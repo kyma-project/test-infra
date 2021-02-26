@@ -60,57 +60,6 @@ func TestBootstrapJobPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"}, actualPost.Spec.Containers[0].Args)
 }
 
-func TestBootstrapHelmJobPresubmit(t *testing.T) {
-	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/buildpack.yaml")
-	// THEN
-	require.NoError(t, err)
-
-	assert.Len(t, jobConfig.PresubmitsStatic, 1)
-	infraPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"})
-
-	expName := "pre-test-infra-bootstrap-helm"
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(infraPresubmits, expName, "master")
-	require.NotNil(t, actualPresubmit)
-	assert.Equal(t, expName, actualPresubmit.Name)
-	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
-	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
-	assert.False(t, actualPresubmit.SkipReport)
-	assert.True(t, actualPresubmit.Decorate)
-	assert.False(t, actualPresubmit.Optional)
-	assert.Equal(t, "github.com/kyma-project/test-infra", actualPresubmit.PathAlias)
-	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoTestInfra, preset.GcrPush, preset.BuildPr)
-	assert.Equal(t, "^prow/images/bootstrap-helm/", actualPresubmit.RunIfChanged)
-	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "prow/images/bootstrap-helm/Dockerfile"))
-	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap-helm"}, actualPresubmit.Spec.Containers[0].Args)
-}
-
-func TestBootstrapHelmJobPostsubmit(t *testing.T) {
-	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/buildpack.yaml")
-	// THEN
-	require.NoError(t, err)
-
-	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
-	infraPost := jobConfig.AllStaticPostsubmits([]string{"kyma-project/test-infra"})
-
-	expName := "post-test-infra-bootstrap-helm"
-	actualPost := tester.FindPostsubmitJobByNameAndBranch(infraPost, expName, "master")
-	require.NotNil(t, actualPost)
-	assert.Equal(t, expName, actualPost.Name)
-	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
-	assert.Equal(t, 10, actualPost.MaxConcurrency)
-	assert.True(t, actualPost.Decorate)
-	assert.Equal(t, "github.com/kyma-project/test-infra", actualPost.PathAlias)
-	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoTestInfra, preset.GcrPush, preset.BuildRelease)
-	assert.Equal(t, "^prow/images/bootstrap-helm/", actualPost.RunIfChanged)
-	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualPost.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualPost.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap-helm"}, actualPost.Spec.Containers[0].Args)
-}
-
 func TestBuildpackGolangJobPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/buildpack.yaml")
@@ -262,47 +211,6 @@ func TestBuildpackGolangKubebuilder2JobPostsubmit(t *testing.T) {
 	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualPost.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-kubebuilder2"}, actualPost.Spec.Containers[0].Args)
-}
-
-func TestKymaClusterInfraPresubmit(t *testing.T) {
-	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/buildpack.yaml")
-	// THEN
-	require.NoError(t, err)
-
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"}), "pre-test-infra-kyma-cluster-infra", "master")
-	require.NotNil(t, actualPresubmit)
-
-	assert.False(t, actualPresubmit.SkipReport)
-	assert.True(t, actualPresubmit.Decorate)
-	assert.Equal(t, "github.com/kyma-project/test-infra", actualPresubmit.PathAlias)
-	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "prow/images/kyma-cluster-infra/Dockerfile"))
-	assert.Len(t, actualPresubmit.Spec.Containers, 1)
-	actualContainer := actualPresubmit.Spec.Containers[0]
-	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualContainer.Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualContainer.Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-cluster-infra"}, actualContainer.Args)
-	tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
-}
-
-func TestKymaClusterInfraPostsubmit(t *testing.T) {
-	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/buildpack.yaml")
-	// THEN
-	require.NoError(t, err)
-
-	actualPostsubmit := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/test-infra"}), "post-test-infra-kyma-cluster-infra", "master")
-	require.NotNil(t, actualPostsubmit)
-
-	assert.True(t, actualPostsubmit.Decorate)
-	assert.Equal(t, "github.com/kyma-project/test-infra", actualPostsubmit.PathAlias)
-	assert.True(t, tester.IfPostsubmitShouldRunAgainstChanges(*actualPostsubmit, "prow/images/kyma-cluster-infra/Dockerfile"))
-	assert.Len(t, actualPostsubmit.Spec.Containers, 1)
-	actualContainer := actualPostsubmit.Spec.Containers[0]
-	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualContainer.Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualContainer.Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-cluster-infra"}, actualContainer.Args)
-	tester.AssertThatSpecifiesResourceRequests(t, actualPostsubmit.JobBase)
 }
 
 func TestBuildpackNodeJobPresubmit(t *testing.T) {

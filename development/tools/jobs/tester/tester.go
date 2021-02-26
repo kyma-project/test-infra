@@ -59,10 +59,6 @@ const (
 	ImageKymaIntegrationK15 = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200817-1.14.0-rc1-75-g625c1054-k8s1.15"
 	// ImageKymaIntegrationLatest represents kyma integration image with kubectl 1.16
 	ImageKymaIntegrationLatest = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20201208-8f23a167-k8s1.16"
-	// ImageBootstrapHelm20181121 represents verion of bootstrap-helm image
-	ImageBootstrapHelm20181121 = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc"
-	// ImageBootstrapHelm20191227 represents verion of bootstrap-helm image
-	ImageBootstrapHelm20191227 = "eu.gcr.io/kyma-project/test-infra/bootstrap-helm:v20191227-cca719e8"
 	// ImageGolangToolboxLatest represents the latest version of the golang buildpack toolbox
 	ImageGolangToolboxLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20210125-6234473e"
 	// ImageProwToolsLatest represents the latest version of the prow-tools image
