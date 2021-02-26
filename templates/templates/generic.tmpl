@@ -2,9 +2,8 @@
     - name: {{if .JobConfig.name}}{{.JobConfig.name}}{{else}}{{fail ".JobConfig.name is not defined"}}{{end}}
       {{- if .JobConfig.annotations}}
       annotations:
-        {{- $booleans := list "yes" "no" "true" "false" -}}
         {{- range $key, $value := .JobConfig.annotations}}
-        {{$key}}: {{ if has $value $booleans }}{{ quote $value }}{{else}}{{ $value }}{{end}}
+        {{$key}}: {{quote $value}}
         {{- end}}
       {{- end}}
       {{- if .JobConfig.labels}}
