@@ -29,7 +29,6 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/milv"
-              - "ci-pr"
             env:
               - name: GO11MODULE
                 value: "on"
@@ -67,7 +66,6 @@ postsubmits: # runs on master
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/milv"
-              - "ci-master"
             env:
               - name: GO11MODULE
                 value: "on"

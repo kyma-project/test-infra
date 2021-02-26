@@ -164,6 +164,8 @@ templates:
         localSets:
           milv_jobConfig:
             image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.15.7
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/milv"
             env:
               GO11MODULE: "on"
             branches:
@@ -175,9 +177,6 @@ templates:
                   name: pre-master-kyma-incubator-milv
                   always_run: true
                   <<: *commonJob
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/milv"
-                    - "ci-pr"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -188,9 +187,6 @@ templates:
               - jobConfig:
                   name: post-master-kyma-incubator-milv
                   <<: *commonJob
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/milv"
-                    - "ci-master"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
