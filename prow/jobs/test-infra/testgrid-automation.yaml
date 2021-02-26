@@ -4,8 +4,6 @@
 presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-test-infra-validate-testgrid-config
-      annotations:
-        testgrid-create-test-group: "false"
       run_if_changed: '^(prow/jobs/.*\.yaml)|(prow/testgrid-default\.yaml)$'
       skip_report: false
       decorate: true

@@ -57,7 +57,7 @@ postsubmits: # runs on master
   kyma-project/test-infra:
     - name: post-master-test-infra-image-syncer-run
       annotations:
-        testgrid-create-test-group: "false"
+        testgrid-dashboards: "kyma_experimental"
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository: "true"
