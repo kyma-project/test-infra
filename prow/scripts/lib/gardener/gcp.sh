@@ -85,7 +85,10 @@ gardener::install_kyma() {
 
     (
     set -x
-    kyma alpha deploy --ci --source=local -w="${KYMA_PROJECT_DIR}/kyma"
+    kyma install \
+        --ci \
+        --source "${KYMA_SOURCE}" \
+        --timeout 90m
     )
 }
 
