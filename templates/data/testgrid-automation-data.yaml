@@ -6,8 +6,6 @@ templates:
           jobConfig_default:
             image: "gcr.io/k8s-prow/transfigure"
             run_if_changed: '^(prow/jobs/.*\.yaml)|(prow/testgrid-default\.yaml)$'
-            annotations:
-              testgrid-create-test-group: "false"
             command: "/transfigure.sh"
             privileged: "false"
         jobConfigs:
@@ -37,6 +35,8 @@ templates:
                     - "prow/jobs"
                     - "prow/testgrid-default.yaml"
                     - "kyma"
+                  annotations:
+                    testgrid-dashboards: kyma_experimental
                   volumeMounts:
                     - name: "github-token"
                       mountPath: "/etc/github-token"
@@ -48,6 +48,5 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
-                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
