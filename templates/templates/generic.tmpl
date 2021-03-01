@@ -105,6 +105,12 @@
                 {{- end }}
               {{- end}}
             {{- end}}
+        {{- with .JobConfig.tolerations }}
+        tolerations:
+        {{- range $k, $v := . }}
+          {{$k}}: {{$v}}
+        {{- end }}
+        {{- end }}
         {{- if .JobConfig.volumes}}
         volumes:
           {{- range .JobConfig.volumes}}
