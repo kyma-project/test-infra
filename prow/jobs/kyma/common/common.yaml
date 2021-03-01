@@ -40,6 +40,10 @@ postsubmits: # runs on master
     - name: post-master-kyma-common
       annotations:
         testgrid-create-test-group: "false"
+      labels:
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-kyma: "true"
+        preset-sa-gcr-push: "true"
       run_if_changed: '^common/'
       skip_report: false
       decorate: true
