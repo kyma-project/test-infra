@@ -461,3 +461,75 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-golang
+      - to: ../prow/jobs/incubator/marketplaces/marketplaces.yaml
+        localSets:
+          marketplaces_labels:
+            labels:
+              preset-dind-enabled: "true"
+              preset-sa-gcr-push: "true"
+              preset-docker-push-repository-global: "true"
+              preset-kind-volume-mounts: "true"
+          job_tolerations:
+            tolerations:
+              key: resources-usage
+              value: high
+              operator: Equal
+              effect: NoSchedule
+        jobConfigs:
+          - repoName: kyma-incubator/marketplaces
+            jobs:
+              - jobConfig:
+                  name: pre-marketplaces
+                  always_run: true
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/marketplaces"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang-toolbox
+                  local:
+                    - marketplaces_labels
+                    - job_tolerations
+              - jobConfig:
+                  name: post-marketplaces
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/marketplaces"
+                    - "ci-master"
+                  branches:
+                    - "^master$"
+                    - "^release-\\d+\\.\\d+$"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                    - image_buildpack-golang-toolbox
+                  local:
+                    - marketplaces_labels
+                    - job_tolerations
+              - jobConfig:
+                  name: rel-marketplaces
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/marketplaces"
+                    - "ci-release"
+                  branches:
+                    - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$"
+                  labels:
+                    preset-bot-github-token: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                    - image_buildpack-golang-toolbox
+                  local:
+                    - marketplaces_labels
+                    - job_tolerations
