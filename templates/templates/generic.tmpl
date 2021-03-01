@@ -107,8 +107,11 @@
             {{- end}}
         {{- with .JobConfig.tolerations }}
         tolerations:
-        {{- range $k, $v := . }}
-          {{$k}}: {{$v}}
+        {{- range . }}
+          - key: {{ .key }}
+            operator: {{ .operator }}
+            value: {{ .value }}
+            effect: {{ .effect }}
         {{- end }}
         {{- end }}
         {{- if .JobConfig.volumes}}

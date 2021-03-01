@@ -36,10 +36,10 @@ presubmits: # runs on PRs
                 memory: 1.5Gi
                 cpu: 0.8
         tolerations:
-          effect: NoSchedule
-          key: resources-usage
-          operator: Equal
-          value: high
+          - key: resources-usage
+            operator: Equal
+            value: high
+            effect: NoSchedule
   
 postsubmits: # runs on master
   kyma-incubator/marketplaces:
@@ -78,10 +78,10 @@ postsubmits: # runs on master
                 memory: 1.5Gi
                 cpu: 0.8
         tolerations:
-          effect: NoSchedule
-          key: resources-usage
-          operator: Equal
-          value: high
+          - key: resources-usage
+            operator: Equal
+            value: high
+            effect: NoSchedule
     - name: rel-marketplaces
       annotations:
         testgrid-create-test-group: "false"
@@ -117,8 +117,8 @@ postsubmits: # runs on master
                 memory: 1.5Gi
                 cpu: 0.8
         tolerations:
-          effect: NoSchedule
-          key: resources-usage
-          operator: Equal
-          value: high
+          - key: resources-usage
+            operator: Equal
+            value: high
+            effect: NoSchedule
   

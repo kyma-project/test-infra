@@ -471,10 +471,10 @@ templates:
               preset-kind-volume-mounts: "true"
           job_tolerations:
             tolerations:
-              key: resources-usage
-              value: high
-              operator: Equal
-              effect: NoSchedule
+              - key: resources-usage
+                value: high
+                operator: Equal
+                effect: NoSchedule
         jobConfigs:
           - repoName: kyma-incubator/marketplaces
             jobs:
