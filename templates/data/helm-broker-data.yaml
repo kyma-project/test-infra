@@ -1,0 +1,80 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/helm-broker/helm-broker.yaml
+        localSets:
+          kind_mounts:
+            labels:
+              preset-kind-volume-mounts: "true"
+        jobConfigs:
+          - repoName: kyma-project/helm-broker
+            jobs:
+              - jobConfig:
+                  name: pre-master-helm-broker
+                  always_run: true
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/helm-broker"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang-kubebuilder2
+                    - build_labels
+              - jobConfig:
+                  name: post-master-helm-broker
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/helm-broker"
+                    - "ci-master"
+                  labels:
+                    preset-bot-github-token: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                    - image_buildpack-golang-kubebuilder2
+                    - build_labels
+              - jobConfig:
+                  name: pre-master-helm-broker-chart-test
+                  always_run: true
+                  env:
+                    RUN_ON_PROW: "true"
+                  command: make
+                  args:
+                    - "charts-test"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - build_labels
+                  local:
+                    - kind_mounts
+              - jobConfig:
+                  name: post-release-helm-broker
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/helm-broker"
+                    - "ci-release"
+                  env:
+                    RUN_ON_PROW: "true"
+                  labels:
+                    preset-bot-github-token: "true"
+                  branches:
+                    - 'v\d+\.\d+\.\d+$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                    - image_buildpack-golang-kubebuilder2
+                    - build_labels
+                  local:
+                    - kind_mounts
