@@ -1,0 +1,81 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/cli/cli.yaml
+        localSets:
+          job_spec:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+            env:
+              GO111MODULE: "on"
+        jobConfigs:
+          - repoName: kyma-project/cli
+            jobs:
+              - jobConfig:
+                  name: pre-kyma-cli
+                  always_run: true
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/cli"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang-toolbox
+                  local:
+                    - job_spec
+              - jobConfig:
+                  name: post-kyma-cli
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/cli"
+                    - "ci-master"
+                  branches:
+                    - "^master$"
+                    - "^release-\\d+\\.\\d+$"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                    - image_buildpack-golang-toolbox
+                  local:
+                    - job_spec
+              - jobConfig:
+                  name: rel-kyma-cli
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/cli"
+                    - "ci-release"
+                  branches:
+                    - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$"
+                  labels:
+                    preset-bot-github-token: "true"
+                    preset-dind-enabled: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                    - image_buildpack-golang-toolbox
+                  local:
+                    - job_spec
+              - jobConfig:
+                  name: stable-kyma-cli
+                  branches:
+                    - "^stable$"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/cli"
+                    - "ci-master"
+                  labels:
+                    preset-kyma-cli-stable: "true"
+                    preset-sa-kyma-artifacts: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                    - image_buildpack-golang-toolbox
+                  local:
+                    - job_spec
