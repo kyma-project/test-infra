@@ -4,8 +4,6 @@ package preset
 type Preset string
 
 const (
-	// KindVolumesMounts means kubernetes-in-docker preset
-	KindVolumesMounts Preset = "preset-kind-volume-mounts"
 	// GcrPush means GCR push service account
 	GcrPush Preset = "preset-sa-gcr-push"
 	// DockerPushRepoKyma means Docker repository
