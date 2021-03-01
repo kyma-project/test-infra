@@ -49,6 +49,20 @@ vm_job_template_k3s: &vm_job_template_k3s
           memory: 100Mi
           cpu: 50m
 
+vm_job_template_k3s_kyma2: &vm_job_template_k3s_kyma2
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+    - <<: *base_image_k16
+      command:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma2-k3s.sh"
+      resources:
+        requests:
+          memory: 100Mi
+          cpu: 50m
+
 vm_job_template_serverless_k3s: &vm_job_template_serverless_k3s
   decorate: true
   path_alias: github.com/kyma-project/kyma
@@ -227,6 +241,23 @@ presubmits: # runs on PRs
       - <<: *kyma_local_ref
         base_ref: main
     
+    - name: pre-master-kyma2-integration-k3s
+      optional: false
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      branches:
+      - ^master$
+      <<: *vm_job_template_k3s_kyma2
+      # following regexp won't start build if only Markdown files were changed
+      run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        preset-build-pr: "true"
+        <<: *vm_job_labels_template
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+      - <<: *kyma_local_ref
+        base_ref: main
+
     - name: pre-master-serverless-integration-k3s
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
