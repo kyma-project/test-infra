@@ -11,7 +11,7 @@ pjNames:
 prConfigs:
   kyma-project:
     kyma:
-      prNumber: 10738
+      prNumber: 10754
     addons:
       prNumber: 152
     examples:
