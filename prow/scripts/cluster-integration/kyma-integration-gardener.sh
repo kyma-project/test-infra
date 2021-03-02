@@ -117,7 +117,7 @@ gardener::generate_overrides
 gardener::provision_cluster
 
 # TODO actually do something with it
-kubectl -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/host-pid-container.yaml"
+kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/host-pid-container.yaml"
 
 # uses previously set KYMA_SOURCE
 gardener::install_kyma
