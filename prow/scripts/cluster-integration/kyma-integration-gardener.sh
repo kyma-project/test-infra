@@ -116,6 +116,9 @@ gardener::generate_overrides
 
 gardener::provision_cluster
 
+# TODO actually do something with it
+kubectl -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/host-pid-container.yaml"
+
 # uses previously set KYMA_SOURCE
 gardener::install_kyma
 
@@ -138,6 +141,9 @@ else
     fi
     gardener::test_kyma
 fi
+
+# TODO make this less ugly
+gcloud logging write "gardener-${COMMON_NAME}" "$(kubectl logs view-pid)"
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"

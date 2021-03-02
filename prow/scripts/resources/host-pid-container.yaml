@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: view-pid
+spec:
+  hostPID: true
+  containers:
+    - name: view-pid
+      image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9
+      command: ["sh", "-c"]
+      args: ["while true; do date +\"%Y/%m/%d %T %Z\"; ps auxf; sleep 10; done;"]
