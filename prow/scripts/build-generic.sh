@@ -21,8 +21,12 @@ if [[ ! -d "${SOURCES_DIR}" ]]; then
   usage
 fi
 
-gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
-docker::start
+if [[ -n "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
+    gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+fi
+if [[ "${DOCKER_IN_DOCKER_ENABLED}" == true ]]; then
+    docker::start
+fi
 
 if [ -n "${PULL_NUMBER}" ]; then
   echo "Building from PR"
