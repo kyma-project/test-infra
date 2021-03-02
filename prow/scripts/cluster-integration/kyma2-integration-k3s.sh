@@ -23,13 +23,9 @@ load_env() {
 prepare_k3s() {
     echo "starting cluster"
     # TODO pass OIDC setup 
-    curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE=777 INSTALL_K3S_EXEC="server --disable traefik" sh -
-    mkdir -p ~/.kube
-    cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
-    chmod 600 ~/.kube/config
-
-    REGISTRY_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' /registry.localhost)
-    echo "${REGISTRY_IP} registry.localhost" >> /etc/hosts
+    pushd "${KYMA_SOURCES_DIR}/tests/fast-integration/hack"
+    ./create-cluster-k3d.sh
+    popd
 }
 
 install_kyma() {
