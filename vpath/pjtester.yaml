@@ -1,2 +1,2 @@
 pjNames:
-  - pjName: "presubmit-test-job"
+  - pjName: "post-master-kyma-gke-rapid-integration"
