@@ -19,27 +19,27 @@ func TestHelmBrokerJobsPresubmit(t *testing.T) {
 		expPresets      []preset.Preset
 		expContainerImg string
 		expCommand      string
-		expArgs         string
+		expArgs         []string
 	}{
 		"pre-master-helm-broker": {
 			givenJobName: "pre-master-helm-broker",
 
 			expPresets: []preset.Preset{
-				preset.DindEnabled, preset.GcrPush, preset.BuildPr, preset.DockerPushRepoKyma,
+				preset.DindEnabled, preset.GcrPush, preset.DockerPushRepoKyma,
 			},
 			expContainerImg: tester.ImageGolangKubebuilder2BuildpackLatest,
-			expCommand:      "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh",
-			expArgs:         "/home/prow/go/src/github.com/kyma-project/helm-broker",
+			expCommand:      "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh",
+			expArgs:         []string{"/home/prow/go/src/github.com/kyma-project/helm-broker", "ci-pr"},
 		},
 		"pre-master-helm-broker-chart-test": {
 			givenJobName: "pre-master-helm-broker-chart-test",
 
 			expPresets: []preset.Preset{
-				preset.DindEnabled, preset.GcrPush, preset.BuildPr, preset.DockerPushRepoKyma, preset.KindVolumesMounts,
+				preset.DindEnabled, preset.GcrPush, preset.DockerPushRepoKyma, preset.KindVolumesMounts,
 			},
-			expContainerImg: tester.ImageGolangBuildpack1_13,
+			expContainerImg: tester.ImageGolangBuildpack1_14,
 			expCommand:      "make",
-			expArgs:         "charts-test",
+			expArgs:         []string{"charts-test"},
 		},
 	}
 	for tn, tc := range tests {
@@ -52,14 +52,13 @@ func TestHelmBrokerJobsPresubmit(t *testing.T) {
 			assert.Equal(t, 10, actualJob.MaxConcurrency)
 			assert.False(t, actualJob.SkipReport)
 			assert.True(t, actualJob.Decorate)
-			assert.Equal(t, "github.com/kyma-project/helm-broker", actualJob.PathAlias)
 			assert.True(t, actualJob.AlwaysRun)
 			assert.Empty(t, actualJob.RunIfChanged)
 			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 			tester.AssertThatHasPresets(t, actualJob.JobBase, tc.expPresets...)
 			assert.Equal(t, tc.expContainerImg, actualJob.Spec.Containers[0].Image)
 			assert.Equal(t, []string{tc.expCommand}, actualJob.Spec.Containers[0].Command)
-			assert.Equal(t, []string{tc.expArgs}, actualJob.Spec.Containers[0].Args)
+			assert.Equal(t, tc.expArgs, actualJob.Spec.Containers[0].Args)
 		})
 	}
 }
@@ -78,23 +77,23 @@ func TestHelmBrokerJobsPostsubmits(t *testing.T) {
 		expBranches     []string
 		expContainerImg string
 		expCommand      string
-		expArgs         string
+		expArgs         []string
 	}{
 		{
 			expName:         "post-master-helm-broker",
 			expBranches:     []string{"^master$"},
-			expPresets:      []preset.Preset{preset.DindEnabled, preset.GcrPush, preset.BuildMaster, preset.DockerPushRepoKyma},
+			expPresets:      []preset.Preset{preset.DindEnabled, preset.GcrPush, preset.DockerPushRepoKyma},
 			expContainerImg: tester.ImageGolangKubebuilder2BuildpackLatest,
-			expCommand:      "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh",
-			expArgs:         "/home/prow/go/src/github.com/kyma-project/helm-broker",
+			expCommand:      "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh",
+			expArgs:         []string{"/home/prow/go/src/github.com/kyma-project/helm-broker", "ci-master"},
 		},
 		{
 			expName:         "post-release-helm-broker",
 			expBranches:     []string{"v\\d+\\.\\d+\\.\\d+$"},
-			expPresets:      []preset.Preset{preset.DindEnabled, preset.GcrPush, preset.BuildRelease, preset.DockerPushRepoKyma, preset.BotGithubToken, preset.KindVolumesMounts},
+			expPresets:      []preset.Preset{preset.DindEnabled, preset.GcrPush, preset.DockerPushRepoKyma, preset.BotGithubToken, preset.KindVolumesMounts},
 			expContainerImg: tester.ImageGolangKubebuilder2BuildpackLatest,
-			expCommand:      "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh",
-			expArgs:         "/home/prow/go/src/github.com/kyma-project/helm-broker",
+			expCommand:      "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh",
+			expArgs:         []string{"/home/prow/go/src/github.com/kyma-project/helm-broker", "ci-release"},
 		},
 	} {
 		t.Run(tests.expName, func(t *testing.T) {
@@ -104,13 +103,12 @@ func TestHelmBrokerJobsPostsubmits(t *testing.T) {
 
 			assert.Equal(t, 10, actualPost.MaxConcurrency)
 			assert.True(t, actualPost.Decorate)
-			assert.Equal(t, "github.com/kyma-project/helm-broker", actualPost.PathAlias)
 			tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
 			tester.AssertThatHasPresets(t, actualPost.JobBase, tests.expPresets...)
 			assert.Equal(t, tests.expContainerImg, actualPost.Spec.Containers[0].Image)
 			assert.Empty(t, actualPost.RunIfChanged)
 			assert.Equal(t, []string{tests.expCommand}, actualPost.Spec.Containers[0].Command)
-			assert.Equal(t, []string{tests.expArgs}, actualPost.Spec.Containers[0].Args)
+			assert.Equal(t, tests.expArgs, actualPost.Spec.Containers[0].Args)
 		})
 	}
 

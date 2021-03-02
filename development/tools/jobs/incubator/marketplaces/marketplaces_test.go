@@ -12,6 +12,7 @@ import (
 )
 
 const registryJobPath = "./../../../../../prow/jobs/incubator/marketplaces/marketplaces.yaml"
+const marketplacesGovernanceFile = "./../../../../../prow/jobs/incubator/marketplaces/marketplaces-governance.yaml"
 
 func TestMarketplacesJobRelease(t *testing.T) {
 	jobConfig, err := tester.ReadJobConfig(registryJobPath)
@@ -25,9 +26,8 @@ func TestMarketplacesJobRelease(t *testing.T) {
 
 	assert.True(t, actualPost.Decorate)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
-	assert.Equal(t, "github.com/kyma-incubator/marketplaces", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoGlobal, preset.GcrPush, preset.BuildRelease, preset.BotGithubToken)
+	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoGlobal, preset.GcrPush, preset.BotGithubToken)
 
 }
 
@@ -45,9 +45,8 @@ func TestMarketplacesJobPresubmit(t *testing.T) {
 	assert.True(t, actualPre.Decorate)
 	assert.False(t, actualPre.Optional)
 	assert.True(t, actualPre.AlwaysRun)
-	assert.Equal(t, "github.com/kyma-incubator/marketplaces", actualPre.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPre.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPre.JobBase, preset.DindEnabled, preset.DockerPushRepoGlobal, preset.GcrPush, preset.BuildPr)
+	tester.AssertThatHasPresets(t, actualPre.JobBase, preset.DindEnabled, preset.DockerPushRepoGlobal, preset.GcrPush)
 }
 
 func TestMarketplacesPostsubmit(t *testing.T) {
@@ -62,14 +61,13 @@ func TestMarketplacesPostsubmit(t *testing.T) {
 
 	assert.True(t, actualPost.Decorate)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
-	assert.Equal(t, "github.com/kyma-incubator/marketplaces", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoGlobal, preset.GcrPush, preset.BuildMaster)
+	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoGlobal, preset.GcrPush)
 }
 
 func TestGovernanceJobPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig(registryJobPath)
+	jobConfig, err := tester.ReadJobConfig(marketplacesGovernanceFile)
 	// THEN
 	require.NoError(t, err)
 
@@ -93,7 +91,7 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 
 func TestGovernanceJobPeriodic(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig(registryJobPath)
+	jobConfig, err := tester.ReadJobConfig(marketplacesGovernanceFile)
 	// THEN
 	require.NoError(t, err)
 

@@ -4,17 +4,16 @@ templates:
       - to: ../prow/jobs/test-infra/watch-pods/watch-pods.yaml
         localSets:
           default:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             run_if_changed: "^watch-pods/"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/watch-pods"
         jobConfigs:
           - repoName: "github.com/kyma-project/test-infra"
             jobs:
               - jobConfig:
                   name: "pre-master-test-infra-watch-pods"
-                  labels:
-                    preset-build-pr: "true"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/test-infra/watch-pods"
+                    - "ci-pr"
                 inheritedConfigs:
                   local:
                     - "default"
@@ -25,8 +24,9 @@ templates:
                     - "build_labels"
               - jobConfig:
                   name: "post-master-test-infra-watch-pods"
-                  labels:
-                    preset-build-master: "true"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/test-infra/watch-pods"
+                    - "ci-master"
                 inheritedConfigs:
                   local:
                     - "default"
