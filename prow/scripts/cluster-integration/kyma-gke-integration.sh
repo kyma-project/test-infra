@@ -201,7 +201,7 @@ log::info "Installation triggered"
 
 yes | kyma install \
   --ci \
-  -s "${KYMA_SOURCE}" \
+  -s "master" \
   -o "$PWD/kyma-installer-overrides.yaml" \
   --domain "${DOMAIN}" \
   --tls-cert="${TLS_CERT}" \
