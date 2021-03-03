@@ -119,6 +119,10 @@ gardener::provision_cluster
 # TODO actually do something with it
 kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/host-pid-container.yaml"
 
+gcloud::authenticate "${SA_GARDENER_LOGS}"
+log::info saving one log line to "gardener-${COMMON_NAME}"
+gcloud logging write "gardener-${COMMON_NAME}" "Installation started"
+
 # uses previously set KYMA_SOURCE
 gardener::install_kyma
 
@@ -130,8 +134,9 @@ utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 log::info saving logs to "gardener-${COMMON_NAME}"
 pid_logs=$(kubectl logs view-pid)
 # gcloud logging write "gardener-${COMMON_NAME}" "$pid_logs"
+# gcloud::authenticate "${SA_GARDENER_LOGS}"
 while IFS=$'\n' read -r line; do
-    gcloud logging write "gardener-${COMMON_NAME}" "${line[@]}"
+    gcloud logging write "gardener-${COMMON_NAME}" "${line}"
 done <<< "$pid_logs"
 
 if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
