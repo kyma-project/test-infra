@@ -68,8 +68,6 @@ const (
 	// KymaIncubatorDir means kyma incubator dir
 	KymaIncubatorDir = "/home/prow/go/src/github.com/kyma-incubator"
 
-	// BuildScriptDir means build script directory
-	BuildScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
 	// GovernanceScriptDir means governance script directory
 	GovernanceScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
 	// MetadataGovernanceScriptDir means governance script directory
@@ -291,11 +289,6 @@ Deprecated: Please use IfPresubmitShouldRunAgainstChanges or IfPostsubmitShouldR
 */
 func AssertThatJobDoesNotRunIfChanged(t *testing.T, p jobRunner, changedFile string) {
 	assert.False(t, p.RunsAgainstChanges([]string{changedFile}), "triggered by changed file [%s]", changedFile)
-}
-
-// AssertThatHasCommand checks if job has
-func AssertThatHasCommand(t *testing.T, command []string) {
-	assert.Equal(t, []string{BuildScriptDir}, command)
 }
 
 // AssertThatExecGolangBuildpack checks if job executes golang buildpack

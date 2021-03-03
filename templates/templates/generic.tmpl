@@ -105,6 +105,15 @@
                 {{- end }}
               {{- end}}
             {{- end}}
+        {{- with .JobConfig.tolerations }}
+        tolerations:
+        {{- range . }}
+          - key: {{ .key }}
+            operator: {{ .operator }}
+            value: {{ .value }}
+            effect: {{ .effect }}
+        {{- end }}
+        {{- end }}
         {{- if .JobConfig.volumes}}
         volumes:
           {{- range .JobConfig.volumes}}

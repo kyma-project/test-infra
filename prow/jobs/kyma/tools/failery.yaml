@@ -3,12 +3,8 @@
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-master-kyma-common
-      labels:
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^common/'
+    - name: pre-master-kyma-tools-failery
+      run_if_changed: '^tools/failery/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -28,7 +24,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/common"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/tools/failery"
               - "ci-pr"
             resources:
               requests:
@@ -37,14 +33,10 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on master
   kyma-project/kyma:
-    - name: post-master-kyma-common
+    - name: post-master-kyma-tools-failery
       annotations:
         testgrid-create-test-group: "false"
-      labels:
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^common/'
+      run_if_changed: '^tools/failery/'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -64,7 +56,7 @@ postsubmits: # runs on master
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/common"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/tools/failery"
               - "ci-master"
             resources:
               requests:
