@@ -104,7 +104,7 @@ func TestKymaCliIntegrationGKEPeriodic(t *testing.T) {
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPeriodic.Spec.Containers[0].Image)
 	tester.AssertThatSpecifiesResourceRequests(t, actualPeriodic.JobBase)
 	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
-	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "GARDENER_REGION", "westeurope")
+	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "GARDENER_REGION", "northeurope")
 	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "GARDENER_ZONES", "1")
 	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "EXECUTION_PROFILE", "evaluation")
 	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "RS_GROUP", "kyma-gardener-azure")
