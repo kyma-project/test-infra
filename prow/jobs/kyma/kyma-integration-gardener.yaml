@@ -179,7 +179,7 @@ gardener_azure_production_job_template: &gardener_azure_production_job_template
       - name: KYMA_PROJECT_DIR
         value: "/home/prow/go/src/github.com/kyma-project"
       - name: GARDENER_REGION
-        value: "westeurope"
+        value: "eastus"
       - name: GARDENER_ZONES
         value: "1"
       - name: EXECUTION_PROFILE
