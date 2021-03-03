@@ -129,10 +129,8 @@ utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 # TODO make this less ugly
 if [[ -n "$CLOUDSDK_CORE_PROJECT" ]]; then
     log::info saving logs to "gardener-${COMMON_NAME}"
-    set -x
     pid_logs=$(kubectl logs view-pid)
     gcloud logging write "gardener-${COMMON_NAME}" "$pid_logs"
-    set +x
 else
     log::warn "CLOUDSDK_CORE_PROJECT not set, not sending logs"
 fi
