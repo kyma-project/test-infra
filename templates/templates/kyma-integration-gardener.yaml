@@ -114,7 +114,7 @@ gardener_azure_job_template: &gardener_azure_job_template
           - name: KYMA_PROJECT_DIR
             value: "/home/prow/go/src/github.com/kyma-project"
           - name: GARDENER_REGION
-            value: "westeurope"
+            value: "northeurope"
           - name: GARDENER_ZONES
             value: "1"
         resources:
@@ -145,7 +145,7 @@ gardener_azure_evaluation_job_template: &gardener_azure_evaluation_job_template
       - name: KYMA_PROJECT_DIR
         value: "/home/prow/go/src/github.com/kyma-project"
       - name: GARDENER_REGION
-        value: "westeurope"
+        value: "northeurope"
       - name: GARDENER_ZONES
         value: "1"
       - name: EXECUTION_PROFILE
@@ -177,7 +177,7 @@ gardener_azure_production_job_template: &gardener_azure_production_job_template
       - name: KYMA_PROJECT_DIR
         value: "/home/prow/go/src/github.com/kyma-project"
       - name: GARDENER_REGION
-        value: "eastus"
+        value: "northeurope"
       - name: GARDENER_ZONES
         value: "1"
       - name: EXECUTION_PROFILE
@@ -209,7 +209,7 @@ gardener_azure_hibernation_job_template: &gardener_azure_hibernation_job_templat
       - name: KYMA_PROJECT_DIR
         value: "/home/prow/go/src/github.com/kyma-project"
       - name: GARDENER_REGION
-        value: "westeurope"
+        value: "northeurope"
       - name: GARDENER_ZONES
         value: "1"
       - name: EXECUTION_PROFILE
@@ -275,7 +275,7 @@ presubmits:
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: GARDENER_REGION
-                value: "westeurope"
+                value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
               - name: EXECUTION_PROFILE
