@@ -126,6 +126,9 @@ gardener::install_kyma
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
+# TODO make this less ugly
+gcloud logging write "gardener-${COMMON_NAME}" "$(kubectl logs view-pid)"
+
 if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
     gardener::hibernate_kyma
     sleep 120
@@ -141,9 +144,6 @@ else
     fi
     gardener::test_kyma
 fi
-
-# TODO make this less ugly
-gcloud logging write "gardener-${COMMON_NAME}" "$(kubectl logs view-pid)"
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
