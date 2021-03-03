@@ -309,6 +309,8 @@ gardener::wake_up_kyma() {
 
 gardener::test_fast_integration_kyma() {
     log::info "Running Kyma Fast Integration tests"
+    
+    sleep 100000
 
     pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
     make ci-no-install
