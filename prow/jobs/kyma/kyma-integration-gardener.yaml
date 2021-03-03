@@ -369,7 +369,7 @@ periodics:
       preset-log-collector-slack-token: "true"
       <<: *gardener_azure_job_labels_template
 
-    - name: kyma-integration-evaluation-gardener-azure-big
+  - name: kyma-integration-evaluation-gardener-azure-big
     cluster: untrusted-workload
     <<: *gardener_azure_evaluation_job_template
     decorate: true
