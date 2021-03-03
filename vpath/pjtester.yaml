@@ -1,0 +1,29 @@
+pjNames:
+- pjName: "kyma-governance"
+- pjName: "pre-master-website-governance"
+- pjName: "pre-master-addons-governance"
+- pjName: "pre-documentation-component-governance"
+- pjName: "pre-master-examples-governance"
+- pjName: "pre-master-community-governance"
+- pjName: "pre-master-console-governance"
+- pjName: "pre-master-test-infra-governance"
+
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 10754
+    addons:
+      prNumber: 152
+    examples:
+      prNumber: 173
+    community:
+      prNumber: 540
+    console:
+      prNumber: 2134
+    test-infra:
+      prNumber: 3340
+    website:
+      prNumber: 676
+  kyma-incubator:
+    documentation-component:
+      prNumber: 73
