@@ -33,6 +33,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 
 # All provides require these values, each of them may check for additional variables
 requiredVars=(
@@ -114,12 +116,16 @@ kyma::install_cli
 # currently only Azure generates overrides, but this may chaneg in the future
 gardener::generate_overrides
 
+gcloud::authenticate "${SA_GARDENER_LOGS}"
+log::info saving one log line to "gardener-${COMMON_NAME}"
+gcloud logging write "gardener-${COMMON_NAME}" "provisioning started"
+
 gardener::provision_cluster
 
 # TODO actually do something with it
 kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/host-pid-container.yaml"
 
-gcloud::authenticate "${SA_GARDENER_LOGS}"
+# gcloud::authenticate "${SA_GARDENER_LOGS}"
 log::info saving one log line to "gardener-${COMMON_NAME}"
 gcloud logging write "gardener-${COMMON_NAME}" "Installation started"
 
