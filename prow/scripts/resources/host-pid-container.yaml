@@ -14,6 +14,8 @@ spec:
       volumeMounts:
         - mountPath: /test-proc
           name: test-proc-vol
+        - mountPath: /var/run/docker.sock
+          name: docker-socket
   volumes:
     - name: test-proc-vol
       hostPath:
@@ -21,3 +23,7 @@ spec:
         path: /proc
         # this field is optional
         type: Directory
+    - name: docker-socket
+      hostPath:
+        path: /var/run/docker.sock
+        type: Socket
