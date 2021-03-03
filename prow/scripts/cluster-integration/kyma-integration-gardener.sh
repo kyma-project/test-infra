@@ -127,7 +127,14 @@ gardener::install_kyma
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
 # TODO make this less ugly
-gcloud logging write "gardener-${COMMON_NAME}" "$(kubectl logs view-pid)"
+if [[ -n "$CLOUDSDK_CORE_PROJECT" ]]; then
+    log::info saving logs to "gardener-${COMMON_NAME}"
+    set -x
+    gcloud logging write "gardener-${COMMON_NAME}" "$(kubectl logs view-pid)"
+    set +x
+else
+    log::warn "CLOUDSDK_CORE_PROJECT not set, not sending logs"
+fi
 
 if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
     gardener::hibernate_kyma
