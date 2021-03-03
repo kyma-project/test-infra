@@ -94,7 +94,7 @@ gardener::init() {
 
 gardener::set_machine_type() {
     if [ -z "${MACHINE_TYPE}" ]; then
-        if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
+        if [[ "$EXECUTION_PROFILE" == "evaluation" && -z "$AZURE_CLUSTER_BIG" ]]; then
             export MACHINE_TYPE="Standard_D4_v3"
         else
             export MACHINE_TYPE="Standard_D8_v3"
