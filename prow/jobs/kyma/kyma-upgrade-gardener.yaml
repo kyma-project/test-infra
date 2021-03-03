@@ -44,7 +44,7 @@ gardener_azure_job_template: &gardener_azure_job_template
           - name: KYMA_PROJECT_DIR
             value: "/home/prow/go/src/github.com/kyma-project"
           - name: GARDENER_REGION
-            value: "westeurope"
+            value: "northeurope"
           - name: GARDENER_ZONES
             value: "1"
         resources:
