@@ -142,6 +142,6 @@ else
 fi
 
 sleep 1800
-
+pgrep -P "$docker_pid"
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"

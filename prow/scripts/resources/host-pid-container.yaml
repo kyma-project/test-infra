@@ -8,6 +8,7 @@ data:
     #!/bin/bash
     { while true
       do
+        date
         memory_capacity_in_kb=$(cat /host-proc/meminfo | grep MemTotal | awk '{print $2}')
         memory_capacity_in_bytes=$((memory_capacity_in_kb * 1024))
         memory_usage_in_bytes=$(cat /host-sys/fs/cgroup/memory/memory.usage_in_bytes)
@@ -22,25 +23,21 @@ data:
         memory_available_in_bytes=$((memory_capacity_in_bytes - memory_working_set))
         memory_available_in_kb=$((memory_available_in_bytes / 1024))
         memory_available_in_mb=$((memory_available_in_kb / 1024))
-        echo "memory.capacity_in_bytes $memory_capacity_in_bytes"
-        echo "memory.usage_in_bytes $memory_usage_in_bytes"
-        echo "memory.total_inactive_file $memory_total_inactive_file"
-        echo "memory.working_set $memory_working_set"
-        echo "memory.available_in_bytes $memory_available_in_bytes"
-        echo "memory.available_in_kb $memory_available_in_kb"
-        echo "memory.available_in_mb $memory_available_in_mb"
-        docker_ds=$(docker container ls --format='{{println .ID}}' | sort | uniq)
+        echo "memory.capacity_in_bytes: $memory_capacity_in_bytes"
+        echo "memory.usage_in_bytes: $memory_usage_in_bytes"
+        echo "memory.total_inactive_file: $memory_total_inactive_file"
+        echo "memory.working_set: $memory_working_set"
+        echo "memory.available_in_bytes: $memory_available_in_bytes"
+        echo "memory.available_in_kb: $memory_available_in_kb"
+        echo "memory.available_in_mb: $memory_available_in_mb"
+        docker_ids=$(docker container ls --format='{{println .ID}}' | sort | uniq)
         for docker_id in $docker_ids
         do
-          echo "Docker PID and container name"
-          docker inspect --format '{{ .State.Pid }}:{{ .Name }}' "$docker_id"
+          echo "Docker PID and container name: $(docker inspect --format '{{ .State.Pid }}:{{ .Name }}' "$docker_id")"
           docker_pid=$(docker inspect --format '{{ .State.Pid }}' "$docker_id")
-          echo "Container mem limit"
-          cat "/host-proc/$docker_pid/root/sys/fs/cgroup/memory/memory.limit_in_bytes"
-          echo "Container mem usage"
-          cat "/host-proc/$docker_pid/root/sys/fs/cgroup/memory/memory.usage_in_bytes"
-          echo "Continer child processes"
-          pgrep -P "$docker_pid"
+          echo "Container mem limit: $(cat "/host-proc/$docker_pid/root/sys/fs/cgroup/memory/memory.limit_in_bytes")"
+          echo "Container mem usage: $(cat "/host-proc/$docker_pid/root/sys/fs/cgroup/memory/memory.usage_in_bytes")"
+          echo "Continer child processes: $(pgrep -P "$docker_pid")"
         done
       done } > /var/oom_debug
 ---
