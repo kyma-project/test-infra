@@ -30,6 +30,10 @@
 # - Storage Admin
 # - Compute Network Admin
 
+
+export PROVISION_REGIONAL_CLUSTER="true"
+export NODES_PER_ZONE="1"
+
 set -o errexit
 
 ENABLE_TEST_LOG_COLLECTOR=false
