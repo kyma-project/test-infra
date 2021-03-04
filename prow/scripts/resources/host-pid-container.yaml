@@ -6,41 +6,42 @@ metadata:
 data:
   entrypoint.sh: |-
     #!/bin/bash
-    { while true do
-      memory_capacity_in_kb=$(cat /host-proc/meminfo | grep MemTotal | awk '{print $2}')
-      memory_capacity_in_bytes=$((memory_capacity_in_kb * 1024))
-      memory_usage_in_bytes=$(cat /host-sys/fs/cgroup/memory/memory.usage_in_bytes)
-      memory_total_inactive_file=$(cat /host-sys/fs/cgroup/memory/memory.stat | grep total_inactive_file | awk '{print $2}')
-      memory_working_set=${memory_usage_in_bytes}
-      if [ "$memory_working_set" -lt "$memory_total_inactive_file" ];
-      then
-        memory_working_set=0
-      else
-        memory_working_set=$((memory_usage_in_bytes - memory_total_inactive_file))
-      fi
-      memory_available_in_bytes=$((memory_capacity_in_bytes - memory_working_set))
-      memory_available_in_kb=$((memory_available_in_bytes / 1024))
-      memory_available_in_mb=$((memory_available_in_kb / 1024))
-      echo "memory.capacity_in_bytes $memory_capacity_in_bytes"
-      echo "memory.usage_in_bytes $memory_usage_in_bytes"
-      echo "memory.total_inactive_file $memory_total_inactive_file"
-      echo "memory.working_set $memory_working_set"
-      echo "memory.available_in_bytes $memory_available_in_bytes"
-      echo "memory.available_in_kb $memory_available_in_kb"
-      echo "memory.available_in_mb $memory_available_in_mb"
-      docker_pids=$(docker container ls --format='{{println .ID}}' | sort | uniq)
-      for docker_pid in $docker_pids
+    { while true
       do
-        echo "Docker PID and container name"
-        docker inspect --format '{{ .State.Pid }}:{{ .Name }}' "$docker_pid"
-        echo "Container mem limit"
-        cat "/host-proc/$docker_pid/root/sys/fs/cgroup/memory/memory.limit_in_bytes"
-        echo "Container mem usage"
-        cat "/host-proc/$docker_pid/root/sys/fs/cgroup/memory/memory.usage_in_bytes"
-        echo "Continer child processes"
-        pgrep -P "$docker_pid"
-      done
-    done } > /var/oom_debug
+        memory_capacity_in_kb=$(cat /host-proc/meminfo | grep MemTotal | awk '{print $2}')
+        memory_capacity_in_bytes=$((memory_capacity_in_kb * 1024))
+        memory_usage_in_bytes=$(cat /host-sys/fs/cgroup/memory/memory.usage_in_bytes)
+        memory_total_inactive_file=$(cat /host-sys/fs/cgroup/memory/memory.stat | grep total_inactive_file | awk '{print $2}')
+        memory_working_set=${memory_usage_in_bytes}
+        if [ "$memory_working_set" -lt "$memory_total_inactive_file" ];
+        then
+          memory_working_set=0
+        else
+          memory_working_set=$((memory_usage_in_bytes - memory_total_inactive_file))
+        fi
+        memory_available_in_bytes=$((memory_capacity_in_bytes - memory_working_set))
+        memory_available_in_kb=$((memory_available_in_bytes / 1024))
+        memory_available_in_mb=$((memory_available_in_kb / 1024))
+        echo "memory.capacity_in_bytes $memory_capacity_in_bytes"
+        echo "memory.usage_in_bytes $memory_usage_in_bytes"
+        echo "memory.total_inactive_file $memory_total_inactive_file"
+        echo "memory.working_set $memory_working_set"
+        echo "memory.available_in_bytes $memory_available_in_bytes"
+        echo "memory.available_in_kb $memory_available_in_kb"
+        echo "memory.available_in_mb $memory_available_in_mb"
+        docker_pids=$(docker container ls --format='{{println .ID}}' | sort | uniq)
+        for docker_pid in $docker_pids
+        do
+          echo "Docker PID and container name"
+          docker inspect --format '{{ .State.Pid }}:{{ .Name }}' "$docker_pid"
+          echo "Container mem limit"
+          cat "/host-proc/$docker_pid/root/sys/fs/cgroup/memory/memory.limit_in_bytes"
+          echo "Container mem usage"
+          cat "/host-proc/$docker_pid/root/sys/fs/cgroup/memory/memory.usage_in_bytes"
+          echo "Continer child processes"
+          pgrep -P "$docker_pid"
+        done
+      done } > /var/oom_debug
 ---
 apiVersion: v1
 kind: Pod
