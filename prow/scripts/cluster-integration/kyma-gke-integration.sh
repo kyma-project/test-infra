@@ -199,6 +199,8 @@ envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-installer-over
 
 log::info "Installation triggered"
 
+KYMA_SOURCE=master
+
 yes | kyma install \
   --ci \
   -s "${KYMA_SOURCE}" \
