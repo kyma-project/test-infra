@@ -44,7 +44,7 @@ data:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: view-pid
+  name: oom-debug
 spec:
   hostPID: true
   containers:
