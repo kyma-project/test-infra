@@ -201,7 +201,7 @@ log::info "Installation triggered"
 
 yes | kyma install \
   --ci \
-  -s "PR-10778" \
+  -s "PR-10786" \
   -o "$PWD/kyma-installer-overrides.yaml" \
   --domain "${DOMAIN}" \
   --tls-cert="${TLS_CERT}" \
