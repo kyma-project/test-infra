@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: debug-entrypoint
+  name: oom-debug-entrypoint
 data:
   entrypoint.sh: |-
     #!/bin/bash
@@ -48,7 +48,7 @@ metadata:
 spec:
   hostPID: true
   containers:
-    - name: view-pid
+    - name: oom-debug
       securityContext:
         privileged: true
       image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9
@@ -68,15 +68,11 @@ spec:
   volumes:
     - name: proc-vol
       hostPath:
-        # directory location on host
         path: /proc
-        # this field is optional
         type: Directory
     - name: sys-vol
       hostPath:
-        # directory location on host
         path: /sys
-        # this field is optional
         type: Directory
     - name: docker-socket
       hostPath:
@@ -85,4 +81,4 @@ spec:
     - name: entrypoint-vol
       configMap:
         defaultMode: 0700
-        name: debug-entrypoint
+        name: oom-debug-entrypoint

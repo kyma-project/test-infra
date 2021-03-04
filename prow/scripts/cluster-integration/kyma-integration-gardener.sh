@@ -116,7 +116,8 @@ gardener::generate_overrides
 
 gardener::provision_cluster
 
-kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/host-pid-container.yaml"
+# run oom debug pod
+kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/debug-container.yaml"
 
 # uses previously set KYMA_SOURCE
 gardener::install_kyma
@@ -141,7 +142,8 @@ else
     gardener::test_kyma
 fi
 
-sleep 1800
-pgrep -P "$docker_pid"
+# copy oom debug pod output to artifacts directory
+kubectl cp default/oom-debug:/var/oom_debug "${ARTIFACTS}/oom_debug.txt"
+
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
