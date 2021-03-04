@@ -95,7 +95,7 @@ function post_hook() {
   exit "${EXIT_STATUS}"
 }
 
-trap post_hook EXIT INT
+#trap post_hook EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
