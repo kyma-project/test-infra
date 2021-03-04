@@ -13,7 +13,7 @@ presubmits: # runs on PRs
         - ^master$
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/transfigure"
+          - image: "gcr.io/k8s-prow/transfigure:v20210222-670293a77e"
             securityContext:
               privileged: false
             command:
@@ -45,7 +45,7 @@ postsubmits: # runs on master
         - ^master$
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/transfigure"
+          - image: "gcr.io/k8s-prow/transfigure:v20210222-670293a77e"
             securityContext:
               privileged: false
             command:
