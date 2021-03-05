@@ -1,6 +1,6 @@
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: kyma-governance
+    - name: pre-master-kyma-governance
       cluster: untrusted-workload
       skip_report: false
       decorate: true

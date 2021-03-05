@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "kyma-governance"
+  - pjName: "pre-master-kyma-governance"
   - pjName: "pre-master-website-governance"
   - pjName: "pre-master-addons-governance"
   - pjName: "pre-documentation-component-governance"
