@@ -41,7 +41,7 @@ data:
           mem_usage=$(cat $host_cgroup_base$docker_cgroup/memory.usage_in_bytes)
           mem_limit=$(cat $host_cgroup_base$docker_cgroup/memory.limit_in_bytes)
           max_mem_usage=$(cat $host_cgroup_base$docker_cgroup/memory.max_usage_in_bytes)
-          mem_usage_percent=$(( $mem_usage \* 100 / $mem_limit))
+          mem_usage_percent=$(( $mem_usage * 100 / $mem_limit))
           echo "[$docker_pid] Container PID and name: $(docker inspect --format '{{ .State.Pid }}:{{ .Name }}' "$docker_id")"
           #echo "[$docker_pid] Container memory.usage_in_bytes: $(cat $host_cgroup_base$docker_cgroup/memory.usage_in_bytes)"
           echo "[$docker_pid] Container memory.usage_in_bytes: $mem_usage"
