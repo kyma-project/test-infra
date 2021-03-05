@@ -34,10 +34,7 @@ gardener::cleanup() {
     log::info "Cleanup"
     set +e
 
-    log::info "Describe nodes"
-    kubectl describe nodes
-    kubectl top nodes
-    kubectl top pods --all-namespaces
+    utils::describe_nodes
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         if  [ -z "${CLEANUP_ONLY_SUCCEEDED}" ] || [[ -n "${CLEANUP_ONLY_SUCCEEDED}" && ${EXIT_STATUS} -eq 0 ]]; then

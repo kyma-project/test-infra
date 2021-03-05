@@ -277,3 +277,14 @@ function utils::save_env_file() {
     echo "${var}"=\""$(printenv "${var}")"\" >> .env
   done
 }
+
+function utils::describe_nodes() {
+  log::info "Describe nodes"
+    {
+      kubectl describe nodes
+      kubectl top nodes
+      kubectl top pods --all-namespaces
+    } > "${ARTIFACTS}/describe_nodes.txt"
+
+  grep -i "System OOM encountered" "${ARTIFACTS}/describe_nodes.txt"
+}
