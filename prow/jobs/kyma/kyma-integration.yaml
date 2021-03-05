@@ -345,6 +345,7 @@ postsubmits:
         testgrid-create-test-group: "false"
       branches:
         - ^master$
+      skip_report: true
       labels:
         preset-log-collector-slack-token: "true"
         preset-build-master: "true"

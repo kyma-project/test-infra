@@ -370,6 +370,9 @@ postsubmits:
         testgrid-create-test-group: "false"
       branches:
         - ^master$
+      {{- if eq .channel "rapid"}}
+      skip_report: true
+      {{- end }}
       labels:
         preset-log-collector-slack-token: "true"
         preset-build-master: "true"
