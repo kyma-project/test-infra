@@ -38,10 +38,18 @@ data:
         do
           docker_pid=$(docker inspect --format '{{ .State.Pid }}' "$docker_id")
           docker_cgroup=$(cat /host-proc/$docker_pid/cgroup | awk -F":memory:" '{print $2}')
+          mem_usage=$(cat $host_cgroup_base$docker_cgroup/memory.usage_in_bytes)
+          mem_limit=$(cat $host_cgroup_base$docker_cgroup/memory.limit_in_bytes)
+          max_mem_usage=$(cat $host_cgroup_base$docker_cgroup/memory.max_usage_in_bytes)
           echo "[$docker_pid] Container PID and name: $(docker inspect --format '{{ .State.Pid }}:{{ .Name }}' "$docker_id")"
-          echo "[$docker_pid] Container memory.usage_in_bytes: $(cat $host_cgroup_base$docker_cgroup/memory.usage_in_bytes)"
-          echo "[$docker_pid] Container memory.max_usage_in_bytes: $(cat $host_cgroup_base$docker_cgroup/memory.max_usage_in_bytes)"
-          echo "[$docker_pid] Container memory.limit_in_bytes: $(cat $host_cgroup_base$docker_cgroup/memory.limit_in_bytes)"
+          #echo "[$docker_pid] Container memory.usage_in_bytes: $(cat $host_cgroup_base$docker_cgroup/memory.usage_in_bytes)"
+          echo "[$docker_pid] Container memory.usage_in_bytes: $mem_usage"
+          #echo "[$docker_pid] Container memory.max_usage_in_bytes: $(cat $host_cgroup_base$docker_cgroup/memory.max_usage_in_bytes)"
+          echo "[$docker_pid] Container memory.max_usage_in_bytes: $max_mem_usage"
+          #echo "[$docker_pid] Container memory.limit_in_bytes: $(cat $host_cgroup_base$docker_cgroup/memory.limit_in_bytes)"
+          echo "[$docker_pid] Container memory.limit_in_bytes: $mem_limit"
+          echo "[$docker_pid] Container memory.usage_percentage: $(( $mem_usage * 100 / $mem_limit))"
+          echo "[$docker_pid] Container memory.max_usage_percentage: $(( $max_mem_usage * 100 / $mem_limit))"
           echo "[$docker_pid] cgroup processes: $(cat $host_cgroup_base$docker_cgroup/cgroup.procs)"
           #echo "Container memory cgroup: $(cat /host-proc/$docker_pid/cgroup)"
           echo "[$docker_pid]Container child processes: $(pgrep -P "$docker_pid" | tr '\n' ' ')"
