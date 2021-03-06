@@ -34,7 +34,7 @@ prepare_k3s() {
 run_tests() {
     pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
     if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
-        npm run test-compass
+        make ci-compass
     else
         make ci
     fi
