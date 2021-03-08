@@ -345,6 +345,26 @@ postsubmits:
       - <<: *kyma_local_ref
         base_ref: main
 
+    - name: post-master-kyma-integration-k3s-compass-dev
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      annotations:
+        testgrid-dashboards: kyma_integration
+        description: Kyma integration job on k3s with compass dev.
+        testgrid-days-of-results: "60"
+      <<: *vm_job_template_k3s
+      branches:
+      - ^master$
+      labels:
+        preset-build-master: "true"
+        preset-kyma-integration-compass-dev: "true"
+        preset-kyma-integration-compass-enabled: "true"
+        <<: *vm_job_labels_template
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+      - <<: *kyma_local_ref
+        base_ref: main
+
     - name: post-master-kyma-gke-integration
       cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       <<: *gke_job_template
@@ -878,7 +898,7 @@ periodics:
     <<: *vm_job_template_k3s
     annotations:
       testgrid-dashboards: kyma_integration
-      description: Kyma integration periodic job on k3s.
+      description: Kyma integration periodic job on k3s with compass dev.
     labels:
       preset-build-master: "true"
       preset-kyma-integration-compass-dev: "true"
