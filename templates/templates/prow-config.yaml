@@ -651,6 +651,10 @@ deck:
           name: junit
         required_files:
           - artifacts/junit.*\.xml
+      - lens:
+          name: podinfo
+        required_files:
+          - podinfo.json
   branding:
     header_color: "#0b74de" # Kyma color
     logo: "/static/extensions/logo.svg"
