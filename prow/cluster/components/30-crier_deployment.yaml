@@ -23,10 +23,15 @@ spec:
           args:
             - --config-path=/etc/config/config.yaml
             - --job-config-path=/etc/job-config
+            - --github-workers=5
+            - --github-endpoint=http://ghproxy
+            - --github-endpoint=https://api.github.com
+            - --github-token-path=/etc/github/oauth
             - --slack-workers=1
             - --slack-token-file=/etc/slack/token
             - --gcs-workers=1
             - --gcs-credentials-file=/etc/credentials/service-account.json
+            - --kubernetes-gcs-workers=1
             - --kubeconfig=/etc/workload-clusters/config
           volumeMounts:
             - name: kubeconfig
@@ -44,6 +49,9 @@ spec:
             - name: gcs-service-account
               mountPath: /etc/credentials
               readOnly: true
+            - name: oauth
+              mountPath: /etc/github
+              readOnly: true
       volumes:
         - name: kubeconfig
           secret:
@@ -60,3 +68,6 @@ spec:
         - name: gcs-service-account
           secret:
             secretName: sa-crier
+        - name: oauth
+          secret:
+            secretName: oauth-token
