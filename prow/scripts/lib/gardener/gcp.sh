@@ -28,6 +28,9 @@ gardener::cleanup() {
 
     utils::describe_nodes
 
+    # copy oom debug pod output to artifacts directory
+    kubectl cp default/oom-debug:/var/oom_debug "${ARTIFACTS}/oom_debug.txt"
+
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
         utils::deprovision_gardener_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
