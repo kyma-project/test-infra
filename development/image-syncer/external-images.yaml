@@ -1,11 +1,11 @@
 targetRepoPrefix:  "eu.gcr.io/kyma-project/external/"
 images:
-- source: "alpine:3.12.4"
+- source: "alpine:3.13.2"
 #- source: "bitnami/keycloak-gatekeeper:10.0.0"
 - source: "bitnami/postgres-exporter:0.8.0-debian-10-r28"
 #- source: "busybox:1.32.0"
 - source: "curlimages/curl:7.70.0"
-- source: "golang:1.16.0-alpine"
+#- source: "golang:1.16.0-alpine"
 - source: "grafana/loki:2.1.0"
 - source: "hudymi/mockice:0.1.3"
 - source: "istio/pilot:1.5.10-distroless"
