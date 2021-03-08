@@ -224,7 +224,7 @@ presubmits: # runs on PRs
         base_ref: main
       
     - name: pre-master-kyma-integration-k3s-compass-dev
-      optional: false
+      optional: true
       cluster: untrusted-workload
       branches:
       - ^master$
