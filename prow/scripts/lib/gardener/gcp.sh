@@ -26,6 +26,8 @@ gardener::cleanup() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
+    utils::describe_nodes
+
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
         utils::deprovision_gardener_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
