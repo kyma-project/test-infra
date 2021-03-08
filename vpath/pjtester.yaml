@@ -1,7 +1,0 @@
-pjNames:
-- pjName: "pre-master-kyma-integration-k3s"
-- pjName: "pre-master-kyma-integration-k3s-compass"
-prConfigs:
-  kyma-project:
-    kyma:
-      prNumber: 10815
