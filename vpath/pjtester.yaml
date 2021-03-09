@@ -1,6 +1,2 @@
 pjNames:
   - pjName: "post-master-kyma-gke-rapid-integration"
-prConfigs:
-  kyma-project:
-    kyma:
-      prNumber: 10786

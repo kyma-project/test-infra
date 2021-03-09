@@ -178,12 +178,11 @@ fi
 # if GKE_RELEASE_CHANNEL is set, get latest possible cluster version
 gcloud::set_latest_cluster_version_for_channel
 
-# # serverless tests are failing, disabling them for now
-# if [[ "${GKE_RELEASE_CHANNEL}" == "rapid" ]]; then
-#   # disabled: core-test-external-solution, serverless-long , serverless
-#   KYMA_TESTS="connector-service console-backend api-gateway application-connector monitoring console-web dex-connection apiserver-proxy kiali application-registry application-operator service-catalog cluster-users rafter connection-token-handler istio-kyma-validate logging dex-integration"
-#   export KYMA_TESTS
-# fi
+# serverless tests are failing when are running on a cluster with contianerD
+if [[ "${GKE_RELEASE_CHANNEL}" == "rapid" ]]; then
+  # set image type to the image that uses docker instead of containerD
+  export IMAGE_TYPE="cos"
+fi
 
 gcloud::provision_gke_cluster "$CLUSTER_NAME"
 export CLEANUP_CLUSTER="true"
@@ -201,7 +200,7 @@ log::info "Installation triggered"
 
 yes | kyma install \
   --ci \
-  -s "PR-10786" \
+  -s "${KYMA_SOURCE}" \
   -o "$PWD/kyma-installer-overrides.yaml" \
   --domain "${DOMAIN}" \
   --tls-cert="${TLS_CERT}" \
