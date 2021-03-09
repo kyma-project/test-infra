@@ -6,6 +6,7 @@ metadata:
 data:
   entrypoint.sh: |-
     #!/bin/bash
+    set +e
     host_cgroup_base="/host-sys/fs/cgroup/memory"
     { while true
       do
