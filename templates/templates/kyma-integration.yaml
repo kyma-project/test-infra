@@ -226,6 +226,25 @@ presubmits: # runs on PRs
         base_ref: master
       - <<: *kyma_local_ref
         base_ref: main
+      
+    - name: pre-master-kyma-integration-k3s-compass-dev
+      optional: true
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      branches:
+      - ^master$
+      <<: *vm_job_template_k3s
+      # following regexp won't start build if only Markdown files were changed
+      run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        preset-build-pr: "true"
+        preset-kyma-integration-compass-dev: "true"
+        preset-kyma-integration-compass-enabled: "true"
+        <<: *vm_job_labels_template
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+      - <<: *kyma_local_ref
+        base_ref: main
     
     - name: pre-master-serverless-integration-k3s
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
@@ -319,6 +338,26 @@ postsubmits:
       - ^master$
       labels:
         preset-build-master: "true"
+        <<: *vm_job_labels_template
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+      - <<: *kyma_local_ref
+        base_ref: main
+
+    - name: post-master-kyma-integration-k3s-compass-dev
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      annotations:
+        testgrid-dashboards: kyma_integration
+        description: Kyma integration job on k3s with compass dev.
+        testgrid-days-of-results: "60"
+      <<: *vm_job_template_k3s
+      branches:
+      - ^master$
+      labels:
+        preset-build-master: "true"
+        preset-kyma-integration-compass-dev: "true"
+        preset-kyma-integration-compass-enabled: "true"
         <<: *vm_job_labels_template
       extra_refs:
       - <<: *test_infra_ref
@@ -844,6 +883,29 @@ periodics:
       description: Kyma integration periodic job on k3s.
     labels:
       preset-build-master: "true"
+      <<: *vm_job_labels_template
+    decorate: true
+    cron: "5 * * * *"
+    branches:
+    - ^master$
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+    - <<: *kyma_local_ref
+      base_ref: main
+    - <<: *kyma_ref
+      base_ref: master
+  
+  - name: kyma-integration-k3s-compass-dev
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+    <<: *vm_job_template_k3s
+    annotations:
+      testgrid-dashboards: kyma_integration
+      description: Kyma integration periodic job on k3s with compass dev.
+    labels:
+      preset-build-master: "true"
+      preset-kyma-integration-compass-dev: "true"
+      preset-kyma-integration-compass-enabled: "true"
       <<: *vm_job_labels_template
     decorate: true
     cron: "5 * * * *"
