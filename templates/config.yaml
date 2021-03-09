@@ -149,12 +149,6 @@ templates:
           <<: *kyma_generic_component
           path: components/application-gateway
           since: "1.7"
-      - to: ../prow/jobs/kyma/components/application-operator/application-operator-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *kyma_generic_component
-          path: components/application-operator
-          since: "1.7"
       - to: ../prow/jobs/kyma/components/application-registry/application-registry-generic.yaml
         values:
           <<: *cluster_default
@@ -233,12 +227,6 @@ templates:
           <<: *kyma_generic_component
           path: tests/application-gateway-legacy-tests
           since: "1.16"
-      - to: ../prow/jobs/kyma/tests/application-operator-tests/application-operator-tests-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *kyma_generic_component
-          path: tests/application-operator-tests
-          since: "1.7"
       - to: ../prow/jobs/kyma/tests/application-registry-tests/application-registry-tests-generic.yaml
         values:
           <<: *cluster_default

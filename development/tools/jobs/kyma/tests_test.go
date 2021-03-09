@@ -34,11 +34,6 @@ var tests = []struct {
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "application-operator-tests", image: tester.ImageGolangKubebuilder2BuildpackLatest, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-		},
-	},
 	{path: "application-registry-tests", image: tester.ImageGolangKubebuilder2BuildpackLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
