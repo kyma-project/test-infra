@@ -652,7 +652,7 @@ templates:
           path: tests/tenant-fetcher
           since: "1.17"
           optional: false
-      - to: ../prow/jobs/incubator/compass/tests/compass-e2e-tests.yaml
+      - to: ../prow/jobs/incubator/compass/tests/compass-e2e-tests/compass-e2e-tests.yaml
         values:
           <<: *cluster_default
           <<: *compass_generic_component
