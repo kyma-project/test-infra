@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "pre-master-kyma2-integration-k3s"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: master

@@ -1,0 +1,13 @@
+serverless:
+  dockerRegistry:
+    enableInternal: false
+    serverAddress: "registry.localhost:5000"
+    registryAddress: "registry.localhost:5000"
+  containers:
+    manager:
+      envs:
+        functionBuildExecutorImage:
+          value: "eu.gcr.io/kyma-project/external/aerfio/kaniko-executor:v1.3.0"
+global:
+  environment:
+    gardener: false
