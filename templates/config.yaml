@@ -652,6 +652,13 @@ templates:
           path: tests/tenant-fetcher
           since: "1.17"
           optional: false
+      - to: ../prow/jobs/incubator/compass/tests/compass-e2e-tests.yaml
+        values:
+          <<: *cluster_default
+          <<: *compass_generic_component
+          path: tests
+          since: "1.18"
+          optional: false
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
