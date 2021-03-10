@@ -205,7 +205,7 @@ fi
 
 log::info "Create local resources for a sample Function"
 
-kyma init function
+kyma init function --name first-function
 
 log::info "Apply local resources for the Function to the Kyma cluster"
 
@@ -218,8 +218,7 @@ log::info "Check if the Function is running"
 attempts=3
 for ((i=1; i<=attempts; i++)); do
     set +e
-    func_name=$(cat config.yaml | grep 'name:' | sed 's/name://g' | sed 's/ //g')
-    result=$(kubectl get pods -lserverless.kyma-project.io/function-name=${func_name},serverless.kyma-project.io/resource=deployment -o jsonpath='{.items[0].status.phase}')
+    result=$(kubectl get pods -lserverless.kyma-project.io/function-name=first-function,serverless.kyma-project.io/resource=deployment -o jsonpath='{.items[0].status.phase}')
     set -e
     if [[ "$result" == *"Running"* ]]; then
         echo "The Function is in Running state"
