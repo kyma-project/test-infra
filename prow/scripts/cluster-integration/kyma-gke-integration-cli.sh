@@ -205,7 +205,7 @@ fi
 
 log::info "Create local resources for a sample Function"
 
-kyma init function
+kyma init function --name first-function
 
 log::info "Apply local resources for the Function to the Kyma cluster"
 
