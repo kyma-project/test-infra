@@ -1,6 +1,0 @@
-pjNames:
-  - pjName: "pre-kyma-cli-integration"
-prConfigs:
-  kyma-project:
-    cli:
-      prNumber: 775
