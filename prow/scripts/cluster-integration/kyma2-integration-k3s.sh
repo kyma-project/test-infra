@@ -24,7 +24,7 @@ load_env() {
 }
 
 prepare_cli(){
-    export PATH="cli/bin:${PATH}"
+    export PATH="$PWD/bin:${PATH}"
     kyma alpha deploy --help
 }
 
