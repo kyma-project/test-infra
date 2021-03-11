@@ -5,7 +5,7 @@ This chart lets' you install Github Slack Connector on [Kyma](https://kyma-proje
 ## Prerequisites
 
 1. Github Slack Connector utilises Kyma features. You need a running Kyma cluster. See Kyma documentation to learn how to [install](https://kyma-project.io/docs/#installation-installation) it.
-2. It uses Github Webhook Gateway for receiving webhook events from Github. See Github Webhook Gateway [installation](../githubWebhookGateway/README.md#Installation) to learn how to build it.
+2. It uses Github Webhook Gateway for receiving webhook events from Github. See Github Webhook Gateway [installation](../githubWebhookGateway/README.md) to learn how to build it.
 3. To validate a source of github webhook event you need to know github webhook secret defined for connected repository or organisation.
 4. helm3 installed on your workstation.
 5. Connector publish messages on slack channel. You need a slack app with `chat:write` OAuth scope assigned to bot token. See slack [docs](https://api.slack.com/authentication/basics) to learn how to create new app.
