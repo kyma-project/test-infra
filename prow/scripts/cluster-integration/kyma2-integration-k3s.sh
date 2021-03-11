@@ -3,6 +3,8 @@ export DEBUG=1
 # export OIDC_ISSUER=$1
 # export OIDC_CLIENT_ID=$2
 
+export KYMA_SOURCES_DIR="./kyma"
+
 set -o errexit
 set -o pipefail
 
@@ -19,7 +21,6 @@ load_env() {
     if [ -f "${ENV_FILE}" ]; then
         export $(xargs < "${ENV_FILE}")
     fi
-    export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
     export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 }
 
