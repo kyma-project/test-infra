@@ -18,7 +18,7 @@ source "${SCRIPT_DIR}/lib/utils.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
-    export JOB_NAME_PATTERN="(pre-compass-components-.*)|(pre-compass-tests-.*)"
+    export JOB_NAME_PATTERN="(pre-compass-components-.*)|(pre-compass-tests)"
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
