@@ -118,20 +118,17 @@ utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" ".env" "~/.env"
 
 log::info "Copying Kyma to the instance"
 #shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
+utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${KYMA_PROJECT_DIR}/kyma" "~/kyma"
 
 
 log::info "Building Kyma CLI"
 cd "${KYMA_PROJECT_DIR}/cli"
 make build-linux
 mv "${KYMA_PROJECT_DIR}/cli/bin/kyma-linux" "${KYMA_PROJECT_DIR}/cli/bin/kyma"
-export PATH="${KYMA_PROJECT_DIR}/cli/bin:${PATH}"
 
-kyma version
-kyma alpha deploy --help
+utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${KYMA_PROJECT_DIR}/cli/bin" "~/cli/bin"
 
-
-# log::info "Triggering the installation"
-# gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma2-integration-k3s.sh"
+log::info "Triggering the installation"
+gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma2-integration-k3s.sh"
 
 log::success "all done"

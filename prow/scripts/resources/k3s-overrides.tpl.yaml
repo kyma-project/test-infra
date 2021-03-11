@@ -8,6 +8,3 @@ serverless:
       envs:
         functionBuildExecutorImage:
           value: "eu.gcr.io/kyma-project/external/aerfio/kaniko-executor:v1.3.0"
-global:
-  environment:
-    gardener: false
