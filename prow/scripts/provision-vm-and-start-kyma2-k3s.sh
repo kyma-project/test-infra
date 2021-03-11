@@ -110,11 +110,7 @@ trap cleanup exit INT
 
 log::info "Preparing environment variables for the instance"
 envVars=(
-  # COMPASS_TENANT
-  # COMPASS_HOST
-  # COMPASS_CLIENT_ID
-  # COMPASS_CLIENT_SECRET
-  # COMPASS_INTEGRATION_ENABLED
+  KYMA_PROJECT_DIR
 )
 utils::save_env_file "${envVars[@]}"
 #shellcheck disable=SC2088
@@ -132,6 +128,7 @@ mv "${KYMA_PROJECT_DIR}/cli/bin/kyma-linux" "${KYMA_PROJECT_DIR}/cli/bin/kyma"
 export PATH="${KYMA_PROJECT_DIR}/cli/bin:${PATH}"
 
 kyma version
+kyma alpha deploy --help
 
 
 # log::info "Triggering the installation"
