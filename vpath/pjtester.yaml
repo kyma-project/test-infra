@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "pre-compass-tests"
+    pjPath: "test-infra/prow/jobs/incubator/compass/tests/compass-e2e-tests/"
+prConfigs:
+  kyma-incubator:
+    compass:
+      prNumber: 1760
