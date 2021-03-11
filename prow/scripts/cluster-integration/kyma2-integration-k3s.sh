@@ -8,9 +8,19 @@ export DEBUG=1
 set -o errexit
 set -o pipefail
 
-# export KYMA_SOURCES_DIR="./kyma"
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+
+
+
+export KYMA_SOURCES_DIR="./kyma"
 
 prereq_test() {
+    requiredVars=(
+        KYMA_PROJECT_DIR
+    )
+    utils::check_required_vars "${requiredVars[@]}"
+    
     command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
     command -v npm >/dev/null 2>&1 || { echo >&2 "npm not found"; exit 1; }
     command -v jq >/dev/null 2>&1 || { echo >&2 "jq not found"; exit 1; }
@@ -60,7 +70,7 @@ test_kyma() {
 prereq_test
 load_env
 prepare_cli
-prepare_k3s
-install_kyma
-patch_coredns
+# prepare_k3s
+# install_kyma
+# patch_coredns
 # test_kyma
