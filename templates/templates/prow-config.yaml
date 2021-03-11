@@ -1,9 +1,4 @@
 presets:
-  - labels:
-      preset-azure-cluster-big: "true"
-    env:
-      - name: AZURE_CLUSTER_BIG
-        value: "true"
   # cluster version
   - labels:
       preset-cluster-version: "true"
