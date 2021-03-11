@@ -7,6 +7,7 @@ data:
   entrypoint.sh: |-
     #!/bin/bash
     set +e
+    set -x
     host_cgroup_base="/host-sys/fs/cgroup/memory"
     { while true
       do
