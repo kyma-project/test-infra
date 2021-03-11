@@ -1,6 +1,6 @@
 # Overview
 
-Function issueLabeled is executed by Kyma [Serverless](https://kyma-project.io/docs/components/serverless/) when registered issuesevent.labeled event occur.
+Function issueLabeled is executed by Kyma [Serverless](https://kyma-project.io/docs/components/serverless/) when registered issuesevent.labeled event occur. All issuesevent.labeled events for labels `internal-incident` or `customer-incident` will be processed by function.
 
 ## Prerequisites
 
