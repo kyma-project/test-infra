@@ -1,9 +1,9 @@
 pjNames:
   - pjName: "pre-compass-tests"
     pjPath: "test-infra/prow/jobs/incubator/compass/tests/compass-e2e-tests/"
-  - pjName: "compass-gke-integration.yaml"
+  - pjName: "pre-master-compass-gke-integration"
     pjPath: "test-infra/prow/jobs/incubator/compass/"
-  - pjName: "compass-integration.yaml"
+  - pjName: "pre-master-compass-integration"
     pjPath: "test-infra/prow/jobs/incubator/compass/"
 prConfigs:
   kyma-incubator:
