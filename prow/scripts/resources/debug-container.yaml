@@ -53,7 +53,7 @@ data:
           echo "[$docker_pid] Container memory.max_usage_percentage: $max_mem_usage_percent"
           echo "[$docker_pid] cgroup processes: $(cat $host_cgroup_base$docker_cgroup/cgroup.procs)"
         done
-      done } > /var/oom_debug
+      done } 2>&1 | tee /var/oom_debug
 ---
 apiVersion: v1
 kind: Pod
