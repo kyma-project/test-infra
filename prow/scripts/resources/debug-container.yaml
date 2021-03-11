@@ -54,44 +54,53 @@ data:
         done
       done } > /var/oom_debug
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: DaemonSet
 metadata:
   name: oom-debug
+  namespace: default
 spec:
-  hostPID: true
-  containers:
-    - name: oom-debug
-      securityContext:
-        privileged: true
-      image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9
-      command:
-        - "/bin/entrypoint.sh"
-      volumeMounts:
-        - mountPath: /host-proc
-          name: proc-vol
-        - mountPath: /host-sys
-          name: sys-vol
-        - mountPath: /var/run/docker.sock
-          name: docker-socket
+  selector:
+    matchLabels:
+      name: oom-debug
+  template:
+    metadata:
+      labels:
+        name: oom-debug
+    spec:
+      hostPID: true
+      containers:
+      - name: oom-debug
+        securityContext:
+          privileged: true
+        image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9
+        command:
+          - "/bin/entrypoint.sh"
+        volumeMounts:
+          - mountPath: /host-proc
+            name: proc-vol
+          - mountPath: /host-sys
+            name: sys-vol
+          - mountPath: /var/run/docker.sock
+            name: docker-socket
+          - name: entrypoint-vol
+            mountPath: /bin/entrypoint.sh
+            readOnly: true
+            subPath: entrypoint.sh
+      volumes:
+        - name: proc-vol
+          hostPath:
+            path: /proc
+            type: Directory
+        - name: sys-vol
+          hostPath:
+            path: /sys
+            type: Directory
+        - name: docker-socket
+          hostPath:
+            path: /var/run/docker.sock
+            type: Socket
         - name: entrypoint-vol
-          mountPath: /bin/entrypoint.sh
-          readOnly: true
-          subPath: entrypoint.sh
-  volumes:
-    - name: proc-vol
-      hostPath:
-        path: /proc
-        type: Directory
-    - name: sys-vol
-      hostPath:
-        path: /sys
-        type: Directory
-    - name: docker-socket
-      hostPath:
-        path: /var/run/docker.sock
-        type: Socket
-    - name: entrypoint-vol
-      configMap:
-        defaultMode: 0700
-        name: oom-debug-entrypoint
+          configMap:
+            defaultMode: 0700
+            name: oom-debug-entrypoint
