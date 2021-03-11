@@ -111,13 +111,13 @@ gardener::set_machine_type
 
 kyma::install_cli
 
-# currently only Azure generates overrides, but this may chaneg in the future
+# currently only Azure generates overrides, but this may change in the future
 gardener::generate_overrides
 
 gardener::provision_cluster
 
 # run oom debug pod
-kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/debug-container.yaml"
+utils::debug_oom
 
 # uses previously set KYMA_SOURCE
 gardener::install_kyma

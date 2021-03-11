@@ -34,10 +34,11 @@ gardener::cleanup() {
     log::info "Cleanup"
     set +e
 
+    # describe nodes to file in artifacts directory
     utils::describe_nodes
 
-    # copy oom debug pod output to artifacts directory
-    for pod in $(k get pod -l "name=oom-debug" -o=jsonpath='{.items[*].metadata.name}'); do kubectl cp default/"${pod}":/var/oom_debug "${ARTIFACTS}/${pod}.txt";done
+    # copy output from debug container to artifacts directory
+    utils::debug_get_output
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         if  [ -z "${CLEANUP_ONLY_SUCCEEDED}" ] || [[ -n "${CLEANUP_ONLY_SUCCEEDED}" && ${EXIT_STATUS} -eq 0 ]]; then

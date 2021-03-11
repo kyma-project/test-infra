@@ -288,3 +288,14 @@ function utils::describe_nodes() {
 
   grep -i "System OOM encountered" "${ARTIFACTS}/describe_nodes.txt"
 }
+
+function utils::debug_oom() {
+  # run oom debug pod
+  kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/debug-container.yaml"
+}
+
+function utils::debug_get_output() {
+  # copy oom debug pod output to artifacts directory
+  kubectl get pod -o wide
+  for pod in $(kubectl get pod -l "name=oom-debug" -o=jsonpath='{.items[*].metadata.name}'); do kubectl cp default/"${pod}":/var/oom_debug "${ARTIFACTS}/${pod}.txt";done
+}
