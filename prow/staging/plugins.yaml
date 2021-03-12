@@ -7,3 +7,16 @@ plugins:
   kyma-test-infra-dev/test-infra:
     plugins:
       - update-config
+
+config_updater:
+  prow/staging/config.yaml:
+    name: config
+  prow/staging/plugins.yaml:
+    name: plugins
+  prow/staging/jobs/**/*.yaml:
+    name: job-config
+
+trigger:
+  - repos:
+     - kyma-test-infra-dev
+    only_org_members: true
