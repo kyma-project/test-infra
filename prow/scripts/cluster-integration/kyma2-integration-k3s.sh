@@ -36,7 +36,7 @@ prepare_k3s() {
 }
 
 install_kyma() {
-    envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/k3s-overrides.tpl.tpl.yaml" > "$PWD/k3s-overrides.yaml"
+    envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/k3s-overrides.tpl.yaml" > "$PWD/k3s-overrides.yaml"
     kyma alpha deploy -w ${KYMA_SOURCES_DIR} -s local -p evaluation -f ./k3s-overrides.yaml --non-interactive
 }
 
