@@ -10,3 +10,13 @@ presubmits:
             command: ["/bin/echo"]
             args:
               - "HELLO WORLD"
+    - name: pre-test-presubmit-runifchanged
+      cluster: workload-cluster
+      decorate: true
+      run_if_changed: ^prow/staging/testfile$
+      spec:
+        containers:
+          - image: alpine
+            command: ["/bin/cat"]
+            args:
+              - "prow/staging/testfile"
