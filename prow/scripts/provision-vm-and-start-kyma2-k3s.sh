@@ -127,6 +127,7 @@ make build-linux
 mv "${KYMA_PROJECT_DIR}/cli/bin/kyma-linux" "${KYMA_PROJECT_DIR}/cli/bin/kyma"
 
 utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${KYMA_PROJECT_DIR}/cli/bin" "~/bin"
+utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/k3s-overrides.tpl.yaml" "~/k3s-overrides.tpl.yaml"
 
 log::info "Triggering the installation"
 gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma2-integration-k3s.sh"
