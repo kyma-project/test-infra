@@ -1,0 +1,9 @@
+plugins:
+  kyma-test-infra-dev:
+    plugins:
+      - cat
+      - trigger
+      - assign
+  kyma-test-infra-dev/test-infra:
+    plugins:
+      - update-config
