@@ -36,9 +36,7 @@ prepare_k3s() {
 }
 
 install_kyma() {
-    cat ./k3s-overrides.tpl.yaml
     envsubst < "./k3s-overrides.tpl.yaml" > "./k3s-overrides.yaml"
-    cat ./k3s-overrides.yaml
     kyma alpha deploy -w ${KYMA_SOURCES_DIR} -s local -p evaluation -f ./k3s-overrides.yaml --non-interactive
 }
 
@@ -59,4 +57,4 @@ prepare_cli
 prepare_k3s
 install_kyma
 # patch_coredns
-# test_kyma
+test_kyma
