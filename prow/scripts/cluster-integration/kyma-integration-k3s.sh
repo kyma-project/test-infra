@@ -22,6 +22,12 @@ load_env() {
 }
 
 prepare_k3s() {
+    cat /proc/sys/kernel/random/entropy_avail
+    echo "rng-tools"
+    apt-get -y install rng-tools
+    sleep 10
+    cat /proc/sys/kernel/random/entropy_avail
+    
     pushd ${LOCAL_KYMA_DIR}
     ./create-cluster-k3s.sh
 
