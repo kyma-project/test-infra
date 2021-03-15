@@ -7,12 +7,12 @@ source "${LIBDIR}/log.sh"
 
 #
 # Get the path to the file containing the test steps.
-# @param Name of the test-stragey (will be mapped to test file).
+# @param Name of the test file.
 #
 clitests::getTestFile() {
-    local testSuite=$1
+    local testFile=$1
 
-    echo "${TESTDIR}/testsuite-${testSuite}.sh"
+    echo "${TESTDIR}/${testFile}.sh"
 }
 
 #
