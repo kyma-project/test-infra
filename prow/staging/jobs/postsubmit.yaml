@@ -3,6 +3,8 @@ postsubmits:
     - name: post-test-postsubmit
       decorate: true
       cluster: workload-cluster
+      branches:
+        - ^master$
       spec:
         containers:
           - image: alpine
