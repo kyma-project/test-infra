@@ -13,7 +13,7 @@ periodics:
           command:
             - /autobump.sh
           args:
-            - /etc/github-token/token
+            - /etc/github-token/oauth
             - "neighbors-dev-bot"
             - "przemek.pokrywka+neighbors@gmail.com"
           volumeMounts:
