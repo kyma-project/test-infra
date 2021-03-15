@@ -32,6 +32,8 @@ function copy_artifacts {
   gsutil cp "${ARTIFACTS}/kyma-installer-cr-cluster.yaml" "$BUCKET_PATH/kyma-installer-cr-cluster.yaml"
   gsutil cp "${ARTIFACTS}/kyma-installer-cr-local.yaml" "$BUCKET_PATH/kyma-installer-cr-local.yaml"
   gsutil cp "${ARTIFACTS}/kyma-installer-cr-cluster-runtime.yaml" "$BUCKET_PATH/kyma-installer-cr-cluster-runtime.yaml"
+
+  gsutil cp "${ARTIFACTS}/kyma-components.yaml" "$BUCKET_PATH/kyma-components.yaml"
 }
 
 gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
