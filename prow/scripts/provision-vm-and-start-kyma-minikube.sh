@@ -110,6 +110,6 @@ log::info "Copying Kyma to the instance"
 utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
 
 log::info "Triggering the installation"
-gcloud compute ssh --ssh-flag="-vvv" --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-integration-minikube.sh"
+gcloud compute ssh --ssh-flag="-v" --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-integration-minikube.sh"
 
 log::success "all done"

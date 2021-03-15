@@ -171,7 +171,7 @@ function utils::send_to_vm() {
 
   for i in $(seq 1 5); do
     [[ ${i} -gt 1 ]] && log::info 'Retrying in 15 seconds..' && sleep 15;
-    gcloud compute scp --strict-host-key-checking=no --ssh-flag="-vvv" --recurse --zone="${ZONE}" "${LOCAL_PATH}" "${REMOTE_NAME}":"${REMOTE_PATH}" && break;
+    gcloud compute scp --strict-host-key-checking=no --scp-flag="-v" --recurse --zone="${ZONE}" "${LOCAL_PATH}" "${REMOTE_NAME}":"${REMOTE_PATH}" && break;
     [[ ${i} -ge 5 ]] && log::error "Failed after $i attempts." && exit 1
   done;
 }
@@ -210,7 +210,7 @@ function utils::compress_send_to_vm() {
   tar -czf "${TMP_DIRECTORY}/pack.tar.gz" -C "${LOCAL_PATH}" "."
   #shellcheck disable=SC2088
   utils::send_to_vm "${ZONE}" "${REMOTE_NAME}" "${TMP_DIRECTORY}/pack.tar.gz" "~/"
-  gcloud compute ssh --ssh-flag="-vvv" --zone="${ZONE}" --command="mkdir ${REMOTE_PATH} && tar -xf ~/pack.tar.gz -C ${REMOTE_PATH}" --ssh-flag="-o ServerAliveInterval=30" "${REMOTE_NAME}"
+  gcloud compute ssh --ssh-flag="-v" --zone="${ZONE}" --command="mkdir ${REMOTE_PATH} && tar -xf ~/pack.tar.gz -C ${REMOTE_PATH}" --ssh-flag="-o ServerAliveInterval=30" "${REMOTE_NAME}"
   
   rm -rf "${TMP_DIRECTORY}"
 }
