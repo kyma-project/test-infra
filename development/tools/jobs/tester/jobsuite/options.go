@@ -119,6 +119,15 @@ func TestInfraRepo() Option {
 	}
 }
 
+// BusolaRepo function returns Option type
+func BusolaRepo() Option {
+	return func(suite *Config) {
+		suite.Repository = "github.com/kyma-project/busola"
+		suite.DockerRepositoryPreset = preset.DockerPushRepoKyma
+		suite.BuildPresetMaster = preset.BuildBusolaMaster
+	}
+}
+
 // ConsoleRepo function returns Option type
 func ConsoleRepo() Option {
 	return func(suite *Config) {
