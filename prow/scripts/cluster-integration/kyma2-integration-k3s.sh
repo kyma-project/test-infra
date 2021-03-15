@@ -47,7 +47,7 @@ install_kyma() {
 
 test_kyma() {
     pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
-    nom install
+    npm install
     npm run test-no-install
     popd
 }
