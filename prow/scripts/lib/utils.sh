@@ -294,7 +294,7 @@ function utils::describe_nodes() {
     for pid in ${killed_pids}
     do
       log::info "killed PID ${pid} details"
-      grep container "${ARTIFACTS}/oom-debug-*.txt" | grep "${pid}"
+      grep Report "${ARTIFACTS}/oom-debug-*.txt" | grep "${pid}"
     done
   fi
 }
