@@ -68,7 +68,6 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
       branches:
-        - ^master$
         - ^main$
     {{ end -}}
     {{ end -}}

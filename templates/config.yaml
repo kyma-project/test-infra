@@ -494,30 +494,35 @@ templates:
           <<: *busola_generic_component
           path: core-ui
           since: "1.19"
+          optional: true
       - to: ../prow/jobs/busola/busola-service-catalog-ui/busola-service-catalog-ui.yaml
         values:
           <<: *cluster_default
           <<: *busola_generic_component
           path: service-catalog-ui
           since: "1.19"
+          optional: true
       - to: ../prow/jobs/busola/busola-tests/busola-tests.yaml
         values:
           <<: *cluster_default
           <<: *busola_generic_component
           path: tests
           since: "1.19"
+          optional: true
       - to: ../prow/jobs/busola/busola-core/busola-core.yaml
         values:
           <<: *cluster_default
           <<: *busola_generic_component
           path: core
           since: "1.19"
+          optional: true
       - to: ../prow/jobs/busola/busola-backend/busola-backend.yaml
         values:
           <<: *cluster_default
           <<: *busola_generic_component
           path: backend
           since: "1.19"
+          optional: true
   - from: templates/generic-component-pamela.yaml
     render:
       - to: ../prow/jobs/console/core-ui/core-ui.yaml
