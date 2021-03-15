@@ -307,5 +307,5 @@ function utils::debug_oom() {
 function utils::debug_get_output() {
   # copy oom debug pod output to artifacts directory
   kubectl get pod -o wide
-  for pod in $(kubectl get pod -l "name=oom-debug" -o=jsonpath='{.items[*].metadata.name}'); do kubectl cp default/"${pod}":/var/oom_debug "${ARTIFACTS}/${pod}.txt";done
+  for pod in $(kubectl get pod -l "name=oom-debug" -o=jsonpath='{.items[*].metadata.name}'); do kubectl cp default/"${pod}":/var/oom_debug -c oom-debug "${ARTIFACTS}/${pod}.txt";done
 }

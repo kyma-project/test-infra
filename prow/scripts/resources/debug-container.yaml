@@ -72,7 +72,7 @@ data:
           cgroup_processes=""
           for pid in $(cat $host_cgroup_base$docker_cgroup/cgroup.procs)
           do
-            if [ -z $cgroup_processes ]; then
+            if [ -z "$cgroup_processes" ]; then
               cgroup_processes="$pid"
             else
               cgroup_processes="$cgroup_processes $pid"
@@ -92,7 +92,6 @@ data:
           echo "[$container_pid] Container memory.max_usage_percentage: $max_mem_usage_percent"
           echo "[$container_pid] Container cgroup processes: $cgroup_processes"
         done
-        break
       done
       for key in ${!report_container_name[@]}
       do
