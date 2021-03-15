@@ -228,7 +228,7 @@ presubmits: # runs on PRs
         base_ref: main
       
     - name: pre-master-kyma-integration-k3s-compass-dev
-      optional: true
+      optional: false
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
       - ^master$
