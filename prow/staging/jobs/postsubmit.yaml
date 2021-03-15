@@ -1,0 +1,11 @@
+postsubmits:
+  kyma-test-infra-dev/test-infra:
+    - name: post-test-postsubmit
+      decorate: true
+      cluster: workload-cluster
+      spec:
+        containers:
+          - image: alpine
+            command: [ "/bin/echo" ]
+            args:
+              - "postsubmit test"

@@ -20,3 +20,25 @@ presubmits:
             command: ["/bin/cat"]
             args:
               - "prow/staging/testfile"
+    - name: pre-test-presubmit-optional
+      cluster: workload-cluster
+      decorate: true
+      optional: true
+      always_run: true
+      spec:
+        containers:
+          - image: alpine
+            command: [ "/bin/echo" ]
+            args:
+              - "HELLO WORLD OPTIONAL"
+    - name: pre-test-presubmit-optional-runifchanged
+      cluster: workload-cluster
+      decorate: true
+      optional: true
+      run_if_changed: ^prow/staging/testfile$
+      spec:
+        containers:
+          - image: alpine
+            command: [ "/bin/cat" ]
+            args:
+              - "prow/staging/testfile"
