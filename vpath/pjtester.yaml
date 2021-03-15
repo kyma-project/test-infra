@@ -1,9 +1,0 @@
-pjNames:
-  - pjName: "pre-master-kyma-governance"
-  - pjName: "pre-master-website-governance"
-  - pjName: "pre-master-addons-governance"
-  - pjName: "pre-documentation-component-governance"
-  - pjName: "pre-master-examples-governance"
-  - pjName: "pre-master-community-governance"
-  - pjName: "pre-master-console-governance"
-  - pjName: "pre-master-test-infra-governance"
