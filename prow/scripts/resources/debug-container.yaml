@@ -6,11 +6,13 @@ metadata:
 data:
   entrypoint.sh: |-
     #!/bin/bash
+    hostname
     set +e
     host_cgroup_base="/host-sys/fs/cgroup/memory"
     { while true
       do
         date
+        # host memory statistics
         memory_capacity_in_kb=$(cat /host-proc/meminfo | grep MemTotal | awk '{print $2}')
         memory_capacity_in_bytes=$((memory_capacity_in_kb * 1024))
         memory_usage_in_bytes=$(cat /host-sys/fs/cgroup/memory/memory.usage_in_bytes)
@@ -33,42 +35,69 @@ data:
         echo "memory.available_in_bytes: $memory_available_in_bytes"
         echo "memory.available_in_kb: $memory_available_in_kb"
         echo "memory.available_in_mb: $memory_available_in_mb"
+        # container statistics
         echo "Containers"
-        docker_ids=$(docker container ls --format='{{println .ID}}' | sort | uniq)
-        for docker_id in $docker_ids
+        container_ids=$(docker container ls --format='{{println .ID}}' | sort | uniq)
+        declare -A report_container_name
+        declare -A report_max_mem_usage
+        declare -A report_max_mem_usage_percent
+        declare -A report_cgroup_processes
+        declare -A report_pod_name
+        for container_id in $container_ids
         do
-          docker_pid=$(docker inspect --format '{{ .State.Pid }}' "$docker_id")
-          docker_name=$(docker inspect --format '{{ .Name }}' "$docker_id")
-          if [[ -z "${report_max_mem_usage[$docker_pid]+unset}" ]]; then
-            report_max_mem_usage[$docker_pid]=$docker_pid
-            report_max_mem_usage_percent[$docker_pid]=$docker_pid
-            report_container_name[$docker_pid]=$docker_name
+          container_pid=$(docker inspect --format '{{ .State.Pid }}' "$container_id")
+          container_name=$(docker inspect --format '{{ .Name }}' "$container_id")
+          # Check if container is present in tables
+          if [[ -z "${report_container_name[$container_pid]+unset}" ]]; then
+            report_max_mem_usage[$container_pid]=0
+            report_max_mem_usage_percent[$container_pid]=0
+            report_container_name[$container_pid]=$container_name
+            report_cgroup_processes[$container_pid]=$container_pid
           fi
-          docker_cgroup=$(cat /host-proc/$docker_pid/cgroup | grep ":memory:" | awk -F":memory:" '{print $2}')
+          docker_cgroup=$(cat /host-proc/$container_pid/cgroup | grep ":memory:" | awk -F":memory:" '{print $2}')
           mem_usage=$(cat $host_cgroup_base$docker_cgroup/memory.usage_in_bytes)
           mem_limit=$(cat $host_cgroup_base$docker_cgroup/memory.limit_in_bytes)
           max_mem_usage=$(cat $host_cgroup_base$docker_cgroup/memory.max_usage_in_bytes)
-          if [ $max_mem_usage -gt ${report_max_mem_usage[$docker_pid]} ]; then
-            report_max_mem_usage[$docker_pid]=$max_mem_usage
+          # check if recorded max_mem_usage need update
+          if [ $max_mem_usage -gt ${report_max_mem_usage[$container_pid]} ]; then
+            report_max_mem_usage[$container_pid]=$max_mem_usage
           fi
           mem_usage_percent=$(( $mem_usage * 100 / $mem_limit))
           max_mem_usage_percent=$(( $max_mem_usage * 100 / $mem_limit))
-          if [ $max_mem_usage_percent -gt ${report_max_mem_usage_percent[$docker_pid]} ]; then
-            report_max_mem_usage_percent[$docker_pid]=$max_mem_usage_percent
+          # check if recorded max_mem_usage_ercent need update
+          if [ $max_mem_usage_percent -gt ${report_max_mem_usage_percent[$container_pid]} ]; then
+            report_max_mem_usage_percent[$container_pid]=$max_mem_usage_percent
           fi
-          echo "[$docker_pid] Container name: $docker_name"
-          echo "[$docker_pid] Container memory.usage_in_bytes: $mem_usage"
-          echo "[$docker_pid] Container memory.max_usage_in_bytes: $max_mem_usage"
-          echo "[$docker_pid] Container memory.limit_in_bytes: $mem_limit"
-          echo "[$docker_pid] Container memory.usage_percentage: $mem_usage_percent"
-          echo "[$docker_pid] Container memory.max_usage_percentage: $max_mem_usage_percent"
-          echo "[$docker_pid] cgroup processes: $(cat $host_cgroup_base$docker_cgroup/cgroup.procs)"
+          # build string with list of cgroup PIDs
+          cgroup_processes=""
+          for pid in $(cat $host_cgroup_base$docker_cgroup/cgroup.procs)
+          do
+            if [ -z $cgroup_processes ]; then
+              cgroup_processes="$pid"
+            else
+              cgroup_processes="$cgroup_processes $pid"
+            fi
+          done
+          # add cgroup pids to the list, list will be made uniq when printed
+          report_cgroup_processes[$container_pid]="${report_cgroup_processes[$container_pid]} $cgroup_processes"
+          # find container pod name
+          pod_name=$(nsenter -t $container_pid -u hostname)
+          report_pod_name[$container_pid]="$pod_name"
+          echo "[$container_pid] Container name: $container_name"
+          echo "[$container_pid] Container pod name: $pod_name"
+          echo "[$container_pid] Container memory.usage_in_bytes: $mem_usage"
+          echo "[$container_pid] Container memory.max_usage_in_bytes: $max_mem_usage"
+          echo "[$container_pid] Container memory.limit_in_bytes: $mem_limit"
+          echo "[$container_pid] Container memory.usage_percentage: $mem_usage_percent"
+          echo "[$container_pid] Container memory.max_usage_percentage: $max_mem_usage_percent"
+          echo "[$container_pid] Container cgroup processes: $cgroup_processes"
         done
+        break
       done
-    for key in ${!report_container_name[@]}
-    do
-      echo "container: ${report_container_name[$key]} max_mem: ${report_max_mem_usage[$key]} max_mem_percent: ${report_max_mem_usage_percent[$key]}"
-    done } > /var/oom_debug
+      for key in ${!report_container_name[@]}
+      do
+        echo "container: ${report_container_name[$key]} | podname: ${report_pod_name[$key]} | $max_mem: ${report_max_mem_usage[$key]} | max_mem_percent: ${report_max_mem_usage_percent[$key]} | cgroup_processes: $(echo ${report_cgroup_processes[$key]} | tr ' ' '\n' | sort -u | tr '\n' ' ')"
+      done } > /var/oom_debug
 ---
 apiVersion: apps/v1
 kind: DaemonSet

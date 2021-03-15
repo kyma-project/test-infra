@@ -287,6 +287,16 @@ function utils::describe_nodes() {
     } > "${ARTIFACTS}/describe_nodes.txt"
 
   grep -i "System OOM encountered" "${ARTIFACTS}/describe_nodes.txt"
+  oom_found=$?
+  if [ $oom_found -eq 0 ]; then
+    log::banner "OOM event found"
+    killed_pids=$(grep -i "System OOM encountered" "${ARTIFACTS}/describe_nodes.txt" | awk -F"pid:" '{print $2}' | tr -d '\n')
+    for pid in ${killed_pids}
+    do
+      log::info "killed PID ${pid} details"
+      grep container "${ARTIFACTS}/oom-debug-*.txt" | grep "${pid}"
+    done
+  fi
 }
 
 function utils::debug_oom() {
