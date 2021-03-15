@@ -1,39 +1,39 @@
 periodics:
-  name: ci-prow-autobump
-  cluster: workload-cluster
-  cron: "0 9-16 * * 1-5"
-  decorate: true
-  extra_refs:
-    - org: kyma-test-infra-dev
-      repo: test-infra
-      base_ref: master
-  spec:
-    containers:
-      - image: gcr.io/k8s-prow/autobump
-        command:
-          - /autobump.sh
-        args:
-          - /etc/github-token/token
-          - "neighbors-dev-bot"
-          - "przemek.pokrywka+neighbors@gmail.com"
-        volumeMounts:
-          - name: github
-            mountPath: /etc/github-token
-            readOnly: true
-        env:
-          - name: GH_ORG
-            value: kyma-test-infra-dev
-          - name: GH_REPO
-            value: test-infra
-          - name: PROW_CONTROLLER_MANAGER_FILE
-            value: prow/staging/cluster/prow_controller_manager_deployment.yaml
-          - name: COMPONENT_FILE_DIR
-            value: prow/staging/cluster
-          - name: CONFIG_PATH
-            value: prow/staging/config.yaml
-          - name: JOB_CONFIG_PATH
-            value: prow/staging/jobs
-    volumes:
-      - name: github
-        secret:
-          secretName: oauth-token
+  - name: ci-prow-autobump
+    cluster: workload-cluster
+    cron: "0 9-16 * * 1-5"
+    decorate: true
+    extra_refs:
+      - org: kyma-test-infra-dev
+        repo: test-infra
+        base_ref: master
+    spec:
+      containers:
+        - image: gcr.io/k8s-prow/autobump
+          command:
+            - /autobump.sh
+          args:
+            - /etc/github-token/token
+            - "neighbors-dev-bot"
+            - "przemek.pokrywka+neighbors@gmail.com"
+          volumeMounts:
+            - name: github
+              mountPath: /etc/github-token
+              readOnly: true
+          env:
+            - name: GH_ORG
+              value: kyma-test-infra-dev
+            - name: GH_REPO
+              value: test-infra
+            - name: PROW_CONTROLLER_MANAGER_FILE
+              value: prow/staging/cluster/prow_controller_manager_deployment.yaml
+            - name: COMPONENT_FILE_DIR
+              value: prow/staging/cluster
+            - name: CONFIG_PATH
+              value: prow/staging/config.yaml
+            - name: JOB_CONFIG_PATH
+              value: prow/staging/jobs
+      volumes:
+        - name: github
+          secret:
+            secretName: oauth-token
