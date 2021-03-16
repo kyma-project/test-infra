@@ -138,7 +138,7 @@ else
     log::info "Copying CoreDNS patch for K3s to the instance"
     #shellcheck disable=SC2088
     utils::send_to_vm "${ZONE}" "cli-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/k3s/coredns-patch.sh" "~/patch"
-    utils::send_to_vm "${ZONE}" "cli-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/resources/k3d-coredns-patch.tpl.yaml" "~/patch"
+    utils::send_to_vm "${ZONE}" "cli-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/resources/k3s-coredns-patch.tpl.yaml" "~/patch"
     gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- ~/patch/coredns-patch.sh
 fi
 
