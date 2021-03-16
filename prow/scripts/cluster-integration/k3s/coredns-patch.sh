@@ -4,4 +4,4 @@
 #
 
 export REGISTRY_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' /registry.localhost) 
-kubectl -n kube-system patch cm coredns --patch "$(cat ~/test-infra/prow/scripts/resources/k3d-coredns-patch.tpl.yaml | envsubst )"
+kubectl -n kube-system patch cm coredns --patch "$(cat ~/patch/k3d-coredns-patch.tpl.yaml | envsubst )"

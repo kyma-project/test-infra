@@ -133,8 +133,13 @@ if [ "$KUBERNETES_RUNTIME" = 'minikube' ]; then
 else
     gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "curl -s -o install-k3d.sh https://raw.githubusercontent.com/rancher/k3d/main/install.sh && chmod +x ./install-k3d.sh && ./install-k3d.sh"
     gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma alpha provision k3s --ci"
+    
     # apply coreDNS patch
-    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- ${SCRIPT_DIR}/cluster-integration/k3s/coredns-patch.sh
+    log::info "Copying CoreDNS patch for K3s to the instance"
+    #shellcheck disable=SC2088
+    utils::send_to_vm "${ZONE}" "cli-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/k3s/coredns-patch.sh" "~/patch"
+    utils::send_to_vm "${ZONE}" "cli-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/resources/k3d-coredns-patch.tpl.yaml" "~/patch"
+    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- ~/patch/coredns-patch.sh
 fi
 
 # Install kyma
