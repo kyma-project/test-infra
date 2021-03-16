@@ -76,7 +76,7 @@ data:
           done
           # add cgroup pids to the list, list will be made uniq when printed
           report_cgroup_processes[$container_pid]="${report_cgroup_processes[$container_pid]} $cgroup_processes"
-          echo "date | container_pid: $container_pid | container_name: $container_name | podname: $pod_name | mem_limit_in_bytes: $mem_limit | limit_hit_count: $limit_hit_count | mem_usage_in_bytes: $mem_usage | max_mem_usage_in_bytes: ${report_max_mem_usage[$container_pid]} | mem_usage_percent: $mem_usage_percent | max_mem_usage_percent: ${report_max_mem_usage_percent[$container_pid]} | cgroup_processes: $(echo ${report_cgroup_processes[$container_pid]} | tr ' ' '\n' | sort -u | tr '\n' ' ')" >> /var/oom_debug
+          echo "$(date) | container_pid: $container_pid | container_name: $container_name | podname: $pod_name | mem_limit_in_bytes: $mem_limit | limit_hit_count: $limit_hit_count | mem_usage_in_bytes: $mem_usage | max_mem_usage_in_bytes: ${report_max_mem_usage[$container_pid]} | mem_usage_percent: $mem_usage_percent | max_mem_usage_percent: ${report_max_mem_usage_percent[$container_pid]} | cgroup_processes: $(echo ${report_cgroup_processes[$container_pid]} | tr ' ' '\n' | sort -u | tr '\n' ' ')" >> /var/oom_debug
         done
     }
     
