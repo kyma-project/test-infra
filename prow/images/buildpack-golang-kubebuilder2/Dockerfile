@@ -32,7 +32,7 @@ RUN curl -L -O "https://github.com/kubernetes-sigs/kustomize/releases/download/k
     rm kustomize_v${KUSTOMIZE_VERSION}_linux_${ARCH}.tar.gz && \
     mv kustomize /usr/local/bin/kustomize
 
-RUN apt install python-pip \
+RUN apt install python-pip && \
 	pip install cgroup-utils
 
 # Paths
