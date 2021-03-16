@@ -268,6 +268,21 @@ func AssertThatHasExtraRepoRef(t *testing.T, in config.UtilityConfig, repositori
 	AssertThatHasExtraRef(t, in, extraRefs)
 }
 
+// AssertThatHasExtraRepoRefCustom checks if UtilityConfig has repositories passed in argument defined with custom branches set
+func AssertThatHasExtraRepoRefCustom(t *testing.T, in config.UtilityConfig, repositories []string, branches []string) {
+	t.Helper()
+	var extraRefs []prowapi.Refs
+	for index, repository := range repositories {
+		extraRefs = append(extraRefs, prowapi.Refs{
+			Org:       "kyma-project",
+			Repo:      repository,
+			BaseRef:   branches[index],
+			PathAlias: fmt.Sprintf("github.com/kyma-project/%s", repository),
+		})
+	}
+	AssertThatHasExtraRef(t, in, extraRefs)
+}
+
 // AssertThatHasPresets checks if JobBase has expected labels
 func AssertThatHasPresets(t *testing.T, in config.JobBase, expected ...preset.Preset) {
 	for _, p := range expected {

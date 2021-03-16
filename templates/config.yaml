@@ -112,6 +112,16 @@ console_generic_component: &console_generic_component
     - ^shared/
     - ^package.json
 
+busola_generic_component: &busola_generic_component
+  repository: github.com/kyma-project/busola
+  pushRepository: kyma
+  build: build-busola
+  bootstrapTag: PR-2951
+  additionalRunIfChanged:
+    - ^components/
+    - ^shared/
+    - ^package.json
+
 # Default definition of workload clusters
 cluster_default: &cluster_default
   cluster:
@@ -476,6 +486,36 @@ templates:
           <<: *kyma_generic_component
           path: components/permission-controller
           since: "1.10"
+  - from: templates/generic-component-busola.yaml
+    render:
+      - to: ../prow/jobs/busola/busola-core-ui/busola-core-ui.yaml
+        values:
+          <<: *cluster_default
+          <<: *busola_generic_component
+          path: core-ui
+          since: "1.19"
+          optional: true
+      - to: ../prow/jobs/busola/busola-service-catalog-ui/busola-service-catalog-ui.yaml
+        values:
+          <<: *cluster_default
+          <<: *busola_generic_component
+          path: service-catalog-ui
+          since: "1.19"
+          optional: true
+      - to: ../prow/jobs/busola/busola-core/busola-core.yaml
+        values:
+          <<: *cluster_default
+          <<: *busola_generic_component
+          path: core
+          since: "1.19"
+          optional: true
+      - to: ../prow/jobs/busola/busola-backend/busola-backend.yaml
+        values:
+          <<: *cluster_default
+          <<: *busola_generic_component
+          path: backend
+          since: "1.19"
+          optional: true
   - from: templates/generic-component-pamela.yaml
     render:
       - to: ../prow/jobs/console/core-ui/core-ui.yaml
