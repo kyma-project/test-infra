@@ -278,7 +278,7 @@ data:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: cls-config
+  name: kcp-cls-config
   namespace: kcp-system
 type: Opaque
 data:
