@@ -313,11 +313,6 @@ presets:
       - name: BUILD_TYPE
         value: master
   - labels:
-      preset-build-busola-master: "true"
-    env:
-      - name: BUILD_TYPE
-        value: master
-  - labels:
       preset-build-release: "true"
     env:
       - name: BUILD_TYPE

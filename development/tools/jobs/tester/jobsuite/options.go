@@ -124,7 +124,6 @@ func BusolaRepo() Option {
 	return func(suite *Config) {
 		suite.Repository = "github.com/kyma-project/busola"
 		suite.DockerRepositoryPreset = preset.DockerPushRepoKyma
-		suite.BuildPresetMaster = preset.BuildBusolaMaster
 	}
 }
 

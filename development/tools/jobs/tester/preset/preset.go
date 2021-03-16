@@ -24,8 +24,6 @@ const (
 	BuildMaster Preset = "preset-build-master"
 	// BuildArtifactsMaster means building artifacts master environment
 	BuildArtifactsMaster Preset = "preset-build-artifacts-master"
-	// BuildBusolaMaster means busola master environment
-	BuildBusolaMaster Preset = "preset-build-busola-master"
 	// BuildConsoleMaster means console master environment
 	BuildConsoleMaster Preset = "preset-build-console-master"
 	// BuildConsolePr means console PR environment
