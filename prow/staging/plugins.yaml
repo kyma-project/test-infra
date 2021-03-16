@@ -28,3 +28,8 @@ trigger:
   - repos:
      - kyma-test-infra-dev
     only_org_members: true
+
+lgtm:
+  repos:
+    - kyma-test-infra-dev
+  review_acts_as_lgtm: true
