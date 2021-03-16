@@ -4,4 +4,4 @@ pjNames:
 prConfigs:
   kyma-project:
     test-infra:
-      prNumber: 1212
+      prNumber: 3404
