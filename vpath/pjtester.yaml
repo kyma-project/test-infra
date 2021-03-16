@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "pre-kyma-cli-integration-k3s"
+  - pjName: "post-kyma-cli-integration-k3s"
+prConfigs:
+  kyma-project:
+    test-infra:
+      prNumber: 1212
