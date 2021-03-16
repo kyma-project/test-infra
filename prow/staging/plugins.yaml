@@ -1,7 +1,6 @@
 plugins:
   kyma-test-infra-dev:
     plugins:
-      - approve
       - cat
       - trigger
       - assign

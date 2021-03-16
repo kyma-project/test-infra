@@ -42,8 +42,8 @@ spec:
         - --github-token-path=/etc/github/oauth
         - --config-path=/etc/config/config.yaml
         - --job-config-path=/etc/job-config
-        - --history-uri=gs://k8s-prow/tide-history.json
-        - --status-path=gs://k8s-prow/tide-status-checkpoint.yaml
+#        - --history-uri=gs://k8s-prow/tide-history.json
+#        - --status-path=gs://k8s-prow/tide-status-checkpoint.yaml
         ports:
         - name: http
           containerPort: 8888

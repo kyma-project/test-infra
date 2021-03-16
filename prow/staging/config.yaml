@@ -62,18 +62,21 @@ sink:
   resync_period: 1m
   terminated_pod_ttl: 30m
 
-#tide:
-#  queries:
-#    - labels:
-#        - lgtm
-#        - approved
-#      missingLabels:
-#        - needs-rebase
-#        - do-not-merge/hold
-#        - do-not-merge/work-in-progress
-#        - do-not-merge/invalid-owners-file
-#      orgs:
-#        - << your_github_org >>
+tide:
+  merge_method:
+    kyma-test-infra-dev/test-infra: squash
+  target_url: https://status-dev.prow.build.kyma-project.io/tide
+  queries:
+    - labels:
+        - lgtm
+        - approved
+      missingLabels:
+        - needs-rebase
+        - do-not-merge/hold
+        - do-not-merge/work-in-progress
+        - do-not-merge/invalid-owners-file
+      orgs:
+        - kyma-test-infra-dev
 
 push_gateway:
   endpoint: pushgateway
