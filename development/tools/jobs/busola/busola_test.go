@@ -70,5 +70,4 @@ func TestBusolaJobs(t *testing.T) {
 			ts.Run(t)
 		})
 	}
-	// t.Run("All Files covered by test", jobsuite.CheckFilesAreTested(repos, testedConfigurations, jobBasePath, "components"))
 }
