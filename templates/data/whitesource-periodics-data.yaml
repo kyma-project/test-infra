@@ -93,6 +93,7 @@ templates:
                   name: "busola"
                   language: "javascript"
                   project: "kyma-project"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

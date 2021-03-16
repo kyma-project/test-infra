@@ -41,11 +41,6 @@ var components = []struct {
 			jobsuite.AllReleases(),
 		},
 	},
-	{path: "busola-tests", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.AllReleases(),
-		},
-	},
 }
 
 func TestBusolaJobs(t *testing.T) {

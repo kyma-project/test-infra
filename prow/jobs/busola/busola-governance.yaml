@@ -48,7 +48,7 @@ periodics: # runs periodic on master
       path_alias: github.com/kyma-project/test-infra
     - org: kyma-project
       repo: busola
-      base_ref: master
+      base_ref: main
       path_alias: github.com/kyma-project/busola
   spec:
     containers:

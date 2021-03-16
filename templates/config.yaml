@@ -502,13 +502,6 @@ templates:
           path: service-catalog-ui
           since: "1.19"
           optional: true
-      - to: ../prow/jobs/busola/busola-tests/busola-tests.yaml
-        values:
-          <<: *cluster_default
-          <<: *busola_generic_component
-          path: tests
-          since: "1.19"
-          optional: true
       - to: ../prow/jobs/busola/busola-core/busola-core.yaml
         values:
           <<: *cluster_default

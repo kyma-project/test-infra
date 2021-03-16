@@ -76,7 +76,6 @@ postsubmits:
         - <<: *test_infra_ref
           base_ref: master
       branches:
-      - ^master$
       - ^main$
       
     - name: post-rel120-busola-backend
