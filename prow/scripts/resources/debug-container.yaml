@@ -50,6 +50,7 @@ data:
         docker_cgroup=$(cat /host-proc/$container_pid/cgroup | grep ":memory:" | awk -F":memory:" '{print $2}')
         while [ -d $host_cgroup_base$docker_cgroup ]
         do
+          cgutil event $host_cgroup_base$docker_cgroup/memory.oom_control
           mem_usage=$(cat $host_cgroup_base$docker_cgroup/memory.usage_in_bytes)
           mem_limit=$(cat $host_cgroup_base$docker_cgroup/memory.limit_in_bytes)
           max_mem_usage=$(cat $host_cgroup_base$docker_cgroup/memory.max_usage_in_bytes)
@@ -116,7 +117,7 @@ spec:
       - name: oom-debug
         securityContext:
           privileged: true
-        image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9
+        image: eu.gcr.io/kyma-project/test-infra/pr/buildpack-golang-kubebuilder2:PR-3394
         command:
           - "/bin/entrypoint.sh"
         volumeMounts:
