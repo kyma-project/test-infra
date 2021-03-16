@@ -94,7 +94,7 @@ clitests::assertRemoteCommand() {
 
     # config values
     local interval=15
-    local retries=5
+    local retries=10
 
     date
     local output
