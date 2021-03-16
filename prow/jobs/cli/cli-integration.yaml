@@ -99,7 +99,7 @@ postsubmits: # runs on merge
         preset-sa-vm-kyma-integration: "true"
         preset-gc-project-env: "true"
     - name: post-kyma-cli-integration-k3s
-      cluster: untrusted-workload
+      cluster: trusted-workload
       <<: *k3s_job_template
       labels:
         preset-build-master: "true"
