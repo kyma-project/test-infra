@@ -14,7 +14,7 @@ plugins:
       - dog
   kyma-test-infra-dev/test-infra:
     plugins:
-      - update-config
+      - config-updater
 
 config_updater:
   prow/staging/config.yaml:
