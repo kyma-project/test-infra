@@ -274,6 +274,15 @@ data:
   auditlog-config-path: "/path"
   auditlog-security-path: "/path"
   auditlog-tenant: "tnt"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kcp-cls-config
+  namespace: kcp-system
+type: Opaque
+data:
+  cls-config.yaml: ""
 EOF
 }
 
