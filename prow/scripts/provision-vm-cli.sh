@@ -135,7 +135,6 @@ else
     gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma alpha provision k3s --ci"
     # apply coreDNS patch
     gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- ${SCRIPT_DIR}/cluster-integration/k3s/coredns-patch.sh
-
 fi
 
 # Install kyma
