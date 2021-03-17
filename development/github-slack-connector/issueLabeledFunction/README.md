@@ -1,6 +1,6 @@
 # Overview
 
-Function issueLabeled is executed by Kyma [Serverless](https://kyma-project.io/docs/components/serverless/) when registered issuesevent.labeled event occur. All issuesevent.labeled events for labels `internal-incident` or `customer-incident` will be processed by function.
+The Function issueLabeled is executed by Kyma [Serverless](https://kyma-project.io/docs/components/serverless/) when registered **issuesevent.labeled** event occur. All **issuesevent.labeled** events for labels `internal-incident` or `customer-incident` will be processed by this Function.
 
 ## Prerequisites
 
@@ -8,7 +8,7 @@ Function issueLabeled is executed by Kyma [Serverless](https://kyma-project.io/d
 
 ## Installation
 
-Push [handler.py](handler.py) and [requirements.txt](requirements.txt) files to Github repository and [point serverless](https://kyma-project.io/docs/components/serverless/#tutorials-create-a-function-from-git-repository-sources) to download its code for building function image.
+Push the [handler.py](handler.py) and [requirements.txt](requirements.txt) files to your GitHub repository and [point Serverless](https://kyma-project.io/docs/components/serverless/#tutorials-create-a-function-from-git-repository-sources) to download its code for building a Function image.
 
 ## Configuration
 
