@@ -67,16 +67,14 @@ tide:
     kyma-test-infra-dev/test-infra: squash
   target_url: https://status-dev.prow.build.kyma-project.io/tide
   queries:
-    - labels:
-        - lgtm
-        - approved
-      missingLabels:
+    - missingLabels:
         - needs-rebase
         - do-not-merge/hold
         - do-not-merge/work-in-progress
         - do-not-merge/invalid-owners-file
       orgs:
         - kyma-test-infra-dev
+      reviewApprovedRequired: true
 
 push_gateway:
   endpoint: pushgateway
@@ -99,3 +97,13 @@ slack_reporter_configs:
       {{with .Spec.Refs}}*Repository:* {{.Org}}/{{.Repo}}
       *Commit:* <{{.BaseLink}}|{{printf "%.7s" .BaseSHA}}>
       {{end}}*<{{.Status.URL}}|View logs>*
+
+branch-protection:
+  enforce_admins: false
+  required_pull_request_reviews:
+    require_code_owner_reviews: true
+    required_approving_review_count: 1
+    dismiss_stale_reviews: true
+  orgs:
+    kyma-test-infra-dev:
+      protect: true
