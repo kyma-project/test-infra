@@ -35,7 +35,7 @@ data:
     }
     
     function track_container() {
-        hostname
+        set -x
         container_id=$1
         container_pid=$(docker inspect --format '{{ .State.Pid }}' "$container_id")
         # container statistics
@@ -49,7 +49,7 @@ data:
         # find container pod name
         pod_name=$(nsenter -t $container_pid -u hostname)
         docker_cgroup=$(cat /host-proc/$container_pid/cgroup | grep ":memory:" | awk -F":memory:" '{print $2}')
-        while [ -d $host_cgroup_base$docker_cgroup ]
+        while [ -d /host-proc/$container_pid/cgroup ]
         do
           cgutil event $host_cgroup_base$docker_cgroup/memory.oom_control
           mem_usage=$(cat $host_cgroup_base$docker_cgroup/memory.usage_in_bytes)
@@ -82,6 +82,7 @@ data:
         done
     }
     
+    set -x
     set +e
     export host_cgroup_base="/host-sys/fs/cgroup/memory"
     declare -A containers
