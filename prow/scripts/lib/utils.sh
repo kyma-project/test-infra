@@ -300,7 +300,7 @@ function utils::oom_get_output() {
       if [[ -z "${node_with_oom[${BASH_REMATCH[1]}]+unset}" ]]; then
         node_with_oom["${BASH_REMATCH[1]}"]="true"
         pod=$(kubectl get pod -l "name=oom-debug" --field-selector spec.nodeName="${BASH_REMATCH[1]}" -o=jsonpath='{.items[*].metadata.name}')
-        kubectl cp default/"${pod}":/var/oom_debug -c oom-debug "${ARTIFACTS}/${pod}.txt"
+        kubectl cp "default/${pod}:/var/oom_debug" -c oom-debug "${ARTIFACTS}/${pod}.txt"
       fi
     fi
   done < "${ARTIFACTS}/describe_nodes.txt"

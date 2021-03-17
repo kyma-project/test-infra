@@ -132,6 +132,9 @@ spec:
             readOnly: true
             subPath: entrypoint.sh
         resources:
+          requests:
+            memory: "100Mi"
+            cpu: "100m"
           limits:
             memory: "300Mi"
             cpu: "1"
