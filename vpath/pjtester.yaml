@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "kyma-integration-evaluation-gardener-azure"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 10908
+configPath: "test-infra/prow/config.yaml"

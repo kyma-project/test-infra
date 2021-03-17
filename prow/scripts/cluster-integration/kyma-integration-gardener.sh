@@ -80,29 +80,31 @@ export CLUSTER_NAME="${COMMON_NAME}"
 
 # set KYMA_SOURCE used by gardener::install_kyma
 # at the time of writing this comment, kyma-integration-gardener never sets BUILD_TYPE to "release"
-if [[ -n ${PULL_NUMBER} ]]; then
-    # In case of PR, operate on PR number
-    KYMA_SOURCE="PR-${PULL_NUMBER}"
-    export KYMA_SOURCE
-    # TODO maybe can be replaced with PULL_BASE_REF?
-elif [[ "${BUILD_TYPE}" == "release" ]]; then
-    readonly RELEASE_VERSION=$(cat "VERSION")
-    log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
-    KYMA_SOURCE="${RELEASE_VERSION}"
-    export KYMA_SOURCE
-else
-    # Otherwise (master), operate on triggering commit id
-    if [[ -n ${PULL_BASE_SHA} ]]; then
-        readonly COMMIT_ID="${PULL_BASE_SHA::8}"
-        KYMA_SOURCE="${COMMIT_ID}"
-        export KYMA_SOURCE
-    else
-        # periodic job, so default to master
-        KYMA_SOURCE="master"
-        export KYMA_SOURCE
-    fi
-fi
+#if [[ -n ${PULL_NUMBER} ]]; then
+#    # In case of PR, operate on PR number
+#    KYMA_SOURCE="PR-${PULL_NUMBER}"
+#    export KYMA_SOURCE
+#    # TODO maybe can be replaced with PULL_BASE_REF?
+#elif [[ "${BUILD_TYPE}" == "release" ]]; then
+#    readonly RELEASE_VERSION=$(cat "VERSION")
+#    log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
+#    KYMA_SOURCE="${RELEASE_VERSION}"
+#    export KYMA_SOURCE
+#else
+#    # Otherwise (master), operate on triggering commit id
+#    if [[ -n ${PULL_BASE_SHA} ]]; then
+#        readonly COMMIT_ID="${PULL_BASE_SHA::8}"
+#        KYMA_SOURCE="${COMMIT_ID}"
+#        export KYMA_SOURCE
+#    else
+#        # periodic job, so default to master
+#        KYMA_SOURCE="master"
+#        export KYMA_SOURCE
+#    fi
+#fi
 
+KYMA_SOURCE="PR-10908"
+export KYMA_SOURCE
 # checks required vars and initializes gcloud/docker if necessary
 gardener::init
 

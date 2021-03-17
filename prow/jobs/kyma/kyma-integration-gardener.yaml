@@ -362,7 +362,7 @@ periodics:
     - <<: *test_infra_ref
       base_ref: master
     - <<: *kyma_ref
-      base_ref: master
+      base_ref: PR-10908
     - <<: *kyma_local_ref
       base_ref: main
     labels:
