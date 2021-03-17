@@ -35,6 +35,7 @@ data:
     }
     
     function track_container() {
+        hostname
         container_id=$1
         container_pid=$(docker inspect --format '{{ .State.Pid }}' "$container_id")
         # container statistics
@@ -81,7 +82,6 @@ data:
         done
     }
     
-    hostname
     set +e
     export host_cgroup_base="/host-sys/fs/cgroup/memory"
     declare -A containers
@@ -131,6 +131,10 @@ spec:
             mountPath: /bin/entrypoint.sh
             readOnly: true
             subPath: entrypoint.sh
+        resources:
+          limits:
+            memory: "100Mi"
+            cpu: "1"
       volumes:
         - name: proc-vol
           hostPath:

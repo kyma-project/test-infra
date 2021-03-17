@@ -34,11 +34,11 @@ gardener::cleanup() {
     log::info "Cleanup"
     set +e
 
-    # copy output from debug container to artifacts directory
-    utils::debug_get_output
-
     # describe nodes to file in artifacts directory
     utils::describe_nodes
+
+    # copy output from debug container to artifacts directory
+    utils::oom_get_output
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         if  [ -z "${CLEANUP_ONLY_SUCCEEDED}" ] || [[ -n "${CLEANUP_ONLY_SUCCEEDED}" && ${EXIT_STATUS} -eq 0 ]]; then

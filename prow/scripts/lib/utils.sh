@@ -285,27 +285,35 @@ function utils::describe_nodes() {
       kubectl top nodes
       kubectl top pods --all-namespaces
     } > "${ARTIFACTS}/describe_nodes.txt"
+}
 
-  grep -i "System OOM encountered" "${ARTIFACTS}/describe_nodes.txt"
-  oom_found=$?
-  if [ $oom_found -eq 0 ]; then
+
+function utils::oom_get_output() {
+  if [ ! -e "${ARTIFACTS}/describe_nodes.txt" ]; then
+    utils::describe_nodes
+  fi
+  while IFS= read -r line
+  declare -A node_with_oom
+  regex="^.*kubelet,[[:blank:]]+(.*)[[:blank:]]+System[[:blank:]]OOM[[:blank:]]encountered.*$"
+  do
+    if [[ $line =~ $regex ]]; then
+      if [[ -z "${node_with_oom[${BASH_REMATCH[1]}]+unset}" ]]; then
+        node_with_oom["${BASH_REMATCH[1]}"]="true"
+        pod=$(kubectl get pod -l "name=oom-debug" --field-selector spec.nodeName="${BASH_REMATCH[1]}" -o=jsonpath='{.items[*].metadata.name}')
+        kubectl cp default/"${pod}":/var/oom_debug -c oom-debug "${ARTIFACTS}/${pod}.txt"
+      fi
+    fi
+  done < "${ARTIFACTS}/describe_nodes.txt"
+  if [ -e "${ARTIFACTS}/oom-debug-*.txt" ]; then
     log::banner "OOM event found"
-    killed_pids=$(grep -i "System OOM encountered" "${ARTIFACTS}/describe_nodes.txt" | awk -F"pid:" '{print $2}' | tr -d '\n')
-    for pid in ${killed_pids}
-    do
-      log::info "killed PID ${pid} details"
-      grep Report "${ARTIFACTS}/oom-debug-*.txt" | grep "${pid}"
-    done
+    oom_message=$(grep -i "System OOM encountered" "${ARTIFACTS}/describe_nodes.txt")
+    log::warning "$oom_message"
+    log::info "killed processes info"
+    cat "${ARTIFACTS}/oom-debug-*.txt"
   fi
 }
 
 function utils::debug_oom() {
   # run oom debug pod
   kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/debug-container.yaml"
-}
-
-function utils::debug_get_output() {
-  # copy oom debug pod output to artifacts directory
-  kubectl get pod -o wide
-  for pod in $(kubectl get pod -l "name=oom-debug" -o=jsonpath='{.items[*].metadata.name}'); do kubectl cp default/"${pod}":/var/oom_debug -c oom-debug "${ARTIFACTS}/${pod}.txt";done
 }
