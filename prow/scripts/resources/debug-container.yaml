@@ -133,7 +133,7 @@ spec:
             subPath: entrypoint.sh
         resources:
           limits:
-            memory: "100Mi"
+            memory: "200Mi"
             cpu: "1"
       volumes:
         - name: proc-vol
