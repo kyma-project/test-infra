@@ -118,28 +118,33 @@ log::info "Building Kyma CLI"
 date
 cd "${KYMA_PROJECT_DIR}/cli"
 make build-linux
-gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "mkdir \$HOME/bin"
+gcloud compute ssh --quiet --zone="${ZONE}" --ssh-flag="-T" "cli-integration-test-${RANDOM_ID}" -- "mkdir \$HOME/bin"
 
 log::info "Copying Kyma CLI to the instance"
 #shellcheck disable=SC2088
 utils::send_to_vm "${ZONE}" "cli-integration-test-${RANDOM_ID}" "${KYMA_PROJECT_DIR}/cli/bin/kyma-linux" "~/bin/kyma"
-gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
+gcloud compute ssh --quiet --zone="${ZONE}" --ssh-flag="-T" "cli-integration-test-${RANDOM_ID}" -- "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
+
+
+log::info "Copying scripts to the instance"
+#shellcheck disable=SC2088
+utils::send_to_vm "${ZONE}" "cli-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}" "~/scripts"
 
 # Provision Kubernetes runtime
 log::info "Provisioning Kubernetes runtime '$KUBERNETES_RUNTIME'"
 date
 if [ "$KUBERNETES_RUNTIME" = 'minikube' ]; then
-    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma provision minikube --non-interactive"
+    log::info "Installing minikube"
+    gcloud compute ssh --quiet --zone="${ZONE}" --ssh-flag="-T" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma provision minikube --non-interactive"
 else
-    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "curl -s -o install-k3d.sh https://raw.githubusercontent.com/rancher/k3d/main/install.sh && chmod +x ./install-k3d.sh && ./install-k3d.sh"
-    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma alpha provision k3s --ci"
-    
+    log::info "Installing k3s"
+    gcloud compute ssh --quiet --zone="${ZONE}" --ssh-flag="-T" "cli-integration-test-${RANDOM_ID}" -- "curl -s -o install-k3d.sh https://raw.githubusercontent.com/rancher/k3d/main/install.sh && chmod +x ./install-k3d.sh && ./install-k3d.sh"
+    gcloud compute ssh --quiet --zone="${ZONE}" --ssh-flag="-T" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma alpha provision k3s --ci"
+
     # apply coreDNS patch
-    log::info "Copying CoreDNS patch for K3s to the instance"
+    log::info "Applying k3s coreDSN patch"
     #shellcheck disable=SC2088
-    utils::send_to_vm "${ZONE}" "cli-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/k3s/coredns-patch.sh" "~/patch"
-    utils::send_to_vm "${ZONE}" "cli-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/resources/k3s-coredns-patch.tpl.yaml" "~/patch"
-    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- chmod +x ~/patch/coredns-patch.sh && ~/patch/coredns-patch.sh
+    gcloud compute ssh --quiet --ssh-flag="-T" --zone="${ZONE}" --ssh-flag="-T" "cli-integration-test-${RANDOM_ID}" -- "sudo sh -c 'scripts/cluster-integration/k3s/coredns-patch.sh'"
 fi
 
 # Install kyma
@@ -148,10 +153,12 @@ date
 if [ "$INSTALLATION" = 'alpha' ]; then
     gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma alpha deploy --ci ${SOURCE}"
 else
-    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma install --non-interactive ${SOURCE}"
+    gcloud compute ssh --quiet --ssh-flag="-T" --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma install --non-interactive ${SOURCE}"
 fi
 
 # Run test suite
+log::info "Run test suite"
+
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/lib/clitests.sh"
 if clitests::testSuiteExists "test-all"; then
