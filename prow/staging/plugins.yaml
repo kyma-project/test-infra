@@ -14,15 +14,16 @@ plugins:
       - dog
   kyma-test-infra-dev/test-infra:
     plugins:
-      - update-config
+      - config-updater
 
 config_updater:
-  prow/staging/config.yaml:
-    name: config
-  prow/staging/plugins.yaml:
-    name: plugins
-  prow/staging/jobs/**/*.yaml:
-    name: job-config
+  maps:
+    prow/staging/config.yaml:
+      name: config
+    prow/staging/plugins.yaml:
+      name: plugins
+    prow/staging/jobs/**/*.yaml:
+      name: job-config
 
 trigger:
   - repos:
