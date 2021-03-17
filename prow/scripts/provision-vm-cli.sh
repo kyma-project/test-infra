@@ -139,7 +139,7 @@ else
     #shellcheck disable=SC2088
     utils::send_to_vm "${ZONE}" "cli-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/k3s/coredns-patch.sh" "~/patch"
     utils::send_to_vm "${ZONE}" "cli-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/resources/k3s-coredns-patch.tpl.yaml" "~/patch"
-    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- chmod +x ~/patch/coredns-patch.sh && ~/patch/coredns-patch.sh
+    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- ~/patch/coredns-patch.sh
 fi
 
 # Install kyma
