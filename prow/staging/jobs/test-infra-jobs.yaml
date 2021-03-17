@@ -1,0 +1,31 @@
+periodics:
+  - name: ci-prow-branchprotector
+    cron: "54 * * * *" # at 54th minute every hour
+    decorate: true
+    decoration_config:
+      timeout: 5h
+    cluster: workload-cluster
+    extra_refs:
+      - org: kyma-test-infra-dev
+        repo: test-infra
+        base_ref: master
+    spec:
+      containers:
+        - name: branchprotector
+          image: gcr.io/k8s-prow/branchprotector:v20210316-fe8b28563d
+          command: [ "/app/prow/cmd/branchprotector/app.binary" ]
+          args:
+            - --config-path=prow/staging/config.yaml
+            - --job-config-path=prow/staging/jobs
+            - --github-token-path=/etc/github/oauth
+            - --confirm
+            - --github-endpoint=https://api.github.com
+#           - --github-endpoint=http://ghproxy
+          volumeMounts:
+            - mountPath: /etc/github
+              name: oauth
+              readOnly: true
+      volumes:
+        - name: oauth
+          secret:
+            secretName: oauth-token
