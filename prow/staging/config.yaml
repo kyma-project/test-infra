@@ -107,4 +107,3 @@ branch-protection:
   orgs:
     kyma-test-infra-dev:
       protect: true
-
