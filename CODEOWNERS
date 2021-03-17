@@ -38,7 +38,7 @@
 
 /templates/templates @kyma-project/prow @sjanota
 
+/prow/staging/ @Ressetkk @dekiel
+
 # All .md files
 *.md @adamwalach
-
-/prow/staging/ @Ressetkk @dekiel
