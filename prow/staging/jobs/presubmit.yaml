@@ -7,9 +7,9 @@ presubmits:
       spec:
         containers:
           - image: alpine
-            command: ["/bin/echo"]
+            command: ["/bin/sh"]
             args:
-              - "HELLO WORLD"
+              - "-c date && sleep 120 && date"
     - name: pre-test-presubmit-runifchanged
       cluster: workload-cluster
       decorate: true
@@ -17,9 +17,9 @@ presubmits:
       spec:
         containers:
           - image: alpine
-            command: ["/bin/cat"]
+            command: ["/bin/sh"]
             args:
-              - "prow/staging/testfile"
+              - "-c date && sleep 120 && date"
     - name: pre-test-presubmit-optional
       cluster: workload-cluster
       decorate: true
@@ -28,9 +28,9 @@ presubmits:
       spec:
         containers:
           - image: alpine
-            command: [ "/bin/echo" ]
+            command: [ "/bin/sh" ]
             args:
-              - "HELLO WORLD OPTIONAL"
+              - "-c date && sleep 120 && date"
     - name: pre-test-presubmit-optional-runifchanged
       cluster: workload-cluster
       decorate: true
@@ -39,9 +39,9 @@ presubmits:
       spec:
         containers:
           - image: alpine
-            command: [ "/bin/cat" ]
+            command: [ "/bin/sh" ]
             args:
-              - "prow/staging/testfile"
+              - "-c date && sleep 120 && date"
     - name: pre-test-presubmit-runifchanged-fail
       cluster: workload-cluster
       decorate: true
@@ -49,6 +49,6 @@ presubmits:
       spec:
         containers:
           - image: alpine
-            command: [ "/bin/ash" ]
+            command: [ "/bin/sh" ]
             args:
               - "-c date && sleep 120 && date && exit 1"

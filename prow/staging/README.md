@@ -1,3 +1,3 @@
 # Staging cluster
 
-Lorem ipsum dolor sit amet. d
+Lorem ipsum dolor sit amet. Hi.

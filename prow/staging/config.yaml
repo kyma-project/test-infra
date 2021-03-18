@@ -117,4 +117,4 @@ branch-protection:
         test-infra:
           branches:
             update-prow-components:
-              protect: false
+              allow_force_pushes: true
