@@ -40,6 +40,8 @@ periodics:
     preset-kyma-integration-compass-dev: "true"
   decorate: true
   cron: "5 * * * *"
+  annotations:
+    testgrid-create-test-group: "false"
   branches:
   - ^master$
   extra_refs:
