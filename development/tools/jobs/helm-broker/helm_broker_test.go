@@ -81,7 +81,7 @@ func TestHelmBrokerJobsPostsubmits(t *testing.T) {
 	}{
 		{
 			expName:         "post-master-helm-broker",
-			expBranches:     []string{"^master$"},
+			expBranches:     []string{"^master$", "^main$"},
 			expPresets:      []preset.Preset{preset.DindEnabled, preset.GcrPush, preset.DockerPushRepoKyma},
 			expContainerImg: tester.ImageGolangKubebuilder2BuildpackLatest,
 			expCommand:      "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh",

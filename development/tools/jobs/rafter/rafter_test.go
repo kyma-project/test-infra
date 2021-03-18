@@ -48,7 +48,7 @@ var (
 	releaseMinIOGCPGatewayPresets   = append(commonPresets, minIOGCPPresets...)
 	releaseMinIOAzureGatewayPresets = append(append(commonPresets, minIOAzurePresets...), preset.BuildRelease)
 
-	postBranches    = []string{"^master$"}
+	postBranches    = []string{"^master$", "^main$"}
 	releaseBranches = []string{"v\\d+\\.\\d+\\.\\d+(?:-.*)?$"}
 )
 

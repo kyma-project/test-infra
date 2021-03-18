@@ -23,7 +23,7 @@ func TestVarkesJobPresubmit(t *testing.T) {
 	masterPresubmit := tester.FindPresubmitJobByNameAndBranch(varkesPresubmits, jobName, "master")
 	expName := jobName
 	assert.Equal(t, expName, masterPresubmit.Name)
-	assert.Equal(t, []string{"^master$", "release"}, masterPresubmit.Branches)
+	assert.Equal(t, []string{"^master$", "^main$", "release"}, masterPresubmit.Branches)
 	assert.Equal(t, 10, masterPresubmit.MaxConcurrency)
 	assert.False(t, masterPresubmit.SkipReport)
 	assert.True(t, masterPresubmit.Decorate)
@@ -49,7 +49,7 @@ func TestVarkesJobMasterPostsubmit(t *testing.T) {
 	masterPostsubmit := tester.FindPostsubmitJobByNameAndBranch(varkesPostsubmits, jobName, "master")
 	expName := jobName
 	assert.Equal(t, expName, masterPostsubmit.Name)
-	assert.Equal(t, []string{"^master$"}, masterPostsubmit.Branches)
+	assert.Equal(t, []string{"^master$", "^main$"}, masterPostsubmit.Branches)
 	assert.Equal(t, 10, masterPostsubmit.MaxConcurrency)
 	assert.True(t, masterPostsubmit.Decorate)
 	tester.AssertThatHasExtraRefTestInfra(t, masterPostsubmit.JobBase.UtilityConfig, "master")
