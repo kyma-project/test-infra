@@ -42,6 +42,16 @@ presubmits: # runs on PRs
         - ^master$
         - ^main$
     
+    - name: pre-rel121-kyma-tests-compass-runtime-agent
+      cluster: untrusted-workload
+      optional: false
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.21
+      branches:
+        - release-1.21
+    
     - name: pre-rel120-kyma-tests-compass-runtime-agent
       cluster: untrusted-workload
       optional: false
@@ -62,16 +72,6 @@ presubmits: # runs on PRs
       branches:
         - release-1.19
     
-    - name: pre-rel118-kyma-tests-compass-runtime-agent
-      cluster: untrusted-workload
-      optional: false
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.18
-      branches:
-        - release-1.18
-    
 
 postsubmits:
   kyma-project/kyma:
@@ -87,6 +87,17 @@ postsubmits:
       - ^master$
       - ^main$
       
+    - name: post-rel121-kyma-tests-compass-runtime-agent
+      cluster: trusted-workload
+      annotations:
+        testgrid-create-test-group: "false"
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.21
+      branches:
+        - release-1.21
+    
     - name: post-rel120-kyma-tests-compass-runtime-agent
       cluster: trusted-workload
       annotations:
@@ -108,15 +119,4 @@ postsubmits:
           base_ref: release-1.19
       branches:
         - release-1.19
-    
-    - name: post-rel118-kyma-tests-compass-runtime-agent
-      cluster: trusted-workload
-      annotations:
-        testgrid-create-test-group: "false"
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.18
-      branches:
-        - release-1.18
     
