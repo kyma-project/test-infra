@@ -135,7 +135,7 @@ function utils::receive_from_vm() {
 
   for i in $(seq 1 5); do
     [[ ${i} -gt 1 ]] && log::info 'Retrying in 15 seconds..' && sleep 15;
-    gcloud compute scp --strict-host-key-checking=no --ssh-flag="-v" --recurse --zone="${ZONE}" "${REMOTE_NAME}":"${REMOTE_PATH}" "${LOCAL_PATH}" && break;
+    gcloud compute scp --strict-host-key-checking=no --scp-flag="-v" --recurse --zone="${ZONE}" "${REMOTE_NAME}":"${REMOTE_PATH}" "${LOCAL_PATH}" && break;
     [[ ${i} -ge 5 ]] && log::error "Failed after $i attempts." && exit 1
   done;
 }
