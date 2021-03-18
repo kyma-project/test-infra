@@ -312,6 +312,10 @@ function utils::oom_get_output() {
     log::info "killed processes info"
     cat "${ARTIFACTS}/oom-debug-*.txt"
   fi
+  for pod in $(kubectl get pod -l "name=oom-debug" -o=jsonpath='{.items[*].metadata.name}')
+  do
+    kubectl cp "default/${pod}:/var/debug_*.txt" "${ARTIFACTS}/debug_${pod}.txt"
+  done
 }
 
 function utils::debug_oom() {
