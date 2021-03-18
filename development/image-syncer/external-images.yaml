@@ -45,5 +45,4 @@ images:
 - source: "jmedrek/application-gateway-alpine:1.15"
 - source: "jmedrek/connectivity-validator-alpine:1.14"
 - source: "jmedrek/connectivity-validator-alpine:1.15"
-# - source: "aerfio/kaniko-executor:v1.3.0"
 - source: "aerfio/kaniko-executor:v1.5.1"
