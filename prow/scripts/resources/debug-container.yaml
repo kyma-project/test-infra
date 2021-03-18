@@ -35,7 +35,6 @@ data:
     }
     
     function track_container() {
-        set -x
         container_id=$1
         container_pid=$(docker inspect --format '{{ .State.Pid }}' "$container_id")
         # container statistics
@@ -82,7 +81,6 @@ data:
         done
     }
     
-    set -x
     set +e
     export host_cgroup_base="/host-sys/fs/cgroup/memory"
     declare -A containers
@@ -94,7 +92,7 @@ data:
         # Check if container is present in tables
         if [[ -z "${containers[$container_id]+unset}" ]]; then
           containers[$container_id]=$container_id
-          track_container $container_id & > /var/debug_$container_id
+          track_container $container_id &
         fi
       done
     done

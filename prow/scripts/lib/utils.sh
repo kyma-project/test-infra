@@ -289,7 +289,6 @@ function utils::describe_nodes() {
 
 
 function utils::oom_get_output() {
-  set -x
   if [ ! -e "${ARTIFACTS}/describe_nodes.txt" ]; then
     utils::describe_nodes
   fi
@@ -301,21 +300,16 @@ function utils::oom_get_output() {
       if [[ -z "${node_with_oom[${BASH_REMATCH[1]}]+unset}" ]]; then
         node_with_oom["${BASH_REMATCH[1]}"]="true"
         pod=$(kubectl get pod -l "name=oom-debug" --field-selector spec.nodeName="${BASH_REMATCH[1]}" -o=jsonpath='{.items[*].metadata.name}')
-        kubectl cp "default/${pod}:/var/oom_debug" "${ARTIFACTS}/${pod}.txt"
+        kubectl cp "default/${pod}:/var/oom_debug" "${ARTIFACTS}/${pod}.txt" -c oom-debug
       fi
     fi
   done < "${ARTIFACTS}/describe_nodes.txt"
   if [ -e "${ARTIFACTS}/oom-debug-*.txt" ]; then
     log::banner "OOM event found"
-    oom_message=$(grep -i "System OOM encountered" "${ARTIFACTS}/describe_nodes.txt")
-    log::warning "$oom_message"
+    log::warning "$(grep -i "System OOM encountered" "${ARTIFACTS}/describe_nodes.txt")"
     log::info "killed processes info"
     cat "${ARTIFACTS}/oom-debug-*.txt"
   fi
-  for pod in $(kubectl get pod -l "name=oom-debug" -o=jsonpath='{.items[*].metadata.name}')
-  do
-    kubectl cp "default/${pod}:/var/debug_*" "${ARTIFACTS}/debug_${pod}.txt"
-  done
 }
 
 function utils::debug_oom() {
