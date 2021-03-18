@@ -42,3 +42,13 @@ presubmits:
             command: [ "/bin/cat" ]
             args:
               - "prow/staging/testfile"
+    - name: pre-test-presubmit-runifchanged-fail
+      cluster: workload-cluster
+      decorate: true
+      run_if_changed: ^prow/staging/testfile$
+      spec:
+        containers:
+          - image: alpine
+            command: [ "/bin/ash" ]
+            args:
+              - "-c date && sleep 120 && date && exit 1"

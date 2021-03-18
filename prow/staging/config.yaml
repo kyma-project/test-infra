@@ -8,6 +8,7 @@ deck:
     gcs_browser_prefix: https://gcsweb.prow.build.kyma-project.io/gcs/
     testgrid_config: gs://k8s-testgrid/config
     testgrid_root: https://testgrid.k8s.io/
+    tide_update_period: 1s
     lenses:
       - lens:
           name: metadata
@@ -67,7 +68,9 @@ tide:
     kyma-test-infra-dev/test-infra: squash
   target_url: https://status-dev.prow.build.kyma-project.io/tide
   queries:
-    - missingLabels:
+    - labels:
+        - lgtm
+      missingLabels:
         - needs-rebase
         - do-not-merge/hold
         - do-not-merge/work-in-progress
@@ -75,6 +78,9 @@ tide:
       orgs:
         - kyma-test-infra-dev
       reviewApprovedRequired: true
+  context_options:
+    from-branch-protection: true
+    skip-unknown-contexts: true
 
 push_gateway:
   endpoint: pushgateway
@@ -99,7 +105,7 @@ slack_reporter_configs:
       {{end}}*<{{.Status.URL}}|View logs>*
 
 branch-protection:
-  enforce_admins: false
+  enforce_admins: true
   required_pull_request_reviews:
     require_code_owner_reviews: true
     required_approving_review_count: 1
@@ -107,3 +113,8 @@ branch-protection:
   orgs:
     kyma-test-infra-dev:
       protect: true
+      repos:
+        test-infra:
+          branches:
+            update-prow-components:
+              protect: false
