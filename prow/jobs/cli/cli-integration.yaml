@@ -100,6 +100,8 @@ postsubmits: # runs on merge
         preset-gc-project-env: "true"
     - name: post-kyma-cli-integration-k3s
       cluster: trusted-workload
+      branches:
+        - "^master$" # Master branch
       <<: *k3s_job_template
       labels:
         preset-build-master: "true"
