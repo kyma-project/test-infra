@@ -289,18 +289,19 @@ function utils::describe_nodes() {
 
 
 function utils::oom_get_output() {
+  set -x
   if [ ! -e "${ARTIFACTS}/describe_nodes.txt" ]; then
     utils::describe_nodes
   fi
-  while IFS= read -r line
   declare -A node_with_oom
   regex="^.*kubelet,[[:blank:]]+(.*)[[:blank:]]+System[[:blank:]]OOM[[:blank:]]encountered.*$"
+  while IFS= read -r line
   do
     if [[ $line =~ $regex ]]; then
       if [[ -z "${node_with_oom[${BASH_REMATCH[1]}]+unset}" ]]; then
         node_with_oom["${BASH_REMATCH[1]}"]="true"
         pod=$(kubectl get pod -l "name=oom-debug" --field-selector spec.nodeName="${BASH_REMATCH[1]}" -o=jsonpath='{.items[*].metadata.name}')
-        kubectl cp "default/${pod}:/var/oom_debug" -c oom-debug "${ARTIFACTS}/${pod}.txt"
+        kubectl cp "default/${pod}:/var/oom_debug" "${ARTIFACTS}/${pod}.txt"
       fi
     fi
   done < "${ARTIFACTS}/describe_nodes.txt"
