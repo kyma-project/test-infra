@@ -62,6 +62,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       branches:
         - ^master$
+        - ^main$
         - ^hotfix-.*$
       <<: *gke_integration_job_template_k16
       # following regexp won't start build if only Markdown files were changed
@@ -118,6 +119,7 @@ postsubmits:
       cluster: trusted-workload
       branches:
         - ^master$
+        - ^main$
       <<: *gke_integration_job_template_latest
       annotations:
         testgrid-dashboards: kyma-incubator_compass

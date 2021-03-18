@@ -48,6 +48,7 @@ presubmits: # runs on PRs
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^master$
+        - ^main$
       <<: *gke_job_template
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((resources/serverless\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -85,6 +86,7 @@ presubmits: # runs on PRs
 #         testgrid-num-failures-to-alert: '1'
 #       branches:
 #         - ^master$
+#         - ^main$
 #       labels:
 #         preset-build-master: "true"
 #         <<: *gke_job_labels_template

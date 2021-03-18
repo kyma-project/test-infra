@@ -5,9 +5,6 @@ templates:
         localSets:
           jobConfig_default:
             privileged: "false"
-            branches:
-              - ^master$
-              - ^main$
             automountServiceAccountToken: true
             optional: false
             always_run: false

@@ -44,6 +44,7 @@ presubmits: # runs on PRs
     run_if_changed: "^installation|^chart|^tools/compass-installer"
     branches:
     - ^master$
+    - ^main$
     - ^hotfix-.*$
     <<: *job_template
     extra_refs:
@@ -60,6 +61,7 @@ postsubmits:
       testgrid-create-test-group: "false"
     branches:
       - ^master$
+      - ^main$
       - "^v\\d+\\.\\d+\\.\\d+$" # release tags
     <<: *job_template
     extra_refs:

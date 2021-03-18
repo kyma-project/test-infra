@@ -43,6 +43,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       branches:
         - ^master$
+        - ^main$
       <<: *whitesource_job_template
       labels:
         preset-dind-enabled: "true"

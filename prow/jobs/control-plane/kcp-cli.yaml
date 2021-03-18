@@ -38,6 +38,7 @@ presubmits: # runs on PRs
     run_if_changed: "^tools/cli"
     branches:
     - ^master$
+    - ^main$
     <<: *job_template
     extra_refs:
     - <<: *test_infra_ref
@@ -53,6 +54,7 @@ postsubmits:
       testgrid-create-test-group: "false"
     branches:
       - ^master$
+      - ^main$
     <<: *job_template
     extra_refs:
       - <<: *test_infra_ref

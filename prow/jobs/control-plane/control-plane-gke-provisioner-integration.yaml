@@ -63,6 +63,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       branches:
         - ^master$
+        - ^main$
       <<: *gke_integration_job_template_k16
       run_if_changed: "^resources/kcp/charts/provisioner/"
       labels:
@@ -78,6 +79,7 @@ postsubmits:
       cluster: trusted-workload
       branches:
         - ^master$
+        - ^main$
       <<: *gke_integration_job_template_latest
       annotations:
         testgrid-dashboards: kyma_control-plane
