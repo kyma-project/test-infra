@@ -9,7 +9,8 @@ presubmits:
           - image: alpine
             command: ["/bin/sh"]
             args:
-              - "-c date && sleep 120 && date"
+              - "-c"
+              - "date && sleep 120 && date"
     - name: pre-test-presubmit-runifchanged
       cluster: workload-cluster
       decorate: true
@@ -19,7 +20,8 @@ presubmits:
           - image: alpine
             command: ["/bin/sh"]
             args:
-              - "-c date && sleep 120 && date"
+              - "-c"
+              - "date && sleep 120 && date"
     - name: pre-test-presubmit-optional
       cluster: workload-cluster
       decorate: true
@@ -30,7 +32,8 @@ presubmits:
           - image: alpine
             command: [ "/bin/sh" ]
             args:
-              - "-c date && sleep 120 && date"
+              - "-c"
+              - "date && sleep 120 && date"
     - name: pre-test-presubmit-optional-runifchanged
       cluster: workload-cluster
       decorate: true
@@ -41,7 +44,8 @@ presubmits:
           - image: alpine
             command: [ "/bin/sh" ]
             args:
-              - "-c date && sleep 120 && date"
+              - "-c"
+              - "date && sleep 120 && date"
     - name: pre-test-presubmit-runifchanged-fail
       cluster: workload-cluster
       decorate: true
@@ -51,4 +55,5 @@ presubmits:
           - image: alpine
             command: [ "/bin/sh" ]
             args:
-              - "-c date && sleep 120 && date && exit 1"
+              - "-c"
+              - "date && sleep 120 && date && exit 1"
