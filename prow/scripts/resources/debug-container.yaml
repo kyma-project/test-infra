@@ -94,7 +94,7 @@ data:
         # Check if container is present in tables
         if [[ -z "${containers[$container_id]+unset}" ]]; then
           containers[$container_id]=$container_id
-          track_container $container_id & > /var/debug_$container_id.txt
+          track_container $container_id & > /var/debug_$container_id
         fi
       done
     done
