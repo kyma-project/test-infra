@@ -607,6 +607,71 @@ presets:
     env:
       - name: COMPASS_INTEGRATION_ENABLED
         value: "true"
+  - labels:
+      preset-keb-dev-credentials: "true"
+    env:
+      - name: KEB_HOST
+        valueFrom:
+          secretKeyRef:
+            name: keb-dev-credentials
+            key: KEB_HOST
+      - name: KEB_CLIENT_ID
+        valueFrom:
+          secretKeyRef:
+            name: keb-dev-credentials
+            key: KEB_CLIENT_ID
+      - name: KEB_CLIENT_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: keb-dev-credentials
+            key: KEB_CLIENT_SECRET
+      - name: KEB_GLOBALACCOUNT_ID
+        valueFrom:
+          secretKeyRef:
+            name: keb-dev-credentials
+            key: KEB_GLOBALACCOUNT_ID
+      - name: KEB_SUBACCOUNT_ID
+        value: "prow-keb-integration"
+      - name: GARDENER_KUBECONFIG
+        value: "/gardener/kubeconfig"
+    volumes:
+      - name: gardener-skr-kyma-dev-kubeconfig
+        secret:
+          secretName: gardener-skr-kyma-dev-kubeconfig
+    volumeMounts:
+      - name: gardener-skr-kyma-dev-kubeconfig
+        mountPath: "/gardener"
+        readOnly: true
+  - labels:
+      preset-keb-plan-azure: "true"
+    env:
+      - name: KEB_PLAN_ID
+        value: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
+  - labels:
+      preset-keb-plan-gcp: "true"
+    env:
+      - name: KEB_PLAN_ID
+        value: "ca6e5357-707f-4565-bbbd-b3ab732597c6"
+  - labels:
+      preset-keb-plan-aws: "true"
+    env:
+      - name: KEB_PLAN_ID
+        value: "361c511f-f939-4621-b228-d0fb79a1fe15"
+  - labels:
+      preset-keb-plan-azure-lite: "true"
+    env:
+      - name: KEB_PLAN_ID
+        value: "8cb22518-aa26-44c5-91a0-e669ec9bf443"
+  - labels:
+      preset-keb-plan-trial: "true"
+    env:
+      - name: KEB_PLAN_ID
+        value: "7d55d31d-35ae-4438-bf13-6ffdfa107d9f"
+  - labels:
+      preset-keb-plan-openstack: "true"
+    env:
+      - name: KEB_PLAN_ID
+        value: "03b812ac-c991-4528-b5bd-08b303523a63"
 
 plank:
   job_url_template: 'https://status.build.kyma-project.io/view/gcs/kyma-prow-logs/{{if eq .Spec.Type "presubmit"}}pr-logs/pull{{else if eq .Spec.Type "batch"}}pr-logs/pull{{else}}logs{{end}}{{if .Spec.Refs}}{{if ne .Spec.Refs.Org ""}}/{{.Spec.Refs.Org}}_{{.Spec.Refs.Repo}}{{end}}{{end}}{{if eq .Spec.Type "presubmit"}}/{{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}{{else if eq .Spec.Type "batch"}}/batch{{end}}/{{.Spec.Job}}/{{.Status.BuildID}}/'
