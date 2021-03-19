@@ -96,7 +96,7 @@ for ZONE in ${EU_ZONES}; do
       --image "${IMAGE}" \
       --machine-type n1-standard-4 \
       --zone "${ZONE}" \
-      --boot-disk-size 30 "${LABELS[@]}" &&\
+      --boot-disk-size 200 "${LABELS[@]}" &&\
   log::info "Created kyma-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
   log::error "Could not create machine in zone ${ZONE}"
 done || exit 1
