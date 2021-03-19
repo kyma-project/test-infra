@@ -29,8 +29,10 @@ gardener::cleanup() {
     # describe nodes to file in artifacts directory
     utils::describe_nodes
 
-    # copy output from debug container to artifacts directory
-    utils::oom_get_output
+    if [ "${DEBUG_COMMANDO_OOM}" = "this-was-the-last-time" ]; then
+      # copy output from debug container to artifacts directory
+      utils::oom_get_output
+    fi
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         log::info "Deprovision cluster: \"${CLUSTER_NAME}\""

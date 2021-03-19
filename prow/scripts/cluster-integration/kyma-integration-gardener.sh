@@ -116,8 +116,10 @@ gardener::generate_overrides
 
 gardener::provision_cluster
 
-# run oom debug pod
-utils::debug_oom
+if [ "${DEBUG_COMMANDO_OOM}" = "this-was-the-last-time" ]; then
+  # run oom debug pod
+  utils::debug_oom
+fi
 
 # uses previously set KYMA_SOURCE
 gardener::install_kyma

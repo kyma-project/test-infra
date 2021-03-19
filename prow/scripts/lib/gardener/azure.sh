@@ -37,8 +37,11 @@ gardener::cleanup() {
     # describe nodes to file in artifacts directory
     utils::describe_nodes
 
-    # copy output from debug container to artifacts directory
-    utils::oom_get_output
+
+    if [ "${DEBUG_COMMANDO_OOM}" = "this-was-the-last-time" ]; then
+      # copy output from debug container to artifacts directory
+      utils::oom_get_output
+    fi
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         if  [ -z "${CLEANUP_ONLY_SUCCEEDED}" ] || [[ -n "${CLEANUP_ONLY_SUCCEEDED}" && ${EXIT_STATUS} -eq 0 ]]; then
