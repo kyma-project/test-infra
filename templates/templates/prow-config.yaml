@@ -635,13 +635,8 @@ presets:
             key: KEB_GLOBALACCOUNT_ID
       - name: KEB_SUBACCOUNT_ID
         value: "prow-keb-integration"
-  - labels:
-      preset-keb-dev-integration: "true"
-    env:
       - name: GARDENER_KUBECONFIG
         value: "/gardener/kubeconfig"
-      - name: SHOOT_KUBECONFIG
-        value: "/shoot.kubeconfig"
     volumes:
       - name: gardener-skr-kyma-dev-kubeconfig
         secret:
