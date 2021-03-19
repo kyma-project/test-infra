@@ -1,6 +1,0 @@
-pjNames:
-- pjName: "skr-azure-integration-dev"
-prConfigs:
-  kyma-project:
-    kyma:
-      prNumber: 10816
