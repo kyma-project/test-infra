@@ -14,10 +14,10 @@
 set -o errexit
 
 MINIKUBE_VERSION=v1.12.2
-KUBECTL_CLI_VERSION=v1.16.3
+KUBECTL_CLI_VERSION=v1.19.7
 CRICTL_VERSION=v1.12.0
 HELM_VERSION="v3.4.2"
-DOCKER_VERSION=18.06.1~ce~3-0~debian
+DOCKER_VERSION=5:20.10.5~3-0~debian-buster
 NODEJS_VERSION="14.x"
 
 # install docker
@@ -28,16 +28,19 @@ sudo apt-get install -y \
      curl \
      gnupg2 \
      socat \
+     lsb-release \
+     wget \
+     build-essential \
      software-properties-common
 
-curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
-sudo add-apt-repository \
-   "deb [arch=amd64] https://download.docker.com/linux/debian \
-   $(lsb_release -cs) \
-   stable"
+echo \
+  "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 sudo apt update
+sudo apt-cache policy docker-ce
 sudo apt install -y docker-ce=${DOCKER_VERSION}
 
 # install kubectl
