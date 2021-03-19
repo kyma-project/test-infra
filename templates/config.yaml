@@ -444,6 +444,12 @@ templates:
           <<: *kyma_generic_component
           path: components/eventing-controller
           since: "1.17"
+      - to: ../prow/jobs/kyma/components/nats-operator/nats-operator-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *kyma_generic_component
+          path: components/nats-operator
+          since: "1.21"
       - to: ../prow/jobs/kyma/components/nats-init/nats-init-generic.yaml
         values:
           <<: *cluster_default
