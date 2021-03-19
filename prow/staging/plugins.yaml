@@ -11,6 +11,7 @@ plugins:
       - verify-owners
       - yuks
       - dog
+      - size
   kyma-test-infra-dev/test-infra:
     plugins:
       - config-updater
@@ -33,3 +34,10 @@ lgtm:
   - repos:
       - kyma-test-infra-dev
     review_acts_as_lgtm: true
+
+size:
+  s:   10
+  m:   30
+  l:   100
+  xl:  500
+  xxl: 1000
