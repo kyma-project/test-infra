@@ -431,4 +431,25 @@ templates:
                       local:
                         - "default"
                         - "postsubmit"
-                        
+                  - inheritedConfigs:
+                      global:
+                        - "image_bootstrap"
+                      local:
+                        - "default"
+                        - "presubmit"
+                    jobConfig:
+                      name: "pre-test-infra-debug-commando"
+                      run_if_changed: "^prow/images/debug-commmando/"
+                      args:
+                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/debug-commando"
+                  - inheritedConfigs:
+                      global:
+                        - "image_bootstrap"
+                      local:
+                        - "default"
+                        - "postsubmit"
+                    jobConfig:
+                      name: "post-test-infra-debug-commando"
+                      run_if_changed: "^prow/images/debug-commando/"
+                      args:
+                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/debug-commando"

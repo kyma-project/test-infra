@@ -13,6 +13,8 @@ LABEL io.kyma-project.test-infra.commit=$commit
 RUN apt-get update && apt-get install -y --no-install-recommends \
     rsync=3.1.2-1+deb9u2 \
     procps=2:3.3.12-3+deb9u1 \
+	python-pip \
+    && yes | pip install cgroup-utils \
     && apt-get clean
 
 RUN go get golang.org/x/tools/cmd/goimports  \
@@ -28,6 +30,6 @@ ENV LICENSE_PULLER_PATH=/license-puller.sh
 
 # Prow Tools
 
-COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20201208-c200b51a /prow-tools /prow-tools
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20210122-26875a41 /prow-tools /prow-tools
 # for better access to prow-tools
 ENV PATH=$PATH:/prow-tools
