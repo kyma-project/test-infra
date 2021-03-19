@@ -12,6 +12,7 @@ plugins:
       - yuks
       - dog
       - size
+      - invalidcommitmsg
   kyma-test-infra-dev/test-infra:
     plugins:
       - config-updater
