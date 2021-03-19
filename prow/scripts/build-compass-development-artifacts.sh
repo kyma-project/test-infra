@@ -34,12 +34,12 @@ function export_variables() {
    if [[ -n "${PULL_NUMBER}" ]]; then
         DOCKER_TAG="PR-${PULL_NUMBER}-${COMMIT_ID}"
         BUCKET_DIR="PR-${PULL_NUMBER}"
-   elif [[ "${PULL_BASE_REF}" != "master" ]]; then
-        DOCKER_TAG="${PULL_BASE_REF}"
-        SKIP_ARTIFACT_UPLOAD=true
-   else
+   elif [[ "${PULL_BASE_REF}" == "master" || "${PULL_BASE_REF}" == "main" ]]; then
         DOCKER_TAG="master-${COMMIT_ID}-${CURRENT_TIMESTAMP}"
         BUCKET_DIR="master-${COMMIT_ID}"
+   else
+        DOCKER_TAG="${PULL_BASE_REF}"
+        SKIP_ARTIFACT_UPLOAD=true
    fi
 
    readonly DOCKER_TAG
