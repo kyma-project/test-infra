@@ -22,6 +22,7 @@ NODEJS_VERSION="14.x"
 
 # install docker
 sudo apt-get update
+sudo apt-get upgrade -y
 sudo apt-get install -y \
      apt-transport-https \
      ca-certificates \
@@ -69,3 +70,20 @@ curl -sL https://deb.nodesource.com/setup_${NODEJS_VERSION} | sudo bash -
 sudo apt-get -y install \
      jq \
      nodejs
+
+# install monitoring agent
+# https://cloud.google.com/monitoring/agent/installation
+curl -sSO https://dl.google.com/cloudagents/add-monitoring-agent-repo.sh && \
+sudo bash add-monitoring-agent-repo.sh && \
+sudo apt-get update
+sudo apt-cache madison stackdriver-agent
+sudo apt-get install -y 'stackdriver-agent=6.*'
+
+# install logging agent
+# https://cloud.google.com/logging/docs/agent/installation
+curl -sSO https://dl.google.com/cloudagents/add-logging-agent-repo.sh && \
+sudo bash add-logging-agent-repo.sh && \
+sudo apt-get update
+sudo apt-cache madison google-fluentd
+sudo apt-get install -y 'google-fluentd=1.*'
+sudo apt-get install -y google-fluentd-catch-all-config
