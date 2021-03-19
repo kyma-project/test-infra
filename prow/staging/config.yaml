@@ -117,8 +117,3 @@ branch-protection:
       required_status_checks:
         contexts:
           - "tide"
-      repos:
-        test-infra:
-          branches:
-            update-prow-components:
-              allow_force_pushes: true
