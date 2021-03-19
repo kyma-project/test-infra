@@ -108,6 +108,26 @@ periodics:
     base_ref: master
   - <<: *kyma_ref
     base_ref: master
+- name: skr-trial-integration-dev
+  cluster: trusted-workload
+  <<: *skr_integration_job_tmplate
+  labels:
+    preset-build-master: "true"
+    preset-keb-dev-credentials: "true"
+    preset-keb-dev-integration: "true"
+    preset-keb-plan-trial: "true"
+    preset-kyma-integration-compass-dev: "true"
+  decorate: true
+  cron: "5 * * * *"
+  annotations:
+    testgrid-create-test-group: "false"
+  branches:
+  - ^master$
+  extra_refs:
+  - <<: *test_infra_ref
+    base_ref: master
+  - <<: *kyma_ref
+    base_ref: master
 - name: skr-openstack-integration-dev
   cluster: trusted-workload
   <<: *skr_integration_job_tmplate
