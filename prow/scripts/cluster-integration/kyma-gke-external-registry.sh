@@ -284,7 +284,7 @@ log::info "Verify if internal docker registry is disabled"
 verify_internal_registry
 
 log::info "Test Kyma"
-KYMA_TESTS="serverless serverless-long core-test-external-solution" "${TEST_INFRA_SOURCES_DIR}/prow/scripts/kyma-testing.sh"
+KYMA_TESTS="serverless serverless-long" "${TEST_INFRA_SOURCES_DIR}/prow/scripts/kyma-testing.sh"
 
 log::success "Success"
 
