@@ -32,6 +32,7 @@ spec:
             - --gcs-workers=1
             - --gcs-credentials-file=/etc/credentials/service-account.json
             - --kubernetes-gcs-workers=1
+            - --pubsub-workers=5
             - --kubeconfig=/etc/workload-clusters/config
           volumeMounts:
             - name: kubeconfig
