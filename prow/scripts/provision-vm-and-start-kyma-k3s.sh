@@ -117,8 +117,6 @@ envVars=(
   COMPASS_INTEGRATION_ENABLED
 )
 utils::save_env_file "${envVars[@]}"
-log::info "Known hosts:"
-cat "/root/.ssh/google_compute_known_hosts" || true
 #shellcheck disable=SC2088
 utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" ".env" "~/.env"
 
@@ -132,6 +130,5 @@ utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/
 
 log::info "Triggering the installation"
 gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3s.sh"
-log::info "Known hosts:"
-cat "/root/.ssh/google_compute_known_hosts" || true
+
 log::success "all done"
