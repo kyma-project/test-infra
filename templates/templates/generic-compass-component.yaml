@@ -73,19 +73,6 @@ presubmits: # runs on PRs
         - ^hotfix-.*$
     {{ end -}}
     {{ end -}}
-    {{- range $releases }}
-    - name: pre-rel{{ . | replace "." "" }}-{{ $repositoryName }}-{{ $.Values.path | replace "/" "-" }}
-      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
-      optional: {{ $.Values.optional | default false }}
-      <<: *job_template
-      {{- if $isNotTestInfra }}
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-{{ . }}
-      {{- end }}
-      branches:
-        - release-{{ . }}
-    {{ end }}
 
 postsubmits:
   {{ .Values.repository | replace "github.com/" "" }}:
