@@ -1,4 +1,4 @@
-# Basic golang buildpack
+# Image with tools for troubleshooting and debugging.
 
 FROM eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.15.7
 
