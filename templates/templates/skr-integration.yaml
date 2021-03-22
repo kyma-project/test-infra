@@ -46,6 +46,7 @@ periodics:
     base_ref: master
   - <<: *kyma_ref
     base_ref: master
+  skip_report: true
 - name: skr-azure-lite-integration-dev
   cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
   <<: *skr_integration_job_tmplate
@@ -65,6 +66,7 @@ periodics:
     base_ref: master
   - <<: *kyma_ref
     base_ref: master
+  skip_report: true
 - name: skr-aws-integration-dev
   cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
   <<: *skr_integration_job_tmplate
@@ -84,6 +86,7 @@ periodics:
     base_ref: master
   - <<: *kyma_ref
     base_ref: master
+  skip_report: true
 - name: skr-trial-integration-dev
   cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
   <<: *skr_integration_job_tmplate

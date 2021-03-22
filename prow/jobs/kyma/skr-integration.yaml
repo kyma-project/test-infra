@@ -48,6 +48,7 @@ periodics:
     base_ref: master
   - <<: *kyma_ref
     base_ref: master
+  skip_report: true
 - name: skr-azure-lite-integration-dev
   cluster: trusted-workload
   <<: *skr_integration_job_tmplate
@@ -67,6 +68,7 @@ periodics:
     base_ref: master
   - <<: *kyma_ref
     base_ref: master
+  skip_report: true
 - name: skr-aws-integration-dev
   cluster: trusted-workload
   <<: *skr_integration_job_tmplate
@@ -86,6 +88,7 @@ periodics:
     base_ref: master
   - <<: *kyma_ref
     base_ref: master
+  skip_report: true
 - name: skr-trial-integration-dev
   cluster: trusted-workload
   <<: *skr_integration_job_tmplate
