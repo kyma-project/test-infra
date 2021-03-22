@@ -38,7 +38,7 @@ gardener::cleanup() {
     utils::describe_nodes
 
 
-    if [ "${DEBUG_COMMANDO_OOM}" = "this-was-the-last-time" ]; then
+    if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
       # copy output from debug container to artifacts directory
       utils::oom_get_output
     fi

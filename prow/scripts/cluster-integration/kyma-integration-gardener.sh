@@ -116,7 +116,7 @@ gardener::generate_overrides
 
 gardener::provision_cluster
 
-if [ "${DEBUG_COMMANDO_OOM}" = "this-was-the-last-time" ]; then
+if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
   # run oom debug pod
   utils::debug_oom
 fi

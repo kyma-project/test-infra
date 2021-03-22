@@ -25,7 +25,7 @@ presets:
       preset-debug-commando-oom: "true"
     env:
       - name: DEBUG_COMMANDO_OOM
-        value: "this-was-the-last-time"
+        value: "true"
   # pjtester
   - labels:
       preset-pjtester-kubeconfig: "true"
