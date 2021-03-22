@@ -439,7 +439,7 @@ templates:
                         - "presubmit"
                     jobConfig:
                       name: "pre-test-infra-debug-commando"
-                      run_if_changed: "^prow/images/debug-commmando/"
+                      run_if_changed: "^prow/images/debug-commando/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/debug-commando"
                   - inheritedConfigs:
