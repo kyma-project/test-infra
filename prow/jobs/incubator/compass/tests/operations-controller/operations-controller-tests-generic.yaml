@@ -43,6 +43,16 @@ presubmits: # runs on PRs
         - ^main$
         - ^hotfix-.*$
     
+    - name: pre-rel121-compass-tests-operations-controller
+      cluster: untrusted-workload
+      optional: false
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.21
+      branches:
+        - release-1.21
+    
     - name: pre-rel120-compass-tests-operations-controller
       cluster: untrusted-workload
       optional: false
@@ -78,6 +88,17 @@ postsubmits:
       - ^master$
       - ^main$
       
+    - name: post-rel121-compass-tests-operations-controller
+      cluster: trusted-workload
+      annotations:
+        testgrid-create-test-group: "false"
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.21
+      branches:
+        - release-1.21
+    
     - name: post-rel120-compass-tests-operations-controller
       cluster: trusted-workload
       annotations:
