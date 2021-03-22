@@ -15,6 +15,7 @@ prereq_test() {
 }
 
 load_env() {
+    echo "load envs"
     ENV_FILE=".env"
     if [ -f "${ENV_FILE}" ]; then
         export $(xargs < "${ENV_FILE}")
