@@ -17,7 +17,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Install python
 
-RUN apt-get update && apt-get install -y python-setuptools \
+RUN apt-get update && apt-get install -y \
+	python-setuptools \
 	python-pip \
     && yes | pip install cgroup-utils \
     && apt-get clean
@@ -25,10 +26,9 @@ RUN apt-get update && apt-get install -y python-setuptools \
 RUN go get golang.org/x/tools/cmd/goimports  \
     golang.org/x/lint/golint \
     github.com/vektra/mockery \
-    github.com/ericchiang/pup\
-    github.com/kisielk/errcheck && \
-    GO111MODULE="on" go get sigs.k8s.io/kind@v0.5.1 && \
-    GO111MODULE="off" go get -u github.com/maxbrunsfeld/counterfeiter
+    github.com/ericchiang/pup \
+    github.com/kisielk/errcheck \
+    github.com/maxbrunsfeld/counterfeiter
 
 COPY ./license-puller.sh /license-puller.sh
 ENV LICENSE_PULLER_PATH=/license-puller.sh
