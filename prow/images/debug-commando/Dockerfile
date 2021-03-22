@@ -24,11 +24,11 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean
 
 RUN go get golang.org/x/tools/cmd/goimports  \
+    github.com/hashicorp/hcl/hcl/printer \
     golang.org/x/lint/golint \
     github.com/vektra/mockery \
-    github.com/hashicorp/hcl/hcl/printer \
     github.com/ericchiang/pup \
-    github.com/kisielk/errcheck \
+    github.com/kisielk/errcheck
 
 COPY ./license-puller.sh /license-puller.sh
 ENV LICENSE_PULLER_PATH=/license-puller.sh
