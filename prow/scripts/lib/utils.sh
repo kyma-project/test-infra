@@ -168,6 +168,7 @@ function utils::send_to_vm() {
   local REMOTE_NAME=$2
   local LOCAL_PATH=$3
   local REMOTE_PATH=$4
+
   for i in $(seq 1 5); do
     [[ ${i} -gt 1 ]] && log::info 'Retrying in 15 seconds..' && sleep 15;
     gcloud compute scp --strict-host-key-checking=no --quiet --recurse --zone="${ZONE}" "${LOCAL_PATH}" "${REMOTE_NAME}":"${REMOTE_PATH}" && break;
