@@ -23,6 +23,8 @@ RUN apt-get update && apt-get install -y \
     && yes | pip install cgroup-utils \
     && apt-get clean
 
+RUN go get github.com/hashicorp/hcl/hcl/printer
+
 RUN go get golang.org/x/tools/cmd/goimports  \
     github.com/hashicorp/hcl/hcl/printer \
     golang.org/x/lint/golint \
