@@ -116,6 +116,9 @@ gardener::generate_overrides
 
 gardener::provision_cluster
 
+# run oom debug pod
+kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/debug-container.yaml"
+
 # uses previously set KYMA_SOURCE
 gardener::install_kyma
 

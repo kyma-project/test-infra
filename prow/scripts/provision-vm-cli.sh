@@ -45,7 +45,8 @@ fi
 
 # Support configuration via ENV vars (can be be overwritten by CLI args)
 KUBERNETES_RUNTIME="${KUBERNETES_RUNTIME:=minikube}"
-TEST_SUITE="${TEST_SUITE:=default}"
+# Either use the default Kyma install command or the new alpha command.
+INSTALLATION="${INSTALLATION:=default}"
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]
@@ -67,8 +68,8 @@ do
             KUBERNETES_RUNTIME="$2"
             shift 2
             ;;
-        --test-suite|-ts)
-            TEST_SUITE="$2"
+        --installation)
+            INSTALLATION="$2"
             shift 2
             ;;
         --*)
@@ -106,7 +107,7 @@ for ZONE in ${EU_ZONES}; do
         --image "${IMAGE}" \
         --machine-type n1-standard-4 \
         --zone "${ZONE}" \
-        --boot-disk-size 30 "${LABELS[@]}" &&\
+        --boot-disk-size 200 "${LABELS[@]}" &&\
     log::info "Created cli-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
     log::error "Could not create machine in zone ${ZONE}"
 done || exit 1
@@ -130,14 +131,24 @@ date
 if [ "$KUBERNETES_RUNTIME" = 'minikube' ]; then
     gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma provision minikube --non-interactive"
 else
+    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "curl -s -o install-k3d.sh https://raw.githubusercontent.com/rancher/k3d/main/install.sh && chmod +x ./install-k3d.sh && ./install-k3d.sh"
     gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma alpha provision k3s --ci"
+fi
+
+# Install kyma
+log::info "Installing Kyma"
+date
+if [ "$INSTALLATION" = 'alpha' ]; then
+    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma alpha deploy --ci ${SOURCE}"
+else
+    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma install --non-interactive ${SOURCE}"
 fi
 
 # Run test suite
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/lib/clitests.sh"
-if clitests::testSuiteExists "$TEST_SUITE"; then
-    clitests::execute "$TEST_SUITE" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
+if clitests::testSuiteExists "test-all"; then
+    clitests::execute "test-all" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
 else
-    log::error "Test suite '${TEST_SUITE}' not found"
+    log::error "Test file 'test-all.sh' not found"
 fi

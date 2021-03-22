@@ -17,6 +17,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -44,6 +45,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -71,6 +73,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -98,6 +101,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -125,6 +129,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -152,6 +157,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -179,6 +185,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -206,6 +213,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -233,6 +241,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -260,6 +269,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -287,6 +297,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -314,6 +325,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -341,6 +353,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -368,6 +381,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -395,6 +409,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -422,6 +437,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -449,6 +465,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -476,6 +493,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
@@ -485,6 +503,34 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/development/github-slack-connector/githubWebhookGateway"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
+    - name: pre-test-infra-debug-commando
+      labels:
+        preset-build-pr: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/debug-commando/'
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/debug-commando"
             resources:
               requests:
                 memory: 1.5Gi
@@ -508,6 +554,7 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -537,6 +584,7 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -566,6 +614,7 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -595,6 +644,7 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -624,6 +674,7 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -653,6 +704,7 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -682,6 +734,7 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -711,6 +764,7 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -740,6 +794,7 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -769,6 +824,7 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -798,6 +854,7 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -827,6 +884,7 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -856,6 +914,7 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -885,6 +944,7 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -914,6 +974,7 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -943,6 +1004,7 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -972,6 +1034,7 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -1001,6 +1064,7 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
@@ -1010,6 +1074,36 @@ postsubmits: # runs on master
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/development/github-slack-connector/githubWebhookGateway"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
+    - name: post-test-infra-debug-commando
+      annotations:
+        testgrid-create-test-group: "false"
+      labels:
+        preset-build-release: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/debug-commando/'
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/debug-commando"
             resources:
               requests:
                 memory: 1.5Gi

@@ -274,6 +274,15 @@ data:
   auditlog-config-path: "/path"
   auditlog-security-path: "/path"
   auditlog-tenant: "tnt"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kcp-cls-config
+  namespace: kcp-system
+type: Opaque
+data:
+  cls-config.yaml: cmV0ZW50aW9uUGVyaW9kOiA3Cm1heERhdGFJbnN0YW5jZXM6IDQKbWF4SW5nZXN0SW5zdGFuY2VzOiAyCnNlcnZpY2VNYW5hZ2VyOgogIGNyZWRlbnRpYWxzOgogIC0gdXJsOiBodHRwczovL2Zvby5iYXIKICAgIHJlZ2lvbjogZXUKICAgIHVzZXJuYW1lOiBmb29Vc2VyCiAgICBwYXNzd29yZDogYmFyUGFzcwpzYW1sOgogIGFkbWluX2dyb3VwOiBmb28KICBpbml0aWF0ZWQ6IGZhbHNlCiAgZXhjaGFuZ2Vfa2V5OiBiYXIKICByb2xlc19rZXk6IGZvbwogIGlkcDoKICAgIG1ldGFkYXRhX3VybDogaHR0cHM6Ly9mb28uYmFyCiAgICBlbnRpdHlfaWQ6IGh0dHBzOi8vZm9vLmJhcgogIHNwOgogICAgZW50aXR5X2lkOiBmb28KICAgIHNpZ25hdHVyZV9wcml2YXRlX2tleTogZm9v
 EOF
 }
 

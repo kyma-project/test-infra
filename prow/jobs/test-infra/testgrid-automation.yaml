@@ -11,6 +11,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "gcr.io/k8s-prow/transfigure:v20210222-670293a77e"
@@ -43,6 +44,7 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "gcr.io/k8s-prow/transfigure:v20210222-670293a77e"

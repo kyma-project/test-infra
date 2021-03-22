@@ -1,0 +1,59 @@
+presubmits:
+  kyma-test-infra-dev/test-infra:
+    - name: pre-test-presubmit
+      cluster: workload-cluster
+      decorate: true
+      always_run: true
+      spec:
+        containers:
+          - image: alpine
+            command: ["/bin/sh"]
+            args:
+              - "-c"
+              - "date && sleep 120 && date"
+    - name: pre-test-presubmit-runifchanged
+      cluster: workload-cluster
+      decorate: true
+      run_if_changed: ^prow/staging/testfile$
+      spec:
+        containers:
+          - image: alpine
+            command: ["/bin/sh"]
+            args:
+              - "-c"
+              - "date && sleep 120 && date"
+    - name: pre-test-presubmit-optional
+      cluster: workload-cluster
+      decorate: true
+      optional: true
+      always_run: true
+      spec:
+        containers:
+          - image: alpine
+            command: [ "/bin/sh" ]
+            args:
+              - "-c"
+              - "date && sleep 120 && date"
+    - name: pre-test-presubmit-optional-runifchanged
+      cluster: workload-cluster
+      decorate: true
+      optional: true
+      run_if_changed: ^prow/staging/testfile$
+      spec:
+        containers:
+          - image: alpine
+            command: [ "/bin/sh" ]
+            args:
+              - "-c"
+              - "date && sleep 120 && date"
+    - name: pre-test-presubmit-runifchanged-fail
+      cluster: workload-cluster
+      decorate: true
+      run_if_changed: ^prow/staging/testfile$
+      spec:
+        containers:
+          - image: alpine
+            command: [ "/bin/sh" ]
+            args:
+              - "-c"
+              - "date && sleep 120 && date && exit 1"

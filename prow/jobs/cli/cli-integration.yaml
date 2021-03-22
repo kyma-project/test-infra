@@ -39,29 +39,75 @@ job_template: &job_template
           - name: GO111MODULE
             value: "on"
 
+k3s_job_template: &k3s_job_template
+  annotations:
+    testgrid-create-test-group: "false"
+  optional: true # make mandatory when green
+  always_run: true
+  skip_report: true
+  decorate: true
+  path_alias: github.com/kyma-project/cli
+  max_concurrency: 10
+  extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-cli.sh"
+        resources:
+          requests:
+            memory: 1.5Gi
+            cpu: 0.8
+        env:
+          - name: GO111MODULE
+            value: "on"
+          - name: INSTALLATION
+            value: "alpha"
+          - name: KUBERNETES_RUNTIME
+            value: "k3s"
+
 presubmits: # runs on PRs
   kyma-project/cli:
-  - name: pre-kyma-cli-integration
-    cluster: untrusted-workload
-    <<: *job_template
-    labels:
-      preset-build-pr: "true"
-      preset-sa-vm-kyma-integration: "true"
-      preset-gc-project-env: "true"
+    - name: pre-kyma-cli-integration
+      cluster: untrusted-workload
+      <<: *job_template
+      labels:
+        preset-build-pr: "true"
+        preset-sa-vm-kyma-integration: "true"
+        preset-gc-project-env: "true"
+    - name: pre-kyma-cli-integration-k3s
+      cluster: untrusted-workload
+      <<: *k3s_job_template
+      labels:
+        preset-build-master: "true"
+        preset-sa-vm-kyma-integration: "true"
+        preset-gc-project-env: "true"
 
 postsubmits: # runs on merge
   kyma-project/cli:
-  - name: post-kyma-cli-integration
-    cluster: trusted-workload
-    annotations:
-      testgrid-create-test-group: "false"
-    branches:
-      - "^master$" # Master branch
-    <<: *job_template
-    labels:
-      preset-build-master: "true"
-      preset-sa-vm-kyma-integration: "true"
-      preset-gc-project-env: "true"
+    - name: post-kyma-cli-integration
+      cluster: trusted-workload
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - "^master$" # Master branch
+        - "^main$"
+      <<: *job_template
+      labels:
+        preset-build-master: "true"
+        preset-sa-vm-kyma-integration: "true"
+        preset-gc-project-env: "true"
+    - name: post-kyma-cli-integration-k3s
+      cluster: trusted-workload
+      branches:
+        - "^master$" # Master branch
+      <<: *k3s_job_template
+      labels:
+        preset-build-master: "true"
+        preset-sa-vm-kyma-integration: "true"
+        preset-gc-project-env: "true"
 
 periodics:
   - name: kyma-cli-integration-gke
@@ -77,26 +123,26 @@ periodics:
       preset-cluster-use-ssd: "true"
       preset-cluster-version: "true"
     extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
-    - <<: *cli_ref
-      base_ref: master
+      - <<: *test_infra_ref
+        base_ref: master
+      - <<: *cli_ref
+        base_ref: master
     spec:
       containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20201208-8f23a167-k8s1.16
-        securityContext:
-          privileged: true
-        command:
-        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-cli.sh"
-        env:
-        - name: GO111MODULE
-          value: "on"
-        - name: CLOUDSDK_COMPUTE_ZONE
-          value: "europe-west4-a"
-        resources:
-          requests:
-            memory: 1Gi
-            cpu: 400m
+        - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20201208-8f23a167-k8s1.16
+          securityContext:
+            privileged: true
+          command:
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-cli.sh"
+          env:
+            - name: GO111MODULE
+              value: "on"
+            - name: CLOUDSDK_COMPUTE_ZONE
+              value: "europe-west4-a"
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 400m
   - name: kyma-cli-alpha-uninstall-gke
     cluster: untrusted-workload
     annotations:
@@ -104,39 +150,39 @@ periodics:
     decorate: true
     reporter_config:
       slack:
-        channel: 'kyma-prow-dev-null'
+        channel: "kyma-prow-dev-null"
     cron: "00 */1 * * 1-5" # “At minute 0 past every hour on every day-of-week from Monday through Friday.”
     labels:
       preset-gardener-gcp-kyma-integration: "true"
       preset-cluster-version: "true"
       preset-gc-project-env: "true"
     extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
-    - <<: *cli_ref
-      base_ref: master
-    - <<: *kyma_ref
-      base_ref: master
+      - <<: *test_infra_ref
+        base_ref: master
+      - <<: *cli_ref
+        base_ref: master
+      - <<: *kyma_ref
+        base_ref: master
     spec:
       containers:
-      - <<: *base_image_k16
-        securityContext:
-          privileged: true
-        command:
-        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-cli-alpha-uninstall.sh"
-        env:
-          - name: GO111MODULE
-            value: "on"
-          - name: KYMA_PROJECT_DIR
-            value: "/home/prow/go/src/github.com/kyma-project"
-          - name: GARDENER_REGION
-            value: "europe-west4"
-          - name: GARDENER_ZONES
-            value: "europe-west4-b"
-        resources:
-          requests:
-            memory: 1Gi
-            cpu: 400m 
+        - <<: *base_image_k16
+          securityContext:
+            privileged: true
+          command:
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-cli-alpha-uninstall.sh"
+          env:
+            - name: GO111MODULE
+              value: "on"
+            - name: KYMA_PROJECT_DIR
+              value: "/home/prow/go/src/github.com/kyma-project"
+            - name: GARDENER_REGION
+              value: "europe-west4"
+            - name: GARDENER_ZONES
+              value: "europe-west4-b"
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 400m
   - name: kyma-cli-alpha-upgrade-gke
     cluster: untrusted-workload
     annotations:
@@ -144,7 +190,7 @@ periodics:
     decorate: true
     reporter_config:
       slack:
-        channel: 'kyma-prow-dev-null'
+        channel: "kyma-prow-dev-null"
     cron: "00 */1 * * 1-5" # “At minute 0 past every hour on every day-of-week from Monday through Friday.”
     labels:
       preset-gardener-azure-kyma-integration: "true"
@@ -156,87 +202,35 @@ periodics:
       preset-sa-test-gcr-push: "true"
       preset-cluster-version: "true"
     extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
-    - <<: *cli_ref
-      base_ref: master
-    - <<: *kyma_ref
-      base_ref: master
+      - <<: *test_infra_ref
+        base_ref: master
+      - <<: *cli_ref
+        base_ref: master
+      - <<: *kyma_ref
+        base_ref: master
     spec:
       containers:
-      - <<: *base_image_k16
-        securityContext:
-          privileged: true
-        command:
-        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-cli-alpha-upgrade.sh"
-        env:
-          - name: GO111MODULE
-            value: "on"
-          - name: KYMA_PROJECT_DIR
-            value: "/home/prow/go/src/github.com/kyma-project"
-          - name: GARDENER_REGION
-            value: "westeurope"
-          - name: GARDENER_ZONES
-            value: "1"
-          - name: EXECUTION_PROFILE
-            value: "evaluation"
-          - name: RS_GROUP
-            value: "kyma-gardener-azure"
-          - name: REGION
-            value: "northeurope"
-        resources:
-          requests:
-            memory: 1Gi
-            cpu: 400m
-  - name: kyma-cli-alpha-upgrade-gke-big
-    cluster: untrusted-workload
-    annotations:
-      testgrid-create-test-group: "false"
-    decorate: true
-    reporter_config:
-      slack:
-        channel: 'kyma-prow-dev-null'
-    cron: "00 */1 * * 1-5" # “At minute 0 past every hour on every day-of-week from Monday through Friday.”
-    labels:
-      preset-gardener-azure-kyma-integration: "true"
-      preset-az-kyma-prow-credentials: "true"
-      preset-docker-push-repository-gke-integration: "true"
-      preset-dind-enabled: "true"
-      preset-gc-compute-envs: "true"
-      preset-gc-project-env: "true"
-      preset-sa-test-gcr-push: "true"
-      preset-cluster-version: "true"
-      preset-azure-cluster-big: "true"
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
-    - <<: *cli_ref
-      base_ref: master
-    - <<: *kyma_ref
-      base_ref: master
-    spec:
-      containers:
-      - <<: *base_image_k16
-        securityContext:
-          privileged: true
-        command:
-        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-cli-alpha-upgrade.sh"
-        env:
-          - name: GO111MODULE
-            value: "on"
-          - name: KYMA_PROJECT_DIR
-            value: "/home/prow/go/src/github.com/kyma-project"
-          - name: GARDENER_REGION
-            value: "westeurope"
-          - name: GARDENER_ZONES
-            value: "1"
-          - name: EXECUTION_PROFILE
-            value: "evaluation"
-          - name: RS_GROUP
-            value: "kyma-gardener-azure"
-          - name: REGION
-            value: "northeurope"
-        resources:
-          requests:
-            memory: 1Gi
-            cpu: 400m
+        - <<: *base_image_k16
+          securityContext:
+            privileged: true
+          command:
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-cli-alpha-upgrade.sh"
+          env:
+            - name: GO111MODULE
+              value: "on"
+            - name: KYMA_PROJECT_DIR
+              value: "/home/prow/go/src/github.com/kyma-project"
+            - name: GARDENER_REGION
+              value: "westeurope"
+            - name: GARDENER_ZONES
+              value: "1"
+            - name: EXECUTION_PROFILE
+              value: "evaluation"
+            - name: RS_GROUP
+              value: "kyma-gardener-azure"
+            - name: REGION
+              value: "northeurope"
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 400m

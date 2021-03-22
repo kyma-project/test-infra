@@ -20,11 +20,11 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	presubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"})
 	assert.Len(t, presubmits, 1)
 
-	expName := "kyma-governance"
+	expName := "pre-master-kyma-governance"
 	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(presubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
-	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
+	assert.Equal(t, []string{"^master$", "^main$"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)

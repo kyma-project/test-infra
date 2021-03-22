@@ -11,6 +11,7 @@ job_template: &job_template
     path_alias: github.com/kyma-project/test-infra
   branches:
   - ^kyma-master$
+  - ^kyma-main$
   spec:
     containers:
     - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be

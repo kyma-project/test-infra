@@ -33,6 +33,7 @@ presubmits: # runs on PRs
     cluster: untrusted-workload
     branches:
     - ^master$
+    - ^main$
     - ^hotfix-.*$
     <<: *vm_job_template
     run_if_changed: "^(chart|installation)/"
@@ -50,6 +51,7 @@ postsubmits:
     <<: *vm_job_template
     branches:
     - ^master$
+    - ^main$
     labels:
       preset-build-master: "true"
       <<: *vm_job_labels_template

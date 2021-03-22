@@ -22,7 +22,7 @@ func TestValidateProwToolsPresubmit(t *testing.T) {
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*sut, true, "development/tools/pkg/pkg/file.go"))
 	assert.False(t, tester.IfPresubmitShouldRunAgainstChanges(*sut, true, "prow/config.yaml"))
 
-	assert.Equal(t, []string{"^master$"}, sut.Branches)
+	assert.Equal(t, []string{"^master$", "^main$"}, sut.Branches)
 	assert.False(t, sut.SkipReport)
 
 	assert.Len(t, sut.Spec.Containers, 1)
@@ -48,7 +48,7 @@ func TestValidateProwJobsPresubmit(t *testing.T) {
 	assert.False(t, tester.IfPresubmitShouldRunAgainstChanges(*sut, true, "development/tools/cmd/configuploader/main.go"))
 	assert.False(t, tester.IfPresubmitShouldRunAgainstChanges(*sut, true, "development/tools/pkg/pkg/file.go"))
 
-	assert.Equal(t, []string{"^master$"}, sut.Branches)
+	assert.Equal(t, []string{"^master$", "^main$"}, sut.Branches)
 	assert.False(t, sut.SkipReport)
 
 	assert.Len(t, sut.Spec.Containers, 1)

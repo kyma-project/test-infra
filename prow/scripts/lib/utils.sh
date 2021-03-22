@@ -210,8 +210,8 @@ function utils::compress_send_to_vm() {
   tar -czf "${TMP_DIRECTORY}/pack.tar.gz" -C "${LOCAL_PATH}" "."
   #shellcheck disable=SC2088
   utils::send_to_vm "${ZONE}" "${REMOTE_NAME}" "${TMP_DIRECTORY}/pack.tar.gz" "~/"
-  gcloud compute ssh --quiet --zone="${ZONE}" --command="mkdir ${REMOTE_PATH} && tar -xf ~/pack.tar.gz -C ${REMOTE_PATH}" --ssh-flag="-o ServerAliveInterval=30" "${REMOTE_NAME}"
-  
+  gcloud compute ssh --strict-host-key-checking=no --quiet --zone="${ZONE}" --command="mkdir ${REMOTE_PATH} && tar -xf ~/pack.tar.gz -C ${REMOTE_PATH}" --ssh-flag="-o ServerAliveInterval=30" "${REMOTE_NAME}"
+
   rm -rf "${TMP_DIRECTORY}"
 }
 
@@ -276,4 +276,15 @@ function utils::save_env_file() {
 
     echo "${var}"=\""$(printenv "${var}")"\" >> .env
   done
+}
+
+function utils::describe_nodes() {
+  log::info "Describe nodes"
+    {
+      kubectl describe nodes
+      kubectl top nodes
+      kubectl top pods --all-namespaces
+    } > "${ARTIFACTS}/describe_nodes.txt"
+
+  grep -i "System OOM encountered" "${ARTIFACTS}/describe_nodes.txt"
 }

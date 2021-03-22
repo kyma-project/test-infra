@@ -232,6 +232,7 @@ presubmits:
       optional: {{ .Values.optional }}
       branches:
         - ^master$
+        - ^main$
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: {{  .Values.resource_changes_triggering_kafka_tests | join "|" | printf "^(((%s)\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))" | quote }}
       labels:
@@ -251,6 +252,7 @@ presubmits:
       always_run: false
       branches:
         - ^master$
+        - ^main$
       labels:
         preset-build-pr: "true"
         <<: *gardener_azure_job_labels_template
@@ -365,29 +367,6 @@ periodics:
       base_ref: main
     labels:
       preset-log-collector-slack-token: "true"
-      <<: *gardener_azure_job_labels_template
-
-  - name: kyma-integration-evaluation-gardener-azure-big
-    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
-    <<: *gardener_azure_evaluation_job_template
-    decorate: true
-    annotations:
-      testgrid-dashboards: kyma_integration
-      description: Evaluation profile Kyma Azure Gardener integration job.
-    decoration_config:
-      timeout: 7200000000000 # 2h
-      grace_period: 600000000000 # 10min
-    cron: "5 * * * *"
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
-    - <<: *kyma_ref
-      base_ref: master
-    - <<: *kyma_local_ref
-      base_ref: main
-    labels:
-      preset-log-collector-slack-token: "true"
-      preset-azure-cluster-big: "true"
       <<: *gardener_azure_job_labels_template
 
   - name: kyma-integration-production-gardener-azure

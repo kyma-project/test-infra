@@ -1,0 +1,112 @@
+test_infra_ref: &test_infra_ref
+  org: kyma-project
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+
+kyma_ref: &kyma_ref
+  org: kyma-project
+  repo: kyma
+  path_alias: github.com/kyma-project/kyma
+
+# Kubectl 1.16 and CLUSTER_VERSION=1.16
+base_image_k16: &base_image_k16
+  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20201208-8f23a167-k8s1.16
+
+skr_integration_job_tmplate: &skr_integration_job_tmplate
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+    - <<: *base_image_k16
+      command:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
+      resources:
+        request:
+          memory: 100Mi
+          cpu: 50m
+
+periodics:
+- name: skr-azure-integration-dev
+  cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+  <<: *skr_integration_job_tmplate
+  labels:
+    preset-build-master: "true"
+    preset-keb-dev-credentials: "true"
+    preset-keb-plan-azure: "true"
+    preset-kyma-integration-compass-dev: "true"
+  decorate: true
+  cron: "5 * * * *"
+  annotations:
+    testgrid-create-test-group: "false"
+  branches:
+  - ^master$
+  - ^main$
+  extra_refs:
+  - <<: *test_infra_ref
+    base_ref: master
+  - <<: *kyma_ref
+    base_ref: master
+  skip_report: true
+- name: skr-azure-lite-integration-dev
+  cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+  <<: *skr_integration_job_tmplate
+  labels:
+    preset-build-master: "true"
+    preset-keb-dev-credentials: "true"
+    preset-keb-plan-azure-lite: "true"
+    preset-kyma-integration-compass-dev: "true"
+  decorate: true
+  cron: "5 * * * *"
+  annotations:
+    testgrid-create-test-group: "false"
+  branches:
+  - ^master$
+  - ^main$
+  extra_refs:
+  - <<: *test_infra_ref
+    base_ref: master
+  - <<: *kyma_ref
+    base_ref: master
+  skip_report: true
+- name: skr-aws-integration-dev
+  cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+  <<: *skr_integration_job_tmplate
+  labels:
+    preset-build-master: "true"
+    preset-keb-dev-credentials: "true"
+    preset-keb-plan-aws: "true"
+    preset-kyma-integration-compass-dev: "true"
+  decorate: true
+  cron: "5 * * * *"
+  annotations:
+    testgrid-create-test-group: "false"
+  branches:
+  - ^master$
+  - ^main$
+  extra_refs:
+  - <<: *test_infra_ref
+    base_ref: master
+  - <<: *kyma_ref
+    base_ref: master
+  skip_report: true
+- name: skr-trial-integration-dev
+  cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+  <<: *skr_integration_job_tmplate
+  labels:
+    preset-build-master: "true"
+    preset-keb-dev-credentials: "true"
+    preset-keb-plan-trial: "true"
+    preset-kyma-integration-compass-dev: "true"
+  decorate: true
+  cron: "5 * * * *"
+  annotations:
+    testgrid-create-test-group: "false"
+  branches:
+  - ^master$
+  - ^main$
+  extra_refs:
+  - <<: *test_infra_ref
+    base_ref: master
+  - <<: *kyma_ref
+    base_ref: master

@@ -198,6 +198,7 @@ postsubmits:
         testgrid-create-test-group: "false"
       branches:
         - ^master$
+        - ^main$
       <<: *common_build_job_template
       labels:
         <<: *common_job_labels_template
@@ -224,6 +225,7 @@ postsubmits:
         testgrid-create-test-group: "false"
       branches:
         - ^master$
+        - ^main$
       <<: *common_integration_test_job_template
       labels:
         <<: *common_job_labels_template
@@ -245,6 +247,7 @@ postsubmits:
         testgrid-create-test-group: "false"
       branches:
         - ^master$
+        - ^main$
       <<: *common_minio_gateway_test_job_template
       labels:
         <<: *common_job_labels_template
@@ -267,6 +270,7 @@ postsubmits:
         testgrid-create-test-group: "false"
       branches:
         - ^master$
+        - ^main$
       <<: *common_minio_gateway_test_job_template
       labels:
         <<: *common_job_labels_template
@@ -292,6 +296,7 @@ postsubmits:
         testgrid-create-test-group: "false"
       branches:
         - ^master$
+        - ^main$
       <<: *common_minio_gateway_migration_test_job_template
       labels:
         <<: *common_job_labels_template
@@ -314,6 +319,7 @@ postsubmits:
         testgrid-create-test-group: "false"
       branches:
         - ^master$
+        - ^main$
       <<: *common_minio_gateway_migration_test_job_template
       labels:
         <<: *common_job_labels_template
