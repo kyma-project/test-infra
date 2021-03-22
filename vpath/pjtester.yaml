@@ -1,0 +1,3 @@
+pjNames:
+  - pjName: "kyma-integration-production-gardener-azure"
+    report: true
