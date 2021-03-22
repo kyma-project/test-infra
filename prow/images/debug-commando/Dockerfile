@@ -28,7 +28,8 @@ RUN go get golang.org/x/tools/cmd/goimports  \
     github.com/vektra/mockery \
     github.com/ericchiang/pup \
     github.com/kisielk/errcheck \
-    github.com/maxbrunsfeld/counterfeiter
+    github.com/maxbrunsfeld/counterfeiter \
+    github.com/hashicorp/hcl/hcl/printer
 
 COPY ./license-puller.sh /license-puller.sh
 ENV LICENSE_PULLER_PATH=/license-puller.sh
