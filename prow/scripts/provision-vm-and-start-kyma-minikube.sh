@@ -106,9 +106,9 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 trap cleanup exit INT
 
 log::info "Copying Kyma to the instance"
-#shellcheck disable=SC2088
 log:info "Known hosts:"
 cat "/root/.ssh/google_compute_known_hosts" || true
+#shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
 
 log::info "Triggering the installation"
