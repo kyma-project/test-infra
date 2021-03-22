@@ -72,7 +72,7 @@ presubmits: # runs on PRs
         - ^main$
         - ^hotfix-.*$
     {{ end -}}
-    {{ end -}}
+    {{ end }}
 
 postsubmits:
   {{ .Values.repository | replace "github.com/" "" }}:
@@ -96,22 +96,3 @@ postsubmits:
       - ^master$
       - ^main$
       {{ end }}
-    {{- range $releases }}
-    - name: post-rel{{ . | replace "." "" }}-{{ $repositoryName }}-{{ $.Values.path | replace "/" "-" }}
-      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
-      annotations:
-        testgrid-create-test-group: "false"
-      {{- if or $.Values.optional $.Values.skipSlackReport }}
-      reporter_config:
-        slack:
-          channel: 'kyma-prow-dev-null'
-      {{- end }}
-      <<: *job_template
-      {{- if $isNotTestInfra }}
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-{{ . }}
-      {{- end }}
-      branches:
-        - release-{{ . }}
-    {{ end }}

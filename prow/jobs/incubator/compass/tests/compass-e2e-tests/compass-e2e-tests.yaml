@@ -42,7 +42,7 @@ presubmits: # runs on PRs
         - ^master$
         - ^main$
         - ^hotfix-.*$
-
+    
 
 postsubmits:
   kyma-incubator/compass:
@@ -57,3 +57,4 @@ postsubmits:
       branches:
       - ^master$
       - ^main$
+      
