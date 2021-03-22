@@ -106,14 +106,14 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 trap cleanup exit INT
 
 log::info "Copying Kyma to the instance"
-log:info "Known hosts:"
+log::info "Known hosts:"
 cat "/root/.ssh/google_compute_known_hosts" || true
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
 
 log::info "Triggering the installation"
 gcloud compute ssh --strict-host-key-checking=no --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-integration-minikube.sh"
-log:info "Known hosts:"
+log::info "Known hosts:"
 cat "/root/.ssh/google_compute_known_hosts" || true
 
 log::success "all done"
