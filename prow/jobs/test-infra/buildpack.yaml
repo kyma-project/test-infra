@@ -1034,6 +1034,7 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -1093,6 +1094,7 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
