@@ -13,6 +13,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:current"
@@ -36,6 +37,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:current"

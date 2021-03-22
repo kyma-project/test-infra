@@ -23,7 +23,7 @@ func TestAddonsJobPresubmit(t *testing.T) {
 	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(kymaPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
-	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
+	assert.Equal(t, []string{"^master$", "^main$"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.True(t, actualPresubmit.Decorate)
 	assert.True(t, actualPresubmit.AlwaysRun)
@@ -50,7 +50,7 @@ func TestAddonsJobPostsubmit(t *testing.T) {
 	actualPost := tester.FindPostsubmitJobByNameAndBranch(kymaPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
-	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
+	assert.Equal(t, []string{"^master$", "^main$"}, actualPost.Branches)
 
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.True(t, actualPost.Decorate)

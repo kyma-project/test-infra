@@ -40,7 +40,7 @@ func TestCommonJobPostsubmit(t *testing.T) {
 	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
 	require.NotNil(t, actualPostsubmit)
 
-	assert.Equal(t, []string{"^master$"}, actualPostsubmit.Branches)
+	assert.Equal(t, []string{"^master$", "^main$"}, actualPostsubmit.Branches)
 	assert.Equal(t, 10, actualPostsubmit.MaxConcurrency)
 	assert.True(t, actualPostsubmit.Decorate)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPostsubmit.JobBase.UtilityConfig, "master")

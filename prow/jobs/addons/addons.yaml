@@ -31,6 +31,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       branches:
         - ^master$
+        - ^main$
       always_run: true
       <<: *job_template
       labels:
@@ -45,6 +46,7 @@ postsubmits:
         testgrid-create-test-group: "false"
       branches:
         - ^master$
+        - ^main$
       <<: *job_template
       labels:
         <<: *job_labels_template

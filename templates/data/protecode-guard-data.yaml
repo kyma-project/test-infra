@@ -5,9 +5,6 @@ templates:
         localSets:
           jobConfig_default:
             privileged: "false"
-            branches:
-              - ^master$
-              - ^main$
             automountServiceAccountToken: true
             optional: false
             always_run: false
@@ -30,7 +27,7 @@ templates:
                   name: pre-master-kyma-protecode-guard
                   run_if_changed: "^((components\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   env:
-                    JOB_NAME_PATTERN: "(pre-master-kyma-components-.*)|(pre-master-kyma-tests-.*)|(pre-kyma-components-.*)|(pre-kyma-tests-.*)"
+                    JOB_NAME_PATTERN: "(pre-master-kyma-components-.*)|(pre-master-kyma-tests-.*)|(pre-kyma-components-.*)|(pre-kyma-tests-.*)|(pre-main-kyma-components-.*)|(pre-main-kyma-tests-.*)"
                     JOBGUARD_TIMEOUT: "25m"
                 inheritedConfigs:
                   global:

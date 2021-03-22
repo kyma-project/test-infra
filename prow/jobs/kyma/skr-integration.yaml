@@ -43,6 +43,7 @@ periodics:
     testgrid-create-test-group: "false"
   branches:
   - ^master$
+  - ^main$
   extra_refs:
   - <<: *test_infra_ref
     base_ref: master
@@ -63,6 +64,7 @@ periodics:
     testgrid-create-test-group: "false"
   branches:
   - ^master$
+  - ^main$
   extra_refs:
   - <<: *test_infra_ref
     base_ref: master
@@ -83,6 +85,7 @@ periodics:
     testgrid-create-test-group: "false"
   branches:
   - ^master$
+  - ^main$
   extra_refs:
   - <<: *test_infra_ref
     base_ref: master
@@ -103,6 +106,7 @@ periodics:
     testgrid-create-test-group: "false"
   branches:
   - ^master$
+  - ^main$
   extra_refs:
   - <<: *test_infra_ref
     base_ref: master

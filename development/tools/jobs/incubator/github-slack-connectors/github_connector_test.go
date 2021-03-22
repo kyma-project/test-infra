@@ -19,7 +19,7 @@ func TestGithubConnectorJobPresubmit(t *testing.T) {
 	kymaPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-incubator/github-slack-connectors"})
 
 	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(kymaPresubmits, "pre-master-github-connector", "master")
-	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
+	assert.Equal(t, []string{"^master$", "^main$"}, actualPresubmit.Branches)
 	assert.Equal(t, "^github-connector", actualPresubmit.RunIfChanged)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
@@ -39,7 +39,7 @@ func TestGithubConnectorJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 	kymaPost := jobConfig.AllStaticPostsubmits([]string{"kyma-incubator/github-slack-connectors"})
 	actualPost := tester.FindPostsubmitJobByNameAndBranch(kymaPost, "post-master-github-connector", "master")
-	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
+	assert.Equal(t, []string{"^master$", "^main$"}, actualPost.Branches)
 	assert.Equal(t, "^github-connector", actualPost.RunIfChanged)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.True(t, actualPost.Decorate)
