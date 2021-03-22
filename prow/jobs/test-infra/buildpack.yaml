@@ -513,7 +513,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^prow/images/debug-commmando/'
+      run_if_changed: '^prow/images/debug-commando/'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/test-infra
