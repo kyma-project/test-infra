@@ -1,0 +1,203 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/governance.yaml
+        localSets:
+          jobConfig_presubmit:
+            run_if_changed: "milv.config.yaml|.md$"
+            labels:
+              preset-build-pr: "true"
+          jobConfig_default:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+            labels:
+              preset-dind-enabled: "true"
+            request_memory: "10Mi"
+            request_cpu: "100m"
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                jobConfig:
+                  name: "kyma-metadata-schema-governance"
+                  run_if_changed: "^resources/.*/values.schema.json$"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/metadata-governance.sh"
+                  args:
+                    - "--repository"
+                    - "kyma"
+                    - "--validator"
+                    - "/home/prow/go/src/github.com/kyma-project/test-infra/development/tools/pkg/metadata/jsonmetadatavalidator.go"
+                  path_alias: github.com/kyma-project/kyma
+              - inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_bootstrap"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                jobConfig:
+                  name: "pre-master-kyma-governance"
+                  args:
+                    - "--repository"
+                    - "kyma"
+                  path_alias: github.com/kyma-project/kyma
+              - inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_bootstrap"
+                    - "jobConfig_periodic"
+                    - "disable_testgrid"
+                    - "extra_refs_kyma"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                jobConfig:
+                  name: "kyma-governance-nightly"
+                  cron: "0 4 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
+                  args:
+                    - "--repository"
+                    - "kyma"
+                    - "--repository-dir"
+                    - "/home/prow/go/src/github.com/kyma-project/kyma"
+                    - "--full-validation"
+                    - "true"
+
+          - repoName: "github.com/kyma-project/examples"
+            jobs:
+              - inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_bootstrap"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                jobConfig:
+                  name: "pre-master-examples-governance"
+                  args:
+                    - "--repository"
+                    - "examples"
+                  path_alias: github.com/kyma-project/examples
+              - inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_bootstrap"
+                    - "jobConfig_periodic"
+                    - "disable_testgrid"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                jobConfig:
+                  name: "examples-governance-nightly"
+                  cron: "0 4 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
+                  extra_refs:
+                    examples:
+                      - org: kyma-project
+                        repo: examples
+                        base_ref: master
+                        path_alias: github.com/kyma-project/examples
+                  args:
+                    - "--repository"
+                    - "examples"
+                    - "--repository-dir"
+                    - "/home/prow/go/src/github.com/kyma-project/examples"
+                    - "--full-validation"
+                    - "true"
+          - repoName: "github.com/kyma-project/website"
+            jobs:
+              - inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_bootstrap"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                jobConfig:
+                  name: "pre-master-website-governance"
+                  args:
+                    - "--repository"
+                    - "website"
+                  path_alias: github.com/kyma-project/website
+              - inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_bootstrap"
+                    - "jobConfig_periodic"
+                    - "disable_testgrid"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                jobConfig:
+                  name: "website-governance-nightly"
+                  cron: "0 4 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
+                  extra_refs:
+                    website:
+                      - org: kyma-project
+                        repo: website
+                        base_ref: master
+                        path_alias: github.com/kyma-project/website
+                  args:
+                    - "--repository"
+                    - "website"
+                    - "--repository-dir"
+                    - "/home/prow/go/src/github.com/kyma-project/website"
+                    - "--full-validation"
+                    - "true"
+          - repoName: "github.com/kyma-incubator/documentation-component"
+            jobs:
+              - inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_bootstrap"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                jobConfig:
+                  name: "pre-documentation-component-governance"
+                  args:
+                    - "--repository"
+                    - "documentation-component"
+                    - "--repository-org"
+                    - "kyma-incubator"
+                  path_alias: github.com/kyma-incubator/documentation-component
+              - inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_bootstrap"
+                    - "jobConfig_periodic"
+                    - "disable_testgrid"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                jobConfig:
+                  name: "documentation-component-governance-nightly"
+                  cron: "0 2 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
+                  extra_refs:
+                    documentation-component:
+                      - org: kyma-incubator
+                        repo: documentation-component
+                        base_ref: master
+                        path_alias: github.com/kyma-incubator/documentation-component
+                  args:
+                    - "--repository"
+                    - "documentation-component"
+                    - "--repository-org"
+                    - "kyma-incubator"
+                    - "--repository-dir"
+                    - "/home/prow/go/src/github.com/kyma-incubator/documentation-component"
+                    - "--full-validation"
+                    - "true"

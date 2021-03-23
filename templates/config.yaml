@@ -51,10 +51,18 @@ globalSets:
   # extra_refs sets
   extra_refs_test-infra:
     extra_refs:
-      - org: "kyma-project"
-        repo: "test-infra"
-        path_alias: "github.com/kyma-project/test-infra"
-        base_ref: "master"
+      test-infra:
+        - org: "kyma-project"
+          repo: "test-infra"
+          path_alias: "github.com/kyma-project/test-infra"
+          base_ref: "master"
+  extra_refs_kyma:
+    extra_refs:
+      kyma:
+        - org: "kyma-project"
+          repo: "kyma"
+          path_alias: "github.com/kyma-project/kyma"
+          base_ref: "master"
   # labels sets
   build_labels:
     labels:
