@@ -8,7 +8,7 @@ In addition to the version introduced in Buildpack Golang, this image adds these
 - goimports
 - errcheck
 - golint
-- glangci-lint
+- golangci-lint
 - mockery
 - failery
 - kind (v0.5.1)
