@@ -354,5 +354,3 @@ gardener::test_kyma() {
     set -e
     log::success "Tests completed"
 }
-
-}
