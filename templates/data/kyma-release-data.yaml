@@ -82,6 +82,7 @@ templates:
                     MACHINE_TYPE: "n1-highcpu-16"
                   labels:
                     preset-build-pr: "true"
+                    preset-gke-upgrade-pre-release-job: "true"
                   command: "bash"
                   args:
                     - "-c"
@@ -188,6 +189,7 @@ templates:
                     preset-gke-kyma-developers-group: "true"
                     preset-docker-push-repository-kyma: "true"
                     preset-cluster-version: "true"
+                    preset-gc-compute-envs: "true"
                   command: "bash"
                   request_memory: 200Mi
                   request_cpu: 80m
