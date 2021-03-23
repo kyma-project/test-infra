@@ -1,4 +1,4 @@
-package examples_test
+package governance_test
 
 import (
 	"fmt"
@@ -10,17 +10,16 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestGovernanceJobPresubmit(t *testing.T) {
+func TestWebsiteGovernanceJobPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/examples-governance.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/governance.yaml")
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.PresubmitsStatic, 1)
-	presubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/examples"})
+	presubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/website"})
 	assert.Len(t, presubmits, 1)
 
-	expName := "pre-master-examples-governance"
+	expName := "pre-master-website-governance"
 	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(presubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -28,7 +27,7 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
-	assert.Equal(t, "github.com/kyma-project/examples", actualPresubmit.PathAlias)
+	assert.Equal(t, "github.com/kyma-project/website", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.BuildPr, preset.DindEnabled)
 	assert.Equal(t, "milv.config.yaml|.md$", actualPresubmit.RunIfChanged)
@@ -36,28 +35,27 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "some_markdown.md"))
 	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"--repository", "examples"}, actualPresubmit.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"--repository", "website"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestGovernanceJobPeriodic(t *testing.T) {
+func TestWebsiteGovernanceJobPeriodic(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/examples-governance.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/governance.yaml")
 	// THEN
 	require.NoError(t, err)
 
 	periodics := jobConfig.AllPeriodics()
-	assert.Len(t, periodics, 1)
 
-	expName := "examples-governance-nightly"
+	expName := "website-governance-nightly"
 	actualPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, actualPeriodic)
 	assert.Equal(t, expName, actualPeriodic.Name)
 	assert.True(t, actualPeriodic.Decorate)
-	assert.Equal(t, "0 1 * * 1-5", actualPeriodic.Cron)
+	assert.Equal(t, "0 6 * * 1-5", actualPeriodic.Cron)
 	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, preset.DindEnabled)
-	tester.AssertThatHasExtraRepoRef(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra", "examples"})
+	tester.AssertThatHasExtraRepoRef(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra", "website"})
 	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPeriodic.Spec.Containers[0].Command)
-	repositoryDirArg := fmt.Sprintf("%s/examples", tester.KymaProjectDir)
-	assert.Equal(t, []string{"--repository", "examples", "--repository-dir", repositoryDirArg, "--full-validation", "true"}, actualPeriodic.Spec.Containers[0].Args)
+	repositoryDirArg := fmt.Sprintf("%s/website", tester.KymaProjectDir)
+	assert.Equal(t, []string{"--repository", "website", "--repository-dir", repositoryDirArg, "--full-validation", "true"}, actualPeriodic.Spec.Containers[0].Args)
 }

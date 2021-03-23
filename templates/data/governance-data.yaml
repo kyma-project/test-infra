@@ -99,7 +99,7 @@ templates:
                     - "jobConfig_default"
                 jobConfig:
                   name: "examples-governance-nightly"
-                  cron: "0 4 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
+                  cron: "0 1 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
                   extra_refs:
                     examples:
                       - org: kyma-project
@@ -141,7 +141,7 @@ templates:
                     - "jobConfig_default"
                 jobConfig:
                   name: "website-governance-nightly"
-                  cron: "0 4 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
+                  cron: "0 6 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
                   extra_refs:
                     website:
                       - org: kyma-project

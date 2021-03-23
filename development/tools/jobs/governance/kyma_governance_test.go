@@ -1,4 +1,4 @@
-package kyma_test
+package governance_test
 
 import (
 	"fmt"
@@ -10,9 +10,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestGovernanceJobPresubmit(t *testing.T) {
+func TesKymaGovernanceJobPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-governance.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/governance.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -39,14 +39,13 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"--repository", "kyma"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestGovernanceJobPeriodic(t *testing.T) {
+func TestKymaGovernanceJobPeriodic(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-governance.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/governance.yaml")
 	// THEN
 	require.NoError(t, err)
 
 	periodics := jobConfig.AllPeriodics()
-	assert.Len(t, periodics, 1)
 
 	expName := "kyma-governance-nightly"
 	actualPeriodic := tester.FindPeriodicJobByName(periodics, expName)

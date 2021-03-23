@@ -217,7 +217,7 @@ periodics: # runs on schedule
         testgrid-create-test-group: "false"
       labels:
         preset-dind-enabled: "true"
-      cron: "0 4 * * 1-5"
+      cron: "0 1 * * 1-5"
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -254,7 +254,7 @@ periodics: # runs on schedule
         testgrid-create-test-group: "false"
       labels:
         preset-dind-enabled: "true"
-      cron: "0 4 * * 1-5"
+      cron: "0 6 * * 1-5"
       skip_report: false
       decorate: true
       cluster: untrusted-workload
