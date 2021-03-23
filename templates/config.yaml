@@ -652,51 +652,11 @@ templates:
           path: components/schema-migrator
           since: "1.7"
           optional: false
-      - to: ../prow/jobs/incubator/compass/tests/operations-controller/operations-controller-tests-generic.yaml
+      - to: ../prow/jobs/incubator/compass/tests/compass-e2e-tests/compass-e2e-tests.yaml
         values:
           <<: *cluster_default
           <<: *compass_generic_component
-          path: tests/operations-controller
-          since: "1.19"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/tests/connector-tests/connector-tests-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: tests/connector-tests
-          since: "1.7"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/tests/director/director-generic-approach.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: tests/director
-          since: "1.10"
-      - to: ../prow/jobs/incubator/compass/tests/system-broker/system-broker-tests-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: tests/system-broker
-          since: "1.17"
-      - to: ../prow/jobs/incubator/compass/tests/connectivity-adapter/connectivity-adapter-tests-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: tests/connectivity-adapter
-          since: "1.11"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/tests/ord-service/ord-service-tests-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: tests/ord-service
-          since: "1.17"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/tests/tenant-fetcher/tenant-fetcher-tests-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: tests/tenant-fetcher
+          path: tests
           since: "1.17"
           optional: false
   - from: templates/kyma-integration.yaml
