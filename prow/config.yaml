@@ -20,6 +20,12 @@ presets:
           secretKeyRef:
             name: log-collector-slack-token
             key: token
+  # debug commando
+  - labels:
+      preset-debug-commando-oom: "true"
+    env:
+      - name: DEBUG_COMMANDO_OOM
+        value: "true"
   # pjtester
   - labels:
       preset-pjtester-kubeconfig: "true"
