@@ -58,7 +58,7 @@ const (
 	// ImageKymaIntegrationLatest represents kyma integration image with kubectl 1.16
 	ImageKymaIntegrationLatest = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20201208-8f23a167-k8s1.16"
 	// ImageGolangToolboxLatest represents the latest version of the golang buildpack toolbox
-	ImageGolangToolboxLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20210125-6234473e"
+	ImageGolangToolboxLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20210323-bfa93550"
 	// ImageProwToolsLatest represents the latest version of the prow-tools image
 	ImageProwToolsLatest = "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210122-26875a41"
 	// ImageProwToolsCurrent represents the latest version of the prow-tools image
