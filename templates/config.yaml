@@ -292,6 +292,7 @@ templates:
           <<: *kyma_generic_component
           path: tests/end-to-end/external-solution-integration
           since: "1.10"
+          until: "1.21"
       - to: ../prow/jobs/control-plane/components/provisioner/provisioner-generic.yaml
         values:
           <<: *cluster_default

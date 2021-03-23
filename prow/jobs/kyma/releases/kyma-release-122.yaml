@@ -87,7 +87,7 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-gke-kyma-integration: "true"
         preset-sa-test-gcr-push: "true"
-      run_if_changed: '^((resources\S+|installation\S+|tests/end-to-end/upgrade/chart/upgrade/\S+|tests/end-to-end/external-solution-integration/chart/external-solution/\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      run_if_changed: '^((resources\S+|installation\S+|tests/end-to-end/upgrade/chart/upgrade/\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
