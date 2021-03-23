@@ -34,7 +34,7 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	assert.Equal(t, "milv.config.yaml|.md$", actualPresubmit.RunIfChanged)
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "milv.config.yaml"))
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "some_markdown.md"))
-	assert.Equal(t, tester.ImageBootstrapLatest, actualPresubmit.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"--repository", "website"}, actualPresubmit.Spec.Containers[0].Args)
 }
@@ -56,7 +56,7 @@ func TestGovernanceJobPeriodic(t *testing.T) {
 	assert.Equal(t, "0 6 * * 1-5", actualPeriodic.Cron)
 	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, preset.DindEnabled)
 	tester.AssertThatHasExtraRepoRef(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra", "website"})
-	assert.Equal(t, tester.ImageBootstrapLatest, actualPeriodic.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPeriodic.Spec.Containers[0].Command)
 	repositoryDirArg := fmt.Sprintf("%s/website", tester.KymaProjectDir)
 	assert.Equal(t, []string{"--repository", "website", "--repository-dir", repositoryDirArg, "--full-validation", "true"}, actualPeriodic.Spec.Containers[0].Args)
