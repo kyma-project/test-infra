@@ -10,6 +10,7 @@ presubmits: # runs on PRs
       run_if_changed: 'milv.config.yaml|.md$'
       skip_report: false
       decorate: true
+      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
