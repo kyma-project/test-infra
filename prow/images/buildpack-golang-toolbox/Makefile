@@ -5,6 +5,7 @@
 
 IMG_NAME = buildpack-golang-toolbox
 IMG = $(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(IMG_NAME)
+LINTER_VERSION = v1.38.0
 
 
 # build and push on PR, tag with PR number
@@ -33,7 +34,7 @@ endif
 # build image and tag it with commit ID or PR number
 .PHONY: build-image
 build-image:
-	docker build -t $(IMG):$(DOCKER_TAG) --build-arg commit=$(DOCKER_TAG) .
+	docker build -t $(IMG):$(DOCKER_TAG) --build-arg commit=$(DOCKER_TAG) --build-arg linterVersion=$(LINTER_VERSION) .
 
 
 # push image with all tags

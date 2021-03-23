@@ -8,6 +8,9 @@ ARG commit
 ENV IMAGE_COMMIT=$commit
 LABEL io.kyma-project.test-infra.commit=$commit
 
+ARG linterVersion
+ENV LINTER_VERSION=$linterVersion
+
 # Install additional tools
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -25,6 +28,10 @@ RUN go get golang.org/x/tools/cmd/goimports \
 
 COPY ./license-puller.sh /license-puller.sh
 ENV LICENSE_PULLER_PATH=/license-puller.sh
+
+# Install linter
+
+RUN curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- -b ${GOPATH}/bin ${LINTER_VERSION}
 
 # Prow Tools
 
