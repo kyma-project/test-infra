@@ -387,9 +387,6 @@ periodics:
     - <<: *kyma_local_ref
       base_ref: main
     labels:
-      prow.k8s.io/pubsub.project: "sap-kyma-prow"
-      prow.k8s.io/pubsub.topic: "test-infra-periodics"
-      prow.k8s.io/pubsub.runID: "test-run"
       preset-log-collector-slack-token: "true"
       <<: *gardener_azure_job_labels_template
 
