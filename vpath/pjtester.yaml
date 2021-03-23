@@ -1,0 +1,5 @@
+pjNames:
+  - pjName: "kyma-upgrade-gardener-azure"
+  - pjName: "pre-master-kyma-gke-upgrade"
+  - pjName: "post-rel120-kyma-gke-release-upgrade"
+  - pjName: "post-rel121-kyma-gke-release-upgrade"
