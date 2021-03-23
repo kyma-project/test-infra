@@ -131,9 +131,9 @@ cluster_default: &cluster_default
     periodic: trusted-workload
 
 templates:
-  #  - from: templates/kyma-release-upgrade.yaml
-  #    render:
-  #      - to: ../prow/jobs/kyma/kyma-release-upgrade.yaml
+#  - from: templates/kyma-release-upgrade.yaml
+#    render:
+#      - to: ../prow/jobs/kyma/kyma-release-upgrade.yaml
   - from: templates/generic-component.yaml
     render:
       - to: ../prow/jobs/kyma/components/application-broker/application-broker-generic.yaml
@@ -730,12 +730,12 @@ templates:
       - to: ../prow/jobs/kyma/kyma-artifacts.yaml
         values:
           <<: *cluster_default
-  #  TODO: remove when https://github.com/kyma-project/test-infra/issues/3174 is finished
-  #  - from: templates/kyma-github-release.yaml
-  #    render:
-  #      - to: ../prow/jobs/kyma/kyma-github-release.yaml
-  #        values:
-  #          <<: *cluster_default
+#  TODO: remove when https://github.com/kyma-project/test-infra/issues/3174 is finished
+#  - from: templates/kyma-github-release.yaml
+#    render:
+#      - to: ../prow/jobs/kyma/kyma-github-release.yaml
+#        values:
+#          <<: *cluster_default
   - from: templates/kyma-gke-external-registry.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-gke-external-registry.yaml
@@ -748,11 +748,11 @@ templates:
         values:
           <<: *cluster_default
           since: "1.13"
-  #  - from: templates/kyma-release-candidate.yaml
-  #    render:
-  #      - to: ../prow/jobs/kyma/kyma-release-candidate.yaml
-  #        values:
-  #          <<: *cluster_default
+#  - from: templates/kyma-release-candidate.yaml
+#    render:
+#      - to: ../prow/jobs/kyma/kyma-release-candidate.yaml
+#        values:
+#          <<: *cluster_default
   - from: templates/compass-integration.yaml
     render:
       - to: ../prow/jobs/incubator/compass/compass-integration.yaml
