@@ -6,25 +6,25 @@ test_infra_ref: &test_infra_ref
 job_template: &job_template
   optional: true
   reporter_config: # TODO: Remove after testing
-        slack:
-          channel: 'kyma-prow-dev-null'
+    slack:
+      channel: "kyma-prow-dev-null"
   decorate: true
   path_alias: github.com/kyma-project/control-plane
   max_concurrency: 10
   spec:
     containers:
-    - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20210125-6234473e
-      securityContext:
-        privileged: true
-      command:
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kcp-development-artifacts.sh"
-      resources:
-        requests:
-          memory: 1Gi
-          cpu: 0.2
-      volumeMounts:
-        - name: sa-kyma-artifacts
-          mountPath: /etc/credentials/sa-kyma-artifacts
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20210323-bfa93550
+        securityContext:
+          privileged: true
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kcp-development-artifacts.sh"
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 0.2
+        volumeMounts:
+          - name: sa-kyma-artifacts
+            mountPath: /etc/credentials/sa-kyma-artifacts
     volumes:
       # we cannot use preset-sa-kyma-artifacts because we are using preset-sa-gcr-push which also set environment variable: GOOGLE_APPLICATION_CREDENTIALS.
       - name: sa-kyma-artifacts
@@ -39,32 +39,32 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/control-plane:
-  - name: pre-master-kcp-development-artifacts
-    cluster: untrusted-workload
-    run_if_changed: "^installation|^resources|^tools/kcp-installer"
-    branches:
-    - ^master$
-    - ^main$
-    <<: *job_template
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
-    labels:
-      <<: *job_labels_template
+    - name: pre-master-kcp-development-artifacts
+      cluster: untrusted-workload
+      run_if_changed: "^installation|^resources|^tools/kcp-installer"
+      branches:
+        - ^master$
+        - ^main$
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+      labels:
+        <<: *job_labels_template
 
 postsubmits:
   kyma-project/control-plane:
-  - name: post-master-kcp-development-artifacts
-    cluster: trusted-workload
-    annotations:
-      testgrid-create-test-group: "false"
-    branches:
-      - ^master$
-      - ^main$
-    <<: *job_template
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: master
-    labels:
-      <<: *job_labels_template
-      preset-build-artifacts-master: "true"
+    - name: post-master-kcp-development-artifacts
+      cluster: trusted-workload
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - ^master$
+        - ^main$
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+      labels:
+        <<: *job_labels_template
+        preset-build-artifacts-master: "true"
