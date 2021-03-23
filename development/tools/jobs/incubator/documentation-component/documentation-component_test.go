@@ -64,7 +64,7 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	assert.NoError(t, err)
 	assert.True(t, shouldRun)
 
-	assert.Equal(t, tester.ImageBootstrapLatest, actualPresubmit.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"--repository", "documentation-component", "--repository-org", "kyma-incubator"}, actualPresubmit.Spec.Containers[0].Args)
 }
@@ -94,7 +94,7 @@ func TestGovernanceJobPeriodic(t *testing.T) {
 			PathAlias: "github.com/kyma-incubator/documentation-component",
 		},
 	})
-	assert.Equal(t, tester.ImageBootstrapLatest, actualPeriodic.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPeriodic.Spec.Containers[0].Command)
 	repositoryDirArg := fmt.Sprintf("%s/documentation-component", tester.KymaIncubatorDir)
 	assert.Equal(t, []string{"--repository", "documentation-component", "--repository-org", "kyma-incubator", "--repository-dir", repositoryDirArg, "--full-validation", "true"}, actualPeriodic.Spec.Containers[0].Args)
