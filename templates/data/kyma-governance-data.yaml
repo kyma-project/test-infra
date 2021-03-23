@@ -1,0 +1,60 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/kyma/kyma-governance.yaml
+        localSets:
+          jobConfig_default:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+            labels:
+              preset-dind-enabled: "true"
+            request_memory: "10Mi"
+            request_cpu: "100m"
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  name: "pre-master-kyma-governance"
+                  labels:
+                    preset-build-pr: "true"
+                  run_if_changed: "milv.config.yaml|.md$"
+                  args:
+                    - "--repository"
+                    - "kyma"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_bootstrap"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  name: "kyma-governance-nightly"
+                  type_periodic: "true"
+                  annotations:
+                    testgrid-create-test-group: "false"
+                  cron: "0 4 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
+                  cluster: "untrusted-workload"
+                  extra_refs:
+                    - org: kyma-project
+                      repo: test-infra
+                      base_ref: master
+                      path_alias: github.com/kyma-project/test-infra
+                    - org: kyma-project
+                      repo: kyma
+                      base_ref: master
+                      path_alias: github.com/kyma-project/kyma
+                  args:
+                    - "--repository"
+                    - "kyma"
+                    - "--repository-dir"
+                    - "/home/prow/go/src/github.com/kyma-project/kyma"
+                    - "--full-validation"
+                    - "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_bootstrap"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
