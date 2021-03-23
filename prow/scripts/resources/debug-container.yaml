@@ -116,7 +116,8 @@ spec:
       - name: oom-debug
         securityContext:
           privileged: true
-        image: eu.gcr.io/kyma-project/test-infra/pr/buildpack-golang-kubebuilder2:PR-3394
+        image: eu.gcr.io/kyma-project/test-infra/debug-commando:current
+        imagePullPolicy: Always
         command:
           - "/bin/entrypoint.sh"
         volumeMounts:
