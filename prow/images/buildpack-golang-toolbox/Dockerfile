@@ -15,11 +15,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     procps=2:3.3.12-3+deb9u1 \
     && apt-get clean
 
-RUN go get golang.org/x/tools/cmd/goimports  \
+RUN go get golang.org/x/tools/cmd/goimports \
     golang.org/x/lint/golint \
-    github.com/vektra/mockery \
-    github.com/ericchiang/pup\
+    github.com/ericchiang/pup \
     github.com/kisielk/errcheck && \
+    GO111MODULE="on" go get github.com/vektra/mockery && \
     GO111MODULE="on" go get sigs.k8s.io/kind@v0.5.1 && \
     GO111MODULE="off" go get -u github.com/maxbrunsfeld/counterfeiter
 
