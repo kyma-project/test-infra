@@ -117,6 +117,8 @@ presubmits: # runs on PRs
                 value: "1"
               - name: PROVISION_REGIONAL_CLUSTER
                 value: "true"
+              - name: SCENARIO_TYPE
+                value: release
             resources:
               requests:
                 memory: 200Mi
@@ -330,4 +332,3 @@ postsubmits: # runs on master
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-  
