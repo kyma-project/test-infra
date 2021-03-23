@@ -120,8 +120,11 @@ gardener::provision_cluster
 kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/debug-container.yaml"
 
 # uses previously set KYMA_SOURCE
-gardener::install_kyma
-
+if [[ "${KYMA_ALPHA}" == "true" ]]; then
+  gardener::alpha_deploy_kyma
+else
+  gardener::install_kyma
+fi
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"

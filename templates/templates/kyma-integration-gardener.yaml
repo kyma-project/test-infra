@@ -284,6 +284,52 @@ presubmits:
               requests:
                 memory: 1Gi
                 cpu: 400m
+    - name: pre-master-kyma-gardener-azure-kyma-alpha
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      decoration_config:
+        timeout: 14400000000000 # 4h
+        grace_period: 600000000000 # 10min
+      optional: true
+      always_run: false
+      branches:
+        - ^master$
+      labels:
+        preset-build-pr: "true"
+        <<: *gardener_azure_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+      spec:
+        containers:
+          - <<: *base_image_k16
+            securityContext:
+              privileged: true
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
+            env:
+              - name: RS_GROUP
+                value: "kyma-gardener-azure"
+              - name: REGION
+                value: "northeurope"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
+              - name: GARDENER_REGION
+                value: "northeurope"
+              - name: GARDENER_ZONES
+                value: "1"
+              - name: EXECUTION_PROFILE
+                value: "evaluation"
+              - name: KYMA_ALPHA
+                value: "true"
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 400m
 
 periodics:
   - name: kyma-integration-gardener-gcp
