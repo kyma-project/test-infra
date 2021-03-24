@@ -2,6 +2,73 @@
 
 
 presubmits: # runs on PRs
+  kyma-project/addons:
+    - name: pre-master-addons-governance
+      labels:
+        preset-build-pr: "true"
+        preset-dind-enabled: "true"
+      run_if_changed: 'milv.config.yaml|.md$'
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/addons
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: master
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+            args:
+              - "--repository"
+              - "addons"
+            resources:
+              requests:
+                memory: 10Mi
+                cpu: 100m
+  
+  kyma-project/busola:
+    - name: pre-master-busola-governance
+      labels:
+        preset-build-pr: "true"
+        preset-dind-enabled: "true"
+      run_if_changed: 'milv.config.yaml|.md$'
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/busola
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: master
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+            args:
+              - "--repository"
+              - "busola"
+            resources:
+              requests:
+                memory: 10Mi
+                cpu: 100m
+  
   kyma-project/community:
     - name: pre-master-community-governance
       labels:
@@ -172,6 +239,40 @@ presubmits: # runs on PRs
                 memory: 10Mi
                 cpu: 100m
   
+  kyma-project/test-infra:
+    - name: pre-master-test-infra-governance
+      labels:
+        preset-build-pr: "true"
+        preset-dind-enabled: "true"
+      run_if_changed: 'milv.config.yaml|.md$'
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: master
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+            args:
+              - "--repository"
+              - "test-infra"
+            resources:
+              requests:
+                memory: 10Mi
+                cpu: 100m
+  
   kyma-project/website:
     - name: pre-master-website-governance
       labels:
@@ -243,6 +344,80 @@ presubmits: # runs on PRs
                 cpu: 100m
   
 periodics: # runs on schedule
+    - name: addons-governance-nightly
+      annotations:
+        testgrid-create-test-group: "false"
+      labels:
+        preset-dind-enabled: "true"
+      cron: "0 22 * * 1-5"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: addons
+          path_alias: github.com/kyma-project/addons
+          base_ref: master
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: master
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+            args:
+              - "--repository"
+              - "addons"
+              - "--repository-dir"
+              - "/home/prow/go/src/github.com/kyma-project/addons"
+              - "--full-validation"
+              - "true"
+            resources:
+              requests:
+                memory: 10Mi
+                cpu: 100m
+  
+    - name: busola-governance-nightly
+      annotations:
+        testgrid-create-test-group: "false"
+      labels:
+        preset-dind-enabled: "true"
+      cron: "0 0 * * 1-5"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: busola
+          path_alias: github.com/kyma-project/busola
+          base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: master
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+            args:
+              - "--repository"
+              - "busola"
+              - "--repository-dir"
+              - "/home/prow/go/src/github.com/kyma-project/busola"
+              - "--full-validation"
+              - "true"
+            resources:
+              requests:
+                memory: 10Mi
+                cpu: 100m
+  
     - name: community-governance-nightly
       annotations:
         testgrid-create-test-group: "false"
@@ -384,6 +559,39 @@ periodics: # runs on schedule
               - "kyma"
               - "--repository-dir"
               - "/home/prow/go/src/github.com/kyma-project/kyma"
+              - "--full-validation"
+              - "true"
+            resources:
+              requests:
+                memory: 10Mi
+                cpu: 100m
+  
+    - name: test-infra-governance-nightly
+      annotations:
+        testgrid-create-test-group: "false"
+      labels:
+        preset-dind-enabled: "true"
+      cron: "0 5 * * 1-5"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: master
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+            args:
+              - "--repository"
+              - "test-infra"
+              - "--repository-dir"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra"
               - "--full-validation"
               - "true"
             resources:

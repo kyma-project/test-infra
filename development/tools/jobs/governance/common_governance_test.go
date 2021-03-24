@@ -14,7 +14,7 @@ func TestCommonGovernanceJobPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.PresubmitsStatic, 6)
+	assert.Len(t, jobConfig.PresubmitsStatic, 9)
 	//presubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/website"})
 	//assert.Len(t, presubmits, 1)
 }
@@ -26,7 +26,7 @@ func TestCommonGovernanceJobPerodic(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.AllPeriodics()
-	assert.Len(t, periodics, 6)
+	assert.Len(t, periodics, 9)
 
 	kyma_presubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"})
 	assert.Len(t, kyma_presubmits, 2)
