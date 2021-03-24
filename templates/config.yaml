@@ -487,6 +487,7 @@ templates:
           <<: *kyma_generic_component
           path: tests/contract/knative-channel-kafka
           since: "1.10"
+          until: "1.20"
       - to: ../prow/jobs/kyma/tests/rafter/rafter-tests-generic.yaml
         values:
           <<: *cluster_default
