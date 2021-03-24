@@ -134,7 +134,7 @@ func TestKymaGardenerAzureIntegrationPresubmit(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_ZONES", "1")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "RS_GROUP", "kyma-gardener-azure")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "REGION", "northeurope")
-	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "REGION", "northeurope")
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_ALPHA", "true")
 	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
 }
 
