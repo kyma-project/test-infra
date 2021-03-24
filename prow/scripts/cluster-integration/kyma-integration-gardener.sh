@@ -121,7 +121,7 @@ kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/debug-contain
 
 # uses previously set KYMA_SOURCE
 if [[ "${KYMA_ALPHA}" == "true" ]]; then
-  gardener::alpha_deploy_kyma
+  kyma::alpha_deploy_kyma
 else
   gardener::install_kyma
 fi

@@ -10,7 +10,6 @@ The folder structure looks as follows:
 
 ```
 ├── azure.sh # This script contains functions that interact with Azure services.
-├── cli-alpha.sh # This script contains functions used for running test suite.
 ├── clitests.sh # This script contain function for deploying Kyma.
 ├── docker.sh # This script contains functions that interact with Docker.
 ├── gardener # This directory contains helper scripts used by Gardener pipeline jobs.

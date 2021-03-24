@@ -84,16 +84,6 @@ gardener::provision_cluster() {
     )
 }
 
-gardener::alpha_deploy_kyma() {
-  log::info "Deploying Kyma"
-
-  if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
-	  kyma alpha deploy --ci --profile evaluation --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
-	else
-	  kyma alpha deploy --ci --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
-	fi
-}
-
 gardener::install_kyma() {
     log::info "Installing Kyma"
     (

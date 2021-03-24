@@ -112,6 +112,30 @@ func TestKymaGardenerAzureIntegrationPresubmit(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "RS_GROUP", "kyma-gardener-azure")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "REGION", "northeurope")
 	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
+
+	jobName = "pre-master-kyma-gardener-azure-kyma-alpha"
+	job = tester.FindPresubmitJobByName(presubmits, jobName)
+	require.NotNil(t, job)
+	assert.Equal(t, jobName, job.Name)
+	assert.True(t, job.Decorate)
+	assert.True(t, job.Optional)
+	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAzureIntegration, preset.KymaCLIStable, preset.ClusterVersion)
+	tester.AssertThatHasExtraRef(t, job.JobBase.UtilityConfig, []prowapi.Refs{{
+		Org:       "kyma-project",
+		Repo:      "test-infra",
+		BaseRef:   "master",
+		PathAlias: "github.com/kyma-project/test-infra",
+	}})
+	assert.Equal(t, tester.ImageKymaIntegrationLatest, job.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"}, job.Spec.Containers[0].Args)
+	assert.Equal(t, "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", job.RunIfChanged)
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_REGION", "northeurope")
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_ZONES", "1")
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "RS_GROUP", "kyma-gardener-azure")
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "REGION", "northeurope")
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "REGION", "northeurope")
+	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
 }
 
 func TestKymaGardenerAzureIntegrationPostsubmit(t *testing.T) {

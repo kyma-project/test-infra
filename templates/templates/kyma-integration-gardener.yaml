@@ -292,7 +292,8 @@ presubmits:
         timeout: 14400000000000 # 4h
         grace_period: 600000000000 # 10min
       optional: true
-      always_run: false
+      # following regexp won't start build if only Markdown files were changed
+      run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       branches:
         - ^master$
       labels:
