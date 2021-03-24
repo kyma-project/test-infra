@@ -23,10 +23,11 @@ templates:
             request_cpu: 80m
           test-infra:
             extra_refs:
-              - org: kyma-project
-                repo: test-infra
-                path_alias: github.com/kyma-project/test-infra
-                base_ref: release-{{ $rel }}
+              test-infra:
+                - org: kyma-project
+                  repo: test-infra
+                  path_alias: github.com/kyma-project/test-infra
+                  base_ref: release-{{ $rel }}
         jobConfigs:
           - repoName: kyma-project/kyma
             jobs:

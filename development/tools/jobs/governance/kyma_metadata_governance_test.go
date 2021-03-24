@@ -1,4 +1,4 @@
-package kyma_test
+package governance_test
 
 import (
 	"testing"
@@ -11,13 +11,12 @@ import (
 
 func TestMetadataGovernanceJobPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-metadata-governance.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/governance.yaml")
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.PresubmitsStatic, 1)
 	presubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"})
-	assert.Len(t, presubmits, 1)
+
 	expName := "kyma-metadata-schema-governance"
 	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(presubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
