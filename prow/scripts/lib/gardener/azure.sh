@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# vim: noai:ts=4:sw=4
 
 #Azure:
 #Expected vars (additional to common vars):
@@ -47,10 +48,6 @@ gardener::cleanup() {
         if  [ -z "${CLEANUP_ONLY_SUCCEEDED}" ] || [[ -n "${CLEANUP_ONLY_SUCCEEDED}" && ${EXIT_STATUS} -eq 0 ]]; then
             log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
             utils::deprovision_gardener_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
-
-            log::info "Deleting Azure EventHubs Namespace: \"${EVENTHUB_NAMESPACE_NAME}\""
-            # Delete the Azure Event Hubs namespace which was created
-            az eventhubs namespace delete -n "${EVENTHUB_NAMESPACE_NAME}" -g "${RS_GROUP}"
         fi
     fi
 
@@ -71,10 +68,7 @@ gardener::init() {
         GARDENER_KYMA_PROW_KUBECONFIG
         GARDENER_KYMA_PROW_PROJECT_NAME
         GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
-        RS_GROUP
         REGION
-        AZURE_SUBSCRIPTION_ID
-        AZURE_CREDENTIALS_FILE
         CLOUDSDK_CORE_PROJECT
         KYMA_SOURCE
     )
@@ -85,15 +79,6 @@ gardener::init() {
 
     # we need to start the docker daemon
     docker::start
-
-    EVENTHUB_NAMESPACE_NAME=""
-    # Local variables
-    if [[ -n "${PULL_NUMBER}" ]]; then  ### Creating name of the eventhub namespaces for pre-submit jobs
-        EVENTHUB_NAMESPACE_NAME="pr-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}"
-    else
-        EVENTHUB_NAMESPACE_NAME="kyma-gardener-azure-${RANDOM_NAME_SUFFIX}"
-    fi
-    export EVENTHUB_NAMESPACE_NAME
 }
 
 gardener::set_machine_type() {
@@ -107,12 +92,7 @@ gardener::set_machine_type() {
 }
 
 gardener::generate_overrides() {
-    log::info "Generate Azure Event Hubs overrides"
-
-    EVENTHUB_SECRET_OVERRIDE_FILE=$(mktemp)
-    export EVENTHUB_SECRET_OVERRIDE_FILE
-
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
+return 
 }
 
 gardener::provision_cluster() {
@@ -156,9 +136,6 @@ gardener::install_kyma() {
         kyma install \
             --ci \
             --source "${KYMA_SOURCE}" \
-            -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
-            -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
-            -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
             -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
             --timeout 60m \
             --profile evaluation \
@@ -167,9 +144,6 @@ gardener::install_kyma() {
         kyma install \
             --ci \
             --source "${KYMA_SOURCE}" \
-            -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
-            -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
-            -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
             -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
             --timeout 60m \
             --profile production \
@@ -178,9 +152,6 @@ gardener::install_kyma() {
         kyma install \
             --ci \
             --source "${KYMA_SOURCE}" \
-            -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
-            -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
-            -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
             -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
             --timeout 90m \
             --verbose
@@ -348,3 +319,4 @@ gardener::test_kyma() {
     set -e
     log::success "Tests completed"
 }
+
