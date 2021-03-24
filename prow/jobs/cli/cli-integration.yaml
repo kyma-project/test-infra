@@ -93,6 +93,7 @@ postsubmits: # runs on merge
         testgrid-create-test-group: "false"
       branches:
         - "^master$" # Master branch
+        - "^main$"
       <<: *job_template
       labels:
         preset-build-master: "true"

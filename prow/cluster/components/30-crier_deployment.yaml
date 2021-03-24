@@ -20,6 +20,9 @@ spec:
       containers:
         - name: crier
           image: gcr.io/k8s-prow/crier:v20200319-1aea24112
+          env:
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: "/etc/credentials/service-account.json"
           args:
             - --config-path=/etc/config/config.yaml
             - --job-config-path=/etc/job-config
@@ -32,6 +35,7 @@ spec:
             - --gcs-workers=1
             - --gcs-credentials-file=/etc/credentials/service-account.json
             - --kubernetes-gcs-workers=1
+            - --pubsub-workers=5
             - --kubeconfig=/etc/workload-clusters/config
           volumeMounts:
             - name: kubeconfig

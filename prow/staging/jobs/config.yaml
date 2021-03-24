@@ -1,0 +1,9 @@
+periodics:
+- interval: 10m
+  name: echo-test-external
+  cluster: workload-cluster
+  decorate: true
+  spec:
+    containers:
+      - image: alpine
+        command: ["/bin/date"]

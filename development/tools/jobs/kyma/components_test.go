@@ -160,6 +160,12 @@ var components = []struct {
 			jobsuite.AllReleases(),
 		},
 	},
+	{path: "nats-operator", image: tester.ImageGolangKubebuilder2BuildpackLatest, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.AllReleases(),
+		},
+	},
 }
 
 func TestComponentJobs(t *testing.T) {

@@ -37,7 +37,7 @@ presubmits: # runs on PRs
               - name: JOBGUARD_TIMEOUT
                 value: "25m"
               - name: JOB_NAME_PATTERN
-                value: "(pre-master-kyma-components-.*)|(pre-master-kyma-tests-.*)|(pre-kyma-components-.*)|(pre-kyma-tests-.*)"
+                value: "(pre-master-kyma-components-.*)|(pre-master-kyma-tests-.*)|(pre-kyma-components-.*)|(pre-kyma-tests-.*)|(pre-main-kyma-components-.*)|(pre-main-kyma-tests-.*)"
             resources:
               requests:
                 memory: 200Mi

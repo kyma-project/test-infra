@@ -15,6 +15,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       extra_refs:
         - org: kyma-project
           repo: test-infra
@@ -53,6 +54,7 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       extra_refs:
         - org: kyma-project
           repo: test-infra

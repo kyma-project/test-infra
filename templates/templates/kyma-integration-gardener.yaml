@@ -91,6 +91,7 @@ gardener_azure_job_labels_template: &gardener_azure_job_labels_template
   preset-sa-test-gcr-push: "true"               # required for pushing images
   preset-sa-gardener-logs: "true"               # required for writing logs to Stackdriver
   preset-cluster-version: "true"
+  preset-debug-commando-oom: "true"             # detect and troubleshoot oom events
 
 gardener_azure_job_template: &gardener_azure_job_template
   decorate: true
@@ -232,6 +233,7 @@ presubmits:
       optional: {{ .Values.optional }}
       branches:
         - ^master$
+        - ^main$
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: {{  .Values.resource_changes_triggering_kafka_tests | join "|" | printf "^(((%s)\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))" | quote }}
       labels:
@@ -251,6 +253,7 @@ presubmits:
       always_run: false
       branches:
         - ^master$
+        - ^main$
       labels:
         preset-build-pr: "true"
         <<: *gardener_azure_job_labels_template
@@ -386,6 +389,9 @@ periodics:
     - <<: *kyma_local_ref
       base_ref: main
     labels:
+      prow.k8s.io/pubsub.project: sap-kyma-prow
+      prow.k8s.io/pubsub.runID: test-run
+      prow.k8s.io/pubsub.topic: test-infra-periodics
       preset-log-collector-slack-token: "true"
       <<: *gardener_azure_job_labels_template
 

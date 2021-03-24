@@ -8,30 +8,30 @@ test_infra_ref: &test_infra_ref
 
 job_template: &job_template
   decorate: true
-  path_alias: github.com/kyma-incubator/compass
+  path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   labels:
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
-    preset-docker-push-repository-incubator: "true"
-  run_if_changed: "^tests/operations-controller/|^scripts/"
+    preset-docker-push-repository-kyma: "true"
+  run_if_changed: "^components/nats-operator/|^common/makefiles/"
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9
         securityContext:
           privileged: true
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-incubator/compass/tests/operations-controller"
+          - "/home/prow/go/src/github.com/kyma-project/kyma/components/nats-operator"
         resources:
           requests:
             memory: 1.5Gi
             cpu: 0.8
 
 presubmits: # runs on PRs
-  kyma-incubator/compass:
-    - name: pre-compass-tests-operations-controller
+  kyma-project/kyma:
+    - name: pre-kyma-components-nats-operator
       cluster: untrusted-workload
       optional: false
       <<: *job_template
@@ -41,32 +41,21 @@ presubmits: # runs on PRs
       branches:
         - ^master$
         - ^main$
-        - ^hotfix-.*$
     
-    - name: pre-rel120-compass-tests-operations-controller
+    - name: pre-rel121-kyma-components-nats-operator
       cluster: untrusted-workload
       optional: false
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: release-1.20
+          base_ref: release-1.21
       branches:
-        - release-1.20
-    
-    - name: pre-rel119-compass-tests-operations-controller
-      cluster: untrusted-workload
-      optional: false
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.19
-      branches:
-        - release-1.19
+        - release-1.21
     
 
 postsubmits:
-  kyma-incubator/compass:
-    - name: post-compass-tests-operations-controller
+  kyma-project/kyma:
+    - name: post-kyma-components-nats-operator
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
@@ -78,25 +67,14 @@ postsubmits:
       - ^master$
       - ^main$
       
-    - name: post-rel120-compass-tests-operations-controller
+    - name: post-rel121-kyma-components-nats-operator
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: release-1.20
+          base_ref: release-1.21
       branches:
-        - release-1.20
-    
-    - name: post-rel119-compass-tests-operations-controller
-      cluster: trusted-workload
-      annotations:
-        testgrid-create-test-group: "false"
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.19
-      branches:
-        - release-1.19
+        - release-1.21
     

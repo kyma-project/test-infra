@@ -1,9 +1,9 @@
 global:
-  nextRelease: "1.21"
+  nextRelease: "1.22"
   releases:
+    - "1.21"
     - "1.20"
     - "1.19"
-    - "1.18"
 
 globalSets:
   # Image sets
@@ -20,7 +20,7 @@ globalSets:
   image_buildpack-golang-kubebuilder2:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9"
   image_buildpack-golang-toolbox:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20210125-6234473e"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20210323-bfa93550"
   image_wssagent:
     image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
   # JobConfig sets
@@ -30,6 +30,7 @@ globalSets:
     decorate: "true"
     branches:
       - "^master$"
+      - "^main$"
     privileged: "true"
     request_memory: "1.5Gi"
     request_cpu: "0.8"
@@ -291,6 +292,7 @@ templates:
           <<: *kyma_generic_component
           path: tests/end-to-end/external-solution-integration
           since: "1.10"
+          until: "1.21"
       - to: ../prow/jobs/control-plane/components/provisioner/provisioner-generic.yaml
         values:
           <<: *cluster_default
@@ -447,6 +449,12 @@ templates:
           <<: *kyma_generic_component
           path: components/eventing-controller
           since: "1.17"
+      - to: ../prow/jobs/kyma/components/nats-operator/nats-operator-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *kyma_generic_component
+          path: components/nats-operator
+          since: "1.21"
       - to: ../prow/jobs/kyma/components/nats-init/nats-init-generic.yaml
         values:
           <<: *cluster_default
@@ -649,51 +657,11 @@ templates:
           path: components/schema-migrator
           since: "1.7"
           optional: false
-      - to: ../prow/jobs/incubator/compass/tests/operations-controller/operations-controller-tests-generic.yaml
+      - to: ../prow/jobs/incubator/compass/tests/compass-e2e-tests/compass-e2e-tests.yaml
         values:
           <<: *cluster_default
           <<: *compass_generic_component
-          path: tests/operations-controller
-          since: "1.19"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/tests/connector-tests/connector-tests-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: tests/connector-tests
-          since: "1.7"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/tests/director/director-generic-approach.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: tests/director
-          since: "1.10"
-      - to: ../prow/jobs/incubator/compass/tests/system-broker/system-broker-tests-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: tests/system-broker
-          since: "1.17"
-      - to: ../prow/jobs/incubator/compass/tests/connectivity-adapter/connectivity-adapter-tests-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: tests/connectivity-adapter
-          since: "1.11"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/tests/ord-service/ord-service-tests-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: tests/ord-service
-          since: "1.17"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/tests/tenant-fetcher/tenant-fetcher-tests-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: tests/tenant-fetcher
+          path: tests
           since: "1.17"
           optional: false
   - from: templates/kyma-integration.yaml
@@ -777,3 +745,8 @@ templates:
   - from: templates/testgrid-default.yaml
     render:
       - to: ../prow/testgrid-default.yaml
+  - from: templates/skr-integration.yaml
+    render:
+      - to: ../prow/jobs/kyma/skr-integration.yaml
+        values:
+          <<: *cluster_default

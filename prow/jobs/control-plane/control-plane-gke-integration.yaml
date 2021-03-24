@@ -60,6 +60,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       branches:
         - ^master$
+        - ^main$
       <<: *gke_integration_job_template_k16
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -76,6 +77,7 @@ postsubmits:
       cluster: trusted-workload
       branches:
         - ^master$
+        - ^main$
       <<: *gke_integration_job_template_latest
       annotations:
         testgrid-dashboards: kyma_control-plane

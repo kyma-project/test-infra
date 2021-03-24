@@ -465,7 +465,7 @@ func newTestPJ(pjCfg pjCfg, opt options) prowapi.ProwJob {
 	if pjCfg.Report {
 		pj.Spec.Report = true
 	} else {
-		pj.Spec.Report = false
+		pj.Spec.ReporterConfig = &prowapi.ReporterConfig{Slack: &prowapi.SlackReporterConfig{Channel: "kyma-prow-dev-null"}}
 	}
 	return pj
 }

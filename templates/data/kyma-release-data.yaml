@@ -72,7 +72,7 @@ templates:
                     - "gke_config"
               - jobConfig:
                   name: pre-rel{{ $relShort }}-kyma-gke-upgrade
-                  run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tests/end-to-end/external-solution-integration/chart/external-solution/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   branches:
                     - ^release-{{ $rel }}$
                   env:
@@ -82,6 +82,7 @@ templates:
                     MACHINE_TYPE: "n1-highcpu-16"
                   labels:
                     preset-build-pr: "true"
+                    preset-gke-upgrade-pre-release-job: "true"
                   command: "bash"
                   args:
                     - "-c"
@@ -188,6 +189,7 @@ templates:
                     preset-gke-kyma-developers-group: "true"
                     preset-docker-push-repository-kyma: "true"
                     preset-cluster-version: "true"
+                    preset-gc-compute-envs: "true"
                   command: "bash"
                   request_memory: 200Mi
                   request_cpu: 80m

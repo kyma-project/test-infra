@@ -88,7 +88,7 @@ func (s ComponentSuite) postMasterTest(jobConfig config.JobConfig) func(t *testi
 		)
 		require.NotNil(t, job)
 
-		assert.Equal(t, []string{"^master$"}, job.Branches)
+		assert.Equal(t, []string{"^master$", "^main$"}, job.Branches)
 		assert.Equal(t, 10, job.MaxConcurrency)
 		assert.True(t, job.Decorate)
 		if !s.isTestInfra() {
