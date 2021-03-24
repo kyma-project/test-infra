@@ -289,7 +289,6 @@ templates:
                     - "jobConfig_default"
                     - "image_bootstrap"
                     - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
