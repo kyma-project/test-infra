@@ -14,6 +14,90 @@ templates:
             request_memory: "10Mi"
             request_cpu: "100m"
         jobConfigs:
+          - repoName: "github.com/kyma-project/community"
+            jobs:
+              - inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_bootstrap"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                jobConfig:
+                  name: "pre-master-community-governance"
+                  args:
+                    - "--repository"
+                    - "community"
+                  path_alias: github.com/kyma-project/community
+              - inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_bootstrap"
+                    - "jobConfig_periodic"
+                    - "disable_testgrid"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                jobConfig:
+                  name: "community-governance-nightly"
+                  cron: "0 23 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
+                  extra_refs:
+                    community:
+                      - org: kyma-project
+                        repo: community
+                        base_ref: master
+                        path_alias: github.com/kyma-project/community
+                  args:
+                    - "--repository"
+                    - "community"
+                    - "--repository-dir"
+                    - "/home/prow/go/src/github.com/kyma-project/community"
+                    - "--full-validation"
+                    - "true"
+          - repoName: "github.com/kyma-project/console"
+            jobs:
+              - inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_bootstrap"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                jobConfig:
+                  name: "pre-master-console-governance"
+                  args:
+                    - "--repository"
+                    - "console"
+                  path_alias: github.com/kyma-project/console
+              - inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_bootstrap"
+                    - "jobConfig_periodic"
+                    - "disable_testgrid"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                jobConfig:
+                  name: "console-governance-nightly"
+                  cron: "0 0 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
+                  extra_refs:
+                    console:
+                      - org: kyma-project
+                        repo: console
+                        base_ref: master
+                        path_alias: github.com/kyma-project/console
+                  args:
+                    - "--repository"
+                    - "console"
+                    - "--repository-dir"
+                    - "/home/prow/go/src/github.com/kyma-project/console"
+                    - "--full-validation"
+                    - "true"
           - repoName: "github.com/kyma-project/examples"
             jobs:
               - inheritedConfigs:
