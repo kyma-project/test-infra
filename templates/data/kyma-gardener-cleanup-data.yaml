@@ -9,8 +9,9 @@ templates:
               preset-gardener-gcp-kyma-integration: "true"
             env:
               KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
-            decoration_timeout: 1800000000000 # 30min
-            decoration_grace_period: 600000000000 # 10min
+            decoration_config:
+              timeout: 1800000000000 # 30min
+              grace_period: 600000000000 # 10min
             request_memory: 1Gi
             request_cpu: 400m
         jobConfigs:

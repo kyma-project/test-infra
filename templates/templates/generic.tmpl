@@ -30,13 +30,10 @@
       {{- if .JobConfig.decorate}}
       decorate: {{.JobConfig.decorate}}
       {{- end}}
-      {{- if or .JobConfig.decoration_timeout .JobConfig.decoration_grace_period false}}
+      {{- if .JobConfig.decoration_config }}
       decoration_config:
-        {{- if .JobConfig.decoration_timeout}}
-        timeout: {{.JobConfig.decoration_timeout}}
-        {{- end}}
-        {{- if .JobConfig.decoration_grace_period}}
-        grace_period: {{.JobConfig.decoration_grace_period}}
+        {{- range $key, $value := .JobConfig.decoration_config}}
+        {{$key}}: {{$value}}
         {{- end}}
       {{- end}}
       {{- if .JobConfig.path_alias }}

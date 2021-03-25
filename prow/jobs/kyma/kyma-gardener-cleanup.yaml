@@ -11,8 +11,8 @@ periodics: # runs on schedule
       skip_report: false
       decorate: true
       decoration_config:
-        timeout: 1800000000000
         grace_period: 600000000000
+        timeout: 1800000000000
       cluster: untrusted-workload
       extra_refs:
         - org: kyma-project
