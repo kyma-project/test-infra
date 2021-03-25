@@ -6,6 +6,7 @@ presubmits: # runs on PRs
     - name: pre-master-kyma-addons
       labels:
         preset-bot-github-token: "true"
+        preset-build-pr: "true"
         preset-dind-enabled: "true"
       always_run: true
       skip_report: false
