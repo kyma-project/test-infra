@@ -329,6 +329,13 @@ templates:
           path: components/metris
           since: "1.14"
           optional: false
+      - to: ../prow/jobs/control-plane/components/kyma-metrics-collector/kyma-metrics-collector-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *control_plane_generic_component
+          path: components/kyma-metrics-collector
+          since: "1.22"
+          optional: false
       - to: ../prow/jobs/control-plane/components/kubeconfig-service/kubeconfig-service-generic.yaml
         values:
           <<: *cluster_default
