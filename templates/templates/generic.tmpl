@@ -56,6 +56,11 @@
           {{- end}}
         {{- end}}
       {{- end}}
+      {{- if .JobConfig.slack_channel}}
+      reporter_config:
+        slack:
+          channel: {{ .JobConfig.slack_channel }}
+      {{- end}}
       spec:
         containers:
           - image: {{ if .JobConfig.image }}{{quote .JobConfig.image}}{{else}}{{ fail ".JobConfig.image is not defined" }}{{end}}
