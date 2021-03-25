@@ -14,7 +14,7 @@ job_template: &job_template
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
     preset-docker-push-repository-control-plane: "true"
-  run_if_changed: "^components/metris/|^scripts/"
+  run_if_changed: "^components/kyma-metrics-collector/|^scripts/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9
@@ -23,7 +23,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/control-plane/components/metris"
+          - "/home/prow/go/src/github.com/kyma-project/control-plane/components/kyma-metrics-collector"
         resources:
           requests:
             memory: 1.5Gi
@@ -31,7 +31,7 @@ job_template: &job_template
 
 presubmits: # runs on PRs
   kyma-project/control-plane:
-    - name: pre-control-plane-components-metris
+    - name: pre-control-plane-components-kyma-metrics-collector
       cluster: untrusted-workload
       optional: false
       <<: *job_template
@@ -42,7 +42,7 @@ presubmits: # runs on PRs
         - ^master$
         - ^main$
     
-    - name: pre-rel121-control-plane-components-metris
+    - name: pre-rel121-control-plane-components-kyma-metrics-collector
       cluster: untrusted-workload
       optional: false
       <<: *job_template
@@ -55,7 +55,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/control-plane:
-    - name: post-control-plane-components-metris
+    - name: post-control-plane-components-kyma-metrics-collector
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
@@ -67,7 +67,7 @@ postsubmits:
       - ^master$
       - ^main$
       
-    - name: post-rel121-control-plane-components-metris
+    - name: post-rel121-control-plane-components-kyma-metrics-collector
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
