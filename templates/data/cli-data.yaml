@@ -142,6 +142,7 @@ templates:
                     - "jobConfig_postsubmit"
                     - "extra_refs_test-infra"
                     - "image_buildpack-golang-kubebuilder2"
+                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "jobConfig_submit"
@@ -154,6 +155,7 @@ templates:
                     - "jobConfig_postsubmit"
                     - "extra_refs_test-infra"
                     - "image_buildpack-golang-kubebuilder2"
+                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "k3s_template"
@@ -168,6 +170,7 @@ templates:
                     - "jobConfig_periodic"
                     - "extra_refs_test-infra"    
                     - "image_kyma-integration"
+                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "smaller_cluster"
@@ -196,6 +199,7 @@ templates:
                     - "extra_refs_test-infra"
                     - "extra_refs_kyma"
                     - "image_kyma-integration"
+                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "smaller_cluster"

@@ -21,7 +21,7 @@ presubmits: # runs on PRs
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9"
@@ -55,7 +55,7 @@ presubmits: # runs on PRs
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9"
@@ -75,9 +75,11 @@ presubmits: # runs on PRs
                 memory: 1.5Gi
                 cpu: 0.8
   
-postsubmits: # runs on master
+postsubmits: # runs on main
   kyma-project/cli:
     - name: post-kyma-cli-integration
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-build-master: "true"
         preset-gc-project-env: "true"
@@ -89,18 +91,13 @@ postsubmits: # runs on master
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-<<<<<<< HEAD
-        - "^master$" # Master branch
-        - "^main$"
-      <<: *k3s_job_template
-=======
         - ^master$
         - ^main$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9"
@@ -116,7 +113,8 @@ postsubmits: # runs on master
                 memory: 1.5Gi
                 cpu: 0.8
     - name: post-kyma-cli-integration-k3s
->>>>>>> cli-integration
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-build-master: "true"
         preset-gc-project-env: "true"
@@ -135,7 +133,7 @@ postsubmits: # runs on master
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9"
@@ -157,88 +155,13 @@ postsubmits: # runs on master
   
 periodics: # runs on schedule
     - name: kyma-cli-integration-gke
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
-<<<<<<< HEAD
-
-periodics:
-  - name: kyma-cli-integration-gke
-    cluster: untrusted-workload
-    annotations:
-      testgrid-create-test-group: "false"
-    decorate: true
-    cron: "00 00 * * *" # "At 00:00 each day"
-    labels:
-      preset-sa-gke-kyma-integration: "true"
-      preset-gc-compute-envs: "true"
-      preset-gc-project-env: "true"
-      preset-cluster-use-ssd: "true"
-      preset-cluster-version: "true"
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: main
-      - <<: *cli_ref
-        base_ref: master
-    spec:
-      containers:
-        - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20201208-8f23a167-k8s1.16
-          securityContext:
-            privileged: true
-          command:
-            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-cli.sh"
-          env:
-            - name: GO111MODULE
-              value: "on"
-            - name: CLOUDSDK_COMPUTE_ZONE
-              value: "europe-west4-a"
-          resources:
-            requests:
-              memory: 1Gi
-              cpu: 400m
-  - name: kyma-cli-alpha-uninstall-gke
-    cluster: untrusted-workload
-    annotations:
-      testgrid-create-test-group: "false"
-    decorate: true
-    reporter_config:
-      slack:
-        channel: "kyma-prow-dev-null"
-    cron: "00 */1 * * 1-5" # “At minute 0 past every hour on every day-of-week from Monday through Friday.”
-    labels:
-      preset-gardener-gcp-kyma-integration: "true"
-      preset-cluster-version: "true"
-      preset-gc-project-env: "true"
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: main
-      - <<: *cli_ref
-        base_ref: master
-      - <<: *kyma_ref
-        base_ref: master
-    spec:
-      containers:
-        - <<: *base_image_k16
-          securityContext:
-            privileged: true
-          command:
-            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-cli-alpha-uninstall.sh"
-          env:
-            - name: GO111MODULE
-              value: "on"
-            - name: KYMA_PROJECT_DIR
-              value: "/home/prow/go/src/github.com/kyma-project"
-            - name: GARDENER_REGION
-              value: "europe-west4"
-            - name: GARDENER_ZONES
-              value: "europe-west4-b"
-          resources:
-            requests:
-              memory: 1Gi
-              cpu: 400m
-=======
         preset-sa-gke-kyma-integration: "true"
       cron: "00 00 * * *"
       skip_report: false
@@ -253,7 +176,7 @@ periodics:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20201208-8f23a167-k8s1.16"
@@ -271,6 +194,8 @@ periodics:
                 memory: 1Gi
                 cpu: 400m
     - name: kyma-cli-alpha-uninstall-gke
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-cluster-version: "true"
         preset-gardener-gcp-kyma-integration: "true"
@@ -292,7 +217,7 @@ periodics:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       reporter_config:
         slack:
           channel: kyma-prow-dev-null
@@ -317,4 +242,3 @@ periodics:
                 memory: 1Gi
                 cpu: 400m
   
->>>>>>> cli-integration
