@@ -3,6 +3,8 @@
 
 periodics: # runs on schedule
     - name: kyma-cli-compatibility-1
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-gc-project-env: "true"
         preset-sa-vm-kyma-integration: "true"
@@ -37,6 +39,8 @@ periodics: # runs on schedule
                 memory: 1.5Gi
                 cpu: 0.8
     - name: kyma-cli-compatibility-2
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-gc-project-env: "true"
         preset-sa-vm-kyma-integration: "true"

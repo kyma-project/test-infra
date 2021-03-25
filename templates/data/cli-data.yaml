@@ -244,6 +244,7 @@ templates:
                     - "jobConfig_periodic"
                     - "image_buildpack-golang-kubebuilder2"
                     - "extra_refs_test-infra"
+                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                 jobConfig:
@@ -258,6 +259,7 @@ templates:
                     - "jobConfig_periodic"
                     - "image_buildpack-golang-kubebuilder2"
                     - "extra_refs_test-infra"
+                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                 jobConfig:
