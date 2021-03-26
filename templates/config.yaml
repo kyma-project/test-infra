@@ -544,7 +544,7 @@ templates:
           path: backend
           since: "1.19"
           optional: true
-  - from: templates/generic-component-pamela.yaml
+  - from: templates/generic-component-console.yaml
     render:
       - to: ../prow/jobs/console/core-ui/core-ui.yaml
         values:
@@ -582,12 +582,6 @@ templates:
           <<: *console_generic_component
           path: core
           since: "1.12"
-      - to: ../prow/jobs/console/pamela/pamela.yaml
-        values:
-          <<: *cluster_default
-          <<: *console_generic_component
-          path: pamela
-          since: "1.18"
   - from: templates/generic-compass-component.yaml
     render:
       - to: ../prow/jobs/incubator/compass/components/operations-controller/operations-controller-generic.yaml
