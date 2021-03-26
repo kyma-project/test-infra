@@ -41,7 +41,6 @@ presubmits: # runs on PRs
       branches:
         - ^master$
         - ^main$
-        - ^pamela$
     
     - name: pre-rel121-console-tests
       cluster: untrusted-workload
