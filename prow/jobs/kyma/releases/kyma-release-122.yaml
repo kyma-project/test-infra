@@ -123,7 +123,7 @@ presubmits: # runs on PRs
                 memory: 200Mi
                 cpu: 80m
   
-postsubmits: # runs on master
+postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-rel122-kyma-integration
       annotations:

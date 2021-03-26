@@ -37,7 +37,7 @@ presubmits: # runs on PRs
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
       branches:
         - ^master$
         - ^main$
@@ -53,7 +53,7 @@ postsubmits:
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
       branches:
       - ^master$
       - ^main$

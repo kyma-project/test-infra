@@ -59,7 +59,7 @@ presubmits: # runs on PRs
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
     - name: pre-rel121-kyma-gke-external-registry
       cluster: untrusted-workload
       branches:

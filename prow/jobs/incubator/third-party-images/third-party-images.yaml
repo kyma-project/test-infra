@@ -420,7 +420,7 @@ presubmits: # runs on PRs
                 memory: 1.5Gi
                 cpu: 0.8
   
-postsubmits: # runs on master
+postsubmits: # runs on main
   kyma-incubator/third-party-images:
     - name: post-master-tpi-cloudsql-proxy
       annotations:

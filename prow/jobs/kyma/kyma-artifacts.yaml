@@ -64,7 +64,7 @@ presubmits: # runs on PRs
       always_run: true
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
       labels:
         <<: *build_labels
         <<: *develop_job_labels
@@ -122,7 +122,7 @@ postsubmits:
       always_run: true
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
       labels:
         <<: *build_labels
         <<: *develop_job_labels
