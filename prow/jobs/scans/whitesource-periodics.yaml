@@ -21,7 +21,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: control-plane
           path_alias: github.com/kyma-project/control-plane
@@ -68,7 +68,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: control-plane
           path_alias: github.com/kyma-project/control-plane
@@ -115,7 +115,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
@@ -162,7 +162,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
@@ -209,7 +209,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: console
           path_alias: github.com/kyma-project/console
@@ -256,7 +256,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: busola
           path_alias: github.com/kyma-project/busola
@@ -303,7 +303,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: cli
           path_alias: github.com/kyma-project/cli
@@ -350,7 +350,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: helm-broker
           path_alias: github.com/kyma-project/helm-broker
@@ -397,7 +397,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: rafter
           path_alias: github.com/kyma-project/rafter
@@ -444,7 +444,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-incubator
           repo: knative-kafka
           path_alias: github.com/kyma-incubator/knative-kafka
@@ -491,7 +491,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-incubator
           repo: api-gateway
           path_alias: github.com/kyma-incubator/api-gateway
@@ -538,7 +538,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-incubator
           repo: dex
           path_alias: github.com/kyma-incubator/dex
@@ -585,7 +585,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-incubator
           repo: hydroform
           path_alias: github.com/kyma-incubator/hydroform
@@ -632,7 +632,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-incubator
           repo: terraform-provider-gardener
           path_alias: github.com/kyma-incubator/terraform-provider-gardener
@@ -679,7 +679,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-incubator
           repo: octopus
           path_alias: github.com/kyma-incubator/octopus
@@ -726,7 +726,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: website
           path_alias: github.com/kyma-project/website
@@ -773,7 +773,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-incubator
           repo: podpreset-crd
           path_alias: github.com/kyma-incubator/podpreset-crd
@@ -822,7 +822,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
@@ -869,7 +869,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
@@ -916,7 +916,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: cli
           path_alias: github.com/kyma-project/cli

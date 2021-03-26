@@ -20,7 +20,7 @@ presubmits: # runs on PRs
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -53,7 +53,7 @@ presubmits: # runs on PRs
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -87,7 +87,7 @@ presubmits: # runs on PRs
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -121,7 +121,7 @@ presubmits: # runs on PRs
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -155,7 +155,7 @@ presubmits: # runs on PRs
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -189,7 +189,7 @@ presubmits: # runs on PRs
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
@@ -223,7 +223,7 @@ presubmits: # runs on PRs
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -286,7 +286,7 @@ presubmits: # runs on PRs
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -320,7 +320,7 @@ presubmits: # runs on PRs
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -356,7 +356,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -393,7 +393,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -430,7 +430,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -467,7 +467,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -504,7 +504,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -541,7 +541,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -574,7 +574,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
@@ -607,7 +607,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: website
           path_alias: github.com/kyma-project/website
@@ -648,7 +648,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
