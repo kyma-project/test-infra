@@ -40,6 +40,30 @@ presets:
       - name: pjtester-kubeconfig
         mountPath: /etc/kubeconfig/pjtester
         readOnly: true
+  # rafter
+  - labels:
+      preset-rafter-build-master: "true"
+    env:
+      - name: BUILD_TYPE
+        value: master
+      - name: DOCKER_PUSH_DIRECTORY
+        value: ""
+  - labels:
+      preset-rafter-minio-gcs-gateway: "true"
+    env:
+      - name: MINIO_GATEWAY_MODE
+        value: gcs
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west4-a"
+  - labels:
+      preset-rafter-minio-az-gateway: "true"
+    env:
+      - name: MINIO_GATEWAY_MODE
+        value: azure
+      - name: AZURE_RS_GROUP
+        value: rafter-minio-gateway
+      - name: AZURE_REGION
+        value: westeurope
   - labels:
       preset-sa-prow-job-resource-cleaner: "true"
     env:

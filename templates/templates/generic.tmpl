@@ -59,6 +59,9 @@
           repo: {{ .repo }}
           path_alias: {{ .path_alias }}
           base_ref: {{ .base_ref}}
+            {{- if .base_sha}}
+          base_sha: {{ .base_sha}}
+            {{- end}}
           {{- end}}
         {{- end}}
       {{- end}}
