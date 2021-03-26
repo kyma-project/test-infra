@@ -20,8 +20,10 @@ presubmits: # runs on PRs
         preset-kyma-keyring: "true"
         preset-sa-gke-kyma-integration: "true"
         preset-sa-test-gcr-push: "true"
+      run_if_changed: '^((resources\S+|installation\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
+      path_alias: github.com/kyma-project/control-plane
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -34,7 +36,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:current"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20201208-8f23a167-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -50,6 +52,9 @@ presubmits: # runs on PRs
 postsubmits: # runs on main
   kyma-project/control-plane:
     - name: post-master-control-plane-gke-integration
+      annotations:
+        description: "Kyma control-plane GKE integration job."
+        testgrid-dashboards: "kyma_control-plane"
       labels:
         preset-build-master: "true"
         preset-cluster-version: "true"
@@ -69,6 +74,7 @@ postsubmits: # runs on main
         preset-sa-test-gcr-push: "true"
       skip_report: false
       decorate: true
+      path_alias: github.com/kyma-project/control-plane
       cluster: trusted-workload
       max_concurrency: 10
       branches:
@@ -79,9 +85,12 @@ postsubmits: # runs on main
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-prow-dev-null
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:current"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20201208-8f23a167-k8s1.16"
             securityContext:
               privileged: true
             command:
