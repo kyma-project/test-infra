@@ -71,7 +71,7 @@ presubmits: # runs on PRs
         <<: *gke_integration_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
 
 postsubmits:
   kyma-project/control-plane:
