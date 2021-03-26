@@ -33,6 +33,6 @@ presubmits: # runs on PRs
     always_run: true
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: master
+      base_ref: main
     labels:
       <<: *job_labels_template

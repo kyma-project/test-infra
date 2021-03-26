@@ -226,7 +226,7 @@ presubmits: # runs on PRs
         <<: *vm_job_labels_template
       extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *kyma_local_ref
         base_ref: main
     
@@ -259,7 +259,7 @@ presubmits: # runs on PRs
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
 
     - name: pre-master-kyma-gke-upgrade
       cluster: untrusted-workload

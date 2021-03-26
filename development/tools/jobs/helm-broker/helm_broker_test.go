@@ -54,7 +54,7 @@ func TestHelmBrokerJobsPresubmit(t *testing.T) {
 			assert.True(t, actualJob.Decorate)
 			assert.True(t, actualJob.AlwaysRun)
 			assert.Empty(t, actualJob.RunIfChanged)
-			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "main")
 			tester.AssertThatHasPresets(t, actualJob.JobBase, tc.expPresets...)
 			assert.Equal(t, tc.expContainerImg, actualJob.Spec.Containers[0].Image)
 			assert.Equal(t, []string{tc.expCommand}, actualJob.Spec.Containers[0].Command)
