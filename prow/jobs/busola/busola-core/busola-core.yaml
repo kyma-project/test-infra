@@ -33,7 +33,7 @@ presubmits: # runs on PRs
   kyma-project/busola:
     - name: pre-busola-core
       cluster: untrusted-workload
-      optional: true
+      optional: false
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
@@ -43,7 +43,7 @@ presubmits: # runs on PRs
     
     - name: pre-rel121-busola-core
       cluster: untrusted-workload
-      optional: true
+      optional: false
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
@@ -53,7 +53,7 @@ presubmits: # runs on PRs
     
     - name: pre-rel120-busola-core
       cluster: untrusted-workload
-      optional: true
+      optional: false
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
@@ -63,7 +63,7 @@ presubmits: # runs on PRs
     
     - name: pre-rel119-busola-core
       cluster: untrusted-workload
-      optional: true
+      optional: false
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
@@ -78,9 +78,6 @@ postsubmits:
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
-      reporter_config:
-        slack:
-          channel: 'kyma-prow-dev-null'
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
@@ -92,9 +89,6 @@ postsubmits:
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
-      reporter_config:
-        slack:
-          channel: 'kyma-prow-dev-null'
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
@@ -106,9 +100,6 @@ postsubmits:
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
-      reporter_config:
-        slack:
-          channel: 'kyma-prow-dev-null'
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
@@ -120,9 +111,6 @@ postsubmits:
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
-      reporter_config:
-        slack:
-          channel: 'kyma-prow-dev-null'
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
