@@ -39,12 +39,14 @@ func (so StatusOptions) BuildStatuses(c github.Client) ([]Status, error) {
 	}
 
 	var expectedStatuses []Status
-	for _, s := range statuses.Statuses {
-		if pattern.MatchString(s.Context) {
-			expectedStatuses = append(expectedStatuses, Status{s.Context, s.State})
+	if so.ExpContextRegexp != "" {
+		for _, s := range statuses.Statuses {
+			if pattern.MatchString(s.Context) {
+				expectedStatuses = append(expectedStatuses, Status{s.Context, s.State})
+			}
 		}
 	}
-	if so.FailOnNoContexts {
+	if so.FailOnNoContexts && len(expectedStatuses) == 0 {
 		return nil, errors.New("context is empty")
 	}
 	return expectedStatuses, nil

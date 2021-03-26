@@ -43,19 +43,16 @@ func (o *Options) AddFlags(fs *flag.FlagSet) {
 }
 
 func (c Client) Run() error {
-	//wait a minute before building requires statuses
-	logrus.Debugln("Waiting a minute before fetching new checks")
-	<-time.After(1 * time.Minute)
-
+	logrus.Info("Building required statuses based on regexp")
 	statuses, err := c.BuildStatuses(c.client)
 	if err != nil {
 		return err
 	}
+	logrus.Infof("Waiting for statuses to have success state: %v", allStatusesString(statuses))
 
 	timeout := time.After(c.Timeout)
 	poller := time.NewTicker(c.PollInterval)
 	defer poller.Stop()
-
 loop:
 	for {
 		select {
@@ -65,6 +62,7 @@ loop:
 			statuses, err = c.Update(c.client, statuses)
 			for _, st := range statuses {
 				if st.IsPending() {
+					logrus.Debugf("Statuses are still pending: %v", allStatusesString(statuses))
 					continue loop
 				}
 				if st.IsFailed() {
@@ -76,4 +74,15 @@ loop:
 		logrus.Debugln(statuses)
 		return nil
 	}
+}
+
+func allStatusesString(st []Status) string {
+	var res string
+	for i, s := range st {
+		res += s.Context
+		if i < len(st)-1 {
+			res += ", "
+		}
+	}
+	return res
 }

@@ -56,4 +56,5 @@ func main() {
 	if err := jobGuardClient.Run(); err != nil {
 		logger.WithError(err).Fatal("JobGuard caught error.")
 	}
+	logger.Infoln("All required checks have successful state.")
 }
