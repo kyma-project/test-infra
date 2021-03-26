@@ -37,7 +37,7 @@ var (
 const (
 	defaultPjPath       = "test-infra/prow/jobs/"
 	defaultConfigPath   = "test-infra/prow/config.yaml"
-	defaultMasterBranch = "master"
+	defaultMainBranch = "main"
 )
 
 // pjCfg holds prowjob to test name and path to it's definition.
@@ -342,7 +342,7 @@ func presubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, e
 		//Check if PR number for prowjob specification refs was provided in pjtester.yaml.
 		if !opt.matchRefPR(pjs.Refs) {
 			// If PR number not provided set BaseRef to master
-			pjs.Refs.BaseRef = defaultMasterBranch
+			pjs.Refs.BaseRef = defaultMainBranch
 			// get latest PR number for BaseRef branch and use it to set extra refs
 			jobSpec := &downwardapi.JobSpec{Refs: pjs.Refs}
 			branchPrAsString, err := prtagbuilder.BuildPrTag(jobSpec, true, true, opt.prFinder)
@@ -392,7 +392,7 @@ func postsubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, 
 		matched := opt.matchRefPR(pjs.Refs)
 		if !matched {
 			// If PR number not provided set BaseRef to master
-			pjs.Refs.BaseRef = defaultMasterBranch
+			pjs.Refs.BaseRef = defaultMainBranch
 		}
 		// Set PR refs for prowjob ExtraRefs if PR number provided in pjtester.yaml.
 		for index, ref := range pjs.ExtraRefs {

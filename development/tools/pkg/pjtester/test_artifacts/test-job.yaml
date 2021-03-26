@@ -9,7 +9,7 @@ presubmits: # runs on PRs
     - name: test-infra-presubmit-test-job
       run_if_changed: "^(development/image-syncer)"
       branches:
-        - ^master$
+        - ^main$
       max_concurrency: 10
       labels:
         <<: *job_labels_template
@@ -36,7 +36,7 @@ presubmits: # runs on PRs
     - name: fake-repo-presubmit-test-job
       run_if_changed: "^(development/image-syncer)"
       branches:
-        - ^master$
+        - ^main$
       max_concurrency: 10
       labels:
         <<: *job_labels_template
@@ -61,4 +61,4 @@ presubmits: # runs on PRs
           base_ref: master
         - org: kyma-project
           repo: test-infra
-          base_ref: master
+          base_ref: main
