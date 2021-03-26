@@ -103,7 +103,7 @@ func TestHelmBrokerJobsPostsubmits(t *testing.T) {
 
 			assert.Equal(t, 10, actualPost.MaxConcurrency)
 			assert.True(t, actualPost.Decorate)
-			tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
+			tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "main")
 			tester.AssertThatHasPresets(t, actualPost.JobBase, tests.expPresets...)
 			assert.Equal(t, tests.expContainerImg, actualPost.Spec.Containers[0].Image)
 			assert.Empty(t, actualPost.RunIfChanged)

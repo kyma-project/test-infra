@@ -31,7 +31,7 @@ job_template: &job_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: external-solution-integration-tests-generic.yamlpre-rel120-kyma-tests-contract-knative-channel-kafka
+    - name: pre-rel120-kyma-tests-contract-knative-channel-kafka
       cluster: untrusted-workload
       optional: false
       <<: *job_template

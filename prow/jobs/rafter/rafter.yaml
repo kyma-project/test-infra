@@ -60,7 +60,7 @@ common_job_config_template: &common_job_config_template
   extra_refs:
     - org: kyma-project
       repo: test-infra
-      base_ref: master
+      base_ref: main
       base_sha: "b973e815bb8124a19a82fe6df722ce174d4a7566"
       path_alias: github.com/kyma-project/test-infra
 
