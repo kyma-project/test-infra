@@ -40,7 +40,7 @@ var (
 	fakeRepoPrRepo          string
 	fakeRepoBaseRef         string
 	fakeRepoBaseSHA         string
-	fakeRepoMainName      string
+	fakeRepoMainName        string
 	fakeRepoProtectedBranch bool
 	fakeRepoMerged          bool
 	fakeRepoCommitMessage   string

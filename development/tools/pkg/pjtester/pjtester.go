@@ -35,8 +35,8 @@ var (
 
 // Default values for kyma-project/test-infra
 const (
-	defaultPjPath       = "test-infra/prow/jobs/"
-	defaultConfigPath   = "test-infra/prow/config.yaml"
+	defaultPjPath     = "test-infra/prow/jobs/"
+	defaultConfigPath = "test-infra/prow/config.yaml"
 	defaultMainBranch = "main"
 )
 
