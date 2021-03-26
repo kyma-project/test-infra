@@ -70,7 +70,6 @@ presubmits: # runs on PRs
       branches:
         - ^master$
         - ^main$
-        - ^pamela$
     {{ end -}}
     {{ end -}}
     {{- range $releases }}
