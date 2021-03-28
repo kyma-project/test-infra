@@ -25,7 +25,7 @@ job_template: &job_template
   max_concurrency: 10
   extra_refs:
     - <<: *test_infra_ref
-      base_ref: master
+      base_ref: main
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9
@@ -50,7 +50,7 @@ k3s_job_template: &k3s_job_template
   max_concurrency: 10
   extra_refs:
     - <<: *test_infra_ref
-      base_ref: master
+      base_ref: main
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9
@@ -103,6 +103,7 @@ postsubmits: # runs on merge
       cluster: trusted-workload
       branches:
         - "^master$" # Master branch
+        - "^main$"
       <<: *k3s_job_template
       labels:
         preset-build-master: "true"
@@ -124,7 +125,7 @@ periodics:
       preset-cluster-version: "true"
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *cli_ref
         base_ref: master
     spec:
@@ -158,7 +159,7 @@ periodics:
       preset-gc-project-env: "true"
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *cli_ref
         base_ref: master
       - <<: *kyma_ref

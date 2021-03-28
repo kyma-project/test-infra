@@ -48,7 +48,7 @@ presubmits: # runs on PRs
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
       labels:
         <<: *job_labels_template
 
@@ -64,7 +64,7 @@ postsubmits:
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
       labels:
         <<: *job_labels_template
         preset-build-artifacts-master: "true"

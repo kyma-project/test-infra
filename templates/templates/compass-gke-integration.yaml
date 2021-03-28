@@ -70,7 +70,7 @@ presubmits: # runs on PRs
         <<: *gke_integration_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
 
 {{- range (matchingReleases .Global.releases "1.13" nil) }}
     - name: pre-rel{{ . | replace "." "" }}-compass-gke-integration
@@ -107,4 +107,4 @@ postsubmits:
         <<: *gke_integration_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main

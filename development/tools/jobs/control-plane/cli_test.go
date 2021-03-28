@@ -22,7 +22,7 @@ func TestKCPPresubmitCLI(t *testing.T) {
 	assert.False(t, job.SkipReport)
 	assert.False(t, job.AlwaysRun)
 	assert.False(t, job.Optional)
-	tester.AssertThatHasExtraRefTestInfra(t, job.UtilityConfig, "master")
+	tester.AssertThatHasExtraRefTestInfra(t, job.UtilityConfig, "main")
 	tester.AssertThatHasPresets(t, job.JobBase, "preset-kyma-development-artifacts-bucket", preset.GcrPush)
 	require.Len(t, job.Spec.Containers, 1)
 	cont := job.Spec.Containers[0]
@@ -47,7 +47,7 @@ func TestKCPPostsubmitCLI(t *testing.T) {
 	job := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/control-plane"}), "post-master-kcp-cli", "master")
 	require.NotNil(t, job)
 	assert.Empty(t, job.RunIfChanged)
-	tester.AssertThatHasExtraRefTestInfra(t, job.UtilityConfig, "master")
+	tester.AssertThatHasExtraRefTestInfra(t, job.UtilityConfig, "main")
 	tester.AssertThatHasPresets(t, job.JobBase, preset.BuildArtifactsMaster, "preset-kyma-development-artifacts-bucket", preset.GcrPush)
 	require.Len(t, job.Spec.Containers, 1)
 	cont := job.Spec.Containers[0]

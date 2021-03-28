@@ -54,7 +54,7 @@ func TestHelmBrokerJobsPresubmit(t *testing.T) {
 			assert.True(t, actualJob.Decorate)
 			assert.True(t, actualJob.AlwaysRun)
 			assert.Empty(t, actualJob.RunIfChanged)
-			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "main")
 			tester.AssertThatHasPresets(t, actualJob.JobBase, tc.expPresets...)
 			assert.Equal(t, tc.expContainerImg, actualJob.Spec.Containers[0].Image)
 			assert.Equal(t, []string{tc.expCommand}, actualJob.Spec.Containers[0].Command)
@@ -103,7 +103,7 @@ func TestHelmBrokerJobsPostsubmits(t *testing.T) {
 
 			assert.Equal(t, 10, actualPost.MaxConcurrency)
 			assert.True(t, actualPost.Decorate)
-			tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
+			tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "main")
 			tester.AssertThatHasPresets(t, actualPost.JobBase, tests.expPresets...)
 			assert.Equal(t, tests.expContainerImg, actualPost.Spec.Containers[0].Image)
 			assert.Empty(t, actualPost.RunIfChanged)

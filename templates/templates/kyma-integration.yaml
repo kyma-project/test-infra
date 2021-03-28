@@ -194,7 +194,7 @@ presubmits: # runs on PRs
         <<: *vm_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
     
     - name: pre-master-kyma-integration-k3s
       optional: false
@@ -210,7 +210,7 @@ presubmits: # runs on PRs
         <<: *vm_job_labels_template
       extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *kyma_local_ref
         base_ref: main
       
@@ -230,7 +230,7 @@ presubmits: # runs on PRs
         <<: *vm_job_labels_template
       extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *kyma_local_ref
         base_ref: main
     
@@ -247,7 +247,7 @@ presubmits: # runs on PRs
         <<: *vm_job_labels_template
       extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
 
     - name: pre-master-kyma-gke-integration
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
@@ -263,7 +263,7 @@ presubmits: # runs on PRs
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
   {{- range .Values.gkeVersions }}
   {{- if has "presubmit" .jobs }}
     - name: pre-master-kyma-gke-{{ .channel }}-integration
@@ -281,7 +281,7 @@ presubmits: # runs on PRs
         preset-gke-{{ .channel }}: "true"
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
   {{- end }}
   {{- end }}
 
@@ -299,7 +299,7 @@ presubmits: # runs on PRs
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
 
 postsubmits:
   kyma-project/kyma:
@@ -318,7 +318,7 @@ postsubmits:
         <<: *vm_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
       
     - name: post-master-kyma-integration-k3s
       cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
@@ -335,7 +335,7 @@ postsubmits:
         <<: *vm_job_labels_template
       extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *kyma_local_ref
         base_ref: main
 
@@ -356,7 +356,7 @@ postsubmits:
         <<: *vm_job_labels_template
       extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *kyma_local_ref
         base_ref: main
 
@@ -377,7 +377,7 @@ postsubmits:
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
 
     - name: post-master-kyma-gke-upgrade
       cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
@@ -396,7 +396,7 @@ postsubmits:
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
   {{- range .Values.gkeVersions }}
   {{- if has "postsubmit" .jobs }}
     - name: post-master-kyma-gke-{{ .channel }}-integration
@@ -417,7 +417,7 @@ postsubmits:
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
   {{- end }}
   {{- end }}
 
@@ -450,7 +450,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *base_image_k16
@@ -481,7 +481,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -505,7 +505,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -529,7 +529,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -553,7 +553,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -577,7 +577,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -601,7 +601,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -626,7 +626,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -650,7 +650,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -684,7 +684,7 @@ periodics:
     extra_refs:
       - org: kyma-project
         repo: test-infra
-        base_ref: master
+        base_ref: main
         path_alias: github.com/kyma-project/test-infra
       - <<: *kyma_ref
         base_ref: master
@@ -756,7 +756,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *kyma_ref
         base_ref: master
     spec:
@@ -827,7 +827,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *kyma_ref
         base_ref: master
     spec:
@@ -889,7 +889,7 @@ periodics:
     - ^main$
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: master
+      base_ref: main
     - <<: *kyma_local_ref
       base_ref: main
     - <<: *kyma_ref
@@ -913,7 +913,7 @@ periodics:
     - ^main$
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: master
+      base_ref: main
     - <<: *kyma_local_ref
       base_ref: main
     - <<: *kyma_ref

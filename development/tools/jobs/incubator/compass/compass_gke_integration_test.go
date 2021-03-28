@@ -41,7 +41,7 @@ func TestCompassGKEIntegrationPresubmit(t *testing.T) {
 		"preset-kyma-development-artifacts-bucket",
 		preset.ClusterVersion,
 	)
-	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "main")
 	require.Len(t, actualJob.Spec.Containers, 1)
 	compassCont := actualJob.Spec.Containers[0]
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, compassCont.Image)
@@ -123,7 +123,7 @@ func TestCompassGKEIntegrationPostsubmit(t *testing.T) {
 		"preset-kyma-development-artifacts-bucket",
 		preset.ClusterVersion,
 	)
-	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "main")
 	require.Len(t, actualJob.Spec.Containers, 1)
 	compassCont := actualJob.Spec.Containers[0]
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, compassCont.Image)

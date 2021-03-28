@@ -4,7 +4,7 @@ postsubmits:
       decorate: true
       cluster: workload-cluster
       branches:
-        - ^master$
+        - ^main$
       spec:
         containers:
           - image: alpine

@@ -26,7 +26,7 @@ func TestKymaAzureEventhubsNamespacesCleanupJobPeriodics(t *testing.T) {
 	assert.Equal(t, "30 * * * *", job.Cron)
 	assert.Equal(t, job.DecorationConfig.Timeout.Get(), 30*time.Minute)
 	assert.Equal(t, job.DecorationConfig.GracePeriod.Get(), 10*time.Minute)
-	tester.AssertThatHasExtraRepoRef(t, job.JobBase.UtilityConfig, []string{"test-infra"})
+	tester.AssertThatHasExtraRepoRefCustom(t, job.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, job.Spec.Containers[0].Image)
 	assert.Equal(t, "true", job.JobBase.Labels["preset-az-kyma-prow-credentials"])
 	assert.Equal(t, []string{"-c", "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/cleanup-azure-event-hubs-namespaces.sh"}, job.Spec.Containers[0].Args)

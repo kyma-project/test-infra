@@ -241,7 +241,7 @@ presubmits:
         <<: *gardener_azure_job_labels_template
       extra_refs:
          - <<: *test_infra_ref
-           base_ref: master
+           base_ref: main
     - name: pre-master-kyma-gardener-azure-fast-integration
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       decorate: true
@@ -259,7 +259,7 @@ presubmits:
         <<: *gardener_azure_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - <<: *base_image_k16
@@ -299,12 +299,13 @@ presubmits:
       run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       branches:
         - ^master$
+        - ^main$
       labels:
         preset-build-pr: "true"
         <<: *gardener_azure_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - <<: *base_image_k16
@@ -349,7 +350,7 @@ periodics:
     cron: "00 08 * * *"
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *kyma_ref
         base_ref: master
     labels:
@@ -369,7 +370,7 @@ periodics:
     cron: "00 14 * * *"
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *kyma_ref
         base_ref: master
     labels:
@@ -388,7 +389,7 @@ periodics:
     cron: "0 4,7,10,13 * * *"
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *kyma_ref
         base_ref: master
     labels:
@@ -408,7 +409,7 @@ periodics:
     cron: "5 * * * *"
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: master
+      base_ref: main
     - <<: *kyma_ref
       base_ref: master
     - <<: *kyma_local_ref
@@ -430,7 +431,7 @@ periodics:
     cron: "5 * * * *"
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: master
+      base_ref: main
     - <<: *kyma_ref
       base_ref: master
     - <<: *kyma_local_ref
@@ -454,7 +455,7 @@ periodics:
     cron: "0 5,8,11,14 * * *"
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: master
+      base_ref: main
     - <<: *kyma_ref
       base_ref: master
     - <<: *kyma_local_ref

@@ -23,7 +23,7 @@ func TestDocumentationComponentJobPresubmit(t *testing.T) {
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
 	assert.False(t, actualPresubmit.Optional)
-	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
+	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "main")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled)
 
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "add-ons/some_random_file.js"))

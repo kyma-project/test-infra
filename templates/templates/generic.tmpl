@@ -139,7 +139,7 @@ presubmits: # runs on PRs
   {{end}}
 {{- end}}
 {{- if hasPostsubmit .Values.JobConfigs}}
-postsubmits: # runs on master
+postsubmits: # runs on main
   {{- range .Values.JobConfigs }}
   {{ replace "github.com/" "" .RepoName -}}:
     {{- range .Jobs -}}

@@ -25,7 +25,7 @@ func TestEventEmailServiceJobsPresubmit(t *testing.T) {
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
-	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
+	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "main")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoKyma, preset.GcrPush)
 	assert.Equal(t, "^event-email-service/", actualPresubmit.RunIfChanged)
 	assert.Equal(t, tester.ImageNodeBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
@@ -49,7 +49,7 @@ func TestEventEmailServiceJobPostsubmit(t *testing.T) {
 
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.True(t, actualPost.Decorate)
-	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
+	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "main")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoKyma, preset.GcrPush)
 	assert.Equal(t, "^event-email-service/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageNodeBuildpackLatest, actualPost.Spec.Containers[0].Image)

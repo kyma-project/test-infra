@@ -26,7 +26,7 @@ func TestMetadataGovernanceJobPresubmit(t *testing.T) {
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
-	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
+	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "main")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.BuildPr, preset.DindEnabled)
 	assert.Equal(t, "^resources/.*/values.schema.json$", actualPresubmit.RunIfChanged)
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "resources/test/values.schema.json"))

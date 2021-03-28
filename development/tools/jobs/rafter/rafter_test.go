@@ -110,7 +110,7 @@ func TestRafterJobsPresubmits(t *testing.T) {
 			assert.False(t, preJob.Optional)
 			assert.Equal(t, rafterPathAlias, preJob.PathAlias)
 			assert.Equal(t, 10, preJob.MaxConcurrency)
-			tester.AssertThatHasExtraRefTestInfraWithSHA(t, preJob.JobBase.UtilityConfig, "master", testInfraExtraRefSHA)
+			tester.AssertThatHasExtraRefTestInfraWithSHA(t, preJob.JobBase.UtilityConfig, "main", testInfraExtraRefSHA)
 			tester.AssertThatHasPresets(t, preJob.JobBase, actualJob.presets...)
 			assert.Empty(t, preJob.RunIfChanged)
 
@@ -240,7 +240,7 @@ func TestRafterJobsPostsubmits(t *testing.T) {
 			assert.True(t, preJob.Decorate)
 			assert.Equal(t, rafterPathAlias, preJob.PathAlias)
 			assert.Equal(t, 10, preJob.MaxConcurrency)
-			tester.AssertThatHasExtraRefTestInfraWithSHA(t, preJob.JobBase.UtilityConfig, "master", testInfraExtraRefSHA)
+			tester.AssertThatHasExtraRefTestInfraWithSHA(t, preJob.JobBase.UtilityConfig, "main", testInfraExtraRefSHA)
 			tester.AssertThatHasPresets(t, preJob.JobBase, actualJob.presets...)
 			assert.Empty(t, preJob.RunIfChanged)
 

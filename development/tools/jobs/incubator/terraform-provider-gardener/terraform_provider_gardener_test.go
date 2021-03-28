@@ -27,7 +27,7 @@ func TestTerraformProviderGardenerJobsPresubmit(t *testing.T) {
 	assert.True(t, actualPresubmit.Decorate)
 	assert.True(t, actualPresubmit.AlwaysRun)
 	assert.Empty(t, actualPresubmit.RunIfChanged)
-	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
+	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "main")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled)
 	assert.Equal(t, tester.ImageGolangBuildpack1_14, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, "GO111MODULE", actualPresubmit.Spec.Containers[0].Env[0].Name)
@@ -51,7 +51,7 @@ func TestTerraformProviderGardenerJobPostsubmit(t *testing.T) {
 
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.True(t, actualPost.Decorate)
-	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
+	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "main")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled)
 	assert.Equal(t, tester.ImageGolangBuildpack1_14, actualPost.Spec.Containers[0].Image)
 	assert.Equal(t, "GO111MODULE", actualPost.Spec.Containers[0].Env[0].Name)
