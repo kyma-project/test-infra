@@ -347,7 +347,7 @@ func presubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, e
 			jobSpec := &downwardapi.JobSpec{Refs: pjs.Refs}
 			branchPrAsString, err := prtagbuilder.BuildPrTag(jobSpec, true, true, opt.prFinder)
 			if err != nil {
-				fmt.Printf("failed get pr number for main branch head, trying with master")
+				fmt.Printf("level=info msg=failed get pr number for main branch head, using master\n")
 				jobSpec.Refs.BaseRef = "master"
 				branchPrAsString, err = prtagbuilder.BuildPrTag(jobSpec, true, true, opt.prFinder)
 				if err != nil {
@@ -401,7 +401,7 @@ func postsubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, 
 			fakeJobSpec := &downwardapi.JobSpec{Refs: pjs.Refs}
 			_, err := prtagbuilder.BuildPrTag(fakeJobSpec, true, true, opt.prFinder)
 			if err != nil {
-				fmt.Printf("failed get pr number for main branch head, using master")
+				fmt.Printf("level=info msg=failed get pr number for main branch head, using master\n")
 				pjs.Refs.BaseRef = "master"
 			}
 		}
