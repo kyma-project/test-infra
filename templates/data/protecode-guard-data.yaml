@@ -58,7 +58,7 @@ templates:
           - repoName: "github.com/kyma-incubator/third-party-images"
             jobs:
               - jobConfig:
-                  name: pre-master-tpi-protecode-guard
+                  name: pre-master-third-party-images-protecode-guard
                   run_if_changed: "^((.*)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   env:
                     JOB_NAME_PATTERN: "pre-master-tpi-.*"
