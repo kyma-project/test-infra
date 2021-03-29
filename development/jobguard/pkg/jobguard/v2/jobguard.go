@@ -14,17 +14,20 @@ const (
 	DefaultPollInterval = 1 * time.Minute
 )
 
+// Options holds configuration to the JobGuard client.
 type Options struct {
 	Timeout      time.Duration
 	PollInterval time.Duration
 	StatusOptions
 }
 
+// Client represents JobGuard instance
 type Client struct {
 	client github.Client
 	Options
 }
 
+// NewClient returns new Client instance with set of Options
 func NewClient(client github.Client, opts Options) *Client {
 	c := new(Client)
 	c.client = client
@@ -32,6 +35,7 @@ func NewClient(client github.Client, opts Options) *Client {
 	return c
 }
 
+// AddFlags configures basic FlagSet for the binary
 func (o *Options) AddFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&o.FailOnNoContexts, "fail-on-no-contexts", false, "Fail if regexp does not match to any of the GitHub contexts.")
 	fs.DurationVar(&o.Timeout, "timeout", DefaultTimeout, "Time after the JobGuard fails.")
@@ -41,6 +45,8 @@ func (o *Options) AddFlags(fs *flag.FlagSet) {
 	fs.StringVar(&o.BaseRef, "base-ref", "", "GitHub base ref to pull statuses from.")
 }
 
+// Run fetches the statuses by a defined StatusPredicate, then updates their status periodically
+// until all statuses are in "success" or "failure" state. If the Status is in failed state then returns proper error.
 func (c Client) Run() error {
 	logrus.Info("Building required statuses based on regexp")
 	statuses, err := c.FetchRequiredStatuses(c.client, c.PredicateFunc)
