@@ -40,7 +40,7 @@ func (o *Options) AddFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&o.FailOnNoContexts, "fail-on-no-contexts", false, "Fail if regexp does not match to any of the GitHub contexts.")
 	fs.DurationVar(&o.Timeout, "timeout", DefaultTimeout, "Time after the JobGuard fails.")
 	fs.DurationVar(&o.PollInterval, "poll-interval", DefaultPollInterval, "Interval in which JobGuard checks contexts on GitHub.")
-	fs.StringVar(&o.Org, "org", "", "Github organisation to check.")
+	fs.StringVar(&o.Org, "org", "", "GitHub organisation to check.")
 	fs.StringVar(&o.Repo, "repo", "", "GitHub repository to check.")
 	fs.StringVar(&o.BaseRef, "base-ref", "", "GitHub base ref to pull statuses from.")
 }

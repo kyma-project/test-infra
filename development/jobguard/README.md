@@ -13,10 +13,27 @@ To run the application, use this command:
 
 |Flag|Required|Description|
 |---|---|---|
-|`-github-host`| No | GitHub's default host |
-|`-github-endpoint`| No | GitHub API endpoint|
-|`-github-graphql-endpoint`| No | GitHub GraphQL API endpoint|
-|`-github-token-path`|Yes|Path to the file containing the GitHub OAuth secret|
-|`-debug`|No|Enable debug logging|
-|`-dry-run`|No|Run in dry mode|
+|`-github-host`| No | GitHub's default host.|
+|`-github-endpoint`| No | GitHub API endpoint.|
+|`-github-graphql-endpoint`| No | GitHub GraphQL API endpoint.|
+|`-github-token-path`|Yes|Path to the file containing the GitHub OAuth secret.|
+|`-debug`|No|Enable debug logging.|
+|`-dry-run`|No|Run in dry mode.|
+|`-fail-on-no-contexts`|No|Fail if regexp does not match to any of the GitHub contexts.|
+|`-timeout`|No|Time after the JobGuard fails.|
+|`-poll-interval`|No|Interval in which JobGuard checks contexts on GitHub.|
+|`-org`|Yes|GitHub organisation to check.|
+|`-repo`|Yes|GitHub repository to check.|
+|`-base-ref`|Yes|GitHub base ref to pull statuses from.|
 
+### Example
+```shell
+go run cmd/jobguard/main.go \
+  -github-endpoint=http://ghproxy \
+  -github-endpoint=https://api.github.com \
+  -github-token-path=/path/to/oauth \
+  -org=example-org \
+  -repo=example-repo \
+  -base-ref=13abc \
+  -expected-contexts-regexp="(some-context-regexp|another-context)"
+```
