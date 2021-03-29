@@ -1,6 +1,6 @@
 # Prow Cluster Monitoring Setup
 
-This document describes how to install and manage Prow cluster monitoring that is available at `https://monitoring.build.kyma-project.io`. 
+This document describes how to install and manage Prow cluster monitoring that is available at the URL `monitoring.build.kyma-project.io`.
 This document also describes how to create and manage Grafana dashboards.
 
 ## Prerequisites
@@ -43,8 +43,8 @@ Follow these steps:
    ```
 
 5. Open the Grafana dashboard.
-   
-   Grafana dashboard is available at `https://monitoring.build.kyma-project.io`. It can take some time till the dashboard is accessible.
+
+   Grafana dashboard is available at the URL `monitoring.build.kyma-project.io`. It can take some time till the dashboard is accessible.
 
 ## Authenticate to Grafana
 
@@ -56,7 +56,7 @@ By default, Grafana dashboards are visible for anonymous users with the read-onl
    kubectl -n {namespaceName} get secret {releaseName}-grafana -o jsonpath="{.data.admin-password}" | base64 -D
    ```
 
-2. Go to `https://monitoring.build.kyma-project.io/login`.
+2. Go to the URL `monitoring.build.kyma-project.io/login`.
 
 3. Provide credentials:
 
