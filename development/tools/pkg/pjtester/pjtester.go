@@ -341,7 +341,7 @@ func presubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, e
 	if pjs.Refs.Org != opt.org || pjs.Refs.Repo != opt.repo {
 		//Check if PR number for prowjob specification refs was provided in pjtester.yaml.
 		if !opt.matchRefPR(pjs.Refs) {
-			// If PR number not provided set BaseRef to master
+			// If PR number not provided set BaseRef to main
 			pjs.Refs.BaseRef = defaultMainBranch
 			// get latest PR number for BaseRef branch and use it to set extra refs
 			jobSpec := &downwardapi.JobSpec{Refs: pjs.Refs}
