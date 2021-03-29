@@ -16,6 +16,8 @@ branch-protection:
       repos:
         kyma:
           branches:
+            kyma-2.0-docu:
+              protect: true
             release-1.21:
               required_status_checks:
                 contexts:
