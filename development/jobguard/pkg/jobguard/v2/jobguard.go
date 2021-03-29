@@ -54,13 +54,14 @@ func (c Client) Run() error {
 	defer poller.Stop()
 
 	for {
+		logrus.Info("Updating statuses...")
 		statuses, err := c.Update(c.client, statuses)
 		if err != nil {
 			return err
 		}
 		switch statuses.CombinedStatus() {
 		case StatusPending:
-			logrus.Infof("Some statuses are still in pending state: %v", statuses.PendingList())
+			logrus.Debugf("Some statuses are still in pending state: %v", statuses.PendingList())
 			break
 		case StatusFailure:
 			return fmt.Errorf("statuses are in failed state: %v", statuses.FailedList())
