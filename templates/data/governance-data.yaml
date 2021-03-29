@@ -133,7 +133,7 @@ templates:
                     community:
                       - org: kyma-project
                         repo: community
-                        base_ref: master
+                        base_ref: main
                         path_alias: github.com/kyma-project/community
                   args:
                     - "--repository"
@@ -217,7 +217,7 @@ templates:
                     examples:
                       - org: kyma-project
                         repo: examples
-                        base_ref: master
+                        base_ref: main
                         path_alias: github.com/kyma-project/examples
                   args:
                     - "--repository"
@@ -350,7 +350,7 @@ templates:
                     website:
                       - org: kyma-project
                         repo: website
-                        base_ref: master
+                        base_ref: main
                         path_alias: github.com/kyma-project/website
                   args:
                     - "--repository"
