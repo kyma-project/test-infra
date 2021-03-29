@@ -84,3 +84,44 @@ presubmits: # runs on PRs
                 memory: 200Mi
                 cpu: 80m
   
+  kyma-incubator/third-party-images:
+    - name: pre-master-tpi-protecode-guard
+      labels:
+        preset-gc-compute-envs: "true"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-gke-kyma-integration: "true"
+      run_if_changed: '^((.*)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:current"
+            automountServiceAccountToken: true
+            securityContext:
+              privileged: false
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/protecode-guard.sh"
+            env:
+              - name: JOBGUARD_TIMEOUT
+                value: "25m"
+              - name: JOB_NAME_PATTERN
+                value: "pre-master-tpi-.*"
+            resources:
+              requests:
+                memory: 200Mi
+                cpu: 80m
+  
