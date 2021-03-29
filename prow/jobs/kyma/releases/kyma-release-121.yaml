@@ -295,6 +295,45 @@ postsubmits: # runs on master
               requests:
                 memory: 200Mi
                 cpu: 80m
+    - name: post-rel121-kyma-rc-jc
+      annotations:
+        description: "Release candidate job for Kyma 1.21."
+        testgrid-dashboards: "kyma_release-1.21"
+        testgrid-days-of-results: "60"
+      labels:
+        preset-cluster-version: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-kyma: "true"
+        preset-gc-project-env: "true"
+        preset-gke-kyma-developers-group: "true"
+        preset-kyma-artifacts-bucket: "true"
+        preset-sa-gke-kyma-integration: "true"
+        preset-gc-compute-envs: "true"
+      skip_report: true
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+      - ^1.21\.\d+(?:-.*)?$
+      extra_refs:
+      - org: kyma-project
+        repo: test-infra
+        path_alias: github.com/kyma-project/test-infra
+        base_ref: release-1.21
+      spec:
+        containers:
+        - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:current"
+          securityContext:
+            privileged: true
+          command:
+          - "bash"
+          args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-release-candidate.sh"
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 80m
     - name: post-rel121-kyma-gke-release-upgrade
       annotations:
         testgrid-dashboards: "kyma_release-1.21"

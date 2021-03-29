@@ -132,8 +132,8 @@ readonly COMMON_NAME_PREFIX="gke-release"
 readonly RELEASE_VERSION=$(cat "VERSION")
 log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
 TRIMMED_RELEASE_VERSION=${RELEASE_VERSION//./-}
-COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${TRIMMED_RELEASE_VERSION}" | tr "[:upper:]" "[:lower:]")
-
+#COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${TRIMMED_RELEASE_VERSION}" | tr "[:upper:]" "[:lower:]")
+COMMON_NAME="gke-release-demo2"
 
 ### Cluster name must be less than 40 characters!
 export CLUSTER_NAME="${COMMON_NAME}"

@@ -1,0 +1,6 @@
+pjNames:
+- pjName: "post-rel121-kyma-rc-jc"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 10948
