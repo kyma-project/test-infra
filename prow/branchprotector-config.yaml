@@ -17,7 +17,8 @@ branch-protection:
         kyma:
           branches:
             kyma-2.0-docu:
-              protect: true
+              required_pull_request_reviews:
+                require_code_owner_reviews: false
             release-1.21:
               required_status_checks:
                 contexts:
