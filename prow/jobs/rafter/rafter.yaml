@@ -24,7 +24,7 @@ presubmits: # runs on PRs
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
@@ -67,7 +67,7 @@ presubmits: # runs on PRs
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
@@ -113,7 +113,7 @@ presubmits: # runs on PRs
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
@@ -159,7 +159,7 @@ presubmits: # runs on PRs
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
@@ -205,7 +205,7 @@ presubmits: # runs on PRs
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
@@ -251,7 +251,7 @@ presubmits: # runs on PRs
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
@@ -300,7 +300,7 @@ postsubmits: # runs on main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
@@ -345,7 +345,7 @@ postsubmits: # runs on main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
@@ -388,7 +388,7 @@ postsubmits: # runs on main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
@@ -431,7 +431,7 @@ postsubmits: # runs on main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
@@ -477,7 +477,7 @@ postsubmits: # runs on main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
@@ -523,7 +523,7 @@ postsubmits: # runs on main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
@@ -569,7 +569,7 @@ postsubmits: # runs on main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
@@ -614,7 +614,7 @@ postsubmits: # runs on main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
@@ -660,7 +660,7 @@ postsubmits: # runs on main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
@@ -706,7 +706,7 @@ postsubmits: # runs on main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
@@ -752,7 +752,7 @@ postsubmits: # runs on main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
@@ -797,7 +797,7 @@ postsubmits: # runs on main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
