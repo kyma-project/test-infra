@@ -10,16 +10,18 @@ import (
 )
 
 type options struct {
-	debug           bool
-	dryRun          bool
-	github          flagutil.GitHubOptions
-	jobguardOptions jobguard.Options
+	debug            bool
+	dryRun           bool
+	github           flagutil.GitHubOptions
+	jobguardOptions  jobguard.Options
+	expContextRegexp string
 }
 
 func gatherOptions(fs *flag.FlagSet, args ...string) options {
 	var o options
 	fs.BoolVar(&o.debug, "debug", false, "Enable debug logging.")
 	fs.BoolVar(&o.dryRun, "dry-run", false, "Enable dry run.")
+	fs.StringVar(&o.expContextRegexp, "expected-contexts-regexp", "", "Regular expression of expected contexts.")
 
 	o.jobguardOptions.AddFlags(fs)
 	o.github.AddFlags(fs)
@@ -34,27 +36,27 @@ func main() {
 		logrus.SetLevel(logrus.DebugLevel)
 	}
 
-	logger := logrus.WithField("tool", "jobguard")
 	var secretAgent = &secret.Agent{}
 	var token string
 	if o.github.TokenPath == "" {
-		logger.Fatal("Missing github token path")
+		logrus.Fatal("Missing github token path")
 	}
 	token = o.github.TokenPath
 
 	if err := secretAgent.Start([]string{token}); err != nil {
-		logger.WithError(err).Fatal("Could not start SecretAgent.")
+		logrus.WithError(err).Fatal("Could not start SecretAgent.")
 	}
-	logger.Debugf("%+v", o)
+	logrus.Debugf("%+v", o)
 
 	githubStatus, err := o.github.GitHubClientWithLogFields(secretAgent, o.dryRun, logrus.Fields{"component": "github-status"})
 	if err != nil {
-		logger.WithError(err).Fatal("Could not start GitHub client.")
+		logrus.WithError(err).Fatal("Could not start GitHub client.")
 	}
 
+	o.jobguardOptions.PredicateFunc = jobguard.RegexpPredicate(o.expContextRegexp)
 	jobGuardClient := jobguard.NewClient(githubStatus, o.jobguardOptions)
 	if err := jobGuardClient.Run(); err != nil {
-		logger.WithError(err).Fatal("JobGuard caught error.")
+		logrus.WithError(err).Fatal("JobGuard caught error.")
 	}
-	logger.Infoln("All required checks have successful state.")
+	logrus.Infoln("All required checks have successful state.")
 }

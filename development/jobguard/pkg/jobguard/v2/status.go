@@ -2,7 +2,6 @@ package v2
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"k8s.io/test-infra/prow/github"
 	"regexp"
 )
@@ -15,73 +14,94 @@ const (
 )
 
 type StatusOptions struct {
-	ExpContextRegexp string
 	FailOnNoContexts bool
+	PredicateFunc    StatusPredicate
 
 	Org     string
 	Repo    string
 	BaseRef string
 }
 
-type Status struct {
-	Context string
-	State   string
+type StatusMap map[string]string
+type StatusPredicate func(in github.Status) bool
+
+func RegexpPredicate(p string) StatusPredicate {
+	expr := regexp.MustCompile(p)
+	return func(in github.Status) bool {
+		return expr.MatchString(in.Context)
+	}
 }
 
-func (so StatusOptions) BuildStatuses(c github.Client) ([]Status, error) {
-	pattern, err := regexp.Compile(so.ExpContextRegexp)
-	if err != nil {
-		return nil, fmt.Errorf("regexp error: %w", err)
-	}
-	statuses, err := c.GetCombinedStatus(so.Org, so.Repo, so.BaseRef)
-	if err != nil {
-		return nil, fmt.Errorf("status fetch error: %w", err)
-	}
-
-	var expectedStatuses []Status
-	if so.ExpContextRegexp != "" {
-		for _, s := range statuses.Statuses {
-			if pattern.MatchString(s.Context) {
-				expectedStatuses = append(expectedStatuses, Status{s.Context, s.State})
-			}
-		}
-	}
-	if so.FailOnNoContexts && len(expectedStatuses) == 0 {
-		return nil, errors.New("context is empty")
-	}
-	return expectedStatuses, nil
-}
-
-func (so StatusOptions) Update(c github.Client, requiredStatuses []Status) ([]Status, error) {
-	statuses, err := c.GetCombinedStatus(so.Org, so.Repo, so.BaseRef)
+func (so StatusOptions) FetchRequiredStatuses(c github.Client, sp StatusPredicate) (StatusMap, error) {
+	r, err := c.GetCombinedStatus(so.Org, so.Repo, so.BaseRef)
 	if err != nil {
 		return nil, fmt.Errorf("status fetch error: %w", err)
 	}
 
-	for _, s := range statuses.Statuses {
-		for _, cs := range requiredStatuses {
-			if cs.Equals(s.Context) {
-				cs.State = s.State
-				break // we've updated the status, no need to check further
-			}
+	required := make(StatusMap)
+	for _, st := range r.Statuses {
+		if sp(st) {
+			required[st.Context] = st.State
 		}
 	}
 
-	return requiredStatuses, nil
+	return required, nil
 }
 
-func (st Status) Equals(s string) bool {
-	return st.Context == s
+func (so StatusOptions) Update(c github.Client, required StatusMap) (StatusMap, error) {
+	r, err := c.GetCombinedStatus(so.Org, so.Repo, so.BaseRef)
+	if err != nil {
+		return nil, fmt.Errorf("status fetch error: %w", err)
+	}
+
+	for _, st := range r.Statuses {
+		if _, ok := required[st.Context]; ok {
+			required[st.Context] = st.State
+		}
+	}
+
+	return required, nil
 }
 
-func (st Status) IsFailed() bool {
-	return st.State == StatusError || st.State == StatusFailure
+func (sm StatusMap) CombinedStatus() string {
+	status := StatusSuccess
+	for _, v := range sm {
+		if v == StatusPending {
+			status = v
+			break
+		}
+		if v == StatusFailure || v == StatusError {
+			status = StatusFailure
+			break
+		}
+	}
+	return status
 }
 
-func (st Status) IsSuccess() bool {
-	return st.State == StatusSuccess
+func (sm StatusMap) PendingList() string {
+	var list string
+	for k, v := range sm {
+		if v == StatusPending {
+			list += k + " "
+		}
+	}
+	return list
 }
 
-func (st Status) IsPending() bool {
-	return st.State == StatusPending
+func (sm StatusMap) FailedList() string {
+	var list string
+	for k, v := range sm {
+		if v == StatusFailure || v == StatusError {
+			list += k + " "
+		}
+	}
+	return list
+}
+
+func (sm StatusMap) String() string {
+	var res string
+	for s := range sm {
+		res += s + " "
+	}
+	return res
 }
