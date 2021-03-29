@@ -2,6 +2,7 @@ package v2
 
 import (
 	"flag"
+	"fmt"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"k8s.io/test-infra/prow/github"
@@ -59,10 +60,10 @@ func (c Client) Run() error {
 		}
 		switch statuses.CombinedStatus() {
 		case StatusPending:
-			logrus.Infof("Some statuses are still in pending state.")
+			logrus.Infof("Some statuses are still in pending state: %v", statuses.PendingList())
 			break
 		case StatusFailure:
-			return errors.New("statuses are in failed state")
+			return fmt.Errorf("statuses are in failed state: %v", statuses.FailedList())
 		case StatusSuccess:
 			return nil
 		}

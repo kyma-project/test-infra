@@ -2,6 +2,7 @@ package v2
 
 import (
 	"fmt"
+	"github.com/pkg/errors"
 	"k8s.io/test-infra/prow/github"
 	"regexp"
 )
@@ -44,7 +45,9 @@ func (so StatusOptions) FetchRequiredStatuses(c github.Client, sp StatusPredicat
 			required[st.Context] = st.State
 		}
 	}
-
+	if so.FailOnNoContexts && len(required) == 0 {
+		return nil, errors.New("no statuses math the given predicate")
+	}
 	return required, nil
 }
 
