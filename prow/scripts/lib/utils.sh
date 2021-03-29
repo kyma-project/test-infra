@@ -285,6 +285,7 @@ function utils::describe_nodes() {
       kubectl top nodes
       kubectl top pods --all-namespaces
     } > "${ARTIFACTS}/describe_nodes.txt"
+    grep -i "System OOM encountered" "${ARTIFACTS}/describe_nodes.txt"
 }
 
 
