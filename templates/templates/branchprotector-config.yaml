@@ -24,6 +24,9 @@ branch-protection:
                   {{- end }}
                   {{- end }}
             {{- end }}
+            kyma-2.0-docu:
+              required_pull_request_reviews:
+                require_code_owner_reviews: false
         test-infra:
           required_status_checks:
             contexts:

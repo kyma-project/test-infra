@@ -16,9 +16,6 @@ branch-protection:
       repos:
         kyma:
           branches:
-            kyma-2.0-docu:
-              required_pull_request_reviews:
-                require_code_owner_reviews: false
             release-1.21:
               required_status_checks:
                 contexts:
@@ -40,6 +37,9 @@ branch-protection:
                   - pre-rel119-kyma-gke-integration
                   - pre-rel119-kyma-gke-upgrade
                   - pre-rel119-kyma-artifacts
+            kyma-2.0-docu:
+              required_pull_request_reviews:
+                require_code_owner_reviews: false
         test-infra:
           required_status_checks:
             contexts:
