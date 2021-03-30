@@ -22,6 +22,8 @@ This workflow assumes no-one has write access to the GitHub repositories. Unfort
 
 ### Workflow
 
+This is how the workflow looks like from the developer's perspective:
+
 1. Create a PR.
 2. After the required jobs have passed, ask for approvals from the code owners.
 3. Once the PR gets all the required approvals, Tide adds the PR to the merge pool.
