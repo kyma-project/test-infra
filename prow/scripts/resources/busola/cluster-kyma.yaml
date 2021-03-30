@@ -1,29 +1,36 @@
 apiVersion: core.gardener.cloud/v1beta1
 kind: Shoot
 metadata:
-  namespace: garden-hasselhoff
   name: $DOMAIN_NAME
 spec:
-  purpose: development
   cloudProfileName: gcp
   kubernetes:
     allowPrivilegedContainers: true
     kubeAPIServer:
       enableBasicAuthentication: false
       oidcConfig:
+        # clientID: 5W89vBHwn2mu7nT0uzvoN4xCof0h4jtN
+        # groupsClaim: 'http://k8s/groups'
+        # issuerURL: 'https://kyma.eu.auth0.com/'
+        # usernameClaim: email
         clientID: d0316c58-b0fe-45cd-9960-0fea0708355a
         groupsClaim: groups
         issuerURL: 'https://apskyxzcl.accounts400.ondemand.com'
         signingAlgs:
           - RS256
         usernameClaim: sub
-        usernamePrefix: '-'
-    version: 1.20.4
+        usernamePrefix: '-' 
+    version: 1.18.16
+  networking:
+    nodes: 10.250.0.0/16
+    pods: 100.96.0.0/11
+    services: 100.64.0.0/13
+    type: calico
   provider:
     controlPlaneConfig:
       apiVersion: gcp.provider.extensions.gardener.cloud/v1alpha1
       kind: ControlPlaneConfig
-      zone: europe-west1-d
+      zone: $GARDENER_ZONES
     infrastructureConfig:
       apiVersion: gcp.provider.extensions.gardener.cloud/v1alpha1
       kind: InfrastructureConfig
@@ -35,7 +42,7 @@ spec:
         image:
           name: gardenlinux
           version: 184.0.0
-        type: n1-standard-2
+        type: n1-standard-4
       maxSurge: 1
       maxUnavailable: 0
       maximum: 3
@@ -45,12 +52,13 @@ spec:
         size: 20Gi
         type: pd-ssd
       zones:
-      - europe-west1-d
-  networking:
-    nodes: 10.250.0.0/16
-    pods: 100.96.0.0/11
-    services: 100.64.0.0/13
-    type: calico      
+      - $GARDENER_ZONES
+  purpose: testing
+  addons:
+    kubernetesDashboard:
+      enabled: false
+    nginxIngress:
+      enabled: false
   maintenance:
     timeWindow:
       begin: 010000+0000
@@ -58,15 +66,5 @@ spec:
     autoUpdate:
       kubernetesVersion: true
       machineImageVersion: true
-  hibernation:
-    schedules:
-      - start: '00 19 * * 1,2,3,4,5'
-        end: '00 06 * * 1,2,3,4,5'
-        location: Europe/Berlin
-  addons:
-    kubernetesDashboard:
-      enabled: false
-    nginxIngress:
-      enabled: false        
-  region: europe-west1
-  secretBindingName: gardener
+  region: $GARDENER_REGION
+  secretBindingName: $GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME

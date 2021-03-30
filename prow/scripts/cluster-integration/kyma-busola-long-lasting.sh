@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 #Description: Kyma CLI Integration plan on Gardener. This scripts implements a pipeline that consists of many steps. The purpose is to install and test Kyma using the CLI on a real Gardener cluster.
 #
 #Expected common vars:
@@ -16,14 +18,62 @@
 #Please look in each provider script for provider specific requirements
 
 
+function delete_cluster(){
+    local name="$1"
+    set +e
+    kubectl annotate shoot "${name}" confirmation.gardener.cloud/deletion=true --overwrite
+    kubectl delete   shoot "${name}" --wait=true
+    set -e
+}
 
+function provisionBusola(){
+    RESOURCES_PATH=${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola/
 
-# exit on error, and raise error when variable is not set when used
-set -e
+    export DOMAIN_NAME=$1
+
+    log::info "We will install Busola on the cluster: ${DOMAIN_NAME}"
+    # We create the cluster
+    cat ${RESOURCES_PATH}/cluster-busola.yaml | envsubst | kubectl create -f -
+
+    # #we wait for the cluster to be ready
+    kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${DOMAIN_NAME}"
+
+    # #we switch to the new cluster
+    kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath={.data.kubeconfig} | base64 -d > "${RESOURCES_PATH}/kubeconfig--busola--${DOMAIN_NAME}.yaml"
+    export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--busola--$DOMAIN_NAME.yaml"
+
+    # # we ask for new certificates
+    cat "${RESOURCES_PATH}/wildcardCert.yaml" | envsubst | kubectl apply -f -
+
+    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+    helm repo update
+
+    cat "${RESOURCES_PATH}/nginxValues.yaml" | envsubst | helm install ingress-nginx --namespace=kube-system -f - ingress-nginx/ingress-nginx
+
+    #wait for ingress controller to start
+    kubectl wait --namespace kube-system \
+      --for=condition=ready pod \
+      --selector=app.kubernetes.io/component=controller \
+      --timeout=120s
+
+    #install busola
+    FULL_DOMAIN="${DOMAIN_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com"
+
+    find "${BUSOLA_SOURCES_DIR}/resources" -name "*.yaml" \
+         -exec sed -i "s/%DOMAIN%/${FULL_DOMAIN}/g" "{}" \;
+
+    kubectl apply -k "${BUSOLA_SOURCES_DIR}/resources"
+
+    TERM=dumb kubectl cluster-info
+    echo "Please generate params for using k8s http://enkode.surge.sh/"
+    echo "Kyma busola Url:"
+    echo "https://busola.${DOMAIN_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com?auth=generated_params_in_previous_step"
+}
 
 ENABLE_TEST_LOG_COLLECTOR=false
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
+export BUSOLA_SOURCES_DIR="${KYMA_PROJECT_DIR}/busola"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
@@ -48,28 +98,21 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-if [[ $GARDENER_PROVIDER == "azure" ]]; then
-    # shellcheck source=prow/scripts/lib/gardener/azure.sh
-    #source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/azure.sh"
-    log::info "Provisioning on azure"
+if [[ $GARDENER_PROVIDER == "gcp" ]]; then
+    # shellcheck source=prow/scripts/lib/gardener/gcp.sh
+    #source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gcp.sh"
+    log::info "Provisioning on gcp"
 else
     ## TODO what should I put here? Is this a backend?
     log::error "GARDENER_PROVIDER ${GARDENER_PROVIDER} is not yet supported"
     exit 1
 fi
 
-# nice cleanup on exit, be it succesful or on fail
-trap gardener::cleanup EXIT INT
-
-#Used to detect errors for logging purposes
-ERROR_LOGGING_GUARD="true"
-export ERROR_LOGGING_GUARD
-
-RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
 readonly COMMON_NAME_PREFIX="grd"
 readonly KYMA_NAME_SUFFIX="kyma"
-readonly BUSOLA_NAME_SUFFIX="bsl"
+readonly BUSOLA_NAME_SUFFIX="busol"
 
+export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
 
 KYMA_COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${KYMA_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 BUSOLA_COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${BUSOLA_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
@@ -79,79 +122,8 @@ export BUSOLA_COMMON_NAME
 log::info "Kyma cluster name: ${KYMA_COMMON_NAME}"
 log::info "Busola cluster name: ${BUSOLA_COMMON_NAME}"
 
-exit
 
-### Cluster name must be less than 10 characters!
-export CLUSTER_NAME="${COMMON_NAME}"
-
-# set KYMA_SOURCE used by gardener::install_kyma
-# at the time of writing this comment, kyma-integration-gardener never sets BUILD_TYPE to "release"
-if [[ -n ${PULL_NUMBER} ]]; then
-    # In case of PR, operate on PR number
-    KYMA_SOURCE="PR-${PULL_NUMBER}"
-    export KYMA_SOURCE
-    # TODO maybe can be replaced with PULL_BASE_REF?
-elif [[ "${BUILD_TYPE}" == "release" ]]; then
-    readonly RELEASE_VERSION=$(cat "VERSION")
-    log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
-    KYMA_SOURCE="${RELEASE_VERSION}"
-    export KYMA_SOURCE
-else
-    # Otherwise (master), operate on triggering commit id
-    if [[ -n ${PULL_BASE_SHA} ]]; then
-        readonly COMMIT_ID="${PULL_BASE_SHA::8}"
-        KYMA_SOURCE="${COMMIT_ID}"
-        export KYMA_SOURCE
-    else
-        # periodic job, so default to master
-        KYMA_SOURCE="master"
-        export KYMA_SOURCE
-    fi
-fi
-
-# checks required vars and initializes gcloud/docker if necessary
-gardener::init
-
-# if MACHINE_TYPE is not set then use default one
-gardener::set_machine_type
-
-kyma::install_cli
-
-# currently only Azure generates overrides, but this may change in the future
-gardener::generate_overrides
-
-gardener::provision_cluster
-
-if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
-  # run oom debug pod
-  utils::debug_oom
-fi
-
-# uses previously set KYMA_SOURCE
-if [[ "${KYMA_ALPHA}" == "true" ]]; then
-  kyma::alpha_deploy_kyma
-else
-  gardener::install_kyma
-fi
-
-# generate pod-security-policy list in json
-utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
-
-if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
-    gardener::hibernate_kyma
-    sleep 120
-    gardener::wake_up_kyma
-fi
-
-if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
-    gardener::test_fast_integration_kyma
-else
-    # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
-    if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
-      export ENABLE_TEST_LOG_COLLECTOR=true
-    fi
-    gardener::test_kyma
-fi
-
-#!!! Must be at the end of the script !!!
-ERROR_LOGGING_GUARD="false"
+#${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/busola/installKymaNew.sh "master" ${KYMA_COMMON_NAME}
+delete_cluster "${BUSOLA_COMMON_NAME}"
+provisionBusola "${BUSOLA_COMMON_NAME}"
+#${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/busola/installBusola.sh ${BUSOLA_COMMON_NAME}

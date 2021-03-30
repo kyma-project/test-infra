@@ -4,7 +4,7 @@ metadata:
   name: default-ssl-certificate
   namespace: kube-system
 spec:
-  commonName: "*.$DOMAIN_NAME.hasselhoff.shoot.canary.k8s-hana.ondemand.com"
+  commonName: "*.$DOMAIN_NAME.$GARDENER_KYMA_PROW_PROJECT_NAME.shoot.canary.k8s-hana.ondemand.com"
   secretRef:
     name: default-ssl-certificate
     namespace: kube-system

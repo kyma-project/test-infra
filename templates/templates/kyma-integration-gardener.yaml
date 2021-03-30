@@ -13,6 +13,11 @@ kyma_local_ref: &kyma_local_ref
   repo: local-kyma
   path_alias: github.com/kyma-incubator/local-kyma
 
+busola_ref: &busola_ref
+    org: kyma-project
+    repo: busola
+    path_alias: github.com/kyma-project/busola
+
 
 # Kubectl 1.16 and CLUSTER_VERSION=1.16
 base_image_k16: &base_image_k16
@@ -123,7 +128,7 @@ gardener_azure_job_template: &gardener_azure_job_template
             memory: 1Gi
             cpu: 400m
 
-gardener_azure_busola_job_template: &gardener_azure_busola_job_template
+gardener_gcp_busola_job_template: &gardener_gcp_busola_job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -136,18 +141,14 @@ gardener_azure_busola_job_template: &gardener_azure_busola_job_template
       - "bash"
       args:
       - "-c"
-      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-busola-long-lasting.sh"
       env:
-      - name: RS_GROUP
-        value: "kyma-gardener-azure"
-      - name: REGION
-        value: "northeurope"
       - name: KYMA_PROJECT_DIR
         value: "/home/prow/go/src/github.com/kyma-project"
       - name: GARDENER_REGION
-        value: "northeurope"
+        value: "europe-west4"
       - name: GARDENER_ZONES
-        value: "1"
+        value: "europe-west4-b"
       resources:
         requests:
           memory: 1Gi
@@ -497,7 +498,7 @@ periodics:
     annotations:
       testgrid-create-test-group: "false"
     cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
-    <<: *gardener_azure_busola_job_template
+    <<: *gardener_gcp_busola_job_template
     decorate: true
     decoration_config:
       timeout: 14400000000000 # 4h
@@ -508,6 +509,8 @@ periodics:
       base_ref: main
     - <<: *kyma_ref
       base_ref: master
+    - <<: *busola_ref
+      base_ref: main
     labels:
       preset-log-collector-slack-token: "true"
-      <<: *gardener_azure_job_labels_template
+      <<: *gardener_gcp_job_labels_template
