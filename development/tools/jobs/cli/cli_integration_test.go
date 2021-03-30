@@ -18,7 +18,7 @@ func TestKymaCliIntegrationPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "pre-kyma-cli-integration"
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/cli"}), expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/cli"}), expName, "main")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -40,7 +40,7 @@ func TestKymaCliIntegrationJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "post-kyma-cli-integration"
-	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/cli"}), expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/cli"}), expName, "main")
 	require.NotNil(t, actualPost)
 
 	require.NotNil(t, actualPost)
@@ -70,7 +70,7 @@ func TestKymaCliIntegrationGKEPeriodic(t *testing.T) {
 	assert.Equal(t, expName, actualPeriodic.Name)
 	assert.True(t, actualPeriodic.Decorate)
 	assert.Equal(t, "00 00 * * *", actualPeriodic.Cron)
-	tester.AssertThatHasExtraRepoRefCustom(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra", "cli"}, []string{"main", "master"})
+	tester.AssertThatHasExtraRepoRefCustom(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra", "cli"}, []string{"main", "main"})
 	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, preset.SaGKEKymaIntegration, preset.GCProjectEnv, "preset-gc-compute-envs", "preset-cluster-use-ssd", preset.ClusterVersion)
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPeriodic.Spec.Containers[0].Image)
 	tester.AssertThatSpecifiesResourceRequests(t, actualPeriodic.JobBase)
@@ -84,7 +84,7 @@ func TestKymaCliIntegrationGKEPeriodic(t *testing.T) {
 	assert.Equal(t, expName, actualPeriodic.Name)
 	assert.True(t, actualPeriodic.Decorate)
 	assert.Equal(t, "00 */1 * * 1-5", actualPeriodic.Cron)
-	tester.AssertThatHasExtraRepoRefCustom(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra", "cli", "kyma"}, []string{"main", "master", "master"})
+	tester.AssertThatHasExtraRepoRefCustom(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra", "cli", "kyma"}, []string{"main", "main", "master"})
 	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, preset.GardenerGCPIntegration, preset.ClusterVersion)
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPeriodic.Spec.Containers[0].Image)
 	tester.AssertThatSpecifiesResourceRequests(t, actualPeriodic.JobBase)

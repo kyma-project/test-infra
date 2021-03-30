@@ -17,7 +17,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: cli
           path_alias: github.com/kyma-project/cli
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
@@ -53,7 +53,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: cli
           path_alias: github.com/kyma-project/cli
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
