@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"strings"
 )
 
 type PubSubMessage struct {
@@ -30,15 +31,37 @@ type MessagePayload struct {
 }
 
 type ProwMessage struct {
-	Project string              `json:"project"`
-	Topic   string              `json:"topic"`
-	RunID   string              `json:"runid"`
-	Status  string              `json:"status"`
-	URL     string              `json:"url"`
-	GcsPath string              `json:"gcs_path"`
-	Refs    []map[string]string `json:"refs"`
-	JobType string              `json:"job_type"`
-	JobName string              `json:"job_name"`
+	Project string                   `json:"project"`
+	Topic   string                   `json:"topic"`
+	RunID   string                   `json:"runid"`
+	Status  string                   `json:"status"`
+	URL     string                   `json:"url"`
+	GcsPath string                   `json:"gcs_path"`
+	Refs    []map[string]interface{} `json:"refs"`
+	JobType string                   `json:"job_type"`
+	JobName string                   `json:"job_name"`
+}
+
+// Entry defines a log entry.
+type LogEntry struct {
+	Message  string `json:"message"`
+	Severity string `json:"severity,omitempty"`
+	Trace    string `json:"logging.googleapis.com/trace,omitempty"`
+
+	// Cloud Log Viewer allows filtering and display of this as `jsonPayload.component`.
+	Component string `json:"component,omitempty"`
+}
+
+// String renders an entry structure to the JSON format expected by Cloud Logging.
+func (e LogEntry) String() string {
+	if e.Severity == "" {
+		e.Severity = "INFO"
+	}
+	out, err := json.Marshal(e)
+	if err != nil {
+		log.Printf("json.Marshal: %v", err)
+	}
+	return string(out)
 }
 
 var (
@@ -49,6 +72,7 @@ var (
 	data               ProwMessage
 	oomEventFoundTopic *pubsub.Topic
 	res                *pubsub.PublishResult
+	projectID          string
 )
 
 func init() {
@@ -65,9 +89,19 @@ func init() {
 		log.Fatal(err)
 	}
 	oomEventFoundTopic = pubsubClient.Topic("oom-event-found")
+	log.SetFlags(0)
+	projectID = "sap-kyma-prow"
 }
 
 func Checkoomevent(w http.ResponseWriter, r *http.Request) {
+	var trace string
+	if projectID != "" {
+		traceHeader := r.Header.Get("X-Cloud-Trace-Context")
+		traceParts := strings.Split(traceHeader, "/")
+		if len(traceParts) > 0 && len(traceParts[0]) > 0 {
+			trace = fmt.Sprintf("projects/%s/traces/%s", projectID, traceParts[0])
+		}
+	}
 	var message PubSubMessage
 	functionCtx := context.Background()
 	if err := json.NewDecoder(r.Body).Decode(&message); err != nil {
@@ -80,7 +114,6 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "400 - message is empty!")
 		return
 	}
-	fmt.Fprintf(os.Stdout, "%s", message.Message.Data)
 	bdata, err := base64.StdEncoding.DecodeString(message.Message.Data)
 	if err != nil {
 		fmt.Fprintf(os.Stdout, "base64 decoding failed")
@@ -90,44 +123,59 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(os.Stdout, "json unmarshal failed")
 		log.Fatal(err)
 	}
-	gcsMatch := gcsPathRegex.FindStringSubmatch(data.GcsPath)
-	// Read the object1 from bucket.
-	fmt.Fprintf(os.Stdout, "%v", data)
-	fmt.Fprintf(os.Stdout, "%v", gcsMatch)
-	objectPath := fmt.Sprintf("%s/artifacts/describe_nodes.txt", gcsMatch[2])
-	rc, err := client.Bucket(gcsMatch[1]).Object(objectPath).NewReader(functionCtx)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rc.Close()
-	body, err := ioutil.ReadAll(rc)
-	if err != nil {
-		log.Fatal(err)
-	}
-	oomFound := oomEventRegex.Match(body)
-	if oomFound {
-		fmt.Fprintf(os.Stdout, "OOM event detected")
-		res = oomEventFoundTopic.Publish(functionCtx, &pubsub.Message{
-			Data: bdata,
+	if data.Status != "success" && data.Status != "failure" {
+		log.Println(LogEntry{
+			Severity:  "INFO",
+			Component: "kyma.prow.cloud-function.checkoomevent",
+			Message:   fmt.Sprintf("prowjob status is %s, no data to search, skipping", data.Status),
+			Trace:     trace,
 		})
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "200 - message processed, status can't be analysed")
 	} else {
-		fmt.Fprintf(os.Stdout, "OOM event not found")
-	}
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(w, "500 - failed decode data field")
-	}
-	if res != nil {
-		msgID, err := res.Get(functionCtx)
+		log.Println(LogEntry{
+			Severity:  "INFO",
+			Component: "kyma.prow.cloud-function.checkoomevent",
+			Message:   fmt.Sprintf("prowjob status is %s, searching oom events", data.Status),
+			Trace:     trace,
+		})
+		gcsMatch := gcsPathRegex.FindStringSubmatch(data.GcsPath)
+		// Read the object1 from bucket.
+		objectPath := fmt.Sprintf("%s/artifacts/describe_nodes.txt", gcsMatch[2])
+		rc, err := client.Bucket(gcsMatch[1]).Object(objectPath).NewReader(functionCtx)
 		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			fmt.Fprintf(w, "500 - failed publish oom-event-found topic")
 			log.Fatal(err)
 		}
-		if msgID != "" {
-			fmt.Fprintf(os.Stdout, "%s", msgID)
+		defer rc.Close()
+		body, err := ioutil.ReadAll(rc)
+		if err != nil {
+			log.Fatal(err)
 		}
+		oomFound := oomEventRegex.Match(body)
+		if oomFound {
+			fmt.Fprintf(os.Stdout, "OOM event detected")
+			res = oomEventFoundTopic.Publish(functionCtx, &pubsub.Message{
+				Data: bdata,
+			})
+		} else {
+			fmt.Fprintf(os.Stdout, "OOM event not found")
+		}
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "500 - failed decode data field")
+		}
+		if res != nil {
+			msgID, err := res.Get(functionCtx)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				fmt.Fprintf(w, "500 - failed publish oom-event-found topic")
+				log.Fatal(err)
+			}
+			if msgID != "" {
+				fmt.Fprintf(os.Stdout, "%s", msgID)
+			}
+		}
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "200 - message processed")
 	}
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "200 - message processed")
 }
