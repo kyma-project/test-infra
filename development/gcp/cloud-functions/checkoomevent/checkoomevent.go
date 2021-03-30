@@ -80,6 +80,7 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "400 - message is empty!")
 		return
 	}
+	fmt.Fprintf(os.Stdout, "%s", message.Message.Data)
 	bdata, err := base64.StdEncoding.DecodeString(message.Message.Data)
 	if err != nil {
 		fmt.Fprintf(os.Stdout, "base64 decoding failed")
@@ -91,6 +92,8 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 	}
 	gcsMatch := gcsPathRegex.FindStringSubmatch(data.GcsPath)
 	// Read the object1 from bucket.
+	fmt.Fprintf(os.Stdout, "%v", data)
+	fmt.Fprintf(os.Stdout, "%v", gcsMatch)
 	objectPath := fmt.Sprintf("%s/artifacts/describe_nodes.txt", gcsMatch[2])
 	rc, err := client.Bucket(gcsMatch[1]).Object(objectPath).NewReader(functionCtx)
 	if err != nil {
