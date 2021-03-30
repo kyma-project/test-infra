@@ -6,11 +6,9 @@ metadata:
 data:
   entrypoint.sh: |-
     #!/bin/bash
-    set +e
-    host_cgroup_base="/host-sys/fs/cgroup/memory"
-    { while true
-      do
+    function host_stats() {
         date
+        # host memory statistics
         memory_capacity_in_kb=$(cat /host-proc/meminfo | grep MemTotal | awk '{print $2}')
         memory_capacity_in_bytes=$((memory_capacity_in_kb * 1024))
         memory_usage_in_bytes=$(cat /host-sys/fs/cgroup/memory/memory.usage_in_bytes)
@@ -33,65 +31,127 @@ data:
         echo "memory.available_in_bytes: $memory_available_in_bytes"
         echo "memory.available_in_kb: $memory_available_in_kb"
         echo "memory.available_in_mb: $memory_available_in_mb"
-        echo "Containers"
-        docker_ids=$(docker container ls --format='{{println .ID}}' | sort | uniq)
-        for docker_id in $docker_ids
+    
+    }
+    
+    function track_container() {
+        container_id=$1
+        container_pid=$(docker inspect --format '{{ .State.Pid }}' "$container_id")
+        # container statistics
+        report_max_mem_usage[$container_pid]=0
+        report_max_mem_usage_percent[$container_pid]=0
+        container_name=$(docker inspect --format '{{ .Name }}' "$container_id")
+        if [[ $container_name =~ .*oom-debug.* ]]; then
+          exit 0
+        fi
+        report_cgroup_processes[$container_pid]=$container_pid
+        # find container pod name
+        pod_name=$(nsenter -t $container_pid -u hostname)
+        docker_cgroup=$(cat /host-proc/$container_pid/cgroup | grep ":memory:" | awk -F":memory:" '{print $2}')
+        while [ -d /host-proc/$container_pid/cgroup ]
         do
-          docker_pid=$(docker inspect --format '{{ .State.Pid }}' "$docker_id")
-          docker_cgroup=$(cat /host-proc/$docker_pid/cgroup | grep ":memory:" | awk -F":memory:" '{print $2}')
+          cgutil event $host_cgroup_base$docker_cgroup/memory.oom_control
           mem_usage=$(cat $host_cgroup_base$docker_cgroup/memory.usage_in_bytes)
           mem_limit=$(cat $host_cgroup_base$docker_cgroup/memory.limit_in_bytes)
           max_mem_usage=$(cat $host_cgroup_base$docker_cgroup/memory.max_usage_in_bytes)
+          # check if recorded max_mem_usage need update
+          if [ $max_mem_usage -gt ${report_max_mem_usage[$container_pid]} ]; then
+            report_max_mem_usage[$container_pid]=$max_mem_usage
+          fi
           mem_usage_percent=$(( $mem_usage * 100 / $mem_limit))
           max_mem_usage_percent=$(( $max_mem_usage * 100 / $mem_limit))
-          echo "[$docker_pid] Container PID and name: $(docker inspect --format '{{ .State.Pid }}:{{ .Name }}' "$docker_id")"
-          echo "[$docker_pid] Container memory.usage_in_bytes: $mem_usage"
-          echo "[$docker_pid] Container memory.max_usage_in_bytes: $max_mem_usage"
-          echo "[$docker_pid] Container memory.limit_in_bytes: $mem_limit"
-          echo "[$docker_pid] Container memory.usage_percentage: $mem_usage_percent"
-          echo "[$docker_pid] Container memory.max_usage_percentage: $max_mem_usage_percent"
-          echo "[$docker_pid] cgroup processes: $(cat $host_cgroup_base$docker_cgroup/cgroup.procs)"
+          # check if recorded max_mem_usage_ercent need update
+          if [ $max_mem_usage_percent -gt ${report_max_mem_usage_percent[$container_pid]} ]; then
+            report_max_mem_usage_percent[$container_pid]=$max_mem_usage_percent
+          fi
+          # build string with list of cgroup PIDs
+          limit_hit_count=$(cat $host_cgroup_base$docker_cgroup/memory.failcnt)
+          cgroup_processes=""
+          for pid in $(cat $host_cgroup_base$docker_cgroup/cgroup.procs)
+          do
+            if [ -z "$cgroup_processes" ]; then
+              cgroup_processes="$pid"
+            else
+              cgroup_processes="$cgroup_processes $pid"
+            fi
+          done
+          # add cgroup pids to the list, list will be made uniq when printed
+          report_cgroup_processes[$container_pid]="${report_cgroup_processes[$container_pid]} $cgroup_processes"
+          echo "$(date) | container_pid: $container_pid | container_name: $container_name | podname: $pod_name | mem_limit_in_bytes: $mem_limit | limit_hit_count: $limit_hit_count | mem_usage_in_bytes: $mem_usage | max_mem_usage_in_bytes: ${report_max_mem_usage[$container_pid]} | mem_usage_percent: $mem_usage_percent | max_mem_usage_percent: ${report_max_mem_usage_percent[$container_pid]} | cgroup_processes: $(echo ${report_cgroup_processes[$container_pid]} | tr ' ' '\n' | sort -u | tr '\n' ' ')"
         done
-      done } > /var/oom_debug
+    }
+    
+    set +e
+    export host_cgroup_base="/host-sys/fs/cgroup/memory"
+    declare -A containers
+    while true
+    do
+      container_ids=$(docker container ls --format='{{println .ID}}' | sort | uniq)
+      for container_id in $container_ids
+      do
+        # Check if container is present in tables
+        if [[ -z "${containers[$container_id]+unset}" ]]; then
+          containers[$container_id]=$container_id
+          track_container $container_id &
+        fi
+      done
+    done
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: DaemonSet
 metadata:
   name: oom-debug
+  namespace: default
 spec:
-  hostPID: true
-  containers:
-    - name: oom-debug
-      securityContext:
-        privileged: true
-      image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9
-      command:
-        - "/bin/entrypoint.sh"
-      volumeMounts:
-        - mountPath: /host-proc
-          name: proc-vol
-        - mountPath: /host-sys
-          name: sys-vol
-        - mountPath: /var/run/docker.sock
-          name: docker-socket
+  selector:
+    matchLabels:
+      name: oom-debug
+  template:
+    metadata:
+      labels:
+        name: oom-debug
+    spec:
+      hostPID: true
+      containers:
+        - name: oom-debug
+          securityContext:
+            privileged: true
+          image: eu.gcr.io/kyma-project/test-infra/debug-commando:current
+          imagePullPolicy: Always
+          command:
+            - "/bin/entrypoint.sh"
+          volumeMounts:
+            - mountPath: /host-proc
+              name: proc-vol
+            - mountPath: /host-sys
+              name: sys-vol
+            - mountPath: /var/run/docker.sock
+              name: docker-socket
+            - name: entrypoint-vol
+              mountPath: /bin/entrypoint.sh
+              readOnly: true
+              subPath: entrypoint.sh
+          resources:
+            requests:
+              memory: "50Mi"
+              cpu: "100m"
+            limits:
+              memory: "350Mi"
+              cpu: "1"
+      volumes:
+        - name: proc-vol
+          hostPath:
+            path: /proc
+            type: Directory
+        - name: sys-vol
+          hostPath:
+            path: /sys
+            type: Directory
+        - name: docker-socket
+          hostPath:
+            path: /var/run/docker.sock
+            type: Socket
         - name: entrypoint-vol
-          mountPath: /bin/entrypoint.sh
-          readOnly: true
-          subPath: entrypoint.sh
-  volumes:
-    - name: proc-vol
-      hostPath:
-        path: /proc
-        type: Directory
-    - name: sys-vol
-      hostPath:
-        path: /sys
-        type: Directory
-    - name: docker-socket
-      hostPath:
-        path: /var/run/docker.sock
-        type: Socket
-    - name: entrypoint-vol
-      configMap:
-        defaultMode: 0700
-        name: oom-debug-entrypoint
+          configMap:
+            defaultMode: 0700
+            name: oom-debug-entrypoint
