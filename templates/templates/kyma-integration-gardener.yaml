@@ -493,10 +493,9 @@ periodics:
       preset-log-collector-slack-token: "true"
       <<: *gardener_azure_job_labels_template
 
-  - name: kyma-integration-gardener-busola
+  - name: kyma-nightly-gardener-azure-busola
     annotations:
-      testgrid-dashboards: kyma_integration
-      description: Kyma Azure Gardener integration job.
+      testgrid-create-test-group: "false"
     cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     <<: *gardener_azure_busola_job_template
     decorate: true
