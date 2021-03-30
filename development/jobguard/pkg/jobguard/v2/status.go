@@ -2,9 +2,10 @@ package v2
 
 import (
 	"fmt"
+	"regexp"
+
 	"github.com/pkg/errors"
 	"k8s.io/test-infra/prow/github"
-	"regexp"
 )
 
 const (

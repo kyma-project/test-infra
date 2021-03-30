@@ -2,11 +2,12 @@ package main
 
 import (
 	"flag"
+	"os"
+
 	jobguard "github.com/kyma-project/test-infra/development/jobguard/pkg/jobguard/v2"
 	"github.com/sirupsen/logrus"
 	"k8s.io/test-infra/prow/config/secret"
 	"k8s.io/test-infra/prow/flagutil"
-	"os"
 )
 
 type options struct {

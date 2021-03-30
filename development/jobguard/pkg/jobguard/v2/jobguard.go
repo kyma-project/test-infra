@@ -3,10 +3,11 @@ package v2
 import (
 	"flag"
 	"fmt"
+	"time"
+
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"k8s.io/test-infra/prow/github"
-	"time"
 )
 
 const (
@@ -48,6 +49,7 @@ func (o *Options) AddFlags(fs *flag.FlagSet) {
 // Run fetches the statuses by a defined StatusPredicate, then updates their status periodically
 // until all statuses are in "success" or "failure" state. If the Status is in failed state then returns proper error.
 func (c Client) Run() error {
+	<-time.After(30 * time.Second)
 	logrus.Info("Building required statuses based on regexp")
 	statuses, err := c.FetchRequiredStatuses(c.client, c.PredicateFunc)
 	if err != nil {
