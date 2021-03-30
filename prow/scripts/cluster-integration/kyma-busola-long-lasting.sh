@@ -17,32 +17,32 @@ set -e
 #
 #Please look in each provider script for provider specific requirements
 
-
 function delete_cluster(){
     local name="$1"
     set +e
+    log::info "Deleting cluster '${name}'"
     kubectl annotate shoot "${name}" confirmation.gardener.cloud/deletion=true --overwrite
-    kubectl delete   shoot "${name}" --wait=true
+    kubectl delete shoot "${name}" --wait=true
     set -e
 }
 
 function provisionBusola(){
-    RESOURCES_PATH=${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola/
-
     export DOMAIN_NAME=$1
 
-    log::info "We will install Busola on the cluster: ${DOMAIN_NAME}"
-    # We create the cluster
-    cat ${RESOURCES_PATH}/cluster-busola.yaml | envsubst | kubectl create -f -
+    RESOURCES_PATH=${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola/
 
-    # #we wait for the cluster to be ready
+    log::info "Installing Busola on the cluster: ${DOMAIN_NAME}"
+    # create the cluster
+    cat "${RESOURCES_PATH}/cluster-busola.yaml" | envsubst | kubectl create -f -
+
+    # wait for the cluster to be ready
     kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${DOMAIN_NAME}"
 
-    # #we switch to the new cluster
+    # switch to the new cluster
     kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath={.data.kubeconfig} | base64 -d > "${RESOURCES_PATH}/kubeconfig--busola--${DOMAIN_NAME}.yaml"
     export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--busola--$DOMAIN_NAME.yaml"
 
-    # # we ask for new certificates
+    # ask for new certificates
     cat "${RESOURCES_PATH}/wildcardCert.yaml" | envsubst | kubectl apply -f -
 
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
@@ -50,13 +50,13 @@ function provisionBusola(){
 
     cat "${RESOURCES_PATH}/nginxValues.yaml" | envsubst | helm install ingress-nginx --namespace=kube-system -f - ingress-nginx/ingress-nginx
 
-    #wait for ingress controller to start
+    # wait for ingress controller to start
     kubectl wait --namespace kube-system \
       --for=condition=ready pod \
       --selector=app.kubernetes.io/component=controller \
       --timeout=120s
 
-    #install busola
+    # install busola
     FULL_DOMAIN="${DOMAIN_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com"
 
     find "${BUSOLA_SOURCES_DIR}/resources" -name "*.yaml" \
@@ -65,9 +65,38 @@ function provisionBusola(){
     kubectl apply -k "${BUSOLA_SOURCES_DIR}/resources"
 
     TERM=dumb kubectl cluster-info
-    echo "Please generate params for using k8s http://enkode.surge.sh/"
-    echo "Kyma busola Url:"
-    echo "https://busola.${DOMAIN_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com?auth=generated_params_in_previous_step"
+    log::info "Please generate params for using k8s http://enkode.surge.sh/"
+    log::info "Kyma busola Url:"
+    log::info "https://busola.${DOMAIN_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com?auth=generated_params_in_previous_step"
+}
+
+function provisionKyma2(){
+    export KYMA_VERSION=$1
+    export DOMAIN_NAME=$2
+
+    RESOURCES_PATH=${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola/
+
+    log::info "Installing Kyma version: ${KYMA_VERSION} on the cluster : ${DOMAIN_NAME}"
+
+    # create the cluster
+    cat "${RESOURCES_PATH}/cluster-kyma.yaml" | envsubst | kubectl create -f -
+
+    # wait for the cluster to be ready
+    kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${DOMAIN_NAME}"
+
+    # switch to the new cluster
+    kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath={.data.kubeconfig} | base64 -d > "${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
+    export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
+
+    kyma::install_cli
+
+    TERM=dumb kyma alpha deploy \
+    --kubeconfig="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml" \
+    --profile=evaluation \
+    --source="${KYMA_VERSION}" \
+    --value global.environment.gardener=true \
+    --workers-count=4
+
 }
 
 ENABLE_TEST_LOG_COLLECTOR=false
@@ -112,18 +141,16 @@ readonly COMMON_NAME_PREFIX="grd"
 readonly KYMA_NAME_SUFFIX="kyma"
 readonly BUSOLA_NAME_SUFFIX="busol"
 
-export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
-
 KYMA_COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${KYMA_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 BUSOLA_COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${BUSOLA_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-export KYMA_COMMON_NAME
-export BUSOLA_COMMON_NAME
 
 log::info "Kyma cluster name: ${KYMA_COMMON_NAME}"
 log::info "Busola cluster name: ${BUSOLA_COMMON_NAME}"
 
+export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
+delete_cluster "${KYMA_COMMON_NAME}"
+provisionKyma2 "master" "${KYMA_COMMON_NAME}"
 
-#${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/busola/installKymaNew.sh "master" ${KYMA_COMMON_NAME}
+export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
 delete_cluster "${BUSOLA_COMMON_NAME}"
 provisionBusola "${BUSOLA_COMMON_NAME}"
-#${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/busola/installBusola.sh ${BUSOLA_COMMON_NAME}
