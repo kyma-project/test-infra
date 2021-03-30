@@ -426,7 +426,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: community
           path_alias: github.com/kyma-project/community
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
@@ -500,7 +500,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: examples
           path_alias: github.com/kyma-project/examples
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
@@ -611,7 +611,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: website
           path_alias: github.com/kyma-project/website
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
