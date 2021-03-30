@@ -28,7 +28,7 @@ func TestCompassPresubmitDevelopmentArtifacts(t *testing.T) {
 	tester.AssertThatHasPresets(t, job.JobBase, preset.DindEnabled, preset.DockerPushRepoKyma, "preset-kyma-development-artifacts-bucket", preset.GcrPush)
 	require.Len(t, job.Spec.Containers, 1)
 	cont := job.Spec.Containers[0]
-	assert.Equal(t, tester.ImageBootstrap20190604, cont.Image)
+	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, cont.Image)
 	require.Len(t, cont.Command, 1)
 	assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-compass-development-artifacts.sh", cont.Command[0])
 	require.Len(t, job.Spec.Volumes, 1)
@@ -53,7 +53,7 @@ func TestCompassPostsubmitDevelopmentArtifcts(t *testing.T) {
 	tester.AssertThatHasPresets(t, job.JobBase, preset.DindEnabled, preset.DockerPushRepoKyma, preset.BuildArtifactsMaster, "preset-kyma-development-artifacts-bucket", preset.GcrPush)
 	require.Len(t, job.Spec.Containers, 1)
 	cont := job.Spec.Containers[0]
-	assert.Equal(t, tester.ImageBootstrap20190604, cont.Image)
+	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, cont.Image)
 	require.Len(t, cont.Command, 1)
 	assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-compass-development-artifacts.sh", cont.Command[0])
 	require.Len(t, job.Spec.Volumes, 1)

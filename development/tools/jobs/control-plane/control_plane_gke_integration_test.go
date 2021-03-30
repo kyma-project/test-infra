@@ -44,10 +44,8 @@ func TestKCPGKEIntegrationPresubmit(t *testing.T) {
 	require.Len(t, actualJob.Spec.Containers, 1)
 	kcpCont := actualJob.Spec.Containers[0]
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, kcpCont.Image)
-	assert.Equal(t, []string{"bash"}, kcpCont.Command)
-	require.Len(t, kcpCont.Args, 2)
-	assert.Equal(t, "-c", kcpCont.Args[0])
-	assert.Equal(t, "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/control-plane-gke-integration.sh", kcpCont.Args[1])
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/control-plane-gke-integration.sh"}, kcpCont.Command)
+	require.Len(t, kcpCont.Args, 0)
 	tester.AssertThatContainerHasEnv(t, kcpCont, "CLOUDSDK_COMPUTE_ZONE", "europe-west4-b")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 }
@@ -85,10 +83,8 @@ func TestKCPGKEIntegrationPostsubmit(t *testing.T) {
 	require.Len(t, actualJob.Spec.Containers, 1)
 	kcpCont := actualJob.Spec.Containers[0]
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, kcpCont.Image)
-	assert.Equal(t, []string{"bash"}, kcpCont.Command)
-	require.Len(t, kcpCont.Args, 2)
-	assert.Equal(t, "-c", kcpCont.Args[0])
-	assert.Equal(t, "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/control-plane-gke-integration.sh", kcpCont.Args[1])
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/control-plane-gke-integration.sh"}, kcpCont.Command)
+	require.Len(t, kcpCont.Args, 0)
 	tester.AssertThatContainerHasEnv(t, kcpCont, "CLOUDSDK_COMPUTE_ZONE", "europe-west4-b")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 }
