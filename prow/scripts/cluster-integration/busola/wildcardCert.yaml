@@ -1,0 +1,10 @@
+kind: Certificate
+apiVersion: cert.gardener.cloud/v1alpha1
+metadata:
+  name: default-ssl-certificate
+  namespace: kube-system
+spec:
+  commonName: "*.$DOMAIN_NAME.hasselhoff.shoot.canary.k8s-hana.ondemand.com"
+  secretRef:
+    name: default-ssl-certificate
+    namespace: kube-system

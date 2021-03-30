@@ -123,6 +123,35 @@ gardener_azure_job_template: &gardener_azure_job_template
             memory: 1Gi
             cpu: 400m
 
+gardener_azure_busola_job_template: &gardener_azure_busola_job_template
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+    - <<: *base_image_k16
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      args:
+      - "-c"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
+      env:
+      - name: RS_GROUP
+        value: "kyma-gardener-azure"
+      - name: REGION
+        value: "northeurope"
+      - name: KYMA_PROJECT_DIR
+        value: "/home/prow/go/src/github.com/kyma-project"
+      - name: GARDENER_REGION
+        value: "northeurope"
+      - name: GARDENER_ZONES
+        value: "1"
+      resources:
+        requests:
+          memory: 1Gi
+          cpu: 400m
 
 gardener_azure_evaluation_job_template: &gardener_azure_evaluation_job_template
   decorate: true
@@ -460,6 +489,26 @@ periodics:
       base_ref: master
     - <<: *kyma_local_ref
       base_ref: main
+    labels:
+      preset-log-collector-slack-token: "true"
+      <<: *gardener_azure_job_labels_template
+
+  - name: kyma-integration-gardener-busola
+    annotations:
+      testgrid-dashboards: kyma_integration
+      description: Kyma Azure Gardener integration job.
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+    <<: *gardener_azure_busola_job_template
+    decorate: true
+    decoration_config:
+      timeout: 14400000000000 # 4h
+      grace_period: 600000000000 # 10min
+    cron: "0 4,7,10,13 * * *"
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: main
+    - <<: *kyma_ref
+      base_ref: master
     labels:
       preset-log-collector-slack-token: "true"
       <<: *gardener_azure_job_labels_template
