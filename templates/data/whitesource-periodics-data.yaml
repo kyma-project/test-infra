@@ -106,6 +106,7 @@ templates:
                   name: "cli"
                   language: "golang-mod"
                   project: "kyma-project"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -216,6 +217,7 @@ templates:
                   name: "website"
                   language: "javascript"
                   project: "kyma-project"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -271,6 +273,7 @@ templates:
                   project: "kyma-project"
                   custom_projectname: "release-cli"
                   whitesource_release: "true"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

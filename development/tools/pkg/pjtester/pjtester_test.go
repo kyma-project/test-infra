@@ -40,7 +40,7 @@ var (
 	fakeRepoPrRepo          string
 	fakeRepoBaseRef         string
 	fakeRepoBaseSHA         string
-	fakeRepoMasterName      string
+	fakeRepoMainName        string
 	fakeRepoProtectedBranch bool
 	fakeRepoMerged          bool
 	fakeRepoCommitMessage   string
@@ -57,8 +57,8 @@ func TestMain(m *testing.M) {
 	}
 	// set data for testing
 	testInfraPrAuthor = "testInfraAuthor"
-	testInfraBaseRef = "master"
-	testInfraBaseSHA = "testInfraMasterSHA"
+	testInfraBaseRef = "main"
+	testInfraBaseSHA = "testInfraMainSHA"
 	testInfraPrNumber = 12345
 	testInfraPrHeadSHA = "testInfraPrHeadSHA"
 	testInfraPrOrg = "kyma-project"
@@ -75,9 +75,9 @@ func TestMain(m *testing.M) {
 	fakeRepoPrNumber = 1515
 	fakeRepoPrOrg = "kyma-project"
 	fakeRepoPrRepo = "fake-repo"
-	fakeRepoBaseRef = "master"
+	fakeRepoBaseRef = "main"
 	fakeRepoBaseSHA = "fakeRepoSHA"
-	fakeRepoMasterName = "master"
+	fakeRepoMainName = "main"
 	fakeRepoProtectedBranch = false
 	fakeRepoMerged = true
 	fakeRepoCommitMessage = fmt.Sprintf("Fake Repo commit message (#%s)", strconv.Itoa(fakeRepoPrNumber))
@@ -193,7 +193,7 @@ func TestNewTestPJ(t *testing.T) {
 	o.prFinder = mocks.NewFakeGitHubClient(nil)
 	ctx := context.Background()
 	o.prFinder.Repositories.(*mocks.GithubRepoService).On("GetBranch", ctx, fakeRepoPrOrg, fakeRepoPrRepo, fakeRepoBaseRef).Return(&gogithub.Branch{
-		Name: &fakeRepoMasterName,
+		Name: &fakeRepoMainName,
 		Commit: &gogithub.RepositoryCommit{
 			Commit: &gogithub.Commit{
 				SHA:     &fakeRepoBaseSHA,

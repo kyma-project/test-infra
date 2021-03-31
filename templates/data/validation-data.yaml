@@ -70,7 +70,7 @@ templates:
                     - "jobConfig_presubmit"
               - jobConfig:
                   name: "pre-master-test-infra-validate-generated-files"
-                  run_if_changed: "^templates/|^prow/jobs/|^prow/config.yaml|^prow/scripts/|^development/tools/(cmd/rendertemplates/|jobs/releases/releases.go)"
+                  run_if_changed: "^templates/|^prow/jobs/|^prow/config.yaml|^prow/scripts/|^development/tools/(cmd/rendertemplates/|jobs/releases/releases.go)|^prow/branchprotector-config.yaml"
                   labels:
                     preset-build-pr: "true"
                     preset-dind-enabled: "true"

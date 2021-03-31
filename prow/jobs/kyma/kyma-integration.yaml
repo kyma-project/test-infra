@@ -90,21 +90,6 @@ presets:
     env:
       - name: GKE_RELEASE_CHANNEL
         value: rapid
-  - labels:
-      preset-gke-upgrade-pre-job: "true"
-    env:
-      - name: SCENARIO_TYPE
-        value: pre
-  - labels:
-      preset-gke-upgrade-pre-release-job: "true"
-    env:
-      - name: SCENARIO_TYPE
-        value: release
-  - labels:
-      preset-gke-upgrade-post-job: "true"
-    env:
-      - name: SCENARIO_TYPE
-        value: post
 
 gke_job_template: &gke_job_template
   decorate: true
@@ -196,6 +181,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       branches:
         - ^master$
+        - ^main$
       <<: *vm_job_template
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -204,13 +190,14 @@ presubmits: # runs on PRs
         <<: *vm_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
     
     - name: pre-master-kyma-integration-k3s
       optional: false
       cluster: untrusted-workload
       branches:
       - ^master$
+      - ^main$
       <<: *vm_job_template_k3s
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -219,7 +206,7 @@ presubmits: # runs on PRs
         <<: *vm_job_labels_template
       extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *kyma_local_ref
         base_ref: main
       
@@ -228,6 +215,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       branches:
       - ^master$
+      - ^main$
       <<: *vm_job_template_k3s
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -238,7 +226,7 @@ presubmits: # runs on PRs
         <<: *vm_job_labels_template
       extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *kyma_local_ref
         base_ref: main
     
@@ -246,6 +234,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       branches:
       - ^master$
+      - ^main$
       <<: *vm_job_template_serverless_k3s
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((resources/serverless\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -254,12 +243,13 @@ presubmits: # runs on PRs
         <<: *vm_job_labels_template
       extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
 
     - name: pre-master-kyma-gke-integration
       cluster: untrusted-workload
       branches:
         - ^master$
+        - ^main$
       <<: *gke_job_template
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -269,22 +259,23 @@ presubmits: # runs on PRs
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
 
     - name: pre-master-kyma-gke-upgrade
       cluster: untrusted-workload
       branches:
         - ^master$
+        - ^main$
       <<: *gke_upgrade_job_template
       # following regexp won't start build if only Markdown files were changed
-      run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tests/end-to-end/external-solution-integration/chart/external-solution/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         preset-build-pr: "true"
         preset-gke-upgrade-pre-job: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
 
 postsubmits:
   kyma-project/kyma:
@@ -297,12 +288,13 @@ postsubmits:
       <<: *vm_job_template
       branches:
         - ^master$
+        - ^main$
       labels:
         preset-build-master: "true"
         <<: *vm_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
       
     - name: post-master-kyma-integration-k3s
       cluster: trusted-workload
@@ -313,12 +305,13 @@ postsubmits:
       <<: *vm_job_template_k3s
       branches:
       - ^master$
+      - ^main$
       labels:
         preset-build-master: "true"
         <<: *vm_job_labels_template
       extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *kyma_local_ref
         base_ref: main
 
@@ -331,6 +324,7 @@ postsubmits:
       <<: *vm_job_template_k3s
       branches:
       - ^master$
+      - ^main$
       labels:
         preset-build-master: "true"
         preset-kyma-integration-compass-dev: "true"
@@ -338,7 +332,7 @@ postsubmits:
         <<: *vm_job_labels_template
       extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *kyma_local_ref
         base_ref: main
 
@@ -351,6 +345,7 @@ postsubmits:
         testgrid-days-of-results: "60"
       branches:
         - ^master$
+        - ^main$
       labels:
         preset-log-collector-slack-token: "true"
         preset-build-master: "true"
@@ -358,7 +353,7 @@ postsubmits:
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
 
     - name: post-master-kyma-gke-upgrade
       cluster: trusted-workload
@@ -369,6 +364,7 @@ postsubmits:
         testgrid-days-of-results: "60"
       branches:
         - ^master$
+        - ^main$
       labels:
         preset-gke-upgrade-post-job: "true"
         preset-log-collector-slack-token: "true"
@@ -376,7 +372,7 @@ postsubmits:
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
     - name: post-master-kyma-gke-rapid-integration
       cluster: trusted-workload
       <<: *gke_job_template
@@ -384,6 +380,7 @@ postsubmits:
         testgrid-create-test-group: "false"
       branches:
         - ^master$
+        - ^main$
       skip_report: true
       labels:
         preset-log-collector-slack-token: "true"
@@ -392,7 +389,7 @@ postsubmits:
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
 
 periodics:
   # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.
@@ -423,7 +420,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *base_image_k16
@@ -454,7 +451,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -478,7 +475,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -502,7 +499,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -526,7 +523,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -550,7 +547,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -574,7 +571,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -599,7 +596,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -623,7 +620,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -657,7 +654,7 @@ periodics:
     extra_refs:
       - org: kyma-project
         repo: test-infra
-        base_ref: master
+        base_ref: main
         path_alias: github.com/kyma-project/test-infra
       - <<: *kyma_ref
         base_ref: master
@@ -729,7 +726,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *kyma_ref
         base_ref: master
     spec:
@@ -800,7 +797,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *kyma_ref
         base_ref: master
     spec:
@@ -859,9 +856,10 @@ periodics:
     cron: "5 * * * *"
     branches:
     - ^master$
+    - ^main$
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: master
+      base_ref: main
     - <<: *kyma_local_ref
       base_ref: main
     - <<: *kyma_ref
@@ -882,9 +880,10 @@ periodics:
     cron: "5 * * * *"
     branches:
     - ^master$
+    - ^main$
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: master
+      base_ref: main
     - <<: *kyma_local_ref
       base_ref: main
     - <<: *kyma_ref

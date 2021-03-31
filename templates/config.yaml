@@ -1,9 +1,9 @@
 global:
-  nextRelease: "1.21"
+  nextRelease: "1.22"
   releases:
+    - "1.21"
     - "1.20"
     - "1.19"
-    - "1.18"
 
 globalSets:
   # Image sets
@@ -12,7 +12,7 @@ globalSets:
   image_prow-tools:
     image: "eu.gcr.io/kyma-project/test-infra/prow-tools:current"
   image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:current"
+    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20201208-8f23a167-k8s1.16"
   image_buildpack-node:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:PR-2951"
   image_buildpack-golang:
@@ -20,7 +20,7 @@ globalSets:
   image_buildpack-golang-kubebuilder2:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9"
   image_buildpack-golang-toolbox:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20210125-6234473e"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20210323-bfa93550"
   image_wssagent:
     image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
   # JobConfig sets
@@ -30,6 +30,7 @@ globalSets:
     decorate: "true"
     branches:
       - "^master$"
+      - "^main$"
     privileged: "true"
     request_memory: "1.5Gi"
     request_cpu: "0.8"
@@ -50,10 +51,18 @@ globalSets:
   # extra_refs sets
   extra_refs_test-infra:
     extra_refs:
-      - org: "kyma-project"
-        repo: "test-infra"
-        path_alias: "github.com/kyma-project/test-infra"
-        base_ref: "master"
+      test-infra:
+        - org: "kyma-project"
+          repo: "test-infra"
+          path_alias: "github.com/kyma-project/test-infra"
+          base_ref: "main"
+  extra_refs_kyma:
+    extra_refs:
+      kyma:
+        - org: "kyma-project"
+          repo: "kyma"
+          path_alias: "github.com/kyma-project/kyma"
+          base_ref: "master"
   # labels sets
   build_labels:
     labels:
@@ -291,6 +300,7 @@ templates:
           <<: *kyma_generic_component
           path: tests/end-to-end/external-solution-integration
           since: "1.10"
+          until: "1.21"
       - to: ../prow/jobs/control-plane/components/provisioner/provisioner-generic.yaml
         values:
           <<: *cluster_default
@@ -318,6 +328,13 @@ templates:
           <<: *control_plane_generic_component
           path: components/metris
           since: "1.14"
+          optional: false
+      - to: ../prow/jobs/control-plane/components/kyma-metrics-collector/kyma-metrics-collector-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *control_plane_generic_component
+          path: components/kyma-metrics-collector
+          since: "1.22"
           optional: false
       - to: ../prow/jobs/control-plane/components/kubeconfig-service/kubeconfig-service-generic.yaml
         values:
@@ -420,18 +437,21 @@ templates:
           <<: *kyma_generic_component
           path: components/event-service
           since: "1.7"
+          until: "1.20"
       - to: ../prow/jobs/kyma/tests/integration/event-service/event-service-tests-generic.yaml
         values:
           <<: *cluster_default
           <<: *kyma_generic_component
           path: tests/integration/event-service
           since: "1.7"
+          until: "1.20"
       - to: ../prow/jobs/kyma/components/event-sources/event-sources-generic.yaml
         values:
           <<: *cluster_default
           <<: *kyma_generic_component
           path: components/event-sources
           since: "1.9"
+          until: "1.20"
       - to: ../prow/jobs/kyma/components/event-publisher-proxy/event-publisher-proxy-generic.yaml
         values:
           <<: *cluster_default
@@ -457,6 +477,7 @@ templates:
           path: components/nats-init
           since: "1.12"
           optional: true
+          until: "1.20"
       - to: ../prow/jobs/kyma/components/function-controller/function-controller-generic.yaml
         values:
           <<: *cluster_default
@@ -481,6 +502,7 @@ templates:
           <<: *kyma_generic_component
           path: tests/contract/knative-channel-kafka
           since: "1.10"
+          until: "1.20"
       - to: ../prow/jobs/kyma/tests/rafter/rafter-tests-generic.yaml
         values:
           <<: *cluster_default
@@ -500,29 +522,25 @@ templates:
           <<: *busola_generic_component
           path: core-ui
           since: "1.19"
-          optional: true
       - to: ../prow/jobs/busola/busola-service-catalog-ui/busola-service-catalog-ui.yaml
         values:
           <<: *cluster_default
           <<: *busola_generic_component
           path: service-catalog-ui
           since: "1.19"
-          optional: true
       - to: ../prow/jobs/busola/busola-core/busola-core.yaml
         values:
           <<: *cluster_default
           <<: *busola_generic_component
           path: core
           since: "1.19"
-          optional: true
       - to: ../prow/jobs/busola/busola-backend/busola-backend.yaml
         values:
           <<: *cluster_default
           <<: *busola_generic_component
           path: backend
           since: "1.19"
-          optional: true
-  - from: templates/generic-component-pamela.yaml
+  - from: templates/generic-component-console.yaml
     render:
       - to: ../prow/jobs/console/core-ui/core-ui.yaml
         values:
@@ -560,12 +578,6 @@ templates:
           <<: *console_generic_component
           path: core
           since: "1.12"
-      - to: ../prow/jobs/console/pamela/pamela.yaml
-        values:
-          <<: *cluster_default
-          <<: *console_generic_component
-          path: pamela
-          since: "1.18"
   - from: templates/generic-compass-component.yaml
     render:
       - to: ../prow/jobs/incubator/compass/components/operations-controller/operations-controller-generic.yaml
@@ -651,51 +663,11 @@ templates:
           path: components/schema-migrator
           since: "1.7"
           optional: false
-      - to: ../prow/jobs/incubator/compass/tests/operations-controller/operations-controller-tests-generic.yaml
+      - to: ../prow/jobs/incubator/compass/tests/compass-e2e-tests/compass-e2e-tests.yaml
         values:
           <<: *cluster_default
           <<: *compass_generic_component
-          path: tests/operations-controller
-          since: "1.19"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/tests/connector-tests/connector-tests-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: tests/connector-tests
-          since: "1.7"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/tests/director/director-generic-approach.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: tests/director
-          since: "1.10"
-      - to: ../prow/jobs/incubator/compass/tests/system-broker/system-broker-tests-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: tests/system-broker
-          since: "1.17"
-      - to: ../prow/jobs/incubator/compass/tests/connectivity-adapter/connectivity-adapter-tests-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: tests/connectivity-adapter
-          since: "1.11"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/tests/ord-service/ord-service-tests-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: tests/ord-service
-          since: "1.17"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/tests/tenant-fetcher/tenant-fetcher-tests-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: tests/tenant-fetcher
+          path: tests
           since: "1.17"
           optional: false
   - from: templates/kyma-integration.yaml

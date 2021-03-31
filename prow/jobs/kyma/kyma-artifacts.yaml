@@ -64,7 +64,20 @@ presubmits: # runs on PRs
       always_run: true
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
+      labels:
+        <<: *build_labels
+        <<: *develop_job_labels
+        <<: *job_labels_template
+    - name: pre-rel121-kyma-artifacts
+      cluster: untrusted-workload
+      branches:
+        - ^release-1.21$
+      <<: *job_template
+      always_run: true
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.21
       labels:
         <<: *build_labels
         <<: *develop_job_labels
@@ -95,19 +108,6 @@ presubmits: # runs on PRs
         <<: *build_labels
         <<: *develop_job_labels
         <<: *job_labels_template
-    - name: pre-rel118-kyma-artifacts
-      cluster: untrusted-workload
-      branches:
-        - ^release-1.18$
-      <<: *job_template
-      always_run: true
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.18
-      labels:
-        <<: *build_labels
-        <<: *develop_job_labels
-        <<: *job_labels_template
 
 postsubmits:
   kyma-project/kyma:
@@ -122,10 +122,25 @@ postsubmits:
       always_run: true
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
       labels:
         <<: *build_labels
         <<: *develop_job_labels
+        <<: *job_labels_template
+    - name: post-rel121-kyma-artifacts
+      annotations:
+        testgrid-create-test-group: "false"
+      cluster: trusted-workload
+      branches:
+        - ^release-1.21$
+      <<: *job_template
+      always_run: true
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.21
+      labels:
+        <<: *build_labels
+        <<: *release_job_labels
         <<: *job_labels_template
     - name: post-rel120-kyma-artifacts
       annotations:
@@ -153,21 +168,6 @@ postsubmits:
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.19
-      labels:
-        <<: *build_labels
-        <<: *release_job_labels
-        <<: *job_labels_template
-    - name: post-rel118-kyma-artifacts
-      annotations:
-        testgrid-create-test-group: "false"
-      cluster: trusted-workload
-      branches:
-        - ^release-1.18$
-      <<: *job_template
-      always_run: true
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.18
       labels:
         <<: *build_labels
         <<: *release_job_labels

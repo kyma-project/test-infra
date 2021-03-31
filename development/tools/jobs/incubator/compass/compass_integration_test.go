@@ -58,7 +58,7 @@ func TestCompassIntegrationJobsPresubmit(t *testing.T) {
 			assert.True(t, actualJob.Decorate)
 			assert.False(t, actualJob.SkipReport)
 			assert.Equal(t, 10, actualJob.MaxConcurrency)
-			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "main")
 			tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 
 			// the job specific expectation
@@ -100,12 +100,12 @@ func TestCompassIntegrationJobsPostsubmit(t *testing.T) {
 
 			// then
 			// the common expectation
-			assert.Equal(t, []string{"^master$"}, actualJob.Branches)
+			assert.Equal(t, []string{"^master$", "^main$"}, actualJob.Branches)
 			assert.Equal(t, 10, actualJob.MaxConcurrency)
 			assert.Equal(t, "", actualJob.RunIfChanged)
 			assert.True(t, actualJob.Decorate)
 			assert.Equal(t, "github.com/kyma-incubator/compass", actualJob.PathAlias)
-			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "main")
 			tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 
 			// the job specific expectation

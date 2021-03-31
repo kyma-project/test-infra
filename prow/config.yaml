@@ -20,6 +20,12 @@ presets:
           secretKeyRef:
             name: log-collector-slack-token
             key: token
+  # debug commando
+  - labels:
+      preset-debug-commando-oom: "true"
+    env:
+      - name: DEBUG_COMMANDO_OOM
+        value: "true"
   # pjtester
   - labels:
       preset-pjtester-kubeconfig: "true"
@@ -34,6 +40,30 @@ presets:
       - name: pjtester-kubeconfig
         mountPath: /etc/kubeconfig/pjtester
         readOnly: true
+  # rafter
+  - labels:
+      preset-rafter-build-master: "true"
+    env:
+      - name: BUILD_TYPE
+        value: master
+      - name: DOCKER_PUSH_DIRECTORY
+        value: ""
+  - labels:
+      preset-rafter-minio-gcs-gateway: "true"
+    env:
+      - name: MINIO_GATEWAY_MODE
+        value: gcs
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west4-a"
+  - labels:
+      preset-rafter-minio-az-gateway: "true"
+    env:
+      - name: MINIO_GATEWAY_MODE
+        value: azure
+      - name: AZURE_RS_GROUP
+        value: rafter-minio-gateway
+      - name: AZURE_REGION
+        value: westeurope
   - labels:
       preset-sa-prow-job-resource-cleaner: "true"
     env:
@@ -672,6 +702,21 @@ presets:
     env:
       - name: KEB_PLAN_ID
         value: "03b812ac-c991-4528-b5bd-08b303523a63"
+  - labels:
+      preset-gke-upgrade-pre-job: "true"
+    env:
+    - name: SCENARIO_TYPE
+      value: pre
+  - labels:
+      preset-gke-upgrade-pre-release-job: "true"
+    env:
+    - name: SCENARIO_TYPE
+      value: release
+  - labels:
+      preset-gke-upgrade-post-job: "true"
+    env:
+    - name: SCENARIO_TYPE
+      value: post
 
 plank:
   job_url_template: 'https://status.build.kyma-project.io/view/gcs/kyma-prow-logs/{{if eq .Spec.Type "presubmit"}}pr-logs/pull{{else if eq .Spec.Type "batch"}}pr-logs/pull{{else}}logs{{end}}{{if .Spec.Refs}}{{if ne .Spec.Refs.Org ""}}/{{.Spec.Refs.Org}}_{{.Spec.Refs.Repo}}{{end}}{{end}}{{if eq .Spec.Type "presubmit"}}/{{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}{{else if eq .Spec.Type "batch"}}/batch{{end}}/{{.Spec.Job}}/{{.Status.BuildID}}/'

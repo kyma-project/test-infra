@@ -26,10 +26,13 @@ gardener::cleanup() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
+    # describe nodes to file in artifacts directory
     utils::describe_nodes
 
-    # copy oom debug pod output to artifacts directory
-    kubectl cp default/oom-debug:/var/oom_debug "${ARTIFACTS}/oom_debug.txt"
+    if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
+      # copy output from debug container to artifacts directory
+      utils::oom_get_output
+    fi
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         log::info "Deprovision cluster: \"${CLUSTER_NAME}\""

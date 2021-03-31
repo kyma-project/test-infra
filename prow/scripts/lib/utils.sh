@@ -135,7 +135,7 @@ function utils::receive_from_vm() {
 
   for i in $(seq 1 5); do
     [[ ${i} -gt 1 ]] && log::info 'Retrying in 15 seconds..' && sleep 15;
-    gcloud compute scp --strict-host-key-checking=no --verbosity=debug --recurse --zone="${ZONE}" "${REMOTE_NAME}":"${REMOTE_PATH}" "${LOCAL_PATH}" && break;
+    gcloud compute scp --strict-host-key-checking=no --quiet --recurse --zone="${ZONE}" "${REMOTE_NAME}":"${REMOTE_PATH}" "${LOCAL_PATH}" && break;
     [[ ${i} -ge 5 ]] && log::error "Failed after $i attempts." && exit 1
   done;
 }
@@ -171,7 +171,7 @@ function utils::send_to_vm() {
 
   for i in $(seq 1 5); do
     [[ ${i} -gt 1 ]] && log::info 'Retrying in 15 seconds..' && sleep 15;
-    gcloud compute scp --strict-host-key-checking=no --verbosity=debug --recurse --zone="${ZONE}" "${LOCAL_PATH}" "${REMOTE_NAME}":"${REMOTE_PATH}" && break;
+    gcloud compute scp --strict-host-key-checking=no --quiet --recurse --zone="${ZONE}" "${LOCAL_PATH}" "${REMOTE_NAME}":"${REMOTE_PATH}" && break;
     [[ ${i} -ge 5 ]] && log::error "Failed after $i attempts." && exit 1
   done;
 }
@@ -210,8 +210,8 @@ function utils::compress_send_to_vm() {
   tar -czf "${TMP_DIRECTORY}/pack.tar.gz" -C "${LOCAL_PATH}" "."
   #shellcheck disable=SC2088
   utils::send_to_vm "${ZONE}" "${REMOTE_NAME}" "${TMP_DIRECTORY}/pack.tar.gz" "~/"
-  gcloud compute ssh --strict-host-key-checking=no --verbosity=debug --zone="${ZONE}" --command="mkdir ${REMOTE_PATH} && tar -xf ~/pack.tar.gz -C ${REMOTE_PATH}" --ssh-flag="-o ServerAliveInterval=30" "${REMOTE_NAME}"
-  
+  gcloud compute ssh --strict-host-key-checking=no --quiet --zone="${ZONE}" --command="mkdir ${REMOTE_PATH} && tar -xf ~/pack.tar.gz -C ${REMOTE_PATH}" --ssh-flag="-o ServerAliveInterval=30" "${REMOTE_NAME}"
+
   rm -rf "${TMP_DIRECTORY}"
 }
 
@@ -285,6 +285,35 @@ function utils::describe_nodes() {
       kubectl top nodes
       kubectl top pods --all-namespaces
     } > "${ARTIFACTS}/describe_nodes.txt"
+    grep -i "System OOM encountered" "${ARTIFACTS}/describe_nodes.txt"
+}
 
-  grep -i "System OOM encountered" "${ARTIFACTS}/describe_nodes.txt"
+
+function utils::oom_get_output() {
+  if [ ! -e "${ARTIFACTS}/describe_nodes.txt" ]; then
+    utils::describe_nodes
+  fi
+  declare -A node_with_oom
+  regex="^.*kubelet,[[:blank:]]+(.*)[[:blank:]]+System[[:blank:]]OOM[[:blank:]]encountered.*$"
+  while IFS= read -r line
+  do
+    if [[ $line =~ $regex ]]; then
+      if [[ -z "${node_with_oom[${BASH_REMATCH[1]}]+unset}" ]]; then
+        node_with_oom["${BASH_REMATCH[1]}"]="true"
+        pod=$(kubectl get pod -l "name=oom-debug" --field-selector spec.nodeName="${BASH_REMATCH[1]}" -o=jsonpath='{.items[*].metadata.name}')
+        kubectl logs "${pod}" -c oom-debug > "${ARTIFACTS}/${pod}.txt"
+      fi
+    fi
+  done < "${ARTIFACTS}/describe_nodes.txt"
+  if [ -e "${ARTIFACTS}/oom-debug-*.txt" ]; then
+    log::banner "OOM event found"
+    log::warning "$(grep -i "System OOM encountered" "${ARTIFACTS}/describe_nodes.txt")"
+    log::info "killed processes info"
+    cat "${ARTIFACTS}/oom-debug-*.txt"
+  fi
+}
+
+function utils::debug_oom() {
+  # run oom debug pod
+  kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/debug-container.yaml"
 }

@@ -60,6 +60,7 @@ presubmits: # runs on PRs
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^master$
+        - ^main$
         - ^hotfix-.*$
       <<: *gke_integration_job_template_k16
       # following regexp won't start build if only Markdown files were changed
@@ -69,7 +70,7 @@ presubmits: # runs on PRs
         <<: *gke_integration_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
 
 {{- range (matchingReleases .Global.releases "1.13" nil) }}
     - name: pre-rel{{ . | replace "." "" }}-compass-gke-integration
@@ -93,6 +94,7 @@ postsubmits:
       cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^master$
+        - ^main$
       <<: *gke_integration_job_template_latest
       annotations:
         testgrid-dashboards: kyma-incubator_compass
@@ -105,4 +107,4 @@ postsubmits:
         <<: *gke_integration_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main

@@ -46,6 +46,6 @@ periodics:
       grace_period: 600000000000 # 10min
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     labels:
       preset-az-kyma-prow-credentials: "true"

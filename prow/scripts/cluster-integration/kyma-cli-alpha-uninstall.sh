@@ -35,8 +35,6 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gcp.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
-# shellcheck source=prow/scripts/lib/cli-alpha.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/cli-alpha.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 
@@ -83,7 +81,7 @@ log::info "Installing Kyma"
 
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
-cli-alpha::deploy
+kyma::alpha_deploy_kyma
 )
 
 sleep 1m
@@ -99,7 +97,7 @@ sleep 1m
 log::info "Install Kyma again"
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
-cli-alpha::deploy
+kyma::alpha_deploy_kyma
 )
 
 log::info "Run Kyma tests"

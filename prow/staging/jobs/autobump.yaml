@@ -6,7 +6,7 @@ periodics:
     extra_refs:
       - org: kyma-test-infra-dev
         repo: test-infra
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - image: gcr.io/k8s-prow/autobump

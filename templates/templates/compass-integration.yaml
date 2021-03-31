@@ -31,6 +31,7 @@ presubmits: # runs on PRs
     cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     branches:
     - ^master$
+    - ^main$
     - ^hotfix-.*$
     <<: *vm_job_template
     run_if_changed: "^(chart|installation)/"
@@ -39,7 +40,7 @@ presubmits: # runs on PRs
       <<: *vm_job_labels_template
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: master
+      base_ref: main
   
 postsubmits:
   kyma-incubator/compass:
@@ -48,6 +49,7 @@ postsubmits:
     <<: *vm_job_template
     branches:
     - ^master$
+    - ^main$
     labels:
       preset-build-master: "true"
       <<: *vm_job_labels_template
@@ -57,4 +59,4 @@ postsubmits:
       testgrid-days-of-results: "60"
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: master
+      base_ref: main

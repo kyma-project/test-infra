@@ -30,6 +30,12 @@
       {{- if .JobConfig.decorate}}
       decorate: {{.JobConfig.decorate}}
       {{- end}}
+      {{- if .JobConfig.decoration_config }}
+      decoration_config:
+        {{- range $key, $value := .JobConfig.decoration_config}}
+        {{$key}}: {{$value}}
+        {{- end}}
+      {{- end}}
       {{- if .JobConfig.path_alias }}
       path_alias: {{ .JobConfig.path_alias }}
       {{- end }}
@@ -47,12 +53,22 @@
       {{- end}}
       {{- if .JobConfig.extra_refs}}
       extra_refs:
-        {{- range .JobConfig.extra_refs}}
+        {{- range  $key, $value := .JobConfig.extra_refs}}
+          {{- range $value}}
         - org: {{ .org }}
           repo: {{ .repo }}
           path_alias: {{ .path_alias }}
           base_ref: {{ .base_ref}}
+            {{- if .base_sha}}
+          base_sha: {{ .base_sha}}
+            {{- end}}
+          {{- end}}
         {{- end}}
+      {{- end}}
+      {{- if .JobConfig.slack_channel}}
+      reporter_config:
+        slack:
+          channel: {{ .JobConfig.slack_channel }}
       {{- end}}
       spec:
         containers:
@@ -137,7 +153,7 @@ presubmits: # runs on PRs
   {{end}}
 {{- end}}
 {{- if hasPostsubmit .Values.JobConfigs}}
-postsubmits: # runs on master
+postsubmits: # runs on main
   {{- range .Values.JobConfigs }}
   {{ replace "github.com/" "" .RepoName -}}:
     {{- range .Jobs -}}

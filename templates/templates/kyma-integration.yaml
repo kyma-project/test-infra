@@ -94,21 +94,6 @@ presets:
       - name: GKE_RELEASE_CHANNEL
         value: {{ .channel }}
   {{- end }}
-  - labels:
-      preset-gke-upgrade-pre-job: "true"
-    env:
-      - name: SCENARIO_TYPE
-        value: pre
-  - labels:
-      preset-gke-upgrade-pre-release-job: "true"
-    env:
-      - name: SCENARIO_TYPE
-        value: release
-  - labels:
-      preset-gke-upgrade-post-job: "true"
-    env:
-      - name: SCENARIO_TYPE
-        value: post
 
 gke_job_template: &gke_job_template
   decorate: true
@@ -200,6 +185,7 @@ presubmits: # runs on PRs
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^master$
+        - ^main$
       <<: *vm_job_template
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -208,13 +194,14 @@ presubmits: # runs on PRs
         <<: *vm_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
     
     - name: pre-master-kyma-integration-k3s
       optional: false
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
       - ^master$
+      - ^main$
       <<: *vm_job_template_k3s
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -223,7 +210,7 @@ presubmits: # runs on PRs
         <<: *vm_job_labels_template
       extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *kyma_local_ref
         base_ref: main
       
@@ -232,6 +219,7 @@ presubmits: # runs on PRs
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
       - ^master$
+      - ^main$
       <<: *vm_job_template_k3s
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -242,7 +230,7 @@ presubmits: # runs on PRs
         <<: *vm_job_labels_template
       extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *kyma_local_ref
         base_ref: main
     
@@ -250,6 +238,7 @@ presubmits: # runs on PRs
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
       - ^master$
+      - ^main$
       <<: *vm_job_template_serverless_k3s
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((resources/serverless\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -258,12 +247,13 @@ presubmits: # runs on PRs
         <<: *vm_job_labels_template
       extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
 
     - name: pre-master-kyma-gke-integration
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^master$
+        - ^main$
       <<: *gke_job_template
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -273,7 +263,7 @@ presubmits: # runs on PRs
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
   {{- range .Values.gkeVersions }}
   {{- if has "presubmit" .jobs }}
     - name: pre-master-kyma-gke-{{ .channel }}-integration
@@ -283,6 +273,7 @@ presubmits: # runs on PRs
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^master$
+        - ^main$
       <<: *gke_job_template
       run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
@@ -290,7 +281,7 @@ presubmits: # runs on PRs
         preset-gke-{{ .channel }}: "true"
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
   {{- end }}
   {{- end }}
 
@@ -298,16 +289,17 @@ presubmits: # runs on PRs
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^master$
+        - ^main$
       <<: *gke_upgrade_job_template
       # following regexp won't start build if only Markdown files were changed
-      run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tests/end-to-end/external-solution-integration/chart/external-solution/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         preset-build-pr: "true"
         preset-gke-upgrade-pre-job: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
 
 postsubmits:
   kyma-project/kyma:
@@ -320,12 +312,13 @@ postsubmits:
       <<: *vm_job_template
       branches:
         - ^master$
+        - ^main$
       labels:
         preset-build-master: "true"
         <<: *vm_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
       
     - name: post-master-kyma-integration-k3s
       cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
@@ -336,12 +329,13 @@ postsubmits:
       <<: *vm_job_template_k3s
       branches:
       - ^master$
+      - ^main$
       labels:
         preset-build-master: "true"
         <<: *vm_job_labels_template
       extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *kyma_local_ref
         base_ref: main
 
@@ -354,6 +348,7 @@ postsubmits:
       <<: *vm_job_template_k3s
       branches:
       - ^master$
+      - ^main$
       labels:
         preset-build-master: "true"
         preset-kyma-integration-compass-dev: "true"
@@ -361,7 +356,7 @@ postsubmits:
         <<: *vm_job_labels_template
       extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *kyma_local_ref
         base_ref: main
 
@@ -374,6 +369,7 @@ postsubmits:
         testgrid-days-of-results: "60"
       branches:
         - ^master$
+        - ^main$
       labels:
         preset-log-collector-slack-token: "true"
         preset-build-master: "true"
@@ -381,7 +377,7 @@ postsubmits:
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
 
     - name: post-master-kyma-gke-upgrade
       cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
@@ -392,6 +388,7 @@ postsubmits:
         testgrid-days-of-results: "60"
       branches:
         - ^master$
+        - ^main$
       labels:
         preset-gke-upgrade-post-job: "true"
         preset-log-collector-slack-token: "true"
@@ -399,7 +396,7 @@ postsubmits:
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
   {{- range .Values.gkeVersions }}
   {{- if has "postsubmit" .jobs }}
     - name: post-master-kyma-gke-{{ .channel }}-integration
@@ -409,6 +406,7 @@ postsubmits:
         testgrid-create-test-group: "false"
       branches:
         - ^master$
+        - ^main$
       {{- if eq .channel "rapid"}}
       skip_report: true
       {{- end }}
@@ -419,7 +417,7 @@ postsubmits:
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
   {{- end }}
   {{- end }}
 
@@ -452,7 +450,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *base_image_k16
@@ -483,7 +481,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -507,7 +505,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -531,7 +529,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -555,7 +553,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -579,7 +577,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -603,7 +601,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -628,7 +626,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -652,7 +650,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - <<: *prow_tools_image
@@ -686,7 +684,7 @@ periodics:
     extra_refs:
       - org: kyma-project
         repo: test-infra
-        base_ref: master
+        base_ref: main
         path_alias: github.com/kyma-project/test-infra
       - <<: *kyma_ref
         base_ref: master
@@ -758,7 +756,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *kyma_ref
         base_ref: master
     spec:
@@ -829,7 +827,7 @@ periodics:
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: main
       - <<: *kyma_ref
         base_ref: master
     spec:
@@ -888,9 +886,10 @@ periodics:
     cron: "5 * * * *"
     branches:
     - ^master$
+    - ^main$
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: master
+      base_ref: main
     - <<: *kyma_local_ref
       base_ref: main
     - <<: *kyma_ref
@@ -911,9 +910,10 @@ periodics:
     cron: "5 * * * *"
     branches:
     - ^master$
+    - ^main$
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: master
+      base_ref: main
     - <<: *kyma_local_ref
       base_ref: main
     - <<: *kyma_ref

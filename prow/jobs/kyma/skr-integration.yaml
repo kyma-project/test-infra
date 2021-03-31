@@ -43,9 +43,10 @@ periodics:
     testgrid-create-test-group: "false"
   branches:
   - ^master$
+  - ^main$
   extra_refs:
   - <<: *test_infra_ref
-    base_ref: master
+    base_ref: main
   - <<: *kyma_ref
     base_ref: master
 - name: skr-azure-lite-integration-dev
@@ -62,9 +63,10 @@ periodics:
     testgrid-create-test-group: "false"
   branches:
   - ^master$
+  - ^main$
   extra_refs:
   - <<: *test_infra_ref
-    base_ref: master
+    base_ref: main
   - <<: *kyma_ref
     base_ref: master
 - name: skr-aws-integration-dev
@@ -81,9 +83,10 @@ periodics:
     testgrid-create-test-group: "false"
   branches:
   - ^master$
+  - ^main$
   extra_refs:
   - <<: *test_infra_ref
-    base_ref: master
+    base_ref: main
   - <<: *kyma_ref
     base_ref: master
 - name: skr-trial-integration-dev
@@ -100,8 +103,9 @@ periodics:
     testgrid-create-test-group: "false"
   branches:
   - ^master$
+  - ^main$
   extra_refs:
   - <<: *test_infra_ref
-    base_ref: master
+    base_ref: main
   - <<: *kyma_ref
     base_ref: master

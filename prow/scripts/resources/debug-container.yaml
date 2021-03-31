@@ -113,31 +113,31 @@ spec:
     spec:
       hostPID: true
       containers:
-        - name: oom-debug
-          securityContext:
-            privileged: true
-          image: eu.gcr.io/kyma-project/test-infra/debug-commando:current
-          imagePullPolicy: Always
-          command:
-            - "/bin/entrypoint.sh"
-          volumeMounts:
-            - mountPath: /host-proc
-              name: proc-vol
-            - mountPath: /host-sys
-              name: sys-vol
-            - mountPath: /var/run/docker.sock
-              name: docker-socket
-            - name: entrypoint-vol
-              mountPath: /bin/entrypoint.sh
-              readOnly: true
-              subPath: entrypoint.sh
-          resources:
-            requests:
-              memory: "50Mi"
-              cpu: "100m"
-            limits:
-              memory: "350Mi"
-              cpu: "1"
+      - name: oom-debug
+        securityContext:
+          privileged: true
+        image: eu.gcr.io/kyma-project/test-infra/debug-commando:current
+        imagePullPolicy: Always
+        command:
+          - "/bin/entrypoint.sh"
+        volumeMounts:
+          - mountPath: /host-proc
+            name: proc-vol
+          - mountPath: /host-sys
+            name: sys-vol
+          - mountPath: /var/run/docker.sock
+            name: docker-socket
+          - name: entrypoint-vol
+            mountPath: /bin/entrypoint.sh
+            readOnly: true
+            subPath: entrypoint.sh
+        resources:
+          requests:
+            memory: "50Mi"
+            cpu: "100m"
+          limits:
+            memory: "350Mi"
+            cpu: "1"
       volumes:
         - name: proc-vol
           hostPath:

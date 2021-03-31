@@ -72,7 +72,7 @@ func (s ComponentSuite) preMasterTest(jobConfig config.JobConfig) func(t *testin
 		AssertThatExecGolangBuildpack(t, job.JobBase, s.Image, s.workingDirectory())
 		AssertThatSpecifiesResourceRequests(t, job.JobBase)
 		if !s.isTestInfra() {
-			AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "master")
+			AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "main")
 		}
 		AssertThatHasPresets(t, job.JobBase, preset.DindEnabled, s.DockerRepositoryPreset, preset.GcrPush, preset.BuildPr)
 		job.RunsAgainstChanges(s.FilesTriggeringJob)
@@ -88,11 +88,11 @@ func (s ComponentSuite) postMasterTest(jobConfig config.JobConfig) func(t *testi
 		)
 		require.NotNil(t, job)
 
-		assert.Equal(t, []string{"^master$"}, job.Branches)
+		assert.Equal(t, []string{"^master$", "^main$"}, job.Branches)
 		assert.Equal(t, 10, job.MaxConcurrency)
 		assert.True(t, job.Decorate)
 		if !s.isTestInfra() {
-			AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "master")
+			AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "main")
 		}
 		AssertThatHasPresets(t, job.JobBase, preset.DindEnabled, s.DockerRepositoryPreset, preset.GcrPush, s.BuildPresetMaster)
 		job.RunsAgainstChanges(s.FilesTriggeringJob)

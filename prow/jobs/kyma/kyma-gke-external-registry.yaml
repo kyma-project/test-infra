@@ -50,6 +50,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       branches:
         - ^master$
+        - ^main$
       <<: *gke_job_template
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((resources/serverless\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -58,7 +59,21 @@ presubmits: # runs on PRs
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
+    - name: pre-rel121-kyma-gke-external-registry
+      cluster: untrusted-workload
+      branches:
+        - release-1.21
+      <<: *gke_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: release-1.21
     - name: pre-rel120-kyma-gke-external-registry
       cluster: untrusted-workload
       branches:
@@ -87,20 +102,6 @@ presubmits: # runs on PRs
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-1.19
-    - name: pre-rel118-kyma-gke-external-registry
-      cluster: untrusted-workload
-      branches:
-        - release-1.18
-      <<: *gke_job_template
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.18
 
 # postsubmits:
 #   kyma-project/kyma:
@@ -112,6 +113,7 @@ presubmits: # runs on PRs
 #         testgrid-num-failures-to-alert: '1'
 #       branches:
 #         - ^master$
+#         - ^main$
 #       labels:
 #         preset-build-master: "true"
 #         <<: *gke_job_labels_template

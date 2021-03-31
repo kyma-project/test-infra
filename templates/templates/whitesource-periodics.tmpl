@@ -56,11 +56,13 @@
       {{- end}}
       {{- if .JobConfig.extra_refs}}
       extra_refs:
-        {{- range .JobConfig.extra_refs}}
+        {{- range $key, $value := .JobConfig.extra_refs}}
+          {{- range $value}}
         - org: {{ .org }}
           repo: {{ .repo }}
           path_alias: {{ .path_alias }}
           base_ref: {{ .base_ref}}
+          {{- end}}
         {{- end}}
         - org: {{ .JobConfig.project }}
           repo: {{ .JobConfig.name }}
