@@ -198,6 +198,7 @@ periodics: # runs on schedule
         testgrid-create-test-group: "false"
       labels:
         preset-cluster-version: "true"
+        preset-debug-commando-oom: "true"
         preset-gardener-gcp-kyma-integration: "true"
         preset-gc-project-env: "true"
       cron: "00 */1 * * 1-5"

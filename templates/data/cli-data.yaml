@@ -218,6 +218,7 @@ templates:
                     GARDENER_REGION: "europe-west4"
                     GARDENER_ZONES: "europe-west4-b"
                   labels:
+                    preset-debug-commando-oom: "true"
                     preset-gardener-gcp-kyma-integration: "true"
                     preset-cluster-version: "true"
                     preset-gc-project-env: "true"
