@@ -28,7 +28,7 @@ templates:
                   name: post-kyma-cli
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/cli"
-                    - "ci-master"
+                    - "ci-main"
                   branches:
                     - "^master$"
                     - "^release-\\d+\\.\\d+$"
@@ -66,7 +66,7 @@ templates:
                     - "^stable$"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/cli"
-                    - "ci-master"
+                    - "ci-main"
                   labels:
                     preset-kyma-cli-stable: "true"
                     preset-sa-kyma-artifacts: "true"
