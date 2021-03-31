@@ -35,6 +35,6 @@ ENV LICENSE_PULLER_PATH=/license-puller.sh
 
 # Prow Tools
 
-COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20210122-26875a41 /prow-tools /prow-tools
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20210331-4a336452 /prow-tools /prow-tools
 # for better access to prow-tools
 ENV PATH=$PATH:/prow-tools
