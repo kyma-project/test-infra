@@ -503,7 +503,7 @@ periodics:
     <<: *gardener_gcp_busola_job_template
     decorate: true
     decoration_config:
-      timeout: 3600000000000 # 1h
+      timeout: 7200000000000 # 2h
       grace_period: 600000000000 # 10min
     cron: "0 6 * * *"
     extra_refs:
@@ -525,7 +525,7 @@ periodics:
     <<: *gardener_gcp_busola_job_template
     decorate: true
     decoration_config:
-      timeout: 3600000000000 # 1h
+      timeout: 7200000000000 # 2h
       grace_period: 600000000000 # 10min
     cron: "0 6 * * *"
     extra_refs:

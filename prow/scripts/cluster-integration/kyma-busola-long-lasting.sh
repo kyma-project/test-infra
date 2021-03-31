@@ -33,21 +33,24 @@ function provisionBusola(){
 
     log::info "Installing Busola on the cluster: ${DOMAIN_NAME}"
     # create the cluster
+    # shellcheck disable=SC2002
     cat "${RESOURCES_PATH}/cluster-busola.yaml" | envsubst | kubectl create -f -
 
     # wait for the cluster to be ready
     kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${DOMAIN_NAME}"
 
     # switch to the new cluster
-    kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath={.data.kubeconfig} | base64 -d > "${RESOURCES_PATH}/kubeconfig--busola--${DOMAIN_NAME}.yaml"
+    kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--busola--${DOMAIN_NAME}.yaml"
     export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--busola--$DOMAIN_NAME.yaml"
 
     # ask for new certificates
+    # shellcheck disable=SC2002
     cat "${RESOURCES_PATH}/wildcardCert.yaml" | envsubst | kubectl apply -f -
 
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
     helm repo update
 
+    # shellcheck disable=SC2002
     cat "${RESOURCES_PATH}/nginxValues.yaml" | envsubst | helm install ingress-nginx --namespace=kube-system -f - ingress-nginx/ingress-nginx
 
     # wait for ingress controller to start
@@ -79,13 +82,14 @@ function provisionKyma2(){
     log::info "Installing Kyma version: ${KYMA_VERSION} on the cluster : ${DOMAIN_NAME}"
 
     # create the cluster
+    # shellcheck disable=SC2002
     cat "${RESOURCES_PATH}/cluster-kyma.yaml" | envsubst | kubectl create -f -
 
     # wait for the cluster to be ready
     kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${DOMAIN_NAME}"
 
     # switch to the new cluster
-    kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath={.data.kubeconfig} | base64 -d > "${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
+    kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
     export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
 
     kyma::install_cli
