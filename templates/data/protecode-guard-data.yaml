@@ -55,7 +55,7 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "jobConfig_labels"
-          - repoName: "github.com/kyma-incubator/third-party-images"
+          - repoName: "github.com/kyma-project/third-party-images"
             jobs:
               - jobConfig:
                   name: pre-master-third-party-images-protecode-guard

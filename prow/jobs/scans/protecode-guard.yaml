@@ -84,7 +84,7 @@ presubmits: # runs on PRs
                 memory: 200Mi
                 cpu: 80m
   
-  kyma-incubator/third-party-images:
+  kyma-project/third-party-images:
     - name: pre-master-third-party-images-protecode-guard
       labels:
         preset-gc-compute-envs: "true"

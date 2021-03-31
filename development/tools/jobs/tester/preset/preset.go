@@ -16,6 +16,8 @@ const (
 	DockerPushRepoIncubator Preset = "preset-docker-push-repository-incubator"
 	// DockerPushRepoControlPlane means Docker repository control-plane images
 	DockerPushRepoControlPlane Preset = "preset-docker-push-repository-control-plane"
+	// DockerPushRepoThirdPartyImages means Docker repository third-party-images
+	DockerPushRepoThirdPartyImages Preset = "preset-docker-push-repository-tpi"
 	// DockerPushRepoGlobal means Docker global repository for images
 	DockerPushRepoGlobal Preset = "preset-docker-push-repository-global"
 	// BuildPr means PR environment
