@@ -3,7 +3,7 @@ This directory contains source code for the image-guard admission controller.
 
 Image-guard performs the following tasks:
 * Monitor and log used Docker images in the Pods.
-* Optionally, check and allow the usage of the whitelisted registries only.
+* Optionally, check and allow the usage of the listed registries only.
 
 ## Prerequisites
 To deploy the application, you need the following:
