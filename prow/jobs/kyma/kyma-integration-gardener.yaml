@@ -496,16 +496,16 @@ periodics:
       preset-log-collector-slack-token: "true"
       <<: *gardener_azure_job_labels_template
 
-  - name: kyma-nightly-gardener-azure-busola
+  - name: kyma-nightly-gardener-gcp-busola
     annotations:
       testgrid-create-test-group: "false"
     cluster: untrusted-workload
     <<: *gardener_gcp_busola_job_template
     decorate: true
     decoration_config:
-      timeout: 14400000000000 # 4h
+      timeout: 3600000000000 # 1h
       grace_period: 600000000000 # 10min
-    cron: "0 4,7,10,13 * * *"
+    cron: "0 6 * * *"
     extra_refs:
     - <<: *test_infra_ref
       base_ref: main
@@ -514,5 +514,28 @@ periodics:
     - <<: *busola_ref
       base_ref: main
     labels:
+      preset-busola-nightly-provision-type-busola: "true"
+      preset-log-collector-slack-token: "true"
+      <<: *gardener_gcp_job_labels_template
+
+  - name: kyma-nightly-gardener-gcp-busola-kyma
+    annotations:
+      testgrid-create-test-group: "false"
+    cluster: untrusted-workload
+    <<: *gardener_gcp_busola_job_template
+    decorate: true
+    decoration_config:
+      timeout: 3600000000000 # 1h
+      grace_period: 600000000000 # 10min
+    cron: "0 6 * * *"
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: main
+    - <<: *kyma_ref
+      base_ref: master
+    - <<: *busola_ref
+      base_ref: main
+    labels:
+      preset-busola-nightly-provision-type-kyma: "true"
       preset-log-collector-slack-token: "true"
       <<: *gardener_gcp_job_labels_template

@@ -1,2 +1,3 @@
 pjNames:
-- pjName: "kyma-nightly-gardener-azure-busola"
+#- pjName: "kyma-nightly-gardener-gcp-busola"
+- pjName: "kyma-nightly-gardener-gcp-busola-kyma"

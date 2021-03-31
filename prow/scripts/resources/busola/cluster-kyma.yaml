@@ -9,17 +9,13 @@ spec:
     kubeAPIServer:
       enableBasicAuthentication: false
       oidcConfig:
-        # clientID: 5W89vBHwn2mu7nT0uzvoN4xCof0h4jtN
-        # groupsClaim: 'http://k8s/groups'
-        # issuerURL: 'https://kyma.eu.auth0.com/'
-        # usernameClaim: email
-        clientID: d0316c58-b0fe-45cd-9960-0fea0708355a
+        clientID: 12b13a26-d993-4d0c-aa08-5f5852bbdff6
         groupsClaim: groups
-        issuerURL: 'https://apskyxzcl.accounts400.ondemand.com'
+        issuerURL: 'https://kyma.accounts.ondemand.com'
         signingAlgs:
           - RS256
         usernameClaim: sub
-        usernamePrefix: '-' 
+        usernamePrefix: '-'
     version: 1.18.16
   networking:
     nodes: 10.250.0.0/16
@@ -53,7 +49,7 @@ spec:
         type: pd-ssd
       zones:
       - $GARDENER_ZONES
-  purpose: testing
+  purpose: development
   addons:
     kubernetesDashboard:
       enabled: false

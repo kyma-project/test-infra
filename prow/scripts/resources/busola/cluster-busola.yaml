@@ -3,7 +3,7 @@ kind: Shoot
 metadata:
   name: $DOMAIN_NAME
 spec:
-  purpose: testing
+  purpose: development
   cloudProfileName: gcp
   kubernetes:
     allowPrivilegedContainers: true

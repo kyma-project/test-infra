@@ -123,6 +123,7 @@ requiredVars=(
     GARDENER_KYMA_PROW_KUBECONFIG
     GARDENER_KYMA_PROW_PROJECT_NAME
     GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
+    BUSOLA_PROVISION_TYPE
 )
 
 utils::check_required_vars "${requiredVars[@]}"
@@ -139,18 +140,23 @@ fi
 
 readonly COMMON_NAME_PREFIX="grd"
 readonly KYMA_NAME_SUFFIX="kyma"
-readonly BUSOLA_NAME_SUFFIX="busol"
+readonly BUSOLA_NAME_SUFFIX="busola"
 
 KYMA_COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${KYMA_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 BUSOLA_COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${BUSOLA_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 
-log::info "Kyma cluster name: ${KYMA_COMMON_NAME}"
-log::info "Busola cluster name: ${BUSOLA_COMMON_NAME}"
 
 export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
-delete_cluster "${KYMA_COMMON_NAME}"
-provisionKyma2 "master" "${KYMA_COMMON_NAME}"
 
-export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
-delete_cluster "${BUSOLA_COMMON_NAME}"
-provisionBusola "${BUSOLA_COMMON_NAME}"
+if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
+    log::info "Kyma cluster name: ${KYMA_COMMON_NAME}"
+    delete_cluster "${KYMA_COMMON_NAME}"
+    provisionKyma2 "master" "${KYMA_COMMON_NAME}"
+elif [[ $BUSOLA_PROVISION_TYPE == "BUSOLA" ]]; then
+    log::info "Busola cluster name: ${BUSOLA_COMMON_NAME}"
+    delete_cluster "${BUSOLA_COMMON_NAME}"
+    provisionBusola "${BUSOLA_COMMON_NAME}"
+else
+    log::error "Wrong value for BUSOLA_PROVISION_TYPE: '$BUSOLA_PROVISION_TYPE'"
+    exit 1
+fi
