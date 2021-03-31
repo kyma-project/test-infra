@@ -35,6 +35,7 @@ data:
     }
     
     function track_container() {
+        set -x
         container_id=$1
         container_pid=$(docker inspect --format '{{ .State.Pid }}' "$container_id")
         # container statistics
@@ -83,7 +84,7 @@ data:
           echo "$(date) | container_pid: $container_pid | container_name: $container_name | podname: $pod_name | mem_limit_in_bytes: $mem_limit | limit_hit_count: $limit_hit_count | mem_usage_in_bytes: $mem_usage | max_mem_usage_in_bytes: ${report_max_mem_usage[$container_pid]} | mem_usage_percent: $mem_usage_percent | max_mem_usage_percent: ${report_max_mem_usage_percent[$container_pid]} | cgroup_processes: $(echo ${report_cgroup_processes[$container_pid]} | tr ' ' '\n' | sort -u | tr '\n' ' ')"
         done
     }
-    
+    set -x
     set +e
     export host_cgroup_base="/host-sys/fs/cgroup/memory"
     declare -A containers
