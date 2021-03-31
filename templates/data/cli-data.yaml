@@ -28,7 +28,7 @@ templates:
                   name: post-kyma-cli
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/cli"
-                    - "ci-master"
+                    - "ci-main"
                   branches:
                     - "^master$"
                     - "^release-\\d+\\.\\d+$"
@@ -66,7 +66,7 @@ templates:
                     - "^stable$"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/cli"
-                    - "ci-master"
+                    - "ci-main"
                   labels:
                     preset-kyma-cli-stable: "true"
                     preset-sa-kyma-artifacts: "true"
@@ -181,7 +181,7 @@ templates:
                       - org: "kyma-project"
                         repo: "cli"
                         path_alias: "github.com/kyma-project/cli"
-                        base_ref: "master"
+                        base_ref: "main"
                   cron: "00 00 * * *" # "At 00:00 each day"
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-cli.sh"
                   env:
@@ -210,7 +210,7 @@ templates:
                       - org: "kyma-project"
                         repo: "cli"
                         path_alias: "github.com/kyma-project/cli"
-                        base_ref: "master"
+                        base_ref: "main"
                   cron: "00 */1 * * 1-5" # “At minute 0 past every hour on every day-of-week from Monday through Friday.”
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-cli-alpha-uninstall.sh"
                   env:
@@ -238,7 +238,7 @@ templates:
                 - org: "kyma-project"
                   repo: "cli"
                   path_alias: "github.com/kyma-project/cli"
-                  base_ref: "master"
+                  base_ref: "main"
         jobConfigs:
           - repoName:  kyma-project/cli
             jobs:
