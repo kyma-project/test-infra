@@ -17,7 +17,7 @@ kyma_local_ref: &kyma_local_ref
 
 # prow-tools image
 prow_tools_image: &prow_tools_image
-  image: eu.gcr.io/kyma-project/test-infra/prow-tools:v20210122-26875a41
+  image: eu.gcr.io/kyma-project/test-infra/prow-tools:v20210331-4a336452
 
 # Kubectl 1.16 and CLUSTER_VERSION=1.16
 base_image_k16: &base_image_k16
@@ -507,7 +507,7 @@ periodics:
             - "bash"
           args:
             - "-c"
-            - "/prow-tools/clusterscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -whitelisted-clusters=kyma-prow,workload-kyma-prow,nightly,weekly"
+            - "/prow-tools/clusterscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -excluded-clusters=kyma-prow,workload-kyma-prow,nightly,weekly"
           resources:
             requests:
               memory: 100Mi
