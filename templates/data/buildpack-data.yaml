@@ -352,7 +352,7 @@ templates:
                         - "presubmit"
                     jobConfig:
                       name: "pre-test-infra-prow-tools"
-                      run_if_changed: '^development/tools/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
+                      run_if_changed: '^development/(tools|jobguard)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
                   - inheritedConfigs:
@@ -363,7 +363,7 @@ templates:
                         - "postsubmit"
                     jobConfig:
                       name: "post-test-infra-prow-tools"
-                      run_if_changed: '^development/tools/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
+                      run_if_changed: '^development/(tools|jobguard)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
                   - inheritedConfigs:
