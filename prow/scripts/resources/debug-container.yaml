@@ -38,12 +38,15 @@ data:
         container_id=$1
         container_pid=$(docker inspect --format '{{ .State.Pid }}' "$container_id")
         # container statistics
+        declare - A report_max_mem_usage
+        declare - A report_max_mem_usage_percent
         report_max_mem_usage[$container_pid]=0
         report_max_mem_usage_percent[$container_pid]=0
         container_name=$(docker inspect --format '{{ .Name }}' "$container_id")
         if [[ $container_name =~ .*oom-debug.* ]]; then
           exit 0
         fi
+        declare -A report_cgroup_processes
         report_cgroup_processes[$container_pid]=$container_pid
         # find container pod name
         pod_name=$(nsenter -t $container_pid -u hostname)
