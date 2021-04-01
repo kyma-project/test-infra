@@ -73,7 +73,7 @@ There are two jobs that generate artifacts which allow you to install Kyma on a 
 All artifacts are stored in the publicly available bucket under the `gs://kyma-development-artifacts/` location. The bucket has a defined lifecycle management rule to automatically delete files older than 60 days. These are the exact artifacts locations:
 * For pull requests: `gs://kyma-development-artifacts/PR-<number>`
 * For changes to the `main` branch: `gs://kyma-development-artifacts/master-<commit_sha>`
-* For the latest changes in the `main` branch:  `gs://kyma-development-artifacts/master`
+* For the latest changes in the `main` branch: `gs://kyma-development-artifacts/master`
 
 A directory with artifacts consists of the following files:
 - `kyma-installer-cluster.yaml` to deploy Kyma installer
