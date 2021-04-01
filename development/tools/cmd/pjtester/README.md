@@ -8,7 +8,7 @@ ProwJob tester is a tool for testing changes to ProwJobs and scripts in the `tes
 
 The workhorse for testing ProwJobs is a tool written in Go called `pjtester`. It's available in the `prow-tools` Docker image.
 
-`pjtester` is executed by the presubmit job `pre-master-test-infra-pjtester`. This presubmit job is triggered when something changes under the `test-infra` repository virtual path `vpath/pjtester.yaml`. 
+`pjtester` is executed by the presubmit job `pre-master-test-infra-pjtester`. This presubmit job is triggered when something changes under the `test-infra` repository virtual path `vpath/pjtester.yaml`.
 It is configured by the **run-if-changed** option:
 ```bash
 run_if_changed: "^(vpath/pjtester.yaml)"
@@ -20,7 +20,7 @@ By default, `pjtester` disables all reporting for the ProwJob. That means no Sla
 
 Details from `pjtester.yaml` and from the ProwJob environment variables are used to construct the specification of the ProwJob to test. `pjtester` uses the environment variables created by Prow for the presubmit job which identify the pull request and its commit hash in the `test-infra` repository. The generated ProwJob to test then uses the `test-infra` code from the pull request's head, ensuring that the latest code is under test.
 
-For presubmit jobs, Prow requires the pull request's head SHA, pull request number, and pull request author set in the ProwJob refs. In the `pjtester.yaml file`, you must specify a pull request number for a repository against which a tested Prow job is running. If you don't specify one, `pjtester` will find a pull request for the `master` branch (`HEAD`) and use its details for the presubmit refs.
+For presubmit jobs, Prow requires the pull request's head SHA, pull request number, and pull request author set in the ProwJob refs. In the `pjtester.yaml file`, you must specify a pull request number for a repository against which a tested Prow job is running. If you don't specify one, `pjtester` will find a pull request for the `main` branch (`HEAD`) and use its details for the presubmit refs.
 
 Finally, `pjtester` creates the ProwJob on the production Prow instance. The ProwJob name for which you triggered the test is prefixed with `{YOUR_GITHUB_USER}_test_of_prowjob_`.
 
@@ -32,7 +32,7 @@ ProwJob tester is a tool running on Prow. You need a working Prow instance to us
 
 ## Installation
 
-To make `pjtester` work for you, you need to compile it and build an image with its binary included. This is done by the `post-test-infra-prow-tools` ProwJob. It builds and pushes the `prow-tools` image. 
+To make `pjtester` work for you, you need to compile it and build an image with its binary included. This is done by the `post-test-infra-prow-tools` ProwJob. It builds and pushes the `prow-tools` image.
 Next, you must add a presubmit job to trigger `pjtester` execution. This is done by the `pre-master-test-infra-pjtester` ProwJob.
 
 ## Configuration

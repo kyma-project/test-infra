@@ -13,7 +13,7 @@ The template list includes:
 - `compass-integration.yaml` that defines presubmit and postsubmit integration jobs which build Kyma to check its compatibility with the Compass component.
 - `generic-component.yaml` that provides a new way of creating component jobs. Instead of a predefined buildpack, it uses a generic bootstrap that contains Makefile and Docker but no component-specific dependencies.
 - `kyma-artifacts.yaml` that serves to create release artifacts.
-- `kyma-github-release.yaml` that is used for creating the GitHub release after merging the release branch to the `master` branch.
+- `kyma-github-release.yaml` that is used for creating the GitHub release after merging the release branch to the `main` branch.
 - `kyma-integration.yaml` that defines a set of presubmit and postsubmit integration jobs that build Kyma on clusters to verify if the introduced changes do not affect the existing Kyma components.
 - `kyma-release-candidate.yaml` that is used for building the release cluster for testing purposes.
 - `prow-config.yaml` that serves to create the main Prow configuration without job definitions.

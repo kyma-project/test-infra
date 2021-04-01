@@ -160,7 +160,7 @@ If the job is still in the testing phase, you can set `optional: true`.
 
 ## Migration from Plank to GitHub reporter
 
-First, you need to disable GitHub reporting in Plank. To do that, add the `--skip-report=true` flag to the Plank [deployment](https://github.com/kyma-project/test-infra/blob/master/prow/cluster/components/11-plank_deployment.yaml).
+First, you need to disable GitHub reporting in Plank. To do that, add the `--skip-report=true` flag to the Plank [deployment](https://github.com/kyma-project/test-infra/blob/main/prow/cluster/components/11-plank_deployment.yaml).
 
 Before migrating, upgrade your Plank to a version that includes the commit [`2118178`](https://github.com/kubernetes/test-infra/pull/10975/commits/211817826fc3c4f3315a02e46f3d6aa35573d22f).
 

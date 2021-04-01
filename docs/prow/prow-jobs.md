@@ -49,8 +49,8 @@ When you define jobs for Prow, the **name** parameter of the job must follow one
 You can extend the name of the job with a suffix to indicate the job's purpose. For example, write `pre-master-kyma-integration`.
 
 Add `{prefix}` in front of all presubmit and postsubmit jobs. Use:
-- `pre-master` for presubmit jobs that run against the `master` branch.
-- `post-master` for postsubmit jobs that run against the `master` branch.
+- `pre-master` for presubmit jobs that run against the `main` branch.
+- `post-master` for postsubmit jobs that run against the `main` branch.
 - `pre-rel{release-number}` for presubmit jobs that run against the release branches. For example, write `pre-rel06-kyma-components-api-controller`.
 
 
