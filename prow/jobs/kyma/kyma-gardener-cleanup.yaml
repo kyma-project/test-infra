@@ -26,6 +26,9 @@ periodics: # runs on schedule
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/cleanup-gardener.sh"
+            args:
+              - "--excluded-clusters"
+              - "grdbusola,grdkyma"
             env:
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"

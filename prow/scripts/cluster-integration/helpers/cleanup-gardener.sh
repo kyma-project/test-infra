@@ -11,6 +11,7 @@
 # - GARDENER_KYMA_PROW_PROJECT_NAME Name of the gardener project where the clusters will be cleaned up.
 # Arguments:
 # --excluded-clusters -  list of comma separated clusters that won't get removed
+
 readonly SECONDS_PER_HOUR=3600
 
 set -e
@@ -35,7 +36,6 @@ utils::check_required_vars "${requiredVars[@]}"
 EXCLUDED_CLUSTERS=""
 while [[ $# -gt 0 ]]
 do
-
     key="$1"
 
     case ${key} in
