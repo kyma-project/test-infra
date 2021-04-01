@@ -129,8 +129,6 @@ gardener::install_kyma() {
         return 1
     fi
 
-    INSTALLATION_RESOURCES_DIR=${KYMA_SOURCES_DIR}/installation/resources
-
     set -x
     if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
         kyma install \
