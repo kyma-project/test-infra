@@ -7,8 +7,6 @@ The main purpose of Job Guard is to delay running integration jobs that depend o
 
 ## Usage
 
-### Run the application
-
 To run the application, use this command:
 
 ```shell
@@ -21,7 +19,7 @@ go run cmd/jobguard/main.go \
   -base-ref=13abc \
   -expected-contexts-regexp="(some-context-regexp|another-context)"
 ```
-### CLI parameters
+## CLI parameters
 
 |Flag|Required|Description|
 |---|---|---|
