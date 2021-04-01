@@ -10,7 +10,7 @@
 # - GARDENER_KYMA_PROW_KUBECONFIG - Kubeconfig of the Gardener service account of the project
 # - GARDENER_KYMA_PROW_PROJECT_NAME Name of the gardener project where the clusters will be cleaned up.
 # Arguments:
-# --excluded-clusters -  list of comma separated clusters that won't get removed
+# --excluded-clusters -  regexp of clusters that won't get removed
 
 readonly SECONDS_PER_HOUR=3600
 
