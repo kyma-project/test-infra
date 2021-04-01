@@ -131,11 +131,15 @@ fi
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
+ps -ef | grep -i entrypoint
+
 if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
     gardener::hibernate_kyma
     sleep 120
     gardener::wake_up_kyma
 fi
+
+ps -ef | grep -i entrypoint
 
 if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
     gardener::test_fast_integration_kyma
@@ -146,6 +150,8 @@ else
     fi
     gardener::test_kyma
 fi
+
+sleep 3600
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
