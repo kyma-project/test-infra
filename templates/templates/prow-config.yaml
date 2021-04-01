@@ -398,6 +398,15 @@ presets:
           secretKeyRef:
             name: kyma-guard-bot-github-token
             key: token
+    # for new jobguard which does not use env for tokens
+    volumes:
+      - name: kyma-guard-bot-token-path
+        secret:
+          secretName: kyma-guard-bot-github-token
+      volumeMounts:
+        - name: kyma-guard-bot-token-path
+          mountPath: /etc/github
+          readOnly: true
   - labels:
       preset-kyma-guard-bot-github-identity: "true"
     env:

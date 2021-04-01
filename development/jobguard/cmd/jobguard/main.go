@@ -22,7 +22,7 @@ func gatherOptions(fs *flag.FlagSet, args ...string) options {
 	var o options
 	fs.BoolVar(&o.debug, "debug", false, "Enable debug logging.")
 	fs.BoolVar(&o.dryRun, "dry-run", false, "Enable dry run.")
-	fs.StringVar(&o.expContextRegexp, "expected-contexts-regexp", "", "Regular expression of expected contexts.")
+	fs.StringVar(&o.expContextRegexp, "expected-contexts-regexp", "", "Regular expression with expected contexts.")
 
 	o.jobguardOptions.AddFlags(fs)
 	o.github.AddFlags(fs)

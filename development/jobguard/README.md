@@ -19,6 +19,7 @@ To run the application, use this command:
 |`-github-token-path`|Yes|Path to the file containing the GitHub OAuth secret.|
 |`-debug`|No|Enable debug logging.|
 |`-dry-run`|No|Run in dry mode.|
+|`-expected-contexts-regexp`|Yes|Regular expression with expected contexts.|
 |`-fail-on-no-contexts`|No|Fail if regexp does not match to any of the GitHub contexts.|
 |`-timeout`|No|Time after the JobGuard fails.|
 |`-poll-interval`|No|Interval in which JobGuard checks contexts on GitHub.|
