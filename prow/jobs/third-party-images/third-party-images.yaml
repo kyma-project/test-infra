@@ -2,11 +2,11 @@
 
 
 presubmits: # runs on PRs
-  kyma-incubator/third-party-images:
+  kyma-project/third-party-images:
     - name: pre-master-tpi-cloudsql-proxy
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^cloudsql-proxy/'
       skip_report: false
@@ -29,7 +29,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/cloudsql-proxy"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/cloudsql-proxy"
               - "ci-pr"
             resources:
               requests:
@@ -38,7 +38,7 @@ presubmits: # runs on PRs
     - name: pre-master-tpi-docker-registry
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^docker-registry/'
       skip_report: false
@@ -61,7 +61,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/docker-registry"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/docker-registry"
               - "ci-pr"
             resources:
               requests:
@@ -70,7 +70,7 @@ presubmits: # runs on PRs
     - name: pre-master-tpi-fluent-bit
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^fluent-bit/'
       skip_report: false
@@ -93,7 +93,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/fluent-bit"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/fluent-bit"
               - "ci-pr"
             resources:
               requests:
@@ -102,7 +102,7 @@ presubmits: # runs on PRs
     - name: pre-master-tpi-jaeger-operator
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^jaeger-operator/'
       skip_report: false
@@ -125,7 +125,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/jaeger-operator"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/jaeger-operator"
               - "ci-pr"
             resources:
               requests:
@@ -134,7 +134,7 @@ presubmits: # runs on PRs
     - name: pre-master-tpi-k8s-tools
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^k8s-tools/'
       skip_report: false
@@ -157,7 +157,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/k8s-tools"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/k8s-tools"
               - "ci-pr"
             resources:
               requests:
@@ -166,7 +166,7 @@ presubmits: # runs on PRs
     - name: pre-master-tpi-kiali
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^kiali/'
       skip_report: false
@@ -189,7 +189,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/kiali"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiali"
               - "ci-pr"
             resources:
               requests:
@@ -198,7 +198,7 @@ presubmits: # runs on PRs
     - name: pre-master-tpi-kiwigrid-sidecar
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^kiwigrid-sidecar/'
       skip_report: false
@@ -221,7 +221,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/kiwigrid-sidecar"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiwigrid-sidecar"
               - "ci-pr"
             resources:
               requests:
@@ -230,7 +230,7 @@ presubmits: # runs on PRs
     - name: pre-master-tpi-minio
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^minio/'
       skip_report: false
@@ -253,7 +253,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/minio"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/minio"
               - "ci-pr"
             resources:
               requests:
@@ -262,7 +262,7 @@ presubmits: # runs on PRs
     - name: pre-master-tpi-minio-mc
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^minio-mc/'
       skip_report: false
@@ -285,7 +285,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/minio-mc"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/minio-mc"
               - "ci-pr"
             resources:
               requests:
@@ -294,7 +294,7 @@ presubmits: # runs on PRs
     - name: pre-master-tpi-console-nginx
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^console-nginx/'
       skip_report: false
@@ -317,7 +317,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/console-nginx"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/console-nginx"
               - "ci-pr"
             resources:
               requests:
@@ -326,7 +326,7 @@ presubmits: # runs on PRs
     - name: pre-master-tpi-node-exporter
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prometheus-node-exporter/'
       skip_report: false
@@ -349,7 +349,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/prometheus-node-exporter"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/prometheus-node-exporter"
               - "ci-pr"
             resources:
               requests:
@@ -358,7 +358,7 @@ presubmits: # runs on PRs
     - name: pre-master-tpi-grafana
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^grafana/'
       skip_report: false
@@ -381,7 +381,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/grafana"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/grafana"
               - "ci-pr"
             resources:
               requests:
@@ -390,7 +390,7 @@ presubmits: # runs on PRs
     - name: pre-master-tpi-python
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^python/'
       skip_report: false
@@ -413,7 +413,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/python"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/python"
               - "ci-pr"
             resources:
               requests:
@@ -421,13 +421,13 @@ presubmits: # runs on PRs
                 cpu: 0.8
   
 postsubmits: # runs on main
-  kyma-incubator/third-party-images:
+  kyma-project/third-party-images:
     - name: post-master-tpi-cloudsql-proxy
       annotations:
         testgrid-create-test-group: "false"
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^cloudsql-proxy/'
       skip_report: false
@@ -450,7 +450,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/cloudsql-proxy"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/cloudsql-proxy"
               - "ci-master"
             resources:
               requests:
@@ -461,7 +461,7 @@ postsubmits: # runs on main
         testgrid-create-test-group: "false"
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^docker-registry/'
       skip_report: false
@@ -484,7 +484,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/docker-registry"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/docker-registry"
               - "ci-master"
             resources:
               requests:
@@ -495,7 +495,7 @@ postsubmits: # runs on main
         testgrid-create-test-group: "false"
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^fluent-bit/'
       skip_report: false
@@ -518,7 +518,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/fluent-bit"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/fluent-bit"
               - "ci-master"
             resources:
               requests:
@@ -529,7 +529,7 @@ postsubmits: # runs on main
         testgrid-create-test-group: "false"
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^jaeger-operator/'
       skip_report: false
@@ -552,7 +552,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/jaeger-operator"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/jaeger-operator"
               - "ci-master"
             resources:
               requests:
@@ -563,7 +563,7 @@ postsubmits: # runs on main
         testgrid-create-test-group: "false"
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^k8s-tools/'
       skip_report: false
@@ -586,7 +586,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/k8s-tools"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/k8s-tools"
               - "ci-master"
             resources:
               requests:
@@ -597,7 +597,7 @@ postsubmits: # runs on main
         testgrid-create-test-group: "false"
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^kiali/'
       skip_report: false
@@ -620,7 +620,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/kiali"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiali"
               - "ci-master"
             resources:
               requests:
@@ -631,7 +631,7 @@ postsubmits: # runs on main
         testgrid-create-test-group: "false"
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^kiwigrid-sidecar/'
       skip_report: false
@@ -654,7 +654,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/kiwigrid-sidecar"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiwigrid-sidecar"
               - "ci-master"
             resources:
               requests:
@@ -665,7 +665,7 @@ postsubmits: # runs on main
         testgrid-create-test-group: "false"
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^minio/'
       skip_report: false
@@ -688,7 +688,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/minio"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/minio"
               - "ci-master"
             resources:
               requests:
@@ -699,7 +699,7 @@ postsubmits: # runs on main
         testgrid-create-test-group: "false"
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^minio-mc/'
       skip_report: false
@@ -722,7 +722,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/minio-mc"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/minio-mc"
               - "ci-master"
             resources:
               requests:
@@ -733,7 +733,7 @@ postsubmits: # runs on main
         testgrid-create-test-group: "false"
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^console-nginx/'
       skip_report: false
@@ -756,7 +756,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/console-nginx"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/console-nginx"
               - "ci-master"
             resources:
               requests:
@@ -767,7 +767,7 @@ postsubmits: # runs on main
         testgrid-create-test-group: "false"
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prometheus-node-exporter/'
       skip_report: false
@@ -790,7 +790,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/prometheus-node-exporter"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/prometheus-node-exporter"
               - "ci-master"
             resources:
               requests:
@@ -801,7 +801,7 @@ postsubmits: # runs on main
         testgrid-create-test-group: "false"
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^grafana/'
       skip_report: false
@@ -824,7 +824,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/grafana"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/grafana"
               - "ci-master"
             resources:
               requests:
@@ -835,7 +835,7 @@ postsubmits: # runs on main
         testgrid-create-test-group: "false"
       labels:
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^python/'
       skip_report: false
@@ -858,7 +858,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/python"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/python"
               - "ci-master"
             resources:
               requests:

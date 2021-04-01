@@ -1,22 +1,22 @@
 templates:
   - from: templates/generic.tmpl
     render:
-      - to: ../prow/jobs/incubator/third-party-images/third-party-images.yaml
+      - to: ../prow/jobs/third-party-images/third-party-images.yaml
         localSets:
           default:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             labels:
               preset-dind-enabled: "true"
               preset-sa-gcr-push: "true"
-              preset-docker-push-repository-incubator: "true"
+              preset-docker-push-repository-tpi: "true"
         jobConfigs:
-          - repoName: "kyma-incubator/third-party-images"
+          - repoName: "kyma-project/third-party-images"
             jobs:
               - jobConfig:
                   name: "pre-master-tpi-cloudsql-proxy"
                   run_if_changed: "^cloudsql-proxy/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/cloudsql-proxy"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/cloudsql-proxy"
                     - "ci-pr"
                 inheritedConfigs:
                   global:
@@ -30,7 +30,7 @@ templates:
                   name: "post-master-tpi-cloudsql-proxy"
                   run_if_changed: "^cloudsql-proxy/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/cloudsql-proxy"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/cloudsql-proxy"
                     - "ci-master"
                 inheritedConfigs:
                   global:
@@ -46,7 +46,7 @@ templates:
                   name: "pre-master-tpi-docker-registry"
                   run_if_changed: "^docker-registry/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/docker-registry"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/docker-registry"
                     - "ci-pr"
                 inheritedConfigs:
                   global:
@@ -60,7 +60,7 @@ templates:
                   name: "post-master-tpi-docker-registry"
                   run_if_changed: "^docker-registry/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/docker-registry"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/docker-registry"
                     - "ci-master"
                 inheritedConfigs:
                   global:
@@ -76,7 +76,7 @@ templates:
                   name: "pre-master-tpi-fluent-bit"
                   run_if_changed: "^fluent-bit/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/fluent-bit"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/fluent-bit"
                     - "ci-pr"
                 inheritedConfigs:
                   global:
@@ -90,7 +90,7 @@ templates:
                   name: "post-master-tpi-fluent-bit"
                   run_if_changed: "^fluent-bit/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/fluent-bit"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/fluent-bit"
                     - "ci-master"
                 inheritedConfigs:
                   global:
@@ -106,7 +106,7 @@ templates:
                   name: "pre-master-tpi-jaeger-operator"
                   run_if_changed: "^jaeger-operator/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/jaeger-operator"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/jaeger-operator"
                     - "ci-pr"
                 inheritedConfigs:
                   global:
@@ -120,7 +120,7 @@ templates:
                   name: "post-master-tpi-jaeger-operator"
                   run_if_changed: "^jaeger-operator/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/jaeger-operator"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/jaeger-operator"
                     - "ci-master"
                 inheritedConfigs:
                   global:
@@ -136,7 +136,7 @@ templates:
                   name: "pre-master-tpi-k8s-tools"
                   run_if_changed: "^k8s-tools/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/k8s-tools"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/k8s-tools"
                     - "ci-pr"
                 inheritedConfigs:
                   global:
@@ -150,7 +150,7 @@ templates:
                   name: "post-master-tpi-k8s-tools"
                   run_if_changed: "^k8s-tools/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/k8s-tools"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/k8s-tools"
                     - "ci-master"
                 inheritedConfigs:
                   global:
@@ -166,7 +166,7 @@ templates:
                   name: "pre-master-tpi-kiali"
                   run_if_changed: "^kiali/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/kiali"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiali"
                     - "ci-pr"
                 inheritedConfigs:
                   global:
@@ -180,7 +180,7 @@ templates:
                   name: "post-master-tpi-kiali"
                   run_if_changed: "^kiali/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/kiali"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiali"
                     - "ci-master"
                 inheritedConfigs:
                   global:
@@ -196,7 +196,7 @@ templates:
                   name: "pre-master-tpi-kiwigrid-sidecar"
                   run_if_changed: "^kiwigrid-sidecar/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/kiwigrid-sidecar"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiwigrid-sidecar"
                     - "ci-pr"
                 inheritedConfigs:
                   global:
@@ -210,7 +210,7 @@ templates:
                   name: "post-master-tpi-kiwigrid-sidecar"
                   run_if_changed: "^kiwigrid-sidecar/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/kiwigrid-sidecar"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiwigrid-sidecar"
                     - "ci-master"
                 inheritedConfigs:
                   global:
@@ -226,7 +226,7 @@ templates:
                   name: "pre-master-tpi-minio"
                   run_if_changed: "^minio/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/minio"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/minio"
                     - "ci-pr"
                 inheritedConfigs:
                   global:
@@ -240,7 +240,7 @@ templates:
                   name: "post-master-tpi-minio"
                   run_if_changed: "^minio/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/minio"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/minio"
                     - "ci-master"
                 inheritedConfigs:
                   global:
@@ -256,7 +256,7 @@ templates:
                   name: "pre-master-tpi-minio-mc"
                   run_if_changed: "^minio-mc/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/minio-mc"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/minio-mc"
                     - "ci-pr"
                 inheritedConfigs:
                   global:
@@ -270,7 +270,7 @@ templates:
                   name: "post-master-tpi-minio-mc"
                   run_if_changed: "^minio-mc/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/minio-mc"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/minio-mc"
                     - "ci-master"
                 inheritedConfigs:
                   global:
@@ -286,7 +286,7 @@ templates:
                   name: "pre-master-tpi-console-nginx"
                   run_if_changed: "^console-nginx/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/console-nginx"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/console-nginx"
                     - "ci-pr"
                 inheritedConfigs:
                   global:
@@ -300,7 +300,7 @@ templates:
                   name: "post-master-tpi-console-nginx"
                   run_if_changed: "^console-nginx/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/console-nginx"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/console-nginx"
                     - "ci-master"
                 inheritedConfigs:
                   global:
@@ -316,7 +316,7 @@ templates:
                   name: "pre-master-tpi-node-exporter"
                   run_if_changed: "^prometheus-node-exporter/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/prometheus-node-exporter"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/prometheus-node-exporter"
                     - "ci-pr"
                 inheritedConfigs:
                   global:
@@ -330,7 +330,7 @@ templates:
                   name: "post-master-tpi-node-exporter"
                   run_if_changed: "^prometheus-node-exporter/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/prometheus-node-exporter"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/prometheus-node-exporter"
                     - "ci-master"
                 inheritedConfigs:
                   global:
@@ -346,7 +346,7 @@ templates:
                   name: "pre-master-tpi-grafana"
                   run_if_changed: "^grafana/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/grafana"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/grafana"
                     - "ci-pr"
                 inheritedConfigs:
                   global:
@@ -360,7 +360,7 @@ templates:
                   name: "post-master-tpi-grafana"
                   run_if_changed: "^grafana/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/grafana"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/grafana"
                     - "ci-master"
                 inheritedConfigs:
                   global:
@@ -376,7 +376,7 @@ templates:
                   name: "pre-master-tpi-python"
                   run_if_changed: "^python/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/python"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/python"
                     - "ci-pr"
                 inheritedConfigs:
                   global:
@@ -390,7 +390,7 @@ templates:
                   name: "post-master-tpi-python"
                   run_if_changed: "^python/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/python"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/python"
                     - "ci-master"
                 inheritedConfigs:
                   global:
