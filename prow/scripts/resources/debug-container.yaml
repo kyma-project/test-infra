@@ -9,12 +9,12 @@ data:
     function host_stats() {
         date
         # host memory statistics
-        memory_capacity_in_kb=$(cat /host-proc/meminfo | grep MemTotal | awk '{print $2}')
-        memory_capacity_in_bytes=$((memory_capacity_in_kb * 1024))
-        memory_usage_in_bytes=$(cat /host-sys/fs/cgroup/memory/memory.usage_in_bytes)
-        memory_total_inactive_file=$(cat /host-sys/fs/cgroup/memory/memory.stat | grep total_inactive_file | awk '{print $2}')
+        memory_capacity_in_kb=$( cat /host-proc/meminfo | grep MemTotal | awk '{print $2}' )
+        memory_capacity_in_bytes=$(( memory_capacity_in_kb * 1024 ))
+        memory_usage_in_bytes=$( cat /host-sys/fs/cgroup/memory/memory.usage_in_bytes )
+        memory_total_inactive_file=$( cat /host-sys/fs/cgroup/memory/memory.stat | grep total_inactive_file | awk '{print $2}' )
         memory_working_set=${memory_usage_in_bytes}
-        if [ "$memory_working_set" -lt "$memory_total_inactive_file" ];
+        if [ "${memory_working_set}" -lt "${memory_total_inactive_file}" ];
         then
           memory_working_set=0
         else
@@ -27,68 +27,67 @@ data:
     }
     
     function track_container() {
-        set -x
-        container_id=$1
-        container_pid=$(docker inspect --format '{{ .State.Pid }}' "$container_id")
+        container_id=${1}
+        container_pid=$(docker inspect --format '{{ .State.Pid }}' "${container_id}")
         # container statistics
         declare -A report_max_mem_usage
         declare -A report_max_mem_usage_percent
-        report_max_mem_usage[$container_pid]=0
-        report_max_mem_usage_percent[$container_pid]=0
-        container_name=$(docker inspect --format '{{ .Name }}' "$container_id")
-        if [[ $container_name =~ .*oom-debug.* ]]; then
+        declare -A report_cgroup_processes
+        report_max_mem_usage[${container_pid}]=0
+        report_max_mem_usage_percent[${container_pid}]=0
+        container_name=$(docker inspect --format '{{ .Name }}' "${container_id}")
+        if [[ ${container_name} =~ .*oom-debug.* ]]; then
           exit 0
         fi
-        declare -A report_cgroup_processes
-        report_cgroup_processes[$container_pid]=$container_pid
+        report_cgroup_processes[$container_pid]="${container_pid}"
         # find container pod name
-        pod_name=$(nsenter -t $container_pid -u hostname)
-        docker_cgroup=$(cat /host-proc/$container_pid/cgroup | grep ":memory:" | awk -F":memory:" '{print $2}')
-        while [ -d /host-proc/$container_pid/cgroup ]
+        pod_name=$(nsenter -t "${container_pid}" -u hostname)
+        docker_cgroup=$(cat /host-proc/"${container_pid}"/cgroup | grep ":memory:" | awk -F":memory:" '{print $2}')
+        mem_limit=$(cat "${host_cgroup_base}${docker_cgroup"/memory.limit_in_bytes)
+        while [ -d /host-proc/"${container_pid}"/cgroup ]
         do
-          cgutil event $host_cgroup_base$docker_cgroup/memory.oom_control
-          mem_usage=$(cat $host_cgroup_base$docker_cgroup/memory.usage_in_bytes)
-          mem_limit=$(cat $host_cgroup_base$docker_cgroup/memory.limit_in_bytes)
-          max_mem_usage=$(cat $host_cgroup_base$docker_cgroup/memory.max_usage_in_bytes)
+          cgutil event "${host_cgroup_base}${docker_cgroup}"/memory.oom_control
+          mem_usage=$(cat "${host_cgroup_base}${docker_cgroup}"/memory.usage_in_bytes)
+          max_mem_usage=$(cat "${host_cgroup_base}${docker_cgroup}"/memory.max_usage_in_bytes)
           # check if recorded max_mem_usage need update
-          if [ $max_mem_usage -gt ${report_max_mem_usage[$container_pid]} ]; then
-            report_max_mem_usage[$container_pid]=$max_mem_usage
+          if [ "${max_mem_usage}" -gt ${report_max_mem_usage[$container_pid]} ]; then
+            report_max_mem_usage[$container_pid]="${max_mem_usage}"
           fi
-          mem_usage_percent=$(( $mem_usage * 100 / $mem_limit))
-          max_mem_usage_percent=$(( $max_mem_usage * 100 / $mem_limit))
+          mem_usage_percent=$(( "${mem_usage}" * 100 / "${mem_limit}"))
+          max_mem_usage_percent=$(( "${max_mem_usage}" * 100 / "${mem_limit}"))
           # check if recorded max_mem_usage_ercent need update
-          if [ $max_mem_usage_percent -gt ${report_max_mem_usage_percent[$container_pid]} ]; then
-            report_max_mem_usage_percent[$container_pid]=$max_mem_usage_percent
+          if [ "${max_mem_usage_percent}" -gt ${report_max_mem_usage_percent[$container_pid]} ]; then
+            report_max_mem_usage_percent[$container_pid]="${max_mem_usage_percent}"
           fi
           # build string with list of cgroup PIDs
-          limit_hit_count=$(cat $host_cgroup_base$docker_cgroup/memory.failcnt)
+          limit_hit_count=$(cat "${host_cgroup_base}${docker_cgroup}"/memory.failcnt)
           cgroup_processes=""
-          for pid in $(cat $host_cgroup_base$docker_cgroup/cgroup.procs)
+          for pid in $(cat "${host_cgroup_base}${docker_cgroup}"/cgroup.procs)
           do
-            if [ -z "$cgroup_processes" ]; then
-              cgroup_processes="$pid"
+            if [ -z "${cgroup_processes}" ]; then
+              cgroup_processes="${pid}"
             else
-              cgroup_processes="$cgroup_processes $pid"
+              cgroup_processes="${cgroup_processes} ${pid}"
             fi
           done
           # add cgroup pids to the list, list will be made uniq when printed
-          report_cgroup_processes[$container_pid]="${report_cgroup_processes[$container_pid]} $cgroup_processes"
-          echo "$(date) | container_pid: $container_pid | container_name: $container_name | podname: $pod_name | mem_limit_in_bytes: $mem_limit | limit_hit_count: $limit_hit_count | mem_usage_in_bytes: $mem_usage | max_mem_usage_in_bytes: ${report_max_mem_usage[$container_pid]} | mem_usage_percent: $mem_usage_percent | max_mem_usage_percent: ${report_max_mem_usage_percent[$container_pid]} | cgroup_processes: $(echo ${report_cgroup_processes[$container_pid]} | tr ' ' '\n' | sort -u | tr '\n' ' ')"
+          report_cgroup_processes[$container_pid]="${report_cgroup_processes[$container_pid]} ${cgroup_processes}"
+          echo "$(date) | container_pid: ${container_pid} | container_name: ${container_name} | podname: ${pod_name} | mem_limit_in_bytes: ${mem_limit} | limit_hit_count: ${limit_hit_count} | mem_usage_in_bytes: ${mem_usage} | max_mem_usage_in_bytes: ${report_max_mem_usage[$container_pid]} | mem_usage_percent: ${mem_usage_percent} | max_mem_usage_percent: ${report_max_mem_usage_percent[$container_pid]} | cgroup_processes: $(echo ${report_cgroup_processes[$container_pid]} | tr ' ' '\n' | sort -u | tr '\n' ' ')"
         done
     }
-    set -x
+    
     set +e
     export host_cgroup_base="/host-sys/fs/cgroup/memory"
     declare -A containers
     while true
     do
       container_ids=$(docker container ls --format='{{println .ID}}' | sort | uniq)
-      for container_id in $container_ids
+      for container_id in "${container_ids}"
       do
         # Check if container is present in tables
         if [[ -z "${containers[$container_id]+unset}" ]]; then
-          containers[$container_id]=$container_id
-          track_container $container_id &
+          containers[$container_id]="${container_id}"
+          track_container "${container_id}" &
         fi
       done
     done
