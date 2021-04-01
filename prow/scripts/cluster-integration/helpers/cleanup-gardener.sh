@@ -33,14 +33,14 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-EXCLUDED_CLUSTERS=""
+EXCLUDED_CLUSTERS_REGEX=""
 while [[ $# -gt 0 ]]
 do
     key="$1"
 
     case ${key} in
         --excluded-clusters)
-            EXCLUDED_CLUSTERS="$2"
+            EXCLUDED_CLUSTERS_REGEX="$2"
             shift
             shift
             ;;
@@ -50,7 +50,6 @@ do
             ;;
     esac
 done
-EXCLUDED_CLUSTERS=(${EXCLUDED_CLUSTERS//,/ }) # convert comma separated clusters string to array
 
 echo "--------------------------------------------------------------------------------"
 echo "Removing Gardener clusters allocated by failed/terminated integration jobs...  "
@@ -64,8 +63,7 @@ CLUSTERS=(${CLUSTERS//,/ }) # convert comma separated clusters string to array
 # cleanup all clusters
 for CLUSTER in "${CLUSTERS[@]}"
 do
-    omit_cluster=$(utils::check_if_in_list "$CLUSTER" "${EXCLUDED_CLUSTERS[@]}")
-    if [ "$omit_cluster" = "false" ]; then
+    if [[ ! "$CLUSTER" =~ ${EXCLUDED_CLUSTERS_REGEX} ]]; then
         # check cluster age
         # shellcheck disable=SC2016
         CREATION_TIME="$(kubectl --kubeconfig "${GARDENER_KYMA_PROW_KUBECONFIG}" -n garden-"${GARDENER_KYMA_PROW_PROJECT_NAME}" get shoots "$CLUSTER" -o go-template='{{.metadata.creationTimestamp}}')"

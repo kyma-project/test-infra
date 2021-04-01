@@ -317,24 +317,3 @@ function utils::debug_oom() {
   # run oom debug pod
   kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/debug-container.yaml"
 }
-
-# utils::check_if_in_list checks if the variable is in a list
-# Arguments
-# $1 - argument to check
-# $2 - list of variables
-function utils::check_if_in_list() {
-  if [ -z "$1" ]; then
-    echo "Not enough arguments, searched item is required"
-    exit
-  fi
-  checked_element=$1
-  shift
-
-  local in_list="false"
-    for list_element in "$@"; do
-        if [ "$checked_element" = "$list_element" ]; then
-            in_list="true"
-        fi
-    done
-    echo "$in_list"
-}
