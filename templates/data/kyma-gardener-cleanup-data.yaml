@@ -5,6 +5,9 @@ templates:
         localSets:
           jobConfig_default:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/cleanup-gardener.sh"
+            args:
+              - "--excluded-clusters"
+              - "(grdbusola|grdkyma)"
             labels:
               preset-gardener-gcp-kyma-integration: "true"
             env:
