@@ -300,6 +300,7 @@ function applyControlPlaneOverrides() {
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "provisioning-enable-overrides" \
     --data "global.provisioning.enabled=true" \
     --data "global.metris.enabled=true" \
+    --data "global.kyma_metrics_collector.enabled=true" \
     --data "global.database.embedded.enabled=true" \
     --data "global.kyma_environment_broker.enabled=true" \
     --data "kyma-environment-broker.e2e.enabled=false" \
