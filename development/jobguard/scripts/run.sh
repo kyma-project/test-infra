@@ -6,9 +6,6 @@ ROOT_PATH=$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")
 KYMA_PROJECT_DIR=${KYMA_PROJECT_DIR:-"/home/prow/go/src/github.com/kyma-project"}
 JOB_NAME_PATTERN=${JOB_NAME_PATTERN:-"(pre-master-kyma-components-.*)|(pre-master-kyma-tests-.*)|(pre-kyma-components-.*)|(pre-kyma-tests-.*)|(pre-main-kyma-components-.*)|(pre-main-kyma-tests-.*)"}
 TIMEOUT=${JOBGUARD_TIMEOUT:-"15m"}
-echo "KYMA PROJECT DIR ${KYMA_PROJECT_DIR}"
-echo "COMMIT SHA: ${PULL_PULL_SHA}"
-echo "JOBGUARD_TIMEOUT: ${TIMEOUT}"
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 function jobguard_fallback() {
@@ -49,9 +46,8 @@ args=(
 )
 
 if [ -x "/prow-tools/jobguard" ]; then
-  /prow-tools/jobguard "${args[@]}" || jobguard_fallback
+  /prow-tools/jobguard "${args[@]}" || jobguard_fallback # try to fall back to older configuration
 else
   cd "${ROOT_PATH}/cmd/jobguard" || exit 1
-  go run main.go "${args[@]}" ||
-    jobguard_fallback # try to fall back to older configuration
+  go run main.go "${args[@]}" || jobguard_fallback # try to fall back to older configuration
 fi
