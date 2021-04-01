@@ -43,7 +43,7 @@ data:
         # find container pod name
         pod_name=$(nsenter -t "${container_pid}" -u hostname)
         docker_cgroup=$(cat /host-proc/"${container_pid}"/cgroup | grep ":memory:" | awk -F":memory:" '{print $2}')
-        mem_limit=$(cat "${host_cgroup_base}${docker_cgroup"/memory.limit_in_bytes)
+        mem_limit=$(cat "${host_cgroup_base}${docker_cgroup}"/memory.limit_in_bytes)
         while [ -d /host-proc/"${container_pid}"/cgroup ]
         do
           cgutil event "${host_cgroup_base}${docker_cgroup}"/memory.oom_control
