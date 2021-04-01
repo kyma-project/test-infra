@@ -77,6 +77,11 @@ gardener::set_machine_type
 
 gardener::provision_cluster
 
+if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
+  # run oom debug pod
+  utils::debug_oom
+fi
+
 log::info "Installing Kyma"
 
 (
