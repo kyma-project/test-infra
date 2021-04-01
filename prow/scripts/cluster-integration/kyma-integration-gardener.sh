@@ -149,7 +149,6 @@ else
     gardener::test_kyma
 fi
 
-sleep 3600
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
