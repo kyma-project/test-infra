@@ -1,0 +1,71 @@
+apiVersion: core.gardener.cloud/v1beta1
+kind: Shoot
+metadata:
+  name: $DOMAIN_NAME
+spec:
+  purpose: development
+  cloudProfileName: gcp
+  kubernetes:
+    allowPrivilegedContainers: true
+    kubeAPIServer:
+      enableBasicAuthentication: false
+      oidcConfig:
+        clientID: d0316c58-b0fe-45cd-9960-0fea0708355a
+        groupsClaim: groups
+        issuerURL: 'https://apskyxzcl.accounts400.ondemand.com'
+        signingAlgs:
+          - RS256
+        usernameClaim: sub
+        usernamePrefix: '-'
+    version: 1.20.4
+  provider:
+    controlPlaneConfig:
+      apiVersion: gcp.provider.extensions.gardener.cloud/v1alpha1
+      kind: ControlPlaneConfig
+      zone: $GARDENER_ZONES
+    infrastructureConfig:
+      apiVersion: gcp.provider.extensions.gardener.cloud/v1alpha1
+      kind: InfrastructureConfig
+      networks:
+        workers: 10.250.0.0/16
+    type: gcp
+    workers:
+    - machine:
+        image:
+          name: gardenlinux
+          version: 184.0.0
+        type: n1-standard-2
+      maxSurge: 1
+      maxUnavailable: 0
+      maximum: 3
+      minimum: 1
+      name: worker-dev
+      volume:
+        size: 20Gi
+        type: pd-ssd
+      zones:
+      - $GARDENER_ZONES
+  networking:
+    nodes: 10.250.0.0/16
+    pods: 100.96.0.0/11
+    services: 100.64.0.0/13
+    type: calico      
+  maintenance:
+    timeWindow:
+      begin: 010000+0000
+      end: 020000+0000
+    autoUpdate:
+      kubernetesVersion: true
+      machineImageVersion: true
+  hibernation:
+    schedules:
+      - start: '00 19 * * 1,2,3,4,5'
+        end: '00 06 * * 1,2,3,4,5'
+        location: Europe/Berlin
+  addons:
+    kubernetesDashboard:
+      enabled: false
+    nginxIngress:
+      enabled: false        
+  region: $GARDENER_REGION
+  secretBindingName: $GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
