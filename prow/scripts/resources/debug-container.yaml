@@ -28,15 +28,15 @@ data:
     
     function track_container() {
         set -x
-        container_id=${1}
-        container_pid=$(docker inspect --format '{{ .State.Pid }}' "${container_id}")
+        function_container_id=$1
+        container_pid=$(docker inspect --format '{{ .State.Pid }}' "${function_container_id}")
         # container statistics
         declare -A report_max_mem_usage
         declare -A report_max_mem_usage_percent
         declare -A report_cgroup_processes
         report_max_mem_usage[$container_pid]=0
         report_max_mem_usage_percent[$container_pid]=0
-        container_name=$(docker inspect --format '{{ .Name }}' "${container_id}")
+        container_name=$(docker inspect --format '{{ .Name }}' "${function_container_id}")
         #if [[ "$container_name" =~ ".*oom-debug.*" ]]; then
         #  exit 0
         #fi
@@ -83,7 +83,7 @@ data:
     declare -A containers
     while true
     do
-      container_ids=$(docker container ls --format='{{println .ID}}' | sort | uniq)
+      container_ids="$(docker container ls --format='{{println .ID}}' | sort | uniq)"
       for container_id in "${container_ids}"
       do
         # Check if container is present in tables
