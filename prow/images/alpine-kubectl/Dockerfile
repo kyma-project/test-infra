@@ -25,6 +25,6 @@ ENTRYPOINT ["/bin/bash"]
 
 # Prow Tools
 
-COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20201113-72ed0661 /prow-tools /prow-tools
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20210401-294e46e5 /prow-tools /prow-tools
 # for better access to prow-tools
 ENV PATH=$PATH:/prow-tools

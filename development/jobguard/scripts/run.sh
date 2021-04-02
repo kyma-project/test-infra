@@ -41,7 +41,7 @@ args=(
   -timeout="$TIMEOUT"
   -org="$REPO_OWNER"
   -repo="$REPO_NAME"
-  -base-ref="$PULL_BASE_SHA"
+  -base-ref="$PULL_PULL_SHA"
   -expected-contexts-regexp="$JOB_NAME_PATTERN"
 )
 
