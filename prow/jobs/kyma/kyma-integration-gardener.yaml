@@ -384,7 +384,7 @@ periodics:
       - <<: *test_infra_ref
         base_ref: main
       - <<: *kyma_ref
-        base_ref: master
+        base_ref: main
     labels:
       preset-log-collector-slack-token: "true"
       <<: *gardener_gcp_job_labels_template
@@ -404,7 +404,7 @@ periodics:
       - <<: *test_infra_ref
         base_ref: main
       - <<: *kyma_ref
-        base_ref: master
+        base_ref: main
     labels:
       <<: *gardener_aws_job_labels_template
 
@@ -423,7 +423,7 @@ periodics:
       - <<: *test_infra_ref
         base_ref: main
       - <<: *kyma_ref
-        base_ref: master
+        base_ref: main
     labels:
       preset-log-collector-slack-token: "true"
       <<: *gardener_azure_job_labels_template
@@ -443,7 +443,7 @@ periodics:
     - <<: *test_infra_ref
       base_ref: main
     - <<: *kyma_ref
-      base_ref: master
+      base_ref: main
     - <<: *kyma_local_ref
       base_ref: main
     labels:
@@ -465,7 +465,7 @@ periodics:
     - <<: *test_infra_ref
       base_ref: main
     - <<: *kyma_ref
-      base_ref: master
+      base_ref: main
     - <<: *kyma_local_ref
       base_ref: main
     labels:
@@ -489,7 +489,7 @@ periodics:
     - <<: *test_infra_ref
       base_ref: main
     - <<: *kyma_ref
-      base_ref: master
+      base_ref: main
     - <<: *kyma_local_ref
       base_ref: main
     labels:
@@ -510,7 +510,7 @@ periodics:
     - <<: *test_infra_ref
       base_ref: main
     - <<: *kyma_ref
-      base_ref: master
+      base_ref: main
     - <<: *busola_ref
       base_ref: main
     labels:
@@ -532,7 +532,7 @@ periodics:
     - <<: *test_infra_ref
       base_ref: main
     - <<: *kyma_ref
-      base_ref: master
+      base_ref: main
     - <<: *busola_ref
       base_ref: main
     labels:

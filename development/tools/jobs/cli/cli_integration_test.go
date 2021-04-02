@@ -84,7 +84,7 @@ func TestKymaCliIntegrationGKEPeriodic(t *testing.T) {
 	assert.Equal(t, expName, actualPeriodic.Name)
 	assert.True(t, actualPeriodic.Decorate)
 	assert.Equal(t, "00 */1 * * 1-5", actualPeriodic.Cron)
-	tester.AssertThatHasExtraRepoRefCustom(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra", "cli", "kyma"}, []string{"main", "main", "master"})
+	tester.AssertThatHasExtraRepoRefCustom(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra", "cli", "kyma"}, []string{"main", "main", "main"})
 	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, preset.GardenerGCPIntegration, preset.ClusterVersion)
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPeriodic.Spec.Containers[0].Image)
 	tester.AssertThatSpecifiesResourceRequests(t, actualPeriodic.JobBase)
