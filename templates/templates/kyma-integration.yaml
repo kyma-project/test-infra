@@ -15,7 +15,7 @@ kyma_local_ref: &kyma_local_ref
 
 # prow-tools image
 prow_tools_image: &prow_tools_image
-  image: eu.gcr.io/kyma-project/test-infra/prow-tools:v20210331-4a336452
+  image: eu.gcr.io/kyma-project/test-infra/prow-tools:v20210401-294e46e5
 
 # Kubectl 1.16 and CLUSTER_VERSION=1.16
 base_image_k16: &base_image_k16
