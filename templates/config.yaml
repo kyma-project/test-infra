@@ -740,12 +740,12 @@ templates:
       - to: ../prow/config.yaml
         values:
           <<: *cluster_default
-  - from: templates/kyma-azure-event-hubs-namespaces-cleanup.yaml
-    render:
-      - to: ../prow/jobs/kyma/kyma-azure-event-hubs-namespaces-cleanup.yaml
-        values:
-          <<: *cluster_default
-          optional: true
+  # - from: templates/kyma-azure-event-hubs-namespaces-cleanup.yaml
+  #   render:
+  #     - to: ../prow/jobs/kyma/kyma-azure-event-hubs-namespaces-cleanup.yaml
+  #       values:
+  #         <<: *cluster_default
+  #         optional: true
   - from: templates/branchprotector-config.yaml
     render:
       - to: ../prow/branchprotector-config.yaml
