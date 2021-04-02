@@ -43,6 +43,7 @@ args=(
   -repo="$REPO_NAME"
   -base-ref="$PULL_BASE_SHA"
   -expected-contexts-regexp="$JOB_NAME_PATTERN"
+  -debug="true"
 )
 
 if [ -x "/prow-tools/jobguard" ]; then
