@@ -27,6 +27,7 @@ data:
     }
     
     function track_container() {
+        set -x
         container_id=${1}
         container_pid=$(docker inspect --format '{{ .State.Pid }}' "${container_id}")
         # container statistics
@@ -36,7 +37,7 @@ data:
         report_max_mem_usage[$container_pid]=0
         report_max_mem_usage_percent[$container_pid]=0
         container_name=$(docker inspect --format '{{ .Name }}' "${container_id}")
-        #if [[ ${container_name} =~ .*oom-debug.* ]]; then
+        #if [[ "$container_name" =~ ".*oom-debug.*" ]]; then
         #  exit 0
         #fi
         report_cgroup_processes[$container_pid]="${container_pid}"
@@ -77,6 +78,7 @@ data:
     }
     
     set +e
+    set -x
     export host_cgroup_base="/host-sys/fs/cgroup/memory"
     declare -A containers
     while true

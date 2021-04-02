@@ -139,6 +139,11 @@ gardener::provision_cluster() {
             --verbose
     fi
     set +x
+
+    if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
+      # run oom debug pod
+      utils::debug_oom
+    fi
 }
 
 gardener::install_kyma() {

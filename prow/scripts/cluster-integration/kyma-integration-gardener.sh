@@ -116,11 +116,6 @@ gardener::generate_overrides
 
 gardener::provision_cluster
 
-if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
-  # run oom debug pod
-  utils::debug_oom
-fi
-
 # uses previously set KYMA_SOURCE
 if [[ "${KYMA_ALPHA}" == "true" ]]; then
   kyma::alpha_deploy_kyma
@@ -149,6 +144,7 @@ else
     gardener::test_kyma
 fi
 
+sleep 3600
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"

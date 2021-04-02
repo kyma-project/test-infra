@@ -85,6 +85,11 @@ gardener::provision_cluster() {
             --scaler-max 4 --scaler-min 2 \
             --kube-version="${GARDENER_CLUSTER_VERSION}"
     )
+
+    if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
+      # run oom debug pod
+      utils::debug_oom
+    fi
 }
 
 gardener::install_kyma() {
