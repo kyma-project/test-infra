@@ -13,7 +13,7 @@ Workload clusters:
 - Use separate subnets for nodes, Pods, and services.
 
 ```gcloud container clusters list
-   NAME                          LOCATION        MAIN_VERSION  MAIN_IP       MACHINE_TYPE   NODE_VERSION    NUM_NODES  STATUS
+   NAME                          LOCATION        MASTER_VERSION  MASTER_IP       MACHINE_TYPE   NODE_VERSION    NUM_NODES  STATUS
    trusted-workload-kyma-prow    europe-west3    1.14.10-gke.36  _____________   n1-standard-4  1.14.10-gke.36  3          RUNNING
    untrusted-workload-kyma-prow  europe-west3    1.14.10-gke.36  _____________   n1-standard-4  1.14.10-gke.36  2          RUNNING
 ```
