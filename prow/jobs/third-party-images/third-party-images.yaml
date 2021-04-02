@@ -451,7 +451,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/third-party-images/cloudsql-proxy"
-              - "ci-main"
+              - "ci-master"
             resources:
               requests:
                 memory: 1.5Gi
@@ -485,7 +485,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/third-party-images/docker-registry"
-              - "ci-main"
+              - "ci-master"
             resources:
               requests:
                 memory: 1.5Gi
@@ -519,7 +519,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/third-party-images/fluent-bit"
-              - "ci-main"
+              - "ci-master"
             resources:
               requests:
                 memory: 1.5Gi
@@ -553,7 +553,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/third-party-images/jaeger-operator"
-              - "ci-main"
+              - "ci-master"
             resources:
               requests:
                 memory: 1.5Gi
@@ -587,7 +587,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/third-party-images/k8s-tools"
-              - "ci-main"
+              - "ci-master"
             resources:
               requests:
                 memory: 1.5Gi
@@ -621,7 +621,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiali"
-              - "ci-main"
+              - "ci-master"
             resources:
               requests:
                 memory: 1.5Gi
@@ -655,7 +655,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiwigrid-sidecar"
-              - "ci-main"
+              - "ci-master"
             resources:
               requests:
                 memory: 1.5Gi
@@ -689,7 +689,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/third-party-images/minio"
-              - "ci-main"
+              - "ci-master"
             resources:
               requests:
                 memory: 1.5Gi
@@ -723,7 +723,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/third-party-images/minio-mc"
-              - "ci-main"
+              - "ci-master"
             resources:
               requests:
                 memory: 1.5Gi
@@ -757,7 +757,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/third-party-images/console-nginx"
-              - "ci-main"
+              - "ci-master"
             resources:
               requests:
                 memory: 1.5Gi
@@ -791,7 +791,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/third-party-images/prometheus-node-exporter"
-              - "ci-main"
+              - "ci-master"
             resources:
               requests:
                 memory: 1.5Gi
@@ -825,7 +825,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/third-party-images/grafana"
-              - "ci-main"
+              - "ci-master"
             resources:
               requests:
                 memory: 1.5Gi
@@ -859,7 +859,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/third-party-images/python"
-              - "ci-main"
+              - "ci-master"
             resources:
               requests:
                 memory: 1.5Gi
