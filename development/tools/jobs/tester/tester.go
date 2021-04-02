@@ -60,7 +60,7 @@ const (
 	// ImageGolangToolboxLatest represents the latest version of the golang buildpack toolbox
 	ImageGolangToolboxLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20210323-bfa93550"
 	// ImageProwToolsLatest represents the latest version of the prow-tools image
-	ImageProwToolsLatest = "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210331-4a336452"
+	ImageProwToolsLatest = "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210401-294e46e5"
 	// ImageProwToolsCurrent represents the latest version of the prow-tools image
 	ImageProwToolsCurrent = "eu.gcr.io/kyma-project/test-infra/prow-tools:current"
 	// KymaProjectDir means kyma project dir
