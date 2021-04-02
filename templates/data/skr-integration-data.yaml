@@ -1,0 +1,78 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/kyma/skr-integration.yaml
+        localSets:
+          jobConfig_default:
+            path_alias: github.com/kyma-project/kyma
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
+            cluster: "trusted-workload"
+            request_memory: 100Mi
+            request_cpu:  50m
+            labels:
+              preset-build-master: "true"
+              preset-keb-dev-credentials: "true"
+              preset-kyma-integration-compass-dev: "true"
+        jobConfigs:
+          - repoName: "kyma-project/kyma"
+            jobs:
+              - inheritedConfigs:
+                  global:
+                    - "image_kyma-integration"
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                jobConfig:
+                  name: "skr-azure-integration-dev"
+                  cron: "5 * * * *" # "At minute 30 past every hour"
+                  labels:
+                    preset-keb-plan-azure: "true"
+              - inheritedConfigs:
+                  global:
+                    - "image_kyma-integration"
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                jobConfig:
+                  name: "skr-azure-lite-integration-dev"
+                  cron: "5 * * * *" # "At minute 30 past every hour"
+                  labels:
+                    preset-keb-plan-azure-lite: "true"
+              - inheritedConfigs:
+                  global:
+                    - "image_kyma-integration"
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                jobConfig:
+                  name: "skr-aws-integration-dev"
+                  cron: "5 * * * *" # "At minute 30 past every hour"
+                  labels:
+                    preset-keb-plan-aws: "true"
+              - inheritedConfigs:
+                  global:
+                    - "image_kyma-integration"
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                jobConfig:
+                  name: "skr-trial-integration-dev"
+                  cron: "5 * * * *" # "At minute 30 past every hour"
+                  labels:
+                    preset-keb-plan-trial: "true"
