@@ -53,7 +53,7 @@ for ZONE in ${EU_ZONES}; do
     gcloud compute instances create "kyma-deps-image-vm-${RANDOM_ID}" \
         --metadata enable-oslogin=TRUE \
         --machine-type n1-standard-4 \
-        --image-family debian-9 \
+        --image-family debian-10 \
         --image-project debian-cloud \
         --zone "${ZONE}" \
         --boot-disk-size 200 \
