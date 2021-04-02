@@ -118,12 +118,16 @@ spec:
         command:
           - "/bin/entrypoint.sh"
         volumeMounts:
+          - mountPath: /host-root
+            name: root-vol
           - mountPath: /host-proc
             name: proc-vol
           - mountPath: /host-sys
             name: sys-vol
           - mountPath: /var/run/docker.sock
             name: docker-socket
+          - mountPath: /run/containerd/containerd.sock
+            name: containerd-socket
           - name: entrypoint-vol
             mountPath: /bin/entrypoint.sh
             readOnly: true
@@ -136,6 +140,10 @@ spec:
             memory: "350Mi"
             cpu: "1"
       volumes:
+        - name: root-vol
+          hostPath:
+            path: /
+            type: Directory
         - name: proc-vol
           hostPath:
             path: /proc
@@ -147,6 +155,10 @@ spec:
         - name: docker-socket
           hostPath:
             path: /var/run/docker.sock
+            type: Socket
+        - name: containerd-socket
+          hostPath:
+            path: /run/containerd/containerd.sock
             type: Socket
         - name: entrypoint-vol
           configMap:
