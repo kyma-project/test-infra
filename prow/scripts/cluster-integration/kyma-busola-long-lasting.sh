@@ -142,7 +142,7 @@ else
     exit 1
 fi
 
-readonly COMMON_NAME_PREFIX="grd"
+readonly COMMON_NAME_PREFIX="grn"
 readonly KYMA_NAME_SUFFIX="kyma"
 readonly BUSOLA_NAME_SUFFIX="busola"
 
