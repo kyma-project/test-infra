@@ -42,10 +42,11 @@ require (
 	github.com/tidwall/gjson v1.6.0
 	github.com/vrischmann/envconfig v1.2.0
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
+	golang.org/x/tools v0.0.0-20200930213115-e57f6d466a48 // indirect
 	google.golang.org/api v0.22.0
 	gopkg.in/yaml.v2 v2.3.0
-	k8s.io/api v0.20.1
-	k8s.io/apimachinery v0.20.1
+	k8s.io/api v0.17.3
+	k8s.io/apimachinery v0.17.3
 	k8s.io/client-go v9.0.0+incompatible
 	k8s.io/test-infra v0.0.0-20200320172837-fbc86f22b087
 )
