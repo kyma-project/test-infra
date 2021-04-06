@@ -505,7 +505,7 @@ periodics:
     decoration_config:
       timeout: 7200000000000 # 2h
       grace_period: 600000000000 # 10min
-    cron: "0 6 * * *"
+    cron: "0 6 * * 1-5"
     extra_refs:
     - <<: *test_infra_ref
       base_ref: main
@@ -527,7 +527,7 @@ periodics:
     decoration_config:
       timeout: 7200000000000 # 2h
       grace_period: 600000000000 # 10min
-    cron: "0 6 * * *"
+    cron: "0 6 * * 1-5"
     extra_refs:
     - <<: *test_infra_ref
       base_ref: main
