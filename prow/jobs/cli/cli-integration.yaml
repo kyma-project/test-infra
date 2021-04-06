@@ -15,8 +15,8 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
+        - ^release-.*$
       extra_refs:
         - org: kyma-project
           repo: test-infra
@@ -49,8 +49,8 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
+        - ^release-.*$
       extra_refs:
         - org: kyma-project
           repo: test-infra

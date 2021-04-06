@@ -123,6 +123,9 @@ templates:
                     - "jobConfig_presubmit"
                 jobConfig:
                   name: pre-kyma-cli-integration
+                  branches:
+                    - ^main$
+                    - ^release-.*$
               - inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -136,6 +139,9 @@ templates:
                     - "jobConfig_presubmit"
                 jobConfig:
                   name: pre-kyma-cli-integration-k3s
+                  branches:
+                    - ^main$
+                    - ^release-.*$
               - inheritedConfigs:
                   global:
                     - "jobConfig_default"
