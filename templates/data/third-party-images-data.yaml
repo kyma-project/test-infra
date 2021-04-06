@@ -31,7 +31,7 @@ templates:
                   run_if_changed: "^cloudsql-proxy/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/cloudsql-proxy"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_bootstrap"
@@ -61,7 +61,7 @@ templates:
                   run_if_changed: "^docker-registry/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/docker-registry"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_bootstrap"
@@ -91,7 +91,7 @@ templates:
                   run_if_changed: "^fluent-bit/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/fluent-bit"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_bootstrap"
@@ -121,7 +121,7 @@ templates:
                   run_if_changed: "^jaeger-operator/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/jaeger-operator"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_bootstrap"
@@ -151,7 +151,7 @@ templates:
                   run_if_changed: "^k8s-tools/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/k8s-tools"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_bootstrap"
@@ -181,7 +181,7 @@ templates:
                   run_if_changed: "^kiali/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiali"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_bootstrap"
@@ -211,7 +211,7 @@ templates:
                   run_if_changed: "^kiwigrid-sidecar/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiwigrid-sidecar"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_bootstrap"
@@ -241,7 +241,7 @@ templates:
                   run_if_changed: "^minio/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/minio"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_bootstrap"
@@ -271,7 +271,7 @@ templates:
                   run_if_changed: "^minio-mc/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/minio-mc"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_bootstrap"
@@ -301,7 +301,7 @@ templates:
                   run_if_changed: "^console-nginx/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/console-nginx"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_bootstrap"
@@ -331,7 +331,7 @@ templates:
                   run_if_changed: "^prometheus-node-exporter/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/prometheus-node-exporter"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_bootstrap"
@@ -361,7 +361,7 @@ templates:
                   run_if_changed: "^grafana/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/grafana"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_bootstrap"
@@ -391,7 +391,7 @@ templates:
                   run_if_changed: "^python/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/python"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_bootstrap"

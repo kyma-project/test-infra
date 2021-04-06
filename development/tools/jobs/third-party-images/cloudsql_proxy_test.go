@@ -46,5 +46,5 @@ func TestCloudSQLProxyJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPostsubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoThirdPartyImages, preset.GcrPush)
 	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualPostsubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, actualPostsubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/third-party-images/cloudsql-proxy", "ci-master"}, actualPostsubmit.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/third-party-images/cloudsql-proxy", "ci-main"}, actualPostsubmit.Spec.Containers[0].Args)
 }
