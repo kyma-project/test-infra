@@ -56,7 +56,7 @@ periodics:
     preset-keb-plan-azure-lite: "true"
     preset-kyma-integration-compass-dev: "true"
   decorate: true
-  cron: "5 * * * *"
+  cron: "5 1 * * *"
   annotations:
     testgrid-create-test-group: "false"
   branches:
