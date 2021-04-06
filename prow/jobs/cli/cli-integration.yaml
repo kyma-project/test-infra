@@ -14,9 +14,6 @@ presubmits: # runs on PRs
       path_alias: github.com/kyma-project/cli
       cluster: untrusted-workload
       max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
       extra_refs:
         - org: kyma-project
           repo: test-infra
@@ -48,9 +45,6 @@ presubmits: # runs on PRs
       path_alias: github.com/kyma-project/cli
       cluster: untrusted-workload
       max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
       extra_refs:
         - org: kyma-project
           repo: test-infra
