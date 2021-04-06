@@ -126,8 +126,8 @@ spec:
             name: sys-vol
           - mountPath: /var/run/docker.sock
             name: docker-socket
-          - mountPath: /run/containerd/containerd.sock
-            name: containerd-socket
+          #- mountPath: /run/containerd/containerd.sock
+          #  name: containerd-socket
           - name: entrypoint-vol
             mountPath: /bin/entrypoint.sh
             readOnly: true
@@ -156,10 +156,11 @@ spec:
           hostPath:
             path: /var/run/docker.sock
             type: Socket
-        - name: containerd-socket
-          hostPath:
-            path: /run/containerd/containerd.sock
-            type: Socket
+        #- name: containerd-socket
+        #  hostPath:
+            #path: /var/run/docker/containerd/containerd.sock
+        #    path: /var/run/dockershim.sock
+        #    type: Socket
         - name: entrypoint-vol
           configMap:
             defaultMode: 0700
