@@ -730,11 +730,11 @@ templates:
 #      - to: ../prow/jobs/kyma/kyma-release-candidate.yaml
 #        values:
 #          <<: *cluster_default
-  - from: templates/compass-integration.yaml
-    render:
-      - to: ../prow/jobs/incubator/compass/compass-integration.yaml
-        values:
-          <<: *cluster_default
+  # - from: templates/compass-integration.yaml
+  #   render:
+  #     - to: ../prow/jobs/incubator/compass/compass-integration.yaml
+  #       values:
+  #         <<: *cluster_default
   - from: templates/prow-config.yaml
     render:
       - to: ../prow/config.yaml
