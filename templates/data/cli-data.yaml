@@ -81,14 +81,6 @@ templates:
                     - job_spec
       - to: ../prow/jobs/cli/cli-integration.yaml
         localSets:
-          jobConfig_default_all_branches:
-            skip_report: "false"
-            max_concurrency: "10"
-            decorate: "true"
-            request_memory: "1.5Gi"
-            request_cpu: "0.8"
-            cluster_presubmit: "untrusted-workload"
-            cluster_postsubmit: "trusted-workload"
           jobConfig_default:
             optional: false
             always_run: true
@@ -121,29 +113,35 @@ templates:
             jobs:
               - inheritedConfigs:
                   global:
+                    - "jobConfig_default"
                     - "jobConfig_presubmit"
                     - "extra_refs_test-infra"
                     - "image_buildpack-golang-kubebuilder2"
                   local:
-                    - "jobConfig_default_all_branches"
                     - "jobConfig_default"
                     - "jobConfig_submit"
                     - "jobConfig_presubmit"
                 jobConfig:
                   name: pre-kyma-cli-integration
+                  branches:
+                    - ^main$
+                    - ^release-.*$
               - inheritedConfigs:
                   global:
+                    - "jobConfig_default"
                     - "jobConfig_presubmit"
                     - "extra_refs_test-infra"
                     - "image_buildpack-golang-kubebuilder2"
                   local:
-                    - "jobConfig_default_all_branches"
                     - "jobConfig_default"
                     - "k3s_template"
                     - "jobConfig_submit"
                     - "jobConfig_presubmit"
                 jobConfig:
                   name: pre-kyma-cli-integration-k3s
+                  branches:
+                    - ^main$
+                    - ^release-.*$
               - inheritedConfigs:
                   global:
                     - "jobConfig_default"
