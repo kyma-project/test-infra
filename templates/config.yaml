@@ -758,8 +758,8 @@ templates:
   - from: templates/testgrid-default.yaml
     render:
       - to: ../prow/testgrid-default.yaml
-  - from: templates/skr-integration.yaml
-    render:
-      - to: ../prow/jobs/kyma/skr-integration.yaml
-        values:
-          <<: *cluster_default
+  # - from: templates/skr-integration.yaml
+  #   render:
+  #     - to: ../prow/jobs/kyma/skr-integration.yaml
+  #       values:
+  #         <<: *cluster_default
