@@ -299,6 +299,14 @@ postsubmits: # runs on master
       annotations:
         testgrid-dashboards: "kyma_release-1.21"
         testgrid-days-of-results: "90"
+      labels:
+        preset-sa-gke-kyma-integration: "true"
+        preset-bot-github-token: "true"
+        preset-gc-compute-envs: "true"
+        preset-gc-project-env: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-kyma: "true"
+        preset-cluster-version: "true"
       skip_report: false
       decorate: true
       cluster: trusted-workload

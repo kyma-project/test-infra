@@ -216,6 +216,14 @@ templates:
                   annotations:
                     testgrid-dashboards: kyma_release-{{ $rel }}
                     testgrid-days-of-results: "90"
+                  labels:
+                    preset-sa-gke-kyma-integration: "true"
+                    preset-bot-github-token: "true"
+                    preset-gc-compute-envs: "true"
+                    preset-gc-project-env: "true"
+                    preset-dind-enabled: "true"
+                    preset-docker-push-repository-kyma: "true"
+                    preset-cluster-version: "true"
                   command: "bash"
                   args:
                     - "-c"
