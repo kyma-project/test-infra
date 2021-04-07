@@ -28,6 +28,9 @@ job_template: &job_template
           requests:
             memory: 1.5Gi
             cpu: 0.8
+        env:
+          - name: GOGC
+            value: "off"
 
 presubmits: # runs on PRs
   kyma-project/kyma:
