@@ -17,7 +17,7 @@ job_template: &job_template
   run_if_changed: "^tests/application-registry-tests/|^common/makefiles/"
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210402-70b4b74f
         securityContext:
           privileged: true
         command:

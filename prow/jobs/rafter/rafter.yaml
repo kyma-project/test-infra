@@ -28,7 +28,7 @@ presubmits: # runs on PRs
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210402-70b4b74f"
             securityContext:
               privileged: true
             command:
@@ -71,7 +71,7 @@ presubmits: # runs on PRs
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210402-70b4b74f"
             securityContext:
               privileged: true
             command:
@@ -304,7 +304,7 @@ postsubmits: # runs on main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210402-70b4b74f"
             securityContext:
               privileged: true
             command:
@@ -349,7 +349,7 @@ postsubmits: # runs on main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210402-70b4b74f"
             securityContext:
               privileged: true
             command:
@@ -392,7 +392,7 @@ postsubmits: # runs on main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210402-70b4b74f"
             securityContext:
               privileged: true
             command:
@@ -435,7 +435,7 @@ postsubmits: # runs on main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210402-70b4b74f"
             securityContext:
               privileged: true
             command:
