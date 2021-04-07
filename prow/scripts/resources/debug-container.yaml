@@ -113,10 +113,10 @@ spec:
       - name: oom-debug
         securityContext:
           privileged: true
-        image: eu.gcr.io/kyma-project/test-infra/debug-commando:current
+        image: eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-3450
         imagePullPolicy: Always
         command:
-          - "/bin/entrypoint.sh"
+          - "/prow-tools/dockeroomfinder"
         volumeMounts:
           - mountPath: /host-root
             name: root-vol
@@ -137,7 +137,7 @@ spec:
             memory: "50Mi"
             cpu: "100m"
           limits:
-            memory: "350Mi"
+            memory: "50Mi"
             cpu: "1"
       volumes:
         - name: root-vol

@@ -305,7 +305,7 @@ function utils::oom_get_output() {
       fi
     fi
   done < "${ARTIFACTS}/describe_nodes.txt"
-  if [ -e "${ARTIFACTS}/oom-debug-*.txt" ]; then
+  if compgen -G "${ARTIFACTS}/oom-debug-*.txt" > /dev/null ; then
     log::banner "OOM event found"
     log::warning "$(grep -i "System OOM encountered" "${ARTIFACTS}/describe_nodes.txt")"
     log::info "killed processes info"

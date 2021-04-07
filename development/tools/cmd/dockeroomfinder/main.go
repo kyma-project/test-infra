@@ -4,6 +4,7 @@ import (
 	"fmt"
 	dockerclient "github.com/fsouza/go-dockerclient"
 	log "github.com/sirupsen/logrus"
+	"os"
 	"sync"
 	"time"
 )
@@ -43,7 +44,7 @@ func main() {
 			if !ok {
 				log.Error("failed read docker event")
 			}
-			fmt.Printf("OOM event received time: %s , namespace: %s , pod: %s ,container: %s , image: %s ",
+			fmt.Fprintf(os.Stdout, "OOM event received time: %s , namespace: %s , pod: %s ,container: %s , image: %s \n",
 				time.Unix(event.Time, 0).Format(time.RFC822Z),
 				event.Actor.Attributes["io.kubernetes.pod.namespace"],
 				event.Actor.Attributes["io.kubernetes.pod.name"],
