@@ -12,13 +12,13 @@ globalSets:
   image_prow-tools:
     image: "eu.gcr.io/kyma-project/test-infra/prow-tools:current"
   image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210402-70b4b74f-k8s1.16"
+    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210407-70afe459-k8s1.16"
   image_buildpack-node:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:PR-2951"
   image_buildpack-golang:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
   image_buildpack-golang-kubebuilder2:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210402-70b4b74f"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210407-70afe459"
   image_buildpack-golang-toolbox:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20210323-bfa93550"
   image_wssagent:
@@ -73,7 +73,7 @@ globalSets:
 kyma_generic_component: &kyma_generic_component
   repository: github.com/kyma-project/kyma
   pushRepository: kyma
-  buildpackTag: v20210402-70b4b74f
+  buildpackTag: v20210407-70afe459
   additionalRunIfChanged:
     - ^common/makefiles/
 
@@ -107,7 +107,7 @@ control_plane_generic_component: &control_plane_generic_component
   repository: github.com/kyma-project/control-plane
   build: build
   pushRepository: control-plane
-  buildpackTag: v20210402-70b4b74f
+  buildpackTag: v20210407-70afe459
   additionalRunIfChanged:
     - ^scripts/
 
