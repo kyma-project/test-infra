@@ -28,7 +28,7 @@ templates:
                     - "jobConfig_default"
                 jobConfig:
                   name: "skr-azure-integration-dev"
-                  cron: "5 * * * *" # "At minute 30 past every hour"
+                  cron: "5 1 * * *" # "At minute 30 past every hour"
                   labels:
                     preset-keb-plan-azure: "true"
               - inheritedConfigs:
@@ -43,7 +43,7 @@ templates:
                     - "jobConfig_default"
                 jobConfig:
                   name: "skr-azure-lite-integration-dev"
-                  cron: "5 * * * *" # "At minute 30 past every hour"
+                  cron: "5 1 * * *" # "At minute 30 past every hour"
                   labels:
                     preset-keb-plan-azure-lite: "true"
               - inheritedConfigs:
@@ -58,7 +58,7 @@ templates:
                     - "jobConfig_default"
                 jobConfig:
                   name: "skr-aws-integration-dev"
-                  cron: "5 * * * *" # "At minute 30 past every hour"
+                  cron: "5 1 * * *" # "At minute 30 past every hour"
                   labels:
                     preset-keb-plan-aws: "true"
               - inheritedConfigs:

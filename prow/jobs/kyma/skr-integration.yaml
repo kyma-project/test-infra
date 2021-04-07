@@ -10,7 +10,7 @@ periodics: # runs on schedule
         preset-keb-dev-credentials: "true"
         preset-keb-plan-azure: "true"
         preset-kyma-integration-compass-dev: "true"
-      cron: "5 * * * *"
+      cron: "5 1 * * *"
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -43,7 +43,7 @@ periodics: # runs on schedule
         preset-keb-dev-credentials: "true"
         preset-keb-plan-azure-lite: "true"
         preset-kyma-integration-compass-dev: "true"
-      cron: "5 * * * *"
+      cron: "5 1 * * *"
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -76,7 +76,7 @@ periodics: # runs on schedule
         preset-keb-dev-credentials: "true"
         preset-keb-plan-aws: "true"
         preset-kyma-integration-compass-dev: "true"
-      cron: "5 * * * *"
+      cron: "5 1 * * *"
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
