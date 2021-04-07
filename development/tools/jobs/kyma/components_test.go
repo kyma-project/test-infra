@@ -171,6 +171,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Since(releases.Release122),
+			jobsuite.Optional(),
 		},
 	},
 }
