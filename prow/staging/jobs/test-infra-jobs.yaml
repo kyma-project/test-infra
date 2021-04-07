@@ -8,11 +8,11 @@ periodics:
     extra_refs:
       - org: kyma-test-infra-dev
         repo: test-infra
-        base_ref: main
+        base_ref: master
     spec:
       containers:
         - name: branchprotector
-          image: gcr.io/k8s-prow/branchprotector:v20210318-ffb8032f91
+          image: gcr.io/k8s-prow/branchprotector:v20210407-51f95c2d52
           command: [ "/app/prow/cmd/branchprotector/app.binary" ]
           args:
             - --config-path=prow/staging/config.yaml
