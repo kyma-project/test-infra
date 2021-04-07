@@ -17,7 +17,7 @@ job_template: &job_template
   run_if_changed: "^tests/end-to-end/external-solution-integration/|^common/makefiles/"
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210402-70b4b74f
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210407-70afe459
         securityContext:
           privileged: true
         command:
