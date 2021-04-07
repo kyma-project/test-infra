@@ -514,6 +514,12 @@ templates:
           <<: *kyma_generic_component
           path: components/permission-controller
           since: "1.10"
+      - to: ../prow/jobs/kyma/components/busola-migrator/busola-migrator-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *kyma_generic_component
+          path: components/busola-migrator
+          since: "1.22" # TODO: Should be 2.0 but then pre-submit jobs are not generated
   - from: templates/generic-component-busola.yaml
     render:
       - to: ../prow/jobs/busola/busola-core-ui/busola-core-ui.yaml
