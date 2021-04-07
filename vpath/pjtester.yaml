@@ -1,7 +1,0 @@
-pjNames:
-  - pjName: "pre-kyma-components-busola-migrator"
-  - pjName: "post-kyma-components-busola-migrator"
-prConfigs:
-  kyma-project:
-    kyma:
-      prNumber: 10987
