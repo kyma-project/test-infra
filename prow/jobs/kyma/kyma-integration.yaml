@@ -211,7 +211,7 @@ presubmits: # runs on PRs
         base_ref: main
       
     - name: pre-master-kyma-integration-k3s-compass-dev
-      optional: false
+      optional: true
       cluster: untrusted-workload
       branches:
       - ^master$
@@ -317,6 +317,7 @@ postsubmits:
 
     - name: post-master-kyma-integration-k3s-compass-dev
       cluster: trusted-workload
+      optional: true
       annotations:
         testgrid-dashboards: kyma_integration
         description: Kyma integration job on k3s with compass dev.
@@ -877,7 +878,7 @@ periodics:
       preset-kyma-integration-compass-enabled: "true"
       <<: *vm_job_labels_template
     decorate: true
-    cron: "5 * * * *"
+    cron: "5 1 * * *"
     branches:
     - ^master$
     - ^main$
