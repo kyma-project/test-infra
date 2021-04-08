@@ -48,7 +48,7 @@ periodics:
   - <<: *test_infra_ref
     base_ref: main
   - <<: *kyma_ref
-    base_ref: master
+    base_ref: main
 - name: skr-azure-lite-integration-dev
   cluster: trusted-workload
   <<: *skr_integration_job_tmplate
@@ -68,7 +68,7 @@ periodics:
   - <<: *test_infra_ref
     base_ref: main
   - <<: *kyma_ref
-    base_ref: master
+    base_ref: main
 - name: skr-aws-integration-dev
   cluster: trusted-workload
   <<: *skr_integration_job_tmplate
@@ -88,7 +88,7 @@ periodics:
   - <<: *test_infra_ref
     base_ref: main
   - <<: *kyma_ref
-    base_ref: master
+    base_ref: main
 - name: skr-trial-integration-dev
   cluster: trusted-workload
   <<: *skr_integration_job_tmplate
@@ -108,4 +108,4 @@ periodics:
   - <<: *test_infra_ref
     base_ref: main
   - <<: *kyma_ref
-    base_ref: master
+    base_ref: main

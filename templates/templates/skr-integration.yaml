@@ -46,7 +46,7 @@ periodics:
   - <<: *test_infra_ref
     base_ref: main
   - <<: *kyma_ref
-    base_ref: master
+    base_ref: main
 - name: skr-azure-lite-integration-dev
   cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
   <<: *skr_integration_job_tmplate
@@ -66,7 +66,7 @@ periodics:
   - <<: *test_infra_ref
     base_ref: main
   - <<: *kyma_ref
-    base_ref: master
+    base_ref: main
 - name: skr-aws-integration-dev
   cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
   <<: *skr_integration_job_tmplate
@@ -86,7 +86,7 @@ periodics:
   - <<: *test_infra_ref
     base_ref: main
   - <<: *kyma_ref
-    base_ref: master
+    base_ref: main
 - name: skr-trial-integration-dev
   cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
   <<: *skr_integration_job_tmplate
@@ -106,4 +106,4 @@ periodics:
   - <<: *test_infra_ref
     base_ref: main
   - <<: *kyma_ref
-    base_ref: master
+    base_ref: main

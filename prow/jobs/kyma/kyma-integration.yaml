@@ -658,7 +658,7 @@ periodics:
         base_ref: main
         path_alias: github.com/kyma-project/test-infra
       - <<: *kyma_ref
-        base_ref: master
+        base_ref: main
     spec:
       volumes:
         - name: sa-stability-fluentd-storage-writer
@@ -729,7 +729,7 @@ periodics:
       - <<: *test_infra_ref
         base_ref: main
       - <<: *kyma_ref
-        base_ref: master
+        base_ref: main
     spec:
       volumes:
         - name: sa-stability-fluentd-storage-writer
@@ -800,7 +800,7 @@ periodics:
       - <<: *test_infra_ref
         base_ref: main
       - <<: *kyma_ref
-        base_ref: master
+        base_ref: main
     spec:
       volumes:
         - name: sa-stability-fluentd-storage-writer
@@ -864,7 +864,7 @@ periodics:
     - <<: *kyma_local_ref
       base_ref: main
     - <<: *kyma_ref
-      base_ref: master
+      base_ref: main
   
   - name: kyma-integration-k3s-compass-dev
     cluster: trusted-workload
@@ -888,4 +888,4 @@ periodics:
     - <<: *kyma_local_ref
       base_ref: main
     - <<: *kyma_ref
-      base_ref: master
+      base_ref: main

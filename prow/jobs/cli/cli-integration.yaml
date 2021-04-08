@@ -214,7 +214,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
