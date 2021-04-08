@@ -19,7 +19,7 @@ spec:
         image: eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-3450
         imagePullPolicy: Always
         command:
-          - "/prow-tools/dockeroomfinder"
+          - "/prow-tools/oomfinder"
         volumeMounts:
           - mountPath: /var/run
             name: docker-socket
@@ -27,11 +27,11 @@ spec:
             name: containerd-socket
         resources:
           requests:
-            memory: "50Mi"
+            memory: "16Mi"
             cpu: "100m"
           limits:
-            memory: "50Mi"
-            cpu: "1"
+            memory: "32Mi"
+            cpu: "300m"
       volumes:
         - name: docker-socket
           hostPath:
