@@ -97,7 +97,7 @@ else
         KYMA_SOURCE="${COMMIT_ID}"
         export KYMA_SOURCE
     else
-        # periodic job, so default to master
+        # periodic job, so default to main
         KYMA_SOURCE="main"
         export KYMA_SOURCE
     fi
