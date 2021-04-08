@@ -81,6 +81,6 @@ elif [[ "$PULL_BASE_REF" =~ ^release-.* ]]; then
   # TODO this script needs to be revisited for future improvements...
   "${SCRIPT_DIR}"/changelog-generator.sh
 else
-  copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master-${DOCKER_TAG}"
-  copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
+  copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/main-${DOCKER_TAG}"
+  copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/main"
 fi
