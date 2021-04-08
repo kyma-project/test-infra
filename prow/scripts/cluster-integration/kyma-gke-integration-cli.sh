@@ -184,7 +184,7 @@ echo "${COMPONENT_OVERRIDES}" > "${COMPONENT_OVERRIDES_FILE}"
 log::info "Installing Kyma"
 kyma install \
     --ci \
-    --source master \
+    --source main \
     -o "${COMPONENT_OVERRIDES_FILE}" \
     --domain "${DOMAIN}" \
     --tls-cert "${TLS_CERT}" \

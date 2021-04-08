@@ -98,7 +98,7 @@ else
         export KYMA_SOURCE
     else
         # periodic job, so default to master
-        KYMA_SOURCE="master"
+        KYMA_SOURCE="main"
         export KYMA_SOURCE
     fi
 fi
