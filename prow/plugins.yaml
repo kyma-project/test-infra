@@ -19,6 +19,8 @@ config_updater:
       name: branchprotector-config
     prow/plugins.yaml:
       name: plugins
+    prow/labels.yaml:
+      name: label-config
 
 triggers:
 - repos:
