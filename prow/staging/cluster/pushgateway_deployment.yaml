@@ -107,7 +107,7 @@ spec:
   ports:
   - name: pushgateway-external
     port: 80
-    targetPort: http
+    targetPort: 8081
   type: NodePort
   selector:
     app: pushgateway-proxy
