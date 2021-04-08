@@ -1,5 +1,0 @@
-site
-docs/api-docs.md
-*_test_output.json
-e2e/node_modules
-.DS_Store
