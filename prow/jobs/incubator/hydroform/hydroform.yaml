@@ -2,7 +2,7 @@
 
 
 presubmits: # runs on PRs
-  kyma-incubator/hydroform:
+  kyma-project/hydroform:
     - name: pre-master-hydroform
       labels:
         preset-dind-enabled: "true"
@@ -29,7 +29,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/hydroform"
+              - "/home/prow/go/src/github.com/kyma-project/hydroform"
               - "ci-pr"
             env:
               - name: GO111MODULE
@@ -40,7 +40,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
   
 postsubmits: # runs on main
-  kyma-incubator/hydroform:
+  kyma-project/hydroform:
     - name: post-master-hydroform
       annotations:
         testgrid-create-test-group: "false"
@@ -68,7 +68,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/hydroform"
+              - "/home/prow/go/src/github.com/kyma-project/hydroform"
               - "ci-master"
             env:
               - name: GO111MODULE

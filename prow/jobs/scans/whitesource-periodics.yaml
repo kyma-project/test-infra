@@ -576,7 +576,7 @@ periodics: # runs on schedule
         preset-kyma-keyring: "true"
         preset-kyma-wssagent-config: "true"
         preset-wssagent-keys: "true"
-        preset-sa-gke-kyma-integration-kyma-incubator-whitesource: "true"
+        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
       cron: "0 4 * * *"
       skip_report: false
       decorate: true
@@ -586,9 +586,9 @@ periodics: # runs on schedule
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
-        - org: kyma-incubator
+        - org: kyma-project
           repo: hydroform
-          path_alias: github.com/kyma-incubator/hydroform
+          path_alias: github.com/kyma-project/hydroform
           base_ref: master
       spec:
         containers:

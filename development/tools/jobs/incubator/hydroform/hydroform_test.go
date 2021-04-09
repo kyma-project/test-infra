@@ -16,7 +16,7 @@ func TestHydroformJobsPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PresubmitsStatic, 1)
-	kymaPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-incubator/hydroform"})
+	kymaPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/hydroform"})
 	assert.Len(t, kymaPresubmits, 1)
 
 	actualPresubmit := kymaPresubmits[0]
@@ -34,7 +34,7 @@ func TestHydroformJobsPresubmit(t *testing.T) {
 	assert.Equal(t, "GO111MODULE", actualPresubmit.Spec.Containers[0].Env[0].Name)
 	assert.Equal(t, "on", actualPresubmit.Spec.Containers[0].Env[0].Value)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/hydroform", "ci-pr"}, actualPresubmit.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/hydroform", "ci-pr"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
 func TestHydroformJobPostsubmit(t *testing.T) {
@@ -44,7 +44,7 @@ func TestHydroformJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
-	kymaPost := jobConfig.AllStaticPostsubmits([]string{"kyma-incubator/hydroform"})
+	kymaPost := jobConfig.AllStaticPostsubmits([]string{"kyma-project/hydroform"})
 	assert.Len(t, kymaPost, 1)
 
 	actualPost := kymaPost[0]
@@ -61,5 +61,5 @@ func TestHydroformJobPostsubmit(t *testing.T) {
 	assert.Equal(t, "on", actualPost.Spec.Containers[0].Env[0].Value)
 	assert.Empty(t, actualPost.RunIfChanged)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, actualPost.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/hydroform", "ci-master"}, actualPost.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/hydroform", "ci-master"}, actualPost.Spec.Containers[0].Args)
 }
