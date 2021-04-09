@@ -119,7 +119,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
@@ -166,7 +166,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
@@ -826,7 +826,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
@@ -873,7 +873,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
