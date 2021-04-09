@@ -58,6 +58,7 @@ templates:
                   name: "kyma"
                   language: "golang"
                   project: "kyma-project"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -71,6 +72,7 @@ templates:
                   language: "golang-mod"
                   project: "kyma-project"
                   custom_projectname: "kyma-mod"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -247,6 +249,7 @@ templates:
                   project: "kyma-project"
                   custom_projectname: "release-kyma"
                   whitesource_release: "true"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -261,6 +264,7 @@ templates:
                   project: "kyma-project"
                   custom_projectname: "release-kyma-mod"
                   whitesource_release: "true"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
