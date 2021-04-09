@@ -128,14 +128,14 @@ templates:
                     - disable_testgrid
       - to: ../prow/jobs/incubator/hydroform/hydroform.yaml
         jobConfigs:
-          - repoName: kyma-incubator/hydroform
+          - repoName: kyma-project/hydroform
             jobs:
               - jobConfig:
                   name: pre-master-hydroform
                   <<: *commonJob
                   always_run: true
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/hydroform"
+                    - "/home/prow/go/src/github.com/kyma-project/hydroform"
                     - "ci-pr"
                   env:
                     GO111MODULE: "on"
@@ -149,7 +149,7 @@ templates:
                   name: post-master-hydroform
                   <<: *commonJob
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/hydroform"
+                    - "/home/prow/go/src/github.com/kyma-project/hydroform"
                     - "ci-master"
                   env:
                     GO111MODULE: "on"
