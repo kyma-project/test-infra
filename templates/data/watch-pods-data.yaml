@@ -26,7 +26,7 @@ templates:
                   name: "post-master-test-infra-watch-pods"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/test-infra/watch-pods"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   local:
                     - "default"
