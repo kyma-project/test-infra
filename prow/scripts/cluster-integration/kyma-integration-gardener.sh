@@ -116,11 +116,6 @@ gardener::generate_overrides
 
 gardener::provision_cluster
 
-if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
-  # run oom debug pod
-  utils::debug_oom
-fi
-
 # uses previously set KYMA_SOURCE
 if [[ "${KYMA_ALPHA}" == "true" ]]; then
   kyma::alpha_deploy_kyma
@@ -131,11 +126,13 @@ fi
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
+
 if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
     gardener::hibernate_kyma
     sleep 120
     gardener::wake_up_kyma
 fi
+
 
 if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
     gardener::test_fast_integration_kyma
@@ -146,6 +143,7 @@ else
     fi
     gardener::test_kyma
 fi
+
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"

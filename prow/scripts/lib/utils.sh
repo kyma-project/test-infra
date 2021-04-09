@@ -285,7 +285,11 @@ function utils::describe_nodes() {
       kubectl top nodes
       kubectl top pods --all-namespaces
     } > "${ARTIFACTS}/describe_nodes.txt"
-    grep -i "System OOM encountered" "${ARTIFACTS}/describe_nodes.txt"
+    grep "System OOM encountered" "${ARTIFACTS}/describe_nodes.txt"
+    last=$?
+    if [[ $last -eq 0 ]]; then
+      log::banner "OOM event found"
+    fi
 }
 
 
@@ -293,24 +297,22 @@ function utils::oom_get_output() {
   if [ ! -e "${ARTIFACTS}/describe_nodes.txt" ]; then
     utils::describe_nodes
   fi
-  declare -A node_with_oom
-  regex="^.*kubelet,[[:blank:]]+(.*)[[:blank:]]+System[[:blank:]]OOM[[:blank:]]encountered.*$"
-  while IFS= read -r line
-  do
-    if [[ $line =~ $regex ]]; then
-      if [[ -z "${node_with_oom[${BASH_REMATCH[1]}]+unset}" ]]; then
-        node_with_oom["${BASH_REMATCH[1]}"]="true"
-        pod=$(kubectl get pod -l "name=oom-debug" --field-selector spec.nodeName="${BASH_REMATCH[1]}" -o=jsonpath='{.items[*].metadata.name}')
-        kubectl logs "${pod}" -c oom-debug > "${ARTIFACTS}/${pod}.txt"
-      fi
+  log::info "Download OOM events details"
+  pods=$(kubectl get pod -l "name=oom-debug" -o=jsonpath='{.items[*].metadata.name}')
+  for pod in $pods; do
+    kubectl logs "$pod" -c oom-debug > "${ARTIFACTS}/$pod.txt"
+  done
+  debugFiles=$(ls -1 "${ARTIFACTS}"/oom-debug-*.txt)
+  for debugFile in $debugFiles; do
+    grep "OOM event received" "$debugFile" > /dev/null
+    last=$?
+    if [[ $last -eq 0 ]]; then
+      log::info "Print OOM events details"
+      cat "$debugFile"
+    else
+      rm "$debugFile"
     fi
-  done < "${ARTIFACTS}/describe_nodes.txt"
-  if [ -e "${ARTIFACTS}/oom-debug-*.txt" ]; then
-    log::banner "OOM event found"
-    log::warning "$(grep -i "System OOM encountered" "${ARTIFACTS}/describe_nodes.txt")"
-    log::info "killed processes info"
-    cat "${ARTIFACTS}/oom-debug-*.txt"
-  fi
+  done
 }
 
 function utils::debug_oom() {
