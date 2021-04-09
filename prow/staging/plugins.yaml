@@ -27,6 +27,9 @@ config_updater:
       name: job-config
     prow/staging/labels.yaml:
       name: label-config
+      clusters:
+        workload-cluster:
+          - test-pods
 
 trigger:
   - repos:
