@@ -184,7 +184,7 @@ templates:
               - jobConfig:
                   name: "hydroform"
                   language: "golang-mod"
-                  project: "kyma-incubator"
+                  project: "kyma-project"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
