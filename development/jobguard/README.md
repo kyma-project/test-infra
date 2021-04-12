@@ -1,34 +1,40 @@
-# Job Guard 
+# JobGuard 
 
 ## Overview
 
-Job Guard is a simple tool that fetches all statuses for GitHub pull requests and waits for some of them to finish.
-The main purpose of Job Guard is to delay running integration jobs that depend on component jobs. This tool acts as a guard for integration tests.
+JobGuard is a simple tool that fetches all statuses for GitHub pull requests and waits for some of them to finish.
+The main purpose of JobGuard is to delay running integration jobs that depend on component jobs. This tool acts as a guard for integration tests.
 
 ## Usage
 
-### Run the application
-
 To run the application, use this command:
 
-```bash
-COMMIT_SHA={commit_sha} PROW_CONFIG_FILE={prow_config_file} PROW_JOBS_DIRECTORY={prow_jobs_directory} go run cmd/main.go
+```shell
+go run cmd/jobguard/main.go \
+  -github-endpoint=http://ghproxy \
+  -github-endpoint=https://api.github.com \
+  -github-token-path=/path/to/oauth \
+  -org=example-org \
+  -repo=example-repo \
+  -base-ref=13abc \
+  -expected-contexts-regexp="(some-context-regexp|another-context)"
 ```
+## CLI parameters
 
-### Environment variables
+JobGuard accepts the following command line parameters:
 
-Use the following environment variables to configure the application:
-
-| Name                      | Required  | Default  value                 | Description |
-|---------------------------|:-----------:|---------------------------|-------------|
-| **INITIAL_SLEEP_TIME**    | No        | `1m`                      | Initial sleep time for the application |
-| **RETRY_INTERVAL**        | No        | `15s`                     | Interval between re-fetching statuses |
-| **TIMEOUT**               | No        | `15m`                     | Timeout of waiting for successful jobs |
-| **API_ORIGIN**            | No        | `https://api.github.com`  | Origin of the GitHub API |
-| **REPO_OWNER**            | No        | `kyma-project`            | Username or organization name of the repository owner |
-| **REPO_NAME**             | No        | `kyma`                    | Name of the repository |
-| **COMMIT_SHA**            | Yes       | None                          | Commit SHA |
-| **GITHUB_TOKEN**          | No        | None                          | Authorization token for GitHub API |
-| **JOB_NAME_PATTERN**      | No        | `components`              | Regexp to filter dependant statuses |
-| **PROW_CONFIG_FILE**      | Yes       | None                          | Path to the Prow `config.yaml` file  |
-| **PROW_JOBS_DIRECTORY**   | Yes       | None                          | Path to the directory with Prow jobs |
+|Flag|Required|Description|
+|---|---|---|
+|`-github-host`| No | GitHub's default host.|
+|`-github-endpoint`| No | GitHub API endpoint.|
+|`-github-graphql-endpoint`| No | GitHub GraphQL API endpoint.|
+|`-github-token-path`|Yes|Path to the file containing the GitHub OAuth secret.|
+|`-debug`|No|Enable debug logging.|
+|`-dry-run`|No|Run in dry mode.|
+|`-expected-contexts-regexp`|Yes|Regular expression with expected contexts.|
+|`-fail-on-no-contexts`|No|Fail if regexp does not match any of the GitHub contexts.|
+|`-timeout`|No|Time after JobGuard fails.|
+|`-poll-interval`|No|Interval in which JobGuard checks contexts on GitHub.|
+|`-org`|Yes|GitHub organisation to check.|
+|`-repo`|Yes|GitHub repository to check.|
+|`-base-ref`|Yes|GitHub base ref to pull statuses from.|
