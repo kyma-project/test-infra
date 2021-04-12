@@ -48,5 +48,5 @@ func TestCommonJobPostsubmit(t *testing.T) {
 	assert.Equal(t, "^common/", actualPostsubmit.RunIfChanged)
 	assert.Equal(t, tester.ImageGolangBuildpack1_14, actualPostsubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, actualPostsubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/common", "ci-master"}, actualPostsubmit.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/common", "ci-main"}, actualPostsubmit.Spec.Containers[0].Args)
 }
