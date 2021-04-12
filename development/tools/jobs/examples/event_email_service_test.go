@@ -54,5 +54,5 @@ func TestEventEmailServiceJobPostsubmit(t *testing.T) {
 	assert.Equal(t, "^event-email-service/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageNodeBuildpackLatest, actualPost.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, actualPost.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/examples/event-email-service", "ci-master"}, actualPost.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/examples/event-email-service", "ci-main"}, actualPost.Spec.Containers[0].Args)
 }
