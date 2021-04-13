@@ -65,7 +65,7 @@ func TestDocumentationComponentGovernanceJobPeriodic(t *testing.T) {
 		{
 			Org:       "kyma-incubator",
 			Repo:      "documentation-component",
-			BaseRef:   "master",
+			BaseRef:   "main",
 			PathAlias: "github.com/kyma-incubator/documentation-component",
 		},
 	})
