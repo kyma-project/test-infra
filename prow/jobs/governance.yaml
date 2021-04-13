@@ -644,7 +644,7 @@ periodics: # runs on schedule
         - org: kyma-incubator
           repo: documentation-component
           path_alias: github.com/kyma-incubator/documentation-component
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
