@@ -28,7 +28,7 @@ templates:
                   name: "post-master-examples-event-email-service"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/examples/event-email-service"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_buildpack-node"
@@ -60,7 +60,7 @@ templates:
                   name: "post-master-examples-http-db-service"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/examples/http-db-service"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_buildpack-golang"
@@ -92,7 +92,7 @@ templates:
                   name: "post-master-examples-monitoring-custom-metrics"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/examples/monitoring-custom-metrics"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_buildpack-golang"
@@ -124,7 +124,7 @@ templates:
                   name: "post-master-examples-orders-service"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/examples/orders-service"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_buildpack-golang"
@@ -156,7 +156,7 @@ templates:
                   name: "post-master-examples-tests-http-db-service"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/examples/tests/http-db-service"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_buildpack-golang"
@@ -188,7 +188,7 @@ templates:
                   name: "post-master-examples-tracing"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/examples/tracing"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_buildpack-golang"
