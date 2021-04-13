@@ -61,22 +61,3 @@ postsubmits:
           base_ref: release-1.20
       labels:
         <<: *job_labels_template
-    - name: post-rel119-kyma-release-candidate
-      cluster: trusted-workload
-      annotations:
-        testgrid-dashboards: kyma_release-1.19
-        # testgrid-alert-email: email-here@sap.com
-        testgrid-num-failures-to-alert: '1'
-        description: Release candidate job for Kyma 1.19.
-        testgrid-days-of-results: "90"
-      branches:
-        - '^1\.19\.\d+(?:-.*)?$' # release tags
-      <<: *job_template
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.19
-      labels:
-        <<: *job_labels_template
-
