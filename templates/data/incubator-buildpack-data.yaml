@@ -30,7 +30,7 @@ templates:
                   <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/api-gateway"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
