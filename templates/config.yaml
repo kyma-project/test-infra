@@ -451,7 +451,7 @@ templates:
           <<: *kyma_generic_component
           path: components/event-sources
           since: "1.9"
-          until: "1.20"
+          until: "1.21"
       - to: ../prow/jobs/kyma/components/event-publisher-proxy/event-publisher-proxy-generic.yaml
         values:
           <<: *cluster_default
