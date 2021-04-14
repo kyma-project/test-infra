@@ -99,7 +99,7 @@ function provisionKyma2(){
     --profile=evaluation \
     --source="${KYMA_VERSION}" \
     --value global.environment.gardener=true \
-    --workers-count=4
+    --concurrency=4
 
 }
 
