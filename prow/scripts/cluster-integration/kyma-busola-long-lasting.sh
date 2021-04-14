@@ -99,7 +99,7 @@ function provisionKyma2(){
     --profile=evaluation \
     --source="${KYMA_VERSION}" \
     --value global.environment.gardener=true \
-    --workers-count=4
+    --concurrency=4
 
 }
 
@@ -155,7 +155,7 @@ export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
 if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
     log::info "Kyma cluster name: ${KYMA_COMMON_NAME}"
     delete_cluster "${KYMA_COMMON_NAME}"
-    provisionKyma2 "master" "${KYMA_COMMON_NAME}"
+    provisionKyma2 "main" "${KYMA_COMMON_NAME}"
 elif [[ $BUSOLA_PROVISION_TYPE == "BUSOLA" ]]; then
     log::info "Busola cluster name: ${BUSOLA_COMMON_NAME}"
     delete_cluster "${BUSOLA_COMMON_NAME}"
