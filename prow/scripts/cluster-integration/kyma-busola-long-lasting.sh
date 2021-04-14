@@ -93,7 +93,10 @@ function provisionBusola() {
       --timeout=120s
 
     # delete old installation
-    kubectl delete ns "$busola_namespace" --wait=true
+    namespace_exists=$(kubectl get ns -o json | jq ".items | .[] | .metadata | select(.name == \"$busola_namespace\") | .name")
+    if [[ "$namespace_exists" == "$busola_namespace" ]]; then
+        kubectl delete ns "$busola_namespace" --wait=true
+    fi
 
     # install busola
     FULL_DOMAIN="${DOMAIN_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com"
