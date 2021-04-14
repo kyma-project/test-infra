@@ -26,12 +26,12 @@ function delete_cluster(){
     set -e
 }
 
-function provisionBusola(){
+function provisionCluster() {
     export DOMAIN_NAME=$1
 
     RESOURCES_PATH=${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola/
 
-    log::info "Installing Busola on the cluster: ${DOMAIN_NAME}"
+    log::info "Creating cluster: ${DOMAIN_NAME}"
     # create the cluster
     # shellcheck disable=SC2002
     cat "${RESOURCES_PATH}/cluster-busola.yaml" | envsubst | kubectl create -f -
@@ -59,13 +59,37 @@ function provisionBusola(){
       --selector=app.kubernetes.io/component=controller \
       --timeout=120s
 
+    log::info "Cluster ${DOMAIN_NAME} was creates succesfully"
+}
+
+function provisionBusola() {
+    export DOMAIN_NAME=$1
+
+    busola_namespace="busola"
+
+    RESOURCES_PATH=${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola/
+
+    log::info "Installing Busola on the cluster: ${DOMAIN_NAME}"
+
+    # wait for the cluster to be ready
+    kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${DOMAIN_NAME}"
+
+    # wait for ingress controller to start
+    kubectl wait --namespace kube-system \
+      --for=condition=ready pod \
+      --selector=app.kubernetes.io/component=controller \
+      --timeout=120s
+
     # install busola
     FULL_DOMAIN="${DOMAIN_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com"
+
+    # delete old installation
+    kubectl delete ns "$busola_namespace"
 
     find "${BUSOLA_SOURCES_DIR}/resources" -name "*.yaml" \
          -exec sed -i "s/%DOMAIN%/${FULL_DOMAIN}/g" "{}" \;
 
-    kubectl apply -k "${BUSOLA_SOURCES_DIR}/resources"
+    kubectl apply --namespace "$busola_namespace" -k "${BUSOLA_SOURCES_DIR}/resources"
 
     TERM=dumb kubectl cluster-info
     log::info "Please generate params for using k8s http://enkode.surge.sh/"
@@ -159,6 +183,9 @@ if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
 elif [[ $BUSOLA_PROVISION_TYPE == "BUSOLA" ]]; then
     log::info "Busola cluster name: ${BUSOLA_COMMON_NAME}"
     delete_cluster "${BUSOLA_COMMON_NAME}"
+    if [[ $PERIODIC_TYPE == "weekly" ]]; then
+        provisionCluster "${BUSOLA_COMMON_NAME}"
+    fi
     provisionBusola "${BUSOLA_COMMON_NAME}"
 else
     log::error "Wrong value for BUSOLA_PROVISION_TYPE: '$BUSOLA_PROVISION_TYPE'"

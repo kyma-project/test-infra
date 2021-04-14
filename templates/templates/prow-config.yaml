@@ -1,6 +1,17 @@
 presets:
   # cluster version
   - labels:
+      preset-periodic-weekly: "true"
+    env:
+      - name: PERIODIC_TYPE
+        value: "weekly"
+  - labels:
+      preset-periodic-nightly: "true"
+    env:
+      - name: PERIODIC_TYPE
+        value: "nightly"
+  # cluster version
+  - labels:
       preset-cluster-version: "true"
     env:
       - name: AKS_CLUSTER_VERSION
