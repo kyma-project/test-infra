@@ -80,6 +80,9 @@ function provisionBusola() {
 
     log::info "Installing Busola on the cluster: ${DOMAIN_NAME}"
 
+    kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--busola--${DOMAIN_NAME}.yaml"
+    export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--busola--$DOMAIN_NAME.yaml"
+
     # wait for the cluster to be ready
     kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${DOMAIN_NAME}"
 
@@ -89,11 +92,11 @@ function provisionBusola() {
       --selector=app.kubernetes.io/component=controller \
       --timeout=120s
 
+    # delete old installation
+    kubectl delete ns "$busola_namespace" --wait=true
+
     # install busola
     FULL_DOMAIN="${DOMAIN_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com"
-
-    # delete old installation
-    kubectl delete ns "$busola_namespace"
 
     find "${BUSOLA_SOURCES_DIR}/resources" -name "*.yaml" \
          -exec sed -i "s/%DOMAIN%/${FULL_DOMAIN}/g" "{}" \;
