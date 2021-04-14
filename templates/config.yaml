@@ -730,22 +730,11 @@ templates:
 #      - to: ../prow/jobs/kyma/kyma-release-candidate.yaml
 #        values:
 #          <<: *cluster_default
-  - from: templates/compass-integration.yaml
-    render:
-      - to: ../prow/jobs/incubator/compass/compass-integration.yaml
-        values:
-          <<: *cluster_default
   - from: templates/prow-config.yaml
     render:
       - to: ../prow/config.yaml
         values:
           <<: *cluster_default
-  - from: templates/kyma-azure-event-hubs-namespaces-cleanup.yaml
-    render:
-      - to: ../prow/jobs/kyma/kyma-azure-event-hubs-namespaces-cleanup.yaml
-        values:
-          <<: *cluster_default
-          optional: true
   - from: templates/branchprotector-config.yaml
     render:
       - to: ../prow/branchprotector-config.yaml
@@ -758,8 +747,3 @@ templates:
   - from: templates/testgrid-default.yaml
     render:
       - to: ../prow/testgrid-default.yaml
-  - from: templates/skr-integration.yaml
-    render:
-      - to: ../prow/jobs/kyma/skr-integration.yaml
-        values:
-          <<: *cluster_default
