@@ -374,6 +374,8 @@ postsubmits:
       cluster: trusted-workload
       decorate: true
       path_alias: github.com/kyma-project/kyma
+      annotations:
+        testgrid-create-test-group: "false"
       decoration_config:
         timeout: 14400000000000 # 4h
         grace_period: 600000000000 # 10min

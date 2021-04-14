@@ -372,6 +372,8 @@ postsubmits:
       cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       decorate: true
       path_alias: github.com/kyma-project/kyma
+      annotations:
+        testgrid-create-test-group: "false"
       decoration_config:
         timeout: 14400000000000 # 4h
         grace_period: 600000000000 # 10min
