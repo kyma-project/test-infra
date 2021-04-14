@@ -38,6 +38,15 @@ function provisionCluster() {
 
     # wait for the cluster to be ready
     kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${DOMAIN_NAME}"
+    log::info "Cluster ${DOMAIN_NAME} was created succesfully"
+}
+
+function provisionIngress() {
+    export DOMAIN_NAME=$1
+
+    RESOURCES_PATH=${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola/
+
+    log::info "Install ingress"
 
     # switch to the new cluster
     kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--busola--${DOMAIN_NAME}.yaml"
@@ -58,8 +67,8 @@ function provisionCluster() {
       --for=condition=ready pod \
       --selector=app.kubernetes.io/component=controller \
       --timeout=120s
-
-    log::info "Cluster ${DOMAIN_NAME} was creates succesfully"
+    
+    log::info "Ingress is ready"
 }
 
 function provisionBusola() {
@@ -105,10 +114,6 @@ function provisionKyma2(){
 
     log::info "Installing Kyma version: ${KYMA_VERSION} on the cluster : ${DOMAIN_NAME}"
 
-    # create the cluster
-    # shellcheck disable=SC2002
-    cat "${RESOURCES_PATH}/cluster-kyma.yaml" | envsubst | kubectl create -f -
-
     # wait for the cluster to be ready
     kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${DOMAIN_NAME}"
 
@@ -124,7 +129,6 @@ function provisionKyma2(){
     --source="${KYMA_VERSION}" \
     --value global.environment.gardener=true \
     --concurrency=4
-
 }
 
 ENABLE_TEST_LOG_COLLECTOR=false
@@ -179,13 +183,17 @@ export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
 if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
     log::info "Kyma cluster name: ${KYMA_COMMON_NAME}"
     delete_cluster "${KYMA_COMMON_NAME}"
+    provisionCluster "${KYMA_COMMON_NAME}"
+    export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
     provisionKyma2 "main" "${KYMA_COMMON_NAME}"
 elif [[ $BUSOLA_PROVISION_TYPE == "BUSOLA" ]]; then
     log::info "Busola cluster name: ${BUSOLA_COMMON_NAME}"
-    delete_cluster "${BUSOLA_COMMON_NAME}"
     if [[ $PERIODIC_TYPE == "weekly" ]]; then
+        delete_cluster "${BUSOLA_COMMON_NAME}"
         provisionCluster "${BUSOLA_COMMON_NAME}"
+        provisionIngress "${BUSOLA_COMMON_NAME}"
     fi
+    export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
     provisionBusola "${BUSOLA_COMMON_NAME}"
 else
     log::error "Wrong value for BUSOLA_PROVISION_TYPE: '$BUSOLA_PROVISION_TYPE'"
