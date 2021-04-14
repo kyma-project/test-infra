@@ -99,12 +99,15 @@ function provisionBusola() {
         kubectl delete ns "$busola_namespace" --wait=true
     fi
 
+    log::info "Busola installation started"
+
     # install busola
     FULL_DOMAIN="${DOMAIN_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com"
 
     find "${BUSOLA_SOURCES_DIR}/resources" -name "*.yaml" \
          -exec sed -i "s/%DOMAIN%/${FULL_DOMAIN}/g" "{}" \;
 
+    kubectl create namespace "$busola_namespace"
     kubectl apply --namespace "$busola_namespace" -k "${BUSOLA_SOURCES_DIR}/resources"
 
     TERM=dumb kubectl cluster-info
