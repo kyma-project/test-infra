@@ -91,7 +91,7 @@ function provisionBusola() {
       --timeout=120s
 
     # delete old installation
-    namespace_exists=$(kubectl get ns -o json | jq ".items | .[] | .metadata | select(.name == \"$busola_namespace\") | .name")
+    namespace_exists=$(kubectl get ns -o json | jq -r ".items | .[] | .metadata | select(.name == \"$busola_namespace\") | .name")
     if [[ "$namespace_exists" == "$busola_namespace" ]]; then
         log::info "namespace busola exists, deleting..."
         kubectl delete ns "$busola_namespace" --wait=true
