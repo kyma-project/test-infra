@@ -370,7 +370,7 @@ presubmits:
 
 postsubmits:
   kyma-project/kyma:
-    - name: pre-master-kyma-gardener-azure-kyma-alpha
+    - name: post-master-kyma-gardener-azure-kyma-alpha
       cluster: trusted-workload
       decorate: true
       path_alias: github.com/kyma-project/kyma

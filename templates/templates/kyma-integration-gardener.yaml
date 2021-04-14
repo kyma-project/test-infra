@@ -368,7 +368,7 @@ presubmits:
 
 postsubmits:
   kyma-project/kyma:
-    - name: pre-master-kyma-gardener-azure-kyma-alpha
+    - name: post-master-kyma-gardener-azure-kyma-alpha
       cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       decorate: true
       path_alias: github.com/kyma-project/kyma
