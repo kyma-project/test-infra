@@ -80,6 +80,7 @@ function provisionBusola() {
 
     log::info "Installing Busola on the cluster: ${DOMAIN_NAME}"
 
+    export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
     kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--busola--${DOMAIN_NAME}.yaml"
     export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--busola--$DOMAIN_NAME.yaml"
 
@@ -124,6 +125,7 @@ function provisionKyma2(){
     kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${DOMAIN_NAME}"
 
     # switch to the new cluster
+    export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
     kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
     export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
 
@@ -190,7 +192,6 @@ if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
     log::info "Kyma cluster name: ${KYMA_COMMON_NAME}"
     delete_cluster "${KYMA_COMMON_NAME}"
     provisionCluster "${KYMA_COMMON_NAME}"
-    export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
     provisionKyma2 "main" "${KYMA_COMMON_NAME}"
 elif [[ $BUSOLA_PROVISION_TYPE == "BUSOLA" ]]; then
     log::info "Busola cluster name: ${BUSOLA_COMMON_NAME}"
@@ -199,7 +200,6 @@ elif [[ $BUSOLA_PROVISION_TYPE == "BUSOLA" ]]; then
         provisionCluster "${BUSOLA_COMMON_NAME}"
         provisionIngress "${BUSOLA_COMMON_NAME}"
     fi
-    export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
     provisionBusola "${BUSOLA_COMMON_NAME}"
 else
     log::error "Wrong value for BUSOLA_PROVISION_TYPE: '$BUSOLA_PROVISION_TYPE'"
