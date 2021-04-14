@@ -84,9 +84,6 @@ function provisionBusola() {
     kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--busola--${DOMAIN_NAME}.yaml"
     export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--busola--$DOMAIN_NAME.yaml"
 
-    # wait for the cluster to be ready
-    kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${DOMAIN_NAME}"
-
     # wait for ingress controller to start
     kubectl wait --namespace kube-system \
       --for=condition=ready pod \
@@ -123,9 +120,6 @@ function provisionKyma2(){
     RESOURCES_PATH=${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola/
 
     log::info "Installing Kyma version: ${KYMA_VERSION} on the cluster : ${DOMAIN_NAME}"
-
-    # wait for the cluster to be ready
-    kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${DOMAIN_NAME}"
 
     # switch to the new cluster
     export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
