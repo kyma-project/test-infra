@@ -195,8 +195,16 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "request_small"
+                    - "vm_job_template"
+                    - "vm_job_labels_template"
                 jobConfig:
-                  name: "generic_job_template"
+                  name: "post-master-kyma-integration"
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    description: Kyma integration job.
+                    testgrid-days-of-results: "60"
+                  labels:
+                    preset-build-master: "true"
               - inheritedConfigs:
                   global:
                     - "jobConfig_default"
