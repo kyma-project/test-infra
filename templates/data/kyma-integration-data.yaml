@@ -438,62 +438,110 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "image_kyma-integration"
+                    - "image_prow-tools"
                     - "extra_refs_test-infra"
+                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
                 jobConfig:
-                  name: "generic_job_template"
+                  name: "orphaned-loadbalancer-cleaner"
+                  cron: "15 * * * *" # "At 15 past every hour"
+                  labels:
+                    preset-sa-gke-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "/prow-tools/orphanremover -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
+              - inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_prow-tools"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "jobConfig_periodic"
+                jobConfig:
+                  name: "firewall-cleaner"
+                  cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
+                  labels:
+                    preset-sa-gke-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "/prow-tools/firewallcleaner -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
+              - inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_prow-tools"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "jobConfig_periodic"
+                jobConfig:
+                  name: "orphaned-dns-cleaner"
+                  cron: "30 * * * *" # "At minute 30 past every hour"
+                  labels:
+                    preset-sa-gke-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                    preset-gc-compute-envs: "true"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "/prow-tools/dnscollector -project=${CLOUDSDK_CORE_PROJECT} -dnsZone=${CLOUDSDK_DNS_ZONE_NAME} -ageInHours=2 -regions=${CLOUDSDK_COMPUTE_REGION} -dryRun=false"
+              - inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_prow-tools"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "jobConfig_periodic"
+                jobConfig:
+                  name: "github-stats"
+                  cron: "0 6 * * *" # "At 6:00 every day"
+                  labels:
+                    preset-bot-github-token: "true"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/github-stats.sh"
               - inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
                   local:
                     - "jobConfig_default"
-                    - "request_small"
+                    - "request_big"
                     - "jobConfig_periodic"
+                    - "gke_job_labels_template"
                 jobConfig:
-                  name: "generic_job_template"
-              - inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "jobConfig_periodic"
-                jobConfig:
-                  name: "generic_job_template"
-              - inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "jobConfig_periodic"
-                jobConfig:
-                  name: "generic_job_template"
-              - inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "jobConfig_periodic"
-                jobConfig:
-                  name: "generic_job_template"
+                  name: "kyma-gke-nightly"
+                  cron: "0 4 * * 1-5" # "At 04:00 on every weekday Monday through Friday"
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    description: Kyma GKE nightly build.
+                  labels:
+                    preset-kyma-keyring: "true"
+                    preset-kyma-encryption-key: "true"
+                    preset-build-master: "true"
+                    preset-stability-checker-slack-notifications: "true"
+                    preset-nightly-github-integration: "true"
+                    preset-kms-gc-project-env: "true"
+                    preset-certificates-bucket: "true"
+                    preset-gke-pod-security-policy: "true"
               - inheritedConfigs:
                   global:
                     - "jobConfig_default"
