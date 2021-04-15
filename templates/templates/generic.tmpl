@@ -134,6 +134,7 @@
         volumes:
           {{- range .JobConfig.volumes}}
           - name: {{ .name }}
+            {{- if and .secretName .configMapName }}{{fail "secretName and configMapName are mutually exclusive. Use only one of them."}}{{end}}
             {{- if .secretName }}
             secret:
               secretName: {{ .secretName }}
