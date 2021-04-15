@@ -1,0 +1,49 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/test-infra/prow-periodics.yaml
+        localSets:
+          periodic_config:
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            branches:
+              - "^master$"
+              - "^main$"
+            type_periodic: "true"
+            cluster: "trusted-workload"
+          github_token_mounts:
+            volumes:
+              - name: kyma-bot-github-token
+                secretName: kyma-bot-github-token
+              - name: config
+                secretName: label-config
+            volumeMounts:
+              - name: kyma-bot-github-token
+                mountPath: /etc/github
+                readOnly: true
+              - name: config
+                mountPath: /etc/config
+                readOnly: true
+        jobConfigs:
+          - repoName: kyma-project/test-infra
+            jobs:
+              - jobConfig:
+                  name: ci-prow-label-sync
+                  cron: "17 * * * *"
+                  image: gcr.io/k8s-prow/label_sync:v20210408-455417db0f
+                  command: /app/label_sync/app.binary
+                  args:
+                    - --config=/etc/config/labels.yaml
+                    - --confirm=true
+                    - --orgs=kyma-project,kyma-incubator
+                    - --token=/etc/github/token
+                    - --endpoint=http://ghproxy
+                    - --endpoint=https://api.github.com
+                    - --debug
+                inheritedConfigs:
+                  local:
+                    - periodic_config
+                    - github_token_mounts
+                  global:
+                    - disable_testgrid
