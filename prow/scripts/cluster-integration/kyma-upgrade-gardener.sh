@@ -95,6 +95,7 @@ gardener::provision_cluster
 readonly RELEASE_VERSION=$(cat "VERSION")
 log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
 KYMA_SOURCE="${RELEASE_VERSION}"
+export KYMA_SOURCE
 
 # uses previously set KYMA_SOURCE
 gardener::install_kyma
