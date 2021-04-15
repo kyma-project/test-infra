@@ -317,8 +317,6 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
@@ -328,66 +326,114 @@ templates:
                   name: "utilities-kyma-integration-cleaner"
                   cron: "30 * * * *" # "At 30 minutes past every hour"
                   image: eu.gcr.io/kyma-project/prow/cleaner:0.0.1 # see test-infra/prow/images/cleaner
+                  labels:
+                    preset-sa-vm-kyma-integration: "true"
+                    preset-gc-project-env: "true"
               - inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
+                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
                 jobConfig:
-                  name: "generic_job_template"
+                  name: "orphaned-az-storage-accounts-cleaner"
+                  cron: "00 00 * * *" # "At 00:00 each day"
+                  labels:
+                    preset-az-kyma-prow-credentials: "true"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/minio/azure-cleaner.sh"
+                  env:
+                    MINIO_GATEWAY_MODE: azure
+                    AZURE_RS_GROUP: rafter-minio-gateway
+                    AZURE_REGION: westeurope
               - inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "image_kyma-integration"
+                    - "image_prow-tools"
                     - "extra_refs_test-infra"
+                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
                 jobConfig:
-                  name: "generic_job_template"
+                  name: "orphaned-assetstore-gcp-bucket-cleaner"
+                  cron: "00 00 * * *" # "At 00:00 each day"
+                  labels:
+                    preset-sa-prow-job-resource-cleaner: "true"
+                    preset-gc-project-env: "true"
+                    command: "bash"
+                    args:
+                      - "-c"
+                      - "prow/scripts/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT}"
               - inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "image_kyma-integration"
+                    - "image_prow-tools"
                     - "extra_refs_test-infra"
+                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
                 jobConfig:
-                  name: "generic_job_template"
+                  name: "orphaned-disks-cleaner"
+                  cron: "30 * * * *" # "At 30 minutes past every hour"
+                  labels:
+                    preset-sa-gke-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|gke-provisioner|gke-backup|weekly|nightly|gke-central|gke-minio|gke-gkecompint|restore|gke-release|gke-gkeext|gke-gke-|gke-gkekcpint|gke-test|gke-cli'"
               - inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "image_kyma-integration"
+                    - "image_prow-tools"
                     - "extra_refs_test-infra"
+                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
                 jobConfig:
-                  name: "generic_job_template"
+                  name: "orphaned-clusters-cleaner"
+                  cron: "0 * * * *" # "At 0 minute every hour"
+                  labels:
+                    preset-sa-gke-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "/prow-tools/clusterscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -excluded-clusters=kyma-prow,workload-kyma-prow,nightly,weekly"
               - inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "image_kyma-integration"
+                    - "image_prow-tools"
                     - "extra_refs_test-infra"
+                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
                 jobConfig:
-                  name: "generic_job_template"
+                  name: "orphaned-vms-cleaner"
+                  cron: "15,45 * * * *" # "At 15 and 45 past every hour"
+                  labels:
+                    preset-sa-gke-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "/prow-tools/vmscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
               - inheritedConfigs:
                   global:
                     - "jobConfig_default"
