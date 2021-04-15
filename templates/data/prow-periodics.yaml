@@ -17,7 +17,7 @@ templates:
               - name: kyma-bot-github-token
                 secretName: kyma-bot-github-token
               - name: config
-                secretName: label-config
+                configMapName: label-config
             volumeMounts:
               - name: kyma-bot-github-token
                 mountPath: /etc/github

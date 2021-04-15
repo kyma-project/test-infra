@@ -34,6 +34,6 @@ periodics: # runs on schedule
             secret:
               secretName: kyma-bot-github-token
           - name: config
-            secret:
-              secretName: label-config
+            configMap:
+              name: label-config
   

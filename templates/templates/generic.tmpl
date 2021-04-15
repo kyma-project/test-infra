@@ -138,6 +138,10 @@
             secret:
               secretName: {{ .secretName }}
             {{- end }}
+            {{- if .configMapName }}
+            configMap:
+              name: {{ .configMapName }}
+            {{- end }}
           {{- end}}
         {{- end}}
 {{- end -}}
