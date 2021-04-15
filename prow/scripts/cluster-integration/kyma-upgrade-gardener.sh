@@ -76,6 +76,12 @@ readonly COMMON_NAME_PREFIX="grd"
 COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 export COMMON_NAME
 
+# First select Kyma from the latest release
+readonly RELEASE_VERSION=$(cat "VERSION")
+log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
+KYMA_SOURCE="${RELEASE_VERSION}"
+export KYMA_SOURCE
+
 ### Cluster name must be less than 10 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
 
@@ -91,12 +97,6 @@ kyma::install_cli
 gardener::generate_overrides
 
 gardener::provision_cluster
-
-# Install Kyma from latest release
-readonly RELEASE_VERSION=$(cat "VERSION")
-log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
-KYMA_SOURCE="${RELEASE_VERSION}"
-export KYMA_SOURCE
 
 log::info "Installing Kyma $KYMA_SOURCE"
 # uses previously set KYMA_SOURCE
