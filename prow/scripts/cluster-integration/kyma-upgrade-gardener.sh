@@ -76,6 +76,9 @@ readonly COMMON_NAME_PREFIX="grd"
 COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 export COMMON_NAME
 
+LAST_RELEASE_VERSION=$(kyma::get_last_release_version "${BOT_GITHUB_TOKEN}")
+log::info "Reading release version from RELEASE_VERSION file, got: ${LAST_RELEASE_VERSION}"
+KYMA_SOURCE="${LAST_RELEASE_VERSION}"
 #if [[ -n ${PULL_NUMBER} ]]; then
 #    # In case of PR, operate on PR number
 #    KYMA_SOURCE="PR-${PULL_NUMBER}"
@@ -115,9 +118,7 @@ gardener::generate_overrides
 
 gardener::provision_cluster
 
-LAST_RELEASE_VERSION=$(kyma::get_last_release_version "${BOT_GITHUB_TOKEN}")
-log::info "Reading release version from RELEASE_VERSION file, got: ${LAST_RELEASE_VERSION}"
-KYMA_SOURCE="${LAST_RELEASE_VERSION}"
+
 
 log::info "Installing Kyma $KYMA_SOURCE"
 # uses previously set KYMA_SOURCE
