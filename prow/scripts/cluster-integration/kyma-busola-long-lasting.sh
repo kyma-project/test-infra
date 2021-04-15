@@ -84,12 +84,6 @@ function provisionBusola() {
     kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--busola--${DOMAIN_NAME}.yaml"
     export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--busola--$DOMAIN_NAME.yaml"
 
-    # wait for ingress controller to start
-    kubectl wait --namespace kube-system \
-      --for=condition=ready pod \
-      --selector=app.kubernetes.io/component=controller \
-      --timeout=120s
-
     # delete old installation
     namespace_exists=$(kubectl get ns -o json | jq -r ".items | .[] | .metadata | select(.name == \"$busola_namespace\") | .name")
     if [[ "$namespace_exists" == "$busola_namespace" ]]; then
