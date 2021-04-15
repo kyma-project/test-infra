@@ -177,7 +177,7 @@ else
 fi
 
 # TODO change after testing
-readonly COMMON_NAME_PREFIX="grt"
+readonly COMMON_NAME_PREFIX="grn"
 readonly KYMA_NAME_SUFFIX="kyma"
 readonly BUSOLA_NAME_SUFFIX="busola"
 
