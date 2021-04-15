@@ -320,6 +320,25 @@ presets:
       - name: AZURE_REGION
         value: westeurope
   - labels:
+      preset-minio-gcs-gateway: "true"
+    env:
+      - name: MINIO_GATEWAY_MODE
+        value: gcs
+  - labels:
+      preset-minio-az-gateway: "true"
+    env:
+      - name: MINIO_GATEWAY_MODE
+        value: azure
+      - name: AZURE_RS_GROUP
+        value: kyma-minio-gateway
+      - name: AZURE_REGION
+        value: westeurope
+  - labels:
+      preset-gke-rapid: "true"
+    env:
+      - name: GKE_RELEASE_CHANNEL
+        value: rapid
+  - labels:
       preset-sa-prow-job-resource-cleaner: "true"
     env:
       - name: GOOGLE_APPLICATION_CREDENTIALS
