@@ -21,6 +21,7 @@
 # exit on error, and raise error when variable is not set when used
 set -e
 
+log::info "Starting pipeline"
 ENABLE_TEST_LOG_COLLECTOR=false
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
@@ -97,6 +98,7 @@ log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VER
 KYMA_SOURCE="${RELEASE_VERSION}"
 export KYMA_SOURCE
 
+log::info "Installing Kyma $KYMA_SOURCE"
 # uses previously set KYMA_SOURCE
 gardener::install_kyma
 
@@ -124,6 +126,8 @@ fi
 # Install Kyma 2.0 from main
 KYMA_SOURCE="main"
 export KYMA_SOURCE
+
+log::info "Installing Kyma 2.0"
 kyma::alpha_deploy_kyma
 
 if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
