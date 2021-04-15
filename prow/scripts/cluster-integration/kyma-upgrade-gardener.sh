@@ -78,31 +78,6 @@ export COMMON_NAME
 ### Cluster name must be less than 10 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
 
-# set KYMA_SOURCE used by gardener::install_kyma
-# at the time of writing this comment, kyma-integration-gardener never sets BUILD_TYPE to "release"
-if [[ -n ${PULL_NUMBER} ]]; then
-    # In case of PR, operate on PR number
-    KYMA_SOURCE="PR-${PULL_NUMBER}"
-    export KYMA_SOURCE
-    # TODO maybe can be replaced with PULL_BASE_REF?
-elif [[ "${BUILD_TYPE}" == "release" ]]; then
-    readonly RELEASE_VERSION=$(cat "VERSION")
-    log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
-    KYMA_SOURCE="${RELEASE_VERSION}"
-    export KYMA_SOURCE
-else
-    # Otherwise (master), operate on triggering commit id
-    if [[ -n ${PULL_BASE_SHA} ]]; then
-        readonly COMMIT_ID="${PULL_BASE_SHA::8}"
-        KYMA_SOURCE="${COMMIT_ID}"
-        export KYMA_SOURCE
-    else
-        # periodic job, so default to main
-        KYMA_SOURCE="main"
-        export KYMA_SOURCE
-    fi
-fi
-
 # checks required vars and initializes gcloud/docker if necessary
 gardener::init
 
@@ -115,6 +90,11 @@ kyma::install_cli
 gardener::generate_overrides
 
 gardener::provision_cluster
+
+# Install Kyma from latest release
+readonly RELEASE_VERSION=$(cat "VERSION")
+log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
+KYMA_SOURCE="${RELEASE_VERSION}"
 
 # uses previously set KYMA_SOURCE
 gardener::install_kyma
@@ -140,6 +120,9 @@ else
     gardener::test_kyma
 fi
 
+# Install Kyma 2.0 from main
+KYMA_SOURCE="main"
+export KYMA_SOURCE
 kyma::alpha_deploy_kyma
 
 if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
