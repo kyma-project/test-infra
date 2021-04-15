@@ -32,8 +32,6 @@ func TestKymaGardenerGCPKymaToKyma2JobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_REGION", "europe-west4")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_ZONES", "europe-west4-b")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
-	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "REGION", "northeurope")
-	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "RS_GROUP", "kyma-gardener-azure")
 	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
 }
 
