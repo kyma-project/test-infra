@@ -21,7 +21,6 @@
 # exit on error, and raise error when variable is not set when used
 set -e
 
-log::info "Starting pipeline"
 ENABLE_TEST_LOG_COLLECTOR=false
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
@@ -48,6 +47,7 @@ requiredVars=(
 )
 
 utils::check_required_vars "${requiredVars[@]}"
+log::info "Starting pipeline"
 
 if [[ $GARDENER_PROVIDER == "azure" ]]; then
     # shellcheck source=prow/scripts/lib/gardener/azure.sh
