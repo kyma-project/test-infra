@@ -330,6 +330,7 @@ templates:
                   labels:
                     preset-sa-vm-kyma-integration: "true"
                     preset-gc-project-env: "true"
+                  command: "./cleaner.sh"
               - inheritedConfigs:
                   global:
                     - "jobConfig_default"
