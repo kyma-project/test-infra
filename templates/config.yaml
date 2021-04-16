@@ -700,12 +700,12 @@ templates:
   #       values:
   #         <<: *cluster_default
   #         since: "1.15"
-  - from: templates/compass-gke-integration.yaml
-    render:
-      - to: ../prow/jobs/incubator/compass/compass-gke-integration.yaml
-        values:
-          <<: *cluster_default
-          since: "1.13"
+  # - from: templates/compass-gke-integration.yaml
+  #   render:
+  #     - to: ../prow/jobs/incubator/compass/compass-gke-integration.yaml
+  #       values:
+  #         <<: *cluster_default
+  #         since: "1.13"
 #  - from: templates/kyma-release-candidate.yaml
 #    render:
 #      - to: ../prow/jobs/kyma/kyma-release-candidate.yaml
