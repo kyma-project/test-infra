@@ -46,6 +46,8 @@ templates:
                     - "jobConfig_develop"
                 jobConfig:
                   name: pre-rel{{ . | replace "." "" }}-kyma-artifacts
+                  branches:
+                    - ^release-{{ . }}$
                   extra_refs:
                     test-infra:
                       - org: "kyma-project"
@@ -79,6 +81,8 @@ templates:
                     - "jobConfig_release"
                 jobConfig:
                   name: post-rel{{ . | replace "." "" }}-kyma-artifacts
+                  branches:
+                    - ^release-{{ . }}$
                   extra_refs:
                     test-infra:
                       - org: "kyma-project"
