@@ -1,9 +1,9 @@
 templates:
   - from: templates/generic.tmpl
     render:
-      - to: ../prow/jobs/kyma/kyma-gke-external-registry.yaml
+      - to: ../prow/jobs/kyma/kyma-integration.yaml
         localSets:
-          extra_refs_kyma_local:
+          extra_refs_kyma-local:
             extra_refs:
               local-kyma:
                 - org: "kyma-incubator"
@@ -89,7 +89,7 @@ templates:
                     - "request_small"
                     - "vm_job_template_k3s"
                     - "vm_job_labels_template"
-                    - "extra_refs_kyma_local"
+                    - "extra_refs_kyma-local"
                 jobConfig:
                   name: "pre-master-kyma-integration-k3s"
                   # following regexp won't start build if only Markdown files were changed
@@ -107,7 +107,7 @@ templates:
                     - "request_small"
                     - "vm_job_template_k3s"
                     - "vm_job_labels_template"
-                    - "extra_refs_kyma_local"
+                    - "extra_refs_kyma-local"
                 jobConfig:
                   name: "pre-master-kyma-integration-k3s-compass-dev"
                   # following regexp won't start build if only Markdown files were changed
@@ -216,7 +216,7 @@ templates:
                     - "request_small"
                     - "vm_job_template_k3s"
                     - "vm_job_labels_template"
-                    - "extra_refs_kyma_local"
+                    - "extra_refs_kyma-local"
                 jobConfig:
                   name: "post-master-kyma-integration-k3s"
                   annotations:
@@ -236,7 +236,7 @@ templates:
                     - "request_small"
                     - "vm_job_template_k3s"
                     - "vm_job_labels_template"
-                    - "extra_refs_kyma_local"
+                    - "extra_refs_kyma-local"
                 jobConfig:
                   name: "post-master-kyma-integration-k3s-compass-dev"
                   annotations:
@@ -307,7 +307,7 @@ templates:
                   labels:
                     preset-log-collector-slack-token: "true"
                     preset-build-master: "true"
-                    preset-gke-{{ .channel }}: "true"
+                    preset-gke-rapid: "true"
 
               # periodics
 
@@ -326,6 +326,7 @@ templates:
                   name: "utilities-kyma-integration-cleaner"
                   cron: "30 * * * *" # "At 30 minutes past every hour"
                   image: eu.gcr.io/kyma-project/prow/cleaner:0.0.1 # see test-infra/prow/images/cleaner
+                  command: "./cleaner.sh"
                   labels:
                     preset-sa-vm-kyma-integration: "true"
                     preset-gc-project-env: "true"
@@ -367,10 +368,10 @@ templates:
                   labels:
                     preset-sa-prow-job-resource-cleaner: "true"
                     preset-gc-project-env: "true"
-                    command: "bash"
-                    args:
-                      - "-c"
-                      - "prow/scripts/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT}"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "prow/scripts/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT}"
               - inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -660,13 +661,13 @@ templates:
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
                     - "extra_refs_kyma"
-                    - "extra_refs_kyma_local"
                   local:
                     - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
                     - "vm_job_template_k3s"
                     - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
                 jobConfig:
                   name: "kyma-integration-k3s"
                   annotations:
@@ -682,13 +683,13 @@ templates:
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
                     - "extra_refs_kyma"
-                    - "extra_refs_kyma_local"
                   local:
                     - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
                     - "vm_job_template_k3s"
                     - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
                 jobConfig:
                   name: "kyma-integration-k3s-compass-dev"
                   annotations:
