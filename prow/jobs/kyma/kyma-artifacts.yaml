@@ -11,6 +11,7 @@ presubmits: # runs on PRs
         preset-kyma-development-artifacts-bucket: "true"
         preset-sa-gcr-push: "true"
         preset-sa-kyma-push-artifacts: "true"
+      always_run: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -43,6 +44,7 @@ presubmits: # runs on PRs
         preset-kyma-development-artifacts-bucket: "true"
         preset-sa-gcr-push: "true"
         preset-sa-kyma-push-artifacts: "true"
+      always_run: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -74,6 +76,7 @@ presubmits: # runs on PRs
         preset-kyma-development-artifacts-bucket: "true"
         preset-sa-gcr-push: "true"
         preset-sa-kyma-push-artifacts: "true"
+      always_run: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -105,6 +108,7 @@ presubmits: # runs on PRs
         preset-kyma-development-artifacts-bucket: "true"
         preset-sa-gcr-push: "true"
         preset-sa-kyma-push-artifacts: "true"
+      always_run: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -141,6 +145,7 @@ postsubmits: # runs on main
         preset-kyma-development-artifacts-bucket: "true"
         preset-sa-gcr-push: "true"
         preset-sa-kyma-push-artifacts: "true"
+      always_run: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -175,6 +180,7 @@ postsubmits: # runs on main
         preset-kyma-artifacts-bucket: "true"
         preset-sa-gcr-push: "true"
         preset-sa-kyma-push-artifacts: "true"
+      always_run: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -208,6 +214,7 @@ postsubmits: # runs on main
         preset-kyma-artifacts-bucket: "true"
         preset-sa-gcr-push: "true"
         preset-sa-kyma-push-artifacts: "true"
+      always_run: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -241,6 +248,7 @@ postsubmits: # runs on main
         preset-kyma-artifacts-bucket: "true"
         preset-sa-gcr-push: "true"
         preset-sa-kyma-push-artifacts: "true"
+      always_run: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma

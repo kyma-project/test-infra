@@ -272,8 +272,6 @@ presets:
   - labels:
       preset-slack-alerts: "true"
     env:
-      - name: TEST_RESULT_WINDOW_TIME
-        value: "6h"
       - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
         value: "#kyma-ci-force"
       - name: KYMA_ALERTS_SLACK_API_URL

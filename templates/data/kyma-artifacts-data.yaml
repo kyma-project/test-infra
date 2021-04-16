@@ -8,6 +8,7 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kyma-artifacts.sh"
             request_memory: 1Gi
             request_cpu: 0.2
+            always_run: true
             labels:
               preset-sa-kyma-push-artifacts: "true"
               preset-bot-github-token: "true"
