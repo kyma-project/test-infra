@@ -21,6 +21,9 @@ config_updater:
       name: plugins
     prow/labels.yaml:
       name: label-config
+      clusters:
+        trusted-workload:
+          - default
 
 triggers:
 - repos:

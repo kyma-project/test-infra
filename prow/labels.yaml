@@ -74,8 +74,8 @@ default:
       prowPlugin: approve
       addedBy: approvers
     - color: fef2c0
-      description: Indicates a cherry-pick PR into a release branch has been approved by the release branch manager.
-      name: cherry-pick-approved
+      description: Indicates a release-pr-approved PR into a release branch has been approved by the release branch manager.
+      name: release-pr-approved
       target: prs
       addedBy: humans
     - color: e11d21
