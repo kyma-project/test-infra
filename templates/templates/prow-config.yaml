@@ -251,11 +251,23 @@ presets:
     env:
       - name: EXECUTE_FAST_INTEGRATION_TESTS
         value: "true"
-  - labels:
+
       preset-recreate-cluster: "true"
     env:
     - name: RECREATE_CLUSTER
       value: "true"
+  - labels:
+      preset-slack-alerts: "true"
+    env:
+      - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
+        value: "#kyma-ci-force"
+      - name: KYMA_ALERTS_SLACK_API_URL
+        valueFrom:
+          secretKeyRef:
+            name: kyma-alerts-slack-api-url
+            key: secret
+      - name: KYMA_ALERTS_CHANNEL
+        value: "#kyma-ci-force"
   # cluster version
   - labels:
       preset-cluster-version: "true"
