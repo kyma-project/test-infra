@@ -76,31 +76,10 @@ readonly COMMON_NAME_PREFIX="grd"
 COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 export COMMON_NAME
 
+# Install Kyma form latest release
 LAST_RELEASE_VERSION=$(kyma::get_last_release_version "${BOT_GITHUB_TOKEN}")
 log::info "Reading release version from RELEASE_VERSION file, got: ${LAST_RELEASE_VERSION}"
 KYMA_SOURCE="${LAST_RELEASE_VERSION}"
-#if [[ -n ${PULL_NUMBER} ]]; then
-#    # In case of PR, operate on PR number
-#    KYMA_SOURCE="PR-${PULL_NUMBER}"
-#    export KYMA_SOURCE
-#    # TODO maybe can be replaced with PULL_BASE_REF?
-#elif [[ "${BUILD_TYPE}" == "release" ]]; then
-#    readonly RELEASE_VERSION=$(cat "VERSION")
-#    log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
-#    KYMA_SOURCE="${RELEASE_VERSION}"
-#    export KYMA_SOURCE
-#else
-#    # Otherwise (master), operate on triggering commit id
-#    if [[ -n ${PULL_BASE_SHA} ]]; then
-#        readonly COMMIT_ID="${PULL_BASE_SHA::8}"
-#        KYMA_SOURCE="${COMMIT_ID}"
-#        export KYMA_SOURCE
-#    else
-#        # periodic job, so default to main
-#        KYMA_SOURCE="main"
-#        export KYMA_SOURCE
-#    fi
-#fi
 
 ### Cluster name must be less than 10 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
@@ -118,8 +97,6 @@ gardener::generate_overrides
 
 gardener::provision_cluster
 
-
-
 log::info "Installing Kyma $KYMA_SOURCE"
 # uses previously set KYMA_SOURCE
 gardener::install_kyma
@@ -127,13 +104,11 @@ gardener::install_kyma
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
-
 if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
     gardener::hibernate_kyma
     sleep 120
     gardener::wake_up_kyma
 fi
-
 
 if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
     gardener::test_fast_integration_kyma
