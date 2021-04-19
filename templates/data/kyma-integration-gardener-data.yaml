@@ -2,12 +2,6 @@ templates:
   - from: templates/generic.tmpl
     render:
       - to: ../prow/jobs/kyma/kyma-integration-gardener_tmp.yaml
-        values:
-          resource_changes_triggering_kafka_tests:
-            - resources/knative-eventing
-            - resources/event-sources
-            - resources/knative-eventing-kafka
-            - resources/application-connector
         localSets:
           extra_refs_kyma-local:
             extra_refs:
@@ -29,7 +23,9 @@ templates:
             request_cpu: 400m
           jobConfig_presubmit:
             optional: true
-          command_long_lasting:
+            labels:
+              preset-build-pr: "true"
+          command_integration:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
           command_busola_long_lasting:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-busola-long-lasting.sh"
@@ -51,7 +47,13 @@ templates:
               KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
               GARDENER_REGION: "europe-west4"
               GARDENER_ZONES: "europe-west4-b"
-          gardener_azure_job_labels:
+          gardener_azure_job:
+            env:
+              RS_GROUP: "kyma-gardener-azure"
+              REGION: "northeurope"
+              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
+              GARDENER_REGION: "northeurope"
+              GARDENER_ZONES: "1"
             labels:
               preset-gardener-azure-kyma-integration: "true"
               preset-docker-push-repository-gke-integration: "true"
@@ -64,13 +66,6 @@ templates:
               preset-sa-gardener-logs: "true"               # required for writing logs to Stackdriver
               preset-cluster-version: "true"
               preset-debug-commando-oom: "true"             # detect and troubleshoot oom events
-          gardener_azure_job:
-            env:
-              RS_GROUP: "kyma-gardener-azure"
-              REGION: "northeurope"
-              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
-              GARDENER_REGION: "northeurope"
-              GARDENER_ZONES: "1"
         jobConfigs:
           - repoName: kyma-project/kyma
             jobs:
@@ -83,16 +78,16 @@ templates:
                     - image_kyma-integration
                   local:
                     - jobConfig_default
-                    - command_long_lasting
+                    - command_integration
                     - jobConfig_presubmit
+                    - gardener_azure_job
                 jobConfig:
                   name: pre-master-kyma-gardener-azure-integration
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
-                    run_if_changed: {{  .Values.resource_changes_triggering_kafka_tests | join "|" | printf "^(((%s)\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))" | quote }}
-                    labels:
-                      preset-build-pr: "true"
+                    # following regexp won't start build if only Markdown files were changed
+                    run_if_changed: "^(((resources/knative-eventing|resources/event-sources|resources/knative-eventing-kafka|resources/application-connector)\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
               - inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -102,11 +97,15 @@ templates:
                   local:
                     - jobConfig_default
                     - jobConfig_presubmit
+                    - command_integration
+                    - gardener_azure_job
                 jobConfig:
-                  name: generic-job-templatee
+                  name: pre-master-kyma-gardener-azure-fast-integration
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
+                  env:
+                    EXECUTION_PROFILE: "evaluation"
               - inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -116,11 +115,19 @@ templates:
                   local:
                     - jobConfig_default
                     - jobConfig_presubmit
+                    - command_integration
+                    - gardener_azure_job
                 jobConfig:
-                  name: generic-job-templatee
+                  name: pre-master-kyma-gardener-azure-kyma-alpha
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  env:
+                    EXECUTION_PROFILE: "evaluation"
+                    KYMA_ALPHA: "true"
+
               # postsubmits
               - inheritedConfigs:
                   global:
