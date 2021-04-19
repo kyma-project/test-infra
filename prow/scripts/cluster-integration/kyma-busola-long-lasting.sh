@@ -187,7 +187,7 @@ if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
     provisionKyma2 "main" "${KYMA_COMMON_NAME}"
 elif [[ $BUSOLA_PROVISION_TYPE == "BUSOLA" ]]; then
     log::info "Busola cluster name: ${BUSOLA_COMMON_NAME}"
-    if [[ $PERIODIC_TYPE == "weekly" ]]; then
+    if [[ $RECREATE_CLUSTER == "true" ]]; then
         delete_cluster "${BUSOLA_COMMON_NAME}"
         provisionCluster "${BUSOLA_COMMON_NAME}"
         provisionIngress "${BUSOLA_COMMON_NAME}"
