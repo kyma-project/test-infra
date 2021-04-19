@@ -3,15 +3,10 @@
 presets:
   # cluster version
   - labels:
-      preset-periodic-weekly: "true"
+      preset-recreate-cluster: "true"
     env:
-      - name: PERIODIC_TYPE
-        value: "weekly"
-  - labels:
-      preset-periodic-nightly: "true"
-    env:
-      - name: PERIODIC_TYPE
-        value: "nightly"
+      - name: RECREATE_CLUSTER
+        value: "true"
   # cluster version
   - labels:
       preset-cluster-version: "true"

@@ -519,7 +519,7 @@ periodics:
     labels:
       preset-busola-nightly-provision-type-busola: "true"
       preset-log-collector-slack-token: "true"
-      preset-periodic-weekly: "true"
+      preset-recreate-cluster: "true"
       <<: *gardener_gcp_job_labels_template
 
   - name: kyma-nightly-gardener-gcp-busola
@@ -542,7 +542,6 @@ periodics:
     labels:
       preset-busola-nightly-provision-type-busola: "true"
       preset-log-collector-slack-token: "true"
-      preset-periodic-nightly: "true"
       <<: *gardener_gcp_job_labels_template
 
   - name: kyma-nightly-gardener-gcp-busola-kyma
