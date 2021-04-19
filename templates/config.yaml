@@ -228,6 +228,7 @@ templates:
           <<: *kyma_generic_component
           path: tests/console-backend-service
           since: "1.6"
+          until: "1.22"
       - to: ../prow/jobs/kyma/tests/service-catalog/service-catalog-tests-generic.yaml
         values:
           <<: *cluster_default
@@ -282,12 +283,6 @@ templates:
           <<: *kyma_generic_component
           path: tests/connector-service-tests
           since: "1.7"
-      - to: ../prow/jobs/kyma/tests/console-backend-service/console-backend-service-tests-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *kyma_generic_component
-          path: tests/console-backend-service
-          since: "1.6"
       - to: ../prow/jobs/kyma/tests/end-to-end/upgrade/upgrade-tests-generic.yaml
         values:
           <<: *cluster_default
