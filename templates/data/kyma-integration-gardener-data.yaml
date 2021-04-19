@@ -135,6 +135,7 @@ templates:
                     - jobConfig_postsubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
+                    - disable_testgrid
                   local:
                     - jobConfig_default
                     - command_integration
