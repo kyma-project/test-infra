@@ -77,7 +77,7 @@ templates:
                   local:
                     - jobConfig_default
                 jobConfig:
-                  name: pre-master-kcp-development-artifacts
+                  name: pre-main-kcp-development-artifacts
                   run_if_changed: "^installation|^resources|^tools/kcp-installer"
                   optional: "true"
               - inheritedConfigs:
@@ -90,6 +90,6 @@ templates:
                   local:
                     - jobConfig_default
                 jobConfig:
-                  name: post-master-kcp-development-artifacts
+                  name: post-main-kcp-development-artifacts
                   labels:
                     preset-build-artifacts-master: "true"
