@@ -26,18 +26,27 @@ function delete_cluster(){
     set -e
 }
 
-function provisionBusola(){
+function provisionCluster() {
     export DOMAIN_NAME=$1
 
     RESOURCES_PATH=${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola/
 
-    log::info "Installing Busola on the cluster: ${DOMAIN_NAME}"
+    log::info "Creating cluster: ${DOMAIN_NAME}"
     # create the cluster
     # shellcheck disable=SC2002
     cat "${RESOURCES_PATH}/cluster-busola.yaml" | envsubst | kubectl create -f -
 
     # wait for the cluster to be ready
     kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${DOMAIN_NAME}"
+    log::info "Cluster ${DOMAIN_NAME} was created succesfully"
+}
+
+function provisionIngress() {
+    export DOMAIN_NAME=$1
+
+    RESOURCES_PATH=${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola/
+
+    log::info "Install ingress"
 
     # switch to the new cluster
     kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--busola--${DOMAIN_NAME}.yaml"
@@ -58,6 +67,31 @@ function provisionBusola(){
       --for=condition=ready pod \
       --selector=app.kubernetes.io/component=controller \
       --timeout=120s
+    
+    log::info "Ingress is ready"
+}
+
+function provisionBusola() {
+    export DOMAIN_NAME=$1
+
+    busola_namespace="busola"
+
+    RESOURCES_PATH=${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola/
+
+    log::info "Installing Busola on the cluster: ${DOMAIN_NAME}"
+
+    export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
+    kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--busola--${DOMAIN_NAME}.yaml"
+    export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--busola--$DOMAIN_NAME.yaml"
+
+    # delete old installation
+    namespace_exists=$(kubectl get ns -o json | jq -r ".items | .[] | .metadata | select(.name == \"$busola_namespace\") | .name")
+    if [[ "$namespace_exists" == "$busola_namespace" ]]; then
+        log::info "namespace busola exists, deleting..."
+        kubectl delete ns "$busola_namespace" --wait=true
+    fi
+
+    log::info "Busola installation started"
 
     # install busola
     FULL_DOMAIN="${DOMAIN_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com"
@@ -65,7 +99,8 @@ function provisionBusola(){
     find "${BUSOLA_SOURCES_DIR}/resources" -name "*.yaml" \
          -exec sed -i "s/%DOMAIN%/${FULL_DOMAIN}/g" "{}" \;
 
-    kubectl apply -k "${BUSOLA_SOURCES_DIR}/resources"
+    kubectl create namespace "$busola_namespace"
+    kubectl apply --namespace "$busola_namespace" -k "${BUSOLA_SOURCES_DIR}/resources"
 
     TERM=dumb kubectl cluster-info
     log::info "Please generate params for using k8s http://enkode.surge.sh/"
@@ -81,14 +116,8 @@ function provisionKyma2(){
 
     log::info "Installing Kyma version: ${KYMA_VERSION} on the cluster : ${DOMAIN_NAME}"
 
-    # create the cluster
-    # shellcheck disable=SC2002
-    cat "${RESOURCES_PATH}/cluster-kyma.yaml" | envsubst | kubectl create -f -
-
-    # wait for the cluster to be ready
-    kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${DOMAIN_NAME}"
-
     # switch to the new cluster
+    export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
     kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
     export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
 
@@ -100,7 +129,6 @@ function provisionKyma2(){
     --source="${KYMA_VERSION}" \
     --value global.environment.gardener=true \
     --concurrency=4
-
 }
 
 ENABLE_TEST_LOG_COLLECTOR=false
@@ -155,10 +183,15 @@ export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
 if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
     log::info "Kyma cluster name: ${KYMA_COMMON_NAME}"
     delete_cluster "${KYMA_COMMON_NAME}"
+    provisionCluster "${KYMA_COMMON_NAME}"
     provisionKyma2 "main" "${KYMA_COMMON_NAME}"
 elif [[ $BUSOLA_PROVISION_TYPE == "BUSOLA" ]]; then
     log::info "Busola cluster name: ${BUSOLA_COMMON_NAME}"
-    delete_cluster "${BUSOLA_COMMON_NAME}"
+    if [[ $RECREATE_CLUSTER == "true" ]]; then
+        delete_cluster "${BUSOLA_COMMON_NAME}"
+        provisionCluster "${BUSOLA_COMMON_NAME}"
+        provisionIngress "${BUSOLA_COMMON_NAME}"
+    fi
     provisionBusola "${BUSOLA_COMMON_NAME}"
 else
     log::error "Wrong value for BUSOLA_PROVISION_TYPE: '$BUSOLA_PROVISION_TYPE'"
