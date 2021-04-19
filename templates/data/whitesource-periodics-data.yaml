@@ -160,6 +160,7 @@ templates:
                   name: "api-gateway"
                   language: "golang-mod"
                   project: "kyma-incubator"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
