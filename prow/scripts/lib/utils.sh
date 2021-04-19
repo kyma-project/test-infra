@@ -92,7 +92,6 @@ function utils::generate_letsencrypt_cert() {
       --no-eff-email \
       --server https://acme-v02.api.letsencrypt.org/directory \
       --manual \
-      --manual-public-ip-logging-ok \
       --preferred-challenges dns \
       --manual-auth-hook /prow-tools/certbotauthenticator \
       --manual-cleanup-hook "/prow-tools/certbotauthenticator -D" \
