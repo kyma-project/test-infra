@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-incubator/vstudio-extension:
-    - name: pre-master-vstudio-extension
+    - name: pre-main-vstudio-extension
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
@@ -38,7 +38,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-incubator/vstudio-extension:
-    - name: post-master-vstudio-extension
+    - name: post-main-vstudio-extension
       annotations:
         testgrid-create-test-group: "false"
       labels:

@@ -20,7 +20,7 @@ func TestServiceCatalogTesterJobsPresubmit(t *testing.T) {
 	assert.Len(t, kymaPresubmits, 1)
 
 	actualPresubmit := kymaPresubmits[0]
-	expName := "pre-master-service-catalog-tester"
+	expName := "pre-main-service-catalog-tester"
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -49,7 +49,7 @@ func TestServiceCatalogTesterJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPost, 1)
 
 	actualPost := kymaPost[0]
-	expName := "post-master-service-catalog-tester"
+	expName := "post-main-service-catalog-tester"
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPost.Branches)
 

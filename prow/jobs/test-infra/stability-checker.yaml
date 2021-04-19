@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/test-infra:
-    - name: pre-master-stability-checker
+    - name: pre-main-stability-checker
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -33,7 +33,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/test-infra:
-    - name: post-master-stability-checker
+    - name: post-main-stability-checker
       annotations:
         testgrid-create-test-group: "false"
       labels:

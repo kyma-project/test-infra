@@ -27,7 +27,7 @@ templates:
                   local:
                     - "jobConfig_default"
                 jobConfig:
-                  name: "pre-master-kyma-incubator-dex"
+                  name: "pre-main-kyma-incubator-dex"
                   labels:
                     preset-build-pr: "true"
                   always_run: true
@@ -41,6 +41,6 @@ templates:
                   local:
                     - "jobConfig_default"
                 jobConfig:
-                  name: "post-master-kyma-incubator-dex"
+                  name: "post-main-kyma-incubator-dex"
                   labels:
                     preset-build-master: "true"

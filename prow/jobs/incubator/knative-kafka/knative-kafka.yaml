@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-incubator/knative-kafka:
-    - name: pre-master-knative-kafka
+    - name: pre-main-knative-kafka
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
@@ -39,7 +39,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-incubator/knative-kafka:
-    - name: post-master-knative-kafka
+    - name: post-main-knative-kafka
       annotations:
         testgrid-create-test-group: "false"
       labels:

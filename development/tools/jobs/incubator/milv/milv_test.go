@@ -20,7 +20,7 @@ func TestMilvJobsPresubmit(t *testing.T) {
 	assert.Len(t, kymaPresubmits, 1)
 
 	actualPresubmit := kymaPresubmits[0]
-	expName := "pre-master-kyma-incubator-milv"
+	expName := "pre-main-kyma-incubator-milv"
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^main$"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -46,7 +46,7 @@ func TestMilvJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPost, 1)
 
 	actualPost := kymaPost[0]
-	expName := "post-master-kyma-incubator-milv"
+	expName := "post-main-kyma-incubator-milv"
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"^main$"}, actualPost.Branches)
 

@@ -30,7 +30,7 @@ templates:
                   local:
                     - jobConfig_default
                 jobConfig:
-                  name: pre-master-kcp-cli
+                  name: pre-main-kcp-cli
                   run_if_changed: "^tools/cli"
               - inheritedConfigs:
                   global:
@@ -42,7 +42,7 @@ templates:
                   local:
                     - jobConfig_default
                 jobConfig:
-                  name: post-master-kcp-cli
+                  name: post-main-kcp-cli
                   labels:
                     preset-build-artifacts-master: "true"
       - to: ../prow/jobs/control-plane/kcp-development-artifacts.yaml

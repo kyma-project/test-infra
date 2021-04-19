@@ -17,7 +17,7 @@ func TestSlackConnectorJobPresubmit(t *testing.T) {
 
 	assert.Len(t, jobConfig.PresubmitsStatic, 1)
 	kymaPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-incubator/github-slack-connectors"})
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(kymaPresubmits, "pre-master-slack-connector", "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(kymaPresubmits, "pre-main-slack-connector", "master")
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPresubmit.Branches)
 	assert.Equal(t, "^slack-connector", actualPresubmit.RunIfChanged)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -41,7 +41,7 @@ func TestSlackConnectorJobPostsubmit(t *testing.T) {
 	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
 	kymaPost := jobConfig.AllStaticPostsubmits([]string{"kyma-incubator/github-slack-connectors"})
 
-	actualPost := tester.FindPostsubmitJobByNameAndBranch(kymaPost, "post-master-slack-connector", "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(kymaPost, "post-main-slack-connector", "master")
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPost.Branches)
 	assert.Equal(t, "^slack-connector", actualPost.RunIfChanged)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)

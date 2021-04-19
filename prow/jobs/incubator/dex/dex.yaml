@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-incubator/dex:
-    - name: pre-master-kyma-incubator-dex
+    - name: pre-main-kyma-incubator-dex
       labels:
         preset-build-pr: "true"
         preset-dind-enabled: "true"
@@ -39,7 +39,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-incubator/dex:
-    - name: post-master-kyma-incubator-dex
+    - name: post-main-kyma-incubator-dex
       annotations:
         testgrid-create-test-group: "false"
       labels:

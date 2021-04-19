@@ -14,7 +14,7 @@ func TestReactComponentsJobPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	expName := "pre-master-console-react-components"
+	expName := "pre-main-console-react-components"
 	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/console"}), expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -37,7 +37,7 @@ func TestReactComponentsJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	expName := "post-master-console-react-components"
+	expName := "post-main-console-react-components"
 	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/console"}), expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)

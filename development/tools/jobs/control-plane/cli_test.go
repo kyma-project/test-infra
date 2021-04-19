@@ -15,7 +15,7 @@ func TestKCPPresubmitCLI(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	job := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/control-plane"}), "pre-master-kcp-cli", "master")
+	job := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/control-plane"}), "pre-main-kcp-cli", "master")
 	require.NotNil(t, job)
 
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*job, true, "tools/cli/Makefile"))
@@ -44,7 +44,7 @@ func TestKCPPostsubmitCLI(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	job := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/control-plane"}), "post-master-kcp-cli", "master")
+	job := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/control-plane"}), "post-main-kcp-cli", "master")
 	require.NotNil(t, job)
 	assert.Empty(t, job.RunIfChanged)
 	tester.AssertThatHasExtraRefTestInfra(t, job.UtilityConfig, "main")

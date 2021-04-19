@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-incubator/api-gateway:
-    - name: pre-master-kyma-incubator-api-gateway
+    - name: pre-main-kyma-incubator-api-gateway
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
@@ -38,7 +38,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-incubator/api-gateway:
-    - name: post-master-kyma-incubator-api-gateway
+    - name: post-main-kyma-incubator-api-gateway
       annotations:
         testgrid-create-test-group: "false"
       labels:

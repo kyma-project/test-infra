@@ -10,7 +10,7 @@ templates:
           - repoName: "github.com/kyma-project/test-infra"
             jobs:
               - jobConfig:
-                  name: "pre-master-test-infra-watch-pods"
+                  name: "pre-main-test-infra-watch-pods"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/test-infra/watch-pods"
                     - "ci-pr"
@@ -23,7 +23,7 @@ templates:
                     - "jobConfig_default"
                     - "build_labels"
               - jobConfig:
-                  name: "post-master-test-infra-watch-pods"
+                  name: "post-main-test-infra-watch-pods"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/test-infra/watch-pods"
                     - "ci-main"

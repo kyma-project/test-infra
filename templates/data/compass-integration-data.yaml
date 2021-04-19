@@ -26,7 +26,7 @@ templates:
                   local:
                     - "jobConfig_default"
                 jobConfig:
-                  name: "pre-master-compass-integration"
+                  name: "pre-main-compass-integration"
                   run_if_changed: "^(chart|installation)/"
                   labels:
                     preset-build-pr: "true"
@@ -43,7 +43,7 @@ templates:
                   local:
                     - "jobConfig_default"
                 jobConfig:
-                  name: "post-master-compass-integration"
+                  name: "post-main-compass-integration"
                   labels:
                     preset-build-master: "true"
                   annotations:

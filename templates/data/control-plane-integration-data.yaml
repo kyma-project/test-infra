@@ -37,7 +37,7 @@ templates:
                   local:
                     - jobConfig_default
                 jobConfig:
-                  name: pre-master-control-plane-gke-integration
+                  name: pre-main-control-plane-gke-integration
                   labels:
                     preset-build-pr: "true"
                   run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -50,7 +50,7 @@ templates:
                   local:
                     - jobConfig_default
                 jobConfig:
-                  name: post-master-control-plane-gke-integration
+                  name: post-main-control-plane-gke-integration
                   labels:
                     preset-build-master: "true"
                     preset-log-collector-slack-token: "true"
@@ -96,7 +96,7 @@ templates:
                   local:
                     - jobConfig_default
                 jobConfig:
-                  name: pre-master-control-plane-gke-provisioner-integration
+                  name: pre-main-control-plane-gke-provisioner-integration
                   labels:
                     preset-build-pr: "true"
                   run_if_changed: "^resources/kcp/charts/provisioner/"
@@ -109,7 +109,7 @@ templates:
                   local:
                     - jobConfig_default
                 jobConfig:
-                  name: post-master-control-plane-gke-provisioner-integration
+                  name: post-main-control-plane-gke-provisioner-integration
                   labels:
                     preset-build-master: "true"
                     preset-log-collector-slack-token: "true"
@@ -142,7 +142,7 @@ templates:
                   local:
                     - jobConfig_default
                 jobConfig:
-                  name: pre-master-control-plane-integration
+                  name: pre-main-control-plane-integration
                   labels:
                     preset-build-pr: "true"
                   run_if_changed: "^(resources|installation)/"
@@ -155,7 +155,7 @@ templates:
                   local:
                     - jobConfig_default
                 jobConfig:
-                  name: post-master-control-plane-integration
+                  name: post-main-control-plane-integration
                   labels:
                     preset-build-master: "true"
                     preset-log-collector-slack-token: "true"

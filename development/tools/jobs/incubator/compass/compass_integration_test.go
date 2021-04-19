@@ -20,7 +20,7 @@ func TestCompassIntegrationJobsPresubmit(t *testing.T) {
 		expNotRunIfChangedPaths []string
 	}{
 		"Should contain the compass-integration job": {
-			givenJobName: "pre-master-compass-integration",
+			givenJobName: "pre-main-compass-integration",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration",
@@ -80,7 +80,7 @@ func TestCompassIntegrationJobsPostsubmit(t *testing.T) {
 		expPresets   []preset.Preset
 	}{
 		"Should contain the compass-integration job": {
-			givenJobName: "post-master-compass-integration",
+			givenJobName: "post-main-compass-integration",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",

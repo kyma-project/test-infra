@@ -20,7 +20,7 @@ func TestTerraformProviderGardenerJobsPresubmit(t *testing.T) {
 
 	assert.Len(t, kymaPresubmits, 1)
 
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(kymaPresubmits, "pre-master-terraform-provider-gardener", "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(kymaPresubmits, "pre-main-terraform-provider-gardener", "master")
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
@@ -46,7 +46,7 @@ func TestTerraformProviderGardenerJobPostsubmit(t *testing.T) {
 	kymaPost := jobConfig.AllStaticPostsubmits([]string{"kyma-incubator/terraform-provider-gardener"})
 	assert.Len(t, kymaPost, 1)
 
-	actualPost := tester.FindPostsubmitJobByNameAndBranch(kymaPost, "post-master-terraform-provider-gardener", "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(kymaPost, "post-main-terraform-provider-gardener", "master")
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPost.Branches)
 
 	assert.Equal(t, 10, actualPost.MaxConcurrency)

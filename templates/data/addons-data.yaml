@@ -28,7 +28,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                 jobConfig:
-                    name: "pre-master-kyma-addons"
+                    name: "pre-main-kyma-addons"
                     always_run: "true"
                     args:
                       - "/home/prow/go/src/github.com/kyma-project/addons"
@@ -44,7 +44,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
                 jobConfig:
-                  name: "post-master-kyma-addons"
+                  name: "post-main-kyma-addons"
                   args:
                       - "/home/prow/go/src/github.com/kyma-project/addons"
                       - "ci-master"

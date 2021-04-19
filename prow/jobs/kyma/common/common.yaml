@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-master-kyma-common
+    - name: pre-main-kyma-common
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -38,7 +38,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/kyma:
-    - name: post-master-kyma-common
+    - name: post-main-kyma-common
       annotations:
         testgrid-create-test-group: "false"
       labels:

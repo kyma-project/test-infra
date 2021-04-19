@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/control-plane:
-    - name: pre-master-kcp-cli
+    - name: pre-main-kcp-cli
       labels:
         preset-kyma-development-artifacts-bucket: "true"
         preset-sa-gcr-push: "true"
@@ -42,7 +42,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/control-plane:
-    - name: post-master-kcp-cli
+    - name: post-main-kcp-cli
       annotations:
         testgrid-create-test-group: "false"
       labels:

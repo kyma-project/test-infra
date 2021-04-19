@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/test-infra:
-    - name: pre-master-test-log-collector
+    - name: pre-main-test-log-collector
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -33,7 +33,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/test-infra:
-    - name: post-master-test-log-collector
+    - name: post-main-test-log-collector
       annotations:
         testgrid-create-test-group: "false"
       labels:

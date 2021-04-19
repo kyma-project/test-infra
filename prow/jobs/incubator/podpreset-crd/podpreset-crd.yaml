@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-incubator/podpreset-crd:
-    - name: pre-master-podpreset-crd
+    - name: pre-main-podpreset-crd
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
@@ -39,7 +39,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-incubator/podpreset-crd:
-    - name: post-master-podpreset-crd
+    - name: post-main-podpreset-crd
       annotations:
         testgrid-create-test-group: "false"
       labels:

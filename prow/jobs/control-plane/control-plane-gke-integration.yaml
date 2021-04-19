@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/control-plane:
-    - name: pre-master-control-plane-gke-integration
+    - name: pre-main-control-plane-gke-integration
       labels:
         preset-build-pr: "true"
         preset-cluster-version: "true"
@@ -51,7 +51,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/control-plane:
-    - name: post-master-control-plane-gke-integration
+    - name: post-main-control-plane-gke-integration
       annotations:
         description: "Kyma control-plane GKE integration job."
         testgrid-dashboards: "kyma_control-plane"
