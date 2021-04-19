@@ -135,13 +135,21 @@ templates:
                     - jobConfig_postsubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
+                    - command_integration
+                    - gardener_azure_job
                   local:
                     - jobConfig_default
                 jobConfig:
-                  name: generic-job-templatee
+                  name: post-master-kyma-gardener-azure-kyma-alpha
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
+                  labels:
+                    preset-build-master: "true"
+                  env:
+                    EXECUTION_PROFILE: "evaluation"
+                    KYMA_ALPHA: "true"
+                  
               # periodics
               - inheritedConfigs:
                   global:
