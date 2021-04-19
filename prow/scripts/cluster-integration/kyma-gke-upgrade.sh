@@ -106,7 +106,7 @@ function post_hook() {
   set +e
 
   # collect logs from failed tests before deprovisioning
-  kyma::run_test_log_collector "post-master-kyma-gke-upgrade"
+  kyma::run_test_log_collector "post-main-kyma-gke-upgrade"
 
   gcloud::cleanup
 

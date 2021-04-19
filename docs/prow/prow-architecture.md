@@ -65,8 +65,8 @@ Build logs are archived by Plank on GCS in a dedicated bucket. The bucket is con
 ## Generate development artifacts
 
 There are two jobs that generate artifacts which allow you to install Kyma on a cluster either from the `main` branch or from a pull request changes:
-- `pre-master-kyma-development-artifacts`
-- `post-master-kyma-development-artifacts`
+- `pre-main-kyma-development-artifacts`
+- `post-main-kyma-development-artifacts`
 
 >**NOTE:** For pull requests, the job is executed only if the introduced changes have an impact on the installed Kyma version.
 

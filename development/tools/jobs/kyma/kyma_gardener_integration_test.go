@@ -111,7 +111,7 @@ func TestKymaGardenerAzureIntegrationPresubmit(t *testing.T) {
 
 	presubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"})
 
-	jobName := "pre-master-kyma-gardener-azure-integration"
+	jobName := "pre-main-kyma-gardener-azure-integration"
 	job := tester.FindPresubmitJobByName(presubmits, jobName)
 	require.NotNil(t, job)
 	assert.Equal(t, jobName, job.Name)
@@ -133,7 +133,7 @@ func TestKymaGardenerAzureIntegrationPresubmit(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "REGION", "northeurope")
 	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
 
-	jobName = "pre-master-kyma-gardener-azure-alpha-eval"
+	jobName = "pre-main-kyma-gardener-azure-alpha-eval"
 	job = tester.FindPresubmitJobByName(presubmits, jobName)
 	require.NotNil(t, job)
 	assert.Equal(t, jobName, job.Name)

@@ -46,11 +46,11 @@ When you define jobs for Prow, the **name** parameter of the job must follow one
 - `{prefix}-{repository-name}-{path-to-component}` for components
 - `{prefix}-{repository-name}` for jobs not connected to a particular component
 
-You can extend the name of the job with a suffix to indicate the job's purpose. For example, write `pre-master-kyma-integration`.
+You can extend the name of the job with a suffix to indicate the job's purpose. For example, write `pre-main-kyma-integration`.
 
 Add `{prefix}` in front of all presubmit and postsubmit jobs. Use:
-- `pre-master` for presubmit jobs that run against the `main` branch.
-- `post-master` for postsubmit jobs that run against the `main` branch.
+- `pre-main` for presubmit jobs that run against the `main` branch.
+- `post-main` for postsubmit jobs that run against the `main` branch.
 - `pre-rel{release-number}` for presubmit jobs that run against the release branches. For example, write `pre-rel06-kyma-components-api-controller`.
 
 
@@ -74,7 +74,7 @@ If you want to trigger your job again, add one of these comments to your PR:
 
 `/test all` to rerun all tests
 `/retest` to only rerun failed tests
-`/test {test-name}` or `/retest {test-name}` to only rerun a specific test. For example, run `/test pre-master-kyma-components-binding-usage-controller`.
+`/test {test-name}` or `/retest {test-name}` to only rerun a specific test. For example, run `/test pre-main-kyma-components-binding-usage-controller`.
 
 After you trigger the job, it appears on `https://status.build.kyma-project.io/`.
 

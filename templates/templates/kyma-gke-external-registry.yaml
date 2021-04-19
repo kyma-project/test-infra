@@ -44,7 +44,7 @@ gke_job_labels_template: &gke_job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-master-kyma-gke-external-registry
+    - name: pre-main-kyma-gke-external-registry
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^master$
@@ -78,7 +78,7 @@ presubmits: # runs on PRs
 
 # postsubmits:
 #   kyma-project/kyma:
-#     - name: post-master-kyma-gke-external-registry
+#     - name: post-main-kyma-gke-external-registry
 #       <<: *gke_job_template
 #       annotations:
 #         testgrid-dashboards: kyma-postsubmit

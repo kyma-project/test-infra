@@ -58,7 +58,7 @@ gke_integration_job_labels_template: &gke_integration_job_labels_template
 
 presubmits: # runs on PRs
   kyma-incubator/compass:
-    - name: pre-master-compass-gke-integration
+    - name: pre-main-compass-gke-integration
       cluster: untrusted-workload
       branches:
         - ^master$
@@ -115,7 +115,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-incubator/compass:
-    - name: post-master-compass-gke-integration
+    - name: post-main-compass-gke-integration
       cluster: trusted-workload
       branches:
         - ^master$

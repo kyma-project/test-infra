@@ -181,7 +181,7 @@ gke_job_labels_template: &gke_job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-master-kyma-integration
+    - name: pre-main-kyma-integration
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^master$
@@ -196,7 +196,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: main
     
-    - name: pre-master-kyma-integration-k3s
+    - name: pre-main-kyma-integration-k3s
       optional: false
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
@@ -214,7 +214,7 @@ presubmits: # runs on PRs
       - <<: *kyma_local_ref
         base_ref: main
       
-    - name: pre-master-kyma-integration-k3s-compass-dev
+    - name: pre-main-kyma-integration-k3s-compass-dev
       optional: false
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
@@ -234,7 +234,7 @@ presubmits: # runs on PRs
       - <<: *kyma_local_ref
         base_ref: main
     
-    - name: pre-master-serverless-integration-k3s
+    - name: pre-main-serverless-integration-k3s
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
       - ^master$
@@ -249,7 +249,7 @@ presubmits: # runs on PRs
       - <<: *test_infra_ref
         base_ref: main
 
-    - name: pre-master-kyma-gke-integration
+    - name: pre-main-kyma-gke-integration
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^master$
@@ -266,7 +266,7 @@ presubmits: # runs on PRs
           base_ref: main
   {{- range .Values.gkeVersions }}
   {{- if has "presubmit" .jobs }}
-    - name: pre-master-kyma-gke-{{ .channel }}-integration
+    - name: pre-main-kyma-gke-{{ .channel }}-integration
   {{- if .optional }}
       optional: true
   {{- end }}
@@ -285,7 +285,7 @@ presubmits: # runs on PRs
   {{- end }}
   {{- end }}
 
-    - name: pre-master-kyma-gke-upgrade
+    - name: pre-main-kyma-gke-upgrade
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^master$
@@ -303,7 +303,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - name: post-master-kyma-integration
+    - name: post-main-kyma-integration
       cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       annotations:
         testgrid-dashboards: kyma_integration
@@ -320,7 +320,7 @@ postsubmits:
         - <<: *test_infra_ref
           base_ref: main
       
-    - name: post-master-kyma-integration-k3s
+    - name: post-main-kyma-integration-k3s
       cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       annotations:
         testgrid-dashboards: kyma_integration
@@ -339,7 +339,7 @@ postsubmits:
       - <<: *kyma_local_ref
         base_ref: main
 
-    - name: post-master-kyma-integration-k3s-compass-dev
+    - name: post-main-kyma-integration-k3s-compass-dev
       cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       annotations:
         testgrid-dashboards: kyma_integration
@@ -360,7 +360,7 @@ postsubmits:
       - <<: *kyma_local_ref
         base_ref: main
 
-    - name: post-master-kyma-gke-integration
+    - name: post-main-kyma-gke-integration
       cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       <<: *gke_job_template
       annotations:
@@ -379,7 +379,7 @@ postsubmits:
         - <<: *test_infra_ref
           base_ref: main
 
-    - name: post-master-kyma-gke-upgrade
+    - name: post-main-kyma-gke-upgrade
       cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       <<: *gke_upgrade_job_template
       annotations:
@@ -399,7 +399,7 @@ postsubmits:
           base_ref: main
   {{- range .Values.gkeVersions }}
   {{- if has "postsubmit" .jobs }}
-    - name: post-master-kyma-gke-{{ .channel }}-integration
+    - name: post-main-kyma-gke-{{ .channel }}-integration
       cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       <<: *gke_job_template
       annotations:

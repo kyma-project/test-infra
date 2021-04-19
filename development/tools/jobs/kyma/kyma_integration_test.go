@@ -18,7 +18,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 		expNotRunIfChangedPaths []string
 	}{
 		"Should contain the kyma-integration job": {
-			givenJobName: "pre-master-kyma-integration",
+			givenJobName: "pre-main-kyma-integration",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration",
@@ -35,7 +35,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			},
 		},
 		"Should contain the kyma-integration K3s job": {
-			givenJobName: "pre-master-kyma-integration-k3s",
+			givenJobName: "pre-main-kyma-integration-k3s",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration",
@@ -52,7 +52,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			},
 		},
 		"Should contain the gke-integration job": {
-			givenJobName: "pre-master-kyma-gke-integration",
+			givenJobName: "pre-main-kyma-gke-integration",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.BuildPr,
@@ -110,7 +110,7 @@ func TestKymaGKEUpgradeJobsPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	// when
-	actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"}), "pre-master-kyma-gke-upgrade", "main")
+	actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"}), "pre-main-kyma-gke-upgrade", "main")
 	require.NotNil(t, actualJob)
 
 	// then
@@ -137,21 +137,21 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 		expPresets   []preset.Preset
 	}{
 		"Should contain the kyma-integration job": {
-			givenJobName: "post-master-kyma-integration",
+			givenJobName: "post-main-kyma-integration",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",
 			},
 		},
 		"Should contain the kyma-integration-k3s job": {
-			givenJobName: "post-master-kyma-integration-k3s",
+			givenJobName: "post-main-kyma-integration-k3s",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",
 			},
 		},
 		"Should contain the gke-integration job": {
-			givenJobName: "post-master-kyma-gke-integration",
+			givenJobName: "post-main-kyma-gke-integration",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.BuildMaster,
@@ -160,7 +160,7 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 			},
 		},
 		"Should contain the gke-upgrade job": {
-			givenJobName: "post-master-kyma-gke-upgrade",
+			givenJobName: "post-main-kyma-gke-upgrade",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.BuildMaster,
