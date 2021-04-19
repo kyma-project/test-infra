@@ -1,5 +1,4 @@
 presets:
-  # cluster version
   - labels:
       preset-recreate-cluster: "true"
     env:
