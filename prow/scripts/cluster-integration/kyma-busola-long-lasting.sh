@@ -170,7 +170,7 @@ else
     exit 1
 fi
 
-readonly COMMON_NAME_PREFIX="grn"
+readonly COMMON_NAME_PREFIX="n"
 readonly KYMA_NAME_SUFFIX="kyma"
 readonly BUSOLA_NAME_SUFFIX="busola"
 
