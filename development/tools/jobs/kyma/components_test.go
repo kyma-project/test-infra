@@ -174,6 +174,13 @@ var components = []struct {
 			jobsuite.Optional(),
 		},
 	},
+	{path: "central-application-gateway", image: tester.ImageGolangKubebuilder2BuildpackLatest, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release123),
+			jobsuite.Optional(),
+		},
+	},
 }
 
 func TestComponentJobs(t *testing.T) {

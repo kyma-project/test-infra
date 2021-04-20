@@ -521,6 +521,13 @@ templates:
           path: components/busola-migrator
           since: "1.22" # TODO: Should be 2.0 but then pre-submit jobs are not generated
           optional: true # TODO: Remove after merging https://github.com/kyma-project/kyma/pull/10987
+      - to: ../prow/jobs/kyma/components/central-application-gateway/central-application-gateway.yaml
+        values:
+          <<: *cluster_default
+          <<: *kyma_generic_component
+          path: components/central-application-gateway
+          since: "1.23"
+          optional: true
   - from: templates/generic-component-busola.yaml
     render:
       - to: ../prow/jobs/busola/busola-core-ui/busola-core-ui.yaml
