@@ -32,8 +32,7 @@ function provisionCluster() {
 
     log::info "Creating cluster: ${DOMAIN_NAME}"
     # create the cluster
-    # shellcheck disable=SC2002
-    cat "${DEFINITION_PATH}" | envsubst | kubectl create -f -
+    envsubst < "${DEFINITION_PATH}" | kubectl create -f -
 
     # wait for the cluster to be ready
     kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${DOMAIN_NAME}"
@@ -50,14 +49,12 @@ function provisionIngress() {
     export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--busola--$DOMAIN_NAME.yaml"
 
     # ask for new certificates
-    # shellcheck disable=SC2002
-    cat "${RESOURCES_PATH}/wildcardCert.yaml" | envsubst | kubectl apply -f -
+    envsubst < "${RESOURCES_PATH}/wildcardCert.yaml" | kubectl apply -f -
 
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
     helm repo update
 
-    # shellcheck disable=SC2002
-    cat "${RESOURCES_PATH}/nginxValues.yaml" | envsubst | helm install ingress-nginx --namespace=kube-system -f - ingress-nginx/ingress-nginx
+    envsubst < "${RESOURCES_PATH}/nginxValues.yaml" | helm install ingress-nginx --namespace=kube-system -f - ingress-nginx/ingress-nginx
 
     # wait for ingress controller to start
     kubectl wait --namespace kube-system \
