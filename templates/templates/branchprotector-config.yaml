@@ -32,9 +32,15 @@ branch-protection:
             contexts:
               - "pre-master-test-infra-vpathguard"
         website:
-          required_status_checks:
-            contexts:
-              - "netlify/kyma-project/deploy-preview"
+          branches:
+            main:
+              required_status_checks:
+                contexts:
+                  - "netlify/kyma-project/deploy-preview"
+            archive-snapshots:
+              required_status_checks:
+                contexts:
+                  - "netlify/kyma-project-old/deploy-preview"
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
       repos:
