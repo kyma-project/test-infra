@@ -186,6 +186,74 @@ gardener_azure_evaluation_job_template: &gardener_azure_evaluation_job_template
           memory: 1Gi
           cpu: 400m
 
+gardener_azure_alpha_eval_job_template: &gardener_azure_alpha_eval_job_template
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - <<: *base_image_k16
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
+        env:
+          - name: RS_GROUP
+            value: "kyma-gardener-azure"
+          - name: REGION
+            value: "northeurope"
+          - name: KYMA_PROJECT_DIR
+            value: "/home/prow/go/src/github.com/kyma-project"
+          - name: GARDENER_REGION
+            value: "northeurope"
+          - name: GARDENER_ZONES
+            value: "1"
+          - name: EXECUTION_PROFILE
+            value: "evaluation"
+          - name: KYMA_ALPHA
+            value: "true"
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 400m
+
+gardener_azure_alpha_prod_job_template: &gardener_azure_alpha_prod_job_template
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - <<: *base_image_k16
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
+        env:
+          - name: RS_GROUP
+            value: "kyma-gardener-azure"
+          - name: REGION
+            value: "northeurope"
+          - name: KYMA_PROJECT_DIR
+            value: "/home/prow/go/src/github.com/kyma-project"
+          - name: GARDENER_REGION
+            value: "northeurope"
+          - name: GARDENER_ZONES
+            value: "1"
+          - name: EXECUTION_PROFILE
+            value: "production"
+          - name: KYMA_ALPHA
+            value: "true"
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 400m
+
 gardener_azure_production_job_template: &gardener_azure_production_job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
@@ -317,10 +385,9 @@ presubmits:
               requests:
                 memory: 1Gi
                 cpu: 400m
-    - name: pre-master-kyma-gardener-azure-kyma-alpha
+    - name: pre-master-kyma-gardener-azure-alpha-eval
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
+      <<: *gardener_azure_alpha_eval_job_template
       decoration_config:
         timeout: 14400000000000 # 4h
         grace_period: 600000000000 # 10min
@@ -336,42 +403,30 @@ presubmits:
       extra_refs:
         - <<: *test_infra_ref
           base_ref: main
-      spec:
-        containers:
-          - <<: *base_image_k16
-            securityContext:
-              privileged: true
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
-            env:
-              - name: RS_GROUP
-                value: "kyma-gardener-azure"
-              - name: REGION
-                value: "northeurope"
-              - name: KYMA_PROJECT_DIR
-                value: "/home/prow/go/src/github.com/kyma-project"
-              - name: GARDENER_REGION
-                value: "northeurope"
-              - name: GARDENER_ZONES
-                value: "1"
-              - name: EXECUTION_PROFILE
-                value: "evaluation"
-              - name: KYMA_ALPHA
-                value: "true"
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 400m
+    - name: pre-master-kyma-gardener-azure-alpha-prod
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      <<: *gardener_azure_alpha_prod_job_template
+      decoration_config:
+        timeout: 14400000000000 # 4h
+        grace_period: 600000000000 # 10min
+      optional: true
+      # following regexp won't start build if only Markdown files were changed
+      run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      branches:
+        - ^master$
+        - ^main$
+      labels:
+        preset-build-pr: "true"
+        <<: *gardener_azure_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: main
 
 postsubmits:
   kyma-project/kyma:
-    - name: post-master-kyma-gardener-azure-kyma-alpha
+    - name: post-master-kyma-gardener-azure-alpha-eval
       cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
+      <<: *gardener_azure_alpha_eval_job_template
       annotations:
         testgrid-create-test-group: "false"
       decoration_config:
@@ -386,35 +441,23 @@ postsubmits:
       extra_refs:
         - <<: *test_infra_ref
           base_ref: main
-      spec:
-        containers:
-          - <<: *base_image_k16
-            securityContext:
-              privileged: true
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
-            env:
-              - name: RS_GROUP
-                value: "kyma-gardener-azure"
-              - name: REGION
-                value: "northeurope"
-              - name: KYMA_PROJECT_DIR
-                value: "/home/prow/go/src/github.com/kyma-project"
-              - name: GARDENER_REGION
-                value: "northeurope"
-              - name: GARDENER_ZONES
-                value: "1"
-              - name: EXECUTION_PROFILE
-                value: "evaluation"
-              - name: KYMA_ALPHA
-                value: "true"
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 400m
+    - name: post-master-kyma-gardener-azure-alpha-prod
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      <<: *gardener_azure_alpha_prod_job_template
+      annotations:
+        testgrid-create-test-group: "false"
+      decoration_config:
+        timeout: 14400000000000 # 4h
+        grace_period: 600000000000 # 10min
+      branches:
+        - ^master$
+        - ^main$
+      labels:
+        preset-build-master: "true"
+        <<: *gardener_azure_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: main
 
 periodics:
   - name: kyma-integration-gardener-gcp
@@ -520,6 +563,50 @@ periodics:
       prow.k8s.io/pubsub.project: sap-kyma-prow
       prow.k8s.io/pubsub.runID: test-run
       prow.k8s.io/pubsub.topic: test-infra-periodics
+      preset-log-collector-slack-token: "true"
+      <<: *gardener_azure_job_labels_template
+
+  - name: kyma-alpha-integration-evaluation-gardener-azure
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+    <<: *gardener_azure_alpha_eval_job_template
+    decorate: true
+    annotations:
+      testgrid-dashboards: kyma_integration
+      description: Evaluation profile Kyma Alpha Azure Gardener integration job.
+    decoration_config:
+      timeout: 7200000000000 # 2h
+      grace_period: 600000000000 # 10min
+    cron: "5 * * * *"
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: main
+      - <<: *kyma_ref
+        base_ref: main
+      - <<: *kyma_local_ref
+        base_ref: main
+    labels:
+      preset-log-collector-slack-token: "true"
+      <<: *gardener_azure_job_labels_template
+
+  - name: kyma-alpha-integration-production-gardener-azure
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+    <<: *gardener_azure_alpha_prod_job_template
+    decorate: true
+    annotations:
+      testgrid-dashboards: kyma_integration
+      description: Production profile Kyma Alpha Azure Gardener integration job.
+    decoration_config:
+      timeout: 7200000000000 # 2h
+      grace_period: 600000000000 # 10min
+    cron: "5 * * * *"
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: main
+      - <<: *kyma_ref
+        base_ref: main
+      - <<: *kyma_local_ref
+        base_ref: main
+    labels:
       preset-log-collector-slack-token: "true"
       <<: *gardener_azure_job_labels_template
 
