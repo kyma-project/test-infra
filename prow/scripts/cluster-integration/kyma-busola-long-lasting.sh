@@ -28,13 +28,12 @@ function delete_cluster(){
 
 function provisionCluster() {
     export DOMAIN_NAME=$1
-
-    RESOURCES_PATH=${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola/
+    export DEFINITION_PATH=$2
 
     log::info "Creating cluster: ${DOMAIN_NAME}"
     # create the cluster
     # shellcheck disable=SC2002
-    cat "${RESOURCES_PATH}/cluster-busola.yaml" | envsubst | kubectl create -f -
+    cat "${DEFINITION_PATH}" | envsubst | kubectl create -f -
 
     # wait for the cluster to be ready
     kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${DOMAIN_NAME}"
@@ -43,8 +42,6 @@ function provisionCluster() {
 
 function provisionIngress() {
     export DOMAIN_NAME=$1
-
-    RESOURCES_PATH=${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola/
 
     log::info "Install ingress"
 
@@ -75,8 +72,6 @@ function provisionBusola() {
     export DOMAIN_NAME=$1
 
     busola_namespace="busola"
-
-    RESOURCES_PATH=${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola/
 
     log::info "Installing Busola on the cluster: ${DOMAIN_NAME}"
 
@@ -111,8 +106,6 @@ function provisionBusola() {
 function provisionKyma2(){
     export KYMA_VERSION=$1
     export DOMAIN_NAME=$2
-
-    RESOURCES_PATH=${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola/
 
     log::info "Installing Kyma version: ${KYMA_VERSION} on the cluster : ${DOMAIN_NAME}"
 
@@ -174,6 +167,7 @@ readonly COMMON_NAME_PREFIX="n"
 readonly KYMA_NAME_SUFFIX="kyma"
 readonly BUSOLA_NAME_SUFFIX="busola"
 
+RESOURCES_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola/"
 KYMA_COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${KYMA_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 BUSOLA_COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${BUSOLA_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 
@@ -183,13 +177,13 @@ export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
 if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
     log::info "Kyma cluster name: ${KYMA_COMMON_NAME}"
     delete_cluster "${KYMA_COMMON_NAME}"
-    provisionCluster "${KYMA_COMMON_NAME}"
+    provisionCluster "${KYMA_COMMON_NAME}" "${RESOURCES_PATH}/cluster-kyma.yaml"
     provisionKyma2 "main" "${KYMA_COMMON_NAME}"
 elif [[ $BUSOLA_PROVISION_TYPE == "BUSOLA" ]]; then
     log::info "Busola cluster name: ${BUSOLA_COMMON_NAME}"
     if [[ $RECREATE_CLUSTER == "true" ]]; then
         delete_cluster "${BUSOLA_COMMON_NAME}"
-        provisionCluster "${BUSOLA_COMMON_NAME}"
+        provisionCluster "${BUSOLA_COMMON_NAME}" "${RESOURCES_PATH}/cluster-busola.yaml"
         provisionIngress "${BUSOLA_COMMON_NAME}"
     fi
     provisionBusola "${BUSOLA_COMMON_NAME}"
