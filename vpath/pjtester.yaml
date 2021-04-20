@@ -1,0 +1,4 @@
+pjNames:
+  - pjName: "post-master-kyma-gardener-azure-alpha-eval"
+  - pjName: "pre-master-kyma-gardener-azure-alpha-eval"
+  - pjName: "kyma-alpha-integration-evaluation-gardener-azure"
