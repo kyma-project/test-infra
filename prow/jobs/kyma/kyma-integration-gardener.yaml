@@ -222,6 +222,40 @@ gardener_azure_alpha_eval_job_template: &gardener_azure_alpha_eval_job_template
             memory: 1Gi
             cpu: 400m
 
+gardener_azure_alpha_prod_job_template: &gardener_azure_alpha_prod_job_template
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - <<: *base_image_k16
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
+        env:
+          - name: RS_GROUP
+            value: "kyma-gardener-azure"
+          - name: REGION
+            value: "northeurope"
+          - name: KYMA_PROJECT_DIR
+            value: "/home/prow/go/src/github.com/kyma-project"
+          - name: GARDENER_REGION
+            value: "northeurope"
+          - name: GARDENER_ZONES
+            value: "1"
+          - name: EXECUTION_PROFILE
+            value: "production"
+          - name: KYMA_ALPHA
+            value: "true"
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 400m
+
 gardener_azure_production_job_template: &gardener_azure_production_job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
@@ -371,12 +405,47 @@ presubmits:
       extra_refs:
         - <<: *test_infra_ref
           base_ref: main
+    - name: pre-master-kyma-gardener-azure-alpha-prod
+      cluster: untrusted-workload
+      <<: *gardener_azure_alpha_prod_job_template
+      decoration_config:
+        timeout: 14400000000000 # 4h
+        grace_period: 600000000000 # 10min
+      optional: true
+      # following regexp won't start build if only Markdown files were changed
+      run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      branches:
+        - ^master$
+        - ^main$
+      labels:
+        preset-build-pr: "true"
+        <<: *gardener_azure_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: main
 
 postsubmits:
   kyma-project/kyma:
     - name: post-master-kyma-gardener-azure-alpha-eval
       cluster: trusted-workload
       <<: *gardener_azure_alpha_eval_job_template
+      annotations:
+        testgrid-create-test-group: "false"
+      decoration_config:
+        timeout: 14400000000000 # 4h
+        grace_period: 600000000000 # 10min
+      branches:
+        - ^master$
+        - ^main$
+      labels:
+        preset-build-master: "true"
+        <<: *gardener_azure_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: main
+    - name: post-master-kyma-gardener-azure-alpha-prod
+      cluster: trusted-workload
+      <<: *gardener_azure_alpha_prod_job_template
       annotations:
         testgrid-create-test-group: "false"
       decoration_config:
@@ -506,6 +575,28 @@ periodics:
     annotations:
       testgrid-dashboards: kyma_integration
       description: Evaluation profile Kyma Alpha Azure Gardener integration job.
+    decoration_config:
+      timeout: 7200000000000 # 2h
+      grace_period: 600000000000 # 10min
+    cron: "5 * * * *"
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: main
+      - <<: *kyma_ref
+        base_ref: main
+      - <<: *kyma_local_ref
+        base_ref: main
+    labels:
+      preset-log-collector-slack-token: "true"
+      <<: *gardener_azure_job_labels_template
+
+  - name: kyma-alpha-integration-production-gardener-azure
+    cluster: untrusted-workload
+    <<: *gardener_azure_alpha_prod_job_template
+    decorate: true
+    annotations:
+      testgrid-dashboards: kyma_integration
+      description: Production profile Kyma Alpha Azure Gardener integration job.
     decoration_config:
       timeout: 7200000000000 # 2h
       grace_period: 600000000000 # 10min
