@@ -592,6 +592,29 @@ periodics:
       preset-log-collector-slack-token: "true"
       <<: *gardener_gcp_job_labels_template
 
+  - name: kyma-weekly-gardener-gcp-busola-kyma
+    annotations:
+      testgrid-create-test-group: "false"
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+    <<: *gardener_gcp_busola_job_template
+    decorate: true
+    decoration_config:
+      timeout: 7200000000000 # 2h
+      grace_period: 600000000000 # 10min
+    cron: "0 6 * * 1"  # "At 06:00 on Monday."
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: main
+    - <<: *kyma_ref
+      base_ref: main
+    - <<: *busola_ref
+      base_ref: main
+    labels:
+      preset-busola-nightly-provision-type-kyma: "true"
+      preset-log-collector-slack-token: "true"
+      preset-recreate-cluster: "true"
+      <<: *gardener_gcp_job_labels_template
+
   - name: kyma-nightly-gardener-gcp-busola-kyma
     annotations:
       testgrid-create-test-group: "false"
@@ -601,7 +624,7 @@ periodics:
     decoration_config:
       timeout: 7200000000000 # 2h
       grace_period: 600000000000 # 10min
-    cron: "0 6 * * 1-5"
+    cron: "0 6 * * 2-5" # "At 06:00 on Tuesday-Friday."
     extra_refs:
     - <<: *test_infra_ref
       base_ref: main

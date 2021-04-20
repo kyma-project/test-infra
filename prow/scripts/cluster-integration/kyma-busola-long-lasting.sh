@@ -116,15 +116,41 @@ function provisionKyma2(){
 
     kyma::install_cli
 
+    set -x
     TERM=dumb kyma alpha deploy \
     --kubeconfig="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml" \
     --profile=evaluation \
     --source="${KYMA_VERSION}" \
     --value global.environment.gardener=true \
-    --concurrency=4
+    --concurrency="${CPU_COUNT}"
+    set +x
 }
 
-ENABLE_TEST_LOG_COLLECTOR=false
+function deleteKyma(){
+    export DOMAIN_NAME=$1
+
+    log::info "Deleting Kyma on the cluster : ${DOMAIN_NAME}"
+
+    export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
+    kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
+    export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
+
+    kyma::install_cli
+
+    set -x
+    TERM=dumb kyma alpha delete \
+    --kubeconfig="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml" \
+    --concurrency="${CPU_COUNT}" \
+    --non-interactive \
+    --ci
+    set +x
+    # We wait for the certificate to be revoked
+    kubectl wait --for=delete Certificate --field-selector=metadata.name=kyma-tls-cert --timeout="${CERTIFICATE_TIMEOUT}s" --namespace=istio-system
+
+    # This can be deleted when it's implemented by installer
+    kubectl delete namespace kyma-system --wait=true
+    log::info "Cluster deleted"
+}
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export BUSOLA_SOURCES_DIR="${KYMA_PROJECT_DIR}/busola"
@@ -168,16 +194,23 @@ readonly KYMA_NAME_SUFFIX="kyma"
 readonly BUSOLA_NAME_SUFFIX="busola"
 
 RESOURCES_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola/"
+CPU_COUNT=$(python -c 'import multiprocessing as mp; print(mp.cpu_count())')
+CERTIFICATE_TIMEOUT=120
+
 KYMA_COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${KYMA_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 BUSOLA_COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${BUSOLA_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-
 
 export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
 
 if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
     log::info "Kyma cluster name: ${KYMA_COMMON_NAME}"
-    delete_cluster "${KYMA_COMMON_NAME}"
-    provisionCluster "${KYMA_COMMON_NAME}" "${RESOURCES_PATH}/cluster-kyma.yaml"
+    if [[ $RECREATE_CLUSTER == "true" ]]; then
+        delete_cluster "${KYMA_COMMON_NAME}"
+        provisionCluster "${KYMA_COMMON_NAME}" "${RESOURCES_PATH}/cluster-kyma.yaml"
+    else
+        deleteKyma "${KYMA_COMMON_NAME}"
+    fi
+
     provisionKyma2 "main" "${KYMA_COMMON_NAME}"
 elif [[ $BUSOLA_PROVISION_TYPE == "BUSOLA" ]]; then
     log::info "Busola cluster name: ${BUSOLA_COMMON_NAME}"
