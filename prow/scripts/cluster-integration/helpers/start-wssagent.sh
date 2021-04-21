@@ -62,6 +62,7 @@ KYMA_SRC="${GITHUB_ORG_DIR}/${PROJECTNAME}"
 case "${SCAN_LANGUAGE}" in
 golang)
   echo "SCAN: golang (dep)"
+  go version
   CONFIG_PATH=$GO_CONFIG_PATH
   sed -i.bak "s|go.dependencyManager=|go.dependencyManager=dep|g" $CONFIG_PATH
   sed -i.bak '/^excludes=/d' $CONFIG_PATH
@@ -73,6 +74,7 @@ golang)
 
 golang-mod)
   echo "SCAN: golang-mod"
+  go version
   CONFIG_PATH=$GO_CONFIG_PATH
   export GO111MODULE=on
   sed -i.bak "s|go.dependencyManager=|go.dependencyManager=modules|g" $CONFIG_PATH
