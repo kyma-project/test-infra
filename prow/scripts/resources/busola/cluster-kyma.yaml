@@ -41,11 +41,11 @@ spec:
         type: n1-standard-4
       maxSurge: 1
       maxUnavailable: 0
-      maximum: 3
+      maximum: 5
       minimum: 1
       name: worker-dev
       volume:
-        size: 20Gi
+        size: 50Gi
         type: pd-ssd
       zones:
       - $GARDENER_ZONES
@@ -60,7 +60,9 @@ spec:
       begin: 010000+0000
       end: 020000+0000
     autoUpdate:
-      kubernetesVersion: true
-      machineImageVersion: true
+      kubernetesVersion: false
+      machineImageVersion: false
+  hibernation:
+    enabled: false       
   region: $GARDENER_REGION
   secretBindingName: $GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
