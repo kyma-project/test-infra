@@ -120,6 +120,14 @@ else
     gardener::test_kyma
 fi
 
+# Remove old Kyma components
+
+helm delete core -n kyma-system
+helm delete console -n kyma-system
+helm delete dex -n kyma-system
+helm delete apiserver-proxy -n kyma-system
+helm delete iam-kubeconfig-service -n kyma-system
+
 # Install Kyma 2.0 from main
 KYMA_SOURCE="main"
 export KYMA_SOURCE
