@@ -222,13 +222,6 @@ templates:
           <<: *kyma_generic_component
           path: components/uaa-activator
           since: "1.9"
-      - to: ../prow/jobs/kyma/tests/console-backend-service/console-backend-service-tests-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *kyma_generic_component
-          path: tests/console-backend-service
-          since: "1.6"
-          until: "1.22"
       - to: ../prow/jobs/kyma/tests/service-catalog/service-catalog-tests-generic.yaml
         values:
           <<: *cluster_default
