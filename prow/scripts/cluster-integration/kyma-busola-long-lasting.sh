@@ -114,13 +114,14 @@ function provisionKyma2(){
     kyma::install_cli
 
     #kyma alpha deploy --ci --profile production --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
-    return
+    #return
     set -x
     TERM=dumb kyma alpha deploy \
     --kubeconfig="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml" \
     --profile=evaluation \
     --value global.isBEBEnabled=true \
     --source="${KYMA_VERSION}" \
+    --value global.environment.gardener=true \
     --concurrency="${CPU_COUNT}"
     set +x
 }
@@ -194,7 +195,7 @@ fi
 readonly KYMA_NAME_SUFFIX="kyma"
 readonly BUSOLA_NAME_SUFFIX="busola"
 
-RESOURCES_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola/"
+RESOURCES_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola"
 CPU_COUNT=$(python -c 'import multiprocessing as mp; print(mp.cpu_count())')
 CERTIFICATE_TIMEOUT=120
 
@@ -212,7 +213,7 @@ if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
         provisionCluster "${KYMA_COMMON_NAME}" "${RESOURCES_PATH}/cluster-kyma.yaml"
     else
         echo "Delete kyma"
-        #deleteKyma "${KYMA_COMMON_NAME}"
+        deleteKyma "${KYMA_COMMON_NAME}"
     fi
 
     provisionKyma2 "main" "${KYMA_COMMON_NAME}"
@@ -221,7 +222,6 @@ if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
         log::info "Starting fast integration tests"
         gardener::test_fast_integration_kyma
     fi
-
 elif [[ $BUSOLA_PROVISION_TYPE == "BUSOLA" ]]; then
     log::info "Busola cluster name: ${BUSOLA_COMMON_NAME}"
     if [[ $RECREATE_CLUSTER == "true" ]]; then
@@ -230,7 +230,6 @@ elif [[ $BUSOLA_PROVISION_TYPE == "BUSOLA" ]]; then
         provisionIngress "${BUSOLA_COMMON_NAME}"
     fi
     provisionBusola "${BUSOLA_COMMON_NAME}"
-
 else
     log::error "Wrong value for BUSOLA_PROVISION_TYPE: '$BUSOLA_PROVISION_TYPE'"
     exit 1

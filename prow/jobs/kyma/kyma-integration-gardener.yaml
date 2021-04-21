@@ -1007,6 +1007,109 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
+    - name: kyma-periodic-gardener-gcp-busola-init-kyma
+      annotations:
+        testgrid-create-test-group: "false"
+      labels:
+        preset-busola-nightly-provision-type-kyma: "true"
+        preset-cluster-version: "true"
+        preset-execute-fast-integration-tests: "true"
+        preset-gardener-gcp-kyma-integration: "true"
+        preset-kyma-cli-stable: "true"
+        preset-log-collector-slack-token: "true"
+        preset-recreate-cluster: "true"
+      cron: "0 2 * * 1"
+      skip_report: false
+      decorate: true
+      decoration_config:
+        grace_period: 600000000000
+        timeout: 7200000000000
+      path_alias: github.com/kyma-project/kyma
+      cluster: untrusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: busola
+          path_alias: github.com/kyma-project/busola
+          base_ref: main
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210402-70b4b74f-k8s1.16"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-busola-long-lasting.sh"
+            env:
+              - name: COMMON_NAME_PREFIX
+                value: "np"
+              - name: GARDENER_REGION
+                value: "europe-west4"
+              - name: GARDENER_ZONES
+                value: "europe-west4-b"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 400m
+    - name: kyma-periodic-gardener-gcp-busola-kyma
+      annotations:
+        testgrid-create-test-group: "false"
+      labels:
+        preset-busola-nightly-provision-type-kyma: "true"
+        preset-cluster-version: "true"
+        preset-execute-fast-integration-tests: "true"
+        preset-gardener-gcp-kyma-integration: "true"
+        preset-kyma-cli-stable: "true"
+        preset-log-collector-slack-token: "true"
+      cron: "0 2 * * 2-5"
+      skip_report: false
+      decorate: true
+      decoration_config:
+        grace_period: 600000000000
+        timeout: 7200000000000
+      path_alias: github.com/kyma-project/kyma
+      cluster: untrusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: busola
+          path_alias: github.com/kyma-project/busola
+          base_ref: main
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210402-70b4b74f-k8s1.16"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-busola-long-lasting.sh"
+            env:
+              - name: COMMON_NAME_PREFIX
+                value: "np"
+              - name: GARDENER_REGION
+                value: "europe-west4"
+              - name: GARDENER_ZONES
+                value: "europe-west4-b"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 400m
     - name: kyma-upgrade-gardener-kyma-to-kyma2
       annotations:
         description: "Azure Kyma 1.x to Kyma 2.0 upgrade."
@@ -1063,3 +1166,4 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
+  
