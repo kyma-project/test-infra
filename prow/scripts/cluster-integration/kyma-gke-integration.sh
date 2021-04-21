@@ -85,7 +85,7 @@ function post_hook() {
   # collect logs from failed tests before deprovisioning
   kyma::run_test_log_collector "post-master-kyma-gke-integration"
 
-  log::info "Gather Kubeaudit logs"
+  log::info "Gather Kubeaudit logs:"
   curl -sL https://github.com/Shopify/kubeaudit/releases/download/v0.11.8/kubeaudit_0.11.8_linux_amd64.tar.gz | tar -xzO kubeaudit > ./kubeaudit
   chmod +x ./kubeaudit
   # kubeaudit returns non-zero exit code when it finds issues
@@ -95,7 +95,9 @@ function post_hook() {
   incompliant_resources=$(jq -c 'select( .ResourceNamespace == "kyma-system" )' < "${ARTIFACTS}/kubeaudit.log")
   compliant=$(echo "$incompliant_resources" | jq -r -s 'if length == 0 then "true" else "false" end')
 
-  if [[ "$compliant" != "true" ]]; then
+  if [[ "$compliant" == "true" ]]; then
+    log::info "All resources are compliant"
+  else
     EXIT_STATUS=1
     log::error "Not all resources are compliant:"
     echo "$incompliant_resources"
