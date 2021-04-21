@@ -28,7 +28,7 @@ func TestKymaGardenerAzureIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAzureIntegration, preset.KymaCLIStable, preset.ClusterVersion)
 	tester.AssertThatHasExtraRepoRefCustom(t, job.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, job.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"}, job.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"}, job.Spec.Containers[0].Command)
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_REGION", "northeurope")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_ZONES", "1")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
@@ -47,7 +47,7 @@ func TestKymaGardenerAzureIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAzureIntegration, preset.KymaCLIStable, preset.ClusterVersion)
 	tester.AssertThatHasExtraRepoRefCustom(t, job.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, job.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"}, job.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"}, job.Spec.Containers[0].Command)
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_REGION", "northeurope")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_ZONES", "1")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
@@ -74,7 +74,7 @@ func TestKymaGardenerGCPIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerGCPIntegration, preset.KymaCLIStable, preset.ClusterVersion)
 	tester.AssertThatHasExtraRepoRefCustom(t, job.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, job.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"}, job.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"}, job.Spec.Containers[0].Command)
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_REGION", "europe-west4")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_ZONES", "europe-west4-b")
@@ -98,7 +98,7 @@ func TestKymaGardenerAWSIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAWSIntegration, preset.KymaCLIStable, preset.ClusterVersion)
 	tester.AssertThatHasExtraRepoRefCustom(t, job.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, job.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"}, job.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"}, job.Spec.Containers[0].Command)
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_REGION", "eu-west-3")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_ZONES", "eu-west-3a")
@@ -125,7 +125,7 @@ func TestKymaGardenerAzureIntegrationPresubmit(t *testing.T) {
 		PathAlias: "github.com/kyma-project/test-infra",
 	}})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, job.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"}, job.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"}, job.Spec.Containers[0].Command)
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_REGION", "northeurope")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_ZONES", "1")
@@ -147,7 +147,7 @@ func TestKymaGardenerAzureIntegrationPresubmit(t *testing.T) {
 		PathAlias: "github.com/kyma-project/test-infra",
 	}})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, job.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"}, job.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"}, job.Spec.Containers[0].Command)
 	assert.Equal(t, "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", job.RunIfChanged)
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_REGION", "northeurope")
@@ -155,29 +155,5 @@ func TestKymaGardenerAzureIntegrationPresubmit(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "RS_GROUP", "kyma-gardener-azure")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "REGION", "northeurope")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_ALPHA", "true")
-	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
-}
-
-func TestKymaGardenerAzureIntegrationPostsubmit(t *testing.T) {
-	t.SkipNow() // currently this test is flaky and disabled in the template
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration-gardener.yaml")
-	require.NoError(t, err)
-
-	postsubmits := jobConfig.AllStaticPostsubmits([]string{"kyma-project/kyma"})
-
-	jobName := "post-master-kyma-gardener-azure-integration"
-	job := tester.FindPostsubmitJobByName(postsubmits, jobName)
-	require.NotNil(t, job)
-	assert.Equal(t, jobName, job.Name)
-	assert.True(t, job.Decorate)
-	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAzureIntegration, preset.KymaCLIStable, preset.ClusterVersion)
-	tester.AssertThatHasExtraRepoRef(t, job.JobBase.UtilityConfig, []string{"test-infra"})
-	assert.Equal(t, tester.ImageKymaIntegrationLatest, job.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"}, job.Spec.Containers[0].Args)
-	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
-	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_REGION", "northeurope")
-	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_ZONES", "1")
-	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "RS_GROUP", "kyma-gardener-azure")
-	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "REGION", "northeurope")
 	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
 }
