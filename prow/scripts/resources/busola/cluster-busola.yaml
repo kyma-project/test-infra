@@ -9,14 +9,6 @@ spec:
     allowPrivilegedContainers: true
     kubeAPIServer:
       enableBasicAuthentication: false
-      oidcConfig:
-        clientID: d0316c58-b0fe-45cd-9960-0fea0708355a
-        groupsClaim: groups
-        issuerURL: 'https://apskyxzcl.accounts400.ondemand.com'
-        signingAlgs:
-          - RS256
-        usernameClaim: sub
-        usernamePrefix: '-'
     version: 1.20.5
   provider:
     controlPlaneConfig:
@@ -57,15 +49,12 @@ spec:
     autoUpdate:
       kubernetesVersion: true
       machineImageVersion: true
-  hibernation:
-    schedules:
-      - start: '00 19 * * 1,2,3,4,5'
-        end: '00 06 * * 1,2,3,4,5'
-        location: Europe/Berlin
   addons:
     kubernetesDashboard:
       enabled: false
     nginxIngress:
-      enabled: false        
+      enabled: false      
+  hibernation:
+    enabled: false        
   region: $GARDENER_REGION
   secretBindingName: $GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
