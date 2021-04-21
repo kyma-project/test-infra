@@ -456,6 +456,9 @@ periodics: # runs on schedule
       cron: "0 4,7,10,13 * * *"
       skip_report: false
       decorate: true
+      decoration_config:
+        grace_period: 600000000000
+        timeout: 14400000000000
       path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       extra_refs:
