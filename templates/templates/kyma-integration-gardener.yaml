@@ -688,7 +688,7 @@ periodics:
     decoration_config:
       timeout: 7200000000000 # 2h
       grace_period: 600000000000 # 10min
-    cron: "0 6 * * 1"  # "At 06:00 on Monday."
+    cron: "0 2 * * 1"  # "At 02:00 UTC on Monday."
     extra_refs:
     - <<: *test_infra_ref
       base_ref: main
@@ -711,7 +711,7 @@ periodics:
     decoration_config:
       timeout: 7200000000000 # 2h
       grace_period: 600000000000 # 10min
-    cron: "0 6 * * 2-5" # "At 06:00 on Tuesday-Friday."
+    cron: "0 2 * * 2-5" # "At 02:00 UTC on Tuesday-Friday."
     extra_refs:
     - <<: *test_infra_ref
       base_ref: main
