@@ -110,15 +110,8 @@ if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
     gardener::wake_up_kyma
 fi
 
-if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
-    gardener::test_fast_integration_kyma
-else
-    # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
-    if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
-      export ENABLE_TEST_LOG_COLLECTOR=true
-    fi
-    gardener::test_kyma
-fi
+# Test Kyma
+gardener::test_fast_integration_kyma
 
 # Remove old Kyma components
 
@@ -135,15 +128,8 @@ export KYMA_SOURCE
 log::info "Installing Kyma 2.0"
 kyma::alpha_deploy_kyma
 
-if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
-    gardener::test_fast_integration_kyma
-else
-    # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
-    if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
-      export ENABLE_TEST_LOG_COLLECTOR=true
-    fi
-    gardener::test_kyma
-fi
+# Test Kyma
+gardener::test_fast_integration_kyma
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
