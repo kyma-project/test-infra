@@ -19,7 +19,7 @@ function kyma::install {
         | sed -e "s/__VERSION__/0.0.1/g" \
         | sed -e "s/__.*__//g" \
         | kubectl apply -f-
-
+    
     kyma::is_installed "${1}" "${5}"
 }
 
@@ -28,12 +28,12 @@ function kyma::alpha_deploy_kyma() {
   log::info "Deploying Kyma"
 
   if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
-	  kyma alpha deploy --ci --profile evaluation --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
-	elif [[ "$EXECUTION_PROFILE" == "production" ]]; then
+    kyma alpha deploy --ci --profile evaluation --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
+  elif [[ "$EXECUTION_PROFILE" == "production" ]]; then
     kyma alpha deploy --ci --profile production --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
-	else
-	  kyma alpha deploy --ci --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
-	fi
+  else
+    kyma alpha deploy --ci --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
+  fi
 }
 
 # kyma::is_installed waits for Kyma installation finish
@@ -104,7 +104,7 @@ function kyma::get_last_release_version {
         log::error "Github token is missing, please provide token"
         exit 1
     fi
-
+    
     version=$(curl --silent --fail --show-error -H "Authorization: token ${1}" "https://api.github.com/repos/kyma-project/kyma/releases" \
         | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].tag_name')
 

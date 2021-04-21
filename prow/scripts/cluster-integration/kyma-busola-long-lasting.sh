@@ -113,12 +113,14 @@ function provisionKyma2(){
 
     kyma::install_cli
 
+    #kyma alpha deploy --ci --profile production --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
+    return
     set -x
     TERM=dumb kyma alpha deploy \
     --kubeconfig="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml" \
     --profile=evaluation \
+    --value global.isBEBEnabled=true \
     --source="${KYMA_VERSION}" \
-    --value global.environment.gardener=true \
     --concurrency="${CPU_COUNT}"
     set +x
 }
@@ -177,8 +179,8 @@ requiredVars=(
 utils::check_required_vars "${requiredVars[@]}"
 
 if [[ $GARDENER_PROVIDER == "gcp" ]]; then
-    # shellcheck source=prow/scripts/lib/gardener/gcp.sh
-    #source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gcp.sh"
+    #shellcheck source=prow/scripts/lib/gardener/gcp.sh
+    source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gcp.sh"
     log::info "Provisioning on gcp"
 else
     ## TODO what should I put here? Is this a backend?
@@ -186,7 +188,9 @@ else
     exit 1
 fi
 
-readonly COMMON_NAME_PREFIX="n"
+if [ -z "$COMMON_NAME_PREFIX" ] ; then
+    COMMON_NAME_PREFIX="n"
+fi
 readonly KYMA_NAME_SUFFIX="kyma"
 readonly BUSOLA_NAME_SUFFIX="busola"
 
@@ -199,16 +203,25 @@ BUSOLA_COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${BUSOLA_NAME_SUFFIX}" | tr "[:u
 
 export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
 
+log::info "Kyma cluster name: ${KYMA_COMMON_NAME}"
+
 if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
     log::info "Kyma cluster name: ${KYMA_COMMON_NAME}"
     if [[ $RECREATE_CLUSTER == "true" ]]; then
         delete_cluster "${KYMA_COMMON_NAME}"
         provisionCluster "${KYMA_COMMON_NAME}" "${RESOURCES_PATH}/cluster-kyma.yaml"
     else
-        deleteKyma "${KYMA_COMMON_NAME}"
+        echo "Delete kyma"
+        #deleteKyma "${KYMA_COMMON_NAME}"
     fi
 
     provisionKyma2 "main" "${KYMA_COMMON_NAME}"
+    if [[ $EXECUTE_FAST_INTEGRATION_TESTS == "true" ]]; then
+        kubectl get pods --all-namespaces
+        log::info "Starting fast integration tests"
+        gardener::test_fast_integration_kyma
+    fi
+
 elif [[ $BUSOLA_PROVISION_TYPE == "BUSOLA" ]]; then
     log::info "Busola cluster name: ${BUSOLA_COMMON_NAME}"
     if [[ $RECREATE_CLUSTER == "true" ]]; then
@@ -217,6 +230,7 @@ elif [[ $BUSOLA_PROVISION_TYPE == "BUSOLA" ]]; then
         provisionIngress "${BUSOLA_COMMON_NAME}"
     fi
     provisionBusola "${BUSOLA_COMMON_NAME}"
+
 else
     log::error "Wrong value for BUSOLA_PROVISION_TYPE: '$BUSOLA_PROVISION_TYPE'"
     exit 1

@@ -154,6 +154,34 @@ gardener_gcp_busola_job_template: &gardener_gcp_busola_job_template
           memory: 1Gi
           cpu: 400m
 
+gardener_gcp_busola_periodic_job_template: &gardener_gcp_busola_periodic_job_template
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+    - <<: *base_image_k16
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      args:
+      - "-c"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-busola-long-lasting.sh"
+      env:
+      - name: KYMA_PROJECT_DIR
+        value: "/home/prow/go/src/github.com/kyma-project"
+      - name: GARDENER_REGION
+        value: "europe-west4"
+      - name: GARDENER_ZONES
+        value: "europe-west4-b"
+      - name: COMMON_NAME_PREFIX
+        value: "np"
+      resources:
+        requests:
+          memory: 1Gi
+          cpu: 400m
+
 gardener_azure_evaluation_job_template: &gardener_azure_evaluation_job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
@@ -724,11 +752,11 @@ periodics:
       preset-log-collector-slack-token: "true"
       <<: *gardener_gcp_job_labels_template
 
-  - name: kyma-periodic-gardener-gcp-busola-kyma
+  - name: kyma-periodic-gardener-gcp-busola-init-kyma
     annotations:
       testgrid-create-test-group: "false"
     cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
-    <<: *gardener_gcp_busola_job_template
+    <<: *gardener_gcp_busola_periodic_job_template
     decorate: true
     decoration_config:
       timeout: 7200000000000 # 2h
@@ -752,7 +780,7 @@ periodics:
     annotations:
       testgrid-create-test-group: "false"
     cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
-    <<: *gardener_gcp_busola_job_template
+    <<: *gardener_gcp_busola_periodic_job_template
     decorate: true
     decoration_config:
       timeout: 7200000000000 # 2h
