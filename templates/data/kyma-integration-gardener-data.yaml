@@ -480,4 +480,3 @@ templates:
                   labels:
                     preset-busola-nightly-provision-type-kyma: "true"
                     preset-log-collector-slack-token: "true"
-
