@@ -62,7 +62,13 @@ templates:
           - repoName: kyma-project/kyma
             jobs:
               # presubmits
-              - inheritedConfigs:
+              - jobConfig:
+                  name: "pre-master-kyma-integration"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  labels:
+                    preset-build-pr: "true"
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
@@ -73,31 +79,13 @@ templates:
                     - "request_small"
                     - "vm_job_template"
                     - "vm_job_labels_template"
-                jobConfig:
-                  name: "pre-master-kyma-integration"
-                  # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  labels:
-                    preset-build-pr: "true"
-              - inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "vm_job_template_k3s"
-                    - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
-                jobConfig:
+              - jobConfig:
                   name: "pre-master-kyma-integration-k3s"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
@@ -108,8 +96,7 @@ templates:
                     - "request_small"
                     - "vm_job_template_k3s"
                     - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
-                jobConfig:
+              - jobConfig:
                   name: "pre-master-kyma-integration-k3s-compass-dev"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -117,7 +104,25 @@ templates:
                     preset-build-pr: "true"
                     preset-kyma-integration-compass-dev: "true"
                     preset-kyma-integration-compass-enabled: "true"
-              - inheritedConfigs:
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_k3s"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
+              - jobConfig:
+                  name: "pre-master-serverless-integration-k3s"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  labels:
+                    preset-build-pr: "true"
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
@@ -128,13 +133,14 @@ templates:
                     - "request_small"
                     - "vm_job_template_serverless_k3s"
                     - "vm_job_labels_template"
-                jobConfig:
-                  name: "pre-master-serverless-integration-k3s"
+              - jobConfig:
+                  name: "pre-master-kyma-gke-integration"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
-              - inheritedConfigs:
+                    preset-gke-pod-security-policy: "true"
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
@@ -145,14 +151,11 @@ templates:
                     - "request_big"
                     - "gke_job_template"
                     - "gke_job_labels_template"
-                jobConfig:
-                  name: "pre-master-kyma-gke-integration"
-                  # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  labels:
-                    preset-build-pr: "true"
-                    preset-gke-pod-security-policy: "true"
-              # - inheritedConfigs:
+              # - jobConfig:
+              #     name: "pre-master-kyma-gke-rapid-integration"
+              #     labels:
+              #       preset-gke-rapid: "true"
+              #   inheritedConfigs:
               #     global:
               #       - "jobConfig_default"
               #       - "jobConfig_presubmit"
@@ -163,11 +166,14 @@ templates:
               #       - "request_big"
               #       - "gke_job_template"
               #       - "gke_job_labels_template"
-              #   jobConfig:
-              #     name: "pre-master-kyma-gke-rapid-integration"
-              #     labels:
-              #       preset-gke-rapid: "true"
-              - inheritedConfigs:
+              - jobConfig:
+                  name: "pre-master-kyma-gke-upgrade"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-gke-upgrade-pre-job: "true"
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
@@ -178,16 +184,17 @@ templates:
                     - "request_big"
                     - "gke_upgrade_job_template"
                     - "gke_job_labels_template"
-                jobConfig:
-                  name: "pre-master-kyma-gke-upgrade"
-                  # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  labels:
-                    preset-build-pr: "true"
-                    preset-gke-upgrade-pre-job: "true"
-              
+
               # postsubmits
-              - inheritedConfigs:
+              - jobConfig:
+                  name: "post-master-kyma-integration"
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    description: Kyma integration job.
+                    testgrid-days-of-results: "60"
+                  labels:
+                    preset-build-master: "true"
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
@@ -198,27 +205,7 @@ templates:
                     - "request_small"
                     - "vm_job_template"
                     - "vm_job_labels_template"
-                jobConfig:
-                  name: "post-master-kyma-integration"
-                  annotations:
-                    testgrid-dashboards: kyma_integration
-                    description: Kyma integration job.
-                    testgrid-days-of-results: "60"
-                  labels:
-                    preset-build-master: "true"
-              - inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "vm_job_template_k3s"
-                    - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
-                jobConfig:
+              - jobConfig:
                   name: "post-master-kyma-integration-k3s"
                   annotations:
                     testgrid-dashboards: kyma_integration
@@ -226,7 +213,7 @@ templates:
                     testgrid-days-of-results: "60"
                   labels:
                     preset-build-master: "true"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
@@ -238,7 +225,7 @@ templates:
                     - "vm_job_template_k3s"
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
-                jobConfig:
+              - jobConfig:
                   name: "post-master-kyma-integration-k3s-compass-dev"
                   annotations:
                     testgrid-dashboards: kyma_integration
@@ -248,7 +235,29 @@ templates:
                     preset-build-master: "true"
                     preset-kyma-integration-compass-dev: "true"
                     preset-kyma-integration-compass-enabled: "true"
-              - inheritedConfigs:
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_k3s"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
+              - jobConfig:
+                  name: "post-master-kyma-gke-integration"
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    description: Kyma GKE integration job.
+                    testgrid-days-of-results: "60"
+                  labels:
+                    preset-log-collector-slack-token: "true"
+                    preset-build-master: "true"
+                    preset-gke-pod-security-policy: "true"
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
@@ -259,17 +268,17 @@ templates:
                     - "request_big"
                     - "gke_job_template"
                     - "gke_job_labels_template"
-                jobConfig:
-                  name: "post-master-kyma-gke-integration"
+              - jobConfig:
+                  name: "post-master-kyma-gke-upgrade"
                   annotations:
                     testgrid-dashboards: kyma_integration
-                    description: Kyma GKE integration job.
+                    description: Kyma GKE upgrade job.
                     testgrid-days-of-results: "60"
                   labels:
+                    preset-gke-upgrade-post-job: "true"
                     preset-log-collector-slack-token: "true"
                     preset-build-master: "true"
-                    preset-gke-pod-security-policy: "true"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
@@ -280,17 +289,14 @@ templates:
                     - "request_big"
                     - "gke_upgrade_job_template"
                     - "gke_job_labels_template"
-                jobConfig:
-                  name: "post-master-kyma-gke-upgrade"
-                  annotations:
-                    testgrid-dashboards: kyma_integration
-                    description: Kyma GKE upgrade job.
-                    testgrid-days-of-results: "60"
+              - jobConfig:
+                  name: "post-master-kyma-gke-rapid-integration"
+                  skip_report: true
                   labels:
-                    preset-gke-upgrade-post-job: "true"
                     preset-log-collector-slack-token: "true"
                     preset-build-master: "true"
-              - inheritedConfigs:
+                    preset-gke-rapid: "true"
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
@@ -302,28 +308,12 @@ templates:
                     - "request_big"
                     - "gke_job_template"
                     - "gke_job_labels_template"
-                jobConfig:
-                  name: "post-master-kyma-gke-rapid-integration"
-                  skip_report: true
-                  labels:
-                    preset-log-collector-slack-token: "true"
-                    preset-build-master: "true"
-                    preset-gke-rapid: "true"
 
               # periodics
 
               # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.
               # Purpose of this job is to avoid error: "Login profile size exceeds 32 KiB" when running kyma-integration tests
-              - inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "jobConfig_periodic"
-                jobConfig:
+              - jobConfig:
                   name: "utilities-kyma-integration-cleaner"
                   cron: "30 * * * *" # "At 30 minutes past every hour"
                   image: eu.gcr.io/kyma-project/prow/cleaner:0.0.1 # see test-infra/prow/images/cleaner
@@ -332,7 +322,26 @@ templates:
                     preset-sa-vm-kyma-integration: "true"
                     preset-gc-project-env: "true"
                   command: "./cleaner.sh"
-              - inheritedConfigs:
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "jobConfig_periodic"
+              - jobConfig:
+                  name: "orphaned-az-storage-accounts-cleaner"
+                  cron: "00 00 * * *" # "At 00:00 each day"
+                  labels:
+                    preset-az-kyma-prow-credentials: "true"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/minio/azure-cleaner.sh"
+                  env:
+                    MINIO_GATEWAY_MODE: azure
+                    AZURE_RS_GROUP: rafter-minio-gateway
+                    AZURE_REGION: westeurope
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
@@ -343,28 +352,7 @@ templates:
                     - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
-                jobConfig:
-                  name: "orphaned-az-storage-accounts-cleaner"
-                  cron: "00 00 * * *" # "At 00:00 each day"
-                  labels:
-                    preset-az-kyma-prow-credentials: "true"
-                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/minio/azure-cleaner.sh"
-                  env:
-                    MINIO_GATEWAY_MODE: azure
-                    AZURE_RS_GROUP: rafter-minio-gateway
-                    AZURE_REGION: westeurope
-              - inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "image_prow-tools"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "jobConfig_periodic"
-                jobConfig:
+              - jobConfig:
                   name: "orphaned-assetstore-gcp-bucket-cleaner"
                   cron: "00 00 * * *" # "At 00:00 each day"
                   labels:
@@ -374,7 +362,7 @@ templates:
                   args:
                     - "-c"
                     - "prow/scripts/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT}"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
@@ -385,7 +373,7 @@ templates:
                     - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
-                jobConfig:
+              - jobConfig:
                   name: "orphaned-disks-cleaner"
                   cron: "30 * * * *" # "At 30 minutes past every hour"
                   labels:
@@ -395,7 +383,7 @@ templates:
                   args:
                     - "-c"
                     - "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|gke-provisioner|gke-backup|weekly|nightly|gke-central|gke-minio|gke-gkecompint|restore|gke-release|gke-gkeext|gke-gke-|gke-gkekcpint|gke-test|gke-cli'"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
@@ -406,7 +394,7 @@ templates:
                     - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
-                jobConfig:
+              - jobConfig:
                   name: "orphaned-clusters-cleaner"
                   cron: "0 * * * *" # "At 0 minute every hour"
                   labels:
@@ -416,7 +404,7 @@ templates:
                   args:
                     - "-c"
                     - "/prow-tools/clusterscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -excluded-clusters=kyma-prow,workload-kyma-prow,nightly,weekly"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
@@ -427,7 +415,7 @@ templates:
                     - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
-                jobConfig:
+              - jobConfig:
                   name: "orphaned-vms-cleaner"
                   cron: "15,45 * * * *" # "At 15 and 45 past every hour"
                   labels:
@@ -437,7 +425,7 @@ templates:
                   args:
                     - "-c"
                     - "/prow-tools/vmscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
@@ -448,7 +436,7 @@ templates:
                     - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
-                jobConfig:
+              - jobConfig:
                   name: "orphaned-loadbalancer-cleaner"
                   cron: "15 * * * *" # "At 15 past every hour"
                   labels:
@@ -458,7 +446,7 @@ templates:
                   args:
                     - "-c"
                     - "/prow-tools/orphanremover -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
@@ -469,7 +457,7 @@ templates:
                     - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
-                jobConfig:
+              - jobConfig:
                   name: "firewall-cleaner"
                   cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
                   labels:
@@ -479,7 +467,7 @@ templates:
                   args:
                     - "-c"
                     - "/prow-tools/firewallcleaner -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
@@ -490,7 +478,7 @@ templates:
                     - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
-                jobConfig:
+              - jobConfig:
                   name: "orphaned-dns-cleaner"
                   cron: "30 * * * *" # "At minute 30 past every hour"
                   labels:
@@ -501,7 +489,7 @@ templates:
                   args:
                     - "-c"
                     - "/prow-tools/dnscollector -project=${CLOUDSDK_CORE_PROJECT} -dnsZone=${CLOUDSDK_DNS_ZONE_NAME} -ageInHours=2 -regions=${CLOUDSDK_COMPUTE_REGION} -dryRun=false"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
@@ -512,25 +500,24 @@ templates:
                     - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
-                jobConfig:
+              - jobConfig:
                   name: "github-stats"
                   cron: "0 6 * * *" # "At 6:00 every day"
                   labels:
                     preset-bot-github-token: "true"
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/github-stats.sh"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "image_kyma-integration"
+                    - "image_prow-tools"
                     - "extra_refs_test-infra"
-                    - "extra_refs_kyma"
+                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
-                    - "request_big"
+                    - "request_small"
                     - "jobConfig_periodic"
-                    - "gke_job_labels_template"
-                jobConfig:
+              - jobConfig:
                   name: "kyma-gke-nightly"
                   cron: "0 4 * * 1-5" # "At 04:00 on every weekday Monday through Friday"
                   annotations:
@@ -566,7 +553,7 @@ templates:
                     GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS: "cluster-access"
                     CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
                     TEST_RESULT_WINDOW_TIME: "6h"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
@@ -578,7 +565,7 @@ templates:
                     - "request_big"
                     - "jobConfig_periodic"
                     - "gke_job_labels_template"
-                jobConfig:
+              - jobConfig:
                   name: "kyma-gke-weekly"
                   cron: "0 6 * * 1" # "At 06:00 on Monday."
                   annotations:
@@ -614,7 +601,7 @@ templates:
                     GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS: "cluster-access"
                     CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
                     TEST_RESULT_WINDOW_TIME: "24h"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
@@ -626,7 +613,7 @@ templates:
                     - "request_big"
                     - "jobConfig_periodic"
                     - "gke_job_labels_template"
-                jobConfig:
+              - jobConfig:
                   name: "kyma-aks-nightly"
                   cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
                   annotations:
@@ -659,7 +646,7 @@ templates:
                     INPUT_CLUSTER_NAME: "nightly-aks"
                     GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS: "cluster-access"
                     TEST_RESULT_WINDOW_TIME: "6h"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
@@ -668,12 +655,10 @@ templates:
                     - "extra_refs_kyma"
                   local:
                     - "jobConfig_default"
-                    - "request_small"
+                    - "request_big"
                     - "jobConfig_periodic"
-                    - "vm_job_template_k3s"
-                    - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
-                jobConfig:
+                    - "gke_job_labels_template"
+              - jobConfig:
                   name: "kyma-integration-k3s"
                   annotations:
                     testgrid-dashboards: kyma_integration
@@ -681,7 +666,7 @@ templates:
                   cron: "5 * * * *"
                   labels:
                     preset-build-master: "true"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
@@ -695,7 +680,7 @@ templates:
                     - "vm_job_template_k3s"
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
-                jobConfig:
+              - jobConfig:
                   name: "kyma-integration-k3s-compass-dev"
                   annotations:
                     testgrid-dashboards: kyma_integration
@@ -705,3 +690,17 @@ templates:
                     preset-build-master: "true"
                     preset-kyma-integration-compass-dev: "true"
                     preset-kyma-integration-compass-enabled: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "jobConfig_periodic"
+                    - "vm_job_template_k3s"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"

@@ -25,7 +25,9 @@ templates:
           - repoName: kyma-project/kyma
             jobs:
               # presubmits
-              - inheritedConfigs:
+              - jobConfig:
+                  name: "pre-kyma-artifacts"
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
@@ -34,18 +36,8 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "jobConfig_develop"
-                jobConfig:
-                  name: "pre-kyma-artifacts"
               {{- range .Global.releases }}
-              - inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_bootstrap"
-                  local:
-                    - "jobConfig_default"
-                    - "jobConfig_develop"
-                jobConfig:
+              - jobConfig:
                   name: pre-rel{{ . | replace "." "" }}-kyma-artifacts
                   branches:
                     - ^release-{{ . }}$
@@ -55,10 +47,20 @@ templates:
                         repo: "test-infra"
                         path_alias: "github.com/kyma-project/test-infra"
                         base_ref: release-{{ . }}
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_bootstrap"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_develop"
               {{- end }}
 
               # postsubmits
-              - inheritedConfigs:
+              - jobConfig:
+                  name: "post-kyma-artifacts"
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
@@ -68,19 +70,8 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "jobConfig_develop"
-                jobConfig:
-                  name: "post-kyma-artifacts"
               {{- range .Global.releases }}
-              - inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_bootstrap"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "jobConfig_release"
-                jobConfig:
+              - jobConfig:
                   name: post-rel{{ . | replace "." "" }}-kyma-artifacts
                   branches:
                     - ^release-{{ . }}$
@@ -90,4 +81,13 @@ templates:
                         repo: "test-infra"
                         path_alias: "github.com/kyma-project/test-infra"
                         base_ref: release-{{ . }}
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_bootstrap"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_release"
               {{- end }}

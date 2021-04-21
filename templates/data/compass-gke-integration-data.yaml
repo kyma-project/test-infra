@@ -32,15 +32,7 @@ templates:
           - repoName: kyma-incubator/compass
             jobs:
               # presubmits
-              - inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                jobConfig:
+              - jobConfig:
                   name: pre-master-compass-gke-integration
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((chart\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -50,8 +42,7 @@ templates:
                     - ^master$
                     - ^main$
                     - ^hotfix-.*$
-              {{- range .Global.releases }}
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
@@ -59,7 +50,8 @@ templates:
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
-                jobConfig:
+              {{- range .Global.releases }}
+              - jobConfig:
                   name: pre-rel{{ . | replace "." "" }}-compass-gke-integration
                   optional: true
                   always_run: false
@@ -73,17 +65,17 @@ templates:
                         repo: "test-infra"
                         path_alias: "github.com/kyma-project/test-infra"
                         base_ref: release-{{ . }}
-              {{- end }}
-              # postsubmits
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "jobConfig_postsubmit"
+                    - "jobConfig_presubmit"
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
-                jobConfig:
+                {{- end }}
+              # postsubmits
+              - jobConfig:
                   name: post-master-compass-gke-integration
                   annotations:
                     testgrid-dashboards: kyma-incubator_compass
@@ -91,3 +83,11 @@ templates:
                   labels:
                     preset-build-master: "true"
                   slack_channel: "kyma-prow-dev-null"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"

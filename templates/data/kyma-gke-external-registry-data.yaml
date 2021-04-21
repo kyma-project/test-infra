@@ -28,7 +28,13 @@ templates:
           - repoName: kyma-project/kyma
             jobs:
               # presubmits
-              - inheritedConfigs:
+              - jobConfig:
+                  name: "pre-master-kyma-gke-external-registry"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((resources/serverless\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  labels:
+                    preset-build-pr: "true"
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
@@ -36,21 +42,8 @@ templates:
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
-                jobConfig:
-                  name: "pre-master-kyma-gke-external-registry"
-                  # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((resources/serverless\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  labels:
-                    preset-build-pr: "true"
               {{- range .Global.releases }}
-              - inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"
-                  local:
-                    - "jobConfig_default"
-                jobConfig:
+              - jobConfig:
                   name: pre-rel{{ . | replace "." "" }}-kyma-gke-external-registry
                   always_run: false
                   labels:
@@ -63,16 +56,15 @@ templates:
                         repo: "test-infra"
                         path_alias: "github.com/kyma-project/test-infra"
                         base_ref: release-{{ . }}
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_kyma-integration"
+                  local:
+                    - "jobConfig_default"
               {{- end }}
-              # - inheritedConfigs:
-              #     global:
-              #       - "jobConfig_default"
-              #       - "jobConfig_postsubmit"
-              #       - "image_kyma-integration"
-              #       - "extra_refs_test-infra"
-              #     local:
-              #       - "jobConfig_default"
-              #   jobConfig:
+              # - jobConfig:
               #     name: "post-master-kyma-gke-external-registry"
               #     # following regexp won't start build if only Markdown files were changed
               #     annotations:
@@ -81,3 +73,11 @@ templates:
               #       testgrid-num-failures-to-alert: '1'
               #     labels:
               #       preset-build-master: "true"
+              #   inheritedConfigs:
+              #     global:
+              #       - "jobConfig_default"
+              #       - "jobConfig_postsubmit"
+              #       - "image_kyma-integration"
+              #       - "extra_refs_test-infra"
+              #     local:
+              #       - "jobConfig_default"
