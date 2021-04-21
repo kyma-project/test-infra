@@ -82,7 +82,7 @@ templates:
                     - jobConfig_presubmit
                     - gardener_azure_job
                 jobConfig:
-                  name: pre-master-kyma-gardener-azure-integration
+                  name: pre-main-kyma-gardener-azure-integration
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -100,7 +100,7 @@ templates:
                     - command_integration
                     - gardener_azure_job
                 jobConfig:
-                  name: pre-master-kyma-gardener-azure-fast-integration
+                  name: pre-main-kyma-gardener-azure-fast-integration
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -118,7 +118,7 @@ templates:
                     - command_integration
                     - gardener_azure_job
                 jobConfig:
-                  name: pre-master-kyma-gardener-azure-alpha-eval
+                  name: pre-main-kyma-gardener-azure-alpha-eval
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -139,7 +139,7 @@ templates:
                     - command_integration
                     - gardener_azure_job
                 jobConfig:
-                  name: pre-master-kyma-gardener-azure-alpha-prod
+                  name: pre-main-kyma-gardener-azure-alpha-prod
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -162,7 +162,7 @@ templates:
                     - command_integration
                     - gardener_azure_job
                 jobConfig:
-                  name: post-master-kyma-gardener-azure-alpha-eval
+                  name: post-main-kyma-gardener-azure-alpha-eval
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -183,7 +183,7 @@ templates:
                     - command_integration
                     - gardener_azure_job
                 jobConfig:
-                  name: post-master-kyma-gardener-azure-alpha-prod
+                  name: post-main-kyma-gardener-azure-alpha-prod
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
