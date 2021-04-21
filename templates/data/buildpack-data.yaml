@@ -36,380 +36,380 @@ templates:
             jobConfigs:
               - repoName: "github.com/kyma-project/test-infra"
                 jobs:
-                  - inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                      local:
-                        - "default"
-                        - "presubmit"
-                    jobConfig:
+                  - jobConfig:
                       name: "pre-test-infra-bootstrap"
                       run_if_changed: "^prow/images/bootstrap/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "postsubmit"
-                    jobConfig:
+                        - "presubmit"
+                  - jobConfig:
                       name: "post-test-infra-bootstrap"
                       run_if_changed: "^prow/images/bootstrap/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "presubmit"
-                    jobConfig:
+                        - "postsubmit"
+                  - jobConfig:
                       name: "pre-test-infra-kyma-integration"
                       run_if_changed: "^prow/images/kyma-integration/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "postsubmit"
-                    jobConfig:
+                        - "presubmit"
+                  - jobConfig:
                       name: "post-test-infra-kyma-integration"
                       run_if_changed: "^prow/images/kyma-integration/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "presubmit"
-                    jobConfig:
+                        - "postsubmit"
+                  - jobConfig:
                       name: "pre-test-infra-buildpack-golang"
                       run_if_changed: "^prow/images/buildpack-golang/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "postsubmit"
-                    jobConfig:
+                        - "presubmit"
+                  - jobConfig:
                       name: "post-test-infra-buildpack-golang"
                       run_if_changed: "^prow/images/buildpack-golang/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "presubmit"
-                    jobConfig:
+                        - "postsubmit"
+                  - jobConfig:
                       name: "pre-test-infra-buildpack-golang-toolbox"
                       run_if_changed: "^prow/images/buildpack-golang-toolbox/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-toolbox"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "postsubmit"
-                    jobConfig:
+                        - "presubmit"
+                  - jobConfig:
                       name: "post-test-infra-buildpack-golang-toolbox"
                       run_if_changed: "^prow/images/buildpack-golang-toolbox/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-toolbox"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "presubmit"
-                    jobConfig:
+                        - "postsubmit"
+                  - jobConfig:
                       name: "pre-test-infra-buildpack-golang-kubebuilder2"
                       run_if_changed: "^prow/images/buildpack-golang-kubebuilder2/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-kubebuilder2"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "postsubmit"
-                    jobConfig:
+                        - "presubmit"
+                  - jobConfig:
                       name: "post-test-infra-buildpack-golang-kubebuilder2"
                       run_if_changed: "^prow/images/buildpack-golang-kubebuilder2/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-kubebuilder2"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "presubmit"
-                    jobConfig:
+                        - "postsubmit"
+                  - jobConfig:
                       name: "pre-test-infra-buildpack-node"
                       run_if_changed: "^prow/images/buildpack-node/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "postsubmit"
-                    jobConfig:
+                        - "presubmit"
+                  - jobConfig:
                       name: "post-test-infra-buildpack-node"
                       run_if_changed: "^prow/images/buildpack-node/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "presubmit"
-                    jobConfig:
+                        - "postsubmit"
+                  - jobConfig:
                       name: "pre-test-infra-buildpack-node-chromium"
                       run_if_changed: "^prow/images/buildpack-node-chromium/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node-chromium"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "postsubmit"
-                    jobConfig:
+                        - "presubmit"
+                  - jobConfig:
                       name: "post-test-infra-buildpack-node-chromium"
                       run_if_changed: "^prow/images/buildpack-node-chromium/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node-chromium"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "presubmit"
-                    jobConfig:
+                        - "postsubmit"
+                  - jobConfig:
                       name: "pre-test-infra-buildpack-java"
                       run_if_changed: "^prow/images/buildpack-java/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-java"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "postsubmit"
-                    jobConfig:
+                        - "presubmit"
+                  - jobConfig:
                       name: "post-test-infra-buildpack-java"
                       run_if_changed: "^prow/images/buildpack-java/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-java"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "presubmit"
-                    jobConfig:
+                        - "postsubmit"
+                  - jobConfig:
                       name: "pre-test-infra-buildpack-java-node"
                       run_if_changed: "^prow/images/buildpack-java-node/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-java-node"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "postsubmit"
-                    jobConfig:
+                        - "presubmit"
+                  - jobConfig:
                       name: "post-test-infra-buildpack-java-node"
                       run_if_changed: "^prow/images/buildpack-java-node/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-java-node"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "presubmit"
-                    jobConfig:
+                        - "postsubmit"
+                  - jobConfig:
                       name: "pre-test-infra-cleaner"
                       run_if_changed: "^prow/images/cleaner/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/cleaner"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "postsubmit"
-                    jobConfig:
+                        - "presubmit"
+                  - jobConfig:
                       name: "post-test-infra-cleaner"
                       run_if_changed: "^prow/images/cleaner/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/cleaner"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "presubmit"
-                    jobConfig:
+                        - "postsubmit"
+                  - jobConfig:
                       name: "pre-test-infra-vulnerability-scanner"
                       run_if_changed: "^prow/images/vulnerability-scanner/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/vulnerability-scanner"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "postsubmit"
-                    jobConfig:
+                        - "presubmit"
+                  - jobConfig:
                       name: "post-test-infra-vulnerability-scanner"
                       run_if_changed: "^prow/images/vulnerability-scanner/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/vulnerability-scanner"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "presubmit"
-                    jobConfig:
+                        - "postsubmit"
+                  - jobConfig:
                       name: "pre-test-infra-whitesource-scanner"
                       run_if_changed: "^prow/images/whitesource-scanner/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/whitesource-scanner"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "postsubmit"
-                    jobConfig:
+                        - "presubmit"
+                  - jobConfig:
                       name: "post-test-infra-whitesource-scanner"
                       run_if_changed: "^prow/images/whitesource-scanner/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/whitesource-scanner"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "presubmit"
-                    jobConfig:
+                        - "postsubmit"
+                  - jobConfig:
                       name: "pre-test-infra-kubectl"
                       run_if_changed: "^prow/images/alpine-kubectl/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/alpine-kubectl"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "postsubmit"
-                    jobConfig:
+                        - "presubmit"
+                  - jobConfig:
                       name: "post-test-infra-kubectl"
                       run_if_changed: "^prow/images/alpine-kubectl/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/alpine-kubectl"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "presubmit"
-                    jobConfig:
+                        - "postsubmit"
+                  - jobConfig:
                       run_if_changed: "^prow/images/probot-stale/"
                       name: "pre-test-infra-probot-stale"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/probot-stale"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "postsubmit"
-                    jobConfig:
+                        - "presubmit"
+                  - jobConfig:
                       run_if_changed: "^prow/images/probot-stale/"
                       name: "post-test-infra-probot-stale"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/probot-stale"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "presubmit"
-                    jobConfig:
+                        - "postsubmit"
+                  - jobConfig:
                       name: "pre-test-infra-prow-tools"
                       run_if_changed: '^development/(tools|jobguard)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "postsubmit"
-                    jobConfig:
+                        - "presubmit"
+                  - jobConfig:
                       name: "post-test-infra-prow-tools"
                       run_if_changed: '^development/(tools|jobguard)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
-                        - "presubmit"
-                    jobConfig:
+                        - "postsubmit"
+                  - jobConfig:
                       name: "pre-test-infra-prow-clonerefs"
                       run_if_changed: "^prow/images/clonerefs/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/clonerefs"
-                  - inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                      local:
-                        - "default"
-                        - "postsubmit"
-                    jobConfig:
-                      name: "post-test-infra-prow-clonerefs"
-                      run_if_changed: "^prow/images/clonerefs/"
-                      args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/clonerefs"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
                         - "presubmit"
-                    jobConfig:
-                      name: "pre-test-infra-image-guard"
-                      run_if_changed: '^development/image-guard/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+                  - jobConfig:
+                      name: "post-test-infra-prow-clonerefs"
+                      run_if_changed: "^prow/images/clonerefs/"
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/image-guard"
-                  - inheritedConfigs:
+                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/clonerefs"
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
                         - "postsubmit"
-                    jobConfig:
+                  - jobConfig:
+                      name: "pre-test-infra-image-guard"
+                      run_if_changed: '^development/image-guard/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+                      args:
+                        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/image-guard"
+                    inheritedConfigs:
+                      global:
+                        - "image_bootstrap"
+                      local:
+                        - "default"
+                        - "presubmit"
+                  - jobConfig:
                       name: "post-test-infra-image-guard"
                       run_if_changed: '^development/image-guard/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/development/image-guard"
+                    inheritedConfigs:
+                      global:
+                        - "image_bootstrap"
+                      local:
+                        - "default"
+                        - "postsubmit"
                   - jobConfig:
                      name: "pre-test-infra-github-connector-webhook-gateway"
                      run_if_changed: '^development/github-slack-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
@@ -432,25 +432,25 @@ templates:
                       local:
                         - "default"
                         - "postsubmit"
-                  - inheritedConfigs:
+                  - jobConfig:
+                      name: "pre-test-infra-debug-commando"
+                      run_if_changed: "^prow/images/debug-commando/"
+                      args:
+                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/debug-commando"
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
                         - "presubmit"
-                    jobConfig:
-                      name: "pre-test-infra-debug-commando"
+                  - jobConfig:
+                      name: "post-test-infra-debug-commando"
                       run_if_changed: "^prow/images/debug-commando/"
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/debug-commando"
-                  - inheritedConfigs:
+                    inheritedConfigs:
                       global:
                         - "image_bootstrap"
                       local:
                         - "default"
                         - "postsubmit"
-                    jobConfig:
-                      name: "post-test-infra-debug-commando"
-                      run_if_changed: "^prow/images/debug-commando/"
-                      args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/debug-commando"

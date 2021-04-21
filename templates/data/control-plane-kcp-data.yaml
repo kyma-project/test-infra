@@ -21,7 +21,10 @@ templates:
         jobConfigs:
           - repoName: kyma-project/control-plane
             jobs:
-              - inheritedConfigs:
+              - jobConfig:
+                  name: pre-main-kcp-cli
+                  run_if_changed: "^tools/cli"
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -29,10 +32,11 @@ templates:
                     - image_buildpack-golang-toolbox
                   local:
                     - jobConfig_default
-                jobConfig:
-                  name: pre-main-kcp-cli
-                  run_if_changed: "^tools/cli"
-              - inheritedConfigs:
+              - jobConfig:
+                  name: post-main-kcp-cli
+                  labels:
+                    preset-build-artifacts-master: "true"
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
@@ -41,10 +45,6 @@ templates:
                     - disable_testgrid
                   local:
                     - jobConfig_default
-                jobConfig:
-                  name: post-main-kcp-cli
-                  labels:
-                    preset-build-artifacts-master: "true"
       - to: ../prow/jobs/control-plane/kcp-development-artifacts.yaml
         localSets:
           jobConfig_default:
@@ -68,7 +68,11 @@ templates:
         jobConfigs:
           - repoName: kyma-project/control-plane
             jobs:
-              - inheritedConfigs:
+              - jobConfig:
+                  name: pre-main-kcp-development-artifacts
+                  run_if_changed: "^installation|^resources|^tools/kcp-installer"
+                  optional: "true"
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -76,11 +80,11 @@ templates:
                     - image_buildpack-golang-toolbox
                   local:
                     - jobConfig_default
-                jobConfig:
-                  name: pre-main-kcp-development-artifacts
-                  run_if_changed: "^installation|^resources|^tools/kcp-installer"
-                  optional: "true"
-              - inheritedConfigs:
+              - jobConfig:
+                  name: post-main-kcp-development-artifacts
+                  labels:
+                    preset-build-artifacts-master: "true"
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
@@ -89,7 +93,3 @@ templates:
                     - disable_testgrid
                   local:
                     - jobConfig_default
-                jobConfig:
-                  name: post-main-kcp-development-artifacts
-                  labels:
-                    preset-build-artifacts-master: "true"

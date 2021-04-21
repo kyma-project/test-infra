@@ -72,25 +72,14 @@ templates:
           - repoName: kyma-project/kyma
             jobs:
               # presubmits
-              - inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_kyma-integration
-                  local:
-                    - jobConfig_default
-                    - command_integration
-                    - jobConfig_presubmit
-                    - gardener_azure_job
-                jobConfig:
+              - jobConfig:
                   name: pre-main-kyma-gardener-azure-integration
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
                     # following regexp won't start build if only Markdown files were changed
                     run_if_changed: "^(((resources/knative-eventing|resources/event-sources|resources/knative-eventing-kafka|resources/application-connector)\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -98,17 +87,17 @@ templates:
                     - image_kyma-integration
                   local:
                     - jobConfig_default
-                    - jobConfig_presubmit
                     - command_integration
+                    - jobConfig_presubmit
                     - gardener_azure_job
-                jobConfig:
+              - jobConfig:
                   name: pre-main-kyma-gardener-azure-fast-integration
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
                   env:
                     EXECUTION_PROFILE: "evaluation"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -119,7 +108,7 @@ templates:
                     - jobConfig_presubmit
                     - command_integration
                     - gardener_azure_job
-                jobConfig:
+              - jobConfig:
                   name: pre-main-kyma-gardener-azure-alpha-eval
                   decoration_config:
                     timeout: 14400000000000 # 4h
@@ -129,7 +118,7 @@ templates:
                   env:
                     EXECUTION_PROFILE: "evaluation"
                     KYMA_ALPHA: "true"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -140,7 +129,7 @@ templates:
                     - jobConfig_presubmit
                     - command_integration
                     - gardener_azure_job
-                jobConfig:
+              - jobConfig:
                   name: pre-main-kyma-gardener-azure-alpha-prod
                   decoration_config:
                     timeout: 14400000000000 # 4h
@@ -150,20 +139,20 @@ templates:
                   env:
                     EXECUTION_PROFILE: "production"
                     KYMA_ALPHA: "true"
-
-              # postsubmits
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - jobConfig_default
-                    - jobConfig_postsubmit
+                    - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
-                    - disable_testgrid
                   local:
                     - jobConfig_default
+                    - jobConfig_presubmit
                     - command_integration
                     - gardener_azure_job
-                jobConfig:
+
+              # postsubmits
+              - jobConfig:
                   name: post-main-kyma-gardener-azure-alpha-eval
                   decoration_config:
                     timeout: 14400000000000 # 4h
@@ -173,7 +162,7 @@ templates:
                   env:
                     EXECUTION_PROFILE: "evaluation"
                     KYMA_ALPHA: "true"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
@@ -184,7 +173,7 @@ templates:
                     - jobConfig_default
                     - command_integration
                     - gardener_azure_job
-                jobConfig:
+              - jobConfig:
                   name: post-main-kyma-gardener-azure-alpha-prod
                   decoration_config:
                     timeout: 14400000000000 # 4h
@@ -194,20 +183,20 @@ templates:
                   env:
                     EXECUTION_PROFILE: "production"
                     KYMA_ALPHA: "true"
-                  
-              # periodics
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - jobConfig_default
-                    - jobConfig_periodic
+                    - jobConfig_postsubmit
                     - extra_refs_test-infra
-                    - extra_refs_kyma
                     - image_kyma-integration
+                    - disable_testgrid
                   local:
                     - jobConfig_default
-                    - gardener_gcp_job
                     - command_integration
-                jobConfig:
+                    - gardener_azure_job
+
+              # periodics
+              - jobConfig:
                   name: kyma-integration-gardener-gcp
                   annotations:
                     testgrid-dashboards: kyma_integration
@@ -218,7 +207,27 @@ templates:
                   cron: "00 08 * * *"
                   labels:
                     preset-log-collector-slack-token: "true"
-              - inheritedConfigs:
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                    - image_kyma-integration
+                  local:
+                    - jobConfig_default
+                    - gardener_gcp_job
+                    - command_integration
+              - jobConfig:
+                  name: kyma-integration-gardener-aws
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    description: Kyma AWS Gardener integration job.
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  cron: "00 14 * * *"
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_periodic
@@ -229,27 +238,7 @@ templates:
                     - jobConfig_default
                     - gardener_aws_job
                     - command_integration
-                jobConfig:
-                  name: kyma-integration-gardener-aws
-                  annotations:
-                    testgrid-dashboards: kyma_integration
-                    description: Kyma AWS Gardener integration job.
-                  decoration_config:
-                    timeout: 14400000000000 # 4h
-                    grace_period: 600000000000 # 10min
-                  cron: "00 14 * * *"
-              - inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_periodic
-                    - extra_refs_test-infra
-                    - extra_refs_kyma
-                    - image_kyma-integration
-                  local:
-                    - jobConfig_default
-                    - gardener_azure_job
-                    - command_integration
-                jobConfig:
+              - jobConfig:
                   name: kyma-integration-gardener-azure
                   annotations:
                     testgrid-dashboards: kyma_integration
@@ -260,7 +249,7 @@ templates:
                   cron: "0 4,7,10,13 * * *"
                   labels:
                     preset-log-collector-slack-token: "true"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_periodic
@@ -270,9 +259,8 @@ templates:
                   local:
                     - jobConfig_default
                     - gardener_azure_job
-                    - extra_refs_kyma-local
                     - command_integration
-                jobConfig:
+              - jobConfig:
                   name: kyma-integration-evaluation-gardener-azure
                   annotations:
                     testgrid-dashboards: kyma_integration
@@ -285,7 +273,7 @@ templates:
                     preset-log-collector-slack-token: "true"
                   env:
                     EXECUTION_PROFILE: "evaluation"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_periodic
@@ -297,7 +285,7 @@ templates:
                     - gardener_azure_job
                     - extra_refs_kyma-local
                     - command_integration
-                jobConfig:
+              - jobConfig:
                   name: kyma-integration-production-gardener-azure
                   annotations:
                     testgrid-dashboards: kyma_integration
@@ -313,7 +301,7 @@ templates:
                     preset-log-collector-slack-token: "true"
                   env:
                     EXECUTION_PROFILE: "production"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_periodic
@@ -325,7 +313,7 @@ templates:
                     - gardener_azure_job
                     - extra_refs_kyma-local
                     - command_integration
-                jobConfig:
+              - jobConfig:
                   name: kyma-alpha-integration-evaluation-gardener-azure
                   annotations:
                     testgrid-dashboards: kyma_integration
@@ -339,7 +327,7 @@ templates:
                   env:
                     EXECUTION_PROFILE: "evaluation"
                     KYMA_ALPHA: "true"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_periodic
@@ -351,7 +339,7 @@ templates:
                     - gardener_azure_job
                     - extra_refs_kyma-local
                     - command_integration
-                jobConfig:
+              - jobConfig:
                   name: kyma-alpha-integration-production-gardener-azure
                   annotations:
                     testgrid-dashboards: kyma_integration
@@ -365,20 +353,19 @@ templates:
                   env:
                     EXECUTION_PROFILE: "production"
                     KYMA_ALPHA: "true"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_periodic
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - image_kyma-integration
-                    - disable_testgrid
                   local:
                     - jobConfig_default
                     - gardener_azure_job
                     - extra_refs_kyma-local
                     - command_integration
-                jobConfig:
+              - jobConfig:
                   name: kyma-integration-hibernation-gardener-azure
                   decoration_config:
                     timeout: 5400000000000  # 90min
@@ -392,7 +379,7 @@ templates:
                   env:
                     EXECUTION_PROFILE: "evaluation"
                     HIBERNATION_ENABLED: "true"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_periodic
@@ -402,10 +389,10 @@ templates:
                     - disable_testgrid
                   local:
                     - jobConfig_default
-                    - command_busola_long_lasting
-                    - gardener_gcp_job
-                    - extra_refs_busola
-                jobConfig:
+                    - gardener_azure_job
+                    - extra_refs_kyma-local
+                    - command_integration
+              - jobConfig:
                   name: kyma-weekly-gardener-gcp-busola
                   decoration_config:
                     timeout: 7200000000000 # 2h
@@ -415,7 +402,7 @@ templates:
                     preset-busola-nightly-provision-type-busola: "true"
                     preset-log-collector-slack-token: "true"
                     preset-recreate-cluster: "true"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_periodic
@@ -428,7 +415,7 @@ templates:
                     - command_busola_long_lasting
                     - gardener_gcp_job
                     - extra_refs_busola
-                jobConfig:
+              - jobConfig:
                   name: kyma-nightly-gardener-gcp-busola
                   decoration_config:
                     timeout: 7200000000000 # 2h
@@ -437,7 +424,7 @@ templates:
                   labels:
                     preset-busola-nightly-provision-type-busola: "true"
                     preset-log-collector-slack-token: "true"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_periodic
@@ -450,7 +437,7 @@ templates:
                     - command_busola_long_lasting
                     - gardener_gcp_job
                     - extra_refs_busola
-                jobConfig:
+              - jobConfig:
                   name: kyma-weekly-gardener-gcp-busola-kyma
                   decoration_config:
                     timeout: 7200000000000 # 2h
@@ -460,7 +447,7 @@ templates:
                     preset-busola-nightly-provision-type-kyma: "true"
                     preset-log-collector-slack-token: "true"
                     preset-recreate-cluster: "true"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_periodic
@@ -473,7 +460,7 @@ templates:
                     - command_busola_long_lasting
                     - gardener_gcp_job
                     - extra_refs_busola
-                jobConfig:
+              - jobConfig:
                   name: kyma-nightly-gardener-gcp-busola-kyma
                   decoration_config:
                     timeout: 7200000000000 # 2h
@@ -482,7 +469,7 @@ templates:
                   labels:
                     preset-busola-nightly-provision-type-kyma: "true"
                     preset-log-collector-slack-token: "true"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_periodic
@@ -495,7 +482,7 @@ templates:
                     - command_busola_long_lasting
                     - gardener_gcp_job
                     - extra_refs_busola
-                jobConfig:
+              - jobConfig:
                   name: kyma-periodic-gardener-gcp-busola-init-kyma
                   decoration_config:
                     timeout: 7200000000000 # 2h
@@ -508,7 +495,7 @@ templates:
                     preset-execute-fast-integration-tests: "true"
                   env:
                     COMMON_NAME_PREFIX: "np"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_periodic
@@ -521,7 +508,7 @@ templates:
                     - command_busola_long_lasting
                     - gardener_gcp_job
                     - extra_refs_busola
-                jobConfig:
+              - jobConfig:
                   name: kyma-periodic-gardener-gcp-busola-kyma
                   decoration_config:
                     timeout: 7200000000000 # 2h
@@ -533,19 +520,20 @@ templates:
                     preset-execute-fast-integration-tests: "true"
                   env:
                     COMMON_NAME_PREFIX: "np"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_periodic
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - image_kyma-integration
+                    - disable_testgrid
                   local:
                     - jobConfig_default
-                    - gardener_azure_job
-#                    - extra_refs_kyma-local
-                    - command_upgrade_1_to_2
-                jobConfig:
+                    - command_busola_long_lasting
+                    - gardener_gcp_job
+                    - extra_refs_busola
+              - jobConfig:
                   name: kyma-upgrade-gardener-kyma-to-kyma2
                   annotations:
                     testgrid-dashboards: kyma_integration
@@ -559,3 +547,15 @@ templates:
 #                  env:
 #                    EXECUTION_PROFILE: "production"
 #                    KYMA_ALPHA: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                    - image_kyma-integration
+                  local:
+                    - jobConfig_default
+                    - gardener_azure_job
+#                    - extra_refs_kyma-local
+                    - command_upgrade_1_to_2

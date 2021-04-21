@@ -23,15 +23,7 @@ templates:
         jobConfigs:
           - repoName: kyma-incubator/compass
             jobs:
-              - inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_bootstrap
-                  local:
-                    - jobConfig_default
-                jobConfig:
+              - jobConfig:
                   name: pre-main-compass-development-artifacts
                   optional: true
                   run_if_changed: "^installation|^chart|^tools/compass-installer"
@@ -39,16 +31,15 @@ templates:
                     - ^master$
                     - ^main$
                     - ^hotfix-.*$
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - jobConfig_default
-                    - jobConfig_postsubmit
+                    - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_bootstrap
-                    - disable_testgrid
                   local:
                     - jobConfig_default
-                jobConfig:
+              - jobConfig:
                   name: post-main-compass-development-artifacts
                   branches:
                     - ^master$
@@ -58,5 +49,12 @@ templates:
                     preset-build-artifacts-master: "true"
                   slack_channel: "kyma-prow-dev-null"
 
-
-
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - image_bootstrap
+                    - disable_testgrid
+                  local:
+                    - jobConfig_default
