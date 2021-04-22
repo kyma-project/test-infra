@@ -62,7 +62,7 @@ templates:
                   name: post-master-kyma-common
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/common"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
