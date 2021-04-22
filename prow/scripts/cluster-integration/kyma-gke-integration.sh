@@ -85,24 +85,6 @@ function post_hook() {
   # collect logs from failed tests before deprovisioning
   kyma::run_test_log_collector "post-master-kyma-gke-integration"
 
-  log::info "Gather Kubeaudit logs:"
-  curl -sL https://github.com/Shopify/kubeaudit/releases/download/v0.11.8/kubeaudit_0.11.8_linux_amd64.tar.gz | tar -xzO kubeaudit > ./kubeaudit
-  chmod +x ./kubeaudit
-  # kubeaudit returns non-zero exit code when it finds issues
-  # In the context of this job we just want to grab the logs
-  # It should not break the execution of this script
-  ./kubeaudit privileged privesc -p json  > "${ARTIFACTS}/kubeaudit.log" || true
-  incompliant_resources=$(jq -c 'select( .ResourceNamespace == "kyma-system" )' < "${ARTIFACTS}/kubeaudit.log")
-  compliant=$(echo "$incompliant_resources" | jq -r -s 'if length == 0 then "true" else "false" end')
-
-  if [[ "$compliant" == "true" ]]; then
-    log::info "All resources are compliant"
-  else
-    EXIT_STATUS=1
-    log::error "Not all resources are compliant:"
-    echo "$incompliant_resources"
-  fi
-
   gcloud::cleanup
 
   MSG=""
@@ -241,6 +223,9 @@ fi
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
+
+utils::kubeaudit_get_privileged_containers "${ARTIFACTS}/kubeaudit.log"
+utils::kubeaudit_get_incompliant_resources "${ARTIFACTS}/kubeaudit.log"
 
 # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
