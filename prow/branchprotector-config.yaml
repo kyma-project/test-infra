@@ -58,24 +58,13 @@ branch-protection:
       protect: true # protect all repos & branches in kyma-incubator org
       repos:
         compass:
-          protect: false
           branches:
             master:
-              protect: true
               required_status_checks:
                 strict: true
         compass-console:
-          protect: false
           branches:
             main:
-              protect: true
-              required_status_checks:
-                strict: true
-        ord-service:
-          protect: false
-          branches:
-            main:
-              protect: true
               required_status_checks:
                 strict: true
 plank:
