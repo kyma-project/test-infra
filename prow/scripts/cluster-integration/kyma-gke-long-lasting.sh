@@ -248,7 +248,7 @@ echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${CLUSTER_NAME}.json"
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
-utils::kubeaudit_get_privileged_containers "${ARTIFACTS}/kubeaudit.log"
+utils::kubeaudit_create_report "${ARTIFACTS}/kubeaudit.log"
 
 log::info "Install stability-checker"
 date

@@ -319,10 +319,10 @@ function utils::debug_oom() {
   kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/debug-container.yaml"
 }
 
-# utils::kubeaudit_get_privileged_containers downlaods kubeaudit if necessary and checks for privileged containers
+# utils::kubeaudit_create_report downlaods kubeaudit if necessary and checks for privileged containers
 # Arguments
 # $1 - Name of the output log file
-function utils::kubeaudit_get_privileged_containers() {
+function utils::kubeaudit_create_report() {
    if [ -z "$1" ]; then
     echo "Kubeuadit file path is empty. Exiting..."
     exit 1
@@ -340,11 +340,11 @@ function utils::kubeaudit_get_privileged_containers() {
   ./kubeaudit privileged privesc -p json  > "$kubeaudit_file" || true
 }
 
-# utils::kubeaudit_get_incompliant_resources analyzes kubeaudit.log file and returns list of non-compliant resources in kyma-system namespace
+# utils::check_kubeaudit_report analyzes kubeaudit.log file and returns list of non-compliant resources in kyma-system namespace
 # Arguments
 # $1 - Name of the input log file
 # S2 - optional, name of the resource namespace. Defaults to "kyma-system"
-function utils::kubeaudit_get_incompliant_resources() {
+function utils::check_kubeaudit_report() {
   if [ -z "$1" ]; then
     echo "Kubeuadit file path is empty. Exiting..."
     exit 1
