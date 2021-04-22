@@ -47,7 +47,7 @@ config_updater:
       name: label-config
       clusters:
         trusted-workload:
-          - default
+          - test-pods
 
 triggers:
   - repos:

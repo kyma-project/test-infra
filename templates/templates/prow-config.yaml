@@ -1,3 +1,7 @@
+prowjob_namespace: default
+pod_namespace: test-pods
+decorate_all_jobs: true
+
 plank:
   job_url_prefix_config:
     '*': https://status.build.kyma-project.io/view/
