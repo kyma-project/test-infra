@@ -29,9 +29,11 @@ func TestKymaGardenerGCPKymaToKyma2JobPeriodics(t *testing.T) {
 	tester.AssertThatHasExtraRepoRefCustom(t, job.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, job.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener.sh"}, job.Spec.Containers[0].Args)
-	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_REGION", "europe-west4")
-	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_ZONES", "europe-west4-b")
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_REGION", "northeurope")
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_ZONES", "1")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "REGION", "northeurope")
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "RS_GROUP", "kyma-gardener-azure")
 	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
 }
 
