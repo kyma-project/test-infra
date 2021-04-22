@@ -29,6 +29,8 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
           command_busola_long_lasting:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-busola-long-lasting.sh"
+          command_upgrade_1_to_2:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener.sh"
           gardener_aws_job:
             labels:
               preset-gardener-aws-kyma-integration: "true"
@@ -480,3 +482,29 @@ templates:
                   labels:
                     preset-busola-nightly-provision-type-kyma: "true"
                     preset-log-collector-slack-token: "true"
+              - inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                    - image_kyma-integration
+                  local:
+                    - jobConfig_default
+                    - gardener_azure_job
+#                    - extra_refs_kyma-local
+                    - command_upgrade_1_to_2
+                jobConfig:
+                  name: kyma-upgrade-gardener-kyma-to-kyma2
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    description: Evaluation profile Kyma 1.x to Kyma 2.0 upgrade.
+                  decoration_config:
+                    timeout: 7200000000000 # 2h
+                    grace_period: 600000000000 # 10min
+                  cron: "0 0 7-17 ? * 1-5"
+                  labels:
+                    preset-bot-github-token: "true"
+#                  env:
+#                    EXECUTION_PROFILE: "production"
+#                    KYMA_ALPHA: "true"
