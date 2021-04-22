@@ -27,26 +27,26 @@ function delete_cluster(){
 }
 
 function provisionCluster() {
-    export DOMAIN_NAME=$1
+    export GARDENER_CLUSTER_NAME=$1
     export DEFINITION_PATH=$2
 
-    log::info "Creating cluster: ${DOMAIN_NAME}"
+    log::info "Creating cluster: ${GARDENER_CLUSTER_NAME}"
     # create the cluster
     envsubst < "${DEFINITION_PATH}" | kubectl create -f -
 
     # wait for the cluster to be ready
-    kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${DOMAIN_NAME}"
-    log::info "Cluster ${DOMAIN_NAME} was created succesfully"
+    kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${GARDENER_CLUSTER_NAME}"
+    log::info "Cluster ${GARDENER_CLUSTER_NAME} was created succesfully"
 }
 
 function provisionIngress() {
-    export DOMAIN_NAME=$1
+    export GARDENER_CLUSTER_NAME=$1
 
     log::info "Install ingress"
 
     # switch to the new cluster
-    kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--busola--${DOMAIN_NAME}.yaml"
-    export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--busola--$DOMAIN_NAME.yaml"
+    kubectl get secrets "${GARDENER_CLUSTER_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--busola--${GARDENER_CLUSTER_NAME}.yaml"
+    export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--busola--$GARDENER_CLUSTER_NAME.yaml"
 
     # ask for new certificates
     envsubst < "${RESOURCES_PATH}/wildcardCert.yaml" | kubectl apply -f -
@@ -66,15 +66,15 @@ function provisionIngress() {
 }
 
 function provisionBusola() {
-    export DOMAIN_NAME=$1
+    export GARDENER_CLUSTER_NAME=$1
 
     busola_namespace="busola"
 
-    log::info "Installing Busola on the cluster: ${DOMAIN_NAME}"
+    log::info "Installing Busola on the cluster: ${GARDENER_CLUSTER_NAME}"
 
     export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
-    kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--busola--${DOMAIN_NAME}.yaml"
-    export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--busola--$DOMAIN_NAME.yaml"
+    kubectl get secrets "${GARDENER_CLUSTER_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--busola--${GARDENER_CLUSTER_NAME}.yaml"
+    export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--busola--$GARDENER_CLUSTER_NAME.yaml"
 
     # delete old installation
     namespace_exists=$(kubectl get ns -o json | jq -r ".items | .[] | .metadata | select(.name == \"$busola_namespace\") | .name")
@@ -86,7 +86,7 @@ function provisionBusola() {
     log::info "Busola installation started"
 
     # install busola
-    FULL_DOMAIN="${DOMAIN_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com"
+    FULL_DOMAIN="${GARDENER_CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com"
 
     find "${BUSOLA_SOURCES_DIR}/resources" -name "*.yaml" \
          -exec sed -i "s/%DOMAIN%/${FULL_DOMAIN}/g" "{}" \;
@@ -97,19 +97,19 @@ function provisionBusola() {
     TERM=dumb kubectl cluster-info
     log::info "Please generate params for using k8s http://enkode.surge.sh/"
     log::info "Kyma busola Url:"
-    log::info "https://busola.${DOMAIN_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com?auth=generated_params_in_previous_step"
+    log::info "https://busola.${GARDENER_CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com?auth=generated_params_in_previous_step"
 }
 
 function provisionKyma2(){
     export KYMA_VERSION=$1
-    export DOMAIN_NAME=$2
+    export GARDENER_CLUSTER_NAME=$2
 
-    log::info "Installing Kyma version: ${KYMA_VERSION} on the cluster : ${DOMAIN_NAME}"
+    log::info "Installing Kyma version: ${KYMA_VERSION} on the cluster : ${GARDENER_CLUSTER_NAME}"
 
     # switch to the new cluster
     export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
-    kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
-    export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
+    kubectl get secrets "${GARDENER_CLUSTER_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--kyma--${GARDENER_CLUSTER_NAME}.yaml"
+    export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--kyma--${GARDENER_CLUSTER_NAME}.yaml"
 
     kyma::install_cli
 
@@ -117,7 +117,7 @@ function provisionKyma2(){
     #return
     set -x
     TERM=dumb kyma alpha deploy \
-    --kubeconfig="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml" \
+    --kubeconfig="${RESOURCES_PATH}/kubeconfig--kyma--${GARDENER_CLUSTER_NAME}.yaml" \
     --profile=evaluation \
     --value global.isBEBEnabled=true \
     --source="${KYMA_VERSION}" \
@@ -127,19 +127,19 @@ function provisionKyma2(){
 }
 
 function deleteKyma(){
-    export DOMAIN_NAME=$1
+    export GARDENER_CLUSTER_NAME=$1
 
-    log::info "Deleting Kyma on the cluster : ${DOMAIN_NAME}"
+    log::info "Deleting Kyma on the cluster : ${GARDENER_CLUSTER_NAME}"
 
     export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
-    kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
-    export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
+    kubectl get secrets "${GARDENER_CLUSTER_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--kyma--${GARDENER_CLUSTER_NAME}.yaml"
+    export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--kyma--${GARDENER_CLUSTER_NAME}.yaml"
 
     kyma::install_cli
 
     set -x
     TERM=dumb kyma alpha delete \
-    --kubeconfig="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml" \
+    --kubeconfig="${RESOURCES_PATH}/kubeconfig--kyma--${GARDENER_CLUSTER_NAME}.yaml" \
     --concurrency="${CPU_COUNT}" \
     --non-interactive \
     --ci
@@ -190,10 +190,11 @@ else
 fi
 
 if [ -z "$COMMON_NAME_PREFIX" ] ; then
-    COMMON_NAME_PREFIX="n"
+    COMMON_NAME_PREFIX="nv1"
 fi
 readonly KYMA_NAME_SUFFIX="kyma"
 readonly BUSOLA_NAME_SUFFIX="busola"
+readonly GARDENER_CLUSTER_VERSION="1.20.5"
 
 RESOURCES_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola"
 CPU_COUNT=$(python -c 'import multiprocessing as mp; print(mp.cpu_count())')

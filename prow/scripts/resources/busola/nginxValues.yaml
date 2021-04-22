@@ -4,7 +4,7 @@ controller:
   service:
     annotations:
       dns.gardener.cloud/class: garden
-      dns.gardener.cloud/dnsnames: "*.$DOMAIN_NAME.$GARDENER_KYMA_PROW_PROJECT_NAME.shoot.canary.k8s-hana.ondemand.com"
+      dns.gardener.cloud/dnsnames: "*.$GARDENER_CLUSTER_NAME.$GARDENER_KYMA_PROW_PROJECT_NAME.shoot.canary.k8s-hana.ondemand.com"
   resources:
     # limits:
     #   cpu: 1000m

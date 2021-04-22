@@ -1,7 +1,7 @@
 apiVersion: core.gardener.cloud/v1beta1
 kind: Shoot
 metadata:
-  name: $DOMAIN_NAME
+  name: $GARDENER_CLUSTER_NAME
 spec:
   cloudProfileName: gcp
   kubernetes:
@@ -16,7 +16,7 @@ spec:
           - RS256
         usernameClaim: sub
         usernamePrefix: '-'
-    version: 1.19.9
+    version: $GARDENER_CLUSTER_VERSION
   networking:
     nodes: 10.250.0.0/16
     pods: 100.96.0.0/11
