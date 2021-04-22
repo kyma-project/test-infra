@@ -1,6 +1,6 @@
 plugins:
   kyma-project:
-    plugins:
+#    plugins:
       - cat
       - trigger
       - assign
@@ -15,11 +15,10 @@ plugins:
       - invalidcommitmsg
       - help
   kyma-project/test-infra:
-    plugins:
+#    plugins:
       - config-updater
-
   kyma-incubator:
-    plugins:
+#    plugins:
       - cat
       - trigger
       - assign
