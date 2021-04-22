@@ -123,6 +123,20 @@ function provisionKyma2(){
     set +x
 }
 
+
+function patch_obj() {
+    CRD=$1
+    NAME=$2
+    echo "CRD=$CRD"
+    echo "NAME=$NAME"
+    kubectl patch $CRD $NAME -p '{"metadata":{"finalizers":[]}}' --type=merge
+}
+function patch_all_crd() {
+  CRD=$1
+  kubectl get $CRD -ojson | jq -r ".items[].metadata.name" | while read -r name; do patch_obj $CRD $name; done
+
+}
+
 function deleteKyma(){
     export DOMAIN_NAME=$1
 
@@ -143,9 +157,12 @@ function deleteKyma(){
     set +x
     # We wait for the certificate to be revoked
     kubectl wait --for=delete Certificate --field-selector=metadata.name=kyma-tls-cert --timeout="${CERTIFICATE_TIMEOUT}s" --namespace=istio-system
-
     # This can be deleted when it's implemented by installer
     kubectl delete namespace kyma-system --wait=true
+    
+    # this can be removed when kyma delete will work
+    # we remove finalizers see https://github.com/kyma-incubator/local-kyma/blob/main/uninstall-kyma.sh
+    kubectl get crd -ojson | jq -r '.items[].metadata.name' |grep kyma |while read -r line; do patch_all_crd $line ; done
     log::info "Cluster deleted"
 }
 
@@ -186,11 +203,11 @@ else
     exit 1
 fi
 
-readonly COMMON_NAME_PREFIX="n"
+readonly COMMON_NAME_PREFIX="nv1"
 readonly KYMA_NAME_SUFFIX="kyma"
 readonly BUSOLA_NAME_SUFFIX="busola"
 
-RESOURCES_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola/"
+RESOURCES_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola"
 CPU_COUNT=$(python -c 'import multiprocessing as mp; print(mp.cpu_count())')
 CERTIFICATE_TIMEOUT=120
 
