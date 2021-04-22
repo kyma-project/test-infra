@@ -340,11 +340,11 @@ function utils::kubeaudit_create_report() {
   ./kubeaudit privileged privesc -p json  > "$kubeaudit_file" || true
 }
 
-# utils::check_kubeaudit_report analyzes kubeaudit.log file and returns list of non-compliant resources in kyma-system namespace
+# utils::kubeaudit_check_report analyzes kubeaudit.log file and returns list of non-compliant resources in kyma-system namespace
 # Arguments
 # $1 - Name of the input log file
 # S2 - optional, name of the resource namespace. Defaults to "kyma-system"
-function utils::check_kubeaudit_report() {
+function utils::kubeaudit_check_report() {
   if [ -z "$1" ]; then
     echo "Kubeuadit file path is empty. Exiting..."
     exit 1
@@ -359,5 +359,6 @@ function utils::check_kubeaudit_report() {
   else
     log::error "Not all resources are compliant:"
     echo "$incompliant_resources"
+    exit 1
   fi
 }
