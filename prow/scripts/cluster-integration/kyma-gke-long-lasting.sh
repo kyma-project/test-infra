@@ -248,13 +248,7 @@ echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${CLUSTER_NAME}.json"
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
-log::info "Gather Kubeaudit logs"
-curl -sL https://github.com/Shopify/kubeaudit/releases/download/v0.11.8/kubeaudit_0.11.8_linux_amd64.tar.gz | tar -xzO kubeaudit > ./kubeaudit
-chmod +x ./kubeaudit
-# kubeaudit returns non-zero exit code when it finds issues
-# In the context of this job we just want to grab the logs
-# It should not break the execution of this script
-./kubeaudit privileged privesc -p json  > "${ARTIFACTS}/kubeaudit.log" || true
+utils::kubeaudit_create_report "${ARTIFACTS}/kubeaudit.log"
 
 log::info "Install stability-checker"
 date

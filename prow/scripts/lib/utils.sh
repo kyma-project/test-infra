@@ -318,3 +318,47 @@ function utils::debug_oom() {
   # run oom debug pod
   kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/debug-container.yaml"
 }
+
+# utils::kubeaudit_create_report downlaods kubeaudit if necessary and checks for privileged containers
+# Arguments
+# $1 - Name of the output log file
+function utils::kubeaudit_create_report() {
+   if [ -z "$1" ]; then
+    echo "Kubeuadit file path is empty. Exiting..."
+    exit 1
+  fi
+  local kubeaudit_file=$1
+
+  log::info "Gather Kubeaudit logs"
+  if ! [[ -x "$(command -v ./kubeaudit)" ]]; then
+    curl -sL https://github.com/Shopify/kubeaudit/releases/download/v0.11.8/kubeaudit_0.11.8_linux_amd64.tar.gz | tar -xzO kubeaudit > ./kubeaudit
+    chmod +x ./kubeaudit
+  fi
+  # kubeaudit returns non-zero exit code when it finds issues
+  # In the context of this job we just want to grab the logs
+  # It should not break the execution of this script
+  ./kubeaudit privileged privesc -p json  > "$kubeaudit_file" || true
+}
+
+# utils::kubeaudit_check_report analyzes kubeaudit.log file and returns list of non-compliant resources in kyma-system namespace
+# Arguments
+# $1 - Name of the input log file
+# S2 - optional, name of the resource namespace. Defaults to "kyma-system"
+function utils::kubeaudit_check_report() {
+  if [ -z "$1" ]; then
+    echo "Kubeuadit file path is empty. Exiting..."
+    exit 1
+  fi
+  local kubeaudit_file=$1
+
+  incompliant_resources=$(jq -c 'select( .ResourceNamespace == "kyma-system" )' < "$kubeaudit_file")
+  compliant=$(echo "$incompliant_resources" | jq -r -s 'if length == 0 then "true" else "false" end')
+
+  if [[ "$compliant" == "true" ]]; then
+    log::info "All resources are compliant"
+  else
+    log::error "Not all resources are compliant:"
+    echo "$incompliant_resources"
+    exit 1
+  fi
+}
