@@ -498,7 +498,7 @@ templates:
                   name: kyma-upgrade-gardener-kyma-to-kyma2
                   annotations:
                     testgrid-dashboards: kyma_integration
-                    description: Evaluation profile Kyma 1.x to Kyma 2.0 upgrade.
+                    description: Azure Kyma 1.x to Kyma 2.0 upgrade.
                   decoration_config:
                     timeout: 7200000000000 # 2h
                     grace_period: 600000000000 # 10min
