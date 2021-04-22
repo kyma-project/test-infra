@@ -13,7 +13,7 @@ metadata:
   namespace: default
   name: tls-ing
   annotations:
-    kubernetes.io/ingress.global-static-ip-name: kyma-prow-status
+    kubernetes.io/ingress.global-static-ip-name: prow-static-ip
     networking.gke.io/managed-certificates: kyma-prow
     kubernetes.io/ingress.class: "gce"
     networking.gke.io/v1beta1.FrontendConfig: "prow-frontend-config"

@@ -8,7 +8,6 @@ plugins:
       - lgtm
       - hold
       - label
-#      - verify-owners
       - yuks
       - dog
       - size
@@ -28,7 +27,6 @@ plugins:
       - lgtm
       - hold
       - label
-#      - verify-owners
       - yuks
       - dog
       - size
@@ -53,12 +51,12 @@ config_updater:
           - default
 
 triggers:
-- repos:
-  - kyma-project
-  - kyma-incubator
-  only_org_members: true
-  ignore_ok_to_test: true
-  elide_skipped_contexts: false
+  - repos:
+    - kyma-project
+    - kyma-incubator
+    only_org_members: true
+    ignore_ok_to_test: true
+    elide_skipped_contexts: false
 
 lgtm:
   - repos:
