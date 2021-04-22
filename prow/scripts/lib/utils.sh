@@ -319,13 +319,15 @@ function utils::debug_oom() {
   kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/debug-container.yaml"
 }
 
-
+# utils::kubeaudit_get_privileged_containers downlaods kubeaudit if necessary and checks for privileged containers
+# Arguments
+# $1 - Name of the output log file
 function utils::kubeaudit_get_privileged_containers() {
    if [ -z "$1" ]; then
     echo "Kubeuadit file path is empty. Exiting..."
     exit 1
   fi
-  kubeaudit_file=$1
+  local kubeaudit_file=$1
 
   log::info "Gather Kubeaudit logs"
   if ! [[ -x "$(command -v ./kubeaudit)" ]]; then
@@ -338,13 +340,16 @@ function utils::kubeaudit_get_privileged_containers() {
   ./kubeaudit privileged privesc -p json  > "$kubeaudit_file" || true
 }
 
-
+# utils::kubeaudit_get_incompliant_resources analyzes kubeaudit.log file and returns list of non-compliant resources in kyma-system namespace
+# Arguments
+# $1 - Name of the input log file
+# S2 - optional, name of the resource namespace. Defaults to "kyma-system"
 function utils::kubeaudit_get_incompliant_resources() {
   if [ -z "$1" ]; then
     echo "Kubeuadit file path is empty. Exiting..."
     exit 1
   fi
-  kubeaudit_file=$1
+  local kubeaudit_file=$1
 
   incompliant_resources=$(jq -c 'select( .ResourceNamespace == "kyma-system" )' < "$kubeaudit_file")
   compliant=$(echo "$incompliant_resources" | jq -r -s 'if length == 0 then "true" else "false" end')
