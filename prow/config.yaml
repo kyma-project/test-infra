@@ -56,9 +56,10 @@ deck:
     header_color: "#0b74de" # Kyma color
     logo: "/static/extensions/logo.svg"
     favicon: "/static/extensions/favicon.png"
-  rerun_auth_config:
-    github_team_ids:
-    - 3108790 # cluster-access GH team in Kyma organization
+  rerun_auth_configs:
+    '*':
+      github_team_ids:
+      - 3108790 # cluster-access GH team in Kyma organization
 
 sinker:
   max_prowjob_age: 48h
