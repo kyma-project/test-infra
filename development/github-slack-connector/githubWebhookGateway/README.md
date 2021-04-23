@@ -2,13 +2,11 @@
 
 ## Overview
 
-The GitHub Webhook Gateway is written in Golang. It listens for incoming GitHub Webhook events. It validates a Webhook HMAC secret, converts it to a CloudEvents compliant event and forwards it to the Kyma [Event Service](https://github.com/kyma-project/kyma/blob/master/components/event-service/README.md). It is meant to run within Kyma as a docker container.
-
+The GitHub Webhook Gateway is written in Golang. It listens for incoming GitHub Webhook events. It validates a Webhook HMAC secret, converts it to a CloudEvents compliant event and forwards it to the Kyma Event Service. It is meant to run within Kyma as a docker container.
 
 ## Prerequisites
 
 Github Webhook Gateway was created to run within the Kyma Runtime, but it will work with any [CloudEvents](https://github.com/cloudevents/spec/blob/v1.0/spec.md) compliant receiver.
-
 
 ## Installation
 
@@ -24,7 +22,6 @@ Use a [Dockerfile](Dockerfile) to build a Docker image:
 2. `cd test-infra/development/github-slack-connector/githubWebhookGateway`
 3. `docker build .`
 
-
 ## Usage
 
 Github Webhook Gateway uses environment variables to read the configuration.
@@ -38,7 +35,6 @@ Github Webhook Gateway uses environment variables to read the configuration.
 | **EVENTING_PORT** | Yes | Port number of Kyma Event Service or any CloudEvents compliant receiver |
 
 Github Webhook Gateway expects to get webhook events on the `/webhook` HTTP path.
-
 
 ## Development
 
