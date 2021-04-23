@@ -10,14 +10,16 @@ import (
 )
 
 const (
-	credentialsFilePath = "/keys/saCredentials.json"
+	credentialsFilePath      = "/keys/saCredentials.json"
+	debugCredentialsFilePath = "/Users/i319037/Downloads/saCredentials.json"
 )
 
 var (
-	pubSubClient    *pubsub.Client
-	kymeEventClient cloudevents.Client
-	cloudEventsCTX  context.Context
-	conf            Config
+	pubSubClient       *pubsub.Client
+	kymeEventClient    cloudevents.Client
+	cloudEventsContext context.Context
+	conf               Config
+	err                error
 )
 
 //Config containing all program configs
@@ -29,30 +31,35 @@ type Config struct {
 	ProjectID         string `envconfig:"PUBSUB_PROJECT_ID"`
 }
 
-func init() {
-	ctx := context.Background()
-	var err error
-	pubSubClient, err = pubsub.NewClient(ctx, conf.ProjectID, option.WithCredentialsFile(credentialsFilePath))
-	if err != nil {
-		log.WithFields(log.Fields{"msg": "failed create pubsub client"}).Fatalf("%s", err)
-	}
-	kymeEventClient, err = cloudevents.NewClientHTTP()
-	if err != nil {
-		log.WithFields(log.Fields{"msg": "failed create kyma eventing cloud event client"}).Fatalf("%s", err)
-	}
-	cloudEventsCTX = cloudevents.ContextWithTarget(context.Background(), conf.KymaEventsService)
-}
-
 func main() {
-	defer pubSubClient.Close()
+	// Build config from environment variables
 	err := envconfig.Init(&conf)
 	if err != nil {
 		log.WithFields(log.Fields{"msg": "failed init config from environment variables"}).Fatalf("%s", err.Error())
 	}
+	// make a
+	ctx := context.Background()
+	pubSubClient, err = pubsub.NewClient(ctx, conf.ProjectID, option.WithCredentialsFile(credentialsFilePath))
+	//pubSubClient, err = pubsub.NewClient(ctx, conf.ProjectID, option.WithCredentialsFile(debugCredentialsFilePath))
+	if err != nil {
+		log.WithFields(log.Fields{"msg": "failed create pubsub client"}).Fatalf("%s", err)
+	}
+	defer pubSubClient.Close()
+	kymeEventClient, err = cloudevents.NewClientHTTP()
+	if err != nil {
+		log.WithFields(log.Fields{"msg": "failed create kyma eventing cloud event client"}).Fatalf("%s", err)
+	}
+	cloudEventsContext = cloudevents.ContextWithTarget(context.Background(), conf.KymaEventsService)
 	log.WithFields(log.Fields{"msg": "set configuration parameter"}).Infof("Using eventing service URL: %s", conf.KymaEventsService)
 	// create subscription to pull messages from
 	sub := pubSubClient.Subscription(conf.SubscriptionID)
-	ctx := context.Background()
+	log.WithFields(log.Fields{"msg": "set configuration parameter"}).Infof("Subscribing to %s", conf.SubscriptionID)
+	ok, err := sub.Exists(ctx)
+	if err != nil {
+		log.WithFields(log.Fields{"msg": "failed to check subscription presence"}).Infof("%v", err)
+	}
+	log.Infof("subscription exists: %t", ok)
+	log.WithFields(log.Fields{"msg": "set configuration parameter"}).Infof("Subscribing to %s", conf.SubscriptionID)
 	// Create a channel to handle messages to as they come in.
 	cm := make(chan *pubsub.Message)
 	defer close(cm)
@@ -64,7 +71,7 @@ func main() {
 			event.SetSource(conf.PubSubGatewayName)
 			event.SetType(conf.EventType)
 			event.SetData(cloudevents.ApplicationJSON, msg)
-			if result := kymeEventClient.Send(cloudEventsCTX, event); cloudevents.IsUndelivered(result) {
+			if result := kymeEventClient.Send(cloudEventsContext, event); cloudevents.IsUndelivered(result) {
 				msg.Nack()
 				log.WithFields(log.Fields{"msg": "failed send event to kyma eventing service"}).Errorf("%s", result)
 			}
@@ -73,8 +80,8 @@ func main() {
 	}()
 
 	// Receive blocks until the context is cancelled or an error occurs.
-	err = sub.Receive(ctx, func(ctx context.Context, msg *pubsub.Message) {
-		cm <- msg
+	err = sub.Receive(ctx, func(ctx context.Context, m *pubsub.Message) {
+		cm <- m
 	})
 	if err != nil {
 		// TODO: support exiting when error and canceling context

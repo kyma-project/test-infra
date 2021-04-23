@@ -12,9 +12,9 @@ pubsubGateway:
   # secret name containing keys of SA with subscriber role on a pubsub subscription
   subscriberSaSecret: "subscriber-sa"
 # Github connector application name. Must match name from Application resource.
-appName: "pubsub-connector"
+appName: "sap-pubsub-connector"
 # Slack connector application name. Must match name from Application resource.
-slackAppName: "slack-connector"
+slackAppName: "sap-slack-connector"
 # Slack application plan suffix. Must match suffix from CMP.
 #cmpSlackAppPlanSuffix: "36130"
 cmpSlackAppPlanSuffix: "4af0a"

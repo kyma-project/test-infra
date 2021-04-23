@@ -25,7 +25,7 @@ spec:
             memory: 256Mi
             cpu: 500m
         volumeMounts:
-        - mountPath: /keys/saCredentials.json
+        - mountPath: /keys
           name: sa-secret
         env:
         - name: GOOGLE_APPLICATION_CREDENTIALS
