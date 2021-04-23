@@ -716,6 +716,11 @@ templates:
       - to: ../prow/config.yaml
         values:
           <<: *cluster_default
+          contexts:
+            - name: kyma-integration
+            - name: kyma-gke-integration
+            - name: kyma-gke-upgrade
+            - name: kyma-artifacts
   - from: templates/branchprotector-config.yaml
     render:
       - to: ../prow/branchprotector-config.yaml
