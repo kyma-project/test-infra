@@ -1,5 +1,5 @@
 prowjob_namespace: default
-pod_namespace: test-pods
+pod_namespace: default
 decorate_all_jobs: true
 
 plank:

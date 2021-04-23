@@ -81,6 +81,9 @@ spec:
         - name: plugins
           mountPath: /etc/plugins
           readOnly: true
+        - name: branding
+          mountPath: /static/extensions
+          readOnly: true
         livenessProbe:
           httpGet:
             path: /healthz
@@ -117,3 +120,7 @@ spec:
       - name: plugins
         configMap:
           name: plugins
+      - name: branding
+        configMap:
+          defaultMode: 420
+          name: branding
