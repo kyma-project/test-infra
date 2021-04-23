@@ -655,6 +655,11 @@ presets:
       - name: COMPASS_INTEGRATION_ENABLED
         value: "true"
   - labels:
+      preset-kyma-integration-central-application-gateway-enabled: "true"
+    env:
+      - name: CENTRAL_APPLICATION_GATEWAY_ENABLED
+        value: "true"
+  - labels:
       preset-keb-dev-credentials: "true"
     env:
       - name: KEB_HOST

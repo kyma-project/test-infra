@@ -233,6 +233,25 @@ presubmits: # runs on PRs
         base_ref: main
       - <<: *kyma_local_ref
         base_ref: main
+
+    - name: pre-master-kyma-integration-k3s-central-application-gateway
+      optional: true
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      branches:
+        - ^master$
+        - ^main$
+      <<: *vm_job_template_k3s
+      # following regexp won't start build if only Markdown files were changed
+      run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        preset-build-pr: "true"
+        preset-kyma-integration-central-application-gateway-enabled: "true"
+        <<: *vm_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: main
+        - <<: *kyma_local_ref
+          base_ref: main
     
     - name: pre-master-serverless-integration-k3s
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
@@ -359,6 +378,26 @@ postsubmits:
         base_ref: main
       - <<: *kyma_local_ref
         base_ref: main
+
+    - name: post-master-kyma-integration-k3s-central-application-gateway
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      annotations:
+        testgrid-dashboards: kyma_integration
+        description: Kyma integration job on k3s with central Application Gateway.
+        testgrid-days-of-results: "60"
+      <<: *vm_job_template_k3s
+      branches:
+        - ^master$
+        - ^main$
+      labels:
+        preset-build-master: "true"
+        preset-kyma-integration-central-application-gateway-enabled: "true"
+        <<: *vm_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: main
+        - <<: *kyma_local_ref
+          base_ref: main
 
     - name: post-master-kyma-gke-integration
       cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
