@@ -190,7 +190,7 @@ readonly COMMON_NAME_PREFIX="n"
 readonly KYMA_NAME_SUFFIX="kyma"
 readonly BUSOLA_NAME_SUFFIX="busola"
 
-RESOURCES_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola/"
+RESOURCES_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola"
 CPU_COUNT=$(python -c 'import multiprocessing as mp; print(mp.cpu_count())')
 CERTIFICATE_TIMEOUT=120
 
