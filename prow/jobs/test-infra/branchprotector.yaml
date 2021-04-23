@@ -1,10 +1,12 @@
 periodics:
   - name: ci-prow-branchprotector
-    cron: "54 * * * *" # at 54th minute every hour
+    cron: "54 */3 * * *" # at 54th minute every 3rd hour
     decorate: true
     decoration_config:
       timeout: 5h
     cluster: trusted-workload
+    annotations:
+      testgrid-create-test-group: "false"
     extra_refs:
       - org: kyma-project
         repo: test-infra
@@ -19,8 +21,8 @@ periodics:
             - --job-config-path=prow/jobs
             - --github-token-path=/etc/github/token
             - --confirm
+            - --github-endpoint=http://ghproxy
             - --github-endpoint=https://api.github.com
-#           - --github-endpoint=http://ghproxy
           volumeMounts:
             - mountPath: /etc/github
               name: oauth
