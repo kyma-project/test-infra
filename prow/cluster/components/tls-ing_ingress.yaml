@@ -3,7 +3,7 @@ kind: FrontendConfig
 metadata:
   name: prow-frontend-config
 spec:
-  sslPolicy: tls-ssl-policy
+  sslPolicy: custom-ssl-policy
 #  redirectToHttps:
 #    enabled: true
 ---
@@ -14,12 +14,12 @@ metadata:
   name: tls-ing
   annotations:
     kubernetes.io/ingress.global-static-ip-name: prow-static-ip
-    networking.gke.io/managed-certificates: kyma-prow
+    networking.gke.io/managed-certificates: status-kyma-prow
     kubernetes.io/ingress.class: "gce"
     networking.gke.io/v1beta1.FrontendConfig: "prow-frontend-config"
 spec:
   rules:
-  - host: status-dev.prow.build.kyma-project.io
+  - host: status.build.kyma-project.io
     http:
       paths:
       - path: /*

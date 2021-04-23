@@ -4,7 +4,7 @@ metadata:
   name: monitoring-prow-frontend-config
   namespace: prow-monitoring
 spec:
-  sslPolicy: tls-ssl-policy
+  sslPolicy: custom-ssl-policy
 #  redirectToHttps:
 #    enabled: true
 ---
@@ -32,7 +32,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   annotations:
-    kubernetes.io/ingress.global-static-ip-name: monitoring-kyma-prow
+    kubernetes.io/ingress.global-static-ip-name: monitoring-prow
     kubernetes.io/ingress.class: "gce"
     networking.gke.io/managed-certificates: monitoring-kyma-prow
     networking.gke.io/v1beta1.FrontendConfig: "monitoring-prow-frontend-config"

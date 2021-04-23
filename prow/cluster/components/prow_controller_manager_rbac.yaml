@@ -66,24 +66,17 @@ rules:
   - watch
   - update
   - patch
----
-kind: Role
-apiVersion: rbac.authorization.k8s.io/v1beta1
-metadata:
-  namespace: default
-  name: "prow-controller-manager"
-rules:
 - apiGroups:
-   - ""
+    - ""
   resources:
-  - pods
+    - pods
   verbs:
-  - create
-  - delete
-  - list
-  - watch
-  - get
-  - patch
+    - create
+    - delete
+    - list
+    - watch
+    - get
+    - patch
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
@@ -97,17 +90,3 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: "prow-controller-manager"
----
-kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
-metadata:
-  namespace: default
-  name: "prow-controller-manager"
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: "prow-controller-manager"
-subjects:
-- kind: ServiceAccount
-  name: "prow-controller-manager"
-  namespace: default
