@@ -54,7 +54,7 @@ do
         # check if all images were already scanned
         images_in_queue=$(jq '.items | .[] | .scan | select(.status == "")' "$RESPONSE_FILE")
         if [[ -z "$images_in_queue" ]]; then
-            # log::info "all images were scanned"
+            # all images were scanned
             exit 1
         fi
     fi
