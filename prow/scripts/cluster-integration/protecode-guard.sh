@@ -50,6 +50,13 @@ do
     else
         log::warn "Some images contain security vulnerabilities"
         log::warn "For more details please check json output"
+
+        # check if all images were already scanned
+        images_in_queue=$(jq '.items | .[] | .scan | select(.status == "")' "$RESPONSE_FILE")
+        if [[ -z "$images_in_queue" ]]; then
+            # all images were scanned
+            exit 1
+        fi
     fi
 
     sleep 10
