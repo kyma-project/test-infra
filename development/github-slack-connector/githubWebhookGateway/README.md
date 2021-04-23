@@ -8,6 +8,7 @@ The GitHub Webhook Gateway is written in Golang. It listens for incoming GitHub 
 
 Github Webhook Gateway was created to run within the Kyma Runtime, but it will work with any [CloudEvents](https://github.com/cloudevents/spec/blob/v1.0/spec.md) compliant receiver.
 
+
 ## Installation
 
 To install github-webhook-gateway binary, follow these steps:
