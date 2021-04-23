@@ -7,4 +7,4 @@ metadata:
   namespace: prow-monitoring
 spec:
   domains:
-  - monitoring.status.build.kyma-project.io
+  - monitoring.build.kyma-project.io

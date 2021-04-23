@@ -40,7 +40,7 @@ metadata:
   namespace: prow-monitoring
 spec:
   rules:
-  - host: monitoring.status-dev.prow.build.kyma-project.io
+  - host: monitoring.build.kyma-project.io
     http:
       paths:
       - backend:

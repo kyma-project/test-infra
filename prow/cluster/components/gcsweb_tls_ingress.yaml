@@ -1,7 +1,7 @@
 apiVersion: networking.gke.io/v1beta1
 kind: FrontendConfig
 metadata:
-  name: prow-frontend-config
+  name: gcsweb-frontend-config
 spec:
   sslPolicy: custom-ssl-policy
 #  redirectToHttps:
@@ -16,7 +16,7 @@ metadata:
     kubernetes.io/ingress.global-static-ip-name: gcsweb-prow
     networking.gke.io/managed-certificates: gcsweb-kyma-prow
     kubernetes.io/ingress.class: "gce"
-    networking.gke.io/v1beta1.FrontendConfig: "prow-frontend-config"
+    networking.gke.io/v1beta1.FrontendConfig: "gcsweb-frontend-config"
 spec:
   rules:
   - host: gcsweb.build.kyma-project.io
@@ -25,4 +25,4 @@ spec:
         - path: /*
           backend:
             serviceName: gcsweb
-            servicePort: 8080
+            servicePort: 80
