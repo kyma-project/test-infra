@@ -436,6 +436,8 @@ periodics:
     spec:
       containers:
         - image: eu.gcr.io/kyma-project/prow/cleaner:0.0.1 # see test-infra/prow/images/cleaner
+          command:
+            - "./cleaner.sh"
           resources:
             requests:
               memory: 100Mi
