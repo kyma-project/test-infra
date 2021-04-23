@@ -240,6 +240,16 @@ tide:
         - do-not-merge/invalid-commit-message
       orgs:
         - kyma-project
+      reviewApprovedRequired: true
+    - labels:
+        - lgtm
+      missingLabels:
+        - needs-rebase
+        - do-not-merge/hold
+        - do-not-merge/work-in-progress
+        - do-not-merge/invalid-owners-file
+        - do-not-merge/invalid-commit-message
+      orgs:
         - kyma-incubator
       reviewApprovedRequired: true
   context_options:
