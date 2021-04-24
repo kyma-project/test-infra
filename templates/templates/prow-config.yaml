@@ -136,6 +136,7 @@ branch-protection:
       repos:
         compass:
           protect: false
+          allow_disabled_policies: true
           branches:
             master:
               protect: true
@@ -143,6 +144,7 @@ branch-protection:
                 strict: true
         compass-console:
           protect: false
+          allow_disabled_policies: true
           branches:
             main:
               protect: true
