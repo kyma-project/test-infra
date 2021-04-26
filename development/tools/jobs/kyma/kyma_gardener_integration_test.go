@@ -11,6 +11,32 @@ import (
 	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
 )
 
+func TestKymaGardenerGCPKymaToKyma2JobPeriodics(t *testing.T) {
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration-gardener.yaml")
+	require.NoError(t, err)
+
+	periodics := jobConfig.AllPeriodics()
+
+	jobName := "kyma-upgrade-gardener-kyma-to-kyma2"
+	job := tester.FindPeriodicJobByName(periodics, jobName)
+	require.NotNil(t, job)
+	assert.Equal(t, jobName, job.Name)
+	assert.True(t, job.Decorate)
+	assert.Equal(t, "0 0 7-17 ? * 1-5", job.Cron)
+	assert.Equal(t, job.DecorationConfig.Timeout.Get(), 2*time.Hour)
+	assert.Equal(t, job.DecorationConfig.GracePeriod.Get(), 10*time.Minute)
+	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAzureIntegration, preset.KymaCLIStable, preset.ClusterVersion)
+	tester.AssertThatHasExtraRepoRefCustom(t, job.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
+	assert.Equal(t, tester.ImageKymaIntegrationLatest, job.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener.sh"}, job.Spec.Containers[0].Command)
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_REGION", "northeurope")
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_ZONES", "1")
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "REGION", "northeurope")
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "RS_GROUP", "kyma-gardener-azure")
+	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
+}
+
 func TestKymaGardenerAzureIntegrationJobPeriodics(t *testing.T) {
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration-gardener.yaml")
 	require.NoError(t, err)
