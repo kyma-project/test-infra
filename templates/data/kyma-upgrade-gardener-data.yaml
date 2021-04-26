@@ -25,7 +25,15 @@ templates:
         jobConfigs:
           - repoName: kyma-project/kyma
             jobs:
-              - inheritedConfigs:
+              - jobConfig:
+                  name: kyma-upgrade-gardener-azure
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  cron:  "0 1 * * 1-5"
+                  labels:
+                    preset-log-collector-slack-token: "true"
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_periodic
@@ -35,11 +43,3 @@ templates:
                     - disable_testgrid
                   local:
                     - jobConfig_default
-                jobConfig:
-                  name: kyma-upgrade-gardener-azure
-                  decoration_config:
-                    timeout: 14400000000000 # 4h
-                    grace_period: 600000000000 # 10min
-                  cron:  "0 1 * * 1-5"
-                  labels:
-                    preset-log-collector-slack-token: "true"

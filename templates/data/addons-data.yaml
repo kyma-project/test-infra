@@ -18,37 +18,27 @@ templates:
         jobConfigs:
           - repoName: "github.com/kyma-project/addons"
             jobs:
-              - inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_buildpack-golang"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                jobConfig:
+              - jobConfig:
                     name: "pre-main-kyma-addons"
                     always_run: "true"
                     args:
                       - "/home/prow/go/src/github.com/kyma-project/addons"
                       - "ci-pr"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "jobConfig_postsubmit"
+                    - "jobConfig_presubmit"
                     - "image_buildpack-golang"
                     - "extra_refs_test-infra"
-                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                jobConfig:
+                    - "jobConfig_presubmit"
+              - jobConfig:
                   name: "post-main-kyma-addons"
                   args:
                       - "/home/prow/go/src/github.com/kyma-project/addons"
                       - "ci-master"
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
@@ -58,10 +48,20 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
-                jobConfig:
+              - jobConfig:
                   name: "post-rel-kyma-addons"
                   branches:
                     - '\d+\.\d+\.\d+$'
                   args:
                       - "/home/prow/go/src/github.com/kyma-project/addons"
                       - "ci-release"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_buildpack-golang"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"

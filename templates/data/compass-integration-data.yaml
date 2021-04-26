@@ -17,15 +17,7 @@ templates:
         jobConfigs:
           - repoName: "kyma-incubator/compass"
             jobs:
-              - inheritedConfigs:
-                  global:
-                    - "image_buildpack-golang-kubebuilder2"
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                jobConfig:
+              - jobConfig:
                   name: "pre-main-compass-integration"
                   run_if_changed: "^(chart|installation)/"
                   labels:
@@ -34,15 +26,15 @@ templates:
                     - ^master$
                     - ^main$
                     - ^hotfix-.*$
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - "image_buildpack-golang-kubebuilder2"
                     - "jobConfig_default"
-                    - "jobConfig_postsubmit"
+                    - "jobConfig_presubmit"
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
-                jobConfig:
+              - jobConfig:
                   name: "post-main-compass-integration"
                   labels:
                     preset-build-master: "true"
@@ -50,4 +42,11 @@ templates:
                     testgrid-dashboards: kyma-incubator_compass
                     description: Compass integration job.
                     testgrid-days-of-results: "60"
-
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang-kubebuilder2"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"

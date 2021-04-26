@@ -19,7 +19,12 @@ templates:
         jobConfigs:
           - repoName: "kyma-project/kyma"
             jobs:
-              - inheritedConfigs:
+              - jobConfig:
+                  name: "kyma-azure-event-hubs-namespaces-cleanup"
+                  cron: "30 * * * *" # "At minute 30 past every hour"
+                  labels:
+                    preset-az-kyma-prow-credentials: "true"
+                inheritedConfigs:
                   global:
                     - "image_kyma-integration"
                     - "jobConfig_default"
@@ -29,8 +34,3 @@ templates:
                     - "disable_testgrid"
                   local:
                     - "default"
-                jobConfig:
-                  name: "kyma-azure-event-hubs-namespaces-cleanup"
-                  cron: "30 * * * *" # "At minute 30 past every hour"
-                  labels:
-                    preset-az-kyma-prow-credentials: "true"

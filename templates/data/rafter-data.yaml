@@ -70,23 +70,25 @@ templates:
           - repoName: kyma-project/rafter
             jobs:
               ## BUILDS
-              - inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - image_buildpack-golang-kubebuilder2
-                  local:
-                    - jobConfig_default
-                    - extra_refs_test-infra
-                    - jobConfig_presubmit
-                    - common_build_job
-                    - labels_push
-                jobConfig:
+              - jobConfig:
                   name: pre-rafter
                   labels:
                     preset-build-pr: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - image_buildpack-golang-kubebuilder2
+                  local:
+                    - jobConfig_default
+                    - extra_refs_test-infra
+                    - jobConfig_presubmit
+                    - common_build_job
+                    - labels_push
               ## INTEGRATION TEST
-              - inheritedConfigs:
+              - jobConfig:
+                  name: pre-rafter-integration-test
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -96,10 +98,10 @@ templates:
                     - extra_refs_test-infra
                     - jobConfig_presubmit
                     - common_integration_test_job
-                jobConfig:
-                  name: pre-rafter-integration-test
               ## MINIO GATEWAY TEST
-              - inheritedConfigs:
+              - jobConfig:
+                  name: pre-rafter-minio-gcs-gateway
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -110,25 +112,25 @@ templates:
                     - jobConfig_presubmit
                     - common_minio_gateway_test_job
                     - labels_minio_gcs_gateway
-                jobConfig:
-                  name: pre-rafter-minio-gcs-gateway
-              - inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - image_kyma-integration
-                  local:
-                    - jobConfig_default
-                    - extra_refs_test-infra
-                    - jobConfig_presubmit
-                    - common_minio_gateway_test_job
-                    - labels_minio_az_gateway
-                jobConfig:
+              - jobConfig:
                   name: pre-rafter-minio-az-gateway
                   labels:
                     preset-build-pr: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - image_kyma-integration
+                  local:
+                    - jobConfig_default
+                    - extra_refs_test-infra
+                    - jobConfig_presubmit
+                    - common_minio_gateway_test_job
+                    - labels_minio_az_gateway
               ## MINIO GATEWAY MIGRATION TEST
-              - inheritedConfigs:
+              - jobConfig:
+                  name: pre-rafter-minio-gcs-gateway-migration
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -139,40 +141,40 @@ templates:
                     - jobConfig_presubmit
                     - common_minio_gateway_migration_test_job
                     - labels_minio_gcs_gateway
-                jobConfig:
-                  name: pre-rafter-minio-gcs-gateway-migration
-              - inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - image_kyma-integration
-                  local:
-                    - jobConfig_default
-                    - extra_refs_test-infra
-                    - jobConfig_presubmit
-                    - common_minio_gateway_migration_test_job
-                    - labels_minio_az_gateway
-                jobConfig:
+              - jobConfig:
                   name: pre-rafter-minio-az-gateway-migration
                   labels:
                     preset-build-pr: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - image_kyma-integration
+                  local:
+                    - jobConfig_default
+                    - extra_refs_test-infra
+                    - jobConfig_presubmit
+                    - common_minio_gateway_migration_test_job
+                    - labels_minio_az_gateway
               ## POSTSUBMITS:
               ## BUILDS
-              - inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - image_buildpack-golang-kubebuilder2
-                    - disable_testgrid
-                  local:
-                    - jobConfig_default
-                    - extra_refs_test-infra
-                    - common_build_job
-                    - labels_push
-                    - jobConfig_postsubmit
-                jobConfig:
+              - jobConfig:
                   name: post-rafter
-              - inheritedConfigs:
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - image_buildpack-golang-kubebuilder2
+                    - disable_testgrid
+                  local:
+                    - jobConfig_default
+                    - extra_refs_test-infra
+                    - common_build_job
+                    - labels_push
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: release-rafter
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
@@ -184,22 +186,22 @@ templates:
                     - common_build_job
                     - labels_push
                     - jobconfig_release
-                jobConfig:
-                  name: release-rafter
               ## INTEGRATION TEST
-              - inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - image_buildpack-golang-kubebuilder2
-                    - disable_testgrid
-                  local:
-                    - jobConfig_default
-                    - extra_refs_test-infra
-                    - common_integration_test_job
-                jobConfig:
+              - jobConfig:
                   name: post-rafter-integration-test
-              - inheritedConfigs:
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - image_buildpack-golang-kubebuilder2
+                    - disable_testgrid
+                  local:
+                    - jobConfig_default
+                    - extra_refs_test-infra
+                    - common_integration_test_job
+              - jobConfig:
+                  name: release-rafter-integration-test
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
@@ -210,23 +212,10 @@ templates:
                     - extra_refs_test-infra
                     - common_integration_test_job
                     - jobconfig_release
-                jobConfig:
-                  name: release-rafter-integration-test
               ## MINIO GATEWAY TEST
-              - inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - image_kyma-integration
-                    - disable_testgrid
-                  local:
-                    - jobConfig_default
-                    - extra_refs_test-infra
-                    - common_minio_gateway_test_job
-                    - labels_minio_gcs_gateway
-                jobConfig:
+              - jobConfig:
                   name: post-rafter-minio-gcs-gateway
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
@@ -237,10 +226,9 @@ templates:
                     - extra_refs_test-infra
                     - common_minio_gateway_test_job
                     - labels_minio_gcs_gateway
-                    - jobconfig_release
-                jobConfig:
+              - jobConfig:
                   name: release-rafter-minio-gcs-gateway
-              - inheritedConfigs:
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
@@ -250,11 +238,25 @@ templates:
                     - jobConfig_default
                     - extra_refs_test-infra
                     - common_minio_gateway_test_job
-                    - labels_minio_az_gateway
-                    - jobConfig_postsubmit
-                jobConfig:
+                    - labels_minio_gcs_gateway
+                    - jobconfig_release
+              - jobConfig:
                   name: post-rafter-minio-az-gateway
-              - inheritedConfigs:
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - image_kyma-integration
+                    - disable_testgrid
+                  local:
+                    - jobConfig_default
+                    - extra_refs_test-infra
+                    - common_minio_gateway_test_job
+                    - labels_minio_az_gateway
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: release-rafter-minio-az-gateway
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
@@ -266,23 +268,23 @@ templates:
                     - common_minio_gateway_test_job
                     - labels_minio_az_gateway
                     - jobconfig_release
-                jobConfig:
-                  name: release-rafter-minio-az-gateway
               ## MINIO GATEWAY MIGRATION TEST
-              - inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - image_kyma-integration
-                    - disable_testgrid
-                  local:
-                    - jobConfig_default
-                    - extra_refs_test-infra
-                    - common_minio_gateway_migration_test_job
-                    - labels_minio_gcs_gateway
-                jobConfig:
+              - jobConfig:
                   name: post-rafter-minio-gcs-gateway-migration
-              - inheritedConfigs:
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - image_kyma-integration
+                    - disable_testgrid
+                  local:
+                    - jobConfig_default
+                    - extra_refs_test-infra
+                    - common_minio_gateway_migration_test_job
+                    - labels_minio_gcs_gateway
+              - jobConfig:
+                  name: release-rafter-minio-gcs-gateway-migration
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
@@ -294,9 +296,9 @@ templates:
                     - common_minio_gateway_migration_test_job
                     - labels_minio_gcs_gateway
                     - jobconfig_release
-                jobConfig:
-                  name: release-rafter-minio-gcs-gateway-migration
-              - inheritedConfigs:
+              - jobConfig:
+                  name: post-rafter-minio-az-gateway-migration
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
@@ -308,9 +310,9 @@ templates:
                     - common_minio_gateway_migration_test_job
                     - labels_minio_az_gateway
                     - jobConfig_postsubmit
-                jobConfig:
-                  name: post-rafter-minio-az-gateway-migration
-              - inheritedConfigs:
+              - jobConfig:
+                  name: release-rafter-minio-az-gateway-migration
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
@@ -322,7 +324,3 @@ templates:
                     - common_minio_gateway_migration_test_job
                     - labels_minio_az_gateway
                     - jobconfig_release
-                jobConfig:
-                  name: release-rafter-minio-az-gateway-migration
-
-

@@ -18,7 +18,12 @@ templates:
         jobConfigs:
           - repoName:  kyma-incubator/dex
             jobs:
-              - inheritedConfigs:
+              - jobConfig:
+                  name: "pre-main-kyma-incubator-dex"
+                  labels:
+                    preset-build-pr: "true"
+                  always_run: true
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
@@ -26,12 +31,11 @@ templates:
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
-                jobConfig:
-                  name: "pre-main-kyma-incubator-dex"
+              - jobConfig:
+                  name: "post-main-kyma-incubator-dex"
                   labels:
-                    preset-build-pr: "true"
-                  always_run: true
-              - inheritedConfigs:
+                    preset-build-master: "true"
+                inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
@@ -40,7 +44,3 @@ templates:
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
-                jobConfig:
-                  name: "post-main-kyma-incubator-dex"
-                  labels:
-                    preset-build-master: "true"

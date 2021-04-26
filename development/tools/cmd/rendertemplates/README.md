@@ -50,7 +50,7 @@ render:
 
 ```yaml
 jobConfigs:
-  - repoName: "github.com/kyma-project/test-infra"
+  - repoName: "kyma-project/test-infra"
     jobs:
     - jobConfig:
         name: "pre-test-infra-bootstrap"
@@ -65,17 +65,17 @@ Every job under the **inheritedConfigs** key specifies which ConfigSets are inhe
 
 ```yaml
 jobConfigs:
-  - repoName: "github.com/kyma-project/test-infra"
+  - repoName: "kyma-project/test-infra"
     jobs:
-    - inheritedConfigs:
-        global:
-          - "image_bootstrap"
-        local:
-          - "default"
-          - "presubmit"
-        jobConfig:
+      - jobConfig:
           name: "pre-test-infra-bootstrap"
           run_if_changed: "^prow/images/bootstrap/"
+        inheritedConfigs:
+          global:
+            - "image_bootstrap"
+          local:
+            - "default"
+            - "presubmit"
 ```
 The Render Templates builds the **Values** variable by merging ConfigSets from **globalSets** first. If the job inherits the `default` ConfigSet from **globalSets**, it is merged first and all other ConfigSets from **globalSets** are merged afterwards. Then, the Render Templates merges ConfigSets from **localSets**. Again, if the job inherits the `default` ConfigSet from **localSets**, it's merged first and then all the other ConfigSets from **localSets** are merged. ConfigSets other than default are merged in any order during the **globalSets** and **localSets** phases. ConfigSets from **jobConfig** are merged as the last ones. Existing keys in the **Values** variable are overwritten by values from the merged ConfigSets.
 

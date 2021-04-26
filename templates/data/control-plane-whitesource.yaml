@@ -14,15 +14,7 @@ templates:
         jobConfigs:
           - repoName: kyma-project/control-plane
             jobs:
-              - inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_wssagent
-                  local:
-                    - jobConfig_default
-                jobConfig:
+              - jobConfig:
                   name: pre-main-provisioner-whitesource-scan
                   run_if_changed: "go.mod|go.sum"
                   optional: true
@@ -37,3 +29,11 @@ templates:
                     preset-kms-gc-project-env: "true"
                     preset-gc-project-env: "true"
                     preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_wssagent
+                  local:
+                    - jobConfig_default
