@@ -269,6 +269,18 @@ presets:
     env:
     - name: RECREATE_CLUSTER
       value: "true"
+  - labels:
+      preset-slack-alerts: "true"
+    env:
+      - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
+        value: "#kyma-ci-force"
+      - name: KYMA_ALERTS_SLACK_API_URL
+        valueFrom:
+          secretKeyRef:
+            name: kyma-alerts-slack-api-url
+            key: secret
+      - name: KYMA_ALERTS_CHANNEL
+        value: "#kyma-ci-force"
   # cluster version
   - labels:
       preset-cluster-version: "true"
@@ -332,6 +344,25 @@ presets:
         value: rafter-minio-gateway
       - name: AZURE_REGION
         value: westeurope
+  - labels:
+      preset-minio-gcs-gateway: "true"
+    env:
+      - name: MINIO_GATEWAY_MODE
+        value: gcs
+  - labels:
+      preset-minio-az-gateway: "true"
+    env:
+      - name: MINIO_GATEWAY_MODE
+        value: azure
+      - name: AZURE_RS_GROUP
+        value: kyma-minio-gateway
+      - name: AZURE_REGION
+        value: westeurope
+  - labels:
+      preset-gke-rapid: "true"
+    env:
+      - name: GKE_RELEASE_CHANNEL
+        value: rapid
   - labels:
       preset-sa-prow-job-resource-cleaner: "true"
     env:
@@ -441,6 +472,18 @@ presets:
       - name: sa-kyma-artifacts
         mountPath: /etc/credentials/sa-kyma-artifacts
   # Gardener presets
+  - labels:
+      preset-sa-kyma-push-artifacts: "true"
+    env:
+      - name: SA_KYMA_ARTIFACTS_GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-kyma-artifacts/service-account.json
+    volumes:
+      - name: sa-kyma-artifacts
+        secret:
+          secretName: sa-kyma-artifacts
+    volumeMounts:
+      - name: sa-kyma-artifacts
+        mountPath: /etc/credentials/sa-kyma-artifacts
   - labels:
       preset-sa-gardener-logs: "true"
     env:

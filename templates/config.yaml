@@ -672,40 +672,15 @@ templates:
           path: tests
           since: "1.17"
           optional: false
-  - from: templates/kyma-integration.yaml
-    render:
-      - to: ../prow/jobs/kyma/kyma-integration.yaml
-        values:
-          <<: *cluster_default
-          gkeVersions:
-            - channel: rapid
-              jobs: ["postsubmit"]
   - from: templates/releases.go.tmpl
     render:
       - to: ../development/tools/jobs/releases/releases.go
-  - from: templates/kyma-artifacts.yaml
-    render:
-      - to: ../prow/jobs/kyma/kyma-artifacts.yaml
-        values:
-          <<: *cluster_default
 #  TODO: remove when https://github.com/kyma-project/test-infra/issues/3174 is finished
 #  - from: templates/kyma-github-release.yaml
 #    render:
 #      - to: ../prow/jobs/kyma/kyma-github-release.yaml
 #        values:
 #          <<: *cluster_default
-  - from: templates/kyma-gke-external-registry.yaml
-    render:
-      - to: ../prow/jobs/kyma/kyma-gke-external-registry.yaml
-        values:
-          <<: *cluster_default
-          since: "1.15"
-  - from: templates/compass-gke-integration.yaml
-    render:
-      - to: ../prow/jobs/incubator/compass/compass-gke-integration.yaml
-        values:
-          <<: *cluster_default
-          since: "1.13"
 #  - from: templates/kyma-release-candidate.yaml
 #    render:
 #      - to: ../prow/jobs/kyma/kyma-release-candidate.yaml
