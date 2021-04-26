@@ -59,6 +59,7 @@ func TestValidateProwJobsPresubmit(t *testing.T) {
 }
 
 func TestValidateConfigsPresubmit(t *testing.T) {
+	t.Skip("Skip this test before jobs rewrite.")
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/validation.yaml")
 	// THEN
