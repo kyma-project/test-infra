@@ -28,7 +28,7 @@ presubmits: # runs on PRs
         containers:
           - image: "gcr.io/k8s-prow/checkconfig:v20210407-51f95c2d52"
             command:
-              - "checkconfig"
+              - "/app/prow/cmd/checkconfig/app.binary"
             args:
               - "--plugin-config=prow/plugins.yaml"
               - "--config-path=prow/config.yaml"
