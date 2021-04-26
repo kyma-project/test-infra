@@ -37,7 +37,7 @@ templates:
                     - "image_prow-tools"
                     - "jobConfig_presubmit"
               - jobConfig:
-                  name: "pre-master-test-infra-validate-prow-tools"
+                  name: "pre-main-test-infra-validate-prow-tools"
                   privileged: "false"
                   run_if_changed: "^development/tools/(cmd/.*|pkg/.*|Makefile|.*.sh)"
                   labels:
@@ -53,7 +53,7 @@ templates:
                     - "image_buildpack-golang"
                     - "jobConfig_presubmit"
               - jobConfig:
-                  name: "pre-master-test-infra-validate-prow-jobs"
+                  name: "pre-main-test-infra-validate-prow-jobs"
                   privileged: "false"
                   run_if_changed: "^(development/tools/jobs|prow)" # Also for any changes in prow directory
                   labels:
@@ -69,7 +69,7 @@ templates:
                     - "image_buildpack-golang"
                     - "jobConfig_presubmit"
               - jobConfig:
-                  name: "pre-master-test-infra-validate-generated-files"
+                  name: "pre-main-test-infra-validate-generated-files"
                   run_if_changed: "^templates/|^prow/jobs/|^prow/config.yaml|^prow/scripts/|^development/tools/(cmd/rendertemplates/|jobs/releases/releases.go)|^prow/branchprotector-config.yaml"
                   labels:
                     preset-build-pr: "true"
@@ -81,7 +81,7 @@ templates:
                     - "image_buildpack-golang"
                     - "jobConfig_presubmit"
               - jobConfig:
-                  name: "pre-master-test-infra-validate-prow-installer-files"
+                  name: "pre-main-test-infra-validate-prow-installer-files"
                   run_if_changed: "^development/prow-installer/cmd/|^development/prow-installer/pkg/"
                   privileged: "false"
                   labels:

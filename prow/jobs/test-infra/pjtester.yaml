@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/test-infra:
-    - name: pre-master-test-infra-pjtester
+    - name: pre-main-test-infra-pjtester
       labels:
         preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
@@ -29,7 +29,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-master-test-infra-vpathguard
+    - name: pre-main-test-infra-vpathguard
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true

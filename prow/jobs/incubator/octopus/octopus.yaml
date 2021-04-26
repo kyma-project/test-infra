@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-incubator/octopus:
-    - name: pre-master-kyma-incubator-octopus
+    - name: pre-main-kyma-incubator-octopus
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
@@ -41,7 +41,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-incubator/octopus:
-    - name: post-master-kyma-incubator-octopus
+    - name: post-main-kyma-incubator-octopus
       annotations:
         testgrid-create-test-group: "false"
       labels:

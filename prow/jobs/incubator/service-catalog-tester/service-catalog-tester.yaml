@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-incubator/service-catalog-tester:
-    - name: pre-master-service-catalog-tester
+    - name: pre-main-service-catalog-tester
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
@@ -38,7 +38,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-incubator/service-catalog-tester:
-    - name: post-master-service-catalog-tester
+    - name: post-main-service-catalog-tester
       annotations:
         testgrid-create-test-group: "false"
       labels:

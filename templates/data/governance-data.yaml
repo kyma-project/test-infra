@@ -26,7 +26,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                 jobConfig:
-                  name: "pre-master-addons-governance"
+                  name: "pre-main-addons-governance"
                   args:
                     - "--repository"
                     - "addons"
@@ -68,7 +68,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                 jobConfig:
-                  name: "pre-master-busola-governance"
+                  name: "pre-main-busola-governance"
                   args:
                     - "--repository"
                     - "busola"
@@ -112,7 +112,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                 jobConfig:
-                  name: "pre-master-community-governance"
+                  name: "pre-main-community-governance"
                   args:
                     - "--repository"
                     - "community"
@@ -154,7 +154,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                 jobConfig:
-                  name: "pre-master-console-governance"
+                  name: "pre-main-console-governance"
                   args:
                     - "--repository"
                     - "console"
@@ -196,7 +196,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                 jobConfig:
-                  name: "pre-master-examples-governance"
+                  name: "pre-main-examples-governance"
                   args:
                     - "--repository"
                     - "examples"
@@ -257,7 +257,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                 jobConfig:
-                  name: "pre-master-kyma-governance"
+                  name: "pre-main-kyma-governance"
                   args:
                     - "--repository"
                     - "kyma"
@@ -293,7 +293,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                 jobConfig:
-                  name: "pre-master-test-infra-governance"
+                  name: "pre-main-test-infra-governance"
                   args:
                     - "--repository"
                     - "test-infra"
@@ -329,7 +329,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                 jobConfig:
-                  name: "pre-master-website-governance"
+                  name: "pre-main-website-governance"
                   args:
                     - "--repository"
                     - "website"

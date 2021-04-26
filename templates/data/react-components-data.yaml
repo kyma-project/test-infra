@@ -10,7 +10,7 @@ templates:
           - repoName: "github.com/kyma-project/console"
             jobs:
               - jobConfig:
-                  name: "pre-master-console-react-components"
+                  name: "pre-main-console-react-components"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/console/components/react"
                     - "ci-pr"
@@ -23,7 +23,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "post-master-console-react-components"
+                  name: "post-main-console-react-components"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/console/components/react"
                     - "ci-master"

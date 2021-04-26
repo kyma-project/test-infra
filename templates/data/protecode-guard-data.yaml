@@ -24,10 +24,10 @@ templates:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
               - jobConfig:
-                  name: pre-master-kyma-protecode-guard
+                  name: pre-main-kyma-protecode-guard
                   run_if_changed: "^((components\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   env:
-                    JOB_NAME_PATTERN: "(pre-master-kyma-components-.*)|(pre-master-kyma-tests-.*)|(pre-kyma-components-.*)|(pre-kyma-tests-.*)|(pre-main-kyma-components-.*)|(pre-main-kyma-tests-.*)"
+                    JOB_NAME_PATTERN: "(pre-main-kyma-components-.*)|(pre-main-kyma-tests-.*)|(pre-kyma-components-.*)|(pre-kyma-tests-.*)"
                     JOBGUARD_TIMEOUT: "25m"
                 inheritedConfigs:
                   global:
@@ -41,7 +41,7 @@ templates:
           - repoName: "github.com/kyma-project/console"
             jobs:
               - jobConfig:
-                  name: pre-master-console-protecode-guard
+                  name: pre-main-console-protecode-guard
                   run_if_changed: "^((components\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   env:
                     JOB_NAME_PATTERN: "pre-console-.*"
@@ -58,10 +58,10 @@ templates:
           - repoName: "github.com/kyma-project/third-party-images"
             jobs:
               - jobConfig:
-                  name: pre-master-third-party-images-protecode-guard
+                  name: pre-main-third-party-images-protecode-guard
                   run_if_changed: "^((.*)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   env:
-                    JOB_NAME_PATTERN: "pre-master-tpi-.*"
+                    JOB_NAME_PATTERN: "pre-main-tpi-.*"
                     JOBGUARD_TIMEOUT: "25m"
                 inheritedConfigs:
                   global:

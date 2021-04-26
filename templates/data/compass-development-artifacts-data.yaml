@@ -32,7 +32,7 @@ templates:
                   local:
                     - jobConfig_default
                 jobConfig:
-                  name: pre-master-compass-development-artifacts
+                  name: pre-main-compass-development-artifacts
                   optional: true
                   run_if_changed: "^installation|^chart|^tools/compass-installer"
                   branches:
@@ -49,7 +49,7 @@ templates:
                   local:
                     - jobConfig_default
                 jobConfig:
-                  name: post-master-compass-development-artifacts
+                  name: post-main-compass-development-artifacts
                   branches:
                     - ^master$
                     - ^main$

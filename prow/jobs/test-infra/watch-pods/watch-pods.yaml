@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/test-infra:
-    - name: pre-master-test-infra-watch-pods
+    - name: pre-main-test-infra-watch-pods
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -33,7 +33,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/test-infra:
-    - name: post-master-test-infra-watch-pods
+    - name: post-main-test-infra-watch-pods
       annotations:
         testgrid-create-test-group: "false"
       labels:

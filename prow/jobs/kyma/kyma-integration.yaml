@@ -177,7 +177,7 @@ gke_job_labels_template: &gke_job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-master-kyma-integration
+    - name: pre-main-kyma-integration
       cluster: untrusted-workload
       branches:
         - ^master$
@@ -192,7 +192,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: main
     
-    - name: pre-master-kyma-integration-k3s
+    - name: pre-main-kyma-integration-k3s
       optional: false
       cluster: untrusted-workload
       branches:
@@ -210,7 +210,7 @@ presubmits: # runs on PRs
       - <<: *kyma_local_ref
         base_ref: main
       
-    - name: pre-master-kyma-integration-k3s-compass-dev
+    - name: pre-main-kyma-integration-k3s-compass-dev
       optional: false
       cluster: untrusted-workload
       branches:
@@ -230,7 +230,7 @@ presubmits: # runs on PRs
       - <<: *kyma_local_ref
         base_ref: main
     
-    - name: pre-master-serverless-integration-k3s
+    - name: pre-main-serverless-integration-k3s
       cluster: untrusted-workload
       branches:
       - ^master$
@@ -245,7 +245,7 @@ presubmits: # runs on PRs
       - <<: *test_infra_ref
         base_ref: main
 
-    - name: pre-master-kyma-gke-integration
+    - name: pre-main-kyma-gke-integration
       cluster: untrusted-workload
       branches:
         - ^master$
@@ -261,7 +261,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: main
 
-    - name: pre-master-kyma-gke-upgrade
+    - name: pre-main-kyma-gke-upgrade
       cluster: untrusted-workload
       branches:
         - ^master$
@@ -279,7 +279,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - name: post-master-kyma-integration
+    - name: post-main-kyma-integration
       cluster: trusted-workload
       annotations:
         testgrid-dashboards: kyma_integration
@@ -296,7 +296,7 @@ postsubmits:
         - <<: *test_infra_ref
           base_ref: main
       
-    - name: post-master-kyma-integration-k3s
+    - name: post-main-kyma-integration-k3s
       cluster: trusted-workload
       annotations:
         testgrid-dashboards: kyma_integration
@@ -315,7 +315,7 @@ postsubmits:
       - <<: *kyma_local_ref
         base_ref: main
 
-    - name: post-master-kyma-integration-k3s-compass-dev
+    - name: post-main-kyma-integration-k3s-compass-dev
       cluster: trusted-workload
       annotations:
         testgrid-dashboards: kyma_integration
@@ -336,7 +336,7 @@ postsubmits:
       - <<: *kyma_local_ref
         base_ref: main
 
-    - name: post-master-kyma-gke-integration
+    - name: post-main-kyma-gke-integration
       cluster: trusted-workload
       <<: *gke_job_template
       annotations:
@@ -355,7 +355,7 @@ postsubmits:
         - <<: *test_infra_ref
           base_ref: main
 
-    - name: post-master-kyma-gke-upgrade
+    - name: post-main-kyma-gke-upgrade
       cluster: trusted-workload
       <<: *gke_upgrade_job_template
       annotations:
@@ -373,7 +373,7 @@ postsubmits:
       extra_refs:
         - <<: *test_infra_ref
           base_ref: main
-    - name: post-master-kyma-gke-rapid-integration
+    - name: post-main-kyma-gke-rapid-integration
       cluster: trusted-workload
       <<: *gke_job_template
       annotations:

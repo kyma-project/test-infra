@@ -17,7 +17,7 @@ func TestMonitoringCustomMetricsJobsPresubmit(t *testing.T) {
 
 	assert.Len(t, jobConfig.PresubmitsStatic, 1)
 	kymaPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/examples"})
-	expName := "pre-master-examples-monitoring-custom-metrics"
+	expName := "pre-main-examples-monitoring-custom-metrics"
 
 	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -41,7 +41,7 @@ func TestMonitoringCustomMetricsJobPostsubmit(t *testing.T) {
 
 	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
 	kymaPost := jobConfig.AllStaticPostsubmits([]string{"kyma-project/examples"})
-	expName := "post-master-examples-monitoring-custom-metrics"
+	expName := "post-main-examples-monitoring-custom-metrics"
 	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName)
 
 	assert.Equal(t, expName, actualPost.Name)

@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/control-plane:
-    - name: pre-master-provisioner-whitesource-scan
+    - name: pre-main-provisioner-whitesource-scan
       labels:
         preset-build-pr: "true"
         preset-dind-enabled: "true"

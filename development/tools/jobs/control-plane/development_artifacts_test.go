@@ -15,7 +15,7 @@ func TestKCPPresubmitDevelopmentArtifacts(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	job := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/control-plane"}), "pre-master-kcp-development-artifacts", "master")
+	job := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/control-plane"}), "pre-main-kcp-development-artifacts", "main")
 	require.NotNil(t, job)
 
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*job, true, "resources/provisioner/values.yaml"))
@@ -46,7 +46,7 @@ func TestKCPPostsubmitDevelopmentArtifcts(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	job := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/control-plane"}), "post-master-kcp-development-artifacts", "master")
+	job := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/control-plane"}), "post-main-kcp-development-artifacts", "main")
 	require.NotNil(t, job)
 	assert.Empty(t, job.RunIfChanged)
 	tester.AssertThatHasExtraRefTestInfra(t, job.UtilityConfig, "main")

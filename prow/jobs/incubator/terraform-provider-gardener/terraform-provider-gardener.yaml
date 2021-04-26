@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-incubator/terraform-provider-gardener:
-    - name: pre-master-terraform-provider-gardener
+    - name: pre-main-terraform-provider-gardener
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
@@ -41,7 +41,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-incubator/terraform-provider-gardener:
-    - name: post-master-terraform-provider-gardener
+    - name: post-main-terraform-provider-gardener
       annotations:
         testgrid-create-test-group: "false"
       labels:

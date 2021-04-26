@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/control-plane:
-    - name: pre-master-control-plane-integration
+    - name: pre-main-control-plane-integration
       labels:
         preset-build-pr: "true"
         preset-gc-project-env: "true"
@@ -40,7 +40,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/control-plane:
-    - name: post-master-control-plane-integration
+    - name: post-main-control-plane-integration
       annotations:
         testgrid-dashboards: "kyma_control-plane"
       labels:

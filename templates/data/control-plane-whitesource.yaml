@@ -23,7 +23,7 @@ templates:
                   local:
                     - jobConfig_default
                 jobConfig:
-                  name: pre-master-provisioner-whitesource-scan
+                  name: pre-main-provisioner-whitesource-scan
                   run_if_changed: "go.mod|go.sum"
                   optional: true
                   labels:

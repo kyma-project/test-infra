@@ -20,7 +20,7 @@ func TestHydroformJobsPresubmit(t *testing.T) {
 	assert.Len(t, kymaPresubmits, 1)
 
 	actualPresubmit := kymaPresubmits[0]
-	expName := "pre-master-hydroform"
+	expName := "pre-main-hydroform"
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -48,7 +48,7 @@ func TestHydroformJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPost, 1)
 
 	actualPost := kymaPost[0]
-	expName := "post-master-hydroform"
+	expName := "post-main-hydroform"
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPost.Branches)
 

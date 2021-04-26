@@ -21,8 +21,8 @@ func TestHelmBrokerJobsPresubmit(t *testing.T) {
 		expCommand      string
 		expArgs         []string
 	}{
-		"pre-master-helm-broker": {
-			givenJobName: "pre-master-helm-broker",
+		"pre-main-helm-broker": {
+			givenJobName: "pre-main-helm-broker",
 
 			expPresets: []preset.Preset{
 				preset.DindEnabled, preset.GcrPush, preset.DockerPushRepoKyma,
@@ -31,8 +31,8 @@ func TestHelmBrokerJobsPresubmit(t *testing.T) {
 			expCommand:      "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh",
 			expArgs:         []string{"/home/prow/go/src/github.com/kyma-project/helm-broker", "ci-pr"},
 		},
-		"pre-master-helm-broker-chart-test": {
-			givenJobName: "pre-master-helm-broker-chart-test",
+		"pre-main-helm-broker-chart-test": {
+			givenJobName: "pre-main-helm-broker-chart-test",
 
 			expPresets: []preset.Preset{
 				preset.DindEnabled, preset.GcrPush, preset.DockerPushRepoKyma, preset.KindVolumesMounts,
@@ -80,7 +80,7 @@ func TestHelmBrokerJobsPostsubmits(t *testing.T) {
 		expArgs         []string
 	}{
 		{
-			expName:         "post-master-helm-broker",
+			expName:         "post-main-helm-broker",
 			expBranches:     []string{"^master$", "^main$"},
 			expPresets:      []preset.Preset{preset.DindEnabled, preset.GcrPush, preset.DockerPushRepoKyma},
 			expContainerImg: tester.ImageGolangKubebuilder2BuildpackLatest,

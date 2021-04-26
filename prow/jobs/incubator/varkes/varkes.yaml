@@ -39,7 +39,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-incubator/varkes:
-    - name: post-master-varkes
+    - name: post-main-varkes
       annotations:
         testgrid-create-test-group: "false"
       labels:

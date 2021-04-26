@@ -20,7 +20,7 @@ func TesKymaGovernanceJobPresubmit(t *testing.T) {
 	presubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"})
 	assert.Len(t, presubmits, 1)
 
-	expName := "pre-master-kyma-governance"
+	expName := "pre-main-kyma-governance"
 	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(presubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)

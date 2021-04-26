@@ -15,7 +15,7 @@ func TestValidateProwToolsPresubmit(t *testing.T) {
 	require.NoError(t, err)
 	testInfraPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"})
 
-	sut := tester.FindPresubmitJobByNameAndBranch(testInfraPresubmits, "pre-master-test-infra-validate-prow-tools", "master")
+	sut := tester.FindPresubmitJobByNameAndBranch(testInfraPresubmits, "pre-main-test-infra-validate-prow-tools", "master")
 	require.NotNil(t, sut)
 
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*sut, true, "development/tools/cmd/configuploader/main.go"))
@@ -39,7 +39,7 @@ func TestValidateProwJobsPresubmit(t *testing.T) {
 	require.NoError(t, err)
 	testInfraPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"})
 
-	sut := tester.FindPresubmitJobByNameAndBranch(testInfraPresubmits, "pre-master-test-infra-validate-prow-jobs", "master")
+	sut := tester.FindPresubmitJobByNameAndBranch(testInfraPresubmits, "pre-main-test-infra-validate-prow-jobs", "master")
 	require.NotNil(t, sut)
 
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*sut, true, "prow/config.yaml"))

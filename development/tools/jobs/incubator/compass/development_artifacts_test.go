@@ -15,7 +15,7 @@ func TestCompassPresubmitDevelopmentArtifacts(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	job := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-incubator/compass"}), "pre-master-compass-development-artifacts", "master")
+	job := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-incubator/compass"}), "pre-main-compass-development-artifacts", "master")
 	require.NotNil(t, job)
 
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*job, true, "chart/compass/values.yaml"))
@@ -46,7 +46,7 @@ func TestCompassPostsubmitDevelopmentArtifcts(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	job := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-incubator/compass"}), "post-master-compass-development-artifacts", "master")
+	job := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-incubator/compass"}), "post-main-compass-development-artifacts", "master")
 	require.NotNil(t, job)
 	assert.Empty(t, job.RunIfChanged)
 	tester.AssertThatHasExtraRefTestInfra(t, job.UtilityConfig, "main")

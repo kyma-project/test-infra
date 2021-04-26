@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/third-party-images:
-    - name: pre-master-tpi-cloudsql-proxy
+    - name: pre-main-tpi-cloudsql-proxy
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
@@ -35,7 +35,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-master-tpi-docker-registry
+    - name: pre-main-tpi-docker-registry
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
@@ -67,7 +67,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-master-tpi-fluent-bit
+    - name: pre-main-tpi-fluent-bit
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
@@ -99,7 +99,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-master-tpi-jaeger-operator
+    - name: pre-main-tpi-jaeger-operator
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
@@ -131,7 +131,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-master-tpi-k8s-tools
+    - name: pre-main-tpi-k8s-tools
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
@@ -163,7 +163,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-master-tpi-kiali
+    - name: pre-main-tpi-kiali
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
@@ -195,7 +195,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-master-tpi-kiwigrid-sidecar
+    - name: pre-main-tpi-kiwigrid-sidecar
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
@@ -227,7 +227,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-master-tpi-minio
+    - name: pre-main-tpi-minio
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
@@ -259,7 +259,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-master-tpi-minio-mc
+    - name: pre-main-tpi-minio-mc
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
@@ -291,7 +291,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-master-tpi-console-nginx
+    - name: pre-main-tpi-console-nginx
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
@@ -323,7 +323,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-master-tpi-node-exporter
+    - name: pre-main-tpi-node-exporter
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
@@ -355,7 +355,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-master-tpi-grafana
+    - name: pre-main-tpi-grafana
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
@@ -390,7 +390,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/third-party-images:
-    - name: post-master-tpi-cloudsql-proxy
+    - name: post-main-tpi-cloudsql-proxy
       annotations:
         testgrid-create-test-group: "false"
       labels:
@@ -424,7 +424,7 @@ postsubmits: # runs on main
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: post-master-tpi-docker-registry
+    - name: post-main-tpi-docker-registry
       annotations:
         testgrid-create-test-group: "false"
       labels:
@@ -458,7 +458,7 @@ postsubmits: # runs on main
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: post-master-tpi-fluent-bit
+    - name: post-main-tpi-fluent-bit
       annotations:
         testgrid-create-test-group: "false"
       labels:
@@ -492,7 +492,7 @@ postsubmits: # runs on main
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: post-master-tpi-jaeger-operator
+    - name: post-main-tpi-jaeger-operator
       annotations:
         testgrid-create-test-group: "false"
       labels:
@@ -526,7 +526,7 @@ postsubmits: # runs on main
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: post-master-tpi-k8s-tools
+    - name: post-main-tpi-k8s-tools
       annotations:
         testgrid-create-test-group: "false"
       labels:
@@ -560,7 +560,7 @@ postsubmits: # runs on main
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: post-master-tpi-kiali
+    - name: post-main-tpi-kiali
       annotations:
         testgrid-create-test-group: "false"
       labels:
@@ -594,7 +594,7 @@ postsubmits: # runs on main
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: post-master-tpi-kiwigrid-sidecar
+    - name: post-main-tpi-kiwigrid-sidecar
       annotations:
         testgrid-create-test-group: "false"
       labels:
@@ -628,7 +628,7 @@ postsubmits: # runs on main
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: post-master-tpi-minio
+    - name: post-main-tpi-minio
       annotations:
         testgrid-create-test-group: "false"
       labels:
@@ -662,7 +662,7 @@ postsubmits: # runs on main
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: post-master-tpi-minio-mc
+    - name: post-main-tpi-minio-mc
       annotations:
         testgrid-create-test-group: "false"
       labels:
@@ -696,7 +696,7 @@ postsubmits: # runs on main
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: post-master-tpi-console-nginx
+    - name: post-main-tpi-console-nginx
       annotations:
         testgrid-create-test-group: "false"
       labels:
@@ -730,7 +730,7 @@ postsubmits: # runs on main
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: post-master-tpi-node-exporter
+    - name: post-main-tpi-node-exporter
       annotations:
         testgrid-create-test-group: "false"
       labels:
@@ -764,7 +764,7 @@ postsubmits: # runs on main
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: post-master-tpi-grafana
+    - name: post-main-tpi-grafana
       annotations:
         testgrid-create-test-group: "false"
       labels:

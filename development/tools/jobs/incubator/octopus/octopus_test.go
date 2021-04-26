@@ -17,7 +17,7 @@ func TestOctopusJobsPresubmit(t *testing.T) {
 
 	// then
 	require.NoError(t, err)
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-incubator/octopus"}), "pre-master-kyma-incubator-octopus", "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-incubator/octopus"}), "pre-main-kyma-incubator-octopus", "master")
 	require.NotNil(t, actualPresubmit)
 
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -39,7 +39,7 @@ func TestOctopusJobPostsubmit(t *testing.T) {
 	// then
 	require.NoError(t, err)
 
-	actualPostsubmit := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-incubator/octopus"}), "post-master-kyma-incubator-octopus", "master")
+	actualPostsubmit := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-incubator/octopus"}), "post-main-kyma-incubator-octopus", "master")
 	require.NotNil(t, actualPostsubmit)
 
 	assert.Equal(t, 10, actualPostsubmit.MaxConcurrency)

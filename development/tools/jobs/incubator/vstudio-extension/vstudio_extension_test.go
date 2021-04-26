@@ -19,7 +19,7 @@ func TestVStudioExtensionJobsPresubmit(t *testing.T) {
 	assert.Len(t, kymaPresubmits, 1)
 
 	actualPresubmit := kymaPresubmits[0]
-	expName := "pre-master-vstudio-extension"
+	expName := "pre-main-vstudio-extension"
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -43,7 +43,7 @@ func TestVStudioExtensionJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPost, 1)
 
 	actualPost := kymaPost[0]
-	expName := "post-master-vstudio-extension"
+	expName := "post-main-vstudio-extension"
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPost.Branches)
 

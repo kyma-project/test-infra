@@ -108,7 +108,7 @@ function post_hook() {
   set +e
 
   # collect logs from failed tests before deprovisioning
-  kyma::run_test_log_collector "post-master-control-plane-gke-provisioner-integration"
+  kyma::run_test_log_collector "post-main-control-plane-gke-provisioner-integration"
 
   gcloud::cleanup
 

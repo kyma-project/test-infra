@@ -18,7 +18,7 @@ func TestFaileryJobPresubmit(t *testing.T) {
 	kymaPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"})
 	assert.Len(t, kymaPresubmits, 1)
 
-	expName := "pre-master-kyma-tools-failery"
+	expName := "pre-main-kyma-tools-failery"
 	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(kymaPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -45,7 +45,7 @@ func TestFaileryJobPostsubmit(t *testing.T) {
 	kymaPost := jobConfig.AllStaticPostsubmits([]string{"kyma-project/kyma"})
 	assert.Len(t, kymaPost, 1)
 
-	expName := "post-master-kyma-tools-failery"
+	expName := "post-main-kyma-tools-failery"
 	actualPost := tester.FindPostsubmitJobByNameAndBranch(kymaPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
