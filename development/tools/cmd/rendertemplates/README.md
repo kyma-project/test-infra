@@ -50,7 +50,7 @@ render:
 
 ```yaml
 jobConfigs:
-  - repoName: "github.com/kyma-project/test-infra"
+  - repoName: "kyma-project/test-infra"
     jobs:
     - jobConfig:
         name: "pre-test-infra-bootstrap"
