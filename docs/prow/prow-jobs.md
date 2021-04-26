@@ -33,7 +33,7 @@ prow
 You can configure the following job types:
 
 - **Presubmit** jobs run on pull requests (PRs). They validate changes against the target repository. By default, all presubmit jobs must pass before you can merge the PR.  If you set the **optional** parameter to `true`, a job becomes optional and you can still merge your PR even if the job fails.
-- **Postsubmit** jobs are almost the same as the already defined presubmit jobs, but they run when you merge the PR. You can notice the difference in labels as postsubmit jobs use **preset-build-master** instead of **preset-build-pr**.
+- **Postsubmit** jobs are almost the same as the already defined presubmit jobs, but they run when you merge the PR. You can notice the difference in labels as postsubmit jobs use **preset-build-main** instead of **preset-build-pr**.
 - **Periodic** jobs run automatically at a scheduled time. You don't need to modify or merge the PR to trigger them.
 
 The presubmit and postsubmit jobs for a PR run in a random order. Their number in a PR depends on the configuration in the YAML file. You can check the job status on [`https://status.build.kyma-project.io/`](https://status.build.kyma-project.io/).

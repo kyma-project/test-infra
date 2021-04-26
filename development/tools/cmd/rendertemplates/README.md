@@ -34,7 +34,7 @@ render:
         skip_report: "false"
         max_concurrency: "10"
         branches:
-        - "^master$"
+        - "^main$"
       presubmit:
         type_presubmit: "true"
         labels:
