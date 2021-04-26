@@ -29,7 +29,7 @@ templates:
             jobs:
               # presubmits
               - jobConfig:
-                  name: "pre-master-kyma-gke-external-registry"
+                  name: "pre-main-kyma-gke-external-registry"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources/serverless\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -65,7 +65,7 @@ templates:
                     - "jobConfig_default"
               {{- end }}
               # - jobConfig:
-              #     name: "post-master-kyma-gke-external-registry"
+              #     name: "post-main-kyma-gke-external-registry"
               #     # following regexp won't start build if only Markdown files were changed
               #     annotations:
               #       testgrid-dashboards: kyma-postsubmit

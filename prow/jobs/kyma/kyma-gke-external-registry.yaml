@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-master-kyma-gke-external-registry
+    - name: pre-main-kyma-gke-external-registry
       labels:
         preset-build-pr: "true"
         preset-cluster-use-ssd: "true"

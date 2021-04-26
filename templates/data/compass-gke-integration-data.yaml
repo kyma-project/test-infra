@@ -33,7 +33,7 @@ templates:
             jobs:
               # presubmits
               - jobConfig:
-                  name: pre-master-compass-gke-integration
+                  name: pre-main-compass-gke-integration
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((chart\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -76,7 +76,7 @@ templates:
                 {{- end }}
               # postsubmits
               - jobConfig:
-                  name: post-master-compass-gke-integration
+                  name: post-main-compass-gke-integration
                   annotations:
                     testgrid-dashboards: kyma-incubator_compass
                     description: Compass GKE integration job.

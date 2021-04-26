@@ -63,7 +63,7 @@ templates:
             jobs:
               # presubmits
               - jobConfig:
-                  name: "pre-master-kyma-integration"
+                  name: "pre-main-kyma-integration"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -80,7 +80,7 @@ templates:
                     - "vm_job_template"
                     - "vm_job_labels_template"
               - jobConfig:
-                  name: "pre-master-kyma-integration-k3s"
+                  name: "pre-main-kyma-integration-k3s"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -97,7 +97,7 @@ templates:
                     - "vm_job_template_k3s"
                     - "vm_job_labels_template"
               - jobConfig:
-                  name: "pre-master-kyma-integration-k3s-compass-dev"
+                  name: "pre-main-kyma-integration-k3s-compass-dev"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -117,7 +117,7 @@ templates:
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "pre-master-serverless-integration-k3s"
+                  name: "pre-main-serverless-integration-k3s"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -134,7 +134,7 @@ templates:
                     - "vm_job_template_serverless_k3s"
                     - "vm_job_labels_template"
               - jobConfig:
-                  name: "pre-master-kyma-gke-integration"
+                  name: "pre-main-kyma-gke-integration"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -152,7 +152,7 @@ templates:
                     - "gke_job_template"
                     - "gke_job_labels_template"
               # - jobConfig:
-              #     name: "pre-master-kyma-gke-rapid-integration"
+              #     name: "pre-main-kyma-gke-rapid-integration"
               #     labels:
               #       preset-gke-rapid: "true"
               #   inheritedConfigs:
@@ -167,7 +167,7 @@ templates:
               #       - "gke_job_template"
               #       - "gke_job_labels_template"
               - jobConfig:
-                  name: "pre-master-kyma-gke-upgrade"
+                  name: "pre-main-kyma-gke-upgrade"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -187,7 +187,7 @@ templates:
 
               # postsubmits
               - jobConfig:
-                  name: "post-master-kyma-integration"
+                  name: "post-main-kyma-integration"
                   annotations:
                     testgrid-dashboards: kyma_integration
                     description: Kyma integration job.
@@ -206,7 +206,7 @@ templates:
                     - "vm_job_template"
                     - "vm_job_labels_template"
               - jobConfig:
-                  name: "post-master-kyma-integration-k3s"
+                  name: "post-main-kyma-integration-k3s"
                   annotations:
                     testgrid-dashboards: kyma_integration
                     description: Kyma integration job on k3s.
@@ -226,7 +226,7 @@ templates:
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "post-master-kyma-integration-k3s-compass-dev"
+                  name: "post-main-kyma-integration-k3s-compass-dev"
                   annotations:
                     testgrid-dashboards: kyma_integration
                     description: Kyma integration job on k3s with compass dev.
@@ -248,7 +248,7 @@ templates:
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "post-master-kyma-gke-integration"
+                  name: "post-main-kyma-gke-integration"
                   annotations:
                     testgrid-dashboards: kyma_integration
                     description: Kyma GKE integration job.
@@ -269,7 +269,7 @@ templates:
                     - "gke_job_template"
                     - "gke_job_labels_template"
               - jobConfig:
-                  name: "post-master-kyma-gke-upgrade"
+                  name: "post-main-kyma-gke-upgrade"
                   annotations:
                     testgrid-dashboards: kyma_integration
                     description: Kyma GKE upgrade job.
@@ -290,7 +290,7 @@ templates:
                     - "gke_upgrade_job_template"
                     - "gke_job_labels_template"
               - jobConfig:
-                  name: "post-master-kyma-gke-rapid-integration"
+                  name: "post-main-kyma-gke-rapid-integration"
                   skip_report: true
                   labels:
                     preset-log-collector-slack-token: "true"

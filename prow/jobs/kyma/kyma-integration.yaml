@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-master-kyma-integration
+    - name: pre-main-kyma-integration
       labels:
         preset-build-pr: "true"
         preset-gc-project-env: "true"
@@ -34,7 +34,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 100Mi
                 cpu: 50m
-    - name: pre-master-kyma-integration-k3s
+    - name: pre-main-kyma-integration-k3s
       labels:
         preset-build-pr: "true"
         preset-gc-project-env: "true"
@@ -69,7 +69,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 100Mi
                 cpu: 50m
-    - name: pre-master-kyma-integration-k3s-compass-dev
+    - name: pre-main-kyma-integration-k3s-compass-dev
       labels:
         preset-build-pr: "true"
         preset-gc-project-env: "true"
@@ -106,7 +106,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 100Mi
                 cpu: 50m
-    - name: pre-master-serverless-integration-k3s
+    - name: pre-main-serverless-integration-k3s
       labels:
         preset-build-pr: "true"
         preset-gc-project-env: "true"
@@ -137,7 +137,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 100Mi
                 cpu: 50m
-    - name: pre-master-kyma-gke-integration
+    - name: pre-main-kyma-gke-integration
       labels:
         preset-build-pr: "true"
         preset-cluster-use-ssd: "true"
@@ -179,7 +179,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 200Mi
                 cpu: 80m
-    - name: pre-master-kyma-gke-upgrade
+    - name: pre-main-kyma-gke-upgrade
       labels:
         preset-build-pr: "true"
         preset-cluster-use-ssd: "true"
@@ -230,7 +230,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/kyma:
-    - name: post-master-kyma-integration
+    - name: post-main-kyma-integration
       annotations:
         description: "Kyma integration job."
         testgrid-dashboards: "kyma_integration"
@@ -264,7 +264,7 @@ postsubmits: # runs on main
               requests:
                 memory: 100Mi
                 cpu: 50m
-    - name: post-master-kyma-integration-k3s
+    - name: post-main-kyma-integration-k3s
       annotations:
         description: "Kyma integration job on k3s."
         testgrid-dashboards: "kyma_integration"
@@ -302,7 +302,7 @@ postsubmits: # runs on main
               requests:
                 memory: 100Mi
                 cpu: 50m
-    - name: post-master-kyma-integration-k3s-compass-dev
+    - name: post-main-kyma-integration-k3s-compass-dev
       annotations:
         description: "Kyma integration job on k3s with compass dev."
         testgrid-dashboards: "kyma_integration"
@@ -342,7 +342,7 @@ postsubmits: # runs on main
               requests:
                 memory: 100Mi
                 cpu: 50m
-    - name: post-master-kyma-gke-integration
+    - name: post-main-kyma-gke-integration
       annotations:
         description: "Kyma GKE integration job."
         testgrid-dashboards: "kyma_integration"
@@ -388,7 +388,7 @@ postsubmits: # runs on main
               requests:
                 memory: 200Mi
                 cpu: 80m
-    - name: post-master-kyma-gke-upgrade
+    - name: post-main-kyma-gke-upgrade
       annotations:
         description: "Kyma GKE upgrade job."
         testgrid-dashboards: "kyma_integration"
@@ -440,7 +440,7 @@ postsubmits: # runs on main
               requests:
                 memory: 200Mi
                 cpu: 80m
-    - name: post-master-kyma-gke-rapid-integration
+    - name: post-main-kyma-gke-rapid-integration
       annotations:
         testgrid-create-test-group: "false"
       labels:

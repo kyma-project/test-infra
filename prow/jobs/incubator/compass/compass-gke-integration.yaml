@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-incubator/compass:
-    - name: pre-master-compass-gke-integration
+    - name: pre-main-compass-gke-integration
       labels:
         preset-build-pr: "true"
         preset-cluster-version: "true"
@@ -196,7 +196,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-incubator/compass:
-    - name: post-master-compass-gke-integration
+    - name: post-main-compass-gke-integration
       annotations:
         description: "Compass GKE integration job."
         testgrid-dashboards: "kyma-incubator_compass"
