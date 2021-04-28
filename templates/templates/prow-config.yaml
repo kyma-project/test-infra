@@ -105,16 +105,6 @@ branch-protection:
       repos:
         kyma:
           branches:
-            {{- range $rel := .Global.releases }}
-            release-{{ $rel }}:
-              required_status_checks:
-                contexts:
-                  {{- range $.Values.contexts }}
-                    {{- if releaseMatches $rel .since .until }}
-                    - pre-rel{{ $rel | replace "." "" }}-{{ .name }}
-                    {{- end }}
-                    {{- end }}
-            {{- end }}
             kyma-2.0-docu:
               required_pull_request_reviews:
                 require_code_owner_reviews: false
