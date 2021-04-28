@@ -15,6 +15,11 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "jenkins/jenkins:lts"
+            command:
+              - "/sbin/tini"
+            args:
+              - "--"
+              - "/usr/local/bin/jenkins.sh"
             imagePullPolicy: Always
             securityContext:
               privileged: false
