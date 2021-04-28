@@ -1,0 +1,24 @@
+presubmits: # runs on PRs
+  kyma-project/test-infra:
+    - name: oom-tester
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "test-run"
+        prow.k8s.io/pubsub.topic: "test-infra-periodics"
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "jenkins/jenkins:lts"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            resources:
+              requests:
+                memory: 0.2Gi
+                cpu: 0.8
