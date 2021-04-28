@@ -96,6 +96,7 @@ templates:
                     - "request_small"
                     - "vm_job_template_k3s"
                     - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
               - jobConfig:
                   name: "pre-main-kyma-integration-k3s-compass-dev"
                   # following regexp won't start build if only Markdown files were changed
