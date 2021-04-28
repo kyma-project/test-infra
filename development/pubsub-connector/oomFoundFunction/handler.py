@@ -1,6 +1,6 @@
 import os
 from slack_bolt import App
-from google.cloud import firestore
+#from google.cloud import firestore
 from slack_sdk.errors import SlackApiError
 
 
@@ -40,13 +40,13 @@ def reportOOMevent(client: App.client, message: dict):
 		print(f"Got an error: {e.response['error']}")
 
 
-def getProwjobDoc(db: firestore.Client, prowjobid: str) -> dict:
-	doc_ref = db.collection('prowjobs').document('{}'.format(prowjobid))
-	doc = doc_ref.get()
-	if doc.exists:
-		return doc.to_dict()
-	else:
-		return None
+#def getProwjobDoc(db: firestore.Client, prowjobid: str) -> dict:
+#	doc_ref = db.collection('prowjobs').document('{}'.format(prowjobid))
+#	doc = doc_ref.get()
+#	if doc.exists:
+#		return doc.to_dict()
+#	else:
+#		return None
 
 
 #def getProwjobID():
