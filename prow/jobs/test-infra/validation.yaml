@@ -26,13 +26,13 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:current"
+          - image: "gcr.io/k8s-prow/checkconfig:v20210407-51f95c2d52"
             command:
-              - "prow/scripts/validate-config.sh"
+              - "/app/prow/cmd/checkconfig/app.binary"
             args:
-              - "prow/plugins.yaml"
-              - "prow/config.yaml"
-              - "prow/jobs"
+              - "--plugin-config=prow/plugins.yaml"
+              - "--config-path=prow/config.yaml"
+              - "--job-config-path=prow/jobs"
             resources:
               requests:
                 memory: 1.5Gi

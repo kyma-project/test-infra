@@ -25,16 +25,16 @@ templates:
               - jobConfig:
                   name: "pre-test-infra-validate-configs"
                   run_if_changed: "^prow/((plugins|config).yaml|jobs/)"
-                  command: "prow/scripts/validate-config.sh"
+                  command: "/app/prow/cmd/checkconfig/app.binary"
+                  image: gcr.io/k8s-prow/checkconfig:v20210407-51f95c2d52
                   args:
-                    - "prow/plugins.yaml"
-                    - "prow/config.yaml"
-                    - "prow/jobs"
+                    - "--plugin-config=prow/plugins.yaml"
+                    - "--config-path=prow/config.yaml"
+                    - "--job-config-path=prow/jobs"
                 inheritedConfigs:
                   local:
                     - "jobConfig_allBranches"
                   global:
-                    - "image_prow-tools"
                     - "jobConfig_presubmit"
               - jobConfig:
                   name: "pre-main-test-infra-validate-prow-tools"
