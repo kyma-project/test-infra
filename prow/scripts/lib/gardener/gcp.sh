@@ -123,6 +123,14 @@ gardener::test_fast_integration_kyma() {
     log::success "Tests completed"
 }
 
+gardener::pre_upgrade_test_fast_integration_kyma() {
+    return
+}
+
+gardener::post_upgrade_test_fast_integration_kyma() {
+    return
+}
+
 gardener::test_kyma() {
     log::info "Running Kyma tests"
 
