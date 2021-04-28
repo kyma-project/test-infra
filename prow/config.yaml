@@ -106,27 +106,6 @@ branch-protection:
       repos:
         kyma:
           branches:
-            release-1.22:
-              required_status_checks:
-                contexts:
-                    - pre-rel122-kyma-integration
-                    - pre-rel122-kyma-gke-integration
-                    - pre-rel122-kyma-gke-upgrade
-                    - pre-rel122-kyma-artifacts
-            release-1.21:
-              required_status_checks:
-                contexts:
-                    - pre-rel121-kyma-integration
-                    - pre-rel121-kyma-gke-integration
-                    - pre-rel121-kyma-gke-upgrade
-                    - pre-rel121-kyma-artifacts
-            release-1.20:
-              required_status_checks:
-                contexts:
-                    - pre-rel120-kyma-integration
-                    - pre-rel120-kyma-gke-integration
-                    - pre-rel120-kyma-gke-upgrade
-                    - pre-rel120-kyma-artifacts
             kyma-2.0-docu:
               required_pull_request_reviews:
                 require_code_owner_reviews: false
