@@ -4,7 +4,7 @@ export GO111MODULE=on
 ROOT_PATH=$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")
 
 KYMA_PROJECT_DIR=${KYMA_PROJECT_DIR:-"/home/prow/go/src/github.com/kyma-project"}
-JOB_NAME_PATTERN=${JOB_NAME_PATTERN:-"(pre-master-kyma-components-.*)|(pre-master-kyma-tests-.*)|(pre-kyma-components-.*)|(pre-kyma-tests-.*)|(pre-main-kyma-components-.*)|(pre-main-kyma-tests-.*)"}
+JOB_NAME_PATTERN=${JOB_NAME_PATTERN:-"(pre-master-kyma-components-.*)|(pre-master-kyma-tests-.*)|(pre-kyma-components-.*)|(pre-kyma-tests-.*)|(pre-main-kyma-components-.*)|(pre-main-kyma-tests-.*)|(pre.*kyma-artifacts)"}
 TIMEOUT=${JOBGUARD_TIMEOUT:-"15m"}
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
@@ -37,7 +37,7 @@ args=(
   -github-endpoint="http://ghproxy"
   -github-endpoint="https://api.github.com"
   -github-token-path="/etc/github/token"
-  -fail-on-no-contexts="true"
+  -fail-on-no-contexts="false"
   -timeout="$TIMEOUT"
   -org="$REPO_OWNER"
   -repo="$REPO_NAME"
