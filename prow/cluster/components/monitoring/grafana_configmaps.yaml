@@ -49,6 +49,19 @@ data:
         version: 1
         orgId: 1
         editable: false
+      - name: bigquery-prow
+        type: doitintl-bigquery-datasource
+        access: proxy
+        isDefault: true
+        jsonData:
+            authenticationType: jwt
+            clientEmail: $GF_PLUGINS_BIGQUERY_DATASOURCE_EMAIL
+            defaultProject: sap-kyma-prow
+            tokenUri: https://oauth2.googleapis.com/token
+        secureJsonData:
+            privateKey: $GF_PLUGINS_BIGQUERY_DATASOURCE_PRIVATE_KEY
+        version: 2
+        readOnly: false
 ---
 apiVersion: v1
 kind: ConfigMap
