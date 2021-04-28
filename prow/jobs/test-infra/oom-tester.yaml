@@ -24,6 +24,6 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
             resources:
-              requests:
+              limits:
                 memory: 0.2Gi
                 cpu: 0.8
