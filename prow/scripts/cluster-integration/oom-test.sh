@@ -27,6 +27,7 @@ ENABLE_TEST_LOG_COLLECTOR=false
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
+export KYMA_SOURCE="PR-${PULL_NUMBER}"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
@@ -88,6 +89,8 @@ gardener::set_machine_type
 gardener::provision_cluster
 
 kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/oom-test.yaml"
+
+sleep 300
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
