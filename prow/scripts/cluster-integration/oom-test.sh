@@ -20,6 +20,7 @@
 
 # exit on error, and raise error when variable is not set when used
 set -e
+set -x
 
 ENABLE_TEST_LOG_COLLECTOR=false
 
@@ -86,7 +87,7 @@ gardener::set_machine_type
 
 gardener::provision_cluster
 
-kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/oom-test.yaml
+kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/oom-test.yaml"
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
