@@ -70,3 +70,4 @@ postsubmits: # runs on main
           - name: github-token
             secret:
               secretName: kyma-bot-github-token
+  
