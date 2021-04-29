@@ -8,6 +8,12 @@ JOB_NAME_PATTERN=${JOB_NAME_PATTERN:-"(pre-main-kyma-components-.*)|(pre-main-ky
 TIMEOUT=${JOBGUARD_TIMEOUT:-"15m"}
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
+
+if [ -z "$PULL_PULL_SHA" ]; then
+  echo "WORKAROUND: skip jobguard execution - not on PR commit"
+  exit 0
+fi
+
 function jobguard_fallback() {
   if [ -x "/prow-tools/jobguard" ]; then
     env GITHUB_TOKEN="${BOT_GITHUB_TOKEN}" \
