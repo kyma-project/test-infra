@@ -102,6 +102,8 @@ default:
       target: prs
       prowPlugin: wip
       addedBy: prow
+      previously:
+        - name: WIP
     - color: 7057ff
       description: Denotes an issue ready for a new contributor, according to the "help wanted" guidelines.
       name: 'good first issue'

@@ -46,6 +46,7 @@ spec:
         - --kubernetes-blob-storage-workers=1
         - --slack-token-file=/etc/slack/token
         - --slack-workers=1
+        - --gcs-credentials-file=/etc/credentials/service-account.json
         volumeMounts:
         - mountPath: /etc/kubeconfig
           name: kubeconfig
@@ -61,6 +62,9 @@ spec:
           readOnly: true
         - name: slack
           mountPath: /etc/slack
+          readOnly: true
+        - name: gcs-service-account
+          mountPath: /etc/credentials
           readOnly: true
       volumes:
       - name: config
@@ -79,3 +83,6 @@ spec:
         secret:
           defaultMode: 420
           secretName: workload-clusters-kubeconfig
+      - name: gcs-service-account
+        secret:
+          secretName: sa-crier

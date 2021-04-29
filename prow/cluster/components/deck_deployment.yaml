@@ -47,7 +47,7 @@ spec:
         - --kubeconfig=/etc/kubeconfig/config
         - --tide-url=http://tide/
         - --hook-url=http://hook:8888/plugin-help
-        - --redirect-http-to=status-dev.prow.build.kyma-project.io
+        - --redirect-http-to=status.build.kyma-project.io
         - --oauth-url=/github-login
         - --config-path=/etc/config/config.yaml
         - --job-config-path=/etc/job-config
