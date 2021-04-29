@@ -86,6 +86,8 @@ gardener::init
 # if MACHINE_TYPE is not set then use default one
 gardener::set_machine_type
 
+kyma::install_cli
+
 gardener::provision_cluster
 
 kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/oom-test.yaml"
