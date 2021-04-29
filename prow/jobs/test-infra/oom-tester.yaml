@@ -14,16 +14,31 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "jenkins/jenkins:lts"
+          - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210402-70b4b74f-k8s1.16
             command:
-              - "/sbin/tini"
+              - "bash"
             args:
-              - "--"
-              - "/usr/local/bin/jenkins.sh"
+              - "-c"
+              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/oom-test.sh"
+            env:
+              - name: RS_GROUP
+                value: "kyma-gardener-azure"
+              - name: REGION
+                value: "northeurope"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
+              - name: GARDENER_REGION
+                value: "northeurope"
+              - name: GARDENER_ZONES
+                value: "1"
+              - name: EXECUTION_PROFILE
+                value: "evaluation"
+              - name: HIBERNATION_ENABLED
+                value: "true"
             imagePullPolicy: Always
             securityContext:
-              privileged: false
+              privileged: true
             resources:
               limits:
-                memory: 0.2Gi
-                cpu: 0.8
+                memory: 1Gi
+                cpu: 0.4

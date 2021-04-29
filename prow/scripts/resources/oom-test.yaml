@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: oom-test
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      name: oom-test
+  template:
+    metadata:
+      labels:
+        name: oom-test
+    spec:
+      containers:
+      - name: oom-test
+        securityContext:
+          privileged: true
+        image: "jenkins/jenkins:lts"
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "200Mi"
+            cpu: "300m"
