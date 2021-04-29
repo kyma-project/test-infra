@@ -14,7 +14,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/transfigure:v20210222-670293a77e"
+          - image: "gcr.io/k8s-prow/transfigure:v20210407-51f95c2d52"
             securityContext:
               privileged: false
             command:
@@ -47,7 +47,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/transfigure:v20210222-670293a77e"
+          - image: "gcr.io/k8s-prow/transfigure:v20210407-51f95c2d52"
             securityContext:
               privileged: false
             command:
@@ -70,4 +70,3 @@ postsubmits: # runs on main
           - name: github-token
             secret:
               secretName: kyma-bot-github-token
-  
