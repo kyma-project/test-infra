@@ -9,6 +9,18 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "test-run"
         prow.k8s.io/pubsub.topic: "test-infra-periodics"
+        preset-log-collector-slack-token: "true"
+        preset-gardener-azure-kyma-integration: "true"
+        preset-docker-push-repository-gke-integration: "true"
+        preset-kyma-cli-stable: "true"
+        preset-az-kyma-prow-credentials: "true"
+        preset-dind-enabled: "true"                   # we need to be able to start docker
+        preset-gc-compute-envs: "true"                # prrovides the GCP region
+        preset-gc-project-env: "true"                 # required to be able to delete images
+        preset-sa-test-gcr-push: "true"               # required for pushing images
+        preset-sa-gardener-logs: "true"               # required for writing logs to Stackdriver
+        preset-cluster-version: "true"
+        preset-debug-commando-oom: "true"             # detect and troubleshoot oom events
       branches:
         - ^master$
         - ^main$
