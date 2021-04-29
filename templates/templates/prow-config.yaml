@@ -149,6 +149,8 @@ branch-protection:
 
 tide:
   sync_period: 2m
+  batch_size_limit:
+    kyma-project/kyma: -1 # disable batch merging for Kyma repo
   merge_method:
     kyma-project/kyma: squash
     kyma-project/website: squash
