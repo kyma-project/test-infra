@@ -1,6 +1,6 @@
 default:
   labels:
-    - color: green
+    - color: 00ff00
       name: lgtm
       description: Looks good to me!
       target: prs
