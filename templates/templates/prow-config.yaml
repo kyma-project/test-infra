@@ -174,7 +174,6 @@ tide:
     kyma-incubator/ord-service: squash
     kyma-incubator/documentation-component: squash
     kyma-incubator/terraform-provider-gardener: squash
-    kyma-incubator/metris: squash
     kyma-incubator/bullseye-showcase: squash
     kyma-incubator/milv: squash
     kyma-incubator/podpreset-crd: squash
