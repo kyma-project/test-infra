@@ -310,14 +310,6 @@ templates:
           path: components/schema-migrator
           since: "1.14"
           optional: false
-      - to: ../prow/jobs/control-plane/components/metris/metris-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *control_plane_generic_component
-          path: components/metris
-          since: "1.14"
-          until: "1.23"
-          optional: false
       - to: ../prow/jobs/control-plane/components/kyma-metrics-collector/kyma-metrics-collector-generic.yaml
         values:
           <<: *cluster_default

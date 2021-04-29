@@ -4,8 +4,6 @@ import (
 	"path"
 	"testing"
 
-	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
-
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 )
@@ -48,16 +46,6 @@ var components = []struct {
 			jobsuite.JobFileSuffix("kcp-generic"),
 			jobsuite.ControlPlaneRepo(),
 			jobsuite.AllReleases(),
-		},
-	},
-	{
-		name:  "metris",
-		image: tester.ImageGolangKubebuilder2BuildpackLatest,
-		suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.ControlPlaneRepo(),
-			jobsuite.Until(releases.Release123),
 		},
 	},
 	{
