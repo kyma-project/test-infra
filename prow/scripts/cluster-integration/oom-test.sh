@@ -92,7 +92,7 @@ gardener::provision_cluster
 
 kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/oom-test.yaml"
 
-sleep 300
+sleep 3600
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
