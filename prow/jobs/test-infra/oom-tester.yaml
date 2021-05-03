@@ -45,8 +45,6 @@ presubmits: # runs on PRs
                 value: "1"
               - name: EXECUTION_PROFILE
                 value: "evaluation"
-              - name: HIBERNATION_ENABLED
-                value: "true"
             imagePullPolicy: Always
             securityContext:
               privileged: true
