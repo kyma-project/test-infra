@@ -119,7 +119,7 @@ path-to-referenced-charts:
 If your job involves pushing a Docker image, its name is based on the following environment variables:
 
 - **DOCKER_TAG** that refers to the Docker tag set by the `build.sh` script.
-- **DOCKER_PUSH_DIRECTORY** that points to the directory in the Docker repository where the image is pushed. Set it in the job definition by adding the **preset-build-pr**, **preset-build-master**, or **preset-build-release** Preset.
+- **DOCKER_PUSH_DIRECTORY** that points to the directory in the Docker repository where the image is pushed. Set it in the job definition by adding the **preset-build-pr**, **preset-build-main**, or **preset-build-release** Preset.
 - **DOCKER_PUSH_REPOSITORY** that is the Docker repository where the image is pushed. It is set in the job definition by the **preset-docker-push-repository** Preset.
 
 7. Change your component job and test to obligatory.
