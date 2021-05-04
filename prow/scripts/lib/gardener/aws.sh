@@ -120,7 +120,6 @@ gardener::pre_upgrade_test_fast_integration_kyma() {
 }
 
 gardener::post_upgrade_test_fast_integration_kyma() {
-    # TODO
     return
 }
 
