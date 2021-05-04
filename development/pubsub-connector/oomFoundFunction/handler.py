@@ -5,8 +5,9 @@ from slack_sdk.errors import SlackApiError
 
 
 def reportOOMevent(client: App.client, message: dict):
+	print("sending notification to {}".format(os.environ['NOTIFICATION_SLACK_CHANNEL']))
 	try:
-		result = client.chat_postMessage(channel=os.environ['OOM_SLACK_CHANNEL'],
+		result = client.chat_postMessage(channel=os.environ['NOTIFICATION_SLACK_CHANNEL'],
 										 blocks=[
 											 {
 												 "type": "context",
@@ -56,6 +57,7 @@ def main(event, context):
 	app = App(
 	)
 	app.client.base_url = "{}/".format(os.environ['OOM_FOUND_SLACK_CONNECTOR_2906b647_0DFE_4BF0_98E8_1C50D0348550_GATEWAY_URL'])
+	print("Slack api base URL: {}".format(app.client.base_url))
 	# Project ID is determined by the GCLOUD_PROJECT environment variable
 	# GOOGLE_APPLICATION_CREDENTIALS
 	#db = firestore.Client()
