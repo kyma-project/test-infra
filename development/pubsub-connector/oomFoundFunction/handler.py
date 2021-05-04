@@ -4,10 +4,30 @@ from slack_bolt import App
 from slack_sdk.errors import SlackApiError
 
 
-def reportOOMevent(client: App.client, message: dict):
+#def getProwjobDoc(db: firestore.Client, prowjobid: str) -> dict:
+#	doc_ref = db.collection('prowjobs').document('{}'.format(prowjobid))
+#	doc = doc_ref.get()
+#	if doc.exists:
+#		return doc.to_dict()
+#	else:
+#		return None
+
+
+#def getProwjobID():
+
+
+def main(event, context):
+	app = App(
+	)
+	app.client.base_url = "{}/".format(os.environ['OOM_FOUND_SLACK_CONNECTOR_2906b647_0DFE_4BF0_98E8_1C50D0348550_GATEWAY_URL'])
+	print("Slack api base URL: {}".format(app.client.base_url))
+	# Project ID is determined by the GCLOUD_PROJECT environment variable
+	# GOOGLE_APPLICATION_CREDENTIALS
+	#db = firestore.Client()
+	#getProwjobDoc(db, )
 	print("sending notification to {}".format(os.environ['NOTIFICATION_SLACK_CHANNEL']))
 	try:
-		result = client.chat_postMessage(channel=os.environ['NOTIFICATION_SLACK_CHANNEL'],
+		result = app.client.chat_postMessage(channel=os.environ['NOTIFICATION_SLACK_CHANNEL'],
 										 blocks=[
 											 {
 												 "type": "context",
@@ -31,35 +51,12 @@ def reportOOMevent(client: App.client, message: dict):
 												 "text": {
 													 "type": "mrkdwn",
 													 "text": "OutOfMemory event found in {} prowjob".format(
-														 message["job_name"])
+														 event["data"]["job_name"])
 												 }
 											 }
 										 ])
 		assert result["ok"]
+		return result["ok"]
 	except SlackApiError as e:
 		assert result["ok"] is False
 		print(f"Got an error: {e.response['error']}")
-
-
-#def getProwjobDoc(db: firestore.Client, prowjobid: str) -> dict:
-#	doc_ref = db.collection('prowjobs').document('{}'.format(prowjobid))
-#	doc = doc_ref.get()
-#	if doc.exists:
-#		return doc.to_dict()
-#	else:
-#		return None
-
-
-#def getProwjobID():
-
-
-def main(event, context):
-	app = App(
-	)
-	app.client.base_url = "{}/".format(os.environ['OOM_FOUND_SLACK_CONNECTOR_2906b647_0DFE_4BF0_98E8_1C50D0348550_GATEWAY_URL'])
-	print("Slack api base URL: {}".format(app.client.base_url))
-	# Project ID is determined by the GCLOUD_PROJECT environment variable
-	# GOOGLE_APPLICATION_CREDENTIALS
-	#db = firestore.Client()
-	#getProwjobDoc(db, )
-	reportOOMevent(app.client, event["data"])
