@@ -34,6 +34,9 @@ spec:
       containers:
       - name: crier
         image: gcr.io/k8s-prow/crier:v20210407-51f95c2d52
+        env:
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: "/etc/credentials/service-account.json"
         args:
         - --blob-storage-workers=1
         - --config-path=/etc/config/config.yaml
@@ -44,6 +47,7 @@ spec:
         - --job-config-path=/etc/job-config
         - --kubeconfig=/etc/kubeconfig/config
         - --kubernetes-blob-storage-workers=1
+        - --pubsub-workers=5
         - --slack-token-file=/etc/slack/token
         - --slack-workers=1
         - --gcs-credentials-file=/etc/credentials/service-account.json
