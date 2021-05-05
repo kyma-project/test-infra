@@ -18,7 +18,6 @@ from slack_sdk.errors import SlackApiError
 
 def main(event, context):
 	app = App(
-		token=""
 	)
 	app.client.base_url = "{}/".format(os.environ['OOM_FOUND_SLACK_CONNECTOR_2906B647_0DFE_4BF0_98E8_1C50D0348550_GATEWAY_URL'])
 	print("Slack api base URL: {}".format(app.client.base_url))

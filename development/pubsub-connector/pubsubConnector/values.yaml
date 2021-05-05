@@ -23,6 +23,9 @@ cmpSlackAppPlan: "slack-connector"
 cmpAppPlanSuffix: "553d5"
 # Kyma cluster FQDN.
 eventPublisherProxyURL: "http://eventing-event-publisher-proxy.kyma-system/publish"
+slackConnector:
+  botTokenSecret: "slack-bot-token"
+  botTokenSecretKey: "token"
 
 function:
   issues:

@@ -20,4 +20,9 @@ spec:
         configMapKeyRef:
           name: {{ .Release.Name }}-pubsub-gateway-config
           key: notificationSlackChannel
+    - name: SLACK_BOT_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: {{ .Values.slackConnector.botTokenSecret }}
+          key: {{ .Values.slackConnector.botTokenSecretKey }}
   runtime: python38
