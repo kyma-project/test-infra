@@ -1,8 +1,10 @@
 package main
 
 import (
-	"cloud.google.com/go/pubsub"
 	"context"
+	"fmt"
+
+	"cloud.google.com/go/pubsub"
 	cloudevents "github.com/cloudevents/sdk-go/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/vrischmann/envconfig"
@@ -29,13 +31,14 @@ type Config struct {
 	SubscriptionID    string `envconfig:"PUBSUB_SUBSCRIPTION_ID"`
 	EventType         string `envconfig:"EVENT_TYPE"`
 	ProjectID         string `envconfig:"PUBSUB_PROJECT_ID"`
+	AppName           string `envconfig:"APP_NAME"`
 }
 
 func main() {
 	// Build config from environment variables
 	err := envconfig.Init(&conf)
 	if err != nil {
-		log.WithFields(log.Fields{"msg": "failed init config from environment variables"}).Fatalf("%s", err.Error())
+		log.Fatalf("failed init config from environment variables %s", err.Error())
 	}
 	// make a
 	ctx := context.Background()
@@ -47,19 +50,21 @@ func main() {
 	defer pubSubClient.Close()
 	kymeEventClient, err = cloudevents.NewClientHTTP()
 	if err != nil {
-		log.WithFields(log.Fields{"msg": "failed create kyma eventing cloud event client"}).Fatalf("%s", err)
+		log.Fatalf("failed create kyma eventing cloud event client, got error: %s", err)
 	}
 	cloudEventsContext = cloudevents.ContextWithTarget(context.Background(), conf.KymaEventsService)
-	log.WithFields(log.Fields{"msg": "set configuration parameter"}).Infof("Using eventing service URL: %s", conf.KymaEventsService)
+	log.Infof("using eventing service URL: %s", conf.KymaEventsService)
 	// create subscription to pull messages from
 	sub := pubSubClient.Subscription(conf.SubscriptionID)
-	log.WithFields(log.Fields{"msg": "set configuration parameter"}).Infof("Subscribing to %s", conf.SubscriptionID)
+	log.Infof("subscribing to pubsub subscription: %s", conf.SubscriptionID)
 	ok, err := sub.Exists(ctx)
 	if err != nil {
-		log.WithFields(log.Fields{"msg": "failed to check subscription presence"}).Infof("%v", err)
+		log.Fatalf("failed to check subscription presence: %v", err)
 	}
 	log.Infof("subscription exists: %t", ok)
-	log.WithFields(log.Fields{"msg": "set configuration parameter"}).Infof("Subscribing to %s", conf.SubscriptionID)
+	log.Infof("subscribing to %s", conf.SubscriptionID)
+	eventingEventType := fmt.Sprintf("sap.kyma.custom.m-%s.%s", conf.AppName, conf.EventType)
+	log.Infof("using event type : %s", eventingEventType)
 	// Create a channel to handle messages to as they come in.
 	cm := make(chan *pubsub.Message)
 	defer close(cm)
@@ -69,7 +74,7 @@ func main() {
 			log.WithFields(log.Fields{"msg": "received message"}).Infof("message ID:%s", msg.ID)
 			event := cloudevents.NewEvent()
 			event.SetSource(conf.PubSubGatewayName)
-			event.SetType(conf.EventType)
+			event.SetType(eventingEventType)
 			event.SetData(cloudevents.ApplicationJSON, msg)
 			if result := kymeEventClient.Send(cloudEventsContext, event); cloudevents.IsUndelivered(result) {
 				msg.Nack()

@@ -12,3 +12,4 @@ data:
   pubsubSubscriptionID: {{ .Values.pubsubGateway.pubsubSubscriptionID }}
   eventType: {{ .Values.pubsubGateway.eventType }}
   pubsubProjectID: {{ .Values.pubsubGateway.projectID }}
+  appName: {{ .Values.appName }}
