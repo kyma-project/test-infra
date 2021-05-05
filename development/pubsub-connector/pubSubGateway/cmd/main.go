@@ -63,7 +63,7 @@ func main() {
 	}
 	log.Infof("subscription exists: %t", ok)
 	log.Infof("subscribing to %s", conf.SubscriptionID)
-	eventingEventType := fmt.Sprintf("sap.kyma.custom.m-%s.%s", conf.AppName, conf.EventType)
+	eventingEventType := fmt.Sprintf("sap.kyma.custom.mp-%s.%s", conf.AppName, conf.EventType)
 	log.Infof("using event type : %s", eventingEventType)
 	// Create a channel to handle messages to as they come in.
 	cm := make(chan *pubsub.Message)
