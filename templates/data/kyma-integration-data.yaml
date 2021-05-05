@@ -194,7 +194,7 @@ templates:
                     description: Kyma integration job.
                     testgrid-days-of-results: "60"
                   labels:
-                    preset-build-master: "true"
+                    preset-build-main: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -213,7 +213,7 @@ templates:
                     description: Kyma integration job on k3s.
                     testgrid-days-of-results: "60"
                   labels:
-                    preset-build-master: "true"
+                    preset-build-main: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -233,7 +233,7 @@ templates:
                     description: Kyma integration job on k3s with compass dev.
                     testgrid-days-of-results: "60"
                   labels:
-                    preset-build-master: "true"
+                    preset-build-main: "true"
                     preset-kyma-integration-compass-dev: "true"
                     preset-kyma-integration-compass-enabled: "true"
                 inheritedConfigs:
@@ -256,7 +256,7 @@ templates:
                     testgrid-days-of-results: "60"
                   labels:
                     preset-log-collector-slack-token: "true"
-                    preset-build-master: "true"
+                    preset-build-main: "true"
                     preset-gke-pod-security-policy: "true"
                 inheritedConfigs:
                   global:
@@ -278,7 +278,7 @@ templates:
                   labels:
                     preset-gke-upgrade-post-job: "true"
                     preset-log-collector-slack-token: "true"
-                    preset-build-master: "true"
+                    preset-build-main: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -295,7 +295,7 @@ templates:
                   skip_report: true
                   labels:
                     preset-log-collector-slack-token: "true"
-                    preset-build-master: "true"
+                    preset-build-main: "true"
                     preset-gke-rapid: "true"
                 inheritedConfigs:
                   global:
@@ -527,7 +527,7 @@ templates:
                   labels:
                     preset-kyma-keyring: "true"
                     preset-kyma-encryption-key: "true"
-                    preset-build-master: "true"
+                    preset-build-main: "true"
                     preset-stability-checker-slack-notifications: "true"
                     preset-nightly-github-integration: "true"
                     preset-kms-gc-project-env: "true"
@@ -575,7 +575,7 @@ templates:
                   labels:
                     preset-kyma-keyring: "true"
                     preset-kyma-encryption-key: "true"
-                    preset-build-master: "true"
+                    preset-build-main: "true"
                     preset-stability-checker-slack-notifications: "true"
                     preset-weekly-github-integration: "true"
                     preset-kms-gc-project-env: "true"
@@ -623,7 +623,7 @@ templates:
                   labels:
                     preset-kyma-keyring: "true"
                     preset-kyma-encryption-key: "true"
-                    preset-build-master: "true"
+                    preset-build-main: "true"
                     preset-stability-checker-slack-notifications: "true"
                     preset-nightly-aks-github-integration: "true"
                     preset-kms-gc-project-env: "true"
@@ -666,7 +666,7 @@ templates:
                     description: Kyma integration periodic job on k3s.
                   cron: "5 * * * *"
                   labels:
-                    preset-build-master: "true"
+                    preset-build-main: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -688,7 +688,7 @@ templates:
                     description: Kyma integration periodic job on k3s with compass dev.
                   cron: "5 * * * *"
                   labels:
-                    preset-build-master: "true"
+                    preset-build-main: "true"
                     preset-kyma-integration-compass-dev: "true"
                     preset-kyma-integration-compass-enabled: "true"
                 inheritedConfigs:

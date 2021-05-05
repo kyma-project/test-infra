@@ -6,7 +6,7 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-        preset-build-master: "true"
+        preset-build-main: "true"
         preset-keb-dev-credentials: "true"
         preset-keb-plan-azure: "true"
         preset-kyma-integration-compass-dev: "true"
@@ -39,7 +39,7 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-        preset-build-master: "true"
+        preset-build-main: "true"
         preset-keb-dev-credentials: "true"
         preset-keb-plan-azure-lite: "true"
         preset-kyma-integration-compass-dev: "true"
@@ -72,7 +72,7 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-        preset-build-master: "true"
+        preset-build-main: "true"
         preset-keb-dev-credentials: "true"
         preset-keb-plan-aws: "true"
         preset-kyma-integration-compass-dev: "true"
@@ -105,7 +105,7 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-        preset-build-master: "true"
+        preset-build-main: "true"
         preset-keb-dev-credentials: "true"
         preset-keb-plan-trial: "true"
         preset-kyma-integration-compass-dev: "true"

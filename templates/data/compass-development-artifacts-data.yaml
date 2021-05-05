@@ -46,7 +46,7 @@ templates:
                     - ^main$
                     - "^v\\d+\\.\\d+\\.\\d+$" # release tags
                   labels:
-                    preset-build-artifacts-master: "true"
+                    preset-build-artifacts-main: "true"
                   slack_channel: "kyma-prow-dev-null"
 
                 inheritedConfigs:

@@ -44,7 +44,7 @@ templates:
               - jobConfig:
                   name: post-main-control-plane-gke-integration
                   labels:
-                    preset-build-master: "true"
+                    preset-build-main: "true"
                     preset-log-collector-slack-token: "true"
                   slack_channel: "kyma-prow-dev-null"
                   annotations:
@@ -103,7 +103,7 @@ templates:
               - jobConfig:
                   name: post-main-control-plane-gke-provisioner-integration
                   labels:
-                    preset-build-master: "true"
+                    preset-build-main: "true"
                     preset-log-collector-slack-token: "true"
                   slack_channel: "kyma-prow-dev-null"
                   annotations:
@@ -149,7 +149,7 @@ templates:
               - jobConfig:
                   name: post-main-control-plane-integration
                   labels:
-                    preset-build-master: "true"
+                    preset-build-main: "true"
                     preset-log-collector-slack-token: "true"
                   annotations:
                     testgrid-dashboards: kyma_control-plane

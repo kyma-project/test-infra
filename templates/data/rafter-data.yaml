@@ -23,7 +23,7 @@ templates:
             optional: "false"
           jobConfig_postsubmit:
             labels:
-              preset-rafter-build-master: "true"
+              preset-rafter-build-main: "true"
           extra_refs_test-infra:
             extra_refs:
               test-infra:

@@ -14,7 +14,7 @@ templates:
               preset-build-pr: "true"
           jobConfig_postsubmit:
             labels:
-              preset-build-master: "true"
+              preset-build-main: "true"
         jobConfigs:
           - repoName: "github.com/kyma-project/addons"
             jobs:

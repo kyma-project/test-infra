@@ -37,7 +37,7 @@ templates:
               - jobConfig:
                   name: "post-main-compass-integration"
                   labels:
-                    preset-build-master: "true"
+                    preset-build-main: "true"
                   annotations:
                     testgrid-dashboards: kyma-incubator_compass
                     description: Compass integration job.

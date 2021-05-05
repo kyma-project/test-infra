@@ -81,7 +81,7 @@ templates:
                     testgrid-dashboards: kyma-incubator_compass
                     description: Compass GKE integration job.
                   labels:
-                    preset-build-master: "true"
+                    preset-build-main: "true"
                   slack_channel: "kyma-prow-dev-null"
                 inheritedConfigs:
                   global:

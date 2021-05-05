@@ -98,7 +98,7 @@ templates:
               preset-build-pr: "true"
           jobConfig_postsubmit:
             labels:
-              preset-build-master: "true"
+              preset-build-main: "true"
           k3s_template:
             optional: true # make mandatory when green
             skip_report: true

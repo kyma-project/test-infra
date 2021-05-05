@@ -104,7 +104,7 @@ templates:
                     - ^release-{{ $rel }}$
                   labels:
                     preset-sa-vm-kyma-integration: "true"
-                    preset-build-master: "true"
+                    preset-build-main: "true"
                   annotations:
                     testgrid-dashboards: kyma_release-{{ $rel }}
                     description: Kyma integration job for release {{ $rel }} .
