@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"cloud.google.com/go/pubsub"
 	cloudevents "github.com/cloudevents/sdk-go/v2"
@@ -63,7 +64,7 @@ func main() {
 	}
 	log.Infof("subscription exists: %t", ok)
 	log.Infof("subscribing to %s", conf.SubscriptionID)
-	eventingEventType := fmt.Sprintf("sap.kyma.custom.mp-%s.%s", conf.AppName, conf.EventType)
+	eventingEventType := strings.Replace(fmt.Sprintf("sap.kyma.custom.mp-%s.%s", conf.AppName, conf.EventType), "-", "", -1)
 	log.Infof("using event type : %s", eventingEventType)
 	// Create a channel to handle messages to as they come in.
 	cm := make(chan *pubsub.Message)
