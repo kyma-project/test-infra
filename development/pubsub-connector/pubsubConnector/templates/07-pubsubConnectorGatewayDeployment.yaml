@@ -31,7 +31,8 @@ spec:
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: /keys/saCredentials.json
         - name: PUBSUB_GATEWAY_NAME
-          value: {{ .Release.Name }}-oom-found-pubsub-gateway
+          #value: {{ .Release.Name }}-oom-found-pubsub-gateway
+          value: mp-{{ .Values.appName }}
         - name: EVENTING_SERVICE
           valueFrom:
             configMapKeyRef:
