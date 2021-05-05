@@ -47,6 +47,16 @@ spec:
             secretKeyRef:
               name: grafana
               key: password
+        - name: GF_PLUGINS_BIGQUERY_DATASOURCE_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: gf-plugins-bigquery-datasource-email
+              key: secret
+        - name: GF_PLUGINS_BIGQUERY_DATASOURCE_PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: gf-plugins-bigquery-datasource-private-key
+              key: secret
         ports:
         - containerPort: 3001
           name: http
