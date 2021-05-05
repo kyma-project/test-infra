@@ -158,7 +158,7 @@ templates:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
                   labels:
-                    preset-build-master: "true"
+                    preset-build-main: "true"
                   env:
                     EXECUTION_PROFILE: "evaluation"
                     KYMA_ALPHA: "true"
@@ -179,7 +179,7 @@ templates:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
                   labels:
-                    preset-build-master: "true"
+                    preset-build-main: "true"
                   env:
                     EXECUTION_PROFILE: "production"
                     KYMA_ALPHA: "true"

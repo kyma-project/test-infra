@@ -301,7 +301,7 @@ presets:
         readOnly: true
   # rafter
   - labels:
-      preset-rafter-build-master: "true"
+      preset-rafter-build-main: "true"
     env:
       - name: BUILD_TYPE
         value: master
@@ -623,19 +623,19 @@ presets:
       - name: DOCKER_PUSH_DIRECTORY
         value: "/pr"
   - labels:
-      preset-build-master: "true"
+      preset-build-main: "true"
     env:
       - name: BUILD_TYPE
         value: master
       - name: DOCKER_PUSH_DIRECTORY
         value: "/develop"
   - labels:
-      preset-build-artifacts-master: "true"
+      preset-build-artifacts-main: "true"
     env:
       - name: BUILD_TYPE
         value: master
   - labels:
-      preset-build-console-master: "true"
+      preset-build-console-main: "true"
     env:
       - name: BUILD_TYPE
         value: master

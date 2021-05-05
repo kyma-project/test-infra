@@ -72,7 +72,7 @@ templates:
               #       # testgrid-alert-email: email-here@sap.com
               #       testgrid-num-failures-to-alert: '1'
               #     labels:
-              #       preset-build-master: "true"
+              #       preset-build-main: "true"
               #   inheritedConfigs:
               #     global:
               #       - "jobConfig_default"

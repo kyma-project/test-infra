@@ -286,7 +286,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kind-volume-mounts: "true"
-        preset-rafter-build-master: "true"
+        preset-rafter-build-main: "true"
         preset-sa-gcr-push: "true"
       skip_report: false
       decorate: true
@@ -555,7 +555,7 @@ postsubmits: # runs on main
         preset-az-kyma-prow-credentials: "true"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
-        preset-rafter-build-master: "true"
+        preset-rafter-build-main: "true"
         preset-rafter-minio-az-gateway: "true"
       skip_report: false
       decorate: true
@@ -738,7 +738,7 @@ postsubmits: # runs on main
         preset-az-kyma-prow-credentials: "true"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
-        preset-rafter-build-master: "true"
+        preset-rafter-build-main: "true"
         preset-rafter-minio-az-gateway: "true"
       skip_report: false
       decorate: true

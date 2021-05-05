@@ -236,7 +236,7 @@ postsubmits: # runs on main
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
       labels:
-        preset-build-master: "true"
+        preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
@@ -270,7 +270,7 @@ postsubmits: # runs on main
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
       labels:
-        preset-build-master: "true"
+        preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
@@ -308,7 +308,7 @@ postsubmits: # runs on main
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
       labels:
-        preset-build-master: "true"
+        preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-kyma-integration-compass-dev: "true"
@@ -348,7 +348,7 @@ postsubmits: # runs on main
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
       labels:
-        preset-build-master: "true"
+        preset-build-main: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
         preset-dind-enabled: "true"
@@ -394,7 +394,7 @@ postsubmits: # runs on main
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
       labels:
-        preset-build-master: "true"
+        preset-build-main: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
         preset-dind-enabled: "true"
@@ -444,7 +444,7 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
-        preset-build-master: "true"
+        preset-build-main: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
         preset-dind-enabled: "true"
@@ -783,7 +783,7 @@ periodics: # runs on schedule
         description: "Kyma GKE nightly build."
         testgrid-dashboards: "kyma_integration"
       labels:
-        preset-build-master: "true"
+        preset-build-main: "true"
         preset-certificates-bucket: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
@@ -860,7 +860,7 @@ periodics: # runs on schedule
         description: "Kyma GKE weekly build."
         testgrid-dashboards: "kyma_integration"
       labels:
-        preset-build-master: "true"
+        preset-build-main: "true"
         preset-certificates-bucket: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
@@ -938,7 +938,7 @@ periodics: # runs on schedule
         testgrid-dashboards: "kyma_integration"
       labels:
         preset-az-kyma-prow-credentials: "true"
-        preset-build-master: "true"
+        preset-build-main: "true"
         preset-certificates-bucket: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
@@ -1008,7 +1008,7 @@ periodics: # runs on schedule
         description: "Kyma integration periodic job on k3s."
         testgrid-dashboards: "kyma_integration"
       labels:
-        preset-build-master: "true"
+        preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
@@ -1046,7 +1046,7 @@ periodics: # runs on schedule
         description: "Kyma integration periodic job on k3s with compass dev."
         testgrid-dashboards: "kyma_integration"
       labels:
-        preset-build-master: "true"
+        preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-kyma-integration-compass-dev: "true"

@@ -10,7 +10,7 @@ templates:
             request_memory: 100Mi
             request_cpu:  50m
             labels:
-              preset-build-master: "true"
+              preset-build-main: "true"
               preset-keb-dev-credentials: "true"
               preset-kyma-integration-compass-dev: "true"
         jobConfigs:

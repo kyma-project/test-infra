@@ -201,7 +201,7 @@ postsubmits: # runs on main
         description: "Compass GKE integration job."
         testgrid-dashboards: "kyma-incubator_compass"
       labels:
-        preset-build-master: "true"
+        preset-build-main: "true"
         preset-cluster-version: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"

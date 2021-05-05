@@ -34,7 +34,7 @@ templates:
               - jobConfig:
                   name: "post-main-kyma-incubator-dex"
                   labels:
-                    preset-build-master: "true"
+                    preset-build-main: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

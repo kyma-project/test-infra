@@ -131,7 +131,7 @@ postsubmits: # runs on master
         description: "Kyma integration job for release 1.21 ."
         testgrid-dashboards: "kyma_release-1.21"
       labels:
-        preset-build-master: "true"
+        preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"

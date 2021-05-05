@@ -35,7 +35,7 @@ templates:
               - jobConfig:
                   name: post-main-kcp-cli
                   labels:
-                    preset-build-artifacts-master: "true"
+                    preset-build-artifacts-main: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -83,7 +83,7 @@ templates:
               - jobConfig:
                   name: post-main-kcp-development-artifacts
                   labels:
-                    preset-build-artifacts-master: "true"
+                    preset-build-artifacts-main: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default

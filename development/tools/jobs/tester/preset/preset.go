@@ -23,11 +23,11 @@ const (
 	// BuildPr means PR environment
 	BuildPr Preset = "preset-build-pr"
 	// BuildMaster means master environment
-	BuildMaster Preset = "preset-build-master"
+	BuildMaster Preset = "preset-build-main"
 	// BuildArtifactsMaster means building artifacts master environment
-	BuildArtifactsMaster Preset = "preset-build-artifacts-master"
+	BuildArtifactsMaster Preset = "preset-build-artifacts-main"
 	// BuildConsoleMaster means console master environment
-	BuildConsoleMaster Preset = "preset-build-console-master"
+	BuildConsoleMaster Preset = "preset-build-console-main"
 	// BuildConsolePr means console PR environment
 	BuildConsolePr Preset = "preset-build-console-pr"
 	// BuildRelease means release environment

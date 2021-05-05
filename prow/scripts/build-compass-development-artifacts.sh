@@ -58,7 +58,7 @@ export_variables
 
 # installer ci-pr, ci-main, kyma-installer ci-pr, ci-main
 #   DOCKER_TAG - calculated in export_variables
-#   DOCKER_PUSH_DIRECTORY, preset-build-master, preset-build-pr
+#   DOCKER_PUSH_DIRECTORY, preset-build-main, preset-build-pr
 #   DOCKER_PUSH_REPOSITORY - preset-docker-push-repository
 export COMPASS_PATH="/home/prow/go/src/github.com/kyma-incubator/compass"
 buildTarget="release"
