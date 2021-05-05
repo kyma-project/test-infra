@@ -18,6 +18,7 @@ slackAppName: "sap-slack-connector"
 # Slack application plan suffix. Must match suffix from CMP.
 #cmpSlackAppPlanSuffix: "36130"
 cmpSlackAppPlanSuffix: "4af0a"
+cmpSlackAppPlan: "slack-connector"
 # Github application plan suffix. Must match suffix from CMP.
 cmpAppPlanSuffix: "553d5"
 # Kyma cluster FQDN.
