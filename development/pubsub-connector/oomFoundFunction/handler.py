@@ -1,4 +1,4 @@
-import os
+import os, base64
 from slack_bolt import App
 #from google.cloud import firestore
 from slack_sdk.errors import SlackApiError
@@ -20,15 +20,13 @@ def main(event, context):
 	app = App(
 	)
 	app.client.base_url = "{}/".format(os.environ['OOM_FOUND_SLACK_CONNECTOR_2906B647_0DFE_4BF0_98E8_1C50D0348550_GATEWAY_URL'])
-	print("Slack api base URL: {}".format(app.client.base_url))
+	print("Slack api base URL: {}\n".format(app.client.base_url))
 	# Project ID is determined by the GCLOUD_PROJECT environment variable
 	# GOOGLE_APPLICATION_CREDENTIALS
 	#db = firestore.Client()
 	#getProwjobDoc(db, )
-	print("sending notification to {}".format(os.environ['NOTIFICATION_SLACK_CHANNEL']))
-	print(event)
-	print(event["data"])
-	print(event["extensions"]["request"])
+	print("sending notification to {}\n".format(os.environ['NOTIFICATION_SLACK_CHANNEL']))
+	msg = base64.decodebytes(event["data"]["Data"])
 	try:
 		result = app.client.chat_postMessage(channel=os.environ['NOTIFICATION_SLACK_CHANNEL'],
 										 blocks=[
@@ -53,8 +51,8 @@ def main(event, context):
 												 "type": "section",
 												 "text": {
 													 "type": "mrkdwn",
-													 "text": "OutOfMemory event found in {} prowjob".format(
-														 event["data"]["job_name"])
+													 "text": "OutOfMemory event found in <{}|{}> prowjob.".format(msg["url"],
+														 msg["job_name"])
 												 }
 											 }
 										 ])
