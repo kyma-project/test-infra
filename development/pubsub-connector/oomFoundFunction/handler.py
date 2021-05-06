@@ -1,6 +1,9 @@
-import os, base64, json
+import base64
+import json
+import os
+
 from slack_bolt import App
-#from google.cloud import firestore
+# from google.cloud import firestore
 from slack_sdk.errors import SlackApiError
 
 
@@ -29,34 +32,32 @@ def main(event, context):
 	msg = json.loads(base64.b64decode(event["data"]["Data"]))
 	try:
 		result = app.client.chat_postMessage(channel=os.environ['NOTIFICATION_SLACK_CHANNEL'],
-										 text="Summer has come and passed",
-										 blocks=[
-											 {
-												 "type": "context",
-												 "elements": [
-													 {
-														 "type": "mrkdwn",
-														 "text": "OutOfMemory event"
-													 }
-												 ]
-											 },
-											 {
-												 "type": "header",
-												 "text": {
-													 "type": "plain_text",
-													 "text": "OOM event found",
-													 "emoji": "true"
-												 }
-											 },
-											 {
-												 "type": "section",
-												 "text": {
-													 "type": "mrkdwn",
-													 "text": "OutOfMemory event found in <{}|{}> prowjob.".format(msg["url"],
-														 msg["job_name"])
-												 }
-											 }
-										 ])
+										text="Summer has come and passed",
+										blocks=[
+											{
+												"type": "context",
+												"elements": [
+													{
+														"type": "mrkdwn",
+														"text": "OutOfMemory event"
+													}
+												]
+											},
+											{
+												"type": "header",
+												"text": {
+													"type": "plain_text",
+													"text": "OOM event found"
+												}
+											},
+											{
+												"type": "section",
+												"text": {
+													"type": "mrkdwn",
+													"text": "OutOfMemory event found in <{}|{}> prowjob.".format(msg["url"], msg["job_name"])
+												}
+											}
+										])
 		#assert result["ok"]
 		#return result["ok"]
 		print(result)
