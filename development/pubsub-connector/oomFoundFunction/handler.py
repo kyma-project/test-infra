@@ -26,20 +26,7 @@ def main(event, context):
 	#db = firestore.Client()
 	#getProwjobDoc(db, )
 	print("sending notification to {}\n".format(os.environ['NOTIFICATION_SLACK_CHANNEL']))
-	print("{}\n".format(event))
-	print("{}\n".format(event["data"]))
-	print("{}\n".format(event["data"]["Data"]))
-	msgtest = base64.b64decode(event["data"]["Data"])
-	print("{}\n".format(msgtest))
-	msgtestdict = json.loads(msgtest)
-	print("{}\n".format(msgtestdict["url"]))
-	b64bytes = event["data"]["Data"].encode('ascii')
-	msgbytes = base64.b64decode(b64bytes)
-	msg = msgbytes.decode('ascii')
-	print("{}\n".format(msg))
-	msgdict = json.loads(msg)
-	print("{}\n".format(msgdict["url"]))
-	print("{}\n".format(msgdict["job_name"]))
+	msg = json.loads(base64.b64decode(event["data"]["Data"]))
 	try:
 		result = app.client.chat_postMessage(channel=os.environ['NOTIFICATION_SLACK_CHANNEL'],
 										 blocks=[
