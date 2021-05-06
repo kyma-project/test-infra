@@ -29,6 +29,7 @@ def main(event, context):
 	msg = json.loads(base64.b64decode(event["data"]["Data"]))
 	try:
 		result = app.client.chat_postMessage(channel=os.environ['NOTIFICATION_SLACK_CHANNEL'],
+										 text="Summer has come and passed",
 										 blocks=[
 											 {
 												 "type": "context",
@@ -56,8 +57,9 @@ def main(event, context):
 												 }
 											 }
 										 ])
-		assert result["ok"]
-		return result["ok"]
+		#assert result["ok"]
+		#return result["ok"]
+		print(result)
 	except SlackApiError as e:
-		assert result["ok"] is False
+		#assert result["ok"] is False
 		print(f"Got an error: {e.response['error']}")
