@@ -1,4 +1,4 @@
-import os, base64
+import os, base64, json
 from slack_bolt import App
 #from google.cloud import firestore
 from slack_sdk.errors import SlackApiError
@@ -29,12 +29,17 @@ def main(event, context):
 	print("{}\n".format(event))
 	print("{}\n".format(event["data"]))
 	print("{}\n".format(event["data"]["Data"]))
+	msgtest = base64.b64decode(event["data"]["Data"])
+	print("{}\n".format(msgtest))
+	msgtestdict = json.loads(msgtest)
+	print("{}\n".format(msgtestdict["url"]))
 	b64bytes = event["data"]["Data"].encode('ascii')
 	msgbytes = base64.b64decode(b64bytes)
 	msg = msgbytes.decode('ascii')
 	print("{}\n".format(msg))
-	print("{}\n".format(msg["url"]))
-	print("{}\n".format(msg["job_name"]))
+	msgdict = json.loads(msg)
+	print("{}\n".format(msgdict["url"]))
+	print("{}\n".format(msgdict["job_name"]))
 	try:
 		result = app.client.chat_postMessage(channel=os.environ['NOTIFICATION_SLACK_CHANNEL'],
 										 blocks=[
