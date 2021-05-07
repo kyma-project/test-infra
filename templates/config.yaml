@@ -139,9 +139,9 @@ cluster_default: &cluster_default
     periodic: trusted-workload
 
 templates:
-#  - from: templates/kyma-release-upgrade.yaml
-#    render:
-#      - to: ../prow/jobs/kyma/kyma-release-upgrade.yaml
+  #  - from: templates/kyma-release-upgrade.yaml
+  #    render:
+  #      - to: ../prow/jobs/kyma/kyma-release-upgrade.yaml
   - from: templates/generic-component.yaml
     render:
       - to: ../prow/jobs/kyma/components/application-broker/application-broker-generic.yaml
@@ -511,6 +511,12 @@ templates:
           optional: true
   - from: templates/generic-component-busola.yaml
     render:
+      - to: ../prow/jobs/busola/busola-ui-test/busola-ui-test.yaml
+        values:
+          <<: *cluster_default
+          <<: *busola_generic_component
+          path: /
+          since: "1.21"
       - to: ../prow/jobs/busola/busola-core-ui/busola-core-ui.yaml
         values:
           <<: *cluster_default
@@ -668,17 +674,17 @@ templates:
   - from: templates/releases.go.tmpl
     render:
       - to: ../development/tools/jobs/releases/releases.go
-#  TODO: remove when https://github.com/kyma-project/test-infra/issues/3174 is finished
-#  - from: templates/kyma-github-release.yaml
-#    render:
-#      - to: ../prow/jobs/kyma/kyma-github-release.yaml
-#        values:
-#          <<: *cluster_default
-#  - from: templates/kyma-release-candidate.yaml
-#    render:
-#      - to: ../prow/jobs/kyma/kyma-release-candidate.yaml
-#        values:
-#          <<: *cluster_default
+  #  TODO: remove when https://github.com/kyma-project/test-infra/issues/3174 is finished
+  #  - from: templates/kyma-github-release.yaml
+  #    render:
+  #      - to: ../prow/jobs/kyma/kyma-github-release.yaml
+  #        values:
+  #          <<: *cluster_default
+  #  - from: templates/kyma-release-candidate.yaml
+  #    render:
+  #      - to: ../prow/jobs/kyma/kyma-release-candidate.yaml
+  #        values:
+  #          <<: *cluster_default
   - from: templates/prow-config.yaml
     render:
       - to: ../prow/config.yaml
