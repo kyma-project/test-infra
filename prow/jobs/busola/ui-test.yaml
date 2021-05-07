@@ -6,6 +6,7 @@ presubmits: # runs on PRs
     - name: pre-busola-ui-test
       labels:
         preset-build-pr: "true"
+        preset-gardener-azure-kyma-integration: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"

@@ -34,6 +34,7 @@ templates:
                   run_if_changed: "/"
                   labels:
                     preset-build-pr: "true"
+                    preset-gardener-azure-kyma-integration: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

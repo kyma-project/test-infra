@@ -4,9 +4,12 @@
 # Use this flag to specify the custom image for provisining vms. If no flag is provided, the latest custom image is used.
 
 set -o errexit
+set -o pipefail
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
+readonly TMP_DIR=$(mktemp -d)
+
 
 # shellcheck source=prow/scripts/lib/gcloud.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
@@ -27,9 +30,7 @@ cleanup() {
     
     # do not fail the job regardless of the vm deletion result
     set +e
-    
-    #shellcheck disable=SC2088
-    utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/fast-integration/junit_kyma-fast-integration.xml" "${ARTIFACTS}"
+
     gcloud compute instances stop --async --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}"
     
     log::info "End of cleanup"
@@ -108,23 +109,20 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
 trap cleanup exit INT
 
-log::info "Preparing environment variables for the instance"
-envVars=(
-    COMPASS_TENANT
-    COMPASS_HOST
-    COMPASS_CLIENT_ID
-    COMPASS_CLIENT_SECRET
-    COMPASS_INTEGRATION_ENABLED
-)
-utils::save_env_file "${envVars[@]}"
-#shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" ".env" "~/.env"
+export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
+KYMA_CLUSTER_NAME="nkyma"
+log::info "KYMA_CLUSTER_NAME=${KYMA_CLUSTER_NAME}"
+kubectl get secrets "${KYMA_CLUSTER_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${TMP_DIR}/kubeconfig-${KYMA_CLUSTER_NAME}.yaml"
 
-log::info "Copying Kyma to the instance"
+log::info "Copying Kyma kubeconfig to the instance"
 #shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
+utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${TMP_DIR}/kubeconfig-${KYMA_CLUSTER_NAME}.yaml" "~/kubeconfig-kyma.yaml"
+
+log::info "Copying Busola to the instance"
+#shellcheck disable=SC2088
+utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola" "~/busola"
 
 log::info "Triggering the installation"
-gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3s.sh"
+gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/busola-integration-k3s.sh"
 
 log::success "all done"
