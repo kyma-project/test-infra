@@ -52,7 +52,6 @@ data:
       - name: bigquery-prow
         type: doitintl-bigquery-datasource
         access: proxy
-        isDefault: true
         jsonData:
             authenticationType: jwt
             clientEmail: ${GF_PLUGINS_BIGQUERY_DATASOURCE_EMAIL}
@@ -61,6 +60,22 @@ data:
         secureJsonData:
             privateKey: "${GF_PLUGINS_BIGQUERY_DATASOURCE_PRIVATE_KEY}"
         version: 2
+        readOnly: false
+      - name: github-public
+        type: marcusolsson-json-datasource
+        access: proxy
+        basicAuth: false
+        withCredentials: false
+        isDefault: false
+        url: https://api.github.com
+        jsonData:
+            httpHeaderName1: Authorization
+            oauthPassThru: false
+            tlsAuth: false
+            tlsSkipVerify: false
+        secureJsonData:
+            httpHeaderValue1: "Bearer ${GF_PLUGINS_JSON_DATASOURCE_PRIVATE_TOKEN}"
+        version: 8
         readOnly: false
 ---
 apiVersion: v1

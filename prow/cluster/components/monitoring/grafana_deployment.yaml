@@ -41,7 +41,7 @@ spec:
         - name: GF_SECURITY_ADMIN_USER
           value: adm
         - name: GF_INSTALL_PLUGINS
-          value: doitintl-bigquery-datasource
+          value: doitintl-bigquery-datasource,marcusolsson-json-datasource
         - name: GF_SECURITY_ADMIN_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -56,6 +56,11 @@ spec:
           valueFrom:
             secretKeyRef:
               name: gf-plugins-bigquery-datasource-private-key
+              key: secret
+        - name: GF_PLUGINS_JSON_DATASOURCE_PRIVATE_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: gf-plugins-json-datasource-private-token
               key: secret
         ports:
         - containerPort: 3001
@@ -79,6 +84,9 @@ spec:
           readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/quality
           name: grafana-dashboard-quality
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/quality-poc
+          name: grafana-dashboard-quality-poc
           readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/prow
           name: grafana-dashboard-prow
@@ -119,6 +127,9 @@ spec:
       - name: grafana-dashboard-quality
         configMap:
           name: grafana-dashboard-quality
+      - name: grafana-dashboard-quality-poc
+        configMap:
+          name: grafana-dashboard-quality-poc
       - name: grafana-dashboard-prow
         configMap:
           name: grafana-dashboard-prow

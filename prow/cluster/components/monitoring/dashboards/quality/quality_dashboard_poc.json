@@ -1,0 +1,1167 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "",
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "links": [],
+  "panels": [
+    {
+      "datasource": "github-public",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "id": 11,
+      "options": {
+        "frameIndex": 0,
+        "showHeader": true
+      },
+      "pluginVersion": "7.5.2",
+      "targets": [
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].repository.name",
+              "name": "repo"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "filter",
+              "all"
+            ],
+            [
+              "per_page",
+              "100"
+            ],
+            [
+              "labels",
+              "priority/critical"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "tracing",
+          "urlPath": "/orgs/kyma-project/issues"
+        }
+      ],
+      "title": "Critical issues",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "label": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "number": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              },
+              "repo": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "number (count)": "Open bugs",
+              "repo": "Repo"
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "field": "Repo"
+              }
+            ]
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": "github-public",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 7,
+        "y": 0
+      },
+      "id": 10,
+      "options": {
+        "frameIndex": 0,
+        "showHeader": true
+      },
+      "pluginVersion": "7.5.2",
+      "targets": [
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].repository.name",
+              "name": "repo"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "filter",
+              "all"
+            ],
+            [
+              "per_page",
+              "100"
+            ],
+            [
+              "labels",
+              "test-case"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "tracing",
+          "urlPath": "/orgs/kyma-project/issues"
+        }
+      ],
+      "title": "Test cases for release",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "label": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "number": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              },
+              "repo": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "number (count)": "Test cases",
+              "repo": "Repo"
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "field": "Repo"
+              }
+            ]
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": "github-public",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 9,
+        "x": 14,
+        "y": 0
+      },
+      "id": 12,
+      "options": {
+        "frameIndex": 0,
+        "showHeader": true
+      },
+      "pluginVersion": "7.5.2",
+      "targets": [
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].repository.name",
+              "name": "repo"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "filter",
+              "all"
+            ],
+            [
+              "per_page",
+              "100"
+            ],
+            [
+              "labels",
+              "bug"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "tracing",
+          "urlPath": "/orgs/kyma-project/issues"
+        }
+      ],
+      "title": "Total bugs open",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "label": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "number": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              },
+              "repo": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "number (count)": "Open bugs",
+              "repo": "Repo"
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "field": "Repo"
+              }
+            ]
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": "github-public",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 15,
+        "w": 9,
+        "x": 14,
+        "y": 7
+      },
+      "id": 9,
+      "options": {
+        "frameIndex": 0,
+        "showHeader": true
+      },
+      "pluginVersion": "7.5.2",
+      "targets": [
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].labels[?(@.name == \"area/application-connector\")].name",
+              "name": "label"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "labels",
+              "bug,area/application-connector"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "bug,area/application-connector",
+          "urlPath": "/repos/kyma-project/kyma/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].labels[?(@.name == \"area/application-gateway\")].name",
+              "name": "label"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "labels",
+              "bug,area/application-gateway"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "bug,area/application-gateway",
+          "urlPath": "/repos/kyma-project/kyma/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].labels[?(@.name == \"area/ci\")].name",
+              "name": "label"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "labels",
+              "bug,area/ci"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "bug,area/ci",
+          "urlPath": "/repos/kyma-project/kyma/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].labels[?(@.name == \"area/cli\")].name",
+              "name": "label"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "labels",
+              "bug,area/cli"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "bug,area/cli",
+          "urlPath": "/repos/kyma-project/kyma/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].labels[?(@.name == \"area/community\")].name",
+              "name": "label"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "labels",
+              "bug,area/community"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "bug,area/community",
+          "urlPath": "/repos/kyma-project/kyma/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].labels[?(@.name == \"area/console\")].name",
+              "name": "label"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "labels",
+              "bug,area/console"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "bug,area/console",
+          "urlPath": "/repos/kyma-project/kyma/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].labels[?(@.name == \"area/control-plane\")].name",
+              "name": "label"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "labels",
+              "bug,area/control-plane"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "bug,area/control-plane",
+          "urlPath": "/repos/kyma-project/kyma/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].labels[?(@.name == \"area/core-and-supporting\")].name",
+              "name": "label"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "labels",
+              "bug,area/core-and-supporting"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "bug,area/core-and-supporting",
+          "urlPath": "/repos/kyma-project/kyma/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].labels[?(@.name == \"area/documentation\")].name",
+              "name": "label"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "labels",
+              "bug,area/documentation"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "bug,area/documentation",
+          "urlPath": "/repos/kyma-project/kyma/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].labels[?(@.name == \"area/eventing\")].name",
+              "name": "label"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "labels",
+              "bug,area/eventing"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "eventing",
+          "urlPath": "/repos/kyma-project/kyma/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].labels[?(@.name == \"area/installation\")].name",
+              "name": "label"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "labels",
+              "bug,area/installation"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "installation",
+          "urlPath": "/repos/kyma-project/kyma/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].labels[?(@.name == \"area/kyma-control-plane\")].name",
+              "name": "label"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "labels",
+              "bug,area/kyma-control-plane"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "kyma-control-plane",
+          "urlPath": "/repos/kyma-project/kyma/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].labels[?(@.name == \"area/logging\")].name",
+              "name": "label"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "labels",
+              "bug,area/logging"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "logging",
+          "urlPath": "/repos/kyma-project/kyma/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].labels[?(@.name == \"area/luigi\")].name",
+              "name": "label"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "labels",
+              "bug,area/luigi"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "luigi",
+          "urlPath": "/repos/kyma-project/kyma/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].labels[?(@.name == \"area/management-plane\")].name",
+              "name": "label"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "labels",
+              "bug,area/management-plane"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "management-plane",
+          "urlPath": "/repos/kyma-project/kyma/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].labels[?(@.name == \"area/monitoring\")].name",
+              "name": "label"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "labels",
+              "bug,area/monitoring"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "monitoring",
+          "urlPath": "/repos/kyma-project/kyma/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].labels[?(@.name == \"area/performance\")].name",
+              "name": "label"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "labels",
+              "bug,area/performance"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "performance",
+          "urlPath": "/repos/kyma-project/kyma/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].labels[?(@.name == \"area/quality\")].name",
+              "name": "label"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "labels",
+              "bug,area/quality"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "quality",
+          "urlPath": "/repos/kyma-project/kyma/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].labels[?(@.name == \"area/security\")].name",
+              "name": "label"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "labels",
+              "bug,area/security"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "security",
+          "urlPath": "/repos/kyma-project/kyma/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].labels[?(@.name == \"area/serverless\")].name",
+              "name": "label"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "labels",
+              "bug,area/serverless"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "serverless",
+          "urlPath": "/repos/kyma-project/kyma/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].labels[?(@.name == \"area/service-catalog\")].name",
+              "name": "label"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "labels",
+              "bug,area/service-catalog"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "service-catalog",
+          "urlPath": "/repos/kyma-project/kyma/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].labels[?(@.name == \"area/service-mesh\")].name",
+              "name": "label"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "labels",
+              "bug,area/service-mesh"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "service-mesh",
+          "urlPath": "/repos/kyma-project/kyma/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].labels[?(@.name == \"area/tracing\")].name",
+              "name": "label"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "labels",
+              "bug,area/tracing"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "tracing",
+          "urlPath": "/repos/kyma-project/kyma/issues"
+        }
+      ],
+      "title": "Open bugs per area",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "label": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "number": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              }
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "label": "Area",
+              "number (count)": "Open bugs"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    }
+  ],
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-1w/w",
+    "to": "now-1w/w"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Quality dashboard PoC",
+  "uid": "01f0VWjMk",
+  "version": 38
+}
