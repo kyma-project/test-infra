@@ -31,8 +31,10 @@ def main(event, context):
 	print("sending notification to {}\n".format(os.environ['NOTIFICATION_SLACK_CHANNEL']))
 	msg = json.loads(base64.b64decode(event["data"]["Data"]))
 	try:
-		result = app.client.chat_postMessage(channel=os.environ['NOTIFICATION_SLACK_CHANNEL'],
-										text="Summer has come and passed",
+		result = app.client.chat_postMessage(channel = os.environ['NOTIFICATION_SLACK_CHANNEL'],
+										text = "oom found in <{}|{}> prowjob.".format(msg["url"], msg["job_name"]),
+										username = "oom_bot",
+										icon_url = "https://www.stickpng.com/img/download/580b57fbd9996e24bc43bdf6",
 										blocks=[
 											{
 												"type": "context",
