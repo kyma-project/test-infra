@@ -19,260 +19,191 @@
   "links": [],
   "panels": [
     {
-      "datasource": "github-public",
-      "description": "",
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
       "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": null,
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
+        "defaults": {},
         "overrides": []
       },
+      "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
-        "h": 4,
-        "w": 6,
+        "h": 8,
+        "w": 9,
         "x": 0,
         "y": 0
       },
-      "id": 11,
-      "options": {
-        "frameIndex": 0,
-        "showHeader": true
+      "hiddenSeries": false,
+      "id": 20,
+      "interval": null,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
       },
-      "pluginVersion": "7.5.2",
+      "lines": false,
+      "linewidth": 1,
+      "maxDataPoints": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
       "targets": [
         {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$[*].repository.name",
-              "name": "repo"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "filter",
-              "all"
-            ],
-            [
-              "per_page",
-              "100"
-            ],
-            [
-              "labels",
-              "priority/critical"
-            ]
-          ],
-          "queryParams": "",
           "queryType": "randomWalk",
-          "refId": "tracing",
-          "urlPath": "/orgs/kyma-project/issues"
+          "refId": "A"
         }
       ],
-      "title": "Critical issues",
-      "transformations": [
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Total incidents",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
         {
-          "id": "groupBy",
-          "options": {
-            "fields": {
-              "label": {
-                "aggregations": [],
-                "operation": "groupby"
-              },
-              "number": {
-                "aggregations": [
-                  "count"
-                ],
-                "operation": "aggregate"
-              },
-              "repo": {
-                "aggregations": [],
-                "operation": "groupby"
-              }
-            }
-          }
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
         },
         {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "number (count)": "Open bugs",
-              "repo": "Repo"
-            }
-          }
-        },
-        {
-          "id": "sortBy",
-          "options": {
-            "fields": {},
-            "sort": [
-              {
-                "field": "Repo"
-              }
-            ]
-          }
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
         }
       ],
-      "type": "table"
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
-      "datasource": "github-public",
-      "description": "",
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
       "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": null,
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
+        "defaults": {},
         "overrides": []
       },
+      "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 7,
+        "h": 8,
+        "w": 8,
+        "x": 9,
         "y": 0
       },
-      "id": 10,
-      "options": {
-        "frameIndex": 0,
-        "showHeader": true
+      "hiddenSeries": false,
+      "id": 21,
+      "interval": "1d",
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
       },
-      "pluginVersion": "7.5.2",
+      "lines": false,
+      "linewidth": 1,
+      "maxDataPoints": 2,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
       "targets": [
         {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$[*].repository.name",
-              "name": "repo"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "filter",
-              "all"
-            ],
-            [
-              "per_page",
-              "100"
-            ],
-            [
-              "labels",
-              "test-case"
-            ]
-          ],
-          "queryParams": "",
           "queryType": "randomWalk",
-          "refId": "tracing",
-          "urlPath": "/orgs/kyma-project/issues"
+          "refId": "A"
         }
       ],
-      "title": "Test cases for release",
-      "transformations": [
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "New incidents",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "transformations": [],
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
         {
-          "id": "groupBy",
-          "options": {
-            "fields": {
-              "label": {
-                "aggregations": [],
-                "operation": "groupby"
-              },
-              "number": {
-                "aggregations": [
-                  "count"
-                ],
-                "operation": "aggregate"
-              },
-              "repo": {
-                "aggregations": [],
-                "operation": "groupby"
-              }
-            }
-          }
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
         },
         {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "number (count)": "Test cases",
-              "repo": "Repo"
-            }
-          }
-        },
-        {
-          "id": "sortBy",
-          "options": {
-            "fields": {},
-            "sort": [
-              {
-                "field": "Repo"
-              }
-            ]
-          }
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
         }
       ],
-      "type": "table"
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "datasource": "github-public",
@@ -305,8 +236,8 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 9,
-        "x": 14,
+        "w": 7,
+        "x": 17,
         "y": 0
       },
       "id": 12,
@@ -314,7 +245,7 @@
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.3",
       "targets": [
         {
           "cacheDurationSeconds": 300,
@@ -404,6 +335,7 @@
     },
     {
       "datasource": "github-public",
+      "description": "Hardcoded values for now",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -431,17 +363,461 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 15,
-        "w": 9,
-        "x": 14,
+        "h": 6,
+        "w": 7,
+        "x": 17,
         "y": 7
+      },
+      "id": 14,
+      "options": {
+        "frameIndex": 0,
+        "showHeader": true
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$.total_count",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "q",
+              "repo:kyma-project/kyma label:bug is:issue is:open created:>=2021-04-30"
+            ],
+            [
+              "per_page",
+              "100"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "new this week",
+          "urlPath": "/search/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$.total_count",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "q",
+              "repo:kyma-project/kyma label:bug is:issue is:open created:<=2021-04-07"
+            ],
+            [
+              "per_page",
+              "100"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "1 month",
+          "urlPath": "/search/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$.total_count",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "q",
+              "repo:kyma-project/kyma label:bug is:issue is:open created:<=2021-02-07"
+            ],
+            [
+              "per_page",
+              "100"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "3 months",
+          "urlPath": "/search/issues"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$.total_count",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "q",
+              "repo:kyma-project/kyma label:bug is:issue is:open created:<=2020-05-07"
+            ],
+            [
+              "per_page",
+              "100"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "6 months",
+          "urlPath": "/search/issues"
+        }
+      ],
+      "title": "Open bug age (hardcoded WIP)",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "Field": "Time",
+              "Max": "Count"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 9,
+        "x": 0,
+        "y": 8
+      },
+      "id": 23,
+      "options": {
+        "showHeader": true
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Job success rate",
+      "type": "table"
+    },
+    {
+      "datasource": "bigquery-prow",
+      "description": "To simulate how test coverage could look like",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 9,
+        "y": 8
+      },
+      "id": 16,
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": false,
+        "text": {}
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "orderByCol": "1",
+          "orderBySort": "1",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "rawSql": "WITH JOBS as (\nSELECT\n      MIN(CAST(REGEXP_EXTRACT(textPayload, r\"(\\d+\\.\\d+)\") AS float64)) AS val\n    , ANY_VALUE(labels.k8s_pod_prow_k8s_io_job) AS k8s_pod_prow_k8s_io_job\n    , MIN(timestamp) as timestamp\n  FROM `sap-kyma-prow.total_test_coverage.stdout`\n  GROUP BY resource.labels.pod_name\n  HAVING k8s_pod_prow_k8s_io_job NOT LIKE \"pre-%\"\n)\nSELECT a.k8s_pod_prow_k8s_io_job\n     , b.last_result\n     , b.last_timestamp\n     , a.samples_cnt\n     , a.min_result\n     , a.max_result\n     , ROUND(COALESCE((b.last_result - b.previous_result), 0),2) AS last_change\n     , format(\"https://status.build.kyma-project.io/job-history/kyma-prow-logs/logs/%s\", a.k8s_pod_prow_k8s_io_job)  as link\n     , a.stddev\n from \n( SELECT\n    k8s_pod_prow_k8s_io_job\n  , MIN(val) AS min_result\n  , MAX(val) AS max_result\n  , AVG(val) AS avg \n  , COUNT(*) AS samples_cnt\n  , MAX(timestamp) AS timestamp\n  , STDDEV_POP(val) AS stddev\nFROM JOBS\nGROUP BY k8s_pod_prow_k8s_io_job\nORDER BY k8s_pod_prow_k8s_io_job\n) a \nJOIN (SELECT \n   distinct(k8s_pod_prow_k8s_io_job) \n , FIRST_VALUE(val) OVER w1 AS last_result\n , FIRST_VALUE(timestamp) OVER w1 AS last_timestamp\n , NTH_VALUE(val,2) OVER w1 AS previous_result\nFROM JOBS\n WINDOW w1 AS (\n    PARTITION BY k8s_pod_prow_k8s_io_job ORDER BY timestamp DESC\n    ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)\n) b on a.k8s_pod_prow_k8s_io_job = b.k8s_pod_prow_k8s_io_job",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "-- value --"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "-- time --",
+          "timeColumnType": "TIMESTAMP",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Last result (test coveraga mockup)",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "includeTimeField": false,
+            "mode": "reduceFields",
+            "reducers": [
+              "mean"
+            ]
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "last_result"
+              ]
+            }
+          }
+        }
+      ],
+      "type": "gauge"
+    },
+    {
+      "datasource": "github-public",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 9,
+        "y": 12
+      },
+      "id": 10,
+      "options": {
+        "frameIndex": 0,
+        "showHeader": true
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].repository.name",
+              "name": "repo"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "filter",
+              "all"
+            ],
+            [
+              "per_page",
+              "100"
+            ],
+            [
+              "labels",
+              "test-case"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "tracing",
+          "urlPath": "/orgs/kyma-project/issues"
+        }
+      ],
+      "title": "Test cases for release",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "label": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "number": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              },
+              "repo": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "number (count)": "Test cases",
+              "repo": "Repo"
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "field": "Repo"
+              }
+            ]
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": "github-public",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 7,
+        "x": 17,
+        "y": 13
       },
       "id": 9,
       "options": {
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.3",
       "targets": [
         {
           "cacheDurationSeconds": 300,
@@ -1147,6 +1523,313 @@
         }
       ],
       "type": "table"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 9,
+        "x": 0,
+        "y": 16
+      },
+      "id": 25,
+      "options": {
+        "showHeader": true
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Whitesource/protecode",
+      "type": "table"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 8,
+        "x": 9,
+        "y": 16
+      },
+      "id": 18,
+      "options": {
+        "content": "# ??\nexpected days to release ??",
+        "mode": "markdown"
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Days to release",
+      "type": "text"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 9,
+        "y": 19
+      },
+      "id": 27,
+      "options": {
+        "showHeader": true
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Provisioning success rate",
+      "type": "table"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 9,
+        "y": 23
+      },
+      "id": 28,
+      "options": {
+        "showHeader": true
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Deprovisioning success rate",
+      "type": "table"
+    },
+    {
+      "datasource": "github-public",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 9,
+        "x": 0,
+        "y": 24
+      },
+      "id": 11,
+      "options": {
+        "frameIndex": 0,
+        "showHeader": true
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$[*].repository.name",
+              "name": "repo"
+            },
+            {
+              "jsonPath": "$[*].number",
+              "name": ""
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "params": [
+            [
+              "status",
+              "open"
+            ],
+            [
+              "filter",
+              "all"
+            ],
+            [
+              "per_page",
+              "100"
+            ],
+            [
+              "labels",
+              "priority/critical"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "tracing",
+          "urlPath": "/orgs/kyma-project/issues"
+        }
+      ],
+      "title": "Critical issues",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "label": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "number": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              },
+              "repo": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "number (count)": "Open bugs",
+              "repo": "Repo"
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "field": "Repo"
+              }
+            ]
+          }
+        }
+      ],
+      "type": "table"
     }
   ],
   "schemaVersion": 27,
@@ -1162,6 +1845,6 @@
   "timepicker": {},
   "timezone": "",
   "title": "Quality dashboard PoC",
-  "uid": "01f0VWjMk",
-  "version": 38
+  "uid": "de6t5dfsw34dsa",
+  "version": 18
 }
