@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "skr-free-aws-integration-dev"
+  - pjName: "skr-trial-integration-dev"
 prConfigs:
   kyma-project:
     kyma:
