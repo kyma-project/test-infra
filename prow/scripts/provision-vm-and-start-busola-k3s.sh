@@ -118,9 +118,19 @@ log::info "Copying Kyma kubeconfig to the instance"
 #shellcheck disable=SC2088
 utils::send_to_vm "${ZONE}" "busola-ui-test-${RANDOM_ID}" "${TMP_DIR}/kubeconfig-${KYMA_CLUSTER_NAME}.yaml" "~/kubeconfig-kyma.yaml"
 
-log::info "Copying Busola to the instance"
+log::info "Copying Busola 'tests' folder to the instance"
 #shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "busola-ui-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola" "~/busola"
+utils::compress_send_to_vm "${ZONE}" "busola-ui-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/tests" "~/busola-tests"
+
+log::info "Copying Busola 'resources' folder to the instance"
+#shellcheck disable=SC2088
+utils::compress_send_to_vm "${ZONE}" "busola-ui-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/resources" "~/busola-resources"
+
+
+log::info "Copying Kyma-Local to the instance"
+#shellcheck disable=SC2088
+utils::send_to_vm "${ZONE}" "busola-ui-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/local-kyma" "~/local-kyma"
+
 
 log::info "Triggering the installation"
 gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "busola-ui-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/busola-integration-k3s.sh"
