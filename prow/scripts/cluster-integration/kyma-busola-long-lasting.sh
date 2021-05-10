@@ -211,7 +211,7 @@ if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
     log::info "Kyma cluster name: ${KYMA_COMMON_NAME}"
     if [[ $RECREATE_CLUSTER == "true" ]]; then
         delete_cluster "${KYMA_COMMON_NAME}"
-        # wait 5 minutes
+        # wait 2 minutes
         sleep 120
         provisionCluster "${KYMA_COMMON_NAME}" "${RESOURCES_PATH}/cluster-kyma.yaml"
     else
@@ -229,7 +229,7 @@ elif [[ $BUSOLA_PROVISION_TYPE == "BUSOLA" ]]; then
     log::info "Busola cluster name: ${BUSOLA_COMMON_NAME}"
     if [[ $RECREATE_CLUSTER == "true" ]]; then
         delete_cluster "${BUSOLA_COMMON_NAME}"
-        # wait 5 minutes
+        # wait 2 minutes
         sleep 120
         provisionCluster "${BUSOLA_COMMON_NAME}" "${RESOURCES_PATH}/cluster-busola.yaml"
         provisionIngress "${BUSOLA_COMMON_NAME}"
