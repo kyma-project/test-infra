@@ -46,9 +46,11 @@ set -o pipefail
 #prepare_k3s
 #run_tests
 
-echo "ls"
-ls
-kubectl cluster-info
+apt-get nodejs npm
+cd busola/test
+npm ci
+npm run test:cluster
+
 
 export KYMA_KUBECONFIG_PATH="${PWD}/kubeconfig-kyma.yaml"
 echo "KUBECONFIG: ${KYMA_KUBECONFIG_PATH}"
