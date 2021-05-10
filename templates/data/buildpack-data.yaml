@@ -432,3 +432,25 @@ templates:
                       local:
                         - "default"
                         - "postsubmit"
+                  - jobConfig:
+                      name: "pre-test-infra-pubsub-connector-gateway"
+                      run_if_changed: '^development/pubsub-connector/pubSubGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+                      args:
+                        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/pubsub-connector/pubSubGateway"
+                    inheritedConfigs:
+                      global:
+                        - "image_buildpack-golang"
+                      local:
+                        - "default"
+                        - "presubmit"
+                  - jobConfig:
+                      name: "post-test-infra-pubsub-connector-gateway"
+                      run_if_changed: '^development/pubsub-connector/pubSubGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+                      args:
+                        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/pubsub-connector/pubSubGateway"
+                    inheritedConfigs:
+                      global:
+                        - "image_buildpack-golang"
+                      local:
+                        - "default"
+                        - "postsubmit"
