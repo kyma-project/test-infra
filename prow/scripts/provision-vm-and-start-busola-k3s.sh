@@ -25,13 +25,13 @@ fi
 
 cleanup() {
     # # TODO - collect junit results
-    # log::info "Stopping instance kyma-integration-test-${RANDOM_ID}"
+    # log::info "Stopping instance busola-ui-test-${RANDOM_ID}"
     # log::info "It will be removed automatically by cleaner job"
     
     # do not fail the job regardless of the vm deletion result
     set +e
-
-    gcloud compute instances stop --async --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}"
+    
+    gcloud compute instances stop --async --zone="${ZONE}" "busola-ui-test-${RANDOM_ID}"
     
     log::info "End of cleanup"
 }
@@ -94,14 +94,14 @@ ZONE_LIMIT=${ZONE_LIMIT:-5}
 EU_ZONES=$(gcloud compute zones list --filter="name~europe" --limit="${ZONE_LIMIT}" | tail -n +2 | awk '{print $1}')
 STARTTIME=$(date +%s)
 for ZONE in ${EU_ZONES}; do
-    log::info "Attempting to create a new instance named kyma-integration-test-${RANDOM_ID} in zone ${ZONE} using image ${IMAGE}"
-    gcloud compute instances create "kyma-integration-test-${RANDOM_ID}" \
+    log::info "Attempting to create a new instance named busola-ui-test-${RANDOM_ID} in zone ${ZONE} using image ${IMAGE}"
+    gcloud compute instances create "busola-ui-test-${RANDOM_ID}" \
     --metadata enable-oslogin=TRUE \
     --image "${IMAGE}" \
     --machine-type n2-standard-4 \
     --zone "${ZONE}" \
     --boot-disk-size 200 "${LABELS[@]}" && \
-    log::info "Created kyma-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
+    log::info "Created busola-ui-test-${RANDOM_ID} in zone ${ZONE}" && break
     log::error "Could not create machine in zone ${ZONE}"
 done || exit 1
 ENDTIME=$(date +%s)
@@ -116,13 +116,13 @@ kubectl get secrets "${KYMA_CLUSTER_NAME}.kubeconfig" -o jsonpath="{.data.kubeco
 
 log::info "Copying Kyma kubeconfig to the instance"
 #shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${TMP_DIR}/kubeconfig-${KYMA_CLUSTER_NAME}.yaml" "~/kubeconfig-kyma.yaml"
+utils::send_to_vm "${ZONE}" "busola-ui-test-${RANDOM_ID}" "${TMP_DIR}/kubeconfig-${KYMA_CLUSTER_NAME}.yaml" "~/kubeconfig-kyma.yaml"
 
 log::info "Copying Busola to the instance"
 #shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola" "~/busola"
+utils::compress_send_to_vm "${ZONE}" "busola-ui-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola" "~/busola"
 
 log::info "Triggering the installation"
-gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/busola-integration-k3s.sh"
+gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "busola-ui-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/busola-integration-k3s.sh"
 
 log::success "all done"

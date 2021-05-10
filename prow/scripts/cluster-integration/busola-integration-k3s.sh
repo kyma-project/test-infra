@@ -46,6 +46,10 @@ set -o pipefail
 #prepare_k3s
 #run_tests
 
+echo "ls"
+ls
+kubectl cluster-info
+
 export KYMA_KUBECONFIG_PATH="${PWD}/kubeconfig-kyma.yaml"
 echo "KUBECONFIG: ${KYMA_KUBECONFIG_PATH}"
 
