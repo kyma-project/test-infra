@@ -9,7 +9,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   serviceBindingRef:
-    name: mp-{{ .Values.slackAppName }}
+    name: mp-{{ .Values.slackConnector.slackAppName }}
   usedBy:
     kind: serverless-function
     name: {{ .Release.Name }}-oom-found

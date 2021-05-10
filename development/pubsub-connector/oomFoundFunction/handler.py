@@ -3,66 +3,54 @@ import json
 import os
 
 from slack_bolt import App
-# from google.cloud import firestore
 from slack_sdk.errors import SlackApiError
 
 
-#def getProwjobDoc(db: firestore.Client, prowjobid: str) -> dict:
-#	doc_ref = db.collection('prowjobs').document('{}'.format(prowjobid))
-#	doc = doc_ref.get()
-#	if doc.exists:
-#		return doc.to_dict()
-#	else:
-#		return None
-
-
-#def getProwjobID():
-
-
 def main(event, context):
+	# Using SLACK_BOT_TOKEN environment variable
 	app = App(
 	)
-	app.client.base_url = "{}/".format(os.environ['OOM_FOUND_SLACK_CONNECTOR_2906B647_0DFE_4BF0_98E8_1C50D0348550_GATEWAY_URL'])
+	# Set Slack API base URL to the URL of slack-connector application gateway.
+	app.client.base_url = "{}/".format(
+		os.environ['OOM_FOUND_SLACK_CONNECTOR_2906B647_0DFE_4BF0_98E8_1C50D0348550_GATEWAY_URL']
+	)
 	print("Slack api base URL: {}\n".format(app.client.base_url))
-	# Project ID is determined by the GCLOUD_PROJECT environment variable
-	# GOOGLE_APPLICATION_CREDENTIALS
-	#db = firestore.Client()
-	#getProwjobDoc(db, )
-	print("sending notification to {}\n".format(os.environ['NOTIFICATION_SLACK_CHANNEL']))
+	print("sending notification to channel: {}\n".format(os.environ['NOTIFICATION_SLACK_CHANNEL']))
+	# Get cloud events data.
 	msg = json.loads(base64.b64decode(event["data"]["Data"]))
 	try:
-		result = app.client.chat_postMessage(channel = os.environ['NOTIFICATION_SLACK_CHANNEL'],
-										text = "oom found in <{}|{}> prowjob.".format(msg["url"], msg["job_name"]),
-										username = "oom_bot",
-										icon_url = "https://www.stickpng.com/img/download/580b57fbd9996e24bc43bdf6",
-										blocks=[
-											{
-												"type": "context",
-												"elements": [
-													{
-														"type": "mrkdwn",
-														"text": "OutOfMemory event"
+		# Deliver message to the channel.
+		result = app.client.chat_postMessage(channel=os.environ['NOTIFICATION_SLACK_CHANNEL'],
+											text="oom found in <{}|{}> prowjob.".format(msg["url"], msg["job_name"]),
+											username="ProwBot",
+											icon_url="https://www.stickpng.com/img/download/580b57fbd9996e24bc43bdf6",
+											blocks=[
+												{
+													"type": "context",
+													"elements": [
+														{
+															"type": "mrkdwn",
+															"text": "OutOfMemory event"
+														}
+													]
+												},
+												{
+													"type": "header",
+													"text": {
+														"type": "plain_text",
+														"text": "OOM event found"
 													}
-												]
-											},
-											{
-												"type": "header",
-												"text": {
-													"type": "plain_text",
-													"text": "OOM event found"
+												},
+												{
+													"type": "section",
+													"text": {
+														"type": "mrkdwn",
+														"text": "OutOfMemory event found in <{}|{}> prowjob.".format(
+															msg["url"], msg["job_name"])
+													}
 												}
-											},
-											{
-												"type": "section",
-												"text": {
-													"type": "mrkdwn",
-													"text": "OutOfMemory event found in <{}|{}> prowjob.".format(msg["url"], msg["job_name"])
-												}
-											}
-										])
-		#assert result["ok"]
-		#return result["ok"]
-		print(result)
+											])
+		assert result["ok"]
 	except SlackApiError as e:
-		#assert result["ok"] is False
+		assert result["ok"] is False
 		print(f"Got an error: {e.response['error']}")

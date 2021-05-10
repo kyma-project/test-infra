@@ -1,41 +1,38 @@
+# Github connector application name. Must match name from Application resource.
+appName: "sap-pubsub-connector"
 pubsubGateway:
   # Github webhook gateway image.
-  image: "eu.gcr.io/sap-kyma-neighbors-dev/pubsubgateway:latest"
+  image: "eu.gcr.io/kyma-project/test-infra/pubsubgateway:latest"
   # Subscription ID to pull messages from.
   pubsubSubscriptionID: "oom-event-found-sub"
   # Slack channel name to send messages.
-  #notificationSlackChannel: "kyma-neighbors"
-  notificationSlackChannel: "neighbors-dev-test"
+  notificationSlackChannel: "kyma-neighbors"
   # Forwarded event type
   eventType: "oomevent.found.v1"
   # GCP project with pubsub subscription
   projectID: "sap-kyma-prow"
   # secret name containing keys of SA with subscriber role on a pubsub subscription
   subscriberSaSecret: "subscriber-sa"
-# Github connector application name. Must match name from Application resource.
-appName: "sap-pubsub-connector"
-# Slack connector application name. Must match name from Application resource.
-slackAppName: "sap-slack-connector"
-# Slack application plan suffix. Must match suffix from CMP.
-#cmpSlackAppPlanSuffix: "36130"
-cmpSlackAppPlanSuffix: "4af0a"
-cmpSlackAppPlan: "slack-connector"
-# Github application plan suffix. Must match suffix from CMP.
-cmpAppPlanSuffix: "553d5"
-# Kyma cluster FQDN.
-eventPublisherProxyURL: "http://eventing-event-publisher-proxy.kyma-system/publish"
+  # Kyma cluster FQDN.
+  eventPublisherProxyURL: "http://eventing-event-publisher-proxy.kyma-system/publish"
 slackConnector:
+  # Slack application plan suffix. Must match suffix from CMP.
+  cmpSlackAppPlanSuffix: "36130"
+  cmpSlackAppPlan: "slack-connector"
+  # Slack connector application name. Must match name from Application resource.
+  slackAppName: "sap-slack-connector"
+  # Secret name with slack bot token.
   botTokenSecret: "slack-bot-token"
+  # Secret key name with slack bot token.
   botTokenSecretKey: "token"
-
+  # Token fake value.
+  botToken: "fake_token"
 function:
-  issues:
-    labeled:
+  oomevent:
+    found:
       # Repository URL with function code.
-      #repositoryUrl: "https://github.com/kyma-project/test-infra.git"
-      repositoryUrl: "https://github.com/dekiel/test-infra.git"
+      repositoryUrl: "https://github.com/kyma-project/test-infra.git"
       # Path to directory with function code. Relative to repository root.
       functionBaseDir: "/development/pubsub-connector/oomFoundFunction"
       # Branch name with function code.
-      #branch: "master"
-      branch: "pubsub-to-slack"
+      branch: "master"

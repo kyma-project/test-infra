@@ -13,8 +13,7 @@ import (
 )
 
 const (
-	credentialsFilePath      = "/keys/saCredentials.json"
-	debugCredentialsFilePath = "/Users/i319037/Downloads/saCredentials.json"
+	credentialsFilePath = "/keys/saCredentials.json"
 )
 
 var (
@@ -22,17 +21,16 @@ var (
 	kymeEventClient    cloudevents.Client
 	cloudEventsContext context.Context
 	conf               Config
-	err                error
 )
 
-//Config containing all program configs
+//Config contain program configs provided bye environment variables.
 type Config struct {
-	PubSubGatewayName string `envconfig:"PUBSUB_GATEWAY_NAME"` // used as eventing cloudevent source
-	KymaEventsService string `envconfig:"EVENTING_SERVICE"`
-	SubscriptionID    string `envconfig:"PUBSUB_SUBSCRIPTION_ID"`
-	EventType         string `envconfig:"EVENT_TYPE"`
-	ProjectID         string `envconfig:"PUBSUB_PROJECT_ID"`
-	AppName           string `envconfig:"APP_NAME"`
+	PubSubGatewayName string `envconfig:"PUBSUB_GATEWAY_NAME"`    // Used as eventing cloudevent source.
+	KymaEventsService string `envconfig:"EVENTING_SERVICE"`       // URL of Event Publisher Proxy.
+	SubscriptionID    string `envconfig:"PUBSUB_SUBSCRIPTION_ID"` // Google PubSub subscription ID to pull messages from.
+	EventType         string `envconfig:"EVENT_TYPE"`             // Event type published to Event Publisher Proxy.
+	ProjectID         string `envconfig:"PUBSUB_PROJECT_ID"`      // Google PubSub project ID.
+	AppName           string `envconfig:"APP_NAME"`               // PubSub Connector application name as set in Compass.
 }
 
 func main() {
@@ -41,56 +39,61 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed init config from environment variables %s", err.Error())
 	}
-	// make a
+
+	// Create Google PubSub client to pull messages.
 	ctx := context.Background()
 	pubSubClient, err = pubsub.NewClient(ctx, conf.ProjectID, option.WithCredentialsFile(credentialsFilePath))
-	//pubSubClient, err = pubsub.NewClient(ctx, conf.ProjectID, option.WithCredentialsFile(debugCredentialsFilePath))
 	if err != nil {
-		log.WithFields(log.Fields{"msg": "failed create pubsub client"}).Fatalf("%s", err)
+		log.Fatalf("failed create pubsub client, got error: %s", err.Error())
 	}
 	defer pubSubClient.Close()
+
+	// Create cloud events client for publishing messages to Kyma.
 	kymeEventClient, err = cloudevents.NewClientHTTP()
 	if err != nil {
-		log.Fatalf("failed create kyma eventing cloud event client, got error: %s", err)
+		log.Fatalf("failed create kyma eventing cloud event client, got error: %s", err.Error())
 	}
 	cloudEventsContext = cloudevents.ContextWithTarget(context.Background(), conf.KymaEventsService)
 	log.Infof("using eventing service URL: %s", conf.KymaEventsService)
-	// create subscription to pull messages from
+
+	// create subscription client to pull messages from Google PubSub
 	sub := pubSubClient.Subscription(conf.SubscriptionID)
 	log.Infof("subscribing to pubsub subscription: %s", conf.SubscriptionID)
 	ok, err := sub.Exists(ctx)
 	if err != nil {
-		log.Fatalf("failed to check subscription presence: %v", err)
+		log.Fatalf("failed to check subscription presence: %v", err.Error())
 	}
-	log.Infof("subscription exists: %t", ok)
-	log.Infof("subscribing to %s", conf.SubscriptionID)
+	log.Infof("subscription %s exists: %t", conf.SubscriptionID, ok)
+	// Removing dashes from event type to comply with eventing requirements.
 	eventingEventType := strings.Replace(fmt.Sprintf("sap.kyma.custom.mp-%s.%s", conf.AppName, conf.EventType), "-", "", -1)
 	log.Infof("using event type : %s", eventingEventType)
-	// Create a channel to handle messages to as they come in.
+	// Create a channel to handle messages from PubSub as they come in.
 	cm := make(chan *pubsub.Message)
 	defer close(cm)
 	// Handle individual messages in a goroutine.
 	go func() {
 		for msg := range cm {
-			log.WithFields(log.Fields{"msg": "received message"}).Infof("message ID:%s", msg.ID)
+			log.Infof("received message with ID: %s", msg.ID)
+			// Create cloud events event.
 			event := cloudevents.NewEvent()
 			event.SetSource(conf.PubSubGatewayName)
 			event.SetType(eventingEventType)
 			event.SetData(cloudevents.ApplicationJSON, msg)
+			// Publish event to Kyma eventing.
 			if result := kymeEventClient.Send(cloudEventsContext, event); cloudevents.IsUndelivered(result) {
 				msg.Nack()
-				log.WithFields(log.Fields{"msg": "failed send event to kyma eventing service"}).Errorf("%s", result)
+				log.Errorf("failed send event to kyma eventing service: %s", result)
 			}
 			msg.Ack()
+			log.Infof("Message ID %s published to Kyma.", msg.ID)
 		}
 	}()
-
+	// Pulling messsages from pubsub.
 	// Receive blocks until the context is cancelled or an error occurs.
 	err = sub.Receive(ctx, func(ctx context.Context, m *pubsub.Message) {
 		cm <- m
 	})
 	if err != nil {
-		// TODO: support exiting when error and canceling context
-		log.WithFields(log.Fields{"msg": "Finished pulling messages or got an error"}).Errorf("%s", err)
+		log.Errorf("Finished pulling messages or got an error: %s", err.Error())
 	}
 }

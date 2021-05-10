@@ -10,8 +10,8 @@ metadata:
 spec:
   type: git
   source: {{ .Release.Name }}-test-infra
-  reference: {{ .Values.function.issues.labeled.branch }}
-  baseDir: {{ .Values.function.issues.labeled.functionBaseDir }}
+  reference: {{ .Values.function.oomevent.found.branch }}
+  baseDir: {{ .Values.function.oomevent.found.functionBaseDir }}
   env:
     - name: REQ_MB_LIMIT
       value: "10"

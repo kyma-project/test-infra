@@ -8,4 +8,4 @@ metadata:
     release: {{ .Release.Name | quote }}
     function: "{{ .Release.Name }}-oom-found"
 spec:
-  url: {{ .Values.function.issues.labeled.repositoryUrl }}
+  url: {{ .Values.function.oomevent.found.repositoryUrl }}
