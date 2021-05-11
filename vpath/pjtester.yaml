@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "pre-master-kyma-integration-k3s-central-application-gateway"
+  - pjName: "pre-main-kyma-integration-k3s-central-application-gateway"
 prConfigs:
   kyma-project:
     kyma:
