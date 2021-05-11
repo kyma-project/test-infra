@@ -30,7 +30,7 @@ branch-protection:
         test-infra:
           required_status_checks:
             contexts:
-              - "pre-master-test-infra-vpathguard"
+              - "pre-main-test-infra-vpathguard"
         website:
           branches:
             main:

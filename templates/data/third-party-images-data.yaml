@@ -13,7 +13,7 @@ templates:
           - repoName: "kyma-project/third-party-images"
             jobs:
               - jobConfig:
-                  name: "pre-master-tpi-cloudsql-proxy"
+                  name: "pre-main-tpi-cloudsql-proxy"
                   run_if_changed: "^cloudsql-proxy/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/cloudsql-proxy"
@@ -27,7 +27,7 @@ templates:
                   local:
                     - "default"
               - jobConfig:
-                  name: "post-master-tpi-cloudsql-proxy"
+                  name: "post-main-tpi-cloudsql-proxy"
                   run_if_changed: "^cloudsql-proxy/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/cloudsql-proxy"
@@ -43,7 +43,7 @@ templates:
                     - "default"
 
               - jobConfig:
-                  name: "pre-master-tpi-docker-registry"
+                  name: "pre-main-tpi-docker-registry"
                   run_if_changed: "^docker-registry/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/docker-registry"
@@ -57,7 +57,7 @@ templates:
                   local:
                     - "default"
               - jobConfig:
-                  name: "post-master-tpi-docker-registry"
+                  name: "post-main-tpi-docker-registry"
                   run_if_changed: "^docker-registry/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/docker-registry"
@@ -73,7 +73,7 @@ templates:
                     - "default"
 
               - jobConfig:
-                  name: "pre-master-tpi-fluent-bit"
+                  name: "pre-main-tpi-fluent-bit"
                   run_if_changed: "^fluent-bit/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/fluent-bit"
@@ -87,7 +87,7 @@ templates:
                   local:
                     - "default"
               - jobConfig:
-                  name: "post-master-tpi-fluent-bit"
+                  name: "post-main-tpi-fluent-bit"
                   run_if_changed: "^fluent-bit/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/fluent-bit"
@@ -103,7 +103,7 @@ templates:
                     - "default"
 
               - jobConfig:
-                  name: "pre-master-tpi-jaeger-operator"
+                  name: "pre-main-tpi-jaeger-operator"
                   run_if_changed: "^jaeger-operator/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/jaeger-operator"
@@ -117,7 +117,7 @@ templates:
                   local:
                     - "default"
               - jobConfig:
-                  name: "post-master-tpi-jaeger-operator"
+                  name: "post-main-tpi-jaeger-operator"
                   run_if_changed: "^jaeger-operator/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/jaeger-operator"
@@ -133,7 +133,7 @@ templates:
                     - "default"
 
               - jobConfig:
-                  name: "pre-master-tpi-k8s-tools"
+                  name: "pre-main-tpi-k8s-tools"
                   run_if_changed: "^k8s-tools/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/k8s-tools"
@@ -147,7 +147,7 @@ templates:
                   local:
                     - "default"
               - jobConfig:
-                  name: "post-master-tpi-k8s-tools"
+                  name: "post-main-tpi-k8s-tools"
                   run_if_changed: "^k8s-tools/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/k8s-tools"
@@ -163,7 +163,7 @@ templates:
                     - "default"
 
               - jobConfig:
-                  name: "pre-master-tpi-kiali"
+                  name: "pre-main-tpi-kiali"
                   run_if_changed: "^kiali/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiali"
@@ -177,7 +177,7 @@ templates:
                   local:
                     - "default"
               - jobConfig:
-                  name: "post-master-tpi-kiali"
+                  name: "post-main-tpi-kiali"
                   run_if_changed: "^kiali/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiali"
@@ -193,7 +193,7 @@ templates:
                     - "default"
 
               - jobConfig:
-                  name: "pre-master-tpi-kiwigrid-sidecar"
+                  name: "pre-main-tpi-kiwigrid-sidecar"
                   run_if_changed: "^kiwigrid-sidecar/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiwigrid-sidecar"
@@ -207,7 +207,7 @@ templates:
                   local:
                     - "default"
               - jobConfig:
-                  name: "post-master-tpi-kiwigrid-sidecar"
+                  name: "post-main-tpi-kiwigrid-sidecar"
                   run_if_changed: "^kiwigrid-sidecar/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiwigrid-sidecar"
@@ -223,7 +223,7 @@ templates:
                     - "default"
 
               - jobConfig:
-                  name: "pre-master-tpi-minio"
+                  name: "pre-main-tpi-minio"
                   run_if_changed: "^minio/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/minio"
@@ -237,7 +237,7 @@ templates:
                   local:
                     - "default"
               - jobConfig:
-                  name: "post-master-tpi-minio"
+                  name: "post-main-tpi-minio"
                   run_if_changed: "^minio/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/minio"
@@ -253,7 +253,7 @@ templates:
                     - "default"
 
               - jobConfig:
-                  name: "pre-master-tpi-minio-mc"
+                  name: "pre-main-tpi-minio-mc"
                   run_if_changed: "^minio-mc/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/minio-mc"
@@ -267,7 +267,7 @@ templates:
                   local:
                     - "default"
               - jobConfig:
-                  name: "post-master-tpi-minio-mc"
+                  name: "post-main-tpi-minio-mc"
                   run_if_changed: "^minio-mc/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/minio-mc"
@@ -283,7 +283,7 @@ templates:
                     - "default"
 
               - jobConfig:
-                  name: "pre-master-tpi-console-nginx"
+                  name: "pre-main-tpi-console-nginx"
                   run_if_changed: "^console-nginx/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/console-nginx"
@@ -297,7 +297,7 @@ templates:
                   local:
                     - "default"
               - jobConfig:
-                  name: "post-master-tpi-console-nginx"
+                  name: "post-main-tpi-console-nginx"
                   run_if_changed: "^console-nginx/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/console-nginx"
@@ -313,7 +313,7 @@ templates:
                     - "default"
 
               - jobConfig:
-                  name: "pre-master-tpi-node-exporter"
+                  name: "pre-main-tpi-node-exporter"
                   run_if_changed: "^prometheus-node-exporter/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/prometheus-node-exporter"
@@ -327,7 +327,7 @@ templates:
                   local:
                     - "default"
               - jobConfig:
-                  name: "post-master-tpi-node-exporter"
+                  name: "post-main-tpi-node-exporter"
                   run_if_changed: "^prometheus-node-exporter/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/prometheus-node-exporter"
@@ -343,7 +343,7 @@ templates:
                     - "default"
 
               - jobConfig:
-                  name: "pre-master-tpi-grafana"
+                  name: "pre-main-tpi-grafana"
                   run_if_changed: "^grafana/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/grafana"
@@ -357,7 +357,7 @@ templates:
                   local:
                     - "default"
               - jobConfig:
-                  name: "post-master-tpi-grafana"
+                  name: "post-main-tpi-grafana"
                   run_if_changed: "^grafana/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/grafana"

@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/console:
-    - name: pre-master-console-react-components
+    - name: pre-main-console-react-components
       run_if_changed: '^components/react/'
       skip_report: false
       decorate: true
@@ -34,7 +34,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/console:
-    - name: post-master-console-react-components
+    - name: post-main-console-react-components
       annotations:
         testgrid-create-test-group: "false"
       run_if_changed: '^components/react/'

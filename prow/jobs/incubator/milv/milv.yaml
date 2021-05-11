@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-incubator/milv:
-    - name: pre-master-kyma-incubator-milv
+    - name: pre-main-kyma-incubator-milv
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
@@ -39,7 +39,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-incubator/milv:
-    - name: post-master-kyma-incubator-milv
+    - name: post-main-kyma-incubator-milv
       annotations:
         testgrid-create-test-group: "false"
       labels:

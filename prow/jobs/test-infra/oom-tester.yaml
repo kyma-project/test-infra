@@ -1,0 +1,54 @@
+presubmits: # runs on PRs
+  kyma-project/test-infra:
+    - name: oom-tester
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "test-run"
+        prow.k8s.io/pubsub.topic: "test-infra-periodics"
+        preset-log-collector-slack-token: "true"
+        preset-gardener-azure-kyma-integration: "true"
+        preset-docker-push-repository-gke-integration: "true"
+        preset-kyma-cli-stable: "true"
+        preset-az-kyma-prow-credentials: "true"
+        preset-dind-enabled: "true"                   # we need to be able to start docker
+        preset-gc-compute-envs: "true"                # prrovides the GCP region
+        preset-gc-project-env: "true"                 # required to be able to delete images
+        preset-sa-test-gcr-push: "true"               # required for pushing images
+        preset-sa-gardener-logs: "true"               # required for writing logs to Stackdriver
+        preset-cluster-version: "true"
+        preset-debug-commando-oom: "true"             # detect and troubleshoot oom events
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210402-70b4b74f-k8s1.16
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/oom-test.sh"
+            env:
+              - name: RS_GROUP
+                value: "kyma-gardener-azure"
+              - name: REGION
+                value: "northeurope"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
+              - name: GARDENER_REGION
+                value: "northeurope"
+              - name: GARDENER_ZONES
+                value: "1"
+              - name: EXECUTION_PROFILE
+                value: "evaluation"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: true
+            resources:
+              limits:
+                memory: 1Gi
+                cpu: 0.4

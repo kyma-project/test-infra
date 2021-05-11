@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-incubator/compass:
-    - name: pre-master-compass-integration
+    - name: pre-main-compass-integration
       labels:
         preset-build-pr: "true"
         preset-gc-project-env: "true"
@@ -41,13 +41,13 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-incubator/compass:
-    - name: post-master-compass-integration
+    - name: post-main-compass-integration
       annotations:
         description: "Compass integration job."
         testgrid-dashboards: "kyma-incubator_compass"
         testgrid-days-of-results: "60"
       labels:
-        preset-build-master: "true"
+        preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"

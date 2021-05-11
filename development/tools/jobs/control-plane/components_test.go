@@ -49,16 +49,6 @@ var components = []struct {
 		},
 	},
 	{
-		name:  "metris",
-		image: tester.ImageGolangKubebuilder2BuildpackLatest,
-		suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.ControlPlaneRepo(),
-			jobsuite.AllReleases(),
-		},
-	},
-	{
 		name:  "kyma-metrics-collector",
 		image: tester.ImageGolangKubebuilder2BuildpackLatest,
 		suite: tester.NewGenericComponentSuite,

@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/helm-broker:
-    - name: pre-master-helm-broker
+    - name: pre-main-helm-broker
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -35,7 +35,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-master-helm-broker-chart-test
+    - name: pre-main-helm-broker-chart-test
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -73,7 +73,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/helm-broker:
-    - name: post-master-helm-broker
+    - name: post-main-helm-broker
       annotations:
         testgrid-create-test-group: "false"
       labels:

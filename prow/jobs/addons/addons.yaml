@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/addons:
-    - name: pre-master-kyma-addons
+    - name: pre-main-kyma-addons
       labels:
         preset-bot-github-token: "true"
         preset-build-pr: "true"
@@ -39,12 +39,12 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/addons:
-    - name: post-master-kyma-addons
+    - name: post-main-kyma-addons
       annotations:
         testgrid-create-test-group: "false"
       labels:
         preset-bot-github-token: "true"
-        preset-build-master: "true"
+        preset-build-main: "true"
         preset-dind-enabled: "true"
       skip_report: false
       decorate: true
@@ -78,7 +78,7 @@ postsubmits: # runs on main
         testgrid-create-test-group: "false"
       labels:
         preset-bot-github-token: "true"
-        preset-build-master: "true"
+        preset-build-main: "true"
         preset-dind-enabled: "true"
       skip_report: false
       decorate: true

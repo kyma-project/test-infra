@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/hydroform:
-    - name: pre-master-hydroform
+    - name: pre-main-hydroform
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
@@ -41,7 +41,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/hydroform:
-    - name: post-master-hydroform
+    - name: post-main-hydroform
       annotations:
         testgrid-create-test-group: "false"
       labels:

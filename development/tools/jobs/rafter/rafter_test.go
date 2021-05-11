@@ -16,7 +16,7 @@ const (
 	rafterJobConfigPath = "./../../../../prow/jobs/rafter/rafter.yaml"
 	rafterPathAlias     = "github.com/kyma-project/rafter"
 
-	presetRafterBuildMaster = "preset-rafter-build-master"
+	presetRafterBuildMaster = "preset-rafter-build-main"
 
 	buildScriptCommand = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
 	rafterPathArg      = "/home/prow/go/src/github.com/kyma-project/rafter"

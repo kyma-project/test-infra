@@ -31,7 +31,7 @@ import (
 type config struct {
 	SlackToken     string
 	ConfigLocation string
-	ProwJobName    string `envconfig:"default=not-specified"` // for example post-master-kyma-gke-integration
+	ProwJobName    string `envconfig:"default=not-specified"` // for example post-main-kyma-gke-integration
 }
 
 func Mainerr() error {

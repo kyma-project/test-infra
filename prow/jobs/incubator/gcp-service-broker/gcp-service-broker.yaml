@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-incubator/gcp-service-broker:
-    - name: pre-master-gcp-service-broker
+    - name: pre-main-gcp-service-broker
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
@@ -38,7 +38,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-incubator/gcp-service-broker:
-    - name: post-master-gcp-service-broker
+    - name: post-main-gcp-service-broker
       annotations:
         testgrid-create-test-group: "false"
       labels:

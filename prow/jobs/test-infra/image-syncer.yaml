@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/test-infra:
-    - name: pre-master-test-infra-image-syncer-validate
+    - name: pre-main-test-infra-image-syncer-validate
       run_if_changed: '^(development/image-syncer)'
       skip_report: false
       decorate: true
@@ -27,7 +27,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-master-test-infra-image-syncer-dry-run
+    - name: pre-main-test-infra-image-syncer-dry-run
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository: "true"
@@ -57,7 +57,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/test-infra:
-    - name: post-master-test-infra-image-syncer-run
+    - name: post-main-test-infra-image-syncer-run
       annotations:
         testgrid-dashboards: "kyma_experimental"
       labels:

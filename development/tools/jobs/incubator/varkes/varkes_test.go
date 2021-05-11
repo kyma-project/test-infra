@@ -37,7 +37,7 @@ func TestVarkesJobPresubmit(t *testing.T) {
 
 func TestVarkesJobMasterPostsubmit(t *testing.T) {
 	// WHEN
-	const jobName = "post-master-varkes"
+	const jobName = "post-main-varkes"
 	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/varkes/varkes.yaml")
 	// THEN
 	require.NoError(t, err)

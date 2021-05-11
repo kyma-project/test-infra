@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/control-plane:
-    - name: pre-master-kcp-development-artifacts
+    - name: pre-main-kcp-development-artifacts
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -48,11 +48,11 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/control-plane:
-    - name: post-master-kcp-development-artifacts
+    - name: post-main-kcp-development-artifacts
       annotations:
         testgrid-create-test-group: "false"
       labels:
-        preset-build-artifacts-master: "true"
+        preset-build-artifacts-main: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-development-artifacts-bucket: "true"

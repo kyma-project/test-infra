@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-master-kyma-tools-failery
+    - name: pre-main-kyma-tools-failery
       run_if_changed: '^tools/failery/'
       skip_report: false
       decorate: true
@@ -34,7 +34,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/kyma:
-    - name: post-master-kyma-tools-failery
+    - name: post-main-kyma-tools-failery
       annotations:
         testgrid-create-test-group: "false"
       run_if_changed: '^tools/failery/'

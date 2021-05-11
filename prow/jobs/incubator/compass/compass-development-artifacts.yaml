@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-incubator/compass:
-    - name: pre-master-compass-development-artifacts
+    - name: pre-main-compass-development-artifacts
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -46,11 +46,11 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-incubator/compass:
-    - name: post-master-compass-development-artifacts
+    - name: post-main-compass-development-artifacts
       annotations:
         testgrid-create-test-group: "false"
       labels:
-        preset-build-artifacts-master: "true"
+        preset-build-artifacts-main: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-development-artifacts-bucket: "true"

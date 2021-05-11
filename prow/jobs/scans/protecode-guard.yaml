@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-master-kyma-protecode-guard
+    - name: pre-main-kyma-protecode-guard
       labels:
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
@@ -37,14 +37,14 @@ presubmits: # runs on PRs
               - name: JOBGUARD_TIMEOUT
                 value: "25m"
               - name: JOB_NAME_PATTERN
-                value: "(pre-master-kyma-components-.*)|(pre-master-kyma-tests-.*)|(pre-kyma-components-.*)|(pre-kyma-tests-.*)|(pre-main-kyma-components-.*)|(pre-main-kyma-tests-.*)"
+                value: "(pre-main-kyma-components-.*)|(pre-main-kyma-tests-.*)|(pre-kyma-components-.*)|(pre-kyma-tests-.*)"
             resources:
               requests:
                 memory: 200Mi
                 cpu: 80m
   
   kyma-project/console:
-    - name: pre-master-console-protecode-guard
+    - name: pre-main-console-protecode-guard
       labels:
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
@@ -85,7 +85,7 @@ presubmits: # runs on PRs
                 cpu: 80m
   
   kyma-project/third-party-images:
-    - name: pre-master-third-party-images-protecode-guard
+    - name: pre-main-third-party-images-protecode-guard
       labels:
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
@@ -119,7 +119,7 @@ presubmits: # runs on PRs
               - name: JOBGUARD_TIMEOUT
                 value: "25m"
               - name: JOB_NAME_PATTERN
-                value: "pre-master-tpi-.*"
+                value: "pre-main-tpi-.*"
             resources:
               requests:
                 memory: 200Mi

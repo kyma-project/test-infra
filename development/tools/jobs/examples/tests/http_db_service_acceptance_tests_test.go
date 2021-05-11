@@ -17,7 +17,7 @@ func TestHttpDbServiceAcceptanceTestsJobsPresubmit(t *testing.T) {
 
 	assert.Len(t, jobConfig.PresubmitsStatic, 1)
 	kymaPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/examples"})
-	expName := "pre-master-examples-tests-http-db-service"
+	expName := "pre-main-examples-tests-http-db-service"
 
 	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -41,7 +41,7 @@ func TestHttpDbServiceAcceptanceTestsJobPostsubmit(t *testing.T) {
 
 	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
 	kymaPost := jobConfig.AllStaticPostsubmits([]string{"kyma-project/examples"})
-	expName := "post-master-examples-tests-http-db-service"
+	expName := "post-main-examples-tests-http-db-service"
 	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName)
 
 	assert.Equal(t, expName, actualPost.Name)

@@ -295,6 +295,26 @@ gardener::test_fast_integration_kyma() {
     log::success "Tests completed"
 }
 
+gardener::pre_upgrade_test_fast_integration_kyma() {
+    log::info "Running pre-upgrade Kyma Fast Integration tests"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    make ci-pre-upgrade
+    popd
+
+    log::success "Tests completed"
+}
+
+gardener::post_upgrade_test_fast_integration_kyma() {
+    log::info "Running post-upgrade Kyma Fast Integration tests"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    make ci-post-upgrade
+    popd
+
+    log::success "Tests completed"
+}
+
 gardener::test_kyma() {
     log::info "Running Kyma tests"
 

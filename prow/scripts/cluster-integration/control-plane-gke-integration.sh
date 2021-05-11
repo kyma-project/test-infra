@@ -108,7 +108,7 @@ function post_hook() {
   set +e
 
   # collect logs from failed tests before deprovisioning
-  kyma::run_test_log_collector "post-master-control-plane-gke-provisioner-integration"
+  kyma::run_test_log_collector "post-main-control-plane-gke-provisioner-integration"
 
   gcloud::cleanup
 
@@ -289,7 +289,6 @@ function applyControlPlaneOverrides() {
    #Create Provisioning/KEB overrides
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "provisioning-enable-overrides" \
     --data "global.provisioning.enabled=true" \
-    --data "global.metris.enabled=true" \
     --data "global.kyma_metrics_collector.enabled=true" \
     --data "global.database.embedded.enabled=true" \
     --data "global.kyma_environment_broker.enabled=true" \

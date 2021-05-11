@@ -28,7 +28,7 @@ This document lists all types of Secrets used in the `kyma-prow` and `workload-k
 | **kyma-bot-github-token**| Personal access token called `prow-job` used by the `kyma-bot` GitHub user.|
 | **kyma-guard-bot-github-token** | Personal access token for the `kyma-guard-bot` GitHub account.|
 | **kyma-bot@sap.com**| Stores credentials to the `kyma-bot` GitHub account. |
-| **kyma-bot-npm-token** | Token for publishing npm packages in the `npmjs.com` registry. The `kyma-bot` user credentials are used to authenticate to the registry. The Secret is used by the `post-master-varkes` ProwJob. |
+| **kyma-bot-npm-token** | Token for publishing npm packages in the `npmjs.com` registry. The `kyma-bot` user credentials are used to authenticate to the registry. The Secret is used by the `post-main-varkes` ProwJob. |
 | **gardener-kyma-prow-kubeconfig** | Kubeconfig file that allows connection to the `kyma-prow` Gardener project.|
 | **slack-nightly-token**| Token that allows the stability checker to push notifications to Slack. |
 | **sap-slack-bot-token** | Token for publishing messages to the SAP CX workspace. Find more information [here](https://api.slack.com/docs/token-types#bot).|

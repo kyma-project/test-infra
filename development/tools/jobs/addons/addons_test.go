@@ -19,7 +19,7 @@ func TestAddonsJobPresubmit(t *testing.T) {
 	kymaPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/addons"})
 	assert.Len(t, kymaPresubmits, 1)
 
-	expName := "pre-master-kyma-addons"
+	expName := "pre-main-kyma-addons"
 	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(kymaPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -46,7 +46,7 @@ func TestAddonsJobPostsubmit(t *testing.T) {
 	kymaPost := jobConfig.AllStaticPostsubmits([]string{"kyma-project/addons"})
 	assert.Len(t, kymaPost, 2)
 
-	expName := "post-master-kyma-addons"
+	expName := "post-main-kyma-addons"
 	actualPost := tester.FindPostsubmitJobByNameAndBranch(kymaPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)

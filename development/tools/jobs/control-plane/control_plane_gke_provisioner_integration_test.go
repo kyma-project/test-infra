@@ -15,7 +15,7 @@ func TestKCPGKEProvisionerIntegrationPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	// when
-	actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/control-plane"}), "pre-master-control-plane-gke-provisioner-integration", "master")
+	actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/control-plane"}), "pre-main-control-plane-gke-provisioner-integration", "master")
 	require.NotNil(t, actualJob)
 
 	// then
@@ -57,7 +57,7 @@ func TestKCPGKEProvisionerIntegrationPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	// when
-	actualJob := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/control-plane"}), "post-master-control-plane-gke-provisioner-integration", "master")
+	actualJob := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/control-plane"}), "post-main-control-plane-gke-provisioner-integration", "master")
 	require.NotNil(t, actualJob)
 
 	// then

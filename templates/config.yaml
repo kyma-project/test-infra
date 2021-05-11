@@ -310,13 +310,6 @@ templates:
           path: components/schema-migrator
           since: "1.14"
           optional: false
-      - to: ../prow/jobs/control-plane/components/metris/metris-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *control_plane_generic_component
-          path: components/metris
-          since: "1.14"
-          optional: false
       - to: ../prow/jobs/control-plane/components/kyma-metrics-collector/kyma-metrics-collector-generic.yaml
         values:
           <<: *cluster_default
@@ -516,6 +509,13 @@ templates:
           path: components/central-application-gateway
           since: "1.23"
           optional: true
+      - to: ../prow/jobs/kyma/components/central-application-connectivity-validator/central-application-connectivity-validator-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *kyma_generic_component
+          path: components/central-application-connectivity-validator
+          since: "1.23"
+          optional: true # TODO: Remove after merging https://github.com/kyma-project/kyma/pull/11173
   - from: templates/generic-component-busola.yaml
     render:
       - to: ../prow/jobs/busola/busola-core-ui/busola-core-ui.yaml
@@ -672,40 +672,15 @@ templates:
           path: tests
           since: "1.17"
           optional: false
-  - from: templates/kyma-integration.yaml
-    render:
-      - to: ../prow/jobs/kyma/kyma-integration.yaml
-        values:
-          <<: *cluster_default
-          gkeVersions:
-            - channel: rapid
-              jobs: ["postsubmit"]
   - from: templates/releases.go.tmpl
     render:
       - to: ../development/tools/jobs/releases/releases.go
-  - from: templates/kyma-artifacts.yaml
-    render:
-      - to: ../prow/jobs/kyma/kyma-artifacts.yaml
-        values:
-          <<: *cluster_default
 #  TODO: remove when https://github.com/kyma-project/test-infra/issues/3174 is finished
 #  - from: templates/kyma-github-release.yaml
 #    render:
 #      - to: ../prow/jobs/kyma/kyma-github-release.yaml
 #        values:
 #          <<: *cluster_default
-  - from: templates/kyma-gke-external-registry.yaml
-    render:
-      - to: ../prow/jobs/kyma/kyma-gke-external-registry.yaml
-        values:
-          <<: *cluster_default
-          since: "1.15"
-  - from: templates/compass-gke-integration.yaml
-    render:
-      - to: ../prow/jobs/incubator/compass/compass-gke-integration.yaml
-        values:
-          <<: *cluster_default
-          since: "1.13"
 #  - from: templates/kyma-release-candidate.yaml
 #    render:
 #      - to: ../prow/jobs/kyma/kyma-release-candidate.yaml
@@ -716,6 +691,11 @@ templates:
       - to: ../prow/config.yaml
         values:
           <<: *cluster_default
+          contexts:
+            - name: kyma-integration
+            - name: kyma-gke-integration
+            - name: kyma-gke-upgrade
+            - name: kyma-artifacts
   - from: templates/branchprotector-config.yaml
     render:
       - to: ../prow/branchprotector-config.yaml

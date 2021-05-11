@@ -20,7 +20,7 @@ func TestKCPIntegrationJobsPresubmit(t *testing.T) {
 		expNotRunIfChangedPaths []string
 	}{
 		"Should contain the control-plane-integration job": {
-			givenJobName: "pre-master-control-plane-integration",
+			givenJobName: "pre-main-control-plane-integration",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration",
@@ -80,7 +80,7 @@ func TestKCPIntegrationJobsPostsubmit(t *testing.T) {
 		expPresets   []preset.Preset
 	}{
 		"Should contain the control-plane-integration job": {
-			givenJobName: "post-master-control-plane-integration",
+			givenJobName: "post-main-control-plane-integration",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",

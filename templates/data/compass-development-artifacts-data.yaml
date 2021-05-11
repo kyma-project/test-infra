@@ -23,7 +23,15 @@ templates:
         jobConfigs:
           - repoName: kyma-incubator/compass
             jobs:
-              - inheritedConfigs:
+              - jobConfig:
+                  name: pre-main-compass-development-artifacts
+                  optional: true
+                  run_if_changed: "^installation|^chart|^tools/compass-installer"
+                  branches:
+                    - ^master$
+                    - ^main$
+                    - ^hotfix-.*$
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -31,15 +39,17 @@ templates:
                     - image_bootstrap
                   local:
                     - jobConfig_default
-                jobConfig:
-                  name: pre-master-compass-development-artifacts
-                  optional: true
-                  run_if_changed: "^installation|^chart|^tools/compass-installer"
+              - jobConfig:
+                  name: post-main-compass-development-artifacts
                   branches:
                     - ^master$
                     - ^main$
-                    - ^hotfix-.*$
-              - inheritedConfigs:
+                    - "^v\\d+\\.\\d+\\.\\d+$" # release tags
+                  labels:
+                    preset-build-artifacts-main: "true"
+                  slack_channel: "kyma-prow-dev-null"
+
+                inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
@@ -48,15 +58,3 @@ templates:
                     - disable_testgrid
                   local:
                     - jobConfig_default
-                jobConfig:
-                  name: post-master-compass-development-artifacts
-                  branches:
-                    - ^master$
-                    - ^main$
-                    - "^v\\d+\\.\\d+\\.\\d+$" # release tags
-                  labels:
-                    preset-build-artifacts-master: "true"
-                  slack_channel: "kyma-prow-dev-null"
-
-
-

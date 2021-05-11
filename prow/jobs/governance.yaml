@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/addons:
-    - name: pre-master-addons-governance
+    - name: pre-main-addons-governance
       labels:
         preset-build-pr: "true"
         preset-dind-enabled: "true"
@@ -37,7 +37,7 @@ presubmits: # runs on PRs
                 cpu: 100m
   
   kyma-project/busola:
-    - name: pre-master-busola-governance
+    - name: pre-main-busola-governance
       labels:
         preset-build-pr: "true"
         preset-dind-enabled: "true"
@@ -70,7 +70,7 @@ presubmits: # runs on PRs
                 cpu: 100m
   
   kyma-project/community:
-    - name: pre-master-community-governance
+    - name: pre-main-community-governance
       labels:
         preset-build-pr: "true"
         preset-dind-enabled: "true"
@@ -104,7 +104,7 @@ presubmits: # runs on PRs
                 cpu: 100m
   
   kyma-project/console:
-    - name: pre-master-console-governance
+    - name: pre-main-console-governance
       labels:
         preset-build-pr: "true"
         preset-dind-enabled: "true"
@@ -138,7 +138,7 @@ presubmits: # runs on PRs
                 cpu: 100m
   
   kyma-project/examples:
-    - name: pre-master-examples-governance
+    - name: pre-main-examples-governance
       labels:
         preset-build-pr: "true"
         preset-dind-enabled: "true"
@@ -206,7 +206,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 10Mi
                 cpu: 100m
-    - name: pre-master-kyma-governance
+    - name: pre-main-kyma-governance
       labels:
         preset-build-pr: "true"
         preset-dind-enabled: "true"
@@ -240,7 +240,7 @@ presubmits: # runs on PRs
                 cpu: 100m
   
   kyma-project/test-infra:
-    - name: pre-master-test-infra-governance
+    - name: pre-main-test-infra-governance
       labels:
         preset-build-pr: "true"
         preset-dind-enabled: "true"
@@ -269,7 +269,7 @@ presubmits: # runs on PRs
                 cpu: 100m
   
   kyma-project/website:
-    - name: pre-master-website-governance
+    - name: pre-main-website-governance
       labels:
         preset-build-pr: "true"
         preset-dind-enabled: "true"

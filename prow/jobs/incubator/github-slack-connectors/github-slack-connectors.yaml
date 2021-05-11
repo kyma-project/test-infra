@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-incubator/github-slack-connectors:
-    - name: pre-master-github-connector
+    - name: pre-main-github-connector
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
@@ -35,7 +35,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-master-slack-connector
+    - name: pre-main-slack-connector
       labels:
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
@@ -70,7 +70,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-incubator/github-slack-connectors:
-    - name: post-master-github-connector
+    - name: post-main-github-connector
       annotations:
         testgrid-create-test-group: "false"
       labels:
@@ -104,7 +104,7 @@ postsubmits: # runs on main
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: post-master-slack-connector
+    - name: post-main-slack-connector
       annotations:
         testgrid-create-test-group: "false"
       labels:
