@@ -1,6 +1,5 @@
 pjNames:
-  - pjName: "preset-keb-plan-free-aws"
-  - pjName: "preset-keb-plan-free-azure"
+  - pjName: "preset-keb-plan-trial"
 prConfigs:
   kyma-project:
     kyma:
