@@ -76,3 +76,18 @@ templates:
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
+              - jobConfig:
+                  name: "preset-keb-plan-free-aws"
+                  cron: "5 1 * * *" # "At 01:05"
+                  labels:
+                    preset-keb-plan-trial: "true"
+                  inheritedConfigs:
+                    global:
+                      - "image_kyma-integration"
+                      - "jobConfig_default"
+                      - "jobConfig_periodic"
+                      - "extra_refs_test-infra"
+                      - "extra_refs_kyma"
+                      - "disable_testgrid"
+                    local:
+                      - "jobConfig_default"
