@@ -8,7 +8,7 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             cluster: "trusted-workload"
             request_memory: 100Mi
-            request_cpu:  50m
+            request_cpu: 50m
             labels:
               preset-build-main: "true"
               preset-keb-dev-credentials: "true"
@@ -81,13 +81,13 @@ templates:
                   cron: "5 1 * * *" # "At 01:05"
                   labels:
                     preset-keb-plan-free-aws: "true"
-                  inheritedConfigs:
-                    global:
-                      - "image_kyma-integration"
-                      - "jobConfig_default"
-                      - "jobConfig_periodic"
-                      - "extra_refs_test-infra"
-                      - "extra_refs_kyma"
-                      - "disable_testgrid"
-                    local:
-                      - "jobConfig_default"
+                inheritedConfigs:
+                  global:
+                    - "image_kyma-integration"
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
