@@ -1007,6 +1007,20 @@ presets:
       - name: KEB_PLAN_ID
         value: "03b812ac-c991-4528-b5bd-08b303523a63"
   - labels:
+      preset-keb-plan-free-aws: "true"
+    env:
+      - name: KEB_PLAN_ID
+        value: "b1a5764e-2ea1-4f95-94c0-2b4538b37b55"
+      - name: KEB_REGION
+        value: "cf-eu10"
+  - labels:
+      preset-keb-plan-free-azure: "true"
+    env:
+      - name: KEB_PLAN_ID
+        value: "b1a5764e-2ea1-4f95-94c0-2b4538b37b55"
+      - name: KEB_REGION
+        value: "cf-eu20"
+  - labels:
       preset-gke-upgrade-pre-job: "true"
     env:
       - name: SCENARIO_TYPE
