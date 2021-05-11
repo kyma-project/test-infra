@@ -4,6 +4,8 @@ LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${LIBDIR}/log.sh"
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
 function az::verify_deps {
   if ! [[ -x $(command -v az) ]]; then
@@ -131,6 +133,13 @@ function az::provision_aks_cluster {
       --client-secret "$(jq -r '.secret' "$AZURE_CREDENTIALS_FILE")" \
       --generate-ssh-keys \
       --zones 1 2 3
+
+  # Schedule pod with oom finder.
+  if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
+      # run oom debug pod
+      utils::debug_oom
+  fi
+
 }
 
 # az ::reserve_ip_address reserves IP address and returns it to STDOUT

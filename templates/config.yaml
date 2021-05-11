@@ -36,6 +36,8 @@ globalSets:
     request_cpu: "0.8"
     cluster_presubmit: "untrusted-workload"
     cluster_postsubmit: "trusted-workload"
+    pubsub_project: "sap-kyma-prow"
+    pubsub_topic: "prowjobs"
   jobConfig_presubmit:
     type_presubmit: "true"
     cluster: "untrusted-workload"
