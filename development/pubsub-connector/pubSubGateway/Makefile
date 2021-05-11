@@ -45,7 +45,7 @@ push-image:
 	docker push $(IMG)
 
 
-# validate
+# validate go files
 .PHONY: validate
 validate:
 	./before-commit.sh ci
