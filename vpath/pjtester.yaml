@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "preset-keb-plan-trial"
+  - pjName: "skr-free-aws-integration-dev"
 prConfigs:
   kyma-project:
     kyma:
