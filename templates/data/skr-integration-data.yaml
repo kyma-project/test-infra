@@ -77,10 +77,10 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "preset-keb-plan-free-aws"
+                  name: "skr-free-aws-integration-dev"
                   cron: "5 1 * * *" # "At 01:05"
                   labels:
-                    preset-keb-plan-trial: "true"
+                    preset-keb-plan-free-aws: "true"
                   inheritedConfigs:
                     global:
                       - "image_kyma-integration"
