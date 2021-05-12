@@ -6,7 +6,8 @@ set -o pipefail
 LOCAL_KYMA_DIR="./local-kyma"
 K3S_DOMAIN="local.kyma.dev"
 
-export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
+KYMA_PROJECT_DIR="/home/prow/go/src/github.com/kyma-project"
+TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
