@@ -112,14 +112,16 @@ K3S_SERVER="local.kyma.dev"
 
 echo "Deploying Busola resources on the ${K3S_SERVER} server"
 
-docker pull cypress/included:7.2.0
+kubectl wait \
+    --for=condition=ready pod \
+    --timeout=120s
 
-kubectl get pods
 
 cp $PWD/kubeconfig-kyma.yaml $PWD/busola-tests/fixtures/kubeconfig.yaml
 
 echo "Running Cypress tests inside Docker..."
-docker run --entrypoint /bin/bash --network=host -v $PWD/busola-tests:/tests -w /tests cypress/included:7.2.0 -c "npm ci; cypress run --browser chrome --headless"
+CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included@sha256:310bf4d486abaa54e3a60fc70d22757b561f260fa5b0154bb2a4c7b7dde3e9b3"
+docker run --entrypoint /bin/bash --network=host -v $PWD/busola-tests:/tests -w /tests $CYPRESS_IMAGE -c "npm ci; cypress run --browser chrome --headless"
 
 
 
