@@ -3,11 +3,13 @@
 set -o errexit
 set -o pipefail
 
+LOCAL_KYMA_DIR="./local-kyma"
+K3S_DOMAIN="local.kyma.dev"
+
+export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
+
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
-
-export LOCAL_KYMA_DIR="./local-kyma"
-K3S_DOMAIN="local.kyma.dev"
 
 prepare_k3s() {
     pushd ${LOCAL_KYMA_DIR}
@@ -120,7 +122,7 @@ kubectl wait \
 
 cp $PWD/kubeconfig-kyma.yaml $PWD/busola-tests/fixtures/kubeconfig.yaml
 
-echo "Running Cypress tests inside Docker..."
+log::banner "Running Cypress tests inside Docker..."
 CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included@sha256:310bf4d486abaa54e3a60fc70d22757b561f260fa5b0154bb2a4c7b7dde3e9b3"
 docker run --entrypoint /bin/bash --network=host -v $PWD/busola-tests:/tests -w /tests $CYPRESS_IMAGE -c "npm ci; cypress run --browser chrome --headless"
 
