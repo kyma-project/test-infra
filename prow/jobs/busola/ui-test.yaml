@@ -42,5 +42,5 @@ presubmits: # runs on PRs
             resources:
               requests:
                 memory: 100Mi
-                cpu: 50m
+                cpu: 300m
   
