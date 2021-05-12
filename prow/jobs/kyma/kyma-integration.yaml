@@ -5,9 +5,9 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-kyma-integration
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: pre-main-kyma-integration
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
@@ -39,9 +39,9 @@ presubmits: # runs on PRs
                 cpu: 50m
     - name: pre-main-kyma-integration-k3s
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: pre-main-kyma-integration-k3s
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3s"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
@@ -77,9 +77,9 @@ presubmits: # runs on PRs
                 cpu: 50m
     - name: pre-main-kyma-integration-k3s-compass-dev
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: pre-main-kyma-integration-k3s-compass-dev
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3s-compass-dev"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
@@ -117,9 +117,9 @@ presubmits: # runs on PRs
                 cpu: 50m
     - name: pre-main-serverless-integration-k3s
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: pre-main-serverless-integration-k3s
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-serverless-integration-k3s"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
@@ -151,9 +151,9 @@ presubmits: # runs on PRs
                 cpu: 50m
     - name: pre-main-kyma-gke-integration
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: pre-main-kyma-gke-integration
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-gke-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
@@ -196,9 +196,9 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pre-main-kyma-gke-upgrade
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: pre-main-kyma-gke-upgrade
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-gke-upgrade"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
@@ -254,9 +254,9 @@ postsubmits: # runs on main
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: post-main-kyma-integration
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
@@ -291,9 +291,9 @@ postsubmits: # runs on main
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: post-main-kyma-integration-k3s
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3s"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
@@ -332,9 +332,9 @@ postsubmits: # runs on main
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: post-main-kyma-integration-k3s-compass-dev
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3s-compass-dev"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
@@ -375,9 +375,9 @@ postsubmits: # runs on main
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: post-main-kyma-gke-integration
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-gke-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
@@ -424,9 +424,9 @@ postsubmits: # runs on main
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: post-main-kyma-gke-upgrade
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-gke-upgrade"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
@@ -477,9 +477,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: post-main-kyma-gke-rapid-integration
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-gke-rapid-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
@@ -526,9 +526,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: utilities-kyma-integration-cleaner
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "utilities-kyma-integration-cleaner"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-sa-vm-kyma-integration: "true"
       cron: "30 * * * *"
@@ -551,9 +551,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: orphaned-az-storage-accounts-cleaner
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "orphaned-az-storage-accounts-cleaner"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
       cron: "00 00 * * *"
       skip_report: false
@@ -587,9 +587,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: orphaned-assetstore-gcp-bucket-cleaner
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "orphaned-assetstore-gcp-bucket-cleaner"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-sa-prow-job-resource-cleaner: "true"
       cron: "00 00 * * *"
@@ -620,9 +620,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: orphaned-disks-cleaner
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "orphaned-disks-cleaner"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-sa-gke-kyma-integration: "true"
       cron: "30 * * * *"
@@ -653,9 +653,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: orphaned-clusters-cleaner
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "orphaned-clusters-cleaner"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-sa-gke-kyma-integration: "true"
       cron: "0 * * * *"
@@ -686,9 +686,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: orphaned-vms-cleaner
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "orphaned-vms-cleaner"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-sa-gke-kyma-integration: "true"
       cron: "15,45 * * * *"
@@ -719,9 +719,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: orphaned-loadbalancer-cleaner
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "orphaned-loadbalancer-cleaner"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-sa-gke-kyma-integration: "true"
       cron: "15 * * * *"
@@ -752,9 +752,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: firewall-cleaner
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "firewall-cleaner"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-sa-gke-kyma-integration: "true"
       cron: "45 */4 * * 1-5"
@@ -785,9 +785,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: orphaned-dns-cleaner
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "orphaned-dns-cleaner"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
         preset-sa-gke-kyma-integration: "true"
@@ -819,9 +819,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: github-stats
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "github-stats"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
       cron: "0 6 * * *"
       skip_report: false
@@ -849,9 +849,9 @@ periodics: # runs on schedule
         description: "Kyma GKE nightly build."
         testgrid-dashboards: "kyma_integration"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: kyma-gke-nightly
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-gke-nightly"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-certificates-bucket: "true"
         preset-cluster-use-ssd: "true"
@@ -929,9 +929,9 @@ periodics: # runs on schedule
         description: "Kyma GKE weekly build."
         testgrid-dashboards: "kyma_integration"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: kyma-gke-weekly
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-gke-weekly"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-certificates-bucket: "true"
         preset-cluster-use-ssd: "true"
@@ -1009,9 +1009,9 @@ periodics: # runs on schedule
         description: "Kyma AKS nightly build."
         testgrid-dashboards: "kyma_integration"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: kyma-aks-nightly
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-aks-nightly"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
         preset-build-main: "true"
         preset-certificates-bucket: "true"
@@ -1083,9 +1083,9 @@ periodics: # runs on schedule
         description: "Kyma integration periodic job on k3s."
         testgrid-dashboards: "kyma_integration"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: kyma-integration-k3s
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-integration-k3s"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
@@ -1124,9 +1124,9 @@ periodics: # runs on schedule
         description: "Kyma integration periodic job on k3s with compass dev."
         testgrid-dashboards: "kyma_integration"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: kyma-integration-k3s-compass-dev
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-integration-k3s-compass-dev"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"

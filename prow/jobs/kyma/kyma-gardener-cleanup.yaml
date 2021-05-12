@@ -6,9 +6,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: kyma-gardener-cleanup
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-gardener-cleanup"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gardener-gcp-kyma-integration: "true"
       cron: "0 * * * *"
       skip_report: false

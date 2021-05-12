@@ -5,9 +5,9 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-main-compass-gke-integration
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: pre-main-compass-gke-integration
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-compass-gke-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-cluster-version: "true"
         preset-dind-enabled: "true"
@@ -57,9 +57,9 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pre-rel122-compass-gke-integration
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: pre-rel122-compass-gke-integration
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-rel122-compass-gke-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-cluster-version: "true"
         preset-dind-enabled: "true"
@@ -107,9 +107,9 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pre-rel121-compass-gke-integration
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: pre-rel121-compass-gke-integration
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-rel121-compass-gke-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-cluster-version: "true"
         preset-dind-enabled: "true"
@@ -157,9 +157,9 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pre-rel120-compass-gke-integration
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: pre-rel120-compass-gke-integration
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-rel120-compass-gke-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-cluster-version: "true"
         preset-dind-enabled: "true"
@@ -213,9 +213,9 @@ postsubmits: # runs on main
         description: "Compass GKE integration job."
         testgrid-dashboards: "kyma-incubator_compass"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: post-main-compass-gke-integration
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-compass-gke-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-cluster-version: "true"
         preset-dind-enabled: "true"

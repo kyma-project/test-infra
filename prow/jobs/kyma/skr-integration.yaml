@@ -6,9 +6,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: skr-azure-integration-dev
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "skr-azure-integration-dev"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-keb-dev-credentials: "true"
         preset-keb-plan-azure: "true"
@@ -42,9 +42,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: skr-azure-lite-integration-dev
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "skr-azure-lite-integration-dev"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-keb-dev-credentials: "true"
         preset-keb-plan-azure-lite: "true"
@@ -78,9 +78,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: skr-aws-integration-dev
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "skr-aws-integration-dev"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-keb-dev-credentials: "true"
         preset-keb-plan-aws: "true"
@@ -114,9 +114,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: skr-trial-integration-dev
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "skr-trial-integration-dev"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-keb-dev-credentials: "true"
         preset-keb-plan-trial: "true"
@@ -150,9 +150,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: skr-free-aws-integration-dev
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "skr-free-aws-integration-dev"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-keb-dev-credentials: "true"
         preset-keb-plan-free-aws: "true"

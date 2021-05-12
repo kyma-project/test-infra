@@ -5,9 +5,9 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-kyma-protecode-guard
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: pre-main-kyma-protecode-guard
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-protecode-guard"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
@@ -49,9 +49,9 @@ presubmits: # runs on PRs
   kyma-project/console:
     - name: pre-main-console-protecode-guard
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: pre-main-console-protecode-guard
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-console-protecode-guard"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
@@ -93,9 +93,9 @@ presubmits: # runs on PRs
   kyma-project/third-party-images:
     - name: pre-main-third-party-images-protecode-guard
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: pre-main-third-party-images-protecode-guard
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-third-party-images-protecode-guard"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"

@@ -5,9 +5,9 @@ presubmits: # runs on PRs
   kyma-project/addons:
     - name: pre-main-kyma-addons
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: pre-main-kyma-addons
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-addons"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
@@ -46,9 +46,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: post-main-kyma-addons
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-addons"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-build-main: "true"
         preset-dind-enabled: "true"
@@ -83,9 +83,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: post-rel-kyma-addons
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-rel-kyma-addons"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-build-main: "true"
         preset-dind-enabled: "true"

@@ -5,9 +5,9 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-kyma-gardener-azure-integration
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: pre-main-kyma-gardener-azure-integration
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-gardener-azure-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
         preset-build-pr: "true"
         preset-cluster-version: "true"
@@ -62,9 +62,9 @@ presubmits: # runs on PRs
                 cpu: 400m
     - name: pre-main-kyma-gardener-azure-fast-integration
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: pre-main-kyma-gardener-azure-fast-integration
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-gardener-azure-fast-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
         preset-build-pr: "true"
         preset-cluster-version: "true"
@@ -120,9 +120,9 @@ presubmits: # runs on PRs
                 cpu: 400m
     - name: pre-main-kyma-gardener-azure-alpha-eval
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: pre-main-kyma-gardener-azure-alpha-eval
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-gardener-azure-alpha-eval"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
         preset-build-pr: "true"
         preset-cluster-version: "true"
@@ -181,9 +181,9 @@ presubmits: # runs on PRs
                 cpu: 400m
     - name: pre-main-kyma-gardener-azure-alpha-prod
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: pre-main-kyma-gardener-azure-alpha-prod
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-gardener-azure-alpha-prod"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
         preset-build-pr: "true"
         preset-cluster-version: "true"
@@ -247,9 +247,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: post-main-kyma-gardener-azure-alpha-eval
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-gardener-azure-alpha-eval"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
         preset-build-main: "true"
         preset-cluster-version: "true"
@@ -308,9 +308,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: post-main-kyma-gardener-azure-alpha-prod
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-gardener-azure-alpha-prod"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
         preset-build-main: "true"
         preset-cluster-version: "true"
@@ -372,9 +372,9 @@ periodics: # runs on schedule
         description: "Kyma GCP Gardener integration job."
         testgrid-dashboards: "kyma_integration"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: kyma-integration-gardener-gcp
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-integration-gardener-gcp"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-cluster-version: "true"
         preset-debug-commando-oom: "true"
         preset-gardener-gcp-kyma-integration: "true"
@@ -420,9 +420,9 @@ periodics: # runs on schedule
         description: "Kyma AWS Gardener integration job."
         testgrid-dashboards: "kyma_integration"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: kyma-integration-gardener-aws
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-integration-gardener-aws"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-cluster-version: "true"
         preset-debug-commando-oom: "true"
         preset-gardener-aws-kyma-integration: "true"
@@ -467,9 +467,9 @@ periodics: # runs on schedule
         description: "Kyma Azure Gardener integration job."
         testgrid-dashboards: "kyma_integration"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: kyma-integration-gardener-azure
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-integration-gardener-azure"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
         preset-cluster-version: "true"
         preset-debug-commando-oom: "true"
@@ -526,9 +526,9 @@ periodics: # runs on schedule
         description: "Evaluation profile Kyma Azure Gardener integration job."
         testgrid-dashboards: "kyma_integration"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: kyma-integration-evaluation-gardener-azure
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-integration-evaluation-gardener-azure"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
         preset-cluster-version: "true"
         preset-debug-commando-oom: "true"
@@ -591,9 +591,9 @@ periodics: # runs on schedule
         description: "Production profile Kyma Azure Gardener integration job."
         testgrid-dashboards: "kyma_integration"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: kyma-integration-production-gardener-azure
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-integration-production-gardener-azure"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
         preset-cluster-version: "true"
         preset-debug-commando-oom: "true"
@@ -656,9 +656,9 @@ periodics: # runs on schedule
         description: "Evaluation profile Kyma Alpha Azure Gardener integration job."
         testgrid-dashboards: "kyma_integration"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: kyma-alpha-integration-evaluation-gardener-azure
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-alpha-integration-evaluation-gardener-azure"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
         preset-cluster-version: "true"
         preset-debug-commando-oom: "true"
@@ -723,9 +723,9 @@ periodics: # runs on schedule
         description: "Production profile Kyma Alpha Azure Gardener integration job."
         testgrid-dashboards: "kyma_integration"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: kyma-alpha-integration-production-gardener-azure
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-alpha-integration-production-gardener-azure"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
         preset-cluster-version: "true"
         preset-debug-commando-oom: "true"
@@ -789,9 +789,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: kyma-integration-hibernation-gardener-azure
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-integration-hibernation-gardener-azure"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
         preset-cluster-version: "true"
         preset-debug-commando-oom: "true"
@@ -855,9 +855,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: kyma-weekly-gardener-gcp-busola
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-weekly-gardener-gcp-busola"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-busola-nightly-provision-type-busola: "true"
         preset-cluster-version: "true"
         preset-debug-commando-oom: "true"
@@ -908,9 +908,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: kyma-nightly-gardener-gcp-busola
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-nightly-gardener-gcp-busola"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-busola-nightly-provision-type-busola: "true"
         preset-cluster-version: "true"
         preset-debug-commando-oom: "true"
@@ -960,9 +960,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: kyma-weekly-gardener-gcp-busola-kyma
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-weekly-gardener-gcp-busola-kyma"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-busola-nightly-provision-type-kyma: "true"
         preset-cluster-version: "true"
         preset-debug-commando-oom: "true"
@@ -1013,9 +1013,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: kyma-periodic-gardener-gcp-busola-init-kyma
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-periodic-gardener-gcp-busola-init-kyma"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-busola-nightly-provision-type-kyma: "true"
         preset-cluster-version: "true"
         preset-debug-commando-oom: "true"
@@ -1069,9 +1069,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: kyma-periodic-gardener-gcp-busola-kyma
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-periodic-gardener-gcp-busola-kyma"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-busola-nightly-provision-type-kyma: "true"
         preset-cluster-version: "true"
         preset-debug-commando-oom: "true"
@@ -1125,9 +1125,9 @@ periodics: # runs on schedule
         description: "Azure Kyma 1.x to Kyma 2.0 upgrade."
         testgrid-dashboards: "kyma_integration"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: kyma-upgrade-gardener-kyma-to-kyma2
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-upgrade-gardener-kyma-to-kyma2"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
         preset-bot-github-token: "true"
         preset-cluster-version: "true"

@@ -5,9 +5,9 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-main-kcp-cli
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: pre-main-kcp-cli
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kcp-cli"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-kyma-development-artifacts-bucket: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^tools/cli'
@@ -49,9 +49,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: sap-kyma-prow
-        prow.k8s.io/pubsub.runID: post-main-kcp-cli
-        prow.k8s.io/pubsub.topic: prowjobs
+      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-kcp-cli"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-artifacts-main: "true"
         preset-kyma-development-artifacts-bucket: "true"
         preset-sa-gcr-push: "true"
