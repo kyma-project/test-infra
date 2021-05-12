@@ -4,6 +4,10 @@
 presubmits: # runs on PRs
   kyma-project/cli:
     - name: pre-kyma-cli
+      labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-kyma-cli
+        prow.k8s.io/pubsub.topic: prowjobs
       always_run: true
       skip_report: false
       decorate: true
@@ -40,6 +44,10 @@ postsubmits: # runs on main
     - name: post-kyma-cli
       annotations:
         testgrid-create-test-group: "false"
+      labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: post-kyma-cli
+        prow.k8s.io/pubsub.topic: prowjobs
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -73,6 +81,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: rel-kyma-cli
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-bot-github-token: "true"
         preset-dind-enabled: "true"
       skip_report: false
@@ -107,6 +118,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: stable-kyma-cli
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-kyma-cli-stable: "true"
         preset-sa-kyma-artifacts: "true"
       skip_report: false

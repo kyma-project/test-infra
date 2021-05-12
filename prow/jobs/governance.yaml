@@ -5,6 +5,9 @@ presubmits: # runs on PRs
   kyma-project/addons:
     - name: pre-main-addons-governance
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-main-addons-governance
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-pr: "true"
         preset-dind-enabled: "true"
       run_if_changed: 'milv.config.yaml|.md$'
@@ -39,6 +42,9 @@ presubmits: # runs on PRs
   kyma-project/busola:
     - name: pre-main-busola-governance
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-main-busola-governance
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-pr: "true"
         preset-dind-enabled: "true"
       run_if_changed: 'milv.config.yaml|.md$'
@@ -72,6 +78,9 @@ presubmits: # runs on PRs
   kyma-project/community:
     - name: pre-main-community-governance
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-main-community-governance
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-pr: "true"
         preset-dind-enabled: "true"
       run_if_changed: 'milv.config.yaml|.md$'
@@ -106,6 +115,9 @@ presubmits: # runs on PRs
   kyma-project/console:
     - name: pre-main-console-governance
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-main-console-governance
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-pr: "true"
         preset-dind-enabled: "true"
       run_if_changed: 'milv.config.yaml|.md$'
@@ -140,6 +152,9 @@ presubmits: # runs on PRs
   kyma-project/examples:
     - name: pre-main-examples-governance
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-main-examples-governance
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-pr: "true"
         preset-dind-enabled: "true"
       run_if_changed: 'milv.config.yaml|.md$'
@@ -174,6 +189,9 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: kyma-metadata-schema-governance
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: kyma-metadata-schema-governance
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-pr: "true"
         preset-dind-enabled: "true"
       run_if_changed: '^resources/.*/values.schema.json$'
@@ -208,6 +226,9 @@ presubmits: # runs on PRs
                 cpu: 100m
     - name: pre-main-kyma-governance
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-main-kyma-governance
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-pr: "true"
         preset-dind-enabled: "true"
       run_if_changed: 'milv.config.yaml|.md$'
@@ -242,6 +263,9 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-main-test-infra-governance
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-main-test-infra-governance
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-pr: "true"
         preset-dind-enabled: "true"
       run_if_changed: 'milv.config.yaml|.md$'
@@ -271,6 +295,9 @@ presubmits: # runs on PRs
   kyma-project/website:
     - name: pre-main-website-governance
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-main-website-governance
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-pr: "true"
         preset-dind-enabled: "true"
       run_if_changed: 'milv.config.yaml|.md$'
@@ -305,6 +332,9 @@ presubmits: # runs on PRs
   kyma-incubator/documentation-component:
     - name: pre-documentation-component-governance
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-documentation-component-governance
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-pr: "true"
         preset-dind-enabled: "true"
       run_if_changed: 'milv.config.yaml|.md$'
@@ -343,6 +373,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: addons-governance-nightly
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-dind-enabled: "true"
       cron: "0 22 * * 1-5"
       skip_report: false
@@ -380,6 +413,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: busola-governance-nightly
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-dind-enabled: "true"
       cron: "0 0 * * 1-5"
       skip_report: false
@@ -417,6 +453,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: community-governance-nightly
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-dind-enabled: "true"
       cron: "0 23 * * 1-5"
       skip_report: false
@@ -454,6 +493,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: console-governance-nightly
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-dind-enabled: "true"
       cron: "0 0 * * 1-5"
       skip_report: false
@@ -491,6 +533,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: examples-governance-nightly
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-dind-enabled: "true"
       cron: "0 1 * * 1-5"
       skip_report: false
@@ -528,6 +573,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: kyma-governance-nightly
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-dind-enabled: "true"
       cron: "0 4 * * 1-5"
       skip_report: false
@@ -565,6 +613,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: test-infra-governance-nightly
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-dind-enabled: "true"
       cron: "0 5 * * 1-5"
       skip_report: false
@@ -598,6 +649,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: website-governance-nightly
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-dind-enabled: "true"
       cron: "0 6 * * 1-5"
       skip_report: false
@@ -635,6 +689,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: documentation-component-governance-nightly
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-dind-enabled: "true"
       cron: "0 2 * * 1-5"
       skip_report: false

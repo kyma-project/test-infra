@@ -5,6 +5,9 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-main-control-plane-gke-integration
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-main-control-plane-gke-integration
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-pr: "true"
         preset-cluster-version: "true"
         preset-dind-enabled: "true"
@@ -56,6 +59,9 @@ postsubmits: # runs on main
         description: "Kyma control-plane GKE integration job."
         testgrid-dashboards: "kyma_control-plane"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: post-main-control-plane-gke-integration
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-main: "true"
         preset-cluster-version: "true"
         preset-dind-enabled: "true"

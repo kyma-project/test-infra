@@ -5,6 +5,9 @@ presubmits: # runs on PRs
   kyma-project/rafter:
     - name: pre-rafter
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-rafter
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -51,6 +54,9 @@ presubmits: # runs on PRs
             effect: NoSchedule
     - name: pre-rafter-integration-test
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-rafter-integration-test
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
       always_run: true
@@ -94,6 +100,9 @@ presubmits: # runs on PRs
             effect: NoSchedule
     - name: pre-rafter-minio-gcs-gateway
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-rafter-minio-gcs-gateway
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-dind-enabled: "true"
         preset-gc-project-env: "true"
         preset-kind-volume-mounts: "true"
@@ -140,6 +149,9 @@ presubmits: # runs on PRs
             effect: NoSchedule
     - name: pre-rafter-minio-az-gateway
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-rafter-minio-az-gateway
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-az-kyma-prow-credentials: "true"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
@@ -186,6 +198,9 @@ presubmits: # runs on PRs
             effect: NoSchedule
     - name: pre-rafter-minio-gcs-gateway-migration
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-rafter-minio-gcs-gateway-migration
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-dind-enabled: "true"
         preset-gc-project-env: "true"
         preset-kind-volume-mounts: "true"
@@ -232,6 +247,9 @@ presubmits: # runs on PRs
             effect: NoSchedule
     - name: pre-rafter-minio-az-gateway-migration
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-rafter-minio-az-gateway-migration
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-az-kyma-prow-credentials: "true"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
@@ -283,6 +301,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: post-rafter
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kind-volume-mounts: "true"
@@ -329,6 +350,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: release-rafter
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-release: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -374,6 +398,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: post-rafter-integration-test
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
       skip_report: false
@@ -417,6 +444,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: release-rafter-integration-test
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-release: "true"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
@@ -460,6 +490,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: post-rafter-minio-gcs-gateway
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-dind-enabled: "true"
         preset-gc-project-env: "true"
         preset-kind-volume-mounts: "true"
@@ -506,6 +539,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: release-rafter-minio-gcs-gateway
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-release: "true"
         preset-dind-enabled: "true"
         preset-gc-project-env: "true"
@@ -552,6 +588,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: post-rafter-minio-az-gateway
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-az-kyma-prow-credentials: "true"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
@@ -598,6 +637,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: release-rafter-minio-az-gateway
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-az-kyma-prow-credentials: "true"
         preset-build-release: "true"
         preset-dind-enabled: "true"
@@ -643,6 +685,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: post-rafter-minio-gcs-gateway-migration
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-dind-enabled: "true"
         preset-gc-project-env: "true"
         preset-kind-volume-mounts: "true"
@@ -689,6 +734,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: release-rafter-minio-gcs-gateway-migration
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-release: "true"
         preset-dind-enabled: "true"
         preset-gc-project-env: "true"
@@ -735,6 +783,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: post-rafter-minio-az-gateway-migration
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-az-kyma-prow-credentials: "true"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
@@ -781,6 +832,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: release-rafter-minio-az-gateway-migration
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-az-kyma-prow-credentials: "true"
         preset-build-release: "true"
         preset-dind-enabled: "true"

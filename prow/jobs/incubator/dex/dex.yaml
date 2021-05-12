@@ -5,6 +5,9 @@ presubmits: # runs on PRs
   kyma-incubator/dex:
     - name: pre-main-kyma-incubator-dex
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-main-kyma-incubator-dex
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
@@ -43,6 +46,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: post-main-kyma-incubator-dex
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-main: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"

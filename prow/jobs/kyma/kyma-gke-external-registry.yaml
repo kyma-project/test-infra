@@ -5,6 +5,9 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-kyma-gke-external-registry
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-main-kyma-gke-external-registry
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-pr: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
@@ -49,6 +52,9 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pre-rel122-kyma-gke-external-registry
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-rel122-kyma-gke-external-registry
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-release: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
@@ -91,6 +97,9 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pre-rel121-kyma-gke-external-registry
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-rel121-kyma-gke-external-registry
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-release: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
@@ -133,6 +142,9 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pre-rel120-kyma-gke-external-registry
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-rel120-kyma-gke-external-registry
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-release: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"

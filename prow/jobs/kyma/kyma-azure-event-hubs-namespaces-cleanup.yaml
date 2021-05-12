@@ -6,6 +6,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: kyma-azure-event-hubs-namespaces-cleanup
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-az-kyma-prow-credentials: "true"
       cron: "30 * * * *"
       optional: true

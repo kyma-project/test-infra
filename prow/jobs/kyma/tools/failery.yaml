@@ -4,6 +4,10 @@
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-kyma-tools-failery
+      labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-main-kyma-tools-failery
+        prow.k8s.io/pubsub.topic: prowjobs
       run_if_changed: '^tools/failery/'
       skip_report: false
       decorate: true
@@ -37,6 +41,10 @@ postsubmits: # runs on main
     - name: post-main-kyma-tools-failery
       annotations:
         testgrid-create-test-group: "false"
+      labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: post-main-kyma-tools-failery
+        prow.k8s.io/pubsub.topic: prowjobs
       run_if_changed: '^tools/failery/'
       skip_report: false
       decorate: true

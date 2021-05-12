@@ -5,6 +5,9 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-main-kcp-development-artifacts
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-main-kcp-development-artifacts
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-development-artifacts-bucket: "true"
@@ -52,6 +55,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: post-main-kcp-development-artifacts
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-artifacts-main: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"

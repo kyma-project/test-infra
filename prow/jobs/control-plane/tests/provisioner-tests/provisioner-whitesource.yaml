@@ -5,6 +5,9 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-main-provisioner-whitesource-scan
       labels:
+      	prow.k8s.io/pubsub.project: sap-kyma-prow
+        prow.k8s.io/pubsub.runID: pre-main-provisioner-whitesource-scan
+        prow.k8s.io/pubsub.topic: prowjobs
         preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
