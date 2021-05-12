@@ -6,6 +6,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "unstale-gardener-project"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gardener-neighbors: "true"
       cron: "0 5 1 * *"
       skip_report: false

@@ -2,7 +2,7 @@
 appName: "sap-pubsub-connector"
 pubsubGateway:
   # Github webhook gateway image.
-  image: "eu.gcr.io/kyma-project/test-infra/pubsubgateway:latest"
+  image: "eu.gcr.io/kyma-project/test-infra/pubsub-gateway:PR-3626"
   # Subscription ID to pull messages from.
   pubsubSubscriptionID: "oom-event-found-sub"
   # Slack channel name to send messages.
@@ -36,4 +36,4 @@ function:
       # Path to directory with function code. Relative to repository root.
       functionBaseDir: "/development/pubsub-connector/oomFoundFunction"
       # Branch name with function code.
-      branch: "master"
+      branch: "main"

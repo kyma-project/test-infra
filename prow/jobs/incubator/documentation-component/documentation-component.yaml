@@ -5,6 +5,9 @@ presubmits: # runs on PRs
   kyma-incubator/documentation-component:
     - name: pre-documentation-component
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-documentation-component"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
         preset-sa-gcr-push: "true"

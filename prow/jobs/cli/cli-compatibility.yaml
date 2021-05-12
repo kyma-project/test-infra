@@ -6,6 +6,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-cli-compatibility-1"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-sa-vm-kyma-integration: "true"
       cron: "00 00 * * *"
@@ -42,6 +45,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-cli-compatibility-2"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-sa-vm-kyma-integration: "true"
       cron: "00 03 * * *"

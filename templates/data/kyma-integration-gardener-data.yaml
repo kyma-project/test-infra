@@ -21,6 +21,8 @@ templates:
             path_alias: github.com/kyma-project/kyma
             request_memory: 1Gi
             request_cpu: 400m
+            labels:
+              preset-debug-commando-oom: "true"
           jobConfig_presubmit:
             optional: true
             labels:
@@ -67,7 +69,6 @@ templates:
               preset-sa-test-gcr-push: "true"               # required for pushing images
               preset-sa-gardener-logs: "true"               # required for writing logs to Stackdriver
               preset-cluster-version: "true"
-              preset-debug-commando-oom: "true"             # detect and troubleshoot oom events
         jobConfigs:
           - repoName: kyma-project/kyma
             jobs:
@@ -295,9 +296,6 @@ templates:
                     grace_period: 600000000000 # 10min
                   cron: "5 * * * *"
                   labels:
-                    prow.k8s.io/pubsub.project: sap-kyma-prow
-                    prow.k8s.io/pubsub.runID: test-run
-                    prow.k8s.io/pubsub.topic: test-infra-periodics
                     preset-log-collector-slack-token: "true"
                   env:
                     EXECUTION_PROFILE: "production"
@@ -372,9 +370,6 @@ templates:
                     grace_period: 600000000000 # 10min
                   cron: "0 5,8,11,14 * * *"
                   labels:
-                    prow.k8s.io/pubsub.project: sap-kyma-prow
-                    prow.k8s.io/pubsub.runID: test-run
-                    prow.k8s.io/pubsub.topic: test-infra-periodics
                     preset-log-collector-slack-token: "true"
                   env:
                     EXECUTION_PROFILE: "evaluation"
