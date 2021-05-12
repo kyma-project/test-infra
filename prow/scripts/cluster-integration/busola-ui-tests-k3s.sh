@@ -68,8 +68,8 @@ install_busola(){
     
     kubectl create secret tls default-ssl-certificate \
     --namespace kube-system \
-    --key ./ssl/${1}.key \
-    --cert ./ssl/${1}.crt
+    --key ./ssl/"${1}".key \
+    --cert ./ssl/"${1}".crt
     
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
     helm repo update
@@ -88,7 +88,7 @@ install_busola(){
     pushd busola-resources
     
     for i in ./**{/*,}.yaml; do
-        sed -i "s,%DOMAIN%,$1,g" $i
+        sed -i "s,%DOMAIN%,$1,g" "$i"
     done
     
     kubectl apply -k .
@@ -113,8 +113,8 @@ kubectl wait \
 --all \
 --timeout=120s
 
-cp $PWD/kubeconfig-kyma.yaml $PWD/busola-tests/fixtures/kubeconfig.yaml
+cp "$PWD/kubeconfig-kyma.yaml" "$PWD/busola-tests/fixtures/kubeconfig.yaml"
 
 echo "Running Cypress tests inside Docker..."
-docker run --entrypoint /bin/bash --network=host -v $PWD/busola-tests:/tests -w /tests $CYPRESS_IMAGE -c "npm ci --no-optional; cypress run --browser chrome --headless"
+docker run --entrypoint /bin/bash --network=host -v ./busola-tests:/tests -w /tests $CYPRESS_IMAGE -c "npm ci --no-optional; cypress run --browser chrome --headless"
 
