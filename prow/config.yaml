@@ -110,10 +110,6 @@ branch-protection:
             kyma-2.0-docu:
               required_pull_request_reviews:
                 require_code_owner_reviews: false
-#        test-infra:
-#          required_status_checks:
-#            contexts:
-#              - "pre-main-test-infra-vpathguard"
         website:
           branches:
             main:
