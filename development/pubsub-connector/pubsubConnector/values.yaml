@@ -18,6 +18,7 @@ pubsubGateway:
 slackConnector:
   # Slack application plan suffix. Must match suffix from CMP.
   cmpSlackAppPlanSuffix: "36130"
+  apiId: "85ded56e-303b-43b3-a950-8b1c3d519561"
   cmpSlackAppPlan: "slack-connector"
   # Slack connector application name. Must match name from Application resource.
   slackAppName: "sap-slack-connector"
