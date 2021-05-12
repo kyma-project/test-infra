@@ -1,2 +1,3 @@
 pjNames:
   - pjName: oom-tester
+    report: true
