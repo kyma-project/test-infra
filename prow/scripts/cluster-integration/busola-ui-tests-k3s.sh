@@ -5,7 +5,7 @@ set -o pipefail
 
 LOCAL_KYMA_DIR="./local-kyma"
 K3S_DOMAIN="local.kyma.dev"
-CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included@sha256:310bf4d486abaa54e3a60fc70d22757b561f260fa5b0154bb2a4c7b7dde3e9b3"
+CYPRESS_IMAGE="cypress/browsers:node14.16.0-chrome89-ff86"
 
 
 prepare_k3s() {
