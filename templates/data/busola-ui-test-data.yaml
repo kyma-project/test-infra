@@ -16,7 +16,7 @@ templates:
             cluster: "trusted-workload"
           request_small:
             request_memory: 100Mi
-            request_cpu: 300m
+            request_cpu: 900m
           vm_job_template_k3s:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-busola-k3s.sh"
           vm_job_labels_template:
