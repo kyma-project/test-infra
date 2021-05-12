@@ -30,7 +30,7 @@ templates:
               # presubmits
               - jobConfig:
                   name: "pre-busola-ui-test"
-                  # following regexp won't start build if only Markdown files were changed
+                  optional: true
                   run_if_changed: "/"
                   labels:
                     preset-build-pr: "true"
