@@ -8,7 +8,7 @@ K3S_DOMAIN="local.kyma.dev"
 CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included:7.3.0"
 
 # pull the large image in the background to save some time
-docker pull --quiet $CYPRESS_IMAGE &
+# docker pull --quiet $CYPRESS_IMAGE &
 
 prepare_k3s() {
     pushd ${LOCAL_KYMA_DIR}
