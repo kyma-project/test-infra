@@ -5,7 +5,7 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-main-test-infra-pjtester
       labels:
-      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-test-infra-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-pjtester-kubeconfig: "true"
@@ -34,7 +34,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-test-infra-vpathguard
       labels:
-      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-test-infra-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^(vpath/pjtester.yaml)'

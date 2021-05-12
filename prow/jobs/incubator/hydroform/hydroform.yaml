@@ -5,7 +5,7 @@ presubmits: # runs on PRs
   kyma-project/hydroform:
     - name: pre-main-hydroform
       labels:
-      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-hydroform"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
@@ -48,7 +48,7 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-hydroform"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"

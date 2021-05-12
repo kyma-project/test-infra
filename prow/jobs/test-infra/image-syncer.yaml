@@ -5,7 +5,7 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-main-test-infra-image-syncer-validate
       labels:
-      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-test-infra-image-syncer-validate"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^(development/image-syncer)'
@@ -33,7 +33,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-test-infra-image-syncer-dry-run
       labels:
-      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-test-infra-image-syncer-dry-run"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
@@ -68,7 +68,7 @@ postsubmits: # runs on main
       annotations:
         testgrid-dashboards: "kyma_experimental"
       labels:
-      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-test-infra-image-syncer-run"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"

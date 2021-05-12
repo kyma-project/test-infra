@@ -5,7 +5,7 @@ presubmits: # runs on PRs
   kyma-project/cli:
     - name: pre-kyma-cli-integration
       labels:
-      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kyma-cli-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
@@ -41,7 +41,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-kyma-cli-integration-k3s
       labels:
-      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kyma-cli-integration-k3s"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
@@ -87,7 +87,7 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-kyma-cli-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
@@ -125,7 +125,7 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-kyma-cli-integration-k3s"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
@@ -170,7 +170,7 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "kyma-cli-integration-gke"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-cluster-use-ssd: "true"
@@ -212,7 +212,7 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "kyma-cli-alpha-uninstall-gke"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-cluster-version: "true"

@@ -5,7 +5,7 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-main-compass-integration
       labels:
-      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-compass-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
@@ -50,7 +50,7 @@ postsubmits: # runs on main
         testgrid-dashboards: "kyma-incubator_compass"
         testgrid-days-of-results: "60"
       labels:
-      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-compass-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"

@@ -5,7 +5,7 @@ presubmits: # runs on PRs
   kyma-incubator/github-slack-connectors:
     - name: pre-main-github-connector
       labels:
-      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-github-connector"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
@@ -40,7 +40,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-slack-connector
       labels:
-      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-slack-connector"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
@@ -80,7 +80,7 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-github-connector"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
@@ -117,7 +117,7 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-slack-connector"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"

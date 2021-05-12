@@ -6,7 +6,7 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "ci-prow-label-sync"
         prow.k8s.io/pubsub.topic: "prowjobs"
       cron: "17 * * * *"

@@ -5,7 +5,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-release-pr-image-guard
       labels:
-      	prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-release-pr-image-guard"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
