@@ -3,15 +3,12 @@ kind: Service
 metadata:
   name: {{ include "probot.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "probot.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    app: {{ include "probot.name" . }}
 spec:
-  type: {{ .Values.service.type }}
+  selector:
+    app: {{ include "probot.name" . }}
   ports:
     - port: {{ .Values.service.port }}
       targetPort: {{ .Values.deployment.config.port }}
-      protocol: TCP
       name: http
-  selector:
-    app.kubernetes.io/name: {{ include "probot.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+  type: {{ .Values.service.type }}
