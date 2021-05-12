@@ -5,6 +5,9 @@ presubmits: # runs on PRs
   kyma-project/busola:
     - name: pre-busola-ui-test
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-busola-ui-test"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gardener-azure-kyma-integration: "true"
         preset-gc-project-env: "true"
