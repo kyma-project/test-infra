@@ -5,8 +5,10 @@ set -o pipefail
 
 LOCAL_KYMA_DIR="./local-kyma"
 K3S_DOMAIN="local.kyma.dev"
-CYPRESS_IMAGE="cypress/browsers:node14.16.0-chrome89-ff86"
+CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included:7.3.0"
 
+# pull the large image in the background to save some time
+docker pull --quiet $CYPRESS_IMAGE &
 
 prepare_k3s() {
     pushd ${LOCAL_KYMA_DIR}
@@ -104,8 +106,7 @@ prepare_k3s
 generate_cert $K3S_DOMAIN
 install_busola $K3S_DOMAIN
 
-#pull the large image while waiting for Busola pods to be ready
-docker pull $CYPRESS_IMAGE
+
 
 # wait for all Busola pods to be ready
 kubectl wait \
