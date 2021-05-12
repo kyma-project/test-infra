@@ -3,11 +3,17 @@
 set -o errexit
 set -o pipefail
 
+# shellcheck source=prow/scripts/lib/log.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
+
 export LOCAL_KYMA_DIR="./local-kyma"
+K3S_DOMAIN="local.kyma.dev"
 
 prepare_k3s() {
     pushd ${LOCAL_KYMA_DIR}
     ./create-cluster-k3s.sh
+    #k3s cluster created
+    kubectl cluster-info
     popd
 }
 
@@ -22,7 +28,7 @@ generate_cert(){
     # Generate root certificate
     openssl req -x509 -new -nodes -subj "/C=US/O=_Development CA/CN=Development certificates" -key ca.key -sha256 -days 3650 -out ca.crt
     
-    echo "Root certificate generated"
+    echo "Root certificate generated √"
     
     # Generate a private key
     openssl genrsa -out "$1.key" 2048
@@ -53,12 +59,13 @@ EOF
     -days 365 \
     -sha256
     
-    echo "Certificate generated successfully"
+    echo "Certificate generated √"
     popd
 }
 
 install_busola(){
-    
+    # $1 is the domain
+    echo "Deploying Busola resources on the $1 server"
     
     kubectl create secret tls default-ssl-certificate \
     --namespace kube-system \
@@ -95,22 +102,14 @@ install_busola(){
 }
 
 
-
+log::info "THIS IS A TEST LOG"
 
 prepare_k3s
-generate_cert "local.kyma.dev"
-install_busola "local.kyma.dev"
+generate_cert $K3S_DOMAIN
+install_busola $K3S_DOMAIN
 
 node -v
 npm -v
-
-
-kubectl cluster-info
-kubectl config view
-#K3S_SERVER=$(kubectl config view --minify -o jsonpath='{.clusters[].cluster.server}')
-K3S_SERVER="local.kyma.dev"
-
-echo "Deploying Busola resources on the ${K3S_SERVER} server"
 
 # wait for all Busola pods to be ready
 kubectl wait \
@@ -124,11 +123,4 @@ cp $PWD/kubeconfig-kyma.yaml $PWD/busola-tests/fixtures/kubeconfig.yaml
 echo "Running Cypress tests inside Docker..."
 CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included@sha256:310bf4d486abaa54e3a60fc70d22757b561f260fa5b0154bb2a4c7b7dde3e9b3"
 docker run --entrypoint /bin/bash --network=host -v $PWD/busola-tests:/tests -w /tests $CYPRESS_IMAGE -c "npm ci; cypress run --browser chrome --headless"
-
-
-
-# export KYMA_KUBECONFIG_PATH="${PWD}/kubeconfig-kyma.yaml"
-# echo "KUBECONFIG: ${KYMA_KUBECONFIG_PATH}"
-
-# export KUBECONFIG="${KYMA_KUBECONFIG_PATH}"
 
