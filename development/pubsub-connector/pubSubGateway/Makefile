@@ -3,20 +3,22 @@
 # DOCKER_PUSH_REPOSITORY - URL set by prow preset
 # DOCKER_PUSH_DIRECTORY
 
-IMG_NAME = debug-commando
+IMG_NAME = pubsub-gateway
 IMG = $(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(IMG_NAME)
 
 
 # build and push on PR, tag with PR number
 .PHONY: ci-pr
-ci-pr: build-image push-image
+ci-pr: build-image push-image validate
 push-image: build-image
+build-image: validate
 
 
 # build and push on postsubmit, tag with commit ID and current
 .PHONY: ci-release
-ci-release: build-image tag-image push-image
+ci-release: build-image tag-image push-image validate
 tag-image: build-image
+build-image: validate
 
 
 # tag image with current tag
@@ -33,7 +35,7 @@ endif
 # build image and tag it with commit ID or PR number
 .PHONY: build-image
 build-image:
-	docker build -t $(IMG):$(DOCKER_TAG) --build-arg commit=$(DOCKER_TAG) .
+	docker build -t $(IMG):$(DOCKER_TAG) --build-arg commit=$(DOCKER_TAG) -f Dockerfile .
 
 
 # push image with all tags
@@ -41,3 +43,14 @@ build-image:
 push-image:
 	@echo "___ Pushing image with all tags ___"
 	docker push $(IMG)
+
+
+# validate go files
+.PHONY: validate
+validate:
+	./before-commit.sh ci
+
+
+.PHONY: clean
+clean:
+	rm -f $(APP_NAME)

@@ -5,6 +5,9 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-main-control-plane-integration
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-control-plane-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
@@ -44,6 +47,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-dashboards: "kyma_control-plane"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-control-plane-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"

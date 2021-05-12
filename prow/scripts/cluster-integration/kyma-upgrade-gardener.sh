@@ -111,7 +111,7 @@ if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
 fi
 
 # Test Kyma
-gardener::test_fast_integration_kyma
+gardener::pre_upgrade_test_fast_integration_kyma
 
 # Remove old Kyma components
 
@@ -129,7 +129,7 @@ log::info "Installing Kyma 2.0"
 kyma::alpha_deploy_kyma
 
 # Test Kyma
-gardener::test_fast_integration_kyma
+gardener::post_upgrade_test_fast_integration_kyma
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"

@@ -82,6 +82,11 @@ cleanup() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
+    if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
+      # copy output from debug container to artifacts directory
+      utils::oom_get_output
+    fi
+
     # collect logs from failed tests before deprovisioning
     kyma::run_test_log_collector "kyma-upgrade-gardener-azure"
 
@@ -130,6 +135,12 @@ function provisionCluster() {
             --scaler-max 4 --scaler-min 3 \
             --kube-version="${GARDENER_CLUSTER_VERSION}"
     )
+
+    # Schedule pod with oom finder.
+    if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
+      # run oom debug pod
+      utils::debug_oom
+    fi
 }
 
 function getLastReleaseCandidateVersion() {
