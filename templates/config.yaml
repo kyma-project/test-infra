@@ -696,15 +696,6 @@ templates:
             - name: kyma-gke-integration
             - name: kyma-gke-upgrade
             - name: kyma-artifacts
-  - from: templates/branchprotector-config.yaml
-    render:
-      - to: ../prow/branchprotector-config.yaml
-        values:
-          contexts:
-            - name: kyma-integration
-            - name: kyma-gke-integration
-            - name: kyma-gke-upgrade
-            - name: kyma-artifacts
   - from: templates/testgrid-default.yaml
     render:
       - to: ../prow/testgrid-default.yaml
