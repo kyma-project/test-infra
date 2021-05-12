@@ -30,6 +30,4 @@ spec:
         configMapKeyref:
           name: {{ .Release.Name }}-pubsub-gateway-config
           key: slackConnectorApiId
-    - name: OOM_FOUND_SLACK_CONNECTOR_85ded56e-303b-43b3-a950-8b1c3d519561_GATEWAY_URL
-      value:
   runtime: python38
