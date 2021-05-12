@@ -41,10 +41,7 @@ globalSets:
     request_cpu: "0.8"
     cluster_presubmit: "untrusted-workload"
     cluster_postsubmit: "trusted-workload"
-    # !!!NOTICE!!! pubsub labels are set additionally in pubsub_labels globalSet, values has to be changed in both globalSets
     <<: *pubsub_config
-    #pubsub_project: "sap-kyma-prow"
-    #pubsub_topic: "prowjobs"
   jobConfig_presubmit:
     type_presubmit: "true"
     cluster: "untrusted-workload"
@@ -57,11 +54,9 @@ globalSets:
   disable_testgrid:
     annotations:
       testgrid-create-test-group: "false"
-  # !!!NOTICE!!! globalSet for prowjobs which don't inherit jobConfig_default globalSet
+  # globalSet for prowjobs which don't inherit jobConfig_default globalSet
   pubsub_labels:
     <<: *pubsub_config
-    #pubsub_project: "sap-kyma-prow"
-    #pubsub_topic: "prowjobs"
   # extra_refs sets
   extra_refs_test-infra:
     extra_refs:
