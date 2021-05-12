@@ -74,7 +74,7 @@ install_busola(){
     --cert ./ssl/"${1}".crt
     
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-    helm repo update
+    # helm repo update
     
     helm install ingress-nginx \
     --namespace=kube-system \
