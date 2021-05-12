@@ -16,6 +16,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-sa-gardener-logs: "true"               # required for writing logs to Stackdriver
               preset-cluster-version: "true"
+              preset-debug-commando-oom: "true"
             env:
               RS_GROUP: "kyma-gardener-azure"
               REGION: "northeurope"

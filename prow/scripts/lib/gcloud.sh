@@ -3,6 +3,8 @@ LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${LIBDIR}"/log.sh
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
 # gcloud::verify_deps checks if the needed preconditions are met to use this library
 function gcloud::verify_deps {
@@ -384,6 +386,12 @@ function gcloud::provision_gke_cluster {
 
   kubectl -n kube-system patch cm kube-dns --type merge --patch \
     "$(cat "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/kube-dns-stub-domains-patch.yaml)"
+
+  # Schedule pod with oom finder.
+  if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
+      # run oom debug pod
+      utils::debug_oom
+  fi
 }
 
 # gcloud::deprovision_gke_cluster removes a GKE cluster
@@ -402,6 +410,11 @@ function gcloud::deprovision_gke_cluster {
 
 #  gcloud config set project "${GCLOUD_PROJECT_NAME}"
 #  gcloud config set compute/zone "${GCLOUD_COMPUTE_ZONE}"
+
+  if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
+      # copy output from debug container to artifacts directory
+      utils::oom_get_output
+  fi
 
   local params
   params+=("--quiet")

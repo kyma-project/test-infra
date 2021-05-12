@@ -4,6 +4,10 @@
 presubmits: # runs on PRs
   kyma-project/console:
     - name: pre-main-console-react-components
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-console-react-components"
+        prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^components/react/'
       skip_report: false
       decorate: true
@@ -37,6 +41,10 @@ postsubmits: # runs on main
     - name: post-main-console-react-components
       annotations:
         testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-console-react-components"
+        prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^components/react/'
       skip_report: false
       decorate: true
