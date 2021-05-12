@@ -24,15 +24,10 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
 fi
 
 cleanup() {
-    # # TODO - collect junit results
-    # log::info "Stopping instance busola-ui-test-${RANDOM_ID}"
-    # log::info "It will be removed automatically by cleaner job"
     
     # do not fail the job regardless of the vm deletion result
     set +e
-    
     gcloud compute instances stop --async --zone="${ZONE}" "busola-ui-test-${RANDOM_ID}"
-    
     log::info "End of cleanup"
 }
 

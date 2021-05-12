@@ -5,17 +5,13 @@ set -o pipefail
 
 LOCAL_KYMA_DIR="./local-kyma"
 K3S_DOMAIN="local.kyma.dev"
+CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included@sha256:310bf4d486abaa54e3a60fc70d22757b561f260fa5b0154bb2a4c7b7dde3e9b3"
 
-KYMA_PROJECT_DIR="/home/prow/go/src/github.com/kyma-project"
-TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
-
-# shellcheck source=prow/scripts/lib/log.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 
 prepare_k3s() {
     pushd ${LOCAL_KYMA_DIR}
     ./create-cluster-k3s.sh
-    #k3s cluster created
+    echo "k3s cluster created √"
     kubectl cluster-info
     popd
 }
@@ -62,13 +58,13 @@ EOF
     -days 365 \
     -sha256
     
-    echo "Certificate generated √"
+    echo "Certificate generated for the $1 domain √"
     popd
 }
 
 install_busola(){
     # $1 is the domain
-    echo "Deploying Busola resources on the $1 server"
+    echo "Deploying Busola resources on the $1 domain"
     
     kubectl create secret tls default-ssl-certificate \
     --namespace kube-system \
@@ -89,7 +85,6 @@ install_busola(){
     --selector=app.kubernetes.io/component=controller \
     --timeout=120s
     
-    
     pushd busola-resources
     
     for i in ./**{/*,}.yaml; do
@@ -98,32 +93,28 @@ install_busola(){
     
     kubectl apply -k .
     
-    echo "Busola Url:"
-    echo "https://busola.$1"
-    
     popd
+    echo "Busola resources applied √"
 }
 
-
-log::info "THIS IS A TEST LOG"
+echo "Node.js version: $(node -v)"
+echo "NPM version: $(npm -v)"
 
 prepare_k3s
 generate_cert $K3S_DOMAIN
 install_busola $K3S_DOMAIN
 
-node -v
-npm -v
+#pull the large image while waiting for Busola pods to be ready
+docker pull $CYPRESS_IMAGE
 
 # wait for all Busola pods to be ready
 kubectl wait \
-    --for=condition=ready pod \
-    --all \
-    --timeout=120s
-
+--for=condition=ready pod \
+--all \
+--timeout=120s
 
 cp $PWD/kubeconfig-kyma.yaml $PWD/busola-tests/fixtures/kubeconfig.yaml
 
-log::banner "Running Cypress tests inside Docker..."
-CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included@sha256:310bf4d486abaa54e3a60fc70d22757b561f260fa5b0154bb2a4c7b7dde3e9b3"
-docker run --entrypoint /bin/bash --network=host -v $PWD/busola-tests:/tests -w /tests $CYPRESS_IMAGE -c "npm ci; cypress run --browser chrome --headless"
+echo "Running Cypress tests inside Docker..."
+docker run --entrypoint /bin/bash --network=host -v $PWD/busola-tests:/tests -w /tests $CYPRESS_IMAGE -c "npm ci --no-optional; cypress run --browser chrome --headless"
 
