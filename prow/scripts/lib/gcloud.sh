@@ -2,9 +2,9 @@
 LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
 
 # shellcheck source=prow/scripts/lib/log.sh
-source "${LIBDIR}"/log.sh
+source "${LIBDIR}/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+source "${LIBDIR}/utils.sh"
 
 # gcloud::verify_deps checks if the needed preconditions are met to use this library
 function gcloud::verify_deps {
