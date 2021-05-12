@@ -5,6 +5,9 @@ presubmits: # runs on PRs
   kyma-project/third-party-images:
     - name: pre-main-tpi-cloudsql-proxy
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-tpi-cloudsql-proxy"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
@@ -37,6 +40,9 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-tpi-docker-registry
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-tpi-docker-registry"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
@@ -69,6 +75,9 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-tpi-fluent-bit
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-tpi-fluent-bit"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
@@ -101,6 +110,9 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-tpi-jaeger-operator
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-tpi-jaeger-operator"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
@@ -133,6 +145,9 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-tpi-k8s-tools
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-tpi-k8s-tools"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
@@ -165,6 +180,9 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-tpi-kiali
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-tpi-kiali"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
@@ -197,6 +215,9 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-tpi-kiwigrid-sidecar
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-tpi-kiwigrid-sidecar"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
@@ -229,6 +250,9 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-tpi-minio
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-tpi-minio"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
@@ -261,6 +285,9 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-tpi-minio-mc
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-tpi-minio-mc"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
@@ -293,6 +320,9 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-tpi-console-nginx
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-tpi-console-nginx"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
@@ -325,6 +355,9 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-tpi-node-exporter
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-tpi-node-exporter"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
@@ -357,6 +390,9 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-tpi-grafana
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-tpi-grafana"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
@@ -394,6 +430,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-tpi-cloudsql-proxy"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
@@ -428,6 +467,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-tpi-docker-registry"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
@@ -462,6 +504,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-tpi-fluent-bit"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
@@ -496,6 +541,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-tpi-jaeger-operator"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
@@ -530,6 +578,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-tpi-k8s-tools"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
@@ -564,6 +615,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-tpi-kiali"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
@@ -598,6 +652,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-tpi-kiwigrid-sidecar"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
@@ -632,6 +689,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-tpi-minio"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
@@ -666,6 +726,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-tpi-minio-mc"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
@@ -700,6 +763,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-tpi-console-nginx"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
@@ -734,6 +800,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-tpi-node-exporter"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"
@@ -768,6 +837,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-tpi-grafana"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-tpi: "true"
         preset-sa-gcr-push: "true"

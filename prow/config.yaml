@@ -110,10 +110,6 @@ branch-protection:
             kyma-2.0-docu:
               required_pull_request_reviews:
                 require_code_owner_reviews: false
-#        test-infra:
-#          required_status_checks:
-#            contexts:
-#              - "pre-main-test-infra-vpathguard"
         website:
           branches:
             main:
@@ -968,8 +964,6 @@ presets:
         value: "prow-keb-integration"
       - name: GARDENER_KUBECONFIG
         value: "/gardener/kubeconfig"
-      - name: KEB_REGION
-        value: "cf-eu10"
     volumes:
       - name: gardener-skr-kyma-dev-kubeconfig
         secret:
@@ -1008,6 +1002,20 @@ presets:
     env:
       - name: KEB_PLAN_ID
         value: "03b812ac-c991-4528-b5bd-08b303523a63"
+  - labels:
+      preset-keb-plan-free-aws: "true"
+    env:
+      - name: KEB_PLAN_ID
+        value: "b1a5764e-2ea1-4f95-94c0-2b4538b37b55"
+      - name: KEB_REGION
+        value: "cf-eu10"
+  - labels:
+      preset-keb-plan-free-azure: "true"
+    env:
+      - name: KEB_PLAN_ID
+        value: "b1a5764e-2ea1-4f95-94c0-2b4538b37b55"
+      - name: KEB_REGION
+        value: "cf-eu20"
   - labels:
       preset-gke-upgrade-pre-job: "true"
     env:

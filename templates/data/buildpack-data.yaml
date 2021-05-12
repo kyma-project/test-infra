@@ -4,19 +4,7 @@ templates:
           - to: ../prow/jobs/test-infra/buildpack.yaml
             localSets:
               default:
-                skip_report: "false"
-                max_concurrency: "10"
-                decorate: "true"
-                path_alias: "github.com/kyma-project/test-infra"
-                branches:
-                  - "^master$"
-                  - "^main$"
-                privileged: "true"
                 command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-                request_memory: "1.5Gi"
-                request_cpu: "0.8"
-                cluster_presubmit: "untrusted-workload"
-                cluster_postsubmit: "trusted-workload"
                 labels:
                   preset-dind-enabled: "true"
                   preset-sa-gcr-push: "true"
@@ -44,6 +32,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -55,6 +44,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -66,6 +56,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -77,6 +68,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -88,6 +80,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -99,6 +92,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -110,6 +104,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -121,6 +116,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -132,6 +128,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -143,6 +140,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -154,6 +152,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -165,6 +164,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -176,6 +176,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -187,6 +188,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -198,6 +200,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -209,6 +212,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -220,6 +224,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -231,6 +236,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -242,6 +248,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -253,6 +260,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -264,6 +272,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -275,6 +284,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -286,6 +296,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -297,6 +308,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -308,6 +320,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -319,6 +332,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -330,6 +344,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -341,6 +356,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -352,6 +368,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -363,6 +380,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -374,6 +392,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -385,6 +404,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -396,6 +416,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -407,6 +428,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_bootstrap"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -418,6 +440,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_buildpack-golang"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -429,6 +452,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_buildpack-golang"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -440,6 +464,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_buildpack-golang"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -451,6 +476,7 @@ templates:
                     inheritedConfigs:
                       global:
                         - "image_buildpack-golang"
+                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
