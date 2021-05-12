@@ -112,8 +112,10 @@ K3S_SERVER="local.kyma.dev"
 
 echo "Deploying Busola resources on the ${K3S_SERVER} server"
 
+# wait for all Busola pods to be ready
 kubectl wait \
     --for=condition=ready pod \
+    --all \
     --timeout=120s
 
 
