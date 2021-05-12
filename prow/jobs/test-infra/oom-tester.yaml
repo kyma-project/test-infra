@@ -7,8 +7,8 @@ presubmits: # runs on PRs
       max_concurrency: 10
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "test-run"
-        prow.k8s.io/pubsub.topic: "test-infra-periodics"
+        prow.k8s.io/pubsub.runID: "oom-tester"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-log-collector-slack-token: "true"
         preset-gardener-azure-kyma-integration: "true"
         preset-docker-push-repository-gke-integration: "true"
