@@ -1140,8 +1140,8 @@ periodics: # runs on schedule
         preset-kyma-cli-stable: "true"
         preset-sa-gardener-logs: "true"
         preset-sa-test-gcr-push: "true"
-      cron: "0 0 7-17 ? * 1-5"
-      skip_report: false
+      interval: 1h
+      skip_report: true
       decorate: true
       decoration_config:
         grace_period: 600000000000

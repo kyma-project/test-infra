@@ -136,5 +136,9 @@ kyma::alpha_deploy_kyma
 # Test Kyma
 gardener::post_upgrade_test_fast_integration_kyma
 
+log::info "Sleeping for 20 minutes..."
+sleep 1200
+log::info "Done sleeping!"
+
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
