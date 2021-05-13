@@ -11,7 +11,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"regexp"
 	"strings"
 )
@@ -105,12 +104,28 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 	var message PubSubMessage
 	functionCtx := context.Background()
 	if err := json.NewDecoder(r.Body).Decode(&message); err != nil {
+		log.Println(LogEntry{
+			Message:   "failed decode message body",
+			Severity:  "CRITICAL",
+			Trace:     trace,
+			Component: "kyma.prow.cloud-function.checkoomevent",
+			Labels:    map[string]string{"messageId": message.Message.MessageId},
+		})
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprint(w, "500 - failed decode message!")
+		return
 	}
 	if message.Message.Data == "" {
+		log.Println(LogEntry{
+			Message:   "message data is empty, nothing to analyse",
+			Severity:  "ERROR",
+			Trace:     trace,
+			Component: "kyma.prow.cloud-function.checkoomevent",
+			Labels:    map[string]string{"messageId": message.Message.MessageId},
+		})
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprint(w, "400 - message is empty!")
+		return
 	}
 	bdata, err := base64.StdEncoding.DecodeString(message.Message.Data)
 	if err != nil {
@@ -121,10 +136,19 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 			Component: "kyma.prow.cloud-function.checkoomevent",
 			Labels:    map[string]string{"messageId": message.Message.MessageId},
 		})
+		return
 	}
 	if err := json.Unmarshal(bdata, &data); err != nil {
-		fmt.Fprintf(os.Stdout, "json unmarshal failed")
-		log.Fatal(err)
+		log.Println(LogEntry{
+			Severity:  "CRITICAL",
+			Component: "kyma.prow.cloud-function.checkoomevent",
+			Message:   "failed unmarshal message data to json",
+			Trace:     trace,
+			Labels:    map[string]string{"messageId": message.Message.MessageId},
+		})
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprint(w, "500 - failed unmarshal message data to json!")
+		return
 	}
 	if data.Status != "success" && data.Status != "failure" {
 		// prowjob didn't finish no data to search for oom
@@ -137,6 +161,7 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 		})
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "200 - message processed, prowjob not finished, no data to analyse")
+		return
 	} else {
 		log.Println(LogEntry{
 			Severity:  "INFO",
@@ -162,6 +187,7 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 			})
 			w.WriteHeader(http.StatusOK)
 			fmt.Fprintf(w, "200 - message processed, describe_nodes.txt not found, no data to analyse")
+			return
 		} else if err != nil && err != storage.ErrObjectNotExist {
 			log.Println(LogEntry{
 				Severity:  "CRITICAL",
@@ -172,6 +198,7 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 			})
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprintf(w, "500 - failed get describe_nodes.txt from gcs, can't analyse data")
+			return
 		} else {
 			defer rc.Close()
 			// read content of descrbie_nodes.txt
@@ -186,6 +213,7 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 				})
 				w.WriteHeader(http.StatusInternalServerError)
 				fmt.Fprintf(w, "500 - failed read describe_nodes.txt from gcs, can't analyse data")
+				return
 			}
 
 			// read for oom event in describe_nodes.txt
@@ -215,6 +243,7 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 						})
 						w.WriteHeader(http.StatusInternalServerError)
 						fmt.Fprintf(w, "500 - failed publish message to oom-event-found topic")
+						return
 					}
 					log.Println(LogEntry{
 						Severity:  "INFO",
@@ -225,6 +254,7 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 					})
 					w.WriteHeader(http.StatusOK)
 					fmt.Fprintf(w, "200 - message processed, published message to oom-event-found topic")
+					return
 				}
 			} else {
 				log.Println(LogEntry{
