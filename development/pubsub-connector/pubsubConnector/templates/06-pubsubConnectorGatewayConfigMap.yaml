@@ -13,3 +13,4 @@ data:
   eventType: {{ .Values.pubsubGateway.eventType }}
   pubsubProjectID: {{ .Values.pubsubGateway.projectID }}
   appName: {{ .Values.appName }}
+  slackConnectorApiId: {{ .Values.slackConnector.apiId | upper }}
