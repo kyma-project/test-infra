@@ -1,6 +1,0 @@
-pjNames:
-  - pjName: "kyma-upgrade-gardener-kyma-to-kyma2"
-prConfigs:
-  kyma-project:
-    test-infra:
-      prNumber: 3641
