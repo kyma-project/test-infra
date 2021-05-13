@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "probot.fullname" . }}
+  name: {{ .Chart.Name }}
   labels:
-    app: {{ include "probot.name" . }}
+    app: {{ .Chart.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ include "probot.name" . }}
+      app: {{ .Chart.Name }}
   template:
     metadata:
       labels:
-        app: {{ include "probot.name" . }}
+        app: {{ .Chart.Name }}
     spec:
       containers:
       - name: {{ .Chart.Name }}

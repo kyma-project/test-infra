@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "probot.fullname" . }}
+  name: {{ .Chart.Name }}-svc
   labels:
-    app: {{ include "probot.name" . }}
+    app: {{ .Chart.Name }}
 spec:
   selector:
-    app: {{ include "probot.name" . }}
+    app: {{ .Chart.Name }}
   ports:
     - port: {{ .Values.service.port }}
       targetPort: {{ .Values.deployment.config.port }}
