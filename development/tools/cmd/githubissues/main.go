@@ -8,7 +8,7 @@ import (
 	"os"
 
 	"cloud.google.com/go/bigquery"
-	"github.com/google/go-github/v35/github"
+	"github.com/google/go-github/v31/github"
 	"golang.org/x/oauth2"
 	"google.golang.org/api/option"
 )
