@@ -18,7 +18,13 @@ templates:
             request_memory: 100Mi
             request_cpu: 50m
           vm_job_template_k3s:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-busola-k3s.sh"
+            command:
+            - "/bin/sh"
+            args:
+            - "-c"
+            - |
+              /home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-busola-k3s.sh
+              2>&1 | while read -r line ; do printf "[%04d] | %s\n" $SECONDS "$line"; done;
           vm_job_labels_template:
             labels:
               preset-kyma-guard-bot-github-token: "true"

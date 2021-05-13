@@ -38,7 +38,12 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-busola-k3s.sh"
+              - "[/bin/sh]"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-busola-k3s.sh
+2>&1 | while read -r line ; do printf "[%04d] | %s\n" $SECONDS "$line"; done;
+"
             resources:
               requests:
                 memory: 100Mi
