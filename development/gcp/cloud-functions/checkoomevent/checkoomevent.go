@@ -88,6 +88,8 @@ func init() {
 		log.Fatal(err)
 	}
 	oomEventFoundTopic = pubsubClient.Topic("oom-event-found")
+	// disable batch sending by forcing publishing message when one message is ready to send
+	oomEventFoundTopic.PublishSettings.CountThreshold = 1
 	log.SetFlags(0)
 	projectID = "sap-kyma-prow"
 }
