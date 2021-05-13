@@ -302,36 +302,6 @@ presets:
       - name: DOCKER_PUSH_DIRECTORY
         value: ""
   - labels:
-      preset-rafter-minio-gcs-gateway: "true"
-    env:
-      - name: MINIO_GATEWAY_MODE
-        value: gcs
-      - name: CLOUDSDK_COMPUTE_ZONE
-        value: "europe-west4-a"
-  - labels:
-      preset-rafter-minio-az-gateway: "true"
-    env:
-      - name: MINIO_GATEWAY_MODE
-        value: azure
-      - name: AZURE_RS_GROUP
-        value: rafter-minio-gateway
-      - name: AZURE_REGION
-        value: westeurope
-  - labels:
-      preset-minio-gcs-gateway: "true"
-    env:
-      - name: MINIO_GATEWAY_MODE
-        value: gcs
-  - labels:
-      preset-minio-az-gateway: "true"
-    env:
-      - name: MINIO_GATEWAY_MODE
-        value: azure
-      - name: AZURE_RS_GROUP
-        value: kyma-minio-gateway
-      - name: AZURE_REGION
-        value: westeurope
-  - labels:
       preset-gke-rapid: "true"
     env:
       - name: GKE_RELEASE_CHANNEL
