@@ -47,10 +47,14 @@ spec:
           value: {{ .Values.deployment.config.logLevel | quote }}
         - name: DISABLE_STATS
           value: {{ .Values.deployment.config.disableStats | quote }}
+        {{- if .Values.deployment.config.githubHost}}
         - name: GHE_HOST
           value: {{ .Values.deployment.config.githubHost | quote }}
+        {{- end}}
+        {{- if .Values.deployment.config.githubProtocol}}
         - name: GHE_PROTOCOL
           value: {{ .Values.deployment.config.githubProtocol | quote }}
+        {{- end}}
         - name: APP_ID
           valueFrom:
             secretKeyRef:
