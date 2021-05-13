@@ -102,8 +102,14 @@ install_busola(){
 echo "Node.js version: $(node -v)"
 echo "NPM version: $(npm -v)"
 
+
+echo "STEP: Preparing k3s cluster"
 prepare_k3s
+
+echo "STEP: Generating cerfificate"
 generate_cert $K3S_DOMAIN
+
+echo "STEP: Installing Busola on the cluster"
 install_busola $K3S_DOMAIN
 
 
@@ -116,6 +122,6 @@ kubectl wait \
 
 cp "$PWD/kubeconfig-kyma.yaml" "$PWD/busola-tests/fixtures/kubeconfig.yaml"
 
-echo "Running Cypress tests inside Docker..."
+echo "STEP: Running Cypress tests inside Docker"
 docker run --entrypoint /bin/bash --network=host -v "$PWD/busola-tests:/tests" -w /tests $CYPRESS_IMAGE -c "npm ci --no-optional; NO_COLOR=1 cypress run --browser chrome --headless"
 
