@@ -1141,7 +1141,7 @@ periodics: # runs on schedule
         preset-sa-gardener-logs: "true"
         preset-sa-test-gcr-push: "true"
       interval: 1h
-      skip_report: true
+      skip_report: false
       decorate: true
       decoration_config:
         grace_period: 600000000000

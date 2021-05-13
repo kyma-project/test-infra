@@ -536,7 +536,7 @@ templates:
                   decoration_config:
                     timeout: 7200000000000 # 2h
                     grace_period: 600000000000 # 10min
-                  cron: "0 0 7-17 ? * 1-5"
+                  interval: 1h
                   labels:
                     preset-bot-github-token: "true"
 #                  env:

@@ -21,8 +21,8 @@ func TestKymaGardenerGCPKymaToKyma2JobPeriodics(t *testing.T) {
 	job := tester.FindPeriodicJobByName(periodics, jobName)
 	require.NotNil(t, job)
 	assert.Equal(t, jobName, job.Name)
-
-	assert.Equal(t, "0 0 7-17 ? * 1-5", job.Cron)
+	assert.True(t, job.Decorate)
+	assert.Equal(t, "1h", job.Interval)
 	assert.Equal(t, job.DecorationConfig.Timeout.Get(), 2*time.Hour)
 	assert.Equal(t, job.DecorationConfig.GracePeriod.Get(), 10*time.Minute)
 	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAzureIntegration, preset.KymaCLIStable, preset.ClusterVersion)
