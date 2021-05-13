@@ -121,9 +121,10 @@ helm delete dex -n kyma-system
 helm delete apiserver-proxy -n kyma-system
 helm delete iam-kubeconfig-service -n kyma-system
 helm delete testing -n kyma-system
+helm delete xip-patch -n kyma-installer
 helm delete permission-controller -n kyma-system
 
-kc delete ns kyma-installer --ignore-not-found=true
+kubectl delete ns kyma-installer --ignore-not-found=true
 
 # Install Kyma 2.0 from main
 KYMA_SOURCE="main"
