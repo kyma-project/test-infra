@@ -16,11 +16,11 @@ import (
 var (
 	githubOrgName  = flag.String("githubOrgName", "", "Github organization name [Required]")
 	githubToken    = flag.String("githubToken", "", "Github token [Required]")
-	issuesFilename = flag.String("issuesFilename", "issues.json", "name of the JSON file containign all issues [optional]")
-	bqCredentials  = flag.String("bqCredentials", "", "Path to BigQuery credentials file [required]")
-	bqProjectID    = flag.String("bqProjectID", "", "BigQuery project ID [required]")
-	bqDatasetName  = flag.String("bqDataset", "", "BigQuery dataset name [required]")
-	bqTableName    = flag.String("bqTable", "issues", "BigQuery table name [optional]")
+	issuesFilename = flag.String("issuesFilename", "issues.json", "name of the JSON file containign all issues [Optional]")
+	bqCredentials  = flag.String("bqCredentials", "", "Path to BigQuery credentials file [Required]")
+	bqProjectID    = flag.String("bqProjectID", "", "BigQuery project ID [Required]")
+	bqDatasetName  = flag.String("bqDataset", "", "BigQuery dataset name [Required]")
+	bqTableName    = flag.String("bqTable", "issues", "BigQuery table name [Required]")
 )
 
 func main() {
