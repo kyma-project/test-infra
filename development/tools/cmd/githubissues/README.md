@@ -2,7 +2,7 @@
 
 
 ## Overview
-This command queries all open Github issues in an organization, and generates BigQuery table with this data.
+This command queries all open Github issues in an organization, and generates BigQuery table containing that data.
 ### Flags
 
 See the list of available flags:
