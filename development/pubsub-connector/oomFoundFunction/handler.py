@@ -12,7 +12,7 @@ def main(event, context):
 	)
 	# Set Slack API base URL to the URL of slack-connector application gateway.
 	app.client.base_url = "{}/".format(
-		os.environ['OOM_FOUND_SLACK_CONNECTOR_{}_GATEWAY_URL'.format(os.environ['SLACK_API_ID'])]
+		os.environ['OOM_FOUND_SLACK_CONNECTOR_{}_GATEWAY_URL'.format(os.environ['SLACK_API_ID']).replace('-', '_')]
 	)
 	print("Slack api base URL: {}\n".format(app.client.base_url))
 	print("sending notification to channel: {}\n".format(os.environ['NOTIFICATION_SLACK_CHANNEL']))
