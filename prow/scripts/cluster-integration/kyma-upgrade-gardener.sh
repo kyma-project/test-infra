@@ -134,7 +134,8 @@ log::info "Installing Kyma 2.0"
 kyma::alpha_deploy_kyma
 
 # Test Kyma
-gardener::post_upgrade_test_fast_integration_kyma
+log::info "PADU"
+res=$(gardener::post_upgrade_test_fast_integration_kyma)
 
 log::info "Sleeping for 20 minutes..."
 sleep 1200
