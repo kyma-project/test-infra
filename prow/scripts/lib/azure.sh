@@ -5,7 +5,7 @@ LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${LIBDIR}/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+source "${LIBDIR}/utils.sh"
 
 function az::verify_deps {
   if ! [[ -x $(command -v az) ]]; then
