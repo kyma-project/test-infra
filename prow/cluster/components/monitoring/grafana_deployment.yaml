@@ -57,11 +57,6 @@ spec:
             secretKeyRef:
               name: gf-plugins-bigquery-datasource-private-key
               key: secret
-        - name: GF_PLUGINS_JSON_DATASOURCE_PRIVATE_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: gf-plugins-json-datasource-private-token
-              key: secret
         ports:
         - containerPort: 3001
           name: http
