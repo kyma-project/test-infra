@@ -100,7 +100,7 @@ func main() {
 	fmt.Printf("Saving %d issues to \"%v\"\n", len(allIssues), *issuesFilename)
 	issuesFile, err := os.OpenFile(*issuesFilename, os.O_TRUNC|os.O_RDWR|os.O_CREATE, 0666)
 	if err != nil {
-		fmt.Printf("could nor open file: %v", err)
+		fmt.Printf("could not open file: %v", err)
 		os.Exit(1)
 	}
 	defer issuesFile.Close()
