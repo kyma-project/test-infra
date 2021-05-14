@@ -95,9 +95,10 @@ gardener::generate_overrides
 
 gardener::provision_cluster
 
-#TODO: Remove!
+#TODO: Remove -->
 log::info "PADU"
 cat /home/prow/go/src/github.com/kyma-project/kyma/resources/istio/Chart.yaml
+#Remove <--
 
 log::info "Installing Kyma $KYMA_SOURCE"
 # uses previously set KYMA_SOURCE
@@ -129,10 +130,10 @@ helm delete iam-kubeconfig-service -n kyma-system
 #kubectl delete ns kyma-installer --ignore-not-found=true
 
 # Install Kyma 2.0 from main
-KYMA_SOURCE="ffbfafdd103eba57148925a5886945e89b780ff4"
+KYMA_SOURCE="padu"
 export KYMA_SOURCE
 
-log::info "Installing Kyma 2.0 from Istio 1.9.5: ffbfafdd103eba57148925a5886945e89b780ff4"
+log::info "Installing Kyma 2.0"
 kyma::alpha_deploy_kyma
 
 # Test Kyma
