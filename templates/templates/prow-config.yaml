@@ -108,10 +108,6 @@ branch-protection:
             kyma-2.0-docu:
               required_pull_request_reviews:
                 require_code_owner_reviews: false
-#        test-infra:
-#          required_status_checks:
-#            contexts:
-#              - "pre-main-test-infra-vpathguard"
         website:
           branches:
             main:
@@ -305,36 +301,6 @@ presets:
         value: master
       - name: DOCKER_PUSH_DIRECTORY
         value: ""
-  - labels:
-      preset-rafter-minio-gcs-gateway: "true"
-    env:
-      - name: MINIO_GATEWAY_MODE
-        value: gcs
-      - name: CLOUDSDK_COMPUTE_ZONE
-        value: "europe-west4-a"
-  - labels:
-      preset-rafter-minio-az-gateway: "true"
-    env:
-      - name: MINIO_GATEWAY_MODE
-        value: azure
-      - name: AZURE_RS_GROUP
-        value: rafter-minio-gateway
-      - name: AZURE_REGION
-        value: westeurope
-  - labels:
-      preset-minio-gcs-gateway: "true"
-    env:
-      - name: MINIO_GATEWAY_MODE
-        value: gcs
-  - labels:
-      preset-minio-az-gateway: "true"
-    env:
-      - name: MINIO_GATEWAY_MODE
-        value: azure
-      - name: AZURE_RS_GROUP
-        value: kyma-minio-gateway
-      - name: AZURE_REGION
-        value: westeurope
   - labels:
       preset-gke-rapid: "true"
     env:
@@ -971,8 +937,6 @@ presets:
         value: "prow-keb-integration"
       - name: GARDENER_KUBECONFIG
         value: "/gardener/kubeconfig"
-      - name: KEB_REGION
-        value: "cf-eu10"
     volumes:
       - name: gardener-skr-kyma-dev-kubeconfig
         secret:
@@ -1011,6 +975,20 @@ presets:
     env:
       - name: KEB_PLAN_ID
         value: "03b812ac-c991-4528-b5bd-08b303523a63"
+  - labels:
+      preset-keb-plan-free-aws: "true"
+    env:
+      - name: KEB_PLAN_ID
+        value: "b1a5764e-2ea1-4f95-94c0-2b4538b37b55"
+      - name: KEB_REGION
+        value: "cf-eu10"
+  - labels:
+      preset-keb-plan-free-azure: "true"
+    env:
+      - name: KEB_PLAN_ID
+        value: "b1a5764e-2ea1-4f95-94c0-2b4538b37b55"
+      - name: KEB_REGION
+        value: "cf-eu20"
   - labels:
       preset-gke-upgrade-pre-job: "true"
     env:

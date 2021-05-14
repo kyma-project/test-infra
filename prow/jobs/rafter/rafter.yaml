@@ -5,6 +5,9 @@ presubmits: # runs on PRs
   kyma-project/rafter:
     - name: pre-rafter
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-rafter"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -51,6 +54,9 @@ presubmits: # runs on PRs
             effect: NoSchedule
     - name: pre-rafter-integration-test
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-rafter-integration-test"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
       always_run: true
@@ -92,190 +98,6 @@ presubmits: # runs on PRs
             operator: Equal
             value: high
             effect: NoSchedule
-    - name: pre-rafter-minio-gcs-gateway
-      labels:
-        preset-dind-enabled: "true"
-        preset-gc-project-env: "true"
-        preset-kind-volume-mounts: "true"
-        preset-rafter-minio-gcs-gateway: "true"
-        preset-sa-gke-kyma-integration: "true"
-      always_run: true
-      optional: false
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/rafter
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-          base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210402-70b4b74f-k8s1.16"
-            securityContext:
-              privileged: true
-            command:
-              - "make"
-            args:
-              - "minio-gateway-test"
-            env:
-              - name: CLUSTER_VERSION
-                value: "1.16"
-              - name: GO111MODULE
-                value: "on"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
-        tolerations:
-          - key: resources-usage
-            operator: Equal
-            value: high
-            effect: NoSchedule
-    - name: pre-rafter-minio-az-gateway
-      labels:
-        preset-az-kyma-prow-credentials: "true"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-        preset-kind-volume-mounts: "true"
-        preset-rafter-minio-az-gateway: "true"
-      always_run: true
-      optional: false
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/rafter
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-          base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210402-70b4b74f-k8s1.16"
-            securityContext:
-              privileged: true
-            command:
-              - "make"
-            args:
-              - "minio-gateway-test"
-            env:
-              - name: CLUSTER_VERSION
-                value: "1.16"
-              - name: GO111MODULE
-                value: "on"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
-        tolerations:
-          - key: resources-usage
-            operator: Equal
-            value: high
-            effect: NoSchedule
-    - name: pre-rafter-minio-gcs-gateway-migration
-      labels:
-        preset-dind-enabled: "true"
-        preset-gc-project-env: "true"
-        preset-kind-volume-mounts: "true"
-        preset-rafter-minio-gcs-gateway: "true"
-        preset-sa-gke-kyma-integration: "true"
-      always_run: true
-      optional: false
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/rafter
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-          base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210402-70b4b74f-k8s1.16"
-            securityContext:
-              privileged: true
-            command:
-              - "make"
-            args:
-              - "minio-gateway-migration-test"
-            env:
-              - name: CLUSTER_VERSION
-                value: "1.16"
-              - name: GO111MODULE
-                value: "on"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
-        tolerations:
-          - key: resources-usage
-            operator: Equal
-            value: high
-            effect: NoSchedule
-    - name: pre-rafter-minio-az-gateway-migration
-      labels:
-        preset-az-kyma-prow-credentials: "true"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-        preset-kind-volume-mounts: "true"
-        preset-rafter-minio-az-gateway: "true"
-      always_run: true
-      optional: false
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/rafter
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-          base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210402-70b4b74f-k8s1.16"
-            securityContext:
-              privileged: true
-            command:
-              - "make"
-            args:
-              - "minio-gateway-migration-test"
-            env:
-              - name: CLUSTER_VERSION
-                value: "1.16"
-              - name: GO111MODULE
-                value: "on"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
-        tolerations:
-          - key: resources-usage
-            operator: Equal
-            value: high
-            effect: NoSchedule
   
 postsubmits: # runs on main
   kyma-project/rafter:
@@ -283,6 +105,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-rafter"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kind-volume-mounts: "true"
@@ -329,6 +154,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "release-rafter"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -374,6 +202,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-rafter-integration-test"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
       skip_report: false
@@ -417,6 +248,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "release-rafter-integration-test"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
@@ -442,372 +276,6 @@ postsubmits: # runs on main
               - "make"
             args:
               - "integration-test"
-            env:
-              - name: CLUSTER_VERSION
-                value: "1.16"
-              - name: GO111MODULE
-                value: "on"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
-        tolerations:
-          - key: resources-usage
-            operator: Equal
-            value: high
-            effect: NoSchedule
-    - name: post-rafter-minio-gcs-gateway
-      annotations:
-        testgrid-create-test-group: "false"
-      labels:
-        preset-dind-enabled: "true"
-        preset-gc-project-env: "true"
-        preset-kind-volume-mounts: "true"
-        preset-rafter-minio-gcs-gateway: "true"
-        preset-sa-gke-kyma-integration: "true"
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/rafter
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-          base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210402-70b4b74f-k8s1.16"
-            securityContext:
-              privileged: true
-            command:
-              - "make"
-            args:
-              - "minio-gateway-test"
-            env:
-              - name: CLUSTER_VERSION
-                value: "1.16"
-              - name: GO111MODULE
-                value: "on"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
-        tolerations:
-          - key: resources-usage
-            operator: Equal
-            value: high
-            effect: NoSchedule
-    - name: release-rafter-minio-gcs-gateway
-      annotations:
-        testgrid-create-test-group: "false"
-      labels:
-        preset-build-release: "true"
-        preset-dind-enabled: "true"
-        preset-gc-project-env: "true"
-        preset-kind-volume-mounts: "true"
-        preset-rafter-minio-gcs-gateway: "true"
-        preset-sa-gke-kyma-integration: "true"
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/rafter
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - v\d+\.\d+\.\d+(?:-.*)?$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-          base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210402-70b4b74f-k8s1.16"
-            securityContext:
-              privileged: true
-            command:
-              - "make"
-            args:
-              - "minio-gateway-test"
-            env:
-              - name: CLUSTER_VERSION
-                value: "1.16"
-              - name: GO111MODULE
-                value: "on"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
-        tolerations:
-          - key: resources-usage
-            operator: Equal
-            value: high
-            effect: NoSchedule
-    - name: post-rafter-minio-az-gateway
-      annotations:
-        testgrid-create-test-group: "false"
-      labels:
-        preset-az-kyma-prow-credentials: "true"
-        preset-dind-enabled: "true"
-        preset-kind-volume-mounts: "true"
-        preset-rafter-build-main: "true"
-        preset-rafter-minio-az-gateway: "true"
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/rafter
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-          base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210402-70b4b74f-k8s1.16"
-            securityContext:
-              privileged: true
-            command:
-              - "make"
-            args:
-              - "minio-gateway-test"
-            env:
-              - name: CLUSTER_VERSION
-                value: "1.16"
-              - name: GO111MODULE
-                value: "on"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
-        tolerations:
-          - key: resources-usage
-            operator: Equal
-            value: high
-            effect: NoSchedule
-    - name: release-rafter-minio-az-gateway
-      annotations:
-        testgrid-create-test-group: "false"
-      labels:
-        preset-az-kyma-prow-credentials: "true"
-        preset-build-release: "true"
-        preset-dind-enabled: "true"
-        preset-kind-volume-mounts: "true"
-        preset-rafter-minio-az-gateway: "true"
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/rafter
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - v\d+\.\d+\.\d+(?:-.*)?$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-          base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210402-70b4b74f-k8s1.16"
-            securityContext:
-              privileged: true
-            command:
-              - "make"
-            args:
-              - "minio-gateway-test"
-            env:
-              - name: CLUSTER_VERSION
-                value: "1.16"
-              - name: GO111MODULE
-                value: "on"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
-        tolerations:
-          - key: resources-usage
-            operator: Equal
-            value: high
-            effect: NoSchedule
-    - name: post-rafter-minio-gcs-gateway-migration
-      annotations:
-        testgrid-create-test-group: "false"
-      labels:
-        preset-dind-enabled: "true"
-        preset-gc-project-env: "true"
-        preset-kind-volume-mounts: "true"
-        preset-rafter-minio-gcs-gateway: "true"
-        preset-sa-gke-kyma-integration: "true"
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/rafter
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-          base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210402-70b4b74f-k8s1.16"
-            securityContext:
-              privileged: true
-            command:
-              - "make"
-            args:
-              - "minio-gateway-migration-test"
-            env:
-              - name: CLUSTER_VERSION
-                value: "1.16"
-              - name: GO111MODULE
-                value: "on"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
-        tolerations:
-          - key: resources-usage
-            operator: Equal
-            value: high
-            effect: NoSchedule
-    - name: release-rafter-minio-gcs-gateway-migration
-      annotations:
-        testgrid-create-test-group: "false"
-      labels:
-        preset-build-release: "true"
-        preset-dind-enabled: "true"
-        preset-gc-project-env: "true"
-        preset-kind-volume-mounts: "true"
-        preset-rafter-minio-gcs-gateway: "true"
-        preset-sa-gke-kyma-integration: "true"
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/rafter
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - v\d+\.\d+\.\d+(?:-.*)?$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-          base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210402-70b4b74f-k8s1.16"
-            securityContext:
-              privileged: true
-            command:
-              - "make"
-            args:
-              - "minio-gateway-migration-test"
-            env:
-              - name: CLUSTER_VERSION
-                value: "1.16"
-              - name: GO111MODULE
-                value: "on"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
-        tolerations:
-          - key: resources-usage
-            operator: Equal
-            value: high
-            effect: NoSchedule
-    - name: post-rafter-minio-az-gateway-migration
-      annotations:
-        testgrid-create-test-group: "false"
-      labels:
-        preset-az-kyma-prow-credentials: "true"
-        preset-dind-enabled: "true"
-        preset-kind-volume-mounts: "true"
-        preset-rafter-build-main: "true"
-        preset-rafter-minio-az-gateway: "true"
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/rafter
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-          base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210402-70b4b74f-k8s1.16"
-            securityContext:
-              privileged: true
-            command:
-              - "make"
-            args:
-              - "minio-gateway-migration-test"
-            env:
-              - name: CLUSTER_VERSION
-                value: "1.16"
-              - name: GO111MODULE
-                value: "on"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
-        tolerations:
-          - key: resources-usage
-            operator: Equal
-            value: high
-            effect: NoSchedule
-    - name: release-rafter-minio-az-gateway-migration
-      annotations:
-        testgrid-create-test-group: "false"
-      labels:
-        preset-az-kyma-prow-credentials: "true"
-        preset-build-release: "true"
-        preset-dind-enabled: "true"
-        preset-kind-volume-mounts: "true"
-        preset-rafter-minio-az-gateway: "true"
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/rafter
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - v\d+\.\d+\.\d+(?:-.*)?$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-          base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210402-70b4b74f-k8s1.16"
-            securityContext:
-              privileged: true
-            command:
-              - "make"
-            args:
-              - "minio-gateway-migration-test"
             env:
               - name: CLUSTER_VERSION
                 value: "1.16"

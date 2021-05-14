@@ -5,6 +5,9 @@ presubmits: # runs on PRs
   kyma-project/examples:
     - name: pre-main-examples-event-email-service
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-examples-event-email-service"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
@@ -37,6 +40,9 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-examples-http-db-service
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-examples-http-db-service"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
@@ -69,6 +75,9 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-examples-monitoring-custom-metrics
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-examples-monitoring-custom-metrics"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
@@ -101,6 +110,9 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-examples-orders-service
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-examples-orders-service"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
@@ -133,6 +145,9 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-examples-tests-http-db-service
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-examples-tests-http-db-service"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
@@ -165,6 +180,9 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-examples-tracing
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-examples-tracing"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
@@ -202,6 +220,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-examples-event-email-service"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
@@ -236,6 +257,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-examples-http-db-service"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
@@ -270,6 +294,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-examples-monitoring-custom-metrics"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
@@ -304,6 +331,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-examples-orders-service"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
@@ -338,6 +368,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-examples-tests-http-db-service"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
@@ -372,6 +405,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-examples-tracing"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"

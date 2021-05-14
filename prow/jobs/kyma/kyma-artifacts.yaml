@@ -5,6 +5,9 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-artifacts
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-kyma-artifacts"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -38,6 +41,9 @@ presubmits: # runs on PRs
                 cpu: 0.2
     - name: pre-rel122-kyma-artifacts
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-rel122-kyma-artifacts"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -70,6 +76,9 @@ presubmits: # runs on PRs
                 cpu: 0.2
     - name: pre-rel121-kyma-artifacts
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-rel121-kyma-artifacts"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -102,6 +111,9 @@ presubmits: # runs on PRs
                 cpu: 0.2
     - name: pre-rel120-kyma-artifacts
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-rel120-kyma-artifacts"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -139,6 +151,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-kyma-artifacts"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -174,6 +189,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-rel122-kyma-artifacts"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -208,6 +226,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-rel121-kyma-artifacts"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -242,6 +263,9 @@ postsubmits: # runs on main
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-rel120-kyma-artifacts"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"

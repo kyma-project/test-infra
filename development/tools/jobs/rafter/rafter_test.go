@@ -21,32 +21,22 @@ const (
 	buildScriptCommand = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
 	rafterPathArg      = "/home/prow/go/src/github.com/kyma-project/rafter"
 
-	makeCommand                  = "make"
-	integrationTestArg           = "integration-test"
-	minIOGatewayTestArg          = "minio-gateway-test"
-	minIOGatewayMigrationTestArg = "minio-gateway-migration-test"
+	makeCommand        = "make"
+	integrationTestArg = "integration-test"
 )
 
 var (
 	commonPresets     = []preset.Preset{preset.DindEnabled, preset.KindVolumesMounts}
 	commonPushPresets = []preset.Preset{preset.GcrPush, preset.DockerPushRepoKyma}
-	minIOGCPPresets   = []preset.Preset{"preset-rafter-minio-gcs-gateway", "preset-sa-gke-kyma-integration", "preset-gc-project-env"}
-	minIOAzurePresets = []preset.Preset{"preset-rafter-minio-az-gateway", "preset-az-kyma-prow-credentials"}
 
-	preBuildPresets             = append(append(commonPresets, commonPushPresets...), preset.BuildPr)
-	preIntegrationTestPresets   = commonPresets
-	preMinIOGCPGatewayPresets   = append(commonPresets, minIOGCPPresets...)
-	preMinIOAzureGatewayPresets = append(append(commonPresets, minIOAzurePresets...), preset.BuildPr)
+	preBuildPresets           = append(append(commonPresets, commonPushPresets...), preset.BuildPr)
+	preIntegrationTestPresets = commonPresets
 
-	postBuildPresets             = append(append(commonPresets, commonPushPresets...), presetRafterBuildMaster)
-	postIntegrationTestPresets   = commonPresets
-	postMinIOGCPGatewayPresets   = append(commonPresets, minIOGCPPresets...)
-	postMinIOAzureGatewayPresets = append(append(commonPresets, minIOAzurePresets...), presetRafterBuildMaster)
+	postBuildPresets           = append(append(commonPresets, commonPushPresets...), presetRafterBuildMaster)
+	postIntegrationTestPresets = commonPresets
 
-	releaseBuildPresets             = append(append(commonPresets, commonPushPresets...), preset.BuildRelease)
-	releaseIntegrationTestPresets   = commonPresets
-	releaseMinIOGCPGatewayPresets   = append(commonPresets, minIOGCPPresets...)
-	releaseMinIOAzureGatewayPresets = append(append(commonPresets, minIOAzurePresets...), preset.BuildRelease)
+	releaseBuildPresets           = append(append(commonPresets, commonPushPresets...), preset.BuildRelease)
+	releaseIntegrationTestPresets = commonPresets
 
 	postBranches    = []string{"^master$", "^main$"}
 	releaseBranches = []string{"v\\d+\\.\\d+\\.\\d+(?:-.*)?$"}
@@ -73,30 +63,6 @@ func TestRafterJobsPresubmits(t *testing.T) {
 			containerImg: tester.ImageGolangKubebuilder2BuildpackLatest,
 			command:      makeCommand,
 			args:         integrationTestArg,
-		},
-		"pre-rafter-minio-gcs-gateway": {
-			presets:      preMinIOGCPGatewayPresets,
-			containerImg: tester.ImageKymaIntegrationLatest,
-			command:      makeCommand,
-			args:         minIOGatewayTestArg,
-		},
-		"pre-rafter-minio-az-gateway": {
-			presets:      preMinIOAzureGatewayPresets,
-			containerImg: tester.ImageKymaIntegrationLatest,
-			command:      makeCommand,
-			args:         minIOGatewayTestArg,
-		},
-		"pre-rafter-minio-gcs-gateway-migration": {
-			presets:      preMinIOGCPGatewayPresets,
-			containerImg: tester.ImageKymaIntegrationLatest,
-			command:      makeCommand,
-			args:         minIOGatewayMigrationTestArg,
-		},
-		"pre-rafter-minio-az-gateway-migration": {
-			presets:      preMinIOAzureGatewayPresets,
-			containerImg: tester.ImageKymaIntegrationLatest,
-			command:      makeCommand,
-			args:         minIOGatewayMigrationTestArg,
 		},
 	} {
 		t.Run(jobName, func(t *testing.T) {
@@ -172,62 +138,6 @@ func TestRafterJobsPostsubmits(t *testing.T) {
 			containerImg: tester.ImageGolangKubebuilder2BuildpackLatest,
 			command:      makeCommand,
 			args:         integrationTestArg,
-		},
-		"post-rafter-minio-gcs-gateway": {
-			presets:      postMinIOGCPGatewayPresets,
-			branches:     postBranches,
-			containerImg: tester.ImageKymaIntegrationLatest,
-			command:      makeCommand,
-			args:         minIOGatewayTestArg,
-		},
-		"release-rafter-minio-gcs-gateway": {
-			presets:      releaseMinIOGCPGatewayPresets,
-			branches:     releaseBranches,
-			containerImg: tester.ImageKymaIntegrationLatest,
-			command:      makeCommand,
-			args:         minIOGatewayTestArg,
-		},
-		"post-rafter-minio-az-gateway": {
-			presets:      postMinIOAzureGatewayPresets,
-			branches:     postBranches,
-			containerImg: tester.ImageKymaIntegrationLatest,
-			command:      makeCommand,
-			args:         minIOGatewayTestArg,
-		},
-		"release-rafter-minio-az-gateway": {
-			presets:      releaseMinIOAzureGatewayPresets,
-			branches:     releaseBranches,
-			containerImg: tester.ImageKymaIntegrationLatest,
-			command:      makeCommand,
-			args:         minIOGatewayTestArg,
-		},
-		"post-rafter-minio-gcs-gateway-migration": {
-			presets:      postMinIOGCPGatewayPresets,
-			branches:     postBranches,
-			containerImg: tester.ImageKymaIntegrationLatest,
-			command:      makeCommand,
-			args:         minIOGatewayMigrationTestArg,
-		},
-		"release-rafter-minio-gcs-gateway-migration": {
-			presets:      releaseMinIOGCPGatewayPresets,
-			branches:     releaseBranches,
-			containerImg: tester.ImageKymaIntegrationLatest,
-			command:      makeCommand,
-			args:         minIOGatewayMigrationTestArg,
-		},
-		"post-rafter-minio-az-gateway-migration": {
-			presets:      postMinIOAzureGatewayPresets,
-			branches:     postBranches,
-			containerImg: tester.ImageKymaIntegrationLatest,
-			command:      makeCommand,
-			args:         minIOGatewayMigrationTestArg,
-		},
-		"release-rafter-minio-az-gateway-migration": {
-			presets:      releaseMinIOAzureGatewayPresets,
-			branches:     releaseBranches,
-			containerImg: tester.ImageKymaIntegrationLatest,
-			command:      makeCommand,
-			args:         minIOGatewayMigrationTestArg,
 		},
 	} {
 		t.Run(jobName, func(t *testing.T) {

@@ -46,4 +46,5 @@ templates:
                     - periodic_config
                     - github_token_mounts
                   global:
-                    - disable_testgrid
+                    - "pubsub_labels"
+                    - "disable_testgrid"
