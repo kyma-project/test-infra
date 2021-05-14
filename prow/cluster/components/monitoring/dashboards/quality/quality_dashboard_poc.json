@@ -21,7 +21,7 @@
   "panels": [
     {
       "datasource": "bigquery-prow",
-      "description": "For some reason it doesn't work as expected, lists only internal-incident",
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -32,8 +32,6 @@
             "filterable": false
           },
           "mappings": [],
-          "max": 10,
-          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -59,7 +57,7 @@
       },
       "id": 20,
       "interval": null,
-      "maxDataPoints": 1,
+      "maxDataPoints": null,
       "options": {
         "showHeader": true
       },
@@ -99,7 +97,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Total incidents (bad data)",
+      "title": "Total incidents",
       "transformations": [
         {
           "id": "organize",
@@ -117,7 +115,7 @@
     },
     {
       "datasource": "bigquery-prow",
-      "description": "For some reason it doesn't work as expected, lists only internal-incident",
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -151,8 +149,8 @@
         "y": 0
       },
       "id": 21,
-      "interval": "1d",
-      "maxDataPoints": 2,
+      "interval": null,
+      "maxDataPoints": null,
       "options": {
         "showHeader": true
       },
@@ -191,7 +189,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "New incidents (bad data)",
+      "title": "New incidents",
       "transformations": [
         {
           "id": "organize",
@@ -264,7 +262,7 @@
           "orderBySort": "1",
           "queryParams": "",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"bug\" \n)\nSELECT \n    COALESCE(repository, \"total\"),\n    COUNT(*) as `cnt`\nFROM issues_filtered\nGROUP BY ROLLUP(repository)\nORDER BY repository ASC",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"bug\" AND repository.name IN (\"kyma\", \"control-plane\")\n)\nSELECT \n    repository,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nGROUP BY repository\nORDER BY repository ASC",
           "refId": "A",
           "select": [
             [
@@ -286,10 +284,44 @@
               "type": "macro"
             }
           ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "orderByCol": "1",
+          "orderBySort": "1",
+          "rawQuery": true,
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues_backlog`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"bug\"\n)\nSELECT \n    \"SKR\" as repository,\n    COUNT(*) as `cnt`\nFROM issues_filtered",
+          "refId": "SKR",
+          "select": [
+            [
+              {
+                "params": [
+                  "-- value --"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "-- time --",
+          "timeColumnType": "TIMESTAMP",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
       "title": "Total bugs open",
       "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
         {
           "id": "organize",
           "options": {
@@ -297,7 +329,8 @@
             "indexByName": {},
             "renameByName": {
               "cnt": "Count",
-              "f0_": "Repository"
+              "f0_": "",
+              "repository": "Repository"
             }
           }
         }
@@ -383,10 +416,44 @@
               "type": "macro"
             }
           ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "orderByCol": "1",
+          "orderBySort": "1",
+          "rawQuery": true,
+          "rawSql": "WITH bugs AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.issues_backlog`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"bug\"\n)\nSELECT \n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    ) as one_week,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)\n    ) as one_month,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30* 3 DAY)\n    ) as three_months,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30*6 DAY)\n    ) as six_months,",
+          "refId": "SKR",
+          "select": [
+            [
+              {
+                "params": [
+                  "-- value --"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "-- time --",
+          "timeColumnType": "TIMESTAMP",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
       "title": "Open bug age",
       "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
         {
           "id": "organize",
           "options": {
@@ -402,7 +469,11 @@
         },
         {
           "id": "reduce",
-          "options": {}
+          "options": {
+            "reducers": [
+              "sum"
+            ]
+          }
         },
         {
           "id": "organize",
@@ -411,7 +482,7 @@
             "indexByName": {},
             "renameByName": {
               "Field": "Time",
-              "Max": "Count"
+              "Total": "Bugs"
             }
           }
         }
@@ -611,7 +682,7 @@
       },
       "id": 10,
       "options": {
-        "frameIndex": 0,
+        "frameIndex": 1,
         "showHeader": true
       },
       "pluginVersion": "7.5.3",
@@ -653,10 +724,44 @@
               "type": "macro"
             }
           ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "orderByCol": "1",
+          "orderBySort": "1",
+          "rawQuery": true,
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues_backlog`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"test-case\" \n)\nSELECT\n    \"SKR\" as repository,\n    COUNT(*) as `cnt`\nFROM issues_filtered",
+          "refId": "SKR",
+          "select": [
+            [
+              {
+                "params": [
+                  "-- value --"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "-- time --",
+          "timeColumnType": "TIMESTAMP",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
       "title": "Test cases for release",
       "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
         {
           "id": "organize",
           "options": {
@@ -707,7 +812,7 @@
       },
       "id": 9,
       "options": {
-        "frameIndex": 0,
+        "frameIndex": 1,
         "showHeader": true
       },
       "pluginVersion": "7.5.3",
@@ -727,7 +832,7 @@
           "orderBySort": "1",
           "queryParams": "",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE repository.name = \"kyma\"\n)\nSELECT \n    SUBSTR(label,6) as area,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nWHERE label LIKE \"area/%\"\nAND number IN (SELECT number FROM issues_filtered WHERE label = \"bug\")\nGROUP BY label\nORDER BY area\n",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE repository.name IN (\"kyma\", \"control-plane\")\n)\nSELECT \n    SUBSTR(label,6) as area,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nWHERE label LIKE \"area/%\"\nAND number IN (SELECT number FROM issues_filtered WHERE label = \"bug\")\nGROUP BY label\nORDER BY area\n",
           "refId": "A",
           "select": [
             [
@@ -749,10 +854,82 @@
               "type": "macro"
             }
           ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "orderByCol": "1",
+          "orderBySort": "1",
+          "rawQuery": true,
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues_backlog`, UNNEST(labels) as labels_unpacked\n)\nSELECT \n    SUBSTR(label,6) as area,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nWHERE label LIKE \"area/%\"\nAND number IN (SELECT number FROM issues_filtered WHERE label = \"bug\")\nGROUP BY label\nORDER BY area\n",
+          "refId": "SKR",
+          "select": [
+            [
+              {
+                "params": [
+                  "-- value --"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "-- time --",
+          "timeColumnType": "TIMESTAMP",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
       "title": "Open bugs per area",
       "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "Area": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "Count": {
+                "aggregations": [
+                  "sum"
+                ],
+                "operation": "aggregate"
+              },
+              "area": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "cnt": {
+                "aggregations": [
+                  "sum"
+                ],
+                "operation": "aggregate"
+              }
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "field": "area"
+              }
+            ]
+          }
+        },
         {
           "id": "organize",
           "options": {
@@ -760,7 +937,8 @@
             "indexByName": {},
             "renameByName": {
               "area": "Area",
-              "cnt": "Count"
+              "cnt": "Count",
+              "cnt (sum)": "Count"
             }
           }
         }
@@ -793,7 +971,20 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "time"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": null
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -803,7 +994,8 @@
       },
       "id": 25,
       "options": {
-        "showHeader": true
+        "showHeader": true,
+        "sortBy": []
       },
       "pluginVersion": "7.5.3",
       "targets": [
@@ -1025,10 +1217,44 @@
               "type": "macro"
             }
           ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "orderByCol": "1",
+          "orderBySort": "1",
+          "rawQuery": true,
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.issues_backlog`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"priority/critical\" \n)\nSELECT\n    issues_all.repository,\n    critical_open,\n    COALESCE(critical_new, 0)\nFROM\n(\n    SELECT \n        \"SKR\" as repository,\n        COUNT(*) as `critical_open`\n    FROM issues_filtered\n    GROUP BY repository\n) AS issues_all LEFT JOIN (\n    SELECT \n        \"SKR\" as repository,\n        COUNT(*) as `critical_new`\n    FROM issues_filtered\n    WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    GROUP BY repository\n) AS issues_new ON issues_all.repository = issues_new.repository\n--GROUP BY repository\nORDER BY repository",
+          "refId": "SKR",
+          "select": [
+            [
+              {
+                "params": [
+                  "-- value --"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "-- time --",
+          "timeColumnType": "TIMESTAMP",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
       "title": "Critical issues",
       "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
         {
           "id": "organize",
           "options": {
@@ -1047,7 +1273,7 @@
     }
   ],
   "schemaVersion": 27,
-  "style": "dark",
+  "style": "light",
   "tags": [],
   "templating": {
     "list": []
