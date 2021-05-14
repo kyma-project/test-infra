@@ -20,7 +20,7 @@ func TestKCPGKEIntegrationPresubmit(t *testing.T) {
 
 	// then
 	assert.False(t, actualJob.Optional)
-	assert.True(t, actualJob.Decorate)
+
 	assert.Equal(t, "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
 	assert.Equal(t, "github.com/kyma-project/control-plane", actualJob.PathAlias)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
@@ -60,7 +60,7 @@ func TestKCPGKEIntegrationPostsubmit(t *testing.T) {
 	require.NotNil(t, actualJob)
 
 	// then
-	assert.True(t, actualJob.Decorate)
+
 	assert.Equal(t, "github.com/kyma-project/control-plane", actualJob.PathAlias)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
 	tester.AssertThatHasPresets(t, actualJob.JobBase,

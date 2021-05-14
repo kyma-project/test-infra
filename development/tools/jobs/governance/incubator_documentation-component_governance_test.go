@@ -29,7 +29,7 @@ func TestDocumentationComponentGovernanceJobPresubmit(t *testing.T) {
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
-	assert.True(t, actualPresubmit.Decorate)
+
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "main")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.BuildPr, preset.DindEnabled)
 	assert.Equal(t, "milv.config.yaml|.md$", actualPresubmit.RunIfChanged)
@@ -57,7 +57,7 @@ func TestDocumentationComponentGovernanceJobPeriodic(t *testing.T) {
 	actualPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, actualPeriodic)
 	assert.Equal(t, expName, actualPeriodic.Name)
-	assert.True(t, actualPeriodic.Decorate)
+
 	assert.Equal(t, "0 2 * * 1-5", actualPeriodic.Cron)
 	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, preset.DindEnabled)
 	tester.AssertThatHasExtraRepoRefCustom(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
