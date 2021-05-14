@@ -117,6 +117,9 @@ presubmits: # runs on PRs
                 cpu: 50m
     - name: pre-main-kyma-integration-k3s-central-application-gateway
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3s-central-application-gateway"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
@@ -154,6 +157,9 @@ presubmits: # runs on PRs
                 cpu: 50m
     - name: pre-main-kyma-integration-k3s-central-application-gateway-compass
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3s-central-application-gateway-compass"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
@@ -451,6 +457,9 @@ postsubmits: # runs on main
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3s-central-application-gateway"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
@@ -490,6 +499,9 @@ postsubmits: # runs on main
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3s-central-application-gateway-compass"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
