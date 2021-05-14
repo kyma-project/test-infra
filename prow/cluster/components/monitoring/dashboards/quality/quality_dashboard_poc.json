@@ -338,8 +338,8 @@
       "type": "table"
     },
     {
-      "datasource": "prow-api",
-      "description": "Data itself is good but this plugin can't parse it further",
+      "datasource": "bigquery-prow",
+      "description": "I have no idea it this works properly, too few entries on friday",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -351,15 +351,15 @@
           },
           "mappings": [],
           "thresholds": {
-            "mode": "absolute",
+            "mode": "percentage",
             "steps": [
               {
-                "color": "green",
+                "color": "red",
                 "value": null
               },
               {
-                "color": "red",
-                "value": 80
+                "color": "green",
+                "value": 100
               }
             ]
           }
@@ -368,24 +368,52 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "job"
+              "options": "success"
             },
             "properties": [
               {
-                "id": "custom.width",
-                "value": 361
+                "id": "unit",
+                "value": "%"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "color-text"
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "state"
+              "options": "job"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 73
+                "value": 271
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "cnt_success"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 99
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "cnt"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 47
               }
             ]
           }
@@ -408,57 +436,45 @@
           "cacheDurationSeconds": 300,
           "fields": [
             {
-              "jsonPath": "$.items[*].spec.job",
-              "name": "job"
-            },
-            {
-              "jsonPath": "$.items[*].status.state",
-              "name": "state"
-            },
-            {
-              "jsonPath": "$.items[*].status.state",
-              "name": "state2"
+              "jsonPath": ""
             }
           ],
+          "format": "table",
+          "group": [],
           "method": "GET",
-          "params": [
+          "metricColumn": "none",
+          "orderByCol": "1",
+          "orderBySort": "1",
+          "queryParams": "",
+          "rawQuery": true,
+          "rawSql": "WITH all_jobs AS\n(\n    SELECT\n        jsonPayload.job as job,\n        jsonPayload.to as state\n    FROM `sap-kyma-prow.prow_jobs.stderr`\n    WHERE\n        TIMESTAMP BETWEEN \"2021-05-13\" AND \"2021-05-21\"\n        AND jsonPayload.to IN ( \"success\", \"error\", \"failure\")\n)\nSELECT \n    job,\n    COUNTIF(state = \"success\") as `cnt_success`,\n    COUNT(*) as `cnt`,\n    COUNTIF(state = \"success\") / COUNT(*) * 100 as `success`\nFROM all_jobs \nGROUP BY job\nORDER BY job",
+          "refId": "A",
+          "select": [
             [
-              "omit",
-              "annotations,labels,decoration_config,pod_spec"
+              {
+                "params": [
+                  "-- value --"
+                ],
+                "type": "column"
+              }
             ]
           ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "A",
-          "urlPath": "/prowjobs.js"
+          "timeColumn": "-- time --",
+          "timeColumnType": "TIMESTAMP",
+          "urlPath": "",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Job success rate (bad data)",
-      "transformations": [
-        {
-          "id": "groupBy",
-          "options": {
-            "fields": {
-              "job": {
-                "aggregations": [],
-                "operation": "groupby"
-              },
-              "state": {
-                "aggregations": [],
-                "operation": "groupby"
-              },
-              "state2": {
-                "aggregations": [
-                  "count"
-                ],
-                "operation": "aggregate"
-              }
-            }
-          }
-        }
-      ],
+      "title": "Job success rate (sligthly better data)",
+      "transformations": [],
       "type": "table"
     },
     {
