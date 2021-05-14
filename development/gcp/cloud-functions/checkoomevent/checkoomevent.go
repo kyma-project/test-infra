@@ -15,20 +15,23 @@ import (
 	"strings"
 )
 
+// This message will be send by pubsub system.
 type PubSubMessage struct {
 	Message      MessagePayload `json:"message"`
 	Subscription string         `json:"subscription"`
 }
 
+// This is the Message payload of pubsub message
 type MessagePayload struct {
 	Attributes   map[string]string `json:"attributes"`
-	Data         string            `json:"data"`
+	Data         string            `json:"data"` // This property is base64 encoded
 	MessageId    string            `json:"messageId"`
 	Message_Id   string            `json:"message_id"`
 	PublishTime  string            `json:"publishTime"`
 	Publish_time string            `json:"publish_time"`
 }
 
+// This is the Data payload of pubsub message payload.
 type ProwMessage struct {
 	Project string                   `json:"project"`
 	Topic   string                   `json:"topic"`
@@ -43,10 +46,11 @@ type ProwMessage struct {
 
 // Entry defines a log entry.
 type LogEntry struct {
-	Message  string            `json:"message"`
-	Severity string            `json:"severity,omitempty"`
-	Trace    string            `json:"logging.googleapis.com/trace,omitempty"`
-	Labels   map[string]string `json:"logging.googleapis.com/operation,omitempty"`
+	Message  string `json:"message"`
+	Severity string `json:"severity,omitempty"`
+	// Trace will be the same for one function call, you can use it for filetering in logs
+	Trace  string            `json:"logging.googleapis.com/trace,omitempty"`
+	Labels map[string]string `json:"logging.googleapis.com/operation,omitempty"`
 	// Cloud Log Viewer allows filtering and display of this as `jsonPayload.component`.
 	Component string `json:"component,omitempty"`
 }
@@ -63,6 +67,11 @@ func (e LogEntry) String() string {
 	return string(out)
 }
 
+const (
+	projectID            = "sap-kyma-prow"
+	oomEventFoundTopicId = "oom-event-found"
+)
+
 var (
 	client             *storage.Client
 	gcsPathRegex       *regexp.Regexp
@@ -71,40 +80,41 @@ var (
 	data               ProwMessage
 	oomEventFoundTopic *pubsub.Topic
 	pubsubResults      []*pubsub.PublishResult
-	projectID          string
+	trace              string
 )
 
+// init will create clients reused by function calls
 func init() {
 	var err error
 	ctx := context.Background()
 	gcsPathRegex = regexp.MustCompile(`^gs://(.+?)/(.*)$`)
 	oomEventRegex = regexp.MustCompile(`System OOM encountered`)
+	// GCS client to read log files from bucket
 	client, err = storage.NewClient(ctx, option.WithoutAuthentication())
 	if err != nil {
 		log.Fatal(err)
 	}
-	pubsubClient, err := pubsub.NewClient(ctx, "sap-kyma-prow")
+	// pubsub client to publish messages to pubsub
+	pubsubClient, err := pubsub.NewClient(ctx, projectID)
 	if err != nil {
 		log.Fatal(err)
 	}
-	oomEventFoundTopic = pubsubClient.Topic("oom-event-found")
+	// topic to publish messages when oom event was found
+	oomEventFoundTopic = pubsubClient.Topic(oomEventFoundTopicId)
 	// disable batch sending by forcing publishing message when one message is ready to send
 	oomEventFoundTopic.PublishSettings.CountThreshold = 1
 	log.SetFlags(0)
-	projectID = "sap-kyma-prow"
 }
 
 func Checkoomevent(w http.ResponseWriter, r *http.Request) {
-	var trace string
-	if projectID != "" {
-		traceHeader := r.Header.Get("X-Cloud-Trace-Context")
-		traceParts := strings.Split(traceHeader, "/")
-		if len(traceParts) > 0 && len(traceParts[0]) > 0 {
-			trace = fmt.Sprintf("projects/%s/traces/%s", projectID, traceParts[0])
-		}
+	// set trace value to use it in logEntry
+	traceHeader := r.Header.Get("X-Cloud-Trace-Context")
+	traceParts := strings.Split(traceHeader, "/")
+	if len(traceParts) > 0 && len(traceParts[0]) > 0 {
+		trace = fmt.Sprintf("projects/%s/traces/%s", projectID, traceParts[0])
 	}
-	var message PubSubMessage
 	functionCtx := context.Background()
+	// decode http messages body
 	if err := json.NewDecoder(r.Body).Decode(&message); err != nil {
 		log.Println(LogEntry{
 			Message:   "failed decode message body",
@@ -129,6 +139,7 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "400 - message is empty!")
 		return
 	}
+	// decode base64 prow message
 	bdata, err := base64.StdEncoding.DecodeString(message.Message.Data)
 	if err != nil {
 		log.Println(LogEntry{
@@ -152,6 +163,7 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "500 - failed unmarshal message data to json!")
 		return
 	}
+	// check prowjob status to know if oom event search can start
 	if data.Status != "success" && data.Status != "failure" {
 		// prowjob didn't finish no data to search for oom
 		log.Println(LogEntry{
@@ -165,6 +177,7 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "200 - message processed, prowjob not finished, no data to analyse")
 		return
 	} else {
+		// start looking for oom event
 		log.Println(LogEntry{
 			Severity:  "INFO",
 			Component: "kyma.prow.cloud-function.checkoomevent",
@@ -178,7 +191,7 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 		objectPath := fmt.Sprintf("%s/artifacts/describe_nodes.txt", gcsMatch[2])
 		// get object with describe nodes output from bucket
 		rc, err := client.Bucket(gcsMatch[1]).Object(objectPath).NewReader(functionCtx)
-		// check if object exist
+		// check if object in a bucket exist
 		if err == storage.ErrObjectNotExist {
 			log.Println(LogEntry{
 				Severity:  "INFO",
@@ -191,6 +204,7 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "200 - message processed, describe_nodes.txt not found, no data to analyse")
 			return
 		} else if err != nil && err != storage.ErrObjectNotExist {
+			// report other errors than object not exist errors
 			log.Println(LogEntry{
 				Severity:  "CRITICAL",
 				Component: "kyma.prow.cloud-function.checkoomevent",
@@ -218,9 +232,10 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			// read for oom event in describe_nodes.txt
+			// search for oom event in describe_nodes.txt
 			oomFound := oomEventRegex.Match(body)
 			if oomFound {
+				// oom event found
 				log.Println(LogEntry{
 					Severity:  "INFO",
 					Component: "kyma.prow.cloud-function.checkoomevent",
@@ -229,9 +244,11 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 					Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName},
 				})
 				defer oomEventFoundTopic.Stop()
+				// publish message to oom-event-found topic
 				pubsubResponse := oomEventFoundTopic.Publish(functionCtx, &pubsub.Message{
 					Data: bdata,
 				})
+				// check if message published successfully
 				pubsubResults = append(pubsubResults, pubsubResponse)
 				for _, result := range pubsubResults {
 					msgID, err := result.Get(functionCtx)
