@@ -50,7 +50,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 5,
         "w": 9,
         "x": 0,
         "y": 0
@@ -143,7 +143,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 5,
         "w": 8,
         "x": 9,
         "y": 0
@@ -235,7 +235,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 5,
         "w": 7,
         "x": 17,
         "y": 0
@@ -338,6 +338,235 @@
       "type": "table"
     },
     {
+      "datasource": "prow-api",
+      "description": "Data itself is good but this plugin can't parse it further",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "job"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 361
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "state"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 73
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 9,
+        "x": 0,
+        "y": 5
+      },
+      "id": 23,
+      "options": {
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$.items[*].spec.job",
+              "name": "job"
+            },
+            {
+              "jsonPath": "$.items[*].status.state",
+              "name": "state"
+            },
+            {
+              "jsonPath": "$.items[*].status.state",
+              "name": "state2"
+            }
+          ],
+          "method": "GET",
+          "params": [
+            [
+              "omit",
+              "annotations,labels,decoration_config,pod_spec"
+            ]
+          ],
+          "queryParams": "",
+          "queryType": "randomWalk",
+          "refId": "A",
+          "urlPath": "/prowjobs.js"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Job success rate (bad data)",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "job": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "state": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "state2": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              }
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": "bigquery-prow",
+      "description": "To simulate how test coverage could look like",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "%"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 9,
+        "y": 5
+      },
+      "id": 16,
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": false,
+        "text": {}
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "orderByCol": "1",
+          "orderBySort": "1",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "rawSql": "WITH JOBS as (\nSELECT\n      MIN(CAST(REGEXP_EXTRACT(textPayload, r\"(\\d+\\.\\d+)\") AS float64)) AS val\n    , ANY_VALUE(labels.k8s_pod_prow_k8s_io_job) AS k8s_pod_prow_k8s_io_job\n    , MIN(timestamp) as timestamp\n  FROM `sap-kyma-prow.total_test_coverage.stdout`\n  GROUP BY resource.labels.pod_name\n  HAVING k8s_pod_prow_k8s_io_job NOT LIKE \"pre-%\"\n)\nSELECT a.k8s_pod_prow_k8s_io_job\n     , b.last_result\n     , b.last_timestamp\n     , a.samples_cnt\n     , a.min_result\n     , a.max_result\n     , ROUND(COALESCE((b.last_result - b.previous_result), 0),2) AS last_change\n     , format(\"https://status.build.kyma-project.io/job-history/kyma-prow-logs/logs/%s\", a.k8s_pod_prow_k8s_io_job)  as link\n     , a.stddev\n from \n( SELECT\n    k8s_pod_prow_k8s_io_job\n  , MIN(val) AS min_result\n  , MAX(val) AS max_result\n  , AVG(val) AS avg \n  , COUNT(*) AS samples_cnt\n  , MAX(timestamp) AS timestamp\n  , STDDEV_POP(val) AS stddev\nFROM JOBS\nGROUP BY k8s_pod_prow_k8s_io_job\nORDER BY k8s_pod_prow_k8s_io_job\n) a \nJOIN (SELECT \n   distinct(k8s_pod_prow_k8s_io_job) \n , FIRST_VALUE(val) OVER w1 AS last_result\n , FIRST_VALUE(timestamp) OVER w1 AS last_timestamp\n , NTH_VALUE(val,2) OVER w1 AS previous_result\nFROM JOBS\n WINDOW w1 AS (\n    PARTITION BY k8s_pod_prow_k8s_io_job ORDER BY timestamp DESC\n    ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)\n) b on a.k8s_pod_prow_k8s_io_job = b.k8s_pod_prow_k8s_io_job",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "-- value --"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "-- time --",
+          "timeColumnType": "TIMESTAMP",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Last result (test coveraga mockup)",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "includeTimeField": false,
+            "mode": "reduceFields",
+            "reducers": [
+              "mean"
+            ]
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "last_result"
+              ]
+            }
+          }
+        }
+      ],
+      "type": "gauge"
+    },
+    {
       "datasource": "bigquery-prow",
       "description": "",
       "fieldConfig": {
@@ -370,7 +599,7 @@
         "h": 6,
         "w": 7,
         "x": 17,
-        "y": 7
+        "y": 5
       },
       "id": 14,
       "options": {
@@ -487,236 +716,7 @@
           }
         }
       ],
-      "transparent": true,
       "type": "table"
-    },
-    {
-      "datasource": "prow-api",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": null,
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "job"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 361
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "state"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 73
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 9,
-        "x": 0,
-        "y": 8
-      },
-      "id": 23,
-      "options": {
-        "showHeader": true,
-        "sortBy": []
-      },
-      "pluginVersion": "7.5.3",
-      "targets": [
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$.items[*].spec.job",
-              "name": "job"
-            },
-            {
-              "jsonPath": "$.items[*].status.state",
-              "name": "state"
-            },
-            {
-              "jsonPath": "$.items[*].status.state",
-              "name": "state2"
-            }
-          ],
-          "method": "GET",
-          "params": [
-            [
-              "omit",
-              "annotations,labels,decoration_config,pod_spec"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "A",
-          "urlPath": "/prowjobs.js"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Job success rate (mock data)",
-      "transformations": [
-        {
-          "id": "groupBy",
-          "options": {
-            "fields": {
-              "job": {
-                "aggregations": [],
-                "operation": "groupby"
-              },
-              "state": {
-                "aggregations": [],
-                "operation": "groupby"
-              },
-              "state2": {
-                "aggregations": [
-                  "count"
-                ],
-                "operation": "aggregate"
-              }
-            }
-          }
-        }
-      ],
-      "type": "table"
-    },
-    {
-      "datasource": "bigquery-prow",
-      "description": "To simulate how test coverage could look like",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "max": 100,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "%"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 8,
-        "x": 9,
-        "y": 8
-      },
-      "id": 16,
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": false,
-        "text": {}
-      },
-      "pluginVersion": "7.5.3",
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "orderByCol": "1",
-          "orderBySort": "1",
-          "queryType": "randomWalk",
-          "rawQuery": true,
-          "rawSql": "WITH JOBS as (\nSELECT\n      MIN(CAST(REGEXP_EXTRACT(textPayload, r\"(\\d+\\.\\d+)\") AS float64)) AS val\n    , ANY_VALUE(labels.k8s_pod_prow_k8s_io_job) AS k8s_pod_prow_k8s_io_job\n    , MIN(timestamp) as timestamp\n  FROM `sap-kyma-prow.total_test_coverage.stdout`\n  GROUP BY resource.labels.pod_name\n  HAVING k8s_pod_prow_k8s_io_job NOT LIKE \"pre-%\"\n)\nSELECT a.k8s_pod_prow_k8s_io_job\n     , b.last_result\n     , b.last_timestamp\n     , a.samples_cnt\n     , a.min_result\n     , a.max_result\n     , ROUND(COALESCE((b.last_result - b.previous_result), 0),2) AS last_change\n     , format(\"https://status.build.kyma-project.io/job-history/kyma-prow-logs/logs/%s\", a.k8s_pod_prow_k8s_io_job)  as link\n     , a.stddev\n from \n( SELECT\n    k8s_pod_prow_k8s_io_job\n  , MIN(val) AS min_result\n  , MAX(val) AS max_result\n  , AVG(val) AS avg \n  , COUNT(*) AS samples_cnt\n  , MAX(timestamp) AS timestamp\n  , STDDEV_POP(val) AS stddev\nFROM JOBS\nGROUP BY k8s_pod_prow_k8s_io_job\nORDER BY k8s_pod_prow_k8s_io_job\n) a \nJOIN (SELECT \n   distinct(k8s_pod_prow_k8s_io_job) \n , FIRST_VALUE(val) OVER w1 AS last_result\n , FIRST_VALUE(timestamp) OVER w1 AS last_timestamp\n , NTH_VALUE(val,2) OVER w1 AS previous_result\nFROM JOBS\n WINDOW w1 AS (\n    PARTITION BY k8s_pod_prow_k8s_io_job ORDER BY timestamp DESC\n    ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)\n) b on a.k8s_pod_prow_k8s_io_job = b.k8s_pod_prow_k8s_io_job",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "-- value --"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "timeColumn": "-- time --",
-          "timeColumnType": "TIMESTAMP",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "Last result (test coveraga mockup)",
-      "transformations": [
-        {
-          "id": "reduce",
-          "options": {
-            "includeTimeField": false,
-            "mode": "reduceFields",
-            "reducers": [
-              "mean"
-            ]
-          }
-        },
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "names": [
-                "last_result"
-              ]
-            }
-          }
-        }
-      ],
-      "type": "gauge"
     },
     {
       "datasource": "bigquery-prow",
@@ -748,10 +748,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 8,
         "x": 9,
-        "y": 12
+        "y": 9
       },
       "id": 10,
       "options": {
@@ -881,7 +881,7 @@
         "h": 16,
         "w": 7,
         "x": 17,
-        "y": 13
+        "y": 11
       },
       "id": 9,
       "options": {
@@ -1063,7 +1063,7 @@
         "h": 8,
         "w": 9,
         "x": 0,
-        "y": 16
+        "y": 14
       },
       "id": 25,
       "options": {
@@ -1092,7 +1092,7 @@
         "h": 3,
         "w": 8,
         "x": 9,
-        "y": 16
+        "y": 14
       },
       "id": 18,
       "options": {
@@ -1140,10 +1140,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 8,
         "x": 9,
-        "y": 19
+        "y": 17
       },
       "id": 27,
       "options": {
@@ -1159,56 +1159,6 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "Provisioning success rate (mock data)",
-      "type": "table"
-    },
-    {
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": null,
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 8,
-        "x": 9,
-        "y": 23
-      },
-      "id": 28,
-      "options": {
-        "showHeader": true
-      },
-      "pluginVersion": "7.5.3",
-      "targets": [
-        {
-          "queryType": "randomWalk",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Deprovisioning success rate (mock data)",
       "type": "table"
     },
     {
@@ -1244,7 +1194,7 @@
         "h": 5,
         "w": 9,
         "x": 0,
-        "y": 24
+        "y": 22
       },
       "id": 11,
       "options": {
@@ -1342,6 +1292,56 @@
           }
         }
       ],
+      "type": "table"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 9,
+        "y": 22
+      },
+      "id": 28,
+      "options": {
+        "showHeader": true
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Deprovisioning success rate (mock data)",
       "type": "table"
     }
   ],
