@@ -16,6 +16,7 @@ import (
 var (
 	githubOrgName  = flag.String("githubOrgName", "", "Github organization name [Required]")
 	githubToken    = flag.String("githubToken", "", "Github token [Required]")
+	githubBaseUrl  = flag.String("githubBaseUrl", "", "Custom Github API base URL [Optional]")
 	issuesFilename = flag.String("issuesFilename", "issues.json", "name of the JSON file containign all issues [Optional]")
 	bqCredentials  = flag.String("bqCredentials", "", "Path to BigQuery credentials file [Required]")
 	bqProjectID    = flag.String("bqProjectID", "", "BigQuery project ID [Required]")
@@ -63,7 +64,21 @@ func main() {
 		&oauth2.Token{AccessToken: *githubToken},
 	)
 	tc := oauth2.NewClient(ctx, ts)
-	ghClient := github.NewClient(tc)
+
+	var ghClient *github.Client
+	var err error
+
+	if *githubBaseUrl == "" {
+		// github.com
+		ghClient = github.NewClient(tc)
+	} else {
+		// custom instance
+		ghClient, err = github.NewEnterpriseClient(*githubBaseUrl, *githubBaseUrl, tc)
+		if err != nil {
+			fmt.Printf("Github enterprise: %v", err)
+			os.Exit(1)
+		}
+	}
 	listOptions := &github.IssueListOptions{Filter: "all", State: "open", ListOptions: github.ListOptions{PerPage: 100}}
 
 	fmt.Println("Receiving list of issues")
