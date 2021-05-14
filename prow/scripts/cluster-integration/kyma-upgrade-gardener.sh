@@ -135,7 +135,11 @@ kyma::alpha_deploy_kyma
 
 # Test Kyma
 log::info "PADU"
+
 set +e
+cat /home/prow/go/src/github.com/kyma-project/kyma/resources/istio/Chart.yaml
+
+log::info "PADU2"
 gardener::post_upgrade_test_fast_integration_kyma
 set -e
 
