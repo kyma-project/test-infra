@@ -1,0 +1,3 @@
+pjNames:
+  - pjName: "post-kyma-cli-integration-k3s"
+  - pjName: "pre-kyma-cli-integration-k3s"

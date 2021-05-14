@@ -147,8 +147,23 @@ fi
 # Run test suite
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/lib/clitests.sh"
-if clitests::testSuiteExists "test-all"; then
-    clitests::execute "test-all" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
+
+# ON alpha installation there is no dex, therefore skipping the test
+if [ "$INSTALLATION" = 'alpha' ]; then
+    if clitests::testSuiteExists "test-version"; then
+        clitests::execute "test-version" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
+    else
+        log::error "Test file 'test-version.sh' not found"
+    fi
+    if clitests::testSuiteExists "test-function"; then
+        clitests::execute "test-function" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
+    else
+        log::error "Test file 'test-function.sh' not found"
+    fi
 else
-    log::error "Test file 'test-all.sh' not found"
+    if clitests::testSuiteExists "test-all"; then
+        clitests::execute "test-all" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
+    else
+        log::error "Test file 'test-all.sh' not found"
+    fi
 fi
