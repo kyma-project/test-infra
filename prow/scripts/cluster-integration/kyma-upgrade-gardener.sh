@@ -139,13 +139,12 @@ kyma::alpha_deploy_kyma
 # Test Kyma
 
 set +e
-
 log::info "PADU2"
 gardener::post_upgrade_test_fast_integration_kyma
 set -e
 
 log::info "Sleeping for 5 minutes..."
-sleep 301
+sleep 303
 log::info "Done sleeping!"
 
 #!!! Must be at the end of the script !!!
