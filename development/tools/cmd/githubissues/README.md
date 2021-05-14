@@ -10,6 +10,7 @@ See the list of available flags:
 | Name                             | Required | Description                                                                                          |
 | :-----------------------------   | :------: | :--------------------------------------------------------------------------------------------------- |
 | **--githubOrgName**              |   Yes    | The string value with the Github organization name to retrieve issues from.
+| **--githubRepoName**             |    No    | The string value with the Github repository name to retrieve issues from.
 | **--githubToken**                |   Yes    | The string value with the Github OAuth token.
 | **--githubBaseURL**              |    No    | The string value with the custom Github API base URL.
 | **--issuesFilename**             |    No    | The string value with the name of the generated file with list of issues. It defaults to `issues.json`.

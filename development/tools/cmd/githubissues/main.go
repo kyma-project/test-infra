@@ -15,6 +15,7 @@ import (
 
 var (
 	githubOrgName  = flag.String("githubOrgName", "", "Github organization name [Required]")
+	githubRepoName = flag.String("githubRepoName", "", "Github repository name [Optional]")
 	githubToken    = flag.String("githubToken", "", "Github token [Required]")
 	githubBaseURL  = flag.String("githubBaseURL", "", "Custom Github API base URL [Optional]")
 	issuesFilename = flag.String("issuesFilename", "issues.json", "name of the JSON file containign all issues [Optional]")
@@ -69,22 +70,33 @@ func main() {
 	var err error
 
 	if *githubBaseURL == "" {
-		// github.com
 		ghClient = github.NewClient(tc)
 	} else {
-		// custom instance
 		ghClient, err = github.NewEnterpriseClient(*githubBaseURL, *githubBaseURL, tc)
 		if err != nil {
 			fmt.Printf("Github enterprise: %v", err)
 			os.Exit(1)
 		}
 	}
-	listOptions := &github.IssueListOptions{Filter: "all", State: "open", ListOptions: github.ListOptions{PerPage: 100}}
+
+	var listOptions *github.IssueListOptions
+	var IssueListByRepoOptions *github.IssueListByRepoOptions
+	if *githubRepoName == "" {
+		listOptions = &github.IssueListOptions{Filter: "all", State: "open", ListOptions: github.ListOptions{PerPage: 100}}
+	} else {
+		IssueListByRepoOptions = &github.IssueListByRepoOptions{State: "open", ListOptions: github.ListOptions{PerPage: 100}}
+	}
 
 	fmt.Println("Receiving list of issues")
 	var allIssues []*github.Issue
 	for {
-		issues, response, err := ghClient.Issues.ListByOrg(ctx, *githubOrgName, listOptions)
+		var issues []*github.Issue
+		var response *github.Response
+		if *githubRepoName == "" {
+			issues, response, err = ghClient.Issues.ListByOrg(ctx, *githubOrgName, listOptions)
+		} else {
+			issues, response, err = ghClient.Issues.ListByRepo(ctx, *githubOrgName, *githubRepoName, IssueListByRepoOptions)
+		}
 		if err != nil {
 			fmt.Printf("Github issues: %v", err)
 			os.Exit(1)
@@ -94,13 +106,18 @@ func main() {
 		if response.NextPage == 0 {
 			break
 		}
-		listOptions.Page = response.NextPage
+
+		if *githubRepoName == "" {
+			listOptions.Page = response.NextPage
+		} else {
+			IssueListByRepoOptions.Page = response.NextPage
+		}
 	}
 
 	fmt.Printf("Saving %d issues to \"%v\"\n", len(allIssues), *issuesFilename)
 	issuesFile, err := os.OpenFile(*issuesFilename, os.O_TRUNC|os.O_RDWR|os.O_CREATE, 0666)
 	if err != nil {
-		fmt.Printf("could not open file: %v", err)
+		fmt.Printf("could nor open file: %v", err)
 		os.Exit(1)
 	}
 	defer issuesFile.Close()
