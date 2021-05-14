@@ -52,10 +52,10 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			},
 		},
 		"Should contain the kyma-integration K3s with central Application Gateway job": {
-			givenJobName: "pre-main-kyma-integration-k3s-central-application-gateway",
+			givenJobName: "pre-main-kyma-integration-k3s-central-app-gateway",
 
 			expPresets: []preset.Preset{
-				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-application-gateway-enabled",
+				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-gateway-enabled",
 			},
 
 			expRunIfChangedRegex: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
@@ -69,10 +69,10 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			},
 		},
 		"Should contain the kyma-integration K3s with central Application Gateway and Compass job": {
-			givenJobName: "pre-main-kyma-integration-k3s-central-application-gateway-compass",
+			givenJobName: "pre-main-kyma-integration-k3s-central-app-gateway-compass",
 
 			expPresets: []preset.Preset{
-				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-application-gateway-enabled", "preset-kyma-integration-compass-dev", "preset-kyma-integration-compass-enabled",
+				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-gateway-enabled", "preset-kyma-integration-compass-dev", "preset-kyma-integration-compass-enabled",
 			},
 
 			expRunIfChangedRegex: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
@@ -185,17 +185,17 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 			},
 		},
 		"Should contain the kyma-integration K3s with central Application Gateway job": {
-			givenJobName: "post-main-kyma-integration-k3s-central-application-gateway",
+			givenJobName: "post-main-kyma-integration-k3s-central-app-gateway",
 
 			expPresets: []preset.Preset{
-				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-application-gateway-enabled",
+				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-gateway-enabled",
 			},
 		},
 		"Should contain the kyma-integration K3s with central Application Gateway and Compass job": {
-			givenJobName: "post-main-kyma-integration-k3s-central-application-gateway-compass",
+			givenJobName: "post-main-kyma-integration-k3s-central-app-gateway-compass",
 
 			expPresets: []preset.Preset{
-				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-application-gateway-enabled", "preset-kyma-integration-compass-dev", "preset-kyma-integration-compass-enabled",
+				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-gateway-enabled", "preset-kyma-integration-compass-dev", "preset-kyma-integration-compass-enabled",
 			},
 		},
 		"Should contain the gke-integration job": {

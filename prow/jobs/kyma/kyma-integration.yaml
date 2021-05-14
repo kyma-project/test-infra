@@ -115,15 +115,15 @@ presubmits: # runs on PRs
               requests:
                 memory: 100Mi
                 cpu: 50m
-    - name: pre-main-kyma-integration-k3s-central-application-gateway
+    - name: pre-main-kyma-integration-k3s-central-app-gateway
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3s-central-application-gateway"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3s-central-app-gateway"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-integration-central-application-gateway-enabled: "true"
+        preset-kyma-integration-central-app-gateway-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^((tests/fast-integration\S+|resources\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       optional: true
@@ -155,15 +155,15 @@ presubmits: # runs on PRs
               requests:
                 memory: 100Mi
                 cpu: 50m
-    - name: pre-main-kyma-integration-k3s-central-application-gateway-compass
+    - name: pre-main-kyma-integration-k3s-central-app-gateway-compass
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3s-central-application-gateway-compass"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3s-central-app-gateway-compass"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-integration-central-application-gateway-enabled: "true"
+        preset-kyma-integration-central-app-gateway-enabled: "true"
         preset-kyma-integration-compass-dev: "true"
         preset-kyma-integration-compass-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
@@ -451,19 +451,19 @@ postsubmits: # runs on main
               requests:
                 memory: 100Mi
                 cpu: 50m
-    - name: post-main-kyma-integration-k3s-central-application-gateway
+    - name: post-main-kyma-integration-k3s-central-app-gateway
       annotations:
         description: "Kyma integration job on k3s with central Application Gateway."
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3s-central-application-gateway"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3s-central-app-gateway"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-integration-central-application-gateway-enabled: "true"
+        preset-kyma-integration-central-app-gateway-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
       skip_report: false
       decorate: true
@@ -493,19 +493,19 @@ postsubmits: # runs on main
               requests:
                 memory: 100Mi
                 cpu: 50m
-    - name: post-main-kyma-integration-k3s-central-application-gateway-compass
+    - name: post-main-kyma-integration-k3s-central-app-gateway-compass
       annotations:
         description: "Kyma integration job on k3s with central Application Gateway and Compass dev."
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3s-central-application-gateway-compass"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3s-central-app-gateway-compass"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-integration-central-application-gateway-enabled: "true"
+        preset-kyma-integration-central-app-gateway-enabled: "true"
         preset-kyma-integration-compass-dev: "true"
         preset-kyma-integration-compass-enabled: "true"
         preset-sa-vm-kyma-integration: "true"

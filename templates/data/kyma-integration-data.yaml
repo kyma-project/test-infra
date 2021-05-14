@@ -118,13 +118,13 @@ templates:
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "pre-main-kyma-integration-k3s-central-application-gateway"
+                  name: "pre-main-kyma-integration-k3s-central-app-gateway"
                   optional: true
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
-                    preset-kyma-integration-central-application-gateway-enabled: "true"
+                    preset-kyma-integration-central-app-gateway-enabled: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -138,7 +138,7 @@ templates:
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "pre-main-kyma-integration-k3s-central-application-gateway-compass"
+                  name: "pre-main-kyma-integration-k3s-central-app-gateway-compass"
                   optional: true
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -146,7 +146,7 @@ templates:
                     preset-build-pr: "true"
                     preset-kyma-integration-compass-dev: "true"
                     preset-kyma-integration-compass-enabled: "true"
-                    preset-kyma-integration-central-application-gateway-enabled: "true"
+                    preset-kyma-integration-central-app-gateway-enabled: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -291,14 +291,14 @@ templates:
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "post-main-kyma-integration-k3s-central-application-gateway"
+                  name: "post-main-kyma-integration-k3s-central-app-gateway"
                   annotations:
                     testgrid-dashboards: kyma_integration
                     description: Kyma integration job on k3s with central Application Gateway.
                     testgrid-days-of-results: "60"
                   labels:
                     preset-build-main: "true"
-                    preset-kyma-integration-central-application-gateway-enabled: "true"
+                    preset-kyma-integration-central-app-gateway-enabled: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -312,7 +312,7 @@ templates:
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "post-main-kyma-integration-k3s-central-application-gateway-compass"
+                  name: "post-main-kyma-integration-k3s-central-app-gateway-compass"
                   annotations:
                     testgrid-dashboards: kyma_integration
                     description: Kyma integration job on k3s with central Application Gateway and Compass dev.
@@ -321,7 +321,7 @@ templates:
                     preset-build-main: "true"
                     preset-kyma-integration-compass-dev: "true"
                     preset-kyma-integration-compass-enabled: "true"
-                    preset-kyma-integration-central-application-gateway-enabled: "true"
+                    preset-kyma-integration-central-app-gateway-enabled: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
