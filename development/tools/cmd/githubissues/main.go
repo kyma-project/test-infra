@@ -16,7 +16,7 @@ import (
 var (
 	githubOrgName  = flag.String("githubOrgName", "", "Github organization name [Required]")
 	githubToken    = flag.String("githubToken", "", "Github token [Required]")
-	githubBaseUrl  = flag.String("githubBaseUrl", "", "Custom Github API base URL [Optional]")
+	githubBaseURL  = flag.String("githubBaseURL", "", "Custom Github API base URL [Optional]")
 	issuesFilename = flag.String("issuesFilename", "issues.json", "name of the JSON file containign all issues [Optional]")
 	bqCredentials  = flag.String("bqCredentials", "", "Path to BigQuery credentials file [Required]")
 	bqProjectID    = flag.String("bqProjectID", "", "BigQuery project ID [Required]")
@@ -68,12 +68,12 @@ func main() {
 	var ghClient *github.Client
 	var err error
 
-	if *githubBaseUrl == "" {
+	if *githubBaseURL == "" {
 		// github.com
 		ghClient = github.NewClient(tc)
 	} else {
 		// custom instance
-		ghClient, err = github.NewEnterpriseClient(*githubBaseUrl, *githubBaseUrl, tc)
+		ghClient, err = github.NewEnterpriseClient(*githubBaseURL, *githubBaseURL, tc)
 		if err != nil {
 			fmt.Printf("Github enterprise: %v", err)
 			os.Exit(1)
