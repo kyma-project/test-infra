@@ -129,10 +129,10 @@ helm delete iam-kubeconfig-service -n kyma-system
 #kubectl delete ns kyma-installer --ignore-not-found=true
 
 # Install Kyma 2.0 from main
-KYMA_SOURCE="56bbf1ca42d746fd36f1216574e910800ca9130e"
+KYMA_SOURCE="ffbfafdd103eba57148925a5886945e89b780ff4"
 export KYMA_SOURCE
 
-log::info "Installing Kyma 2.0 from before Istio 1.9.5: 56bbf1ca42d746fd36f1216574e910800ca9130e"
+log::info "Installing Kyma 2.0 from Istio 1.9.5: ffbfafdd103eba57148925a5886945e89b780ff4"
 kyma::alpha_deploy_kyma
 
 # Test Kyma
