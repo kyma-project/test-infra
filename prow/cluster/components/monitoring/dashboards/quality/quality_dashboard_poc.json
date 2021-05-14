@@ -491,7 +491,7 @@
       "type": "table"
     },
     {
-      "datasource": null,
+      "datasource": "prow-api",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -516,7 +516,32 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "job"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 361
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "state"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 73
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -526,18 +551,66 @@
       },
       "id": 23,
       "options": {
-        "showHeader": true
+        "showHeader": true,
+        "sortBy": []
       },
       "pluginVersion": "7.5.3",
       "targets": [
         {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": "$.items[*].spec.job",
+              "name": "job"
+            },
+            {
+              "jsonPath": "$.items[*].status.state",
+              "name": "state"
+            },
+            {
+              "jsonPath": "$.items[*].status.state",
+              "name": "state2"
+            }
+          ],
+          "method": "GET",
+          "params": [
+            [
+              "omit",
+              "annotations,labels,decoration_config,pod_spec"
+            ]
+          ],
+          "queryParams": "",
           "queryType": "randomWalk",
-          "refId": "A"
+          "refId": "A",
+          "urlPath": "/prowjobs.js"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
       "title": "Job success rate (mock data)",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "job": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "state": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "state2": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              }
+            }
+          }
+        }
+      ],
       "type": "table"
     },
     {

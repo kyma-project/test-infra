@@ -61,20 +61,17 @@ data:
             privateKey: "${GF_PLUGINS_BIGQUERY_DATASOURCE_PRIVATE_KEY}"
         version: 2
         readOnly: false
-      - name: github-public
+      - name: prow-api
         type: marcusolsson-json-datasource
         access: proxy
         basicAuth: false
         withCredentials: false
         isDefault: false
-        url: https://api.github.com
+        url: https://status.build.kyma-project.io
         jsonData:
-            httpHeaderName1: Authorization
             oauthPassThru: false
             tlsAuth: false
             tlsSkipVerify: false
-        secureJsonData:
-            httpHeaderValue1: "Bearer ${GF_PLUGINS_JSON_DATASOURCE_PRIVATE_TOKEN}"
         version: 8
         readOnly: false
 ---
