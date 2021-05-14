@@ -116,6 +116,10 @@ fi
 # Test Kyma
 gardener::pre_upgrade_test_fast_integration_kyma
 
+log::info "Sleeping for 10 minutes..."
+sleep 600
+log::info "Done sleeping!"
+
 # Remove old Kyma components
 
 helm delete core -n kyma-system
@@ -143,7 +147,7 @@ log::info "PADU2"
 gardener::post_upgrade_test_fast_integration_kyma
 set -e
 
-log::info "Sleeping for 20 minutes..."
+log::info "Sleeping for 10 minutes..."
 sleep 1200
 log::info "Done sleeping!"
 
