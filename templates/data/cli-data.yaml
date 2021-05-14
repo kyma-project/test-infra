@@ -100,8 +100,6 @@ templates:
             labels:
               preset-build-main: "true"
           k3s_template:
-            optional: true # make mandatory when green
-            skip_report: true
             env:
               INSTALLATION: "alpha"
               KUBERNETES_RUNTIME: "k3s"
@@ -157,7 +155,6 @@ templates:
                     - "jobConfig_postsubmit"
               - jobConfig:
                   name: post-kyma-cli-integration-k3s
-                  optional: true # make mandatory when green
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
