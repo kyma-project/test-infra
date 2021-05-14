@@ -61,19 +61,6 @@ data:
             privateKey: "${GF_PLUGINS_BIGQUERY_DATASOURCE_PRIVATE_KEY}"
         version: 2
         readOnly: false
-      - name: prow-api
-        type: marcusolsson-json-datasource
-        access: proxy
-        basicAuth: false
-        withCredentials: false
-        isDefault: false
-        url: https://status.build.kyma-project.io
-        jsonData:
-            oauthPassThru: false
-            tlsAuth: false
-            tlsSkipVerify: false
-        version: 8
-        readOnly: false
 ---
 apiVersion: v1
 kind: ConfigMap

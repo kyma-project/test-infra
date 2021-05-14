@@ -41,7 +41,7 @@ spec:
         - name: GF_SECURITY_ADMIN_USER
           value: adm
         - name: GF_INSTALL_PLUGINS
-          value: doitintl-bigquery-datasource,marcusolsson-json-datasource
+          value: doitintl-bigquery-datasource
         - name: GF_SECURITY_ADMIN_PASSWORD
           valueFrom:
             secretKeyRef:
