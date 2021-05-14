@@ -16,197 +16,199 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
+  "id": 11,
   "links": [],
   "panels": [
     {
-      "aliasColors": {},
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
+      "datasource": "bigquery-prow",
+      "description": "For some reason it doesn't work as expected, lists only internal-incident",
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "max": 10,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
         "overrides": []
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 9,
         "x": 0,
         "y": 0
       },
-      "hiddenSeries": false,
       "id": 20,
       "interval": null,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": false,
-      "linewidth": 1,
       "maxDataPoints": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "showHeader": true
       },
-      "percentage": false,
       "pluginVersion": "7.5.3",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
       "targets": [
         {
+          "format": "table",
+          "group": [],
+          "location": "US",
+          "metricColumn": "none",
+          "orderByCol": "1",
+          "orderBySort": "1",
           "queryType": "randomWalk",
-          "refId": "A"
+          "rawQuery": true,
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM sap-kyma-prow.github_issues.issues_backlog, UNNEST(labels) as labels_unpacked\n)\nSELECT \n    label,\n    COUNT(*)\nFROM issues_filtered\nWHERE label LIKE \"%incident\"\nAND number IN (SELECT number FROM issues_filtered  WHERE label = \"bug\")\nGROUP BY label",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "-- value --"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "-- time --",
+          "timeColumnType": "TIMESTAMP",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
-      "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
-      "title": "Total incidents",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
+      "title": "Total incidents (bad data)",
+      "transformations": [
         {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "f0_": "Count",
+              "label": "Label"
+            }
+          }
         }
       ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "table"
     },
     {
-      "aliasColors": {},
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
+      "datasource": "bigquery-prow",
+      "description": "For some reason it doesn't work as expected, lists only internal-incident",
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
         "overrides": []
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 8,
         "x": 9,
         "y": 0
       },
-      "hiddenSeries": false,
       "id": 21,
       "interval": "1d",
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": false,
-      "linewidth": 1,
       "maxDataPoints": 2,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "showHeader": true
       },
-      "percentage": false,
       "pluginVersion": "7.5.3",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
       "targets": [
         {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "orderByCol": "1",
+          "orderBySort": "1",
           "queryType": "randomWalk",
-          "refId": "A"
+          "rawQuery": true,
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM sap-kyma-prow.github_issues.issues_backlog, UNNEST(labels) as labels_unpacked\n    WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n)\nSELECT \n    label,\n    COUNT(*)\nFROM issues_filtered\nWHERE label LIKE \"%incident\"\nAND number IN (SELECT number FROM issues_filtered  WHERE label = \"bug\")\nGROUP BY label",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "-- value --"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "-- time --",
+          "timeColumnType": "TIMESTAMP",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
-      "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
-      "title": "New incidents",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "transformations": [],
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
+      "title": "New incidents (bad data)",
+      "transformations": [
         {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "f0_": "Count",
+              "label": "Label"
+            }
+          }
         }
       ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "table"
     },
     {
-      "datasource": "github-public",
+      "datasource": "bigquery-prow",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -251,91 +253,60 @@
           "cacheDurationSeconds": 300,
           "fields": [
             {
-              "jsonPath": "$[*].repository.name",
-              "name": "repo"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
+              "jsonPath": ""
             }
           ],
-          "hide": false,
+          "format": "table",
+          "group": [],
           "method": "GET",
-          "params": [
+          "metricColumn": "none",
+          "orderByCol": "1",
+          "orderBySort": "1",
+          "queryParams": "",
+          "rawQuery": true,
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"bug\" \n)\nSELECT \n    COALESCE(repository, \"total\"),\n    COUNT(*) as `cnt`\nFROM issues_filtered\nGROUP BY ROLLUP(repository)\nORDER BY repository ASC",
+          "refId": "A",
+          "select": [
             [
-              "status",
-              "open"
-            ],
-            [
-              "filter",
-              "all"
-            ],
-            [
-              "per_page",
-              "100"
-            ],
-            [
-              "labels",
-              "bug"
+              {
+                "params": [
+                  "-- value --"
+                ],
+                "type": "column"
+              }
             ]
           ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "tracing",
-          "urlPath": "/orgs/kyma-project/issues"
+          "timeColumn": "-- time --",
+          "timeColumnType": "TIMESTAMP",
+          "urlPath": "",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
       "title": "Total bugs open",
       "transformations": [
-        {
-          "id": "groupBy",
-          "options": {
-            "fields": {
-              "label": {
-                "aggregations": [],
-                "operation": "groupby"
-              },
-              "number": {
-                "aggregations": [
-                  "count"
-                ],
-                "operation": "aggregate"
-              },
-              "repo": {
-                "aggregations": [],
-                "operation": "groupby"
-              }
-            }
-          }
-        },
         {
           "id": "organize",
           "options": {
             "excludeByName": {},
             "indexByName": {},
             "renameByName": {
-              "number (count)": "Open bugs",
-              "repo": "Repo"
+              "cnt": "Count",
+              "f0_": "Repository"
             }
-          }
-        },
-        {
-          "id": "sortBy",
-          "options": {
-            "fields": {},
-            "sort": [
-              {
-                "field": "Repo"
-              }
-            ]
           }
         }
       ],
       "type": "table"
     },
     {
-      "datasource": "github-public",
-      "description": "Hardcoded values for now",
+      "datasource": "bigquery-prow",
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -379,105 +350,56 @@
           "cacheDurationSeconds": 300,
           "fields": [
             {
-              "jsonPath": "$.total_count",
-              "name": ""
+              "jsonPath": ""
             }
           ],
-          "hide": false,
+          "format": "table",
+          "group": [],
           "method": "GET",
-          "params": [
+          "metricColumn": "none",
+          "orderByCol": "1",
+          "orderBySort": "1",
+          "queryParams": "",
+          "rawQuery": true,
+          "rawSql": "WITH bugs AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE repository.name = \"kyma\" AND labels_unpacked.name = \"bug\"\n)\nSELECT \n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    ) as one_week,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)\n    ) as one_month,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30* 3 DAY)\n    ) as three_months,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30*6 DAY)\n    ) as six_months,",
+          "refId": "A",
+          "select": [
             [
-              "q",
-              "repo:kyma-project/kyma label:bug is:issue is:open created:>=2021-04-30"
-            ],
-            [
-              "per_page",
-              "100"
+              {
+                "params": [
+                  "-- value --"
+                ],
+                "type": "column"
+              }
             ]
           ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "new this week",
-          "urlPath": "/search/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
+          "timeColumn": "-- time --",
+          "timeColumnType": "TIMESTAMP",
+          "urlPath": "",
+          "where": [
             {
-              "jsonPath": "$.total_count",
-              "name": ""
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
             }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "q",
-              "repo:kyma-project/kyma label:bug is:issue is:open created:<=2021-04-07"
-            ],
-            [
-              "per_page",
-              "100"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "1 month",
-          "urlPath": "/search/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$.total_count",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "q",
-              "repo:kyma-project/kyma label:bug is:issue is:open created:<=2021-02-07"
-            ],
-            [
-              "per_page",
-              "100"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "3 months",
-          "urlPath": "/search/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$.total_count",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "q",
-              "repo:kyma-project/kyma label:bug is:issue is:open created:<=2020-05-07"
-            ],
-            [
-              "per_page",
-              "100"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "6 months",
-          "urlPath": "/search/issues"
+          ]
         }
       ],
-      "title": "Open bug age (hardcoded WIP)",
+      "title": "Open bug age",
       "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "one_month": "Older than 1 month",
+              "one_week": "New this week*",
+              "six_months": "Older than 6 months",
+              "three_months": "Older than 3 months"
+            }
+          }
+        },
         {
           "id": "reduce",
           "options": {}
@@ -494,6 +416,7 @@
           }
         }
       ],
+      "transparent": true,
       "type": "table"
     },
     {
@@ -543,7 +466,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Job success rate",
+      "title": "Job success rate (mock data)",
       "type": "table"
     },
     {
@@ -569,7 +492,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "%"
         },
         "overrides": []
       },
@@ -651,7 +575,7 @@
       "type": "gauge"
     },
     {
-      "datasource": "github-public",
+      "datasource": "bigquery-prow",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -696,90 +620,59 @@
           "cacheDurationSeconds": 300,
           "fields": [
             {
-              "jsonPath": "$[*].repository.name",
-              "name": "repo"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
+              "jsonPath": ""
             }
           ],
-          "hide": false,
+          "format": "table",
+          "group": [],
           "method": "GET",
-          "params": [
+          "metricColumn": "none",
+          "orderByCol": "1",
+          "orderBySort": "1",
+          "queryParams": "",
+          "rawQuery": true,
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"test-case\" \n)\nSELECT \n    repository,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nGROUP BY repository\nORDER BY repository",
+          "refId": "A",
+          "select": [
             [
-              "status",
-              "open"
-            ],
-            [
-              "filter",
-              "all"
-            ],
-            [
-              "per_page",
-              "100"
-            ],
-            [
-              "labels",
-              "test-case"
+              {
+                "params": [
+                  "-- value --"
+                ],
+                "type": "column"
+              }
             ]
           ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "tracing",
-          "urlPath": "/orgs/kyma-project/issues"
+          "timeColumn": "-- time --",
+          "timeColumnType": "TIMESTAMP",
+          "urlPath": "",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
       "title": "Test cases for release",
       "transformations": [
-        {
-          "id": "groupBy",
-          "options": {
-            "fields": {
-              "label": {
-                "aggregations": [],
-                "operation": "groupby"
-              },
-              "number": {
-                "aggregations": [
-                  "count"
-                ],
-                "operation": "aggregate"
-              },
-              "repo": {
-                "aggregations": [],
-                "operation": "groupby"
-              }
-            }
-          }
-        },
         {
           "id": "organize",
           "options": {
             "excludeByName": {},
             "indexByName": {},
             "renameByName": {
-              "number (count)": "Test cases",
-              "repo": "Repo"
+              "cnt": "Count",
+              "repository": "Repository"
             }
-          }
-        },
-        {
-          "id": "sortBy",
-          "options": {
-            "fields": {},
-            "sort": [
-              {
-                "field": "Repo"
-              }
-            ]
           }
         }
       ],
       "type": "table"
     },
     {
-      "datasource": "github-public",
+      "datasource": "bigquery-prow",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -807,7 +700,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 13,
+        "h": 16,
         "w": 7,
         "x": 17,
         "y": 13
@@ -823,701 +716,51 @@
           "cacheDurationSeconds": 300,
           "fields": [
             {
-              "jsonPath": "$[*].labels[?(@.name == \"area/application-connector\")].name",
-              "name": "label"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
+              "jsonPath": ""
             }
           ],
-          "hide": false,
+          "format": "table",
+          "group": [],
           "method": "GET",
-          "params": [
+          "metricColumn": "none",
+          "orderByCol": "1",
+          "orderBySort": "1",
+          "queryParams": "",
+          "rawQuery": true,
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE repository.name = \"kyma\"\n)\nSELECT \n    SUBSTR(label,6) as area,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nWHERE label LIKE \"area/%\"\nAND number IN (SELECT number FROM issues_filtered WHERE label = \"bug\")\nGROUP BY label\nORDER BY area\n",
+          "refId": "A",
+          "select": [
             [
-              "status",
-              "open"
-            ],
-            [
-              "labels",
-              "bug,area/application-connector"
+              {
+                "params": [
+                  "-- value --"
+                ],
+                "type": "column"
+              }
             ]
           ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "bug,area/application-connector",
-          "urlPath": "/repos/kyma-project/kyma/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
+          "timeColumn": "-- time --",
+          "timeColumnType": "TIMESTAMP",
+          "urlPath": "",
+          "where": [
             {
-              "jsonPath": "$[*].labels[?(@.name == \"area/application-gateway\")].name",
-              "name": "label"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
             }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "labels",
-              "bug,area/application-gateway"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "bug,area/application-gateway",
-          "urlPath": "/repos/kyma-project/kyma/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$[*].labels[?(@.name == \"area/ci\")].name",
-              "name": "label"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "labels",
-              "bug,area/ci"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "bug,area/ci",
-          "urlPath": "/repos/kyma-project/kyma/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$[*].labels[?(@.name == \"area/cli\")].name",
-              "name": "label"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "labels",
-              "bug,area/cli"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "bug,area/cli",
-          "urlPath": "/repos/kyma-project/kyma/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$[*].labels[?(@.name == \"area/community\")].name",
-              "name": "label"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "labels",
-              "bug,area/community"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "bug,area/community",
-          "urlPath": "/repos/kyma-project/kyma/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$[*].labels[?(@.name == \"area/console\")].name",
-              "name": "label"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "labels",
-              "bug,area/console"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "bug,area/console",
-          "urlPath": "/repos/kyma-project/kyma/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$[*].labels[?(@.name == \"area/control-plane\")].name",
-              "name": "label"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "labels",
-              "bug,area/control-plane"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "bug,area/control-plane",
-          "urlPath": "/repos/kyma-project/kyma/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$[*].labels[?(@.name == \"area/core-and-supporting\")].name",
-              "name": "label"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "labels",
-              "bug,area/core-and-supporting"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "bug,area/core-and-supporting",
-          "urlPath": "/repos/kyma-project/kyma/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$[*].labels[?(@.name == \"area/documentation\")].name",
-              "name": "label"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "labels",
-              "bug,area/documentation"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "bug,area/documentation",
-          "urlPath": "/repos/kyma-project/kyma/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$[*].labels[?(@.name == \"area/eventing\")].name",
-              "name": "label"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "labels",
-              "bug,area/eventing"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "eventing",
-          "urlPath": "/repos/kyma-project/kyma/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$[*].labels[?(@.name == \"area/installation\")].name",
-              "name": "label"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "labels",
-              "bug,area/installation"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "installation",
-          "urlPath": "/repos/kyma-project/kyma/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$[*].labels[?(@.name == \"area/kyma-control-plane\")].name",
-              "name": "label"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "labels",
-              "bug,area/kyma-control-plane"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "kyma-control-plane",
-          "urlPath": "/repos/kyma-project/kyma/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$[*].labels[?(@.name == \"area/logging\")].name",
-              "name": "label"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "labels",
-              "bug,area/logging"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "logging",
-          "urlPath": "/repos/kyma-project/kyma/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$[*].labels[?(@.name == \"area/luigi\")].name",
-              "name": "label"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "labels",
-              "bug,area/luigi"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "luigi",
-          "urlPath": "/repos/kyma-project/kyma/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$[*].labels[?(@.name == \"area/management-plane\")].name",
-              "name": "label"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "labels",
-              "bug,area/management-plane"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "management-plane",
-          "urlPath": "/repos/kyma-project/kyma/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$[*].labels[?(@.name == \"area/monitoring\")].name",
-              "name": "label"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "labels",
-              "bug,area/monitoring"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "monitoring",
-          "urlPath": "/repos/kyma-project/kyma/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$[*].labels[?(@.name == \"area/performance\")].name",
-              "name": "label"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "labels",
-              "bug,area/performance"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "performance",
-          "urlPath": "/repos/kyma-project/kyma/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$[*].labels[?(@.name == \"area/quality\")].name",
-              "name": "label"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "labels",
-              "bug,area/quality"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "quality",
-          "urlPath": "/repos/kyma-project/kyma/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$[*].labels[?(@.name == \"area/security\")].name",
-              "name": "label"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "labels",
-              "bug,area/security"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "security",
-          "urlPath": "/repos/kyma-project/kyma/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$[*].labels[?(@.name == \"area/serverless\")].name",
-              "name": "label"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "labels",
-              "bug,area/serverless"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "serverless",
-          "urlPath": "/repos/kyma-project/kyma/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$[*].labels[?(@.name == \"area/service-catalog\")].name",
-              "name": "label"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "labels",
-              "bug,area/service-catalog"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "service-catalog",
-          "urlPath": "/repos/kyma-project/kyma/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$[*].labels[?(@.name == \"area/service-mesh\")].name",
-              "name": "label"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "labels",
-              "bug,area/service-mesh"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "service-mesh",
-          "urlPath": "/repos/kyma-project/kyma/issues"
-        },
-        {
-          "cacheDurationSeconds": 300,
-          "fields": [
-            {
-              "jsonPath": "$[*].labels[?(@.name == \"area/tracing\")].name",
-              "name": "label"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
-            }
-          ],
-          "hide": false,
-          "method": "GET",
-          "params": [
-            [
-              "status",
-              "open"
-            ],
-            [
-              "labels",
-              "bug,area/tracing"
-            ]
-          ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "tracing",
-          "urlPath": "/repos/kyma-project/kyma/issues"
+          ]
         }
       ],
       "title": "Open bugs per area",
       "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "groupBy",
-          "options": {
-            "fields": {
-              "label": {
-                "aggregations": [],
-                "operation": "groupby"
-              },
-              "number": {
-                "aggregations": [
-                  "count"
-                ],
-                "operation": "aggregate"
-              }
-            }
-          }
-        },
         {
           "id": "organize",
           "options": {
             "excludeByName": {},
             "indexByName": {},
             "renameByName": {
-              "label": "Area",
-              "number (count)": "Open bugs"
+              "area": "Area",
+              "cnt": "Count"
             }
           }
         }
@@ -1571,7 +814,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Whitesource/protecode",
+      "title": "Whitesource/protecode (mock data)",
       "type": "table"
     },
     {
@@ -1600,7 +843,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Days to release",
+      "title": "Days to release (mock data)",
       "type": "text"
     },
     {
@@ -1650,7 +893,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Provisioning success rate",
+      "title": "Provisioning success rate (mock data)",
       "type": "table"
     },
     {
@@ -1682,7 +925,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
+        "h": 6,
         "w": 8,
         "x": 9,
         "y": 23
@@ -1700,12 +943,12 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Deprovisioning success rate",
+      "title": "Deprovisioning success rate (mock data)",
       "type": "table"
     },
     {
-      "datasource": "github-public",
-      "description": "",
+      "datasource": "bigquery-prow",
+      "description": "New counts all opened in the last 7 days",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1733,7 +976,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 9,
         "x": 0,
         "y": 24
@@ -1749,83 +992,54 @@
           "cacheDurationSeconds": 300,
           "fields": [
             {
-              "jsonPath": "$[*].repository.name",
-              "name": "repo"
-            },
-            {
-              "jsonPath": "$[*].number",
-              "name": ""
+              "jsonPath": ""
             }
           ],
-          "hide": false,
+          "format": "table",
+          "group": [],
           "method": "GET",
-          "params": [
+          "metricColumn": "none",
+          "orderByCol": "1",
+          "orderBySort": "1",
+          "queryParams": "",
+          "rawQuery": true,
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"priority/critical\" \n)\nSELECT\n    issues_all.repository,\n    critical_open,\n    COALESCE(critical_new, 0)\nFROM\n(\n    SELECT \n        repository,\n        COUNT(*) as `critical_open`\n    FROM issues_filtered\n    GROUP BY repository\n) AS issues_all LEFT JOIN (\n    SELECT \n        repository,\n        COUNT(*) as `critical_new`\n    FROM issues_filtered\n    WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    GROUP BY repository\n) AS issues_new ON issues_all.repository = issues_new.repository\n--GROUP BY repository\nORDER BY repository",
+          "refId": "A",
+          "select": [
             [
-              "status",
-              "open"
-            ],
-            [
-              "filter",
-              "all"
-            ],
-            [
-              "per_page",
-              "100"
-            ],
-            [
-              "labels",
-              "priority/critical"
+              {
+                "params": [
+                  "-- value --"
+                ],
+                "type": "column"
+              }
             ]
           ],
-          "queryParams": "",
-          "queryType": "randomWalk",
-          "refId": "tracing",
-          "urlPath": "/orgs/kyma-project/issues"
+          "timeColumn": "-- time --",
+          "timeColumnType": "TIMESTAMP",
+          "urlPath": "",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
       "title": "Critical issues",
       "transformations": [
-        {
-          "id": "groupBy",
-          "options": {
-            "fields": {
-              "label": {
-                "aggregations": [],
-                "operation": "groupby"
-              },
-              "number": {
-                "aggregations": [
-                  "count"
-                ],
-                "operation": "aggregate"
-              },
-              "repo": {
-                "aggregations": [],
-                "operation": "groupby"
-              }
-            }
-          }
-        },
         {
           "id": "organize",
           "options": {
             "excludeByName": {},
             "indexByName": {},
             "renameByName": {
-              "number (count)": "Open bugs",
-              "repo": "Repo"
+              "cnt": "Count",
+              "critical_open": "Open",
+              "f0_": "New",
+              "repository": "Repository"
             }
-          }
-        },
-        {
-          "id": "sortBy",
-          "options": {
-            "fields": {},
-            "sort": [
-              {
-                "field": "Repo"
-              }
-            ]
           }
         }
       ],
