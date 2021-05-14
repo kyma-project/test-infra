@@ -127,15 +127,17 @@ helm delete permission-controller -n kyma-system
 kubectl delete ns kyma-installer --ignore-not-found=true
 
 # Install Kyma 2.0 from main
-KYMA_SOURCE="main"
+KYMA_SOURCE="56bbf1ca42d746fd36f1216574e910800ca9130e"
 export KYMA_SOURCE
 
-log::info "Installing Kyma 2.0"
+log::info "Installing Kyma 2.0 from before Istio 1.9.5"
 kyma::alpha_deploy_kyma
 
 # Test Kyma
 log::info "PADU"
-res=$(gardener::post_upgrade_test_fast_integration_kyma)
+set +e
+gardener::post_upgrade_test_fast_integration_kyma
+set -e
 
 log::info "Sleeping for 20 minutes..."
 sleep 1200
