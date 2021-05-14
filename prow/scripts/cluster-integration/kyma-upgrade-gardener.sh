@@ -16,8 +16,6 @@
 #Please look in each provider script for provider specific requirements
 
 
-
-
 # exit on error, and raise error when variable is not set when used
 set -e
 
@@ -97,6 +95,10 @@ gardener::generate_overrides
 
 gardener::provision_cluster
 
+#TODO: Remove!
+log::info "PADU"
+cat /home/prow/go/src/github.com/kyma-project/kyma/resources/istio/Chart.yaml
+
 log::info "Installing Kyma $KYMA_SOURCE"
 # uses previously set KYMA_SOURCE
 gardener::install_kyma
@@ -120,24 +122,22 @@ helm delete console -n kyma-system
 helm delete dex -n kyma-system
 helm delete apiserver-proxy -n kyma-system
 helm delete iam-kubeconfig-service -n kyma-system
-helm delete testing -n kyma-system
-helm delete xip-patch -n kyma-installer
-helm delete permission-controller -n kyma-system
+#helm delete testing -n kyma-system
+#helm delete xip-patch -n kyma-installer
+#helm delete permission-controller -n kyma-system
 
-kubectl delete ns kyma-installer --ignore-not-found=true
+#kubectl delete ns kyma-installer --ignore-not-found=true
 
 # Install Kyma 2.0 from main
 KYMA_SOURCE="56bbf1ca42d746fd36f1216574e910800ca9130e"
 export KYMA_SOURCE
 
-log::info "Installing Kyma 2.0 from before Istio 1.9.5"
+log::info "Installing Kyma 2.0 from before Istio 1.9.5: 56bbf1ca42d746fd36f1216574e910800ca9130e"
 kyma::alpha_deploy_kyma
 
 # Test Kyma
-log::info "PADU"
 
 set +e
-cat /home/prow/go/src/github.com/kyma-project/kyma/resources/istio/Chart.yaml
 
 log::info "PADU2"
 gardener::post_upgrade_test_fast_integration_kyma
