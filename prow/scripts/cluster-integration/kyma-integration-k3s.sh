@@ -33,7 +33,9 @@ prepare_k3s() {
 
 run_tests() {
     pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
-    if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
+    if [[ -v COMPASS_INTEGRATION_ENABLED && -v CENTRAL_APPLICATION_GATEWAY_ENABLED ]]; then
+        make ci-application-connectivity-2-compass
+    elif [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
         make ci-compass
     elif [[ -v CENTRAL_APPLICATION_GATEWAY_ENABLED ]]; then
         make ci-application-connectivity-2
