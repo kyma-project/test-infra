@@ -28,7 +28,7 @@
             "mode": "thresholds"
           },
           "custom": {
-            "align": null,
+            "align": "center",
             "filterable": false
           },
           "mappings": [],
@@ -122,7 +122,7 @@
             "mode": "thresholds"
           },
           "custom": {
-            "align": null,
+            "align": "center",
             "filterable": false
           },
           "mappings": [],
@@ -214,7 +214,7 @@
             "mode": "thresholds"
           },
           "custom": {
-            "align": null,
+            "align": "center",
             "filterable": false
           },
           "mappings": [],
@@ -346,7 +346,7 @@
             "mode": "thresholds"
           },
           "custom": {
-            "align": null,
+            "align": "center",
             "filterable": false
           },
           "mappings": [],
@@ -358,8 +358,12 @@
                 "value": null
               },
               {
+                "color": "#EAB839",
+                "value": 60
+              },
+              {
                 "color": "green",
-                "value": 100
+                "value": 80
               }
             ]
           }
@@ -378,18 +382,10 @@
               {
                 "id": "custom.displayMode",
                 "value": "color-text"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "job"
-            },
-            "properties": [
+              },
               {
-                "id": "custom.width",
-                "value": 271
+                "id": "decimals",
+                "value": 1
               }
             ]
           },
@@ -401,7 +397,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 99
+                "value": 98
               }
             ]
           },
@@ -413,7 +409,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 47
+                "value": 52
               }
             ]
           }
@@ -591,7 +587,7 @@
             "mode": "thresholds"
           },
           "custom": {
-            "align": null,
+            "align": "center",
             "filterable": false
           },
           "mappings": [],
@@ -743,7 +739,7 @@
             "mode": "thresholds"
           },
           "custom": {
-            "align": null,
+            "align": "center",
             "filterable": false
           },
           "mappings": [],
@@ -873,7 +869,7 @@
             "mode": "thresholds"
           },
           "custom": {
-            "align": null,
+            "align": "center",
             "filterable": false
           },
           "mappings": [],
@@ -1186,7 +1182,7 @@
             "mode": "thresholds"
           },
           "custom": {
-            "align": null,
+            "align": "center",
             "filterable": false
           },
           "mappings": [],
