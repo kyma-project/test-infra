@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -77,7 +78,7 @@ func exitOnError(err error, context string) {
 }
 
 type configMapSetter interface {
-	Update(*v1.ConfigMap) (*v1.ConfigMap, error)
+	Update(context.Context, *v1.ConfigMap, metav1.UpdateOptions) (*v1.ConfigMap, error)
 }
 
 func replaceConfigMapFromFile(name, path string, client configMapSetter) error {
@@ -86,7 +87,7 @@ func replaceConfigMapFromFile(name, path string, client configMapSetter) error {
 		return err
 	}
 
-	_, err = client.Update(config)
+	_, err = client.Update(context.Background(), config, metav1.UpdateOptions{})
 	return err
 }
 
@@ -96,7 +97,7 @@ func replaceConfigMapFromDirectory(name, path string, client configMapSetter) er
 		return err
 	}
 
-	_, err = client.Update(config)
+	_, err = client.Update(context.Background(), config, metav1.UpdateOptions{})
 	return err
 }
 
