@@ -145,7 +145,7 @@ func (s *SecretsPopulator) PopulateSecrets(ctx context.Context, project string, 
 			return err
 		}
 
-		curr, err := s.secretsClient.Get(sec.Name, metav1.GetOptions{})
+		curr, err := s.secretsClient.Get(ctx, sec.Name, metav1.GetOptions{})
 		switch {
 		case err == nil:
 			if bytes.Equal(curr.Data[sec.Key], decoded) {
@@ -154,20 +154,20 @@ func (s *SecretsPopulator) PopulateSecrets(ctx context.Context, project string, 
 			}
 
 			curr.Data[sec.Key] = decoded
-			if _, err = s.secretsClient.Update(curr); err != nil {
+			if _, err = s.secretsClient.Update(ctx, curr, metav1.UpdateOptions{}); err != nil {
 				return errors.Wrap(err, "while updating secret")
 			}
 			s.logSecretAction(curr, "Updated")
 
 		case k8serrors.IsNotFound(err):
-			curr, err := s.secretsClient.Create(&corev1.Secret{
+			curr, err := s.secretsClient.Create(ctx, &corev1.Secret{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: sec.Name,
 				},
 				Data: map[string][]byte{
 					sec.Key: decoded,
 				},
-			})
+			}, metav1.CreateOptions{})
 			if err != nil {
 				return errors.Wrapf(err, "while creating secret [%s]", sec.Name)
 			}
