@@ -41,6 +41,6 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-busola-k3s.sh"
             resources:
               requests:
-                memory: 100Mi
-                cpu: 50m
+                memory: 800Mi
+                cpu: 999m
   
