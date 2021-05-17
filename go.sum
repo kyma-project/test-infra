@@ -255,7 +255,6 @@ github.com/aws/aws-sdk-go v1.31.12 h1:SxRRGyhlCagI0DYkhOg+FgdXGXzRTE3vEX/gsgFaiK
 github.com/aws/aws-sdk-go v1.31.12/go.mod h1:5zCpMtNQVjRREroY7sYe8lOMRSxkhG6MZveU8YkpAk0=
 github.com/aybabtme/rgbterm v0.0.0-20170906152045-cc83f3b3ce59/go.mod h1:q/89r3U2H7sSsE2t6Kca0lfwTK8JdoNGS/yzM/4iH5I=
 github.com/bazelbuild/buildtools v0.0.0-20190917191645-69366ca98f89/go.mod h1:5JP0TXzWDHXv8qvxRC4InIazwdyDseBDbzESUMKk1yU=
-github.com/bazelbuild/buildtools v0.0.0-20200922170545-10384511ce98 h1:OhVnC5zU5QHQ+DUSmgOTPqPnJnrlFmrh2S0HKeHmpbw=
 github.com/bazelbuild/buildtools v0.0.0-20200922170545-10384511ce98/go.mod h1:5JP0TXzWDHXv8qvxRC4InIazwdyDseBDbzESUMKk1yU=
 github.com/beorn7/perks v0.0.0-20160804104726-4c0e84591b9a/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
 github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
@@ -1051,7 +1050,6 @@ github.com/mattn/go-sqlite3 v0.0.0-20160514122348-38ee283dabf1/go.mod h1:FPy6Kqz
 github.com/mattn/go-sqlite3 v1.9.0/go.mod h1:FPy6KqzDD04eiIsT53CuJW3U88zkxoIYsOqkbpncsNc=
 github.com/mattn/go-sqlite3 v2.0.1+incompatible/go.mod h1:FPy6KqzDD04eiIsT53CuJW3U88zkxoIYsOqkbpncsNc=
 github.com/mattn/go-zglob v0.0.1/go.mod h1:9fxibJccNxU2cnpIKLRRFA7zX7qhkJIQWBb449FYHOo=
-github.com/mattn/go-zglob v0.0.2 h1:0qT24o2wsZ8cOXQAERwBX6s+rPMs/bJTKxLVVtgfDXc=
 github.com/mattn/go-zglob v0.0.2/go.mod h1:9fxibJccNxU2cnpIKLRRFA7zX7qhkJIQWBb449FYHOo=
 github.com/mattn/goveralls v0.0.2/go.mod h1:8d1ZMHsd7fW6IRPKQh46F2WRpyib5/X4FOpevwGNQEw=
 github.com/matttproud/golang_protobuf_extensions v1.0.0/go.mod h1:D8He9yQNgCq6Z5Ld7szi9bcBfOoFv/3dc6xSMkL2PC0=

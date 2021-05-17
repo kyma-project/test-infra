@@ -14,9 +14,6 @@ RUN apk --update --no-cache add bash upx dep git && \
     CGO_ENABLED=0 go build -o /prow-tools/jobguard -ldflags="-s -w" development/jobguard/cmd/jobguard/main.go && \
     CGO_ENABLED=0 go build -o /prow-tools/unique-jobs-name -ldflags="-s -w" development/checker/unique-jobs-name/main.go
 
-ENV GOBIN=/prow-tools
-RUN cd development/checker && go get k8s.io/test-infra/prow/cmd/checkconfig@v0.0.0-20200320172837-fbc86f22b087
-
 FROM alpine:latest
 
 ARG commit
