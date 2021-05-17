@@ -14,7 +14,8 @@ def main(event, context):
 	app.client.base_url = "{}/".format(
 		os.environ['OOM_FOUND_SLACK_CONNECTOR_{}_GATEWAY_URL'.format(os.environ['SLACK_API_ID']).replace('-', '_')]
 	)
-	print("received message with id: {}".format(event["data"]["MessageId"]))
+	print(event["data"])
+	#print("received message with id: {}".format(event["data"]["MessageId"]))
 	print("Slack api base URL: {}".format(app.client.base_url))
 	print("sending notification to channel: {}".format(os.environ['NOTIFICATION_SLACK_CHANNEL']))
 	# Get cloud events data.
