@@ -13,3 +13,5 @@ Push the [handler.py](handler.py) and [requirements.txt](requirements.txt) files
 ## Configuration
 
 Function is using [ServiceBindingUsage](https://kyma-project.io/docs/components/serverless/#tutorials-bind-a-service-instance-to-a-function) to get Slack API URL. To point function to the environment variable provided by ServiceBindingUsage set slackConnector.apiId in [values.yaml](../pubsubConnector/values.yaml).
+
+Function use SLACK_BOT_TOKEN environment variable to authorise sending messages to slack channels. To set valid token, use slackConnector.botToken in [values.yaml](../pubsubConnector/values.yaml).
