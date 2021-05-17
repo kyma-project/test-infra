@@ -27,7 +27,6 @@ func TestBootstrapJobPresubmit(t *testing.T) {
 	assert.False(t, actualPresubmit.SkipReport)
 
 	assert.False(t, actualPresubmit.Optional)
-	assert.Equal(t, "github.com/kyma-project/test-infra", actualPresubmit.PathAlias)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoTestInfra, preset.GcrPush, preset.BuildPr)
 	assert.Equal(t, "^prow/images/bootstrap/", actualPresubmit.RunIfChanged)
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "prow/images/bootstrap/Dockerfile"))
@@ -76,7 +75,6 @@ func TestBuildpackGolangJobPresubmit(t *testing.T) {
 	assert.False(t, actualPresubmit.SkipReport)
 
 	assert.False(t, actualPresubmit.Optional)
-	assert.Equal(t, "github.com/kyma-project/test-infra", actualPresubmit.PathAlias)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoTestInfra, preset.GcrPush, preset.BuildPr)
 	assert.Equal(t, "^prow/images/buildpack-golang/", actualPresubmit.RunIfChanged)
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "prow/images/buildpack-golang/Dockerfile"))
@@ -101,7 +99,6 @@ func TestBuildpackGolangJobPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPost.Branches)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 
-	assert.Equal(t, "github.com/kyma-project/test-infra", actualPost.PathAlias)
 	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoTestInfra, preset.GcrPush, preset.BuildRelease)
 	assert.Equal(t, "^prow/images/buildpack-golang/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualPost.Spec.Containers[0].Image)
@@ -127,7 +124,6 @@ func TestBuildpackGolangKubebuilder2JobPresubmit(t *testing.T) {
 	assert.False(t, actualPresubmit.SkipReport)
 
 	assert.False(t, actualPresubmit.Optional)
-	assert.Equal(t, "github.com/kyma-project/test-infra", actualPresubmit.PathAlias)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoTestInfra, preset.GcrPush, preset.BuildPr)
 	assert.Equal(t, "^prow/images/buildpack-golang-kubebuilder2/", actualPresubmit.RunIfChanged)
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "prow/images/buildpack-golang-kubebuilder2/Dockerfile"))
@@ -152,7 +148,6 @@ func TestBuildpackGolangKubebuilder2JobPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPost.Branches)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 
-	assert.Equal(t, "github.com/kyma-project/test-infra", actualPost.PathAlias)
 	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoTestInfra, preset.GcrPush, preset.BuildRelease)
 	assert.Equal(t, "^prow/images/buildpack-golang-kubebuilder2/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualPost.Spec.Containers[0].Image)
@@ -178,7 +173,6 @@ func TestBuildpackNodeJobPresubmit(t *testing.T) {
 	assert.False(t, actualPresubmit.SkipReport)
 
 	assert.False(t, actualPresubmit.Optional)
-	assert.Equal(t, "github.com/kyma-project/test-infra", actualPresubmit.PathAlias)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoTestInfra, preset.GcrPush, preset.BuildPr)
 	assert.Equal(t, "^prow/images/buildpack-node/", actualPresubmit.RunIfChanged)
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "prow/images/buildpack-node/Dockerfile"))
@@ -203,7 +197,6 @@ func TestBuildpackNodeJobPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPost.Branches)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 
-	assert.Equal(t, "github.com/kyma-project/test-infra", actualPost.PathAlias)
 	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoTestInfra, preset.GcrPush, preset.BuildRelease)
 	assert.Equal(t, "^prow/images/buildpack-node-chromium/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualPost.Spec.Containers[0].Image)
@@ -229,7 +222,6 @@ func TestBuildpackNodeChromiumPresubmit(t *testing.T) {
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
 
-	assert.Equal(t, "github.com/kyma-project/test-infra", actualPresubmit.PathAlias)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoTestInfra, preset.GcrPush, preset.BuildPr)
 	assert.Equal(t, "^prow/images/buildpack-node-chromium/", actualPresubmit.RunIfChanged)
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "prow/images/buildpack-node-chromium/Dockerfile"))
@@ -254,7 +246,6 @@ func TestBuildpackNodeChromiumPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPost.Branches)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 
-	assert.Equal(t, "github.com/kyma-project/test-infra", actualPost.PathAlias)
 	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoTestInfra, preset.GcrPush, preset.BuildRelease)
 	assert.Equal(t, "^prow/images/buildpack-node/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualPost.Spec.Containers[0].Image)
@@ -280,7 +271,6 @@ func TestCleanerJobPresubmit(t *testing.T) {
 	assert.False(t, actualPresubmit.SkipReport)
 
 	assert.False(t, actualPresubmit.Optional)
-	assert.Equal(t, "github.com/kyma-project/test-infra", actualPresubmit.PathAlias)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoTestInfra, preset.GcrPush, preset.BuildPr)
 	assert.Equal(t, "^prow/images/cleaner/", actualPresubmit.RunIfChanged)
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "prow/images/cleaner/Dockerfile"))
@@ -305,7 +295,6 @@ func TestCleanerJobPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPost.Branches)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 
-	assert.Equal(t, "github.com/kyma-project/test-infra", actualPost.PathAlias)
 	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoTestInfra, preset.GcrPush, preset.BuildRelease)
 	assert.Equal(t, "^prow/images/cleaner/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualPost.Spec.Containers[0].Image)
@@ -331,7 +320,6 @@ func TestVulnerabilityScannerJobPresubmit(t *testing.T) {
 	assert.False(t, actualPresubmit.SkipReport)
 
 	assert.False(t, actualPresubmit.Optional)
-	assert.Equal(t, "github.com/kyma-project/test-infra", actualPresubmit.PathAlias)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoTestInfra, preset.GcrPush, preset.BuildPr)
 	assert.Equal(t, "^prow/images/vulnerability-scanner/", actualPresubmit.RunIfChanged)
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "prow/images/vulnerability-scanner/Dockerfile"))
@@ -356,7 +344,6 @@ func TestVulnerabilityScannerJobPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPost.Branches)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 
-	assert.Equal(t, "github.com/kyma-project/test-infra", actualPost.PathAlias)
 	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoTestInfra, preset.GcrPush, preset.BuildRelease)
 	assert.Equal(t, "^prow/images/vulnerability-scanner/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualPost.Spec.Containers[0].Image)
@@ -382,7 +369,6 @@ func TestKubectlJobPresubmit(t *testing.T) {
 	assert.False(t, actualPresubmit.SkipReport)
 
 	assert.False(t, actualPresubmit.Optional)
-	assert.Equal(t, "github.com/kyma-project/test-infra", actualPresubmit.PathAlias)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoTestInfra, preset.GcrPush, preset.BuildPr)
 	assert.Equal(t, "^prow/images/alpine-kubectl/", actualPresubmit.RunIfChanged)
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "prow/images/alpine-kubectl/Dockerfile"))
@@ -407,7 +393,6 @@ func TestKubectlJobPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPost.Branches)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 
-	assert.Equal(t, "github.com/kyma-project/test-infra", actualPost.PathAlias)
 	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoTestInfra, preset.GcrPush, preset.BuildRelease)
 	assert.Equal(t, "^prow/images/alpine-kubectl/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualPost.Spec.Containers[0].Image)
