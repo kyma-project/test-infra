@@ -48,8 +48,7 @@ presubmits: # runs on PRs
         preset-gc-project-env: "true"
         preset-sa-vm-kyma-integration: "true"
       always_run: true
-      optional: true
-      skip_report: true
+      skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/cli
       cluster: untrusted-workload
@@ -132,8 +131,7 @@ postsubmits: # runs on main
         preset-gc-project-env: "true"
         preset-sa-vm-kyma-integration: "true"
       always_run: true
-      optional: true
-      skip_report: true
+      skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/cli
       cluster: trusted-workload
