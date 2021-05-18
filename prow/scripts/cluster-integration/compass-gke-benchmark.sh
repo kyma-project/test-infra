@@ -273,7 +273,7 @@ function installKyma() {
   else
     COMPASS_VERSION="master-${COMMIT_ID}"
   fi
-  readonly COMPASS_ARTIFACTS="${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${COMPASS_VERSION}"
+  COMPASS_ARTIFACTS="${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${COMPASS_VERSION}"
   
   TMP_DIR="/tmp/compass-gke-integration"
 
@@ -294,7 +294,7 @@ function installCompassOld() {
   TMP_DIR="/tmp/compass-master-artifacts"
 
   readonly LATEST_VERSION=master-$(git rev-parse --short master)
-  readonly COMPASS_ARTIFACTS="${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${LATEST_VERSION}"
+  COMPASS_ARTIFACTS="${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${LATEST_VERSION}"
 
   gsutil cp "${COMPASS_ARTIFACTS}/compass-installer.yaml" ${TMP_DIR}/compass-installer.yaml
   gsutil cp "${COMPASS_ARTIFACTS}/is-compass-installed.sh" ${TMP_DIR}/is-compass-installed.sh
