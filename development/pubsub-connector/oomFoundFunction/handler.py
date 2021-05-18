@@ -46,7 +46,7 @@ def main(event, context):
 													"type": "section",
 													"text": {
 														"type": "mrkdwn",
-														"text": "OutOfMemory event found in <{}|{}> prowjob.".format(
+														"text": "@here, OutOfMemory event found in <{}|{}> prowjob.".format(
 															msg["url"], msg["job_name"])
 													}
 												}
