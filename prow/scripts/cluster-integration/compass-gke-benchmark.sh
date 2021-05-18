@@ -297,12 +297,10 @@ function installCompassOld() {
   COMPASS_ARTIFACTS="${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${LATEST_VERSION}"
 
   gsutil cp "${COMPASS_ARTIFACTS}/compass-installer.yaml" ${TMP_DIR}/compass-installer.yaml
-  gsutil cp "${COMPASS_ARTIFACTS}/is-compass-installed.sh" ${TMP_DIR}/is-compass-installed.sh
-  chmod +x ${TMP_DIR}/is-compass-installed.sh
   kubectl apply -f ${TMP_DIR}/compass-installer.yaml
 
   log::info "Installation triggered"
-  "${TMP_DIR}"/is-compass-installed.sh --timeout 30m
+  "${COMPASS_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 }
 
 function installCompassNew() {
