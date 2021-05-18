@@ -321,11 +321,6 @@ function installCompassNew() {
   CLEANUP_DOCKER_IMAGE="true"
   COMPASS_INSTALLER_IMAGE="${COMPASS_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-compass-image.sh
 
-  log::info "Apply Compass config"
-  kubectl create namespace "compass-installer"
-  applyCommonOverrides "compass-installer"
-  applyCompassOverrides
-
   echo "Manual concatenating yamls"
   "${COMPASS_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
   | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${COMPASS_INSTALLER_IMAGE};" \
