@@ -18,3 +18,4 @@ Install the Connector locally or on a cluster. For installation details, see the
 
 * [PubSub Connector installation](pubsubConnector/README.md)
 * [PubSub Gateway installation](pubSubGateway/README.md)
+* [OOM event found function installation](oomFoundFunction/README.md)
