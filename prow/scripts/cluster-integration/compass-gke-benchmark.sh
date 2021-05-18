@@ -365,7 +365,7 @@ installCompassOld
 readonly SUITE_NAME="testsuite-all"
 
 log::info "Execute benchmarks on the current master"
-CONCURRENCY=1 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l "\"benchmark\""
+CONCURRENCY=1 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l "benchmark=true"
 
 PODS=$(kubectl get cts $SUITE_NAME -o=go-template --template='{{range .status.results}}{{range .executions}}{{printf "%s\n" .id}}{{end}}{{end}}')
 for POD in $PODS; do
@@ -379,7 +379,7 @@ log::info "Install New Compass version"
 installCompassNew
 
 log::info "Execute benchmarks on the new release"
-CONCURRENCY=1 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l "\"benchmark\""
+CONCURRENCY=1 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l "benchmark=true"
 
 PODS=$(kubectl get cts $SUITE_NAME -o=go-template --template='{{range .status.results}}{{range .executions}}{{printf "%s\n" .id}}{{end}}{{end}}')
 for POD in $PODS; do
