@@ -29,6 +29,7 @@ require (
 	github.com/novln/docker-parser v1.0.0
 	github.com/onsi/gomega v1.10.3
 	github.com/pkg/errors v0.9.1
+	github.com/satori/go.uuid v1.2.0
 	github.com/shurcooL/githubv4 v0.0.0-20191102174205-af46314aec7b
 	github.com/sirupsen/logrus v1.7.0
 	github.com/smartystreets/goconvey v1.6.4
