@@ -110,6 +110,7 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 	if len(traceParts) > 0 && len(traceParts[0]) > 0 {
 		trace = fmt.Sprintf("projects/%s/traces/%s", projectID, traceParts[0])
 	}
+
 	functionCtx := context.Background()
 	// decode http messages body
 	var message PubSubMessage
@@ -153,6 +154,8 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
+
+	// got valid message
 	log.Println(LogEntry{
 		Message:   fmt.Sprintf("received message with id: %s", message.Message.MessageId),
 		Severity:  "INFO",
@@ -160,6 +163,7 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 		Labels:    map[string]string{"messageId": message.Message.MessageId},
 		Component: "kyma.prow.cloud-function.checkoomevent",
 	})
+
 	// decode base64 prow message
 	bdata, err := base64.StdEncoding.DecodeString(message.Message.Data)
 	if err != nil {
@@ -172,6 +176,8 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
+
+	// get message payload published by prow
 	var data ProwMessage
 	if err := json.Unmarshal(bdata, &data); err != nil {
 		log.Println(LogEntry{
@@ -193,6 +199,7 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
+
 	// check prowjob status to know if oom event search can start
 	if data.Status != "success" && data.Status != "failure" {
 		// prowjob didn't finish no data to search for oom
@@ -331,6 +338,7 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 					}
 					return
 				}
+				// log and Ack pubsub message
 				log.Println(LogEntry{
 					Severity:  "INFO",
 					Component: "kyma.prow.cloud-function.checkoomevent",
@@ -350,6 +358,8 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 				}
 				return
 			} else {
+				// oom event was not found
+				// log and Ack pubsub message
 				log.Println(LogEntry{
 					Severity:  "INFO",
 					Component: "kyma.prow.cloud-function.checkoomevent",
