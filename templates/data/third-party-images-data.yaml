@@ -41,7 +41,35 @@ templates:
                     - "disable_testgrid"
                   local:
                     - "default"
-
+              - jobConfig:
+                  name: "pre-main-tpi-etcd"
+                  run_if_changed: "^etcd/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/etcd"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+              - jobConfig:
+                  name: "post-main-tpi-etcd"
+                  run_if_changed: "^etcd/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/etcd"
+                    - "ci-main"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "default"
               - jobConfig:
                   name: "pre-main-tpi-docker-registry"
                   run_if_changed: "^docker-registry/"
