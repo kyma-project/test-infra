@@ -2,11 +2,11 @@
 
 ## Overview
 
-The PubSub Gateway is written in Golang. It pulls messages from PubSub, converts them into a CloudEvents compliant event and forwards it to the Kyma Event Service.
+The PubSub Gateway is written in Golang. It pulls messages from PubSub, converts them into a CloudEvents compliant events and forwards them to the Kyma Event Publisher Proxy.
 
 ## Prerequisites
 
-PubSub Gateway is meant to run in a Pod within the Kyma Runtime.
+PubSub Gateway is meant to run in a Pod within the Kyma Runtime. To get one, check installation instructions [Installation guides](https://kyma-project.io/docs/root/kyma#installation-installation) for details.
 
 ## Installation
 

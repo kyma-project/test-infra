@@ -1,6 +1,6 @@
 # Overview
 
-This chart lets you install the PubSub Connector on [Kyma](https://kyma-project.io/).
+This chart lets you install the PubSub Connector on [Kyma](https://kyma-project.io/). PubSub Connector is pulling messages from PubSub subscription through pubsubGateway. It translate messages to CloudEvents compliant events and publish them to Kyma Event Publisher Proxy. These events are consumed by Kyma serverless [*oomFoundFunction*](../oomFoundFunction). OomFound function will extracts data from event and send notification to slack channel. To do so, function is utilising Slack Connector Application APIs.
 
 ## Prerequisites
 
