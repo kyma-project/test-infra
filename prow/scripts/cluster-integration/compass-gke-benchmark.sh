@@ -275,7 +275,7 @@ function installKyma() {
   fi
   readonly COMPASS_ARTIFACTS="${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${COMPASS_VERSION}"
   
-  readonly TMP_DIR="/tmp/compass-gke-integration"
+  TMP_DIR="/tmp/compass-gke-integration"
 
   gsutil cp "${COMPASS_ARTIFACTS}/kyma-installer.yaml" ${TMP_DIR}/kyma-installer.yaml
   gsutil cp "${COMPASS_ARTIFACTS}/is-kyma-installed.sh" ${TMP_DIR}/is-kyma-installed.sh
