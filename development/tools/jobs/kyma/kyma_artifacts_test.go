@@ -17,7 +17,7 @@ func TestKymaArtifactsReleases(t *testing.T) {
 			actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"}), tester.GetReleaseJobName("kyma-artifacts", currentRelease), currentRelease.Branch())
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
-			assert.True(t, actualPresubmit.Decorate)
+
 			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease.Branch())
 			//tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, "preset-sa-kyma-artifacts", "preset-kyma-artifacts-bucket")

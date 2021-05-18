@@ -26,7 +26,7 @@ func TestVarkesJobPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"^master$", "^main$", "release"}, masterPresubmit.Branches)
 	assert.Equal(t, 10, masterPresubmit.MaxConcurrency)
 	assert.False(t, masterPresubmit.SkipReport)
-	assert.True(t, masterPresubmit.Decorate)
+
 	assert.True(t, masterPresubmit.AlwaysRun)
 	tester.AssertThatHasExtraRefTestInfra(t, masterPresubmit.JobBase.UtilityConfig, "main")
 	tester.AssertThatHasPresets(t, masterPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush)
@@ -51,7 +51,7 @@ func TestVarkesJobMasterPostsubmit(t *testing.T) {
 	assert.Equal(t, expName, masterPostsubmit.Name)
 	assert.Equal(t, []string{"^master$", "^main$"}, masterPostsubmit.Branches)
 	assert.Equal(t, 10, masterPostsubmit.MaxConcurrency)
-	assert.True(t, masterPostsubmit.Decorate)
+
 	tester.AssertThatHasExtraRefTestInfra(t, masterPostsubmit.JobBase.UtilityConfig, "main")
 	tester.AssertThatHasPresets(t, masterPostsubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush)
 	assert.Equal(t, tester.ImageNodeBuildpackLatest, masterPostsubmit.Spec.Containers[0].Image)
@@ -75,7 +75,7 @@ func TestVarkesJobReleasePostsubmit(t *testing.T) {
 	assert.Equal(t, expName, releasePostsubmit.Name)
 	assert.Equal(t, []string{"release"}, releasePostsubmit.Branches)
 	assert.Equal(t, 10, releasePostsubmit.MaxConcurrency)
-	assert.True(t, releasePostsubmit.Decorate)
+
 	tester.AssertThatHasExtraRefTestInfra(t, releasePostsubmit.JobBase.UtilityConfig, "main")
 	tester.AssertThatHasPresets(t, releasePostsubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush)
 	assert.Equal(t, tester.ImageNodeBuildpackLatest, releasePostsubmit.Spec.Containers[0].Image)

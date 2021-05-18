@@ -25,7 +25,7 @@ func TestHydroformJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
-	assert.True(t, actualPresubmit.Decorate)
+
 	assert.True(t, actualPresubmit.AlwaysRun)
 	assert.Empty(t, actualPresubmit.RunIfChanged)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "main")
@@ -53,7 +53,7 @@ func TestHydroformJobPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPost.Branches)
 
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
-	assert.True(t, actualPost.Decorate)
+
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "main")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled)
 	assert.Equal(t, tester.ImageGolangToolboxLatest, actualPost.Spec.Containers[0].Image)

@@ -66,7 +66,7 @@ func (s ComponentSuite) preMasterTest(jobConfig config.JobConfig) func(t *testin
 
 		assert.True(t, job.CouldRun("master"))
 		assert.False(t, job.SkipReport)
-		assert.True(t, job.Decorate)
+
 		assert.Equal(t, s.Optional, job.Optional, "Must be optional: %v", s.Optional)
 		assert.Equal(t, 10, job.MaxConcurrency)
 		AssertThatExecGolangBuildpack(t, job.JobBase, s.Image, s.workingDirectory())
@@ -90,7 +90,7 @@ func (s ComponentSuite) postMasterTest(jobConfig config.JobConfig) func(t *testi
 
 		assert.Equal(t, []string{"^master$", "^main$"}, job.Branches)
 		assert.Equal(t, 10, job.MaxConcurrency)
-		assert.True(t, job.Decorate)
+
 		if !s.isTestInfra() {
 			AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "main")
 		}
@@ -112,7 +112,7 @@ func (s ComponentSuite) preReleaseTest(jobConfig config.JobConfig) func(t *testi
 				require.NotNil(t, job)
 
 				assert.False(t, job.SkipReport)
-				assert.True(t, job.Decorate)
+
 				assert.Equal(t, 10, job.MaxConcurrency)
 				assert.Equal(t, s.Repository, job.PathAlias)
 				assert.False(t, job.AlwaysRun)
@@ -140,7 +140,7 @@ func (s ComponentSuite) postReleaseTest(jobConfig config.JobConfig) func(t *test
 				require.NotNil(t, job)
 
 				assert.Equal(t, 10, job.MaxConcurrency)
-				assert.True(t, job.Decorate)
+
 				assert.Equal(t, s.Repository, job.PathAlias)
 				if !s.isTestInfra() {
 					AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, currentRelease.Branch())

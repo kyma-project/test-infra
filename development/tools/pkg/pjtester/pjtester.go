@@ -2,6 +2,7 @@ package pjtester
 
 import (
 	"bytes"
+	"context"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -198,7 +199,8 @@ func gatherOptions(configPath string, ghOptions prowflagutil.GitHubOptions) opti
 // withGithubClientOptions will add default flags and values for github client.
 func (o options) withGithubClientOptions() options {
 	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
-	o.github.AddFlagsWithoutDefaultGitHubTokenPath(fs)
+	o.github.AddFlags(fs)
+	o.github.AllowAnonymous = true
 	_ = fs.Parse(os.Args[1:])
 	if err := o.github.Validate(false); err != nil {
 		logrus.WithError(err).Fatalf("github options validation failed")
@@ -459,7 +461,7 @@ func formatPjName(pullAuthor, pjName string) string {
 // newTestPJ is building a prowjob definition for test
 func newTestPJ(pjCfg pjCfg, opt options) prowapi.ProwJob {
 	o := getPjCfg(pjCfg, opt)
-	conf, err := config.Load(o.configPath, o.jobConfigPath)
+	conf, err := config.Load(o.configPath, o.jobConfigPath, nil)
 	if err != nil {
 		logrus.WithError(err).Fatal("Error loading prow config")
 	}
@@ -512,7 +514,7 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	}
 	for _, pjCfg := range testCfg.PjNames {
 		pj := newTestPJ(pjCfg, o)
-		result, err := pjsClient.ProwJobs(metav1.NamespaceDefault).Create(&pj)
+		result, err := pjsClient.ProwJobs(metav1.NamespaceDefault).Create(context.Background(), &pj, metav1.CreateOptions{})
 		if err != nil {
 			log.WithError(err).Fatalf("Failed schedule test of prowjob")
 		}

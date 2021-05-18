@@ -85,7 +85,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			// the common expectation
 			assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
 			assert.Equal(t, tc.expRunIfChangedRegex, actualJob.RunIfChanged)
-			assert.True(t, actualJob.Decorate)
+
 			assert.False(t, actualJob.SkipReport)
 			assert.Equal(t, 10, actualJob.MaxConcurrency)
 			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "main")
@@ -120,7 +120,7 @@ func TestKymaGKEUpgradeJobsPresubmit(t *testing.T) {
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualJob, true, "installation/file.yaml"))
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualJob, true, "tests/end-to-end/upgrade/chart/upgrade/Chart.yaml"))
 	assert.False(t, tester.IfPresubmitShouldRunAgainstChanges(*actualJob, true, "tests/end-to-end/upgrade/chart/upgrade/README.md"))
-	assert.True(t, actualJob.Decorate)
+
 	assert.False(t, actualJob.SkipReport)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "main")
@@ -185,7 +185,7 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 			assert.Equal(t, []string{"^master$", "^main$"}, actualJob.Branches)
 			assert.Equal(t, 10, actualJob.MaxConcurrency)
 			assert.Equal(t, "", actualJob.RunIfChanged)
-			assert.True(t, actualJob.Decorate)
+
 			assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
 			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "main")
 			tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
@@ -209,7 +209,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, disksCleanerPeriodic)
 	assert.Equal(t, expName, disksCleanerPeriodic.Name)
-	assert.True(t, disksCleanerPeriodic.Decorate)
+
 	assert.Equal(t, "30 * * * *", disksCleanerPeriodic.Cron)
 	tester.AssertThatHasPresets(t, disksCleanerPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
 	tester.AssertThatHasExtraRepoRefCustom(t, disksCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
@@ -222,7 +222,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	orphanedAZStorageAccountsCleaner := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, orphanedAZStorageAccountsCleaner)
 	assert.Equal(t, expName, orphanedAZStorageAccountsCleaner.Name)
-	assert.True(t, orphanedAZStorageAccountsCleaner.Decorate)
+
 	assert.Equal(t, "00 00 * * *", orphanedAZStorageAccountsCleaner.Cron)
 	tester.AssertThatHasPresets(t, orphanedAZStorageAccountsCleaner.JobBase, "preset-az-kyma-prow-credentials")
 	tester.AssertThatHasExtraRepoRefCustom(t, orphanedAZStorageAccountsCleaner.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
@@ -234,7 +234,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assetstoreGcpBucketCleaner := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, assetstoreGcpBucketCleaner)
 	assert.Equal(t, expName, assetstoreGcpBucketCleaner.Name)
-	assert.True(t, assetstoreGcpBucketCleaner.Decorate)
+
 	assert.Equal(t, "00 00 * * *", assetstoreGcpBucketCleaner.Cron)
 	tester.AssertThatHasPresets(t, assetstoreGcpBucketCleaner.JobBase, preset.GCProjectEnv, preset.SaProwJobResourceCleaner)
 	tester.AssertThatHasExtraRepoRefCustom(t, assetstoreGcpBucketCleaner.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
@@ -247,7 +247,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	clustersCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, clustersCleanerPeriodic)
 	assert.Equal(t, expName, clustersCleanerPeriodic.Name)
-	assert.True(t, clustersCleanerPeriodic.Decorate)
+
 	assert.Equal(t, "0 * * * *", clustersCleanerPeriodic.Cron)
 	tester.AssertThatHasPresets(t, clustersCleanerPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
 	tester.AssertThatHasExtraRepoRefCustom(t, clustersCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
@@ -260,7 +260,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	vmsCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, vmsCleanerPeriodic)
 	assert.Equal(t, expName, vmsCleanerPeriodic.Name)
-	assert.True(t, vmsCleanerPeriodic.Decorate)
+
 	assert.Equal(t, "15,45 * * * *", vmsCleanerPeriodic.Cron)
 	tester.AssertThatHasPresets(t, vmsCleanerPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
 	tester.AssertThatHasExtraRepoRefCustom(t, vmsCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
@@ -273,7 +273,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	loadbalancerCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, loadbalancerCleanerPeriodic)
 	assert.Equal(t, expName, loadbalancerCleanerPeriodic.Name)
-	assert.True(t, loadbalancerCleanerPeriodic.Decorate)
+
 	assert.Equal(t, "15 * * * *", loadbalancerCleanerPeriodic.Cron)
 	tester.AssertThatHasPresets(t, loadbalancerCleanerPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
 	tester.AssertThatHasExtraRepoRefCustom(t, loadbalancerCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
@@ -286,7 +286,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	firewallCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, firewallCleanerPeriodic)
 	assert.Equal(t, expName, firewallCleanerPeriodic.Name)
-	assert.True(t, firewallCleanerPeriodic.Decorate)
+
 	assert.Equal(t, "45 */4 * * 1-5", firewallCleanerPeriodic.Cron)
 	tester.AssertThatHasPresets(t, firewallCleanerPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
 	tester.AssertThatHasExtraRepoRefCustom(t, firewallCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
@@ -299,7 +299,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	dnsCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, dnsCleanerPeriodic)
 	assert.Equal(t, expName, dnsCleanerPeriodic.Name)
-	assert.True(t, dnsCleanerPeriodic.Decorate)
+
 	assert.Equal(t, "30 * * * *", dnsCleanerPeriodic.Cron)
 	tester.AssertThatHasPresets(t, dnsCleanerPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
 	tester.AssertThatHasExtraRepoRefCustom(t, dnsCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
@@ -312,7 +312,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	githubStatsPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, githubStatsPeriodic)
 	assert.Equal(t, expName, githubStatsPeriodic.Name)
-	assert.True(t, githubStatsPeriodic.Decorate)
+
 	assert.Equal(t, "0 6 * * *", githubStatsPeriodic.Cron)
 	assert.Equal(t, tester.ImageProwToolsCurrent, githubStatsPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/github-stats.sh"}, githubStatsPeriodic.Spec.Containers[0].Command)
@@ -322,7 +322,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	nightlyPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, nightlyPeriodic)
 	assert.Equal(t, expName, nightlyPeriodic.Name)
-	assert.True(t, nightlyPeriodic.Decorate)
+
 	assert.Equal(t, "0 4 * * 1-5", nightlyPeriodic.Cron)
 	tester.AssertThatHasPresets(t, nightlyPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration, "preset-stability-checker-slack-notifications", "preset-nightly-github-integration", preset.ClusterVersion, "preset-slack-alerts")
 	tester.AssertThatHasExtraRepoRefCustom(t, nightlyPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
@@ -343,7 +343,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	weeklyPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, weeklyPeriodic)
 	assert.Equal(t, expName, weeklyPeriodic.Name)
-	assert.True(t, weeklyPeriodic.Decorate)
+
 	assert.Equal(t, "0 6 * * 1", weeklyPeriodic.Cron)
 	tester.AssertThatHasPresets(t, weeklyPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration, "preset-stability-checker-slack-notifications", "preset-weekly-github-integration", preset.ClusterVersion, "preset-slack-alerts")
 	tester.AssertThatHasExtraRepoRefCustom(t, weeklyPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
@@ -364,7 +364,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	nightlyAksPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, nightlyAksPeriodic)
 	assert.Equal(t, expName, nightlyAksPeriodic.Name)
-	assert.True(t, nightlyAksPeriodic.Decorate)
+
 	assert.Equal(t, "0 4 * * 1-5", nightlyAksPeriodic.Cron)
 	tester.AssertThatHasPresets(t, nightlyAksPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration, preset.StabilityCheckerSlack, "preset-az-kyma-prow-credentials", "preset-docker-push-repository-gke-integration", "preset-nightly-aks-github-integration", preset.ClusterVersion, "preset-slack-alerts")
 	tester.AssertThatHasExtraRepoRefCustom(t, nightlyAksPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})

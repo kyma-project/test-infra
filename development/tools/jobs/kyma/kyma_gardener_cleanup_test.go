@@ -22,7 +22,7 @@ func TestKymaGardenerCleanupJobPeriodics(t *testing.T) {
 	job := tester.FindPeriodicJobByName(periodics, jobName)
 	require.NotNil(t, job)
 	assert.Equal(t, jobName, job.Name)
-	assert.True(t, job.Decorate)
+
 	assert.Equal(t, "0 * * * *", job.Cron)
 	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerGCPIntegration)
 	tester.AssertThatHasExtraRepoRefCustom(t, job.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})

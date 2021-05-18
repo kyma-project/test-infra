@@ -51,7 +51,7 @@ func TestHelmBrokerJobsPresubmit(t *testing.T) {
 			// then
 			assert.Equal(t, 10, actualJob.MaxConcurrency)
 			assert.False(t, actualJob.SkipReport)
-			assert.True(t, actualJob.Decorate)
+
 			assert.True(t, actualJob.AlwaysRun)
 			assert.Empty(t, actualJob.RunIfChanged)
 			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "main")
@@ -102,7 +102,7 @@ func TestHelmBrokerJobsPostsubmits(t *testing.T) {
 			assert.Equal(t, tests.expBranches, actualPost.Branches)
 
 			assert.Equal(t, 10, actualPost.MaxConcurrency)
-			assert.True(t, actualPost.Decorate)
+
 			tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "main")
 			tester.AssertThatHasPresets(t, actualPost.JobBase, tests.expPresets...)
 			assert.Equal(t, tests.expContainerImg, actualPost.Spec.Containers[0].Image)

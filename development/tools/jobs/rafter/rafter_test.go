@@ -72,7 +72,7 @@ func TestRafterJobsPresubmits(t *testing.T) {
 
 			assert.False(t, preJob.SkipReport)
 			assert.True(t, preJob.AlwaysRun)
-			assert.True(t, preJob.Decorate)
+
 			assert.False(t, preJob.Optional)
 			assert.Equal(t, rafterPathAlias, preJob.PathAlias)
 			assert.Equal(t, 10, preJob.MaxConcurrency)
@@ -148,7 +148,6 @@ func TestRafterJobsPostsubmits(t *testing.T) {
 			require.NotNil(t, actualJob)
 			assert.Equal(t, actualJob.branches, postJob.Branches)
 
-			assert.True(t, postJob.Decorate)
 			assert.Equal(t, rafterPathAlias, postJob.PathAlias)
 			assert.Equal(t, 10, postJob.MaxConcurrency)
 			tester.AssertThatHasExtraRefTestInfraWithSHA(t, postJob.JobBase.UtilityConfig, "main", testInfraExtraRefSHA)
