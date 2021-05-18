@@ -97,7 +97,7 @@
           "orderBySort": "1",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM sap-kyma-prow.github_issues.issues_backlog, UNNEST(labels) as labels_unpacked\n)\nSELECT \n    current_timestamp() as time,\n    label as metric,\n    COUNT(*)\nFROM issues_filtered\nWHERE label LIKE \"%incident\"\nAND number IN (SELECT number FROM issues_filtered  WHERE label = \"bug\")\nGROUP BY label",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM sap-kyma-prow.github_issues.issues_backlog, UNNEST(labels) as labels_unpacked\n    WHERE state = \"open\"\n)\nSELECT \n    current_timestamp() as time,\n    label as metric,\n    COUNT(*)\nFROM issues_filtered\nWHERE label LIKE \"%incident\"\nAND number IN (SELECT number FROM issues_filtered  WHERE label = \"bug\")\nGROUP BY label",
           "refId": "A",
           "select": [
             [
@@ -290,7 +290,7 @@
           "orderBySort": "1",
           "queryParams": "",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"bug\" AND repository.name IN (\"kyma\", \"control-plane\")\n)\nSELECT \n    repository,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nGROUP BY repository\nORDER BY repository ASC",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"bug\" AND repository.name IN (\"kyma\", \"control-plane\") AND state = \"open\"\n)\nSELECT \n    repository,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nGROUP BY repository\nORDER BY repository ASC",
           "refId": "A",
           "select": [
             [
@@ -321,7 +321,7 @@
           "orderByCol": "1",
           "orderBySort": "1",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues_backlog`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"bug\"\n)\nSELECT \n    \"SKR\" as repository,\n    COUNT(*) as `cnt`\nFROM issues_filtered",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues_backlog`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"bug\" AND state = \"open\"\n)\nSELECT \n    \"SKR\" as repository,\n    COUNT(*) as `cnt`\nFROM issues_filtered",
           "refId": "SKR",
           "select": [
             [
@@ -649,7 +649,7 @@
           "orderBySort": "1",
           "queryParams": "",
           "rawQuery": true,
-          "rawSql": "WITH bugs AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE repository.name = \"kyma\" AND labels_unpacked.name = \"bug\"\n)\nSELECT \n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    ) as one_week,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)\n    ) as one_month,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30* 3 DAY)\n    ) as three_months,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30*6 DAY)\n    ) as six_months,",
+          "rawSql": "WITH bugs AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE repository.name  IN (\"kyma\", \"control-plane\") AND labels_unpacked.name = \"bug\" AND state = \"open\"\n)\nSELECT \n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    ) as one_week,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)\n    ) as one_month,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30* 3 DAY)\n    ) as three_months,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30*6 DAY)\n    ) as six_months,",
           "refId": "A",
           "select": [
             [
@@ -680,7 +680,7 @@
           "orderByCol": "1",
           "orderBySort": "1",
           "rawQuery": true,
-          "rawSql": "WITH bugs AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.issues_backlog`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"bug\"\n)\nSELECT \n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    ) as one_week,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)\n    ) as one_month,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30* 3 DAY)\n    ) as three_months,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30*6 DAY)\n    ) as six_months,",
+          "rawSql": "WITH bugs AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.issues_backlog`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"bug\" AND state = \"open\"\n)\nSELECT \n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    ) as one_week,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)\n    ) as one_month,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30* 3 DAY)\n    ) as three_months,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30*6 DAY)\n    ) as six_months,",
           "refId": "SKR",
           "select": [
             [
@@ -801,7 +801,7 @@
           "orderBySort": "1",
           "queryParams": "",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"test-case\" \n)\nSELECT \n    repository,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nGROUP BY repository\nORDER BY repository",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"test-case\" AND state = \"open\"\n)\nSELECT \n    repository,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nGROUP BY repository\nORDER BY repository",
           "refId": "A",
           "select": [
             [
@@ -832,7 +832,7 @@
           "orderByCol": "1",
           "orderBySort": "1",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues_backlog`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"test-case\" \n)\nSELECT\n    \"SKR\" as repository,\n    COUNT(*) as `cnt`\nFROM issues_filtered",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues_backlog`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"test-case\" AND state = \"open\"\n)\nSELECT\n    \"SKR\" as repository,\n    COUNT(*) as `cnt`\nFROM issues_filtered",
           "refId": "SKR",
           "select": [
             [
@@ -960,7 +960,7 @@
           "orderBySort": "1",
           "queryParams": "",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE repository.name IN (\"kyma\", \"control-plane\")\n)\nSELECT \n    SUBSTR(label,6) as area,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nWHERE label LIKE \"area/%\"\nAND number IN (SELECT number FROM issues_filtered WHERE label = \"bug\")\nGROUP BY label\nORDER BY area\n",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE repository.name IN (\"kyma\", \"control-plane\") AND state = \"open\"\n)\nSELECT \n    SUBSTR(label,6) as area,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nWHERE label LIKE \"area/%\"\nAND number IN (SELECT number FROM issues_filtered WHERE label = \"bug\")\nGROUP BY label\nORDER BY area\n",
           "refId": "A",
           "select": [
             [
@@ -991,7 +991,7 @@
           "orderByCol": "1",
           "orderBySort": "1",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues_backlog`, UNNEST(labels) as labels_unpacked\n)\nSELECT \n    SUBSTR(label,6) as area,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nWHERE label LIKE \"area/%\"\nAND number IN (SELECT number FROM issues_filtered WHERE label = \"bug\")\nGROUP BY label\nORDER BY area\n",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues_backlog`, UNNEST(labels) as labels_unpacked\n    WHERE state = \"open\"\n)\nSELECT \n    SUBSTR(label,6) as area,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nWHERE label LIKE \"area/%\"\nAND number IN (SELECT number FROM issues_filtered WHERE label = \"bug\")\nGROUP BY label\nORDER BY area\n",
           "refId": "SKR",
           "select": [
             [
@@ -1130,7 +1130,7 @@
           "orderBySort": "1",
           "queryParams": "",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"priority/critical\" \n)\nSELECT\n    issues_all.repository,\n    critical_open,\n    COALESCE(critical_new, 0)\nFROM\n(\n    SELECT \n        repository,\n        COUNT(*) as `critical_open`\n    FROM issues_filtered\n    GROUP BY repository\n) AS issues_all LEFT JOIN (\n    SELECT \n        repository,\n        COUNT(*) as `critical_new`\n    FROM issues_filtered\n    WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    GROUP BY repository\n) AS issues_new ON issues_all.repository = issues_new.repository\n--GROUP BY repository\nORDER BY repository",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"priority/critical\" AND state = \"open\"\n)\nSELECT\n    issues_all.repository,\n    critical_open,\n    COALESCE(critical_new, 0)\nFROM\n(\n    SELECT \n        repository,\n        COUNT(*) as `critical_open`\n    FROM issues_filtered\n    GROUP BY repository\n) AS issues_all LEFT JOIN (\n    SELECT \n        repository,\n        COUNT(*) as `critical_new`\n    FROM issues_filtered\n    WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    GROUP BY repository\n) AS issues_new ON issues_all.repository = issues_new.repository\n--GROUP BY repository\nORDER BY repository",
           "refId": "A",
           "select": [
             [
@@ -1161,7 +1161,7 @@
           "orderByCol": "1",
           "orderBySort": "1",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.issues_backlog`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"priority/critical\" \n)\nSELECT\n    issues_all.repository,\n    critical_open,\n    COALESCE(critical_new, 0)\nFROM\n(\n    SELECT \n        \"SKR\" as repository,\n        COUNT(*) as `critical_open`\n    FROM issues_filtered\n    GROUP BY repository\n) AS issues_all LEFT JOIN (\n    SELECT \n        \"SKR\" as repository,\n        COUNT(*) as `critical_new`\n    FROM issues_filtered\n    WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    GROUP BY repository\n) AS issues_new ON issues_all.repository = issues_new.repository\n--GROUP BY repository\nORDER BY repository",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.issues_backlog`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"priority/critical\" AND state = \"open\"\n)\nSELECT\n    issues_all.repository,\n    critical_open,\n    COALESCE(critical_new, 0)\nFROM\n(\n    SELECT \n        \"SKR\" as repository,\n        COUNT(*) as `critical_open`\n    FROM issues_filtered\n    GROUP BY repository\n) AS issues_all LEFT JOIN (\n    SELECT \n        \"SKR\" as repository,\n        COUNT(*) as `critical_new`\n    FROM issues_filtered\n    WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    GROUP BY repository\n) AS issues_new ON issues_all.repository = issues_new.repository\n--GROUP BY repository\nORDER BY repository",
           "refId": "SKR",
           "select": [
             [
