@@ -27,10 +27,6 @@
           "color": {
             "mode": "thresholds"
           },
-          "custom": {
-            "align": "center",
-            "filterable": false
-          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -47,7 +43,26 @@
           },
           "unit": "short"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "internal-incident"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "",
+                    "url": "https://github.tools.sap/kyma/backlog/issues?q=is%3Aopen+is%3Aissue+label%3Ainternal-incident+label%3Abug"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 5,
@@ -59,12 +74,22 @@
       "interval": null,
       "maxDataPoints": null,
       "options": {
-        "showHeader": true
+        "displayMode": "lcd",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": false,
+        "text": {}
       },
       "pluginVersion": "7.5.3",
       "targets": [
         {
-          "format": "table",
+          "format": "time_series",
           "group": [],
           "location": "US",
           "metricColumn": "none",
@@ -72,7 +97,7 @@
           "orderBySort": "1",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM sap-kyma-prow.github_issues.issues_backlog, UNNEST(labels) as labels_unpacked\n)\nSELECT \n    label,\n    COUNT(*)\nFROM issues_filtered\nWHERE label LIKE \"%incident\"\nAND number IN (SELECT number FROM issues_filtered  WHERE label = \"bug\")\nGROUP BY label",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM sap-kyma-prow.github_issues.issues_backlog, UNNEST(labels) as labels_unpacked\n)\nSELECT \n    current_timestamp() as time,\n    label as metric,\n    COUNT(*)\nFROM issues_filtered\nWHERE label LIKE \"%incident\"\nAND number IN (SELECT number FROM issues_filtered  WHERE label = \"bug\")\nGROUP BY label",
           "refId": "A",
           "select": [
             [
@@ -103,7 +128,10 @@
           "id": "organize",
           "options": {
             "excludeByName": {},
-            "indexByName": {},
+            "indexByName": {
+              "f0_": 1,
+              "label": 0
+            },
             "renameByName": {
               "f0_": "Count",
               "label": "Label"
@@ -111,7 +139,7 @@
           }
         }
       ],
-      "type": "table"
+      "type": "bargauge"
     },
     {
       "datasource": "bigquery-prow",
@@ -338,83 +366,14 @@
       "type": "table"
     },
     {
+      "columns": [],
       "datasource": "bigquery-prow",
       "description": "I have no idea it this works properly, too few entries on friday",
       "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "center",
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "#EAB839",
-                "value": 60
-              },
-              {
-                "color": "green",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "success"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "%"
-              },
-              {
-                "id": "custom.displayMode",
-                "value": "color-text"
-              },
-              {
-                "id": "decimals",
-                "value": 1
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "cnt_success"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 98
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "cnt"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 52
-              }
-            ]
-          }
-        ]
+        "defaults": {},
+        "overrides": []
       },
+      "fontSize": "100%",
       "gridPos": {
         "h": 9,
         "w": 9,
@@ -424,9 +383,63 @@
       "id": 23,
       "options": {
         "showHeader": true,
-        "sortBy": []
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "success"
+          }
+        ]
       },
+      "pageSize": null,
       "pluginVersion": "7.5.3",
+      "showHeader": true,
+      "sort": {
+        "col": null,
+        "desc": false
+      },
+      "styles": [
+        {
+          "$$hashKey": "object:329",
+          "alias": "",
+          "align": "auto",
+          "colorMode": "value",
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 1,
+          "mappingType": 1,
+          "pattern": "success",
+          "thresholds": [
+            "60",
+            "80"
+          ],
+          "type": "number",
+          "unit": "percent"
+        },
+        {
+          "$$hashKey": "object:265",
+          "alias": "",
+          "align": "left",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "link": true,
+          "linkTargetBlank": true,
+          "linkUrl": "https://status.build.kyma-project.io/job-history/gs/kyma-prow-logs/logs/${__cell}",
+          "pattern": "job",
+          "sanitize": false,
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        }
+      ],
       "targets": [
         {
           "cacheDurationSeconds": 300,
@@ -443,7 +456,7 @@
           "orderBySort": "1",
           "queryParams": "",
           "rawQuery": true,
-          "rawSql": "WITH all_jobs AS\n(\n    SELECT\n        jsonPayload.job as job,\n        jsonPayload.to as state\n    FROM `sap-kyma-prow.prow_jobs.stderr`\n    WHERE\n        TIMESTAMP BETWEEN \"2021-05-13\" AND \"2021-05-21\"\n        AND jsonPayload.to IN ( \"success\", \"error\", \"failure\")\n)\nSELECT \n    job,\n    COUNTIF(state = \"success\") as `cnt_success`,\n    COUNT(*) as `cnt`,\n    COUNTIF(state = \"success\") / COUNT(*) * 100 as `success`\nFROM all_jobs \nGROUP BY job\nORDER BY job",
+          "rawSql": "WITH all_jobs AS\n(\n    SELECT\n        jsonPayload.job as job,\n        jsonPayload.to as state\n    FROM `sap-kyma-prow.prow_jobs.stderr`\n    WHERE\n        --TIMESTAMP BETWEEN \"2021-05-13\" AND \"2021-05-21\"\n        timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n        AND jsonPayload.type != \"presubmit\"\n        AND jsonPayload.to IN ( \"success\", \"error\", \"failure\")\n)\nSELECT \n    job,\n    COUNTIF(state = \"success\") as `cnt_success`,\n    COUNT(*) as `cnt`,\n    COUNTIF(state = \"success\") / COUNT(*) * 100 as `success`\nFROM all_jobs \nGROUP BY job\nORDER BY job",
           "refId": "A",
           "select": [
             [
@@ -470,8 +483,9 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "Job success rate (sligthly better data)",
+      "transform": "table",
       "transformations": [],
-      "type": "table"
+      "type": "table-old"
     },
     {
       "datasource": "bigquery-prow",
@@ -897,6 +911,16 @@
               {
                 "id": "custom.width",
                 "value": null
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "",
+                    "url": "https://github.com/kyma-project/kyma/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aarea/${__value.text}"
+                  }
+                ]
               }
             ]
           }
@@ -912,7 +936,12 @@
       "options": {
         "frameIndex": 1,
         "showHeader": true,
-        "sortBy": []
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "Count"
+          }
+        ]
       },
       "pluginVersion": "7.5.3",
       "targets": [
@@ -1045,149 +1074,6 @@
       "type": "table"
     },
     {
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": null,
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "time"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": null
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 9,
-        "x": 0,
-        "y": 14
-      },
-      "id": 25,
-      "options": {
-        "showHeader": true,
-        "sortBy": []
-      },
-      "pluginVersion": "7.5.3",
-      "targets": [
-        {
-          "queryType": "randomWalk",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Whitesource/protecode (mock data)",
-      "type": "table"
-    },
-    {
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 8,
-        "x": 9,
-        "y": 14
-      },
-      "id": 18,
-      "options": {
-        "content": "# ??\nexpected days to release ??",
-        "mode": "markdown"
-      },
-      "pluginVersion": "7.5.3",
-      "targets": [
-        {
-          "queryType": "randomWalk",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Days to release (mock data)",
-      "type": "text"
-    },
-    {
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": null,
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 8,
-        "x": 9,
-        "y": 17
-      },
-      "id": 27,
-      "options": {
-        "showHeader": true
-      },
-      "pluginVersion": "7.5.3",
-      "targets": [
-        {
-          "queryType": "randomWalk",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Provisioning success rate (mock data)",
-      "type": "table"
-    },
-    {
       "datasource": "bigquery-prow",
       "description": "New counts all opened in the last 7 days",
       "fieldConfig": {
@@ -1220,7 +1106,7 @@
         "h": 5,
         "w": 9,
         "x": 0,
-        "y": 22
+        "y": 14
       },
       "id": 11,
       "options": {
@@ -1352,7 +1238,57 @@
         "h": 5,
         "w": 8,
         "x": 9,
-        "y": 22
+        "y": 14
+      },
+      "id": 27,
+      "options": {
+        "showHeader": true
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Provisioning success rate (mock data)",
+      "type": "table"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 9,
+        "y": 19
       },
       "id": 28,
       "options": {
