@@ -5,6 +5,9 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-rel124-kyma-integration
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-rel124-kyma-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
@@ -33,6 +36,9 @@ presubmits: # runs on PRs
                 cpu: 50m
     - name: pre-rel124-kyma-gke-integration
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-rel124-kyma-gke-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
@@ -75,6 +81,9 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pre-rel124-kyma-gke-upgrade
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-rel124-kyma-gke-upgrade"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
@@ -130,6 +139,9 @@ postsubmits: # runs on main
         description: "Kyma integration job for release 1.24 ."
         testgrid-dashboards: "kyma_release-1.24"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-rel124-kyma-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
@@ -162,6 +174,9 @@ postsubmits: # runs on main
         testgrid-dashboards: "kyma_release-1.24"
         testgrid-days-of-results: "60"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-rel124-kyma-gke-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
@@ -208,6 +223,9 @@ postsubmits: # runs on main
         testgrid-dashboards: "kyma_release-1.24"
         testgrid-days-of-results: "60"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-rel124-kyma-gke-upgrade"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
@@ -261,6 +279,9 @@ postsubmits: # runs on main
         testgrid-dashboards: "kyma_release-1.24"
         testgrid-days-of-results: "60"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-rel124-kyma-release-candidate"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-cluster-version: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -299,6 +320,9 @@ postsubmits: # runs on main
         testgrid-dashboards: "kyma_release-1.24"
         testgrid-days-of-results: "90"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-rel124-kyma-gke-release-upgrade"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-cluster-version: "true"
         preset-dind-enabled: "true"

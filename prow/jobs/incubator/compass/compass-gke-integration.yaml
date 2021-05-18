@@ -58,7 +58,7 @@ presubmits: # runs on PRs
     - name: pre-rel123-compass-gke-integration
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel122-compass-gke-integration"
+        prow.k8s.io/pubsub.runID: "pre-rel123-compass-gke-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-cluster-version: "true"
@@ -108,7 +108,7 @@ presubmits: # runs on PRs
     - name: pre-rel122-compass-gke-integration
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel121-compass-gke-integration"
+        prow.k8s.io/pubsub.runID: "pre-rel122-compass-gke-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-cluster-version: "true"
@@ -158,7 +158,7 @@ presubmits: # runs on PRs
     - name: pre-rel121-compass-gke-integration
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel120-compass-gke-integration"
+        prow.k8s.io/pubsub.runID: "pre-rel121-compass-gke-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-cluster-version: "true"
