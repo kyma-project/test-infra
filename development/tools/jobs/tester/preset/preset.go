@@ -16,16 +16,18 @@ const (
 	DockerPushRepoIncubator Preset = "preset-docker-push-repository-incubator"
 	// DockerPushRepoControlPlane means Docker repository control-plane images
 	DockerPushRepoControlPlane Preset = "preset-docker-push-repository-control-plane"
+	// DockerPushRepoThirdPartyImages means Docker repository third-party-images
+	DockerPushRepoThirdPartyImages Preset = "preset-docker-push-repository-tpi"
 	// DockerPushRepoGlobal means Docker global repository for images
 	DockerPushRepoGlobal Preset = "preset-docker-push-repository-global"
 	// BuildPr means PR environment
 	BuildPr Preset = "preset-build-pr"
 	// BuildMaster means master environment
-	BuildMaster Preset = "preset-build-master"
+	BuildMaster Preset = "preset-build-main"
 	// BuildArtifactsMaster means building artifacts master environment
-	BuildArtifactsMaster Preset = "preset-build-artifacts-master"
+	BuildArtifactsMaster Preset = "preset-build-artifacts-main"
 	// BuildConsoleMaster means console master environment
-	BuildConsoleMaster Preset = "preset-build-console-master"
+	BuildConsoleMaster Preset = "preset-build-console-main"
 	// BuildConsolePr means console PR environment
 	BuildConsolePr Preset = "preset-build-console-pr"
 	// BuildRelease means release environment

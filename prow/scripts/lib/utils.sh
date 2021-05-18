@@ -92,7 +92,6 @@ function utils::generate_letsencrypt_cert() {
       --no-eff-email \
       --server https://acme-v02.api.letsencrypt.org/directory \
       --manual \
-      --manual-public-ip-logging-ok \
       --preferred-challenges dns \
       --manual-auth-hook /prow-tools/certbotauthenticator \
       --manual-cleanup-hook "/prow-tools/certbotauthenticator -D" \
@@ -210,8 +209,8 @@ function utils::compress_send_to_vm() {
   tar -czf "${TMP_DIRECTORY}/pack.tar.gz" -C "${LOCAL_PATH}" "."
   #shellcheck disable=SC2088
   utils::send_to_vm "${ZONE}" "${REMOTE_NAME}" "${TMP_DIRECTORY}/pack.tar.gz" "~/"
-  gcloud compute ssh --quiet --zone="${ZONE}" --command="mkdir ${REMOTE_PATH} && tar -xf ~/pack.tar.gz -C ${REMOTE_PATH}" --ssh-flag="-o ServerAliveInterval=30" "${REMOTE_NAME}"
-  
+  gcloud compute ssh --strict-host-key-checking=no --quiet --zone="${ZONE}" --command="mkdir ${REMOTE_PATH} && tar -xf ~/pack.tar.gz -C ${REMOTE_PATH}" --ssh-flag="-o ServerAliveInterval=30" "${REMOTE_NAME}"
+
   rm -rf "${TMP_DIRECTORY}"
 }
 
@@ -285,6 +284,81 @@ function utils::describe_nodes() {
       kubectl top nodes
       kubectl top pods --all-namespaces
     } > "${ARTIFACTS}/describe_nodes.txt"
+    grep "System OOM encountered" "${ARTIFACTS}/describe_nodes.txt"
+    last=$?
+    if [[ $last -eq 0 ]]; then
+      log::banner "OOM event found"
+    fi
+}
 
-  grep -i "System OOM encountered" "${ARTIFACTS}/describe_nodes.txt"
+
+function utils::oom_get_output() {
+  if [ ! -e "${ARTIFACTS}/describe_nodes.txt" ]; then
+    utils::describe_nodes
+  fi
+  log::info "Download OOM events details"
+  pods=$(kubectl get pod -l "name=oom-debug" -o=jsonpath='{.items[*].metadata.name}')
+  for pod in $pods; do
+    kubectl logs "$pod" -c oom-debug > "${ARTIFACTS}/$pod.txt"
+  done
+  debugFiles=$(ls -1 "${ARTIFACTS}"/oom-debug-*.txt)
+  for debugFile in $debugFiles; do
+    grep "OOM event received" "$debugFile" > /dev/null
+    last=$?
+    if [[ $last -eq 0 ]]; then
+      log::info "Print OOM events details"
+      cat "$debugFile"
+    else
+      rm "$debugFile"
+    fi
+  done
+}
+
+function utils::debug_oom() {
+  # run oom debug pod
+  kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/debug-container.yaml"
+}
+
+# utils::kubeaudit_create_report downlaods kubeaudit if necessary and checks for privileged containers
+# Arguments
+# $1 - Name of the output log file
+function utils::kubeaudit_create_report() {
+   if [ -z "$1" ]; then
+    echo "Kubeuadit file path is empty. Exiting..."
+    exit 1
+  fi
+  local kubeaudit_file=$1
+
+  log::info "Gather Kubeaudit logs"
+  if ! [[ -x "$(command -v ./kubeaudit)" ]]; then
+    curl -sL https://github.com/Shopify/kubeaudit/releases/download/v0.11.8/kubeaudit_0.11.8_linux_amd64.tar.gz | tar -xzO kubeaudit > ./kubeaudit
+    chmod +x ./kubeaudit
+  fi
+  # kubeaudit returns non-zero exit code when it finds issues
+  # In the context of this job we just want to grab the logs
+  # It should not break the execution of this script
+  ./kubeaudit privileged privesc -p json  > "$kubeaudit_file" || true
+}
+
+# utils::kubeaudit_check_report analyzes kubeaudit.log file and returns list of non-compliant resources in kyma-system namespace
+# Arguments
+# $1 - Name of the input log file
+# S2 - optional, name of the resource namespace. Defaults to "kyma-system"
+function utils::kubeaudit_check_report() {
+  if [ -z "$1" ]; then
+    echo "Kubeuadit file path is empty. Exiting..."
+    exit 1
+  fi
+  local kubeaudit_file=$1
+
+  incompliant_resources=$(jq -c 'select( .ResourceNamespace == "kyma-system" )' < "$kubeaudit_file")
+  compliant=$(echo "$incompliant_resources" | jq -r -s 'if length == 0 then "true" else "false" end')
+
+  if [[ "$compliant" == "true" ]]; then
+    log::info "All resources are compliant"
+  else
+    log::error "Not all resources are compliant:"
+    echo "$incompliant_resources"
+    exit 1
+  fi
 }

@@ -16,7 +16,7 @@ func TestCompassGKEIntegrationPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	// when
-	actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-incubator/compass"}), "pre-master-compass-gke-integration", "master")
+	actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-incubator/compass"}), "pre-main-compass-gke-integration", "master")
 	require.NotNil(t, actualJob)
 
 	// then
@@ -41,7 +41,7 @@ func TestCompassGKEIntegrationPresubmit(t *testing.T) {
 		"preset-kyma-development-artifacts-bucket",
 		preset.ClusterVersion,
 	)
-	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "main")
 	require.Len(t, actualJob.Spec.Containers, 1)
 	compassCont := actualJob.Spec.Containers[0]
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, compassCont.Image)
@@ -100,7 +100,7 @@ func TestCompassGKEIntegrationPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	// when
-	actualJob := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-incubator/compass"}), "post-master-compass-gke-integration", "master")
+	actualJob := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-incubator/compass"}), "post-main-compass-gke-integration", "master")
 	require.NotNil(t, actualJob)
 
 	// then
@@ -123,7 +123,7 @@ func TestCompassGKEIntegrationPostsubmit(t *testing.T) {
 		"preset-kyma-development-artifacts-bucket",
 		preset.ClusterVersion,
 	)
-	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "main")
 	require.Len(t, actualJob.Spec.Containers, 1)
 	compassCont := actualJob.Spec.Containers[0]
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, compassCont.Image)

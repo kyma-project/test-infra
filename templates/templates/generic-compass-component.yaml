@@ -66,25 +66,12 @@ presubmits: # runs on PRs
       {{- if $isNotTestInfra }}
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
       branches:
         - ^master$
         - ^main$
         - ^hotfix-.*$
     {{ end -}}
-    {{ end -}}
-    {{- range $releases }}
-    - name: pre-rel{{ . | replace "." "" }}-{{ $repositoryName }}-{{ $.Values.path | replace "/" "-" }}
-      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
-      optional: {{ $.Values.optional | default false }}
-      <<: *job_template
-      {{- if $isNotTestInfra }}
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-{{ . }}
-      {{- end }}
-      branches:
-        - release-{{ . }}
     {{ end }}
 
 postsubmits:
@@ -103,28 +90,9 @@ postsubmits:
       {{- if $isNotTestInfra }}
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
       {{- end }}
       branches:
       - ^master$
       - ^main$
       {{ end }}
-    {{- range $releases }}
-    - name: post-rel{{ . | replace "." "" }}-{{ $repositoryName }}-{{ $.Values.path | replace "/" "-" }}
-      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
-      annotations:
-        testgrid-create-test-group: "false"
-      {{- if or $.Values.optional $.Values.skipSlackReport }}
-      reporter_config:
-        slack:
-          channel: 'kyma-prow-dev-null'
-      {{- end }}
-      <<: *job_template
-      {{- if $isNotTestInfra }}
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-{{ . }}
-      {{- end }}
-      branches:
-        - release-{{ . }}
-    {{ end }}

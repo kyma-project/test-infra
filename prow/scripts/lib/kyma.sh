@@ -23,6 +23,19 @@ function kyma::install {
     kyma::is_installed "${1}" "${5}"
 }
 
+# kyma::alpha_deploy_kyma starts Kyma deployment using alpha feature
+function kyma::alpha_deploy_kyma() {
+  log::info "Deploying Kyma"
+
+  if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
+    kyma alpha deploy --ci --profile evaluation --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
+  elif [[ "$EXECUTION_PROFILE" == "production" ]]; then
+    kyma alpha deploy --ci --profile production --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
+  else
+    kyma alpha deploy --ci --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
+  fi
+}
+
 # kyma::is_installed waits for Kyma installation finish
 #
 # Arguments:

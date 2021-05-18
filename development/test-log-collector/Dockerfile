@@ -16,7 +16,7 @@ COPY ./go.sum .
 RUN go mod download
 
 #
-# copy files whitelisted in .dockerignore
+# copy files allowed in .dockerignore
 #
 COPY . ${BASE_APP_DIR}/
 

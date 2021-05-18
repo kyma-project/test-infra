@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# vim: noai:ts=4:sw=4
 
 #Azure:
 #Expected vars (additional to common vars):
@@ -34,19 +35,19 @@ gardener::cleanup() {
     log::info "Cleanup"
     set +e
 
+    # describe nodes to file in artifacts directory
     utils::describe_nodes
 
-    # copy oom debug pod output to artifacts directory
-    kubectl cp default/oom-debug:/var/oom_debug "${ARTIFACTS}/oom_debug.txt"
+
+    if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
+      # copy output from debug container to artifacts directory
+      utils::oom_get_output
+    fi
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         if  [ -z "${CLEANUP_ONLY_SUCCEEDED}" ] || [[ -n "${CLEANUP_ONLY_SUCCEEDED}" && ${EXIT_STATUS} -eq 0 ]]; then
             log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
             utils::deprovision_gardener_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
-
-            log::info "Deleting Azure EventHubs Namespace: \"${EVENTHUB_NAMESPACE_NAME}\""
-            # Delete the Azure Event Hubs namespace which was created
-            az eventhubs namespace delete -n "${EVENTHUB_NAMESPACE_NAME}" -g "${RS_GROUP}"
         fi
     fi
 
@@ -67,10 +68,7 @@ gardener::init() {
         GARDENER_KYMA_PROW_KUBECONFIG
         GARDENER_KYMA_PROW_PROJECT_NAME
         GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
-        RS_GROUP
         REGION
-        AZURE_SUBSCRIPTION_ID
-        AZURE_CREDENTIALS_FILE
         CLOUDSDK_CORE_PROJECT
         KYMA_SOURCE
     )
@@ -81,15 +79,6 @@ gardener::init() {
 
     # we need to start the docker daemon
     docker::start
-
-    EVENTHUB_NAMESPACE_NAME=""
-    # Local variables
-    if [[ -n "${PULL_NUMBER}" ]]; then  ### Creating name of the eventhub namespaces for pre-submit jobs
-        EVENTHUB_NAMESPACE_NAME="pr-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}"
-    else
-        EVENTHUB_NAMESPACE_NAME="kyma-gardener-azure-${RANDOM_NAME_SUFFIX}"
-    fi
-    export EVENTHUB_NAMESPACE_NAME
 }
 
 gardener::set_machine_type() {
@@ -103,12 +92,7 @@ gardener::set_machine_type() {
 }
 
 gardener::generate_overrides() {
-    log::info "Generate Azure Event Hubs overrides"
-
-    EVENTHUB_SECRET_OVERRIDE_FILE=$(mktemp)
-    export EVENTHUB_SECRET_OVERRIDE_FILE
-
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
+return 
 }
 
 gardener::provision_cluster() {
@@ -135,6 +119,11 @@ gardener::provision_cluster() {
             --verbose
     fi
     set +x
+
+    if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
+      # run oom debug pod
+      utils::debug_oom
+    fi
 }
 
 gardener::install_kyma() {
@@ -145,16 +134,11 @@ gardener::install_kyma() {
         return 1
     fi
 
-    INSTALLATION_RESOURCES_DIR=${KYMA_SOURCES_DIR}/installation/resources
-
     set -x
     if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
         kyma install \
             --ci \
             --source "${KYMA_SOURCE}" \
-            -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
-            -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
-            -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
             -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
             --timeout 60m \
             --profile evaluation \
@@ -163,9 +147,6 @@ gardener::install_kyma() {
         kyma install \
             --ci \
             --source "${KYMA_SOURCE}" \
-            -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
-            -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
-            -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
             -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
             --timeout 60m \
             --profile production \
@@ -174,9 +155,6 @@ gardener::install_kyma() {
         kyma install \
             --ci \
             --source "${KYMA_SOURCE}" \
-            -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
-            -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
-            -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
             -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
             --timeout 90m \
             --verbose
@@ -317,6 +295,26 @@ gardener::test_fast_integration_kyma() {
     log::success "Tests completed"
 }
 
+gardener::pre_upgrade_test_fast_integration_kyma() {
+    log::info "Running pre-upgrade Kyma Fast Integration tests"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    make ci-pre-upgrade
+    popd
+
+    log::success "Tests completed"
+}
+
+gardener::post_upgrade_test_fast_integration_kyma() {
+    log::info "Running post-upgrade Kyma Fast Integration tests"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    make ci-post-upgrade
+    popd
+
+    log::success "Tests completed"
+}
+
 gardener::test_kyma() {
     log::info "Running Kyma tests"
 
@@ -344,3 +342,4 @@ gardener::test_kyma() {
     set -e
     log::success "Tests completed"
 }
+

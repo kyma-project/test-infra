@@ -49,6 +49,7 @@ See the list of available flags:
 | **--strategy**            |    No    | The cluster filter strategy. Defaults to `default`, can be switched to `time`.
 | **--ageInHours**          |    No    | The integer value for the number of hours. It only matches clusters older than `now()-ageInHours`. It defaults to `3`. [Only honored in `default` strategy]
 | **--clusterNameRegexp**   |    No    | The string value with a valid Golang regexp. It is used to match clusters by their name. It defaults to `^gkeint[-](pr|commit)[-].*`. [Only honored in `default` strategy]
+| **--excluded-clusters**   |    No    | The list of clusters that cannot be removed by the cluster collector.
 
 ### Environment variables
 

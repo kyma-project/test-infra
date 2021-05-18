@@ -1,6 +1,6 @@
 # Golang buildpack with kubebuilder
 
-FROM eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20210125-6234473e
+FROM eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20210402-70b4b74f
 
 # Commit details
 
@@ -40,6 +40,6 @@ ENV PATH /home/prow/go/bin:$PATH
 
 # Prow Tools
 
-COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20201113-72ed0661 /prow-tools /prow-tools
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20210401-294e46e5 /prow-tools /prow-tools
 # for better access to prow-tools
 ENV PATH=$PATH:/prow-tools

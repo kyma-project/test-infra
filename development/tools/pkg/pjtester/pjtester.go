@@ -35,9 +35,9 @@ var (
 
 // Default values for kyma-project/test-infra
 const (
-	defaultPjPath       = "test-infra/prow/jobs/"
-	defaultConfigPath   = "test-infra/prow/config.yaml"
-	defaultMasterBranch = "master"
+	defaultPjPath     = "test-infra/prow/jobs/"
+	defaultConfigPath = "test-infra/prow/config.yaml"
+	defaultMainBranch = "main"
 )
 
 // pjCfg holds prowjob to test name and path to it's definition.
@@ -341,13 +341,18 @@ func presubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, e
 	if pjs.Refs.Org != opt.org || pjs.Refs.Repo != opt.repo {
 		//Check if PR number for prowjob specification refs was provided in pjtester.yaml.
 		if !opt.matchRefPR(pjs.Refs) {
-			// If PR number not provided set BaseRef to master
-			pjs.Refs.BaseRef = defaultMasterBranch
+			// If PR number not provided set BaseRef to main
+			pjs.Refs.BaseRef = defaultMainBranch
 			// get latest PR number for BaseRef branch and use it to set extra refs
 			jobSpec := &downwardapi.JobSpec{Refs: pjs.Refs}
 			branchPrAsString, err := prtagbuilder.BuildPrTag(jobSpec, true, true, opt.prFinder)
 			if err != nil {
-				return pjs, fmt.Errorf("could not get pr number for branch head, got error: %w", err)
+				fmt.Printf("level=info msg=failed get pr number for main branch head, using master\n")
+				jobSpec.Refs.BaseRef = "master"
+				branchPrAsString, err = prtagbuilder.BuildPrTag(jobSpec, true, true, opt.prFinder)
+				if err != nil {
+					return pjs, fmt.Errorf("could not get pr number for branch head, got error: %w", err)
+				}
 			}
 			branchPR, err := strconv.Atoi(branchPrAsString)
 			if err != nil {
@@ -391,8 +396,14 @@ func postsubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, 
 		//Check if PR number for prowjob specification refs was provided in pjtester.yaml.
 		matched := opt.matchRefPR(pjs.Refs)
 		if !matched {
-			// If PR number not provided set BaseRef to master
-			pjs.Refs.BaseRef = defaultMasterBranch
+			// If PR number not provided set BaseRef to main
+			pjs.Refs.BaseRef = defaultMainBranch
+			fakeJobSpec := &downwardapi.JobSpec{Refs: pjs.Refs}
+			_, err := prtagbuilder.BuildPrTag(fakeJobSpec, true, true, opt.prFinder)
+			if err != nil {
+				fmt.Printf("level=info msg=failed get pr number for main branch head, using master\n")
+				pjs.Refs.BaseRef = "master"
+			}
 		}
 		// Set PR refs for prowjob ExtraRefs if PR number provided in pjtester.yaml.
 		for index, ref := range pjs.ExtraRefs {
@@ -465,7 +476,7 @@ func newTestPJ(pjCfg pjCfg, opt options) prowapi.ProwJob {
 	if pjCfg.Report {
 		pj.Spec.Report = true
 	} else {
-		pj.Spec.Report = false
+		pj.Spec.ReporterConfig = &prowapi.ReporterConfig{Slack: &prowapi.SlackReporterConfig{Channel: "kyma-prow-dev-null"}}
 	}
 	return pj
 }

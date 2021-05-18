@@ -36,10 +36,6 @@ export UPGRADE_TEST_RELEASE_NAME="${UPGRADE_TEST_NAMESPACE}"
 export UPGRADE_TEST_PATH="${KYMA_SOURCES_DIR}/tests/end-to-end/upgrade/chart/upgrade"
 export UPGRADE_TEST_RESOURCE_LABEL="kyma-project.io/upgrade-e2e-test"
 export TEST_RESOURCE_LABEL_VALUE_PREPARE="prepareData"
-export EXTERNAL_SOLUTION_TEST_PATH="${KYMA_SOURCES_DIR}/tests/end-to-end/external-solution-integration/chart/external-solution"
-export EXTERNAL_SOLUTION_TEST_NAMESPACE="integration-test"
-export EXTERNAL_SOLUTION_TEST_RELEASE_NAME="${EXTERNAL_SOLUTION_TEST_NAMESPACE}"
-export EXTERNAL_SOLUTION_TEST_RESOURCE_LABEL="kyma-project.io/external-solution-e2e-test"
 export TEST_CONTAINER_NAME="tests"
 export KYMA_UPDATE_TIMEOUT="90m"
 export INSTALLATION_OVERRIDE_STACKDRIVER="installer-config-logging-stackdiver.yaml"
@@ -85,6 +81,11 @@ cleanup() {
     EXIT_STATUS=$?
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
+
+    if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
+      # copy output from debug container to artifacts directory
+      utils::oom_get_output
+    fi
 
     # collect logs from failed tests before deprovisioning
     kyma::run_test_log_collector "kyma-upgrade-gardener-azure"
@@ -134,6 +135,12 @@ function provisionCluster() {
             --scaler-max 4 --scaler-min 3 \
             --kube-version="${GARDENER_CLUSTER_VERSION}"
     )
+
+    # Schedule pod with oom finder.
+    if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
+      # run oom debug pod
+      utils::debug_oom
+    fi
 }
 
 function getLastReleaseCandidateVersion() {
@@ -265,9 +272,6 @@ function installTestChartOrFail() {
 createTestResources() {
     # install upgrade test
     installTestChartOrFail "${UPGRADE_TEST_PATH}" "${UPGRADE_TEST_RELEASE_NAME}" "${UPGRADE_TEST_NAMESPACE}"
-
-    # install external-solution test
-    installTestChartOrFail "${EXTERNAL_SOLUTION_TEST_PATH}" "${EXTERNAL_SOLUTION_TEST_RELEASE_NAME}" "${EXTERNAL_SOLUTION_TEST_NAMESPACE}"
 }
 
 function upgradeKyma() {

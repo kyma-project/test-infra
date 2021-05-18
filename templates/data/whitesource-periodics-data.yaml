@@ -31,6 +31,7 @@ templates:
                   name: "control-plane"
                   language: "golang-mod"
                   project: "kyma-project"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -43,6 +44,7 @@ templates:
                   name: "control-plane"
                   language: "golang"
                   project: "kyma-project"
+                  base_ref: "main"
                   custom_projectname: "control-plane-dep"
                 inheritedConfigs:
                   global:
@@ -56,6 +58,7 @@ templates:
                   name: "kyma"
                   language: "golang"
                   project: "kyma-project"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -69,6 +72,7 @@ templates:
                   language: "golang-mod"
                   project: "kyma-project"
                   custom_projectname: "kyma-mod"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -106,6 +110,7 @@ templates:
                   name: "cli"
                   language: "golang-mod"
                   project: "kyma-project"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -155,6 +160,7 @@ templates:
                   name: "api-gateway"
                   language: "golang-mod"
                   project: "kyma-incubator"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -179,7 +185,8 @@ templates:
               - jobConfig:
                   name: "hydroform"
                   language: "golang-mod"
-                  project: "kyma-incubator"
+                  project: "kyma-project"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -216,6 +223,7 @@ templates:
                   name: "website"
                   language: "javascript"
                   project: "kyma-project"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -243,6 +251,7 @@ templates:
                   project: "kyma-project"
                   custom_projectname: "release-kyma"
                   whitesource_release: "true"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -257,6 +266,7 @@ templates:
                   project: "kyma-project"
                   custom_projectname: "release-kyma-mod"
                   whitesource_release: "true"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -271,6 +281,7 @@ templates:
                   project: "kyma-project"
                   custom_projectname: "release-cli"
                   whitesource_release: "true"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

@@ -17,7 +17,7 @@ job_template: &job_template
   run_if_changed: "^components/schema-migrator/|^scripts/"
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210407-70afe459
         securityContext:
           privileged: true
         command:
@@ -37,10 +37,30 @@ presubmits: # runs on PRs
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
       branches:
         - ^master$
         - ^main$
+    
+    - name: pre-rel122-control-plane-components-schema-migrator
+      cluster: untrusted-workload
+      optional: false
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.22
+      branches:
+        - release-1.22
+    
+    - name: pre-rel121-control-plane-components-schema-migrator
+      cluster: untrusted-workload
+      optional: false
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.21
+      branches:
+        - release-1.21
     
     - name: pre-rel120-control-plane-components-schema-migrator
       cluster: untrusted-workload
@@ -52,26 +72,6 @@ presubmits: # runs on PRs
       branches:
         - release-1.20
     
-    - name: pre-rel119-control-plane-components-schema-migrator
-      cluster: untrusted-workload
-      optional: false
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.19
-      branches:
-        - release-1.19
-    
-    - name: pre-rel118-control-plane-components-schema-migrator
-      cluster: untrusted-workload
-      optional: false
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.18
-      branches:
-        - release-1.18
-    
 
 postsubmits:
   kyma-project/control-plane:
@@ -82,11 +82,33 @@ postsubmits:
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
       branches:
       - ^master$
       - ^main$
       
+    - name: post-rel122-control-plane-components-schema-migrator
+      cluster: trusted-workload
+      annotations:
+        testgrid-create-test-group: "false"
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.22
+      branches:
+        - release-1.22
+    
+    - name: post-rel121-control-plane-components-schema-migrator
+      cluster: trusted-workload
+      annotations:
+        testgrid-create-test-group: "false"
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.21
+      branches:
+        - release-1.21
+    
     - name: post-rel120-control-plane-components-schema-migrator
       cluster: trusted-workload
       annotations:
@@ -97,26 +119,4 @@ postsubmits:
           base_ref: release-1.20
       branches:
         - release-1.20
-    
-    - name: post-rel119-control-plane-components-schema-migrator
-      cluster: trusted-workload
-      annotations:
-        testgrid-create-test-group: "false"
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.19
-      branches:
-        - release-1.19
-    
-    - name: post-rel118-control-plane-components-schema-migrator
-      cluster: trusted-workload
-      annotations:
-        testgrid-create-test-group: "false"
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.18
-      branches:
-        - release-1.18
     

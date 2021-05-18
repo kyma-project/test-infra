@@ -48,8 +48,8 @@ func (s ComponentSuite) Run(t *testing.T) {
 	}
 
 	if !s.Deprecated {
-		t.Run("pre-master", s.preMasterTest(jobConfig))
-		t.Run("post-master", s.postMasterTest(jobConfig))
+		t.Run("pre-main", s.preMasterTest(jobConfig))
+		t.Run("post-main", s.postMasterTest(jobConfig))
 	}
 	t.Run("pre-release", s.preReleaseTest(jobConfig))
 	t.Run("post-release", s.postReleaseTest(jobConfig))
@@ -59,7 +59,7 @@ func (s ComponentSuite) preMasterTest(jobConfig config.JobConfig) func(t *testin
 	return func(t *testing.T) {
 		job := FindPresubmitJobByNameAndBranch(
 			jobConfig.AllStaticPresubmits([]string{s.repositorySectionKey()}),
-			s.jobName("pre-master"),
+			s.jobName("pre-main"),
 			"master",
 		)
 		require.NotNil(t, job)
@@ -72,7 +72,7 @@ func (s ComponentSuite) preMasterTest(jobConfig config.JobConfig) func(t *testin
 		AssertThatExecGolangBuildpack(t, job.JobBase, s.Image, s.workingDirectory())
 		AssertThatSpecifiesResourceRequests(t, job.JobBase)
 		if !s.isTestInfra() {
-			AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "master")
+			AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "main")
 		}
 		AssertThatHasPresets(t, job.JobBase, preset.DindEnabled, s.DockerRepositoryPreset, preset.GcrPush, preset.BuildPr)
 		job.RunsAgainstChanges(s.FilesTriggeringJob)
@@ -83,16 +83,16 @@ func (s ComponentSuite) postMasterTest(jobConfig config.JobConfig) func(t *testi
 	return func(t *testing.T) {
 		job := FindPostsubmitJobByNameAndBranch(
 			jobConfig.AllStaticPostsubmits([]string{s.repositorySectionKey()}),
-			s.jobName("post-master"),
+			s.jobName("post-main"),
 			"master",
 		)
 		require.NotNil(t, job)
 
-		assert.Equal(t, []string{"^master$"}, job.Branches)
+		assert.Equal(t, []string{"^master$", "^main$"}, job.Branches)
 		assert.Equal(t, 10, job.MaxConcurrency)
 		assert.True(t, job.Decorate)
 		if !s.isTestInfra() {
-			AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "master")
+			AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "main")
 		}
 		AssertThatHasPresets(t, job.JobBase, preset.DindEnabled, s.DockerRepositoryPreset, preset.GcrPush, s.BuildPresetMaster)
 		job.RunsAgainstChanges(s.FilesTriggeringJob)

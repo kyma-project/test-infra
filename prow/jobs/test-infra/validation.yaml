@@ -4,6 +4,10 @@
 presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-test-infra-validate-scripts
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-validate-scripts"
+        prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^(development/.*.sh$|prow/.*.sh$)'
       skip_report: false
       decorate: true
@@ -19,6 +23,10 @@ presubmits: # runs on PRs
                 memory: 1.5Gi
                 cpu: 0.8
     - name: pre-test-infra-validate-configs
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-validate-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^prow/((plugins|config).yaml|jobs/)'
       skip_report: false
       decorate: true
@@ -26,19 +34,22 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:current"
+          - image: "gcr.io/k8s-prow/checkconfig:v20210407-51f95c2d52"
             command:
-              - "prow/scripts/validate-config.sh"
+              - "/app/prow/cmd/checkconfig/app.binary"
             args:
-              - "prow/plugins.yaml"
-              - "prow/config.yaml"
-              - "prow/jobs"
+              - "--plugin-config=prow/plugins.yaml"
+              - "--config-path=prow/config.yaml"
+              - "--job-config-path=prow/jobs"
             resources:
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-master-test-infra-validate-prow-tools
+    - name: pre-main-test-infra-validate-prow-tools
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-test-infra-validate-prow-tools"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
       run_if_changed: '^development/tools/(cmd/.*|pkg/.*|Makefile|.*.sh)'
       skip_report: false
@@ -47,6 +58,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
@@ -62,8 +74,11 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-master-test-infra-validate-prow-jobs
+    - name: pre-main-test-infra-validate-prow-jobs
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-test-infra-validate-prow-jobs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
       run_if_changed: '^(development/tools/jobs|prow)'
       skip_report: false
@@ -72,6 +87,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
@@ -87,17 +103,21 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-master-test-infra-validate-generated-files
+    - name: pre-main-test-infra-validate-generated-files
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-test-infra-validate-generated-files"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
-      run_if_changed: '^templates/|^prow/jobs/|^prow/config.yaml|^prow/scripts/|^development/tools/(cmd/rendertemplates/|jobs/releases/releases.go)'
+      run_if_changed: '^templates/|^prow/jobs/|^prow/config.yaml|^prow/scripts/|^development/tools/(cmd/rendertemplates/|jobs/releases/releases.go)|^prow/branchprotector-config.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
@@ -109,8 +129,11 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-master-test-infra-validate-prow-installer-files
+    - name: pre-main-test-infra-validate-prow-installer-files
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-test-infra-validate-prow-installer-files"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
       run_if_changed: '^development/prow-installer/cmd/|^development/prow-installer/pkg/'
       skip_report: false
@@ -119,6 +142,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"

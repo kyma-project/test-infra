@@ -30,7 +30,7 @@ const (
 	// ImageGolangBuildpack1_14 means Golang buildpack image with Go 1.14.*
 	ImageGolangBuildpack1_14 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
 	// ImageGolangKubebuilder2BuildpackLatest means Golang buildpack with Kubebuilder2 image
-	ImageGolangKubebuilder2BuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9"
+	ImageGolangKubebuilder2BuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210407-70afe459"
 	// ImageGolangKubebuilder2_20210216 contains the v20210216-1.14.0-rc1-535-gb45951c9 image
 	ImageGolangKubebuilder2_20210216 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210216-1.14.0-rc1-535-gb45951c9"
 	// ImageNode10Buildpack means Node.js buildpack image (node v10)
@@ -56,11 +56,11 @@ const (
 	// ImageKymaIntegrationK15 represents kyma integration image with kubectl 1.15
 	ImageKymaIntegrationK15 = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200817-1.14.0-rc1-75-g625c1054-k8s1.15"
 	// ImageKymaIntegrationLatest represents kyma integration image with kubectl 1.16
-	ImageKymaIntegrationLatest = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20201208-8f23a167-k8s1.16"
+	ImageKymaIntegrationLatest = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210402-70b4b74f-k8s1.16"
 	// ImageGolangToolboxLatest represents the latest version of the golang buildpack toolbox
-	ImageGolangToolboxLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20210125-6234473e"
+	ImageGolangToolboxLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20210323-bfa93550"
 	// ImageProwToolsLatest represents the latest version of the prow-tools image
-	ImageProwToolsLatest = "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210122-26875a41"
+	ImageProwToolsLatest = "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210401-294e46e5"
 	// ImageProwToolsCurrent represents the latest version of the prow-tools image
 	ImageProwToolsCurrent = "eu.gcr.io/kyma-project/test-infra/prow-tools:current"
 	// KymaProjectDir means kyma project dir

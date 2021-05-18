@@ -97,8 +97,8 @@ else
         KYMA_SOURCE="${COMMIT_ID}"
         export KYMA_SOURCE
     else
-        # periodic job, so default to master
-        KYMA_SOURCE="master"
+        # periodic job, so default to main
+        KYMA_SOURCE="main"
         export KYMA_SOURCE
     fi
 fi
@@ -111,26 +111,28 @@ gardener::set_machine_type
 
 kyma::install_cli
 
-# currently only Azure generates overrides, but this may chaneg in the future
+# currently only Azure generates overrides, but this may change in the future
 gardener::generate_overrides
 
 gardener::provision_cluster
 
-# run oom debug pod
-kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/debug-container.yaml"
-
 # uses previously set KYMA_SOURCE
-gardener::install_kyma
-
+if [[ "${KYMA_ALPHA}" == "true" ]]; then
+  kyma::alpha_deploy_kyma
+else
+  gardener::install_kyma
+fi
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
+
 
 if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
     gardener::hibernate_kyma
     sleep 120
     gardener::wake_up_kyma
 fi
+
 
 if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
     gardener::test_fast_integration_kyma
@@ -141,6 +143,7 @@ else
     fi
     gardener::test_kyma
 fi
+
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"

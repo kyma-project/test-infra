@@ -3,8 +3,11 @@
 
 presubmits: # runs on PRs
   kyma-project/test-infra:
-    - name: pre-master-test-log-collector
+    - name: pre-main-test-log-collector
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-test-log-collector"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
@@ -15,6 +18,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
@@ -30,12 +34,15 @@ presubmits: # runs on PRs
                 memory: 1.5Gi
                 cpu: 0.8
   
-postsubmits: # runs on master
+postsubmits: # runs on main
   kyma-project/test-infra:
-    - name: post-master-test-log-collector
+    - name: post-main-test-log-collector
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-test-log-collector"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
@@ -46,6 +53,7 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"

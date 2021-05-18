@@ -9,8 +9,8 @@ validate:
 .PHONY: ci-pr
 ci-pr: validate
 
-.PHONY: ci-master
-ci-master: validate
+.PHONY: ci-main
+ci-main: validate
 
 .PHONY: ci-release
 ci-release: validate

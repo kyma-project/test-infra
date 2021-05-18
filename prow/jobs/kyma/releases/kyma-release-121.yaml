@@ -117,6 +117,8 @@ presubmits: # runs on PRs
                 value: "1"
               - name: PROVISION_REGIONAL_CLUSTER
                 value: "true"
+              - name: SCENARIO_TYPE
+                value: release
             resources:
               requests:
                 memory: 200Mi
@@ -129,7 +131,7 @@ postsubmits: # runs on master
         description: "Kyma integration job for release 1.21 ."
         testgrid-dashboards: "kyma_release-1.21"
       labels:
-        preset-build-master: "true"
+        preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
@@ -267,6 +269,7 @@ postsubmits: # runs on master
         preset-gke-kyma-developers-group: "true"
         preset-kyma-artifacts-bucket: "true"
         preset-sa-gke-kyma-integration: "true"
+        preset-gc-compute-envs: "true"
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -296,6 +299,14 @@ postsubmits: # runs on master
       annotations:
         testgrid-dashboards: "kyma_release-1.21"
         testgrid-days-of-results: "90"
+      labels:
+        preset-sa-gke-kyma-integration: "true"
+        preset-bot-github-token: "true"
+        preset-gc-compute-envs: "true"
+        preset-gc-project-env: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-kyma: "true"
+        preset-cluster-version: "true"
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -330,4 +341,3 @@ postsubmits: # runs on master
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-  

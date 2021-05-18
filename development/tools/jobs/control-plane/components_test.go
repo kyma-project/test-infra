@@ -49,7 +49,7 @@ var components = []struct {
 		},
 	},
 	{
-		name:  "metris",
+		name:  "kyma-metrics-collector",
 		image: tester.ImageGolangKubebuilder2BuildpackLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{

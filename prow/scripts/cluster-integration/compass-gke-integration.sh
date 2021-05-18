@@ -160,7 +160,6 @@ function applyKymaOverrides() {
     --data "application-operator.tests.enabled=false" \
     --data "tests.application_connector_tests.enabled=false" \
     --data "application-registry.tests.enabled=false" \
-    --data "console-backend-service.tests.enabled=false" \
     --data "test.acceptance.service-catalog.enabled=false" \
     --data "test.acceptance.external_solution.enabled=false" \
     --data "console.test.acceptance.enabled=false" \
@@ -332,7 +331,7 @@ trap post_hook EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
-    export JOB_NAME_PATTERN="(pre-compass-components-.*)|(pre-compass-tests-.*)"
+    export JOB_NAME_PATTERN="(pre-compass-components-.*)|(^pre-compass-tests$)"
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 

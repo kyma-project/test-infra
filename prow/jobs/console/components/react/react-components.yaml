@@ -3,7 +3,11 @@
 
 presubmits: # runs on PRs
   kyma-project/console:
-    - name: pre-master-console-react-components
+    - name: pre-main-console-react-components
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-console-react-components"
+        prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^components/react/'
       skip_report: false
       decorate: true
@@ -11,11 +15,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:PR-2951"
@@ -31,11 +36,15 @@ presubmits: # runs on PRs
                 memory: 1.5Gi
                 cpu: 0.8
   
-postsubmits: # runs on master
+postsubmits: # runs on main
   kyma-project/console:
-    - name: post-master-console-react-components
+    - name: post-main-console-react-components
       annotations:
         testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-console-react-components"
+        prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^components/react/'
       skip_report: false
       decorate: true
@@ -43,11 +52,12 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:PR-2951"

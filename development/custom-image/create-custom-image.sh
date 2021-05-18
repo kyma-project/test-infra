@@ -53,10 +53,10 @@ for ZONE in ${EU_ZONES}; do
     gcloud compute instances create "kyma-deps-image-vm-${RANDOM_ID}" \
         --metadata enable-oslogin=TRUE \
         --machine-type n1-standard-4 \
-        --image-family debian-9 \
+        --image-family debian-10 \
         --image-project debian-cloud \
         --zone "${ZONE}" \
-        --boot-disk-size 30 \
+        --boot-disk-size 200 \
         --metadata-from-file startup-script=./machine-id-clean-up.sh  &&\
     log::info "Created kyma-deps-image-vm-${RANDOM_ID} in zone ${ZONE}" && break
     log::error "Could not create machine in zone ${ZONE}"

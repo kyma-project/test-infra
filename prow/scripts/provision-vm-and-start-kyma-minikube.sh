@@ -96,7 +96,7 @@ for ZONE in ${EU_ZONES}; do
       --image "${IMAGE}" \
       --machine-type n1-standard-4 \
       --zone "${ZONE}" \
-      --boot-disk-size 30 "${LABELS[@]}" &&\
+      --boot-disk-size 200 "${LABELS[@]}" &&\
   log::info "Created kyma-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
   log::error "Could not create machine in zone ${ZONE}"
 done || exit 1
@@ -110,6 +110,6 @@ log::info "Copying Kyma to the instance"
 utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
 
 log::info "Triggering the installation"
-gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-integration-minikube.sh"
+gcloud compute ssh --strict-host-key-checking=no --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-integration-minikube.sh"
 
 log::success "all done"

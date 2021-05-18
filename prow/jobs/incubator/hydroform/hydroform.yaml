@@ -2,9 +2,12 @@
 
 
 presubmits: # runs on PRs
-  kyma-incubator/hydroform:
-    - name: pre-master-hydroform
+  kyma-project/hydroform:
+    - name: pre-main-hydroform
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-hydroform"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
         preset-sa-gcr-push: "true"
@@ -15,20 +18,21 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20210323-bfa93550"
             securityContext:
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/hydroform"
+              - "/home/prow/go/src/github.com/kyma-project/hydroform"
               - "ci-pr"
             env:
               - name: GO111MODULE
@@ -38,12 +42,15 @@ presubmits: # runs on PRs
                 memory: 1.5Gi
                 cpu: 0.8
   
-postsubmits: # runs on master
-  kyma-incubator/hydroform:
-    - name: post-master-hydroform
+postsubmits: # runs on main
+  kyma-project/hydroform:
+    - name: post-main-hydroform
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-hydroform"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
         preset-sa-gcr-push: "true"
@@ -53,21 +60,22 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20210323-bfa93550"
             securityContext:
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/hydroform"
-              - "ci-master"
+              - "/home/prow/go/src/github.com/kyma-project/hydroform"
+              - "ci-main"
             env:
               - name: GO111MODULE
                 value: "on"

@@ -26,10 +26,13 @@ gardener::cleanup() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
+    # describe nodes to file in artifacts directory
     utils::describe_nodes
 
-    # copy oom debug pod output to artifacts directory
-    kubectl cp default/oom-debug:/var/oom_debug "${ARTIFACTS}/oom_debug.txt"
+    if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
+      # copy output from debug container to artifacts directory
+      utils::oom_get_output
+    fi
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
@@ -82,6 +85,11 @@ gardener::provision_cluster() {
             --scaler-max 4 --scaler-min 2 \
             --kube-version="${GARDENER_CLUSTER_VERSION}"
     )
+
+    if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
+      # run oom debug pod
+      utils::debug_oom
+    fi
 }
 
 gardener::install_kyma() {
@@ -105,6 +113,26 @@ gardener::wake_up_kyma() {
 
 gardener::test_fast_integration_kyma() {
     return
+}
+
+gardener::pre_upgrade_test_fast_integration_kyma() {
+    log::info "Running pre-upgrade Kyma Fast Integration tests"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    make ci-pre-upgrade
+    popd
+
+    log::success "Tests completed"
+}
+
+gardener::post_upgrade_test_fast_integration_kyma() {
+    log::info "Running post-upgrade Kyma Fast Integration tests"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    make ci-post-upgrade
+    popd
+
+    log::success "Tests completed"
 }
 
 gardener::test_kyma() {

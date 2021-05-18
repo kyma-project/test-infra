@@ -1,0 +1,118 @@
+default:
+  labels:
+    - color: 00ff00
+      name: lgtm
+      description: Looks good to me!
+      target: prs
+      prowPlugin: lgtm
+    - color: ee9900
+      description: Denotes a PR that changes 100-499 lines, ignoring generated files.
+      name: size/L
+      target: prs
+      prowPlugin: size
+      addedBy: prow
+    - color: eebb00
+      description: Denotes a PR that changes 30-99 lines, ignoring generated files.
+      name: size/M
+      target: prs
+      prowPlugin: size
+      addedBy: prow
+    - color: 77bb00
+      description: Denotes a PR that changes 10-29 lines, ignoring generated files.
+      name: size/S
+      target: prs
+      prowPlugin: size
+      addedBy: prow
+    - color: ee5500
+      description: Denotes a PR that changes 500-999 lines, ignoring generated files.
+      name: size/XL
+      target: prs
+      prowPlugin: size
+      addedBy: prow
+    - color: "009900"
+      description: Denotes a PR that changes 0-9 lines, ignoring generated files.
+      name: size/XS
+      target: prs
+      prowPlugin: size
+      addedBy: prow
+    - color: ee0000
+      description: Denotes a PR that changes 1000+ lines, ignoring generated files.
+      name: size/XXL
+      target: prs
+      prowPlugin: size
+      addedBy: prow
+    - color: ffaa00
+      description: Denotes a PR that should be squashed by tide when it merges.
+      name: tide/merge-method-squash
+      target: prs
+      addedBy: humans
+    - color: ffaa00
+      description: Denotes a PR that should be rebased by tide when it merges.
+      name: tide/merge-method-rebase
+      target: prs
+      addedBy: humans
+    - color: ffaa00
+      description: Denotes a PR that should use a standard merge by tide when it merges.
+      name: tide/merge-method-merge
+      target: prs
+      addedBy: humans
+    - color: e11d21
+      description: Denotes an issue that blocks the tide merge queue for a branch while it is open.
+      name: tide/merge-blocker
+      target: issues
+      addedBy: humans
+    - color: f9d0c4
+      description: ¯\\\_(ツ)_/¯
+      name: "¯\\_(ツ)_/¯"
+      target: both
+      prowPlugin: shrug
+      addedBy: humans
+    - color: 0ffa16
+      description: Indicates a PR has been approved by an approver from all required OWNERS files.
+      name: approved
+      target: prs
+      prowPlugin: approve
+      addedBy: approvers
+    - color: fef2c0
+      description: Indicates an approved PR into a release branch has been approved by the release branch manager.
+      name: release-pr-approved
+      target: prs
+      addedBy: humans
+    - color: e11d21
+      description: Indicates that a PR should not merge because someone has issued a /hold command.
+      name: do-not-merge/hold
+      target: prs
+      prowPlugin: hold
+      addedBy: anyone
+    - color: e11d21
+      description: Indicates that a PR should not merge because it has an invalid commit message.
+      name: do-not-merge/invalid-commit-message
+      target: prs
+      prowPlugin: invalidcommitmsg
+      addedBy: prow
+    - color: e11d21
+      description: Indicates that a PR should not merge because it has an invalid OWNERS file in it.
+      name: do-not-merge/invalid-owners-file
+      target: prs
+      prowPlugin: verify-owners
+      addedBy: prow
+    - color: e11d21
+      description: Indicates that a PR should not merge because it is a work in progress.
+      name: do-not-merge/work-in-progress
+      target: prs
+      prowPlugin: wip
+      addedBy: prow
+      previously:
+        - name: WIP
+    - color: 7057ff
+      description: Denotes an issue ready for a new contributor, according to the "help wanted" guidelines.
+      name: 'good first issue'
+      target: issues
+      prowPlugin: help
+      addedBy: anyone
+    - color: 006b75
+      description: Denotes an issue that needs help from a contributor. Must meet "help wanted" guidelines.
+      name: 'help wanted'
+      target: issues
+      prowPlugin: help
+      addedBy: anyone

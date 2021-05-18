@@ -83,7 +83,7 @@ function post_hook() {
   set +e
 
   # collect logs from failed tests before deprovisioning
-  kyma::run_test_log_collector "post-master-kyma-gke-integration"
+  kyma::run_test_log_collector "post-main-kyma-gke-integration"
 
   gcloud::cleanup
 
@@ -223,6 +223,9 @@ fi
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
+
+utils::kubeaudit_create_report "${ARTIFACTS}/kubeaudit.log"
+utils::kubeaudit_check_report "${ARTIFACTS}/kubeaudit.log"
 
 # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then

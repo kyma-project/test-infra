@@ -4,6 +4,7 @@ import (
 	"path"
 	"testing"
 
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 )
@@ -158,6 +159,33 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.AllReleases(),
+		},
+	},
+	{path: "nats-operator", image: tester.ImageGolangKubebuilder2BuildpackLatest, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.AllReleases(),
+		},
+	},
+	{path: "busola-migrator", image: tester.ImageGolangKubebuilder2BuildpackLatest, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release122),
+			jobsuite.Optional(),
+		},
+	},
+	{path: "central-application-gateway", image: tester.ImageGolangKubebuilder2BuildpackLatest, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release123),
+			jobsuite.Optional(),
+		},
+	},
+	{path: "central-application-connectivity-validator", image: tester.ImageGolangKubebuilder2BuildpackLatest, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release123),
+			jobsuite.Optional(),
 		},
 	},
 }

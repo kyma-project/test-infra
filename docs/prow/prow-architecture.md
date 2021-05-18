@@ -45,7 +45,7 @@ There are different kinds of plugins that react to GitHub events forwarded by th
 Prow plugins applied for the Kyma project include:
 - **trigger** that matches the received event against the job configuration from the `jobs` folder. If it finds the match, it creates a new Prow job resource.
 - **cat** that checks if there is a new GitHub event for a `/meow` comment on a PR. If it finds it, it adds a cat image to the related PR. For that purpose, it uses the GitHub token available as a Kubernetes Secret.
-- **config-updater** that reads the configuration from `config.yaml`, `plugins.yaml`, and the `jobs` folder, and updates it on the production cluster after the merge to the `master` branch. This plugin is only configured for the `test-infra` repository.
+- **config-updater** that reads the configuration from `config.yaml`, `plugins.yaml`, and the `jobs` folder, and updates it on the production cluster after the merge to the `main` branch. This plugin is only configured for the `test-infra` repository.
 
 ## Prow jobs
 Different build jobs are specified in the `jobs` folder per repository. Each of them uses different kind of trigger conditions. Depending on the trigger, a component becomes active to create a Prow-specific Prow job resource that represents a given job execution. At a later time, a real Pod gets created by the Plank based on the Pod specification provided in the `jobs` folder. Inside the Pod, a container executes the actual build logic. When the process is finished, the Sinker component cleans up the Pod.
@@ -64,16 +64,16 @@ Build logs are archived by Plank on GCS in a dedicated bucket. The bucket is con
 
 ## Generate development artifacts
 
-There are two jobs that generate artifacts which allow you to install Kyma on a cluster either from the `master` branch or from a pull request changes:
-- `pre-master-kyma-development-artifacts`
-- `post-master-kyma-development-artifacts`
+There are two jobs that generate artifacts which allow you to install Kyma on a cluster either from the `main` branch or from a pull request changes:
+- `pre-main-kyma-development-artifacts`
+- `post-main-kyma-development-artifacts`
 
 >**NOTE:** For pull requests, the job is executed only if the introduced changes have an impact on the installed Kyma version.
 
 All artifacts are stored in the publicly available bucket under the `gs://kyma-development-artifacts/` location. The bucket has a defined lifecycle management rule to automatically delete files older than 60 days. These are the exact artifacts locations:
 * For pull requests: `gs://kyma-development-artifacts/PR-<number>`
-* For changes to the `master` branch: `gs://kyma-development-artifacts/master-<commit_sha>`
-* For the latest changes in the master branch:  `gs://kyma-development-artifacts/master`
+* For changes to the `main` branch: `gs://kyma-development-artifacts/master-<commit_sha>`
+* For the latest changes in the `main` branch: `gs://kyma-development-artifacts/master`
 
 A directory with artifacts consists of the following files:
 - `kyma-installer-cluster.yaml` to deploy Kyma installer

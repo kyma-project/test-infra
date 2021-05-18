@@ -34,12 +34,12 @@ function export_variables() {
    if [[ -n "${PULL_NUMBER}" ]]; then
         DOCKER_TAG="PR-${PULL_NUMBER}-${COMMIT_ID}"
         BUCKET_DIR="PR-${PULL_NUMBER}"
-   elif [[ "${PULL_BASE_REF}" != "master" ]]; then
-        DOCKER_TAG="${PULL_BASE_REF}"
-        SKIP_ARTIFACT_UPLOAD=true
-   else
+   elif [[ "${PULL_BASE_REF}" == "master" || "${PULL_BASE_REF}" == "main" ]]; then
         DOCKER_TAG="master-${COMMIT_ID}-${CURRENT_TIMESTAMP}"
         BUCKET_DIR="master-${COMMIT_ID}"
+   else
+        DOCKER_TAG="${PULL_BASE_REF}"
+        SKIP_ARTIFACT_UPLOAD=true
    fi
 
    readonly DOCKER_TAG
@@ -56,9 +56,9 @@ gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 export_variables
 
-# installer ci-pr, ci-master, kyma-installer ci-pr, ci-master
+# installer ci-pr, ci-main, kyma-installer ci-pr, ci-main
 #   DOCKER_TAG - calculated in export_variables
-#   DOCKER_PUSH_DIRECTORY, preset-build-master, preset-build-pr
+#   DOCKER_PUSH_DIRECTORY, preset-build-main, preset-build-pr
 #   DOCKER_PUSH_REPOSITORY - preset-docker-push-repository
 export COMPASS_PATH="/home/prow/go/src/github.com/kyma-incubator/compass"
 buildTarget="release"

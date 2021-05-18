@@ -46,9 +46,6 @@ export UPGRADE_TEST_LABEL_VALUE_EXECUTE="executeTests"
 export TEST_CONTAINER_NAME="tests"
 export HELM_TIMEOUT_SEC=10000s # timeout in sec for helm install/test operation
 export TEST_TIMEOUT_SEC=600    # timeout in sec for test pods until they reach the terminating state
-export EXTERNAL_SOLUTION_TEST_PATH="${KYMA_SOURCES_DIR}/tests/end-to-end/external-solution-integration/chart/external-solution"
-export EXTERNAL_SOLUTION_TEST_NAMESPACE="integration-test"
-export EXTERNAL_SOLUTION_TEST_RELEASE_NAME="${EXTERNAL_SOLUTION_TEST_NAMESPACE}"
 
 
 KYMA_LABEL_PREFIX="kyma-project.io"
@@ -363,9 +360,6 @@ function createTestResources() {
   log::info "Install additional charts"
   # install upgrade test
   installTestChartOrFail "${UPGRADE_TEST_PATH}" "${UPGRADE_TEST_RELEASE_NAME}" "${UPGRADE_TEST_NAMESPACE}"
-
-  # install external-solution test
-  installTestChartOrFail "${EXTERNAL_SOLUTION_TEST_PATH}" "${EXTERNAL_SOLUTION_TEST_RELEASE_NAME}" "${EXTERNAL_SOLUTION_TEST_NAMESPACE}"
 }
 
 upgradeKyma() {

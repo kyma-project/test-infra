@@ -55,9 +55,9 @@ gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 export_variables
 
-# installer ci-pr, ci-master, kyma-installer ci-pr, ci-master
+# installer ci-pr, ci-main, kyma-installer ci-pr, ci-main
 #   DOCKER_TAG - calculated in export_variables
-#   DOCKER_PUSH_DIRECTORY, preset-build-master, preset-build-pr
+#   DOCKER_PUSH_DIRECTORY, preset-build-main, preset-build-pr
 #   DOCKER_PUSH_REPOSITORY - preset-docker-push-repository
 export KCP_PATH="/home/prow/go/src/github.com/kyma-project/control-plane"
 buildTarget="release"

@@ -6,7 +6,7 @@ ENV IMAGE_COMMIT=$commit
 LABEL io.kyma-project.test-infra.commit=$commit
 
 ENV UA_VERSION v20.8.2
-ENV GO_VERSION 1.14.2
+ENV GO_VERSION 1.16.3
 ENV DEP_RELEASE_TAG v0.5.4
 
 # Install Go
@@ -31,6 +31,6 @@ RUN curl -LJO https://github.com/whitesource/unified-agent-distribution/releases
     mv wss-unified-agent.jar /wss/wss-unified-agent.jar
 
 # Prow Tools
-COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20201113-72ed0661 /prow-tools /prow-tools
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20210401-294e46e5 /prow-tools /prow-tools
 # for better access to prow-tools
 ENV PATH=$PATH:/prow-tools

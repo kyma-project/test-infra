@@ -15,7 +15,7 @@ func TestStabilityCheckerJobsPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"}), "pre-master-stability-checker", "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"}), "pre-main-stability-checker", "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
@@ -32,12 +32,12 @@ func TestStabilityCheckerJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	expName := "post-master-stability-checker"
+	expName := "post-main-stability-checker"
 	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/test-infra"}), expName, "master")
 	require.NotNil(t, actualPost)
 
 	assert.Equal(t, expName, actualPost.Name)
-	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
+	assert.Equal(t, []string{"^master$", "^main$"}, actualPost.Branches)
 
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.True(t, actualPost.Decorate)

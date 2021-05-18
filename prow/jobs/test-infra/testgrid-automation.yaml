@@ -4,6 +4,10 @@
 presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-test-infra-validate-testgrid-config
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-validate-testgrid-config"
+        prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^(prow/jobs/.*\.yaml)|(prow/testgrid-default\.yaml)$'
       skip_report: false
       decorate: true
@@ -11,9 +15,10 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/transfigure:v20210222-670293a77e"
+          - image: "gcr.io/k8s-prow/transfigure:v20210407-51f95c2d52"
             securityContext:
               privileged: false
             command:
@@ -29,12 +34,15 @@ presubmits: # runs on PRs
                 memory: 1.5Gi
                 cpu: 0.8
   
-postsubmits: # runs on master
+postsubmits: # runs on main
   kyma-project/test-infra:
     - name: post-test-infra-upload-testgrid-config
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-upload-testgrid-config"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
       run_if_changed: '^(prow/jobs/.*\.yaml)|(prow/testgrid-default\.yaml)$'
       skip_report: false
@@ -43,9 +51,10 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/transfigure:v20210222-670293a77e"
+          - image: "gcr.io/k8s-prow/transfigure:v20210407-51f95c2d52"
             securityContext:
               privileged: false
             command:

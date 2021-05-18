@@ -66,7 +66,7 @@ func (s GenericComponentSuite) testPresubmitJob(jobConfig config.JobConfig) func
 		AssertThatSpecifiesResourceRequests(t, job.JobBase)
 		AssertThatHasPresets(t, job.JobBase, preset.DindEnabled, s.DockerRepositoryPreset, preset.GcrPush)
 		if !s.isTestInfra() {
-			AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "master")
+			AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "main")
 		}
 
 		job.RunsAgainstChanges(s.FilesTriggeringJob)
@@ -94,7 +94,7 @@ func (s GenericComponentSuite) testPostsubmitJob(jobConfig config.JobConfig) fun
 		AssertThatSpecifiesResourceRequests(t, job.JobBase)
 		AssertThatHasPresets(t, job.JobBase, preset.DindEnabled, s.DockerRepositoryPreset, preset.GcrPush)
 		if !s.isTestInfra() {
-			AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "master")
+			AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "main")
 		}
 
 		job.RunsAgainstChanges(s.FilesTriggeringJob)

@@ -145,7 +145,7 @@ postsubmits:
       branches:
         - ^release-1.20$
       labels:
-        preset-build-master: "true"
+        preset-build-main: "true"
         <<: *vm_job_labels_template
       extra_refs:
         - <<: *test_infra_ref

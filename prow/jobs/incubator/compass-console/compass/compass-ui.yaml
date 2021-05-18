@@ -37,41 +37,11 @@ presubmits: # runs on PRs
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
       branches:
         - ^master$
         - ^main$
         - ^hotfix-.*$
-    
-    - name: pre-rel120-compass-console-compass
-      cluster: untrusted-workload
-      optional: false
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.20
-      branches:
-        - release-1.20
-    
-    - name: pre-rel119-compass-console-compass
-      cluster: untrusted-workload
-      optional: false
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.19
-      branches:
-        - release-1.19
-    
-    - name: pre-rel118-compass-console-compass
-      cluster: untrusted-workload
-      optional: false
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.18
-      branches:
-        - release-1.18
     
 
 postsubmits:
@@ -83,41 +53,8 @@ postsubmits:
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: main
       branches:
       - ^master$
       - ^main$
       
-    - name: post-rel120-compass-console-compass
-      cluster: trusted-workload
-      annotations:
-        testgrid-create-test-group: "false"
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.20
-      branches:
-        - release-1.20
-    
-    - name: post-rel119-compass-console-compass
-      cluster: trusted-workload
-      annotations:
-        testgrid-create-test-group: "false"
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.19
-      branches:
-        - release-1.19
-    
-    - name: post-rel118-compass-console-compass
-      cluster: trusted-workload
-      annotations:
-        testgrid-create-test-group: "false"
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.18
-      branches:
-        - release-1.18
-    

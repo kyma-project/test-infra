@@ -18,7 +18,7 @@ source "${SCRIPT_DIR}/lib/utils.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
-    export JOB_NAME_PATTERN="(pre-compass-components-.*)|(pre-compass-tests-.*)"
+    export JOB_NAME_PATTERN="(pre-compass-components-.*)|(^pre-compass-tests$)"
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
@@ -95,7 +95,7 @@ for ZONE in ${EU_ZONES}; do
         --image "${IMAGE}" \
         --machine-type n1-standard-4 \
         --zone "${ZONE}" \
-        --boot-disk-size 30 "${LABELS[@]}" &&\
+        --boot-disk-size 200 "${LABELS[@]}" &&\
     log::info "Created compass-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
     log::error "Could not create machine in zone ${ZONE}"
 done || exit 1

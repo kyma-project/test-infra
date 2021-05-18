@@ -3,8 +3,11 @@
 
 presubmits: # runs on PRs
   kyma-project/test-infra:
-    - name: pre-master-test-infra-pjtester
+    - name: pre-main-test-infra-pjtester
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-test-infra-pjtester"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
@@ -13,6 +16,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:current"
@@ -28,7 +32,11 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-master-test-infra-vpathguard
+    - name: pre-main-test-infra-vpathguard
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-test-infra-vpathguard"
+        prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -36,9 +44,10 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:current"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210402-70b4b74f-k8s1.16"
             imagePullPolicy: Always
             securityContext:
               privileged: false

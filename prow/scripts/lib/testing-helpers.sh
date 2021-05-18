@@ -2,7 +2,7 @@
 
 CURRENT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-# shellcheck disable=SC1090
+# shellcheck source=prow/scripts/lib/log.sh
 source "${CURRENT_DIR}/log.sh"
 
 function context_arg() {

@@ -21,14 +21,14 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: control-plane
           path_alias: github.com/kyma-project/control-plane
-          base_ref: master
+          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210421-b3790671"
             securityContext:
               privileged: false
             command:
@@ -68,14 +68,14 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: control-plane
           path_alias: github.com/kyma-project/control-plane
-          base_ref: master
+          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210421-b3790671"
             securityContext:
               privileged: false
             command:
@@ -115,14 +115,14 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: master
+          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210421-b3790671"
             securityContext:
               privileged: false
             command:
@@ -162,14 +162,14 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: master
+          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210421-b3790671"
             securityContext:
               privileged: false
             command:
@@ -209,14 +209,14 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: console
           path_alias: github.com/kyma-project/console
           base_ref: master
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210421-b3790671"
             securityContext:
               privileged: false
             command:
@@ -256,14 +256,14 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: busola
           path_alias: github.com/kyma-project/busola
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210421-b3790671"
             securityContext:
               privileged: false
             command:
@@ -303,14 +303,14 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: cli
           path_alias: github.com/kyma-project/cli
-          base_ref: master
+          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210421-b3790671"
             securityContext:
               privileged: false
             command:
@@ -350,14 +350,14 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: helm-broker
           path_alias: github.com/kyma-project/helm-broker
           base_ref: master
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210421-b3790671"
             securityContext:
               privileged: false
             command:
@@ -397,14 +397,14 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: rafter
           path_alias: github.com/kyma-project/rafter
           base_ref: master
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210421-b3790671"
             securityContext:
               privileged: false
             command:
@@ -444,14 +444,14 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-incubator
           repo: knative-kafka
           path_alias: github.com/kyma-incubator/knative-kafka
           base_ref: release-0.12
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210421-b3790671"
             securityContext:
               privileged: false
             command:
@@ -491,14 +491,14 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-incubator
           repo: api-gateway
           path_alias: github.com/kyma-incubator/api-gateway
-          base_ref: master
+          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210421-b3790671"
             securityContext:
               privileged: false
             command:
@@ -538,14 +538,14 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-incubator
           repo: dex
           path_alias: github.com/kyma-incubator/dex
           base_ref: kyma-master
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210421-b3790671"
             securityContext:
               privileged: false
             command:
@@ -576,7 +576,7 @@ periodics: # runs on schedule
         preset-kyma-keyring: "true"
         preset-kyma-wssagent-config: "true"
         preset-wssagent-keys: "true"
-        preset-sa-gke-kyma-integration-kyma-incubator-whitesource: "true"
+        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
       cron: "0 4 * * *"
       skip_report: false
       decorate: true
@@ -585,14 +585,14 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
-        - org: kyma-incubator
+          base_ref: main
+        - org: kyma-project
           repo: hydroform
-          path_alias: github.com/kyma-incubator/hydroform
-          base_ref: master
+          path_alias: github.com/kyma-project/hydroform
+          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210421-b3790671"
             securityContext:
               privileged: false
             command:
@@ -632,14 +632,14 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-incubator
           repo: terraform-provider-gardener
           path_alias: github.com/kyma-incubator/terraform-provider-gardener
           base_ref: master
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210421-b3790671"
             securityContext:
               privileged: false
             command:
@@ -679,14 +679,14 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-incubator
           repo: octopus
           path_alias: github.com/kyma-incubator/octopus
           base_ref: master
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210421-b3790671"
             securityContext:
               privileged: false
             command:
@@ -726,14 +726,14 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: website
           path_alias: github.com/kyma-project/website
-          base_ref: master
+          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210421-b3790671"
             securityContext:
               privileged: false
             command:
@@ -773,14 +773,14 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-incubator
           repo: podpreset-crd
           path_alias: github.com/kyma-incubator/podpreset-crd
           base_ref: master
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210421-b3790671"
             securityContext:
               privileged: false
             command:
@@ -803,7 +803,7 @@ periodics: # runs on schedule
                 cpu: 400m
   
 #-------------Release-----------------------------
-    - name: release-kyma-1.20-whitesource-scan
+    - name: release-kyma-1.22-whitesource-scan
       annotations:
         testgrid-create-test-group: "false"
       labels:
@@ -822,14 +822,14 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: master
+          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210421-b3790671"
             securityContext:
               privileged: false
             command:
@@ -850,7 +850,7 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-    - name: release-kyma-mod-1.20-whitesource-scan
+    - name: release-kyma-mod-1.22-whitesource-scan
       annotations:
         testgrid-create-test-group: "false"
       labels:
@@ -869,14 +869,14 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: master
+          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210421-b3790671"
             securityContext:
               privileged: false
             command:
@@ -897,7 +897,7 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-    - name: release-cli-1.20-whitesource-scan
+    - name: release-cli-1.22-whitesource-scan
       annotations:
         testgrid-create-test-group: "false"
       labels:
@@ -916,14 +916,14 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: cli
           path_alias: github.com/kyma-project/cli
-          base_ref: master
+          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210421-b3790671"
             securityContext:
               privileged: false
             command:

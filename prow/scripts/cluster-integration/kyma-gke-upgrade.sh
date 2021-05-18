@@ -45,10 +45,6 @@ export UPGRADE_TEST_PATH="${KYMA_SOURCES_DIR}/tests/end-to-end/upgrade/chart/upg
 export UPGRADE_TEST_NAMESPACE="e2e-upgrade-test"
 export UPGRADE_TEST_RELEASE_NAME="${UPGRADE_TEST_NAMESPACE}"
 export UPGRADE_TEST_RESOURCE_LABEL="kyma-project.io/upgrade-e2e-test"
-export EXTERNAL_SOLUTION_TEST_PATH="${KYMA_SOURCES_DIR}/tests/end-to-end/external-solution-integration/chart/external-solution"
-export EXTERNAL_SOLUTION_TEST_NAMESPACE="integration-test"
-export EXTERNAL_SOLUTION_TEST_RELEASE_NAME="${EXTERNAL_SOLUTION_TEST_NAMESPACE}"
-export EXTERNAL_SOLUTION_TEST_RESOURCE_LABEL="kyma-project.io/external-solution-e2e-test"
 export TEST_RESOURCE_LABEL_VALUE_PREPARE="prepareData"
 export HELM_TIMEOUT_SEC=10000s # timeout in sec for helm install/test operation
 export TEST_TIMEOUT_SEC=600    # timeout in sec for test pods until they reach the terminating state
@@ -110,7 +106,7 @@ function post_hook() {
   set +e
 
   # collect logs from failed tests before deprovisioning
-  kyma::run_test_log_collector "post-master-kyma-gke-upgrade"
+  kyma::run_test_log_collector "post-main-kyma-gke-upgrade"
 
   gcloud::cleanup
 
@@ -315,9 +311,6 @@ function createTestResources() {
   log::banner "Install additional charts"
   # install upgrade test
   installTestChartOrFail "${UPGRADE_TEST_PATH}" "${UPGRADE_TEST_RELEASE_NAME}" "${UPGRADE_TEST_NAMESPACE}"
-
-  # install external-solution test
-  installTestChartOrFail "${EXTERNAL_SOLUTION_TEST_PATH}" "${EXTERNAL_SOLUTION_TEST_RELEASE_NAME}" "${EXTERNAL_SOLUTION_TEST_NAMESPACE}"
 }
 
 function upgradeKymaToRelease() {
