@@ -12,6 +12,10 @@ import (
 	"time"
 )
 
+// dockerOOMListener create channel to get events from docker daemon.
+// Listening is done in a goroutine.
+// Channel will receive only oom events as defined in Filters property of EventsOptions.
+// On oom event details are printed to stdout.
 func dockerOOMListener(client *dockerclient.Client, wg *sync.WaitGroup) {
 	eventsChannel := make(chan *dockerclient.APIEvents)
 	eventOptions := dockerclient.EventsOptions{
@@ -42,6 +46,10 @@ func dockerOOMListener(client *dockerclient.Client, wg *sync.WaitGroup) {
 	}()
 }
 
+// containerOOMListener create channel to get events from containerd daemon.
+// Listening is done within to goroutines. One for errors and second one for events.
+// Channels will receive only oom events as defined in filters argument of Subscribe method.
+// On oom event details are printed to stdout.
 func containerdOOMListener(client *containerd.Client, wg *sync.WaitGroup) {
 	ctx := context.Background()
 	events, errs := client.Subscribe(ctx, "topic==/tasks/oom")
@@ -67,6 +75,7 @@ func containerdOOMListener(client *containerd.Client, wg *sync.WaitGroup) {
 			fmt.Printf("%+v", event)
 		}
 	}()
+	//TODO: check what data is in containerd oom event and if following code is needed.
 	oom := namespaces.WithNamespace(context.Background(), "oom")
 	allContainers, err := client.Containers(oom)
 	if err != nil {
@@ -77,22 +86,30 @@ func containerdOOMListener(client *containerd.Client, wg *sync.WaitGroup) {
 	}
 }
 func main() {
+	// wait group to allow goroutines listen on channels
 	var wg sync.WaitGroup
+	// check docker daemon socket exists
 	if _, err := os.Stat("/var/run/docker.sock"); err == nil {
+		// create docker client with unix socket
 		client, err := dockerclient.NewClient("unix:///var/run/docker.sock")
 		if err != nil {
 			log.WithFields(log.Fields{"msg": "failed create docker client"}).Fatalf("error: %s", err)
 		}
 		wg.Add(1)
+		// listen for oom events
 		dockerOOMListener(client, &wg)
+		// if docker socket doesn't exists try attach to containerd socket
 	} else if os.IsNotExist(err) {
+		// check if containerd socket exists
 		if _, err := os.Stat("/run/containerd/containerd.sock"); err == nil {
+			// create containerd client with unix socket
 			client, err := containerd.New("/run/containerd/containerd.sock")
 			if err != nil {
 				log.WithFields(log.Fields{"msg": "failed create containerd client"}).Fatalf("error: %s", err)
 			}
 			defer client.Close()
 			wg.Add(2)
+			// listen for oom events
 			containerdOOMListener(client, &wg)
 		} else {
 			log.WithFields(log.Fields{"msg": "failed found container runtime socket"}).Errorf("%+v", err)
