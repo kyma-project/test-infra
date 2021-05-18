@@ -740,6 +740,12 @@ templates:
         values:
           <<: *cluster_default
           since: "1.13"
+  - from: templates/compass-gke-benchmark.yaml
+    render:
+      - to: ../prow/jobs/incubator/compass/compass-gke-benchmark.yaml
+        values:
+          <<: *cluster_default
+          since: "1.13"
 #  - from: templates/kyma-release-candidate.yaml
 #    render:
 #      - to: ../prow/jobs/kyma/kyma-release-candidate.yaml
