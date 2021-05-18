@@ -376,7 +376,7 @@ CONCURRENCY=1 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l benchm
 
 PODS=$(kubectl get cts $SUITE_NAME -o=go-template --template='{{range .status.results}}{{range .executions}}{{printf "%s\n" .id}}{{end}}{{end}}')
 for POD in $PODS; do
-  CONTAINER=$(kubectl -n kyma-system get pod $POD -o jsonpath='{.spec.containers[*].name}' | sed s/istio-proxy//g | awk '{$1=$1};1')
+  CONTAINER=$(kubectl -n kyma-system get pod "$POD" -o jsonpath='{.spec.containers[*].name}' | sed s/istio-proxy//g | awk '{$1=$1};1')
   kubectl logs -n kyma-system "$POD" -c "$CONTAINER" > "$CONTAINER"-old
 done
 
@@ -390,7 +390,7 @@ CONCURRENCY=1 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l benchm
 
 PODS=$(kubectl get cts $SUITE_NAME -o=go-template --template='{{range .status.results}}{{range .executions}}{{printf "%s\n" .id}}{{end}}{{end}}')
 for POD in $PODS; do
-  CONTAINER=$(kubectl -n kyma-system get pod $POD -o jsonpath='{.spec.containers[*].name}' | sed s/istio-proxy//g | awk '{$1=$1};1')
+  CONTAINER=$(kubectl -n kyma-system get pod "$POD" -o jsonpath='{.spec.containers[*].name}' | sed s/istio-proxy//g | awk '{$1=$1};1')
   kubectl logs -n kyma-system "$POD" -c "$CONTAINER" > "$CONTAINER"-new
 
   if [ -f "$CONTAINER"-old ]; then
