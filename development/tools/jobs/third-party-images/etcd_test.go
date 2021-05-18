@@ -22,7 +22,6 @@ func TestEtcdJobsPresubmit(t *testing.T) {
 
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
-	assert.True(t, actualPresubmit.Decorate)
 	assert.False(t, actualPresubmit.Optional)
 	assert.Equal(t, "^etcd/", actualPresubmit.RunIfChanged)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoThirdPartyImages, preset.GcrPush)
@@ -42,7 +41,6 @@ func TestEtcdJobPostsubmit(t *testing.T) {
 	require.NotNil(t, actualPostsubmit)
 
 	assert.Equal(t, 10, actualPostsubmit.MaxConcurrency)
-	assert.True(t, actualPostsubmit.Decorate)
 	tester.AssertThatHasPresets(t, actualPostsubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoThirdPartyImages, preset.GcrPush)
 	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualPostsubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, actualPostsubmit.Spec.Containers[0].Command)
