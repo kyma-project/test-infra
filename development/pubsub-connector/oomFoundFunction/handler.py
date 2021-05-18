@@ -52,8 +52,8 @@ def main(event, context):
 												}
 											])
 		assert result["ok"]
-		print("sent notification for message with id: {}".format(event["data"]["ID"]))
+		print("sent notification for message id: {}".format(event["data"]["ID"]))
 	except SlackApiError as e:
 		assert result["ok"] is False
 		print(f"Got an error: {e.response['error']}")
-		print("failed sent notification for message with id: {}".format(event["data"]["ID"]))
+		print("failed sent notification for message id: {}".format(event["data"]["ID"]))

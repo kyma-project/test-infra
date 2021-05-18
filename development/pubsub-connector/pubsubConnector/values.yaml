@@ -36,4 +36,4 @@ function:
       # Path to directory with function code. Relative to repository root.
       functionBaseDir: "/development/pubsub-connector/oomFoundFunction"
       # Branch name with function code.
-      branch: "log_message_id"
+      branch: "main"
