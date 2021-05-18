@@ -2,7 +2,7 @@
 
 
 ## Overview
-This command queries all open Github issues in an organization, and generates BigQuery table containing that data.
+This command queries all open Github issues in an organization or repository, and loads that data to a BigQuery table.
 ### Flags
 
 See the list of available flags:
@@ -18,3 +18,16 @@ See the list of available flags:
 | **--bqProjectID**                |   Yes    | The string value with the name of the BigQuery project.
 | **--bqDatasetName**              |   Yes    | The string value with the name of the BigQuery dataset.
 | **--bqTableName**                |   Yes    | The string value with the name of the BigQuery table.
+
+## Creating empty table
+This program assumes the table already exists. In order to create new table:
+
+* Go to BigQuery console
+* Create new table in a dataset
+* Edit schema as text
+  * For organization copy schema from `table_org_schema.json`
+  * For singular repo copy schema from `table_repo_schema.json`
+* Select partitioning on `updated_at` field
+
+## Error during upload
+Bigquery will fail if the JSON file is bigger than 100MB. The file can be split into smaller parts and uploaded manually before rerunning the program to tix that issue.
