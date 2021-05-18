@@ -282,7 +282,8 @@ function installKyma() {
   chmod +x ${TMP_DIR}/is-kyma-installed.sh
   kubectl apply -f ${TMP_DIR}/kyma-installer.yaml
 
-  log::info "Installation triggered"
+  log::info "Installation triggered. Sleeping for 10 seconds before applying check-kyma-installer..."
+  sleep 10
   "${TMP_DIR}"/is-kyma-installed.sh --timeout 30m
 }
 
@@ -299,7 +300,8 @@ function installCompassOld() {
   gsutil cp "${COMPASS_ARTIFACTS}/compass-installer.yaml" ${TMP_DIR}/compass-installer.yaml
   kubectl apply -f ${TMP_DIR}/compass-installer.yaml
 
-  log::info "Installation triggered"
+  log::info "Installation triggered. Sleeping for 10 seconds before applying check-compass-installer..."
+  sleep 10
   "${COMPASS_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 }
 
@@ -327,8 +329,9 @@ function installCompassNew() {
   | sed -e "s/__VERSION__/0.0.1/g" \
   | sed -e "s/__.*__//g" \
   | kubectl apply -f-
-  
-  log::info "Installation triggered"
+
+  log::info "Installation triggered. Sleeping for 10 seconds before applying check-compass-installer..."
+  sleep 10
   "${COMPASS_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 
   if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
