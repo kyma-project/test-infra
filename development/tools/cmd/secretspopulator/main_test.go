@@ -135,7 +135,7 @@ func TestPopulateSecretsSuccess(t *testing.T) {
 			performedActions := filterOutReadonlyActions(fakeCli.Actions())
 			assert.Len(t, performedActions, tc.expWriteK8sActions)
 
-			secretsList, err := fakeCli.CoreV1().Secrets(metav1.NamespaceDefault).List(metav1.ListOptions{})
+			secretsList, err := fakeCli.CoreV1().Secrets(metav1.NamespaceDefault).List(context.Background(), metav1.ListOptions{})
 			require.NoError(t, err)
 			assert.Len(t, secretsList.Items, 1)
 			assert.Equal(t, tc.secretToProcess.Name, secretsList.Items[0].Name)

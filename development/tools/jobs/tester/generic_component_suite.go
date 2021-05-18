@@ -50,7 +50,6 @@ func (s GenericComponentSuite) testPresubmitJob(jobConfig config.JobConfig) func
 			t.Skip("TODO: Needs a rewrite")
 		}
 
-		assert.True(t, job.Decorate, "Must decorate")
 		assert.Equal(t, s.Optional, job.Optional, "Must be optional: %v", s.Optional)
 		assert.Equal(t, 10, job.MaxConcurrency)
 		assert.Equal(t, s.Repository, job.PathAlias)
@@ -82,7 +81,6 @@ func (s GenericComponentSuite) testPostsubmitJob(jobConfig config.JobConfig) fun
 			t.Skip("TODO: Needs a rewrite")
 		}
 
-		assert.True(t, job.Decorate, "Must decorate")
 		assert.Equal(t, 10, job.MaxConcurrency)
 		assert.Equal(t, s.Repository, job.PathAlias)
 

@@ -22,7 +22,7 @@ func TestKymaAzureEventhubsNamespacesCleanupJobPeriodics(t *testing.T) {
 	job := tester.FindPeriodicJobByName(periodics, jobName)
 	require.NotNil(t, job)
 	assert.Equal(t, jobName, job.Name)
-	assert.True(t, job.Decorate)
+
 	assert.Equal(t, "30 * * * *", job.Cron)
 	assert.Equal(t, job.DecorationConfig.Timeout.Get(), 30*time.Minute)
 	assert.Equal(t, job.DecorationConfig.GracePeriod.Get(), 10*time.Minute)

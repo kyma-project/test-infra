@@ -21,7 +21,7 @@ func TestKymaGardenerGCPKymaToKyma2JobPeriodics(t *testing.T) {
 	job := tester.FindPeriodicJobByName(periodics, jobName)
 	require.NotNil(t, job)
 	assert.Equal(t, jobName, job.Name)
-	assert.True(t, job.Decorate)
+
 	assert.Equal(t, "0 0 7-17 ? * 1-5", job.Cron)
 	assert.Equal(t, job.DecorationConfig.Timeout.Get(), 2*time.Hour)
 	assert.Equal(t, job.DecorationConfig.GracePeriod.Get(), 10*time.Minute)
@@ -47,7 +47,7 @@ func TestKymaGardenerAzureIntegrationJobPeriodics(t *testing.T) {
 	job := tester.FindPeriodicJobByName(periodics, jobName)
 	require.NotNil(t, job)
 	assert.Equal(t, jobName, job.Name)
-	assert.True(t, job.Decorate)
+
 	assert.Equal(t, "0 4,7,10,13 * * *", job.Cron)
 	assert.Equal(t, job.DecorationConfig.Timeout.Get(), 4*time.Hour)
 	assert.Equal(t, job.DecorationConfig.GracePeriod.Get(), 10*time.Minute)
@@ -66,7 +66,7 @@ func TestKymaGardenerAzureIntegrationJobPeriodics(t *testing.T) {
 	job = tester.FindPeriodicJobByName(periodics, jobName)
 	require.NotNil(t, job)
 	assert.Equal(t, jobName, job.Name)
-	assert.True(t, job.Decorate)
+
 	assert.Equal(t, "5 * * * *", job.Cron)
 	assert.Equal(t, job.DecorationConfig.Timeout.Get(), 2*time.Hour)
 	assert.Equal(t, job.DecorationConfig.GracePeriod.Get(), 10*time.Minute)
@@ -93,7 +93,7 @@ func TestKymaGardenerGCPIntegrationJobPeriodics(t *testing.T) {
 	job := tester.FindPeriodicJobByName(periodics, jobName)
 	require.NotNil(t, job)
 	assert.Equal(t, jobName, job.Name)
-	assert.True(t, job.Decorate)
+
 	assert.Equal(t, "00 08 * * *", job.Cron)
 	assert.Equal(t, job.DecorationConfig.Timeout.Get(), 4*time.Hour)
 	assert.Equal(t, job.DecorationConfig.GracePeriod.Get(), 10*time.Minute)
@@ -117,7 +117,7 @@ func TestKymaGardenerAWSIntegrationJobPeriodics(t *testing.T) {
 	job := tester.FindPeriodicJobByName(periodics, jobName)
 	require.NotNil(t, job)
 	assert.Equal(t, jobName, job.Name)
-	assert.True(t, job.Decorate)
+
 	assert.Equal(t, job.DecorationConfig.Timeout.Get(), 4*time.Hour)
 	assert.Equal(t, job.DecorationConfig.GracePeriod.Get(), 10*time.Minute)
 	assert.Equal(t, "00 14 * * *", job.Cron)
@@ -141,7 +141,7 @@ func TestKymaGardenerAzureIntegrationPresubmit(t *testing.T) {
 	job := tester.FindPresubmitJobByName(presubmits, jobName)
 	require.NotNil(t, job)
 	assert.Equal(t, jobName, job.Name)
-	assert.True(t, job.Decorate)
+
 	assert.True(t, job.Optional)
 	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAzureIntegration, preset.KymaCLIStable, preset.ClusterVersion)
 	tester.AssertThatHasExtraRef(t, job.JobBase.UtilityConfig, []prowapi.Refs{{
@@ -163,7 +163,7 @@ func TestKymaGardenerAzureIntegrationPresubmit(t *testing.T) {
 	job = tester.FindPresubmitJobByName(presubmits, jobName)
 	require.NotNil(t, job)
 	assert.Equal(t, jobName, job.Name)
-	assert.True(t, job.Decorate)
+
 	assert.True(t, job.Optional)
 	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAzureIntegration, preset.KymaCLIStable, preset.ClusterVersion)
 	tester.AssertThatHasExtraRef(t, job.JobBase.UtilityConfig, []prowapi.Refs{{
