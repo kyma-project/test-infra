@@ -386,7 +386,8 @@ for POD in $PODS; do
   CONTAINER=$(kubectl -n kyma-system get pod "$POD" -o jsonpath='{.spec.containers[*].name}' | sed s/istio-proxy//g | awk '{$1=$1};1')
   kubectl logs -n kyma-system "$POD" -c "$CONTAINER" > "$CONTAINER"-new
 
-  echo 'INFO[0000] Trying to connect to DB...                    component="persistence/persistence.go:135:persistence.waitForPersistance" x-request-id=bootstrap
+  tee "$CONTAINER"-old << EOF
+  INFO[0000] Trying to connect to DB...                    component="persistence/persistence.go:135:persistence.waitForPersistance" x-request-id=bootstrap
 INFO[0000] Configuring MaxOpenConnections: [2], MaxIdleConnections: [2], ConnectionMaxLifetime: [30m0s]  component="persistence/persistence.go:149:persistence.waitForPersistance" x-request-id=bootstrap
 2021/05/17 14:19:40 Read configuration: &{WebhookUrl:https://kyma-project.io DefaultScenario:DEFAULT DefaultNormalizationPrefix:mp- GatewayOauth:http://localhost:3000}
 INFO[0000] Get Dex id_token                              component="bench/main_test.go:32:bench.TestMain"
@@ -405,7 +406,8 @@ BenchmarkApplicationsForRuntime-12    	      46	 261935490 ns/op
 BenchmarkApplicationsForRuntime-12    	      42	 314906609 ns/op
 BenchmarkApplicationsForRuntime-12    	      38	 278561231 ns/op
 BenchmarkApplicationsForRuntime-12    	      39	 285368073 ns/op
-PASS' > "$CONTAINER"-old
+PASS
+EOF
 
   if [ -f "$CONTAINER"-old ]; then
     STATS=$(benchstat "$CONTAINER"-old "$CONTAINER"-new)
