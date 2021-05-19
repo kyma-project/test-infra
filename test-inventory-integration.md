@@ -44,6 +44,7 @@
 | kyma-weekly-gardener-gcp-busola | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
 | kyma-nightly-gardener-gcp-busola | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
 | kyma-weekly-gardener-gcp-busola-kyma | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
+| kyma-nightly-gardener-gcp-busola-kyma | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
 | kyma-periodic-gardener-gcp-busola-init-kyma | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
 | kyma-periodic-gardener-gcp-busola-kyma | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
 | kyma-upgrade-gardener-kyma-to-kyma2 | gardener_azure | kyma cli | kyma install, kyma deploy |  | periodic |  upgrade-fast-integration  |
