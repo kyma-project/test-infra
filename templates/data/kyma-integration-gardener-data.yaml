@@ -54,9 +54,9 @@ templates:
           gardener_azure_job:
             env:
               RS_GROUP: "kyma-gardener-azure"
-              REGION: "northeurope"
+              REGION: "westeurope"
               KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
-              GARDENER_REGION: "northeurope"
+              GARDENER_REGION: "westeurope"
               GARDENER_ZONES: "1"
             labels:
               preset-gardener-azure-kyma-integration: "true"

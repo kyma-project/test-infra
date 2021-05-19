@@ -47,13 +47,13 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
             env:
               - name: GARDENER_REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: GARDENER_ZONES
                 value: "1"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: RS_GROUP
                 value: "kyma-gardener-azure"
             resources:
@@ -105,13 +105,13 @@ presubmits: # runs on PRs
               - name: EXECUTION_PROFILE
                 value: "evaluation"
               - name: GARDENER_REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: GARDENER_ZONES
                 value: "1"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: RS_GROUP
                 value: "kyma-gardener-azure"
             resources:
@@ -164,7 +164,7 @@ presubmits: # runs on PRs
               - name: EXECUTION_PROFILE
                 value: "evaluation"
               - name: GARDENER_REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: GARDENER_ZONES
                 value: "1"
               - name: KYMA_ALPHA
@@ -172,7 +172,7 @@ presubmits: # runs on PRs
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: RS_GROUP
                 value: "kyma-gardener-azure"
             resources:
@@ -225,7 +225,7 @@ presubmits: # runs on PRs
               - name: EXECUTION_PROFILE
                 value: "production"
               - name: GARDENER_REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: GARDENER_ZONES
                 value: "1"
               - name: KYMA_ALPHA
@@ -233,7 +233,7 @@ presubmits: # runs on PRs
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: RS_GROUP
                 value: "kyma-gardener-azure"
             resources:
@@ -289,7 +289,7 @@ postsubmits: # runs on main
               - name: EXECUTION_PROFILE
                 value: "evaluation"
               - name: GARDENER_REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: GARDENER_ZONES
                 value: "1"
               - name: KYMA_ALPHA
@@ -297,7 +297,7 @@ postsubmits: # runs on main
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: RS_GROUP
                 value: "kyma-gardener-azure"
             resources:
@@ -350,7 +350,7 @@ postsubmits: # runs on main
               - name: EXECUTION_PROFILE
                 value: "production"
               - name: GARDENER_REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: GARDENER_ZONES
                 value: "1"
               - name: KYMA_ALPHA
@@ -358,7 +358,7 @@ postsubmits: # runs on main
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: RS_GROUP
                 value: "kyma-gardener-azure"
             resources:
@@ -508,13 +508,13 @@ periodics: # runs on schedule
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
             env:
               - name: GARDENER_REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: GARDENER_ZONES
                 value: "1"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: RS_GROUP
                 value: "kyma-gardener-azure"
             resources:
@@ -573,13 +573,13 @@ periodics: # runs on schedule
               - name: EXECUTION_PROFILE
                 value: "evaluation"
               - name: GARDENER_REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: GARDENER_ZONES
                 value: "1"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: RS_GROUP
                 value: "kyma-gardener-azure"
             resources:
@@ -638,13 +638,13 @@ periodics: # runs on schedule
               - name: EXECUTION_PROFILE
                 value: "production"
               - name: GARDENER_REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: GARDENER_ZONES
                 value: "1"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: RS_GROUP
                 value: "kyma-gardener-azure"
             resources:
@@ -703,7 +703,7 @@ periodics: # runs on schedule
               - name: EXECUTION_PROFILE
                 value: "evaluation"
               - name: GARDENER_REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: GARDENER_ZONES
                 value: "1"
               - name: KYMA_ALPHA
@@ -711,7 +711,7 @@ periodics: # runs on schedule
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: RS_GROUP
                 value: "kyma-gardener-azure"
             resources:
@@ -770,7 +770,7 @@ periodics: # runs on schedule
               - name: EXECUTION_PROFILE
                 value: "production"
               - name: GARDENER_REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: GARDENER_ZONES
                 value: "1"
               - name: KYMA_ALPHA
@@ -778,7 +778,7 @@ periodics: # runs on schedule
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: RS_GROUP
                 value: "kyma-gardener-azure"
             resources:
@@ -836,7 +836,7 @@ periodics: # runs on schedule
               - name: EXECUTION_PROFILE
                 value: "evaluation"
               - name: GARDENER_REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: GARDENER_ZONES
                 value: "1"
               - name: HIBERNATION_ENABLED
@@ -844,7 +844,7 @@ periodics: # runs on schedule
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: RS_GROUP
                 value: "kyma-gardener-azure"
             resources:
@@ -1166,13 +1166,13 @@ periodics: # runs on schedule
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener.sh"
             env:
               - name: GARDENER_REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: GARDENER_ZONES
                 value: "1"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
-                value: "northeurope"
+                value: "westeurope"
               - name: RS_GROUP
                 value: "kyma-gardener-azure"
             resources:
