@@ -423,7 +423,7 @@ EOF
     log::info "Performance comparison statistics"
     echo "$STATS"
 
-    DELTA=$(echo -n "$STATS" | tail +2 | grep -v '~' | awk '{print $6}')
+    DELTA=$(echo -n "$STATS" | tail +2 | grep -v '~' | awk '{print $(NF-2)}')
     if [[ $DELTA == "-*" ]]; then # If delta is negative
       log::error "There is significant performance degradation in the new release!"
       exit 1
