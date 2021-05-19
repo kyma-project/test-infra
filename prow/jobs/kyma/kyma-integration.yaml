@@ -869,20 +869,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: true
             command:
-              - "/prow-tools/githubissues"
-            args:
-              - "--githubOrgName"
-              - "kyma-project"
-              - "--bqProjectID"
-              - "sap-kyma-prow"
-              - "--bqDataset"
-              - "github_issues"
-              - "--bqTable"
-              - "issues"
-              - "--bqCredentials"
-              - "${GOOGLE_APPLICATION_CREDENTIALS}"
-              - "--githubToken"
-              - "${BOT_GITHUB_TOKEN}"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/github-issues.sh"
             resources:
               requests:
                 memory: 100Mi
