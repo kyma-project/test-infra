@@ -29,6 +29,8 @@ templates:
               preset-build-pr: "true"
           command_integration:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
+          command_integration_eventing:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing.sh"
           command_busola_long_lasting:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-busola-long-lasting.sh"
           command_upgrade_1_to_2:
@@ -51,6 +53,16 @@ templates:
               KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
               GARDENER_REGION: "europe-west4"
               GARDENER_ZONES: "europe-west4-b"
+          gardener_gcp_job_eventing:
+            labels:
+              preset-gardener-gcp-kyma-integration: "true"
+              preset-kyma-cli-stable: "true"
+              preset-cluster-version: "true"
+            env:
+              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
+              GARDENER_REGION: "europe-west4"
+              GARDENER_ZONES: "europe-west4-b"
+              CREDENTIALS_DIR: "/etc/credentials/kyma-tunas-prow-event-mesh"
           gardener_azure_job:
             env:
               RS_GROUP: "kyma-gardener-azure"
@@ -195,6 +207,32 @@ templates:
                     - jobConfig_default
                     - command_integration
                     - gardener_azure_job
+              - jobConfig:
+                  name: pre-main-kyma-gardener-gcp-eventing
+                  optional: true # TODO make required when Eventing E2E tests are available
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                    # following regexp won't start build if only Markdown files were changed
+                    run_if_changed: "^(((resources/eventing)\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  volumes:
+                    - name: kyma-tunas-prow-event-mesh
+                      secretName: kyma-tunas-prow-event-mesh
+                  volumeMounts:
+                    - name: kyma-tunas-prow-event-mesh
+                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
+                      readOnly: true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_kyma-integration
+                  local:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - gardener_gcp_job_eventing
+                    - command_integration_eventing
 
               # periodics
               - jobConfig:
