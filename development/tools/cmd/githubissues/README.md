@@ -24,7 +24,7 @@ This program assumes that the table already exists. In order to create new table
 
 1. Go to BigQuery console.
 2. Create new table in a dataset.
-* Edit schema as text
+3. Edit the schema as text:
   * For organization copy schema from `table_org_schema.json`
   * For singular repo copy schema from `table_repo_schema.json`
 * Select partitioning on `updated_at` field
