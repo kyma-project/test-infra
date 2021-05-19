@@ -6,10 +6,12 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"time"
 
 	"cloud.google.com/go/bigquery"
 	"github.com/google/go-github/v31/github"
 	"golang.org/x/oauth2"
+	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 )
 
@@ -59,15 +61,24 @@ func main() {
 	}
 
 	ctx := context.Background()
+	var err error
+	var ghClient *github.Client
+	var updatedSince time.Time
+	tableExists := true
+
+	fmt.Println("Authenticating to BigQuery")
+	bqClient, err := bigquery.NewClient(ctx, *bqProjectID, option.WithCredentialsFile(*bqCredentials))
+	if err != nil {
+		fmt.Printf("bigquery.NewClient error: %v\n", err)
+		os.Exit(1)
+	}
+	defer bqClient.Close()
 
 	fmt.Println("Authenticating to Github")
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: *githubToken},
 	)
 	tc := oauth2.NewClient(ctx, ts)
-
-	var ghClient *github.Client
-	var err error
 
 	if *githubBaseURL == "" {
 		ghClient = github.NewClient(tc)
@@ -79,12 +90,69 @@ func main() {
 		}
 	}
 
+	// check if data in table exists, if yes, then get last issue
+	fmt.Println("Checking if data in table exists")
+	bqTable := bqClient.Dataset(*bqDatasetName).Table(*bqTableName)
+	_, err = bqTable.Metadata(ctx)
+	if err != nil {
+		tableExists = false
+	}
+
 	var listOptions *github.IssueListOptions
 	var IssueListByRepoOptions *github.IssueListByRepoOptions
+
 	if *githubRepoName == "" {
-		listOptions = &github.IssueListOptions{Filter: "all", State: "open", ListOptions: github.ListOptions{PerPage: 100}}
+		listOptions = &github.IssueListOptions{Filter: "all", State: "all", ListOptions: github.ListOptions{PerPage: 100}}
 	} else {
-		IssueListByRepoOptions = &github.IssueListByRepoOptions{State: "open", ListOptions: github.ListOptions{PerPage: 100}}
+		IssueListByRepoOptions = &github.IssueListByRepoOptions{State: "all", ListOptions: github.ListOptions{PerPage: 100}}
+	}
+
+	if tableExists {
+		fmt.Println("Getting most recently updated issue from the table")
+		// get time of the last indexed issue and search for newer ones
+
+		q := bqClient.Query("SELECT updated_at FROM `" + *bqProjectID + "." + *bqDatasetName + "." + *bqTableName + "` ORDER BY updated_at DESC LIMIT 1")
+		q.Location = "US"
+
+		// 2021-05-14 11:12:06 UTC
+		job, err := q.Run(ctx)
+		if err != nil {
+			fmt.Printf("Bq issues: %v", err)
+			os.Exit(1)
+		}
+		status, err := job.Wait(ctx)
+		if err != nil {
+			fmt.Printf("Bq issues: %v", err)
+			os.Exit(1)
+		}
+		if err := status.Err(); err != nil {
+			fmt.Printf("Bq issues: %v", err)
+			os.Exit(1)
+		}
+		it, err := job.Read(ctx)
+
+		if err != nil {
+			fmt.Printf("Bq issues: %v", err)
+			os.Exit(1)
+		}
+		for {
+			var row []bigquery.Value
+			err := it.Next(&row)
+			if err == iterator.Done {
+				break
+			}
+			if err != nil {
+				fmt.Printf("Bigquery error: %v", err)
+				os.Exit(1)
+			}
+			updatedSince = row[0].(time.Time).Add(time.Second)
+			fmt.Printf("Will be looking for issues updated after %v\n", updatedSince)
+			if *githubRepoName == "" {
+				listOptions.Since = updatedSince
+			} else {
+				IssueListByRepoOptions.Since = updatedSince
+			}
+		}
 	}
 
 	fmt.Println("Receiving list of issues")
@@ -138,24 +206,13 @@ func main() {
 	issuesFile.Seek(0, 0)
 
 	//bigquery
-	fmt.Println("Authenticating to BigQuery")
-	bqClient, err := bigquery.NewClient(ctx, *bqProjectID, option.WithCredentialsFile(*bqCredentials))
-	if err != nil {
-		fmt.Printf("bigquery.NewClient error: %v\n", err)
-		os.Exit(1)
-	}
-	defer bqClient.Close()
 
-	fmt.Printf("Deleting table \"%v:%v.%v\"\n", *bqProjectID, *bqDatasetName, *bqTableName)
-	bqTable := bqClient.Dataset(*bqDatasetName).Table(*bqTableName)
-	if err := bqTable.Delete(ctx); err != nil {
-		fmt.Printf("BigQuery: could not delete table \"%v:%v.%v\", skipping deletion\n", *bqProjectID, *bqDatasetName, *bqTableName)
-	}
+	// load all rows
 
 	fmt.Printf("Pushing data to table \"%v:%v.%v\"\n", *bqProjectID, *bqDatasetName, *bqTableName)
 	dataFile := bigquery.NewReaderSource(issuesFile)
 	dataFile.SourceFormat = bigquery.JSON
-	dataFile.AutoDetect = true
+	// dataFile.AutoDetect = true
 	loader := bqTable.LoaderFrom(dataFile)
 
 	job, err := loader.Run(ctx)
@@ -175,5 +232,25 @@ func main() {
 		os.Exit(1)
 	}
 
+	// dedupe
+	fmt.Println("removing duplicates")
+	q := bqClient.Query("DELETE FROM `" + *bqProjectID + "." + *bqDatasetName + "." + *bqTableName + "` WHERE STRUCT(id, updated_at) NOT IN ( SELECT AS STRUCT id, MAX(updated_at) updated_at FROM `" + *bqProjectID + "." + *bqDatasetName + "." + *bqTableName + "` GROUP BY id)")
+	q.Location = "US"
+
+	// 2021-05-14 11:12:06 UTC
+	job, err = q.Run(ctx)
+	if err != nil {
+		fmt.Printf("Bq issues: %v", err)
+		os.Exit(1)
+	}
+	status, err = job.Wait(ctx)
+	if err != nil {
+		fmt.Printf("Bq issues: %v", err)
+		os.Exit(1)
+	}
+	if err := status.Err(); err != nil {
+		fmt.Printf("Bq issues: %v", err)
+		os.Exit(1)
+	}
 	fmt.Println("Data was added succesfully")
 }
