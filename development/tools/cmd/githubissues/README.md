@@ -26,7 +26,7 @@ This program assumes that the table already exists. In order to create new table
 2. Create new table in a dataset.
 3. Edit the schema as text:
   * For an organization, copy the schema from `table_org_schema.json`.
-  * For singular repo copy schema from `table_repo_schema.json`
+  * For a singular repo, copy the schema from `table_repo_schema.json`.
 * Select partitioning on `updated_at` field
 
 ## Error during upload
