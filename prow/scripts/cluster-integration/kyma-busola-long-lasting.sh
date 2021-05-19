@@ -159,6 +159,7 @@ function deleteKyma(){
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     # kubectl api-resources --verbs=list --namespaced -o name | grep kyma-project.io | sed -e 's/.*/kubectl delete crd & --force=true --wait=false/ ' | sh
     # kubectl delete namespace kyma-system --wait=true
     # log::info "Cluster deleted"
@@ -176,6 +177,10 @@ function deleteKyma(){
 =======
     kubectl api-resources --verbs=list --namespaced -o name | grep kyma-project.io | sed -e 's/.*/kubectl delete crd & --grace-period 0 --force=true --wait=false/ ' | sh
 >>>>>>> 2e9e95c0 ( force delete CRDs)
+=======
+    # log::info "removing CRDs"
+    # kubectl api-resources --verbs=list --namespaced -o name | grep kyma-project.io | sed -e 's/.*/kubectl delete crd & --force=true --wait=false/ ' | sh
+>>>>>>> 3afcf87e (welp)
     
     log::info "Cluster deleted"
 >>>>>>> 8f5373a2 (that shoudl be doen by cli)
