@@ -6,7 +6,7 @@ pubsubGateway:
   # Subscription ID to pull messages from.
   pubsubSubscriptionID: "oom-event-found-sub"
   # Slack channel name to send messages.
-  notificationSlackChannel: "kyma-neighbors"
+  notificationSlackChannel: "kyma-ci-force"
   # Forwarded event type
   eventType: "oomevent.found.v1"
   # GCP project with pubsub subscription
