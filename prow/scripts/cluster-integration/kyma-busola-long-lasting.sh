@@ -151,7 +151,7 @@ function deleteKyma(){
     # This can be deleted when it's implemented by installer
     # remove CRDs
     kubectl api-resources --verbs=list --namespaced -o name | grep kyma-project.io | sed -e 's/.*/kubectl delete crd & --force=true --wait=false/ ' | sh
-    kubectl delete namespace kyma-system --wait=true
+    
     log::info "Cluster deleted"
 }
 
