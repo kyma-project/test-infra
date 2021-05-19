@@ -389,29 +389,6 @@ for POD in $PODS; do
   CONTAINER=$(kubectl -n kyma-system get pod "$POD" -o jsonpath='{.spec.containers[*].name}' | sed s/istio-proxy//g | awk '{$1=$1};1')
   kubectl logs -n kyma-system "$POD" -c "$CONTAINER" > "$CONTAINER"-new
 
-  tee "$CONTAINER"-old << EOF
-  INFO[0000] Trying to connect to DB...                    component="persistence/persistence.go:135:persistence.waitForPersistance" x-request-id=bootstrap
-INFO[0000] Configuring MaxOpenConnections: [2], MaxIdleConnections: [2], ConnectionMaxLifetime: [30m0s]  component="persistence/persistence.go:149:persistence.waitForPersistance" x-request-id=bootstrap
-2021/05/17 14:19:40 Read configuration: &{WebhookUrl:https://kyma-project.io DefaultScenario:DEFAULT DefaultNormalizationPrefix:mp- GatewayOauth:http://localhost:3000}
-INFO[0000] Get Dex id_token                              component="bench/main_test.go:32:bench.TestMain"
-goos: linux
-goarch: amd64
-pkg: github.com/kyma-incubator/compass/tests/director/bench
-cpu: Intel(R) Xeon(R) CPU @ 2.00GHz
-BenchmarkApplicationsForRuntime
-BenchmarkApplicationsForRuntime-4    	      44	 261675730 ns/op
-BenchmarkApplicationsForRuntime-4    	      48	 274556857 ns/op
-BenchmarkApplicationsForRuntime-4    	      39	 364989501 ns/op
-BenchmarkApplicationsForRuntime-4    	      46	 235214858 ns/op
-BenchmarkApplicationsForRuntime-4    	      52	 234556187 ns/op
-BenchmarkApplicationsForRuntime-4    	      49	 267615585 ns/op
-BenchmarkApplicationsForRuntime-4    	      46	 261935490 ns/op
-BenchmarkApplicationsForRuntime-4    	      42	 314906609 ns/op
-BenchmarkApplicationsForRuntime-4    	      38	 278561231 ns/op
-BenchmarkApplicationsForRuntime-4    	      39	 285368073 ns/op
-PASS
-EOF
-
   if [ -f "$CONTAINER"-old ]; then
     log::info "Stats of the main installation"
     benchstat "$CONTAINER"-old
