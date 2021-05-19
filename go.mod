@@ -10,6 +10,7 @@ replace (
 )
 
 require (
+	cloud.google.com/go/bigquery v1.8.0
 	cloud.google.com/go/storage v1.12.0
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
