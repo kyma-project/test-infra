@@ -157,3 +157,9 @@ RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cl
     gcloud components install alpha beta kubectl docker-credential-gcr && \
     gcloud info | tee /workspace/gcloud-info.txt && \
     mv /google-cloud-sdk/bin/kubectl.${CLUSTER_VERSION} /google-cloud-sdk/bin/kubectl
+
+#################################################################
+################ Install Benchmark utilities ####################
+#################################################################
+
+RUN go get golang.org/x/perf/cmd/...
