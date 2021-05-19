@@ -23,7 +23,7 @@ See the list of available flags:
 This program assumes that the table already exists. In order to create new table, do the following:
 
 1. Go to BigQuery console.
-* Create new table in a dataset
+2. Create new table in a dataset.
 * Edit schema as text
   * For organization copy schema from `table_org_schema.json`
   * For singular repo copy schema from `table_repo_schema.json`
