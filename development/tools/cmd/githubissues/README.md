@@ -20,7 +20,7 @@ See the list of available flags:
 | **--bqTableName**                |   Yes    | The string value with the name of the BigQuery table.
 
 ## Creating empty table
-This program assumes the table already exists. In order to create new table:
+This program assumes that the table already exists. In order to create new table, do the following:
 
 * Go to BigQuery console
 * Create new table in a dataset
