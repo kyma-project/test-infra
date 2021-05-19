@@ -30,4 +30,4 @@ This program assumes that the table already exists. In order to create new table
 * Select partitioning on `updated_at` field
 
 ## Error during upload
-Bigquery will fail if the JSON file is bigger than 100MB. The file can be split into smaller parts and uploaded manually before rerunning the program to fix that issue.
+If the JSON file is bigger than 100MB, Bigquery fails. To fix that issue, you can split the file into smaller parts and upload them manually before rerunning the program.
