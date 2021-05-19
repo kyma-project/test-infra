@@ -27,7 +27,7 @@ This program assumes that the table already exists. In order to create new table
 3. Edit the schema as text:
   * For an organization, copy the schema from `table_org_schema.json`.
   * For a singular repo, copy the schema from `table_repo_schema.json`.
-* Select partitioning on `updated_at` field
+4. In the `partitioning` dropdown list, select `updated_at` field.
 
 ## Error during upload
 If the JSON file is bigger than 100MB, Bigquery fails. To fix that issue, you can split the file into smaller parts and upload them manually before rerunning the program.
