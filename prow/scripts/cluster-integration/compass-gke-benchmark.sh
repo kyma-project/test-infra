@@ -389,6 +389,12 @@ for POD in $PODS; do
   CONTAINER=$(kubectl -n kyma-system get pod "$POD" -o jsonpath='{.spec.containers[*].name}' | sed s/istio-proxy//g | awk '{$1=$1};1')
   kubectl logs -n kyma-system "$POD" -c "$CONTAINER" > "$CONTAINER"-new
 
+  echo "CONTAINER>>>>>> $CONTAINER"
+  echo
+  echo "LOGS >>>>"
+  echo
+  cat "$CONTAINER"-new
+
   tee "$CONTAINER"-old << EOF
   INFO[0000] Trying to connect to DB...                    component="persistence/persistence.go:135:persistence.waitForPersistance" x-request-id=bootstrap
 INFO[0000] Configuring MaxOpenConnections: [2], MaxIdleConnections: [2], ConnectionMaxLifetime: [30m0s]  component="persistence/persistence.go:149:persistence.waitForPersistance" x-request-id=bootstrap
@@ -412,10 +418,16 @@ BenchmarkApplicationsForRuntime-12    	      39	 285368073 ns/op
 PASS
 EOF
 
+  echo
+  echo "FAKE TEST FILE >>>>>>"
+  cat "$CONTAINER"-old
+
   if [ -f "$CONTAINER"-old ]; then
     STATS=$(benchstat "$CONTAINER"-old "$CONTAINER"-new)
+    echo "INSIDE THE IF>>>>>"
     echo "$STATS"
     DELTA=$(echo -n "$STATS" | tail +2 | grep -v '~' | awk '{print $6}')
+    echo "DELTA >>>> $DELTA"
     if [[ $DELTA == "-*" ]]; then # If delta is negative
       log::error "There is significant performance degradation in the new release!"
       exit 1
