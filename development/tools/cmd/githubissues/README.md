@@ -22,7 +22,7 @@ See the list of available flags:
 ## Creating empty table
 This program assumes that the table already exists. In order to create new table, do the following:
 
-* Go to BigQuery console
+1. Go to BigQuery console.
 * Create new table in a dataset
 * Edit schema as text
   * For organization copy schema from `table_org_schema.json`
