@@ -4,7 +4,7 @@
 ## Overview
 This command queries all open Github issues in an organization or repository, and loads that data to a BigQuery table.
 
-NOTE: If the JSON file is bigger than 100MB, Bigquery fails. To fix that issue, you can split the file into smaller parts and upload them manually before rerunning the program.
+NOTE: If the JSON file is bigger than 100MB, Bigquery fails. To fix that issue, you can split the file into smaller parts and upload them manually before running the program.
 
 ### Flags
 
