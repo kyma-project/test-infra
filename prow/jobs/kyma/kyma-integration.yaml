@@ -851,6 +851,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "github-issues"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-bot-github-sap-token: "true"
         preset-bot-github-token: "true"
         preset-sa-prow-job-github-issues: "true"
       cron: "0 6 * * *"

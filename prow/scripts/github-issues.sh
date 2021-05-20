@@ -18,4 +18,4 @@ set -e
 "--bqDataset" "github_issues" \
 "--bqTable" "github_tools_sap_kyma" \
 "--bqCredentials" "${GOOGLE_APPLICATION_CREDENTIALS}" \
-"--githubToken" "${BOT_GITHUB_TOKEN_}"
+"--githubToken" "${BOT_GITHUB_SAP_TOKEN}"
