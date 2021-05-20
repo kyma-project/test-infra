@@ -4,6 +4,13 @@ global:
     - "1.23"
     - "1.22"
     - "1.21"
+  components:
+    - to: ../prow/jobs/kyma/components/application-broker/application-broker-generic.yaml
+      path: components/application-broker
+      since: "1.7"
+    - to: ../prow/jobs/kyma/components/application-connectivity-certs-setup-job/application-connectivity-certs-setup-job-generic.yaml
+      path: components/application-connectivity-certs-setup-job
+      since: "1.7"
 
 # global configSet variables
 pubsub_config: &pubsub_config
