@@ -97,7 +97,7 @@
           "orderBySort": "1",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM sap-kyma-prow.github_issues.issues_backlog, UNNEST(labels) as labels_unpacked\n    WHERE state = \"open\"\n)\nSELECT \n    current_timestamp() as time,\n    label as metric,\n    COUNT(*)\nFROM issues_filtered\nWHERE label LIKE \"%incident\"\nAND number IN (SELECT number FROM issues_filtered  WHERE label = \"bug\")\nGROUP BY label",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM sap-kyma-prow.github_issues.github_tools_sap_kyma, UNNEST(labels) as labels_unpacked\n    WHERE state = \"open\"\n)\nSELECT \n    current_timestamp() as time,\n    label as metric,\n    COUNT(*)\nFROM issues_filtered\nWHERE label LIKE \"%incident\"\nAND number IN (SELECT number FROM issues_filtered  WHERE label = \"bug\")\nGROUP BY label",
           "refId": "A",
           "select": [
             [
@@ -149,10 +149,6 @@
           "color": {
             "mode": "thresholds"
           },
-          "custom": {
-            "align": "center",
-            "filterable": false
-          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -180,19 +176,29 @@
       "interval": null,
       "maxDataPoints": null,
       "options": {
-        "showHeader": true
+        "displayMode": "lcd",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "text": {}
       },
       "pluginVersion": "7.5.3",
       "targets": [
         {
-          "format": "table",
+          "format": "time_series",
           "group": [],
           "metricColumn": "none",
           "orderByCol": "1",
           "orderBySort": "1",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM sap-kyma-prow.github_issues.issues_backlog, UNNEST(labels) as labels_unpacked\n    WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n)\nSELECT \n    label,\n    COUNT(*)\nFROM issues_filtered\nWHERE label LIKE \"%incident\"\nAND number IN (SELECT number FROM issues_filtered  WHERE label = \"bug\")\nGROUP BY label",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM sap-kyma-prow.github_issues.github_tools_sap_kyma, UNNEST(labels) as labels_unpacked\n    WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n)\nSELECT \n    current_timestamp() as time,\n    label as metric,\n    COUNT(*)\nFROM issues_filtered\nWHERE label LIKE \"%incident\"\nAND number IN (SELECT number FROM issues_filtered  WHERE label = \"bug\")\nGROUP BY label",
           "refId": "A",
           "select": [
             [
@@ -231,37 +237,17 @@
           }
         }
       ],
-      "type": "table"
+      "type": "bargauge"
     },
     {
+      "columns": [],
       "datasource": "bigquery-prow",
       "description": "",
       "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "center",
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
+        "defaults": {},
         "overrides": []
       },
+      "fontSize": "100%",
       "gridPos": {
         "h": 5,
         "w": 7,
@@ -273,7 +259,75 @@
         "frameIndex": 0,
         "showHeader": true
       },
+      "pageSize": null,
       "pluginVersion": "7.5.3",
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": true
+      },
+      "styles": [
+        {
+          "$$hashKey": "object:394",
+          "alias": "Time",
+          "align": "auto",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "$$hashKey": "object:437",
+          "alias": "",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "$$hashKey": "object:395",
+          "alias": "Repository",
+          "align": "left",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 0,
+          "pattern": "repository",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "$$hashKey": "object:448",
+          "alias": "Count",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "cnt",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
       "targets": [
         {
           "cacheDurationSeconds": 300,
@@ -290,7 +344,7 @@
           "orderBySort": "1",
           "queryParams": "",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"bug\" AND repository.name IN (\"kyma\", \"control-plane\") AND state = \"open\"\n)\nSELECT \n    repository,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nGROUP BY repository\nORDER BY repository ASC",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"bug\" AND repository.name IN (\"kyma\", \"control-plane\") AND state = \"open\"\n)\nSELECT \n    repository,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nGROUP BY repository\nORDER BY repository ASC",
           "refId": "A",
           "select": [
             [
@@ -321,7 +375,7 @@
           "orderByCol": "1",
           "orderBySort": "1",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues_backlog`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"bug\" AND state = \"open\"\n)\nSELECT \n    \"SKR\" as repository,\n    COUNT(*) as `cnt`\nFROM issues_filtered",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.github_tools_sap_kyma`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"bug\" AND state = \"open\"\n)\nSELECT \n    \"SKR\" as repository,\n    COUNT(*) as `cnt`\nFROM issues_filtered",
           "refId": "SKR",
           "select": [
             [
@@ -345,30 +399,19 @@
         }
       ],
       "title": "Total bugs open",
+      "transform": "table",
       "transformations": [
         {
           "id": "merge",
           "options": {}
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "cnt": "Count",
-              "f0_": "",
-              "repository": "Repository"
-            }
-          }
         }
       ],
-      "type": "table"
+      "type": "table-old"
     },
     {
       "columns": [],
       "datasource": "bigquery-prow",
-      "description": "I have no idea it this works properly, too few entries on friday",
+      "description": "",
       "fieldConfig": {
         "defaults": {},
         "overrides": []
@@ -410,6 +453,7 @@
           ],
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 1,
+          "link": false,
           "mappingType": 1,
           "pattern": "success",
           "thresholds": [
@@ -593,34 +637,14 @@
       "type": "gauge"
     },
     {
+      "columns": [],
       "datasource": "bigquery-prow",
       "description": "",
       "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "center",
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
+        "defaults": {},
         "overrides": []
       },
+      "fontSize": "100%",
       "gridPos": {
         "h": 6,
         "w": 7,
@@ -632,7 +656,57 @@
         "frameIndex": 0,
         "showHeader": true
       },
+      "pageSize": null,
       "pluginVersion": "7.5.3",
+      "showHeader": true,
+      "sort": {
+        "col": null,
+        "desc": false
+      },
+      "styles": [
+        {
+          "$$hashKey": "object:514",
+          "alias": "Time",
+          "align": "auto",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "$$hashKey": "object:627",
+          "alias": "",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "$$hashKey": "object:515",
+          "alias": "Time",
+          "align": "left",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 0,
+          "pattern": "Field",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        }
+      ],
       "targets": [
         {
           "cacheDurationSeconds": 300,
@@ -649,7 +723,7 @@
           "orderBySort": "1",
           "queryParams": "",
           "rawQuery": true,
-          "rawSql": "WITH bugs AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE repository.name  IN (\"kyma\", \"control-plane\") AND labels_unpacked.name = \"bug\" AND state = \"open\"\n)\nSELECT \n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    ) as one_week,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)\n    ) as one_month,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30* 3 DAY)\n    ) as three_months,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30*6 DAY)\n    ) as six_months,",
+          "rawSql": "WITH bugs AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`, UNNEST(labels) as labels_unpacked\n    WHERE repository.name  IN (\"kyma\", \"control-plane\") AND labels_unpacked.name = \"bug\" AND state = \"open\"\n)\nSELECT \n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    ) as one_week,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)\n    ) as one_month,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30* 3 DAY)\n    ) as three_months,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30*6 DAY)\n    ) as six_months,",
           "refId": "A",
           "select": [
             [
@@ -680,7 +754,7 @@
           "orderByCol": "1",
           "orderBySort": "1",
           "rawQuery": true,
-          "rawSql": "WITH bugs AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.issues_backlog`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"bug\" AND state = \"open\"\n)\nSELECT \n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    ) as one_week,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)\n    ) as one_month,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30* 3 DAY)\n    ) as three_months,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30*6 DAY)\n    ) as six_months,",
+          "rawSql": "WITH bugs AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.github_tools_sap_kyma`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"bug\" AND state = \"open\"\n)\nSELECT \n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    ) as one_week,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)\n    ) as one_month,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30* 3 DAY)\n    ) as three_months,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30*6 DAY)\n    ) as six_months,",
           "refId": "SKR",
           "select": [
             [
@@ -704,6 +778,7 @@
         }
       ],
       "title": "Open bug age",
+      "transform": "table",
       "transformations": [
         {
           "id": "merge",
@@ -742,37 +817,17 @@
           }
         }
       ],
-      "type": "table"
+      "type": "table-old"
     },
     {
+      "columns": [],
       "datasource": "bigquery-prow",
       "description": "",
       "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "center",
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
+        "defaults": {},
         "overrides": []
       },
+      "fontSize": "100%",
       "gridPos": {
         "h": 5,
         "w": 8,
@@ -784,7 +839,37 @@
         "frameIndex": 1,
         "showHeader": true
       },
+      "pageSize": null,
       "pluginVersion": "7.5.3",
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": true
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "align": "auto",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "alias": "",
+          "align": "right",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
       "targets": [
         {
           "cacheDurationSeconds": 300,
@@ -801,7 +886,7 @@
           "orderBySort": "1",
           "queryParams": "",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"test-case\" AND state = \"open\"\n)\nSELECT \n    repository,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nGROUP BY repository\nORDER BY repository",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"test-case\" AND state = \"open\"\n)\nSELECT \n    repository,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nGROUP BY repository\nORDER BY repository",
           "refId": "A",
           "select": [
             [
@@ -832,7 +917,7 @@
           "orderByCol": "1",
           "orderBySort": "1",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues_backlog`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"test-case\" AND state = \"open\"\n)\nSELECT\n    \"SKR\" as repository,\n    COUNT(*) as `cnt`\nFROM issues_filtered",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.github_tools_sap_kyma`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"test-case\" AND state = \"open\"\n)\nSELECT\n    \"SKR\" as repository,\n    COUNT(*) as `cnt`\nFROM issues_filtered",
           "refId": "SKR",
           "select": [
             [
@@ -856,6 +941,7 @@
         }
       ],
       "title": "Test cases for release",
+      "transform": "table",
       "transformations": [
         {
           "id": "merge",
@@ -873,59 +959,16 @@
           }
         }
       ],
-      "type": "table"
+      "type": "table-old"
     },
     {
+      "columns": [],
       "datasource": "bigquery-prow",
       "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "center",
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Area"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": null
-              },
-              {
-                "id": "links",
-                "value": [
-                  {
-                    "targetBlank": true,
-                    "title": "",
-                    "url": "https://github.com/kyma-project/kyma/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aarea/${__value.text}"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+        "defaults": {},
+        "overrides": []
       },
+      "fontSize": "100%",
       "gridPos": {
         "h": 16,
         "w": 7,
@@ -943,7 +986,64 @@
           }
         ]
       },
+      "pageSize": null,
       "pluginVersion": "7.5.3",
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": false
+      },
+      "styles": [
+        {
+          "$$hashKey": "object:202",
+          "alias": "Time",
+          "align": "auto",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "$$hashKey": "object:280",
+          "alias": "Count",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "cnt (sum)",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "$$hashKey": "object:305",
+          "alias": "Area",
+          "align": "left",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "link": true,
+          "linkTooltip": "",
+          "linkUrl": "https://github.com/kyma-project/kyma/issues?q=is%3Aissue+is%3Aopen+label%3Abug+label%3Aarea/${__cell}",
+          "mappingType": 1,
+          "pattern": "area",
+          "preserveFormat": false,
+          "sanitize": false,
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        }
+      ],
       "targets": [
         {
           "cacheDurationSeconds": 300,
@@ -960,7 +1060,7 @@
           "orderBySort": "1",
           "queryParams": "",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE repository.name IN (\"kyma\", \"control-plane\") AND state = \"open\"\n)\nSELECT \n    SUBSTR(label,6) as area,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nWHERE label LIKE \"area/%\"\nAND number IN (SELECT number FROM issues_filtered WHERE label = \"bug\")\nGROUP BY label\nORDER BY area\n",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`, UNNEST(labels) as labels_unpacked\n    WHERE repository.name IN (\"kyma\", \"control-plane\") AND state = \"open\"\n)\nSELECT \n    SUBSTR(label,6) as area,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nWHERE label LIKE \"area/%\"\nAND number IN (SELECT number FROM issues_filtered WHERE label = \"bug\")\nGROUP BY label\nORDER BY area\n",
           "refId": "A",
           "select": [
             [
@@ -991,7 +1091,7 @@
           "orderByCol": "1",
           "orderBySort": "1",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.issues_backlog`, UNNEST(labels) as labels_unpacked\n    WHERE state = \"open\"\n)\nSELECT \n    SUBSTR(label,6) as area,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nWHERE label LIKE \"area/%\"\nAND number IN (SELECT number FROM issues_filtered WHERE label = \"bug\")\nGROUP BY label\nORDER BY area\n",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.github_tools_sap_kyma`, UNNEST(labels) as labels_unpacked\n    WHERE state = \"open\"\n)\nSELECT \n    SUBSTR(label,6) as area,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nWHERE label LIKE \"area/%\"\nAND number IN (SELECT number FROM issues_filtered WHERE label = \"bug\")\nGROUP BY label\nORDER BY area\n",
           "refId": "SKR",
           "select": [
             [
@@ -1015,6 +1115,7 @@
         }
       ],
       "title": "Open bugs per area",
+      "transform": "table",
       "transformations": [
         {
           "id": "merge",
@@ -1057,51 +1158,19 @@
               }
             ]
           }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "area": "Area",
-              "cnt": "Count",
-              "cnt (sum)": "Count"
-            }
-          }
         }
       ],
-      "type": "table"
+      "type": "table-old"
     },
     {
+      "columns": [],
       "datasource": "bigquery-prow",
       "description": "New counts all opened in the last 7 days",
       "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "center",
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
+        "defaults": {},
         "overrides": []
       },
+      "fontSize": "100%",
       "gridPos": {
         "h": 5,
         "w": 9,
@@ -1113,7 +1182,75 @@
         "frameIndex": 0,
         "showHeader": true
       },
+      "pageSize": null,
       "pluginVersion": "7.5.3",
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": true
+      },
+      "styles": [
+        {
+          "$$hashKey": "object:692",
+          "alias": "Time",
+          "align": "auto",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "$$hashKey": "object:731",
+          "alias": "Open",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "critical_open",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "$$hashKey": "object:693",
+          "alias": "Repository",
+          "align": "left",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "repository",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "$$hashKey": "object:764",
+          "alias": "New",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "f0_",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
       "targets": [
         {
           "cacheDurationSeconds": 300,
@@ -1130,7 +1267,7 @@
           "orderBySort": "1",
           "queryParams": "",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.issues`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"priority/critical\" AND state = \"open\"\n)\nSELECT\n    issues_all.repository,\n    critical_open,\n    COALESCE(critical_new, 0)\nFROM\n(\n    SELECT \n        repository,\n        COUNT(*) as `critical_open`\n    FROM issues_filtered\n    GROUP BY repository\n) AS issues_all LEFT JOIN (\n    SELECT \n        repository,\n        COUNT(*) as `critical_new`\n    FROM issues_filtered\n    WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    GROUP BY repository\n) AS issues_new ON issues_all.repository = issues_new.repository\n--GROUP BY repository\nORDER BY repository",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"priority/critical\" AND state = \"open\"\n)\nSELECT\n    issues_all.repository,\n    critical_open,\n    COALESCE(critical_new, 0)\nFROM\n(\n    SELECT \n        repository,\n        COUNT(*) as `critical_open`\n    FROM issues_filtered\n    GROUP BY repository\n) AS issues_all LEFT JOIN (\n    SELECT \n        repository,\n        COUNT(*) as `critical_new`\n    FROM issues_filtered\n    WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    GROUP BY repository\n) AS issues_new ON issues_all.repository = issues_new.repository\n--GROUP BY repository\nORDER BY repository",
           "refId": "A",
           "select": [
             [
@@ -1161,7 +1298,7 @@
           "orderByCol": "1",
           "orderBySort": "1",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.issues_backlog`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"priority/critical\" AND state = \"open\"\n)\nSELECT\n    issues_all.repository,\n    critical_open,\n    COALESCE(critical_new, 0)\nFROM\n(\n    SELECT \n        \"SKR\" as repository,\n        COUNT(*) as `critical_open`\n    FROM issues_filtered\n    GROUP BY repository\n) AS issues_all LEFT JOIN (\n    SELECT \n        \"SKR\" as repository,\n        COUNT(*) as `critical_new`\n    FROM issues_filtered\n    WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    GROUP BY repository\n) AS issues_new ON issues_all.repository = issues_new.repository\n--GROUP BY repository\nORDER BY repository",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.github_tools_sap_kyma`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"priority/critical\" AND state = \"open\"\n)\nSELECT\n    issues_all.repository,\n    critical_open,\n    COALESCE(critical_new, 0)\nFROM\n(\n    SELECT \n        \"SKR\" as repository,\n        COUNT(*) as `critical_open`\n    FROM issues_filtered\n    GROUP BY repository\n) AS issues_all LEFT JOIN (\n    SELECT \n        \"SKR\" as repository,\n        COUNT(*) as `critical_new`\n    FROM issues_filtered\n    WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    GROUP BY repository\n) AS issues_new ON issues_all.repository = issues_new.repository\n--GROUP BY repository\nORDER BY repository",
           "refId": "SKR",
           "select": [
             [
@@ -1185,6 +1322,7 @@
         }
       ],
       "title": "Critical issues",
+      "transform": "table",
       "transformations": [
         {
           "id": "merge",
@@ -1204,36 +1342,16 @@
           }
         }
       ],
-      "type": "table"
+      "type": "table-old"
     },
     {
+      "columns": [],
       "datasource": null,
       "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": null,
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
+        "defaults": {},
         "overrides": []
       },
+      "fontSize": "100%",
       "gridPos": {
         "h": 5,
         "w": 8,
@@ -1244,7 +1362,37 @@
       "options": {
         "showHeader": true
       },
+      "pageSize": null,
       "pluginVersion": "7.5.3",
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": true
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "align": "auto",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "alias": "",
+          "align": "right",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
       "targets": [
         {
           "queryType": "randomWalk",
@@ -1254,36 +1402,17 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "Provisioning success rate (mock data)",
-      "type": "table"
+      "transform": "timeseries_to_columns",
+      "type": "table-old"
     },
     {
+      "columns": [],
       "datasource": null,
       "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": null,
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
+        "defaults": {},
         "overrides": []
       },
+      "fontSize": "100%",
       "gridPos": {
         "h": 5,
         "w": 8,
@@ -1294,7 +1423,37 @@
       "options": {
         "showHeader": true
       },
+      "pageSize": null,
       "pluginVersion": "7.5.3",
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": true
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "align": "auto",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "alias": "",
+          "align": "right",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
       "targets": [
         {
           "queryType": "randomWalk",
@@ -1304,7 +1463,8 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "Deprovisioning success rate (mock data)",
-      "type": "table"
+      "transform": "timeseries_to_columns",
+      "type": "table-old"
     }
   ],
   "schemaVersion": 27,
