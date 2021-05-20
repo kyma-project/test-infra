@@ -1,0 +1,75 @@
+# copied over from generic-component.yaml
+
+templates:
+  - from: templates/generic.tmpl
+    render:
+      {{- range .Global.components}}
+
+      {{- $releases := matchingReleases .Global.releases .since .until }}
+      {{- $isValidForNextRelease := releaseMatches .Global.nextRelease .since .until }}
+
+      - to: ../prow/jobs/halamix2_test.yaml
+        localSets:
+        jobConfigs:
+          {{- if $isValidForNextRelease }}
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                    name: "huh-{{.to}}"
+                    always_run: "true"
+                    command: "bash"
+                    args:
+                      - "hoh"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_buildpack-golang"
+                    - "extra_refs_test-infra"
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                    name: "huh-{{.to}}"
+                    always_run: "true"
+                    command: "bash"
+                    args:
+                      - "hoh"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_buildpack-golang"
+                    - "extra_refs_test-infra"
+          {{ end }}
+          {{- range $releases }}
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                    name: "huh-{{.to}}"
+                    always_run: "true"
+                    command: "bash"
+                    args:
+                      - "hoh"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_buildpack-golang"
+                    - "extra_refs_test-infra"
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                    name: "huh-{{.to}}"
+                    always_run: "true"
+                    command: "bash"
+                    args:
+                      - "hoh"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_buildpack-golang"
+                    - "extra_refs_test-infra"
+          {{ end }}
+
+      {{- end}}
