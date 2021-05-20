@@ -304,6 +304,7 @@
             "rgba(50, 172, 45, 0.97)"
           ],
           "decimals": 0,
+          "link": true,
           "pattern": "repository",
           "thresholds": [],
           "type": "string",
@@ -964,6 +965,7 @@
     {
       "columns": [],
       "datasource": "bigquery-prow",
+      "description": "This would allow us to add additional comulns in additional queries easier",
       "fieldConfig": {
         "defaults": {},
         "overrides": []
@@ -1060,7 +1062,7 @@
           "orderBySort": "1",
           "queryParams": "",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`, UNNEST(labels) as labels_unpacked\n    WHERE repository.name IN (\"kyma\", \"control-plane\") AND state = \"open\"\n)\nSELECT \n    SUBSTR(label,6) as area,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nWHERE label LIKE \"area/%\"\nAND number IN (SELECT number FROM issues_filtered WHERE label = \"bug\")\nGROUP BY label\nORDER BY area\n",
+          "rawSql": "WITH issues_filtered AS\n(\n    (\n        SELECT DISTINCT \n            repository.name as repository,\n            number,\n            labels_unpacked.name as label\n        FROM `sap-kyma-prow.github_issues.github_com_kyma_project`, UNNEST(labels) as labels_unpacked\n        WHERE repository.name IN (\"kyma\", \"control-plane\") AND state = \"open\"\n    )\n    UNION ALL\n    (\n        SELECT DISTINCT \n            repository.name as repository,\n            number,\n            labels_unpacked.name as label\n        FROM `sap-kyma-prow.github_issues.github_tools_sap_kyma`, UNNEST(labels) as labels_unpacked\n        WHERE repository.name = \"backlog\" AND state = \"open\"\n    )\n)\nSELECT \n    SUBSTR(label,6) as area,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nWHERE label LIKE \"area/%\"\nAND number IN (SELECT number FROM issues_filtered WHERE label = \"bug\")\nGROUP BY label\nORDER BY area\n",
           "refId": "A",
           "select": [
             [
@@ -1082,72 +1084,11 @@
               "type": "macro"
             }
           ]
-        },
-        {
-          "format": "table",
-          "group": [],
-          "hide": false,
-          "metricColumn": "none",
-          "orderByCol": "1",
-          "orderBySort": "1",
-          "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.github_tools_sap_kyma`, UNNEST(labels) as labels_unpacked\n    WHERE state = \"open\"\n)\nSELECT \n    SUBSTR(label,6) as area,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nWHERE label LIKE \"area/%\"\nAND number IN (SELECT number FROM issues_filtered WHERE label = \"bug\")\nGROUP BY label\nORDER BY area\n",
-          "refId": "SKR",
-          "select": [
-            [
-              {
-                "params": [
-                  "-- value --"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "timeColumn": "-- time --",
-          "timeColumnType": "TIMESTAMP",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
         }
       ],
-      "title": "Open bugs per area",
+      "title": "Open bugs per area one query",
       "transform": "table",
       "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "groupBy",
-          "options": {
-            "fields": {
-              "Area": {
-                "aggregations": [],
-                "operation": "groupby"
-              },
-              "Count": {
-                "aggregations": [
-                  "sum"
-                ],
-                "operation": "aggregate"
-              },
-              "area": {
-                "aggregations": [],
-                "operation": "groupby"
-              },
-              "cnt": {
-                "aggregations": [
-                  "sum"
-                ],
-                "operation": "aggregate"
-              }
-            }
-          }
-        },
         {
           "id": "sortBy",
           "options": {
@@ -1464,6 +1405,220 @@
       "timeShift": null,
       "title": "Deprovisioning success rate (mock data)",
       "transform": "timeseries_to_columns",
+      "type": "table-old"
+    },
+    {
+      "columns": [],
+      "datasource": "bigquery-prow",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 16,
+        "w": 7,
+        "x": 17,
+        "y": 27
+      },
+      "id": 29,
+      "options": {
+        "frameIndex": 1,
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "Count"
+          }
+        ]
+      },
+      "pageSize": null,
+      "pluginVersion": "7.5.3",
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": false
+      },
+      "styles": [
+        {
+          "$$hashKey": "object:202",
+          "alias": "Time",
+          "align": "auto",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "$$hashKey": "object:280",
+          "alias": "Count",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "cnt (sum)",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "$$hashKey": "object:305",
+          "alias": "Area",
+          "align": "left",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "link": true,
+          "linkTooltip": "",
+          "linkUrl": "https://github.com/kyma-project/kyma/issues?q=is%3Aissue+is%3Aopen+label%3Abug+label%3Aarea/${__cell}",
+          "mappingType": 1,
+          "pattern": "area",
+          "preserveFormat": false,
+          "sanitize": false,
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "convertToUTC": false,
+          "dataset": "github_issues",
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "orderByCol": "2",
+          "orderBySort": "1",
+          "partitioned": true,
+          "partitionedField": "updated_at",
+          "project": "sap-kyma-prow",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  updated_at\n  $__timeShifting(30d)\nFROM\n  `sap-kyma-prow.github_issues.github_com_kyma_project`\nWHERE\n   $__timeFrom(updated_at) AND $__timeTo(updated_at) ",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": [
+                  "updated_at"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "updated_at"
+                ],
+                "type": "alias"
+              },
+              {
+                "params": [
+                  "1m"
+                ],
+                "type": "timeshift"
+              }
+            ]
+          ],
+          "sharded": false,
+          "table": "github_com_kyma_project",
+          "timeColumn": "updated_at",
+          "timeColumnType": "TIMESTAMP",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "fields": [
+            {
+              "jsonPath": ""
+            }
+          ],
+          "format": "table",
+          "group": [],
+          "hide": true,
+          "method": "GET",
+          "metricColumn": "none",
+          "orderByCol": "1",
+          "orderBySort": "1",
+          "queryParams": "",
+          "rawQuery": true,
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`, UNNEST(labels) as labels_unpacked\n    WHERE repository.name IN (\"kyma\", \"control-plane\") AND state = \"open\"\n),\nissues_previous AS\n(\n  SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`, UNNEST(labels) as labels_unpacked\n    WHERE repository.name IN (\"kyma\", \"control-plane\") AND state = \"open\"\n    AND $__timeFilter(updated_at)\n)\nSELECT \n    SUBSTR(issues_filtered.label,6) as area,\n    COUNT(*) as `cnt`,\n    COUNT(issues_previous.number) as `old`\nFROM issues_filtered INNER JOIN issues_previous ON issues_filtered.repository = issues_previous.repository\nWHERE issues_filtered.label LIKE \"area/%\"\nAND issues_filtered.number IN (SELECT number FROM issues_filtered WHERE label = \"bug\")\nGROUP BY issues_filtered.label\nORDER BY area\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "-- value --"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "-- time --",
+          "timeColumnType": "TIMESTAMP",
+          "urlPath": "",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": true,
+          "metricColumn": "none",
+          "orderByCol": "1",
+          "orderBySort": "1",
+          "rawQuery": true,
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.github_tools_sap_kyma`, UNNEST(labels) as labels_unpacked\n    WHERE repository.name = \"backlog\" AND state = \"open\"\n    \n)\nSELECT \n    SUBSTR(label,6) as area,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nWHERE label LIKE \"area/%\"\nAND number IN (SELECT number FROM issues_filtered WHERE label = \"bug\")\nGROUP BY label\nORDER BY area\n",
+          "refId": "SKR",
+          "select": [
+            [
+              {
+                "params": [
+                  "-- value --"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "-- time --",
+          "timeColumnType": "TIMESTAMP",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "TIMESHIFT!!!!",
+      "transform": "table",
+      "transformations": [],
       "type": "table-old"
     }
   ],
