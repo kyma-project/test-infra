@@ -39,4 +39,6 @@ images:
 - source: "jmedrek/connectivity-validator-alpine:1.15"
 - source: "aerfio/kaniko:v1.5.1"
 - source: "nats:2.1.8"
+- source: "nats:2.1.9"
+- source: "nats:2.2.4"
 - source: "natsio/prometheus-nats-exporter:0.7.0"
