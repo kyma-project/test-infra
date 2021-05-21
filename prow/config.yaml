@@ -646,6 +646,14 @@ presets:
             name: kyma-bot-github-token
             key: token
   - labels:
+      preset-bot-github-sap-token: "true"
+    env:
+      - name: BOT_GITHUB_SAP_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: kyma-bot-github-sap-token
+            key: token
+  - labels:
       preset-bot-github-identity: "true"
     env:
       - name: BOT_GITHUB_EMAIL

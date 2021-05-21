@@ -845,6 +845,37 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
+    - name: github-issues
+      annotations:
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "github-issues"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-bot-github-sap-token: "true"
+        preset-bot-github-token: "true"
+        preset-sa-prow-job-github-issues: "true"
+      cron: "0 6 * * *"
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: trusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:current"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/github-issues.sh"
+            resources:
+              requests:
+                memory: 100Mi
+                cpu: 50m
     - name: kyma-gke-nightly
       annotations:
         description: "Kyma GKE nightly build."
