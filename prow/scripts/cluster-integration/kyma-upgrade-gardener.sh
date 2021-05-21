@@ -148,7 +148,7 @@ gardener::post_upgrade_test_fast_integration_kyma
 set -e
 
 log::info "Sleeping for 10 minutes..."
-sleep 1201
+sleep 1202
 log::info "Done sleeping!"
 
 #!!! Must be at the end of the script !!!
