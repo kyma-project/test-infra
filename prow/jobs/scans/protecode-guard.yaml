@@ -27,7 +27,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210402-70b4b74f-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
             automountServiceAccountToken: true
             securityContext:
               privileged: false
@@ -71,7 +71,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210402-70b4b74f-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
             automountServiceAccountToken: true
             securityContext:
               privileged: false
@@ -115,7 +115,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210402-70b4b74f-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
             automountServiceAccountToken: true
             securityContext:
               privileged: false

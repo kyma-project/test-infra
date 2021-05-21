@@ -2,32 +2,37 @@
 
 
 presubmits: # runs on PRs
-  kyma-project/kyma:
-    - name: pre-main-kyma-gke-external-registry
+  kyma-incubator/compass:
+    - name: pre-main-compass-gke-benchmark
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-gke-external-registry"
+        prow.k8s.io/pubsub.runID: "pre-main-compass-gke-benchmark"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
-        preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
+        preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
+        preset-kms-gc-project-env: "true"
         preset-kyma-artifacts-bucket: "true"
+        preset-kyma-development-artifacts-bucket: "true"
+        preset-kyma-encryption-key: "true"
         preset-kyma-guard-bot-github-token: "true"
+        preset-kyma-keyring: "true"
         preset-sa-gke-kyma-integration: "true"
         preset-sa-test-gcr-push: "true"
-      run_if_changed: '^((resources/serverless\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      run_if_changed: '^((chart\S+|installation\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
+      path_alias: github.com/kyma-incubator/compass
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
         - ^main$
+        - ^hotfix-.*$
       extra_refs:
         - org: kyma-project
           repo: test-infra
@@ -42,7 +47,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-external-registry.sh"
+              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/compass-gke-benchmark.sh"
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
@@ -50,25 +55,30 @@ presubmits: # runs on PRs
               requests:
                 memory: 200Mi
                 cpu: 80m
-    - name: pre-rel123-kyma-gke-external-registry
+    - name: pre-rel123-compass-gke-benchmark
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel123-kyma-gke-external-registry"
+        prow.k8s.io/pubsub.runID: "pre-rel123-compass-gke-benchmark"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
-        preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
+        preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
+        preset-kms-gc-project-env: "true"
         preset-kyma-artifacts-bucket: "true"
+        preset-kyma-development-artifacts-bucket: "true"
+        preset-kyma-encryption-key: "true"
         preset-kyma-guard-bot-github-token: "true"
+        preset-kyma-keyring: "true"
         preset-sa-gke-kyma-integration: "true"
         preset-sa-test-gcr-push: "true"
+      optional: true
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
+      path_alias: github.com/kyma-incubator/compass
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -87,7 +97,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-external-registry.sh"
+              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/compass-gke-benchmark.sh"
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
@@ -95,25 +105,30 @@ presubmits: # runs on PRs
               requests:
                 memory: 200Mi
                 cpu: 80m
-    - name: pre-rel122-kyma-gke-external-registry
+    - name: pre-rel122-compass-gke-benchmark
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel122-kyma-gke-external-registry"
+        prow.k8s.io/pubsub.runID: "pre-rel122-compass-gke-benchmark"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
-        preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
+        preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
+        preset-kms-gc-project-env: "true"
         preset-kyma-artifacts-bucket: "true"
+        preset-kyma-development-artifacts-bucket: "true"
+        preset-kyma-encryption-key: "true"
         preset-kyma-guard-bot-github-token: "true"
+        preset-kyma-keyring: "true"
         preset-sa-gke-kyma-integration: "true"
         preset-sa-test-gcr-push: "true"
+      optional: true
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
+      path_alias: github.com/kyma-incubator/compass
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -132,7 +147,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-external-registry.sh"
+              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/compass-gke-benchmark.sh"
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
@@ -140,25 +155,30 @@ presubmits: # runs on PRs
               requests:
                 memory: 200Mi
                 cpu: 80m
-    - name: pre-rel121-kyma-gke-external-registry
+    - name: pre-rel121-compass-gke-benchmark
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel121-kyma-gke-external-registry"
+        prow.k8s.io/pubsub.runID: "pre-rel121-compass-gke-benchmark"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
-        preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
+        preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
+        preset-kms-gc-project-env: "true"
         preset-kyma-artifacts-bucket: "true"
+        preset-kyma-development-artifacts-bucket: "true"
+        preset-kyma-encryption-key: "true"
         preset-kyma-guard-bot-github-token: "true"
+        preset-kyma-keyring: "true"
         preset-sa-gke-kyma-integration: "true"
         preset-sa-test-gcr-push: "true"
+      optional: true
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
+      path_alias: github.com/kyma-incubator/compass
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -177,7 +197,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-external-registry.sh"
+              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/compass-gke-benchmark.sh"
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"

@@ -17,7 +17,7 @@ globalSets:
   image_prow-tools:
     image: "eu.gcr.io/kyma-project/test-infra/prow-tools:current"
   image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210402-70b4b74f-k8s1.16"
+    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
   image_buildpack-node:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:PR-2951"
   image_buildpack-golang:
