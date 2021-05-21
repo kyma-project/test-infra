@@ -144,19 +144,6 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "knative-kafka"
-                  language: "golang"
-                  project: "kyma-incubator"
-                  base_ref: "release-0.12"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-              - jobConfig:
                   name: "api-gateway"
                   language: "golang-mod"
                   project: "kyma-incubator"
