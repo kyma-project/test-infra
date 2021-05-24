@@ -32,7 +32,7 @@ func TestValidatePayload(t *testing.T) {
 
 		//then
 		assert.Error(t, err)
-		assert.Equal(t, "eventType should not be empty", err.Error())
+		assert.Equal(t, "cloudevent type should not be empty", err.Error())
 
 	})
 
@@ -49,7 +49,7 @@ func TestValidatePayload(t *testing.T) {
 
 		//then
 		assert.Error(t, err)
-		assert.Equal(t, "data should not be empty", err.Error())
+		assert.Equal(t, "cloudevent data should not be empty", err.Error())
 
 	})
 
@@ -66,7 +66,7 @@ func TestValidatePayload(t *testing.T) {
 
 		//then
 		assert.Error(t, err)
-		assert.Equal(t, "sourceID should not be empty", err.Error())
+		assert.Equal(t, "cloudevent source should not be empty", err.Error())
 
 	})
 }

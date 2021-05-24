@@ -8,9 +8,9 @@ import (
 	"testing"
 
 	"github.com/google/go-github/github"
-	"github.com/kyma-project/test-infra/development/github-slack-connector/githubWebhookGateway/pkg/apperrors"
-	gitmocks "github.com/kyma-project/test-infra/development/github-slack-connector/githubWebhookGateway/pkg/github/mocks"
-	"github.com/kyma-project/test-infra/development/github-slack-connector/githubWebhookGateway/pkg/handlers/mocks"
+	"github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway/pkg/apperrors"
+	"github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway/pkg/gateway/mocks"
+	gitmocks "github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway/pkg/github/mocks"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -103,7 +103,7 @@ func TestWebhookHandler(t *testing.T) {
 		mockPayload, err := json.Marshal(toJSON{TestJSON: "test", Action: "labeled"})
 		require.NoError(t, err)
 		rawPayload := json.RawMessage(mockPayload)
-		mockSender.On("SendToKyma", "issuesevent.labeled", "", "v1", "", rawPayload).Return(nil)
+		mockSender.On("SendToKyma", "issuesevent.labeled", "", rawPayload).Return(nil)
 
 		mockValidator.On("GetToken").Return("test")
 		mockValidator.On("ValidatePayload", req, []byte("test")).Return(mockPayload, nil)

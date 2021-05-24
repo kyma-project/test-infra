@@ -9,12 +9,12 @@ import (
 func TestAppError(t *testing.T) {
 
 	t.Run("should create error with proper code", func(t *testing.T) {
-		assert.Equal(t, CodeInternal, Internal("error").Code())
-		assert.Equal(t, CodeNotFound, NotFound("error").Code())
-		assert.Equal(t, CodeAlreadyExists, AlreadyExists("error").Code())
-		assert.Equal(t, CodeWrongInput, WrongInput("error").Code())
-		assert.Equal(t, CodeUpstreamServerCallFailed, UpstreamServerCallFailed("error").Code())
-		assert.Equal(t, CodeAuthenticationFailed, AuthenticationFailed("error").Code())
+		assert.Equal(t, InternalError, Internal("error").Code())
+		assert.Equal(t, NotFoundError, NotFound("error").Code())
+		assert.Equal(t, AlreadyExistsError, AlreadyExists("error").Code())
+		assert.Equal(t, WrongInputError, WrongInput("error").Code())
+		assert.Equal(t, UpstreamServerCallFailedError, UpstreamServerCallFailed("error").Code())
+		assert.Equal(t, AuthenticationFailedError, AuthenticationFailed("error").Code())
 	})
 
 	t.Run("should create error with simple message", func(t *testing.T) {
@@ -53,12 +53,12 @@ func TestAppError(t *testing.T) {
 		appendedAuthenticationFailedErr := createdAuthenticationFailedErr.Append("Some additional message")
 
 		//then
-		assert.Equal(t, CodeInternal, appendedInternalErr.Code())
-		assert.Equal(t, CodeNotFound, appendedNotFoundErr.Code())
-		assert.Equal(t, CodeAlreadyExists, appendedAlreadyExistsErr.Code())
-		assert.Equal(t, CodeWrongInput, appendedWrongInputErr.Code())
-		assert.Equal(t, CodeUpstreamServerCallFailed, appendedUpstreamServerCallFailedErr.Code())
-		assert.Equal(t, CodeAuthenticationFailed, appendedAuthenticationFailedErr.Code())
+		assert.Equal(t, InternalError, appendedInternalErr.Code())
+		assert.Equal(t, NotFoundError, appendedNotFoundErr.Code())
+		assert.Equal(t, AlreadyExistsError, appendedAlreadyExistsErr.Code())
+		assert.Equal(t, WrongInputError, appendedWrongInputErr.Code())
+		assert.Equal(t, UpstreamServerCallFailedError, appendedUpstreamServerCallFailedErr.Code())
+		assert.Equal(t, AuthenticationFailedError, appendedAuthenticationFailedErr.Code())
 	})
 
 	t.Run("should append apperrors and chain messages correctly", func(t *testing.T) {
