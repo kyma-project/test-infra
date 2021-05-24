@@ -57,6 +57,16 @@ spec:
             secretKeyRef:
               name: gf-plugins-bigquery-datasource-private-key
               key: secret
+        - name: GF_AUTH_GITHUB_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: gf-auth-github-client-id
+              key: secret
+        - name: GF_AUTH_GITHUB_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: gf-auth-github-client-secret
+              key: secret
         ports:
         - containerPort: 3001
           name: http
