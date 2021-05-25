@@ -72,8 +72,7 @@ data:
     [auth.basic]
     enabled = false
     [auth.anonymous]
-    enabled = true
-    org_role = Viewer
+    enabled = false
     [auth.github]
     enabled = true
     allow_sign_up = true
