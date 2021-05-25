@@ -20,7 +20,7 @@ Secrets are stored in Google Cloud Storage (GCS) in a dedicated bucket and are e
 Prow components access the RBAC-protected API server using dedicated service accounts and are communicating without having TLS enabled.
 
 ### Crier
-Crier takes care of reporting the status of prow job to the external services like GitHub and Slack. For more information read [crier.md](./crier.md).
+Crier takes care of reporting the status of prow job to the external services like GitHub and Slack. For more information, read [crier.md](./crier.md).
 
 ### Deck
 Deck is exposed through an Ingress definition which has TLS enabled using a certificate issued for `status.build.kyma-project.io`. Deck serves a UI that you can access as an anonymous user to view build statuses. Deck can only view and list the jobs and the job logs.
@@ -29,7 +29,7 @@ Deck is exposed through an Ingress definition which has TLS enabled using a cert
 Hook is exposed through the same Ingress as Deck using a different path which is `https://status.build.kyma-project.io/hook`. It listens for GitHub events triggered by the external GitHub system. The external address to the Hook component gets configured in GitHub as a webhook using a token as a Secret. That token gets generated during the provisioning process and is configured for the Hook component. Hook calls the installed plugins on receiving a GitHub event.
 
 ### Prow-controller-manager
-Formerly Plank. Prow-controller-manager checks regularly if there are new Prow job resources, executes the related job, and applies the Pod specification to the cluster. A Prow job gets created usually by the Trigger plugin based on an event from GitHub, or periodically by the Horologium component.
+Prow-controller-manager (formerly "Plank") checks regularly if there are new Prow job resources, executes the related job, and applies the Pod specification to the cluster. A Prow job gets created usually by the Trigger plugin based on an event from GitHub, or periodically by the Horologium component.
 
 ### Horologium
 Horologium triggers periodic jobs from the `job` folder based on a predefined trigger period.
@@ -44,11 +44,11 @@ Branch Protector is a Prow component that is responsible for defining branch pro
 gcsweb is a lightweight web frontend for GCS which allows you to access the content of the **artifacts** tab in Spyglass without the need to log in. For more information on gcsweb read [this](https://github.com/kubernetes/k8s.io/tree/master/gcsweb.k8s.io) document.
 
 ### Tide
-Tide is a Prow component that automatically checks the acceptance criteria against opened PRs in the repository and if the given PR passes all the criteria Tide automatically merges it.
+Tide is a Prow component that automatically checks the acceptance criteria against opened PRs in the repository. If the given PR passes all the criteria, Tide automatically merges it.
 
 ## Plugins
 There are different kinds of plugins that react to GitHub events forwarded by the Hook component. Plugins are configured per repository using `plugins.yaml`.
-For more information about installed plugins in the `kyma-project` and `kyma-incubator` organisations please refer to the [plugins.yaml](../../prow/plugins.yaml) file.
+For more information about installed plugins in the `kyma-project` and `kyma-incubator` organisations, refer to the [plugins.yaml](../../prow/plugins.yaml) file.
 
 ## Prow jobs
 Different build jobs are specified in the `jobs` folder per repository. Each of them uses different kind of trigger conditions. Depending on the trigger, a component becomes active to create a Prow-specific Prow job resource that represents a given job execution. At a later time, a real Pod gets created by the Plank based on the Pod specification provided in the `jobs` folder. Inside the Pod, a container executes the actual build logic. When the process is finished, the Sinker component cleans up the Pod.

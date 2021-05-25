@@ -15,26 +15,26 @@ Install the following tools:
 The steps assume you have completed the prerequisites.
 
 1. Make sure your kubectl context is set to a correct cluster.
-2. Go to the [prow/cluster/components/monitoring](../../prow/cluster/components/monitoring) directory and run command:
+2. Go to the [prow/cluster/components/monitoring](../../prow/cluster/components/monitoring) directory and run the command:
 ```shell
 jb install
 ```
 This will download all required dependencies for generating Grafana dashboards.
 
-2. Once the command is done run the following commands:
+2. Once the command is done, run the following commands:
 ```shell
 make generate_dashboards
 make apply_configmaps
 ```
 Those commands will generate json dashboards to the `dashboards_out` directory and apply them as configmaps to the kubernetes cluster.
 
-3. Once everything is done run `make clean` to remove the generated json files.
+3. Once everything is done, run `make clean` to remove the generated json files.
 
 ## Apply monitoring deployments
 
-1. If needed generate new Grafana password using a command `openssl rand -hex 12` and paste it as `password` value in the [`grafana_secret.yaml`](../../prow/cluster/components/monitoring/grafana_secret.yaml) file.
+1. If needed, generate a new Grafana password with command `openssl rand -hex 12` and paste it as `password` value in the [`grafana_secret.yaml`](../../prow/cluster/components/monitoring/grafana_secret.yaml) file.
 
-2. Apply Prow namespace and grafana deployment YAMLs in the following order:
+2. Apply Prow namespace and Grafana deployment YAMLs in the following order:
 ```
 prow_monitoring_namespace.yaml
 grafana_rbac.yaml
@@ -44,15 +44,15 @@ grafana_deployment.yaml
 monitoring_kyma-prow_managedcertificate.yaml
 grafana_expose.yaml
 ```
-This will create grafana instance which will be exposed under https://monitoring.build.kyma-project.io.
+This will create a Grafana instance that will be exposed under https://monitoring.build.kyma-project.io.
 
-3. Apply prometheus operator deployment YAMLs in the following order:
+3. Apply the Prometheus operator deployment YAMLs in the following order:
 ```
 prometheus_operator_rbac.yaml
 prometheus_operator_deployment.yaml
 ```
 
-4. Apply Prow prometheus configuration YAMLs in the following order:
+4. Apply the Prow Prometheus configuration YAMLs in the following order:
 ```
 prow_prometheus.yaml
 prow_servicemonitors.yaml
@@ -60,7 +60,7 @@ prow_alertmanager.yaml
 prometheus_expose.yaml
 ```
 
-5. After successfully applying the monitoring configuration files Open the Grafana dashboard.
+5. After successfully applying the monitoring configuration files, open the Grafana dashboard.
    
    Grafana dashboard is available at `https://monitoring.build.kyma-project.io`. It can take some time till the dashboard is accessible.
 
