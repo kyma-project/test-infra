@@ -94,6 +94,8 @@ data:
     disable_gravatar = true
     [server]
     http_port = 3001
+    domain = monitoring.build.kyma-project.io
+    root_url = https://%(domain)s:443/
 ---
 apiVersion: v1
 kind: ConfigMap
