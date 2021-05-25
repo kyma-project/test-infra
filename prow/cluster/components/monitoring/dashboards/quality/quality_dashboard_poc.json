@@ -268,14 +268,6 @@
       },
       "styles": [
         {
-          "$$hashKey": "object:394",
-          "alias": "Time",
-          "align": "auto",
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "Time",
-          "type": "date"
-        },
-        {
           "$$hashKey": "object:437",
           "alias": "Difference",
           "align": "auto",
@@ -308,6 +300,8 @@
           ],
           "decimals": 0,
           "link": true,
+          "linkTooltip": "",
+          "linkUrl": "${__cell_1:raw}",
           "pattern": "repository",
           "thresholds": [],
           "type": "string",
@@ -330,6 +324,24 @@
           "thresholds": [],
           "type": "number",
           "unit": "short"
+        },
+        {
+          "$$hashKey": "object:624",
+          "alias": "",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "url",
+          "thresholds": [],
+          "type": "hidden",
+          "unit": "short"
         }
       ],
       "targets": [
@@ -348,7 +360,7 @@
           "orderBySort": "1",
           "queryParams": "",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    (\n        SELECT DISTINCT \n            repository.name as repository,\n            number,\n            labels_unpacked.name as label,\n            created_at,\n            closed_at\n        FROM `sap-kyma-prow.github_issues.github_com_kyma_project`, UNNEST(labels) as labels_unpacked\n        WHERE labels_unpacked.name = \"bug\" AND repository.name IN (\"kyma\", \"control-plane\") AND state = \"open\"\n    )\n    UNION ALL\n    (\n        SELECT DISTINCT\n            \"SKR\" as repository,\n            number,\n            labels_unpacked.name as label,\n            created_at,\n            closed_at\n        FROM `sap-kyma-prow.github_issues.github_tools_sap_kyma`, UNNEST(labels) as labels_unpacked\n        WHERE labels_unpacked.name = \"bug\" AND state = \"open\"\n        AND repository.name = \"backlog\"\n    )\n)\nSELECT\n    IFNULL(bugs_open.repository, bugs_prev.repository) as repository,\n    IFNULL(bugs_open.cnt, 0) as open,\n    IFNULL(bugs_open.cnt, 0) - IFNULL(bugs_prev.cnt, 0) as difference\nFROM\n(\n    SELECT \n        repository,\n        COUNT(*) as `cnt`\n    FROM issues_filtered\n    WHERE (closed_at IS NULL OR closed_at > $__millisTimeTo(closed_at))\n    AND created_at < $__millisTimeTo(created_at)\n    GROUP BY repository\n    ORDER BY repository ASC\n) as bugs_open\nFULL JOIN\n(\n    SELECT \n        repository,\n        COUNT(*) as `cnt`\n    FROM issues_filtered\n    WHERE (closed_at IS NULL OR closed_at > $__millisTimeFrom(closed_at))\n    AND created_at < $__millisTimeFrom(closed_at)\n    GROUP BY repository\n    ORDER BY repository ASC\n) as bugs_prev\nON bugs_open.repository = bugs_prev.repository\n\n",
+          "rawSql": "WITH issues_filtered AS\n(\n    (\n        SELECT DISTINCT \n            repository.name as repository,\n            CONCAT(\"https://github.com/kyma-project/\", repository.name, \"/labels/bug\") as url,\n            number,\n            labels_unpacked.name as label,\n            created_at,\n            closed_at\n        FROM `sap-kyma-prow.github_issues.github_com_kyma_project`, UNNEST(labels) as labels_unpacked\n        WHERE labels_unpacked.name = \"bug\" AND repository.name IN (\"kyma\", \"control-plane\") AND pull_request IS NULL\n    )\n    UNION ALL\n    (\n        SELECT DISTINCT\n            \"SKR\" as repository,\n            CONCAT(\"https://github.tools.sap/kyma/\", repository.name, \"/labels/bug\") as url,\n            number,\n            labels_unpacked.name as label,\n            created_at,\n            closed_at\n        FROM `sap-kyma-prow.github_issues.github_tools_sap_kyma`, UNNEST(labels) as labels_unpacked\n        WHERE labels_unpacked.name = \"bug\" AND repository.name = \"backlog\" AND pull_request IS NULL\n    )\n)\nSELECT\n    IFNULL(bugs_open.repository, bugs_prev.repository) as repository,\n    IFNULL(bugs_open.url, bugs_prev.url) as url,\n    IFNULL(bugs_open.cnt, 0) as open,\n    IFNULL(bugs_open.cnt, 0) - IFNULL(bugs_prev.cnt, 0) as difference\nFROM\n(\n    SELECT \n        repository,\n        url,\n        COUNT(*) as `cnt`\n    FROM issues_filtered\n    WHERE (closed_at IS NULL OR closed_at > $__millisTimeTo(closed_at))\n    AND created_at < $__millisTimeTo(created_at)\n    GROUP BY repository, url\n    ORDER BY repository ASC\n) as bugs_open\nFULL JOIN\n(\n    SELECT \n        repository,\n        url,\n        COUNT(*) as `cnt`\n    FROM issues_filtered\n    WHERE (closed_at IS NULL OR closed_at > $__millisTimeFrom(closed_at))\n    AND created_at < $__millisTimeFrom(closed_at)\n    GROUP BY repository, url\n    ORDER BY repository ASC\n) as bugs_prev\nON bugs_open.repository = bugs_prev.repository\nORDER BY repository",
           "refId": "A",
           "select": [
             [
@@ -679,6 +691,7 @@
       "targets": [
         {
           "cacheDurationSeconds": 300,
+          "convertToUTC": false,
           "fields": [
             {
               "jsonPath": ""
@@ -692,7 +705,7 @@
           "orderBySort": "1",
           "queryParams": "",
           "rawQuery": true,
-          "rawSql": "WITH bugs AS\n(\n  (\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`, UNNEST(labels) as labels_unpacked\n    WHERE repository.name  IN (\"kyma\", \"control-plane\") AND labels_unpacked.name = \"bug\" AND state = \"open\"\n  )\n  UNION ALL\n  (\n    SELECT DISTINCT\n        repository.name as repository,\n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.github_tools_sap_kyma`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"bug\" AND state = \"open\"\n    AND repository.name = \"backlog\"\n  )\n)\nSELECT \n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    ) as one_week,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)\n    ) as one_month,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30* 3 DAY)\n    ) as three_months,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30*6 DAY)\n    ) as six_months,",
+          "rawSql": "WITH bugs AS\n(\n  (\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label,\n        created_at,\n        closed_at\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`, UNNEST(labels) as labels_unpacked\n    WHERE repository.name  IN (\"kyma\", \"control-plane\") AND labels_unpacked.name = \"bug\"\n  )\n  UNION ALL\n  (\n    SELECT DISTINCT\n        repository.name as repository,\n        number,\n        labels_unpacked.name as label,\n        created_at,\n        closed_at\n    FROM `sap-kyma-prow.github_issues.github_tools_sap_kyma`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"bug\"\n    AND repository.name = \"backlog\"\n  )\n)\nSELECT \n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at >= TIMESTAMP_SUB($__millisTimeTo(created_at), INTERVAL 7 DAY)\n        AND (closed_at IS NULL OR closed_at > $__millisTimeTo(created_at))\n    ) as one_week,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB($__millisTimeTo(created_at), INTERVAL 30 DAY)\n        AND (closed_at IS NULL OR closed_at > $__millisTimeTo(created_at))\n    ) as one_month,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs\n        WHERE created_at <= TIMESTAMP_SUB($__millisTimeTo(created_at), INTERVAL 30*3 DAY)\n        AND (closed_at IS NULL OR closed_at > $__millisTimeTo(created_at))\n    ) as three_months,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs\n        WHERE created_at <= TIMESTAMP_SUB($__millisTimeTo(created_at), INTERVAL 30*6 DAY)\n        AND (closed_at IS NULL OR closed_at > $__millisTimeTo(created_at))\n    ) as six_months",
           "refId": "A",
           "select": [
             [
@@ -726,7 +739,7 @@
             "indexByName": {},
             "renameByName": {
               "one_month": "Older than 1 month",
-              "one_week": "New this week*",
+              "one_week": "Up to 1 week",
               "six_months": "Older than 6 months",
               "three_months": "Older than 3 months"
             }
@@ -783,13 +796,28 @@
       },
       "styles": [
         {
-          "alias": "Time",
+          "$$hashKey": "object:974",
+          "alias": "Repository",
           "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "Time",
-          "type": "date"
+          "decimals": 2,
+          "link": true,
+          "linkUrl": "${__cell_1:raw}",
+          "mappingType": 1,
+          "pattern": "repository",
+          "sanitize": false,
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
         },
         {
+          "$$hashKey": "object:939",
           "alias": "",
           "align": "right",
           "colorMode": null,
@@ -799,7 +827,25 @@
             "rgba(50, 172, 45, 0.97)"
           ],
           "decimals": 2,
-          "pattern": "/.*/",
+          "pattern": "url",
+          "thresholds": [],
+          "type": "hidden",
+          "unit": "short"
+        },
+        {
+          "$$hashKey": "object:1011",
+          "alias": "Count",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "cnt",
           "thresholds": [],
           "type": "number",
           "unit": "short"
@@ -821,7 +867,7 @@
           "orderBySort": "1",
           "queryParams": "",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"test-case\" AND state = \"open\"\n)\nSELECT \n    repository,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nGROUP BY repository\nORDER BY repository",
+          "rawSql": "WITH issues_filtered AS\n(\n  (\n    SELECT DISTINCT \n        repository.name as repository,\n        CONCAT(\"https://github.com/kyma-project/\", repository.name, \"/labels/test-case\") as url,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"test-case\" AND state = \"open\"\n  )\n  UNION ALL\n  (\n    SELECT DISTINCT\n        \"SKR\" as repository,\n        CONCAT(\"https://github.tools.sap/kyma/\", repository.name, \"/labels/test-case\") as url,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.github_tools_sap_kyma`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"test-case\" AND state = \"open\"\n    AND repository.name = \"backlog\"\n  )\n)\nSELECT \n    repository,\n    url,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nGROUP BY repository, url\nORDER BY repository",
           "refId": "A",
           "select": [
             [
@@ -843,57 +889,11 @@
               "type": "macro"
             }
           ]
-        },
-        {
-          "format": "table",
-          "group": [],
-          "hide": false,
-          "metricColumn": "none",
-          "orderByCol": "1",
-          "orderBySort": "1",
-          "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.github_tools_sap_kyma`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"test-case\" AND state = \"open\"\n)\nSELECT\n    \"SKR\" as repository,\n    COUNT(*) as `cnt`\nFROM issues_filtered",
-          "refId": "SKR",
-          "select": [
-            [
-              {
-                "params": [
-                  "-- value --"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "timeColumn": "-- time --",
-          "timeColumnType": "TIMESTAMP",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
         }
       ],
       "title": "Test cases for release",
       "transform": "table",
-      "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "cnt": "Count",
-              "repository": "Repository"
-            }
-          }
-        }
-      ],
+      "transformations": [],
       "type": "table-old"
     },
     {
@@ -958,25 +958,25 @@
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 0,
           "mappingType": 1,
-          "pattern": "cnt",
+          "pattern": "open",
           "thresholds": [],
           "type": "number",
           "unit": "short"
         },
         {
           "$$hashKey": "object:133",
-          "alias": "",
+          "alias": "Differnece",
           "align": "right",
           "colorMode": "value",
           "colors": [
             "rgba(50, 172, 45, 0.97)",
-            "rgba(255, 255, 255, 0.89)",
+            "rgba(178, 178, 178, 0.89)",
             "rgba(245, 54, 54, 0.9)"
           ],
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 0,
           "mappingType": 1,
-          "pattern": "Difference",
+          "pattern": "difference",
           "thresholds": [
             "0",
             "1"
@@ -1003,7 +1003,7 @@
           "orderBySort": "2",
           "queryParams": "",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    (\n        SELECT DISTINCT \n            repository.name as repository,\n            number,\n            labels_unpacked.name as label,\n            created_at,\n            closed_at\n        FROM `sap-kyma-prow.github_issues.github_com_kyma_project`, UNNEST(labels) as labels_unpacked\n        WHERE repository.name IN (\"kyma\", \"control-plane\")\n    )\n    UNION ALL\n    (\n        SELECT DISTINCT\n            repository.name as repository,\n            number,\n            labels_unpacked.name as label,\n            created_at,\n            closed_at\n        FROM `sap-kyma-prow.github_issues.github_tools_sap_kyma`, UNNEST(labels) as labels_unpacked\n        WHERE repository.name = \"backlog\"\n    )\n)\nSELECT\n    IFNULL(issues_open.area, issues_prev.area) as area,\n    IFNULL(issues_prev.cnt, 0) as previous,\n    IFNULL(issues_open.cnt, 0) as open\nFROM\n(\n    SELECT \n        SUBSTR(label,6) as area,\n        COUNT(*) as `cnt`\n    FROM issues_filtered\n    WHERE label LIKE \"area/%\"\n    AND (number, repository) IN (SELECT (number, repository) FROM issues_filtered WHERE label = \"bug\")\n    AND (closed_at IS NULL OR closed_at > $__millisTimeTo(closed_at))\n    AND created_at < $__millisTimeTo(created_at)\n    GROUP BY label\n    ORDER BY area\n) as issues_open\nFULL JOIN\n(\n    SELECT \n      SUBSTR(label,6) as area,\n      COUNT(*) as `cnt`\n    FROM issues_filtered\n    WHERE label LIKE \"area/%\"\n    AND (number, repository) IN (SELECT (number, repository) FROM issues_filtered WHERE label = \"bug\")\n    -- get all issues that were created BEFORE the selected period, and still open or closed AFTER/DURING selected period\n    AND (closed_at IS NULL OR closed_at > $__millisTimeFrom(closed_at))\n    AND created_at < $__millisTimeFrom(closed_at)\n    GROUP BY label\n    ORDER BY area\n) as issues_prev\nON issues_open.area = issues_prev.area\n",
+          "rawSql": "WITH issues_filtered AS\n(\n    (\n        SELECT DISTINCT \n            repository.name as repository,\n            number,\n            labels_unpacked.name as label,\n            created_at,\n            closed_at\n        FROM `sap-kyma-prow.github_issues.github_com_kyma_project`, UNNEST(labels) as labels_unpacked\n        WHERE repository.name IN (\"kyma\", \"control-plane\")\n    )\n    UNION ALL\n    (\n        SELECT DISTINCT\n            repository.name as repository,\n            number,\n            labels_unpacked.name as label,\n            created_at,\n            closed_at\n        FROM `sap-kyma-prow.github_issues.github_tools_sap_kyma`, UNNEST(labels) as labels_unpacked\n        WHERE repository.name = \"backlog\"\n    )\n)\nSELECT\n    IFNULL(issues_open.area, issues_prev.area) as area,\n    IFNULL(issues_open.cnt, 0) as open,\n    IFNULL(issues_open.cnt, 0) - IFNULL(issues_prev.cnt, 0) as difference,\nFROM\n(\n    SELECT \n        SUBSTR(label,6) as area,\n        COUNT(*) as `cnt`\n    FROM issues_filtered\n    WHERE label LIKE \"area/%\"\n    AND (number, repository) IN (SELECT (number, repository) FROM issues_filtered WHERE label = \"bug\")\n    AND (closed_at IS NULL OR closed_at > $__millisTimeTo(closed_at))\n    AND created_at < $__millisTimeTo(created_at)\n    GROUP BY label\n    ORDER BY area\n) as issues_open\nFULL JOIN\n(\n    SELECT \n      SUBSTR(label,6) as area,\n      COUNT(*) as `cnt`\n    FROM issues_filtered\n    WHERE label LIKE \"area/%\"\n    AND (number, repository) IN (SELECT (number, repository) FROM issues_filtered WHERE label = \"bug\")\n    -- get all issues that were created BEFORE the selected period, and still open or closed AFTER/DURING selected period\n    AND (closed_at IS NULL OR closed_at > $__millisTimeFrom(closed_at))\n    AND created_at < $__millisTimeFrom(closed_at)\n    GROUP BY label\n    ORDER BY area\n) as issues_prev\nON issues_open.area = issues_prev.area\n",
           "refId": "Open",
           "select": [
             [
@@ -1029,54 +1029,7 @@
       ],
       "title": "Open bugs per area",
       "transform": "table",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {
-              "area": 0,
-              "cnt 1": 2,
-              "cnt 2": 1
-            },
-            "renameByName": {
-              "cnt 1": "Curr",
-              "cnt 2": "Prev"
-            }
-          }
-        },
-        {
-          "id": "calculateField",
-          "options": {
-            "mode": "reduceRow",
-            "reduce": {
-              "include": [
-                "previous",
-                "open"
-              ],
-              "reducer": "diff"
-            },
-            "replaceFields": false
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Prev": true,
-              "previous": true
-            },
-            "indexByName": {},
-            "renameByName": {
-              "Curr": "Open",
-              "Difference": "Difference",
-              "Prev": "Previous (hide this)",
-              "area": "Area",
-              "open": "Open"
-            }
-          }
-        }
-      ],
+      "transformations": [],
       "type": "table-old"
     },
     {
@@ -1108,14 +1061,6 @@
       },
       "styles": [
         {
-          "$$hashKey": "object:692",
-          "alias": "Time",
-          "align": "auto",
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "Time",
-          "type": "date"
-        },
-        {
           "$$hashKey": "object:731",
           "alias": "Open",
           "align": "auto",
@@ -1144,6 +1089,8 @@
             "rgba(50, 172, 45, 0.97)"
           ],
           "decimals": 2,
+          "link": true,
+          "linkUrl": "${__cell_1:raw}",
           "pattern": "repository",
           "thresholds": [],
           "type": "string",
@@ -1166,6 +1113,24 @@
           "thresholds": [],
           "type": "number",
           "unit": "short"
+        },
+        {
+          "$$hashKey": "object:344",
+          "alias": "",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "url",
+          "thresholds": [],
+          "type": "hidden",
+          "unit": "short"
         }
       ],
       "targets": [
@@ -1184,7 +1149,7 @@
           "orderBySort": "1",
           "queryParams": "",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"priority/critical\" AND state = \"open\"\n)\nSELECT\n    issues_all.repository,\n    critical_open,\n    COALESCE(critical_new, 0)\nFROM\n(\n    SELECT \n        repository,\n        COUNT(*) as `critical_open`\n    FROM issues_filtered\n    GROUP BY repository\n) AS issues_all LEFT JOIN (\n    SELECT \n        repository,\n        COUNT(*) as `critical_new`\n    FROM issues_filtered\n    WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    GROUP BY repository\n) AS issues_new ON issues_all.repository = issues_new.repository\n--GROUP BY repository\nORDER BY repository",
+          "rawSql": "WITH issues_filtered AS\n(\n    (\n    SELECT DISTINCT \n        repository.name as repository,\n        CONCAT(\"https://github.com/kyma-project/\", repository.name, \"/labels/priority/critical\") as url,\n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM sap-kyma-prow.github_issues.github_com_kyma_project, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"priority/critical\" AND state = \"open\"\n    )\n    UNION ALL \n    ( \n        SELECT DISTINCT \n        \"SKR\" as repository,\n        CONCAT(\"https://github.tools.sap/kyma/\", repository.name, \"/labels/priority/critical\") as url,\n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM sap-kyma-prow.github_issues.github_tools_sap_kyma, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"priority/critical\" AND state = \"open\"\n    AND repository.name = \"backlog\"\n    )\n)\nSELECT\n    issues_all.repository,\n    issues_all.url,\n    critical_open,\n    COALESCE(critical_new, 0)\nFROM\n(\n    SELECT \n        repository,\n        url,\n        COUNT(*) as `critical_open`\n    FROM issues_filtered\n    GROUP BY repository, url\n) AS issues_all LEFT JOIN (\n    SELECT \n        repository,\n        url,\n        COUNT(*) as `critical_new`\n    FROM issues_filtered\n    WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    GROUP BY repository, url\n) AS issues_new ON issues_all.repository = issues_new.repository\nORDER BY repository",
           "refId": "A",
           "select": [
             [
@@ -1206,59 +1171,11 @@
               "type": "macro"
             }
           ]
-        },
-        {
-          "format": "table",
-          "group": [],
-          "hide": false,
-          "metricColumn": "none",
-          "orderByCol": "1",
-          "orderBySort": "1",
-          "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM `sap-kyma-prow.github_issues.github_tools_sap_kyma`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"priority/critical\" AND state = \"open\"\n)\nSELECT\n    issues_all.repository,\n    critical_open,\n    COALESCE(critical_new, 0)\nFROM\n(\n    SELECT \n        \"SKR\" as repository,\n        COUNT(*) as `critical_open`\n    FROM issues_filtered\n    GROUP BY repository\n) AS issues_all LEFT JOIN (\n    SELECT \n        \"SKR\" as repository,\n        COUNT(*) as `critical_new`\n    FROM issues_filtered\n    WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    GROUP BY repository\n) AS issues_new ON issues_all.repository = issues_new.repository\n--GROUP BY repository\nORDER BY repository",
-          "refId": "SKR",
-          "select": [
-            [
-              {
-                "params": [
-                  "-- value --"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "timeColumn": "-- time --",
-          "timeColumnType": "TIMESTAMP",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
         }
       ],
       "title": "Critical issues",
       "transform": "table",
-      "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "cnt": "Count",
-              "critical_open": "Open",
-              "f0_": "New",
-              "repository": "Repository"
-            }
-          }
-        }
-      ],
+      "transformations": [],
       "type": "table-old"
     },
     {
