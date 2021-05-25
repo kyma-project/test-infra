@@ -139,6 +139,7 @@ utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
 if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
     gardener::hibernate_kyma
+    # TODO make the sleep value configurable (if it makes sense)
     sleep 120
     gardener::wake_up_kyma
 fi
