@@ -25,7 +25,7 @@ func TestFaileryJobPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
-	assert.True(t, actualPresubmit.Decorate)
+
 	assert.False(t, actualPresubmit.Optional)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "main")
 	assert.Equal(t, "^tools/failery/", actualPresubmit.RunIfChanged)
@@ -52,7 +52,7 @@ func TestFaileryJobPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPost.Branches)
 
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
-	assert.True(t, actualPost.Decorate)
+
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "main")
 	assert.Equal(t, tester.ImageGolangBuildpack1_14, actualPost.Spec.Containers[0].Image)
 	assert.Equal(t, "^tools/failery/", actualPost.RunIfChanged)

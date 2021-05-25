@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -31,11 +32,11 @@ func TestReplaceConfigMapFromFile(t *testing.T) {
 	require.NoError(t, err)
 
 	client := fake.NewSimpleClientset()
-	client.CoreV1().ConfigMaps("default").Create(&v1.ConfigMap{
+	client.CoreV1().ConfigMaps("default").Create(context.Background(), &v1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: "test",
 		},
-	})
+	}, metav1.CreateOptions{})
 
 	var testCases = []struct {
 		name       string
@@ -58,7 +59,7 @@ func TestReplaceConfigMapFromFile(t *testing.T) {
 			} else {
 				require.NoError(t, err)
 
-				config, err := client.CoreV1().ConfigMaps("default").Get("test", metav1.GetOptions{})
+				config, err := client.CoreV1().ConfigMaps("default").Get(context.Background(), "test", metav1.GetOptions{})
 				require.NoError(t, err)
 				require.NotNil(t, config)
 				assert.Len(t, config.Data, 1)
@@ -78,11 +79,11 @@ func TestReplaceConfigMapFromDirectory(t *testing.T) {
 	require.NoError(t, err)
 
 	client := fake.NewSimpleClientset()
-	client.CoreV1().ConfigMaps("default").Create(&v1.ConfigMap{
+	client.CoreV1().ConfigMaps("default").Create(context.Background(), &v1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: "test",
 		},
-	})
+	}, metav1.CreateOptions{})
 
 	var testCases = []struct {
 		name         string
@@ -106,7 +107,7 @@ func TestReplaceConfigMapFromDirectory(t *testing.T) {
 			} else {
 				require.NoError(t, err)
 
-				config, err := client.CoreV1().ConfigMaps("default").Get("test", metav1.GetOptions{})
+				config, err := client.CoreV1().ConfigMaps("default").Get(context.Background(), "test", metav1.GetOptions{})
 				require.NoError(t, err)
 				require.NotNil(t, config)
 				assert.Len(t, config.Data, testCase.entriesCount)

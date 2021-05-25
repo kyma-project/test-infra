@@ -23,7 +23,7 @@ func TestKymaCliIntegrationPresubmit(t *testing.T) {
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
-	assert.True(t, actualPresubmit.Decorate)
+
 	assert.True(t, actualPresubmit.AlwaysRun)
 	assert.Equal(t, "github.com/kyma-project/cli", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "main")
@@ -46,7 +46,7 @@ func TestKymaCliIntegrationJobPostsubmit(t *testing.T) {
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
-	assert.True(t, actualPost.Decorate)
+
 	assert.Equal(t, "github.com/kyma-project/cli", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "main")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.BuildMaster, preset.GCProjectEnv, "preset-sa-vm-kyma-integration")
@@ -68,7 +68,7 @@ func TestKymaCliIntegrationGKEPeriodic(t *testing.T) {
 	actualPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, actualPeriodic)
 	assert.Equal(t, expName, actualPeriodic.Name)
-	assert.True(t, actualPeriodic.Decorate)
+
 	assert.Equal(t, "00 00 * * *", actualPeriodic.Cron)
 	tester.AssertThatHasExtraRepoRefCustom(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra", "cli"}, []string{"main", "main"})
 	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, preset.SaGKEKymaIntegration, preset.GCProjectEnv, "preset-gc-compute-envs", "preset-cluster-use-ssd", preset.ClusterVersion)
@@ -82,7 +82,7 @@ func TestKymaCliIntegrationGKEPeriodic(t *testing.T) {
 	actualPeriodic = tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, actualPeriodic)
 	assert.Equal(t, expName, actualPeriodic.Name)
-	assert.True(t, actualPeriodic.Decorate)
+
 	assert.Equal(t, "00 */1 * * 1-5", actualPeriodic.Cron)
 	tester.AssertThatHasExtraRepoRefCustom(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra", "cli", "kyma"}, []string{"main", "main", "main"})
 	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, preset.GardenerGCPIntegration, preset.ClusterVersion)

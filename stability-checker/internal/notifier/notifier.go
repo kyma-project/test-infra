@@ -75,7 +75,7 @@ func (s *SlackNotifier) Run(ctx context.Context) {
 			return
 		}
 
-		cfg, err := s.cfgMapClient.Get(s.cfgMapName, metaV1.GetOptions{})
+		cfg, err := s.cfgMapClient.Get(context.Background(), s.cfgMapName, metaV1.GetOptions{})
 		if err != nil {
 			s.log.Errorf("Cannot get ConfigMap %s, got error: %v", s.cfgMapName, err)
 			continue

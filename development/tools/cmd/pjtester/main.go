@@ -22,7 +22,8 @@ func main() {
 		fmt.Printf("IMAGE_COMMIT: %s\n", os.Getenv("IMAGE_COMMIT"))
 	}
 	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
-	ghOptions.AddFlagsWithoutDefaultGitHubTokenPath(fs)
+	ghOptions.AddFlags(fs)
+	ghOptions.AllowAnonymous = true
 	_ = fs.Parse(os.Args[1:])
 	if err := ghOptions.Validate(false); err != nil {
 		logrus.WithError(err).Fatalf("github options validation failed")

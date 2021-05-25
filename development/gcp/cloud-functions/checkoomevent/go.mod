@@ -1,6 +1,6 @@
 module github.com/kyma-project/test-infra/development/gcp/cloud-functions/checkoomevent
 
-go 1.14
+go 1.13
 
 require (
 	cloud.google.com/go/pubsub v1.9.0

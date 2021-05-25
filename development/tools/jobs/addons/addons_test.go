@@ -25,7 +25,7 @@ func TestAddonsJobPresubmit(t *testing.T) {
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
-	assert.True(t, actualPresubmit.Decorate)
+
 	assert.True(t, actualPresubmit.AlwaysRun)
 	assert.False(t, actualPresubmit.Optional)
 	assert.Equal(t, "github.com/kyma-project/addons", actualPresubmit.PathAlias)
@@ -53,7 +53,7 @@ func TestAddonsJobPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPost.Branches)
 
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
-	assert.True(t, actualPost.Decorate)
+
 	assert.Equal(t, "github.com/kyma-project/addons", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "main")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.BotGithubToken)
@@ -77,7 +77,7 @@ func TestAddonsReleaseJobPostsubmit(t *testing.T) {
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
-	assert.True(t, actualPost.Decorate)
+
 	assert.Equal(t, "github.com/kyma-project/addons", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "main")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.BotGithubToken)

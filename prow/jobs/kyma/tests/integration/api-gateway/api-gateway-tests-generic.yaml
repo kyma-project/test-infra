@@ -42,6 +42,16 @@ presubmits: # runs on PRs
         - ^master$
         - ^main$
     
+    - name: pre-rel123-kyma-tests-integration-api-gateway
+      cluster: untrusted-workload
+      optional: false
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.23
+      branches:
+        - release-1.23
+    
     - name: pre-rel122-kyma-tests-integration-api-gateway
       cluster: untrusted-workload
       optional: false
@@ -62,16 +72,6 @@ presubmits: # runs on PRs
       branches:
         - release-1.21
     
-    - name: pre-rel120-kyma-tests-integration-api-gateway
-      cluster: untrusted-workload
-      optional: false
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.20
-      branches:
-        - release-1.20
-    
 
 postsubmits:
   kyma-project/kyma:
@@ -87,6 +87,17 @@ postsubmits:
       - ^master$
       - ^main$
       
+    - name: post-rel123-kyma-tests-integration-api-gateway
+      cluster: trusted-workload
+      annotations:
+        testgrid-create-test-group: "false"
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.23
+      branches:
+        - release-1.23
+    
     - name: post-rel122-kyma-tests-integration-api-gateway
       cluster: trusted-workload
       annotations:
@@ -108,15 +119,4 @@ postsubmits:
           base_ref: release-1.21
       branches:
         - release-1.21
-    
-    - name: post-rel120-kyma-tests-integration-api-gateway
-      cluster: trusted-workload
-      annotations:
-        testgrid-create-test-group: "false"
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.20
-      branches:
-        - release-1.20
     
