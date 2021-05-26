@@ -26,10 +26,6 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3s.sh"
           vm_job_template_serverless_k3s:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3s.sh"
-          vm_job_template_serverless_alpha_k3s:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3s.sh"
-            env:
-              USE_ALPHA: "true"
           vm_job_labels_template:
             labels:
               preset-kyma-guard-bot-github-token: "true"
@@ -145,6 +141,8 @@ templates:
                   run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
+                  env:
+                    USE_ALPHA: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -154,7 +152,7 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "request_small"
-                    - "vm_job_template_serverless_alpha_k3s"
+                    - "vm_job_template_serverless_k3s"
                     - "vm_job_labels_template"
               - jobConfig:
                   name: "pre-main-kyma-gke-integration"
