@@ -32,7 +32,6 @@ presubmits: # runs on PRs
       branches:
         - ^master$
         - ^main$
-        - ^hotfix-.*$
       extra_refs:
         - org: kyma-project
           repo: test-infra
