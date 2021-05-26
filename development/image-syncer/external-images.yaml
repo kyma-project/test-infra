@@ -6,7 +6,7 @@ images:
 #- source: "busybox:1.32.0"
 - source: "curlimages/curl:7.70.0"
 - source: "cypress/included:7.4.0"
-#- source: "golang:1.16.3-alpine"
+- source: "golang:1.16.4-alpine"
 - source: "grafana/loki:2.1.0"
 - source: "hudymi/mockice:0.1.3"
 - source: "istio/pilot:1.9.5-distroless"
