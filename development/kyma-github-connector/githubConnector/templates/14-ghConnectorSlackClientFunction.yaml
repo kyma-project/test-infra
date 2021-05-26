@@ -17,7 +17,17 @@ spec:
       value: "10"
     - name: NOTIFICATION_SLACK_CHANNEL
       valueFrom:
+        configMapKeyRef:
+          name: {{ .Release.Name }}-gh-webhook-gateway-config
+          key: notificationSlackChannel
+    - name: SLACK_BOT_TOKEN
+      valueFrom:
         secretKeyRef:
-          name: {{ .Release.Name }}-ghsecret
-          key: slackChannel
+          name: {{ .Values.slackConnector.botTokenSecret }}
+          key: {{ .Values.slackConnector.botTokenSecretKey }}
+    - name: SLACK_API_ID
+      valueFrom:
+        configMapKeyref:
+          name: {{ .Release.Name }}-gh-webhook-gateway-config
+          key: slackConnectorApiId
   runtime: python38

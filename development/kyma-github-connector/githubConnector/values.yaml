@@ -8,8 +8,6 @@ webhookGateway:
   image: "eu.gcr.io/sap-kyma-neighbors-dev/ghwebhookgateway:1.2.0"
   # Secret set for Github webhooks.
   webhookSecretValue: "dummy-secret"
-  # Slack channel name to send messages.
-  notificationSlackChannel: "kyma-team"
   # Kyma cluster FQDN.
   eventPublisherProxyURL: "http://eventing-event-publisher-proxy.kyma-system/publish"
   # Event type published to Kyma
@@ -24,6 +22,8 @@ cmpAppPlanSuffix: "a249d"
 kymaClusterHostname: "ddf1313.kyma-stage.shoot.live.k8s-hana.ondemand.com"
 
 slackConnector:
+  # Slack channel name to send messages.
+  notificationSlackChannel: "kyma-team"
   # Slack connector application name. Must match name from Application resource.
   slackAppName: "slack-connector"
   # Slack connector API ID

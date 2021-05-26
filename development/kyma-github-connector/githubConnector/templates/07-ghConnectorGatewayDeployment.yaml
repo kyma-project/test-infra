@@ -44,3 +44,8 @@ spec:
             configMapKeyRef:
               name: {{ .Release.Name }}-gh-webhook-gateway-config
               key: ghWebhookGatewayPodPort
+        - name: APP_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: appName
+              name: {{ .Release.Name }}-gh-webhook-gateway-config

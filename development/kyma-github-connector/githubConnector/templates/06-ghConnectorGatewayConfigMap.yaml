@@ -7,8 +7,8 @@ metadata:
     app: "mp-{{ .Values.appName }}"
     release: {{ .Release.Name | quote }}
 data:
-  #kymaEventsService: "http://mp-{{ .Values.appName }}-event-service.kyma-integration:8081/mp-{{ .Values.appName }}/v1/events"
   kymaEventingProxy: {{ .Values.webhookGateway.eventPublisherProxyURL | quote }}
-  #kymaEventsPort: "8081"
+  notificationSlackChannel: {{ default "kyma-prow-dev-null" .Values.slackConnector.notificationSlackChannel | quote}}
+  appName: {{ .Values.appName | quote }}
   ghWebhookGatewayPodPort: {{ .Values.webhookGateway.containerPort | quote }}
-  slackChannel: {{ default "kyma-prow-dev-null" .Values.webhookGateway.notificationSlackChannel | quote}}
+  slackConnectorApiId: {{ .Values.slackConnector.apiId | upper }}
