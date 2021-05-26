@@ -14,7 +14,8 @@ def main(event, context):
 	)
 	print("Slack api base URL: {}".format(app.client.base_url))
 	# Get cloud events data.
-	msg = json.loads(base64.b64decode(event["data"]["Data"]))
+	print(event)
+	msg = json.loads(base64.b64decode(event["data"]))
 	print("msg: {}".format(msg))
 	label = msg["label"]["name"]
 	title = msg["issue"]["title"]

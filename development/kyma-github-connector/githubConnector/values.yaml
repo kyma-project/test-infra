@@ -21,7 +21,7 @@ slackConnector:
   # Slack channel name to send messages.
   notificationSlackChannel: "kyma-team"
   # Slack connector application name. Must match name from Application resource.
-  slackAppName: "slack-connector"
+  slackAppName: "mp-sap-slack-connector"
   # Slack connector API ID
   apiId: "2906b647-0dfe-4bf0-98e8-1c50d0348550"
   # Slack application plan base name
