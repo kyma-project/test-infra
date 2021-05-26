@@ -27,6 +27,13 @@
           "color": {
             "mode": "thresholds"
           },
+          "displayName": "${__series.name}",
+          "links": [
+            {
+              "title": "",
+              "url": "https://github.tools.sap/kyma/backlog/issues?q=is%3Aopen+is%3Aissue+label%3A${__series.name}+label%3Abug"
+            }
+          ],
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -43,26 +50,7 @@
           },
           "unit": "short"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "internal-incident"
-            },
-            "properties": [
-              {
-                "id": "links",
-                "value": [
-                  {
-                    "targetBlank": true,
-                    "title": "",
-                    "url": "https://github.tools.sap/kyma/backlog/issues?q=is%3Aopen+is%3Aissue+label%3Ainternal-incident+label%3Abug"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 5,
@@ -97,7 +85,7 @@
           "orderBySort": "1",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM sap-kyma-prow.github_issues.github_tools_sap_kyma, UNNEST(labels) as labels_unpacked\n    WHERE state = \"open\"\n)\nSELECT \n    current_timestamp() as time,\n    label as metric,\n    COUNT(*)\nFROM issues_filtered\nWHERE label LIKE \"%incident\"\nAND number IN (SELECT number FROM issues_filtered  WHERE label = \"bug\")\nGROUP BY label",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM sap-kyma-prow.github_issues.github_tools_sap_kyma, UNNEST(labels) as labels_unpacked\n    WHERE (closed_at IS NULL OR closed_at > $__millisTimeTo(closed_at) )\n)\nSELECT \n    current_timestamp() as time,\n    label as metric,\n    COUNT(*)\nFROM issues_filtered\nWHERE label LIKE \"%incident\"\nAND number IN (SELECT number FROM issues_filtered  WHERE label = \"bug\")\nGROUP BY label\nORDER BY label",
           "refId": "A",
           "select": [
             [
@@ -149,6 +137,13 @@
           "color": {
             "mode": "thresholds"
           },
+          "displayName": "${__series.name}",
+          "links": [
+            {
+              "title": "",
+              "url": "https://github.tools.sap/kyma/backlog/issues?q=is%3Aopen+is%3Aissue+label%3A${__series.name}+label%3Abug"
+            }
+          ],
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -198,7 +193,7 @@
           "orderBySort": "1",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM sap-kyma-prow.github_issues.github_tools_sap_kyma, UNNEST(labels) as labels_unpacked\n    WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n)\nSELECT \n    current_timestamp() as time,\n    label as metric,\n    COUNT(*)\nFROM issues_filtered\nWHERE label LIKE \"%incident\"\nAND number IN (SELECT number FROM issues_filtered  WHERE label = \"bug\")\nGROUP BY label",
+          "rawSql": "WITH issues_filtered AS\n(\n    SELECT DISTINCT \n        number,\n        labels_unpacked.name as label\n    FROM sap-kyma-prow.github_issues.github_tools_sap_kyma, UNNEST(labels) as labels_unpacked\n    WHERE created_at >= TIMESTAMP_SUB($__millisTimeTo(created_at), INTERVAL 7 DAY)\n    AND (closed_at IS NULL OR closed_at > $__millisTimeTo(closed_at) )\n)\nSELECT \n    current_timestamp() as time,\n    label as metric,\n    COUNT(*)\nFROM issues_filtered\nWHERE label LIKE \"%incident\"\nAND number IN (SELECT number FROM issues_filtered  WHERE label = \"bug\")\nGROUP BY label\nORDER BY label",
           "refId": "A",
           "select": [
             [
@@ -632,7 +627,7 @@
         "x": 17,
         "y": 5
       },
-      "id": 14,
+      "id": 30,
       "options": {
         "frameIndex": 0,
         "showHeader": true
@@ -647,15 +642,15 @@
       "styles": [
         {
           "$$hashKey": "object:514",
-          "alias": "Time",
+          "alias": "Age",
           "align": "auto",
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "Time",
-          "type": "date"
+          "pattern": "age",
+          "type": "string"
         },
         {
           "$$hashKey": "object:627",
-          "alias": "",
+          "alias": "Open",
           "align": "auto",
           "colorMode": null,
           "colors": [
@@ -664,27 +659,50 @@
             "rgba(50, 172, 45, 0.97)"
           ],
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
+          "decimals": 0,
           "mappingType": 1,
-          "pattern": "",
+          "pattern": "open",
           "thresholds": [],
           "type": "number",
           "unit": "short"
         },
         {
-          "$$hashKey": "object:515",
-          "alias": "Time",
-          "align": "left",
+          "$$hashKey": "object:634",
+          "alias": "",
+          "align": "auto",
+          "colorMode": "value",
+          "colors": [
+            "rgba(50, 172, 45, 0.97)",
+            "rgba(156, 156, 156, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "Difference",
+          "thresholds": [
+            "0",
+            "1"
+          ],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "$$hashKey": "object:832",
+          "alias": " Prev (hide this)",
+          "align": "auto",
           "colorMode": null,
           "colors": [
             "rgba(245, 54, 54, 0.9)",
             "rgba(237, 129, 40, 0.89)",
             "rgba(50, 172, 45, 0.97)"
           ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 0,
-          "pattern": "Field",
+          "mappingType": 1,
+          "pattern": "prev",
           "thresholds": [],
-          "type": "string",
+          "type": "hidden",
           "unit": "short"
         }
       ],
@@ -705,7 +723,7 @@
           "orderBySort": "1",
           "queryParams": "",
           "rawQuery": true,
-          "rawSql": "WITH bugs AS\n(\n  (\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label,\n        created_at,\n        closed_at\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`, UNNEST(labels) as labels_unpacked\n    WHERE repository.name  IN (\"kyma\", \"control-plane\") AND labels_unpacked.name = \"bug\"\n  )\n  UNION ALL\n  (\n    SELECT DISTINCT\n        repository.name as repository,\n        number,\n        labels_unpacked.name as label,\n        created_at,\n        closed_at\n    FROM `sap-kyma-prow.github_issues.github_tools_sap_kyma`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"bug\"\n    AND repository.name = \"backlog\"\n  )\n)\nSELECT \n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at >= TIMESTAMP_SUB($__millisTimeTo(created_at), INTERVAL 7 DAY)\n        AND (closed_at IS NULL OR closed_at > $__millisTimeTo(created_at))\n    ) as one_week,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs \n        WHERE created_at <= TIMESTAMP_SUB($__millisTimeTo(created_at), INTERVAL 30 DAY)\n        AND (closed_at IS NULL OR closed_at > $__millisTimeTo(created_at))\n    ) as one_month,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs\n        WHERE created_at <= TIMESTAMP_SUB($__millisTimeTo(created_at), INTERVAL 30*3 DAY)\n        AND (closed_at IS NULL OR closed_at > $__millisTimeTo(created_at))\n    ) as three_months,\n    (\n        SELECT \n            COUNT(*)\n        FROM bugs\n        WHERE created_at <= TIMESTAMP_SUB($__millisTimeTo(created_at), INTERVAL 30*6 DAY)\n        AND (closed_at IS NULL OR closed_at > $__millisTimeTo(created_at))\n    ) as six_months",
+          "rawSql": "WITH bugs AS\n(\n  (\n    SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label,\n        created_at,\n        closed_at\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`, UNNEST(labels) as labels_unpacked\n    WHERE repository.name  IN (\"kyma\", \"control-plane\") AND labels_unpacked.name = \"bug\"\n  )\n  UNION ALL\n  (\n    SELECT DISTINCT\n        repository.name as repository,\n        number,\n        labels_unpacked.name as label,\n        created_at,\n        closed_at\n    FROM `sap-kyma-prow.github_issues.github_tools_sap_kyma`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"bug\"\n    AND repository.name = \"backlog\"\n  )\n)\n\nSELECT r.* FROM (\n    SELECT \n    [\n        STRUCT<age STRING, prev INT64, open INT64>\n            (\n                \"Up to 1 week\",\n                (\n                    SELECT \n                        COUNT(*)\n                    FROM bugs \n                    WHERE created_at > TIMESTAMP_SUB($__millisTimeFrom(created_at), INTERVAL 7 DAY) \n                    AND created_at < $__millisTimeFrom(created_at)\n                    AND (closed_at IS NULL OR closed_at > $__millisTimeFrom(created_at))\n                ),\n                (\n                    SELECT \n                        COUNT(*)\n                    FROM bugs \n                    WHERE created_at > TIMESTAMP_SUB($__millisTimeTo(created_at), INTERVAL 7 DAY)\n                    AND created_at < $__millisTimeTo(created_at)\n                    AND (closed_at IS NULL OR closed_at > $__millisTimeTo(created_at))\n                )\n            ),\n            (\n                \"Older than 1 month\",\n                (\n                    SELECT \n                        COUNT(*)\n                    FROM bugs \n                    WHERE created_at < TIMESTAMP_SUB($__millisTimeFrom(created_at), INTERVAL 30 DAY)\n                    AND (closed_at IS NULL OR closed_at > $__millisTimeFrom(created_at))\n                ),\n                (\n                    SELECT \n                        COUNT(*)\n                    FROM bugs \n                    WHERE created_at < TIMESTAMP_SUB($__millisTimeTo(created_at), INTERVAL 30 DAY)\n                    AND (closed_at IS NULL OR closed_at > $__millisTimeTo(created_at))\n                )\n            ),\n            (\n                \"Older than 3 months\",\n                (\n                    SELECT \n                        COUNT(*)\n                    FROM bugs \n                    WHERE created_at < TIMESTAMP_SUB($__millisTimeFrom(created_at), INTERVAL 30*3 DAY)\n                    AND (closed_at IS NULL OR closed_at > $__millisTimeFrom(created_at))\n                ),\n                (\n                    SELECT \n                        COUNT(*)\n                    FROM bugs \n                    WHERE created_at < TIMESTAMP_SUB($__millisTimeTo(created_at), INTERVAL 30*3 DAY)\n                    AND (closed_at IS NULL OR closed_at > $__millisTimeTo(created_at))\n                )\n            ),\n            (\n                \"Older than 6 months\",\n                (\n                    SELECT \n                        COUNT(*)\n                    FROM bugs \n                    WHERE created_at < TIMESTAMP_SUB($__millisTimeFrom(created_at), INTERVAL 30*6 DAY)\n                    AND (closed_at IS NULL OR closed_at > $__millisTimeFrom(created_at))\n                ),\n                (\n                    SELECT \n                        COUNT(*)\n                    FROM bugs \n                    WHERE created_at < TIMESTAMP_SUB($__millisTimeTo(created_at), INTERVAL 30*6 DAY)\n                    AND (closed_at IS NULL OR closed_at > $__millisTimeTo(created_at))\n                )\n            )\n    ] as row\n), UNNEST(row) as r\n",
           "refId": "A",
           "select": [
             [
@@ -733,34 +751,15 @@
       "transform": "table",
       "transformations": [
         {
-          "id": "organize",
+          "id": "calculateField",
           "options": {
-            "excludeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "one_month": "Older than 1 month",
-              "one_week": "Up to 1 week",
-              "six_months": "Older than 6 months",
-              "three_months": "Older than 3 months"
-            }
-          }
-        },
-        {
-          "id": "reduce",
-          "options": {
-            "reducers": [
-              "sum"
-            ]
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "Field": "Time",
-              "Total": "Bugs"
+            "mode": "reduceRow",
+            "reduce": {
+              "include": [
+                "open",
+                "prev"
+              ],
+              "reducer": "diff"
             }
           }
         }
@@ -867,7 +866,7 @@
           "orderBySort": "1",
           "queryParams": "",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n  (\n    SELECT DISTINCT \n        repository.name as repository,\n        CONCAT(\"https://github.com/kyma-project/\", repository.name, \"/labels/test-case\") as url,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"test-case\" AND state = \"open\"\n  )\n  UNION ALL\n  (\n    SELECT DISTINCT\n        \"SKR\" as repository,\n        CONCAT(\"https://github.tools.sap/kyma/\", repository.name, \"/labels/test-case\") as url,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.github_tools_sap_kyma`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"test-case\" AND state = \"open\"\n    AND repository.name = \"backlog\"\n  )\n)\nSELECT \n    repository,\n    url,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nGROUP BY repository, url\nORDER BY repository",
+          "rawSql": "WITH issues_filtered AS\n(\n  (\n    SELECT DISTINCT \n        repository.name as repository,\n        CONCAT(\"https://github.com/kyma-project/\", repository.name, \"/labels/test-case\") as url,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"test-case\"\n    AND created_at < $__millisTimeTo(closed_at)\n    AND (closed_at IS NULL OR closed_at > $__millisTimeTo(closed_at) )\n  )\n  UNION ALL\n  (\n    SELECT DISTINCT\n        \"SKR\" as repository,\n        CONCAT(\"https://github.tools.sap/kyma/\", repository.name, \"/labels/test-case\") as url,\n        number,\n        labels_unpacked.name as label\n    FROM `sap-kyma-prow.github_issues.github_tools_sap_kyma`, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"test-case\"\n    AND created_at < $__millisTimeTo(closed_at)\n    AND (closed_at IS NULL OR closed_at > $__millisTimeTo(closed_at) )\n    AND repository.name = \"backlog\"\n  )\n)\nSELECT \n    repository,\n    url,\n    COUNT(*) as `cnt`\nFROM issues_filtered\nGROUP BY repository, url\nORDER BY repository",
           "refId": "A",
           "select": [
             [
@@ -1149,7 +1148,7 @@
           "orderBySort": "1",
           "queryParams": "",
           "rawQuery": true,
-          "rawSql": "WITH issues_filtered AS\n(\n    (\n    SELECT DISTINCT \n        repository.name as repository,\n        CONCAT(\"https://github.com/kyma-project/\", repository.name, \"/labels/priority/critical\") as url,\n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM sap-kyma-prow.github_issues.github_com_kyma_project, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"priority/critical\" AND state = \"open\"\n    )\n    UNION ALL \n    ( \n        SELECT DISTINCT \n        \"SKR\" as repository,\n        CONCAT(\"https://github.tools.sap/kyma/\", repository.name, \"/labels/priority/critical\") as url,\n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM sap-kyma-prow.github_issues.github_tools_sap_kyma, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"priority/critical\" AND state = \"open\"\n    AND repository.name = \"backlog\"\n    )\n)\nSELECT\n    issues_all.repository,\n    issues_all.url,\n    critical_open,\n    COALESCE(critical_new, 0)\nFROM\n(\n    SELECT \n        repository,\n        url,\n        COUNT(*) as `critical_open`\n    FROM issues_filtered\n    GROUP BY repository, url\n) AS issues_all LEFT JOIN (\n    SELECT \n        repository,\n        url,\n        COUNT(*) as `critical_new`\n    FROM issues_filtered\n    WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    GROUP BY repository, url\n) AS issues_new ON issues_all.repository = issues_new.repository\nORDER BY repository",
+          "rawSql": "WITH issues_filtered AS\n(\n    (\n    SELECT DISTINCT \n        repository.name as repository,\n        CONCAT(\"https://github.com/kyma-project/\", repository.name, \"/labels/priority/critical\") as url,\n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM sap-kyma-prow.github_issues.github_com_kyma_project, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"priority/critical\"\n    AND (closed_at IS NULL OR closed_at > $__millisTimeTo(closed_at) )\n    )\n    UNION ALL \n    ( \n        SELECT DISTINCT \n        \"SKR\" as repository,\n        CONCAT(\"https://github.tools.sap/kyma/\", repository.name, \"/labels/priority/critical\") as url,\n        number,\n        labels_unpacked.name as label,\n        created_at\n    FROM sap-kyma-prow.github_issues.github_tools_sap_kyma, UNNEST(labels) as labels_unpacked\n    WHERE labels_unpacked.name = \"priority/critical\"\n    AND (closed_at IS NULL OR closed_at > $__millisTimeTo(closed_at) )\n    AND repository.name = \"backlog\"\n    )\n)\nSELECT\n    issues_all.repository,\n    issues_all.url,\n    critical_open,\n    COALESCE(critical_new, 0)\nFROM\n(\n    SELECT \n        repository,\n        url,\n        COUNT(*) as `critical_open`\n    FROM issues_filtered\n    GROUP BY repository, url\n) AS issues_all LEFT JOIN (\n    SELECT \n        repository,\n        url,\n        COUNT(*) as `critical_new`\n    FROM issues_filtered\n    WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n    GROUP BY repository, url\n) AS issues_new ON issues_all.repository = issues_new.repository\nORDER BY repository",
           "refId": "A",
           "select": [
             [
@@ -1315,6 +1314,6 @@
   "timepicker": {},
   "timezone": "",
   "title": "Quality dashboard PoC",
-  "uid": "de6t5dfsw34dsa",
+  "uid": "de6t5dfsw34",
   "version": 18
 }
