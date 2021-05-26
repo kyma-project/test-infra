@@ -32,9 +32,6 @@ func (v validator) Validate(event cloudevents.Event) apperrors.AppError {
 	if len(event.Data()) == 0 {
 		return apperrors.WrongInput("cloudevent data should not be empty")
 	}
-	if event.DataContentType() == cloudevents.ApplicationJSON {
-		return apperrors.WrongInput("cloudevent content type should be application/json")
-	}
 
 	return nil
 }

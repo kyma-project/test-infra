@@ -12,10 +12,6 @@ webhookGateway:
   eventPublisherProxyURL: "http://eventing-event-publisher-proxy.kyma-system/publish"
   # Event type published to Kyma
   eventType: "issuesevent.labeled.v1"
-# Slack connector application name. Must match name from Application resource.
-#slackAppName: "slack-connector"
-# Slack application plan suffix. Must match suffix from CMP.
-#cmpSlackAppPlanSuffix: "36130"
 # Github application plan suffix. Must match suffix from CMP.
 cmpAppPlanSuffix: "a249d"
 # Kyma cluster FQDN.

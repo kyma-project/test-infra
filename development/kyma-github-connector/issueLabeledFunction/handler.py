@@ -10,7 +10,7 @@ def main(event, context):
 	)
 	# Set Slack API base URL to the URL of slack-connector application gateway.
 	app.client.base_url = "{}/".format(
-		os.environ['OOM_FOUND_SLACK_CONNECTOR_{}_GATEWAY_URL'.format(os.environ['SLACK_API_ID']).replace('-', '_')]
+		os.environ['KYMA_SLACK_SLACK_CONNECTOR_{}_GATEWAY_URL'.format(os.environ['SLACK_API_ID']).replace('-', '_')]
 	)
 	print("Slack api base URL: {}".format(app.client.base_url))
 	# Get cloud events data.

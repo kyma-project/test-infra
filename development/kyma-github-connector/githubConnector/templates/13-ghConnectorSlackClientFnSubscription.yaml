@@ -1,14 +1,14 @@
 apiVersion: eventing.kyma-project.io/v1alpha1
 kind: Subscription
 metadata:
-  name: {{ .Release.Name}}-oom-found
+  name: {{ .Release.Name }}-issue-labeled
   namespace: {{ .Release.Namespace }}
   labels:
     app: "mp-{{ .Values.appName }}"
     release: {{ .Release.Name | quote }}
-    function: "{{ .Release.Name }}-oom-found"
-    event: "oomevent"
-    action: "found"
+    function: "{{ .Release.Name }}-issue-labeled"
+    event: "issuesevent"
+    action: "labeled"
 spec:
   filter:
     filters:
@@ -22,4 +22,4 @@ spec:
         value: sap.kyma.custom.mp{{ .Values.appName | replace "-" "" }}.{{ .Values.webhookGateway.eventType }}
   protocol: ""
   protocolsettings: {}
-  sink: http://{{ .Release.Name }}-oom-found.{{ .Release.Namespace }}.svc.cluster.local
+  sink: http://{{ .Release.Name }}-issue-labeled.{{ .Release.Namespace }}.svc.cluster.local
