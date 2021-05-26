@@ -4,13 +4,16 @@ webhookGateway:
   # Github webhook gateway container listening port for incoming webhooks.
   containerPort: 8080
   # Github webhook gateway image.
-  image: "eu.gcr.io/kyma-project/test-infra/github-webhook-gateway:PR-3267"
+  #image: "eu.gcr.io/kyma-project/test-infra/github-webhook-gateway:1.2test"
+  image: "eu.gcr.io/sap-kyma-neighbors-dev/ghwebhookgateway:1.2.0"
   # Secret set for Github webhooks.
   webhookSecretValue: "dummy-secret"
   # Slack channel name to send messages.
   notificationSlackChannel: "kyma-team"
   # Kyma cluster FQDN.
   eventPublisherProxyURL: "http://eventing-event-publisher-proxy.kyma-system/publish"
+  # Event type published to Kyma
+  eventType: "issuesevent.labeled.v1"
 # Slack connector application name. Must match name from Application resource.
 #slackAppName: "slack-connector"
 # Slack application plan suffix. Must match suffix from CMP.
@@ -18,17 +21,17 @@ webhookGateway:
 # Github application plan suffix. Must match suffix from CMP.
 cmpAppPlanSuffix: "a249d"
 # Kyma cluster FQDN.
-kymaClusterHostname: "c-6751197.kyma.shoot.live.k8s-hana.ondemand.com"
+kymaClusterHostname: "ddf1313.kyma-stage.shoot.live.k8s-hana.ondemand.com"
 
 slackConnector:
   # Slack connector application name. Must match name from Application resource.
   slackAppName: "slack-connector"
   # Slack connector API ID
-  apiId: "85ded56e-303b-43b3-a950-8b1c3d519561"
+  apiId: "2906b647-0dfe-4bf0-98e8-1c50d0348550"
   # Slack application plan base name
   cmpSlackAppPlan: "slack-connector"
   # Slack application plan suffix. Must match suffix from CMP.
-  cmpSlackAppPlanSuffix: "36130"
+  cmpSlackAppPlanSuffix: "4af0a"
   # Secret name with slack bot token.
   botTokenSecret: "slack-bot-token"
   # Secret key name with slack bot token.
@@ -40,8 +43,8 @@ function:
   issues:
     labeled:
       # Repository URL with function code.
-      repositoryUrl: "https://github.com/kyma-project/test-infra.git"
+      repositoryUrl: "https://github.com/dekiel/test-infra.git"
       # Path to directory with function code. Relative to repository root.
       functionBaseDir: "/development/kyma-github-connector/issueLabeledFunction"
       # Branch name with function code.
-      branch: "main"
+      branch: "fix-gh-connector"

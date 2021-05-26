@@ -1,11 +1,11 @@
 apiVersion: servicecatalog.k8s.io/v1beta1
 kind: ServiceInstance
 metadata:
-  name: mp-{{ .Values.slackAppName }}
+  name: mp-{{ .Values.slackConnector.slackAppName }}
   namespace: {{ .Release.Namespace }}
   labels:
     app: "mp-{{ .Values.appName }}"
     release: {{ .Release.Name | quote }}
 spec:
-  serviceClassExternalName: mp-{{ .Values.slackAppName }}
-  servicePlanExternalName: {{ .Values.slackAppName }}-{{ .Values.cmpSlackAppPlanSuffix }}
+  serviceClassExternalName: mp-{{ .Values.slackConnector.slackAppName }}
+  servicePlanExternalName: {{ .Values.slackConnector.slackAppName }}-{{ .Values.slackConnector.cmpSlackAppPlanSuffix }}

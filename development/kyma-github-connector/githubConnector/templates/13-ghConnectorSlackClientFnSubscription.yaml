@@ -19,7 +19,7 @@ spec:
       eventType:
         property: type
         type: exact
-        value: sap.kyma.custom.mp{{ .Values.appName | replace "-" "" }}.{{ .Values.pubsubGateway.eventType }}
+        value: sap.kyma.custom.mp{{ .Values.appName | replace "-" "" }}.{{ .Values.webhookGateway.eventType }}
   protocol: ""
   protocolsettings: {}
   sink: http://{{ .Release.Name }}-oom-found.{{ .Release.Namespace }}.svc.cluster.local
