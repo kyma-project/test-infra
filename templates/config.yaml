@@ -684,6 +684,15 @@ templates:
           path: tests
           since: "1.17"
           optional: false
+  - from: templates/generic-compass-dump-component.yaml
+    render:
+      - to: ../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-dump-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *compass_generic_component
+          path: components/schema-migrator
+          since: "1.22"
+          optional: false
   - from: templates/releases.go.tmpl
     render:
       - to: ../development/tools/jobs/releases/releases.go

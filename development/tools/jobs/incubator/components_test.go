@@ -1,6 +1,7 @@
 package incubator
 
 import (
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"path"
 	"testing"
 
@@ -56,6 +57,16 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
 			jobsuite.AllReleases(),
+		},
+	},
+	{
+		name:  "schema-migrator-dump",
+		image: tester.ImageBootstrapTestInfraLatest,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.CompassRepo(),
+			jobsuite.Since(releases.Release122),
 		},
 	},
 	{

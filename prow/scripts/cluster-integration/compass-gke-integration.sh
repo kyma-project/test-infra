@@ -299,9 +299,6 @@ function installCompass() {
     exit 1
   fi
 
-  log::info "Pull DB dump from GCR bucket"
-  gsutil cp gs://sap-cp-cmp-dev-db-dump/dump.sql "${COMPASS_SOURCES_DIR}"/components/schema-migrator/seeds/dump.sql
-
   log::info "Build Compass-Installer Docker image"
   CLEANUP_DOCKER_IMAGE="true"
   COMPASS_INSTALLER_IMAGE="${COMPASS_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-compass-image.sh
