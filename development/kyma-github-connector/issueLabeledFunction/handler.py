@@ -14,10 +14,8 @@ def main(event, context):
 	)
 	print("Slack api base URL: {}".format(app.client.base_url))
 	# Get cloud events data.
-	print(event)
 	#msg = json.loads(base64.b64decode(event["data"]))
 	msg = event["data"]
-	print("msg: {}".format(msg))
 	label = msg["label"]["name"]
 	title = msg["issue"]["title"]
 	number = msg["issue"]["number"]
@@ -35,7 +33,7 @@ def main(event, context):
 		try:
 			# Deliver message to the channel.
 			result = app.client.chat_postMessage(channel=os.environ['NOTIFICATION_SLACK_CHANNEL'],
-											 text="oom found in <{}|{}> prowjob.".format(msg["url"], msg["job_name"]),
+											 text="issue {} #{} labeld as {} in {}".format(title, number, label, repo),
 											 username="GithubBot",
 											 blocks=[
 												{
