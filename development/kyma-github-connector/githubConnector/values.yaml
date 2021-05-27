@@ -12,23 +12,21 @@ webhookGateway:
   eventPublisherProxyURL: "http://eventing-event-publisher-proxy.kyma-system/publish"
   # Event type published to Kyma
   eventType: "issuesevent.labeled.v1"
-# Github application plan suffix. Must match suffix from CMP.
-cmpAppPlanSuffix: "a249d"
 # Kyma cluster FQDN.
-kymaClusterHostname: "ddf1313.kyma-stage.shoot.live.k8s-hana.ondemand.com"
+kymaClusterHostname: "c-6751197.kyma.shoot.live.k8s-hana.ondemand.com"
 
 slackConnector:
   # Slack channel name to send messages.
   #notificationSlackChannel: "kyma-team"
   notificationSlackChannel: "neighbors-dev-test"
   # Slack connector application name. Must match name from Application resource.
-  slackAppName: "mp-sap-slack-connector"
+  slackAppName: "mp-slack-connector"
   # Slack connector API ID
-  apiId: "2906b647-0dfe-4bf0-98e8-1c50d0348550"
+  apiId: "85ded56e-303b-43b3-a950-8b1c3d519561"
   # Slack application plan base name
   cmpSlackAppPlan: "slack-connector"
   # Slack application plan suffix. Must match suffix from CMP.
-  cmpSlackAppPlanSuffix: "4af0a"
+  cmpSlackAppPlanSuffix: "36130"
   # Secret name with slack bot token.
   botTokenSecret: "slack-bot-token"
   # Secret key name with slack bot token.

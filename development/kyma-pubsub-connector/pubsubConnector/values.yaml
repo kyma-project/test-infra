@@ -1,7 +1,7 @@
 # PubSub connector application name.
 appName: "pubsub-connector"
 pubsubGateway:
-  # Github webhook gateway image.
+  # PubSub gateway image.
   image: "eu.gcr.io/kyma-project/test-infra/pubsub-gateway:PR-3626"
   # Subscription ID to pull messages from.
   pubsubSubscriptionID: "oom-event-found-sub"
@@ -20,7 +20,7 @@ slackConnector:
   cmpSlackAppPlanSuffix: "36130"
   # Slack connector API ID
   apiId: "85ded56e-303b-43b3-a950-8b1c3d519561"
-  # Slack application plan base name
+  # Slack application plan name
   cmpSlackAppPlan: "slack-connector"
   # Slack connector application name. Must match name from Application resource.
   slackAppName: "mp-slack-connector"
