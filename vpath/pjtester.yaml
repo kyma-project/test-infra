@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "rg-skr-aws-integration-dev"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 11369
