@@ -32,7 +32,7 @@ job_template: &job_template
 
 presubmits: # runs on PRs
   kyma-incubator/compass:
-    - name: pre-compass-components-schema-migrator
+    - name: pre-compass-components-schema-migrator-dump
       cluster: untrusted-workload
       optional: false
       <<: *job_template
@@ -47,7 +47,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-incubator/compass:
-    - name: post-compass-components-schema-migrator
+    - name: post-compass-components-schema-migrator-dump
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
