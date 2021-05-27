@@ -1,5 +1,5 @@
-# Github connector application name. Must match name from Application resource.
-appName: "sap-pubsub-connector"
+# PubSub connector application name.
+appName: "pubsub-connector"
 pubsubGateway:
   # Github webhook gateway image.
   image: "eu.gcr.io/kyma-project/test-infra/pubsub-gateway:PR-3626"
@@ -23,7 +23,7 @@ slackConnector:
   # Slack application plan base name
   cmpSlackAppPlan: "slack-connector"
   # Slack connector application name. Must match name from Application resource.
-  slackAppName: "slack-connector"
+  slackAppName: "mp-slack-connector"
   # Secret name with slack bot token.
   botTokenSecret: "slack-bot-token"
   # Secret key name with slack bot token.

@@ -4,17 +4,17 @@ metadata:
   name: {{ .Release.Name}}-pubsub-gateway
   namespace: {{ .Release.Namespace }}
   labels:
-    app: "mp-{{ .Values.appName }}"
+    app: {{ .Values.appName | quote }}
     release: {{ .Release.Name | quote }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: "mp-{{ .Values.appName }}"
+      app: {{ .Values.appName | quote }}
   template:
     metadata:
       labels:
-        app: "mp-{{ .Values.appName }}"
+        app: {{ .Values.appName | quote }}
         release: {{ .Release.Name | quote }}
     spec:
       containers:
@@ -31,7 +31,7 @@ spec:
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: /keys/saCredentials.json
         - name: PUBSUB_GATEWAY_NAME
-          value: mp-{{ .Values.appName }}
+          value: {{ .Values.appName }}
         - name: EVENTING_SERVICE
           valueFrom:
             configMapKeyRef:

@@ -4,7 +4,7 @@ metadata:
   name: {{ .Release.Name}}-oom-found
   namespace: {{ .Release.Namespace }}
   labels:
-    app: "mp-{{ .Values.appName }}"
+    app: {{ .Values.appName | quote }}
     release: {{ .Release.Name | quote }}
     function: "{{ .Release.Name }}-oom-found"
     event: "oomevent"
