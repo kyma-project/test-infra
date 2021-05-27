@@ -6,6 +6,7 @@ global:
     - "1.21"
   components:
     - to: ../prow/jobs/halamix2_test.yaml
+      # ../prow/jobs/kyma/components/application-broker/application-broker-generic.yaml
       path: components/application-broker
       since: "1.7"
 
