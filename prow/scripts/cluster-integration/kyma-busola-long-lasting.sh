@@ -130,7 +130,7 @@ function provisionKyma2(){
 function deleteKyma(){
     export DOMAIN_NAME=$1
 
-    log::info "Deleting Kyma on the cluster : ${DOMAIN_NAME}"
+    log::info "Uninstalling Kyma on the cluster : ${DOMAIN_NAME}"
 
     export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
     kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
@@ -150,10 +150,10 @@ function deleteKyma(){
 
     # This can be deleted when it's implemented by installer
     # remove CRDs
-    # log::info "removing CRDs"
-    # kubectl api-resources --verbs=list --namespaced -o name | grep kyma-project.io | sed -e 's/.*/kubectl delete crd & --force=true --wait=false/ ' | sh
+    log::info "Removing CRDs"
+    kubectl api-resources --verbs=list --namespaced -o name | grep kyma-project.io | sed -e 's/.*/kubectl delete crd & --force=true --wait=false/ ' | sh
     
-    log::info "Cluster deleted"
+    log::info "Kyma uninstalled"
 }
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
