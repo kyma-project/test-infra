@@ -17,8 +17,7 @@ kymaClusterHostname: "c-6751197.kyma.shoot.live.k8s-hana.ondemand.com"
 
 slackConnector:
   # Slack channel name to send messages.
-  #notificationSlackChannel: "kyma-team"
-  notificationSlackChannel: "neighbors-dev-test"
+  notificationSlackChannel: "kyma-team"
   # Slack connector application name. Must match name from Application resource.
   slackAppName: "mp-slack-connector"
   # Slack connector API ID
