@@ -1,0 +1,9 @@
+pjNames:
+  - pjName: "pre-compass-components-schema-migrator"
+    pjPath: "test-infra/prow/jobs/incubator/compass/components/schema-migrator/"
+  - pjName: "pre-master-compass-integration"
+    pjPath: "test-infra/prow/jobs/incubator/compass/"
+prConfigs:
+  kyma-incubator:
+    compass:
+      prNumber: 1860
