@@ -686,7 +686,7 @@ templates:
           optional: false
   - from: templates/generic-compass-dump-component.yaml
     render:
-      - to: ../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-dump-generic.yaml
+      - to: ../prow/jobs/incubator/compass/components/schema-migrator-dump/schema-migrator-dump-generic.yaml
         values:
           <<: *cluster_default
           <<: *compass_generic_component
