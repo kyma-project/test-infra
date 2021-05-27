@@ -2,14 +2,11 @@
    This template renders jobs for a component using generic buildpack with make and docker
 
    Required values:
-     - repository - repository address (e.g. github.com/kyma-project/kyma
      - path - address of the component within the repository
      - pushRepository - the suffix of the preset-docker-push- label
-     - buildpackTag - tag of the buildpack image
-     - ReleaseBranchPattern - pattern for release branch prefix (default: ^release-<supported-releases>-<component-dir-name>$)
      - runIfChanged - a list of regexps to watch in addition to path (default: [])
-     - resources.memory - memory given to job container (default: 1.5Gi)
-     - resources.cpu - cpu given to job container (default: 0.8)
+     - request_memory - memory given to job container (default: 1.5Gi)
+     - request_cpu - cpu given to job container (default: 0.8)
   */ -}}
 
 {{ $globals := .Global }}
