@@ -53,14 +53,14 @@ if [[ "$BUILD_TYPE" == "pr" ]]; then
   # In case of PR, operate on PR number
   readonly COMMON_NAME_PREFIX="gkecompint-pr"
   COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}")
-  COMPASS_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-compass-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
+  COMPASS_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-compass-benchmark/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
   export COMPASS_INSTALLER_IMAGE
 else
   # Otherwise (master), operate on triggering commit id
   readonly COMMON_NAME_PREFIX="gkecompint-commit"
   readonly COMMIT_ID=$(cd "$COMPASS_SOURCES_DIR" && git rev-parse --short HEAD)
   COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}")
-  COMPASS_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-compass-integration/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
+  COMPASS_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-compass-benchmark/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
   export COMPASS_INSTALLER_IMAGE
 fi
 
@@ -400,7 +400,7 @@ for POD in $PODS; do
     log::info "Performance comparison statistics"
     echo "$STATS"
 
-    DELTA=$(echo -n "$STATS" | tail +2 | grep -v '~' | awk '{print $(NF-2)}')
+    DELTA=$(echo -n "$STATS" | tail +2 | { grep -v '~' || true; } | awk '{print $(NF-2)}')
     if [[ $DELTA == +* ]]; then # If delta is positive
       log::error "There is significant performance degradation in the new release!"
       exit 1
