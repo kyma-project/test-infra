@@ -91,3 +91,18 @@ templates:
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
+              - jobConfig:
+                  name: "rg-skr-aws-integration-dev"
+                  cron: "* * * * *" # "At minute 30 past every hour"
+                  labels:
+                    preset-keb-plan-aws: "true"
+                inheritedConfigs:
+                  global:
+                    - "image_kyma-integration"
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
