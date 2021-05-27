@@ -34,8 +34,9 @@ function:
   oomevent:
     found:
       # Repository URL with function code.
-      repositoryUrl: "https://github.com/kyma-project/test-infra.git"
+      #repositoryUrl: "https://github.com/kyma-project/test-infra.git"
+      repositoryUrl: "https://github.com/dekiel/test-infra.git"
       # Path to directory with function code. Relative to repository root.
       functionBaseDir: "/development/pubsub-connector/oomFoundFunction"
       # Branch name with function code.
-      branch: "main"
+      branch: "fix-gh-connector"
