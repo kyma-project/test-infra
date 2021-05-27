@@ -119,7 +119,7 @@ function provisionKyma2(){
     set -x
     TERM=dumb kyma alpha deploy \
     --kubeconfig="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml" \
-    --profile=evaluation \
+    --profile=production \
     --value global.isBEBEnabled=true \
     --source="${KYMA_VERSION}" \
     --value global.environment.gardener=true \
@@ -151,7 +151,7 @@ function deleteKyma(){
     # This can be deleted when it's implemented by installer
     # remove CRDs
     log::info "Removing CRDs"
-    kubectl api-resources --verbs=list --namespaced -o name | grep kyma-project.io | sed -e 's/.*/kubectl delete crd & --force=true --wait=false/ ' | sh
+    kubectl api-resources --verbs=list --namespaced -o name | grep kyma-project.io | sed -e 's/.*/kubectl delete crd & --force=true --grace-period=0 --wait=false/ ' | sh
     
     log::info "Kyma uninstalled"
 }
@@ -194,7 +194,7 @@ else
 fi
 
 if [ -z "$COMMON_NAME_PREFIX" ] ; then
-    COMMON_NAME_PREFIX="n"
+    COMMON_NAME_PREFIX="nt"
 fi
 readonly KYMA_NAME_SUFFIX="kyma"
 readonly BUSOLA_NAME_SUFFIX="busola"
