@@ -86,7 +86,6 @@ templates:
                     {{- end }}
                   local:
                     - "jobConfig_generic_component"
-                  
             {{ end }}
             {{- range $rel := $releases }}
               - jobConfig:
