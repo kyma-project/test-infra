@@ -1,0 +1,137 @@
+{{- /*
+   This template renders jobs for a component using generic buildpack with make and docker
+
+   Required values:
+     - repository - repository address (e.g. github.com/kyma-project/kyma
+     - path - address of the component within the repository
+     - pushRepository - the suffix of the preset-docker-push- label
+     - buildpackTag - tag of the buildpack image
+     - ReleaseBranchPattern - pattern for release branch prefix (default: ^release-<supported-releases>-<component-dir-name>$)
+     - runIfChanged - a list of regexps to watch in addition to path (default: [])
+     - resources.memory - memory given to job container (default: 1.5Gi)
+     - resources.cpu - cpu given to job container (default: 0.8)
+  */ -}}
+
+{{ $globals := .Global }}
+{{ $repository := "github.com/kyma-project/kyma"}}
+{{ $pushRepository := "kyma"}}
+{{ $additionalRunIfChanged := list "^common/makefiles/"}}
+
+templates:
+  - from: templates/generic.tmpl
+    render:
+
+      {{- range $component := .Global.components}}
+
+      {{ $repositoryName := index ($repository | splitList "/") 2 -}}
+      {{- $runIfChanged := prepend $additionalRunIfChanged (print "^" $component.path "/") | join "|" }}
+      {{- $isNotTestInfra := ne $repository "github.com/kyma-project/test-infra"}}
+      {{- $releases := matchingReleases $globals.releases $component.since $component.until }}
+      {{- $isValidForNextRelease := releaseMatches $globals.nextRelease $component.since $component.until }}
+
+      - to: "{{- $component.to }}"
+        localSets:
+          jobConfig_generic_component:
+            labels:
+              preset-dind-enabled: "true"
+              preset-sa-gcr-push: "true"
+              preset-docker-push-repository-{{ $pushRepository }}: "true"
+            run_if_changed: "{{ $runIfChanged }}"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+            args:
+              - "/home/prow/go/src/{{ $repository }}/{{ $component.path }}"
+            {{- if $component.request_memory }}
+            request_memory: {{ $component.request_memory }}
+            {{ end }}
+            {{- if $component.request_cpu }}
+            request_cpu: {{ $component.request_cpu }}
+            {{ end }}
+          jobConfig_generic_component_presubmit:
+            optional: {{ $component.optional | default false }}
+        jobConfigs:
+          - repoName: {{ $repository }}
+            jobs:
+            {{- if $isValidForNextRelease }}
+              - jobConfig:
+                  name: "pre-{{ $repositoryName }}-{{ $component.path | replace "/" "-" }}"
+                  branches:
+                    - ^master$
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_buildpack-golang-kubebuilder2"
+                    {{- if $isNotTestInfra }}
+                    - "extra_refs_test-infra"
+                    {{- end }}
+                  local:
+                    - "jobConfig_generic_component"
+                    - "jobConfig_generic_component_presubmit"
+              - jobConfig:
+                  name: "post-{{ $repositoryName }}-{{ $component.path | replace "/" "-" }}"
+                  branches:
+                    - ^master$
+                    - ^main$
+                  {{- if or $component.optional $component.skipSlackReport }}
+                  slack_channel: "kyma-prow-dev-null"
+                  {{- end }}
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_buildpack-golang-kubebuilder2"
+                    {{- if $isNotTestInfra }}
+                    - "extra_refs_test-infra"
+                    {{- end }}
+                  local:
+                    - "jobConfig_generic_component"
+                  
+            {{ end }}
+            {{- range $rel := $releases }}
+              - jobConfig:
+                  name: "pre-rel{{ $rel | replace "." "" }}-{{ $repositoryName }}-{{ $component.path | replace "/" "-" }}"
+                  branches:
+                    - release-{{ $rel }}
+                  {{- if $isNotTestInfra }}
+                  extra_refs:
+                    test-infra:
+                      - org: "kyma-project"
+                        repo: "test-infra"
+                        path_alias: "github.com/kyma-project/test-infra"
+                        base_ref: "release-{{- $rel }}"
+                  {{- end }}
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_buildpack-golang-kubebuilder2"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_generic_component"
+                    - "jobConfig_generic_component_presubmit"
+              - jobConfig:
+                  name: "post-rel{{ $rel | replace "." "" }}-{{ $repositoryName }}-{{ $component.path | replace "/" "-" }}"
+                  branches:
+                    - release-{{ $rel }}
+                  {{- if $isNotTestInfra }}
+                  extra_refs:
+                    test-infra:
+                      - org: "kyma-project"
+                        repo: "test-infra"
+                        path_alias: "github.com/kyma-project/test-infra"
+                        base_ref: "release-{{- $rel }}"
+                  {{- end }}
+                  {{- if or $component.optional $component.skipSlackReport }}
+                  slack_channel: "kyma-prow-dev-null"
+                  {{- end }}
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_buildpack-golang-kubebuilder2"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_generic_component"
+            {{ end }}
+      {{- end}}
