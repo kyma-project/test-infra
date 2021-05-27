@@ -41,7 +41,6 @@ templates:
                   branches:
                     - ^master$
                     - ^main$
-                    - ^hotfix-.*$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

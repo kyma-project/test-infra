@@ -27,6 +27,10 @@ cleanup() {
     
     # do not fail the job regardless of the vm deletion result
     set +e
+    
+    #shellcheck disable=SC2088
+    utils::receive_from_vm "${ZONE}" "busola-ui-test-${RANDOM_ID}" "~/busola-tests/cypress" "${ARTIFACTS}"
+    
     gcloud compute instances stop --async --zone="${ZONE}" "busola-ui-test-${RANDOM_ID}"
     log::info "End of cleanup"
 }
