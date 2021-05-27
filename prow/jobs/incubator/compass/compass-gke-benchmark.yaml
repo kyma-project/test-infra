@@ -24,6 +24,7 @@ presubmits: # runs on PRs
         preset-sa-gke-kyma-integration: "true"
         preset-sa-test-gcr-push: "true"
       run_if_changed: '^((chart\S+|installation\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-incubator/compass
