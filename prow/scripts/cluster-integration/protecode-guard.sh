@@ -35,7 +35,7 @@ PR_NAME="PR-${PULL_NUMBER}"
 echo "Protecode scan result for ${PR_NAME}:"
 
 counter=1
-limit=15
+limit=30
 while [ $counter -le $limit ]
 do
     log::banner "Attempt ${counter} of ${limit}"
@@ -59,7 +59,7 @@ do
         fi
     fi
 
-    sleep 10
+    sleep 15
 done
 
 log::error "Timeout reached - job failed"
