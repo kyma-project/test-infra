@@ -953,6 +953,8 @@ presets:
             key: KEB_GLOBALACCOUNT_ID
       - name: KEB_SUBACCOUNT_ID
         value: "prow-keb-integration"
+      - name: KEB_USER_ID
+        value: "test@test.com"
       - name: GARDENER_KUBECONFIG
         value: "/gardener/kubeconfig"
     volumes:
