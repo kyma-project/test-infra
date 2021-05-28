@@ -4,8 +4,7 @@ webhookGateway:
   # Github webhook gateway container listening port for incoming webhooks.
   containerPort: 8080
   # Github webhook gateway image.
-  #image: "eu.gcr.io/kyma-project/test-infra/github-webhook-gateway:1.2test"
-  image: "eu.gcr.io/sap-kyma-neighbors-dev/ghwebhookgateway:1.2.0"
+  image: "eu.gcr.io/kyma-project/test-infra/github-webhook-gateway:PR-3701"
   # Secret set for Github webhooks.
   webhookSecretValue: "dummy-secret"
   # Kyma cluster FQDN.
@@ -37,8 +36,8 @@ function:
   issues:
     labeled:
       # Repository URL with function code.
-      repositoryUrl: "https://github.com/dekiel/test-infra.git"
+      repositoryUrl: "https://github.com/kyma-project/test-infra.git"
       # Path to directory with function code. Relative to repository root.
       functionBaseDir: "/development/kyma-github-connector/issueLabeledFunction"
       # Branch name with function code.
-      branch: "fix-gh-connector"
+      branch: "main"
