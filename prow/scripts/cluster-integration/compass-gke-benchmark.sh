@@ -365,6 +365,14 @@ installKyma
 log::info "Install Compass version from master"
 installCompassOld
 
+log::info "Choose node for benchmarks execution"
+
+NODE=$(kubectl top nodes --sort-by cpu | tail -n 1 | cut -d ' ' -f 1)
+
+log::info "Benchmarks will be executed on node: $NODE"
+
+kubectl label node "$NODE" benchmark=true
+
 readonly SUITE_NAME="testsuite-all"
 
 log::info "Execute benchmarks on the current master"
