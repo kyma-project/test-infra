@@ -1032,3 +1032,11 @@ presets:
     env:
       - name: BUSOLA_PROVISION_TYPE
         value: KYMA
+  - labels:
+      preset-skr-al-secret-key: "true"
+    env:
+      - name: AL_SECRET_KEY
+        valueFrom:
+          secretKeyRef:
+            name: skr-al-secret-key
+            key: secret.json
