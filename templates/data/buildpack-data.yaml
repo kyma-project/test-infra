@@ -410,9 +410,9 @@ templates:
                         - "postsubmit"
                   - jobConfig:
                      name: "pre-test-infra-github-connector-webhook-gateway"
-                     run_if_changed: '^development/github-slack-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+                     run_if_changed: '^development/kyma-github-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
                      args:
-                       - "/home/prow/go/src/github.com/kyma-project/test-infra/development/github-slack-connector/githubWebhookGateway"
+                       - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway"
                     inheritedConfigs:
                       global:
                         - "image_buildpack-golang"
@@ -422,9 +422,9 @@ templates:
                         - "presubmit"
                   - jobConfig:
                       name: "post-test-infra-github-connector-webhook-gateway"
-                      run_if_changed: '^development/github-slack-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+                      run_if_changed: '^development/kyma-github-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/github-slack-connector/githubWebhookGateway"
+                        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway"
                     inheritedConfigs:
                       global:
                         - "image_buildpack-golang"
@@ -434,9 +434,9 @@ templates:
                         - "postsubmit"
                   - jobConfig:
                       name: "pre-test-infra-pubsub-connector-gateway"
-                      run_if_changed: '^development/pubsub-connector/pubSubGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+                      run_if_changed: '^development/kyma-pubsub-connector/pubSubGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/pubsub-connector/pubSubGateway"
+                        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-pubsub-connector/pubSubGateway"
                     inheritedConfigs:
                       global:
                         - "image_buildpack-golang"
@@ -446,9 +446,9 @@ templates:
                         - "presubmit"
                   - jobConfig:
                       name: "post-test-infra-pubsub-connector-gateway"
-                      run_if_changed: '^development/pubsub-connector/pubSubGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+                      run_if_changed: '^development/kyma-pubsub-connector/pubSubGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/pubsub-connector/pubSubGateway"
+                        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-pubsub-connector/pubSubGateway"
                     inheritedConfigs:
                       global:
                         - "image_buildpack-golang"
