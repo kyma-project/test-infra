@@ -214,12 +214,14 @@ if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
     log::info "Kyma cluster name: ${KYMA_COMMON_NAME}"
     if [[ $RECREATE_CLUSTER == "true" ]]; then
         delete_cluster "${KYMA_COMMON_NAME}"
-        # wait 2 minutes
+        # wait 120s this can be removed when Gardener Bug is fixed
+        log::info "We wait 120s for Gardener Shoot to settle after cluster deletion"
         sleep 120
         provisionCluster "${KYMA_COMMON_NAME}" "${RESOURCES_PATH}/cluster-kyma.yaml"
     else
         echo "Delete kyma"
         deleteKyma "${KYMA_COMMON_NAME}"
+        log::info "We wait 30s for Kyma cluster to settle"
         sleep 30
     fi
 
@@ -233,7 +235,8 @@ elif [[ $BUSOLA_PROVISION_TYPE == "BUSOLA" ]]; then
     log::info "Busola cluster name: ${BUSOLA_COMMON_NAME}"
     if [[ $RECREATE_CLUSTER == "true" ]]; then
         delete_cluster "${BUSOLA_COMMON_NAME}"
-        # wait 2 minutes
+        # wait 120s this can be removed when Gardener Bug is fixed
+        log::info "We wait 120s for Gardener Shoot to settle after cluster deletion"
         sleep 120
         provisionCluster "${BUSOLA_COMMON_NAME}" "${RESOURCES_PATH}/cluster-busola.yaml"
         provisionIngress "${BUSOLA_COMMON_NAME}"
