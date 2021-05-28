@@ -1242,7 +1242,7 @@ periodics: # runs on schedule
             resources:
               requests:
                 memory: 1Gi
-                cpu: 1
+                cpu: 2
     - name: kyma-periodic-gardener-gcp-busola-init-kyma
       annotations:
         testgrid-create-test-group: "false"
