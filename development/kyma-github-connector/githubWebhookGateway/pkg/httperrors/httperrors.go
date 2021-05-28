@@ -22,8 +22,6 @@ func AppErrorToResponse(appError apperrors.AppError) (int, ErrorResponse) {
 
 func errorCodeToHttpStatus(code int) int {
 	switch code {
-	case apperrors.InternalError:
-		return http.StatusInternalServerError
 	case apperrors.NotFoundError:
 		return http.StatusNotFound
 	case apperrors.AlreadyExistsError:
