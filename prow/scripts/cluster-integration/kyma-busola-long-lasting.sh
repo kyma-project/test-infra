@@ -105,7 +105,7 @@ function provisionKyma2(){
     export KYMA_VERSION=$1
     export DOMAIN_NAME=$2
 
-    log::info "Installing Kyma version: ${KYMA_VERSION} on the cluster : ${DOMAIN_NAME}"
+    log::info "Installing Kyma version: ${KYMA_VERSION} on the cluster : ${DOMAIN_NAME} using ${CPU_COUNT} cpus"
 
     # switch to the new cluster
     export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
@@ -130,7 +130,7 @@ function provisionKyma2(){
 function deleteKyma(){
     export DOMAIN_NAME=$1
 
-    log::info "Uninstalling Kyma on the cluster : ${DOMAIN_NAME}"
+    log::info "Uninstalling Kyma on the cluster : ${DOMAIN_NAME} using ${CPU_COUNT} cpus"
 
     export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
     kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
