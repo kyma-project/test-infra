@@ -21,7 +21,7 @@ You need the Kyma Runtime to run this Function.
 
 The oomFound Function uses [ServiceBindingUsage](https://kyma-project.io/docs/components/serverless/#tutorials-bind-a-service-instance-to-a-function) to get the Slack API URL. To point the Function to the environment variable provided by the ServiceBindingUsage, set the **SLACK_API_ID** environment variable by providing its value in the *slackConnector.apiId* key in [values.yaml](../pubsubConnector/values.yaml). The Slack API ID will be used to build the target [variable name](https://github.com/kyma-project/test-infra/blob/5f6e98dd0cf692156a0d1caf9b3df5c27d39368d/development/pubsub-connector/oomFoundFunction/handler.py#L15).
 
-Function use **SLACK_BOT_TOKEN** environment variable to authorise sending messages to slack channels. To use valid token, set it on chart installation with helm command argument `--set slackConnector.botToken="xoxb-xxx-xxxx-xxxx-xxxx-xxx"` or set it in [values.yaml](../pubsubConnector/values.yaml).
+The Function uses the **SLACK_BOT_TOKEN** environment variable to authorise sending messages to Slack channels. To use a valid token, set it on chart installation with helm command argument `--set slackConnector.botToken="xoxb-xxx-xxxx-xxxx-xxxx-xxx"` or set it in [values.yaml](../pubsubConnector/values.yaml).
 
 To send your messages to chosen channel, provide its name in the **NOTIFICATION_SLACK_CHANNEL** environment variable. This variable is set by the *function.oomevent.found.notificationSlackChannel* key in [values.yaml](../pubsubConnector/values.yaml).
 
