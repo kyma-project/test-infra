@@ -193,7 +193,7 @@ periodics: # runs on schedule
         preset-keb-dev-credentials: "true"
         preset-keb-plan-aws: "true"
         preset-kyma-integration-compass-dev: "true"
-        preset-skr-al-secret-key: "true"
+        preset-skr-al-service-key: "true"
       cron: "* * * * *"
       skip_report: false
       decorate: true

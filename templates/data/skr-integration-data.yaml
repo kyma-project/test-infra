@@ -96,7 +96,7 @@ templates:
                   cron: "* * * * *" # "At minute 30 past every hour"
                   labels:
                     preset-keb-plan-aws: "true"
-                    preset-skr-al-secret-key: "true"
+                    preset-skr-al-service-key: "true"
                 inheritedConfigs:
                   global:
                     - "image_kyma-integration"
