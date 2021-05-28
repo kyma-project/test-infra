@@ -120,10 +120,11 @@ function provisionKyma2(){
     TERM=dumb kyma alpha deploy \
     --kubeconfig="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml" \
     --profile=production \
-    --value global.isBEBEnabled=true \
     --source="${KYMA_VERSION}" \
-    --value global.environment.gardener=true \
-    --concurrency="${CPU_COUNT}"
+    --concurrency="${CPU_COUNT}" \
+    --non-interactive \
+    --verbose \
+    --ci
     set +x
 }
 
