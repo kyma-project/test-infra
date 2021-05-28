@@ -1241,8 +1241,8 @@ periodics: # runs on schedule
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
-                memory: 2Gi
-                cpu: 2
+                memory: 1Gi
+                cpu: 1
     - name: kyma-periodic-gardener-gcp-busola-init-kyma
       annotations:
         testgrid-create-test-group: "false"
