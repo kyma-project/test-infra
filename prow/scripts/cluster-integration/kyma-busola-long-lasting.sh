@@ -144,6 +144,7 @@ function deleteKyma(){
     --kubeconfig="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml" \
     --concurrency="${CPU_COUNT}" \
     --non-interactive \
+    --verbose \
     --ci
     set +x
     # We wait for the certificate to be revoked
@@ -195,7 +196,7 @@ else
 fi
 
 if [ -z "$COMMON_NAME_PREFIX" ] ; then
-    COMMON_NAME_PREFIX="nt"
+    COMMON_NAME_PREFIX="nt2"
 fi
 readonly KYMA_NAME_SUFFIX="kyma"
 readonly BUSOLA_NAME_SUFFIX="busola"
@@ -222,8 +223,8 @@ if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
     else
         echo "Delete kyma"
         deleteKyma "${KYMA_COMMON_NAME}"
-        log::info "We wait 30s for Kyma cluster to settle"
-        sleep 30
+        log::info "We wait 60s for Kyma cluster to settle"
+        sleep 60
     fi
 
     provisionKyma2 "main" "${KYMA_COMMON_NAME}"
