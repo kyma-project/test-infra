@@ -363,36 +363,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-test-infra-kubectl
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-test-infra-kubectl"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^prow/images/alpine-kubectl/'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/alpine-kubectl"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
     - name: pre-test-infra-probot-stale
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -522,7 +492,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^development/github-slack-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+      run_if_changed: '^development/kyma-github-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -538,7 +508,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/github-slack-connector/githubWebhookGateway"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway"
             resources:
               requests:
                 memory: 1.5Gi
@@ -552,7 +522,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^development/pubsub-connector/pubSubGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+      run_if_changed: '^development/kyma-pubsub-connector/pubSubGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -568,7 +538,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/pubsub-connector/pubSubGateway"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-pubsub-connector/pubSubGateway"
             resources:
               requests:
                 memory: 1.5Gi
@@ -960,38 +930,6 @@ postsubmits: # runs on main
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: post-test-infra-kubectl
-      annotations:
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-test-infra-kubectl"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-release: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^prow/images/alpine-kubectl/'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/alpine-kubectl"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
     - name: post-test-infra-probot-stale
       annotations:
         testgrid-create-test-group: "false"
@@ -1131,7 +1069,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^development/github-slack-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+      run_if_changed: '^development/kyma-github-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -1147,7 +1085,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/github-slack-connector/githubWebhookGateway"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway"
             resources:
               requests:
                 memory: 1.5Gi
@@ -1163,7 +1101,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^development/pubsub-connector/pubSubGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+      run_if_changed: '^development/kyma-pubsub-connector/pubSubGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -1179,7 +1117,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/pubsub-connector/pubSubGateway"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-pubsub-connector/pubSubGateway"
             resources:
               requests:
                 memory: 1.5Gi

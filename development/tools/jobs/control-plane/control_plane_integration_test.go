@@ -55,7 +55,7 @@ func TestKCPIntegrationJobsPresubmit(t *testing.T) {
 			// the common expectation
 			assert.Equal(t, "github.com/kyma-project/control-plane", actualJob.PathAlias)
 			assert.Equal(t, tc.expRunIfChangedRegex, actualJob.RunIfChanged)
-			assert.True(t, actualJob.Decorate)
+
 			assert.False(t, actualJob.SkipReport)
 			assert.Equal(t, 10, actualJob.MaxConcurrency)
 			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "main")
@@ -103,7 +103,7 @@ func TestKCPIntegrationJobsPostsubmit(t *testing.T) {
 			assert.Equal(t, []string{"^master$", "^main$"}, actualJob.Branches)
 			assert.Equal(t, 10, actualJob.MaxConcurrency)
 			assert.Equal(t, "", actualJob.RunIfChanged)
-			assert.True(t, actualJob.Decorate)
+
 			assert.Equal(t, "github.com/kyma-project/control-plane", actualJob.PathAlias)
 			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "main")
 			tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)

@@ -12,6 +12,8 @@ if [[ -z $REGISTRY_VALUES ]]; then
   export REGISTRY_VALUES="dockerRegistry.enableInternal=false,dockerRegistry.serverAddress=registry.localhost:5000,dockerRegistry.registryAddress=registry.localhost:5000,containers.manager.envs.functionBuildExecutorImage.value=${KANIKO_IMAGE}"
 fi
 
+export USE_ALPHA=${USE_ALPHA:-false}
+
 export KYMA_SOURCES_DIR="./kyma"
 
 host::create_registries_file(){
@@ -77,12 +79,52 @@ EOL
 mkdir -p /etc/rancher/k3s
 cp registries.yaml /etc/rancher/k3s
 
+docker ps --format="{{.Names}}"| grep -q registry.localhost || \
 docker run -d \
   -p 5000:5000 \
   --restart=always \
   --name registry.localhost \
   -v "$PWD/registry:/var/lib/registry" \
   eu.gcr.io/kyma-project/test-infra/docker-registry-2:20200202
+}
+
+install::kyma_cli() {
+    local settings
+    local kyma_version
+    mkdir -p "/usr/local/bin"
+    os=$(host::os)
+
+    pushd "/usr/local/bin" || exit
+
+    echo "Install kyma CLI ${os} locally to /usr/local/bin..."
+
+    curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}?alt=media"
+    chmod +x kyma
+    kyma_version=$(kyma version --client)
+    echo "Kyma CLI version: ${kyma_version}"
+
+    echo "OK"
+
+    popd || exit
+
+    eval "${settings}"
+}
+
+host::os() {
+  local host_os
+  case "$(uname -s)" in
+    Darwin)
+      host_os=darwin
+      ;;
+    Linux)
+      host_os=linux
+      ;;
+    *)
+      >&2 echo -e "Unsupported host OS. Must be Linux or Mac OS X."
+      exit 1
+      ;;
+  esac
+  echo "${host_os}"
 }
 
 install::k3s() {
@@ -95,29 +137,54 @@ install::k3s() {
     date
 }
 
+install::k3d() {
+  echo "--> Installing k3d"
+  curl -sfL https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+}
+
 function host::patch_coredns() {
   echo "Patching CoreDns with REGISTRY_IP=$REGISTRY_IP"
   sed "s/REGISTRY_IP/$REGISTRY_IP/" coredns-patch.tpl >coredns-patch.yaml
   kubectl -n kube-system patch cm coredns --patch "$(cat coredns-patch.yaml)"
 }
 
-host::create_coredns_template
-host::create_docker_registry
-# shellcheck disable=SC2155
-export REGISTRY_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' /registry.localhost)
-
-host::update_etc_hosts
-
 date
-echo "--> Creating k8s cluster via k3s"
-install::k3s
 
-# shellcheck disable=SC2004
-while [[ $(kubectl get nodes -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do echo "Waiting for cluster nodes to be ready, elapsed time: $(( $SECONDS/60 )) min $(( $SECONDS % 60 )) sec"; sleep 2; done
-host::patch_coredns
+if [ "$USE_ALPHA" == "true" ]; then
+  echo "--> Installing k3d for kyma-cli"
+  install::k3d
 
-kubectl apply -f "$KYMA_SOURCES_DIR/resources/cluster-essentials/files" -n kyma-system
-helm upgrade --atomic --create-namespace -i serverless "$KYMA_SOURCES_DIR/resources/serverless" -n kyma-system --set "$REGISTRY_VALUES",global.ingress.domainName="$DOMAIN" --wait
+  echo "--> Installing kyma-cli"
+  install::kyma_cli
+
+  echo "--> Provisioning k3s cluster for Kyma"
+  kyma alpha provision k3s --ci
+
+  echo "--> Deploying Serverless"
+  # The python38 function requires 40M+ of memory to work. Mostly used by kubeless. I need to overrride the defaultPreset to M to avoid OOMkill.
+  kyma alpha deploy -p evaluation --component cluster-essentials,serverless --atomic --ci --value "$REGISTRY_VALUES" --value global.ingress.domainName="$DOMAIN" --value "serverless.webhook.values.function.resources.defaultPreset=M" -s local -w $KYMA_SOURCES_DIR
+
+else
+  host::create_coredns_template
+  host::create_docker_registry
+  # shellcheck disable=SC2155
+  export REGISTRY_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' /registry.localhost)
+
+  host::update_etc_hosts
+
+  echo "--> Creating k8s cluster via k3s"
+  install::k3s
+
+  # shellcheck disable=SC2004
+  while [[ $(kubectl get nodes -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do echo "Waiting for cluster nodes to be ready, elapsed time: $(( $SECONDS/60 )) min $(( $SECONDS % 60 )) sec"; sleep 2; done
+  host::patch_coredns
+
+  echo "--> Deploying cluster-essentials"
+  kubectl apply -f "$KYMA_SOURCES_DIR/resources/cluster-essentials/files" -n kyma-system
+
+  echo "--> Deploying Serverless"
+  helm upgrade --atomic --create-namespace -i serverless "$KYMA_SOURCES_DIR/resources/serverless" -n kyma-system --set "$REGISTRY_VALUES",global.ingress.domainName="$DOMAIN" --wait
+fi 
 
 echo "##############################################################################"
 # shellcheck disable=SC2004
@@ -128,7 +195,7 @@ echo "##########################################################################
 # webhook might not be ready in time (but somehow it still accepts the function, we have an issue for that)
 # runtime configmaps might now have been copied to that namespace, but it should be handled by https://github.com/kyma-project/kyma/pull/10026
 ########
-sleep 10
+sleep 50
 ########
 
 SERVERLESS_CHART_DIR="${KYMA_SOURCES_DIR}/resources/serverless"

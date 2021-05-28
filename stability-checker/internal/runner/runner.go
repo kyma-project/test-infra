@@ -93,7 +93,7 @@ func (r *TestRunner) saveTestStatus(endTime time.Time, id string, pass bool) err
 		return errors.Wrap(err, "while marshaling test status")
 	}
 
-	cfg, err := r.cfgMapClient.Get(r.cfgMapName, metaV1.GetOptions{})
+	cfg, err := r.cfgMapClient.Get(context.Background(), r.cfgMapName, metaV1.GetOptions{})
 	if err != nil {
 		return errors.Wrapf(err, "while getting config map %q", r.cfgMapName)
 	}
@@ -113,7 +113,7 @@ func (r *TestRunner) addStatus(cfg *apiCoreV1.ConfigMap, key, testStatus string)
 	}
 
 	cfgCopy.Data[key] = testStatus
-	if _, err := r.cfgMapClient.Update(cfgCopy); err != nil {
+	if _, err := r.cfgMapClient.Update(context.Background(), cfgCopy, metaV1.UpdateOptions{}); err != nil {
 		return errors.Wrapf(err, "while updating config map %q", r.cfgMapName)
 	}
 	return nil

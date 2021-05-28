@@ -443,6 +443,19 @@ presets:
         mountPath: /etc/credentials/sa-gardener-logs
         readOnly: true
   - labels:
+      preset-sa-prow-job-github-issues: "true"
+    env:
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-prow-job-github-issues/service-account.json
+    volumes:
+      - name: sa-prow-job-github-issues
+        secret:
+          secretName: sa-prow-job-github-issues
+    volumeMounts:
+      - name: sa-prow-job-github-issues
+        mountPath: /etc/credentials/sa-prow-job-github-issues
+        readOnly: true
+  - labels:
       preset-gardener-azure-kyma-integration: "true"
     env:
       - name: GARDENER_KYMA_PROW_KUBECONFIG
@@ -631,6 +644,14 @@ presets:
         valueFrom:
           secretKeyRef:
             name: kyma-bot-github-token
+            key: token
+  - labels:
+      preset-bot-github-sap-token: "true"
+    env:
+      - name: BOT_GITHUB_SAP_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: kyma-bot-github-sap-token
             key: token
   - labels:
       preset-bot-github-identity: "true"
@@ -932,6 +953,8 @@ presets:
             key: KEB_GLOBALACCOUNT_ID
       - name: KEB_SUBACCOUNT_ID
         value: "prow-keb-integration"
+      - name: KEB_USER_ID
+        value: "test@test.com"
       - name: GARDENER_KUBECONFIG
         value: "/gardener/kubeconfig"
     volumes:

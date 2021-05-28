@@ -25,7 +25,7 @@ func TestKymaCliCompatibilityPeriodics(t *testing.T) {
 	actualPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, actualPeriodic)
 	assert.Equal(t, expName, actualPeriodic.Name)
-	assert.True(t, actualPeriodic.Decorate)
+
 	assert.Equal(t, "00 00 * * *", actualPeriodic.Cron)
 	tester.AssertThatHasExtraRepoRefCustom(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra", "cli"}, []string{"main", "main"})
 	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, preset.GCProjectEnv, "preset-sa-vm-kyma-integration")
@@ -40,7 +40,7 @@ func TestKymaCliCompatibilityPeriodics(t *testing.T) {
 	actualPeriodic = tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, actualPeriodic)
 	assert.Equal(t, expName, actualPeriodic.Name)
-	assert.True(t, actualPeriodic.Decorate)
+
 	assert.Equal(t, "00 03 * * *", actualPeriodic.Cron)
 	tester.AssertThatHasExtraRepoRefCustom(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra", "cli"}, []string{"main", "main"})
 	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, preset.GCProjectEnv, "preset-sa-vm-kyma-integration")

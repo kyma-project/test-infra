@@ -21,7 +21,7 @@ func TestCompassGKEIntegrationPresubmit(t *testing.T) {
 
 	// then
 	assert.False(t, actualJob.Optional)
-	assert.True(t, actualJob.Decorate)
+
 	assert.Equal(t, "^((chart\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
 	assert.Equal(t, "github.com/kyma-incubator/compass", actualJob.PathAlias)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
@@ -63,7 +63,7 @@ func TestCompassGKEIntegrationJobsReleases(t *testing.T) {
 			require.NotNil(t, actualPresubmit)
 			assert.True(t, actualPresubmit.Optional)
 			assert.False(t, actualPresubmit.SkipReport)
-			assert.True(t, actualPresubmit.Decorate)
+
 			assert.Equal(t, "github.com/kyma-incubator/compass", actualPresubmit.PathAlias)
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease.Branch())
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase,
@@ -104,7 +104,7 @@ func TestCompassGKEIntegrationPostsubmit(t *testing.T) {
 	require.NotNil(t, actualJob)
 
 	// then
-	assert.True(t, actualJob.Decorate)
+
 	assert.Equal(t, "github.com/kyma-incubator/compass", actualJob.PathAlias)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
 	tester.AssertThatHasPresets(t, actualJob.JobBase,

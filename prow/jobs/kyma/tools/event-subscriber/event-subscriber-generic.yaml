@@ -42,6 +42,16 @@ presubmits: # runs on PRs
         - ^master$
         - ^main$
     
+    - name: pre-rel123-kyma-tools-event-subscriber
+      cluster: untrusted-workload
+      optional: true
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.23
+      branches:
+        - release-1.23
+    
     - name: pre-rel122-kyma-tools-event-subscriber
       cluster: untrusted-workload
       optional: true
@@ -62,16 +72,6 @@ presubmits: # runs on PRs
       branches:
         - release-1.21
     
-    - name: pre-rel120-kyma-tools-event-subscriber
-      cluster: untrusted-workload
-      optional: true
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.20
-      branches:
-        - release-1.20
-    
 
 postsubmits:
   kyma-project/kyma:
@@ -90,6 +90,20 @@ postsubmits:
       - ^master$
       - ^main$
       
+    - name: post-rel123-kyma-tools-event-subscriber
+      cluster: trusted-workload
+      annotations:
+        testgrid-create-test-group: "false"
+      reporter_config:
+        slack:
+          channel: 'kyma-prow-dev-null'
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.23
+      branches:
+        - release-1.23
+    
     - name: post-rel122-kyma-tools-event-subscriber
       cluster: trusted-workload
       annotations:
@@ -117,18 +131,4 @@ postsubmits:
           base_ref: release-1.21
       branches:
         - release-1.21
-    
-    - name: post-rel120-kyma-tools-event-subscriber
-      cluster: trusted-workload
-      annotations:
-        testgrid-create-test-group: "false"
-      reporter_config:
-        slack:
-          channel: 'kyma-prow-dev-null'
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.20
-      branches:
-        - release-1.20
     
