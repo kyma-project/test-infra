@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name}}-gh-webhook-gateway
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.appName | quote }}
+    release: {{ .Release.Name | quote }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName | quote }}
+        release: {{ .Release.Name | quote }}
+    spec:
+      containers:
+      - name: ghwebhookgateway
+        imagePullPolicy: Always
+        image: {{ .Values.webhookGateway.image }}
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 500m
+        ports:
+        - containerPort: {{ .Values.webhookGateway.containerPort }}
+        env:
+        - name: GITHUB_WEBHOOK_GATEWAY_NAME
+          value: {{ .Release.Name }}-gh-webhook-gateway
+        - name: GITHUB_WEBHOOK_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-ghsecret
+              key: secret
+        - name: EVENTING_SERVICE
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-gh-webhook-gateway-config
+              key: kymaEventingProxy
+        - name: LISTEN_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-gh-webhook-gateway-config
+              key: ghWebhookGatewayPodPort
+        - name: APP_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: appName
+              name: {{ .Release.Name }}-gh-webhook-gateway-config

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name}}-gh-webhook-gateway-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: "{{ .Values.appName }}"
+    release: {{ .Release.Name | quote }}
+data:
+  kymaEventingProxy: {{ .Values.webhookGateway.eventPublisherProxyURL | quote }}
+  notificationSlackChannel: {{ default "kyma-prow-dev-null" .Values.slackConnector.notificationSlackChannel | quote}}
+  appName: {{ .Values.appName | quote }}
+  ghWebhookGatewayPodPort: {{ .Values.webhookGateway.containerPort | quote }}
+  slackConnectorApiId: {{ .Values.slackConnector.apiId | upper }}
