@@ -124,7 +124,7 @@ presubmits: # runs on PRs
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^((resources\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      run_if_changed: '^((resources/serverless\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -158,7 +158,7 @@ presubmits: # runs on PRs
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^((resources\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      run_if_changed: '^((resources/serverless\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
