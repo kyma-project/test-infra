@@ -195,7 +195,7 @@ echo "##########################################################################
 # webhook might not be ready in time (but somehow it still accepts the function, we have an issue for that)
 # runtime configmaps might now have been copied to that namespace, but it should be handled by https://github.com/kyma-project/kyma/pull/10026
 ########
-sleep 50
+sleep 60
 ########
 
 SERVERLESS_CHART_DIR="${KYMA_SOURCES_DIR}/resources/serverless"
