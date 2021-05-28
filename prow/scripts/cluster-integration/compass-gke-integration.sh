@@ -350,7 +350,7 @@ log::info "Install Compass"
 installCompass
 
 log::info "Test Kyma with Compass"
-CONCURRENCY=1 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh "!benchmark"
+CONCURRENCY=1 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh "benchmark notin (true)"
 
 log::success "Success"
 
