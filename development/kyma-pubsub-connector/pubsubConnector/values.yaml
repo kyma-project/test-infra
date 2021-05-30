@@ -2,7 +2,7 @@
 appName: "pubsub-connector"
 pubsubGateway:
   # PubSub gateway image.
-  image: "eu.gcr.io/kyma-project/test-infra/pubsub-gateway:PR-3626"
+  image: "eu.gcr.io/kyma-project/test-infra/pubsub-gateway:PR-3701"
   # Subscription ID to pull messages from.
   pubsubSubscriptionID: "oom-event-found-sub"
   # Slack channel name to send messages.
@@ -34,9 +34,8 @@ function:
   oomevent:
     found:
       # Repository URL with function code.
-      #repositoryUrl: "https://github.com/kyma-project/test-infra.git"
-      repositoryUrl: "https://github.com/dekiel/test-infra.git"
+      repositoryUrl: "https://github.com/kyma-project/test-infra.git"
       # Path to directory with function code. Relative to repository root.
-      functionBaseDir: "/development/pubsub-connector/oomFoundFunction"
+      functionBaseDir: "/development/kyma-pubsub-connector/oomFoundFunction"
       # Branch name with function code.
-      branch: "fix-gh-connector"
+      branch: "main"
