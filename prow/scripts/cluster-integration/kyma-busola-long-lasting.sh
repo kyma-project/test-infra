@@ -196,7 +196,7 @@ else
 fi
 
 if [ -z "$COMMON_NAME_PREFIX" ] ; then
-    COMMON_NAME_PREFIX="nt3"
+    COMMON_NAME_PREFIX="nt4"
 fi
 readonly KYMA_NAME_SUFFIX="kyma"
 readonly BUSOLA_NAME_SUFFIX="busola"
