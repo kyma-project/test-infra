@@ -196,12 +196,12 @@ func (r *RenderConfig) mergeConfigs(config *Config) {
 					log.Fatalf("Failed merge job configset %s", err)
 				}
 
-				compareAgainst := config.Global["nextRelease"]
+				compareAgainstRelease := config.Global["nextRelease"]
 				if jobConfig["release_current"] != nil {
-					compareAgainst = jobConfig["release_current"]
+					compareAgainstRelease = jobConfig["release_current"]
 				}
 
-				if releaseMatches(compareAgainst, jobConfig["release_since"], jobConfig["release_until"]) {
+				if releaseMatches(compareAgainstRelease, jobConfig["release_since"], jobConfig["release_until"]) {
 					r.JobConfigs[repoIndex].Jobs[jobIndex].JobConfig = jobConfig
 				}
 			}

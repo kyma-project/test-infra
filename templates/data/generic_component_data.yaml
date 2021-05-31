@@ -1,56 +1,20 @@
-{{- /*
-   This template renders jobs for a component using generic buildpack with make and docker
-
-   Required values:
-     - path - address of the component within the repository
-     - pushRepository - the suffix of the preset-docker-push- label
-     - runIfChanged - a list of regexps to watch in addition to path (default: [])
-     - request_memory - memory given to job container (default: 1.5Gi)
-     - request_cpu - cpu given to job container (default: 0.8)
-  */ -}}
-
-{{ $globals := .Global }}
-{{ $repository := "github.com/kyma-project/kyma"}}
-{{ $pushRepository := "kyma"}}
-{{ $additionalRunIfChanged := list "^common/makefiles/"}}
-
 templates:
   - from: templates/generic.tmpl
     render:
-
-      {{- range $component := .Global.components}}
-
-      {{ $repositoryName := index ($repository | splitList "/") 2 -}}
-      {{- $runIfChanged := prepend $additionalRunIfChanged (print "^" $component.path "/") | join "|" }}
-      {{- $isNotTestInfra := ne $repository "github.com/kyma-project/test-infra"}}
-      {{- $releases := matchingReleases $globals.releases $component.since $component.until }}
-      {{- $isValidForNextRelease := releaseMatches $globals.nextRelease $component.since $component.until }}
-
-      - to: "{{- $component.to }}"
+      - to: ../prow/jobs/halamix2_test.yaml
         localSets:
           jobConfig_generic_component:
+            since: "1.7"
             labels:
-              preset-dind-enabled: "true"
-              preset-sa-gcr-push: "true"
-              preset-docker-push-repository-{{ $pushRepository }}: "true"
-            run_if_changed: "{{ $runIfChanged }}"
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+              preset-docker-push-repository-kyma: "true"
+            run_if_changed: '^components/application-broker/|^common/makefiles/'
             args:
-              - "/home/prow/go/src/{{ $repository }}/{{ $component.path }}"
-            {{- if $component.request_memory }}
-            request_memory: {{ $component.request_memory }}
-            {{ end }}
-            {{- if $component.request_cpu }}
-            request_cpu: {{ $component.request_cpu }}
-            {{ end }}
-          jobConfig_generic_component_presubmit:
-            optional: {{ $component.optional | default false }}
+              - "/home/prow/go/src/kyma/application-broker"
         jobConfigs:
-          - repoName: {{ $repository }}
+          - repoName: "github.com/kyma-project/kyma"
             jobs:
-            {{- if $isValidForNextRelease }}
               - jobConfig:
-                  name: "pre-{{ $repositoryName }}-{{ $component.path | replace "/" "-" }}"
+                  name: "pre-kyma-components-application-broker"
                   branches:
                     - ^master$
                     - ^main$
@@ -59,75 +23,67 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                     - "image_buildpack-golang-kubebuilder2"
-                    {{- if $isNotTestInfra }}
+                    - "jobConfig_generic_component"
                     - "extra_refs_test-infra"
-                    {{- end }}
                   local:
                     - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_presubmit"
               - jobConfig:
-                  name: "post-{{ $repositoryName }}-{{ $component.path | replace "/" "-" }}"
+                  name: "post-kyma-components-application-broker"
                   branches:
                     - ^master$
                     - ^main$
-                  {{- if or $component.optional $component.skipSlackReport }}
                   slack_channel: "kyma-prow-dev-null"
-                  {{- end }}
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
                     - "image_buildpack-golang-kubebuilder2"
-                    {{- if $isNotTestInfra }}
+                    - "jobConfig_generic_component"
                     - "extra_refs_test-infra"
-                    {{- end }}
                   local:
                     - "jobConfig_generic_component"
-            {{ end }}
-            {{- range $rel := $releases }}
+            {{- range $rel := .Global.releases }}
               - jobConfig:
-                  name: "pre-rel{{ $rel | replace "." "" }}-{{ $repositoryName }}-{{ $component.path | replace "/" "-" }}"
+                  name: "pre-rel{{ $rel | replace "." "" }}-kyma-components-application-broker"
                   branches:
                     - release-{{ $rel }}
-                  {{- if $isNotTestInfra }}
                   extra_refs:
                     test-infra:
                       - org: "kyma-project"
                         repo: "test-infra"
                         path_alias: "github.com/kyma-project/test-infra"
                         base_ref: "release-{{- $rel }}"
-                  {{- end }}
+                  release_current: "{{ $rel }}"
+                  release_until: "1.22"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                     - "image_buildpack-golang-kubebuilder2"
+                    - "jobConfig_generic_component"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_presubmit"
               - jobConfig:
-                  name: "post-rel{{ $rel | replace "." "" }}-{{ $repositoryName }}-{{ $component.path | replace "/" "-" }}"
+                  name: "post-rel{{ $rel | replace "." "" }}-kyma-components-application-broker"
                   branches:
                     - release-{{ $rel }}
-                  {{- if $isNotTestInfra }}
                   extra_refs:
                     test-infra:
                       - org: "kyma-project"
                         repo: "test-infra"
                         path_alias: "github.com/kyma-project/test-infra"
                         base_ref: "release-{{- $rel }}"
-                  {{- end }}
-                  {{- if or $component.optional $component.skipSlackReport }}
                   slack_channel: "kyma-prow-dev-null"
-                  {{- end }}
+                  release_current: "{{ $rel }}"
+                  release_until: "1.22"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
                     - "image_buildpack-golang-kubebuilder2"
+                    - "jobConfig_generic_component"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_generic_component"
             {{ end }}
-      {{- end}}
