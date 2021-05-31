@@ -357,10 +357,21 @@ presets:
       - name: sa-vm-kyma-integration
         secret:
           secretName: sa-vm-kyma-integration
+      - name: sa-vm-kyma-ssh-key
+        secret:
+          secretName: sa-vm-kyma-ssh-key
+          items:
+            - key: google_compute_engine
+              path: google_compute_engine
+              mode: 0700
+            - key: google_compute_engine.pub
+              path: google_compute_engine.pub
     volumeMounts:
       - name: sa-vm-kyma-integration
         mountPath: /etc/credentials/sa-vm-kyma-integration
         readOnly: true
+      - name: sa-vm-kyma-ssh-key
+        mountPath: /root/.ssh
   - labels:
       preset-sa-gke-kyma-integration: "true"
     env:
