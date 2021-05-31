@@ -4,11 +4,6 @@ global:
     - "1.23"
     - "1.22"
     - "1.21"
-  components:
-    - to: ../prow/jobs/halamix2_test.yaml
-      # ../prow/jobs/kyma/components/application-broker/application-broker-generic.yaml
-      path: components/application-broker
-      since: "1.7"
 
 # global configSet variables
 pubsub_config: &pubsub_config
@@ -59,6 +54,12 @@ globalSets:
   disable_testgrid:
     annotations:
       testgrid-create-test-group: "false"
+  jobConfig_generic_component:
+    labels:
+      preset-dind-enabled: "true"
+      preset-sa-gcr-push: "true"
+      preset-docker-push-repository-kyma: "true"
+    command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
   # globalSet for prowjobs which don't inherit jobConfig_default globalSet
   pubsub_labels:
     <<: *pubsub_config
