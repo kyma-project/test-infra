@@ -95,6 +95,8 @@ data:
     http_port = 3001
     domain = monitoring.build.kyma-project.io
     root_url = https://%(domain)s:443/
+    [users]
+    auto_assign_org_role = Editor
 ---
 apiVersion: v1
 kind: ConfigMap
