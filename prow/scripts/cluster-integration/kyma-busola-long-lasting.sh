@@ -152,8 +152,8 @@ function deleteKyma(){
 
     # This can be deleted when it's implemented by installer
     # remove CRDs
-    log::info "Removing CRDs"
-    kubectl api-resources --verbs=list --namespaced -o name | grep kyma-project.io | sed -e 's/.*/kubectl delete crd & --grace-period=0 --wait=true/ ' | sh
+    # log::info "Removing CRDs"
+    # kubectl api-resources --verbs=list --namespaced -o name | grep kyma-project.io | sed -e 's/.*/kubectl delete crd & --grace-period=0 --wait=true/ ' | sh
     
     log::info "Kyma uninstalled"
 }
