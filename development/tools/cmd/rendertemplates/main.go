@@ -160,7 +160,8 @@ func main() {
 	}
 }
 
-func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
+func (r *RenderConfig) mergeConfigs(config *Config) {
+	globalConfigSets := config.GlobalSets
 	if present := len(r.JobConfigs); present > 0 {
 		r.Values = make(map[string]interface{})
 		for repoIndex, repo := range r.JobConfigs {
@@ -194,7 +195,15 @@ func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 				if err := jobConfig.mergeConfigSet(job.JobConfig); err != nil {
 					log.Fatalf("Failed merge job configset %s", err)
 				}
-				r.JobConfigs[repoIndex].Jobs[jobIndex].JobConfig = jobConfig
+
+				compareAgainst := config.Global["nextRelease"]
+				if jobConfig["release_current"] != nil {
+					compareAgainst = jobConfig["release_current"]
+				}
+
+				if releaseMatches(compareAgainst, jobConfig["release_since"], jobConfig["release_until"]) {
+					r.JobConfigs[repoIndex].Jobs[jobIndex].JobConfig = jobConfig
+				}
 			}
 		}
 		r.Values["JobConfigs"] = r.JobConfigs
@@ -225,7 +234,7 @@ func renderTemplate(basePath string, templateConfig TemplateConfig, config *Conf
 		return err
 	}
 	for _, render := range templateConfig.Render {
-		render.mergeConfigs(config.GlobalSets)
+		render.mergeConfigs(config)
 		err = renderFileFromTemplate(basePath, templateInstance, render, config)
 		if err != nil {
 			log.Printf("Failed render %s file", render.To)
