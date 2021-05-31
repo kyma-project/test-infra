@@ -152,7 +152,7 @@ function createCluster() {
     export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
   fi
   CLEANUP_CLUSTER="true"
-  gcloud::provision_gke_cluster "$CLUSTER_NAME"
+  NUM_NODES=2 gcloud::provision_gke_cluster "$CLUSTER_NAME"
 }
 
 function applyKymaOverrides() {
