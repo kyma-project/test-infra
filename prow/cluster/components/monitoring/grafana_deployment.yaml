@@ -90,8 +90,8 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/quality
           name: grafana-dashboard-quality
           readOnly: false
-        - mountPath: /grafana-dashboard-definitions/0/quality-poc
-          name: grafana-dashboard-quality-poc
+        - mountPath: /grafana-dashboard-definitions/0/test-coverage
+          name: grafana-dashboard-test-coverage
           readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/prow
           name: grafana-dashboard-prow
@@ -132,9 +132,9 @@ spec:
       - name: grafana-dashboard-quality
         configMap:
           name: grafana-dashboard-quality
-      - name: grafana-dashboard-quality-poc
+      - name: grafana-dashboard-test-coverage
         configMap:
-          name: grafana-dashboard-quality-poc
+          name: grafana-dashboard-test-coverage
       - name: grafana-dashboard-prow
         configMap:
           name: grafana-dashboard-prow
