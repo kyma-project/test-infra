@@ -278,10 +278,12 @@ function utils::save_env_file() {
 }
 
 function utils::describe_nodes() {
-  log::info "Describe nodes"
     {
+      log::info "calling describe nodes"
       kubectl describe nodes
+      log::info "calling top nodes"
       kubectl top nodes
+      log::info "calling top pods"
       kubectl top pods --all-namespaces
     } > "${ARTIFACTS}/describe_nodes.txt"
     grep "System OOM encountered" "${ARTIFACTS}/describe_nodes.txt"
@@ -317,6 +319,8 @@ function utils::oom_get_output() {
 function utils::debug_oom() {
   # run oom debug pod
   kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/debug-container.yaml"
+  log::info "waiting 120 seconds for oom commando pods to start"
+  sleep 120
 }
 
 # utils::kubeaudit_create_report downlaods kubeaudit if necessary and checks for privileged containers
