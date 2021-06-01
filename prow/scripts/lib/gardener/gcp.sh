@@ -101,6 +101,7 @@ gardener::provision_cluster() {
 
 gardener::reprovision_cluster() {
   clusterProvisioner::generateCommonName "${COMMON_NAME_PREFIX}"
+  CLUSTER_NAME="${COMMON_NAME}"
   gardener::provision_cluster
 }
 
