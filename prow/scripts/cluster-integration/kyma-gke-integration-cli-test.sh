@@ -32,16 +32,16 @@
 
 set -o errexit
 
-ENABLE_TEST_LOG_COLLECTOR=false
+export ENABLE_TEST_LOG_COLLECTOR=false
 
 #Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
-KYMA_LABEL_PREFIX="kyma-project.io"
-KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"
-INTEGRATION_TEST_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.integration=true"
+#KYMA_LABEL_PREFIX="kyma-project.io"
+#KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"
+#INTEGRATION_TEST_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.integration=true"
 
 # shellcheck source=prow/scripts/lib/gcloud.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
@@ -115,19 +115,19 @@ if [[ "$BUILD_TYPE" == "pr" ]]; then
     # In case of PR, operate on PR number
     readonly COMMON_NAME_PREFIX="gkeint-pr"
     clusterProvisioner::generateCommonName "${COMMON_NAME_PREFIX}" "${PULL_NUMBER}"
-    KYMA_SOURCE="PR-${PULL_NUMBER}"
+#    KYMA_SOURCE="PR-${PULL_NUMBER}"
 elif [[ "$BUILD_TYPE" == "release" ]]; then
     readonly COMMON_NAME_PREFIX="gkeint-rel"
     readonly RELEASE_VERSION=$(cat "VERSION")
     log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
-    KYMA_SOURCE="${RELEASE_VERSION}"
+#    KYMA_SOURCE="${RELEASE_VERSION}"
     clusterProvisioner::generateCommonName "${COMMON_NAME_PREFIX}"
 else
     # Otherwise (master), operate on triggering commit id
     readonly COMMON_NAME_PREFIX="gkeint-commit"
     readonly COMMIT_ID="${PULL_BASE_SHA::8}"
     clusterProvisioner::generateCommonName "${COMMON_NAME_PREFIX}" "${COMMIT_ID}"
-    KYMA_SOURCE="${COMMIT_ID}"
+#    KYMA_SOURCE="${COMMIT_ID}"
     export KYMA_INSTALLER_IMAGE
 fi
 
@@ -187,11 +187,11 @@ fi
 gcloud::provision_gke_cluster "$CLUSTER_NAME"
 export CLEANUP_CLUSTER="true"
 
-log::info "Generate self-signed certificate"
-DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
-CERT_KEY=$(utils::generate_self_signed_cert "$DOMAIN")
-TLS_CERT=$(echo "${CERT_KEY}" | head -1)
-TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
+#log::info "Generate self-signed certificate"
+#DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
+#CERT_KEY=$(utils::generate_self_signed_cert "$DOMAIN")
+#TLS_CERT=$(echo "${CERT_KEY}" | head -1)
+#TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 
 #log::info "Create Kyma CLI overrides"
 #envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-installer-overrides.tpl.yaml" > "$PWD/kyma-installer-overrides.yaml"

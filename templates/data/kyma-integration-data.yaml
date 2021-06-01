@@ -179,17 +179,17 @@ templates:
                   labels:
                     preset-build-pr: "true"
                     preset-gke-pod-security-policy: "true"
-                  inheritedConfigs:
-                    global:
-                      - "jobConfig_default"
-                      - "jobConfig_presubmit"
-                      - "image_kyma-integration"
-                      - "extra_refs_test-infra"
-                    local:
-                      - "jobConfig_default"
-                      - "request_big"
-                      - "gke_job_template"
-                      - "gke_job_labels_template"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "request_big"
+                    - "gke_job_template"
+                    - "gke_job_labels_template"
               # - jobConfig:
               #     name: "pre-main-kyma-gke-rapid-integration"
               #     labels:

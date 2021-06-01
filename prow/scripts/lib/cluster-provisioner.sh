@@ -1,4 +1,4 @@
-
+#!/usr/bin/env bash
 
 
 
@@ -39,7 +39,7 @@ clusterProvisioner::provision_cluster() {
 
   log::info "Provision cluster: \"${clusterName}\""
 
-  CLEANUP_CLUSTER="true"
+  export CLEANUP_CLUSTER="true"
   (
   kyma provision gke \
     --ci \
