@@ -82,7 +82,6 @@ gardener::provision_cluster() {
     (
     set -x
 
-    trap gardener::reprovision_cluster ERR
     kyma provision gardener gcp \
             --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
             --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
@@ -90,7 +89,6 @@ gardener::provision_cluster() {
             --scaler-max 4 --scaler-min 2 \
             --kube-version="${GARDENER_CLUSTER_VERSION}"
     false
-    trap - ERR
     )
 
     if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
@@ -100,9 +98,12 @@ gardener::provision_cluster() {
 }
 
 gardener::reprovision_cluster() {
-  clusterProvisioner::generateCommonName "${COMMON_NAME_PREFIX}"
-  CLUSTER_NAME="${COMMON_NAME}"
-  gardener::provision_cluster
+  if [ "${reprovisionCount:-0}" -lt 1 ]; then
+    export reprovisionCount=1
+    clusterProvisioner::generateCommonName "${COMMON_NAME_PREFIX}"
+    CLUSTER_NAME="${COMMON_NAME}"
+    gardener::provision_cluster
+  fi
 }
 
 gardener::install_kyma() {

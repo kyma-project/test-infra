@@ -70,10 +70,8 @@ trap gardener::cleanup EXIT INT
 ERROR_LOGGING_GUARD="true"
 export ERROR_LOGGING_GUARD
 
-RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
 readonly COMMON_NAME_PREFIX="grd"
-COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-export COMMON_NAME
+clusterProvisioner::generateCommonName "${COMMON_NAME_PREFIX}"
 
 ### Cluster name must be less than 10 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
@@ -114,8 +112,11 @@ kyma::install_cli
 # currently only Azure generates overrides, but this may change in the future
 gardener::generate_overrides
 
+trap gardener::reprovision_cluster ERR
+
 gardener::provision_cluster
 
+trap - ERR
 ## uses previously set KYMA_SOURCE
 #if [[ "${KYMA_ALPHA}" == "true" ]]; then
 #  kyma::alpha_deploy_kyma
