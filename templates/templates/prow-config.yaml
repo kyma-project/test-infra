@@ -355,10 +355,16 @@ presets:
       - name: sa-vm-kyma-integration
         secret:
           secretName: sa-vm-kyma-integration
+      - name: sa-vm-kyma-ssh-key # https://github.com/kyma-project/kyma/issues/10818
+        secret:
+          secretName: sa-vm-kyma-ssh-key
+          defaultMode: 0700
     volumeMounts:
       - name: sa-vm-kyma-integration
         mountPath: /etc/credentials/sa-vm-kyma-integration
         readOnly: true
+      - name: sa-vm-kyma-ssh-key
+        mountPath: /root/.ssh
   - labels:
       preset-sa-gke-kyma-integration: "true"
     env:
