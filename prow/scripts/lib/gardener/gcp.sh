@@ -88,9 +88,9 @@ gardener::provision_cluster() {
             --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
             --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
             --scaler-max 4 --scaler-min 2 \
-            --kube-version="${GARDENER_CLUSTER_VERSION}"
-    )
+            --kube-version="${GARDENER_CLUSTER_VERSION}" || false
     trap - ERR
+    )
 
     if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
       # run oom debug pod

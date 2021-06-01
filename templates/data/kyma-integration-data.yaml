@@ -179,6 +179,7 @@ templates:
                   labels:
                     preset-build-pr: "true"
                     preset-gke-pod-security-policy: "true"
+                    preset-debug-commando-oom: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
