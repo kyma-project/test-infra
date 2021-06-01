@@ -112,11 +112,8 @@ kyma::install_cli
 # currently only Azure generates overrides, but this may change in the future
 gardener::generate_overrides
 
-trap gardener::reprovision_cluster ERR
-
 gardener::provision_cluster
 
-trap - ERR
 ## uses previously set KYMA_SOURCE
 #if [[ "${KYMA_ALPHA}" == "true" ]]; then
 #  kyma::alpha_deploy_kyma
