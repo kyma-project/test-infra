@@ -13,6 +13,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/cluster-provisioner.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/cluster-provisioner.sh"
 
 #!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
 gardener::cleanup() {
@@ -79,6 +81,8 @@ gardener::provision_cluster() {
     CLEANUP_CLUSTER="true"
     (
     set -x
+
+    trap gardener::reprovision_cluster ERR
     kyma provision gardener gcp \
             --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
             --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
@@ -86,11 +90,17 @@ gardener::provision_cluster() {
             --scaler-max 4 --scaler-min 2 \
             --kube-version="${GARDENER_CLUSTER_VERSION}"
     )
+    trap - ERR
 
     if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
       # run oom debug pod
       utils::debug_oom
     fi
+}
+
+gardener::reprovision_cluster() {
+  clusterProvisioner::generateCommonName "${COMMON_NAME_PREFIX}"
+  gardener::provision_cluster
 }
 
 gardener::install_kyma() {
