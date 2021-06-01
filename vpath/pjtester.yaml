@@ -1,0 +1,3 @@
+pjNames:
+  - pjName: "kyma-upgrade-gardener-azure"
+  - pjName: "kyma-azure-event-hubs-namespaces-cleanup"
