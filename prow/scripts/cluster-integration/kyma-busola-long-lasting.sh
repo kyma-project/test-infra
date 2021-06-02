@@ -102,7 +102,7 @@ function provisionBusola() {
 }
 
 function provisionKyma2(){
-    export KYMA_VERSION=PR-11411
+    export KYMA_VERSION=$1
     export DOMAIN_NAME=$2
 
     log::info "Installing Kyma version: ${KYMA_VERSION} on the cluster : ${DOMAIN_NAME} using ${CPU_COUNT} cpus"
@@ -154,7 +154,7 @@ function deleteKyma(){
     # remove CRDs
     # log::info "Removing CRDs"
     # kubectl api-resources --verbs=list --namespaced -o name | grep kyma-project.io | sed -e 's/.*/kubectl delete crd & --grace-period=0 --wait=true/ ' | sh
-    
+    ${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/knsk.sh --delete-all --force --no-color
     log::info "Kyma uninstalled"
 }
 
@@ -215,6 +215,7 @@ log::info "Kyma cluster name: ${KYMA_COMMON_NAME}"
 if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
     log::info "Kyma cluster name: ${KYMA_COMMON_NAME}"
     if [[ $RECREATE_CLUSTER == "true" ]]; then
+        ${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/knsk.sh --delete-all --force --no-color
         delete_cluster "${KYMA_COMMON_NAME}"
         # wait 120s this can be removed when Gardener Bug is fixed
         log::info "We wait 120s for Gardener Shoot to settle after cluster deletion"
