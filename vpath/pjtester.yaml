@@ -1,4 +1,2 @@
 pjNames:
-  - pjName: cli-test-kyma-gke-integration
-    report: true
   - pjName: kyma-integration-gardener-gcp
