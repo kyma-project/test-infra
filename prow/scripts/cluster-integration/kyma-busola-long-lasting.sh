@@ -102,7 +102,7 @@ function provisionBusola() {
 }
 
 function provisionKyma2(){
-    export KYMA_VERSION=$1
+    export KYMA_VERSION=PR-11411
     export DOMAIN_NAME=$2
 
     log::info "Installing Kyma version: ${KYMA_VERSION} on the cluster : ${DOMAIN_NAME} using ${CPU_COUNT} cpus"
@@ -196,7 +196,7 @@ else
 fi
 
 if [ -z "$COMMON_NAME_PREFIX" ] ; then
-    COMMON_NAME_PREFIX="n"
+    COMMON_NAME_PREFIX="nt10"
 fi
 readonly KYMA_NAME_SUFFIX="kyma"
 readonly BUSOLA_NAME_SUFFIX="busola"
