@@ -30,7 +30,7 @@ func TestFaileryJobPresubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "main")
 	assert.Equal(t, "^tools/failery/", actualPresubmit.RunIfChanged)
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "tools/failery/some_random_file.go"))
-	assert.Equal(t, tester.ImageGolangBuildpack1_14, actualPresubmit.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageGolangBuildpack1_16, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tools/failery", "ci-pr"}, actualPresubmit.Spec.Containers[0].Args)
 }
@@ -54,7 +54,7 @@ func TestFaileryJobPostsubmit(t *testing.T) {
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "main")
-	assert.Equal(t, tester.ImageGolangBuildpack1_14, actualPost.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageGolangBuildpack1_16, actualPost.Spec.Containers[0].Image)
 	assert.Equal(t, "^tools/failery/", actualPost.RunIfChanged)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tools/failery", "ci-master"}, actualPost.Spec.Containers[0].Args)

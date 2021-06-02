@@ -61,7 +61,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.16.4"
             securityContext:
               privileged: false
             command:
@@ -90,7 +90,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.16.4"
             securityContext:
               privileged: false
             command:
@@ -120,7 +120,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.16.4"
             securityContext:
               privileged: true
             command:
@@ -145,7 +145,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.16.4"
             securityContext:
               privileged: false
             command:
