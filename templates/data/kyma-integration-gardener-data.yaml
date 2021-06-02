@@ -29,6 +29,8 @@ templates:
               preset-build-pr: "true"
           command_integration:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
+          command_integration_api_gateway:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-api-gateway.sh"            
           command_integration_eventing:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing.sh"
           command_busola_long_lasting:
@@ -163,7 +165,26 @@ templates:
                     - jobConfig_presubmit
                     - command_integration
                     - gardener_azure_job
-
+              - jobConfig:
+                  name: pre-main-kyma-gardener-gcp-api-gateway
+                  labels:
+                    preset-build-pr: "true"
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                    run_if_changed: "^(((resources/api-gateway)\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  env:
+                    KYMA_ALPHA: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_kyma-integration
+                  local:
+                    - jobConfig_default
+                    - gardener_gcp_job
+                    - command_integration_api_gateway
               # postsubmits
               - jobConfig:
                   name: post-main-kyma-gardener-azure-alpha-eval
@@ -207,6 +228,25 @@ templates:
                     - jobConfig_default
                     - command_integration
                     - gardener_azure_job
+              - jobConfig:
+                  name: post-main-kyma-gardener-gcp-api-gateway
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                    run_if_changed: "^(((resources/api-gateway)\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  env:
+                    KYMA_ALPHA: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - image_kyma-integration
+                    - disable_testgrid
+                  local:
+                    - jobConfig_default
+                    - gardener_gcp_job
+                    - command_integration_api_gateway
               - jobConfig:
                   name: pre-main-kyma-gardener-gcp-eventing
                   optional: true # TODO make required when Eventing E2E tests are available
