@@ -171,26 +171,6 @@ templates:
                     - "request_big"
                     - "gke_job_template"
                     - "gke_job_labels_template"
-              - jobConfig:
-                  name: "cli-test-kyma-gke-integration"
-                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-cli-test.sh"
-                  # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  labels:
-                    preset-build-pr: "true"
-                    preset-gke-pod-security-policy: "true"
-                    preset-debug-commando-oom: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "request_big"
-                    - "gke_job_template"
-                    - "gke_job_labels_template"
               # - jobConfig:
               #     name: "pre-main-kyma-gke-rapid-integration"
               #     labels:
@@ -361,7 +341,6 @@ templates:
                   labels:
                     preset-sa-vm-kyma-integration: "true"
                     preset-gc-project-env: "true"
-                  command: "./cleaner.sh"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

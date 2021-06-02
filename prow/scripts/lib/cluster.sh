@@ -3,26 +3,24 @@
 
 
 
-# gcloud::encrypt encrypts text using Google KMS
 # clusterProvisioner::generateCommonName create and export COMMON_NAME variable
 # it generates random part of COMMON_NAME and prefix it with provided arguments
 #
 # Arguments:
 # $1 - string to use as a common name prefix /optional
 # $2 - pull request number or commit id to use as a common name prefix /optional
-clusterProvisioner::generateCommonName() {
-  NAME_PREFIX=$1
-  PULL_NUMBER=$2
-  if [ ${#PULL_NUMBER} -gt 0 ]; then
-    PULL_NUMBER="-${PULL_NUMBER}-"
-  fi
-  RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
-  COMMON_NAME=$(echo "${NAME_PREFIX}${PULL_NUMBER}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-  export COMMON_NAME
-}
+#clusterProvisioner::generateCommonName() {
+#  NAME_PREFIX=$1
+#  PULL_NUMBER=$2
+#  if [ ${#PULL_NUMBER} -gt 0 ]; then
+#    PULL_NUMBER="-${PULL_NUMBER}-"
+#  fi
+#  RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
+#  COMMON_NAME=$(echo "${NAME_PREFIX}${PULL_NUMBER}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+#  export COMMON_NAME
+#}
 
 
-# gcloud::encrypt encrypts text using Google KMS
 # clusterProvisioner::generateCommonName create and export COMMON_NAME variable
 # it generates random part of COMMON_NAME and prefix it with provided arguments
 #

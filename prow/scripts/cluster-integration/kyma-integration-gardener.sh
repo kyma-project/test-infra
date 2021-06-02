@@ -71,7 +71,7 @@ ERROR_LOGGING_GUARD="true"
 export ERROR_LOGGING_GUARD
 
 readonly COMMON_NAME_PREFIX="grd"
-clusterProvisioner::generateCommonName "${COMMON_NAME_PREFIX}"
+utils::generate_commonName "${COMMON_NAME_PREFIX}"
 
 ### Cluster name must be less than 10 characters!
 export CLUSTER_NAME="${COMMON_NAME}"

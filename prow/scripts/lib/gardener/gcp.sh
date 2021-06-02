@@ -14,7 +14,7 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/cluster-provisioner.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/cluster-provisioner.sh"
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/cluster.sh"
 
 #!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
 gardener::cleanup() {
@@ -100,21 +100,21 @@ gardener::provision_cluster() {
     )
     # trap cleanup we want other errors fail pipeline immediately
     trap - ERR
-
-    if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
-      # run oom debug pod
-      utils::debug_oom
-    fi
+    # run oom debug pods
+    utils::debug_oom
 }
 
 # gardener::reprovision_cluster will generate new cluster name
 # and start provisioning again
 gardener::reprovision_cluster() {
   if [ "${reprovisionCount:-0}" -lt 1 ]; then
+    log::info "cluster provisioning failed, trying provision new cluster"
     export reprovisionCount=1
-    clusterProvisioner::generateCommonName "${COMMON_NAME_PREFIX}"
+    utils::generate_commonName "${COMMON_NAME_PREFIX}"
     CLUSTER_NAME="${COMMON_NAME}"
     gardener::provision_cluster
+  else
+    log::info "cluster provisioning failed, already tried with new cluster, I give up"
   fi
 }
 
