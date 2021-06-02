@@ -68,6 +68,7 @@ func Map(m map[string]interface{}) (map[string]interface{}, error) {
 type Config struct {
 	Templates  []TemplateConfig
 	Global     map[string]interface{}
+	Local      map[string]interface{}
 	GlobalSets map[string]ConfigSet `yaml:"globalSets,omitempty"`
 }
 
@@ -145,6 +146,16 @@ func main() {
 			if err := yaml.Unmarshal(cfg.Bytes(), &dataFileConfig); err != nil {
 				log.Fatalf("Cannot parse data file yaml: %s\n", err)
 			}
+
+			cfg.Reset()
+			values := map[string]interface{}{"Global": config.Global, "GlobalSets": config.GlobalSets, "Templates": config.Templates, "Local": dataFileConfig.Local}
+			if err := t.Execute(&cfg, values); err != nil {
+				log.Fatalf("Cannot render data template2: %v", err)
+			}
+			if err := yaml.Unmarshal(cfg.Bytes(), &dataFileConfig); err != nil {
+				log.Fatalf("Cannot parse data file yaml2: %s\n%s\n", err, cfg.Bytes())
+			}
+
 			dataFilesTemplates = append(dataFilesTemplates, dataFileConfig.Templates...)
 		}
 
@@ -263,7 +274,7 @@ func renderFileFromTemplate(basePath string, templateInstance *template.Template
 		return err
 	}
 
-	values := map[string]interface{}{"Values": renderConfig.Values, "Global": config.Global}
+	values := map[string]interface{}{"Values": renderConfig.Values, "Global": config.Global, "Local": config.Local}
 
 	return templateInstance.Execute(destFile, values)
 }
