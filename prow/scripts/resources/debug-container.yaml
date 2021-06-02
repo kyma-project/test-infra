@@ -7,7 +7,7 @@ automountServiceAccountToken: true
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: debug-commando:psp:privileged
+  name: debug-commando:psp:privileged:gardener
 subjects:
   - apiGroup: ""
     kind: ServiceAccount
@@ -21,12 +21,12 @@ roleRef:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: oom-debug-psp:privileged
+  name: debug-commando:psp:privileged:gke
 subjects:
   - apiGroup: ""
     kind: ServiceAccount
     namespace: default
-    name: oom-debug
+    name: debug-commando
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

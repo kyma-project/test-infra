@@ -80,17 +80,25 @@ gardener::provision_cluster() {
 
     CLEANUP_CLUSTER="true"
     (
-    set -x
-
-    trap gardener::reprovision_cluster ERR
-    kyma provision gardener gcp \
-            --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
-            --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
-            --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
-            --scaler-max 4 --scaler-min 2 \
-            --kube-version="${GARDENER_CLUSTER_VERSION}"
-    false
+      set -x
+      # enable trap to catch kyma provision failures
+      trap gardener::reprovision_cluster ERR
+      # decreasing attempts to 2 because we will try to create new cluster from scratch on exit code other than 0
+      kyma provision gardener gcp \
+        --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" \
+        --name "${CLUSTER_NAME}" \
+        --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+        --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
+        --region "${GARDENER_REGION}" \
+        -z "${GARDENER_ZONES}" \
+        -t "${MACHINE_TYPE}" \
+        --scaler-max 4 \
+        --scaler-min 2 \
+        --kube-version="${GARDENER_CLUSTER_VERSION}" \
+        --attempts 2
+      false
     )
+    # trap cleanup we want other errors fail pipeline immediately
     trap - ERR
 
     if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
@@ -99,6 +107,8 @@ gardener::provision_cluster() {
     fi
 }
 
+# gardener::reprovision_cluster will generate new cluster name
+# and start provisioning again
 gardener::reprovision_cluster() {
   if [ "${reprovisionCount:-0}" -lt 1 ]; then
     export reprovisionCount=1
