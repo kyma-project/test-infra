@@ -418,7 +418,7 @@ function utils::run_jobguard() {
 # $2 - pull request number or commit id to use as a common name prefix /optional
 # Exports
 # COMMON_NAME
-utils::generate_CommonName() {
+utils::generate_commonName() {
   NAME_PREFIX=$1
   PULL_NUMBER=$2
   if [ ${#PULL_NUMBER} -gt 0 ]; then
