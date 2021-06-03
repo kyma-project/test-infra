@@ -182,4 +182,3 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-  
