@@ -196,7 +196,7 @@ else
 fi
 
 if [ -z "$COMMON_NAME_PREFIX" ] ; then
-    COMMON_NAME_PREFIX="nt11"
+    COMMON_NAME_PREFIX="nt12"
 fi
 readonly KYMA_NAME_SUFFIX="kyma"
 readonly BUSOLA_NAME_SUFFIX="busola"
@@ -215,7 +215,6 @@ log::info "Kyma cluster name: ${KYMA_COMMON_NAME}"
 if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
     log::info "Kyma cluster name: ${KYMA_COMMON_NAME}"
     if [[ $RECREATE_CLUSTER == "true" ]]; then
-        deleteKyma "${KYMA_COMMON_NAME}"
         delete_cluster "${KYMA_COMMON_NAME}"
         # wait 120s this can be removed when Gardener Bug is fixed
         log::info "We wait 120s for Gardener Shoot to settle after cluster deletion"
