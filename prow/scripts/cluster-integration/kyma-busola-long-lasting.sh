@@ -146,10 +146,13 @@ function deleteKyma(){
     --ci
     set +x
     # We wait for the certificate to be revoked
-    kubectl wait --for=delete Certificate --field-selector=metadata.name=kyma-tls-cert --timeout="${CERTIFICATE_TIMEOUT}s" --namespace=istio-system
+    # kubectl wait --for=delete Certificate --field-selector=metadata.name=kyma-tls-cert --timeout="${CERTIFICATE_TIMEOUT}s" --namespace=istio-system
 
     # This can be deleted when it's implemented by installer
-    kubectl delete namespace kyma-system --wait=true
+    # remove CRDs
+    # log::info "removing CRDs"
+    # kubectl api-resources --verbs=list --namespaced -o name | grep kyma-project.io | sed -e 's/.*/kubectl delete crd & --force=true --wait=false/ ' | sh
+    
     log::info "Cluster deleted"
 }
 
