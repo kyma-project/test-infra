@@ -10,22 +10,41 @@ LABEL io.kyma-project.test-infra.commit=$commit
 
 # Versions
 
-ARG goVersion
-ARG depReleaseTag
-ENV GO_VERSION=$goVersion
-ENV DEP_RELEASE_TAG=$depReleaseTag
+ENV ARCH amd64
+ENV GO_VERSION=1.16.4
+ENV DEP_RELEASE_TAG=v0.5.4
+
+ENV KUBEBUILDER_VERSION 2.3.1
+ENV KUSTOMIZE_VERSION 3.8.4
 
 # Install Go
 
-RUN wget -q https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz && \
-    tar xzf go${GO_VERSION}.linux-amd64.tar.gz && \
-    rm go${GO_VERSION}.linux-amd64.tar.gz && \
+RUN wget -q https://dl.google.com/go/go${GO_VERSION}.linux-${ARCH}.tar.gz && \
+    tar xzf go${GO_VERSION}.linux-${ARCH}.tar.gz && \
+    rm go${GO_VERSION}.linux-${ARCH}.tar.gz && \
     mv go /usr/local
 
 ENV GOPATH /workspace/go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
-RUN mkdir -p ${GOPATH}/bin
-RUN mkdir -p ${GOPATH}/src
+RUN mkdir -p ${GOPATH}/bin && \
+    mkdir -p ${GOPATH}/src
+
+#Install kubebuilder
+RUN curl -L -O "https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${KUBEBUILDER_VERSION}/kubebuilder_${KUBEBUILDER_VERSION}_linux_${ARCH}.tar.gz" && \
+    tar -zxvf kubebuilder_${KUBEBUILDER_VERSION}_linux_${ARCH}.tar.gz && \
+    rm kubebuilder_${KUBEBUILDER_VERSION}_linux_${ARCH}.tar.gz && \
+    mv kubebuilder_${KUBEBUILDER_VERSION}_linux_${ARCH} kubebuilder && \
+    mv kubebuilder /usr/local/ && \
+    curl -L -O "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_${ARCH}.tar.gz" && \
+    tar -zxvf kustomize_v${KUSTOMIZE_VERSION}_linux_${ARCH}.tar.gz && \
+    rm kustomize_v${KUSTOMIZE_VERSION}_linux_${ARCH}.tar.gz && \
+    mv kustomize /usr/local/bin/kustomize
+
+# Paths
+
+ENV PATH /usr/local/kubebuilder/bin:$PATH
+# Path used by decorator
+ENV PATH /home/prow/go/bin:$PATH
 
 # Install Dep
 
