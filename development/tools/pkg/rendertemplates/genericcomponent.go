@@ -38,6 +38,7 @@ func (j *Job) appendCommonValues(r *RenderConfig) {
 	j.InheritedConfigs.Global = commonGlobalConfigs
 }
 
+// GenerateComponentJobs generates jobs for components
 func (r *RenderConfig) GenerateComponentJobs(global map[string]interface{}, globalConfigSets map[string]ConfigSet) {
 	jobs := Repo{RepoName: r.Values["repository"].(string)}
 	repository := strings.Split(r.Values["repository"].(string), "/")[2]

@@ -70,6 +70,7 @@ func Map(m map[string]interface{}) (map[string]interface{}, error) {
 	return copy, nil
 }
 
+// MergeConfigs merges values from GlobalSets, LocalSets and local values for each job
 func (r *RenderConfig) MergeConfigs(config *Config) {
 	globalConfigSets := config.GlobalSets
 	if present := len(r.JobConfigs); present > 0 {
