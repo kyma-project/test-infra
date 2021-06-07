@@ -343,7 +343,7 @@ templates:
           path: components/subscription-cleanup-job
           since: "1.17"
           optional: false
-      - to: ../prow/jobs/control-plane/components/subscription-cleanup-job/provider-config-migration-job-generic.yaml
+      - to: ../prow/jobs/control-plane/components/provider-config-migration-job/provider-config-migration-job-generic.yaml
         values:
           <<: *cluster_default
           <<: *control_plane_generic_component
