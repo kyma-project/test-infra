@@ -252,31 +252,31 @@ function test_console_url() {
   fi
 }
 
-# gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
-# docker::start
-# az::login "$AZURE_CREDENTIALS_FILE"
-# az::set_subscription "$AZURE_SUBSCRIPTION_ID"
+gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+docker::start
+az::login "$AZURE_CREDENTIALS_FILE"
+az::set_subscription "$AZURE_SUBSCRIPTION_ID"
 
-# DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --project="${CLOUDSDK_CORE_PROJECT}" --format="value(dnsName)")"
-# export DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
+DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --project="${CLOUDSDK_CORE_PROJECT}" --format="value(dnsName)")"
+export DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 
 # cleanup
 
-# az::create_resource_group "${RS_GROUP}" "${REGION}"
+az::create_resource_group "${RS_GROUP}" "${REGION}"
 # installCluster
 
-# createPublicIPandDNS
-# "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-letsencrypt-cert.sh"
-# TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
-# export TLS_CERT
-# TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
-# export TLS_KEY
+createPublicIPandDNS
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-letsencrypt-cert.sh"
+TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
+export TLS_CERT
+TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
+export TLS_KEY
 
 setupKubeconfig
 
 kyma::install_cli
 
-kyma provision aks
+kyma provision -c "$AZURE_CREDENTIALS_FILE" -n "${CLUSTER_NAME}" -p "${RS_GROUP}" aks
 
 installKyma
 
