@@ -1,0 +1,3 @@
+pjNames:
+  - pjName: kyma-aks-nightly
+    report: true
