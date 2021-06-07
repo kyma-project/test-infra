@@ -260,7 +260,7 @@ az::set_subscription "$AZURE_SUBSCRIPTION_ID"
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --project="${CLOUDSDK_CORE_PROJECT}" --format="value(dnsName)")"
 export DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 
-# cleanup
+cleanup
 
 az::create_resource_group "${RS_GROUP}" "${REGION}"
 # installCluster
