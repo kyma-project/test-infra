@@ -86,7 +86,6 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.ControlPlaneRepo(),
 			jobsuite.AllReleases(),
-			jobsuite.Optional(),
 		},
 	},
 }
