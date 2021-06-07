@@ -265,9 +265,10 @@ cleanup
 az::create_resource_group "${RS_GROUP}" "${REGION}"
 # installCluster
 kyma::install_cli
-ARM_CLIENT_ID="$AZURE_CLIENT_ID"
-ARM_CLIENT_SECRET="$AZURE_CLIENT_SECRET"
-ARM_SUBSCRIPTION_ID="$AZURE_SUBSCRIPTION_ID"
+export ARM_CLIENT_ID=$(jq -r '.tenant_id' "$AZURE_CREDENTIALS_FILE")
+export ARM_CLIENT_SECRET=$(jq -r '.secret' "$AZURE_CREDENTIALS_FILE")
+export ARM_SUBSCRIPTION_ID=$(jq -r '.app_id' "$AZURE_CREDENTIALS_FILE")
+export AKS_TENANT_ID=$(jq -r '.tenant_id' "$AZURE_CREDENTIALS_FILE")
 kyma provision -c "$AZURE_CREDENTIALS_FILE" -n "${CLUSTER_NAME}" -p "${RS_GROUP}" aks
 
 createPublicIPandDNS
