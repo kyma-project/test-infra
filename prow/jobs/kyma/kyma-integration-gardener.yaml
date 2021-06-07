@@ -25,7 +25,7 @@ presubmits: # runs on PRs
       decorate: true
       decoration_config:
         grace_period: 600000000000
-        run_if_changed: ^(((resources/knative-eventing|resources/event-sources|resources/knative-eventing-kafka|resources/application-connector)\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))
+        run_if_changed: ^(((resources/application-connector)\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))
         timeout: 14400000000000
       path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
