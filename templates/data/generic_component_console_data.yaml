@@ -1,0 +1,58 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/console/core-ui/core-ui.yaml
+        values:
+          path: core-ui
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^components/
+            - ^shared/
+            - ^package.json
+          since: "1.11"
+      - to: ../prow/jobs/console/add-ons/add-ons.yaml
+        values:
+          path: add-ons
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^components/
+            - ^shared/
+            - ^package.json
+          since: "1.11"
+      - to: ../prow/jobs/console/service-catalog-ui/service-catalog-ui.yaml
+        values:
+          path: service-catalog-ui
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^components/
+            - ^shared/
+            - ^package.json
+          since: "1.11"
+      - to: ../prow/jobs/console/logging/console-logging.yaml
+        values:
+          path: logging
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^components/
+            - ^shared/
+            - ^package.json
+          since: "1.11"
+      - to: ../prow/jobs/console/tests/tests.yaml
+        values:
+          path: tests
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^components/
+            - ^shared/
+            - ^package.json
+          since: "1.11"
+      - to: ../prow/jobs/console/core/core.yaml
+        values:
+          path: core
+          repository: github.com/kyma-project/console
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^components/
+            - ^shared/
+            - ^package.json
+          since: "1.12"
