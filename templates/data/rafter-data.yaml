@@ -8,12 +8,6 @@ templates:
             env:
               GO111MODULE: "on"
               CLUSTER_VERSION: "1.16"
-            tolerations:
-              resources-usage:
-                key: "resources-usage"
-                value: "high"
-                operator: "Equal"
-                effect: "NoSchedule"
             labels:
               preset-dind-enabled: "true"
               preset-kind-volume-mounts: "true"

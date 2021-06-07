@@ -49,6 +49,18 @@ data:
         version: 1
         orgId: 1
         editable: false
+      - name: bigquery-prow
+        type: doitintl-bigquery-datasource
+        access: proxy
+        jsonData:
+            authenticationType: jwt
+            clientEmail: ${GF_PLUGINS_BIGQUERY_DATASOURCE_EMAIL}
+            defaultProject: sap-kyma-prow
+            tokenUri: https://oauth2.googleapis.com/token
+        secureJsonData:
+            privateKey: "${GF_PLUGINS_BIGQUERY_DATASOURCE_PRIVATE_KEY}"
+        version: 2
+        readOnly: false
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -60,8 +72,18 @@ data:
     [auth.basic]
     enabled = false
     [auth.anonymous]
+    enabled = false
+    [auth.github]
     enabled = true
-    org_role = Viewer
+    allow_sign_up = true
+    client_id = ${GF_AUTH_GITHUB_CLIENT_ID}
+    client_secret = ${GF_AUTH_GITHUB_CLIENT_SECRET}
+    scopes = user:email,read:org
+    auth_url = https://github.com/login/oauth/authorize
+    token_url = https://github.com/login/oauth/access_token
+    api_url = https://api.github.com/user
+    team_ids =
+    allowed_organizations = kyma-project
     [paths]
     data = /var/lib/grafana
     logs = /var/lib/grafana/logs
@@ -71,6 +93,10 @@ data:
     disable_gravatar = true
     [server]
     http_port = 3001
+    domain = monitoring.build.kyma-project.io
+    root_url = https://%(domain)s:443/
+    [users]
+    auto_assign_org_role = Editor
 ---
 apiVersion: v1
 kind: ConfigMap

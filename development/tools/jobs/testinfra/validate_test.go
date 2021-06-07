@@ -27,7 +27,7 @@ func TestValidateProwToolsPresubmit(t *testing.T) {
 
 	assert.Len(t, sut.Spec.Containers, 1)
 	cont := sut.Spec.Containers[0]
-	assert.Equal(t, tester.ImageGolangBuildpack1_14, cont.Image)
+	assert.Equal(t, tester.ImageGolangBuildpack1_16, cont.Image)
 	assert.Equal(t, []string{"make"}, cont.Command)
 	assert.Equal(t, []string{"-C", "development/tools", "validate"}, cont.Args)
 }
@@ -53,7 +53,7 @@ func TestValidateProwJobsPresubmit(t *testing.T) {
 
 	assert.Len(t, sut.Spec.Containers, 1)
 	cont := sut.Spec.Containers[0]
-	assert.Equal(t, tester.ImageGolangBuildpack1_14, cont.Image)
+	assert.Equal(t, tester.ImageGolangBuildpack1_16, cont.Image)
 	assert.Equal(t, []string{"make"}, cont.Command)
 	assert.Equal(t, []string{"-C", "development/tools", "jobs-tests"}, cont.Args)
 }

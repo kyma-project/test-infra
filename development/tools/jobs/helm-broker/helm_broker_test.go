@@ -37,7 +37,7 @@ func TestHelmBrokerJobsPresubmit(t *testing.T) {
 			expPresets: []preset.Preset{
 				preset.DindEnabled, preset.GcrPush, preset.DockerPushRepoKyma, preset.KindVolumesMounts,
 			},
-			expContainerImg: tester.ImageGolangBuildpack1_14,
+			expContainerImg: tester.ImageGolangBuildpack1_16,
 			expCommand:      "make",
 			expArgs:         []string{"charts-test"},
 		},

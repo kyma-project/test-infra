@@ -26,7 +26,6 @@ ENABLE_TEST_LOG_COLLECTOR=false
 export RS_GROUP \
     REGION
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
-export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export EVENTHUB_SECRET_OVERRIDE_FILE="eventhubs-secret-overrides.yaml"
 export HELM_TIMEOUT_SEC=10000s # timeout in sec for helm install/test operation
@@ -75,9 +74,8 @@ BEFORE_UPGRADE_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.before-upgrade=true"
 POST_UPGRADE_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.after-upgrade=true"
 
 RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
-EVENTHUB_NAMESPACE_NAME="kyma-grdnr-upgrade-${RANDOM_NAME_SUFFIX}"
-export EVENTHUB_NAMESPACE_NAME
-#!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
+
+#!Put cleanup code in this function! Function is executed at exit from the script and on interruption.
 cleanup() {
     #!!! Must be at the beginning of this function !!!
     EXIT_STATUS=$?
@@ -103,11 +101,7 @@ cleanup() {
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
 
-        gardener::deprovision_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
-
-        log::info "Deleting Azure EventHubs Namespace: \"${EVENTHUB_NAMESPACE_NAME}\""
-        # Delete the Azure Event Hubs namespace which was created
-        az eventhubs namespace delete -n "${EVENTHUB_NAMESPACE_NAME}" -g "${RS_GROUP}"
+        utils::deprovision_gardener_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
     fi
 
     rm -rf "${TMP_DIR}"
@@ -162,22 +156,6 @@ function installKyma() {
 
     log::info "Installing Kyma ${LAST_RELEASE_VERSION}"
 
-    log::info "Downloading Kyma installer CR"
-    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/installer-cr-azure-eventhubs.yaml.tpl" \
-        --output installer-cr-azure-eventhubs.yaml.tpl
-
-    log::info "Downloading Azure EventHubs config"
-    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/installer-config-azure-eventhubs.yaml.tpl" \
-        --output installer-config-azure-eventhubs.yaml.tpl
-
-    log::info "Generate Azure Event Hubs overrides"
-
-    # create-azure-event-hubs-secret.sh creates an override secret file, eventhubs-secret-overrides.yaml for Azure EventHub in current working directory.
-    # The override is later used in the Kyma installation to configure the kafka-knative channel.
-
-    # shellcheck disable=SC1090
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
-
     prepare_stackdriver_logging "${INSTALLATION_OVERRIDE_STACKDRIVER}"
 
     (
@@ -185,9 +163,6 @@ function installKyma() {
     kyma install \
         --ci \
         --source "${LAST_RELEASE_VERSION}" \
-        -c installer-cr-azure-eventhubs.yaml.tpl \
-        -o installer-config-azure-eventhubs.yaml.tpl \
-        -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
         -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
         --timeout 90m
     )
@@ -281,17 +256,12 @@ function upgradeKyma() {
 
     log::info "Upgrading Kyma ${TARGET_VERSION:0:8}"
 
-    log::info "Downloading Kyma installer CR"
-    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION:0:8}/installation/resources/installer-cr-azure-eventhubs.yaml.tpl" \
-        --output installer-cr-azure-eventhubs.yaml.tpl
-
     log::info "Triggering update with timeout ${KYMA_UPDATE_TIMEOUT}"
     (
         set -x
         kyma upgrade \
             --ci \
             --source "${TARGET_VERSION:0:8}" \
-            -c installer-cr-azure-eventhubs.yaml.tpl \
             --timeout ${KYMA_UPDATE_TIMEOUT}
     )
 }

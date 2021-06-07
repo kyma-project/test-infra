@@ -50,6 +50,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 200Mi
                 cpu: 80m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-rel123-kyma-gke-external-registry
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -95,6 +102,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 200Mi
                 cpu: 80m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-rel122-kyma-gke-external-registry
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -140,6 +154,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 200Mi
                 cpu: 80m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-rel121-kyma-gke-external-registry
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -185,4 +206,11 @@ presubmits: # runs on PRs
               requests:
                 memory: 200Mi
                 cpu: 80m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
