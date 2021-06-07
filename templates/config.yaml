@@ -88,66 +88,66 @@ globalSets:
 
 
 
-kyma_generic_component: &kyma_generic_component
-  repository: github.com/kyma-project/kyma
-  pushRepository: kyma
-  buildpackTag: v20210601-24c60b5a
-  additionalRunIfChanged:
-    - ^common/makefiles/
+# kyma_generic_component: &kyma_generic_component
+#   repository: github.com/kyma-project/kyma
+#   pushRepository: kyma
+#   buildpackTag: v20210601-24c60b5a
+#   additionalRunIfChanged:
+#     - ^common/makefiles/
 
-compass_generic_component: &compass_generic_component
-  repository: github.com/kyma-incubator/compass
-  build: build
-  pushRepository: incubator
-  bootstrapTag: PR-2951
-  additionalRunIfChanged:
-    - ^scripts/
+# compass_generic_component: &compass_generic_component
+#   repository: github.com/kyma-incubator/compass
+#   build: build
+#   pushRepository: incubator
+#   bootstrapTag: PR-2951
+#   additionalRunIfChanged:
+#     - ^scripts/
 
-compass_ord_service_generic_component: &compass_ord_service_generic_component
-  repository: github.com/kyma-incubator/ord-service
-  build: build
-  pushRepository: incubator
-  bootstrapTag: PR-2951
-  additionalRunIfChanged:
-    - ^scripts/
+# compass_ord_service_generic_component: &compass_ord_service_generic_component
+#   repository: github.com/kyma-incubator/ord-service
+#   build: build
+#   pushRepository: incubator
+#   bootstrapTag: PR-2951
+#   additionalRunIfChanged:
+#     - ^scripts/
 
-compass_console_generic_component: &compass_console_generic_component
-  repository: github.com/kyma-incubator/compass-console
-  pushRepository: incubator
-  build: build
-  bootstrapTag: PR-2951
-  additionalRunIfChanged:
-    - ^components/
-    - ^shared/
-    - ^package.json
+# compass_console_generic_component: &compass_console_generic_component
+#   repository: github.com/kyma-incubator/compass-console
+#   pushRepository: incubator
+#   build: build
+#   bootstrapTag: PR-2951
+#   additionalRunIfChanged:
+#     - ^components/
+#     - ^shared/
+#     - ^package.json
 
-control_plane_generic_component: &control_plane_generic_component
-  repository: github.com/kyma-project/control-plane
-  build: build
-  pushRepository: control-plane
-  buildpackTag: v20210601-24c60b5a
-  additionalRunIfChanged:
-    - ^scripts/
+# control_plane_generic_component: &control_plane_generic_component
+#   repository: github.com/kyma-project/control-plane
+#   build: build
+#   pushRepository: control-plane
+#   buildpackTag: v20210601-24c60b5a
+#   additionalRunIfChanged:
+#     - ^scripts/
 
-console_generic_component: &console_generic_component
-  repository: github.com/kyma-project/console
-  pushRepository: kyma
-  build: build-console
-  bootstrapTag: PR-2951
-  additionalRunIfChanged:
-    - ^components/
-    - ^shared/
-    - ^package.json
+# console_generic_component: &console_generic_component
+#   repository: github.com/kyma-project/console
+#   pushRepository: kyma
+#   build: build-console
+#   bootstrapTag: PR-2951
+#   additionalRunIfChanged:
+#     - ^components/
+#     - ^shared/
+#     - ^package.json
 
-busola_generic_component: &busola_generic_component
-  repository: github.com/kyma-project/busola
-  pushRepository: kyma
-  build: build-busola
-  bootstrapTag: PR-2951
-  additionalRunIfChanged:
-    - ^components/
-    - ^shared/
-    - ^package.json
+# busola_generic_component: &busola_generic_component
+#   repository: github.com/kyma-project/busola
+#   pushRepository: kyma
+#   build: build-busola
+#   bootstrapTag: PR-2951
+#   additionalRunIfChanged:
+#     - ^components/
+#     - ^shared/
+#     - ^package.json
 
 # Default definition of workload clusters
 cluster_default: &cluster_default
@@ -160,162 +160,6 @@ templates:
 #  - from: templates/kyma-release-upgrade.yaml
 #    render:
 #      - to: ../prow/jobs/kyma/kyma-release-upgrade.yaml
-  - from: templates/generic-component-busola.yaml
-    render:
-      - to: ../prow/jobs/busola/busola-core-ui/busola-core-ui.yaml
-        values:
-          <<: *cluster_default
-          <<: *busola_generic_component
-          path: core-ui
-          since: "1.19"
-      - to: ../prow/jobs/busola/busola-service-catalog-ui/busola-service-catalog-ui.yaml
-        values:
-          <<: *cluster_default
-          <<: *busola_generic_component
-          path: service-catalog-ui
-          since: "1.19"
-      - to: ../prow/jobs/busola/busola-core/busola-core.yaml
-        values:
-          <<: *cluster_default
-          <<: *busola_generic_component
-          path: core
-          since: "1.19"
-      - to: ../prow/jobs/busola/busola-backend/busola-backend.yaml
-        values:
-          <<: *cluster_default
-          <<: *busola_generic_component
-          path: backend
-          since: "1.19"
-  - from: templates/generic-component-console.yaml
-    render:
-      - to: ../prow/jobs/console/core-ui/core-ui.yaml
-        values:
-          <<: *cluster_default
-          <<: *console_generic_component
-          path: core-ui
-          since: "1.11"
-      - to: ../prow/jobs/console/add-ons/add-ons.yaml
-        values:
-          <<: *cluster_default
-          <<: *console_generic_component
-          path: add-ons
-          since: "1.11"
-      - to: ../prow/jobs/console/service-catalog-ui/service-catalog-ui.yaml
-        values:
-          <<: *cluster_default
-          <<: *console_generic_component
-          path: service-catalog-ui
-          since: "1.11"
-      - to: ../prow/jobs/console/logging/console-logging.yaml
-        values:
-          <<: *cluster_default
-          <<: *console_generic_component
-          path: logging
-          since: "1.11"
-      - to: ../prow/jobs/console/tests/tests.yaml
-        values:
-          <<: *cluster_default
-          <<: *console_generic_component
-          path: tests
-          since: "1.11"
-      - to: ../prow/jobs/console/core/core.yaml
-        values:
-          <<: *cluster_default
-          <<: *console_generic_component
-          path: core
-          since: "1.12"
-  - from: templates/generic-compass-component.yaml
-    render:
-      - to: ../prow/jobs/incubator/compass/components/operations-controller/operations-controller-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: components/operations-controller
-          since: "1.19"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: components/connector
-          since: "1.7"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/components/director/director-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: components/director
-          since: "1.7"
-          optional: false
-      - to: ../prow/jobs/incubator/ord-service/components/ord-service/ord-service-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_ord_service_generic_component
-          path: components/ord-service
-          since: "1.17"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/components/tenant-fetcher/tenant-fetcher-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: components/tenant-fetcher
-          since: "1.17"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/components/system-broker/system-broker-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: components/system-broker
-          since: "1.16"
-          optional: false
-      - to: ../prow/jobs/incubator/compass-console/compass/compass-ui.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_console_generic_component
-          path: compass
-          since: "1.16"
-      - to: ../prow/jobs/incubator/compass/components/external-services-mock/external-services-mock-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: components/external-services-mock
-          since: "1.12"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/components/connectivity-adapter/connectivity-adapter-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: components/connectivity-adapter
-          since: "1.10"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/components/pairing-adapter/pairing-adapter-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: components/pairing-adapter
-          since: "1.11"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/components/gateway/gateway-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: components/gateway
-          since: "1.7"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: components/schema-migrator
-          since: "1.7"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/tests/compass-e2e-tests/compass-e2e-tests.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: tests
-          since: "1.17"
-          optional: false
   - from: templates/releases.go.tmpl
     render:
       - to: ../development/tools/jobs/releases/releases.go

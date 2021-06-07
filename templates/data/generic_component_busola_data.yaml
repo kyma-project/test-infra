@@ -1,0 +1,38 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/busola/busola-core-ui/busola-core-ui.yaml
+        values:
+          path: core-ui
+          repository: "github.com/kyma-project/busola"
+          huh: "tezt"
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^scripts/
+          since: "1.19"
+      - to: ../prow/jobs/busola/busola-service-catalog-ui/busola-service-catalog-ui.yaml
+        values:
+          path: service-catalog-ui
+          repository: github.com/kyma-project/busola
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^scripts/
+          since: "1.19"
+      - to: ../prow/jobs/busola/busola-core/busola-core.yaml
+        values:
+          path: core
+          repository: github.com/kyma-project/busola
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^scripts/
+          since: "1.19"
+      - to: ../prow/jobs/busola/busola-backend/busola-backend.yaml
+        values:
+          path: backend
+          repository: github.com/kyma-project/busola
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^components/
+            - ^shared/
+            - ^package.json
+          since: "1.19"

@@ -1,301 +1,493 @@
-local:
-  components:
-    - to: ../prow/jobs/kyma/components/application-broker/application-broker-generic.yaml
-      path: components/application-broker
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/components/application-connectivity-certs-setup-job/application-connectivity-certs-setup-job-generic.yaml
-      path: components/application-connectivity-certs-setup-job
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/components/application-connectivity-validator/application-connectivity-validator-generic.yaml
-      path: components/application-connectivity-validator
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/components/application-gateway/application-gateway-generic.yaml
-      path: components/application-gateway
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/components/application-operator/application-operator-generic.yaml
-      path: components/application-operator
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/components/application-registry/application-registry-generic.yaml
-      path: components/application-registry
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/components/compass-runtime-agent/compass-runtime-agent-generic.yaml
-      path: components/compass-runtime-agent
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/components/connection-token-handler/connection-token-handler-generic.yaml
-      path: components/connection-token-handler
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/components/connector-service/connector-service-generic.yaml
-      path: components/connector-service
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/components/console-backend-service/console-backend-service-generic.yaml
-      path: components/console-backend-service
-      release_since: "1.6"
-    - to: ../prow/jobs/kyma/components/kyma-operator/kyma-operator-generic.yaml
-      path: components/kyma-operator
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/components/service-binding-usage-controller/service-binding-usage-controller-generic.yaml
-      path: components/service-binding-usage-controller
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/components/uaa-activator/uaa-activator-generic.yaml
-      path: components/uaa-activator
-      release_since: "1.9"
-    - to: ../prow/jobs/kyma/tests/service-catalog/service-catalog-tests-generic.yaml
-      path: tests/service-catalog
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/tests/application-connector-tests/application-connector-tests-generic.yaml
-      path: tests/application-connector-tests
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/tests/application-gateway-tests/application-gateway-tests-generic.yaml
-      path: tests/application-gateway-tests
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/tests/application-gateway-legacy-tests/application-gateway-legacy-tests-generic.yaml
-      path: tests/application-gateway-legacy-tests
-      release_since: "1.16"
-    - to: ../prow/jobs/kyma/tests/application-operator-tests/application-operator-tests-generic.yaml
-      path: tests/application-operator-tests
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/tests/application-registry-tests/application-registry-tests-generic.yaml
-      path: tests/application-registry-tests
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/tests/compass-runtime-agent/compass-runtime-agent-tests-generic.yaml
-      path: tests/compass-runtime-agent
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/tests/connection-token-handler-tests/connection-token-handler-tests-generic.yaml
-      path: tests/connection-token-handler-tests
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/tests/connector-service-tests/connector-service-tests-generic.yaml
-      path: tests/connector-service-tests
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/tests/end-to-end/upgrade/upgrade-tests-generic.yaml
-      path: tests/end-to-end/upgrade
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/tests/end-to-end/external-solution-integration/external-solution-integration-tests-generic.yaml
-      path: tests/end-to-end/external-solution-integration
-      release_since: "1.10"
-      release_until: "1.21"
-    - to: ../prow/jobs/control-plane/components/provisioner/provisioner-generic.yaml
-      path: components/provisioner
-      release_since: "1.14"
-      optional: false
-    - to: ../prow/jobs/control-plane/components/kyma-environment-broker/kyma-environment-broker-generic.yaml
-      path: components/kyma-environment-broker
-      release_since: "1.14"
-      optional: false
-    - to: ../prow/jobs/control-plane/components/schema-migrator/schema-migrator-kcp-generic.yaml
-      path: components/schema-migrator
-      release_since: "1.14"
-      optional: false
-    - to: ../prow/jobs/control-plane/components/kyma-metrics-collector/kyma-metrics-collector-generic.yaml
-      path: components/kyma-metrics-collector
-      release_since: "1.22"
-      optional: false
-    - to: ../prow/jobs/control-plane/components/kubeconfig-service/kubeconfig-service-generic.yaml
-      path: components/kubeconfig-service
-      release_since: "1.14"
-      optional: false
-    - to: ../prow/jobs/control-plane/components/subscription-cleanup-job/subscription-cleanup-job-generic.yaml
-      path: components/subscription-cleanup-job
-      release_since: "1.17"
-      optional: false
-    - to: ../prow/jobs/control-plane/tests/provisioner-tests/provisioner-tests-generic.yaml
-      path: tests/provisioner-tests
-      release_since: "1.14"
-      optional: false
-    - to: ../prow/jobs/control-plane/tests/e2e/provisioning/provisioning-test-generic.yaml
-      path: tests/e2e/provisioning
-      release_since: "1.14"
-      optional: false
-    - to: ../prow/jobs/kyma/components/apiserver-proxy/apiserver-proxy-generic.yaml
-      path: components/apiserver-proxy
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/components/iam-kubeconfig-service/iam-kubeconfig-service-generic.yaml
-      path: components/iam-kubeconfig-service
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/components/xip-patch/xip-patch-generic.yaml
-      path: components/xip-patch
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/components/dex-static-user-configurer/dex-static-user-configurer-generic.yaml
-      path: components/dex-static-user-configurer
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/components/istio-installer/istio-installer-generic.yaml
-      path: components/istio-installer
-      release_since: "1.10"
-    - to: ../prow/jobs/kyma/tests/integration/dex/dex-tests-generic.yaml
-      path: tests/integration/dex
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/tests/integration/apiserver-proxy/apiserver-proxy-tests-generic.yaml
-      path: tests/integration/apiserver-proxy
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/tests/integration/logging/logging-generic.yaml
-      path: tests/integration/logging
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/tests/integration/monitoring/monitoring-generic.yaml
-      path: tests/integration/monitoring
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/tools/event-subscriber/event-subscriber-generic.yaml
-      path: tools/event-subscriber
-      release_since: "1.12"
-      optional: true
-    - to: ../prow/jobs/kyma/tests/integration/api-gateway/api-gateway-tests-generic.yaml
-      path: tests/integration/api-gateway
-      release_since: "1.7"
-    - to: ../prow/jobs/kyma/components/event-service/event-service-generic.yaml
-      path: components/event-service
-      release_since: "1.7"
-      release_until: "1.20"
-    - to: ../prow/jobs/kyma/tests/integration/event-service/event-service-tests-generic.yaml
-      path: tests/integration/event-service
-      release_since: "1.7"
-      release_until: "1.20"
-    - to: ../prow/jobs/kyma/components/event-sources/event-sources-generic.yaml
-      path: components/event-sources
-      release_since: "1.9"
-      release_until: "1.21"
-    - to: ../prow/jobs/kyma/components/event-publisher-proxy/event-publisher-proxy-generic.yaml
-      path: components/event-publisher-proxy
-      release_since: "1.17"
-    - to: ../prow/jobs/kyma/components/eventing-controller/eventing-controller-generic.yaml
-      path: components/eventing-controller
-      release_since: "1.17"
-    - to: ../prow/jobs/kyma/components/nats-operator/nats-operator-generic.yaml
-      path: components/nats-operator
-      release_since: "1.21"
-    - to: ../prow/jobs/kyma/components/nats-init/nats-init-generic.yaml
-      path: components/nats-init
-      release_since: "1.12"
-      release_until: "1.20"
-      optional: true
-    - to: ../prow/jobs/kyma/components/function-controller/function-controller-generic.yaml
-      path: components/function-controller
-      release_since: "1.9"
-    - to: ../prow/jobs/kyma/tests/function-controller/function-controller-tests-generic.yaml
-      path: tests/function-controller
-      release_since: "1.10"
-    - to: ../prow/jobs/kyma/components/function-runtimes/function-runtimes-generic.yaml
-      path: components/function-runtimes
-      release_since: "1.13"
-    - to: ../prow/jobs/kyma/tests/contract/knative-channel-kafka/knative-channel-kafka-tests-generic.yaml
-      path: tests/contract/knative-channel-kafka
-      release_since: "1.10"
-      release_until: "1.20"
-    - to: ../prow/jobs/kyma/tests/rafter/rafter-tests-generic.yaml
-      path: tests/rafter
-    - to: ../prow/jobs/kyma/components/permission-controller/permission-controller-generic.yaml
-      path: components/permission-controller
-      release_since: "1.10"
-    - to: ../prow/jobs/kyma/components/busola-migrator/busola-migrator-generic.yaml
-      path: components/busola-migrator # TODO: Should be 2.0 but then pre-submit jobs are not generated
-      release_since: "1.22" # TODO: Remove after merging https://github.com/kyma-project/kyma/pull/10987
-      optional: true
-    - to: ../prow/jobs/kyma/components/central-application-gateway/central-application-gateway-generic.yaml
-      path: components/central-application-gateway
-      release_since: "1.23"
-      optional: true
-    - to: ../prow/jobs/kyma/components/central-application-connectivity-validator/central-application-connectivity-validator-generic.yaml
-      path: components/central-application-connectivity-validator
-      release_since: "1.23"
-      optional: true # TODO: Remove after merging https://github.com/kyma-project/kyma/pull/11173
-
-{{ $Global := .Global }}
-
 templates:
   - from: templates/generic.tmpl
     render:
-     {{- range $component := .Local.components }}
-      - to: "{{ $component.to }}"
-        localSets:
-          jobConfig_generic_component:
-            path_alias: github.com/kyma-project/kyma
-            labels:
-              preset-docker-push-repository-kyma: "true"
-            run_if_changed: '^{{ $component.path }}/|^common/makefiles/'
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/{{ $component.path }}"
-            {{- if $component.release_since }}
-            release_since: "{{ $component.release_since }}"
-            {{- end }}
-            {{- if $component.release_until }}
-            release_until: "{{ $component.release_until }}"
-            {{- end }}
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  name: "pre-kyma-{{ $component.path | replace "/" "-" }}"
-                  branches:
-                    - ^master$
-                    - ^main$
-                  optional: {{ $component.optional | default false }}
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_buildpack-golang-kubebuilder2"
-                    - "jobConfig_generic_component"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_generic_component"
-              - jobConfig:
-                  name: "post-kyma-{{ $component.path | replace "/" "-" }}"
-                  branches:
-                    - ^master$
-                    - ^main$
-                  {{- if or $component.optional $component.skipSlackReport }}
-                  slack_channel: "kyma-prow-dev-null"
-                  {{- end }}
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_buildpack-golang-kubebuilder2"
-                    - "jobConfig_generic_component"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_generic_component"
-            {{- range $rel := $Global.releases }}
-              - jobConfig:
-                  name: "pre-rel{{ $rel | replace "." "" }}-kyma-{{ $component.path | replace "/" "-" }}"
-                  branches:
-                    - release-{{ $rel }}
-                  optional: {{ $component.optional | default false }}
-                  extra_refs:
-                    test-infra:
-                      - org: "kyma-project"
-                        repo: "test-infra"
-                        path_alias: "github.com/kyma-project/test-infra"
-                        base_ref: "release-{{- $rel }}"
-                  release_current: "{{ $rel }}"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_buildpack-golang-kubebuilder2"
-                    - "jobConfig_generic_component"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_generic_component"
-              - jobConfig:
-                  name: "post-rel{{ $rel | replace "." "" }}-kyma-{{ $component.path | replace "/" "-" }}"
-                  branches:
-                    - release-{{ $rel }}
-                  extra_refs:
-                    test-infra:
-                      - org: "kyma-project"
-                        repo: "test-infra"
-                        path_alias: "github.com/kyma-project/test-infra"
-                        base_ref: "release-{{- $rel }}"
-                  {{- if or $component.optional $component.skipSlackReport }}
-                  slack_channel: "kyma-prow-dev-null"
-                  {{- end }}
-                  release_current: "{{ $rel }}"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_buildpack-golang-kubebuilder2"
-                    - "jobConfig_generic_component"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_generic_component"
-            {{ end }}
-    {{- end}}
+      - to: ../prow/jobs/kyma/components/application-broker/application-broker-generic.yaml
+        values:
+          path: components/application-broker
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/components/application-connectivity-certs-setup-job/application-connectivity-certs-setup-job-generic.yaml
+        values:
+          path: components/application-connectivity-certs-setup-job
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/components/application-connectivity-validator/application-connectivity-validator-generic.yaml
+        values:
+          path: components/application-connectivity-validator
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/components/application-gateway/application-gateway-generic.yaml
+        values:
+          path: components/application-gateway
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/components/application-operator/application-operator-generic.yaml
+        values:
+          path: components/application-operator
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/components/application-registry/application-registry-generic.yaml
+        values:
+          path: components/application-registry
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/components/compass-runtime-agent/compass-runtime-agent-generic.yaml
+        values:
+          path: components/compass-runtime-agent
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/components/connection-token-handler/connection-token-handler-generic.yaml
+        values:
+          path: components/connection-token-handler
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/components/connector-service/connector-service-generic.yaml
+        values:
+          path: components/connector-service
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/components/console-backend-service/console-backend-service-generic.yaml
+        values:
+          path: components/console-backend-service
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.6"
+      - to: ../prow/jobs/kyma/components/kyma-operator/kyma-operator-generic.yaml
+        values:
+          path: components/kyma-operator
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/components/service-binding-usage-controller/service-binding-usage-controller-generic.yaml
+        values:
+          path: components/service-binding-usage-controller
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/components/uaa-activator/uaa-activator-generic.yaml
+        values:
+          path: components/uaa-activator
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.9"
+      - to: ../prow/jobs/kyma/tests/service-catalog/service-catalog-tests-generic.yaml
+        values:
+          path: tests/service-catalog
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/tests/application-connector-tests/application-connector-tests-generic.yaml
+        values:
+          path: tests/application-connector-tests
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/tests/application-gateway-tests/application-gateway-tests-generic.yaml
+        values:
+          path: tests/application-gateway-tests
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/tests/application-gateway-legacy-tests/application-gateway-legacy-tests-generic.yaml
+        values:
+          path: tests/application-gateway-legacy-tests
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.16"
+      - to: ../prow/jobs/kyma/tests/application-operator-tests/application-operator-tests-generic.yaml
+        values:
+          path: tests/application-operator-tests
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/tests/application-registry-tests/application-registry-tests-generic.yaml
+        values:
+          path: tests/application-registry-tests
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/tests/compass-runtime-agent/compass-runtime-agent-tests-generic.yaml
+        values:
+          path: tests/compass-runtime-agent
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/tests/connection-token-handler-tests/connection-token-handler-tests-generic.yaml
+        values:
+          path: tests/connection-token-handler-tests
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/tests/connector-service-tests/connector-service-tests-generic.yaml
+        values:
+          path: tests/connector-service-tests
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/tests/end-to-end/upgrade/upgrade-tests-generic.yaml
+        values:
+          path: tests/end-to-end/upgrade
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/tests/end-to-end/external-solution-integration/external-solution-integration-tests-generic.yaml
+        values:
+          path: tests/end-to-end/external-solution-integration
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.10"
+          release_until: "1.21"
+      - to: ../prow/jobs/control-plane/components/provisioner/provisioner-generic.yaml
+        values:
+          path: components/provisioner
+          repository: github.com/kyma-project/control-plane
+          pushRepository: control-plane
+          additionalRunIfChanged:
+            - ^scripts/
+          release_since: "1.14"
+          optional: false
+      - to: ../prow/jobs/control-plane/components/kyma-environment-broker/kyma-environment-broker-generic.yaml
+        values:
+          path: components/kyma-environment-broker
+          repository: github.com/kyma-project/control-plane
+          pushRepository: control-plane
+          additionalRunIfChanged:
+            - ^scripts/
+          release_since: "1.14"
+          optional: false
+      - to: ../prow/jobs/control-plane/components/schema-migrator/schema-migrator-kcp-generic.yaml
+        values:
+          path: components/schema-migrator
+          repository: github.com/kyma-project/control-plane
+          pushRepository: control-plane
+          additionalRunIfChanged:
+            - ^scripts/
+          release_since: "1.14"
+          optional: false
+      - to: ../prow/jobs/control-plane/components/kyma-metrics-collector/kyma-metrics-collector-generic.yaml
+        values:
+          path: components/kyma-metrics-collector
+          repository: github.com/kyma-project/control-plane
+          pushRepository: control-plane
+          additionalRunIfChanged:
+            - ^scripts/
+          release_since: "1.22"
+          optional: false
+      - to: ../prow/jobs/control-plane/components/kubeconfig-service/kubeconfig-service-generic.yaml
+        values:
+          path: components/kubeconfig-service
+          repository: github.com/kyma-project/control-plane
+          pushRepository: control-plane
+          additionalRunIfChanged:
+            - ^scripts/
+          release_since: "1.14"
+          optional: false
+      - to: ../prow/jobs/control-plane/components/subscription-cleanup-job/subscription-cleanup-job-generic.yaml
+        values:
+          path: components/subscription-cleanup-job
+          repository: github.com/kyma-project/control-plane
+          pushRepository: control-plane
+          additionalRunIfChanged:
+            - ^scripts/
+          release_since: "1.17"
+          optional: false
+      - to: ../prow/jobs/control-plane/tests/provisioner-tests/provisioner-tests-generic.yaml
+        values:
+          path: tests/provisioner-tests
+          repository: github.com/kyma-project/control-plane
+          pushRepository: control-plane
+          additionalRunIfChanged:
+            - ^scripts/
+          release_since: "1.14"
+          optional: false
+      - to: ../prow/jobs/control-plane/tests/e2e/provisioning/provisioning-test-generic.yaml
+        values:
+          path: tests/e2e/provisioning
+          repository: github.com/kyma-project/control-plane
+          pushRepository: control-plane
+          additionalRunIfChanged:
+            - ^scripts/
+          release_since: "1.14"
+          optional: false
+      - to: ../prow/jobs/kyma/components/apiserver-proxy/apiserver-proxy-generic.yaml
+        values:
+          path: components/apiserver-proxy
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/components/iam-kubeconfig-service/iam-kubeconfig-service-generic.yaml
+        values:
+          path: components/iam-kubeconfig-service
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/components/xip-patch/xip-patch-generic.yaml
+        values:
+          path: components/xip-patch
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/components/dex-static-user-configurer/dex-static-user-configurer-generic.yaml
+        values:
+          path: components/dex-static-user-configurer
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/components/istio-installer/istio-installer-generic.yaml
+        values:
+          path: components/istio-installer
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.10"
+      - to: ../prow/jobs/kyma/tests/integration/dex/dex-tests-generic.yaml
+        values:
+          path: tests/integration/dex
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/tests/integration/apiserver-proxy/apiserver-proxy-tests-generic.yaml
+        values:
+          path: tests/integration/apiserver-proxy
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/tests/integration/logging/logging-generic.yaml
+        values:
+          path: tests/integration/logging
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/tests/integration/monitoring/monitoring-generic.yaml
+        values:
+          path: tests/integration/monitoring
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/tools/event-subscriber/event-subscriber-generic.yaml
+        values:
+          path: tools/event-subscriber
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.12"
+          optional: true
+      - to: ../prow/jobs/kyma/tests/integration/api-gateway/api-gateway-tests-generic.yaml
+        values:
+          path: tests/integration/api-gateway
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+      - to: ../prow/jobs/kyma/components/event-service/event-service-generic.yaml
+        values:
+          path: components/event-service
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+          release_until: "1.20"
+      - to: ../prow/jobs/kyma/tests/integration/event-service/event-service-tests-generic.yaml
+        values:
+          path: tests/integration/event-service
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.7"
+          release_until: "1.20"
+      - to: ../prow/jobs/kyma/components/event-sources/event-sources-generic.yaml
+        values:
+          path: components/event-sources
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.9"
+          release_until: "1.21"
+      - to: ../prow/jobs/kyma/components/event-publisher-proxy/event-publisher-proxy-generic.yaml
+        values:
+          path: components/event-publisher-proxy
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.17"
+      - to: ../prow/jobs/kyma/components/eventing-controller/eventing-controller-generic.yaml
+        values:
+          path: components/eventing-controller
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.17"
+      - to: ../prow/jobs/kyma/components/nats-operator/nats-operator-generic.yaml
+        values:
+          path: components/nats-operator
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.21"
+      - to: ../prow/jobs/kyma/components/nats-init/nats-init-generic.yaml
+        values:
+          path: components/nats-init
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.12"
+          release_until: "1.20"
+          optional: true
+      - to: ../prow/jobs/kyma/components/function-controller/function-controller-generic.yaml
+        values:
+          path: components/function-controller
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.9"
+      - to: ../prow/jobs/kyma/tests/function-controller/function-controller-tests-generic.yaml
+        values:
+          path: tests/function-controller
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.10"
+      - to: ../prow/jobs/kyma/components/function-runtimes/function-runtimes-generic.yaml
+        values:
+          path: components/function-runtimes
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.13"
+      - to: ../prow/jobs/kyma/tests/contract/knative-channel-kafka/knative-channel-kafka-tests-generic.yaml
+        values:
+          path: tests/contract/knative-channel-kafka
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.10"
+          release_until: "1.20"
+      - to: ../prow/jobs/kyma/tests/rafter/rafter-tests-generic.yaml
+        values:
+          path: tests/rafter
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+      - to: ../prow/jobs/kyma/components/permission-controller/permission-controller-generic.yaml
+        values:
+          path: components/permission-controller
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.10"
+      - to: ../prow/jobs/kyma/components/busola-migrator/busola-migrator-generic.yaml
+        values:
+          path: components/busola-migrator
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.22"
+          optional: true
+      - to: ../prow/jobs/kyma/components/central-application-gateway/central-application-gateway-generic.yaml
+        values:
+          path: components/central-application-gateway
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.23"
+          optional: true
+      - to: ../prow/jobs/kyma/components/central-application-connectivity-validator/central-application-connectivity-validator-generic.yaml
+        values:
+          path: components/central-application-connectivity-validator
+          repository: github.com/kyma-project/kyma
+          pushRepository: kyma
+          additionalRunIfChanged:
+            - ^common/makefiles/
+          release_since: "1.23"
+          optional: true

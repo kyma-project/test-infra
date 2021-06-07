@@ -11,6 +11,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 	"text/template"
 
 	"github.com/Masterminds/semver"
@@ -68,7 +69,6 @@ func Map(m map[string]interface{}) (map[string]interface{}, error) {
 type Config struct {
 	Templates  []TemplateConfig
 	Global     map[string]interface{}
-	Local      map[string]interface{}
 	GlobalSets map[string]ConfigSet `yaml:"globalSets,omitempty"`
 }
 
@@ -146,16 +146,6 @@ func main() {
 			if err := yaml.Unmarshal(cfg.Bytes(), &dataFileConfig); err != nil {
 				log.Fatalf("Cannot parse data file yaml: %s\n", err)
 			}
-
-			cfg.Reset()
-			values := map[string]interface{}{"Global": config.Global, "GlobalSets": config.GlobalSets, "Templates": config.Templates, "Local": dataFileConfig.Local}
-			if err := t.Execute(&cfg, values); err != nil {
-				log.Fatalf("Cannot render data template2: %v", err)
-			}
-			if err := yaml.Unmarshal(cfg.Bytes(), &dataFileConfig); err != nil {
-				log.Fatalf("Cannot parse data file yaml2: %s\n%s\n", err, cfg.Bytes())
-			}
-
 			dataFilesTemplates = append(dataFilesTemplates, dataFileConfig.Templates...)
 		}
 
@@ -169,6 +159,102 @@ func main() {
 			log.Fatalf("Cannot render template %s: %s", templateConfig.From, err)
 		}
 	}
+}
+
+// TODO define errors?
+func (r *RenderConfig) generateComponentJobs(global map[string]interface{}, globalConfigSets map[string]ConfigSet) {
+	jobs := Repo{RepoName: r.Values["repository"].(string)}
+	if r.Values["pushRepository"] == nil {
+		log.Fatalln("Component jobs: missing \"pushrepository\" value.")
+	}
+
+	if r.Values["additionalRunIfChanged"] == nil {
+		log.Fatalln("Component jobs: missing \"additionalRunIfChanged\" value.")
+	}
+	repository := strings.Split(r.Values["repository"].(string), "/")[2]
+
+	commonLabels := map[string]interface{}{"preset-dind-enabled": "true", "preset-sa-gcr-push": "true", "preset-docker-push-repository-" + r.Values["pushRepository"].(string): "true"}
+	commonGlobalConfigs := []string{"jobConfig_default", "image_buildpack-golang-kubebuilder2"}
+	commonCommand := "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+	commonArgs := []string{"/home/prow/go/src/" + r.Values["repository"].(string) + "/" + r.Values["path"].(string)}
+	var commonOptional bool
+	if r.Values["optional"] != nil {
+		commonOptional = r.Values["optional"].(bool)
+	}
+
+	additionalRunIfChanged := make([]string, len(r.Values["additionalRunIfChanged"].([]interface{})))
+	for i, add := range r.Values["additionalRunIfChanged"].([]interface{}) {
+		additionalRunIfChanged[i] = add.(string)
+	}
+
+	commonRunIfChanged := "^" + r.Values["path"].(string) + "/|" + strings.Join(additionalRunIfChanged, "|")
+
+	// generate jobs for the next release
+	var preSubmit Job
+	preSubmit.JobConfig = make(map[string]interface{})
+	preSubmit.JobConfig["name"] = "pre-" + repository + "-" + strings.Replace(r.Values["path"].(string), "/", "-", -1)
+	preSubmit.JobConfig["command"] = commonCommand
+	preSubmit.JobConfig["args"] = commonArgs
+	preSubmit.JobConfig["labels"] = commonLabels
+	preSubmit.JobConfig["path_alias"] = r.Values["repository"]
+	preSubmit.JobConfig["run_if_changed"] = commonRunIfChanged
+	preSubmit.JobConfig["optional"] = commonOptional
+	preSubmit.InheritedConfigs.Global = commonGlobalConfigs
+	preSubmit.InheritedConfigs.Global = append(preSubmit.InheritedConfigs.Global, "jobConfig_presubmit", "extra_refs_test-infra")
+	jobs.Jobs = append(jobs.Jobs, preSubmit)
+
+	var postSubmit Job
+	postSubmit.JobConfig = make(map[string]interface{})
+	postSubmit.JobConfig["name"] = "post-" + repository + "-" + strings.Replace(r.Values["path"].(string), "/", "-", -1)
+	postSubmit.JobConfig["command"] = commonCommand
+	postSubmit.JobConfig["args"] = commonArgs
+	postSubmit.JobConfig["labels"] = commonLabels
+	postSubmit.JobConfig["path_alias"] = r.Values["repository"]
+	postSubmit.JobConfig["run_if_changed"] = commonRunIfChanged
+	postSubmit.JobConfig["optional"] = commonOptional
+	postSubmit.InheritedConfigs.Global = commonGlobalConfigs
+	postSubmit.InheritedConfigs.Global = append(postSubmit.InheritedConfigs.Global, "jobConfig_postsubmit", "extra_refs_test-infra", "disable_testgrid")
+	jobs.Jobs = append(jobs.Jobs, postSubmit)
+	// generate jobs for the previous releases
+	if r.Values["skipReleaseJobs"] == nil || r.Values["skipReleaseJobs"].(string) != "true" {
+		for _, currentRelease := range global["releases"].([]interface{}) {
+			rel := currentRelease.(string)
+			commonRelBranches := []string{"release-" + rel}
+			commonExtrarefsTestInfra := map[string]interface{}{"test-infra": []map[string]interface{}{{"org": "kyma-project", "repo": "test-infra", "path_alias": "github.com/kyma-project/test-infra", "base_ref": "release-" + rel}}}
+
+			var preSubmitRel Job
+			preSubmitRel.JobConfig = make(map[string]interface{})
+			preSubmitRel.JobConfig["name"] = "pre-rel" + strings.Replace(rel, ".", "", -1) + "-" + repository + "-" + strings.Replace(r.Values["path"].(string), "/", "-", -1)
+			preSubmitRel.JobConfig["command"] = commonCommand
+			preSubmitRel.JobConfig["args"] = commonArgs
+			preSubmitRel.JobConfig["labels"] = commonLabels
+			preSubmitRel.JobConfig["branches"] = commonRelBranches
+			preSubmitRel.JobConfig["path_alias"] = r.Values["repository"]
+			preSubmitRel.JobConfig["run_if_changed"] = commonRunIfChanged
+			preSubmitRel.JobConfig["optional"] = commonOptional
+			preSubmitRel.JobConfig["extra_refs"] = commonExtrarefsTestInfra
+			preSubmitRel.InheritedConfigs.Global = commonGlobalConfigs
+			preSubmitRel.InheritedConfigs.Global = append(preSubmitRel.InheritedConfigs.Global, "jobConfig_presubmit")
+			jobs.Jobs = append(jobs.Jobs, preSubmitRel)
+
+			var postSubmitRel Job
+			postSubmitRel.JobConfig = make(map[string]interface{})
+			postSubmitRel.JobConfig["name"] = "post-rel" + strings.Replace(rel, ".", "", -1) + "-" + repository + "-" + strings.Replace(r.Values["path"].(string), "/", "-", -1)
+			postSubmitRel.JobConfig["command"] = commonCommand
+			postSubmitRel.JobConfig["args"] = commonArgs
+			postSubmitRel.JobConfig["labels"] = commonLabels
+			postSubmitRel.JobConfig["branches"] = commonRelBranches
+			postSubmitRel.JobConfig["path_alias"] = r.Values["repository"]
+			postSubmitRel.JobConfig["run_if_changed"] = commonRunIfChanged
+			postSubmitRel.JobConfig["optional"] = commonOptional
+			postSubmitRel.JobConfig["extra_refs"] = commonExtrarefsTestInfra
+			postSubmitRel.InheritedConfigs.Global = commonGlobalConfigs
+			postSubmitRel.InheritedConfigs.Global = append(postSubmitRel.InheritedConfigs.Global, "jobConfig_postsubmit", "disable_testgrid")
+			jobs.Jobs = append(jobs.Jobs, postSubmitRel)
+		}
+	}
+
+	r.JobConfigs = append(r.JobConfigs, jobs)
 }
 
 func (r *RenderConfig) mergeConfigs(config *Config) {
@@ -245,6 +331,11 @@ func renderTemplate(basePath string, templateConfig TemplateConfig, config *Conf
 		return err
 	}
 	for _, render := range templateConfig.Render {
+
+		if render.Values["repository"] != nil {
+			render.generateComponentJobs(config.Global, config.GlobalSets)
+		}
+
 		render.mergeConfigs(config)
 		err = renderFileFromTemplate(basePath, templateInstance, render, config)
 		if err != nil {
@@ -274,7 +365,7 @@ func renderFileFromTemplate(basePath string, templateInstance *template.Template
 		return err
 	}
 
-	values := map[string]interface{}{"Values": renderConfig.Values, "Global": config.Global, "Local": config.Local}
+	values := map[string]interface{}{"Values": renderConfig.Values, "Global": config.Global}
 
 	return templateInstance.Execute(destFile, values)
 }
