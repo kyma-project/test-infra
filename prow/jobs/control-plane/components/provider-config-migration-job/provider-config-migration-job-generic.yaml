@@ -41,7 +41,7 @@ presubmits: # runs on PRs
       branches:
         - ^master$
         - ^main$
-
+    
     - name: pre-rel123-control-plane-components-provider-config-migration-job
       cluster: untrusted-workload
       optional: true
@@ -51,7 +51,7 @@ presubmits: # runs on PRs
           base_ref: release-1.23
       branches:
         - release-1.23
-
+    
 
 postsubmits:
   kyma-project/control-plane:
@@ -67,9 +67,9 @@ postsubmits:
         - <<: *test_infra_ref
           base_ref: main
       branches:
-        - ^master$
-        - ^main$
-
+      - ^master$
+      - ^main$
+      
     - name: post-rel123-control-plane-components-provider-config-migration-job
       cluster: trusted-workload
       annotations:
