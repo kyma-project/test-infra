@@ -147,7 +147,7 @@ function deleteKyma(){
     --concurrency="${CPU_COUNT}" \
     --non-interactive \
     --timeout-component 12m \
-    --timeout 40m \    
+    --timeout 40m \
     --verbose \
     --ci
     set +x
