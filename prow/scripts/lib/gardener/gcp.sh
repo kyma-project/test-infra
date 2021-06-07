@@ -13,6 +13,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/gardener/gardener.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
 
 #!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
 gardener::cleanup() {
@@ -36,7 +38,7 @@ gardener::cleanup() {
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
-        utils::deprovision_gardener_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
+        gardener::deprovision_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
     fi
 
     MSG=""
@@ -46,6 +48,34 @@ gardener::cleanup() {
 
     exit "${EXIT_STATUS}"
 }
+
+
+#function gardener::deprovision_cluster() {
+#  if [ -z "$1" ]; then
+#    echo "Project name is empty. Exiting..."
+#    exit 1
+#  fi
+#  if [ -z "$2" ]; then
+#    echo "Cluster name is empty. Exiting..."
+#    exit 1
+#  fi
+#  if [ -z "$3" ]; then
+#    echo "Kubeconfig path is empty. Exiting..."
+#    exit 1
+#  fi
+#  if [ -n "${CLEANUP_CLUSTER}" ]; then
+#    log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
+#    GARDENER_PROJECT_NAME=$1
+#    GARDENER_CLUSTER_NAME=$2
+#    GARDENER_CREDENTIALS=$3
+#
+#    local NAMESPACE="garden-${GARDENER_PROJECT_NAME}"
+#
+#    kubectl --kubeconfig "${GARDENER_CREDENTIALS}" -n "${NAMESPACE}" annotate shoot "${GARDENER_CLUSTER_NAME}" confirmation.gardener.cloud/deletion=true --overwrite
+#    kubectl --kubeconfig "${GARDENER_CREDENTIALS}" -n "${NAMESPACE}" delete shoot "${GARDENER_CLUSTER_NAME}" --wait=false
+#  fi
+#}
+
 
 gardener::init() {
     requiredVars=(

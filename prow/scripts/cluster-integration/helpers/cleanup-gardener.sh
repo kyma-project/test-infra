@@ -24,6 +24,8 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
+# shellcheck source=prow/scripts/lib/gardener/gardener.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
 
 requiredVars=(
     KYMA_PROJECT_DIR
@@ -76,7 +78,7 @@ do
         # clusters older than 4h get deleted
         if [[ ${HOURS_OLD} -ge 4 ]]; then
             log::info "Deprovision cluster: \"${CLUSTER}\" (${HOURS_OLD}h old)"
-            utils::deprovision_gardener_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
+            CLEANUP_CLUSTER="true" gardener::deprovision_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
         fi
     else
         echo "level=warning msg=\"Cluster is excluded, deletion will be skipped. Name: \"${CLUSTER}\"\""
