@@ -122,6 +122,8 @@ function provisionKyma2(){
     --profile=production \
     --source="${KYMA_VERSION}" \
     --concurrency="${CPU_COUNT}" \
+    --timeout-component 12m \
+    --timeout 40m \
     --non-interactive \
     --verbose \
     --ci
@@ -144,6 +146,8 @@ function deleteKyma(){
     --kubeconfig="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml" \
     --concurrency="${CPU_COUNT}" \
     --non-interactive \
+    --timeout-component 12m \
+    --timeout 40m \    
     --verbose \
     --ci
     set +x
