@@ -71,6 +71,39 @@ templates:
                     - "disable_testgrid"
                   local:
                     - "default"
+
+              - jobConfig:
+                  run_if_changed: "^monitoring-custom-metrics/"
+                  name: "pre-main-examples-monitoring-custom-metrics"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/examples/monitoring-custom-metrics"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                    - "build_labels"
+                  local:
+                    - "default"
+              - jobConfig:
+                  run_if_changed: "^monitoring-custom-metrics/"
+                  name: "post-main-examples-monitoring-custom-metrics"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/examples/monitoring-custom-metrics"
+                    - "ci-main"
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "build_labels"
+                    - "disable_testgrid"
+                  local:
+                    - "default"
+
               - jobConfig:
                   run_if_changed: "^orders-service/"
                   name: "pre-main-examples-orders-service"
