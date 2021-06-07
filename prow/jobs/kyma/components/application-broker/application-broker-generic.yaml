@@ -16,13 +16,13 @@ job_template: &job_template
     preset-docker-push-repository-kyma: "true"
   run_if_changed: "^components/application-broker/|^common/makefiles/"
   spec:
-    nodeSelector:
-      node.kubernetes.io/instance-type: n2-highcpu-16
-    tolerations:
-      - key: resources-usage
-        value: high
-        operator: Equal
-        effect: NoSchedule
+#    nodeSelector:
+#      node.kubernetes.io/instance-type: n2-highcpu-16
+#    tolerations:
+#      - key: resources-usage
+#        value: high
+#        operator: Equal
+#        effect: NoSchedule
     containers:
       - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210601-24c60b5a
         securityContext:
