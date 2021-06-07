@@ -137,7 +137,7 @@ gardener::provision_cluster() {
 gardener::reprovision_cluster() {
   if [ "${reprovisionCount:-0}" -lt 1 ]; then
     log::info "cluster provisioning failed, trying provision new cluster"
-    CLEANUP_CLUSTER="true" gardener::deprovision_gardener_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
+    CLEANUP_CLUSTER="true" gardener::deprovision_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
     export reprovisionCount=1
     utils::generate_commonName "${COMMON_NAME_PREFIX}"
     CLUSTER_NAME="${COMMON_NAME}"

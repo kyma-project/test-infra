@@ -33,6 +33,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
+# shellcheck source=prow/scripts/lib/gardener/gardener.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
 
 # All provides require these values, each of them may check for additional variables
 requiredVars=(
