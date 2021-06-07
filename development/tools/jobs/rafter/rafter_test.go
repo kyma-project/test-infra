@@ -7,7 +7,6 @@ import (
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	v1 "k8s.io/api/core/v1"
 )
 
 const (
@@ -82,11 +81,6 @@ func TestRafterJobsPresubmits(t *testing.T) {
 
 			assert.True(t, *preJob.Spec.Containers[0].SecurityContext.Privileged)
 
-			assert.Equal(t, "resources-usage", preJob.Spec.Tolerations[0].Key)
-			assert.Equal(t, "high", preJob.Spec.Tolerations[0].Value)
-			assert.Equal(t, v1.TolerationOpEqual, preJob.Spec.Tolerations[0].Operator)
-			assert.Equal(t, v1.TaintEffectNoSchedule, preJob.Spec.Tolerations[0].Effect)
-
 			container := preJob.Spec.Containers[0]
 			tester.AssertThatContainerHasEnv(t, container, "GO111MODULE", "on")
 			tester.AssertThatContainerHasEnv(t, container, "CLUSTER_VERSION", "1.16")
@@ -155,11 +149,6 @@ func TestRafterJobsPostsubmits(t *testing.T) {
 			assert.Empty(t, postJob.RunIfChanged)
 
 			assert.True(t, *postJob.Spec.Containers[0].SecurityContext.Privileged)
-
-			assert.Equal(t, "resources-usage", postJob.Spec.Tolerations[0].Key)
-			assert.Equal(t, "high", postJob.Spec.Tolerations[0].Value)
-			assert.Equal(t, v1.TolerationOpEqual, postJob.Spec.Tolerations[0].Operator)
-			assert.Equal(t, v1.TaintEffectNoSchedule, postJob.Spec.Tolerations[0].Effect)
 
 			container := postJob.Spec.Containers[0]
 			tester.AssertThatContainerHasEnv(t, container, "GO111MODULE", "on")
