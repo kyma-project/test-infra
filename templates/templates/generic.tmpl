@@ -8,7 +8,7 @@
       {{- end}}
       labels:
         prow.k8s.io/pubsub.project: {{if .JobConfig.pubsub_project}}{{quote .JobConfig.pubsub_project}}{{else}}{{fail "mandatory .JobConfig.pubsub_project is not defined, probably globalSet jobConfig_default not inherited"}}{{end}}
-        prow.k8s.io/pubsub.runID: {{quote .JobConfig.name}}
+        prow.k8s.io/pubsub.runID: {{trunc 64 .JobConfig.name | quote}}
         prow.k8s.io/pubsub.topic: {{if .JobConfig.pubsub_topic}}{{quote .JobConfig.pubsub_topic}}{{else}}{{fail "mandatory .JobConfig.pubsub_topic is not defined, probably globalSet jobConfig_default not inherited"}}{{end}}
         {{- if .JobConfig.labels}}
         {{- range $key, $value := .JobConfig.labels}}
