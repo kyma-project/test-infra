@@ -2,11 +2,11 @@
 
 
 presubmits: # runs on PRs
-  kyma-project/control-plane:
-    - name: pre-control-plane-components-director
+  kyma-incubator/compass:
+    - name: pre-compass-components-director
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-control-plane-components-director"
+        prow.k8s.io/pubsub.runID: "pre-compass-components-director"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
@@ -14,7 +14,7 @@ presubmits: # runs on PRs
       run_if_changed: '^components/director/|^scripts/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/control-plane
+      path_alias: github.com/kyma-incubator/compass
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -33,7 +33,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/control-plane/components/director"
+              - "/home/prow/go/src/github.com/kyma-incubator/compass/components/director"
             resources:
               requests:
                 memory: 1.5Gi
@@ -47,13 +47,13 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
   
 postsubmits: # runs on main
-  kyma-project/control-plane:
-    - name: post-control-plane-components-director
+  kyma-incubator/compass:
+    - name: post-compass-components-director
       annotations:
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-control-plane-components-director"
+        prow.k8s.io/pubsub.runID: "post-compass-components-director"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
@@ -61,7 +61,7 @@ postsubmits: # runs on main
       run_if_changed: '^components/director/|^scripts/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/control-plane
+      path_alias: github.com/kyma-incubator/compass
       cluster: trusted-workload
       max_concurrency: 10
       branches:
@@ -80,7 +80,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/control-plane/components/director"
+              - "/home/prow/go/src/github.com/kyma-incubator/compass/components/director"
             resources:
               requests:
                 memory: 1.5Gi

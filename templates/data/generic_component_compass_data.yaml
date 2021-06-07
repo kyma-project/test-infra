@@ -1,20 +1,10 @@
 templates:
   - from: templates/generic.tmpl
     render:
-      - to: ../prow/jobs/busola/busola-core-ui/busola-core-ui.yaml
-        values:
-          path: core-ui
-          repository: github.com/kyma-project/busola
-          pushRepository: kyma
-          additionalRunIfChanged:
-            - ^scripts/
-          since: "1.19"
-          skipReleaseJobs: "true"
-      
       - to: ../prow/jobs/incubator/compass/components/operations-controller/operations-controller-generic.yaml
         values:
           path: components/operations-controller
-          repository: github.com/kyma-project/control-plane
+          repository: github.com/kyma-incubator/compass
           pushRepository: incubator
           additionalRunIfChanged:
             - ^scripts/
@@ -24,7 +14,7 @@ templates:
       - to: ../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
         values:
           path: components/connector
-          repository: github.com/kyma-project/control-plane
+          repository: github.com/kyma-incubator/compass
           pushRepository: incubator
           additionalRunIfChanged:
             - ^scripts/
@@ -34,7 +24,7 @@ templates:
       - to: ../prow/jobs/incubator/compass/components/director/director-generic.yaml
         values:
           path: components/director
-          repository: github.com/kyma-project/control-plane
+          repository: github.com/kyma-incubator/compass
           pushRepository: incubator
           additionalRunIfChanged:
             - ^scripts/
@@ -54,7 +44,7 @@ templates:
       - to: ../prow/jobs/incubator/compass/components/tenant-fetcher/tenant-fetcher-generic.yaml
         values:
           path: components/tenant-fetcher
-          repository: github.com/kyma-project/control-plane
+          repository: github.com/kyma-incubator/compass
           pushRepository: incubator
           additionalRunIfChanged:
             - ^scripts/
@@ -64,7 +54,7 @@ templates:
       - to: ../prow/jobs/incubator/compass/components/system-broker/system-broker-generic.yaml
         values:
           path: components/system-broker
-          repository: github.com/kyma-project/control-plane
+          repository: github.com/kyma-incubator/compass
           pushRepository: incubator
           additionalRunIfChanged:
             - ^scripts/
@@ -85,7 +75,7 @@ templates:
       - to: ../prow/jobs/incubator/compass/components/external-services-mock/external-services-mock-generic.yaml
         values:
           path: components/external-services-mock
-          repository: github.com/kyma-project/control-plane
+          repository: github.com/kyma-incubator/compass
           pushRepository: incubator
           additionalRunIfChanged:
             - ^scripts/
@@ -95,7 +85,7 @@ templates:
       - to: ../prow/jobs/incubator/compass/components/connectivity-adapter/connectivity-adapter-generic.yaml
         values:
           path: components/connectivity-adapter
-          repository: github.com/kyma-project/control-plane
+          repository: github.com/kyma-incubator/compass
           pushRepository: incubator
           additionalRunIfChanged:
             - ^scripts/
@@ -105,7 +95,7 @@ templates:
       - to: ../prow/jobs/incubator/compass/components/pairing-adapter/pairing-adapter-generic.yaml
         values:
           path: components/pairing-adapter
-          repository: github.com/kyma-project/control-plane
+          repository: github.com/kyma-incubator/compass
           pushRepository: incubator
           additionalRunIfChanged:
             - ^scripts/
@@ -115,7 +105,7 @@ templates:
       - to: ../prow/jobs/incubator/compass/components/gateway/gateway-generic.yaml
         values:
           path: components/gateway
-          repository: github.com/kyma-project/control-plane
+          repository: github.com/kyma-incubator/compass
           pushRepository: incubator
           additionalRunIfChanged:
             - ^scripts/
@@ -125,7 +115,7 @@ templates:
       - to: ../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-generic.yaml
         values:
           path: components/schema-migrator
-          repository: github.com/kyma-project/control-plane
+          repository: github.com/kyma-incubator/compass
           pushRepository: incubator
           additionalRunIfChanged:
             - ^scripts/
@@ -135,7 +125,7 @@ templates:
       - to: ../prow/jobs/incubator/compass/tests/compass-e2e-tests/compass-e2e-tests.yaml
         values:
           path: tests
-          repository: github.com/kyma-project/control-plane
+          repository: github.com/kyma-incubator/compass
           pushRepository: incubator
           additionalRunIfChanged:
             - ^scripts/
