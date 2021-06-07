@@ -265,6 +265,9 @@ cleanup
 az::create_resource_group "${RS_GROUP}" "${REGION}"
 # installCluster
 kyma::install_cli
+ARM_CLIENT_ID = AZURE_CLIENT_ID
+ARM_CLIENT_SECRET = AZURE_CLIENT_SECRET
+ARM_SUBSCRIPTION_ID = AZURE_SUBSCRIPTION_ID
 kyma provision -c "$AZURE_CREDENTIALS_FILE" -n "${CLUSTER_NAME}" -p "${RS_GROUP}" aks
 
 createPublicIPandDNS
