@@ -38,6 +38,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-main-helm-broker-chart-test
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -76,6 +83,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/helm-broker:
@@ -116,6 +130,13 @@ postsubmits: # runs on main
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-release-helm-broker
       annotations:
         testgrid-create-test-group: "false"
@@ -156,4 +177,11 @@ postsubmits: # runs on main
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
