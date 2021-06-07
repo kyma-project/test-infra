@@ -412,12 +412,6 @@ templates:
           <<: *kyma_generic_component
           path: tests/integration/logging
           since: "1.7"
-      - to: ../prow/jobs/kyma/tests/integration/monitoring/monitoring-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *kyma_generic_component
-          path: tests/integration/monitoring
-          since: "1.7"
       - to: ../prow/jobs/kyma/tools/event-subscriber/event-subscriber-generic.yaml
         values:
           <<: *cluster_default
