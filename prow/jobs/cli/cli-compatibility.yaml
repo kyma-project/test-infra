@@ -41,6 +41,13 @@ periodics: # runs on schedule
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: kyma-cli-compatibility-2
       annotations:
         testgrid-create-test-group: "false"
@@ -80,4 +87,11 @@ periodics: # runs on schedule
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   

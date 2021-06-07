@@ -40,6 +40,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 100Mi
                 cpu: 50m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/control-plane:
@@ -82,4 +89,11 @@ postsubmits: # runs on main
               requests:
                 memory: 100Mi
                 cpu: 50m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   

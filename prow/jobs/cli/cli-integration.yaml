@@ -39,6 +39,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-kyma-cli-integration-k3s
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -79,6 +86,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/cli:
@@ -120,6 +134,13 @@ postsubmits: # runs on main
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-kyma-cli-integration-k3s
       annotations:
         testgrid-create-test-group: "false"
@@ -162,6 +183,13 @@ postsubmits: # runs on main
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
 periodics: # runs on schedule
     - name: kyma-cli-integration-gke
@@ -206,6 +234,13 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: kyma-cli-alpha-uninstall-gke
       annotations:
         testgrid-create-test-group: "false"
@@ -258,4 +293,11 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   

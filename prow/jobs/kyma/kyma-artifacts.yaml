@@ -39,6 +39,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 0.2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-rel123-kyma-artifacts
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -74,6 +81,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 0.2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-rel122-kyma-artifacts
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -109,6 +123,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 0.2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-rel121-kyma-artifacts
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -144,6 +165,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 0.2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/kyma:
@@ -185,6 +213,13 @@ postsubmits: # runs on main
               requests:
                 memory: 1Gi
                 cpu: 0.2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-rel123-kyma-artifacts
       annotations:
         testgrid-create-test-group: "false"
@@ -222,6 +257,13 @@ postsubmits: # runs on main
               requests:
                 memory: 1Gi
                 cpu: 0.2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-rel122-kyma-artifacts
       annotations:
         testgrid-create-test-group: "false"
@@ -259,6 +301,13 @@ postsubmits: # runs on main
               requests:
                 memory: 1Gi
                 cpu: 0.2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-rel121-kyma-artifacts
       annotations:
         testgrid-create-test-group: "false"
@@ -296,4 +345,11 @@ postsubmits: # runs on main
               requests:
                 memory: 1Gi
                 cpu: 0.2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   

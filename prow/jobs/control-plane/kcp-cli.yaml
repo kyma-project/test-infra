@@ -38,6 +38,13 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: sa-kyma-artifacts
                 mountPath: /etc/credentials/sa-kyma-artifacts
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
         volumes:
           - name: sa-kyma-artifacts
             secret:
@@ -82,6 +89,13 @@ postsubmits: # runs on main
             volumeMounts:
               - name: sa-kyma-artifacts
                 mountPath: /etc/credentials/sa-kyma-artifacts
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
         volumes:
           - name: sa-kyma-artifacts
             secret:

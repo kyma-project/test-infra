@@ -41,6 +41,13 @@ globalSets:
     request_cpu: "0.8"
     cluster_presubmit: "untrusted-workload"
     cluster_postsubmit: "trusted-workload"
+    nodeSelector:
+      dedicated: high-cpu
+    tolerations:
+    - key: dedicated
+      value: high-cpu
+      operator: Equal
+      effect: NoSchedule
     <<: *pubsub_config
   jobConfig_presubmit:
     type_presubmit: "true"

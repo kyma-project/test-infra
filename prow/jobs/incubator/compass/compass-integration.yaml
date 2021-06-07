@@ -41,6 +41,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 100Mi
                 cpu: 0.8
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-incubator/compass:
@@ -84,4 +91,11 @@ postsubmits: # runs on main
               requests:
                 memory: 100Mi
                 cpu: 0.8
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
