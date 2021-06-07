@@ -264,6 +264,8 @@ cleanup
 
 az::create_resource_group "${RS_GROUP}" "${REGION}"
 # installCluster
+kyma::install_cli
+kyma provision -c "$AZURE_CREDENTIALS_FILE" -n "${CLUSTER_NAME}" -p "${RS_GROUP}" aks
 
 createPublicIPandDNS
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-letsencrypt-cert.sh"
@@ -274,9 +276,6 @@ export TLS_KEY
 
 setupKubeconfig
 
-kyma::install_cli
-
-kyma provision -c "$AZURE_CREDENTIALS_FILE" -n "${CLUSTER_NAME}" -p "${RS_GROUP}" aks
 
 installKyma
 
