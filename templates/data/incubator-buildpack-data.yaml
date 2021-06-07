@@ -163,7 +163,7 @@ templates:
       - to: ../prow/jobs/incubator/milv/milv.yaml
         localSets:
           milv_jobConfig:
-            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.15.7
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.16.4
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/milv"
             env:

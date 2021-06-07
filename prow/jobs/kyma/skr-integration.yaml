@@ -38,6 +38,13 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: skr-azure-lite-integration-dev
       annotations:
         testgrid-create-test-group: "false"
@@ -74,6 +81,13 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: skr-aws-integration-dev
       annotations:
         testgrid-create-test-group: "false"
@@ -110,6 +124,13 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: skr-trial-integration-dev
       annotations:
         testgrid-create-test-group: "false"
@@ -146,6 +167,13 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: skr-free-aws-integration-dev
       annotations:
         testgrid-create-test-group: "false"
@@ -182,6 +210,13 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: rg-skr-aws-integration-dev
       annotations:
         testgrid-create-test-group: "false"
@@ -219,4 +254,11 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   

@@ -133,6 +133,12 @@
             effect: {{ .effect }}
         {{- end }}
         {{- end }}
+        {{- with .JobConfig.nodeSelector }}
+        nodeSelector:
+            {{- range $key, $value := .}}
+            {{$key}}: {{quote $value}}
+            {{- end}}
+        {{- end}}
         {{- if .JobConfig.volumes}}
         volumes:
           {{- range .JobConfig.volumes}}

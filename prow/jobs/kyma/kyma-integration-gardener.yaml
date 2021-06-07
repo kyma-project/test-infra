@@ -25,7 +25,7 @@ presubmits: # runs on PRs
       decorate: true
       decoration_config:
         grace_period: 600000000000
-        run_if_changed: ^(((resources/knative-eventing|resources/event-sources|resources/knative-eventing-kafka|resources/application-connector)\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))
+        run_if_changed: ^(((resources/application-connector)\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))
         timeout: 14400000000000
       path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
@@ -60,6 +60,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-main-kyma-gardener-azure-fast-integration
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -118,6 +125,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-main-kyma-gardener-azure-alpha-eval
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -179,6 +193,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-main-kyma-gardener-azure-alpha-prod
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -240,6 +261,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-main-kyma-gardener-gcp-eventing
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -292,6 +320,13 @@ presubmits: # runs on PRs
               - name: kyma-tunas-prow-event-mesh
                 mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
                 readOnly: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
         volumes:
           - name: kyma-tunas-prow-event-mesh
             secret:
@@ -360,6 +395,13 @@ postsubmits: # runs on main
               requests:
                 memory: 1Gi
                 cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-main-kyma-gardener-azure-alpha-prod
       annotations:
         testgrid-create-test-group: "false"
@@ -421,6 +463,13 @@ postsubmits: # runs on main
               requests:
                 memory: 1Gi
                 cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
 periodics: # runs on schedule
     - name: kyma-integration-gardener-gcp
@@ -471,6 +520,13 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: kyma-integration-gardener-aws
       annotations:
         description: "Kyma AWS Gardener integration job."
@@ -518,6 +574,13 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: kyma-integration-gardener-azure
       annotations:
         description: "Kyma Azure Gardener integration job."
@@ -577,6 +640,13 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: kyma-integration-evaluation-gardener-azure
       annotations:
         description: "Evaluation profile Kyma Azure Gardener integration job."
@@ -642,6 +712,13 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: kyma-integration-production-gardener-azure
       annotations:
         description: "Production profile Kyma Azure Gardener integration job."
@@ -707,6 +784,13 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: kyma-alpha-integration-evaluation-gardener-azure
       annotations:
         description: "Evaluation profile Kyma Alpha Azure Gardener integration job."
@@ -774,6 +858,13 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: kyma-alpha-integration-production-gardener-azure
       annotations:
         description: "Production profile Kyma Alpha Azure Gardener integration job."
@@ -841,6 +932,13 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: kyma-integration-hibernation-gardener-azure
       annotations:
         testgrid-create-test-group: "false"
@@ -907,6 +1005,13 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: kyma-weekly-gardener-gcp-busola
       annotations:
         testgrid-create-test-group: "false"
@@ -960,6 +1065,13 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: kyma-nightly-gardener-gcp-busola
       annotations:
         testgrid-create-test-group: "false"
@@ -1012,6 +1124,13 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: kyma-weekly-gardener-gcp-busola-kyma
       annotations:
         testgrid-create-test-group: "false"
@@ -1065,6 +1184,13 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: kyma-periodic-gardener-gcp-busola-init-kyma
       annotations:
         testgrid-create-test-group: "false"
@@ -1121,6 +1247,13 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: kyma-periodic-gardener-gcp-busola-kyma
       annotations:
         testgrid-create-test-group: "false"
@@ -1176,6 +1309,13 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: kyma-upgrade-gardener-kyma-to-kyma2
       annotations:
         description: "Azure Kyma 1.x to Kyma 2.0 upgrade."
@@ -1235,4 +1375,11 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   

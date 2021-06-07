@@ -234,6 +234,7 @@ function applyCompassOverrides() {
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-auditlog-mock-tests" \
     --data "global.externalServicesMock.enabled=true" \
+    --data "global.externalServicesMock.auditlog=true" \
     --data "gateway.gateway.auditlog.enabled=true" \
     --data "gateway.gateway.auditlog.authMode=oauth" \
     --label "component=compass"
@@ -350,7 +351,7 @@ log::info "Install Compass"
 installCompass
 
 log::info "Test Kyma with Compass"
-CONCURRENCY=1 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
+CONCURRENCY=1 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l "!benchmark"
 
 log::success "Success"
 

@@ -38,6 +38,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 10Mi
                 cpu: 100m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
   kyma-project/busola:
     - name: pre-main-busola-governance
@@ -74,6 +81,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 10Mi
                 cpu: 100m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
   kyma-project/community:
     - name: pre-main-community-governance
@@ -111,6 +125,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 10Mi
                 cpu: 100m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
   kyma-project/console:
     - name: pre-main-console-governance
@@ -148,6 +169,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 10Mi
                 cpu: 100m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
   kyma-project/examples:
     - name: pre-main-examples-governance
@@ -185,6 +213,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 10Mi
                 cpu: 100m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
   kyma-project/kyma:
     - name: kyma-metadata-schema-governance
@@ -210,7 +245,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.16.4"
             securityContext:
               privileged: true
             command:
@@ -224,6 +259,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 10Mi
                 cpu: 100m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-main-kyma-governance
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -259,6 +301,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 10Mi
                 cpu: 100m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
   kyma-project/test-infra:
     - name: pre-main-test-infra-governance
@@ -291,6 +340,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 10Mi
                 cpu: 100m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
   kyma-project/website:
     - name: pre-main-website-governance
@@ -328,6 +384,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 10Mi
                 cpu: 100m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
   kyma-incubator/documentation-component:
     - name: pre-documentation-component-governance
@@ -367,6 +430,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 10Mi
                 cpu: 100m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
 periodics: # runs on schedule
     - name: addons-governance-nightly
@@ -408,6 +478,13 @@ periodics: # runs on schedule
               requests:
                 memory: 10Mi
                 cpu: 100m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
     - name: busola-governance-nightly
       annotations:
@@ -448,6 +525,13 @@ periodics: # runs on schedule
               requests:
                 memory: 10Mi
                 cpu: 100m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
     - name: community-governance-nightly
       annotations:
@@ -488,6 +572,13 @@ periodics: # runs on schedule
               requests:
                 memory: 10Mi
                 cpu: 100m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
     - name: console-governance-nightly
       annotations:
@@ -528,6 +619,13 @@ periodics: # runs on schedule
               requests:
                 memory: 10Mi
                 cpu: 100m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
     - name: examples-governance-nightly
       annotations:
@@ -568,6 +666,13 @@ periodics: # runs on schedule
               requests:
                 memory: 10Mi
                 cpu: 100m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
     - name: kyma-governance-nightly
       annotations:
@@ -608,6 +713,13 @@ periodics: # runs on schedule
               requests:
                 memory: 10Mi
                 cpu: 100m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
     - name: test-infra-governance-nightly
       annotations:
@@ -644,6 +756,13 @@ periodics: # runs on schedule
               requests:
                 memory: 10Mi
                 cpu: 100m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
     - name: website-governance-nightly
       annotations:
@@ -684,6 +803,13 @@ periodics: # runs on schedule
               requests:
                 memory: 10Mi
                 cpu: 100m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
     - name: documentation-component-governance-nightly
       annotations:
@@ -726,4 +852,11 @@ periodics: # runs on schedule
               requests:
                 memory: 10Mi
                 cpu: 100m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   

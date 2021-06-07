@@ -45,6 +45,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 200Mi
                 cpu: 80m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
   kyma-project/console:
     - name: pre-main-console-protecode-guard
@@ -89,6 +96,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 200Mi
                 cpu: 80m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
   kyma-project/third-party-images:
     - name: pre-main-third-party-images-protecode-guard
@@ -133,4 +147,11 @@ presubmits: # runs on PRs
               requests:
                 memory: 200Mi
                 cpu: 80m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   

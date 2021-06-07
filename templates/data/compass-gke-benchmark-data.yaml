@@ -34,6 +34,7 @@ templates:
               # presubmits
               - jobConfig:
                   name: pre-main-compass-gke-benchmark
+                  optional: true
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((chart\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:

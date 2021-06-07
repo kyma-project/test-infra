@@ -31,7 +31,7 @@ presubmits: # runs on PRs
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210407-70afe459"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210601-24c60b5a"
             securityContext:
               privileged: true
             command:
@@ -48,10 +48,12 @@ presubmits: # runs on PRs
                 memory: 1.5Gi
                 cpu: 0.8
         tolerations:
-          - key: resources-usage
+          - key: dedicated
             operator: Equal
-            value: high
+            value: high-cpu
             effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-rafter-integration-test
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -77,7 +79,7 @@ presubmits: # runs on PRs
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210407-70afe459"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210601-24c60b5a"
             securityContext:
               privileged: true
             command:
@@ -94,10 +96,12 @@ presubmits: # runs on PRs
                 memory: 1.5Gi
                 cpu: 0.8
         tolerations:
-          - key: resources-usage
+          - key: dedicated
             operator: Equal
-            value: high
+            value: high-cpu
             effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/rafter:
@@ -129,7 +133,7 @@ postsubmits: # runs on main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210407-70afe459"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210601-24c60b5a"
             securityContext:
               privileged: true
             command:
@@ -146,10 +150,12 @@ postsubmits: # runs on main
                 memory: 1.5Gi
                 cpu: 0.8
         tolerations:
-          - key: resources-usage
+          - key: dedicated
             operator: Equal
-            value: high
+            value: high-cpu
             effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: release-rafter
       annotations:
         testgrid-create-test-group: "false"
@@ -177,7 +183,7 @@ postsubmits: # runs on main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210407-70afe459"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210601-24c60b5a"
             securityContext:
               privileged: true
             command:
@@ -194,10 +200,12 @@ postsubmits: # runs on main
                 memory: 1.5Gi
                 cpu: 0.8
         tolerations:
-          - key: resources-usage
+          - key: dedicated
             operator: Equal
-            value: high
+            value: high-cpu
             effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-rafter-integration-test
       annotations:
         testgrid-create-test-group: "false"
@@ -223,7 +231,7 @@ postsubmits: # runs on main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210407-70afe459"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210601-24c60b5a"
             securityContext:
               privileged: true
             command:
@@ -240,10 +248,12 @@ postsubmits: # runs on main
                 memory: 1.5Gi
                 cpu: 0.8
         tolerations:
-          - key: resources-usage
+          - key: dedicated
             operator: Equal
-            value: high
+            value: high-cpu
             effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: release-rafter-integration-test
       annotations:
         testgrid-create-test-group: "false"
@@ -269,7 +279,7 @@ postsubmits: # runs on main
           base_sha: b973e815bb8124a19a82fe6df722ce174d4a7566
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210407-70afe459"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210601-24c60b5a"
             securityContext:
               privileged: true
             command:
@@ -286,8 +296,10 @@ postsubmits: # runs on main
                 memory: 1.5Gi
                 cpu: 0.8
         tolerations:
-          - key: resources-usage
+          - key: dedicated
             operator: Equal
-            value: high
+            value: high-cpu
             effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
