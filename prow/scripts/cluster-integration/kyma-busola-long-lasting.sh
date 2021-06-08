@@ -122,8 +122,6 @@ function provisionKyma2(){
     --profile=production \
     --source="${KYMA_VERSION}" \
     --concurrency="${CPU_COUNT}" \
-    --timeout-component 12m \
-    --timeout 40m \
     --non-interactive \
     --verbose \
     --ci
@@ -146,19 +144,10 @@ function deleteKyma(){
     --kubeconfig="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml" \
     --concurrency="${CPU_COUNT}" \
     --non-interactive \
-    --timeout-component 12m \
-    --timeout 40m \
     --verbose \
     --ci
     set +x
-    # We wait for the certificate to be revoked
-    # kubectl wait --for=delete Certificate --field-selector=metadata.name=kyma-tls-cert --timeout="${CERTIFICATE_TIMEOUT}s" --namespace=istio-system
 
-    # This can be deleted when it's implemented by installer
-    # remove CRDs
-    # log::info "Removing CRDs"
-    # kubectl api-resources --verbs=list --namespaced -o name | grep kyma-project.io | sed -e 's/.*/kubectl delete crd & --grace-period=0 --wait=true/ ' | sh
-    
     log::info "Kyma uninstalled"
 }
 
@@ -207,7 +196,6 @@ readonly BUSOLA_NAME_SUFFIX="busola"
 
 RESOURCES_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola"
 CPU_COUNT=$(python -c 'import multiprocessing as mp; print(mp.cpu_count())')
-CERTIFICATE_TIMEOUT=120
 
 KYMA_COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${KYMA_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 BUSOLA_COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${BUSOLA_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
