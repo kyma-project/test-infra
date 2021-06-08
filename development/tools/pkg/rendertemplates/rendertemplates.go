@@ -139,6 +139,7 @@ func (j *ConfigSet) mergeConfigSet(configSet ConfigSet) error {
 	return nil
 }
 
+// MatchingReleases filters list of allReleases against since and until values
 func MatchingReleases(allReleases []interface{}, since interface{}, until interface{}) []interface{} {
 	result := make([]interface{}, 0)
 	for _, rel := range allReleases {
@@ -149,6 +150,7 @@ func MatchingReleases(allReleases []interface{}, since interface{}, until interf
 	return result
 }
 
+// ReleaseMatches checks if the release falls between since and until releases
 func ReleaseMatches(rel interface{}, since interface{}, until interface{}) bool {
 	relVer := semver.MustParse(rel.(string))
 	if since != nil && relVer.Compare(semver.MustParse(since.(string))) < 0 {
