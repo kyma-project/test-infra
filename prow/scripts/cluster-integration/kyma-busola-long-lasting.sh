@@ -105,7 +105,7 @@ function provisionKyma2(){
     export KYMA_VERSION=$1
     export DOMAIN_NAME=$2
 
-    log::info "Installing Kyma version: ${KYMA_VERSION} on the cluster : ${DOMAIN_NAME}"
+    log::info "Installing Kyma version: ${KYMA_VERSION} on the cluster : ${DOMAIN_NAME} using ${CPU_COUNT} cpus"
 
     # switch to the new cluster
     export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
@@ -119,18 +119,19 @@ function provisionKyma2(){
     set -x
     TERM=dumb kyma alpha deploy \
     --kubeconfig="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml" \
-    --profile=evaluation \
-    --value global.isBEBEnabled=true \
+    --profile=production \
     --source="${KYMA_VERSION}" \
-    --value global.environment.gardener=true \
-    --concurrency="${CPU_COUNT}"
+    --concurrency="${CPU_COUNT}" \
+    --non-interactive \
+    --verbose \
+    --ci
     set +x
 }
 
 function deleteKyma(){
     export DOMAIN_NAME=$1
 
-    log::info "Deleting Kyma on the cluster : ${DOMAIN_NAME}"
+    log::info "Uninstalling Kyma on the cluster : ${DOMAIN_NAME} using ${CPU_COUNT} cpus"
 
     export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
     kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
@@ -143,14 +144,11 @@ function deleteKyma(){
     --kubeconfig="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml" \
     --concurrency="${CPU_COUNT}" \
     --non-interactive \
+    --verbose \
     --ci
     set +x
-    # We wait for the certificate to be revoked
-    kubectl wait --for=delete Certificate --field-selector=metadata.name=kyma-tls-cert --timeout="${CERTIFICATE_TIMEOUT}s" --namespace=istio-system
 
-    # This can be deleted when it's implemented by installer
-    kubectl delete namespace kyma-system --wait=true
-    log::info "Cluster deleted"
+    log::info "Kyma uninstalled"
 }
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
@@ -198,7 +196,6 @@ readonly BUSOLA_NAME_SUFFIX="busola"
 
 RESOURCES_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola"
 CPU_COUNT=$(python -c 'import multiprocessing as mp; print(mp.cpu_count())')
-CERTIFICATE_TIMEOUT=120
 
 KYMA_COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${KYMA_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 BUSOLA_COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${BUSOLA_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
@@ -211,12 +208,15 @@ if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
     log::info "Kyma cluster name: ${KYMA_COMMON_NAME}"
     if [[ $RECREATE_CLUSTER == "true" ]]; then
         delete_cluster "${KYMA_COMMON_NAME}"
-        # wait 2 minutes
+        # wait 120s this can be removed when Gardener Bug is fixed
+        log::info "We wait 120s for Gardener Shoot to settle after cluster deletion"
         sleep 120
         provisionCluster "${KYMA_COMMON_NAME}" "${RESOURCES_PATH}/cluster-kyma.yaml"
     else
         echo "Delete kyma"
         deleteKyma "${KYMA_COMMON_NAME}"
+        log::info "We wait 60s for Kyma cluster to settle"
+        sleep 60
     fi
 
     provisionKyma2 "main" "${KYMA_COMMON_NAME}"
@@ -229,7 +229,8 @@ elif [[ $BUSOLA_PROVISION_TYPE == "BUSOLA" ]]; then
     log::info "Busola cluster name: ${BUSOLA_COMMON_NAME}"
     if [[ $RECREATE_CLUSTER == "true" ]]; then
         delete_cluster "${BUSOLA_COMMON_NAME}"
-        # wait 2 minutes
+        # wait 120s this can be removed when Gardener Bug is fixed
+        log::info "We wait 120s for Gardener Shoot to settle after cluster deletion"
         sleep 120
         provisionCluster "${BUSOLA_COMMON_NAME}" "${RESOURCES_PATH}/cluster-busola.yaml"
         provisionIngress "${BUSOLA_COMMON_NAME}"
