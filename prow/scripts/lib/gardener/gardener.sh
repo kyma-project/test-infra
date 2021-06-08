@@ -33,14 +33,9 @@ function gardener::deprovision_cluster() {
 # gardener::reprovision_cluster will generate new cluster name
 # and start provisioning again
 gardener::reprovision_cluster() {
-  if [ "${reprovisionCount:-0}" -lt 1 ]; then
     log::info "cluster provisioning failed, trying provision new cluster"
-    export reprovisionCount=1
     CLEANUP_CLUSTER="true" gardener::deprovision_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
     utils::generate_commonName "${COMMON_NAME_PREFIX}"
     CLUSTER_NAME="${COMMON_NAME}"
     gardener::provision_cluster
-  else
-    log::info "cluster provisioning failed, already tried with new cluster, I give up"
-  fi
 }
