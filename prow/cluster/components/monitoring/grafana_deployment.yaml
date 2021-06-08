@@ -40,11 +40,33 @@ spec:
         env:
         - name: GF_SECURITY_ADMIN_USER
           value: adm
+        - name: GF_INSTALL_PLUGINS
+          value: doitintl-bigquery-datasource
         - name: GF_SECURITY_ADMIN_PASSWORD
           valueFrom:
             secretKeyRef:
               name: grafana
               key: password
+        - name: GF_PLUGINS_BIGQUERY_DATASOURCE_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: gf-plugins-bigquery-datasource-email
+              key: secret
+        - name: GF_PLUGINS_BIGQUERY_DATASOURCE_PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: gf-plugins-bigquery-datasource-private-key
+              key: secret
+        - name: GF_AUTH_GITHUB_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: gf-auth-github-client-id
+              key: secret
+        - name: GF_AUTH_GITHUB_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: gf-auth-github-client-secret
+              key: secret
         ports:
         - containerPort: 3001
           name: http
@@ -64,6 +86,12 @@ spec:
           readOnly: false
         - mountPath: /etc/grafana
           name: grafana-config
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/quality
+          name: grafana-dashboard-quality
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/test-coverage
+          name: grafana-dashboard-test-coverage
           readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/prow
           name: grafana-dashboard-prow
@@ -101,6 +129,12 @@ spec:
       - name: grafana-config
         configMap:
           name: grafana-config
+      - name: grafana-dashboard-quality
+        configMap:
+          name: grafana-dashboard-quality
+      - name: grafana-dashboard-test-coverage
+        configMap:
+          name: grafana-dashboard-test-coverage
       - name: grafana-dashboard-prow
         configMap:
           name: grafana-dashboard-prow

@@ -23,7 +23,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.16.4"
             securityContext:
               privileged: true
             command:
@@ -35,6 +35,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/kyma:
@@ -60,7 +67,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.16.4"
             securityContext:
               privileged: true
             command:
@@ -72,4 +79,11 @@ postsubmits: # runs on main
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   

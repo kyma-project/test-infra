@@ -24,6 +24,7 @@ presubmits: # runs on PRs
         preset-sa-gke-kyma-integration: "true"
         preset-sa-test-gcr-push: "true"
       run_if_changed: '^((chart\S+|installation\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-incubator/compass
@@ -54,6 +55,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 200Mi
                 cpu: 80m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-rel123-compass-gke-benchmark
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -104,6 +112,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 200Mi
                 cpu: 80m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-rel122-compass-gke-benchmark
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -154,6 +169,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 200Mi
                 cpu: 80m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-rel121-compass-gke-benchmark
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -204,4 +226,11 @@ presubmits: # runs on PRs
               requests:
                 memory: 200Mi
                 cpu: 80m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   

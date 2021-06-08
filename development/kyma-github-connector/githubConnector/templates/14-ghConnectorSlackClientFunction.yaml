@@ -1,0 +1,33 @@
+apiVersion: serverless.kyma-project.io/v1alpha1
+kind: Function
+metadata:
+  name: {{ .Release.Name }}-issue-labeled
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.appName | quote }}
+    release: {{ .Release.Name | quote }}
+    function: "{{ .Release.Name }}-issue-labeled"
+spec:
+  type: git
+  source: {{ .Release.Name }}-test-infra
+  reference: {{ .Values.function.issues.labeled.branch }}
+  baseDir: {{ .Values.function.issues.labeled.functionBaseDir }}
+  env:
+    - name: REQ_MB_LIMIT
+      value: "10"
+    - name: NOTIFICATION_SLACK_CHANNEL
+      valueFrom:
+        configMapKeyRef:
+          name: {{ .Release.Name }}-gh-webhook-gateway-config
+          key: notificationSlackChannel
+    - name: SLACK_BOT_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: {{ .Values.slackConnector.botTokenSecret }}
+          key: {{ .Values.slackConnector.botTokenSecretKey }}
+    - name: SLACK_API_ID
+      valueFrom:
+        configMapKeyref:
+          name: {{ .Release.Name }}-gh-webhook-gateway-config
+          key: slackConnectorApiId
+  runtime: python38

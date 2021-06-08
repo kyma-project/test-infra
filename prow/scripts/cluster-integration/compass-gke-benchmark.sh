@@ -53,14 +53,14 @@ if [[ "$BUILD_TYPE" == "pr" ]]; then
   # In case of PR, operate on PR number
   readonly COMMON_NAME_PREFIX="gkecompint-pr"
   COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}")
-  COMPASS_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-compass-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
+  COMPASS_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-compass-benchmark/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
   export COMPASS_INSTALLER_IMAGE
 else
   # Otherwise (master), operate on triggering commit id
   readonly COMMON_NAME_PREFIX="gkecompint-commit"
   readonly COMMIT_ID=$(cd "$COMPASS_SOURCES_DIR" && git rev-parse --short HEAD)
   COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}")
-  COMPASS_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-compass-integration/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
+  COMPASS_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-compass-benchmark/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
   export COMPASS_INSTALLER_IMAGE
 fi
 
@@ -359,6 +359,13 @@ CERT_KEY=$(utils::generate_self_signed_cert "$DOMAIN")
 TLS_CERT=$(echo "${CERT_KEY}" | head -1)
 TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 
+log::info "Choose node for benchmarks execution"
+NODE=$(kubectl get nodes | tail -n 1 | cut -d ' ' -f 1)
+
+log::info "Benchmarks will be executed on node: $NODE. Will make it unschedulable."
+kubectl label node "$NODE" benchmark=true
+kubectl cordon "$NODE"
+
 log::info "Install Kyma"
 installKyma
 
@@ -368,7 +375,9 @@ installCompassOld
 readonly SUITE_NAME="testsuite-all"
 
 log::info "Execute benchmarks on the current master"
+kubectl uncordon "$NODE"
 CONCURRENCY=1 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l "benchmark=true"
+kubectl cordon "$NODE"
 
 PODS=$(kubectl get cts $SUITE_NAME -o=go-template --template='{{range .status.results}}{{range .executions}}{{printf "%s\n" .id}}{{end}}{{end}}')
 for POD in $PODS; do
@@ -382,7 +391,9 @@ log::info "Install New Compass version"
 installCompassNew
 
 log::info "Execute benchmarks on the new release"
+kubectl uncordon "$NODE"
 CONCURRENCY=1 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l "benchmark=true"
+kubectl cordon "$NODE"
 
 PODS=$(kubectl get cts $SUITE_NAME -o=go-template --template='{{range .status.results}}{{range .executions}}{{printf "%s\n" .id}}{{end}}{{end}}')
 for POD in $PODS; do
@@ -400,7 +411,7 @@ for POD in $PODS; do
     log::info "Performance comparison statistics"
     echo "$STATS"
 
-    DELTA=$(echo -n "$STATS" | tail +2 | grep -v '~' | awk '{print $(NF-2)}')
+    DELTA=$(echo -n "$STATS" | tail +2 | { grep -v '~' || true; } | awk '{print $(NF-2)}')
     if [[ $DELTA == +* ]]; then # If delta is positive
       log::error "There is significant performance degradation in the new release!"
       exit 1
