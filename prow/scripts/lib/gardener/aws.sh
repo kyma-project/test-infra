@@ -94,6 +94,7 @@ gardener::provision_cluster() {
         --scaler-min 2 \
         --kube-version="${GARDENER_CLUSTER_VERSION}" \
         --attempts 2
+        false
     )
     # trap cleanup we want other errors fail pipeline immediately
     trap - ERR
