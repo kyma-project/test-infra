@@ -105,7 +105,7 @@ func renderTemplate(basePath string, templateConfig rt.TemplateConfig, config *r
 	}
 	for _, render := range templateConfig.Render {
 
-		if render.Values["repository"] != nil && render.Values["path"] != nil {
+		if render.Values["release_since"] != nil && render.Values["repository"] != nil && render.Values["path"] != nil {
 			render.GenerateComponentJobs(config.Global, config.GlobalSets)
 		}
 
