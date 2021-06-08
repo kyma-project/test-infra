@@ -68,40 +68,9 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-# post_hook runs at the end of a script or on any error
-function post_hook() {
-  #!!! Must be at the beginning of this function !!!
-  EXIT_STATUS=$?
+trap utils::post_hook EXIT INT
 
-  log::info "Cleanup"
-
-  if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
-    log::info "AN ERROR OCCURED! Take a look at preceding log entries."
-  fi
-
-  #Turn off exit-on-error so that next step is executed even if previous one fails.
-  set +e
-
-  # collect logs from failed tests before deprovisioning
-  kyma::run_test_log_collector "post-main-kyma-gke-integration"
-
-  gcloud::cleanup
-
-  MSG=""
-  if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-  log::info "Job is finished ${MSG}"
-  set -e
-
-  exit "${EXIT_STATUS}"
-}
-
-trap post_hook EXIT INT
-
-if [[ "${BUILD_TYPE}" == "pr" ]]; then
-    log::info "Execute Job Guard"
-    # shellcheck disable=SC2031
-    "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
-fi
+utils::jobguard "${BUILD_TYPE}"
 
 # Enforce lowercase
 readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
@@ -109,24 +78,24 @@ export REPO_OWNER
 readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
 export REPO_NAME
 
-RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
+#RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
 
 if [[ "$BUILD_TYPE" == "pr" ]]; then
     # In case of PR, operate on PR number
     readonly COMMON_NAME_PREFIX="gkeint-pr"
-    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+    utils::generate_commonName "${COMMON_NAME_PREFIX}" "${PULL_NUMBER}"
     KYMA_SOURCE="PR-${PULL_NUMBER}"
 elif [[ "$BUILD_TYPE" == "release" ]]; then
     readonly COMMON_NAME_PREFIX="gkeint-rel"
     readonly RELEASE_VERSION=$(cat "VERSION")
+    utils::generate_commonName "${COMMON_NAME_PREFIX}"
     log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
     KYMA_SOURCE="${RELEASE_VERSION}"
-    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 else
     # Otherwise (master), operate on triggering commit id
     readonly COMMON_NAME_PREFIX="gkeint-commit"
     readonly COMMIT_ID="${PULL_BASE_SHA::8}"
-    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+    utils::generate_commonName "${COMMON_NAME_PREFIX}" "${COMMIT_ID}"
     KYMA_SOURCE="${COMMIT_ID}"
     export KYMA_INSTALLER_IMAGE
 fi
