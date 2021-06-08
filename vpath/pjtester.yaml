@@ -1,5 +1,0 @@
-pjNames:
-  - pjName: kyma-integration-gardener-gcp
-  - pjName: kyma-integration-gardener-aws
-  - pjName: kyma-integration-evaluation-gardener-azure
-  - pjName: kyma-integration-gardener-azure
