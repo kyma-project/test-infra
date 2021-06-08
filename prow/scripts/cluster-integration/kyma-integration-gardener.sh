@@ -116,33 +116,33 @@ gardener::generate_overrides
 
 gardener::provision_cluster
 
-## uses previously set KYMA_SOURCE
-#if [[ "${KYMA_ALPHA}" == "true" ]]; then
-#  kyma::alpha_deploy_kyma
-#else
-#  gardener::install_kyma
-#fi
+# uses previously set KYMA_SOURCE
+if [[ "${KYMA_ALPHA}" == "true" ]]; then
+  kyma::alpha_deploy_kyma
+else
+  gardener::install_kyma
+fi
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
 
-#if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
-#    gardener::hibernate_kyma
-#    sleep 120
-#    gardener::wake_up_kyma
-#fi
+if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
+    gardener::hibernate_kyma
+    sleep 120
+    gardener::wake_up_kyma
+fi
 
 
-#if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
-#    gardener::test_fast_integration_kyma
-#else
-#    # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
-#    if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
-#      export ENABLE_TEST_LOG_COLLECTOR=true
-#    fi
-#    gardener::test_kyma
-#fi
+if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
+    gardener::test_fast_integration_kyma
+else
+    # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+    if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
+      export ENABLE_TEST_LOG_COLLECTOR=true
+    fi
+    gardener::test_kyma
+fi
 
 
 #!!! Must be at the end of the script !!!
