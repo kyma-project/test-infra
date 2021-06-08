@@ -8,7 +8,7 @@ templates:
           pushRepository: incubator
           additionalRunIfChanged:
             - ^scripts/
-          since: "1.19"
+          release_since: "1.19"
           skipReleaseJobs: "true"
           optional: false
       - to: ../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
@@ -18,7 +18,7 @@ templates:
           pushRepository: incubator
           additionalRunIfChanged:
             - ^scripts/
-          since: "1.7"
+          release_since: "1.7"
           skipReleaseJobs: "true"
           optional: false
       - to: ../prow/jobs/incubator/compass/components/director/director-generic.yaml
@@ -28,7 +28,7 @@ templates:
           pushRepository: incubator
           additionalRunIfChanged:
             - ^scripts/
-          since: "1.7"
+          release_since: "1.7"
           skipReleaseJobs: "true"
           optional: false
       - to: ../prow/jobs/incubator/ord-service/components/ord-service/ord-service-generic.yaml
@@ -38,7 +38,7 @@ templates:
           pushRepository: incubator
           additionalRunIfChanged:
             - ^scripts/
-          since: "1.17"
+          release_since: "1.17"
           skipReleaseJobs: "true"
           optional: false
       - to: ../prow/jobs/incubator/compass/components/tenant-fetcher/tenant-fetcher-generic.yaml
@@ -48,7 +48,7 @@ templates:
           pushRepository: incubator
           additionalRunIfChanged:
             - ^scripts/
-          since: "1.17"
+          release_since: "1.17"
           skipReleaseJobs: "true"
           optional: false
       - to: ../prow/jobs/incubator/compass/components/system-broker/system-broker-generic.yaml
@@ -58,7 +58,7 @@ templates:
           pushRepository: incubator
           additionalRunIfChanged:
             - ^scripts/
-          since: "1.16"
+          release_since: "1.16"
           skipReleaseJobs: "true"
           optional: false
       - to: ../prow/jobs/incubator/compass-console/compass/compass-ui.yaml
@@ -70,7 +70,7 @@ templates:
             - ^components/
             - ^shared/
             - ^package.json
-          since: "1.16"
+          release_since: "1.16"
           skipReleaseJobs: "true"
       - to: ../prow/jobs/incubator/compass/components/external-services-mock/external-services-mock-generic.yaml
         values:
@@ -79,7 +79,7 @@ templates:
           pushRepository: incubator
           additionalRunIfChanged:
             - ^scripts/
-          since: "1.12"
+          release_since: "1.12"
           skipReleaseJobs: "true"
           optional: false
       - to: ../prow/jobs/incubator/compass/components/connectivity-adapter/connectivity-adapter-generic.yaml
@@ -89,7 +89,7 @@ templates:
           pushRepository: incubator
           additionalRunIfChanged:
             - ^scripts/
-          since: "1.10"
+          release_since: "1.10"
           skipReleaseJobs: "true"
           optional: false
       - to: ../prow/jobs/incubator/compass/components/pairing-adapter/pairing-adapter-generic.yaml
@@ -99,7 +99,7 @@ templates:
           pushRepository: incubator
           additionalRunIfChanged:
             - ^scripts/
-          since: "1.11"
+          release_since: "1.11"
           skipReleaseJobs: "true"
           optional: false
       - to: ../prow/jobs/incubator/compass/components/gateway/gateway-generic.yaml
@@ -109,7 +109,7 @@ templates:
           pushRepository: incubator
           additionalRunIfChanged:
             - ^scripts/
-          since: "1.7"
+          release_since: "1.7"
           skipReleaseJobs: "true"
           optional: false
       - to: ../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-generic.yaml
@@ -119,7 +119,7 @@ templates:
           pushRepository: incubator
           additionalRunIfChanged:
             - ^scripts/
-          since: "1.7"
+          release_since: "1.7"
           skipReleaseJobs: "true"
           optional: false
       - to: ../prow/jobs/incubator/compass/tests/compass-e2e-tests/compass-e2e-tests.yaml
@@ -129,6 +129,6 @@ templates:
           pushRepository: incubator
           additionalRunIfChanged:
             - ^scripts/
-          since: "1.17"
+          release_since: "1.17"
           skipReleaseJobs: "true"
           optional: false

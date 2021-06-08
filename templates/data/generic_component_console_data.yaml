@@ -9,7 +9,7 @@ templates:
             - ^components/
             - ^shared/
             - ^package.json
-          since: "1.11"
+          release_since: "1.11"
       - to: ../prow/jobs/console/add-ons/add-ons.yaml
         values:
           path: add-ons
@@ -18,7 +18,7 @@ templates:
             - ^components/
             - ^shared/
             - ^package.json
-          since: "1.11"
+          release_since: "1.11"
       - to: ../prow/jobs/console/service-catalog-ui/service-catalog-ui.yaml
         values:
           path: service-catalog-ui
@@ -27,7 +27,7 @@ templates:
             - ^components/
             - ^shared/
             - ^package.json
-          since: "1.11"
+          release_since: "1.11"
       - to: ../prow/jobs/console/logging/console-logging.yaml
         values:
           path: logging
@@ -36,7 +36,7 @@ templates:
             - ^components/
             - ^shared/
             - ^package.json
-          since: "1.11"
+          release_since: "1.11"
       - to: ../prow/jobs/console/tests/tests.yaml
         values:
           path: tests
@@ -45,7 +45,7 @@ templates:
             - ^components/
             - ^shared/
             - ^package.json
-          since: "1.11"
+          release_since: "1.11"
       - to: ../prow/jobs/console/core/core.yaml
         values:
           path: core
@@ -55,4 +55,4 @@ templates:
             - ^components/
             - ^shared/
             - ^package.json
-          since: "1.12"
+          release_since: "1.12"

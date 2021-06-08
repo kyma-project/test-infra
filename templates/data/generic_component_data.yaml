@@ -330,14 +330,6 @@ templates:
           additionalRunIfChanged:
             - ^common/makefiles/
           release_since: "1.7"
-      - to: ../prow/jobs/kyma/tests/integration/monitoring/monitoring-generic.yaml
-        values:
-          path: tests/integration/monitoring
-          repository: github.com/kyma-project/kyma
-          pushRepository: kyma
-          additionalRunIfChanged:
-            - ^common/makefiles/
-          release_since: "1.7"
       - to: ../prow/jobs/kyma/tools/event-subscriber/event-subscriber-generic.yaml
         values:
           path: tools/event-subscriber
@@ -456,6 +448,7 @@ templates:
           pushRepository: kyma
           additionalRunIfChanged:
             - ^common/makefiles/
+          release_since: "1.9"
       - to: ../prow/jobs/kyma/components/permission-controller/permission-controller-generic.yaml
         values:
           path: components/permission-controller
