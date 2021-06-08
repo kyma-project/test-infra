@@ -371,6 +371,7 @@ function utils::kubeaudit_check_report() {
 }
 
 # post_hook runs at the end of a script or on any error
+# TODO: change direct post_hook and cleanup calls to this function
 function utils::post_hook() {
   #!!! Must be at the beginning of this function !!!
   EXIT_STATUS=$?
@@ -401,13 +402,15 @@ function utils::post_hook() {
 # run_jobguard will start jobguard if build type is set to pr
 # Arguments
 # $1 - Build type set for prowjob
+# TODO: change direct jobgurad calls to this function
 function utils::run_jobguard() {
-  buildType=$( echo "${1}" | tr "[:upper:]" "[:lower:]")
-  if [[ "${buildType}" == "pr" ]]; then
-    log::info "Execute Job Guard"
-    # shellcheck source=development/jobguard/scripts/run.sh
-    "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
-  fi
+    utils::check_empty_arg "${1}"
+    buildType=$( echo "${1}" | tr "[:upper:]" "[:lower:]")
+    if [[ "${buildType}" == "pr" ]]; then
+        log::info "Execute Job Guard"
+        # shellcheck source=development/jobguard/scripts/run.sh
+        "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
+    fi
 }
 
 # utils::generate_CommonName create and export COMMON_NAME variable
@@ -427,4 +430,23 @@ utils::generate_commonName() {
   RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
   COMMON_NAME=$(echo "${NAME_PREFIX}${PULL_NUMBER}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
   export COMMON_NAME
+}
+
+# check_empty_arg will check if first argument is empty.
+# If it's empty it will log second argument as error message and exit with code 1.
+# If second argument is empty, generic default log message will be used.
+#
+# Arguments:
+# $1 - argument to check if it's empty
+# $2 - log message to use if $1 is empty
+function utils::check_empty_arg() {
+    if [ -z "$2" ]; then
+        logMessage="Mandatory argument is empty. Exiting..."
+    else
+        logMessage="${2}"
+    fi
+    if [ -z "$1" ]; then
+        log::error "${logMessage}"
+        exit 1
+    fi
 }
