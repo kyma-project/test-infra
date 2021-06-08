@@ -26,9 +26,11 @@ const (
 var (
 	configFilePath  = flag.String("config", "", "Path of the config file")
 	additionalFuncs = map[string]interface{}{
-		"hasPresubmit":  hasPresubmit,
-		"hasPostsubmit": hasPostsubmit,
-		"hasPeriodic":   hasPeriodic,
+		"matchingReleases": rt.MatchingReleases,
+		"releaseMatches":   rt.ReleaseMatches,
+		"hasPresubmit":     hasPresubmit,
+		"hasPostsubmit":    hasPostsubmit,
+		"hasPeriodic":      hasPeriodic,
 	}
 	commentSignByFileExt = map[string]sets.String{
 		"//": sets.NewString(".go"),

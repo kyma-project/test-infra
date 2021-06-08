@@ -112,7 +112,7 @@ func (r *RenderConfig) MergeConfigs(config *Config) {
 					compareAgainstRelease = jobConfig["release_current"]
 				}
 
-				if releaseMatches(compareAgainstRelease, jobConfig["release_since"], jobConfig["release_until"]) {
+				if ReleaseMatches(compareAgainstRelease, jobConfig["release_since"], jobConfig["release_until"]) {
 					r.JobConfigs[repoIndex].Jobs[jobIndex].JobConfig = jobConfig
 				}
 			}
@@ -139,17 +139,17 @@ func (j *ConfigSet) mergeConfigSet(configSet ConfigSet) error {
 	return nil
 }
 
-func matchingReleases(allReleases []interface{}, since interface{}, until interface{}) []interface{} {
+func MatchingReleases(allReleases []interface{}, since interface{}, until interface{}) []interface{} {
 	result := make([]interface{}, 0)
 	for _, rel := range allReleases {
-		if releaseMatches(rel, since, until) {
+		if ReleaseMatches(rel, since, until) {
 			result = append(result, rel)
 		}
 	}
 	return result
 }
 
-func releaseMatches(rel interface{}, since interface{}, until interface{}) bool {
+func ReleaseMatches(rel interface{}, since interface{}, until interface{}) bool {
 	relVer := semver.MustParse(rel.(string))
 	if since != nil && relVer.Compare(semver.MustParse(since.(string))) < 0 {
 		return false
