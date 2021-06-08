@@ -118,7 +118,6 @@ gardener::provision_cluster() {
                 --kube-version="${GARDENER_CLUSTER_VERSION}" \
                 --verbose \
                 --attempts 2
-                false
         )
     else
         (
