@@ -40,14 +40,13 @@ gardener::cleanup() {
     # describe nodes to file in artifacts directory
     utils::describe_nodes
 
-
     if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
-      # copy output from debug container to artifacts directory
-      utils::oom_get_output
+        # copy output from debug container to artifacts directory
+        utils::oom_get_output
     fi
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
-        if  [ -z "${CLEANUP_ONLY_SUCCEEDED}" ] || [[ -n "${CLEANUP_ONLY_SUCCEEDED}" && ${EXIT_STATUS} -eq 0 ]]; then
+        if [ -z "${CLEANUP_ONLY_SUCCEEDED}" ] || [[ -n "${CLEANUP_ONLY_SUCCEEDED}" && ${EXIT_STATUS} -eq 0 ]]; then
             log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
             gardener::deprovision_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
         fi
@@ -94,38 +93,55 @@ gardener::set_machine_type() {
 }
 
 gardener::generate_overrides() {
-return 
+    return
 }
 
 gardener::provision_cluster() {
     log::info "Provision cluster: \"${CLUSTER_NAME}\""
 
     CLEANUP_CLUSTER="true"
-    set -x
     if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
-        kyma provision gardener az \
-            --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
-            --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
-            --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
-            --scaler-max 1 --scaler-min 1 \
-            --disk-type StandardSSD_LRS \
-            --kube-version="${GARDENER_CLUSTER_VERSION}" \
-            --verbose
+        (
+            # enable trap to catch kyma provision failures
+            trap gardener::reprovision_cluster ERR
+            # decreasing attempts to 2 because we will try to create new cluster from scratch on exit code other than 0
+            kyma provision gardener az \
+                --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" \
+                --name "${CLUSTER_NAME}" \
+                --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+                --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
+                --region "${GARDENER_REGION}" \
+                -z "${GARDENER_ZONES}" \
+                -t "${MACHINE_TYPE}" \
+                --scaler-max 1 --scaler-min 1 \
+                --disk-type StandardSSD_LRS \
+                --kube-version="${GARDENER_CLUSTER_VERSION}" \
+                --verbose \
+                --attempts 2
+        )
     else
-        kyma provision gardener az \
-            --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
-            --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
-            --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
-            --disk-type StandardSSD_LRS \
-            --kube-version="${GARDENER_CLUSTER_VERSION}" \
-            --verbose
+        (
+            # enable trap to catch kyma provision failures
+            trap gardener::reprovision_cluster ERR
+            # decreasing attempts to 2 because we will try to create new cluster from scratch on exit code other than 0
+            kyma provision gardener az \
+                --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" \
+                --name "${CLUSTER_NAME}" \
+                --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+                --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
+                --region "${GARDENER_REGION}" \
+                -z "${GARDENER_ZONES}" \
+                -t "${MACHINE_TYPE}" \
+                --disk-type StandardSSD_LRS \
+                --kube-version="${GARDENER_CLUSTER_VERSION}" \
+                --verbose \
+                --attempts 2
+        )
     fi
-    set +x
-
-    if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
-      # run oom debug pod
-      utils::debug_oom
-    fi
+    # trap cleanup we want other errors fail pipeline immediately
+    trap - ERR
+    # run oom debug pod
+    utils::debug_oom
 }
 
 gardener::install_kyma() {
@@ -172,9 +188,9 @@ gardener::hibernate_kyma() {
     HIBERNATION_POSSIBLE=$(kubectl get shoots "${CLUSTER_NAME}" -o jsonpath='{.status.constraints[?(@.type=="HibernationPossible")].status}')
 
     if [[ "$HIBERNATION_POSSIBLE" != "True" ]]; then
-      log::error "Hibernation for this cluster is not possible! Please take a look at the constraints :"
-      kubectl get shoots "${CLUSTER_NAME}}" -o jsonpath='{.status.constraints}'
-      exit 1
+        log::error "Hibernation for this cluster is not possible! Please take a look at the constraints :"
+        kubectl get shoots "${CLUSTER_NAME}}" -o jsonpath='{.status.constraints}'
+        exit 1
     fi
 
     log::info "Cluster can be hibernated"
@@ -186,8 +202,8 @@ gardener::hibernate_kyma() {
 
     local STATUS
     SECONDS=0
-    local END_TIME=$((SECONDS+1000))
-    while [ ${SECONDS} -lt ${END_TIME} ];do
+    local END_TIME=$((SECONDS + 1000))
+    while [ ${SECONDS} -lt ${END_TIME} ]; do
         STATUS=$(kubectl get shoot "${CLUSTER_NAME}" -o jsonpath='{.status.hibernated}')
         if [ "$STATUS" == "true" ]; then
             log::info "Kyma is hibernated."
@@ -203,24 +219,23 @@ gardener::hibernate_kyma() {
     export KUBECONFIG=$SAVED_KUBECONFIG
 }
 
-pods_running(){
+pods_running() {
     list=$(kubectl get pods -n "$1" -o=jsonpath='{range .items[*]}{.status.phase}{"\n"}')
     if [[ -z $list ]]; then
-      log::error "Failed to get pod list"
-      return 1
+        log::error "Failed to get pod list"
+        return 1
     fi
 
-    for status in $list
-    do
+    for status in $list; do
         if [[ "$status" != "Running" && "$status" != "Succeeded" ]]; then
-          return 1
+            return 1
         fi
     done
 
     return 0
 }
 
-check_pods_in_namespaces(){
+check_pods_in_namespaces() {
     local namespaces=("$@")
     for ns in "${namespaces[@]}"; do
         log::info "checking pods in namespace : $ns"
@@ -232,12 +247,12 @@ check_pods_in_namespaces(){
     return 0
 }
 
-wait_for_pods_in_namespaces(){
+wait_for_pods_in_namespaces() {
     local namespaces=("$@")
     local done=1
     SECONDS=0
-    local END_TIME=$((SECONDS+900))
-    while [ ${SECONDS} -lt ${END_TIME} ];do
+    local END_TIME=$((SECONDS + 900))
+    while [ ${SECONDS} -lt ${END_TIME} ]; do
         if check_pods_in_namespaces "${namespaces[@]}"; then
             done=0
             break
@@ -264,8 +279,8 @@ gardener::wake_up_kyma() {
 
     local STATUS
     SECONDS=0
-    local END_TIME=$((SECONDS+1200))
-    while [ ${SECONDS} -lt ${END_TIME} ];do
+    local END_TIME=$((SECONDS + 1200))
+    while [ ${SECONDS} -lt ${END_TIME} ]; do
         STATUS=$(kubectl get shoot "${CLUSTER_NAME}" -o jsonpath='{.status.hibernated}')
         if [ "$STATUS" == "false" ]; then
             log::info "Kyma is awake."
@@ -324,22 +339,22 @@ gardener::test_kyma() {
     readonly CONCURRENCY=5
     set +e
     (
-    set -x
-    kyma test run \
-        --name "${SUITE_NAME}" \
-        --concurrency "${CONCURRENCY}" \
-        --max-retries 1 \
-        --timeout 120m \
-        --watch \
-        --non-interactive
+        set -x
+        kyma test run \
+            --name "${SUITE_NAME}" \
+            --concurrency "${CONCURRENCY}" \
+            --max-retries 1 \
+            --timeout 120m \
+            --watch \
+            --non-interactive
     )
 
     # collect logs from failed tests before deprovisioning
     kyma::run_test_log_collector "kyma-integration-gardener-azure"
     if ! kyma::test_summary; then
-      log::error "Tests have failed"
-      set -e
-      return 1
+        log::error "Tests have failed"
+        set -e
+        return 1
     fi
     set -e
     log::success "Tests completed"
