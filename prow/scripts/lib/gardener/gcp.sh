@@ -108,6 +108,7 @@ gardener::provision_cluster() {
 
     CLEANUP_CLUSTER="true"
     (
+        set -x
       # enable trap to catch kyma provision failures
       trap gardener::reprovision_cluster ERR
       # decreasing attempts to 2 because we will try to create new cluster from scratch on exit code other than 0
@@ -127,6 +128,7 @@ gardener::provision_cluster() {
     )
     # trap cleanup we want other errors fail pipeline immediately
     trap - ERR
+    set +x
     # run oom debug pods
     utils::debug_oom
 }
