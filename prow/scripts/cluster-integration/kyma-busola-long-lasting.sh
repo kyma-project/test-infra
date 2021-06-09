@@ -207,7 +207,11 @@ log::info "Kyma cluster name: ${KYMA_COMMON_NAME}"
 if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
     log::info "Kyma cluster name: ${KYMA_COMMON_NAME}"
     if [[ $RECREATE_CLUSTER == "true" ]]; then
-        deleteKyma "${KYMA_COMMON_NAME}" || true
+        set +e
+        deleteKyma "${KYMA_COMMON_NAME}"
+        set -e
+
+        export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
         delete_cluster "${KYMA_COMMON_NAME}"
         # wait 120s this can be removed when Gardener Bug is fixed
         log::info "We wait 120s for Gardener Shoot to settle after cluster deletion"
@@ -241,3 +245,4 @@ else
     log::error "Wrong value for BUSOLA_PROVISION_TYPE: '$BUSOLA_PROVISION_TYPE'"
     exit 1
 fi
+
