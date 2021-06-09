@@ -350,6 +350,13 @@ templates:
           path: components/subscription-cleanup-job
           since: "1.17"
           optional: false
+      - to: ../prow/jobs/control-plane/components/provider-config-migration-job/provider-config-migration-job-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *control_plane_generic_component
+          path: components/provider-config-migration-job
+          since: "1.23"
+          optional: true # TODO: Remove after merging https://github.com/kyma-project/control-plane/pull/740
       - to: ../prow/jobs/control-plane/tests/provisioner-tests/provisioner-tests-generic.yaml
         values:
           <<: *cluster_default
