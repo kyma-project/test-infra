@@ -29,7 +29,7 @@ cleanup() {
     set +e
     
     #shellcheck disable=SC2088
-    utils::receive_from_vm "${ZONE}" "busola-ui-test-${RANDOM_ID}" "~/busola-tests/cypress" "${ARTIFACTS}"
+    utils::receive_from_vm "${ZONE}" "busola-ui-test-${RANDOM_ID}" "~/busola-tests/cypress/videos" "${ARTIFACTS}"
     
     gcloud compute instances stop --async --zone="${ZONE}" "busola-ui-test-${RANDOM_ID}"
     log::info "End of cleanup"
