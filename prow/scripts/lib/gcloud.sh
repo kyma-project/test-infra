@@ -5,6 +5,8 @@ LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
 source "${LIBDIR}/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${LIBDIR}/utils.sh"
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "${LIBDIR}/kyma.sh"
 
 # gcloud::verify_deps checks if the needed preconditions are met to use this library
 function gcloud::verify_deps {
@@ -46,32 +48,40 @@ function gcloud::set_account() {
 # Required exported variables:
 # CLOUDSDK_CORE_PROJECT - gcp project
 # CLOUDSDK_COMPUTE_REGION - gcp region
-# IP_ADDRESS_NAME - name of the IP address to be set in gcp
+# Arguments:
+# $1 - name of the IP address to be set in gcp
+# Returns:
+# gcloud::reserve_ip_address_return_1 - reserved ip address
+# TODO: add support for setting CLOUDSDK env vars from function args.
 function gcloud::reserve_ip_address {
-  if [ -z "$1" ]; then
-    log::error "IP address name is empty. Exiting..."
-    exit 1
-  fi
-  IP_ADDRESS_NAME=$1
-
-  counter=0
-  # Check if IP address reservation is present. Wait and retry for one minute to disappear. If IP reservation was removed just before it need a few seconds to disappear.
-  # Otherwise, creation will fail.
-  IP_ADDRESS=$(gcloud compute addresses list --filter="name=${IP_ADDRESS_NAME}" --format="value(ADDRESS)")
-  until [[ -z ${IP_ADDRESS} ]]; do
+    utils::check_empty_arg "${1}" "IP address name is empty. Exiting..."
+    local ipAddressName=$1
+    log::info "Reserve IP Address for ${ipAddressName}"
+    # TODO: setting this variable should be done outside function, it's to specific
+    export CLEANUP_GATEWAY_IP_ADDRESS="true"
+    local counter=0
+    # Check if IP address reservation is present. Wait and retry for one minute to disappear.
+    # If IP reservation was removed just before it need a few seconds to disappear.
+    # Otherwise, creation will fail.
+    local ipAddress
+    ipAddress=$(gcloud compute addresses list --filter="name=${ipAddressName}" --format="value(ADDRESS)")
+  until [[ -z ${ipAddress} ]]; do
     sleep 15
     counter=$(( counter + 1 ))
-    IP_ADDRESS=$(gcloud compute addresses list --filter="name=${IP_ADDRESS_NAME}" --format="value(ADDRESS)")
+    ipAddress=$(gcloud compute addresses list --filter="name=${ipAddressName}" --format="value(ADDRESS)")
     if (( counter == 5 )); then
       # Fail after one minute wait.
-      echo "${IP_ADDRESS_NAME} IP address is still present after one minute wait. Failing"
+      echo "${ipAddressName} IP address is still present after one minute wait. Failing"
       return 1
     fi
   done
 
-  gcloud compute addresses create "${IP_ADDRESS_NAME}" --project="${CLOUDSDK_CORE_PROJECT}" --region="${CLOUDSDK_COMPUTE_REGION}" --network-tier=PREMIUM
+  gcloud compute addresses create "${ipAddressName}" --project="${CLOUDSDK_CORE_PROJECT}" --region="${CLOUDSDK_COMPUTE_REGION}" --network-tier="PREMIUM"
   # Print reserved IP address on stdout as it's consumed by calling process and used for next steps.
-  gcloud compute addresses list --filter="name=${IP_ADDRESS_NAME}" --format="value(ADDRESS)"
+  # TODO: export result as variable, change consuming command to use exported variable
+  #gcloud compute addresses list --filter="name=${IP_ADDRESS_NAME}" --format="value(ADDRESS)"
+  gcloud::reserve_ip_address_return_1="$(gcloud compute addresses list --filter="name=${IP_ADDRESS_NAME}" --format="value(ADDRESS)")"
+  log::info "Created IP Address for Ingressgateway: ${ipAddressName}"
 }
 
 function gcloud::delete_ip_address {
@@ -313,6 +323,10 @@ function gcloud::delete_network {
   log::info "Successfully deleted network $GCLOUD_NETWORK_NAME"
 }
 
+function gcloud::provision_cluster {
+    kyma::install_cli
+    return
+}
 # gcloud::provision_gke_cluster creates a GKE cluster
 # For switch parameters look up the code below.
 #
@@ -489,3 +503,5 @@ function gcloud::set_latest_cluster_version_for_channel() {
 }
 
 gcloud::verify_deps
+
+}

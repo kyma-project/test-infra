@@ -131,6 +131,8 @@ export CLEANUP_GATEWAY_IP_ADDRESS="true"
 log::info "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
 
+
+# TODO: improve that part by moving more code to the function.
 log::info "Create DNS Record for Ingressgateway IP"
 GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 gcloud::create_dns_record "$GATEWAY_IP_ADDRESS" "$GATEWAY_DNS_FULL_NAME"
