@@ -31,7 +31,7 @@ var (
 		"hasPresubmit":     hasPresubmit,
 		"hasPostsubmit":    hasPostsubmit,
 		"hasPeriodic":      hasPeriodic,
-		"getRunId":         GetRunId,
+		"getRunId":         getRunID,
 	}
 	commentSignByFileExt = map[string]sets.String{
 		"//": sets.NewString(".go"),
@@ -203,8 +203,8 @@ func hasPeriodic(r []rt.Repo) bool {
 	return hasProwjobType(r, "type_periodic")
 }
 
-// getRunId trims the name to 63 characters and makes sure it doesn't end on dash
-func GetRunId(name interface{}) string {
+// getRunID trims the name to 63 characters and makes sure it doesn't end on dash
+func getRunID(name interface{}) string {
 	jobName := name.(string)
 	if len(jobName) > 63 {
 		jobName = jobName[0:63]
