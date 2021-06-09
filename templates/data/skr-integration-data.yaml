@@ -73,7 +73,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_test-infra"
-                    - "extra_refs_kyma"
+                    - "extra_refs_kyma_custom"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"

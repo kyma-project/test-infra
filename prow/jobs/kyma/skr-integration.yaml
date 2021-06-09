@@ -149,10 +149,10 @@ periodics: # runs on schedule
       path_alias: github.com/kyma-project/kyma
       cluster: trusted-workload
       extra_refs:
-        - org: kyma-project
+        - org: tgorgol
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: main
+          base_ref: fix-serverless-skr-tests
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra

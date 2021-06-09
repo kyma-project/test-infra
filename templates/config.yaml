@@ -9,7 +9,7 @@ global:
 pubsub_config: &pubsub_config
   pubsub_project: "sap-kyma-prow"
   pubsub_topic: "prowjobs"
-  
+
 globalSets:
   # Image sets
   image_bootstrap:
@@ -44,10 +44,10 @@ globalSets:
     nodeSelector:
       dedicated: high-cpu
     tolerations:
-    - key: dedicated
-      value: high-cpu
-      operator: Equal
-      effect: NoSchedule
+      - key: dedicated
+        value: high-cpu
+        operator: Equal
+        effect: NoSchedule
     <<: *pubsub_config
   jobConfig_presubmit:
     type_presubmit: "true"
@@ -79,15 +79,19 @@ globalSets:
           repo: "kyma"
           path_alias: "github.com/kyma-project/kyma"
           base_ref: "main"
+  extra_refs_kyma_custom:
+    extra_refs:
+      kyma:
+        - org: "tgorgol"
+          repo: "kyma"
+          path_alias: "github.com/kyma-project/kyma"
+          base_ref: "fix-serverless-skr-tests"
   # labels sets
   build_labels:
     labels:
       preset-dind-enabled: "true"
       preset-sa-gcr-push: "true"
       preset-docker-push-repository-kyma: "true"
-
-
-
 
 kyma_generic_component: &kyma_generic_component
   repository: github.com/kyma-project/kyma
@@ -158,9 +162,9 @@ cluster_default: &cluster_default
     periodic: trusted-workload
 
 templates:
-#  - from: templates/kyma-release-upgrade.yaml
-#    render:
-#      - to: ../prow/jobs/kyma/kyma-release-upgrade.yaml
+  #  - from: templates/kyma-release-upgrade.yaml
+  #    render:
+  #      - to: ../prow/jobs/kyma/kyma-release-upgrade.yaml
   - from: templates/generic-component.yaml
     render:
       - to: ../prow/jobs/kyma/components/application-broker/application-broker-generic.yaml
@@ -695,17 +699,17 @@ templates:
   - from: templates/releases.go.tmpl
     render:
       - to: ../development/tools/jobs/releases/releases.go
-#  TODO: remove when https://github.com/kyma-project/test-infra/issues/3174 is finished
-#  - from: templates/kyma-github-release.yaml
-#    render:
-#      - to: ../prow/jobs/kyma/kyma-github-release.yaml
-#        values:
-#          <<: *cluster_default
-#  - from: templates/kyma-release-candidate.yaml
-#    render:
-#      - to: ../prow/jobs/kyma/kyma-release-candidate.yaml
-#        values:
-#          <<: *cluster_default
+  #  TODO: remove when https://github.com/kyma-project/test-infra/issues/3174 is finished
+  #  - from: templates/kyma-github-release.yaml
+  #    render:
+  #      - to: ../prow/jobs/kyma/kyma-github-release.yaml
+  #        values:
+  #          <<: *cluster_default
+  #  - from: templates/kyma-release-candidate.yaml
+  #    render:
+  #      - to: ../prow/jobs/kyma/kyma-release-candidate.yaml
+  #        values:
+  #          <<: *cluster_default
   - from: templates/prow-config.yaml
     render:
       - to: ../prow/config.yaml
