@@ -5,16 +5,17 @@ import (
 )
 
 // copies values from the original jobConfig into the generated ones
-func (j *Job) appendCommonValues(repo Repo, jobConfig ConfigSet) {
+func (j *Job) appendCommonValues(repo Repo, genericJob Job) {
 
 	j.JobConfig["path_alias"] = repo.RepoName
 
 	// copy all values except path
-	for name, val := range jobConfig {
+	for name, val := range genericJob.JobConfig {
 		if name != "path" {
 			j.JobConfig[name] = val
 		}
 	}
+	j.InheritedConfigs.Local = genericJob.InheritedConfigs.Local
 }
 
 // GenerateComponentJobs generates jobs for components
@@ -36,14 +37,14 @@ func (r *RenderConfig) GenerateComponentJobs(global map[string]interface{}) {
 					// generate pre- and post-submit jobs for the next release
 					var preSubmit Job
 					preSubmit.JobConfig = make(map[string]interface{})
-					preSubmit.appendCommonValues(repo, job.JobConfig)
+					preSubmit.appendCommonValues(repo, job)
 					preSubmit.JobConfig["name"] = "pre-" + nameSuffix
 					preSubmit.InheritedConfigs.Global = append(job.InheritedConfigs.Global, "jobConfig_presubmit", "extra_refs_test-infra")
 					jobs = append(jobs, preSubmit)
 
 					var postSubmit Job
 					postSubmit.JobConfig = make(map[string]interface{})
-					postSubmit.appendCommonValues(repo, job.JobConfig)
+					postSubmit.appendCommonValues(repo, job)
 					postSubmit.JobConfig["name"] = "post-" + nameSuffix
 					postSubmit.InheritedConfigs.Global = append(job.InheritedConfigs.Global, "jobConfig_postsubmit", "extra_refs_test-infra", "disable_testgrid")
 					jobs = append(jobs, postSubmit)
@@ -58,7 +59,7 @@ func (r *RenderConfig) GenerateComponentJobs(global map[string]interface{}) {
 
 							var preSubmitRel Job
 							preSubmitRel.JobConfig = make(map[string]interface{})
-							preSubmitRel.appendCommonValues(repo, job.JobConfig)
+							preSubmitRel.appendCommonValues(repo, job)
 							preSubmitRel.JobConfig["name"] = "pre-" + nameRelease + "-" + nameSuffix
 							preSubmitRel.JobConfig["branches"] = commonRelBranches
 							preSubmitRel.JobConfig["extra_refs"] = commonExtrarefsTestInfra
@@ -70,7 +71,7 @@ func (r *RenderConfig) GenerateComponentJobs(global map[string]interface{}) {
 
 							var postSubmitRel Job
 							postSubmitRel.JobConfig = make(map[string]interface{})
-							postSubmitRel.appendCommonValues(repo, job.JobConfig)
+							postSubmitRel.appendCommonValues(repo, job)
 							postSubmitRel.JobConfig["name"] = "post-" + nameRelease + "-" + nameSuffix
 							postSubmitRel.JobConfig["branches"] = commonRelBranches
 							postSubmitRel.JobConfig["extra_refs"] = commonExtrarefsTestInfra
