@@ -47,34 +47,34 @@ templates:
         values:
           <<: *kyma_generic_component
           path: components/console-backend-service
-          since: "1.6"
+          release_since: "1.6"
       - to: ../prow/jobs/kyma/tests/console-backend-service/console-backend-service-tests-generic.yaml
         values:
           <<: *kyma_generic_component
           path: tests/console-backend-service
-          since: "1.6"
+          release_since: "1.6"
 
 ```
 
-### Component templates
+### Component jobs
+
+Component jobs are defined similarly to a regular job, with the exception that `name` field has to be empty, as it will be generated; and `path` value has to be set.
+Component job will generate presubmit and postsubmit jobs for the next release and by default, it will also generate these jobs for supported releases.
+The rest of the values will be copied from the main jobConfig to the generated ones.
+
+See the description of values used by component jobs:
+
+| Name | Required | Description |
+|------| :-------------: |------|
+| **name** | No | Name cannot be set, as it will be generated for each job. |
+| **path** | Yes | Path in a repository to the component. |
+| **release_since** | No |  Specifies the release from which this component version applies. |
+| **release_since** | No |  Specifies the release from which this component version applies. |
+| **release_since** | No |  Specifies the release till which this component version applies.  |
 
 A template receives two objects as input:
 - `Values` which contains all the values specified under `values` in the `config.yaml` file.
 - `Global` which contains values specified under `global` in the `config.yaml` file.
-
-See the description of values used by both component templates:
-
-| Name | Required | Component template(s) | Description |
-|------| :-------------: |------| ------|
-| **additionalRunIfChanged** | No | `generic-component.yaml` | Provides a list of regexps for Prow to watch in addition to `path`. Prow runs the job if it notices any changes in the specified files or folders. The default value is `[]`. |
-| **bootstrapTag** | Yes | `generic-component.yaml` | Provides the tag of the bootstrap image to use. |
-| **pushRepository** | Yes | `generic-component.yaml` | Provides the suffix of the **preset-docker-push-** label to define the GCR image location, such as `kyma`. |
-| **ReleaseBranchPattern** | No | `generic-component.yaml` | Defines the prefix pattern for the release branch for which Prow should run the release job. The default value is `^release-{supported-releases}-{component-dir-name}$`. |
-| **repository** | Yes | `generic-component.yaml` | Specifies the component's GitHub repository address, such as `github.com/kyma-project/kyma`. |
-| **resources.memory** | No | `generic-component.yaml` | Specifies the memory assigned to the job container. The default value is `1.5Gi`. |
-| **resources.cpu** | No | `generic-component.yaml` | Specifies the CPU assigned to the job container. The default value is `0.8`. |
-| **since** | Yes | `generic-component.yaml` | Specifies the release from which this component version applies. |
-| **until** | Yes | `generic-component.yaml` | Specifies the release till which this component version applies.  |
 
 All the functions from the [`sprig`](https://github.com/Masterminds/sprig) library are available in the templates. It is the same library that is used by Helm, so if you know Helm, you are already familiar with them. Also, a few additional functions are available:
 - `releaseMatches {release} {since} {until}` returns a boolean value indicating whether `release` fits in the range. Use `nil` to remove one of the bounds. For example, `releaseMatches {{ $rel }} '1.2' '1.5'` checks if the release `$rel` is not earlier than `1.2` and not later than `1.5`.

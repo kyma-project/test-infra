@@ -1,90 +1,95 @@
 package rendertemplates
 
 import (
-	"log"
 	"strings"
 )
 
-func (j *Job) appendCommonValues(r *RenderConfig) {
-	commonGlobalConfigs := []string{"jobConfig_default", "image_buildpack-golang-kubebuilder2"}
+// copies values from the original jobConfig into the generated ones
+func (j *Job) appendCommonValues(repo Repo, jobConfig ConfigSet) {
 
-	if r.Values["pushRepository"] == nil {
-		log.Fatalln("Component jobs: missing \"pushrepository\" value.")
-	}
-	commonLabels := map[string]interface{}{"preset-dind-enabled": "true", "preset-sa-gcr-push": "true", "preset-docker-push-repository-" + r.Values["pushRepository"].(string): "true"}
+	j.JobConfig["path_alias"] = repo.RepoName
 
-	commonCommand := "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-	commonArgs := []string{"/home/prow/go/src/" + r.Values["repository"].(string) + "/" + r.Values["path"].(string)}
-	var commonOptional bool
-	if r.Values["optional"] != nil {
-		commonOptional = r.Values["optional"].(bool)
+	// copy all values except path
+	for name, val := range jobConfig {
+		if name != "path" {
+			j.JobConfig[name] = val
+		}
 	}
-
-	if r.Values["additionalRunIfChanged"] == nil {
-		log.Fatalln("Component jobs: missing \"additionalRunIfChanged\" value.")
-	}
-	additionalRunIfChanged := make([]string, len(r.Values["additionalRunIfChanged"].([]interface{})))
-	for i, add := range r.Values["additionalRunIfChanged"].([]interface{}) {
-		additionalRunIfChanged[i] = add.(string)
-	}
-	commonRunIfChanged := "^" + r.Values["path"].(string) + "/|" + strings.Join(additionalRunIfChanged, "|")
-
-	j.JobConfig["command"] = commonCommand
-	j.JobConfig["args"] = commonArgs
-	j.JobConfig["labels"] = commonLabels
-	j.JobConfig["path_alias"] = r.Values["repository"]
-	j.JobConfig["run_if_changed"] = commonRunIfChanged
-	j.JobConfig["optional"] = commonOptional
-	j.InheritedConfigs.Global = commonGlobalConfigs
 }
 
 // GenerateComponentJobs generates jobs for components
-func (r *RenderConfig) GenerateComponentJobs(global map[string]interface{}, globalConfigSets map[string]ConfigSet) {
-	jobs := Repo{RepoName: r.Values["repository"].(string)}
-	repository := strings.Split(r.Values["repository"].(string), "/")[2]
-	nameSuffix := repository + "-" + strings.Replace(r.Values["path"].(string), "/", "-", -1)
+func (r *RenderConfig) GenerateComponentJobs(global map[string]interface{}) {
+	if present := len(r.JobConfigs); present > 0 {
+		for repoIndex, repo := range r.JobConfigs {
+			var jobs []Job
+			hasComponentJobs := false
 
-	var preSubmit Job
-	preSubmit.JobConfig = make(map[string]interface{})
-	preSubmit.appendCommonValues(r)
-	preSubmit.JobConfig["name"] = "pre-" + nameSuffix
-	preSubmit.InheritedConfigs.Global = append(preSubmit.InheritedConfigs.Global, "jobConfig_presubmit", "extra_refs_test-infra")
-	jobs.Jobs = append(jobs.Jobs, preSubmit)
+			for _, job := range repo.Jobs {
+				// check if the jobConfig is in expected for component jobs format
+				if job.JobConfig["name"] == nil && job.JobConfig["path"] != nil {
+					hasComponentJobs = true
+					// generate component jobs
 
-	var postSubmit Job
-	postSubmit.JobConfig = make(map[string]interface{})
-	postSubmit.appendCommonValues(r)
-	postSubmit.JobConfig["name"] = "post-" + nameSuffix
-	postSubmit.InheritedConfigs.Global = append(postSubmit.InheritedConfigs.Global, "jobConfig_postsubmit", "extra_refs_test-infra", "disable_testgrid")
-	jobs.Jobs = append(jobs.Jobs, postSubmit)
+					repository := strings.Split(repo.RepoName, "/")[2]
+					nameSuffix := repository + "-" + strings.Replace(job.JobConfig["path"].(string), "/", "-", -1)
 
-	// generate jobs for the previous releases
-	if r.Values["skipReleaseJobs"] == nil || r.Values["skipReleaseJobs"].(string) != "true" {
-		for _, currentRelease := range global["releases"].([]interface{}) {
-			rel := currentRelease.(string)
-			nameRelease := "rel" + strings.Replace(rel, ".", "", -1)
-			commonRelBranches := []string{"release-" + rel}
-			commonExtrarefsTestInfra := map[string]interface{}{"test-infra": []map[string]interface{}{{"org": "kyma-project", "repo": "test-infra", "path_alias": "github.com/kyma-project/test-infra", "base_ref": "release-" + rel}}}
+					// generate pre- and post-submit jobs for the next release
+					var preSubmit Job
+					preSubmit.JobConfig = make(map[string]interface{})
+					preSubmit.appendCommonValues(repo, job.JobConfig)
+					preSubmit.JobConfig["name"] = "pre-" + nameSuffix
+					preSubmit.InheritedConfigs.Global = append(job.InheritedConfigs.Global, "jobConfig_presubmit", "extra_refs_test-infra")
+					jobs = append(jobs, preSubmit)
 
-			var preSubmitRel Job
-			preSubmitRel.JobConfig = make(map[string]interface{})
-			preSubmitRel.appendCommonValues(r)
-			preSubmitRel.JobConfig["name"] = "pre-" + nameRelease + "-" + nameSuffix
-			preSubmitRel.JobConfig["branches"] = commonRelBranches
-			preSubmitRel.JobConfig["extra_refs"] = commonExtrarefsTestInfra
-			preSubmitRel.InheritedConfigs.Global = append(preSubmitRel.InheritedConfigs.Global, "jobConfig_presubmit")
-			jobs.Jobs = append(jobs.Jobs, preSubmitRel)
+					var postSubmit Job
+					postSubmit.JobConfig = make(map[string]interface{})
+					postSubmit.appendCommonValues(repo, job.JobConfig)
+					postSubmit.JobConfig["name"] = "post-" + nameSuffix
+					postSubmit.InheritedConfigs.Global = append(job.InheritedConfigs.Global, "jobConfig_postsubmit", "extra_refs_test-infra", "disable_testgrid")
+					jobs = append(jobs, postSubmit)
 
-			var postSubmitRel Job
-			postSubmitRel.JobConfig = make(map[string]interface{})
-			postSubmitRel.appendCommonValues(r)
-			postSubmitRel.JobConfig["name"] = "post-" + nameRelease + "-" + nameSuffix
-			postSubmitRel.JobConfig["branches"] = commonRelBranches
-			postSubmitRel.JobConfig["extra_refs"] = commonExtrarefsTestInfra
-			postSubmitRel.InheritedConfigs.Global = append(postSubmitRel.InheritedConfigs.Global, "jobConfig_postsubmit", "disable_testgrid")
-			jobs.Jobs = append(jobs.Jobs, postSubmitRel)
+					// check if we have to generate jobs for the previous supported releases
+					if job.JobConfig["skipReleaseJobs"] == nil || job.JobConfig["skipReleaseJobs"].(string) != "true" {
+						for _, currentRelease := range global["releases"].([]interface{}) {
+							rel := currentRelease.(string)
+							nameRelease := "rel" + strings.Replace(rel, ".", "", -1)
+							commonRelBranches := []string{"release-" + rel}
+							commonExtrarefsTestInfra := map[string]interface{}{"test-infra": []map[string]interface{}{{"org": "kyma-project", "repo": "test-infra", "path_alias": "github.com/kyma-project/test-infra", "base_ref": "release-" + rel}}}
+
+							var preSubmitRel Job
+							preSubmitRel.JobConfig = make(map[string]interface{})
+							preSubmitRel.appendCommonValues(repo, job.JobConfig)
+							preSubmitRel.JobConfig["name"] = "pre-" + nameRelease + "-" + nameSuffix
+							preSubmitRel.JobConfig["branches"] = commonRelBranches
+							preSubmitRel.JobConfig["extra_refs"] = commonExtrarefsTestInfra
+
+							// let MergeConfig know to which release compare against
+							preSubmitRel.JobConfig["release_current"] = rel
+							preSubmitRel.InheritedConfigs.Global = append(job.InheritedConfigs.Global, "jobConfig_presubmit")
+							jobs = append(jobs, preSubmitRel)
+
+							var postSubmitRel Job
+							postSubmitRel.JobConfig = make(map[string]interface{})
+							postSubmitRel.appendCommonValues(repo, job.JobConfig)
+							postSubmitRel.JobConfig["name"] = "post-" + nameRelease + "-" + nameSuffix
+							postSubmitRel.JobConfig["branches"] = commonRelBranches
+							postSubmitRel.JobConfig["extra_refs"] = commonExtrarefsTestInfra
+							postSubmitRel.JobConfig["release_current"] = rel
+							postSubmitRel.InheritedConfigs.Global = append(job.InheritedConfigs.Global, "jobConfig_postsubmit", "disable_testgrid")
+							jobs = append(jobs, postSubmitRel)
+						}
+					}
+				} else {
+					// append the job to the list, making it possible to mix component job definitions and regular ones
+					jobs = append(jobs, job)
+				}
+			}
+
+			// replace jobs if there were generated ones, don't change anything otherwise
+			if hasComponentJobs {
+				r.JobConfigs[repoIndex].Jobs = jobs
+			}
 		}
-	}
 
-	r.JobConfigs = append(r.JobConfigs, jobs)
+	}
 }

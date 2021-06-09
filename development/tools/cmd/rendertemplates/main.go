@@ -26,9 +26,11 @@ const (
 var (
 	configFilePath  = flag.String("config", "", "Path of the config file")
 	additionalFuncs = map[string]interface{}{
-		"hasPresubmit":  hasPresubmit,
-		"hasPostsubmit": hasPostsubmit,
-		"hasPeriodic":   hasPeriodic,
+		"matchingReleases": rt.MatchingReleases,
+		"releaseMatches":   rt.ReleaseMatches,
+		"hasPresubmit":     hasPresubmit,
+		"hasPostsubmit":    hasPostsubmit,
+		"hasPeriodic":      hasPeriodic,
 	}
 	commentSignByFileExt = map[string]sets.String{
 		"//": sets.NewString(".go"),
@@ -103,9 +105,8 @@ func renderTemplate(basePath string, templateConfig rt.TemplateConfig, config *r
 	}
 	for _, render := range templateConfig.Render {
 
-		if render.Values["repository"] != nil && render.Values["path"] != nil {
-			render.GenerateComponentJobs(config.Global, config.GlobalSets)
-		}
+		// for each jobConfig, if it doesn't contain name, generate component jobs
+		render.GenerateComponentJobs(config.Global)
 
 		render.MergeConfigs(config)
 		err = renderFileFromTemplate(basePath, templateInstance, render, config)

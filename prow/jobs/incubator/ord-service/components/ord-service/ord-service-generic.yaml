@@ -2,7 +2,7 @@
 
 
 presubmits: # runs on PRs
-  kyma-project/ord-service:
+  kyma-incubator/ord-service:
     - name: pre-ord-service-components-ord-service
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -14,7 +14,7 @@ presubmits: # runs on PRs
       run_if_changed: '^components/ord-service/|^scripts/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/ord-service
+      path_alias: github.com/kyma-incubator/ord-service
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -33,7 +33,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/ord-service/components/ord-service"
+              - "/home/prow/go/src/github.com/kyma-incubator/ord-service/components/ord-service"
             resources:
               requests:
                 memory: 1.5Gi
@@ -47,7 +47,7 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
   
 postsubmits: # runs on main
-  kyma-project/ord-service:
+  kyma-incubator/ord-service:
     - name: post-ord-service-components-ord-service
       annotations:
         testgrid-create-test-group: "false"
@@ -61,7 +61,7 @@ postsubmits: # runs on main
       run_if_changed: '^components/ord-service/|^scripts/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/ord-service
+      path_alias: github.com/kyma-incubator/ord-service
       cluster: trusted-workload
       max_concurrency: 10
       branches:
@@ -80,7 +80,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/ord-service/components/ord-service"
+              - "/home/prow/go/src/github.com/kyma-incubator/ord-service/components/ord-service"
             resources:
               requests:
                 memory: 1.5Gi

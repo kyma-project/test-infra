@@ -61,12 +61,32 @@ globalSets:
   disable_testgrid:
     annotations:
       testgrid-create-test-group: "false"
+  # generic component jobConfigs
   jobConfig_generic_component:
     labels:
       preset-dind-enabled: "true"
       preset-sa-gcr-push: "true"
-      preset-docker-push-repository-kyma: "true"
     command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+  jobConfig_generic_component_kyma:
+    labels:
+      preset-docker-push-repository-kyma: "true"
+    path_alias: "github.com/kyma-project/kyma"
+  jobConfig_generic_component_control-plane:
+    labels:
+      preset-docker-push-repository-control-plane: "true"
+    path_alias: "github.com/kyma-project/control-plane"
+  jobConfig_generic_component_busola:
+    labels:
+      preset-docker-push-repository-kyma: "true"
+    path_alias: "github.com/kyma-project/busola"
+  jobConfig_generic_component_console:
+    labels:
+      preset-docker-push-repository-kyma: "true"
+    path_alias: "github.com/kyma-project/console"
+  jobConfig_generic_component_compass:
+    labels:
+      preset-docker-push-repository-incubator: "true"
+    path_alias: "github.com/kyma-incubator/compass"
   # globalSet for prowjobs which don't inherit jobConfig_default globalSet
   pubsub_labels:
     <<: *pubsub_config

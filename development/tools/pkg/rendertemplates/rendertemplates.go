@@ -107,12 +107,14 @@ func (r *RenderConfig) MergeConfigs(config *Config) {
 					log.Fatalf("Failed merge job configset %s", err)
 				}
 
+				// get release to compare against
 				compareAgainstRelease := config.Global["nextRelease"]
 				if jobConfig["release_current"] != nil {
 					compareAgainstRelease = jobConfig["release_current"]
 				}
 
-				if releaseMatches(compareAgainstRelease, jobConfig["release_since"], jobConfig["release_until"]) {
+				// add job only if it falls between release_since and release_until values
+				if ReleaseMatches(compareAgainstRelease, jobConfig["release_since"], jobConfig["release_until"]) {
 					r.JobConfigs[repoIndex].Jobs[jobIndex].JobConfig = jobConfig
 				}
 			}
@@ -139,17 +141,19 @@ func (j *ConfigSet) mergeConfigSet(configSet ConfigSet) error {
 	return nil
 }
 
-func matchingReleases(allReleases []interface{}, since interface{}, until interface{}) []interface{} {
+// MatchingReleases filters releases list against since and until releases
+func MatchingReleases(allReleases []interface{}, since interface{}, until interface{}) []interface{} {
 	result := make([]interface{}, 0)
 	for _, rel := range allReleases {
-		if releaseMatches(rel, since, until) {
+		if ReleaseMatches(rel, since, until) {
 			result = append(result, rel)
 		}
 	}
 	return result
 }
 
-func releaseMatches(rel interface{}, since interface{}, until interface{}) bool {
+// ReleaseMatches checks if the release falls between since and until releases
+func ReleaseMatches(rel interface{}, since interface{}, until interface{}) bool {
 	relVer := semver.MustParse(rel.(string))
 	if since != nil && relVer.Compare(semver.MustParse(since.(string))) < 0 {
 		return false
