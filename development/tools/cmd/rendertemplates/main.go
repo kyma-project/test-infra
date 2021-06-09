@@ -105,7 +105,7 @@ func renderTemplate(basePath string, templateConfig rt.TemplateConfig, config *r
 	}
 	for _, render := range templateConfig.Render {
 
-		// for each jobConfig, if it doesn't contain name, generate component jobs
+		// check if there are any component jobs and generate final component jobs if necessary
 		render.GenerateComponentJobs(config.Global)
 
 		render.MergeConfigs(config)
