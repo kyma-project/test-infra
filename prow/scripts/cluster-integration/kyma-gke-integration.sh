@@ -140,20 +140,10 @@ export CLEANUP_GATEWAY_DNS_RECORD="true"
 
 log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
 gcloud::create_network "$GCLOUD_NETWORK_NAME" "$GCLOUD_SUBNET_NAME"
-
 log::banner "Provision cluster: \"${CLUSTER_NAME}\""
-if [ -z "$MACHINE_TYPE" ]; then
-      export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
-fi
 
 # if GKE_RELEASE_CHANNEL is set, get latest possible cluster version
 gcloud::set_latest_cluster_version_for_channel
-
-# serverless tests are failing when are running on a cluster with contianerD
-if [[ "${GKE_RELEASE_CHANNEL}" == "rapid" ]]; then
-  # set image type to the image that uses docker instead of containerD
-  export IMAGE_TYPE="cos"
-fi
 
 gcloud::provision_gke_cluster "$CLUSTER_NAME"
 export CLEANUP_CLUSTER="true"
