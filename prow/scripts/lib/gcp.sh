@@ -7,64 +7,134 @@ source "${LIBDIR}/log.sh"
 source "${LIBDIR}/utils.sh"
 
 # gcloud::provision_gke_cluster creates a GKE cluster
-# For switch parameters look up the code below.
-#
-# Required exported variables:
-# GCLOUD_COMPUTE_ZONE - zone in which the new cluster will be created
-# GCLOUD_PROJECT_NAME - name of GCP project
-# GKE_CLUSTER_VERSION - GKE cluster version
 #
 # Arguments:
+#
 # Required arguments:
-# $1 - GKE cluster name
-# $2 - GCP project name
-# $3 - GKE cluster version
-# $ - path to test-infra sources
+# c - GKE cluster name
+# p - GCP project name
+# v - GKE cluster version
+# j - prowjob name
+# J - prowjob id
 #
 # Optional arguments:
-# $3
-# $2 - optional additional labels for the cluster
+# l - optional additional labels for the cluster
+# t - cluster ttl hours, default 3
+# z - zone in which the new zonal cluster will be created, default europe-west4-b
+# m - machine type to use in a cluster, default n1-standard-4
+# R - region in which the new regional cluster will be created, default europe-west4
+# n - cluster worker nodes count, for regional clusters it's per zone count
+# N - gcp network name which use for new cluster, default default
+# S - gcp subnet name which use for new cluster
+# C - release channel to use for new cluster
+# i - cluster node vm image type to use for new cluster
+# g - gcp security group domain to use for new cluster GCLOUD_SECURITY_GROUP_DOMAIN
+# r - it true provision regional cluster
+# s - if true enable using stackdriver for new cluster
+# D - if true enable using ssd disks for new cluster
+# e - if true enable pod security policy for new cluster
+# P - path to test-infra sources
 function gcp::provision_gke_cluster {
-    # check required arguments
-    utils::check_empty_arg "$1" "Cluster name not provided."
-    utils::check_empty_arg "$2" "GCP project name not provided."
-    utils::check_empty_arg "$3" "GKE cluster version not provided."
-    utils::check_empty_arg "$" "Path to test-infra repo sources not provided."
-
-
-    # name arguments
-    local clusterName="$1"
-    local gcpProjectName="$2"
-    local gkeClusterVersion="$3"
-    local testInfraSourcesDir="$"
-    local additionalLabels=$
 
     # default values
+    local clusterName
+    local gcpProjectName
+    local gkeClusterVersion
+    local additionalLabels
+    local prowjobName
+    local prowjobID
+    local ttlHours="3"
+    local computeZone="europe-west4-b"
+    local machineType="n1-standard-4"
+    local computeRegion="europe-west4"
+    local numNodes="3"
+    local nodesPerZone="1"
+    local networkNameDefault="default"
+    local provisionRegionalCluster="false"
+    local enableSSD="false"
+    local enablePSP="false"
+    local enableStackdriver="false"
     local currentTimestampReadableParam
     local currentTimestampParam
     readonly currentTimestampReadableParam=$(date +%Y%m%d)
     readonly currentTimestampParam=$(date +%s)
-    local ttlHoursParam="3"
-    local machineTypeParam="n1-standard-4"
-    local numNodesParam="3"
-    local nodesPerZoneParam="1"
-    local networkParam="default"
-    local computeZoneParam="europe-west4-b"
-    local computeRegionParam="europe-west4"
+    local testInfraSourcesDir="/home/prow/go/src/github.com/kyma-project"
+
+
+    while getopts ":c:p:v:l:t:z:m:R:n:N:S:C:i:g:r:s:D:e:P:j:J:" opt; do
+        case $opt in
+            c)
+                clusterName="$OPTARG" ;;
+            p)
+                gcpProjectName="$OPTARG" ;;
+            v)
+                gkeClusterVersion="$OPTARG" ;;
+            l)
+                additionalLabels="$OPTARG" ;;
+            j)
+                prowjobName="$OPTARG";;
+            J)
+                prowjobID="$OPTARG";;
+            t)
+                ttlHours="$OPTARG" ;;
+            z)
+                computeZone="$OPTARG" ;;
+            m)
+                machineType="$OPTARG" ;;
+            R)
+                computeRegion="$OPTARG" ;;
+            n)
+                local nodesCount="$OPTARG" ;;
+            N)
+                local networkName="$OPTARG" ;;
+            S)
+                local subnetName="$OPTARG" ;;
+            C)
+                local gkeReleaseChannel="$OPTARG" ;;
+            i)
+                local imageType="$OPTARG" ;;
+            g)
+                local gcpSecurityGroupDomain="$OPTARG" ;;
+            r)
+                provisionRegionalCluster="$OPTARG" ;;
+            s)
+                enableStackdriver="$OPTARG" ;;
+            D)
+                enableSSD="$OPTARG" ;;
+            e)
+                enablePSP="$OPTARG" ;;
+            P)
+                testInfraSourcesDir="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+
+    done
+
+
+    # check required arguments
+    utils::check_empty_arg "$clusterName" "Cluster name not provided."
+    utils::check_empty_arg "$gcpProjectName" "GCP project name not provided."
+    utils::check_empty_arg "$gkeClusterVersion" "GKE cluster version not provided."
+    utils::check_empty_arg "$prowjobName" "prowjob name not provided."
+    utils::check_empty_arg "$prowjobID" "prowjob ID not provided."
+
     local kubeDnsPatchPath="$testInfraSourcesDir/prow/scripts/resources/kube-dns-stub-domains-patch.yaml"
     local params
 
     # mandatory labels
-    local cleanerLabels="created-at=$currentTimestampParam,created-at-readable=$currentTimestampReadableParam,ttl=${TTL_HOURS:-$ttlHoursParam}"
-    local jobLabels="job=$JOB_NAME,job-id=$PROW_JOB_ID"
+    local cleanerLabels="created-at=$currentTimestampParam,created-at-readable=$currentTimestampReadableParam,ttl=$ttlHours"
+    local jobLabels="job=$prowjobName,job-id=$prowjobID"
     local clusterLabels="cluster=$clusterName,volatile=true"
 
     # optional labels
-    if [ "${additionalLabels}" ]; then
-        additionalLabels=",${additionalLabels}"
+    if [ "$additionalLabels" ]; then
+        additionalLabels=",$additionalLabels"
     fi
 
-    # build lables parameter value
+    # build labels parameter value
     local labels="$jobLabels,"
     labels+="$clusterLabels,"
     labels+="$cleanerLabels"
@@ -78,42 +148,42 @@ function gcp::provision_gke_cluster {
     params+=("--labels=$labels")
 
     # Conditional parameters
-    params+=("--machine-type=${MACHINE_TYPE:-$machineTypeParam}")
-    if [ "${PROVISION_REGIONAL_CLUSTER}" ] ; then
-        params+=("--region=${CLOUDSDK_COMPUTE_REGION:-$computeRegionParam}")
-        params+=("--num-nodes=${NODES_PER_ZONE:-$nodesPerZoneParam}")
+    params+=("--machine-type=$machineType")
+    if [ "$provisionRegionalCluster" = "true" ] ; then
+        params+=("--region=$computeRegion")
+        params+=("--num-nodes=${nodesCount:-$nodesPerZone}")
     else
-        params+=("--zone=${GCLOUD_COMPUTE_ZONE:-$computeZoneParam}")
-        params+=("--num-nodes=${NUM_NODES:-$numNodesParam}")
+        params+=("--zone=$computeZone")
+        params+=("--num-nodes=${nodesCount:-$numNodes}")
     fi
-    if [ "${GCLOUD_NETWORK_NAME}" ] && [ "${GCLOUD_SUBNET_NAME}" ]; then
-        params+=("--network=${GCLOUD_NETWORK_NAME}")
-        params+=("--subnetwork=${GCLOUD_SUBNET_NAME}")
+    if [ "$networkName" ] && [ "$subnetName" ]; then
+        params+=("--network=$networkName")
+        params+=("--subnetwork=$subnetName")
     else
-        params+=("--network=${GCLOUD_NETWORK_NAME:-$networkParam}")
+        params+=("--network=${networkName:-$networkNameDefault}")
     fi
 
     # Optional parameters
-    if [ "${GKE_RELEASE_CHANNEL}" ]; then
-        params+=("--release-channel=${GKE_RELEASE_CHANNEL}")
+    if [ "$gkeReleaseChannel" ]; then
+        params+=("--release-channel=$gkeReleaseChannel")
     fi
     # serverless tests are failing when are running on a cluster with contianerD
-    if [[ "${GKE_RELEASE_CHANNEL}" == "rapid" ]]; then
+    if [[ "$gkeReleaseChannel" == "rapid" ]]; then
         # set image type to the image that uses docker instead of containerD
         params+=("--image-type=cos")
-    elif [ "${IMAGE_TYPE}" ]; then
-        params+=("--image-type=${IMAGE_TYPE}")
+    elif [ "$imageType" ]; then
+        params+=("--image-type=$imageType")
     fi
-    if [ "${STACKDRIVER_KUBERNETES}" ]; then
+    if [ "$enableStackdriver" = "true" ]; then
         params+=("--enable-stackdriver-kubernetes")
     fi
-    if [ "${CLUSTER_USE_SSD}" ]; then
+    if [ "$enableSSD" = "true" ]; then
         params+=("--disk-type=pd-ssd")
     fi
-    if [ "${GCLOUD_SECURITY_GROUP_DOMAIN}" ]; then
-        params+=("--security-group=gke-security-groups@${GCLOUD_SECURITY_GROUP_DOMAIN}")
+    if [ "$gcpSecurityGroupDomain" ]; then
+        params+=("--security-group=gke-security-groups@$gcpSecurityGroupDomain")
     fi
-    if [ "${GKE_ENABLE_POD_SECURITY_POLICY}" ]; then
+    if [ "$enablePSP" = "true" ]; then
         params+=("--enable-pod-security-policy")
     fi
 
@@ -137,4 +207,16 @@ function gcp::provision_gke_cluster {
 
     # run oom debug pod
     utils::debug_oom
+}
+
+
+# gcloud::authenticate authenticates to gcloud.
+# Arguments:
+# $1 - google login credentials
+function gcp::authenticate() {
+    log::info "Authenticating to gcloud"
+    if [[ -z "$1" ]]; then
+      log::error "Missing account credentials, please provide proper credentials"
+    fi
+    gcloud auth activate-service-account --key-file "${1}" || exit 1
 }

@@ -450,3 +450,52 @@ function utils::check_empty_arg() {
         exit 1
     fi
 }
+
+function utils::set_vars_for_build() {
+
+    local buildType
+
+    while getopts ":b:p:s:" opt; do
+        case $opt in
+            b)
+                buildType="$OPTARG" ;;
+            p)
+                local prNumber="$OPTARG" ;;
+            s)
+                local prBaseSha="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+   done
+
+   # check required arguments
+    utils::check_empty_arg "$buildType" "Build type not provided."
+    if [ "$buildType" = "pr" ]; then
+        utils::check_empty_arg "$prNumber" "Pull request number not provided."
+    fi
+    if [ "$buildType" = "commit" ]; then
+        utils::check_empty_arg "$prBaseSha" "Pull request base sha not provided."
+    fi
+
+    # In case of PR, operate on PR number
+    if [[ "$buildType" == "pr" ]]; then
+        readonly commonNamePrefix="pr"
+        utils::generate_commonName "$commonNamePrefix" "$prNumber"
+        export KYMA_SOURCE="PR-$prNumber"
+    elif [[ "$buildType" == "release" ]]; then
+        readonly commonNamePrefix="rel"
+        readonly releaseVersion=$(cat "VERSION")
+        utils::generate_commonName "$commonNamePrefix"
+        log::info "Reading release version from RELEASE_VERSION file, got: $releaseVersion"
+        export KYMA_SOURCE="$releaseVersion"
+    # Otherwise (master), operate on triggering commit id
+    else
+        readonly commonNamePrefix="commit"
+        readonly commitID="${prBaseSha::8}"
+        utils::generate_commonName "$commonNamePrefix" "$commitID"
+        export KYMA_SOURCE="$commitID"
+        export KYMA_INSTALLER_IMAGE
+    fi
+}
