@@ -191,6 +191,15 @@ fi
 if [ -z "$COMMON_NAME_PREFIX" ] ; then
     COMMON_NAME_PREFIX="n"
 fi
+
+if [[ $LETSENCRYPT_LIMITS_PROTECTION == "true" ]]; then
+    log::info "Letsencrypt limit protection enabled"
+    log::info "Old COMMON_NAME_PREFIX: ${COMMON_NAME_PREFIX}"
+    DAY_OF_THE_WEEK=$(date +'%u')
+    COMMON_NAME_PREFIX="${COMMON_NAME_PREFIX}${DAY_OF_THE_WEEK}"
+    log::info "New COMMON_NAME_PREFIX: ${COMMON_NAME_PREFIX}"
+fi
+
 readonly KYMA_NAME_SUFFIX="kyma"
 readonly BUSOLA_NAME_SUFFIX="busola"
 

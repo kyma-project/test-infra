@@ -1048,3 +1048,8 @@ presets:
           secretKeyRef:
             name: skr-al-secret-key
             key: secret.json
+  - labels:
+      preset-kyma-periodic-nightly-letsencypt-protection: "true"
+    env:
+    - name: LETSENCRYPT_LIMITS_PROTECTION
+      value: "true"
