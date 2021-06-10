@@ -14,7 +14,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_busola"
       - to: ../prow/jobs/busola/busola-service-catalog-ui/busola-service-catalog-ui.yaml
@@ -30,7 +30,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_busola"
       - to: ../prow/jobs/busola/busola-core/busola-core.yaml
@@ -46,7 +46,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_busola"
       - to: ../prow/jobs/busola/busola-backend/busola-backend.yaml
@@ -62,6 +62,6 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_busola"

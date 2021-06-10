@@ -16,7 +16,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_compass"
       - to: ../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
@@ -34,7 +34,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_compass"
       - to: ../prow/jobs/incubator/compass/components/director/director-generic.yaml
@@ -52,7 +52,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_compass"
       - to: ../prow/jobs/incubator/ord-service/components/ord-service/ord-service-generic.yaml
@@ -71,7 +71,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_compass"
       - to: ../prow/jobs/incubator/compass/components/tenant-fetcher/tenant-fetcher-generic.yaml
@@ -89,7 +89,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_compass"
       - to: ../prow/jobs/incubator/compass/components/system-broker/system-broker-generic.yaml
@@ -107,7 +107,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_compass"
       - to: ../prow/jobs/incubator/compass-console/compass/compass-ui.yaml
@@ -125,7 +125,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_compass"
       - to: ../prow/jobs/incubator/compass/components/external-services-mock/external-services-mock-generic.yaml
@@ -143,7 +143,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_compass"
       - to: ../prow/jobs/incubator/compass/components/connectivity-adapter/connectivity-adapter-generic.yaml
@@ -161,7 +161,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_compass"
       - to: ../prow/jobs/incubator/compass/components/pairing-adapter/pairing-adapter-generic.yaml
@@ -179,7 +179,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_compass"
       - to: ../prow/jobs/incubator/compass/components/gateway/gateway-generic.yaml
@@ -197,7 +197,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_compass"
       - to: ../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-generic.yaml
@@ -215,7 +215,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_compass"
       - to: ../prow/jobs/incubator/compass/tests/compass-e2e-tests/compass-e2e-tests.yaml
@@ -233,6 +233,6 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_compass"

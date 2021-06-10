@@ -14,7 +14,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/application-connectivity-certs-setup-job/application-connectivity-certs-setup-job-generic.yaml
@@ -30,7 +30,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/application-connectivity-validator/application-connectivity-validator-generic.yaml
@@ -46,7 +46,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/application-gateway/application-gateway-generic.yaml
@@ -62,7 +62,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/application-operator/application-operator-generic.yaml
@@ -78,7 +78,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/application-registry/application-registry-generic.yaml
@@ -94,7 +94,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/compass-runtime-agent/compass-runtime-agent-generic.yaml
@@ -110,7 +110,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/connection-token-handler/connection-token-handler-generic.yaml
@@ -126,7 +126,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/connector-service/connector-service-generic.yaml
@@ -142,7 +142,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/console-backend-service/console-backend-service-generic.yaml
@@ -158,7 +158,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/kyma-operator/kyma-operator-generic.yaml
@@ -174,7 +174,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/service-binding-usage-controller/service-binding-usage-controller-generic.yaml
@@ -190,7 +190,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/uaa-activator/uaa-activator-generic.yaml
@@ -206,7 +206,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/tests/service-catalog/service-catalog-tests-generic.yaml
@@ -222,7 +222,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/tests/application-connector-tests/application-connector-tests-generic.yaml
@@ -238,7 +238,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/tests/application-gateway-tests/application-gateway-tests-generic.yaml
@@ -254,7 +254,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/tests/application-gateway-legacy-tests/application-gateway-legacy-tests-generic.yaml
@@ -270,7 +270,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/tests/application-operator-tests/application-operator-tests-generic.yaml
@@ -286,7 +286,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/tests/application-registry-tests/application-registry-tests-generic.yaml
@@ -302,7 +302,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/tests/compass-runtime-agent/compass-runtime-agent-tests-generic.yaml
@@ -318,7 +318,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/tests/connection-token-handler-tests/connection-token-handler-tests-generic.yaml
@@ -334,7 +334,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/tests/connector-service-tests/connector-service-tests-generic.yaml
@@ -350,7 +350,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/tests/end-to-end/upgrade/upgrade-tests-generic.yaml
@@ -366,7 +366,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/tests/end-to-end/external-solution-integration/external-solution-integration-tests-generic.yaml
@@ -383,7 +383,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/apiserver-proxy/apiserver-proxy-generic.yaml
@@ -399,7 +399,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/iam-kubeconfig-service/iam-kubeconfig-service-generic.yaml
@@ -415,7 +415,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/xip-patch/xip-patch-generic.yaml
@@ -431,7 +431,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/dex-static-user-configurer/dex-static-user-configurer-generic.yaml
@@ -447,7 +447,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/istio-installer/istio-installer-generic.yaml
@@ -463,7 +463,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/tests/integration/dex/dex-tests-generic.yaml
@@ -479,7 +479,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/tests/integration/apiserver-proxy/apiserver-proxy-tests-generic.yaml
@@ -495,7 +495,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/tests/integration/logging/logging-generic.yaml
@@ -511,7 +511,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/tools/event-subscriber/event-subscriber-generic.yaml
@@ -528,7 +528,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/tests/integration/api-gateway/api-gateway-tests-generic.yaml
@@ -544,7 +544,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/event-service/event-service-generic.yaml
@@ -560,7 +560,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/tests/integration/event-service/event-service-tests-generic.yaml
@@ -576,7 +576,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/event-sources/event-sources-generic.yaml
@@ -593,7 +593,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/event-publisher-proxy/event-publisher-proxy-generic.yaml
@@ -609,7 +609,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/eventing-controller/eventing-controller-generic.yaml
@@ -625,7 +625,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/nats-operator/nats-operator-generic.yaml
@@ -641,7 +641,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/nats-init/nats-init-generic.yaml
@@ -659,7 +659,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/function-controller/function-controller-generic.yaml
@@ -675,7 +675,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/tests/function-controller/function-controller-tests-generic.yaml
@@ -691,7 +691,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/function-runtimes/function-runtimes-generic.yaml
@@ -707,7 +707,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/tests/contract/knative-channel-kafka/knative-channel-kafka-tests-generic.yaml
@@ -724,7 +724,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/tests/rafter/rafter-tests-generic.yaml
@@ -740,7 +740,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/permission-controller/permission-controller-generic.yaml
@@ -756,7 +756,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/busola-migrator/busola-migrator-generic.yaml
@@ -773,7 +773,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/central-application-gateway/central-application-gateway-generic.yaml
@@ -790,7 +790,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
       - to: ../prow/jobs/kyma/components/central-application-connectivity-validator/central-application-connectivity-validator-generic.yaml
@@ -807,6 +807,6 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"

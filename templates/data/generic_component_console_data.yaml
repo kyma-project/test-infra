@@ -14,7 +14,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_console"
       - to: ../prow/jobs/console/add-ons/add-ons.yaml
@@ -30,7 +30,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_console"
       - to: ../prow/jobs/console/service-catalog-ui/service-catalog-ui.yaml
@@ -46,7 +46,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_console"
       - to: ../prow/jobs/console/logging/console-logging.yaml
@@ -62,7 +62,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_console"
       - to: ../prow/jobs/console/tests/tests.yaml
@@ -78,7 +78,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_console"
       - to: ../prow/jobs/console/core/core.yaml
@@ -94,6 +94,6 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_console"

@@ -20,7 +20,7 @@ var components = []struct {
 }{
 	{
 		name:  "connector",
-		image: tester.ImageGolangKubebuilder2BuildpackLatest,
+		image: tester.ImageGolangBuildpack1_16,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -30,7 +30,7 @@ var components = []struct {
 	},
 	{
 		name:  "director",
-		image: tester.ImageGolangKubebuilder2BuildpackLatest,
+		image: tester.ImageGolangBuildpack1_16,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -40,7 +40,7 @@ var components = []struct {
 	},
 	{
 		name:  "gateway",
-		image: tester.ImageGolangKubebuilder2BuildpackLatest,
+		image: tester.ImageGolangBuildpack1_16,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -50,7 +50,7 @@ var components = []struct {
 	},
 	{
 		name:  "schema-migrator",
-		image: tester.ImageGolangKubebuilder2BuildpackLatest,
+		image: tester.ImageGolangBuildpack1_16,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -60,7 +60,7 @@ var components = []struct {
 	},
 	{
 		name:  "connectivity-adapter",
-		image: tester.ImageGolangKubebuilder2BuildpackLatest,
+		image: tester.ImageGolangBuildpack1_16,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -69,7 +69,7 @@ var components = []struct {
 	},
 	{
 		name:  "pairing-adapter",
-		image: tester.ImageGolangKubebuilder2BuildpackLatest,
+		image: tester.ImageGolangBuildpack1_16,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -79,7 +79,7 @@ var components = []struct {
 	},
 	{
 		name:  "external-services-mock",
-		image: tester.ImageGolangKubebuilder2BuildpackLatest,
+		image: tester.ImageGolangBuildpack1_16,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -89,7 +89,7 @@ var components = []struct {
 	},
 	{
 		name:  "tenant-fetcher",
-		image: tester.ImageGolangKubebuilder2BuildpackLatest,
+		image: tester.ImageGolangBuildpack1_16,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -99,7 +99,7 @@ var components = []struct {
 	},
 	{
 		name:  "system-broker",
-		image: tester.ImageGolangKubebuilder2BuildpackLatest,
+		image: tester.ImageGolangBuildpack1_16,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -109,7 +109,7 @@ var components = []struct {
 	},
 	{
 		name:  "compass-console",
-		image: tester.ImageGolangKubebuilder2BuildpackLatest,
+		image: tester.ImageGolangBuildpack1_16,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			func(suite *jobsuite.Config) {
@@ -122,7 +122,7 @@ var components = []struct {
 	},
 	{
 		name:  "ord-service",
-		image: tester.ImageGolangKubebuilder2BuildpackLatest,
+		image: tester.ImageGolangBuildpack1_16,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			func(suite *jobsuite.Config) {
@@ -135,7 +135,7 @@ var components = []struct {
 	},
 	{
 		name:  "operations-controller",
-		image: tester.ImageGolangKubebuilder2BuildpackLatest,
+		image: tester.ImageGolangBuildpack1_16,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
