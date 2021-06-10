@@ -31,6 +31,6 @@ kyma provision gardener gcp \
 
 log::info "Cluster provisioned. Now deleting it..."
 
-CLEANUP_CLUSTER="true" gardener::deprovision_cluster "${GARDENER_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KUBECONFIG}"
+gardener::deprovision_cluster "${GARDENER_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KUBECONFIG}"
 
 log::success "Done! See you next time!"

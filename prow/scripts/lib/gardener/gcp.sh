@@ -50,33 +50,6 @@ gardener::cleanup() {
 }
 
 
-#function gardener::deprovision_cluster() {
-#  if [ -z "$1" ]; then
-#    echo "Project name is empty. Exiting..."
-#    exit 1
-#  fi
-#  if [ -z "$2" ]; then
-#    echo "Cluster name is empty. Exiting..."
-#    exit 1
-#  fi
-#  if [ -z "$3" ]; then
-#    echo "Kubeconfig path is empty. Exiting..."
-#    exit 1
-#  fi
-#  if [ -n "${CLEANUP_CLUSTER}" ]; then
-#    log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
-#    GARDENER_PROJECT_NAME=$1
-#    GARDENER_CLUSTER_NAME=$2
-#    GARDENER_CREDENTIALS=$3
-#
-#    local NAMESPACE="garden-${GARDENER_PROJECT_NAME}"
-#
-#    kubectl --kubeconfig "${GARDENER_CREDENTIALS}" -n "${NAMESPACE}" annotate shoot "${GARDENER_CLUSTER_NAME}" confirmation.gardener.cloud/deletion=true --overwrite
-#    kubectl --kubeconfig "${GARDENER_CREDENTIALS}" -n "${NAMESPACE}" delete shoot "${GARDENER_CLUSTER_NAME}" --wait=false
-#  fi
-#}
-
-
 gardener::init() {
     requiredVars=(
         KYMA_PROJECT_DIR

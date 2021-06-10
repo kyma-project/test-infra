@@ -18,17 +18,15 @@ function gardener::deprovision_cluster() {
     echo "Kubeconfig path is empty. Exiting..."
     exit 1
   fi
-  if [ -n "${CLEANUP_CLUSTER}" ]; then
-    log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
-    GARDENER_PROJECT_NAME=$1
-    GARDENER_CLUSTER_NAME=$2
-    GARDENER_CREDENTIALS=$3
+  log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
+  GARDENER_PROJECT_NAME=$1
+  GARDENER_CLUSTER_NAME=$2
+  GARDENER_CREDENTIALS=$3
 
-    local NAMESPACE="garden-${GARDENER_PROJECT_NAME}"
+  local NAMESPACE="garden-${GARDENER_PROJECT_NAME}"
 
-    kubectl --kubeconfig "${GARDENER_CREDENTIALS}" -n "${NAMESPACE}" annotate shoot "${GARDENER_CLUSTER_NAME}" confirmation.gardener.cloud/deletion=true --overwrite
-    kubectl --kubeconfig "${GARDENER_CREDENTIALS}" -n "${NAMESPACE}" delete shoot "${GARDENER_CLUSTER_NAME}" --wait=false
-  fi
+  kubectl --kubeconfig "${GARDENER_CREDENTIALS}" -n "${NAMESPACE}" annotate shoot "${GARDENER_CLUSTER_NAME}" confirmation.gardener.cloud/deletion=true --overwrite
+  kubectl --kubeconfig "${GARDENER_CREDENTIALS}" -n "${NAMESPACE}" delete shoot "${GARDENER_CLUSTER_NAME}" --wait=false
 }
 
 
