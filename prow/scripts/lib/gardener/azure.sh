@@ -141,8 +141,10 @@ gardener::provision_cluster() {
     fi
     # trap cleanup we want other errors fail pipeline immediately
     trap - ERR
+    if [ "$DEBUG_COMMANDO_OOM" = "true" ]; then
     # run oom debug pod
-    utils::debug_oom
+        utils::debug_oom
+    fi
 }
 
 gardener::install_kyma() {
