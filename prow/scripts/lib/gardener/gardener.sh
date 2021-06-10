@@ -18,15 +18,21 @@ function gardener::deprovision_cluster() {
     echo "Kubeconfig path is empty. Exiting..."
     exit 1
   fi
-  log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
+  log::info "Deprovision cluster: ${CLUSTER_NAME}"
   GARDENER_PROJECT_NAME=$1
   GARDENER_CLUSTER_NAME=$2
   GARDENER_CREDENTIALS=$3
 
   local NAMESPACE="garden-${GARDENER_PROJECT_NAME}"
 
-  kubectl --kubeconfig "${GARDENER_CREDENTIALS}" -n "${NAMESPACE}" annotate shoot "${GARDENER_CLUSTER_NAME}" confirmation.gardener.cloud/deletion=true --overwrite
-  kubectl --kubeconfig "${GARDENER_CREDENTIALS}" -n "${NAMESPACE}" delete shoot "${GARDENER_CLUSTER_NAME}" --wait=false
+  kubectl annotate shoot "${GARDENER_CLUSTER_NAME}" confirmation.gardener.cloud/deletion=true \
+    --overwrite \
+    -n "${NAMESPACE}" \
+    --kubeconfig "${GARDENER_CREDENTIALS}"
+  kubectl delete shoot "${GARDENER_CLUSTER_NAME}" \
+    --wait=false \
+    --kubeconfig "${GARDENER_CREDENTIALS}" \
+    -n "${NAMESPACE}"
 }
 
 
@@ -35,7 +41,7 @@ function gardener::deprovision_cluster() {
 gardener::reprovision_cluster() {
     log::info "cluster provisioning failed, trying provision new cluster"
     log::info "cleaning damaged cluster first"
-    CLEANUP_CLUSTER="true" gardener::deprovision_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
+    gardener::deprovision_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
     log::info "building new cluster name"
     utils::generate_commonName "${COMMON_NAME_PREFIX}"
     CLUSTER_NAME="${COMMON_NAME}"
