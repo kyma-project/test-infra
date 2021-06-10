@@ -526,6 +526,7 @@ templates:
                     preset-log-collector-slack-token: "true"
                     preset-recreate-cluster: "true"
                     preset-execute-fast-integration-tests: "true"
+                    preset-kyma-periodic-nightly-letsencypt-protection: "true"
                   env:
                     COMMON_NAME_PREFIX: "np"
                 inheritedConfigs:
@@ -551,6 +552,7 @@ templates:
                     preset-busola-nightly-provision-type-kyma: "true"
                     preset-log-collector-slack-token: "true"
                     preset-execute-fast-integration-tests: "true"
+                    preset-kyma-periodic-nightly-letsencypt-protection: "true"
                   env:
                     COMMON_NAME_PREFIX: "np"
                 inheritedConfigs:
