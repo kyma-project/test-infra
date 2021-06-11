@@ -5,7 +5,7 @@ set -o pipefail
 
 LOCAL_KYMA_DIR="./local-kyma"
 K3S_DOMAIN="local.kyma.dev"
-CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included:7.3.0"
+CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included:7.5.0"
 
 # pull the large image in the background to save some time
 # docker pull --quiet $CYPRESS_IMAGE &
@@ -121,6 +121,7 @@ kubectl wait \
 --timeout=120s
 
 cp "$PWD/kubeconfig-kyma.yaml" "$PWD/busola-tests/fixtures/kubeconfig.yaml"
+mkdir -p "$PWD/busola-tests/cypress/screenshots"
 
 echo "STEP: Running Cypress tests inside Docker"
 docker run --entrypoint /bin/bash --network=host -v "$PWD/busola-tests:/tests" -w /tests $CYPRESS_IMAGE -c "npm ci --no-optional; NO_COLOR=1 cypress run --browser chrome --headless"
