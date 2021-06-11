@@ -301,14 +301,14 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-api-gateway.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
             env:
+              - name: API_GATEWAY_INTEGRATION
+                value: "true"
               - name: GARDENER_REGION
                 value: "europe-west4"
               - name: GARDENER_ZONES
                 value: "europe-west4-b"
-              - name: KYMA_ALPHA
-                value: "true"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:
@@ -558,14 +558,14 @@ postsubmits: # runs on main
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-api-gateway.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
             env:
+              - name: API_GATEWAY_INTEGRATION
+                value: "true"
               - name: GARDENER_REGION
                 value: "europe-west4"
               - name: GARDENER_ZONES
                 value: "europe-west4-b"
-              - name: KYMA_ALPHA
-                value: "true"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:

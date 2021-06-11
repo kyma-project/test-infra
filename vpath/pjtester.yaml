@@ -1,0 +1,3 @@
+pjNames:
+  - pjName: "pre-main-kyma-gardener-gcp-api-gateway"
+  - pjName: "post-main-kyma-gardener-gcp-api-gateway"
