@@ -41,6 +41,16 @@ presubmits: # runs on PRs
       branches:
         - ^main$
     
+    - name: pre-rel124-busola-backend
+      cluster: untrusted-workload
+      optional: false
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.24
+      branches:
+        - release-1.24
+    
     - name: pre-rel123-busola-backend
       cluster: untrusted-workload
       optional: false
@@ -61,16 +71,6 @@ presubmits: # runs on PRs
       branches:
         - release-1.22
     
-    - name: pre-rel121-busola-backend
-      cluster: untrusted-workload
-      optional: false
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.21
-      branches:
-        - release-1.21
-    
 
 postsubmits:
   kyma-project/busola:
@@ -85,6 +85,17 @@ postsubmits:
       branches:
       - ^main$
       
+    - name: post-rel124-busola-backend
+      cluster: trusted-workload
+      annotations:
+        testgrid-create-test-group: "false"
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.24
+      branches:
+        - release-1.24
+    
     - name: post-rel123-busola-backend
       cluster: trusted-workload
       annotations:
@@ -106,15 +117,4 @@ postsubmits:
           base_ref: release-1.22
       branches:
         - release-1.22
-    
-    - name: post-rel121-busola-backend
-      cluster: trusted-workload
-      annotations:
-        testgrid-create-test-group: "false"
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.21
-      branches:
-        - release-1.21
     

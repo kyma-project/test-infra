@@ -42,6 +42,16 @@ presubmits: # runs on PRs
         - ^master$
         - ^main$
     
+    - name: pre-rel124-control-plane-components-kyma-metrics-collector
+      cluster: untrusted-workload
+      optional: false
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.24
+      branches:
+        - release-1.24
+    
     - name: pre-rel123-control-plane-components-kyma-metrics-collector
       cluster: untrusted-workload
       optional: false
@@ -77,6 +87,17 @@ postsubmits:
       - ^master$
       - ^main$
       
+    - name: post-rel124-control-plane-components-kyma-metrics-collector
+      cluster: trusted-workload
+      annotations:
+        testgrid-create-test-group: "false"
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.24
+      branches:
+        - release-1.24
+    
     - name: post-rel123-control-plane-components-kyma-metrics-collector
       cluster: trusted-workload
       annotations:

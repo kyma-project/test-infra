@@ -1,9 +1,9 @@
 global:
-  nextRelease: "1.24"
+  nextRelease: "1.25"
   releases:
+    - "1.24"
     - "1.23"
     - "1.22"
-    - "1.21"
 
 # global configSet variables
 pubsub_config: &pubsub_config
