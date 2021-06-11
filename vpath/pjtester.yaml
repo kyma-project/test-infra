@@ -1,2 +1,3 @@
 pjNames:
-  - pjName: kyma-integration-gardener-gcp
+  - pjName: pre-main-kyma-gke-integration
+  - pjName: post-main-kyma-gke-integration

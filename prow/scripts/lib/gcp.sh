@@ -64,7 +64,7 @@ function gcp::provision_gke_cluster {
     while getopts ":c:p:v:l:t:z:m:R:n:N:S:C:i:g:r:s:D:e:P:j:J:" opt; do
         case $opt in
             c)
-                clusterName="$OPTARG" ;;
+                clusterName="${OPTARG:0:40}" ;;
             p)
                 gcpProjectName="$OPTARG" ;;
             v)
@@ -120,6 +120,8 @@ function gcp::provision_gke_cluster {
     utils::check_empty_arg "$gkeClusterVersion" "GKE cluster version not provided."
     utils::check_empty_arg "$prowjobName" "prowjob name not provided."
     utils::check_empty_arg "$prowjobID" "prowjob ID not provided."
+
+    log::banner "Provision cluster: $clusterName"
 
     local kubeDnsPatchPath="$testInfraSourcesDir/prow/scripts/resources/kube-dns-stub-domains-patch.yaml"
     local params
@@ -219,4 +221,230 @@ function gcp::authenticate() {
       log::error "Missing account credentials, please provide proper credentials"
     fi
     gcloud auth activate-service-account --key-file "${1}" || exit 1
+}
+
+# gcloud::reserve_ip_address requests a new IP address from gcloud and prints this value to STDOUT
+# Required exported variables:
+# CLOUDSDK_CORE_PROJECT - gcp project
+# CLOUDSDK_COMPUTE_REGION - gcp region
+# Arguments:
+# $1 - name of the IP address to be set in gcp COMMON_NAME
+# Returns:
+# gcloud::reserve_ip_address_return_1 - reserved ip address -> GATEWAY_IP_ADDRESS
+# TODO: add support for setting CLOUDSDK env vars from function args.
+function gcp::reserve_ip_address {
+
+    local ipAddressName
+    local gcpProjectName
+    local computeRegion
+    local ipAddress
+
+    while getopts ":n:p:r:" opt; do
+        case $opt in
+            n)
+                ipAddressName="$OPTARG" ;;
+            p)
+                gcpProjectName="$OPTARG" ;;
+            r)
+                computeRegion="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+    done
+
+    utils::check_empty_arg "$ipAddressName" "IP address name is empty. Exiting..."
+    utils::check_empty_arg "$gcpProjectName" "gcp project name is empty. Exiting..."
+    utils::check_empty_arg "$computeRegion" "gcp compute region name is empty. Exiting..."
+
+    log::info "Reserve IP Address for $ipAddressName"
+    local counter=0
+    # Check if IP address reservation is present. Wait and retry for one minute to disappear.
+    # If IP reservation was removed just before it need a few seconds to disappear.
+    # Otherwise, creation will fail.
+    ipAddress=$(gcloud compute addresses list \
+        --filter="name=$ipAddressName" \
+        --format="value(ADDRESS)")
+    until [[ -z $ipAddress ]]; do
+        sleep 15
+        counter=$(( counter + 1 ))
+        ipAddress=$(gcloud compute addresses list \
+            --filter="name=$ipAddressName" \
+            --format="value(ADDRESS)")
+        if (( counter == 5 )); then
+            # Fail after one minute wait.
+            echo "$ipAddressName IP address is still present after one minute wait. Failing"
+            return 1
+        fi
+    done
+
+    gcloud compute addresses create "$ipAddressName" \
+        --project="$gcpProjectName" \
+        --region="$computeRegion" \
+        --network-tier="PREMIUM"
+    # Print reserved IP address on stdout as it's consumed by calling process and used for next steps.
+    gcp::reserve_ip_address_return_ip_address="$(gcloud compute addresses list \
+        --filter="name=$ipAddressName" \
+        --format="value(ADDRESS)")"
+    log::info "Created IP Address for Ingressgateway: $ipAddressName"
+}
+
+# gcloud::create_dns_record creates an A dns record for corresponding ip address
+# Required exported variables:
+# CLOUDSDK_CORE_PROJECT - gcp project
+# CLOUDSDK_COMPUTE_REGION - gcp region
+#
+# Arguments:
+# $1 - ip address
+# $2 - domain name
+function gcp::create_dns_record {
+
+    local ipAddress
+    local dnsSubDomain
+    local dnsDomain
+    local dnsHostname
+    local gcpProjectName
+    local gcpDnsZoneName
+
+    while getopts ":a:h:s:d:p:z:" opt; do
+        case $opt in
+            a)
+                ipAddress="$OPTARG" ;;
+            h)
+                dnsHostname="$OPTARG" ;;
+            s)
+                dnsSubDomain="$OPTARG" ;;
+            d)
+                dnsDomain="$OPTARG" ;;
+            p)
+                gcpProjectName="$OPTARG" ;;
+            z)
+                gcpDnsZoneName="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2; exit 1 ;;
+        esac
+    done
+
+
+    utils::check_empty_arg "$gcpProjectName" "GCP project name is empty. Exiting..."
+    utils::check_empty_arg "$gcpDnsZoneName" "GCP DNS zone name is empty. Exiting..."
+    utils::check_empty_arg "$ipAddress" "IP address is empty. Exiting..."
+    utils::check_empty_arg "$dnsHostname" "DNS hostname is empty. Exiting..."
+    utils::check_empty_arg "$dnsSubDomain" "DNS subdomain is empty. Exiting..."
+    utils::check_empty_arg "$dnsDomain" "DNS domain is empty. Exiting..."
+
+    dnsFQDN="$dnsHostname.$dnsSubDomain.$dnsDomain"
+
+    set +e
+    local attempts=10
+    local retryTimeInSec="5"
+    for ((i=1; i<=attempts; i++)); do
+      gcloud dns --project="$gcpProjectName" record-sets transaction start --zone="$gcpDnsZoneName" && \
+      gcloud dns --project="$gcpProjectName" record-sets transaction add "${ipAddress}" --name="${dnsFQDN}" --ttl=60 --type=A --zone="$gcpDnsZoneName" && \
+      if gcloud dns --project="$gcpProjectName" record-sets transaction execute --zone="$gcpDnsZoneName"; then
+          break
+      fi
+
+      gcloud dns record-sets transaction abort --zone="$gcpDnsZoneName" --verbosity none
+
+      if [[ "${i}" -lt "${attempts}" ]]; then
+          echo "Unable to create DNS record, let's wait ${retryTimeInSec} seconds and retry. Attempts ${i} of ${attempts}."
+      else
+          echo "Unable to create DNS record after ${attempts} attempts, giving up."
+          exit 1
+      fi
+
+      sleep ${retryTimeInSec}
+    done
+
+    set -e
+
+    local SECONDS=0
+    local endTime=$((SECONDS+600)) #600 seconds == 10 minutes
+
+    while [ $SECONDS -lt $endTime ];do
+      echo "Trying to resolve ${dnsFQDN}"
+      sleep 10
+
+      RESOLVED_IP_ADDRESS=$(dig +short "${dnsFQDN}")
+
+      if [ "${RESOLVED_IP_ADDRESS}" = "${ipAddress}" ]; then
+          echo "Successfully resolved ${dnsFQDN} to ${RESOLVED_IP_ADDRESS}!"
+          return 0
+      fi
+    done
+
+    #TODO: fix it
+    echo "Cannot resolve ${dnsFQDN} to expected IP_ADDRESS: ${ipAddress}."
+    log::warn "Continuing anyway... Kyma installation may fail!"
+}
+
+# Arguments:
+# n - $JOB_NAME
+function gcp::set_vars_for_network {
+    local jobName
+
+    while getopts ":n:" opt; do
+        case $opt in
+            n)
+                jobName="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2; exit 1 ;;
+        esac
+    done
+
+    utils::check_empty_arg "$jobName" "Job name is empty. Exiting..."
+
+    # shellcheck disable=SC2034  # variable hold return value for calling process
+    gcp_set_vars_for_network_net_name="$jobName-net"
+    # shellcheck disable=SC2034  # variable hold return value for calling process
+    gcp_set_vars_for_network_subnet_name="$jobName-subnet"
+}
+
+function gcp::create_network {
+
+    local gcpProjectName
+    local gcpNetworkName
+    local gcpSubnetName
+
+    while getopts ":n:p:s:" opt; do
+        case $opt in
+            n)
+                gcpNetworkName="$OPTARG" ;;
+            p)
+                gcpProjectName="$OPTARG" ;;
+            s)
+                gcpSubnetName="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2; exit 1 ;;
+        esac
+    done
+
+    utils::check_empty_arg "$gcpProjectName" "gcp project name is empty. Exiting..."
+    utils::check_empty_arg "$gcpNetworkName" "gcp network name is empty. Exiting..."
+    utils::check_empty_arg "$gcpSubnetName" "gcp subnet name is empty. Exiting..."
+
+    log::info "Create $gcpNetworkName network with $gcpSubnetName subnet"
+
+    if gcloud compute networks describe "$gcpNetworkName"; then
+        log::warn "Network $gcpNetworkName already exists! Skipping network creation."
+        return 0
+    fi
+    log::info "Creating network $gcpNetworkName"
+    gcloud compute networks create "$gcpNetworkName" \
+        --project="$gcpProjectName" \
+        --subnet-mode=custom
+
+    gcloud compute networks subnets create "$gcpSubnetName" \
+        --network="$gcpNetworkName" \
+        --range=10.0.0.0/22
+
+   log::info "Successfully created network $gcpNetworkName"
 }

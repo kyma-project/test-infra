@@ -56,10 +56,10 @@ export REPO_OWNER
 readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
 export REPO_NAME
 
-KYMA_LABEL_PREFIX="kyma-project.io"
-KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"
-INTEGRATION_TEST_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.integration=true"
-ENABLE_TEST_LOG_COLLECTOR=false
+#TODO: no usage in test-infra and kyma repo, remove if no failures caused by commenting out
+#KYMA_LABEL_PREFIX="kyma-project.io"
+#KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"
+#INTEGRATION_TEST_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.integration=true"
 
 requiredVars=(
     REPO_OWNER
@@ -87,10 +87,11 @@ utils::set_vars_for_build \
     -s "$PULL_BASE_SHA"
 
 ### Cluster name must be less than 40 characters!
-export GCLOUD_NETWORK_NAME="${COMMON_NAME_PREFIX}-net"
-export GCLOUD_SUBNET_NAME="${COMMON_NAME_PREFIX}-subnet"
+gcp::set_vars_for_network -n "$JOB_NAME"
+export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_net_name:?}"
+export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_subnet_name:?}"
 #Local variables
-DNS_SUBDOMAIN="${COMMON_NAME}"
+DNS_SUBDOMAIN="$COMMON_NAME"
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
@@ -99,24 +100,28 @@ kyma::install_cli
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
-log::info "Reserve IP Address for Ingressgateway"
-GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
-export GATEWAY_IP_ADDRESS
-GATEWAY_IP_ADDRESS=$(gcloud::reserve_ip_address "$GATEWAY_IP_ADDRESS_NAME")
+gcp::reserve_ip_address -n "$COMMON_NAME"
+export GATEWAY_IP_ADDRESS="${gcp_reserve_ip_address_return_ip_address:?}"
 export CLEANUP_GATEWAY_IP_ADDRESS="true"
-log::info "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
 
 
 # TODO: improve that part by moving more code to the function.
 log::info "Create DNS Record for Ingressgateway IP"
-GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-gcloud::create_dns_record "$GATEWAY_IP_ADDRESS" "$GATEWAY_DNS_FULL_NAME"
+gcp::create_dns_record \
+    -p "$CLOUDSDK_CORE_PROJECT" \
+    -z "$CLOUDSDK_DNS_ZONE_NAME" \
+    -a "$GATEWAY_IP_ADDRESS" \
+    -h "*" \
+    -s "$DNS_SUBDOMAIN" \
+    -d "$DNS_DOMAIN"
 export CLEANUP_GATEWAY_DNS_RECORD="true"
 
-log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-gcloud::create_network "$GCLOUD_NETWORK_NAME" "$GCLOUD_SUBNET_NAME"
-log::banner "Provision cluster: \"${COMMON_NAME}\""
+gcloud::create_network \
+    -n "$GCLOUD_NETWORK_NAME" \
+    -s "$GCLOUD_SUBNET_NAME" \
+    -p "$CLOUDSDK_CORE_PROJECT"
+
 
 # if GKE_RELEASE_CHANNEL is set, get latest possible cluster version
 gcloud::set_latest_cluster_version_for_channel
@@ -171,9 +176,13 @@ yes | kyma install \
 if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
     log::info "Create DNS Record for Apiserver proxy IP"
     APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-
-    gcloud::create_dns_record "$APISERVER_IP_ADDRESS" "$APISERVER_DNS_FULL_NAME"
+    gcp::create_dns_record \
+        -p "$CLOUDSDK_CORE_PROJECT" \
+        -z "$CLOUDSDK_DNS_ZONE_NAME" \
+        -a "$APISERVER_IP_ADDRESS" \
+        -h "apiserver" \
+        -s "$DNS_SUBDOMAIN" \
+        -d "$DNS_DOMAIN"
     export CLEANUP_APISERVER_DNS_RECORD="true"
 fi
 
