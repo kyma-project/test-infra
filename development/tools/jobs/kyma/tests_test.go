@@ -69,11 +69,6 @@ var tests = []struct {
 		jobsuite.RunIfChanged("^tests/end-to-end/upgrade/[^chart]", "tests/end-to-end/upgrade/fix"),
 		jobsuite.JobFileSuffix("tests-generic"),
 	}},
-	{path: "end-to-end/external-solution-integration", image: tester.ImageGolangKubebuilder2BuildpackLatest, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("tests-generic"),
-		},
-	},
 	{path: "integration/event-service", image: tester.ImageGolangKubebuilder2BuildpackLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),

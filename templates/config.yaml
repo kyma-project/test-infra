@@ -301,13 +301,6 @@ templates:
           <<: *kyma_generic_component
           path: tests/end-to-end/upgrade
           since: "1.7"
-      - to: ../prow/jobs/kyma/tests/end-to-end/external-solution-integration/external-solution-integration-tests-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *kyma_generic_component
-          path: tests/end-to-end/external-solution-integration
-          since: "1.10"
-          until: "1.21"
       - to: ../prow/jobs/control-plane/components/provisioner/provisioner-generic.yaml
         values:
           <<: *cluster_default
@@ -446,13 +439,6 @@ templates:
           path: tests/integration/event-service
           since: "1.7"
           until: "1.20"
-      - to: ../prow/jobs/kyma/components/event-sources/event-sources-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *kyma_generic_component
-          path: components/event-sources
-          since: "1.9"
-          until: "1.21"
       - to: ../prow/jobs/kyma/components/event-publisher-proxy/event-publisher-proxy-generic.yaml
         values:
           <<: *cluster_default
