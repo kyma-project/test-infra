@@ -400,9 +400,11 @@ function gcp::set_vars_for_network {
 
     utils::check_empty_arg "$jobName" "Job name is empty. Exiting..."
 
-    # shellcheck disable=SC2034  # variable hold return value for calling process
+    # variable hold return value for calling process
+    # shellcheck disable=SC2034
     gcp_set_vars_for_network_net_name="$jobName-net"
-    # shellcheck disable=SC2034  # variable hold return value for calling process
+    # variable hold return value for calling process
+    # shellcheck disable=SC2034
     gcp_set_vars_for_network_subnet_name="$jobName-subnet"
 }
 
