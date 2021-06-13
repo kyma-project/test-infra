@@ -79,7 +79,7 @@ utils::check_required_vars "${requiredVars[@]}"
 
 trap utils::post_hook EXIT INT
 
-utils::jobguard "${BUILD_TYPE}"
+utils::run_jobguard "${BUILD_TYPE}"
 
 utils::set_vars_for_build \
     -b "$BUILD_TYPE" \
