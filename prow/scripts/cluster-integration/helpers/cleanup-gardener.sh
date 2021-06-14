@@ -74,9 +74,15 @@ do
         CREATION_TS="$(date -d "${CREATION_TIME}" +%s)" # On macOS use: CREATION_TS=$(date -jf "%Y-%m-%dT%H:%M:%SZ" ${CREATION_TIME} +%s)
         NOW_TS="$(date +%s)"
         HOURS_OLD=$(( (NOW_TS - CREATION_TS) / SECONDS_PER_HOUR ))
-        
-        # clusters older than 4h get deleted
-        if [[ ${HOURS_OLD} -ge 4 ]]; then
+
+
+        # clusters older than 24h get deleted
+        # it matches clusters with day-of-week appended to the name, example: np1kyma
+        if [[ ${HOURS_OLD} -ge 24 && "$CLUSTER" =~ np[0-9].* ]]; then
+            log::info "Deprovision cluster: \"${CLUSTER}\" (${HOURS_OLD}h old)"
+            utils::deprovision_gardener_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
+        elif [[ ${HOURS_OLD} -ge 4 && ! "$CLUSTER" =~ np[0-9].* ]]; then
+            # clusters older than 4h get deleted
             log::info "Deprovision cluster: \"${CLUSTER}\" (${HOURS_OLD}h old)"
             gardener::deprovision_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
         fi

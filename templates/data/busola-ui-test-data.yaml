@@ -30,7 +30,7 @@ templates:
               # presubmits
               - jobConfig:
                   name: "pre-busola-ui-test"
-                  optional: true
+                  optional: false
                   run_if_changed: "/"
                   labels:
                     preset-build-pr: "true"

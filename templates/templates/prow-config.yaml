@@ -1038,3 +1038,16 @@ presets:
     env:
       - name: BUSOLA_PROVISION_TYPE
         value: KYMA
+  - labels:
+      preset-skr-al-service-key: "true"
+    env:
+      - name: AL_SERVICE_KEY
+        valueFrom:
+          secretKeyRef:
+            name: skr-al-secret-key
+            key: secret.json
+  - labels:
+      preset-kyma-periodic-nightly-letsencypt-protection: "true"
+    env:
+    - name: LETSENCRYPT_LIMITS_PROTECTION
+      value: "true"

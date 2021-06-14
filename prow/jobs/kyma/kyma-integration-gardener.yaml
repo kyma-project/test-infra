@@ -268,6 +268,60 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+    - name: pre-main-kyma-gardener-gcp-api-gateway
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-gardener-gcp-api-gateway"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+        preset-cluster-version: "true"
+        preset-debug-commando-oom: "true"
+        preset-gardener-gcp-kyma-integration: "true"
+        preset-kyma-cli-stable: "true"
+      skip_report: false
+      decorate: true
+      decoration_config:
+        grace_period: 600000000000
+        run_if_changed: ^(((resources/api-gateway)\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))
+        timeout: 14400000000000
+      path_alias: github.com/kyma-project/kyma
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
+            env:
+              - name: API_GATEWAY_INTEGRATION
+                value: "true"
+              - name: GARDENER_REGION
+                value: "europe-west4"
+              - name: GARDENER_ZONES
+                value: "europe-west4-b"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-main-kyma-gardener-gcp-eventing
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -459,6 +513,61 @@ postsubmits: # runs on main
                 value: "northeurope"
               - name: RS_GROUP
                 value: "kyma-gardener-azure"
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 400m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: post-main-kyma-gardener-gcp-api-gateway
+      annotations:
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-gardener-gcp-api-gateway"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-cluster-version: "true"
+        preset-debug-commando-oom: "true"
+        preset-gardener-gcp-kyma-integration: "true"
+        preset-kyma-cli-stable: "true"
+      skip_report: false
+      decorate: true
+      decoration_config:
+        grace_period: 600000000000
+        run_if_changed: ^(((resources/api-gateway)\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))
+        timeout: 14400000000000
+      path_alias: github.com/kyma-project/kyma
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
+            env:
+              - name: API_GATEWAY_INTEGRATION
+                value: "true"
+              - name: GARDENER_REGION
+                value: "europe-west4"
+              - name: GARDENER_ZONES
+                value: "europe-west4-b"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
                 memory: 1Gi
@@ -1204,9 +1313,10 @@ periodics: # runs on schedule
         preset-execute-fast-integration-tests: "true"
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
+        preset-kyma-periodic-nightly-letsencypt-protection: "true"
         preset-log-collector-slack-token: "true"
         preset-recreate-cluster: "true"
-      cron: "0 2 * * 1"
+      cron: "0 1 * * 1-5"
       skip_report: false
       decorate: true
       decoration_config:
@@ -1267,8 +1377,9 @@ periodics: # runs on schedule
         preset-execute-fast-integration-tests: "true"
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
+        preset-kyma-periodic-nightly-letsencypt-protection: "true"
         preset-log-collector-slack-token: "true"
-      cron: "0 2 * * 2-5"
+      cron: "0 2-21/2 * * 1-5"
       skip_report: false
       decorate: true
       decoration_config:

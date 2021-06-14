@@ -33,6 +33,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
+# shellcheck source=prow/scripts/cluster-integration/helpers/integration-tests.sh
+source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/integration-tests.sh"
 # shellcheck source=prow/scripts/lib/gardener/gardener.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
 
@@ -119,6 +121,10 @@ gardener::provision_cluster
 # uses previously set KYMA_SOURCE
 if [[ "${KYMA_ALPHA}" == "true" ]]; then
   kyma::alpha_deploy_kyma
+# this will be extended with the next components
+elif [[ "${API_GATEWAY_INTEGRATION}" == "true" ]]; then
+  api-gateway::prepare_components_file
+  integration_tests::install_kyma
 else
   gardener::install_kyma
 fi
@@ -136,6 +142,10 @@ fi
 
 if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
     gardener::test_fast_integration_kyma
+# this will be extended with the next components
+elif [[ "${API_GATEWAY_INTEGRATION}" == "true" ]]; then
+    api-gateway::prepare_test_environments
+    api-gateway::launch_tests
 else
     # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
     if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then

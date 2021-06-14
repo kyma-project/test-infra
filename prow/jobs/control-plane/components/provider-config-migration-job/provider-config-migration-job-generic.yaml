@@ -14,7 +14,7 @@ job_template: &job_template
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
     preset-docker-push-repository-control-plane: "true"
-  run_if_changed: "^components/provisioner/|^scripts/"
+  run_if_changed: "^components/provider-config-migration-job/|^scripts/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210607-b7e95d8b
@@ -23,7 +23,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/control-plane/components/provisioner"
+          - "/home/prow/go/src/github.com/kyma-project/control-plane/components/provider-config-migration-job"
         resources:
           requests:
             memory: 1.5Gi
@@ -31,9 +31,9 @@ job_template: &job_template
 
 presubmits: # runs on PRs
   kyma-project/control-plane:
-    - name: pre-control-plane-components-provisioner
+    - name: pre-control-plane-components-provider-config-migration-job
       cluster: untrusted-workload
-      optional: false
+      optional: true
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
@@ -42,9 +42,9 @@ presubmits: # runs on PRs
         - ^master$
         - ^main$
     
-    - name: pre-rel123-control-plane-components-provisioner
+    - name: pre-rel123-control-plane-components-provider-config-migration-job
       cluster: untrusted-workload
-      optional: false
+      optional: true
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
@@ -52,33 +52,16 @@ presubmits: # runs on PRs
       branches:
         - release-1.23
     
-    - name: pre-rel122-control-plane-components-provisioner
-      cluster: untrusted-workload
-      optional: false
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.22
-      branches:
-        - release-1.22
-    
-    - name: pre-rel121-control-plane-components-provisioner
-      cluster: untrusted-workload
-      optional: false
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.21
-      branches:
-        - release-1.21
-    
 
 postsubmits:
   kyma-project/control-plane:
-    - name: post-control-plane-components-provisioner
+    - name: post-control-plane-components-provider-config-migration-job
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
+      reporter_config:
+        slack:
+          channel: 'kyma-prow-dev-null'
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
@@ -87,36 +70,17 @@ postsubmits:
       - ^master$
       - ^main$
       
-    - name: post-rel123-control-plane-components-provisioner
+    - name: post-rel123-control-plane-components-provider-config-migration-job
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
+      reporter_config:
+        slack:
+          channel: 'kyma-prow-dev-null'
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.23
       branches:
         - release-1.23
-    
-    - name: post-rel122-control-plane-components-provisioner
-      cluster: trusted-workload
-      annotations:
-        testgrid-create-test-group: "false"
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.22
-      branches:
-        - release-1.22
-    
-    - name: post-rel121-control-plane-components-provisioner
-      cluster: trusted-workload
-      annotations:
-        testgrid-create-test-group: "false"
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.21
-      branches:
-        - release-1.21
     

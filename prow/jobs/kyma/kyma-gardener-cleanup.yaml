@@ -31,7 +31,7 @@ periodics: # runs on schedule
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/cleanup-gardener.sh"
             args:
               - "--excluded-clusters"
-              - "(grnbusola|grnkyma|nbusola|nkyma|npbusola|npkyma)"
+              - "(nbusola|nkyma|np[0-9].*)"
             env:
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"

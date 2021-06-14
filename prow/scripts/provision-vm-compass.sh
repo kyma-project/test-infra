@@ -122,7 +122,7 @@ gcloud compute ssh --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_I
 
 log::info "Triggering the installation"
 
-gcloud compute ssh --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" -- "yes | ./compass/installation/scripts/prow/deploy-and-test.sh --dump-db"
+gcloud compute ssh --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" -- "yes | ./compass/installation/scripts/prow/deploy-and-test.sh"
 
 log::info "Copying test artifacts from VM"
 utils::receive_from_vm "${ZONE}" "compass-integration-test-${RANDOM_ID}" "/var/log/prow_artifacts" "${ARTIFACTS}"
