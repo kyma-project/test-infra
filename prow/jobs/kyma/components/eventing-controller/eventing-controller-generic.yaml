@@ -17,7 +17,7 @@ job_template: &job_template
   run_if_changed: "^components/eventing-controller/|^common/makefiles/"
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210601-24c60b5a
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.16.4
         securityContext:
           privileged: true
         command:
