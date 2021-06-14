@@ -97,6 +97,12 @@ DNS_SUBDOMAIN="$COMMON_NAME"
 ERROR_LOGGING_GUARD="true"
 
 gcp::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+
+gcp::create_network \
+    -n "$GCLOUD_NETWORK_NAME" \
+    -s "$GCLOUD_SUBNET_NAME" \
+    -p "$CLOUDSDK_CORE_PROJECT"
+
 kyma::install_cli
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
@@ -117,12 +123,6 @@ gcp::create_dns_record \
     -s "$DNS_SUBDOMAIN" \
     -d "$DNS_DOMAIN"
 export CLEANUP_GATEWAY_DNS_RECORD="true"
-
-gcp::create_network \
-    -n "$GCLOUD_NETWORK_NAME" \
-    -s "$GCLOUD_SUBNET_NAME" \
-    -p "$CLOUDSDK_CORE_PROJECT"
-
 
 # if GKE_RELEASE_CHANNEL is set, get latest possible cluster version
 gcloud::set_latest_cluster_version_for_channel
