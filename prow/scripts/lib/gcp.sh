@@ -440,6 +440,9 @@ function gcp::create_network {
     utils::check_empty_arg "$gcpNetworkName" "gcp network name is empty. Exiting..."
     utils::check_empty_arg "$gcpSubnetName" "gcp subnet name is empty. Exiting..."
 
+    log::info "Replacing underscore with dashes in network and subnetwork name."
+    gcpNetworkName=$(echo "$gcpNetworkName" | tr '_' '-')
+    gcpSubnetName=$(echo "$gcpSubnetName" | tr '_' '-')
     log::info "Create $gcpNetworkName network with $gcpSubnetName subnet"
 
     if gcloud compute networks describe "$gcpNetworkName"; then
