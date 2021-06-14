@@ -96,8 +96,7 @@ DNS_SUBDOMAIN="$COMMON_NAME"
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
-#TODO: use named argsinstead positional ones.
-gcp::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+gcp::authenticate -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 gcp::create_network \
     -n "$GCLOUD_NETWORK_NAME" \
@@ -107,7 +106,7 @@ gcp::create_network \
 kyma::install_cli
 
 # TODO: check if can be included in gcp::create_dns_record
-DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
+#DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
 gcp::reserve_ip_address \
     -n "$COMMON_NAME" \
@@ -124,15 +123,18 @@ gcp::create_dns_record \
     -z "$CLOUDSDK_DNS_ZONE_NAME" \
     -a "$GATEWAY_IP_ADDRESS" \
     -h "*" \
-    -s "$DNS_SUBDOMAIN" \
-    -d "$DNS_DOMAIN"
+    -s "$DNS_SUBDOMAIN"
+    #-d "$DNS_DOMAIN"
+DNS_DOMAIN=${gcp_create_dns_record_dns_domain:?}
 export CLEANUP_GATEWAY_DNS_RECORD="true"
 
 # if GKE_RELEASE_CHANNEL is set, get latest possible cluster version
 gcloud::set_latest_cluster_version_for_channel
 
 #TODO: add this to gcp::provision_gke_cluster
-if [ "$PROVISION_REGIONAL_CLUSTER" ]; then NUM_NODES="$NODES_PER_ZONE"; fi
+#if [ "$PROVISION_REGIONAL_CLUSTER" ]; then NUM_NODES="$NODES_PER_ZONE"; fi
+
+env
 
 gcp::provision_gke_cluster \
     -c "$COMMON_NAME" \

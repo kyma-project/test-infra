@@ -122,6 +122,10 @@ function gcp::provision_gke_cluster {
     utils::check_empty_arg "$prowjobName" "prowjob name not provided."
     utils::check_empty_arg "$prowjobID" "prowjob ID not provided."
 
+    if [ "$provisionRegionalCluster" = "true" ]; then
+        numNodes="$nodesPerZone"
+    fi
+
     log::banner "Provision cluster: $clusterName"
 
     local kubeDnsPatchPath="$testInfraSourcesDir/prow/scripts/resources/kube-dns-stub-domains-patch.yaml"
@@ -217,11 +221,24 @@ function gcp::provision_gke_cluster {
 # Arguments:
 # $1 - google login credentials
 function gcp::authenticate {
+
+    local OPTIND
+    local googleAppCredentials
+
+    while getopts ":c:" opt; do
+        case $opt in
+            c)
+                googleAppCredentials="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+    done
+
     log::info "Authenticating to gcloud"
-    if [[ -z "$1" ]]; then
-      log::error "Missing account credentials, please provide proper credentials"
-    fi
-    gcloud auth activate-service-account --key-file "${1}" || exit 1
+    utils::check_empty_arg "$googleAppCredentials" "Missing account credentials, please provide proper credentials"
+    gcloud auth activate-service-account --key-file "$googleAppCredentials" || exit 1
 }
 
 # gcloud::reserve_ip_address requests a new IP address from gcloud and prints this value to STDOUT
@@ -338,7 +355,12 @@ function gcp::create_dns_record {
     utils::check_empty_arg "$ipAddress" "IP address is empty. Exiting..."
     utils::check_empty_arg "$dnsHostname" "DNS hostname is empty. Exiting..."
     utils::check_empty_arg "$dnsSubDomain" "DNS subdomain is empty. Exiting..."
-    utils::check_empty_arg "$dnsDomain" "DNS domain is empty. Exiting..."
+    #utils::check_empty_arg "$dnsDomain" "DNS domain is empty. Exiting..."
+
+    dnsDomain="$(gcloud dns managed-zones describe "$gcpDnsZoneName" --format="value(dnsName)")"
+    # set return value
+    # shellcheck disable=SC2034
+    gcp_create_dns_record_dns_domain=$dnsDomain
 
     dnsFQDN="$dnsHostname.$dnsSubDomain.$dnsDomain"
 
