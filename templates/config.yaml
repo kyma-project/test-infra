@@ -61,6 +61,8 @@ globalSets:
   disable_testgrid:
     annotations:
       testgrid-create-test-group: "false"
+  jobConfig_slack_dev_null:
+    slack_channel: "kyma-prow-dev-null"
   # generic component jobConfigs
   jobConfig_generic_component:
     labels:

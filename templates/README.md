@@ -30,30 +30,56 @@ The `config.yaml` file has two keys:
 
 The `config.yaml` serves as the input file for the Render Templates that generates the jobs based on the file definition and templates which it specifies. The `config.yaml` file defines the names of the output file, their location, and configuration referred to in `values`.
 
-See the example of `console-backend-service` in which the `generic-component.yaml` template is used to create the component and test-related YAML files using values defined by the **kyma_generic_component** parameter.
+See the example of `application-gateway` in which the `generic.taml` template is used to create the component and test-related YAML files using values defined by the **kyma_generic_component** parameter.
 
 ```yaml
-kyma_generic_component: &kyma_generic_component
-  repository: github.com/kyma-project/kyma
-  pushRepository: kyma
-  bootstrapTag: v20181204-a6e79be
-  additionalRunIfChanged:
-    - ^scripts/
-
 templates:
-  - from: templates/generic-component.yaml
+  - from: templates/generic.tmpl
     render:
-      - to: ../prow/jobs/kyma/components/console-backend-service/console-backend-service-generic.yaml
-        values:
-          <<: *kyma_generic_component
-          path: components/console-backend-service
-          release_since: "1.6"
-      - to: ../prow/jobs/kyma/tests/console-backend-service/console-backend-service-tests-generic.yaml
-        values:
-          <<: *kyma_generic_component
-          path: tests/console-backend-service
-          release_since: "1.6"
-
+      - to: ../prow/jobs/kyma/components/application-gateway/application-gateway-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  path: components/application-gateway
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/application-gateway"
+                  run_if_changed: "^components/application-gateway/|^common/makefiles/"
+                  release_since: "1.7"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_generic_component"
+                    - "jobConfig_generic_component_kyma"
+                    - "extra_refs_test-infra"
+                  preConfigs:
+                    - "jobConfig_presubmit"
+                  postConfigs:
+                    - "jobConfig_postsubmit"
+                    - "disable_testgrid"
+        - to: ../prow/jobs/kyma/tests/application-gateway-tests/application-gateway-tests-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  path: tests/application-gateway-tests
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/kyma/tests/application-gateway-tests"
+                  run_if_changed: "^tests/application-gateway-tests/|^common/makefiles/"
+                  release_since: "1.7"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_generic_component"
+                    - "jobConfig_generic_component_kyma"
+                    - "extra_refs_test-infra"
+                  preConfigs:
+                    - "jobConfig_presubmit"
+                  postConfigs:
+                    - "jobConfig_postsubmit"
+                    - "disable_testgrid"
 ```
 
 ### Component jobs
@@ -66,9 +92,8 @@ See the description of values used by component jobs:
 
 | Name | Required | Description |
 |------| :-------------: |------|
-| **name** | No | Name cannot be set, as it will be generated for each job. |
+| **name** | No | Name must not be set, as it will be generated for each job. |
 | **path** | Yes | Path in a repository to the component. |
-| **release_since** | No |  Specifies the release from which this component version applies. |
 | **release_since** | No |  Specifies the release from which this component version applies. |
 | **release_since** | No |  Specifies the release till which this component version applies.  |
 

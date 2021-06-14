@@ -158,6 +158,9 @@ postsubmits: # runs on main
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-prow-dev-null
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210607-b7e95d8b"
@@ -202,6 +205,9 @@ postsubmits: # runs on main
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-1.23
+      reporter_config:
+        slack:
+          channel: kyma-prow-dev-null
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210607-b7e95d8b"
@@ -246,6 +252,9 @@ postsubmits: # runs on main
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-1.22
+      reporter_config:
+        slack:
+          channel: kyma-prow-dev-null
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210607-b7e95d8b"

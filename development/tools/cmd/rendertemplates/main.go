@@ -106,10 +106,11 @@ func renderTemplate(basePath string, templateConfig rt.TemplateConfig, config *r
 	}
 	for _, render := range templateConfig.Render {
 
+		render.MergeConfigs(config)
+
 		// check if there are any component jobs and generate final component jobs if necessary
 		render.GenerateComponentJobs(config.Global)
 
-		render.MergeConfigs(config)
 		err = renderFileFromTemplate(basePath, templateInstance, render, config)
 		if err != nil {
 			log.Printf("Failed render %s file", render.To)

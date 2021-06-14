@@ -17,6 +17,12 @@ templates:
                     - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_busola"
+                    - "extra_refs_test-infra"
+                  preConfigs:
+                    - "jobConfig_presubmit"
+                  postConfigs:
+                    - "jobConfig_postsubmit"
+                    - "disable_testgrid"
       - to: ../prow/jobs/busola/busola-service-catalog-ui/busola-service-catalog-ui.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/busola"
@@ -33,6 +39,12 @@ templates:
                     - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_busola"
+                    - "extra_refs_test-infra"
+                  preConfigs:
+                    - "jobConfig_presubmit"
+                  postConfigs:
+                    - "jobConfig_postsubmit"
+                    - "disable_testgrid"
       - to: ../prow/jobs/busola/busola-core/busola-core.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/busola"
@@ -49,6 +61,12 @@ templates:
                     - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_busola"
+                    - "extra_refs_test-infra"
+                  preConfigs:
+                    - "jobConfig_presubmit"
+                  postConfigs:
+                    - "jobConfig_postsubmit"
+                    - "disable_testgrid"
       - to: ../prow/jobs/busola/busola-backend/busola-backend.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/busola"
@@ -65,3 +83,9 @@ templates:
                     - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_busola"
+                    - "extra_refs_test-infra"
+                  preConfigs:
+                    - "jobConfig_presubmit"
+                  postConfigs:
+                    - "jobConfig_postsubmit"
+                    - "disable_testgrid"

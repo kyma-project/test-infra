@@ -4,18 +4,13 @@ import (
 	"strings"
 )
 
-// copies values from the original jobConfig into the generated ones
-func (j *Job) appendCommonValues(repo Repo, genericJob Job) {
-
-	j.JobConfig["path_alias"] = repo.RepoName
-
-	// copy all values except path
-	for name, val := range genericJob.JobConfig {
-		if name != "path" {
-			j.JobConfig[name] = val
+// changeExtraRefsBase changes base_ref to base string for each extra_ref
+func (j *Job) changeExtraRefsBase(base string) {
+	if j.JobConfig["extra_refs"] != nil {
+		for extraRefIndex := range j.JobConfig["extra_refs"].(map[interface{}]interface{}) {
+			j.JobConfig["extra_refs"].(map[interface{}]interface{})[extraRefIndex].([]interface{})[0].(map[interface{}]interface{})["base_ref"] = base
 		}
 	}
-	j.InheritedConfigs.Local = genericJob.InheritedConfigs.Local
 }
 
 // GenerateComponentJobs generates jobs for components
@@ -35,49 +30,48 @@ func (r *RenderConfig) GenerateComponentJobs(global map[string]interface{}) {
 					nameSuffix := repository + "-" + strings.Replace(job.JobConfig["path"].(string), "/", "-", -1)
 
 					// generate pre- and post-submit jobs for the next release
-					var preSubmit Job
-					preSubmit.JobConfig = make(map[string]interface{})
-					preSubmit.appendCommonValues(repo, job)
-					preSubmit.JobConfig["name"] = "pre-" + nameSuffix
-					preSubmit.InheritedConfigs.Global = append(job.InheritedConfigs.Global, "jobConfig_presubmit", "extra_refs_test-infra")
-					jobs = append(jobs, preSubmit)
+					if ReleaseMatches(global["nextRelease"], job.JobConfig["release_since"], job.JobConfig["release_until"]) {
+						if len(job.jobConfigPre) > 0 {
+							preSubmit := Job{}
+							preSubmit.JobConfig = deepCopyConfigSet(job.jobConfigPre)
+							preSubmit.JobConfig["name"] = "pre-" + nameSuffix
+							jobs = append(jobs, preSubmit)
+						}
 
-					var postSubmit Job
-					postSubmit.JobConfig = make(map[string]interface{})
-					postSubmit.appendCommonValues(repo, job)
-					postSubmit.JobConfig["name"] = "post-" + nameSuffix
-					postSubmit.InheritedConfigs.Global = append(job.InheritedConfigs.Global, "jobConfig_postsubmit", "extra_refs_test-infra", "disable_testgrid")
-					jobs = append(jobs, postSubmit)
+						if len(job.jobConfigPost) > 0 {
+							postSubmit := Job{}
+							postSubmit.JobConfig = deepCopyConfigSet(job.jobConfigPost)
+							postSubmit.JobConfig["name"] = "post-" + nameSuffix
+							jobs = append(jobs, postSubmit)
+						}
+					}
 
 					// check if we have to generate jobs for the previous supported releases
 					if job.JobConfig["skipReleaseJobs"] == nil || job.JobConfig["skipReleaseJobs"].(string) != "true" {
-						for _, currentRelease := range global["releases"].([]interface{}) {
+						matchingReleases := MatchingReleases(global["releases"].([]interface{}), job.JobConfig["release_since"], job.JobConfig["release_until"])
+						for _, currentRelease := range matchingReleases {
 							rel := currentRelease.(string)
+
 							nameRelease := "rel" + strings.Replace(rel, ".", "", -1)
 							commonRelBranches := []string{"release-" + rel}
-							commonExtrarefsTestInfra := map[string]interface{}{"test-infra": []map[string]interface{}{{"org": "kyma-project", "repo": "test-infra", "path_alias": "github.com/kyma-project/test-infra", "base_ref": "release-" + rel}}}
 
-							var preSubmitRel Job
-							preSubmitRel.JobConfig = make(map[string]interface{})
-							preSubmitRel.appendCommonValues(repo, job)
-							preSubmitRel.JobConfig["name"] = "pre-" + nameRelease + "-" + nameSuffix
-							preSubmitRel.JobConfig["branches"] = commonRelBranches
-							preSubmitRel.JobConfig["extra_refs"] = commonExtrarefsTestInfra
+							if len(job.jobConfigPre) > 0 {
+								preSubmitRel := Job{}
+								preSubmitRel.JobConfig = deepCopyConfigSet(job.jobConfigPre)
+								preSubmitRel.JobConfig["name"] = "pre-" + nameRelease + "-" + nameSuffix
+								preSubmitRel.JobConfig["branches"] = commonRelBranches
+								preSubmitRel.changeExtraRefsBase("release-" + rel)
+								jobs = append(jobs, preSubmitRel)
+							}
 
-							// let MergeConfig know to which release compare against
-							preSubmitRel.JobConfig["release_current"] = rel
-							preSubmitRel.InheritedConfigs.Global = append(job.InheritedConfigs.Global, "jobConfig_presubmit")
-							jobs = append(jobs, preSubmitRel)
-
-							var postSubmitRel Job
-							postSubmitRel.JobConfig = make(map[string]interface{})
-							postSubmitRel.appendCommonValues(repo, job)
-							postSubmitRel.JobConfig["name"] = "post-" + nameRelease + "-" + nameSuffix
-							postSubmitRel.JobConfig["branches"] = commonRelBranches
-							postSubmitRel.JobConfig["extra_refs"] = commonExtrarefsTestInfra
-							postSubmitRel.JobConfig["release_current"] = rel
-							postSubmitRel.InheritedConfigs.Global = append(job.InheritedConfigs.Global, "jobConfig_postsubmit", "disable_testgrid")
-							jobs = append(jobs, postSubmitRel)
+							if len(job.jobConfigPost) > 0 {
+								postSubmitRel := Job{}
+								postSubmitRel.JobConfig = deepCopyConfigSet(job.jobConfigPost)
+								postSubmitRel.JobConfig["name"] = "post-" + nameRelease + "-" + nameSuffix
+								postSubmitRel.JobConfig["branches"] = commonRelBranches
+								postSubmitRel.changeExtraRefsBase("release-" + rel)
+								jobs = append(jobs, postSubmitRel)
+							}
 						}
 					}
 				} else {
@@ -91,6 +85,6 @@ func (r *RenderConfig) GenerateComponentJobs(global map[string]interface{}) {
 				r.JobConfigs[repoIndex].Jobs = jobs
 			}
 		}
-
+		r.Values["JobConfigs"] = r.JobConfigs
 	}
 }

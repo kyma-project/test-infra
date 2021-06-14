@@ -43,14 +43,18 @@ type Repo struct {
 
 // InheritedConfigs specify named configs to use for generating prowjob from template
 type InheritedConfigs struct {
-	Global []string `yaml:"global,omitempty"`
-	Local  []string `yaml:"local,omitempty"`
+	Global      []string `yaml:"global,omitempty"`
+	Local       []string `yaml:"local,omitempty"`
+	PreConfigs  []string `yaml:"preConfigs,omitempty"`
+	PostConfigs []string `yaml:"postConfigs,omitempty"`
 }
 
 // Job holds data for generating prowjob from template
 type Job struct {
 	InheritedConfigs InheritedConfigs `yaml:"inheritedConfigs,omitempty"`
 	JobConfig        ConfigSet        `yaml:"jobConfig,omitempty"`
+	jobConfigPre     ConfigSet
+	jobConfigPost    ConfigSet
 }
 
 // Map performs a deep copy of the given map m.
@@ -78,6 +82,9 @@ func (r *RenderConfig) MergeConfigs(config *Config) {
 		for repoIndex, repo := range r.JobConfigs {
 			for jobIndex, job := range repo.Jobs {
 				jobConfig := ConfigSet{}
+				jobConfigPre := ConfigSet{}
+				jobConfigPost := ConfigSet{}
+
 				if sliceutil.Contains(job.InheritedConfigs.Global, "default") {
 					if err := jobConfig.mergeConfigSet(deepCopyConfigSet(globalConfigSets["default"])); err != nil {
 						log.Fatalf("Failed merge Global default configSet: %s", err)
@@ -96,6 +103,24 @@ func (r *RenderConfig) MergeConfigs(config *Config) {
 						}
 					}
 				}
+
+				if len(job.InheritedConfigs.PreConfigs) > 0 {
+					jobConfigPre = deepCopyConfigSet(jobConfig)
+					for _, v := range job.InheritedConfigs.PreConfigs {
+						if err := jobConfigPre.mergeConfigSet(deepCopyConfigSet(globalConfigSets[v])); err != nil {
+							log.Fatalf("Failed merge global %s named configset: %s", v, err)
+						}
+					}
+				}
+				if len(job.InheritedConfigs.PostConfigs) > 0 {
+					jobConfigPost = deepCopyConfigSet(jobConfig)
+					for _, v := range job.InheritedConfigs.PostConfigs {
+						if err := jobConfigPost.mergeConfigSet(deepCopyConfigSet(globalConfigSets[v])); err != nil {
+							log.Fatalf("Failed merge global %s named configset: %s", v, err)
+						}
+					}
+				}
+
 				for _, v := range job.InheritedConfigs.Local {
 					if v != "default" {
 						if err := jobConfig.mergeConfigSet(deepCopyConfigSet(r.LocalSets[v])); err != nil {
@@ -107,15 +132,23 @@ func (r *RenderConfig) MergeConfigs(config *Config) {
 					log.Fatalf("Failed merge job configset %s", err)
 				}
 
-				// get release to compare against
-				compareAgainstRelease := config.Global["nextRelease"]
-				if jobConfig["release_current"] != nil {
-					compareAgainstRelease = jobConfig["release_current"]
+				if len(jobConfigPre) > 0 {
+					if err := jobConfigPre.mergeConfigSet(job.JobConfig); err != nil {
+						log.Fatalf("Failed merge job configset %s", err)
+					}
+				}
+				if len(jobConfigPost) > 0 {
+					if err := jobConfigPost.mergeConfigSet(job.JobConfig); err != nil {
+						log.Fatalf("Failed merge job configset %s", err)
+					}
 				}
 
-				// add job only if it falls between release_since and release_until values
-				if ReleaseMatches(compareAgainstRelease, jobConfig["release_since"], jobConfig["release_until"]) {
-					r.JobConfigs[repoIndex].Jobs[jobIndex].JobConfig = jobConfig
+				r.JobConfigs[repoIndex].Jobs[jobIndex].JobConfig = jobConfig
+				if len(jobConfigPre) > 0 {
+					r.JobConfigs[repoIndex].Jobs[jobIndex].jobConfigPre = jobConfigPre
+				}
+				if len(jobConfigPost) > 0 {
+					r.JobConfigs[repoIndex].Jobs[jobIndex].jobConfigPost = jobConfigPost
 				}
 			}
 		}
