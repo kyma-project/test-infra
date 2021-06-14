@@ -79,18 +79,27 @@ gardener::provision_cluster() {
 
     CLEANUP_CLUSTER="true"
     (
-    set -x
-    kyma provision gardener aws \
-            --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
-            --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
-            --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
-            --scaler-max 4 --scaler-min 2 \
-            --kube-version="${GARDENER_CLUSTER_VERSION}"
+      # enable trap to catch kyma provision failures
+      trap gardener::reprovision_cluster ERR
+      # decreasing attempts to 2 because we will try to create new cluster from scratch on exit code other than 0
+      kyma provision gardener aws \
+        --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" \
+        --name "${CLUSTER_NAME}" \
+        --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+        --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
+        --region "${GARDENER_REGION}" \
+        -z "${GARDENER_ZONES}" \
+        -t "${MACHINE_TYPE}" \
+        --scaler-max 4 \
+        --scaler-min 2 \
+        --kube-version="${GARDENER_CLUSTER_VERSION}" \
+        --attempts 2
     )
-
-    if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
-      # run oom debug pod
-      utils::debug_oom
+    # trap cleanup we want other errors fail pipeline immediately
+    trap - ERR
+    if [ "$DEBUG_COMMANDO_OOM" = "true" ]; then
+    # run oom debug pod
+        utils::debug_oom
     fi
 }
 

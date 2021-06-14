@@ -27,7 +27,6 @@ export RS_GROUP \
     REGION
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
-export EVENTHUB_SECRET_OVERRIDE_FILE="eventhubs-secret-overrides.yaml"
 export HELM_TIMEOUT_SEC=10000s # timeout in sec for helm install/test operation
 export TEST_TIMEOUT_SEC=600   # timeout in sec for test pods until they reach the terminating state
 export UPGRADE_TEST_NAMESPACE="e2e-upgrade-test"
@@ -101,7 +100,7 @@ cleanup() {
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
 
-        gardener::deprovision_gardener_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
+        gardener::deprovision_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
     fi
 
     rm -rf "${TMP_DIR}"

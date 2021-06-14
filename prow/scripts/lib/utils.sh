@@ -321,9 +321,8 @@ function utils::oom_get_output() {
 # utils::debug_oom will create oom-debug daemonset
 # it will create necessary clusterrolebindings to allow oom-debug pods run as privileged
 function utils::debug_oom() {
-  if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
-    kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/debug-container.yaml"
-  fi
+  # run oom debug pod
+  kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/debug-container.yaml"
 }
 
 # utils::kubeaudit_create_report downlaods kubeaudit if necessary and checks for privileged containers

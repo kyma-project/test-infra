@@ -20,31 +20,32 @@ function gardener::deprovision_cluster() {
     echo "Kubeconfig path is empty. Exiting..."
     exit 1
   fi
-  if [ -n "${CLEANUP_CLUSTER}" ]; then
-    log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
-    GARDENER_PROJECT_NAME=$1
-    GARDENER_CLUSTER_NAME=$2
-    GARDENER_CREDENTIALS=$3
+  log::info "Deprovision cluster: ${CLUSTER_NAME}"
+  GARDENER_PROJECT_NAME=$1
+  GARDENER_CLUSTER_NAME=$2
+  GARDENER_CREDENTIALS=$3
 
-    local NAMESPACE="garden-${GARDENER_PROJECT_NAME}"
+  local NAMESPACE="garden-${GARDENER_PROJECT_NAME}"
 
-    kubectl --kubeconfig "${GARDENER_CREDENTIALS}" -n "${NAMESPACE}" annotate shoot "${GARDENER_CLUSTER_NAME}" confirmation.gardener.cloud/deletion=true --overwrite
-    kubectl --kubeconfig "${GARDENER_CREDENTIALS}" -n "${NAMESPACE}" delete shoot "${GARDENER_CLUSTER_NAME}" --wait=false
-  fi
+  kubectl annotate shoot "${GARDENER_CLUSTER_NAME}" confirmation.gardener.cloud/deletion=true \
+    --overwrite \
+    -n "${NAMESPACE}" \
+    --kubeconfig "${GARDENER_CREDENTIALS}"
+  kubectl delete shoot "${GARDENER_CLUSTER_NAME}" \
+    --wait=false \
+    --kubeconfig "${GARDENER_CREDENTIALS}" \
+    -n "${NAMESPACE}"
 }
 
 
 # gardener::reprovision_cluster will generate new cluster name
 # and start provisioning again
 gardener::reprovision_cluster() {
-  if [ "${reprovisionCount:-0}" -lt 1 ]; then
     log::info "cluster provisioning failed, trying provision new cluster"
-    export reprovisionCount=1
-    CLEANUP_CLUSTER="true" gardener::deprovision_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
+    log::info "cleaning damaged cluster first"
+    gardener::deprovision_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
+    log::info "building new cluster name"
     utils::generate_commonName "${COMMON_NAME_PREFIX}"
     CLUSTER_NAME="${COMMON_NAME}"
     gardener::provision_cluster
-  else
-    log::info "cluster provisioning failed, already tried with new cluster, I give up"
-  fi
 }

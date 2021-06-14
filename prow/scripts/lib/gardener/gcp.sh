@@ -50,33 +50,6 @@ gardener::cleanup() {
 }
 
 
-#function gardener::deprovision_cluster() {
-#  if [ -z "$1" ]; then
-#    echo "Project name is empty. Exiting..."
-#    exit 1
-#  fi
-#  if [ -z "$2" ]; then
-#    echo "Cluster name is empty. Exiting..."
-#    exit 1
-#  fi
-#  if [ -z "$3" ]; then
-#    echo "Kubeconfig path is empty. Exiting..."
-#    exit 1
-#  fi
-#  if [ -n "${CLEANUP_CLUSTER}" ]; then
-#    log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
-#    GARDENER_PROJECT_NAME=$1
-#    GARDENER_CLUSTER_NAME=$2
-#    GARDENER_CREDENTIALS=$3
-#
-#    local NAMESPACE="garden-${GARDENER_PROJECT_NAME}"
-#
-#    kubectl --kubeconfig "${GARDENER_CREDENTIALS}" -n "${NAMESPACE}" annotate shoot "${GARDENER_CLUSTER_NAME}" confirmation.gardener.cloud/deletion=true --overwrite
-#    kubectl --kubeconfig "${GARDENER_CREDENTIALS}" -n "${NAMESPACE}" delete shoot "${GARDENER_CLUSTER_NAME}" --wait=false
-#  fi
-#}
-
-
 gardener::init() {
     requiredVars=(
         KYMA_PROJECT_DIR
@@ -108,7 +81,6 @@ gardener::provision_cluster() {
 
     CLEANUP_CLUSTER="true"
     (
-      set -x
       # enable trap to catch kyma provision failures
       trap gardener::reprovision_cluster ERR
       # decreasing attempts to 2 because we will try to create new cluster from scratch on exit code other than 0
@@ -124,26 +96,13 @@ gardener::provision_cluster() {
         --scaler-min 2 \
         --kube-version="${GARDENER_CLUSTER_VERSION}" \
         --attempts 2
-      false
     )
     # trap cleanup we want other errors fail pipeline immediately
     trap - ERR
+    if [ "$DEBUG_COMMANDO_OOM" = "true" ]; then
     # run oom debug pods
-    utils::debug_oom
-}
-
-# gardener::reprovision_cluster will generate new cluster name
-# and start provisioning again
-gardener::reprovision_cluster() {
-  if [ "${reprovisionCount:-0}" -lt 1 ]; then
-    log::info "cluster provisioning failed, trying provision new cluster"
-    export reprovisionCount=1
-    utils::generate_commonName "${COMMON_NAME_PREFIX}"
-    CLUSTER_NAME="${COMMON_NAME}"
-    gardener::provision_cluster
-  else
-    log::info "cluster provisioning failed, already tried with new cluster, I give up"
-  fi
+        utils::debug_oom
+    fi
 }
 
 gardener::install_kyma() {
