@@ -36,6 +36,7 @@ source "${LIBDIR}/utils.sh"
 # P - path to test-infra sources
 function gcp::provision_gke_cluster {
 
+    local OPTIND
     # default values
     local clusterName
     local gcpProjectName
@@ -215,7 +216,7 @@ function gcp::provision_gke_cluster {
 # gcloud::authenticate authenticates to gcloud.
 # Arguments:
 # $1 - google login credentials
-function gcp::authenticate() {
+function gcp::authenticate {
     log::info "Authenticating to gcloud"
     if [[ -z "$1" ]]; then
       log::error "Missing account credentials, please provide proper credentials"
@@ -234,6 +235,7 @@ function gcp::authenticate() {
 # TODO: add support for setting CLOUDSDK env vars from function args.
 function gcp::reserve_ip_address {
 
+    local OPTIND
     local ipAddressName
     local gcpProjectName
     local computeRegion
@@ -300,6 +302,7 @@ function gcp::reserve_ip_address {
 # $2 - domain name
 function gcp::create_dns_record {
 
+    local OPTIND
     local ipAddress
     local dnsSubDomain
     local dnsDomain
@@ -384,7 +387,8 @@ function gcp::create_dns_record {
 
 # Arguments:
 # n - $JOB_NAME
-function gcp::set_vars_for_network() {
+function gcp::set_vars_for_network {
+
     local OPTIND
     local jobName
 
@@ -411,6 +415,7 @@ function gcp::set_vars_for_network() {
 
 function gcp::create_network {
 
+    local OPTIND
     local gcpProjectName
     local gcpNetworkName
     local gcpSubnetName

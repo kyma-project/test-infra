@@ -439,7 +439,7 @@ utils::generate_commonName() {
 # Arguments:
 # $1 - argument to check if it's empty
 # $2 - log message to use if $1 is empty
-function utils::check_empty_arg() {
+function utils::check_empty_arg {
     if [ -z "$2" ]; then
         logMessage="Mandatory argument is empty. Exiting..."
     else
@@ -451,7 +451,8 @@ function utils::check_empty_arg() {
     fi
 }
 
-function utils::set_vars_for_build() {
+function utils::set_vars_for_build {
+
     local OPTIND
     local buildType
 
