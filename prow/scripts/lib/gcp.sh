@@ -388,10 +388,10 @@ function gcp::set_vars_for_network() {
 
     local jobName
 
-    while getopts ":n:" opt; do
+    while getopts ":j:" opt; do
         case $opt in
-            n)
-                jobName="$OPTARG" ;;
+            j)
+                jobName="$OPTARG"; echo "local var set: $jobName" ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
@@ -399,6 +399,7 @@ function gcp::set_vars_for_network() {
         esac
     done
 
+    echo "$jobName"
     utils::check_empty_arg "$jobName" "Job name is empty. Exiting..."
 
     # variable hold return value for calling process

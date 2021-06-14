@@ -88,7 +88,7 @@ utils::set_vars_for_build \
     -s "$PULL_BASE_SHA"
 
 ### Cluster name must be less than 40 characters!
-gcp::set_vars_for_network -n "$JOB_NAME"
+gcp::set_vars_for_network -j "$JOB_NAME"
 export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_net_name:?}"
 export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_subnet_name:?}"
 #Local variables
