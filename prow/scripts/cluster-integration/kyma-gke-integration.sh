@@ -96,6 +96,7 @@ DNS_SUBDOMAIN="$COMMON_NAME"
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
+#TODO: use named argsinstead positional ones.
 gcp::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 gcp::create_network \
@@ -105,15 +106,18 @@ gcp::create_network \
 
 kyma::install_cli
 
+# TODO: check if can be included in gcp::create_dns_record
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
-gcp::reserve_ip_address -n "$COMMON_NAME" -p "$CLOUDSDK_CORE_PROJECT" -r "$CLOUDSDK_COMPUTE_REGION"
+gcp::reserve_ip_address \
+    -n "$COMMON_NAME" \
+    -p "$CLOUDSDK_CORE_PROJECT" \
+    -r "$CLOUDSDK_COMPUTE_REGION"
 export GATEWAY_IP_ADDRESS="${gcp_reserve_ip_address_return_ip_address:?}"
 export CLEANUP_GATEWAY_IP_ADDRESS="true"
 
 
 
-# TODO: improve that part by moving more code to the function.
 log::info "Create DNS Record for Ingressgateway IP"
 gcp::create_dns_record \
     -p "$CLOUDSDK_CORE_PROJECT" \
@@ -127,6 +131,7 @@ export CLEANUP_GATEWAY_DNS_RECORD="true"
 # if GKE_RELEASE_CHANNEL is set, get latest possible cluster version
 gcloud::set_latest_cluster_version_for_channel
 
+#TODO: add this to gcp::provision_gke_cluster
 if [ "$PROVISION_REGIONAL_CLUSTER" ]; then NUM_NODES="$NODES_PER_ZONE"; fi
 
 gcp::provision_gke_cluster \
@@ -154,6 +159,7 @@ gcp::provision_gke_cluster \
 
 export CLEANUP_CLUSTER="true"
 
+#TODO: do we need function for this? Do we generate such certificates in other scripts?
 log::info "Generate self-signed certificate"
 DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 CERT_KEY=$(utils::generate_self_signed_cert "$DOMAIN")

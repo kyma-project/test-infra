@@ -406,6 +406,9 @@ function gcp::set_vars_for_network {
 
     utils::check_empty_arg "$jobName" "Job name is empty. Exiting..."
 
+    log::info "Replacing underscore with dashes in job name."
+    jobName=$(echo "$jobName" | tr '_' '-')
+
     # variable hold return value for calling process
     # shellcheck disable=SC2034
     gcp_set_vars_for_network_net_name="$jobName-net"
@@ -440,9 +443,6 @@ function gcp::create_network {
     utils::check_empty_arg "$gcpNetworkName" "gcp network name is empty. Exiting..."
     utils::check_empty_arg "$gcpSubnetName" "gcp subnet name is empty. Exiting..."
 
-    log::info "Replacing underscore with dashes in network and subnetwork name."
-    gcpNetworkName=$(echo "$gcpNetworkName" | tr '_' '-')
-    gcpSubnetName=$(echo "$gcpSubnetName" | tr '_' '-')
     log::info "Create $gcpNetworkName network with $gcpSubnetName subnet"
 
     if gcloud compute networks describe "$gcpNetworkName"; then
