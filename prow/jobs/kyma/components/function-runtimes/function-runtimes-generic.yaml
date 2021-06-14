@@ -17,7 +17,7 @@ job_template: &job_template
   run_if_changed: "^components/function-runtimes/|^common/makefiles/"
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.16.4
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210607-b7e95d8b
         securityContext:
           privileged: true
         command:
