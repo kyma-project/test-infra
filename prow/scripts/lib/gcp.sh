@@ -385,13 +385,13 @@ function gcp::create_dns_record {
 # Arguments:
 # n - $JOB_NAME
 function gcp::set_vars_for_network() {
-
+    local OPTIND
     local jobName
 
-    while getopts ":j:" opt; do
+    while getopts ":n:" opt; do
         case $opt in
-            j)
-                jobName="$OPTARG"; echo "local var set: $jobName" ;;
+            n)
+                jobName="$OPTARG" ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
@@ -399,7 +399,6 @@ function gcp::set_vars_for_network() {
         esac
     done
 
-    echo "$jobName"
     utils::check_empty_arg "$jobName" "Job name is empty. Exiting..."
 
     # variable hold return value for calling process

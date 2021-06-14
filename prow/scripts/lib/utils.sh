@@ -452,7 +452,7 @@ function utils::check_empty_arg() {
 }
 
 function utils::set_vars_for_build() {
-
+    local OPTIND
     local buildType
 
     while getopts ":b:p:s:" opt; do
