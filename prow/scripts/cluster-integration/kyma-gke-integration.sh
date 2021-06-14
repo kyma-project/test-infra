@@ -101,7 +101,7 @@ kyma::install_cli
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
-gcp::reserve_ip_address -n "$COMMON_NAME"
+gcp::reserve_ip_address -n "$COMMON_NAME" -p "$CLOUDSDK_CORE_PROJECT" -r "$CLOUDSDK_COMPUTE_REGION"
 export GATEWAY_IP_ADDRESS="${gcp_reserve_ip_address_return_ip_address:?}"
 export CLEANUP_GATEWAY_IP_ADDRESS="true"
 
