@@ -286,7 +286,8 @@ function gcp::reserve_ip_address {
         --region="$computeRegion" \
         --network-tier="PREMIUM"
     # Print reserved IP address on stdout as it's consumed by calling process and used for next steps.
-    gcp::reserve_ip_address_return_ip_address="$(gcloud compute addresses list \
+    # shellcheck disable=SC2034
+    gcp_reserve_ip_address_return_ip_address="$(gcloud compute addresses list \
         --filter="name=$ipAddressName" \
         --format="value(ADDRESS)")"
     log::info "Created IP Address for Ingressgateway: $ipAddressName"
