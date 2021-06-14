@@ -30,9 +30,9 @@ const (
 	// ImageGolangBuildpack1_14 means Golang buildpack image with Go 1.14.*
 	ImageGolangBuildpack1_14 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
 	// ImageGolangBuildpack1_16 means Golang buildpack image with Go 1.16.*
-	ImageGolangBuildpack1_16 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.16.4"
+	ImageGolangBuildpack1_16 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210607-b7e95d8b"
 	// ImageGolangKubebuilder2BuildpackLatest means Golang buildpack with Kubebuilder2 image
-	ImageGolangKubebuilder2BuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.16.4" // see https://github.com/kyma-project/test-infra/pull/3738
+	ImageGolangKubebuilder2BuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210607-b7e95d8b" // see https://github.com/kyma-project/test-infra/pull/3738
 	// ImageGolangKubebuilder2_20210216 contains the v20210216-1.14.0-rc1-535-gb45951c9 image
 	ImageGolangKubebuilder2_20210216 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210216-1.14.0-rc1-535-gb45951c9"
 	// ImageNode10Buildpack means Node.js buildpack image (node v10)
@@ -60,7 +60,7 @@ const (
 	// ImageKymaIntegrationLatest represents kyma integration image with kubectl 1.16
 	ImageKymaIntegrationLatest = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
 	// ImageGolangToolboxLatest represents the latest version of the golang buildpack toolbox
-	ImageGolangToolboxLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.16.4" // see https://github.com/kyma-project/test-infra/pull/3738
+	ImageGolangToolboxLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210607-b7e95d8b" // see https://github.com/kyma-project/test-infra/pull/3738
 	// ImageProwToolsLatest represents the latest version of the prow-tools image
 	ImageProwToolsLatest = "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210401-294e46e5"
 	// ImageProwToolsCurrent represents the latest version of the prow-tools image
