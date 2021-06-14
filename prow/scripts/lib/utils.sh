@@ -278,10 +278,12 @@ function utils::save_env_file() {
 }
 
 function utils::describe_nodes() {
-  log::info "Describe nodes"
     {
+      log::info "calling describe nodes"
       kubectl describe nodes
+      log::info "calling top nodes"
       kubectl top nodes
+      log::info "calling top pods"
       kubectl top pods --all-namespaces
     } > "${ARTIFACTS}/describe_nodes.txt"
     grep "System OOM encountered" "${ARTIFACTS}/describe_nodes.txt"
@@ -296,6 +298,7 @@ function utils::oom_get_output() {
   if [ ! -e "${ARTIFACTS}/describe_nodes.txt" ]; then
     utils::describe_nodes
   fi
+  if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
   log::info "Download OOM events details"
   pods=$(kubectl get pod -l "name=oom-debug" -o=jsonpath='{.items[*].metadata.name}')
   for pod in $pods; do
@@ -312,10 +315,12 @@ function utils::oom_get_output() {
       rm "$debugFile"
     fi
   done
+  fi
 }
 
+# utils::debug_oom will create oom-debug daemonset
+# it will create necessary clusterrolebindings to allow oom-debug pods run as privileged
 function utils::debug_oom() {
-  # run oom debug pod
   kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/debug-container.yaml"
 }
 
@@ -361,4 +366,63 @@ function utils::kubeaudit_check_report() {
     echo "$incompliant_resources"
     exit 1
   fi
+}
+
+# post_hook runs at the end of a script or on any error
+function utils::post_hook() {
+  #!!! Must be at the beginning of this function !!!
+  EXIT_STATUS=$?
+
+  log::info "Cleanup"
+
+  if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
+    log::info "AN ERROR OCCURED! Take a look at preceding log entries."
+  fi
+
+  #Turn off exit-on-error so that next step is executed even if previous one fails.
+  set +e
+
+  # collect logs from failed tests before deprovisioning
+  kyma::run_test_log_collector "post-main-kyma-gke-integration"
+
+  gcloud::cleanup
+
+  MSG=""
+  if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
+  log::info "Job is finished ${MSG}"
+  set -e
+
+  exit "${EXIT_STATUS}"
+}
+
+
+# run_jobguard will start jobguard if build type is set to pr
+# Arguments
+# $1 - Build type set for prowjob
+function utils::run_jobguard() {
+  buildType=$( echo "${1}" | tr "[:upper:]" "[:lower:]")
+  if [[ "${buildType}" == "pr" ]]; then
+    log::info "Execute Job Guard"
+    # shellcheck source=development/jobguard/scripts/run.sh
+    "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
+  fi
+}
+
+# utils::generate_CommonName create and export COMMON_NAME variable
+# it generates random part of COMMON_NAME and prefix it with provided arguments
+#
+# Arguments:
+# $1 - string to use as a common name prefix /optional
+# $2 - pull request number or commit id to use as a common name prefix /optional
+# Exports
+# COMMON_NAME
+utils::generate_commonName() {
+  NAME_PREFIX=$1
+  PULL_NUMBER=$2
+  if [ ${#PULL_NUMBER} -gt 0 ]; then
+    PULL_NUMBER="-${PULL_NUMBER}-"
+  fi
+  RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
+  COMMON_NAME=$(echo "${NAME_PREFIX}${PULL_NUMBER}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+  export COMMON_NAME
 }

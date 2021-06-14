@@ -35,6 +35,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/cluster-integration/helpers/integration-tests.sh
 source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/integration-tests.sh"
+# shellcheck source=prow/scripts/lib/gardener/gardener.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
 
 # All provides require these values, each of them may check for additional variables
 requiredVars=(
@@ -72,10 +74,8 @@ trap gardener::cleanup EXIT INT
 ERROR_LOGGING_GUARD="true"
 export ERROR_LOGGING_GUARD
 
-RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
 readonly COMMON_NAME_PREFIX="grd"
-COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-export COMMON_NAME
+utils::generate_commonName "${COMMON_NAME_PREFIX}"
 
 ### Cluster name must be less than 10 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
@@ -142,7 +142,7 @@ fi
 
 if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
     gardener::test_fast_integration_kyma
-# this will be extended with the next components 
+# this will be extended with the next components
 elif [[ "${API_GATEWAY_INTEGRATION}" == "true" ]]; then
     api-gateway::prepare_test_environments
     api-gateway::launch_tests
