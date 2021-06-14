@@ -384,7 +384,8 @@ function gcp::create_dns_record {
 
 # Arguments:
 # n - $JOB_NAME
-function gcp::set_vars_for_network {
+function gcp::set_vars_for_network() {
+
     local jobName
 
     while getopts ":n:" opt; do
