@@ -118,7 +118,7 @@ gcp::create_dns_record \
     -d "$DNS_DOMAIN"
 export CLEANUP_GATEWAY_DNS_RECORD="true"
 
-gcloud::create_network \
+gcp::create_network \
     -n "$GCLOUD_NETWORK_NAME" \
     -s "$GCLOUD_SUBNET_NAME" \
     -p "$CLOUDSDK_CORE_PROJECT"
