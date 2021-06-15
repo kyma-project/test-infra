@@ -32,7 +32,7 @@ The .yaml files in `data` directory have one key:
 
 The `config.yaml` and .yaml files in the `data` directory serve as the input files for the Render Templates, which generate the jobs based on the file definition and templates that it specifies. These files define the names of the output file, their location, and configuration referred to in `values`.
 
-See the example of `application-gateway` in which the `generic.taml` template is used to create the component and test-related YAML files using values defined by the **kyma_generic_component** parameter.
+See the example of `application-gateway`, in which the `generic.taml` template is used to create the component and test-related YAML files using values defined by the **kyma_generic_component** parameter.
 
 ```yaml
 templates:
