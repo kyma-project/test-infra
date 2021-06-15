@@ -77,6 +77,33 @@ jobConfigs:
             - "default"
             - "presubmit"
 ```
+
+Component job defined in **jobConfig** can be used to generate multiple job definitions for a single component. It is defined by having a `path` value, and by not having a `name` value. This type of config holds two additional lists of configSets named **preConfigs** and **postConfigs**, that holds a list of global ConfigSets used for presubmit and postsubmit jobs.
+
+```yaml
+jobConfigs:
+  - repoName: "github.com/kyma-project/kyma"
+    jobs:
+      - jobConfig:
+          path: components/application-gateway
+          args:
+            - "/home/prow/go/src/github.com/kyma-project/kyma/components/application-gateway"
+          run_if_changed: "^components/application-gateway/|^common/makefiles/"
+          release_since: "1.7"
+        inheritedConfigs:
+          global:
+            - "jobConfig_default"
+            - "image_buildpack-golang"
+            - "jobConfig_generic_component"
+            - "jobConfig_generic_component_kyma"
+            - "extra_refs_test-infra"
+          preConfigs:
+            - "jobConfig_presubmit"
+          postConfigs:
+            - "jobConfig_postsubmit"
+            - "disable_testgrid"
+```
+
 The Render Templates builds the **Values** variable by merging ConfigSets from **globalSets** first. If the job inherits the `default` ConfigSet from **globalSets**, it is merged first and all other ConfigSets from **globalSets** are merged afterwards. Then, the Render Templates merges ConfigSets from **localSets**. Again, if the job inherits the `default` ConfigSet from **localSets**, it's merged first and then all the other ConfigSets from **localSets** are merged. ConfigSets other than default are merged in any order during the **globalSets** and **localSets** phases. ConfigSets from **jobConfig** are merged as the last ones. Existing keys in the **Values** variable are overwritten by values from the merged ConfigSets.
 
 
