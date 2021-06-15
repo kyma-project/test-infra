@@ -78,7 +78,7 @@ jobConfigs:
             - "presubmit"
 ```
 
-Component job defined in **jobConfig** can be used to generate multiple job definitions for a single component. It is defined by having a `path` value, and by not having a `name` value. This type of config holds two additional lists of configSets named **preConfigs** and **postConfigs**, that holds a list of global ConfigSets used for presubmit and postsubmit jobs.
+Component job defined in **jobConfig** can be used to generate multiple job definitions for a single component. It is defined by having a `path` value, and by not having a `name` value. This type of config holds two additional lists of configSets named **preConfigs** and **postConfigs**, which hold a list of global ConfigSets used for presubmit and postsubmit jobs.
 
 ```yaml
 jobConfigs:
