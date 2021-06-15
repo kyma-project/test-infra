@@ -374,6 +374,8 @@ function utils::kubeaudit_check_report() {
 function utils::post_hook() {
   #!!! Must be at the beginning of this function !!!
   EXIT_STATUS=$?
+  # CLUSTER_NAME is used in cleanup function.
+  export CLUSTER_NAME="${CLUSTER_NAME:-$COMMON_NAME}"
 
   log::info "Cleanup"
 
