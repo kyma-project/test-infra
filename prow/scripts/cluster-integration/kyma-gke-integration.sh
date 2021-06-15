@@ -78,7 +78,7 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-trap utils::post_hook EXIT INT
+trap 'utils::post_hook -n $COMMON_NAME -c $CLEANUP_CLUSTER' EXIT INT
 
 utils::run_jobguard "${BUILD_TYPE}"
 

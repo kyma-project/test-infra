@@ -41,7 +41,6 @@ function gcp::provision_gke_cluster {
     local clusterName
     local gcpProjectName
     local gkeClusterVersion
-    #local additionalLabels
     local prowjobName
     local prowjobID
     # default values
@@ -71,10 +70,6 @@ function gcp::provision_gke_cluster {
                 gcpProjectName="$OPTARG" ;;
             v)
                 gkeClusterVersion="$OPTARG" ;;
-            l)
-                if [ -n "$OPTARG" ]; then
-                    local additionalLabels="$OPTARG"
-                fi ;;
             j)
                 prowjobName="$OPTARG";;
             J)
@@ -87,26 +82,8 @@ function gcp::provision_gke_cluster {
                 machineType=${OPTARG:-$machineType} ;;
             R)
                 computeRegion=${OPTARG:-$computeRegion} ;;
-            n)
-                if [ -n "$OPTARG" ]; then
-                    local nodesCount="$OPTARG"
-                fi ;;
             N)
                 networkName=${OPTARG:-$networkName} ;;
-            S)
-                if [ -n "$OPTARG" ]; then
-                    local subnetName="$OPTARG"
-                fi ;;
-            C)
-                local gkeReleaseChannel="$OPTARG" ;;
-            i)
-                if [ -n "$OPTARG" ]; then
-                    local imageType="$OPTARG"
-                fi ;;
-            g)
-                if [ -n "$OPTARG" ]; then
-                    local gcpSecurityGroupDomain="$OPTARG"
-                fi ;;
             r)
                 provisionRegionalCluster=${OPTARG:-$provisionRegionalCluster} ;;
             s)
@@ -117,6 +94,30 @@ function gcp::provision_gke_cluster {
                 enablePSP=${OPTARG:-$enablePSP} ;;
             P)
                 testInfraSourcesDir=${OPTARG:-$testInfraSourcesDir} ;;
+            l)
+                if [ -n "$OPTARG" ]; then
+                    local additionalLabels="$OPTARG"
+                fi ;;
+            n)
+                if [ -n "$OPTARG" ]; then
+                    local nodesCount="$OPTARG"
+                fi ;;
+            S)
+                if [ -n "$OPTARG" ]; then
+                    local subnetName="$OPTARG"
+                fi ;;
+            C)
+                if [ -n "$OPTARG" ]; then
+                    local gkeReleaseChannel="$OPTARG"
+                fi ;;
+            i)
+                if [ -n "$OPTARG" ]; then
+                    local imageType="$OPTARG"
+                fi ;;
+            g)
+                if [ -n "$OPTARG" ]; then
+                    local gcpSecurityGroupDomain="$OPTARG"
+                fi ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
@@ -233,6 +234,7 @@ function gcp::provision_gke_cluster {
 function gcp::authenticate {
 
     local OPTIND
+    #required arguments
     local googleAppCredentials
 
     while getopts ":c:" opt; do
@@ -246,8 +248,9 @@ function gcp::authenticate {
         esac
     done
 
-    log::info "Authenticating to gcloud"
     utils::check_empty_arg "$googleAppCredentials" "Missing account credentials, please provide proper credentials"
+
+    log::info "Authenticating to gcloud"
     gcloud auth activate-service-account --key-file "$googleAppCredentials" || exit 1
 }
 
@@ -263,6 +266,7 @@ function gcp::authenticate {
 function gcp::reserve_ip_address {
 
     local OPTIND
+    # required arguments
     local ipAddressName
     local gcpProjectName
     local computeRegion
@@ -467,7 +471,7 @@ function gcp::create_network {
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2; exit 1 ;;
+                echo "Option -$OPTARG argument not provided" >&2 ;;
         esac
     done
 
@@ -491,4 +495,92 @@ function gcp::create_network {
         --range=10.0.0.0/22
 
    log::info "Successfully created network $gcpNetworkName"
+}
+
+# gcloud::deprovision_gke_cluster removes a GKE cluster
+# Required exported variables:
+# GCLOUD_COMPUTE_ZONE - zone in which the new cluster will be removed
+# GCLOUD_PROJECT_NAME - name of GCP project
+#
+# Arguments:
+# $1 - cluster name
+function gcp::deprovision_gke_cluster {
+  if [ -z "$1" ]; then
+    log::error "Cluster name not provided. Provide proper cluster name."
+    exit 1
+  fi
+  CLUSTER_NAME=$1
+
+#  gcloud config set project "${GCLOUD_PROJECT_NAME}"
+#  gcloud config set compute/zone "${GCLOUD_COMPUTE_ZONE}"
+
+  if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
+      # copy output from debug container to artifacts directory
+      utils::oom_get_output
+  fi
+
+  local params
+  params+=("--quiet")
+  if [ "${PROVISION_REGIONAL_CLUSTER}" ] && [ "${CLOUDSDK_COMPUTE_REGION}" ]; then
+    #Pass gke region name to delete command.
+    params+=("--region=${CLOUDSDK_COMPUTE_REGION}")
+  else
+    params+=("--zone=${GCLOUD_COMPUTE_ZONE}")
+  fi
+
+  if [ -z "${DISABLE_ASYNC_DEPROVISION+x}" ]; then
+      params+=("--async")
+  fi
+
+  log::info "Deprovisioning cluster $CLUSTER_NAME."
+  gcloud --project="$GCLOUD_PROJECT_NAME" beta container clusters delete "$CLUSTER_NAME" "${params[@]}"
+  log::info "Successfully removed cluster $CLUSTER_NAME!"
+}
+
+# gcloud::cleanup is a meta-function that removes all resources that were allocated for specific job.
+# Required exported variables:
+# CLOUDSDK_CORE_PROJECT
+# CLOUDSDK_DNS_ZONE_NAME
+# CLOUDSDK_COMPUTE_REGION
+# GATEWAY_DNS_FULL_NAME
+# GATEWAY_IP_ADDRESS
+# APISERVER_DNS_FULL_NAME
+# APISERVER_IP_ADDRESS
+function gcp::cleanup {
+
+    local OPTIND
+    local clusterName
+    local cleanupCluster="false"
+
+    while getopts ":n:c:" opt; do
+        case $opt in
+            n)
+                clusterName="$OPTARG" ;;
+            c)
+                cleanupCluster="${OPTARG:-$cleanupCluster}" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2; ;;
+        esac
+    done
+
+    utils::check_empty_arg "$clusterName" "Cluster name not provided."
+  utils::oom_get_output
+  if [ -n "$CLEANUP_CLUSTER" ]; then
+    log::info "Removing cluster $CLUSTER_NAME"
+    gcloud::deprovision_gke_cluster "$CLUSTER_NAME"
+  fi
+  if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
+    log::info "Removing DNS record for $GATEWAY_DNS_FULL_NAME"
+    gcloud::delete_dns_record "$GATEWAY_IP_ADDRESS" "$GATEWAY_DNS_FULL_NAME"
+  fi
+  if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
+    log::info "Removing IP address $GATEWAY_IP_ADDRESS_NAME"
+    gcloud::delete_ip_address "$GATEWAY_IP_ADDRESS_NAME"
+  fi
+  if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
+    log::info "Removing DNS record for $APISERVER_DNS_FULL_NAME"
+    gcloud::delete_dns_record "$APISERVER_IP_ADDRESS" "$APISERVER_DNS_FULL_NAME"
+  fi
 }

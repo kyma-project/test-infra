@@ -374,8 +374,27 @@ function utils::kubeaudit_check_report() {
 function utils::post_hook() {
   #!!! Must be at the beginning of this function !!!
   EXIT_STATUS=$?
+
+  local OPTIND
+    local clusterName
+    local cleanupCluster="false"
+
+    while getopts ":n:c:" opt; do
+        case $opt in
+            n)
+                clusterName="$OPTARG" ;;
+            c)
+                cleanupCluster="${OPTARG:-$cleanupCluster}" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2; ;;
+        esac
+    done
+
+    utils::check_empty_arg "$clusterName" "Cluster name not provided."
   # CLUSTER_NAME is used in cleanup function.
-  export CLUSTER_NAME="${CLUSTER_NAME:-$COMMON_NAME}"
+  #export CLUSTER_NAME="${CLUSTER_NAME:-$COMMON_NAME}"
 
   log::info "Cleanup"
 
@@ -389,7 +408,7 @@ function utils::post_hook() {
   # collect logs from failed tests before deprovisioning
   kyma::run_test_log_collector "post-main-kyma-gke-integration"
 
-  gcloud::cleanup
+  gcp::cleanup -n "$clusterName" -c "$cleanupCluster"
 
   MSG=""
   if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
