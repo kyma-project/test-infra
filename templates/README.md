@@ -14,7 +14,7 @@ The template list includes:
 - `kyma-github-release.yaml` that is used for creating the GitHub release after merging the release branch to the `main` branch.
 - `prow-config.yaml` that serves to create the main Prow configuration without job definitions.
 - `releases.go.tmpl` that contains a set of functions for the release which provide the list of currently supported releases and all supported Kyma release branches.
-- `testgrid-default.yaml`that defines a set of testgrid dashbords.
+- `testgrid-default.yaml`, which defines a set of testgrid dashbords.
 - `whitesource-periodics.tmpl` that defines a set of periodic jobs that run Whitesource scan. 
 
 Jobs and Prow configurations have unit tests that are located [here](../development/tools/jobs).
