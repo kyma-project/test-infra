@@ -37,20 +37,21 @@ source "${LIBDIR}/utils.sh"
 function gcp::provision_gke_cluster {
 
     local OPTIND
-    # default values
+    # required arguments
     local clusterName
     local gcpProjectName
     local gkeClusterVersion
-    local additionalLabels
+    #local additionalLabels
     local prowjobName
     local prowjobID
+    # default values
     local ttlHours="3"
     local computeZone="europe-west4-b"
     local machineType="n1-standard-4"
     local computeRegion="europe-west4"
     local numNodes="3"
     local nodesPerZone="1"
-    local networkNameDefault="default"
+    local networkName="default"
     local provisionRegionalCluster="false"
     local enableSSD="false"
     local enablePSP="false"
@@ -71,47 +72,56 @@ function gcp::provision_gke_cluster {
             v)
                 gkeClusterVersion="$OPTARG" ;;
             l)
-                additionalLabels="$OPTARG" ;;
+                if [ -n "$OPTARG" ]; then
+                    local additionalLabels="$OPTARG"
+                fi ;;
             j)
                 prowjobName="$OPTARG";;
             J)
                 prowjobID="$OPTARG";;
             t)
-                ttlHours="$OPTARG" ;;
+                ttlHours=${$OPTARG:-$ttlHours} ;;
             z)
-                computeZone="$OPTARG" ;;
+                computeZone=${$OPTARG:-$computeZone} ;;
             m)
-                machineType="$OPTARG" ;;
+                machineType=${$OPTARG:-$machineType} ;;
             R)
-                computeRegion="$OPTARG" ;;
+                computeRegion=${$OPTARG:-$computeRegion} ;;
             n)
-                local nodesCount="$OPTARG" ;;
+                if [ -n "$OPTARG" ]; then
+                    local nodesCount="$OPTARG"
+                fi ;;
             N)
-                local networkName="$OPTARG" ;;
+                networkName=${$OPTARG:-$networkName} ;;
             S)
-                local subnetName="$OPTARG" ;;
+                if [ -n "$OPTARG" ]; then
+                    local subnetName="$OPTARG"
+                fi ;;
             C)
                 local gkeReleaseChannel="$OPTARG" ;;
             i)
-                local imageType="$OPTARG" ;;
+                if [ -n "$OPTARG" ]; then
+                    local imageType="$OPTARG"
+                fi ;;
             g)
-                local gcpSecurityGroupDomain="$OPTARG" ;;
+                if [ -n "$OPTARG" ]; then
+                    local gcpSecurityGroupDomain="$OPTARG"
+                fi ;;
             r)
-                provisionRegionalCluster="$OPTARG" ;;
+                provisionRegionalCluster=${$OPTARG:-$provisionRegionalCluster} ;;
             s)
-                enableStackdriver="$OPTARG" ;;
+                enableStackdriver=${$OPTARG:-$enableStackdriver} ;;
             D)
-                enableSSD="$OPTARG" ;;
+                enableSSD=${$OPTARG:-$enableSSD} ;;
             e)
-                enablePSP="$OPTARG" ;;
+                enablePSP=${$OPTARG:-$enablePSP} ;;
             P)
-                testInfraSourcesDir="$OPTARG" ;;
+                testInfraSourcesDir=${$OPTARG:-$testInfraSourcesDir} ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
                 echo "Option -$OPTARG argument not provided" >&2 ;;
         esac
-
     done
 
 
@@ -137,7 +147,7 @@ function gcp::provision_gke_cluster {
     local clusterLabels="cluster=$clusterName,volatile=true"
 
     # optional labels
-    if [ "$additionalLabels" ]; then
+    if [ -z "$additionalLabels" ]; then
         additionalLabels=",$additionalLabels"
     fi
 
@@ -167,7 +177,7 @@ function gcp::provision_gke_cluster {
         params+=("--network=$networkName")
         params+=("--subnetwork=$subnetName")
     else
-        params+=("--network=${networkName:-$networkNameDefault}")
+        params+=("--network=$networkName")
     fi
 
     # Optional parameters

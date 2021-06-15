@@ -442,10 +442,10 @@ function utils::check_empty_arg {
     if [ -z "$2" ]; then
         logMessage="Mandatory argument is empty. Exiting..."
     else
-        logMessage="${2}"
+        logMessage="$2"
     fi
     if [ -z "$1" ]; then
-        log::error "${logMessage}"
+        log::error "$logMessage"
         exit 1
     fi
 }

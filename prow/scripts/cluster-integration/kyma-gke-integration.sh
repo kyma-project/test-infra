@@ -131,10 +131,7 @@ export CLEANUP_GATEWAY_DNS_RECORD="true"
 # if GKE_RELEASE_CHANNEL is set, get latest possible cluster version
 gcloud::set_latest_cluster_version_for_channel
 
-#TODO: add this to gcp::provision_gke_cluster
-#if [ "$PROVISION_REGIONAL_CLUSTER" ]; then NUM_NODES="$NODES_PER_ZONE"; fi
-
-env
+if [ "$PROVISION_REGIONAL_CLUSTER" ]; then NUM_NODES="$NODES_PER_ZONE"; fi
 
 gcp::provision_gke_cluster \
     -c "$COMMON_NAME" \
