@@ -4,8 +4,9 @@
 
 Jobs and Prow configuration are generated from templates. The `templates` directory has the following structure:
 
+- `data` which is the subdirectory with files that describes jobs that the [Render Templates](../development/tools/cmd/rendertemplates) tool should generate using job definitions from templates.
 - `templates` which is the subdirectory with all template files that supply the definition of [Prow jobs](../prow/jobs) used in Kyma.
-- `config.yaml` which is the configuration file that describes jobs that the [Render Templates](../development/tools/cmd/rendertemplates) tool should generate using job definitions from templates.
+- `config.yaml` which is the configuration file that describes configuration and jobs that the [Render Templates](../development/tools/cmd/rendertemplates) tool should generate using job definitions from templates.
 
 The template list includes:
 
@@ -25,7 +26,11 @@ The `config.yaml` file has two keys:
 - `global` with a map of values available for all templates
 - `templates` with a list of files to generate
 
-The `config.yaml` serves as the input file for the Render Templates that generates the jobs based on the file definition and templates which it specifies. The `config.yaml` file defines the names of the output file, their location, and configuration referred to in `values`.
+The .yaml files in `data` directory have one key:
+
+- `templates` with a list of files to generate
+
+The `config.yaml` and .yaml files in the `data` directory serves as the input file for the Render Templates that generates the jobs based on the file definition and templates which it specifies. These files define the names of the output file, their location, and configuration referred to in `values`.
 
 See the example of `application-gateway` in which the `generic.taml` template is used to create the component and test-related YAML files using values defined by the **kyma_generic_component** parameter.
 
