@@ -203,7 +203,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.AllPeriodics()
-	assert.Len(t, periodics, 16)
+	assert.Len(t, periodics, 15)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -282,18 +282,18 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, []string{"-c", "/prow-tools/orphanremover -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"}, loadbalancerCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, loadbalancerCleanerPeriodic.JobBase)
 
-	expName = "firewall-cleaner"
-	firewallCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
-	require.NotNil(t, firewallCleanerPeriodic)
-	assert.Equal(t, expName, firewallCleanerPeriodic.Name)
-
-	assert.Equal(t, "45 */4 * * 1-5", firewallCleanerPeriodic.Cron)
-	tester.AssertThatHasPresets(t, firewallCleanerPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
-	tester.AssertThatHasExtraRepoRefCustom(t, firewallCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
-	assert.Equal(t, tester.ImageProwToolsCurrent, firewallCleanerPeriodic.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"bash"}, firewallCleanerPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "/prow-tools/firewallcleaner -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"}, firewallCleanerPeriodic.Spec.Containers[0].Args)
-	tester.AssertThatSpecifiesResourceRequests(t, firewallCleanerPeriodic.JobBase)
+	//expName = "firewall-cleaner"
+	//firewallCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	//require.NotNil(t, firewallCleanerPeriodic)
+	//assert.Equal(t, expName, firewallCleanerPeriodic.Name)
+	//
+	//assert.Equal(t, "45 */4 * * 1-5", firewallCleanerPeriodic.Cron)
+	//tester.AssertThatHasPresets(t, firewallCleanerPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
+	//tester.AssertThatHasExtraRepoRefCustom(t, firewallCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
+	//assert.Equal(t, tester.ImageProwToolsCurrent, firewallCleanerPeriodic.Spec.Containers[0].Image)
+	//assert.Equal(t, []string{"bash"}, firewallCleanerPeriodic.Spec.Containers[0].Command)
+	//assert.Equal(t, []string{"-c", "/prow-tools/firewallcleaner -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"}, firewallCleanerPeriodic.Spec.Containers[0].Args)
+	//tester.AssertThatSpecifiesResourceRequests(t, firewallCleanerPeriodic.JobBase)
 
 	expName = "orphaned-dns-cleaner"
 	dnsCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
