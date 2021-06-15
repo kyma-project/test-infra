@@ -80,19 +80,19 @@ function gcp::provision_gke_cluster {
             J)
                 prowjobID="$OPTARG";;
             t)
-                ttlHours=${$OPTARG:-$ttlHours} ;;
+                ttlHours=${OPTARG:-$ttlHours} ;;
             z)
-                computeZone=${$OPTARG:-$computeZone} ;;
+                computeZone=${OPTARG:-$computeZone} ;;
             m)
-                machineType=${$OPTARG:-$machineType} ;;
+                machineType=${OPTARG:-$machineType} ;;
             R)
-                computeRegion=${$OPTARG:-$computeRegion} ;;
+                computeRegion=${OPTARG:-$computeRegion} ;;
             n)
                 if [ -n "$OPTARG" ]; then
                     local nodesCount="$OPTARG"
                 fi ;;
             N)
-                networkName=${$OPTARG:-$networkName} ;;
+                networkName=${OPTARG:-$networkName} ;;
             S)
                 if [ -n "$OPTARG" ]; then
                     local subnetName="$OPTARG"
@@ -108,15 +108,15 @@ function gcp::provision_gke_cluster {
                     local gcpSecurityGroupDomain="$OPTARG"
                 fi ;;
             r)
-                provisionRegionalCluster=${$OPTARG:-$provisionRegionalCluster} ;;
+                provisionRegionalCluster=${OPTARG:-$provisionRegionalCluster} ;;
             s)
-                enableStackdriver=${$OPTARG:-$enableStackdriver} ;;
+                enableStackdriver=${OPTARG:-$enableStackdriver} ;;
             D)
-                enableSSD=${$OPTARG:-$enableSSD} ;;
+                enableSSD=${OPTARG:-$enableSSD} ;;
             e)
-                enablePSP=${$OPTARG:-$enablePSP} ;;
+                enablePSP=${OPTARG:-$enablePSP} ;;
             P)
-                testInfraSourcesDir=${$OPTARG:-$testInfraSourcesDir} ;;
+                testInfraSourcesDir=${OPTARG:-$testInfraSourcesDir} ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
