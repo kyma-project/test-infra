@@ -925,46 +925,6 @@ periodics: # runs on schedule
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: firewall-cleaner
-      annotations:
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "firewall-cleaner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-gc-project-env: "true"
-        preset-sa-gke-kyma-integration: "true"
-      cron: "45 */4 * * 1-5"
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:current"
-            securityContext:
-              privileged: true
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "/prow-tools/firewallcleaner -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
-            resources:
-              requests:
-                memory: 100Mi
-                cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: orphaned-dns-cleaner
       annotations:
         testgrid-create-test-group: "false"
