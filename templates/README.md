@@ -91,11 +91,11 @@ Component jobs are defined similarly to a regular job, with the exception that `
 Component job will generate presubmit and postsubmit jobs for the next release, and by default, it will also generate these jobs for supported releases.
 The rest of the values will be copied from the main jobConfig to the generated ones.
 
-See the description of values used by component job templates:
-
 A template receives two objects as input:
 - `Values` which contains all the values specified under `values` in the `config.yaml` file.
 - `Global` which contains values specified under `global` in the `config.yaml` file.
+
+See the description of values used by component job templates:
 
 | Name | Required | Description |
 |------| :-------------: |------|
