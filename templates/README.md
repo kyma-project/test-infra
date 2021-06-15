@@ -93,6 +93,10 @@ The rest of the values will be copied from the main jobConfig to the generated o
 
 See the description of values used by component job templates:
 
+A template receives two objects as input:
+- `Values` which contains all the values specified under `values` in the `config.yaml` file.
+- `Global` which contains values specified under `global` in the `config.yaml` file.
+
 | Name | Required | Description |
 |------| :-------------: |------|
 | **name** | No | Name must not be set, as it will be generated for each job. |
@@ -100,10 +104,6 @@ See the description of values used by component job templates:
 | **release_since** | No |  Specifies the release from which this component version applies. |
 | **release_since** | No |  Specifies the release till which this component version applies.  |
 | **skipReleaseJobs** | No | Specifies if the Render Templates tools should omit generating job definitions for currently supported releases. |
-
-A template receives two objects as input:
-- `Values` which contains all the values specified under `values` in the `config.yaml` file.
-- `Global` which contains values specified under `global` in the `config.yaml` file.
 
 All the functions from the [`sprig`](https://github.com/Masterminds/sprig) library are available in the templates. It is the same library that is used by Helm, so if you know Helm, you are already familiar with them. Also, a few additional functions are available:
 - `releaseMatches {release} {since} {until}` returns a boolean value indicating whether `release` fits in the range. Use `nil` to remove one of the bounds. For example, `releaseMatches {{ $rel }} '1.2' '1.5'` checks if the release `$rel` is not earlier than `1.2` and not later than `1.5`.
