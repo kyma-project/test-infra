@@ -99,7 +99,7 @@ See the description of values used by component job templates:
 
 | Name | Required | Description |
 |------| :-------------: |------|
-| **name** | No | Name must not be set, as it will be generated for each job. |
+| **name** | No | Name must not be set. It is generated for each job. |
 | **path** | Yes | Path in a repository to the component files. |
 | **release_since** | No |  Specifies the release from which this component version applies. |
 | **release_since** | No |  Specifies the release till which this component version applies.  |
