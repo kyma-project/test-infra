@@ -392,8 +392,6 @@ function utils::post_hook() {
 
     while getopts ":n:c:l:p:a:G:g:z:I:r:d:R:A:e:f:s:Z:N:" opt; do
         case $opt in
-            n)
-                clusterName="$OPTARG" ;;
             p)
                 projectName="$OPTARG" ;;
             c)
@@ -418,6 +416,10 @@ function utils::post_hook() {
                 provisionRegionalCluster=${OPTARG:-$provisionRegionalCluster} ;;
             d)
                 asyncDeprovision=${OPTARG:-$asyncDeprovision} ;;
+            n)
+                if [ -n "$OPTARG" ]; then
+                    clusterName="$OPTARG"
+                fi ;;
             s)
                 if [ -n "$OPTARG" ]; then
                     dnsSubDomain="$OPTARG"
