@@ -1,5 +1,5 @@
 gitHubLogin: "kyma-bot"
-gitHubToken: "/etc/github/oauth"
+gitHubToken: "/etc/github/token"
 gitName: "Kyma Bot"
 gitEmail: "kyma.bot@sap.com"
 skipPullRequest: false
