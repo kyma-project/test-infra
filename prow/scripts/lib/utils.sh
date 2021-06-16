@@ -390,7 +390,7 @@ function utils::post_hook() {
     local provisionRegionalCluster="false" # r - it true provision regional cluster
     local asyncDeprovision="true" # d - deprovision cluster in async mode
 
-    while getopts ":n:c:l:p:a:G:g:z:I:r:d:" opt; do
+    while getopts ":n:c:l:p:a:G:g:z:I:r:d:R:A:" opt; do
         case $opt in
             n)
                 clusterName="$OPTARG" ;;
@@ -450,7 +450,7 @@ function utils::post_hook() {
             -z "$computeZone" \
             -R "$computeRegion" \
             -r "$provisionRegionalCluster" \
-            -A "$asyncDeprovision"
+            -d "$asyncDeprovision"
     fi
     if [ "$cleanupGatewayDns" = "true" ]; then
         log::info "Removing DNS record for $GATEWAY_DNS_FULL_NAME"

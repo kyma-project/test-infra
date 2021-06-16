@@ -431,41 +431,68 @@ function gcp::create_dns_record {
 # Arguments:
 # $1 - ip address
 # $2 - domain name
-function gcloud::delete_dns_record {
-  if [ -z "$1" ]; then
-    log::error "IP address is empty. Exiting..."
-    exit 1
-  fi
-  if [ -z "$2" ]; then
-    log::error "Domain name is empty. Exiting..."
-    exit 1
-  fi
-  ipAddress=$1
-  dnsName=$2
+function gcp::delete_dns_record {
 
-  log::info "Deleting DNS record $DNS_FULL_NAME"
-  set +e
+    local OPTIND
+    local ipAddress
+    local dnsSubDomain
+    local dnsDomain
+    local dnsHostname
+    local gcpProjectName
+    local gcpDnsZoneName
+
+    while getopts ":a:p:h:s:d:z:" opt; do
+        case $opt in
+            a)
+                ipAddress="$OPTARG" ;;
+            p)
+                gcpProjectName="$OPTARG" ;;
+            h)
+                dnsHostname="$OPTARG" ;;
+            s)
+                dnsSubDomain="$OPTARG" ;;
+            d)
+                dnsDomain="$OPTARG" ;;
+            z)
+                gcpDnsZoneName="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2; ;;
+        esac
+    done
+
+    utils::check_empty_arg "$ipAddress" "IP address not provided"
+    utils::check_empty_arg "$gcpProjectName" "Project name not provided"
+    utils::check_empty_arg "$gcpDnsZoneName" "GCP DNS zone name is empty. Exiting..."
+    utils::check_empty_arg "$dnsHostname" "DNS hostname is empty. Exiting..."
+    utils::check_empty_arg "$dnsSubDomain" "DNS subdomain is empty. Exiting..."
+
+    local dnsDomain
+    dnsDomain="$(gcloud dns managed-zones describe "$gcpDnsZoneName" --format="value(dnsName)")"
+    local dnsFQDN="$dnsHostname.$dnsSubDomain.$dnsDomain"
+
+    log::info "Deleting DNS record $dnsFQDN"
+    set +e
 
   local attempts=10
   local retryTimeInSec="5"
   for ((i=1; i<=attempts; i++)); do
-    gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction start --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
-    gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction remove "${ipAddress}" --name="${dnsName}" --ttl=60 --type=A --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
-    gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction execute --zone="${CLOUDSDK_DNS_ZONE_NAME}"
-
-    if [[ $? -eq 0 ]]; then
+    gcloud dns --project="$projectName" record-sets transaction start --zone="$gcpDnsZoneName" && \
+    gcloud dns --project="$projectName" record-sets transaction remove "$ipAddress" --name="$dnsFQDN" --ttl=60 --type=A --zone="$gcpDnsZoneName" && \
+    if gcloud dns --project="$projectName" record-sets transaction execute --zone="$gcpDnsZoneName"; then
       break
     fi
 
-    gcloud dns record-sets transaction abort --zone="${CLOUDSDK_DNS_ZONE_NAME}" --verbosity none
+    gcloud dns record-sets transaction abort --zone="$gcpDnsZoneName" --verbosity none
 
-    if [[ "${i}" -lt "${attempts}" ]]; then
-      echo "Unable to delete DNS record, Retrying after $retryTimeInSec. Attempts ${i} of ${attempts}."
+    if [[ "$i" -lt "$attempts" ]]; then
+      echo "Unable to delete DNS record, Retrying after $retryTimeInSec. Attempts $i of $attempts."
     else
-      echo "Unable to delete DNS record after ${attempts} attempts, giving up."
+      echo "Unable to delete DNS record after $attempts attempts, giving up."
       exit 1
     fi
-    sleep ${retryTimeInSec}
+    sleep $retryTimeInSec
   done
 
   log::info "DNS Record deleted, but it can be visible for some time due to DNS caches"
@@ -565,7 +592,7 @@ function gcp::deprovision_gke_cluster {
     local asyncDeprovision="true" # A - deprovision cluster in async mode
     local params
 
-    while getopts ":n:p:z:R:r:A:" opt; do
+    while getopts ":n:p:z:R:r:d:" opt; do
         case $opt in
             n)
                 clusterName="$OPTARG" ;;
@@ -577,7 +604,7 @@ function gcp::deprovision_gke_cluster {
                 computeRegion=${OPTARG:-$computeRegion} ;;
             r)
                 provisionRegionalCluster=${OPTARG:-$provisionRegionalCluster} ;;
-            A)
+            d)
                 asyncDeprovision=${OPTARG:-$asyncDeprovision} ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
