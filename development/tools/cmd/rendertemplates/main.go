@@ -204,7 +204,7 @@ func hasPeriodic(r []rt.Repo) bool {
 	return hasProwjobType(r, "type_periodic")
 }
 
-// getRunID trims the name to 63 characters and makes sure it doesn't end on dash
+// getRunID trims the prowjob name to 63 characters and makes sure it doesn't end with dash to match pubsub requirements.
 func getRunID(name interface{}) string {
 	jobName := name.(string)
 	if len(jobName) > 63 {
