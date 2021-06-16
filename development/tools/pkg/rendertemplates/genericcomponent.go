@@ -7,7 +7,7 @@ import (
 // changeExtraRefsBase changes base_ref to base string for each extra_ref
 func (j *Job) changeExtraRefsBase(base string) {
 	if j.JobConfig["extra_refs"] != nil {
-		for extraRefIndex := range j.JobConfig["extra_refs"].(map[interface{}]interface{}) {
+		for extraRefIndex, _ := range j.JobConfig["extra_refs"].(map[interface{}]interface{}) {
 			j.JobConfig["extra_refs"].(map[interface{}]interface{})[extraRefIndex].([]interface{})[0].(map[interface{}]interface{})["base_ref"] = base
 		}
 	}
