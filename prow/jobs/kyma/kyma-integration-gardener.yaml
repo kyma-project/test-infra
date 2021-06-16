@@ -282,7 +282,7 @@ presubmits: # runs on PRs
       decorate: true
       decoration_config:
         grace_period: 600000000000
-        run_if_changed: ^(((resources/api-gateway)\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))
+        run_if_changed: ^((resources/api-gateway\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))
         timeout: 14400000000000
       path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
@@ -539,7 +539,7 @@ postsubmits: # runs on main
       decorate: true
       decoration_config:
         grace_period: 600000000000
-        run_if_changed: ^(((resources/api-gateway)\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))
+        run_if_changed: ^((resources/api-gateway\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))
         timeout: 14400000000000
       path_alias: github.com/kyma-project/kyma
       cluster: trusted-workload
