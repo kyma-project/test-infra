@@ -191,7 +191,7 @@ gardener::hibernate_kyma() {
 
     if [[ "$HIBERNATION_POSSIBLE" != "True" ]]; then
         log::error "Hibernation for this cluster is not possible! Please take a look at the constraints :"
-        kubectl get shoots "${CLUSTER_NAME}}" -o jsonpath='{.status.constraints}'
+        kubectl get shoots "${CLUSTER_NAME}" -o jsonpath='{.status.constraints}'
         exit 1
     fi
 
