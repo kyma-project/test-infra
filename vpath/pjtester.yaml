@@ -1,6 +1,0 @@
-pjNames:
-  - pjName: "pre-kyma-docu-2.0-governance"
-prConfigs:
-  kyma-project:
-    kyma:
-      prNumber: 11484
