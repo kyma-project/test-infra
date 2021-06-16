@@ -373,18 +373,45 @@ function utils::kubeaudit_check_report() {
 # TODO: change direct post_hook and cleanup calls to this function
 function utils::post_hook() {
   #!!! Must be at the beginning of this function !!!
-  EXIT_STATUS=$?
+  local exitCode=$?
 
   local OPTIND
-    local clusterName
-    local cleanupCluster="false"
+    local clusterName # -n
+    local projectName # -p
+    local cleanupCluster="false" # -c
+    local cleanupGatewayDns="false" # -g
+    local cleanupApiserverDns="false" # -a
+    local cleanupGatewayIP="false" # -G
+    local errorLoggingGuard="false" # -l
+    local computeZone="europe-west4-b" # z - zone in which the new zonal cluster will be created
+    local computeRegion="europe-west4" # R - region in which the new regional cluster will be created
+    local provisionRegionalCluster="false" # r - it true provision regional cluster
+    local asyncDeprovision="true" # A - deprovision cluster in async mode
 
-    while getopts ":n:c:" opt; do
+    while getopts ":n:c:l:p:a:G:g:z:R:r:A:" opt; do
         case $opt in
             n)
                 clusterName="$OPTARG" ;;
+            p)
+                projectName="$OPTARG" ;;
             c)
                 cleanupCluster="${OPTARG:-$cleanupCluster}" ;;
+            g)
+                cleanupGatewayDns="${OPTARG:-$cleanupGatewayDns}" ;;
+            a)
+                cleanupApiserverDns="${OPTARG:-$cleanupApiserverDns}" ;;
+            G)
+                cleanupGatewayIP="${OPTARG:-$cleanupGatewayIP}" ;;
+            l)
+                errorLoggingGuard="${OPTARG:-$errorLoggingGuard}" ;;
+            z)
+                computeZone=${OPTARG:-$computeZone} ;;
+            R)
+                computeRegion=${OPTARG:-$computeRegion} ;;
+            r)
+                provisionRegionalCluster=${OPTARG:-$provisionRegionalCluster} ;;
+            A)
+                asyncDeprovision=${OPTARG:-$asyncDeprovision} ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
@@ -392,30 +419,52 @@ function utils::post_hook() {
         esac
     done
 
-    utils::check_empty_arg "$clusterName" "Cluster name not provided."
-  # CLUSTER_NAME is used in cleanup function.
-  #export CLUSTER_NAME="${CLUSTER_NAME:-$COMMON_NAME}"
+    utils::check_empty_arg "$clusterName" "Cluster name not provided." "graceful"
+    utils::check_empty_arg "$projectName" "Project name not provided." "graceful"
 
-  log::info "Cleanup"
+    if [ "$errorLoggingGuard" = "true" ]; then
+        log::info "AN ERROR OCCURED! Take a look at preceding log entries."
+    fi
 
-  if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
-    log::info "AN ERROR OCCURED! Take a look at preceding log entries."
-  fi
+    log::info "Collect logs"
 
-  #Turn off exit-on-error so that next step is executed even if previous one fails.
-  set +e
+    #Turn off exit-on-error so that next step is executed even if previous one fails.
+    set +e
 
-  # collect logs from failed tests before deprovisioning
-  kyma::run_test_log_collector "post-main-kyma-gke-integration"
+    # collect logs from failed tests before deprovisioning
+    kyma::run_test_log_collector "post-main-kyma-gke-integration"
 
-  gcp::cleanup -n "$clusterName" -c "$cleanupCluster"
+    log::info "Cleanup"
 
-  MSG=""
-  if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-  log::info "Job is finished ${MSG}"
-  set -e
+    utils::oom_get_output
+    if [ "$cleanupCluster" = "true" ]; then
+        gcp::deprovision_gke_cluster \
+            -n "$clusterName" \
+            -p "$projectName" \
+            -z "$computeZone" \
+            -R "$computeRegion" \
+            -r "$provisionRegionalCluster" \
+            -A "$asyncDeprovision"
+    fi
+    if [ "$cleanupGatewayDns" = "true" ]; then
+        log::info "Removing DNS record for $GATEWAY_DNS_FULL_NAME"
+        gcloud::delete_dns_record "$GATEWAY_IP_ADDRESS" "$GATEWAY_DNS_FULL_NAME"
+    fi
+    if [ "$cleanupGatewayIP" = "true" ]; then
+        log::info "Removing IP address $GATEWAY_IP_ADDRESS_NAME"
+        gcloud::delete_ip_address "$GATEWAY_IP_ADDRESS_NAME"
+    fi
+    if [ "$cleanupApiserverDns" = "true" ]; then
+        log::info "Removing DNS record for $APISERVER_DNS_FULL_NAME"
+        gcloud::delete_dns_record "$APISERVER_IP_ADDRESS" "$APISERVER_DNS_FULL_NAME"
+    fi
 
-  exit "${EXIT_STATUS}"
+    local msg=""
+    if [[ $exitCode -ne 0 ]]; then msg="(exit status: $exitCode)"; fi
+    log::info "Job is finished $msg"
+    set -e
+
+    exit "$exitCode"
 }
 
 
@@ -461,13 +510,17 @@ utils::generate_commonName() {
 # $2 - log message to use if $1 is empty
 function utils::check_empty_arg {
     if [ -z "$2" ]; then
-        logMessage="Mandatory argument is empty. Exiting..."
+        logMessage="Mandatory argument is empty."
     else
         logMessage="$2"
     fi
     if [ -z "$1" ]; then
-        log::error "$logMessage"
-        exit 1
+        if [ -n "$3" ]; then
+            log::error "$logMessage"
+        else
+            log:error "$logMessage Exiting"
+            exit 1
+        fi
     fi
 }
 

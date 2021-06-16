@@ -323,10 +323,6 @@ function gcloud::delete_network {
   log::info "Successfully deleted network $GCLOUD_NETWORK_NAME"
 }
 
-function gcloud::provision_cluster {
-    kyma::install_cli
-    return
-}
 # gcloud::provision_gke_cluster creates a GKE cluster
 # For switch parameters look up the code below.
 #
@@ -338,6 +334,7 @@ function gcloud::provision_cluster {
 # Arguments:
 # $1 - cluster name
 # $2 - optional additional labels for the cluster
+#TODO: remove after migration
 function gcloud::provision_gke_cluster {
   if [ -z "$1" ]; then
     log::error "Cluster name not provided. Provide proper cluster name."
@@ -415,6 +412,7 @@ function gcloud::provision_gke_cluster {
 #
 # Arguments:
 # $1 - cluster name
+#TODO: remove after migration
 function gcloud::deprovision_gke_cluster {
   if [ -z "$1" ]; then
     log::error "Cluster name not provided. Provide proper cluster name."

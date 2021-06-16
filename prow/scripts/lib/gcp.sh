@@ -20,16 +20,16 @@ source "${LIBDIR}/utils.sh"
 # Optional arguments:
 # l - optional additional labels for the cluster
 # t - cluster ttl hours, default 3
-# z - zone in which the new zonal cluster will be created, default europe-west4-b
+
 # m - machine type to use in a cluster, default n1-standard-4
-# R - region in which the new regional cluster will be created, default europe-west4
+
 # n - cluster worker nodes count, for regional clusters it's per zone count
 # N - gcp network name which use for new cluster, default default
 # S - gcp subnet name which use for new cluster
 # C - release channel to use for new cluster
 # i - cluster node vm image type to use for new cluster
 # g - gcp security group domain to use for new cluster GCLOUD_SECURITY_GROUP_DOMAIN
-# r - it true provision regional cluster
+
 # s - if true enable using stackdriver for new cluster
 # D - if true enable using ssd disks for new cluster
 # e - if true enable pod security policy for new cluster
@@ -45,13 +45,13 @@ function gcp::provision_gke_cluster {
     local prowjobID
     # default values
     local ttlHours="3"
-    local computeZone="europe-west4-b"
+    local computeZone="europe-west4-b" # z - zone in which the new zonal cluster will be created
     local machineType="n1-standard-4"
-    local computeRegion="europe-west4"
+    local computeRegion="europe-west4" # R - region in which the new regional cluster will be created
     local numNodes="3"
     local nodesPerZone="1"
     local networkName="default"
-    local provisionRegionalCluster="false"
+    local provisionRegionalCluster="false" # r - it true provision regional cluster
     local enableSSD="false"
     local enablePSP="false"
     local enableStackdriver="false"
@@ -422,6 +422,57 @@ function gcp::create_dns_record {
     log::warn "Continuing anyway... Kyma installation may fail!"
 }
 
+
+# gcloud::delete_dns_record
+# Required exported variables:
+# CLOUDSDK_CORE_PROJECT - gcp project
+# CLOUDSDK_COMPUTE_REGION - gcp region
+#
+# Arguments:
+# $1 - ip address
+# $2 - domain name
+function gcloud::delete_dns_record {
+  if [ -z "$1" ]; then
+    log::error "IP address is empty. Exiting..."
+    exit 1
+  fi
+  if [ -z "$2" ]; then
+    log::error "Domain name is empty. Exiting..."
+    exit 1
+  fi
+  ipAddress=$1
+  dnsName=$2
+
+  log::info "Deleting DNS record $DNS_FULL_NAME"
+  set +e
+
+  local attempts=10
+  local retryTimeInSec="5"
+  for ((i=1; i<=attempts; i++)); do
+    gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction start --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
+    gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction remove "${ipAddress}" --name="${dnsName}" --ttl=60 --type=A --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
+    gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction execute --zone="${CLOUDSDK_DNS_ZONE_NAME}"
+
+    if [[ $? -eq 0 ]]; then
+      break
+    fi
+
+    gcloud dns record-sets transaction abort --zone="${CLOUDSDK_DNS_ZONE_NAME}" --verbosity none
+
+    if [[ "${i}" -lt "${attempts}" ]]; then
+      echo "Unable to delete DNS record, Retrying after $retryTimeInSec. Attempts ${i} of ${attempts}."
+    else
+      echo "Unable to delete DNS record after ${attempts} attempts, giving up."
+      exit 1
+    fi
+    sleep ${retryTimeInSec}
+  done
+
+  log::info "DNS Record deleted, but it can be visible for some time due to DNS caches"
+  set -e
+}
+
+
 # Arguments:
 # n - $JOB_NAME
 function gcp::set_vars_for_network {
@@ -505,37 +556,79 @@ function gcp::create_network {
 # Arguments:
 # $1 - cluster name
 function gcp::deprovision_gke_cluster {
-  if [ -z "$1" ]; then
-    log::error "Cluster name not provided. Provide proper cluster name."
-    exit 1
-  fi
-  CLUSTER_NAME=$1
+
+    local OPTIND
+    local clusterName
+    local projectName
+    local computeZone="europe-west4-b" # z - zone in which the new zonal cluster will be created
+    local computeRegion="europe-west4" # R - region in which the new regional cluster will be created
+    local asyncDeprovision="true" # A - deprovision cluster in async mode
+    local params
+
+    while getopts ":n:p:z:R:r:A:" opt; do
+        case $opt in
+            n)
+                clusterName="$OPTARG" ;;
+            p)
+                projectName="$OPTARG" ;;
+            z)
+                computeZone=${OPTARG:-$computeZone} ;;
+            R)
+                computeRegion=${OPTARG:-$computeRegion} ;;
+            r)
+                provisionRegionalCluster=${OPTARG:-$provisionRegionalCluster} ;;
+            A)
+                asyncDeprovision=${OPTARG:-$asyncDeprovision} ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2; ;;
+        esac
+    done
+
+    utils::check_empty_arg "$clusterName" "Cluster name not provided"
+    utils::check_empty_arg "$projectName" "Project name not provided"
 
 #  gcloud config set project "${GCLOUD_PROJECT_NAME}"
 #  gcloud config set compute/zone "${GCLOUD_COMPUTE_ZONE}"
 
-  if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
-      # copy output from debug container to artifacts directory
-      utils::oom_get_output
-  fi
+  #if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
+  #    # copy output from debug container to artifacts directory
+  #    utils::oom_get_output
+  #fi
 
-  local params
-  params+=("--quiet")
-  if [ "${PROVISION_REGIONAL_CLUSTER}" ] && [ "${CLOUDSDK_COMPUTE_REGION}" ]; then
-    #Pass gke region name to delete command.
-    params+=("--region=${CLOUDSDK_COMPUTE_REGION}")
-  else
-    params+=("--zone=${GCLOUD_COMPUTE_ZONE}")
-  fi
+    log::info "Deprovisioning cluster $clusterName."
 
-  if [ -z "${DISABLE_ASYNC_DEPROVISION+x}" ]; then
-      params+=("--async")
-  fi
+    params+=("--quiet")
+    if [ "$provisionRegionalCluster" = "true" ]; then
+        #Pass gke region name to delete command.
+        params+=("--region=$computeRegion")
+    else
+        params+=("--zone=$computeZone")
+    fi
 
-  log::info "Deprovisioning cluster $CLUSTER_NAME."
-  gcloud --project="$GCLOUD_PROJECT_NAME" beta container clusters delete "$CLUSTER_NAME" "${params[@]}"
-  log::info "Successfully removed cluster $CLUSTER_NAME!"
+    if [ "$asyncDeprovision" = "true" ]; then
+        params+=("--async")
+    fi
+
+    if gcloud --project="$projectName" beta container clusters delete "$clusterName" "${params[@]}"; then
+        log::info "Successfully removed cluster $clusterName!"
+    fi
 }
+
+
+function gcloud::delete_ip_address {
+  if [ -z "$1" ]; then
+    log::error "IP address name is empty. Exiting..."
+    exit 1
+  fi
+
+  IP_ADDRESS_NAME=$1
+  log::info "Removing IP address $IP_ADDRESS_NAME."
+  gcloud compute addresses delete "$IP_ADDRESS_NAME" --project="${CLOUDSDK_CORE_PROJECT}" --region="${CLOUDSDK_COMPUTE_REGION}"
+  log::info "Successfully removed IP $IP_ADDRESS_NAME!"
+}
+
 
 # gcloud::cleanup is a meta-function that removes all resources that were allocated for specific job.
 # Required exported variables:
@@ -550,14 +643,26 @@ function gcp::cleanup {
 
     local OPTIND
     local clusterName
-    local cleanupCluster="false"
+    local projectName
+    local cleanupCluster="false" # -c
+    local cleanupGatewayDns="false" # -g
+    local cleanupApiserverDns="false" # -a
+    local cleanupGatewayIP="false" # -G
 
-    while getopts ":n:c:" opt; do
+    while getopts ":n:c:p:a:G:g:" opt; do
         case $opt in
             n)
                 clusterName="$OPTARG" ;;
+            p)
+                projectName="$OPTARG" ;;
             c)
                 cleanupCluster="${OPTARG:-$cleanupCluster}" ;;
+            g)
+                cleanupGatewayDns="${OPTARG:-$cleanupGatewayDns}" ;;
+            a)
+                cleanupApiserverDns="${OPTARG:-$cleanupApiserverDns}" ;;
+            G)
+                cleanupGatewayIP="${OPTARG:-$cleanupGatewayIP}" ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
@@ -566,20 +671,22 @@ function gcp::cleanup {
     done
 
     utils::check_empty_arg "$clusterName" "Cluster name not provided."
+    utils::check_empty_arg "$projectName" "Project name not provided."
+
   utils::oom_get_output
-  if [ -n "$CLEANUP_CLUSTER" ]; then
-    log::info "Removing cluster $CLUSTER_NAME"
-    gcloud::deprovision_gke_cluster "$CLUSTER_NAME"
+  if [ "$cleanupCluster" = "true" ]; then
+    log::info "Removing cluster $clusterName"
+    gcp::deprovision_gke_cluster "$clusterName"
   fi
-  if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
+  if [ "$cleanupGatewayDns" = "true" ]; then
     log::info "Removing DNS record for $GATEWAY_DNS_FULL_NAME"
     gcloud::delete_dns_record "$GATEWAY_IP_ADDRESS" "$GATEWAY_DNS_FULL_NAME"
   fi
-  if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
+  if [ "$cleanupGatewayIP" = "true" ]; then
     log::info "Removing IP address $GATEWAY_IP_ADDRESS_NAME"
     gcloud::delete_ip_address "$GATEWAY_IP_ADDRESS_NAME"
   fi
-  if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
+  if [ "$cleanupApiserverDns" = "true" ]; then
     log::info "Removing DNS record for $APISERVER_DNS_FULL_NAME"
     gcloud::delete_dns_record "$APISERVER_IP_ADDRESS" "$APISERVER_DNS_FULL_NAME"
   fi
