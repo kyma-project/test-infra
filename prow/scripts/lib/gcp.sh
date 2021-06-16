@@ -148,7 +148,7 @@ function gcp::provision_gke_cluster {
     local clusterLabels="cluster=$clusterName,volatile=true"
 
     # optional labels
-    if [ -z "$additionalLabels" ]; then
+    if [ -n "$additionalLabels" ]; then
         additionalLabels=",$additionalLabels"
     fi
 
