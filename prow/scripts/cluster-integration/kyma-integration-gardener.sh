@@ -68,8 +68,7 @@ else
 fi
 
 # nice cleanup on exit, be it succesful or on fail
-trap 'gardener::cleanup $CLUSTER_NAME' EXIT INT
-set -x
+trap gardener::cleanup EXIT INT
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
