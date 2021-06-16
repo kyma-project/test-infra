@@ -56,7 +56,7 @@ readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
 export REPO_OWNER
 readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
 export REPO_NAME
-export INGRESS_GATEWAY_HOSTNAME="*"
+export INGRESS_GATEWAY_HOSTNAME='*'
 export APISERVER_HOSTNAME="apiserver"
 
 #TODO: no usage in test-infra and kyma repo, remove if no failures caused by commenting out

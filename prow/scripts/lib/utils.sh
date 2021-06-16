@@ -557,7 +557,7 @@ function utils::check_empty_arg {
         if [ -n "$3" ]; then
             log::error "$logMessage"
         else
-            log:error "$logMessage Exiting"
+            log::error "$logMessage Exiting"
             exit 1
         fi
     fi
