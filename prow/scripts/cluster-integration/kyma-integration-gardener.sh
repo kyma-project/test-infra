@@ -78,6 +78,7 @@ readonly COMMON_NAME_PREFIX="grd"
 utils::generate_commonName "${COMMON_NAME_PREFIX}"
 
 ### Cluster name must be less than 10 characters!
+
 export CLUSTER_NAME="${COMMON_NAME}"
 
 # set KYMA_SOURCE used by gardener::install_kyma

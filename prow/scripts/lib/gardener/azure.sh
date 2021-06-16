@@ -101,7 +101,6 @@ gardener::provision_cluster() {
 
     CLEANUP_CLUSTER="true"
     if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
-        (
             # enable trap to catch kyma provision failures
             trap gardener::reprovision_cluster ERR
             # decreasing attempts to 2 because we will try to create new cluster from scratch on exit code other than 0
@@ -116,11 +115,8 @@ gardener::provision_cluster() {
                 --scaler-max 1 --scaler-min 1 \
                 --disk-type StandardSSD_LRS \
                 --kube-version="${GARDENER_CLUSTER_VERSION}" \
-                --verbose \
                 --attempts 2
-        )
     else
-        (
             # enable trap to catch kyma provision failures
             trap gardener::reprovision_cluster ERR
             # decreasing attempts to 2 because we will try to create new cluster from scratch on exit code other than 0
@@ -134,9 +130,7 @@ gardener::provision_cluster() {
                 -t "${MACHINE_TYPE}" \
                 --disk-type StandardSSD_LRS \
                 --kube-version="${GARDENER_CLUSTER_VERSION}" \
-                --verbose \
                 --attempts 2
-        )
     fi
     # trap cleanup we want other errors fail pipeline immediately
     trap - ERR
