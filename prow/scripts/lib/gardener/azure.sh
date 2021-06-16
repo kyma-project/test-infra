@@ -97,6 +97,7 @@ gardener::generate_overrides() {
 }
 
 gardener::provision_cluster() {
+    set -x
     log::info "Provision cluster: \"${CLUSTER_NAME}\""
 
     CLEANUP_CLUSTER="true"
@@ -116,8 +117,8 @@ gardener::provision_cluster() {
                 --scaler-max 1 --scaler-min 1 \
                 --disk-type StandardSSD_LRS \
                 --kube-version="${GARDENER_CLUSTER_VERSION}" \
-                --verbose \
                 --attempts 2
+            false
         )
     else
         (
@@ -134,8 +135,8 @@ gardener::provision_cluster() {
                 -t "${MACHINE_TYPE}" \
                 --disk-type StandardSSD_LRS \
                 --kube-version="${GARDENER_CLUSTER_VERSION}" \
-                --verbose \
                 --attempts 2
+            false
         )
     fi
     # trap cleanup we want other errors fail pipeline immediately
