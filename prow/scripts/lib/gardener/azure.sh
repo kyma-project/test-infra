@@ -29,6 +29,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
 gardener::cleanup() {
     #!!! Must be at the beginning of this function !!!
     EXIT_STATUS=$?
+    local clusterNameArg="$1"
+    CLUSTER_NAME="${clusterNameArg:-$CLUSTER_NAME}"
     if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
         log::error "AN ERROR OCCURED! Take a look at preceding log entries."
     fi
