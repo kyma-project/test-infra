@@ -21,7 +21,7 @@ func (r *RenderConfig) GenerateComponentJobs(global map[string]interface{}) {
 			hasComponentJobs := false
 
 			for _, job := range repo.Jobs {
-				// check if the jobConfig is in expected for component jobs format
+				// check if the jobConfig is a component job
 				if job.JobConfig["name"] == nil && job.JobConfig["path"] != nil {
 					hasComponentJobs = true
 					// generate component jobs
