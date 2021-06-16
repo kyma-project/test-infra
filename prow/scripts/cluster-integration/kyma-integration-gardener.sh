@@ -70,6 +70,7 @@ fi
 # nice cleanup on exit, be it succesful or on fail
 trap gardener::cleanup EXIT INT
 trap 'echo "CLUSTER_NAME variable used with value $CLUSTER_NAME"' DEBUG
+set -x
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
@@ -80,7 +81,7 @@ utils::generate_commonName "${COMMON_NAME_PREFIX}"
 
 ### Cluster name must be less than 10 characters!
 
-decalre -t CLUSTER_NAME="${COMMON_NAME}"
+declare -t CLUSTER_NAME="${COMMON_NAME}"
 export CLUSTER_NAME
 
 # set KYMA_SOURCE used by gardener::install_kyma
