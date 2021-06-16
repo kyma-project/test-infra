@@ -2,6 +2,6 @@ pjNames:
   - pjName: "pre-main-control-plane-gke-integration"
     pjPath: "test-infra/prow/jobs/control-plane/"
 prConfigs:
-  kyma-incubator:
-    compass:
+  kyma-project:
+    control-plane:
       prNumber: 782
