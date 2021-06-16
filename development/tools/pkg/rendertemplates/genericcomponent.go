@@ -30,15 +30,14 @@ func (r *RenderConfig) GenerateComponentJobs(global map[string]interface{}) {
 					nameSuffix := repository + "-" + strings.Replace(job.JobConfig["path"].(string), "/", "-", -1)
 
 					// generate pre- and post-submit jobs for the next release
-					if ReleaseMatches(global["nextRelease"], job.jobConfigPre["release_since"], job.jobConfigPre["release_until"]) {
+					if ReleaseMatches(global["nextRelease"], job.JobConfig["release_since"], job.JobConfig["release_until"]) {
 						if len(job.jobConfigPre) > 0 {
 							preSubmit := Job{}
 							preSubmit.JobConfig = deepCopyConfigSet(job.jobConfigPre)
 							preSubmit.JobConfig["name"] = "pre-" + nameSuffix
 							jobs = append(jobs, preSubmit)
 						}
-					}
-					if ReleaseMatches(global["nextRelease"], job.jobConfigPost["release_since"], job.jobConfigPost["release_until"]) {
+
 						if len(job.jobConfigPost) > 0 {
 							postSubmit := Job{}
 							postSubmit.JobConfig = deepCopyConfigSet(job.jobConfigPost)
@@ -49,13 +48,14 @@ func (r *RenderConfig) GenerateComponentJobs(global map[string]interface{}) {
 
 					// check if we have to generate jobs for the previous supported releases
 					if job.JobConfig["skipReleaseJobs"] == nil || job.JobConfig["skipReleaseJobs"].(string) != "true" {
-						if len(job.jobConfigPre) > 0 {
-							matchingReleasesPre := MatchingReleases(global["releases"].([]interface{}), job.jobConfigPre["release_since"], job.jobConfigPre["release_until"])
-							for _, currentRelease := range matchingReleasesPre {
-								rel := currentRelease.(string)
-								nameRelease := "rel" + strings.Replace(rel, ".", "", -1)
-								commonRelBranches := []string{"release-" + rel}
 
+						matchingReleases := MatchingReleases(global["releases"].([]interface{}), job.JobConfig["release_since"], job.JobConfig["release_until"])
+						for _, currentRelease := range matchingReleases {
+							rel := currentRelease.(string)
+							nameRelease := "rel" + strings.Replace(rel, ".", "", -1)
+							commonRelBranches := []string{"release-" + rel}
+
+							if len(job.jobConfigPre) > 0 {
 								preSubmitRel := Job{}
 								preSubmitRel.JobConfig = deepCopyConfigSet(job.jobConfigPre)
 								preSubmitRel.JobConfig["name"] = "pre-" + nameRelease + "-" + nameSuffix
@@ -63,13 +63,8 @@ func (r *RenderConfig) GenerateComponentJobs(global map[string]interface{}) {
 								preSubmitRel.changeExtraRefsBase("release-" + rel)
 								jobs = append(jobs, preSubmitRel)
 							}
-						}
-						if len(job.jobConfigPost) > 0 {
-							matchingReleasesPost := MatchingReleases(global["releases"].([]interface{}), job.jobConfigPost["release_since"], job.jobConfigPost["release_until"])
-							for _, currentRelease := range matchingReleasesPost {
-								rel := currentRelease.(string)
-								nameRelease := "rel" + strings.Replace(rel, ".", "", -1)
-								commonRelBranches := []string{"release-" + rel}
+
+							if len(job.jobConfigPost) > 0 {
 								postSubmitRel := Job{}
 								postSubmitRel.JobConfig = deepCopyConfigSet(job.jobConfigPost)
 								postSubmitRel.JobConfig["name"] = "post-" + nameRelease + "-" + nameSuffix

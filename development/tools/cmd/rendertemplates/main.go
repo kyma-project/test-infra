@@ -214,5 +214,4 @@ func getRunID(name interface{}) string {
 		}
 	}
 	return "\"" + jobName + "\""
-	//{{ $runIDtrunc := trunc 63 .JobConfig.name}}{{ if hasSuffix "-" $runIDtrunc}}{{ substr 0 (sub ( (len $runIDtrunc) | int ) 1) $runIDtrunc | quote }}{{else}}{{ $runIDtrunc | quote}}{{end}}
 }
