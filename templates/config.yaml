@@ -49,6 +49,26 @@ globalSets:
       operator: Equal
       effect: NoSchedule
     <<: *pubsub_config
+  jobConfig_kyma20_docu:
+    skip_report: "false"
+    max_concurrency: "10"
+    decorate: "true"
+    optional: "true"
+    branches:
+      - "^kyma-2.0-docu$"
+    privileged: "true"
+    request_memory: "1.5Gi"
+    request_cpu: "0.8"
+    cluster_presubmit: "untrusted-workload"
+    cluster_postsubmit: "trusted-workload"
+    nodeSelector:
+      dedicated: high-cpu
+    tolerations:
+      - key: dedicated
+        value: high-cpu
+        operator: Equal
+        effect: NoSchedule
+    <<: *pubsub_config
   jobConfig_presubmit:
     type_presubmit: "true"
     cluster: "untrusted-workload"
