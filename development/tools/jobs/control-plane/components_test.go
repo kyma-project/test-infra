@@ -20,7 +20,7 @@ var components = []struct {
 }{
 	{
 		name:  "provisioner",
-		image: tester.ImageGolangKubebuilder2BuildpackLatest,
+		image: tester.ImageGolangBuildpack1_16,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -30,7 +30,7 @@ var components = []struct {
 	},
 	{
 		name:  "kyma-environment-broker",
-		image: tester.ImageGolangKubebuilder2BuildpackLatest,
+		image: tester.ImageGolangBuildpack1_16,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -40,7 +40,7 @@ var components = []struct {
 	},
 	{
 		name:  "schema-migrator",
-		image: tester.ImageGolangKubebuilder2BuildpackLatest,
+		image: tester.ImageGolangBuildpack1_16,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("kcp-generic"),
@@ -50,7 +50,7 @@ var components = []struct {
 	},
 	{
 		name:  "kyma-metrics-collector",
-		image: tester.ImageGolangKubebuilder2BuildpackLatest,
+		image: tester.ImageGolangBuildpack1_16,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -60,7 +60,7 @@ var components = []struct {
 	},
 	{
 		name:  "kubeconfig-service",
-		image: tester.ImageGolangKubebuilder2BuildpackLatest,
+		image: tester.ImageGolangBuildpack1_16,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -70,7 +70,7 @@ var components = []struct {
 	},
 	{
 		name:  "subscription-cleanup-job",
-		image: tester.ImageGolangKubebuilder2BuildpackLatest,
+		image: tester.ImageGolangBuildpack1_16,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -80,7 +80,7 @@ var components = []struct {
 	},
 	{
 		name:  "provider-config-migration-job",
-		image: tester.ImageGolangKubebuilder2BuildpackLatest,
+		image: tester.ImageGolangBuildpack1_16,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),

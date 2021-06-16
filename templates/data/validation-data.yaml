@@ -74,7 +74,7 @@ templates:
                     - "pubsub_labels"
               - jobConfig:
                   name: "pre-main-test-infra-validate-generated-files"
-                  run_if_changed: "^templates/|^prow/jobs/|^prow/config.yaml|^prow/scripts/|^development/tools/(cmd/rendertemplates/|jobs/releases/releases.go)|^prow/branchprotector-config.yaml"
+                  run_if_changed: "^templates/|^prow/jobs/|^prow/config.yaml|^prow/scripts/|^development/tools/(cmd/rendertemplates/|pkg/rendertemplates/|jobs/releases/releases.go)|^prow/branchprotector-config.yaml"
                   labels:
                     preset-build-pr: "true"
                     preset-dind-enabled: "true"
