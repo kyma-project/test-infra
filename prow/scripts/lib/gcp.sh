@@ -436,12 +436,11 @@ function gcp::delete_dns_record {
     local OPTIND
     local ipAddress
     local dnsSubDomain
-    local dnsDomain
     local dnsHostname
     local gcpProjectName
     local gcpDnsZoneName
 
-    while getopts ":a:p:h:s:d:z:" opt; do
+    while getopts ":a:p:h:s:z:" opt; do
         case $opt in
             a)
                 ipAddress="$OPTARG" ;;
@@ -451,8 +450,6 @@ function gcp::delete_dns_record {
                 dnsHostname="$OPTARG" ;;
             s)
                 dnsSubDomain="$OPTARG" ;;
-            d)
-                dnsDomain="$OPTARG" ;;
             z)
                 gcpDnsZoneName="$OPTARG" ;;
             \?)
@@ -645,15 +642,34 @@ function gcp::deprovision_gke_cluster {
 
 
 function gcloud::delete_ip_address {
-  if [ -z "$1" ]; then
-    log::error "IP address name is empty. Exiting..."
-    exit 1
-  fi
 
-  IP_ADDRESS_NAME=$1
-  log::info "Removing IP address $IP_ADDRESS_NAME."
-  gcloud compute addresses delete "$IP_ADDRESS_NAME" --project="${CLOUDSDK_CORE_PROJECT}" --region="${CLOUDSDK_COMPUTE_REGION}"
-  log::info "Successfully removed IP $IP_ADDRESS_NAME!"
+    local OPTIND
+    local gcpProjectName
+    local ipAddressName
+    local gcpComputeRegion="europe-west4" # R - region in which the new regional cluster will be created
+
+    while getopts ":p:R:n:" opt; do
+        case $opt in
+            p)
+                gcpProjectName="$OPTARG" ;;
+            n)
+                ipAddressName="$OPTARG" ;;
+            R)
+                gcpComputeRegion=${OPTARG:-$computeRegion} ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2; ;;
+        esac
+    done
+
+    utils::check_empty_arg "$ipAddressName" "IP address not provided"
+    utils::check_empty_arg "$gcpProjectName" "Project name not provided"
+
+    log::info "Removing IP address $ipAddressName."
+    if gcloud compute addresses delete "$ipAddressName" --project="$gcpProjectName" --region="$gcpComputeRegion"; then
+        log::info "Successfully removed IP $ipAddressName!"
+    fi
 }
 
 

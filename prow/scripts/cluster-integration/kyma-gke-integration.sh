@@ -80,9 +80,28 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-trap 'utils::post_hook -n $COMMON_NAME -c $CLEANUP_CLUSTER -g' EXIT INT
+trap 'utils::post_hook' \
+    '-n $COMMON_NAME' \
+    '-p $CLOUDSDK_CORE_PROJECT' \
+    '-c $CLEANUP_CLUSTER -g' \
+    '-g $CLEANUP_GATEWAY_DNS_RECORD' \
+    '-G $INGRESS_GATEWAY_HOSTNAME' \
+    '-a $CLEANUP_APISERVER_DNS_RECORD' \
+    '-A $APISERVER_HOSTNAME' \
+    '-I $CLEANUP_GATEWAY_IP_ADDRESS' \
+    '-l $ERROR_LOGGING_GUARD' \
+    '-z $CLOUDSDK_COMPUTE_ZONE' \
+    '-R $CLOUDSDK_COMPUTE_REGION' \
+    '-r $PROVISION_REGIONAL_CLUSTER' \
+    '-d $DISABLE_ASYNC_DEPROVISION' \
+    '-s $DNS_SUBDOMAIN' \
+    '-e $GATEWAY_IP_ADDRESS' \
+    '-f $APISERVER_IP_ADDRESS' \
+    '-N $COMMON_NAME' \
+    '-Z $CLOUDSDK_DNS_ZONE_NAME' \
+    EXIT INT
 
-utils::run_jobguard "${BUILD_TYPE}"
+utils::run_jobguard "$BUILD_TYPE"
 
 utils::set_vars_for_build \
     -b "$BUILD_TYPE" \
@@ -98,7 +117,7 @@ DNS_SUBDOMAIN="$COMMON_NAME"
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
-gcp::authenticate -c "${GOOGLE_APPLICATION_CREDENTIALS}"
+gcp::authenticate -c "$GOOGLE_APPLICATION_CREDENTIALS"
 
 gcp::create_network \
     -n "$GCLOUD_NETWORK_NAME" \
@@ -163,22 +182,22 @@ export CLEANUP_CLUSTER="true"
 log::info "Generate self-signed certificate"
 DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 CERT_KEY=$(utils::generate_self_signed_cert "$DOMAIN")
-TLS_CERT=$(echo "${CERT_KEY}" | head -1)
-TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
+TLS_CERT=$(echo "$CERT_KEY" | head -1)
+TLS_KEY=$(echo "$CERT_KEY" | tail -1)
 
 log::info "Create Kyma CLI overrides"
-envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-installer-overrides.tpl.yaml" > "$PWD/kyma-installer-overrides.yaml"
+envsubst < "$TEST_INFRA_SOURCES_DIR/prow/scripts/resources/kyma-installer-overrides.tpl.yaml" > "$PWD/kyma-installer-overrides.yaml"
 
-log::info "Installation triggered"
+log::info "Kyma installation triggered"
 
 yes | kyma install \
-  --ci \
-  -s "${KYMA_SOURCE}" \
-  -o "$PWD/kyma-installer-overrides.yaml" \
-  --domain "${DOMAIN}" \
-  --tls-cert="${TLS_CERT}" \
-  --tls-key="${TLS_KEY}" \
-  --timeout 60m
+    --ci \
+    -s "$KYMA_SOURCE" \
+    -o "$PWD/kyma-installer-overrides.yaml" \
+    --domain "$DOMAIN" \
+    --tls-cert="$TLS_CERT" \
+    --tls-key="$TLS_KEY" \
+    --timeout 60m
 
 if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
     log::info "Create DNS Record for Apiserver proxy IP"
@@ -200,14 +219,14 @@ utils::kubeaudit_create_report "$ARTIFACTS/kubeaudit.log"
 utils::kubeaudit_check_report "$ARTIFACTS/kubeaudit.log"
 
 # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
-if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
-  export ENABLE_TEST_LOG_COLLECTOR=true
+if [[ "$BUILD_TYPE" == "master" && -n "$LOG_COLLECTOR_SLACK_TOKEN" ]]; then
+    export ENABLE_TEST_LOG_COLLECTOR=true
 fi
 
 log::info "Test Kyma"
 # shellcheck disable=SC2031
 # TODO (@Ressetkk): Kyma test functions as a separate library
-"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh "${INTEGRATION_TEST_LABEL_QUERY}"
+"$TEST_INFRA_SOURCES_DIR"/prow/scripts/kyma-testing.sh "$INTEGRATION_TEST_LABEL_QUERY"
 
 log::success "Integration Test successful"
 

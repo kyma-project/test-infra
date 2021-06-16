@@ -390,7 +390,7 @@ function utils::post_hook() {
     local provisionRegionalCluster="false" # r - it true provision regional cluster
     local asyncDeprovision="true" # d - deprovision cluster in async mode
 
-    while getopts ":n:c:l:p:a:G:g:z:I:r:d:R:A:" opt; do
+    while getopts ":n:c:l:p:a:G:g:z:I:r:d:R:A:e:f:s:Z:N:" opt; do
         case $opt in
             n)
                 clusterName="$OPTARG" ;;
@@ -418,6 +418,27 @@ function utils::post_hook() {
                 provisionRegionalCluster=${OPTARG:-$provisionRegionalCluster} ;;
             d)
                 asyncDeprovision=${OPTARG:-$asyncDeprovision} ;;
+            s)
+                if [ -n "$OPTARG" ]; then
+                    dnsSubDomain="$OPTARG"
+                fi ;;
+            e)
+                if [ -n "$OPTARG" ]; then
+                    local gatewayIP="$OPTARG"
+                fi ;;
+            f)
+                if [ -n "$OPTARG" ]; then
+                    local apiserverIP="$OPTARG"
+                fi ;;
+            N)
+                if [ -n "$OPTARG" ]; then
+                    local gatewayIpAddressName="$OPTARG"
+                fi ;;
+            # TODO: align parameter letter with other functions
+            Z)
+                if [ -n "$OPTARG" ]; then
+                    gcpDnsZoneName="$OPTARG"
+                fi ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
@@ -453,16 +474,26 @@ function utils::post_hook() {
             -d "$asyncDeprovision"
     fi
     if [ "$cleanupGatewayDns" = "true" ]; then
-        log::info "Removing DNS record for $GATEWAY_DNS_FULL_NAME"
-        gcloud::delete_dns_record "$GATEWAY_IP_ADDRESS" "$GATEWAY_DNS_FULL_NAME"
+        gcp::delete_dns_record \
+            -a "$gatewayIP" \
+            -p "$projectName" \
+            -h "$gatewayHostname" \
+            -s "$dnsSubDomain" \
+            -z "$gcpDnsZoneName"
     fi
     if [ "$cleanupGatewayIP" = "true" ]; then
-        log::info "Removing IP address $GATEWAY_IP_ADDRESS_NAME"
-        gcloud::delete_ip_address "$GATEWAY_IP_ADDRESS_NAME"
+        gcp::delete_ip_address \
+            -p "$projectName" \
+            -n "$gatewayIpAddressName" \
+            -R "$computeRegion"
     fi
     if [ "$cleanupApiserverDns" = "true" ]; then
-        log::info "Removing DNS record for $APISERVER_DNS_FULL_NAME"
-        gcloud::delete_dns_record "$APISERVER_IP_ADDRESS" "$APISERVER_DNS_FULL_NAME"
+        gcp::delete_dns_record \
+            -a "$apiserverIP" \
+            -p "$projectName" \
+            -h "$apiserverHostname" \
+            -s "$dnsSubDomain" \
+            -z "$gcpDnsZoneName"
     fi
 
     local msg=""
