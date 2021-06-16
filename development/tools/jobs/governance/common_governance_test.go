@@ -29,5 +29,5 @@ func TestCommonGovernanceJobPerodic(t *testing.T) {
 	assert.Len(t, periodics, 9)
 
 	kyma_presubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"})
-	assert.Len(t, kyma_presubmits, 2)
+	assert.Len(t, kyma_presubmits, 3)
 }
