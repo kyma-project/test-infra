@@ -68,8 +68,7 @@ else
 fi
 
 # nice cleanup on exit, be it succesful or on fail
-trap gardener::cleanup EXIT INT
-trap 'echo "CLUSTER_NAME variable used with value $CLUSTER_NAME"' DEBUG
+trap 'gardener::cleanup' EXIT INT
 set -x
 
 #Used to detect errors for logging purposes
@@ -81,8 +80,7 @@ utils::generate_commonName "${COMMON_NAME_PREFIX}"
 
 ### Cluster name must be less than 10 characters!
 
-declare -t CLUSTER_NAME="${COMMON_NAME}"
-export CLUSTER_NAME
+export CLUSTER_NAME="${COMMON_NAME}"
 
 # set KYMA_SOURCE used by gardener::install_kyma
 # at the time of writing this comment, kyma-integration-gardener never sets BUILD_TYPE to "release"
