@@ -97,7 +97,6 @@ gardener::generate_overrides() {
 }
 
 gardener::provision_cluster() {
-    set -x
     log::info "Provision cluster: \"${CLUSTER_NAME}\""
 
     CLEANUP_CLUSTER="true"
