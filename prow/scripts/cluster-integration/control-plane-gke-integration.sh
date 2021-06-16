@@ -437,7 +437,7 @@ if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
 fi
 
 log::info "Test Kyma, Compass and Control Plane"
-"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
+"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l "!benchmark"
 
 log::success "Success"
 
