@@ -108,7 +108,7 @@ func renderTemplate(basePath string, templateConfig rt.TemplateConfig, config *r
 
 		render.MergeConfigs(config)
 
-		// check if there are any component jobs and generate final component jobs if necessary
+		// check if there are any component jobs in merged config and generate config for such jobs for each supported release
 		render.GenerateComponentJobs(config.Global)
 
 		err = renderFileFromTemplate(basePath, templateInstance, render, config)
