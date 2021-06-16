@@ -56,6 +56,8 @@ readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
 export REPO_OWNER
 readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
 export REPO_NAME
+export INGRESS_GATEWAY_HOSTNAME="*"
+export APISERVER_HOSTNAME="apiserver"
 
 #TODO: no usage in test-infra and kyma repo, remove if no failures caused by commenting out
 #KYMA_LABEL_PREFIX="kyma-project.io"
@@ -78,7 +80,7 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-trap 'utils::post_hook -n $COMMON_NAME -c $CLEANUP_CLUSTER' EXIT INT
+trap 'utils::post_hook -n $COMMON_NAME -c $CLEANUP_CLUSTER -g' EXIT INT
 
 utils::run_jobguard "${BUILD_TYPE}"
 
@@ -122,9 +124,8 @@ gcp::create_dns_record \
     -p "$CLOUDSDK_CORE_PROJECT" \
     -z "$CLOUDSDK_DNS_ZONE_NAME" \
     -a "$GATEWAY_IP_ADDRESS" \
-    -h "*" \
+    -h "$INGRESS_GATEWAY_HOSTNAME" \
     -s "$DNS_SUBDOMAIN"
-    #-d "$DNS_DOMAIN"
 DNS_DOMAIN=${gcp_create_dns_record_dns_domain:?}
 export CLEANUP_GATEWAY_DNS_RECORD="true"
 
@@ -186,9 +187,8 @@ if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-
         -p "$CLOUDSDK_CORE_PROJECT" \
         -z "$CLOUDSDK_DNS_ZONE_NAME" \
         -a "$APISERVER_IP_ADDRESS" \
-        -h "apiserver" \
-        -s "$DNS_SUBDOMAIN" \
-        -d "$DNS_DOMAIN"
+        -h "$APISERVER_HOSTNAME" \
+        -s "$DNS_SUBDOMAIN"
     export CLEANUP_APISERVER_DNS_RECORD="true"
 fi
 

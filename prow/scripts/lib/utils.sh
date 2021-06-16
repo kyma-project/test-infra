@@ -380,15 +380,17 @@ function utils::post_hook() {
     local projectName # -p
     local cleanupCluster="false" # -c
     local cleanupGatewayDns="false" # -g
+    local gatewayHostname="*" # -G
     local cleanupApiserverDns="false" # -a
-    local cleanupGatewayIP="false" # -G
+    local apiserverHostname="apiserver"
+    local cleanupGatewayIP="false" # -I
     local errorLoggingGuard="false" # -l
     local computeZone="europe-west4-b" # z - zone in which the new zonal cluster will be created
     local computeRegion="europe-west4" # R - region in which the new regional cluster will be created
     local provisionRegionalCluster="false" # r - it true provision regional cluster
-    local asyncDeprovision="true" # A - deprovision cluster in async mode
+    local asyncDeprovision="true" # d - deprovision cluster in async mode
 
-    while getopts ":n:c:l:p:a:G:g:z:R:r:A:" opt; do
+    while getopts ":n:c:l:p:a:G:g:z:I:r:d:" opt; do
         case $opt in
             n)
                 clusterName="$OPTARG" ;;
@@ -398,9 +400,13 @@ function utils::post_hook() {
                 cleanupCluster="${OPTARG:-$cleanupCluster}" ;;
             g)
                 cleanupGatewayDns="${OPTARG:-$cleanupGatewayDns}" ;;
+            G)
+                gatewayHostname="${OPTARG:-$gatewayHostname}" ;;
             a)
                 cleanupApiserverDns="${OPTARG:-$cleanupApiserverDns}" ;;
-            G)
+            A)
+                apiserverHostname="${OPTARG:-$apiserverHostname}" ;;
+            I)
                 cleanupGatewayIP="${OPTARG:-$cleanupGatewayIP}" ;;
             l)
                 errorLoggingGuard="${OPTARG:-$errorLoggingGuard}" ;;
@@ -410,7 +416,7 @@ function utils::post_hook() {
                 computeRegion=${OPTARG:-$computeRegion} ;;
             r)
                 provisionRegionalCluster=${OPTARG:-$provisionRegionalCluster} ;;
-            A)
+            d)
                 asyncDeprovision=${OPTARG:-$asyncDeprovision} ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
