@@ -37,6 +37,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcloud.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcp.sh"
 
 requiredVars=(
     KYMA_PROJECT_DIR
@@ -73,48 +75,82 @@ function post_hook() {
   exit "${EXIT_STATUS}"
 }
 
-trap post_hook EXIT INT
+#trap post_hook EXIT INT
 
-RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
-readonly COMMON_NAME_PREFIX="cli-integration-test-gke"
-COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+# Using set -f to prevent path globing in post_hook arguments.
+# utils::post_hook call set +f at the beginning.
+trap 'EXIT_STATUS=$?; set -f; utils::post_hook -n $COMMON_NAME -p $CLOUDSDK_CORE_PROJECT -c $CLEANUP_CLUSTER -g $CLEANUP_GATEWAY_DNS_RECORD -G $INGRESS_GATEWAY_HOSTNAME -a $CLEANUP_APISERVER_DNS_RECORD -A $APISERVER_HOSTNAME -I $CLEANUP_GATEWAY_IP_ADDRESS -l $ERROR_LOGGING_GUARD -z $CLOUDSDK_COMPUTE_ZONE -R $CLOUDSDK_COMPUTE_REGION -r $PROVISION_REGIONAL_CLUSTER -d $DISABLE_ASYNC_DEPROVISION -s $DNS_SUBDOMAIN -e $GATEWAY_IP_ADDRESS -f $APISERVER_IP_ADDRESS -N $COMMON_NAME -Z $CLOUDSDK_DNS_ZONE_NAME -E $EXIT_STATUS' EXIT INT
+
+#RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
+#readonly COMMON_NAME_PREFIX="cli-integration-test-gke"
+#COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 
 ### Cluster name must be less than 40 characters!
-export CLUSTER_NAME="${COMMON_NAME}"
+#export CLUSTER_NAME="${COMMON_NAME}"
 
-export GCLOUD_NETWORK_NAME="${COMMON_NAME_PREFIX}-net"
-export GCLOUD_SUBNET_NAME="${COMMON_NAME_PREFIX}-subnet"
+utils::set_vars_for_build \
+    -b "$BUILD_TYPE" \
+    -p "$PULL_NUMBER" \
+    -s "$PULL_BASE_SHA"
 
-### For gcloud::provision_gke_cluster
-export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
-
+gcp::set_vars_for_network -n "$JOB_NAME"
+export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_net_name:?}"
+export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_subnet_name:?}"
 #Local variables
-DNS_SUBDOMAIN="${COMMON_NAME}"
-
+DNS_SUBDOMAIN="$COMMON_NAME"
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
-log::info "Authenticate"
-gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
-DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
+#export GCLOUD_NETWORK_NAME="${COMMON_NAME_PREFIX}-net"
+#export GCLOUD_SUBNET_NAME="${COMMON_NAME_PREFIX}-subnet"
+
+### For gcloud::provision_gke_cluster
+#export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
+#export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
+
+gcp::authenticate -c "$GOOGLE_APPLICATION_CREDENTIALS"
+
+#log::info "Authenticate"
+#gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+#DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
+
+gcp::reserve_ip_address \
+    -n "$COMMON_NAME" \
+    -p "$CLOUDSDK_CORE_PROJECT" \
+    -r "$CLOUDSDK_COMPUTE_REGION"
+export GATEWAY_IP_ADDRESS="${gcp_reserve_ip_address_return_ip_address:?}"
+export CLEANUP_GATEWAY_IP_ADDRESS="true"
+
+#log::info "Reserve IP Address for Ingressgateway"
+#GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
+#GATEWAY_IP_ADDRESS=$(gcloud::reserve_ip_address "${GATEWAY_IP_ADDRESS_NAME}")
+#CLEANUP_GATEWAY_IP_ADDRESS="true"
+#echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
 
-log::info "Reserve IP Address for Ingressgateway"
-GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
-GATEWAY_IP_ADDRESS=$(gcloud::reserve_ip_address "${GATEWAY_IP_ADDRESS_NAME}")
-CLEANUP_GATEWAY_IP_ADDRESS="true"
-echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
+#log::info "Create DNS Record for Ingressgateway IP"
+#GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+#CLEANUP_GATEWAY_DNS_RECORD="true"
+#gcloud::create_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
 
 
 log::info "Create DNS Record for Ingressgateway IP"
-GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-CLEANUP_GATEWAY_DNS_RECORD="true"
-gcloud::create_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
+gcp::create_dns_record \
+    -p "$CLOUDSDK_CORE_PROJECT" \
+    -z "$CLOUDSDK_DNS_ZONE_NAME" \
+    -a "$GATEWAY_IP_ADDRESS" \
+    -h "$INGRESS_GATEWAY_HOSTNAME" \
+    -s "$COMMON_NAME"
+DNS_DOMAIN=${gcp_create_dns_record_dns_domain:?}
+export CLEANUP_GATEWAY_DNS_RECORD="true"
 
+#log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
+#gcloud::create_network "${GCLOUD_NETWORK_NAME}" "${GCLOUD_SUBNET_NAME}"
 
-log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-gcloud::create_network "${GCLOUD_NETWORK_NAME}" "${GCLOUD_SUBNET_NAME}"
+gcp::create_network \
+    -n "$GCLOUD_NETWORK_NAME" \
+    -s "$GCLOUD_SUBNET_NAME" \
+    -p "$CLOUDSDK_CORE_PROJECT"
 
 
 log::info "Provision cluster: \"${CLUSTER_NAME}\""
@@ -195,13 +231,26 @@ log::info "Checking the versions"
 kyma version
 
 
+#if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
+#    log::info "Create DNS Record for Apiserver proxy IP"
+#    APISERVER_IP_ADDRESS=$(kubectl get  service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+#    APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+#    CLEANUP_APISERVER_DNS_RECORD="true"
+#    gcloud::create_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
+#fi
+
 if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
     log::info "Create DNS Record for Apiserver proxy IP"
-    APISERVER_IP_ADDRESS=$(kubectl get  service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-    CLEANUP_APISERVER_DNS_RECORD="true"
-    gcloud::create_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
+    APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    gcp::create_dns_record \
+        -p "$CLOUDSDK_CORE_PROJECT" \
+        -z "$CLOUDSDK_DNS_ZONE_NAME" \
+        -a "$APISERVER_IP_ADDRESS" \
+        -h "$APISERVER_HOSTNAME" \
+        -s "$COMMON_NAME"
+    export CLEANUP_APISERVER_DNS_RECORD="true"
 fi
+
 
 log::info "Create local resources for a sample Function"
 

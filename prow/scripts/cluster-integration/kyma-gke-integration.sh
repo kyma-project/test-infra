@@ -31,7 +31,6 @@
 # - Compute Network Admin
 
 set -o errexit
-set -x
 
 #Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
@@ -82,7 +81,7 @@ utils::check_required_vars "${requiredVars[@]}"
 
 # Using set -f to prevent path globing in post_hook arguments.
 # utils::post_hook call set +f at the beginning.
-trap 'EXIT_STATUS=$?; set -f; utils::post_hook -n $COMMON_NAME -p $CLOUDSDK_CORE_PROJECT -c $CLEANUP_CLUSTER -g $CLEANUP_GATEWAY_DNS_RECORD -G $INGRESS_GATEWAY_HOSTNAME -a $CLEANUP_APISERVER_DNS_RECORD -A $APISERVER_HOSTNAME -I $CLEANUP_GATEWAY_IP_ADDRESS -l $ERROR_LOGGING_GUARD -z $CLOUDSDK_COMPUTE_ZONE -R $CLOUDSDK_COMPUTE_REGION -r $PROVISION_REGIONAL_CLUSTER -d $DISABLE_ASYNC_DEPROVISION -s $DNS_SUBDOMAIN -e $GATEWAY_IP_ADDRESS -f $APISERVER_IP_ADDRESS -N $COMMON_NAME -Z $CLOUDSDK_DNS_ZONE_NAME -E $EXIT_STATUS' EXIT INT
+trap 'EXIT_STATUS=$?; set -f; utils::post_hook -n $COMMON_NAME -p $CLOUDSDK_CORE_PROJECT -c $CLEANUP_CLUSTER -g $CLEANUP_GATEWAY_DNS_RECORD -G $INGRESS_GATEWAY_HOSTNAME -a $CLEANUP_APISERVER_DNS_RECORD -A $APISERVER_HOSTNAME -I $CLEANUP_GATEWAY_IP_ADDRESS -l $ERROR_LOGGING_GUARD -z $CLOUDSDK_COMPUTE_ZONE -R $CLOUDSDK_COMPUTE_REGION -r $PROVISION_REGIONAL_CLUSTER -d $DISABLE_ASYNC_DEPROVISION -s $COMMON_NAME -e $GATEWAY_IP_ADDRESS -f $APISERVER_IP_ADDRESS -N $COMMON_NAME -Z $CLOUDSDK_DNS_ZONE_NAME -E $EXIT_STATUS' EXIT INT
 
 utils::run_jobguard "$BUILD_TYPE"
 
@@ -91,12 +90,11 @@ utils::set_vars_for_build \
     -p "$PULL_NUMBER" \
     -s "$PULL_BASE_SHA"
 
-### Cluster name must be less than 40 characters!
 gcp::set_vars_for_network -n "$JOB_NAME"
 export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_net_name:?}"
 export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_subnet_name:?}"
 #Local variables
-DNS_SUBDOMAIN="$COMMON_NAME"
+#DNS_SUBDOMAIN="$COMMON_NAME"
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
@@ -108,9 +106,6 @@ gcp::create_network \
     -p "$CLOUDSDK_CORE_PROJECT"
 
 kyma::install_cli
-
-# TODO: check if can be included in gcp::create_dns_record
-#DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
 gcp::reserve_ip_address \
     -n "$COMMON_NAME" \
@@ -127,7 +122,7 @@ gcp::create_dns_record \
     -z "$CLOUDSDK_DNS_ZONE_NAME" \
     -a "$GATEWAY_IP_ADDRESS" \
     -h "$INGRESS_GATEWAY_HOSTNAME" \
-    -s "$DNS_SUBDOMAIN"
+    -s "$COMMON_NAME"
 DNS_DOMAIN=${gcp_create_dns_record_dns_domain:?}
 export CLEANUP_GATEWAY_DNS_RECORD="true"
 
@@ -162,7 +157,7 @@ export CLEANUP_CLUSTER="true"
 
 utils::generate_self_signed_cert \
     -d "$DNS_DOMAIN" \
-    -s "$DNS_SUBDOMAIN" \
+    -s "$COMMON_NAME" \
     -v "$SELF_SIGN_CERT_VALID_DAYS"
 TLS_CERT="${utils_generate_self_signed_cert_tls_cert:?}"
 TLS_KEY="${utils_generate_self_signed_cert_tls_key:?}"
@@ -189,7 +184,7 @@ if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-
         -z "$CLOUDSDK_DNS_ZONE_NAME" \
         -a "$APISERVER_IP_ADDRESS" \
         -h "$APISERVER_HOSTNAME" \
-        -s "$DNS_SUBDOMAIN"
+        -s "$COMMON_NAME"
     export CLEANUP_APISERVER_DNS_RECORD="true"
 fi
 

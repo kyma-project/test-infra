@@ -24,10 +24,18 @@ function utils::check_required_vars() {
 
 # utils::generate_self_signed_cert generates self-signed certificate for the given domain
 #
-# Optional exported variables
-# CERT_VALID_DAYS - days when the certificate is valid
 # Arguments
-# $1 - domain name
+#
+# required:
+# d - domain name
+# s - subdomain
+#
+# optional:
+# v - number days certificate will be valid, default 5 days
+#
+# Return values
+# utils_generate_self_signed_cert_tls_cert - generated tls certificate
+# utils_generate_self_signed_cert_tls_key - generated tls key
 function utils::generate_self_signed_cert() {
 
     local OPTIND
@@ -59,13 +67,13 @@ function utils::generate_self_signed_cert() {
     local certPath="$tmpDir/cert.pem"
     local keyPath="$tmpDir/key.pem"
 
-  openssl req -x509 -nodes -days "$certValidDays" -newkey rsa:4069 \
-                   -subj "/CN=$dnsFQDN" \
-                   -reqexts SAN -extensions SAN \
-                   -config <(cat /etc/ssl/openssl.cnf \
-          <(printf "\\n[SAN]\\nsubjectAltName=DNS:*.%s" "$dnsFQDN")) \
-                   -keyout "$keyPath" \
-                   -out "$certPath"
+    openssl req -x509 -nodes -days "$certValidDays" -newkey rsa:4069 \
+        -subj "/CN=$dnsFQDN" \
+        -reqexts SAN -extensions SAN \
+        -config <(cat /etc/ssl/openssl.cnf \
+        <(printf "\\n[SAN]\\nsubjectAltName=DNS:*.%s" "$dnsFQDN")) \
+        -keyout "$keyPath" \
+        -out "$certPath"
 
     # return value
     # shellcheck disable=SC2034
@@ -74,11 +82,8 @@ function utils::generate_self_signed_cert() {
     # shellcheck disable=SC2034
     utils_generate_self_signed_cert_tls_key=$(base64 "$keyPath" | tr -d '\n')
 
-  #echo "${TLS_CERT}"
-  #echo "${TLS_KEY}"
-
-  rm "$keyPath"
-  rm "$certPath"
+    rm "$keyPath"
+    rm "$certPath"
 }
 
 # utils::generate_letsencrypt_cert generates let's encrypt certificate for the given domain
@@ -298,6 +303,7 @@ function utils::save_env_file() {
   done
 }
 
+# utils::describe_nodes call k8s statistics commands and check if oom event was recorded.
 function utils::describe_nodes() {
     {
       log::info "calling describe nodes"
@@ -314,7 +320,7 @@ function utils::describe_nodes() {
     fi
 }
 
-
+# utils::oom_get_output download output from debug command pod if exist.
 function utils::oom_get_output() {
   if [ ! -e "${ARTIFACTS}/describe_nodes.txt" ]; then
     utils::describe_nodes
@@ -390,8 +396,28 @@ function utils::kubeaudit_check_report() {
   fi
 }
 
-# post_hook runs at the end of a script or on any error
+# utils::post_hook runs at the end of a script or on any error.
 # TODO: change direct post_hook and cleanup calls to this function
+#
+# Arguments:
+# reqiured:
+# p - cluster name to deprovision
+# E - exit status to report at the end of function execution
+# c - clean cluster if set to true
+# g - clean gateway DNS if set to true
+# G - gateway hostname to clean
+# a - clean apiserver DNS if set to true
+# A - apiserver hostname to clean
+# I - clean gateway IP if set to true
+# l - enable error logging guard if set to true
+# z - GCP compute zone
+# R - GCP compute region
+# r - clean regional cluster if set to true
+# d - deprovision cluster in async mode if set to true
+#
+# optional:
+#
+#
 function utils::post_hook() {
   #!!! Must be at the beginning of this function !!!
     #local EXIT_STATUS=$?
@@ -400,7 +426,6 @@ function utils::post_hook() {
     set +f
 
     local OPTIND
-    local clusterName # -n
     local projectName # -p
     local exitStatus
     local cleanupCluster="false" # -c
@@ -412,7 +437,7 @@ function utils::post_hook() {
     local errorLoggingGuard="false" # -l
     local computeZone="europe-west4-b" # z - zone in which the new zonal cluster will be created
     local computeRegion="europe-west4" # R - region in which the new regional cluster will be created
-    local provisionRegionalCluster="false" # r - it true provision regional cluster
+    local cleanRegionalCluster="false" # r - it true provision regional cluster
     local asyncDeprovision="true" # d - deprovision cluster in async mode
 
     while getopts ":n:c:l:p:a:G:g:z:I:r:d:R:A:e:f:s:Z:N:E:" opt; do
@@ -440,16 +465,16 @@ function utils::post_hook() {
             R)
                 computeRegion=${OPTARG:-$computeRegion} ;;
             r)
-                provisionRegionalCluster=${OPTARG:-$provisionRegionalCluster} ;;
+                cleanRegionalCluster=${OPTARG:-$cleanRegionalCluster} ;;
             d)
                 asyncDeprovision=${OPTARG:-$asyncDeprovision} ;;
             n)
                 if [ -n "$OPTARG" ]; then
-                    clusterName="$OPTARG"
+                    local clusterName="$OPTARG"
                 fi ;;
             s)
                 if [ -n "$OPTARG" ]; then
-                    dnsSubDomain="$OPTARG"
+                    local dnsSubDomain="$OPTARG"
                 fi ;;
             e)
                 if [ -n "$OPTARG" ]; then
@@ -466,7 +491,7 @@ function utils::post_hook() {
             # TODO: align parameter letter with other functions
             Z)
                 if [ -n "$OPTARG" ]; then
-                    gcpDnsZoneName="$OPTARG"
+                    local gcpDnsZoneName="$OPTARG"
                 fi ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
@@ -475,7 +500,6 @@ function utils::post_hook() {
         esac
     done
 
-    utils::check_empty_arg "$clusterName" "Cluster name not provided." "graceful"
     utils::check_empty_arg "$projectName" "Project name not provided." "graceful"
     utils::check_empty_arg "$exitStatus" "Exit status not provided." "graceful"
 
@@ -500,7 +524,7 @@ function utils::post_hook() {
             -p "$projectName" \
             -z "$computeZone" \
             -R "$computeRegion" \
-            -r "$provisionRegionalCluster" \
+            -r "$cleanRegionalCluster" \
             -d "$asyncDeprovision"
     fi
     if [ "$cleanupGatewayDns" = "true" ]; then
@@ -591,6 +615,7 @@ function utils::check_empty_arg {
     fi
 }
 
+#TODO: change exports to retrun variables.
 function utils::set_vars_for_build {
 
     local OPTIND

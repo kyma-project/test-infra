@@ -596,7 +596,7 @@ function gcp::deprovision_gke_cluster {
             R)
                 computeRegion=${OPTARG:-$computeRegion} ;;
             r)
-                provisionRegionalCluster=${OPTARG:-$provisionRegionalCluster} ;;
+                cleanRegionalCluster=${OPTARG:-$cleanRegionalCluster} ;;
             d)
                 asyncDeprovision=${OPTARG:-$asyncDeprovision} ;;
             \?)
@@ -620,7 +620,7 @@ function gcp::deprovision_gke_cluster {
     log::info "Deprovisioning cluster $clusterName."
 
     params+=("--quiet")
-    if [ "$provisionRegionalCluster" = "true" ]; then
+    if [ "$cleanRegionalCluster" = "true" ]; then
         #Pass gke region name to delete command.
         params+=("--region=$computeRegion")
     else
