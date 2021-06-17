@@ -35,7 +35,7 @@ function utils::generate_self_signed_cert() {
     local dnsDomain
     local certValidDays="5"
 
-    while getopts ":s:d:v:" opts; do
+    while getopts ":s:d:v:" opt; do
         case $opt in
             s)
                 dnsSubDomain="$OPTARG";;
@@ -54,9 +54,7 @@ function utils::generate_self_signed_cert() {
     utils::check_empty_arg "$dnsSubDomain" "Subdomain not provided."
 
     log::info "Generate self-signed certificate"
-    local dnsFQDN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
-    local CERT_PATH
-    local KEY_PATH
+    local dnsFQDN="$dnsSubDomain.$dnsDomain"
     tmpDir=$(mktemp -d)
     local certPath="$tmpDir/cert.pem"
     local keyPath="$tmpDir/key.pem"
