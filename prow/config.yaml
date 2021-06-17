@@ -144,6 +144,13 @@ branch-protection:
               protect: true
               required_status_checks:
                 strict: true
+        reconciler:
+          protect: false
+          branches:
+            master:
+              protect: true
+              required_status_checks:
+                strict: true
 
 tide:
   sync_period: 2m
