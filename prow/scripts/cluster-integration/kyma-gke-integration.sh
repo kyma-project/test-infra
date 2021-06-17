@@ -80,6 +80,8 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
+# Using set -f to prevent path globing in post_hook arguments.
+# utils::post_hook call set +f at the beginning.
 trap 'set -f; utils::post_hook -n $COMMON_NAME -p $CLOUDSDK_CORE_PROJECT -c $CLEANUP_CLUSTER -g $CLEANUP_GATEWAY_DNS_RECORD -G $INGRESS_GATEWAY_HOSTNAME -a $CLEANUP_APISERVER_DNS_RECORD -A $APISERVER_HOSTNAME -I $CLEANUP_GATEWAY_IP_ADDRESS -l $ERROR_LOGGING_GUARD -z $CLOUDSDK_COMPUTE_ZONE -R $CLOUDSDK_COMPUTE_REGION -r $PROVISION_REGIONAL_CLUSTER -d $DISABLE_ASYNC_DEPROVISION -s $DNS_SUBDOMAIN -e $GATEWAY_IP_ADDRESS -f $APISERVER_IP_ADDRESS -N $COMMON_NAME -Z $CLOUDSDK_DNS_ZONE_NAME' EXIT INT
 
 utils::run_jobguard "$BUILD_TYPE"

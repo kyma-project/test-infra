@@ -373,11 +373,12 @@ function utils::kubeaudit_check_report() {
 # TODO: change direct post_hook and cleanup calls to this function
 function utils::post_hook() {
   #!!! Must be at the beginning of this function !!!
-  local exitCode=$?
+    local exitCode=$?
 
-  set +f
+    # enabling path globbing, disabled in a trap before utils::post_hook call
+    set +f
 
-  local OPTIND
+    local OPTIND
     local clusterName # -n
     local projectName # -p
     local cleanupCluster="false" # -c
