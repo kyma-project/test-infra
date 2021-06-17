@@ -28,4 +28,4 @@ spec:
     targetPort: 8080
   - name: metrics
     port: 9090
-  type: ClusterIP
+  type: NodePort
