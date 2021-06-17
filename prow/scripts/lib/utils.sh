@@ -394,7 +394,7 @@ function utils::kubeaudit_check_report() {
 # TODO: change direct post_hook and cleanup calls to this function
 function utils::post_hook() {
   #!!! Must be at the beginning of this function !!!
-    local EXIT_STATUS=$?
+    #local EXIT_STATUS=$?
 
     # enabling path globbing, disabled in a trap before utils::post_hook call
     set +f
@@ -402,6 +402,7 @@ function utils::post_hook() {
     local OPTIND
     local clusterName # -n
     local projectName # -p
+    local exitStatus
     local cleanupCluster="false" # -c
     local cleanupGatewayDns="false" # -g
     local gatewayHostname='*' # -G
@@ -414,10 +415,12 @@ function utils::post_hook() {
     local provisionRegionalCluster="false" # r - it true provision regional cluster
     local asyncDeprovision="true" # d - deprovision cluster in async mode
 
-    while getopts ":n:c:l:p:a:G:g:z:I:r:d:R:A:e:f:s:Z:N:" opt; do
+    while getopts ":n:c:l:p:a:G:g:z:I:r:d:R:A:e:f:s:Z:N:E:" opt; do
         case $opt in
             p)
                 projectName="$OPTARG" ;;
+            E)
+                exitStatus="$OPTARG" ;;
             c)
                 cleanupCluster="${OPTARG:-$cleanupCluster}" ;;
             g)
@@ -474,6 +477,7 @@ function utils::post_hook() {
 
     utils::check_empty_arg "$clusterName" "Cluster name not provided." "graceful"
     utils::check_empty_arg "$projectName" "Project name not provided." "graceful"
+    utils::check_empty_arg "$exitStatus" "Exit status not provided." "graceful"
 
     if [ "$errorLoggingGuard" = "true" ]; then
         log::info "AN ERROR OCCURED! Take a look at preceding log entries."
@@ -523,11 +527,11 @@ function utils::post_hook() {
     fi
 
     local msg=""
-    if [[ $EXIT_STATUS -ne 0 ]]; then msg="(exit status: $EXIT_STATUS)"; fi
+    if [[ $exitStatus -ne 0 ]]; then msg="(exit status: $exitStatus)"; fi
     log::info "Job is finished $msg"
     set -e
 
-    exit "$EXIT_STATUS"
+    exit "$exitStatus"
 }
 
 

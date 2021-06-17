@@ -82,7 +82,7 @@ utils::check_required_vars "${requiredVars[@]}"
 
 # Using set -f to prevent path globing in post_hook arguments.
 # utils::post_hook call set +f at the beginning.
-trap 'set -f; utils::post_hook -n $COMMON_NAME -p $CLOUDSDK_CORE_PROJECT -c $CLEANUP_CLUSTER -g $CLEANUP_GATEWAY_DNS_RECORD -G $INGRESS_GATEWAY_HOSTNAME -a $CLEANUP_APISERVER_DNS_RECORD -A $APISERVER_HOSTNAME -I $CLEANUP_GATEWAY_IP_ADDRESS -l $ERROR_LOGGING_GUARD -z $CLOUDSDK_COMPUTE_ZONE -R $CLOUDSDK_COMPUTE_REGION -r $PROVISION_REGIONAL_CLUSTER -d $DISABLE_ASYNC_DEPROVISION -s $DNS_SUBDOMAIN -e $GATEWAY_IP_ADDRESS -f $APISERVER_IP_ADDRESS -N $COMMON_NAME -Z $CLOUDSDK_DNS_ZONE_NAME' EXIT INT
+trap 'EXIT_STATUS=$?; set -f; utils::post_hook -n $COMMON_NAME -p $CLOUDSDK_CORE_PROJECT -c $CLEANUP_CLUSTER -g $CLEANUP_GATEWAY_DNS_RECORD -G $INGRESS_GATEWAY_HOSTNAME -a $CLEANUP_APISERVER_DNS_RECORD -A $APISERVER_HOSTNAME -I $CLEANUP_GATEWAY_IP_ADDRESS -l $ERROR_LOGGING_GUARD -z $CLOUDSDK_COMPUTE_ZONE -R $CLOUDSDK_COMPUTE_REGION -r $PROVISION_REGIONAL_CLUSTER -d $DISABLE_ASYNC_DEPROVISION -s $DNS_SUBDOMAIN -e $GATEWAY_IP_ADDRESS -f $APISERVER_IP_ADDRESS -N $COMMON_NAME -Z $CLOUDSDK_DNS_ZONE_NAME -E $EXIT_STATUS' EXIT INT
 
 utils::run_jobguard "$BUILD_TYPE"
 
@@ -158,20 +158,14 @@ gcp::provision_gke_cluster \
     -D "$CLUSTER_USE_SSD" \
     -e "$GKE_ENABLE_POD_SECURITY_POLICY" \
     -P "$TEST_INFRA_SOURCES_DIR"
-
 export CLEANUP_CLUSTER="true"
 
-#TODO: do we need function for this? Do we generate such certificates in other scripts?
-#DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
-#CERT_KEY=$(utils::generate_self_signed_cert "$DOMAIN")
 utils::generate_self_signed_cert \
     -d "$DNS_DOMAIN" \
     -s "$DNS_SUBDOMAIN" \
     -v "$SELF_SIGN_CERT_VALID_DAYS"
 TLS_CERT="${utils_generate_self_signed_cert_tls_cert:?}"
 TLS_KEY="${utils_generate_self_signed_cert_tls_key:?}"
-#TLS_CERT=$(echo "$CERT_KEY" | head -1)
-#TLS_KEY=$(echo "$CERT_KEY" | tail -1)
 
 log::info "Create Kyma CLI overrides"
 envsubst < "$TEST_INFRA_SOURCES_DIR/prow/scripts/resources/kyma-installer-overrides.tpl.yaml" > "$PWD/kyma-installer-overrides.yaml"
