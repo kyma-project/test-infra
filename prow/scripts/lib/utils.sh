@@ -394,7 +394,7 @@ function utils::kubeaudit_check_report() {
 # TODO: change direct post_hook and cleanup calls to this function
 function utils::post_hook() {
   #!!! Must be at the beginning of this function !!!
-    local exitCode=$?
+    local EXIT_STATUS=$?
 
     # enabling path globbing, disabled in a trap before utils::post_hook call
     set +f
@@ -523,11 +523,11 @@ function utils::post_hook() {
     fi
 
     local msg=""
-    if [[ $exitCode -ne 0 ]]; then msg="(exit status: $exitCode)"; fi
+    if [[ $EXIT_STATUS -ne 0 ]]; then msg="(exit status: $EXIT_STATUS)"; fi
     log::info "Job is finished $msg"
     set -e
 
-    exit "$exitCode"
+    exit "$EXIT_STATUS"
 }
 
 
