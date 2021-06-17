@@ -162,11 +162,16 @@ gcp::provision_gke_cluster \
 export CLEANUP_CLUSTER="true"
 
 #TODO: do we need function for this? Do we generate such certificates in other scripts?
-log::info "Generate self-signed certificate"
-DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
-CERT_KEY=$(utils::generate_self_signed_cert "$DOMAIN")
-TLS_CERT=$(echo "$CERT_KEY" | head -1)
-TLS_KEY=$(echo "$CERT_KEY" | tail -1)
+#DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
+#CERT_KEY=$(utils::generate_self_signed_cert "$DOMAIN")
+utils::generate_self_signed_cert \
+    -d "$DNS_DOMAIN" \
+    -s "$DNS_SUBDOMAIN" \
+    -v "$SELF_SIGN_CERT_VALID_DAYS"
+TLS_CERT="${utils_generate_self_signed_cert_tls_cert:?}"
+TLS_KEY="${utils_generate_self_signed_cert_tls_key:?}"
+#TLS_CERT=$(echo "$CERT_KEY" | head -1)
+#TLS_KEY=$(echo "$CERT_KEY" | tail -1)
 
 log::info "Create Kyma CLI overrides"
 envsubst < "$TEST_INFRA_SOURCES_DIR/prow/scripts/resources/kyma-installer-overrides.tpl.yaml" > "$PWD/kyma-installer-overrides.yaml"
