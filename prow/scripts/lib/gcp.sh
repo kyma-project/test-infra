@@ -20,16 +20,16 @@ source "${LIBDIR}/utils.sh"
 # Optional arguments:
 # l - optional additional labels for the cluster
 # t - cluster ttl hours, default 3
-
+# z - zone in which the new zonal cluster will be created
 # m - machine type to use in a cluster, default n1-standard-4
-
+# R - region in which the new regional cluster will be created
 # n - cluster worker nodes count, for regional clusters it's per zone count
 # N - gcp network name which use for new cluster, default default
 # S - gcp subnet name which use for new cluster
 # C - release channel to use for new cluster
 # i - cluster node vm image type to use for new cluster
 # g - gcp security group domain to use for new cluster GCLOUD_SECURITY_GROUP_DOMAIN
-
+# r - it true provision regional cluster
 # s - if true enable using stackdriver for new cluster
 # D - if true enable using ssd disks for new cluster
 # e - if true enable pod security policy for new cluster
@@ -45,13 +45,13 @@ function gcp::provision_gke_cluster {
     local prowjobID
     # default values
     local ttlHours="3"
-    local computeZone="europe-west4-b" # z - zone in which the new zonal cluster will be created
+    local computeZone="europe-west4-b"
     local machineType="n1-standard-4"
-    local computeRegion="europe-west4" # R - region in which the new regional cluster will be created
+    local computeRegion="europe-west4"
     local numNodes="3"
     local nodesPerZone="1"
     local networkName="default"
-    local provisionRegionalCluster="false" # r - it true provision regional cluster
+    local provisionRegionalCluster="false"
     local enableSSD="false"
     local enablePSP="false"
     local enableStackdriver="false"
@@ -132,10 +132,6 @@ function gcp::provision_gke_cluster {
     utils::check_empty_arg "$gkeClusterVersion" "GKE cluster version not provided."
     utils::check_empty_arg "$prowjobName" "prowjob name not provided."
     utils::check_empty_arg "$prowjobID" "prowjob ID not provided."
-
-    if [ "$provisionRegionalCluster" = "true" ]; then
-        numNodes="$nodesPerZone"
-    fi
 
     log::banner "Provision cluster: $clusterName"
 
