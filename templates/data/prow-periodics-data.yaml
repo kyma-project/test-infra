@@ -74,7 +74,7 @@ templates:
                   slack_channel: kyma-prow-alerts
                   branches:
                     - ^main$
-                  run_if_changed: 'prow/cluster/'
+                  run_if_changed: 'prow/cluster/components/'
                   env:
                     GOOGLE_APPLICATION_CREDENTIALS: /etc/credentials/service-account.json
                   command: /deploy.sh
