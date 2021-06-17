@@ -380,9 +380,9 @@ function utils::post_hook() {
     local projectName # -p
     local cleanupCluster="false" # -c
     local cleanupGatewayDns="false" # -g
-    local gatewayHostname="*" # -G
+    local gatewayHostname='*' # -G
     local cleanupApiserverDns="false" # -a
-    local apiserverHostname="apiserver"
+    local apiserverHostname='apiserver'
     local cleanupGatewayIP="false" # -I
     local errorLoggingGuard="false" # -l
     local computeZone="europe-west4-b" # z - zone in which the new zonal cluster will be created
