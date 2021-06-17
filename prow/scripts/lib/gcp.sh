@@ -641,7 +641,7 @@ function gcp::deprovision_gke_cluster {
 }
 
 
-function gcloud::delete_ip_address {
+function gcp::delete_ip_address {
 
     local OPTIND
     local gcpProjectName
