@@ -77,7 +77,7 @@ templates:
                   run_if_changed: 'prow/cluster/components/'
                   env:
                     GOOGLE_APPLICATION_CREDENTIALS: /etc/credentials/service-account.json
-                  command: /deploy.sh
+                  command: prow/cluster/deploy.sh
                   volumes:
                     - name: sa-prow-deploy
                       secretName: sa-prow-deploy
