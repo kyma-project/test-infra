@@ -375,6 +375,8 @@ function utils::post_hook() {
   #!!! Must be at the beginning of this function !!!
   local exitCode=$?
 
+  set +f
+
   local OPTIND
     local clusterName # -n
     local projectName # -p
