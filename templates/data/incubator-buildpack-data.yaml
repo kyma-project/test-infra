@@ -195,6 +195,41 @@ templates:
                     - disable_testgrid
                   local:
                     - milv_jobConfig
+      - to: ../prow/jobs/incubator/reconciler/reconciler.yaml
+        localSets:
+          reconciler_jobConfig:
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.16.4
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
+            env:
+              GO11MODULE: "on"
+            branches:
+              - ^main$
+        jobConfigs:
+          - repoName: kyma-incubator/reconciler
+            jobs:
+              - jobConfig:
+                  name: pre-main-kyma-incubator-reconciler
+                  always_run: true
+                  <<: *commonJob
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                  local:
+                    - reconciler_jobConfig
+              - jobConfig:
+                  name: post-main-kyma-incubator-reconciler
+                  <<: *commonJob
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                  local:
+                    - reconciler_jobConfig
       - to: ../prow/jobs/incubator/octopus/octopus.yaml
         jobConfigs:
           - repoName: kyma-incubator/octopus
