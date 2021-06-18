@@ -112,8 +112,8 @@ kyma test run \
     --watch \
     --non-interactive \
     istio-kyma-validate application-connector application-operator application-registry \
-    connection-token-handler connector-service api-gateway console-backend \
-    dex-connection dex-integration kiali logging monitoring \
+    connection-token-handler connector-service api-gateway \
+    kiali logging monitoring \
     rafter serverless serverless-long service-catalog
 )
 
