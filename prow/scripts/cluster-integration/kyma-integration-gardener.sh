@@ -75,7 +75,8 @@ ERROR_LOGGING_GUARD="true"
 export ERROR_LOGGING_GUARD
 
 readonly COMMON_NAME_PREFIX="grd"
-utils::generate_commonName "${COMMON_NAME_PREFIX}"
+COMMON_NAME=$(utils::generate_commonName -n "${COMMON_NAME_PREFIX}")
+export COMMON_NAME
 
 ### Cluster name must be less than 10 characters!
 export CLUSTER_NAME="${COMMON_NAME}"

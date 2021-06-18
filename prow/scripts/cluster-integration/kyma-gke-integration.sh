@@ -33,27 +33,27 @@
 set -o errexit
 
 #Exported variables
-export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
-export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
-export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
+export TEST_INFRA_SOURCES_DIR="$KYMA_PROJECT_DIR/test-infra"
+export KYMA_SOURCES_DIR="$KYMA_PROJECT_DIR/kyma"
+export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="$TEST_INFRA_SOURCES_DIR/prow/scripts/cluster-integration/helpers"
 
 # shellcheck source=prow/scripts/lib/gcloud.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/lib/log.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcp.sh"
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 
 ENABLE_TEST_LOG_COLLECTOR=false
 
 # Enforce lowercase
-readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
+readonly REPO_OWNER=$(echo "$REPO_OWNER" | tr '[:upper:]' '[:lower:]')
 export REPO_OWNER
-readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
+readonly REPO_NAME=$(echo "$REPO_NAME" | tr '[:upper:]' '[:lower:]')
 export REPO_NAME
 export INGRESS_GATEWAY_HOSTNAME='*'
 export APISERVER_HOSTNAME='apiserver'
@@ -83,22 +83,27 @@ utils::check_required_vars "${requiredVars[@]}"
 # utils::post_hook call set +f at the beginning.
 trap 'EXIT_STATUS=$?; set -f; utils::post_hook -n $COMMON_NAME -p $CLOUDSDK_CORE_PROJECT -c $CLEANUP_CLUSTER -g $CLEANUP_GATEWAY_DNS_RECORD -G $INGRESS_GATEWAY_HOSTNAME -a $CLEANUP_APISERVER_DNS_RECORD -A $APISERVER_HOSTNAME -I $CLEANUP_GATEWAY_IP_ADDRESS -l $ERROR_LOGGING_GUARD -z $CLOUDSDK_COMPUTE_ZONE -R $CLOUDSDK_COMPUTE_REGION -r $PROVISION_REGIONAL_CLUSTER -d $DISABLE_ASYNC_DEPROVISION -s $COMMON_NAME -e $GATEWAY_IP_ADDRESS -f $APISERVER_IP_ADDRESS -N $COMMON_NAME -Z $CLOUDSDK_DNS_ZONE_NAME -E $EXIT_STATUS' EXIT INT
 
-utils::run_jobguard "$BUILD_TYPE"
+utils::run_jobguard \
+    -b "$BUILD_TYPE" \
+    -P "$TEST_INFRA_SOURCES_DIR"
 
-utils::set_vars_for_build \
+utils::generate_vars_for_build \
     -b "$BUILD_TYPE" \
     -p "$PULL_NUMBER" \
     -s "$PULL_BASE_SHA"
+export COMMON_NAME=${utils_generate_vars_for_build_commonName:?}
+export KYMA_SOURCE=${utils_generate_vars_for_build_kymaSource:?}
 
-gcp::set_vars_for_network -n "$JOB_NAME"
+gcp::set_vars_for_network \
+    -n "$JOB_NAME"
 export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_net_name:?}"
 export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_subnet_name:?}"
-#Local variables
-#DNS_SUBDOMAIN="$COMMON_NAME"
+
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
-gcp::authenticate -c "$GOOGLE_APPLICATION_CREDENTIALS"
+gcp::authenticate \
+    -c "$GOOGLE_APPLICATION_CREDENTIALS"
 
 gcp::create_network \
     -n "$GCLOUD_NETWORK_NAME" \
@@ -123,7 +128,7 @@ gcp::create_dns_record \
     -a "$GATEWAY_IP_ADDRESS" \
     -h "$INGRESS_GATEWAY_HOSTNAME" \
     -s "$COMMON_NAME"
-DNS_DOMAIN=${gcp_create_dns_record_dns_domain:?}
+export DNS_DOMAIN=${gcp_create_dns_record_dns_domain:?}
 export CLEANUP_GATEWAY_DNS_RECORD="true"
 
 # if GKE_RELEASE_CHANNEL is set, get latest possible cluster version
@@ -159,8 +164,8 @@ utils::generate_self_signed_cert \
     -d "$DNS_DOMAIN" \
     -s "$COMMON_NAME" \
     -v "$SELF_SIGN_CERT_VALID_DAYS"
-TLS_CERT="${utils_generate_self_signed_cert_tls_cert:?}"
-TLS_KEY="${utils_generate_self_signed_cert_tls_key:?}"
+export TLS_CERT="${utils_generate_self_signed_cert_tls_cert:?}"
+export TLS_KEY="${utils_generate_self_signed_cert_tls_key:?}"
 
 log::info "Create Kyma CLI overrides"
 envsubst < "$TEST_INFRA_SOURCES_DIR/prow/scripts/resources/kyma-installer-overrides.tpl.yaml" > "$PWD/kyma-installer-overrides.yaml"

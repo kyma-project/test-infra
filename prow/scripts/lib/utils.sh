@@ -24,7 +24,7 @@ function utils::check_required_vars() {
 
 # utils::generate_self_signed_cert generates self-signed certificate for the given domain
 #
-# Arguments
+# Arguments:
 #
 # required:
 # d - domain name
@@ -33,7 +33,7 @@ function utils::check_required_vars() {
 # optional:
 # v - number days certificate will be valid, default 5 days
 #
-# Return values
+# Return variables
 # utils_generate_self_signed_cert_tls_cert - generated tls certificate
 # utils_generate_self_signed_cert_tls_key - generated tls key
 function utils::generate_self_signed_cert() {
@@ -397,31 +397,32 @@ function utils::kubeaudit_check_report() {
 }
 
 # utils::post_hook runs at the end of a script or on any error.
-# TODO: change direct post_hook and cleanup calls to this function
 #
 # Arguments:
-# reqiured:
-# p - cluster name to deprovision
+# required:
+# p - GCP project name
 # E - exit status to report at the end of function execution
-# c - clean cluster if set to true
-# g - clean gateway DNS if set to true
-# G - gateway hostname to clean
-# a - clean apiserver DNS if set to true
-# A - apiserver hostname to clean
-# I - clean gateway IP if set to true
-# l - enable error logging guard if set to true
-# z - GCP compute zone
-# R - GCP compute region
-# r - clean regional cluster if set to true
-# d - deprovision cluster in async mode if set to true
 #
 # optional:
-#
+# c - if set to true cleanup cluster, default false
+# g - if set to true cleanup gateway DNS, default false
+# G - gateway hostname to clean, default *
+# a - if set to true cleanup apiserver DNS, default false
+# A - apiserver hostname to clean, default apiserver
+# I - if set to true cleanup gateway IP, default false
+# l - if set to true enable error logging guard
+# z - GCP compute zone, default europe-west4-b
+# R - GCP compute region, default europe-west4
+# r - if true clean regional cluster, default false
+# d - if true deprovision cluster in async mode, default true
+# n - cluster name to deprovision
+# s - dns subdomain
+# e - gateway IP address
+# f - apiserver IP address
+# N - gateway IP address name
+# Z - GCP dns zone name
 #
 function utils::post_hook() {
-  #!!! Must be at the beginning of this function !!!
-    #local EXIT_STATUS=$?
-
     # enabling path globbing, disabled in a trap before utils::post_hook call
     set +f
 
@@ -559,37 +560,68 @@ function utils::post_hook() {
 }
 
 
-# run_jobguard will start jobguard if build type is set to pr
+# utils::run_jobguard will start jobguard if build type is set to pr
 # Arguments
-# $1 - Build type set for prowjob
-# TODO: change direct jobgurad calls to this function
+# b - Build type set for prowjob
+# P - path to test-infra repository sources root directory
 function utils::run_jobguard() {
-    utils::check_empty_arg "${1}"
-    buildType=$( echo "${1}" | tr "[:upper:]" "[:lower:]")
-    if [[ "${buildType}" == "pr" ]]; then
+
+    local OPTIND
+    local testInfraSourcesDir="/home/prow/go/src/github.com/kyma-project"
+
+    while getopts ":b:P:" opt; do
+        case $opt in
+            b)
+                local buildType="$OPTARG" ;;
+            P)
+                testInfraSourcesDir=${OPTARG:-$testInfraSourcesDir} ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2; ;;
+        esac
+    done
+
+    utils::check_empty_arg "$buildType"
+    buildType=$( echo "$buildType" | tr "[:upper:]" "[:lower:]")
+    if [[ "$buildType" == "pr" ]]; then
         log::info "Execute Job Guard"
         # shellcheck source=development/jobguard/scripts/run.sh
-        "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
+        "$testInfraSourcesDir"/development/jobguard/scripts/run.sh
     fi
 }
 
-# utils::generate_CommonName create and export COMMON_NAME variable
-# it generates random part of COMMON_NAME and prefix it with provided arguments
+# utils::generate_CommonName generate common name
+# It generates random string and prefix it with provided arguments
 #
 # Arguments:
-# $1 - string to use as a common name prefix /optional
-# $2 - pull request number or commit id to use as a common name prefix /optional
-# Exports
-# COMMON_NAME
+# n - string to use as a common name prefix /optional
+# p - pull request number or commit id to use as a common name prefix /optional
+#
+# Returns:
+# generated common name string
 utils::generate_commonName() {
-  NAME_PREFIX=$1
-  PULL_NUMBER=$2
-  if [ ${#PULL_NUMBER} -gt 0 ]; then
-    PULL_NUMBER="-${PULL_NUMBER}-"
+
+    local OPTIND
+
+    while getopts ":n:p:" opt; do
+        case $opt in
+            n)
+                local namePrefix="$OPTARG" ;;
+            p)
+                local pullNumber="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2; ;;
+        esac
+    done
+  if [ ${#pullNumber} -gt 0 ]; then
+    pullNumber="-$pullNumber-"
   fi
-  RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
-  COMMON_NAME=$(echo "${NAME_PREFIX}${PULL_NUMBER}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-  export COMMON_NAME
+  local randomNameSuffix
+  randomNameSuffix=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
+  echo "$namePrefix$pullNumber$randomNameSuffix" | tr "[:upper:]" "[:lower:]"
 }
 
 # check_empty_arg will check if first argument is empty.
@@ -615,8 +647,17 @@ function utils::check_empty_arg {
     fi
 }
 
-#TODO: change exports to retrun variables.
-function utils::set_vars_for_build {
+# utils::generate_vars_for_build generate string values for specific build types
+#
+# Arguments:
+# b - build type
+# p - pull request number
+# s - pull request base SHA
+#
+# Return variables:
+# utils_set_vars_for_build_commonName - generated common name
+# utils_set_vars_for_build_kymaSource - generated kyma source
+function utils::generate_vars_for_build {
 
     local OPTIND
     local buildType
@@ -641,27 +682,28 @@ function utils::set_vars_for_build {
     if [ "$buildType" = "pr" ]; then
         utils::check_empty_arg "$prNumber" "Pull request number not provided."
     fi
-    if [ "$buildType" = "commit" ]; then
-        utils::check_empty_arg "$prBaseSha" "Pull request base sha not provided."
-    fi
 
     # In case of PR, operate on PR number
     if [[ "$buildType" == "pr" ]]; then
         readonly commonNamePrefix="pr"
-        utils::generate_commonName "$commonNamePrefix" "$prNumber"
-        export KYMA_SOURCE="PR-$prNumber"
+        # shellcheck disable=SC2034
+        utils_set_vars_for_build_commonName="$(utils::generate_commonName -n "$commonNamePrefix" -p "$prNumber")"
+        # shellcheck disable=SC2034
+        utils_set_vars_for_build_kymaSource="PR-$prNumber"
     elif [[ "$buildType" == "release" ]]; then
         readonly commonNamePrefix="rel"
         readonly releaseVersion=$(cat "VERSION")
-        utils::generate_commonName "$commonNamePrefix"
+        utils_set_vars_for_build_commonName="$(utils::generate_commonName -n "$commonNamePrefix")"
         log::info "Reading release version from RELEASE_VERSION file, got: $releaseVersion"
-        export KYMA_SOURCE="$releaseVersion"
+        # shellcheck disable=SC2034
+        utils_set_vars_for_build_kymaSource="$releaseVersion"
     # Otherwise (master), operate on triggering commit id
     else
         readonly commonNamePrefix="commit"
         readonly commitID="${prBaseSha::8}"
-        utils::generate_commonName "$commonNamePrefix" "$commitID"
-        export KYMA_SOURCE="$commitID"
-        export KYMA_INSTALLER_IMAGE
+        # shellcheck disable=SC2034
+        utils_set_vars_for_build_commonName="$(utils::generate_commonName "$commonNamePrefix" "$commitID")"
+        # shellcheck disable=SC2034
+        utils_set_vars_for_build_kymaSource="$commitID"
     fi
 }

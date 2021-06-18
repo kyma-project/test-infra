@@ -45,7 +45,7 @@ gardener::reprovision_cluster() {
     log::info "cleaning damaged cluster first"
     gardener::deprovision_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
     log::info "building new cluster name"
-    utils::generate_commonName "${COMMON_NAME_PREFIX}"
+    COMMON_NAME=$(utils::generate_commonName -n "${COMMON_NAME_PREFIX}")
     CLUSTER_NAME="${COMMON_NAME}"
     gardener::provision_cluster
 }
