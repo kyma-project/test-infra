@@ -183,6 +183,7 @@ data:
 EOF
 )
 
+
 echo "$COMPONENT_OVERRIDES" > "$COMPONENT_OVERRIDES_FILE"
 
 log::info "Kyma installation triggered"
@@ -190,8 +191,7 @@ kyma install \
     --ci \
     --source main \
     -o "$COMPONENT_OVERRIDES_FILE" \
-    #TODO: Missing DOMAIN variable
-    --domain "$DOMAIN" \
+    --domain "$DNS_SUBDOMAIN.${DNS_DOMAIN%?}" \
     --tls-cert "$TLS_CERT" \
     --tls-key "$TLS_KEY" \
     --timeout 90m
