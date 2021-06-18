@@ -687,23 +687,24 @@ function utils::generate_vars_for_build {
     if [[ "$buildType" == "pr" ]]; then
         readonly commonNamePrefix="pr"
         # shellcheck disable=SC2034
-        utils_set_vars_for_build_commonName="$(utils::generate_commonName -n "$commonNamePrefix" -p "$prNumber")"
+        utils_generate_vars_for_build_commonName="$(utils::generate_commonName -n "$commonNamePrefix" -p "$prNumber")"
         # shellcheck disable=SC2034
-        utils_set_vars_for_build_kymaSource="PR-$prNumber"
+        utils_generate_vars_for_build_kymaSource="PR-$prNumber"
     elif [[ "$buildType" == "release" ]]; then
         readonly commonNamePrefix="rel"
         readonly releaseVersion=$(cat "VERSION")
-        utils_set_vars_for_build_commonName="$(utils::generate_commonName -n "$commonNamePrefix")"
+        # shellcheck disable=SC2034
+        utils_generate_vars_for_build_commonName="$(utils::generate_commonName -n "$commonNamePrefix")"
         log::info "Reading release version from RELEASE_VERSION file, got: $releaseVersion"
         # shellcheck disable=SC2034
-        utils_set_vars_for_build_kymaSource="$releaseVersion"
+        utils_generate_vars_for_build_kymaSource="$releaseVersion"
     # Otherwise (master), operate on triggering commit id
     else
         readonly commonNamePrefix="commit"
         readonly commitID="${prBaseSha::8}"
         # shellcheck disable=SC2034
-        utils_set_vars_for_build_commonName="$(utils::generate_commonName "$commonNamePrefix" "$commitID")"
+        utils_generate_vars_for_build_commonName="$(utils::generate_commonName "$commonNamePrefix" "$commitID")"
         # shellcheck disable=SC2034
-        utils_set_vars_for_build_kymaSource="$commitID"
+        utils_generate_vars_for_build_kymaSource="$commitID"
     fi
 }

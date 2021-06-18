@@ -312,7 +312,6 @@ function gcp::reserve_ip_address {
         --project="$gcpProjectName" \
         --region="$computeRegion" \
         --network-tier="PREMIUM"
-    # Print reserved IP address on stdout as it's consumed by calling process and used for next steps.
     # shellcheck disable=SC2034
     gcp_reserve_ip_address_return_ip_address="$(gcloud compute addresses list \
         --filter="name=$ipAddressName" \
@@ -365,7 +364,6 @@ function gcp::create_dns_record {
     utils::check_empty_arg "$ipAddress" "IP address is empty. Exiting..."
     utils::check_empty_arg "$dnsHostname" "DNS hostname is empty. Exiting..."
     utils::check_empty_arg "$dnsSubDomain" "DNS subdomain is empty. Exiting..."
-    #utils::check_empty_arg "$dnsDomain" "DNS domain is empty. Exiting..."
 
     dnsDomain="$(gcloud dns managed-zones describe "$gcpDnsZoneName" --format="value(dnsName)")"
     # set return value
@@ -386,14 +384,14 @@ function gcp::create_dns_record {
 
       gcloud dns record-sets transaction abort --zone="$gcpDnsZoneName" --verbosity none
 
-      if [[ "${i}" -lt "${attempts}" ]]; then
-          echo "Unable to create DNS record, let's wait ${retryTimeInSec} seconds and retry. Attempts ${i} of ${attempts}."
+      if [[ "$i" -lt "$attempts" ]]; then
+          echo "Unable to create DNS record, let's wait $retryTimeInSec seconds and retry. Attempts $i of $attempts."
       else
-          echo "Unable to create DNS record after ${attempts} attempts, giving up."
+          echo "Unable to create DNS record after $attempts attempts, giving up."
           exit 1
       fi
 
-      sleep ${retryTimeInSec}
+      sleep $retryTimeInSec
     done
 
     set -e
@@ -402,19 +400,19 @@ function gcp::create_dns_record {
     local endTime=$((SECONDS+600)) #600 seconds == 10 minutes
 
     while [ $SECONDS -lt $endTime ];do
-      echo "Trying to resolve ${dnsFQDN}"
+      echo "Trying to resolve $dnsFQDN"
       sleep 10
 
-      RESOLVED_IP_ADDRESS=$(dig +short "${dnsFQDN}")
+      local resolvedIpAddress
+      resolvedIpAddress=$(dig +short "$dnsFQDN")
 
-      if [ "${RESOLVED_IP_ADDRESS}" = "${ipAddress}" ]; then
-          echo "Successfully resolved ${dnsFQDN} to ${RESOLVED_IP_ADDRESS}!"
+      if [ "$resolvedIpAddress" = "$ipAddress" ]; then
+          echo "Successfully resolved $dnsFQDN to $resolvedIpAddress!"
           return 0
       fi
     done
 
-    #TODO: fix it
-    echo "Cannot resolve ${dnsFQDN} to expected IP_ADDRESS: ${ipAddress}."
+    echo "Cannot resolve $dnsFQDN to expected IP_ADDRESS: $ipAddress."
     log::warn "Continuing anyway... Kyma installation may fail!"
 }
 
@@ -609,14 +607,6 @@ function gcp::deprovision_gke_cluster {
     utils::check_empty_arg "$clusterName" "Cluster name not provided"
     utils::check_empty_arg "$projectName" "Project name not provided"
 
-#  gcloud config set project "${GCLOUD_PROJECT_NAME}"
-#  gcloud config set compute/zone "${GCLOUD_COMPUTE_ZONE}"
-
-  #if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
-  #    # copy output from debug container to artifacts directory
-  #    utils::oom_get_output
-  #fi
-
     log::info "Deprovisioning cluster $clusterName."
 
     params+=("--quiet")
@@ -666,67 +656,4 @@ function gcp::delete_ip_address {
     if gcloud compute addresses delete "$ipAddressName" --project="$gcpProjectName" --region="$gcpComputeRegion"; then
         log::info "Successfully removed IP $ipAddressName!"
     fi
-}
-
-
-# gcloud::cleanup is a meta-function that removes all resources that were allocated for specific job.
-# Required exported variables:
-# CLOUDSDK_CORE_PROJECT
-# CLOUDSDK_DNS_ZONE_NAME
-# CLOUDSDK_COMPUTE_REGION
-# GATEWAY_DNS_FULL_NAME
-# GATEWAY_IP_ADDRESS
-# APISERVER_DNS_FULL_NAME
-# APISERVER_IP_ADDRESS
-function gcp::cleanup {
-
-    local OPTIND
-    local clusterName
-    local projectName
-    local cleanupCluster="false" # -c
-    local cleanupGatewayDns="false" # -g
-    local cleanupApiserverDns="false" # -a
-    local cleanupGatewayIP="false" # -G
-
-    while getopts ":n:c:p:a:G:g:" opt; do
-        case $opt in
-            n)
-                clusterName="$OPTARG" ;;
-            p)
-                projectName="$OPTARG" ;;
-            c)
-                cleanupCluster="${OPTARG:-$cleanupCluster}" ;;
-            g)
-                cleanupGatewayDns="${OPTARG:-$cleanupGatewayDns}" ;;
-            a)
-                cleanupApiserverDns="${OPTARG:-$cleanupApiserverDns}" ;;
-            G)
-                cleanupGatewayIP="${OPTARG:-$cleanupGatewayIP}" ;;
-            \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
-            :)
-                echo "Option -$OPTARG argument not provided" >&2; ;;
-        esac
-    done
-
-    utils::check_empty_arg "$clusterName" "Cluster name not provided."
-    utils::check_empty_arg "$projectName" "Project name not provided."
-
-  utils::oom_get_output
-  if [ "$cleanupCluster" = "true" ]; then
-    log::info "Removing cluster $clusterName"
-    gcp::deprovision_gke_cluster "$clusterName"
-  fi
-  if [ "$cleanupGatewayDns" = "true" ]; then
-    log::info "Removing DNS record for $GATEWAY_DNS_FULL_NAME"
-    gcloud::delete_dns_record "$GATEWAY_IP_ADDRESS" "$GATEWAY_DNS_FULL_NAME"
-  fi
-  if [ "$cleanupGatewayIP" = "true" ]; then
-    log::info "Removing IP address $GATEWAY_IP_ADDRESS_NAME"
-    gcloud::delete_ip_address "$GATEWAY_IP_ADDRESS_NAME"
-  fi
-  if [ "$cleanupApiserverDns" = "true" ]; then
-    log::info "Removing DNS record for $APISERVER_DNS_FULL_NAME"
-    gcloud::delete_dns_record "$APISERVER_IP_ADDRESS" "$APISERVER_DNS_FULL_NAME"
-  fi
 }
