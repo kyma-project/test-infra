@@ -52,7 +52,7 @@ RELEASES=($(printf "%s\n" "${RELEASES[@]}" | uniq))
 # Go through releases ignoring patch versions in descending order until we skip the desired number of minor releases
 
 # remove patch
-CURRENT=$(echo "${RELEASES[0]}" | awk -F'.' '{print $1"."$2}')
+CURRENT=$(echo "${RELEASES[1]}" | awk -F'.' '{print $1"."$2}')
 for r in "${RELEASES[@]}"; do
     # remove patch from candidate
     WANT=$(echo "${r}" | awk -F'.' '{print $1"."$2}')
