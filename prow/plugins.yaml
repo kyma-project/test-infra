@@ -37,6 +37,7 @@ config_updater:
   maps:
     prow/jobs/**/*.yaml:
       name: job-config
+      gzip: true
     prow/config.yaml:
       name: config
     prow/branchprotector-config.yaml:
