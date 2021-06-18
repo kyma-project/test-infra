@@ -83,6 +83,9 @@ globalSets:
       testgrid-create-test-group: "false"
   jobConfig_slack_dev_null:
     slack_channel: "kyma-prow-dev-null"
+  jobConfig_buildpack_incubator:
+    labels:
+      preset-docker-push-repository-incubator: "true"
   # generic component jobConfigs
   jobConfig_generic_component:
     labels:

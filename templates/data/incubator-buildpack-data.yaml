@@ -1,10 +1,3 @@
-commonJob: &commonJob
-  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-  labels:
-    preset-dind-enabled: "true"
-    preset-sa-gcr-push: "true"
-    preset-docker-push-repository-incubator: "true"
-
 templates:
   - from: templates/generic.tmpl
     render:
@@ -15,7 +8,6 @@ templates:
               - jobConfig:
                   name: pre-main-kyma-incubator-api-gateway
                   always_run: true
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/api-gateway"
                     - "ci-pr"
@@ -25,9 +17,10 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-golang-kubebuilder2
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
                   name: post-main-kyma-incubator-api-gateway
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/api-gateway"
                     - "ci-main"
@@ -38,6 +31,8 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-golang-kubebuilder2
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
       - to: ../prow/jobs/incubator/gcp-service-broker/gcp-service-broker.yaml
         jobConfigs:
           - repoName: kyma-incubator/gcp-service-broker
@@ -45,7 +40,6 @@ templates:
               - jobConfig:
                   name: pre-main-gcp-service-broker
                   always_run: true
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/gcp-service-broker"
                     - "ci-pr"
@@ -55,9 +49,10 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
                   name: post-main-gcp-service-broker
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/gcp-service-broker"
                     - "ci-master"
@@ -68,6 +63,9 @@ templates:
                     - extra_refs_test-infra
                     - image_buildpack-golang
                     - disable_testgrid
+
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
       - to: ../prow/jobs/incubator/github-slack-connectors/github-slack-connectors.yaml
         jobConfigs:
           - repoName: kyma-incubator/github-slack-connectors
@@ -75,7 +73,6 @@ templates:
               - jobConfig:
                   name: pre-main-github-connector
                   run_if_changed: "^github-connector"
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/github-slack-connectors/github-connector"
                     - "ci-pr"
@@ -85,10 +82,11 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
                   name: post-main-github-connector
                   run_if_changed: "^github-connector"
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/github-slack-connectors/github-connector"
                     - "ci-master"
@@ -99,9 +97,10 @@ templates:
                     - extra_refs_test-infra
                     - image_buildpack-golang
                     - disable_testgrid
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
                   name: pre-main-slack-connector
-                  <<: *commonJob
                   run_if_changed: "^slack-connector"
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/github-slack-connectors/slack-connector"
@@ -112,9 +111,10 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
                   name: post-main-slack-connector
-                  <<: *commonJob
                   run_if_changed: "^slack-connector"
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/github-slack-connectors/slack-connector"
@@ -126,13 +126,14 @@ templates:
                     - extra_refs_test-infra
                     - image_buildpack-golang
                     - disable_testgrid
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
       - to: ../prow/jobs/incubator/hydroform/hydroform.yaml
         jobConfigs:
           - repoName: kyma-project/hydroform
             jobs:
               - jobConfig:
                   name: pre-main-hydroform
-                  <<: *commonJob
                   always_run: true
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/hydroform"
@@ -145,9 +146,10 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-golang-toolbox
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
                   name: post-main-hydroform
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/hydroform"
                     - "ci-main"
@@ -160,10 +162,11 @@ templates:
                     - extra_refs_test-infra
                     - image_buildpack-golang-toolbox
                     - disable_testgrid
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
       - to: ../prow/jobs/incubator/milv/milv.yaml
         localSets:
           milv_jobConfig:
-            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.16.4
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/milv"
             env:
@@ -176,29 +179,32 @@ templates:
               - jobConfig:
                   name: pre-main-kyma-incubator-milv
                   always_run: true
-                  <<: *commonJob
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
                   local:
                     - milv_jobConfig
               - jobConfig:
                   name: post-main-kyma-incubator-milv
-                  <<: *commonJob
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
                     - extra_refs_test-infra
+                    - image_buildpack-golang
                     - disable_testgrid
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
                   local:
                     - milv_jobConfig
       - to: ../prow/jobs/incubator/reconciler/reconciler.yaml
         localSets:
           reconciler_jobConfig:
-            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.16.4
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
             env:
@@ -211,23 +217,27 @@ templates:
               - jobConfig:
                   name: pre-main-kyma-incubator-reconciler
                   always_run: true
-                  <<: *commonJob
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
                   local:
                     - reconciler_jobConfig
               - jobConfig:
                   name: post-main-kyma-incubator-reconciler
-                  <<: *commonJob
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
                     - extra_refs_test-infra
                     - disable_testgrid
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
                   local:
                     - reconciler_jobConfig
       - to: ../prow/jobs/incubator/octopus/octopus.yaml
@@ -237,7 +247,6 @@ templates:
               - jobConfig:
                   name: pre-main-kyma-incubator-octopus
                   always_run: true
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/octopus"
                     - "ci-pr"
@@ -249,9 +258,10 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-golang-kubebuilder2
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
                   name: post-main-kyma-incubator-octopus
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/octopus"
                     - "ci-master"
@@ -264,6 +274,8 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-golang-kubebuilder2
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
       - to: ../prow/jobs/incubator/podpreset-crd/podpreset-crd.yaml
         jobConfigs:
           - repoName: kyma-incubator/podpreset-crd
@@ -272,7 +284,6 @@ templates:
                   name: pre-main-podpreset-crd
                   path_alias: github.com/jpeeler/podpreset-crd
                   always_run: true
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/jpeeler/podpreset-crd"
                     - "ci-pr"
@@ -282,9 +293,10 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-golang-kubebuilder2
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
                   name: post-main-podpreset-crd
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/jpeeler/podpreset-crd"
                     - "ci-master"
@@ -295,6 +307,8 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-golang-kubebuilder2
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
       - to: ../prow/jobs/incubator/service-catalog-tester/service-catalog-tester.yaml
         jobConfigs:
           - repoName: kyma-incubator/service-catalog-tester
@@ -302,7 +316,6 @@ templates:
               - jobConfig:
                   name: pre-main-service-catalog-tester
                   always_run: true
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/service-catalog-tester"
                     - "ci-pr"
@@ -312,9 +325,10 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
                   name: post-main-service-catalog-tester
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/service-catalog-tester"
                     - "ci-master"
@@ -325,6 +339,8 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
       - to: ../prow/jobs/incubator/terraform-provider-gardener/terraform-provider-gardener.yaml
         jobConfigs:
           - repoName: kyma-incubator/terraform-provider-gardener
@@ -332,7 +348,6 @@ templates:
               - jobConfig:
                   name: pre-main-terraform-provider-gardener
                   always_run: true
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/terraform-provider-gardener"
                     - "ci-pr"
@@ -344,9 +359,10 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
                   name: post-main-terraform-provider-gardener
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/terraform-provider-gardener"
                     - "ci-master"
@@ -359,6 +375,8 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
       - to: ../prow/jobs/incubator/varkes/varkes.yaml
         localSets:
           npm_bot_preset:
@@ -370,7 +388,6 @@ templates:
               - jobConfig:
                   name: pre-varkes
                   always_run: true
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/varkes/"
                     - "ci-pr"
@@ -384,9 +401,10 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-node
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
                   name: post-main-varkes
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/varkes/"
                     - "ci-master"
@@ -397,9 +415,10 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-node
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
                   name: post-release-varkes
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/varkes/"
                     - "ci-release"
@@ -412,6 +431,8 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-node
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
                   local:
                     - npm_bot_preset
       - to: ../prow/jobs/incubator/vstudio-extension/vstudio-extension.yaml
@@ -421,7 +442,6 @@ templates:
               - jobConfig:
                   name: pre-main-vstudio-extension
                   always_run: true
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/vstudio-extension"
                     - "ci-pr"
@@ -431,9 +451,10 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-node
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
                   name: post-main-vstudio-extension
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/vstudio-extension"
                     - "ci-master"
@@ -444,6 +465,8 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-node
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
       - to: ../prow/jobs/incubator/documentation-component/documentation-component.yaml
         jobConfigs:
           - repoName: kyma-incubator/documentation-component
@@ -451,7 +474,6 @@ templates:
               - jobConfig:
                   name: pre-documentation-component
                   always_run: true
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/documentation-component"
                     - "ci-pr"
@@ -461,6 +483,8 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-node
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
       - to: ../prow/jobs/incubator/knative-kafka/knative-kafka.yaml
         jobConfigs:
           - repoName: kyma-incubator/knative-kafka
@@ -468,7 +492,6 @@ templates:
               - jobConfig:
                   name: pre-main-knative-kafka
                   always_run: true
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/knative-kafka"
                     - "ci-pr"
@@ -482,9 +505,10 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
                   name: post-main-knative-kafka
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/knative-kafka"
                     - "ci-master"
@@ -499,3 +523,5 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
