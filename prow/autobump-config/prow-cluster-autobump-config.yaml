@@ -17,6 +17,6 @@ prefixes:
     prefix: "gcr.io/k8s-prow/"
     refConfigFile: "prow/cluster/components/deck_deployment.yaml"
     stagingRefConfigFile: "prow/staging/cluster/deck_deployment.yaml"
-    repo: "https://github.com/kyma-project/test-infra"
+    repo: "https://github.com/kubernetes/test-infra"
     summarise: true
     consistentImages: true
