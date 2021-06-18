@@ -233,6 +233,7 @@ function applyCompassOverrides() {
     --data "global.externalServicesMock.enabled=true" \
     --data "gateway.gateway.auditlog.enabled=true" \
     --data "gateway.gateway.auditlog.authMode=oauth" \
+    --data "global.externalServicesMock.auditlog=true" \
     --label "component=compass"
 }
 
