@@ -37,8 +37,8 @@ globalSets:
       - "^master$"
       - "^main$"
     privileged: "true"
-    request_memory: "1.5Gi"
-    request_cpu: "0.8"
+    request_memory: "3Gi"
+    request_cpu: "2"
     cluster_presubmit: "untrusted-workload"
     cluster_postsubmit: "trusted-workload"
     nodeSelector:

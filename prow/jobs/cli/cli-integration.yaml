@@ -37,8 +37,8 @@ presubmits: # runs on PRs
                 value: "on"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal
@@ -84,8 +84,8 @@ presubmits: # runs on PRs
                 value: "k3s"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal
@@ -132,8 +132,8 @@ postsubmits: # runs on main
                 value: "on"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal
@@ -181,8 +181,8 @@ postsubmits: # runs on main
                 value: "k3s"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal
