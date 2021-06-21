@@ -110,7 +110,7 @@ function az::create_resource_group {
             g)
                 resourceGroup="$OPTARG" ;;
             r)
-                compazureRegionuteRegion="$OPTARG" ;;
+                azureRegion="$OPTARG" ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)

@@ -14,6 +14,7 @@ export KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
 requiredVars=(
+	AKS_CLUSTER_VERSION
 	RS_GROUP
 	REGION
 	AZURE_SUBSCRIPTION_ID
