@@ -254,7 +254,7 @@ function test_console_url() {
 
 gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
-az::login "$AZURE_CREDENTIALS_FILE"
+az::authenticate -c "$AZURE_CREDENTIALS_FILE"
 az::set_subscription "$AZURE_SUBSCRIPTION_ID"
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --project="${CLOUDSDK_CORE_PROJECT}" --format="value(dnsName)")"

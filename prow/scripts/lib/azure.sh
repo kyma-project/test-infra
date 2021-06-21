@@ -7,6 +7,7 @@ source "${LIBDIR}/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${LIBDIR}/utils.sh"
 
+# az::verify_deps checks if all required commands are available
 function az::verify_deps {
   if ! [[ -x $(command -v az) ]]; then
     log::error "'az' command not found in \$PATH. Exiting..."
@@ -24,75 +25,109 @@ function az::verify_deps {
   fi
 }
 
-# az::login logs in to the azure service using provided credentials file in the function argument.
+
+
+# az::authenticate logs in to the azure service using provided credentials file in the function argument.
+# Arguments:
+# required:
+# c - Azure login credentials
 # Function accepts JSON file formatted below:
 # {
 #   "tenant_id": "tenant_id",
 #   "app_id": "subscription_app_id",
 #   "secret": "subscription_secret"
 # }
-function az::login {
-  local AZURE_SUBSCRIPTION_TENANT
-  local AZURE_SUBSCRIPTION_APP_ID
-  local AZURE_SUBSCRIPTION_SECRET
+function az::authenticate {
 
-  # Check the provided credentials in the argument.
-  # Use arguments to avoid exporting sensitive values.
-  if [[ -z "$1" ]]; then
-    log::error "Azure credentials file not provided. please provide azure credentials filepath in the argument. Exiting..."
-    exit 1
-  elif [[ ! -f "$1" ]]; then
-    log::error "Azure credentials file not found. Make sure it is present under the provided filepath. Exiting..."
-    exit 1
-  fi
-  AZURE_CREDENTIALS_FILE="$1"
-  AZURE_SUBSCRIPTION_TENANT=$(jq -r '.tenant_id' "$AZURE_CREDENTIALS_FILE")
-  AZURE_SUBSCRIPTION_APP_ID=$(jq -r '.app_id' "$AZURE_CREDENTIALS_FILE")
-  AZURE_SUBSCRIPTION_SECRET=$(jq -r '.secret' "$AZURE_CREDENTIALS_FILE")
+    local OPTIND
+    local azureSubscriptionTenant
+    local azureSubscriptionAppID
+    local azureSubscriptionSecret
+    local azureCredentialsFile
 
-  # login
-  log::info "Logging in to Azure"
-  az login --service-principal -u "${AZURE_SUBSCRIPTION_APP_ID}" -p "${AZURE_SUBSCRIPTION_SECRET}" --tenant "${AZURE_SUBSCRIPTION_TENANT}"
-  log::info "Successfully logged-in!"
+    # Check the provided credentials in the argument.
+    # Use arguments to avoid exporting sensitive values.
+    while getopts ":c:" opt; do
+        case $opt in
+            c)
+                azureCredentialsFile="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+    done
+    utils::check_empty_arg "$azureCredentialsFile" "Missing account credentials, please provide proper credentials"
+
+    azureSubscriptionTenant=$(jq -r '.tenant_id' "$azureCredentialsFile")
+    azureSubscriptionAppID=$(jq -r '.app_id' "$azureCredentialsFile")
+    azureSubscriptionSecret=$(jq -r '.secret' "$azureCredentialsFile")
+
+    # login
+    log::info "Logging in to Azure"
+    az login --service-principal -u "${azureSubscriptionAppID}" -p "${azureSubscriptionSecret}" --tenant "${azureSubscriptionTenant}"
+    log::info "Successfully logged-in!"
 }
 
 # az::set_subscription sets the subscription using provided subscription ID in the argument.
+# Arguments:
+# required:
+# s - subscription ID
 function az::set_subscription {
-  if [[ -z "$1" ]]; then
-    log::error "Azure Subscription ID is not found. Please provide azure subscription ID in the argument. Exiting..."
-    exit 1
-  fi
+
+    local OPTIND
+    local azureSubscription
+    while getopts ":s:" opt; do
+        case $opt in
+            s)
+                azureSubscription="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+    done
+  utils::check_empty_arg "$azureSubscription"  "missing Azure Subscription ID, please provide proper azure subscription ID in the argument. Exiting..."
   log::info "Setting Azure subscription..."
   az account set \
-    --subscription "$1"
+    --subscription "$azureSubscription"
 }
 
 # az::create_resource_group creates resource group in a given region
 #
-# Arguments
-# $1 - resource group name to be created
-# $2 - region in which group should be created
+# Arguments:
+# required:
+# g - resource group name to be created
+# r - region in which group should be created
 function az::create_resource_group {
-  if [[ -z "$1" ]]; then
-    log::error "Resource group name not present. Provide resource group name as 1st argument. Exiting..."
-    exit 1
-  fi
-  if [[ -z "$2" ]]; then
-    log::error "Region not present. Provide region as 2nd argument. Exiting..."
-    exit 1
-  fi
-  local rsGroup
-  local azRegion
-  rsGroup=$1
-  azRegion=$2
 
-  log::info "Creating resouce group \"$rsGroup\" in a region \"$azRegion\""
-  az group create --name "${rsGroup}" --location "${azRegion}"
-  until [[ $(az group exists --name "${rsGroup}" -o json) == true ]]; do
+  local OPTIND
+    local resourceGroup
+    local azureRegion
+
+    while getopts ":g:r:" opt; do
+        case $opt in
+            g)
+                resourceGroup="$OPTARG" ;;
+            r)
+                compazureRegionuteRegion="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+    done
+
+  utils::check_empty_arg "$resourceGroup" "Resource group name is empty. Exiting..."
+  utils::check_empty_arg "$azureRegion" "Azure region name is empty. Exiting..."
+
+  log::info "Creating resouce group \"$resourceGroup\" in a region \"$azureRegion\""
+  az group create --name "${resourceGroup}" --location "${azureRegion}"
+  until [[ $(az group exists --name "${resourceGroup}" -o json) == true ]]; do
 		sleep 15
 		counter=$(( counter + 1 ))
 		if (( counter == 5 )); then
-			log::error "\n---\nAzure resource group ${rsGroup} still not present after one minute wait.\n---"
+			log::error "\n---\nAzure resource group ${resourceGroup} still not present after one minute wait.\n---"
 			exit 1
 		fi
 	done
@@ -100,66 +135,122 @@ function az::create_resource_group {
 
 # az::provision_aks_cluster creates an AKS cluster
 #
-# Required exported variables
-# RS_GROUP - azure resource group
-# REGION - azure region
-# CLUSTER_SIZE - azure cluster size
-# AKS_CLUSTER_VERSION - desired k8s cluster version
-# CLUSTER_ADDONS - addidional AKS addons
-# AZURE_CREDENTIALS_FILE - credentials file, refer to az::login
+# Arguments:
+# required:
+# c - cluster name
+
+# g - azure resource group
+# r - azure region
+
+# s - azure cluster size
+# v - desired k8s cluster version
+# a - addidional AKS addons
+# f - credentials file, refer to az::login
 #
-# Arguments
-# $1 - cluster name
-function az::provision_aks_cluster {
-  if [[ -z "$1" ]]; then
-    log::error "Cluster name not present. Provide cluster name as an argument. Exiting..."
-    exit 1
-  fi
-  local CLUSTER_NAME
-  CLUSTER_NAME=$1
+function az::provision_k8s_cluster {
+    local OPTIND
+    local clusterName
+    local resourceGroup
+    local azureRegion
+    local clusterSize
+    local clusterVersion
+    local clusterVersionPrecise
+    local aksAddons
+    local credentialsFile
 
-  log::info "Provisioning AKS cluster"
-  AKS_CLUSTER_VERSION_PRECISE=$(az aks get-versions -l "${REGION}" | jq '.orchestrators|.[]|select(.orchestratorVersion | contains("'"${AKS_CLUSTER_VERSION}"'"))' | jq -s '.' | jq -r 'sort_by(.orchestratorVersion | split(".") | map(tonumber)) | .[-1].orchestratorVersion')
-	log::info "Latest available version is: ${AKS_CLUSTER_VERSION_PRECISE}"
+    # Check the provided credentials in the argument.
+    # Use arguments to avoid exporting sensitive values.
+    while getopts ":c:g:r:s:v:a:f:" opt; do
+        case $opt in
+            c)
+                clusterName="$OPTARG" ;;
+            g)
+                resourceGroup="$OPTARG" ;;
+            r)
+               azureRegion="$OPTARG" ;;
+            s)
+                clusterSize="$OPTARG" ;;
+            v)
+                clusterVersion="$OPTARG" ;;
+            a)
+                aksAddons="$OPTARG" ;;
+            f)
+                credentialsFile="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+    done
 
-  az aks create \
-      --resource-group "${RS_GROUP}" \
-      --name "${CLUSTER_NAME}" \
-      --node-count 3 \
-      --node-vm-size "${CLUSTER_SIZE}" \
-      --kubernetes-version "${AKS_CLUSTER_VERSION_PRECISE}" \
-      --enable-addons "${CLUSTER_ADDONS}" \
-      --service-principal "$(jq -r '.app_id' "$AZURE_CREDENTIALS_FILE")" \
-      --client-secret "$(jq -r '.secret' "$AZURE_CREDENTIALS_FILE")" \
-      --generate-ssh-keys \
-      --zones 1 2 3
+    utils::check_empty_arg "$clusterName" "Missing cluster name, please provide proper cluster name"
+    utils::check_empty_arg "$resourceGroup" "Missing resource group name, please provide proper resource group name"
+    utils::check_empty_arg "$azureRegion" "Missing Azure region name, please provide proper Azure region name"
+    utils::check_empty_arg "$clusterSize" "Missing cluster size, please provide proper cluster size"
+    utils::check_empty_arg "$clusterVersion" "Missing cluster name, please provide proper cluster name"
+    utils::check_empty_arg "$aksAddons" "Missing AKS addons, please provide proper AKS addons"
+    utils::check_empty_arg "$credentialsFile" "Missing credentials file name, please provide proper credentials file name"
 
-  # Schedule pod with oom finder.
-  if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
+
+    log::info "Provisioning AKS cluster"
+    clusterVersionPrecise=$(az aks get-versions -l "${azureRegion}" | jq '.orchestrators|.[]|select(.orchestratorVersion | contains("'"${clusterVersion}"'"))' | jq -s '.' | jq -r 'sort_by(.orchestratorVersion | split(".") | map(tonumber)) | .[-1].orchestratorVersion')
+    log::info "Latest available version is: ${clusterVersionPrecise}"
+
+    az aks create \
+        --resource-group "${resourceGroup}" \
+        --name "${clusterName}" \
+        --node-count 3 \
+        --node-vm-size "${clusterSize}" \
+        --kubernetes-version "${clusterVersionPrecise}" \
+        --enable-addons "${aksAddons}" \
+        --service-principal "$(jq -r '.app_id' "$credentialsFile")" \
+        --client-secret "$(jq -r '.secret' "$credentialsFile")" \
+        --generate-ssh-keys \
+        --zones 1 2 3
+
       # run oom debug pod
       utils::debug_oom
-  fi
-
 }
 
-# az ::reserve_ip_address reserves IP address and returns it to STDOUT
+# az ::reserve_ip_address reserves IP address
 #
-# Required exported variables
-# RS_GROUP - resource group (must match the cluster RS group)
-# REGION - Azure region in which IP is reserved
+# Arguments:
+# required:
+# g - resource group (must match the cluster RS group)
+# n - IP address name used for identification
+# r - Azure region in which IP is reserved
 #
-# Arguments
-# $1 - IP address name used for identification
+# Returns:
+# az_reserve_ip_address_return_ip_address - reserved ip address -> GATEWAY_IP_ADDRESS
+#
 function az::reserve_ip_address {
-  if [[ -z "$1" ]]; then
-    log::error "IP address name not present. Provide IP address name as an argument. Exiting..."
-    exit 1
-  fi
-  local ipName
-  ipName=$1
 
-  if az network public-ip create -g "${RS_GROUP}" -n "${ipName}" -l "${REGION}" --allocation-method static; then
-    az network public-ip show -g "${RS_GROUP}" -n "${ipName}" --query ipAddress -o tsv
+    local OPTIND
+    local resourceGroup
+    local ipAddressName
+    local azureRegion
+
+    while getopts ":g:n:r:" opt; do
+        case $opt in
+            g)
+                resourceGroup="$OPTARG" ;;
+            n)
+                ipAddressName="$OPTARG" ;;
+            r)
+                compazureRegionuteRegion="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+    done
+
+  utils::check_empty_arg "$resourceGroup" "Resource group name is empty. Exiting..."
+  utils::check_empty_arg "$ipAddressName" "IP address name is empty. Exiting..."
+  utils::check_empty_arg "$azureRegion" "Azure region name is empty. Exiting..."
+
+  if az network public-ip create -g "${resourceGroup}" -n "${ipAddressName}" -l "${azureRegion}" --allocation-method static; then
+      az_reserve_ip_address_return_ip_address=$(az network public-ip show -g "${resourceGroup}" -n "${ipAddressName}" --query ipAddress -o tsv)
   else
     log::error "Could not create IP address. Exiting..."
     exit 1

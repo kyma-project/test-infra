@@ -26,8 +26,8 @@ validateAzureGatewayEnvironment() {
 
 beforeTest() {
     validateAzureGatewayEnvironment
-    az::login "$AZURE_CREDENTIALS_FILE"
-    az:set_subscription "$AZURE_SUBSCRIPTION_ID"
+    az::authenticate -c "$AZURE_CREDENTIALS_FILE"
+    az::set_subscription "$AZURE_SUBSCRIPTION_ID"
     createResourceGroup
     createStorageAccount
 }
