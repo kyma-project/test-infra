@@ -1,9 +1,0 @@
-pjNames:
-  - pjName: "pre-main-control-plane-gke-integration"
-    pjPath: "test-infra/prow/jobs/control-plane/"
-  - pjName: "pre-main-control-plane-integration"
-    pjPath: "test-infra/prow/jobs/control-plane/"
-prConfigs:
-  kyma-project:
-    control-plane:
-      prNumber: 782
