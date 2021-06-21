@@ -437,7 +437,7 @@ if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
   ENABLE_TEST_LOG_COLLECTOR=true
 fi
 
-log::info "Test Kyma, Compass and Control Plane"
+log::info "Test Kyma and Control Plane"
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l "release != compass"
 
 log::success "Success"
