@@ -95,3 +95,19 @@ templates:
                     - jobConfig_postsubmit
                     - disable_testgrid
                     - pubsub_labels
+              - jobConfig:
+                  name: ci-prow-autobump-jobs
+                  cron: "45 * * * 1-5"
+                  slack_channel: kyma-prow-alerts
+                  image: gcr.io/k8s-prow/generic-autobumper:v20210617-c78e5916da
+                  command: /app/prow/cmd/generic-autobumper/app.binary
+                  args:
+                    - --config=prow/autobump-config/test-infra-autobump-config.yaml
+                inheritedConfigs:
+                  local:
+                    - periodic_config
+                    - github_token_mounts
+                  global:
+                    - "pubsub_labels"
+                    - "disable_testgrid"
+                    - extra_refs_test-infra
