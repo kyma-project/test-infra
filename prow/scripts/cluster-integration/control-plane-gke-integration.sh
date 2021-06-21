@@ -233,6 +233,7 @@ function applyCompassOverrides() {
     --data "global.externalServicesMock.enabled=true" \
     --data "gateway.gateway.auditlog.enabled=true" \
     --data "gateway.gateway.auditlog.authMode=oauth" \
+    --data "global.externalServicesMock.auditlog=true" \
     --label "component=compass"
 }
 
@@ -436,8 +437,8 @@ if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
   ENABLE_TEST_LOG_COLLECTOR=true
 fi
 
-log::info "Test Kyma, Compass and Control Plane"
-"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
+log::info "Test Kyma and Control Plane"
+"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l "release != compass"
 
 log::success "Success"
 
