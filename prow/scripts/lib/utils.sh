@@ -520,7 +520,7 @@ function utils::post_hook() {
 
     utils::oom_get_output
     if [ "$cleanupCluster" = "true" ]; then
-        gcp::deprovision_gke_cluster \
+        gcp::deprovision_k8s_cluster \
             -n "$clusterName" \
             -p "$projectName" \
             -z "$computeZone" \

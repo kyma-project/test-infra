@@ -6,7 +6,7 @@ source "${LIBDIR}/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${LIBDIR}/utils.sh"
 
-# gcloud::provision_gke_cluster creates a GKE cluster
+# gcp::provision_k8s_cluster creates a GKE kubernetes cluster
 #
 # Arguments:
 #
@@ -34,7 +34,7 @@ source "${LIBDIR}/utils.sh"
 # D - if true enable using ssd disks for new cluster
 # e - if true enable pod security policy for new cluster
 # P - path to test-infra sources
-function gcp::provision_gke_cluster {
+function gcp::provision_k8s_cluster {
 
     local OPTIND
     # required arguments
@@ -155,7 +155,6 @@ function gcp::provision_gke_cluster {
     labels+="$additionalLabels"
 
     # Resolving parameters
-
     # Mandatory parameters
     params+=("--project=$gcpProjectName")
     params+=("--cluster-version=$gkeClusterVersion")
@@ -224,9 +223,9 @@ function gcp::provision_gke_cluster {
 }
 
 
-# gcloud::authenticate authenticates to gcloud.
+# gcp::authenticate authenticates to GCP.
 # Arguments:
-# $1 - google login credentials
+# c - google credentials file path
 function gcp::authenticate {
 
     local OPTIND
@@ -250,22 +249,25 @@ function gcp::authenticate {
     gcloud auth activate-service-account --key-file "$googleAppCredentials" || exit 1
 }
 
-# gcloud::reserve_ip_address requests a new IP address from gcloud and prints this value to STDOUT
-# Required exported variables:
-# CLOUDSDK_CORE_PROJECT - gcp project
-# CLOUDSDK_COMPUTE_REGION - gcp region
+# gcp::reserve_ip_address requests a new IP address from GCP and prints this value to STDOUT
+#
 # Arguments:
-# $1 - name of the IP address to be set in gcp COMMON_NAME
+#
+# required:
+# n - name of the IP address to reserve
+# p - GCP project name
+#
+# optional:
+# r - GCP compute region, default europe-west4
+#
 # Returns:
-# gcloud::reserve_ip_address_return_1 - reserved ip address -> GATEWAY_IP_ADDRESS
-# TODO: add support for setting CLOUDSDK env vars from function args.
+# gcp_reserve_ip_address_return_ip_address - reserved ip address
 function gcp::reserve_ip_address {
 
     local OPTIND
-    # required arguments
     local ipAddressName
     local gcpProjectName
-    local computeRegion
+    local computeRegion="europe-west4"
     local ipAddress
 
     while getopts ":n:p:r:" opt; do
@@ -275,7 +277,7 @@ function gcp::reserve_ip_address {
             p)
                 gcpProjectName="$OPTARG" ;;
             r)
-                computeRegion="$OPTARG" ;;
+                computeRegion=${OPTARG:-$computeRegion} ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
@@ -285,7 +287,6 @@ function gcp::reserve_ip_address {
 
     utils::check_empty_arg "$ipAddressName" "IP address name is empty. Exiting..."
     utils::check_empty_arg "$gcpProjectName" "gcp project name is empty. Exiting..."
-    utils::check_empty_arg "$computeRegion" "gcp compute region name is empty. Exiting..."
 
     log::info "Reserve IP Address for $ipAddressName"
     local counter=0
@@ -320,24 +321,26 @@ function gcp::reserve_ip_address {
 }
 
 # gcloud::create_dns_record creates an A dns record for corresponding ip address
-# Required exported variables:
-# CLOUDSDK_CORE_PROJECT - gcp project
-# CLOUDSDK_COMPUTE_REGION - gcp region
 #
 # Arguments:
-# $1 - ip address
-# $2 - domain name
+# a - ip address to use for creating dns record
+# h - hostname to use for creating dns record
+# s - subdomain to use for creating dns record
+# p - GCP project name
+# z - GCP dns zone name
+#
+# Returns:
+# gcp_create_dns_record_return_dns_domain - dns domain
 function gcp::create_dns_record {
 
     local OPTIND
     local ipAddress
     local dnsSubDomain
-    local dnsDomain
     local dnsHostname
     local gcpProjectName
     local gcpDnsZoneName
 
-    while getopts ":a:h:s:d:p:z:" opt; do
+    while getopts ":a:h:s:p:z:" opt; do
         case $opt in
             a)
                 ipAddress="$OPTARG" ;;
@@ -345,8 +348,6 @@ function gcp::create_dns_record {
                 dnsHostname="$OPTARG" ;;
             s)
                 dnsSubDomain="$OPTARG" ;;
-            d)
-                dnsDomain="$OPTARG" ;;
             p)
                 gcpProjectName="$OPTARG" ;;
             z)
@@ -368,7 +369,7 @@ function gcp::create_dns_record {
     dnsDomain="$(gcloud dns managed-zones describe "$gcpDnsZoneName" --format="value(dnsName)")"
     # set return value
     # shellcheck disable=SC2034
-    gcp_create_dns_record_dns_domain=$dnsDomain
+    gcp_create_dns_record_return_dns_domain=$dnsDomain
 
     dnsFQDN="$dnsHostname.$dnsSubDomain.$dnsDomain"
 
@@ -417,14 +418,16 @@ function gcp::create_dns_record {
 }
 
 
-# gcloud::delete_dns_record
-# Required exported variables:
-# CLOUDSDK_CORE_PROJECT - gcp project
-# CLOUDSDK_COMPUTE_REGION - gcp region
+# gcp::delete_dns_record will delete dns record for given hostname and IP address
 #
 # Arguments:
-# $1 - ip address
-# $2 - domain name
+#
+# required:
+# a - ip address of dns record to remove
+# p - GCP project name
+# h - DNS hostname to remove
+# s - DNS subdomain name of dns record to remove
+# z - GCP DNS zone name of dns record to remove
 function gcp::delete_dns_record {
 
     local OPTIND
@@ -466,33 +469,40 @@ function gcp::delete_dns_record {
     log::info "Deleting DNS record $dnsFQDN"
     set +e
 
-  local attempts=10
-  local retryTimeInSec="5"
-  for ((i=1; i<=attempts; i++)); do
-    gcloud dns --project="$projectName" record-sets transaction start --zone="$gcpDnsZoneName" && \
-    gcloud dns --project="$projectName" record-sets transaction remove "$ipAddress" --name="$dnsFQDN" --ttl=60 --type=A --zone="$gcpDnsZoneName" && \
-    if gcloud dns --project="$projectName" record-sets transaction execute --zone="$gcpDnsZoneName"; then
-      break
-    fi
+    local attempts=10
+    local retryTimeInSec="5"
+    for ((i=1; i<=attempts; i++)); do
+        gcloud dns --project="$projectName" record-sets transaction start --zone="$gcpDnsZoneName" && \
+        gcloud dns --project="$projectName" record-sets transaction remove "$ipAddress" --name="$dnsFQDN" --ttl=60 --type=A --zone="$gcpDnsZoneName" && \
+        if gcloud dns --project="$projectName" record-sets transaction execute --zone="$gcpDnsZoneName"; then
+            break
+        fi
 
-    gcloud dns record-sets transaction abort --zone="$gcpDnsZoneName" --verbosity none
+        gcloud dns record-sets transaction abort --zone="$gcpDnsZoneName" --verbosity none
 
-    if [[ "$i" -lt "$attempts" ]]; then
-      echo "Unable to delete DNS record, Retrying after $retryTimeInSec. Attempts $i of $attempts."
-    else
-      echo "Unable to delete DNS record after $attempts attempts, giving up."
-      exit 1
-    fi
-    sleep $retryTimeInSec
-  done
+        if [[ "$i" -lt "$attempts" ]]; then
+            echo "Unable to delete DNS record, Retrying after $retryTimeInSec. Attempts $i of $attempts."
+        else
+            echo "Unable to delete DNS record after $attempts attempts, giving up."
+            exit 1
+        fi
+        sleep $retryTimeInSec
+    done
 
-  log::info "DNS Record deleted, but it can be visible for some time due to DNS caches"
-  set -e
+    log::info "DNS Record deleted, but it can be visible for some time due to DNS caches"
+    set -e
 }
 
-
+# gcp::set_vars_for_network will generate network and subnetwork names
+#
 # Arguments:
-# n - $JOB_NAME
+#
+# required:
+# n - prowjob name, you can use environment variable $JOB_NAME set by Prow
+#
+# Return:
+# gcp_set_vars_for_network_return_net_name - generated network name
+# gcp_set_vars_for_network_return_subnet_name - generated subnetwork name
 function gcp::set_vars_for_network {
 
     local OPTIND
@@ -516,12 +526,20 @@ function gcp::set_vars_for_network {
 
     # variable hold return value for calling process
     # shellcheck disable=SC2034
-    gcp_set_vars_for_network_net_name="$jobName-net"
+    gcp_set_vars_for_network_return_net_name="$jobName-net"
     # variable hold return value for calling process
     # shellcheck disable=SC2034
-    gcp_set_vars_for_network_subnet_name="$jobName-subnet"
+    gcp_set_vars_for_network_return_subnet_name="$jobName-subnet"
 }
 
+# gcp::create_network will create GCP network
+#
+# Arguments:
+#
+# required:
+# n - GCP network name
+# p - GCP project name
+# s - GCP subnetowrk name
 function gcp::create_network {
 
     local OPTIND
@@ -566,21 +584,28 @@ function gcp::create_network {
    log::info "Successfully created network $gcpNetworkName"
 }
 
-# gcloud::deprovision_gke_cluster removes a GKE cluster
-# Required exported variables:
-# GCLOUD_COMPUTE_ZONE - zone in which the new cluster will be removed
-# GCLOUD_PROJECT_NAME - name of GCP project
+# gcp::deprovision_k8s_cluster removes a GKE cluster
 #
 # Arguments:
-# $1 - cluster name
-function gcp::deprovision_gke_cluster {
+#
+# required:
+# n - k8s cluster name to remove
+# p - GCP project name
+#
+# optional:
+# z - GCP compute zone, default europe-west4-b
+# R - GCP compute region, default europe-west4
+# r - if true clean regional cluster, default false
+# d - if true clean cluster in async mode, default true
+function gcp::deprovision_k8s_cluster {
 
     local OPTIND
     local clusterName
     local projectName
-    local computeZone="europe-west4-b" # z - zone in which the new zonal cluster will be created
-    local computeRegion="europe-west4" # R - region in which the new regional cluster will be created
-    local asyncDeprovision="true" # A - deprovision cluster in async mode
+    local computeZone="europe-west4-b"
+    local computeRegion="europe-west4"
+    local cleanRegionalCluster="false"
+    local asyncDeprovision="true"
     local params
 
     while getopts ":n:p:z:R:r:d:" opt; do
@@ -626,7 +651,16 @@ function gcp::deprovision_gke_cluster {
     fi
 }
 
-
+# gcp::delete_ip_address will delete ip address identified by it's name in GCP.
+#
+# Arguments:
+#
+# required:
+# p - GCP project name
+# n - IP address name
+#
+# optional:
+# R - GCP compute region where IP address exists, default europe-west4
 function gcp::delete_ip_address {
 
     local OPTIND

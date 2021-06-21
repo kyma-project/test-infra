@@ -96,8 +96,8 @@ export KYMA_SOURCE=${utils_generate_vars_for_build_kymaSource:?}
 
 gcp::set_vars_for_network \
     -n "$JOB_NAME"
-export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_net_name:?}"
-export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_subnet_name:?}"
+export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_return_net_name:?}"
+export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_return_subnet_name:?}"
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
@@ -128,7 +128,7 @@ gcp::create_dns_record \
     -a "$GATEWAY_IP_ADDRESS" \
     -h "$INGRESS_GATEWAY_HOSTNAME" \
     -s "$COMMON_NAME"
-export DNS_DOMAIN=${gcp_create_dns_record_dns_domain:?}
+export DNS_DOMAIN=${gcp_create_dns_record_return_dns_domain:?}
 export CLEANUP_GATEWAY_DNS_RECORD="true"
 
 # if GKE_RELEASE_CHANNEL is set, get latest possible cluster version
@@ -136,7 +136,7 @@ gcloud::set_latest_cluster_version_for_channel
 
 if [ "$PROVISION_REGIONAL_CLUSTER" ]; then NUM_NODES="$NODES_PER_ZONE"; fi
 
-gcp::provision_gke_cluster \
+gcp::provision_k8s_cluster \
     -c "$COMMON_NAME" \
     -p "$CLOUDSDK_CORE_PROJECT" \
     -v "$GKE_CLUSTER_VERSION" \
@@ -154,7 +154,7 @@ gcp::provision_gke_cluster \
     -i "$IMAGE_TYPE" \
     -g "$GCLOUD_SECURITY_GROUP_DOMAIN" \
     -r "$PROVISION_REGIONAL_CLUSTER" \
-    -s "$STACKDRIVER_KUBERNETESA" \
+    -s "$STACKDRIVER_KUBERNETES" \
     -D "$CLUSTER_USE_SSD" \
     -e "$GKE_ENABLE_POD_SECURITY_POLICY" \
     -P "$TEST_INFRA_SOURCES_DIR"
