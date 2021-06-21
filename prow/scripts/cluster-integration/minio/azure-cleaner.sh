@@ -20,7 +20,7 @@ requiredVars=(
 utils::check_required_vars "${requiredVars[@]}"
 
 az::authenticate -c "$AZURE_CREDENTIALS_FILE"
-az::set_subscription "$AZURE_SUBSCRIPTION_ID"
+az::set_subscription -s "$AZURE_SUBSCRIPTION_ID"
 
 log::info "Removing orphaned Storage Accounts from ${AZURE_RS_GROUP} Resource Group"
 while read -r account; do

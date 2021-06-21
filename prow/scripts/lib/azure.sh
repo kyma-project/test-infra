@@ -133,7 +133,7 @@ function az::create_resource_group {
 	done
 }
 
-# az::provision_aks_cluster creates an AKS cluster
+# az::provision_k8s_cluster creates an AKS cluster
 #
 # Arguments:
 # required:
@@ -145,7 +145,7 @@ function az::create_resource_group {
 # s - azure cluster size
 # v - desired k8s cluster version
 # a - addidional AKS addons
-# f - credentials file, refer to az::login
+# f - credentials file, refer to az::authenticate
 #
 function az::provision_k8s_cluster {
     local OPTIND
@@ -237,7 +237,7 @@ function az::reserve_ip_address {
             n)
                 ipAddressName="$OPTARG" ;;
             r)
-                compazureRegionuteRegion="$OPTARG" ;;
+                azureRegion="$OPTARG" ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
@@ -250,6 +250,7 @@ function az::reserve_ip_address {
   utils::check_empty_arg "$azureRegion" "Azure region name is empty. Exiting..."
 
   if az network public-ip create -g "${resourceGroup}" -n "${ipAddressName}" -l "${azureRegion}" --allocation-method static; then
+      # shellcheck disable=SC2034
       az_reserve_ip_address_return_ip_address=$(az network public-ip show -g "${resourceGroup}" -n "${ipAddressName}" --query ipAddress -o tsv)
   else
     log::error "Could not create IP address. Exiting..."
