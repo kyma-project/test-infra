@@ -6,7 +6,7 @@ templates:
           - repoName: "github.com/kyma-project/busola"
             jobs:
               - jobConfig:
-                  path: web
+                  path: 'web'
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/busola"
                   run_if_changed: '^core/|^core-ui/|^service-catalog-ui/|^components/|^shared/|^package.json'
@@ -33,7 +33,7 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/busola/core-ui"
                   run_if_changed: "^core-ui/|^components/|^shared/|^package.json"
-                  release_since: "1."
+                  release_since: "1.19"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
