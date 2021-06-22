@@ -358,8 +358,8 @@ utils::generate_self_signed_cert \
     -d "$DNS_DOMAIN" \
     -s "$COMMON_NAME" \
     -v "$SELF_SIGN_CERT_VALID_DAYS"
-export TLS_CERT="${utils_generate_self_signed_cert_tls_cert:?}"
-export TLS_KEY="${utils_generate_self_signed_cert_tls_key:?}"
+export TLS_CERT="${utils_generate_self_signed_cert_return_tls_cert:?}"
+export TLS_KEY="${utils_generate_self_signed_cert_return_tls_key:?}"
 
 log::info "Choose node for benchmarks execution"
 NODE=$(kubectl get nodes | tail -n 1 | cut -d ' ' -f 1)

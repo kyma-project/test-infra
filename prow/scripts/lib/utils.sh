@@ -34,8 +34,8 @@ function utils::check_required_vars() {
 # v - number days certificate will be valid, default 5 days
 #
 # Return variables
-# utils_generate_self_signed_cert_tls_cert - generated tls certificate
-# utils_generate_self_signed_cert_tls_key - generated tls key
+# utils_generate_self_signed_cert_return_tls_cert - generated tls certificate
+# utils_generate_self_signed_cert_return_tls_key - generated tls key
 function utils::generate_self_signed_cert() {
 
     local OPTIND
@@ -77,10 +77,10 @@ function utils::generate_self_signed_cert() {
 
     # return value
     # shellcheck disable=SC2034
-    utils_generate_self_signed_cert_tls_cert=$(base64 "$certPath" | tr -d '\n')
+    utils_generate_self_signed_cert_return_tls_cert=$(base64 "$certPath" | tr -d '\n')
     # return value
     # shellcheck disable=SC2034
-    utils_generate_self_signed_cert_tls_key=$(base64 "$keyPath" | tr -d '\n')
+    utils_generate_self_signed_cert_return_tls_key=$(base64 "$keyPath" | tr -d '\n')
 
     rm "$keyPath"
     rm "$certPath"
@@ -489,7 +489,6 @@ function utils::post_hook() {
                 if [ -n "$OPTARG" ]; then
                     local gatewayIpAddressName="$OPTARG"
                 fi ;;
-            # TODO: align parameter letter with other functions
             Z)
                 if [ -n "$OPTARG" ]; then
                     local gcpDnsZoneName="$OPTARG"
@@ -592,14 +591,16 @@ function utils::run_jobguard() {
 }
 
 # utils::generate_CommonName generate common name
-# It generates random string and prefix it with provided arguments
+# It generates random string and prefix it, with provided arguments
 #
 # Arguments:
-# n - string to use as a common name prefix /optional
-# p - pull request number or commit id to use as a common name prefix /optional
 #
-# Returns:
-# generated common name string
+# optional:
+# n - string to use as a common name prefix
+# p - pull request number or commit id to use as a common name prefix
+#
+# Return:
+# utils_generate_commonName_return_commonName - generated common name string
 utils::generate_commonName() {
 
     local OPTIND
@@ -609,19 +610,23 @@ utils::generate_commonName() {
             n)
                 local namePrefix="$OPTARG" ;;
             p)
-                local pullNumber="$OPTARG" ;;
+                local id="$OPTARG" ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
                 echo "Option -$OPTARG argument not provided" >&2; ;;
         esac
     done
-  if [ ${#pullNumber} -gt 0 ]; then
-    pullNumber="-$pullNumber-"
-  fi
-  local randomNameSuffix
-  randomNameSuffix=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
-  echo "$namePrefix$pullNumber$randomNameSuffix" | tr "[:upper:]" "[:lower:]"
+
+    if [ ${#id} -gt 0 ]; then
+        id="-$id-"
+    fi
+
+    local randomNameSuffix
+    randomNameSuffix=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
+    # return value
+    # shellcheck disable=SC2034
+    utils_generate_commonName_return_commonName=$(echo "$namePrefix$id$randomNameSuffix" | tr "[:upper:]" "[:lower:]")
 }
 
 # check_empty_arg will check if first argument is empty.
@@ -650,13 +655,17 @@ function utils::check_empty_arg {
 # utils::generate_vars_for_build generate string values for specific build types
 #
 # Arguments:
+#
+# required:
 # b - build type
-# p - pull request number
-# s - pull request base SHA
+#
+# optional:
+# p - pull request number, required for build type pr
+# s - pull request base SHA, required for build type commit
 #
 # Return variables:
-# utils_set_vars_for_build_commonName - generated common name
-# utils_set_vars_for_build_kymaSource - generated kyma source
+# utils_set_vars_for_build_return_commonName - generated common name
+# utils_set_vars_for_build_return_kymaSource - generated kyma source
 function utils::generate_vars_for_build {
 
     local OPTIND
@@ -686,25 +695,22 @@ function utils::generate_vars_for_build {
     # In case of PR, operate on PR number
     if [[ "$buildType" == "pr" ]]; then
         readonly commonNamePrefix="pr"
+        utils::generate_commonName -n "$commonNamePrefix" -p "$prNumber"
         # shellcheck disable=SC2034
-        utils_generate_vars_for_build_commonName="$(utils::generate_commonName -n "$commonNamePrefix" -p "$prNumber")"
-        # shellcheck disable=SC2034
-        utils_generate_vars_for_build_kymaSource="PR-$prNumber"
+        utils_generate_vars_for_build_return_kymaSource="PR-$prNumber"
     elif [[ "$buildType" == "release" ]]; then
         readonly commonNamePrefix="rel"
         readonly releaseVersion=$(cat "VERSION")
-        # shellcheck disable=SC2034
-        utils_generate_vars_for_build_commonName="$(utils::generate_commonName -n "$commonNamePrefix")"
+        utils::generate_commonName -n "$commonNamePrefix"
         log::info "Reading release version from RELEASE_VERSION file, got: $releaseVersion"
         # shellcheck disable=SC2034
-        utils_generate_vars_for_build_kymaSource="$releaseVersion"
+        utils_generate_vars_for_build_return_kymaSource="$releaseVersion"
     # Otherwise (master), operate on triggering commit id
     else
         readonly commonNamePrefix="commit"
         readonly commitID="${prBaseSha::8}"
+        utils::generate_commonName -n "$commonNamePrefix" -p "$commitID"
         # shellcheck disable=SC2034
-        utils_generate_vars_for_build_commonName="$(utils::generate_commonName "$commonNamePrefix" "$commitID")"
-        # shellcheck disable=SC2034
-        utils_generate_vars_for_build_kymaSource="$commitID"
+        utils_generate_vars_for_build_return_kymaSource="$commitID"
     fi
 }

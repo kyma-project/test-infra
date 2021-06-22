@@ -70,8 +70,8 @@ utils::generate_vars_for_build \
     -b "$BUILD_TYPE" \
     -p "$PULL_NUMBER" \
     -s "$PULL_BASE_SHA"
-export COMMON_NAME=${utils_generate_vars_for_build_commonName:?}
-export KYMA_SOURCE=${utils_generate_vars_for_build_kymaSource:?}
+export COMMON_NAME=${utils_generate_vars_for_build_return_commonName:?}
+export KYMA_SOURCE=${utils_generate_vars_for_build_return_kymaSource:?}
 
 gcp::set_vars_for_network -n "$JOB_NAME"
 export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_return_net_name:?}"
@@ -135,8 +135,8 @@ utils::generate_self_signed_cert \
     -d "$DNS_DOMAIN" \
     -s "$COMMON_NAME" \
     -v "$SELF_SIGN_CERT_VALID_DAYS"
-export TLS_CERT="${utils_generate_self_signed_cert_tls_cert:?}"
-export TLS_KEY="${utils_generate_self_signed_cert_tls_key:?}"
+export TLS_CERT="${utils_generate_self_signed_cert_return_tls_cert:?}"
+export TLS_KEY="${utils_generate_self_signed_cert_return_tls_key:?}"
 
 log::info "Building Kyma CLI"
 cd "$KYMA_PROJECT_DIR/cli"
