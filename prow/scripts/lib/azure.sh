@@ -30,7 +30,7 @@ function az::verify_deps {
 # az::authenticate logs in to the azure service using provided credentials file in the function argument.
 # Arguments:
 # required:
-# c - Azure login credentials
+# f - Azure login credentials file
 # Function accepts JSON file formatted below:
 # {
 #   "tenant_id": "tenant_id",
@@ -47,9 +47,9 @@ function az::authenticate {
 
     # Check the provided credentials in the argument.
     # Use arguments to avoid exporting sensitive values.
-    while getopts ":c:" opt; do
+    while getopts ":f:" opt; do
         case $opt in
-            c)
+            f)
                 azureCredentialsFile="$OPTARG" ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
@@ -355,31 +355,14 @@ function az::deprovision_k8s_cluster {
     local OPTIND
     local clusterName
     local resourceGroup
-    # local azureRegion
-    # local clusterSize
-    # local clusterVersion
-    # local clusterVersionPrecise
-    # local aksAddons
-    # local credentialsFile
 
-    # Check the provided credentials in the argument.
-    # Use arguments to avoid exporting sensitive values.
     while getopts ":c:g:r:s:v:a:f:" opt; do
         case $opt in
             c)
                 clusterName="$OPTARG" ;;
             g)
                 resourceGroup="$OPTARG" ;;
-            # r)
-            #    azureRegion="$OPTARG" ;;
-            # s)
-            #     clusterSize="$OPTARG" ;;
-            # v)
-            #     clusterVersion="$OPTARG" ;;
-            # a)
-            #     aksAddons="$OPTARG" ;;
-            # f)
-            #     credentialsFile="$OPTARG" ;;
+
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
@@ -389,12 +372,6 @@ function az::deprovision_k8s_cluster {
 
     utils::check_empty_arg "$clusterName" "Missing cluster name, please provide proper cluster name"
     utils::check_empty_arg "$resourceGroup" "Missing resource group name, please provide proper resource group name"
-    # utils::check_empty_arg "$azureRegion" "Missing Azure region name, please provide proper Azure region name"
-    # utils::check_empty_arg "$clusterSize" "Missing cluster size, please provide proper cluster size"
-    # utils::check_empty_arg "$clusterVersion" "Missing cluster name, please provide proper cluster name"
-    # utils::check_empty_arg "$aksAddons" "Missing AKS addons, please provide proper AKS addons"
-    # utils::check_empty_arg "$credentialsFile" "Missing credentials file name, please provide proper credentials file name"
-
 
     log::info "Deprovisioning AKS cluster"
     az aks delete -g "${resourceGroup}" -n "${clusterName}" -y
