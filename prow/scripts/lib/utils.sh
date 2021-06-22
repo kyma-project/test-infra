@@ -683,8 +683,6 @@ function utils::generate_vars_for_build {
         esac
    done
 
-   # check required arguments
-    utils::check_empty_arg "$buildType" "Build type not provided."
     if [ "$buildType" = "pr" ]; then
         utils::check_empty_arg "$prNumber" "Pull request number not provided."
     fi
