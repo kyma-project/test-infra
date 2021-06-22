@@ -427,19 +427,19 @@ function utils::post_hook() {
     set +f
 
     local OPTIND
-    local projectName # -p
+    local projectName
     local exitStatus
-    local cleanupCluster="false" # -c
-    local cleanupGatewayDns="false" # -g
-    local gatewayHostname='*' # -G
-    local cleanupApiserverDns="false" # -a
+    local cleanupCluster="false"
+    local cleanupGatewayDns="false"
+    local gatewayHostname='*'
+    local cleanupApiserverDns="false"
     local apiserverHostname='apiserver'
-    local cleanupGatewayIP="false" # -I
-    local errorLoggingGuard="false" # -l
-    local computeZone="europe-west4-b" # z - zone in which the new zonal cluster will be created
-    local computeRegion="europe-west4" # R - region in which the new regional cluster will be created
-    local cleanRegionalCluster="false" # r - it true provision regional cluster
-    local asyncDeprovision="true" # d - deprovision cluster in async mode
+    local cleanupGatewayIP="false"
+    local errorLoggingGuard="false"
+    local computeZone="europe-west4-b"
+    local computeRegion="europe-west4"
+    local cleanRegionalCluster="false"
+    local asyncDeprovision="true"
 
     while getopts ":n:c:l:p:a:G:g:z:I:r:d:R:A:e:f:s:Z:N:E:" opt; do
         case $opt in
