@@ -151,7 +151,7 @@ function cleanup() {
 function installCluster() {
 	log::info "Install Kubernetes on Azure"
 
-	#shellcheck disable=SC2153
+	# shellcheck disable=SC2153
 	az::provision_k8s_cluster \
 		-c "$CLUSTER_NAME" \
 		-g "$RS_GROUP" \
