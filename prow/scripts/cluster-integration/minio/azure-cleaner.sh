@@ -30,10 +30,7 @@ while read -r account; do
     fi
 
     echo "....Removing ${account}"
-    az storage account delete \
-        --name "${account}" \
-        --resource-group "${AZURE_RS_GROUP}" \
-        --yes
+    az::delete_storage_account -n "$account" -g "$AZURE_RS_GROUP"
 done <<< "$(az storage account list \
     --query "[?tags.\"created-by\"=='prow' && sum([to_number(tags.\"created-at\"),to_number(tags.\"ttl\")]) < to_number('$(date +%s)')].name" \
     --resource-group "${AZURE_RS_GROUP}" \
