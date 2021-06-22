@@ -5,7 +5,7 @@ metadata:
   namespace: "kyma-installer"
   labels:
     installer: overrides
-    kyma-project.io/installation: ""
+    kyma-project.io/installation: "true"
     component: core
 data:
   test.acceptance.ui.logging.enabled: "true"
@@ -17,7 +17,7 @@ metadata:
   namespace: "kyma-installer"
   labels:
     installer: overrides
-    kyma-project.io/installation: ""
+    kyma-project.io/installation: "true"
     component: application-connector
 data:
   application-registry.deployment.args.detailedErrorResponse: "true"
@@ -29,7 +29,7 @@ metadata:
   namespace: "kyma-installer"
   labels:
     installer: overrides
-    kyma-project.io/installation: ""
+    kyma-project.io/installation: "true"
     component: istio
 data:
   kyma_istio_operator: |
