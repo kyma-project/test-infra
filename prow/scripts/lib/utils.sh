@@ -620,6 +620,8 @@ utils::generate_commonName() {
 
     if [ ${#id} -gt 0 ]; then
         id="-$id-"
+    elif [ -n "$namePrefix" ]; then
+        namePrefix="$namePrefix-"
     fi
 
     local randomNameSuffix
@@ -690,27 +692,39 @@ function utils::generate_vars_for_build {
     # In case of PR, operate on PR number
     if [[ "$buildType" == "pr" ]]; then
         readonly commonNamePrefix="pr"
-        utils::generate_commonName -n "$commonNamePrefix" -p "$prNumber"
+        utils::generate_commonName \
+            -n "$commonNamePrefix" \
+            -p "$prNumber"
         utils_generate_vars_for_build_return_commonName=${utils_generate_commonName_return_commonName:?}
         # shellcheck disable=SC2034
         utils_generate_vars_for_build_return_kymaSource="PR-$prNumber"
     elif [[ "$buildType" == "release" ]]; then
         readonly commonNamePrefix="rel"
         readonly releaseVersion=$(cat "VERSION")
-        utils::generate_commonName -n "$commonNamePrefix"
+        utils::generate_commonName \
+            -n "$commonNamePrefix"
         # shellcheck disable=SC2034
         utils_generate_vars_for_build_return_commonName=${utils_generate_commonName_return_commonName:?}
         log::info "Reading release version from RELEASE_VERSION file, got: $releaseVersion"
         # shellcheck disable=SC2034
         utils_generate_vars_for_build_return_kymaSource="$releaseVersion"
     # Otherwise (master), operate on triggering commit id
-    else
+    elif [ -n "$prBaseSha" ]; then
         readonly commonNamePrefix="commit"
         readonly commitID="${prBaseSha::8}"
-        utils::generate_commonName -n "$commonNamePrefix" -p "$commitID"
+        utils::generate_commonName \
+            -n "$commonNamePrefix" \
+            -p "$commitID"
         # shellcheck disable=SC2034
         utils_generate_vars_for_build_return_commonName=${utils_generate_commonName_return_commonName:?}
         # shellcheck disable=SC2034
         utils_generate_vars_for_build_return_kymaSource="$commitID"
+    else
+        readonly commonNamePrefix="periodic"
+        utils::generate_commonName \
+            -n "$commonNamePrefix"
+        # shellcheck disable=SC2034
+        utils_generate_vars_for_build_return_commonName=${utils_generate_commonName_return_commonName:?}
+        utils_generate_vars_for_build_return_kymaSource="null"
     fi
 }
