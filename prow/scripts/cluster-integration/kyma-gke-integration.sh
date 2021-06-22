@@ -90,7 +90,8 @@ utils::run_jobguard \
 utils::generate_vars_for_build \
     -b "$BUILD_TYPE" \
     -p "$PULL_NUMBER" \
-    -s "$PULL_BASE_SHA"
+    -s "$PULL_BASE_SHA" \
+    -n "$JOB_NAME"
 export COMMON_NAME=${utils_generate_vars_for_build_return_commonName:?}
 export KYMA_SOURCE=${utils_generate_vars_for_build_return_kymaSource:?}
 

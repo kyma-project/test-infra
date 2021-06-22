@@ -69,7 +69,8 @@ trap 'EXIT_STATUS=$?; set -f; utils::post_hook -n $COMMON_NAME -p $CLOUDSDK_CORE
 utils::generate_vars_for_build \
     -b "$BUILD_TYPE" \
     -p "$PULL_NUMBER" \
-    -s "$PULL_BASE_SHA"
+    -s "$PULL_BASE_SHA" \
+    -n "$JOB_NAME"
 export COMMON_NAME=${utils_generate_vars_for_build_return_commonName:?}
 export KYMA_SOURCE=${utils_generate_vars_for_build_return_kymaSource:?}
 
