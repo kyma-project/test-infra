@@ -1263,7 +1263,7 @@ periodics: # runs on schedule
         preset-sa-test-gcr-push: "true"
         preset-slack-alerts: "true"
         preset-stability-checker-slack-notifications: "true"
-      cron: "0 4 * * 1-5"
+      cron: "0 3 * * 1-5"
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -1350,7 +1350,7 @@ periodics: # runs on schedule
         preset-slack-alerts: "true"
         preset-stability-checker-slack-notifications: "true"
         preset-weekly-github-integration: "true"
-      cron: "0 6 * * 1"
+      cron: "0 5 * * 1"
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -1437,7 +1437,7 @@ periodics: # runs on schedule
         preset-sa-test-gcr-push: "true"
         preset-slack-alerts: "true"
         preset-stability-checker-slack-notifications: "true"
-      cron: "0 4 * * 1-5"
+      cron: "0 3 * * 1-5"
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
