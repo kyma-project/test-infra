@@ -1,0 +1,200 @@
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: 003-kyma-privileged-hostpid
+  annotations:
+    helm.sh/hook: "pre-upgrade, pre-install"
+    helm.sh/hook-weight: "0"
+    helm.sh/hook-delete-policy: "before-hook-creation"
+spec:
+  allowPrivilegeEscalation: true
+  allowedCapabilities:
+  - '*'
+  hostPorts:
+  - max: 65535
+    min: 1024
+  privileged: true
+  hostNetwork: true
+  hostPID: true
+  fsGroup:
+    rule: RunAsAny
+  seLinux:
+    rule: RunAsAny
+  runAsUser:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  volumes:
+    - "*"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kyma:psp:privileged-hostpid
+  annotations:
+    helm.sh/hook: "pre-upgrade, pre-install"
+    helm.sh/hook-weight: "0"
+    helm.sh/hook-delete-policy: "before-hook-creation"
+rules:
+- apiGroups: ["policy"] # "" indicates the core API group
+  resources: ["podsecuritypolicies"]
+  verbs: ["use"]
+  resourceNames: ["003-kyma-privileged-hostpid"]
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ template "fullname" . }}-self-signed-cert
+  labels:
+    {{- include "tplValue" ( dict "value" .Values.global.commonLabels "context" . ) | nindent 4 }}
+rules:
+- apiGroups: [""]
+  resources: ["secrets", "nodes"]
+  verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+ name: {{ template "fullname" . }}-self-signed-cert-privileged-hostpid
+roleRef:
+ kind: ClusterRole
+ name: kyma:psp:privileged-hostpid
+ apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: {{ template "fullname" . }}-self-signed-cert
+  namespace: kyma-system
+
+---
+# in case of changes please test this on GKE, Azure and Gardener
+{{- if .Values.dockerRegistry.enableInternal }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "registry-fullname" }}-cert-patch
+  namespace: kyma-system
+  labels:
+    {{- include "tplValue" ( dict "value" .Values.global.commonLabels "context" . ) | nindent 4 }}
+data:
+  patch-docker.sh: |
+    #!/usr/bin/env bash
+        
+    set -o nounset
+    set -o pipefail
+    set -e
+
+    apk update
+    apk add --no-cache openssl
+
+    CERT_FILE_TEXT=$(kubectl get secret kyma-gateway-certs -n istio-system -o=jsonpath='{.data.cert}' --ignore-not-found)
+    if [ -z "${CERT_FILE_TEXT}" ]; then
+      echo "No cert key in secret kyma-gateway-certs to inject. Checking tls.crt."
+
+      CERT_FILE_TEXT=$(kubectl get secret kyma-gateway-certs -n istio-system -o=jsonpath="{.data['tls\.crt']}" --ignore-not-found)
+      if [ -z "${CERT_FILE_TEXT}" ]; then
+        echo "No tls.crt key in secret kyma-gateway-certs to inject. Exit 0."
+        exit 0
+      fi
+    fi
+
+    DECODED_CERT=$(echo "${CERT_FILE_TEXT}" | sed 's/ /\\ /g' | tr -d '\n' | base64 -d)
+    CERT_FILE="/cert/cert.txt"
+    mkdir "/cert"
+    touch "${CERT_FILE}"
+    echo "${DECODED_CERT}" > "${CERT_FILE}"  
+
+    ISSUER_NO_WHITESPACE=$(openssl x509 -in "${CERT_FILE}" -inform PEM -noout -issuer | sed 's/issuer=//' | tr -d '[:space:]')
+    SUBJECT_NO_WHITESPACE=$(openssl x509 -in "${CERT_FILE}" -inform PEM -noout -subject | sed 's/subject=//' | tr -d '[:space:]')
+
+    if [ "${ISSUER_NO_WHITESPACE}" != "${SUBJECT_NO_WHITESPACE}" ]; then
+      echo "Certificate is not self-signed, everything is ok. Exit 0"
+      exit 0
+    fi
+
+    CONTAINER_RUNTIME=$(kubectl get nodes -o jsonpath='{.items[0].status.nodeInfo.containerRuntimeVersion}'| cut -d: -f 1)
+
+    if [ "${CONTAINER_RUNTIME}" = "docker" ]; then
+      echo "Certificate is self-signed, patching Docker..."
+      DIR="/kube-etc/docker/certs.d/registry.{{ .Values.global.ingress.domainName }}"
+      if [ ! -d "${DIR}" ]; then
+        mkdir -p "${DIR}"
+      fi
+
+      cat "${CERT_FILE}" > "${DIR}/ca.crt"
+    else
+      echo "Certificate is self-signed, patching Containerd..."
+      TMPDIR=$(mktemp -u)
+      # GKE nodes have /usr/local/ mounted read-only. So we need to override the default localcertsdir
+      nsenter --mount=/proc/1/ns/mnt -- sh -c "mkdir $TMPDIR && echo \"${DECODED_CERT}\" > $TMPDIR/ca.crt && update-ca-certificates --localcertsdir $TMPDIR && systemctl restart containerd"
+    fi
+    echo "Done."
+    exit 0
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ template "registry-fullname" }}-self-signed-cert
+  namespace: kyma-system
+  labels:
+    {{- include "tplValue" ( dict "value" .Values.global.commonLabels "context" . ) | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "registry-fullname" }}-cert-update
+  template:
+    metadata:
+      labels:
+        app: {{ template "registry-fullname" }}-cert-update
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: {{ template "fullname" . }}-self-signed-cert
+      hostPID: true
+      hostNetwork: true
+      initContainers:
+        - name: inject-certs
+          securityContext:
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+          image: "{{ .Values.injectCerts.image.repository }}:{{ .Values.injectCerts.image.tag }}"
+          resources:
+            requests:
+              cpu: 70m
+              memory: 70Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+          volumeMounts:
+            - name: etckube
+              mountPath: /kube-etc/
+              readOnly: false
+            - name: scripts
+              mountPath: /scripts
+              readOnly: true
+          command: ["sh", "/scripts/patch-docker.sh"]
+      volumes:
+        - name: etckube
+          hostPath:
+            path: /etc/
+        - configMap:
+            defaultMode: 420
+            name: {{ template "registry-fullname" }}-cert-patch
+          name: scripts
+      containers:
+        - name: pause
+          image: gcr.io/google-containers/pause-amd64:3.2
+          securityContext:
+{{- include "tplValue" ( dict "value" .Values.containers.daemonset.containerSecurityContext "context" . ) | nindent 12 }}
+          resources:
+            requests:
+              cpu: 20m
+              memory: 20Mi
+            limits:
+              cpu: 30m
+              memory: 30Mi
+      terminationGracePeriodSeconds: 30
+    {{- if .Values.global.priorityClassName }}
+      priorityClassName: {{ .Values.global.priorityClassName }}
+    {{- end }}
+{{- end }}
