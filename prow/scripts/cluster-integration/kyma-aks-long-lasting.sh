@@ -120,7 +120,7 @@ function cleanup() {
 		fi
 
 		log::info "\n---\nRemove Cluster, IP Address for Ingressgateway\n---"
-		az::deprovision_k8s_cluster -c "$CLUSTER_NAME" -n"$RS_GROUP"
+		az::deprovision_k8s_cluster -c "$CLUSTER_NAME" -n "$RS_GROUP"
 		if [[ ${az_deprovision_k8s_cluster_exit_code:?} -ne 0 ]]; then
 		  log::error "Failed delete cluster : ${CLUSTER_NAME}"
 		  EXIT_STATUS=${az_deprovision_k8s_cluster_exit_code}
