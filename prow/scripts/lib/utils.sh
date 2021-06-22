@@ -656,10 +656,8 @@ function utils::check_empty_arg {
 #
 # Arguments:
 #
-# required:
-# b - build type
-#
 # optional:
+# b - build type
 # p - pull request number, required for build type pr
 # s - pull request base SHA, required for build type commit
 #
@@ -669,12 +667,11 @@ function utils::check_empty_arg {
 function utils::generate_vars_for_build {
 
     local OPTIND
-    local buildType
 
     while getopts ":b:p:s:" opt; do
         case $opt in
             b)
-                buildType="$OPTARG" ;;
+                local buildType="$OPTARG" ;;
             p)
                 local prNumber="$OPTARG" ;;
             s)
