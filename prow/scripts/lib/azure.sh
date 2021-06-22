@@ -9,23 +9,21 @@ source "${LIBDIR}/utils.sh"
 
 # az::verify_deps checks if all required commands are available
 function az::verify_deps {
-  if ! [[ -x $(command -v az) ]]; then
-    log::error "'az' command not found in \$PATH. Exiting..."
-    exit 1
-  else
-    echo "Azure CLI Version:"
-    az version
-  fi
-  if ! [[ -x $(command -v jq) ]]; then
-    log::error "'jq' command not found in \$PATH. Exiting..."
-    exit 1
-  else
-    echo "jq version:"
-    jq --version
-  fi
+    if ! [[ -x $(command -v az) ]]; then
+        log::error "'az' command not found in \$PATH. Exiting..."
+        exit 1
+    else
+        echo "Azure CLI Version:"
+        az version
+    fi
+    if ! [[ -x $(command -v jq) ]]; then
+        log::error "'jq' command not found in \$PATH. Exiting..."
+        exit 1
+    else
+        echo "jq version:"
+        jq --version
+    fi
 }
-
-
 
 # az::authenticate logs in to the azure service using provided credentials file in the function argument.
 # Arguments:
@@ -77,6 +75,7 @@ function az::set_subscription {
 
     local OPTIND
     local azureSubscription
+
     while getopts ":s:" opt; do
         case $opt in
             s)
@@ -87,10 +86,10 @@ function az::set_subscription {
                 echo "Option -$OPTARG argument not provided" >&2 ;;
         esac
     done
-  utils::check_empty_arg "$azureSubscription"  "missing Azure Subscription ID, please provide proper azure subscription ID in the argument. Exiting..."
-  log::info "Setting Azure subscription..."
-  az account set \
-    --subscription "$azureSubscription"
+    utils::check_empty_arg "$azureSubscription"  "missing Azure Subscription ID, please provide proper azure subscription ID in the argument. Exiting..."
+    log::info "Setting Azure subscription..."
+    az account set \
+        --subscription "$azureSubscription"
 }
 
 # az::create_resource_group creates resource group in a given region
@@ -231,6 +230,7 @@ function az::create_storage_account {
 # n - storage account name to be deleted
 # g - resource group name
 function az::delete_storage_account {
+
     local OPTIND
     local resourceGroup
     local accountName
@@ -271,6 +271,7 @@ function az::delete_storage_account {
 # f - credentials file, refer to az::authenticate
 #
 function az::provision_k8s_cluster {
+
     local OPTIND
     local clusterName
     local resourceGroup
@@ -352,6 +353,7 @@ function az::provision_k8s_cluster {
 # az_deprovision_k8s_cluster_exit_code - exit code
 #
 function az::deprovision_k8s_cluster {
+
     local OPTIND
     local clusterName
     local resourceGroup
@@ -413,17 +415,17 @@ function az::reserve_ip_address {
         esac
     done
 
-  utils::check_empty_arg "$resourceGroup" "Resource group name is empty. Exiting..."
-  utils::check_empty_arg "$ipAddressName" "IP address name is empty. Exiting..."
-  utils::check_empty_arg "$azureRegion" "Azure region name is empty. Exiting..."
+    utils::check_empty_arg "$resourceGroup" "Resource group name is empty. Exiting..."
+    utils::check_empty_arg "$ipAddressName" "IP address name is empty. Exiting..."
+    utils::check_empty_arg "$azureRegion" "Azure region name is empty. Exiting..."
 
-  if az network public-ip create -g "${resourceGroup}" -n "${ipAddressName}" -l "${azureRegion}" --allocation-method static --sku Standard; then
-      # shellcheck disable=SC2034
-      az_reserve_ip_address_return_ip_address=$(az network public-ip show -g "${resourceGroup}" -n "${ipAddressName}" --query ipAddress -o tsv)
-  else
-    log::error "Could not create IP address. Exiting..."
-    exit 1
-  fi
+    if az network public-ip create -g "${resourceGroup}" -n "${ipAddressName}" -l "${azureRegion}" --allocation-method static --sku Standard; then
+        # shellcheck disable=SC2034
+        az_reserve_ip_address_return_ip_address=$(az network public-ip show -g "${resourceGroup}" -n "${ipAddressName}" --query ipAddress -o tsv)
+    else
+        log::error "Could not create IP address. Exiting..."
+        exit 1
+    fi
 }
 
 # This check will trigger everytime the file is sourced.

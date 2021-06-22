@@ -50,8 +50,6 @@ createStorageAccount() {
 }
 
 afterTest() {
-    log::info "Delete ${AZURE_STORAGE_ACCOUNT_NAME} Storage Account"
-
     az::delete_storage_account -n "$AZURE_STORAGE_ACCOUNT_NAME" -g "$AZURE_RS_GROUP"
 
     log::info "Storage Account deleted"
