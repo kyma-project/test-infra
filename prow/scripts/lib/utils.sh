@@ -725,6 +725,7 @@ function utils::generate_vars_for_build {
             -n "$commonNamePrefix"
         # shellcheck disable=SC2034
         utils_generate_vars_for_build_return_commonName=${utils_generate_commonName_return_commonName:?}
+        # shellcheck disable=SC2034
         utils_generate_vars_for_build_return_kymaSource="null"
     fi
 }
