@@ -134,7 +134,7 @@ function az::create_resource_group {
     fi
 
     log::info "Creating resouce group \"$resourceGroup\" in a region \"$azureRegion\""
-    if [ -n "$groupTags" ]; then
+    if [ ${#groupTags[@]} != 0 ]; then
         az group create --name "${resourceGroup}" --location "${azureRegion}" --tags "${groupTags[@]}"
     else
         az group create --name "${resourceGroup}" --location "${azureRegion}"
@@ -177,6 +177,7 @@ function az::delete_resource_group {
     utils::check_empty_arg "$resourceGroup" "Resource group name is empty. Exiting..."
 
     az group delete -n "${resourceGroup}" -y
+    # shellcheck disable=SC2034
     az_delete_resource_group_exit_code=$?
 }
 
@@ -216,7 +217,7 @@ function az::create_storage_account {
     utils::check_empty_arg "$accountName" "Account name is empty. Exiting..."
 
     log::info "Creating ${AZURE_STORAGE_ACCOUNT_NAME} Storage Account"
-    if [ -n "$groupTags" ]; then
+    if [ ${#groupTags[@]} != 0 ]; then
         az storage account create --name "${accountName}" --resource-group "${resourceGroup}" --tags "${groupTags[@]}"
     else
         az storage account create --name "${accountName}" --resource-group "${resourceGroup}"
@@ -397,6 +398,7 @@ function az::deprovision_k8s_cluster {
 
     log::info "Deprovisioning AKS cluster"
     az aks delete -g "${resourceGroup}" -n "${clusterName}" -y
+    # shellcheck disable=SC2034
     az_deprovision_k8s_cluster_exit_code=$?
 
 }
