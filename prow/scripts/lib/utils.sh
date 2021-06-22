@@ -696,12 +696,15 @@ function utils::generate_vars_for_build {
     if [[ "$buildType" == "pr" ]]; then
         readonly commonNamePrefix="pr"
         utils::generate_commonName -n "$commonNamePrefix" -p "$prNumber"
+        utils_generate_vars_for_build_return_commonName=${utils_generate_commonName_return_commonName:?}
         # shellcheck disable=SC2034
         utils_generate_vars_for_build_return_kymaSource="PR-$prNumber"
     elif [[ "$buildType" == "release" ]]; then
         readonly commonNamePrefix="rel"
         readonly releaseVersion=$(cat "VERSION")
         utils::generate_commonName -n "$commonNamePrefix"
+        # shellcheck disable=SC2034
+        utils_generate_vars_for_build_return_commonName=${utils_generate_commonName_return_commonName:?}
         log::info "Reading release version from RELEASE_VERSION file, got: $releaseVersion"
         # shellcheck disable=SC2034
         utils_generate_vars_for_build_return_kymaSource="$releaseVersion"
@@ -710,6 +713,8 @@ function utils::generate_vars_for_build {
         readonly commonNamePrefix="commit"
         readonly commitID="${prBaseSha::8}"
         utils::generate_commonName -n "$commonNamePrefix" -p "$commitID"
+        # shellcheck disable=SC2034
+        utils_generate_vars_for_build_return_commonName=${utils_generate_commonName_return_commonName:?}
         # shellcheck disable=SC2034
         utils_generate_vars_for_build_return_kymaSource="$commitID"
     fi
