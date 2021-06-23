@@ -119,23 +119,10 @@ function cleanup() {
 		  log::warn "Could not delete DNS record ${APISERVER_DNS_FULL_NAME}. Record does not exist."
 		fi
 
-		log::info "\n---\nRemove Cluster, IP Address for Ingressgateway\n---"
 		az::deprovision_k8s_cluster -c "$CLUSTER_NAME" -n "$RS_GROUP"
-		if [[ ${az_deprovision_k8s_cluster_exit_code:?} -ne 0 ]]; then
-		  log::error "Failed delete cluster : ${CLUSTER_NAME}"
-		  EXIT_STATUS=${az_deprovision_k8s_cluster_exit_code}
-		else
-		  log::success "Cluster and IP address for Ingressgateway deleted"
-		fi
 
 		log::info "Remove group"
 		az::delete_resource_group -g "$RS_GROUP"
-		if [[ ${az_delete_resource_group_exit_code:?} -ne 0 ]]; then
-		  log::error "Failed to delete ResourceGrouop : ${RS_GROUP}"
-		  EXIT_STATUS=${az_delete_resource_group_exit_code}
-		else
-		  log::success "ResourceGroup deleted : ${RS_GROUP}"
-		fi
 	else
 		log::info "Azure group does not exist, skip cleanup process"
 	fi
@@ -148,30 +135,12 @@ function cleanup() {
 	set -e
 }
 
-function installCluster() {
-	log::info "Install Kubernetes on Azure"
-
-	# shellcheck disable=SC2153
-	az::provision_k8s_cluster \
-		-c "$CLUSTER_NAME" \
-		-g "$RS_GROUP" \
-		-r "$REGION" \
-		-s "$CLUSTER_SIZE" \
-		-v "$AKS_CLUSTER_VERSION" \
-		-a "$CLUSTER_ADDONS" \
-		-f "$AZURE_CREDENTIALS_FILE"
-}
-
 function createPublicIPandDNS() {
 	CLUSTER_RS_GROUP=$(az aks show -g "${RS_GROUP}" -n "${CLUSTER_NAME}" --query nodeResourceGroup -o tsv)
 
 	# IP address and DNS for Ingressgateway
-	log::info "Reserve IP Address for Ingressgateway"
-
 	az::reserve_ip_address -g "$CLUSTER_RS_GROUP" -n "$STANDARIZED_NAME" -r "$REGION"
 	GATEWAY_IP_ADDRESS="${az_reserve_ip_address_return_ip_address:?}"
-
-	log::success "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
 	log::info "Create DNS Record for Ingressgateway IP"
 
@@ -254,7 +223,18 @@ export DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 cleanup
 
 az::create_resource_group -g "${RS_GROUP}" -r "${REGION}"
-installCluster
+
+log::info "Install Kubernetes on Azure"
+
+# shellcheck disable=SC2153
+az::provision_k8s_cluster \
+	-c "$CLUSTER_NAME" \
+	-g "$RS_GROUP" \
+	-r "$REGION" \
+	-s "$CLUSTER_SIZE" \
+	-v "$AKS_CLUSTER_VERSION" \
+	-a "$CLUSTER_ADDONS" \
+	-f "$AZURE_CREDENTIALS_FILE"
 
 createPublicIPandDNS
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-letsencrypt-cert.sh"

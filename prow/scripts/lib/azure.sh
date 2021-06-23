@@ -63,7 +63,11 @@ function az::authenticate {
 
     # login
     log::info "Logging in to Azure"
-    az login --service-principal -u "${azureSubscriptionAppID}" -p "${azureSubscriptionSecret}" --tenant "${azureSubscriptionTenant}"
+    az login \
+        --service-principal \
+        -u "${azureSubscriptionAppID}" \
+        -p "${azureSubscriptionSecret}" \
+        --tenant "${azureSubscriptionTenant}"
     log::info "Successfully logged-in!"
 }
 
@@ -127,16 +131,21 @@ function az::create_resource_group {
     utils::check_empty_arg "$resourceGroup" "Resource group name is empty. Exiting..."
     utils::check_empty_arg "$azureRegion" "Azure region name is empty. Exiting..."
 
-    if [[ $(az group exists --name "${AZURE_RS_GROUP}" -o json) == true ]]; then
-        log::info "Azure Resource Group ${AZURE_RS_GROUP} exists"
+    if [[ $(az group exists --name "${resourceGroup}" -o json) == true ]]; then
+        log::info "Azure Resource Group ${resourceGroup} exists"
         return
     fi
 
     log::info "Creating resouce group \"$resourceGroup\" in a region \"$azureRegion\""
     if [ ${#groupTags[@]} != 0 ]; then
-        az group create --name "${resourceGroup}" --location "${azureRegion}" --tags "${groupTags[@]}"
+        az group create \
+        --name "${resourceGroup}" \
+        --location "${azureRegion}" \
+        --tags "${groupTags[@]}"
     else
-        az group create --name "${resourceGroup}" --location "${azureRegion}"
+        az group create \
+        --name "${resourceGroup}" \
+        --location "${azureRegion}"
     fi
 
     until [[ $(az group exists --name "${resourceGroup}" -o json) == true ]]; do
@@ -154,13 +163,13 @@ function az::create_resource_group {
 # Arguments:
 # required:
 # g - resource group name to be deleted
-# Returns:
-# az_delete_resource_group_exit_code - exit code
 #
 function az::delete_resource_group {
 
     local OPTIND
     local resourceGroup
+
+    local deleteReturnCode
 
     while getopts ":g:" opt; do
         case $opt in
@@ -175,9 +184,16 @@ function az::delete_resource_group {
 
     utils::check_empty_arg "$resourceGroup" "Resource group name is empty. Exiting..."
 
-    az group delete -n "${resourceGroup}" -y
-    # shellcheck disable=SC2034
-    az_delete_resource_group_exit_code=$?
+    az group delete \
+        -n "${resourceGroup}" \
+        -y
+    deleteReturnCode=$?
+    if [[ ${deleteReturnCode} -ne 0 ]]; then
+        log::error "Failed to delete ResourceGrouop : ${resourceGroup}"
+        exit 1
+    else
+        log::info "ResourceGroup deleted : ${resourceGroup}"
+    fi
 }
 
 # az::create_storage_account creates storage accont resource group in a given group
@@ -215,11 +231,16 @@ function az::create_storage_account {
     utils::check_empty_arg "$resourceGroup" "Resource group name is empty. Exiting..."
     utils::check_empty_arg "$accountName" "Account name is empty. Exiting..."
 
-    log::info "Creating ${AZURE_STORAGE_ACCOUNT_NAME} Storage Account"
+    log::info "Creating ${accountName} Storage Account"
     if [ ${#groupTags[@]} != 0 ]; then
-        az storage account create --name "${accountName}" --resource-group "${resourceGroup}" --tags "${groupTags[@]}"
+        az storage account create \
+            --name "${accountName}" \
+            --resource-group "${resourceGroup}" \
+            --tags "${groupTags[@]}"
     else
-        az storage account create --name "${accountName}" --resource-group "${resourceGroup}"
+        az storage account create \
+            --name "${accountName}" \
+            --resource-group "${resourceGroup}"
     fi
 }
 
@@ -251,9 +272,12 @@ function az::delete_storage_account {
     utils::check_empty_arg "$resourceGroup" "Resource group name is empty. Exiting..."
     utils::check_empty_arg "$accountName" "Account name is empty. Exiting..."
 
-    log::info "Deleting ${AZURE_STORAGE_ACCOUNT_NAME} Storage Account"
+    log::info "Deleting ${accountName} Storage Account"
 
-    az storage account delete --name "${accountName}" --resource-group "${resourceGroup}" --yes
+    az storage account delete \
+        --name "${accountName}" \
+        --resource-group "${resourceGroup}" \
+        --yes
 }
 
 # az::provision_k8s_cluster creates an AKS cluster
@@ -349,14 +373,13 @@ function az::provision_k8s_cluster {
 # a - addidional AKS addons
 # f - credentials file, refer to az::authenticate
 #
-# Returns:
-# az_deprovision_k8s_cluster_exit_code - exit code
-#
 function az::deprovision_k8s_cluster {
 
     local OPTIND
     local clusterName
     local resourceGroup
+
+    local deleteReturnCode
 
     while getopts ":c:g:r:s:v:a:f:" opt; do
         case $opt in
@@ -376,10 +399,18 @@ function az::deprovision_k8s_cluster {
     utils::check_empty_arg "$resourceGroup" "Missing resource group name, please provide proper resource group name"
 
     log::info "Deprovisioning AKS cluster"
-    az aks delete -g "${resourceGroup}" -n "${clusterName}" -y
-    # shellcheck disable=SC2034
-    az_deprovision_k8s_cluster_exit_code=$?
+    az aks delete \
+        -g "${resourceGroup}" \
+        -n "${clusterName}" \
+        -y
 
+    deleteReturnCode=$?
+    if [[ ${deleteReturnCode} -ne 0 ]]; then
+        log::error "Failed delete cluster : ${clusterName}"
+        return 1
+    else
+        log::info "Cluster and IP address for Ingressgateway deleted"
+    fi
 }
 
 # az ::reserve_ip_address reserves IP address
@@ -419,9 +450,11 @@ function az::reserve_ip_address {
     utils::check_empty_arg "$ipAddressName" "IP address name is empty. Exiting..."
     utils::check_empty_arg "$azureRegion" "Azure region name is empty. Exiting..."
 
+    log::info "Reserve IP Address for Ingressgateway"
     if az network public-ip create -g "${resourceGroup}" -n "${ipAddressName}" -l "${azureRegion}" --allocation-method static --sku Standard; then
         # shellcheck disable=SC2034
         az_reserve_ip_address_return_ip_address=$(az network public-ip show -g "${resourceGroup}" -n "${ipAddressName}" --query ipAddress -o tsv)
+        log::success "Created IP Address for Ingressgateway: ${az_reserve_ip_address_return_ip_address}"
     else
         log::error "Could not create IP address. Exiting..."
         exit 1
