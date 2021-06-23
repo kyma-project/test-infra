@@ -1,6 +1,29 @@
 templates:
   - from: templates/generic.tmpl
     render:
+      - to: ../prow/jobs/busola/busola-web/busola-web.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/busola"
+            jobs:
+              - jobConfig:
+                  path: 'web'
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/busola"
+                  run_if_changed: '^core/|^core-ui/|^service-catalog-ui/|^components/|^shared/|^package.json'
+                  optional: true
+                  release_since: "1.24"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_generic_component"
+                    - "jobConfig_generic_component_busola"
+                    - "extra_refs_test-infra"
+                  preConfigs:
+                    - "jobConfig_presubmit"
+                  postConfigs:
+                    - "jobConfig_postsubmit"
+                    - "disable_testgrid"
       - to: ../prow/jobs/busola/busola-core-ui/busola-core-ui.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/busola"
