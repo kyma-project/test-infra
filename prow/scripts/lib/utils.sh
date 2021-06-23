@@ -426,6 +426,9 @@ function utils::post_hook() {
     # enabling path globbing, disabled in a trap before utils::post_hook call
     set +f
 
+    kubectl get installation kyma-installation -o go-template --template='{{- range .status.errorLog }}{{printf "%s:\n %s\n" .component .log}}{{- end}}'
+    kubectl logs -n kyma-installer -l name=kyma-installer
+
     local OPTIND
     local projectName
     local exitStatus
