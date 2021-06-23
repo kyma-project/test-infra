@@ -36,8 +36,8 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-incubator/compass/components/tenant-fetcher"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal
@@ -83,8 +83,8 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-incubator/compass/components/tenant-fetcher"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal

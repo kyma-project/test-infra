@@ -25,7 +25,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.16.4"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210607-b7e95d8b"
             securityContext:
               privileged: true
             command:
@@ -37,8 +37,8 @@ presubmits: # runs on PRs
                 value: "on"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal
@@ -72,7 +72,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.16.4"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210607-b7e95d8b"
             securityContext:
               privileged: true
             command:
@@ -84,8 +84,8 @@ postsubmits: # runs on main
                 value: "on"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal

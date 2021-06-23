@@ -84,8 +84,8 @@ func TestRafterJobsPresubmits(t *testing.T) {
 			container := preJob.Spec.Containers[0]
 			tester.AssertThatContainerHasEnv(t, container, "GO111MODULE", "on")
 			tester.AssertThatContainerHasEnv(t, container, "CLUSTER_VERSION", "1.16")
-			assert.Equal(t, "1536Mi", container.Resources.Requests.Memory().String())
-			assert.Equal(t, "800m", container.Resources.Requests.Cpu().String())
+			assert.Equal(t, "3Gi", container.Resources.Requests.Memory().String())
+			assert.Equal(t, "2", container.Resources.Requests.Cpu().String())
 
 			assert.Equal(t, actualJob.containerImg, container.Image)
 			assert.Equal(t, []string{actualJob.command}, container.Command)
@@ -153,8 +153,8 @@ func TestRafterJobsPostsubmits(t *testing.T) {
 			container := postJob.Spec.Containers[0]
 			tester.AssertThatContainerHasEnv(t, container, "GO111MODULE", "on")
 			tester.AssertThatContainerHasEnv(t, container, "CLUSTER_VERSION", "1.16")
-			assert.Equal(t, "1536Mi", container.Resources.Requests.Memory().String())
-			assert.Equal(t, "800m", container.Resources.Requests.Cpu().String())
+			assert.Equal(t, "3Gi", container.Resources.Requests.Memory().String())
+			assert.Equal(t, "2", container.Resources.Requests.Cpu().String())
 
 			assert.Equal(t, actualJob.containerImg, container.Image)
 			assert.Equal(t, []string{actualJob.command}, container.Command)

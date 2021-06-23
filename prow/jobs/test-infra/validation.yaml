@@ -72,8 +72,8 @@ presubmits: # runs on PRs
               - "validate"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal
@@ -108,8 +108,8 @@ presubmits: # runs on PRs
               - "jobs-tests"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal
@@ -141,8 +141,8 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-generated.sh"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal
@@ -173,8 +173,8 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow-installer/before-commit.sh"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal
