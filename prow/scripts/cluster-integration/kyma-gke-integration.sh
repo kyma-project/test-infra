@@ -59,6 +59,7 @@ export REPO_NAME
 export INGRESS_GATEWAY_HOSTNAME='*'
 export APISERVER_HOSTNAME='apiserver'
 
+# Used by kyma-testing.sh as an argument.
 KYMA_LABEL_PREFIX="kyma-project.io"
 KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"
 INTEGRATION_TEST_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.integration=true"

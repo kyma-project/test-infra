@@ -288,6 +288,9 @@ function gcp::reserve_ip_address {
     utils::check_empty_arg "$ipAddressName" "IP address name is empty. Exiting..."
     utils::check_empty_arg "$gcpProjectName" "gcp project name is empty. Exiting..."
 
+    log::info "Replacing underscore with dashes in address name."
+    ipAddressName=$(echo "$ipAddressName" | tr '_' '-')
+
     log::info "Reserve IP Address for $ipAddressName"
     local counter=0
     # Check if IP address reservation is present. Wait and retry for one minute to disappear.
