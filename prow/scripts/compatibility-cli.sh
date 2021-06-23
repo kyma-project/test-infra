@@ -49,27 +49,30 @@ RELEASES=($(printf "%s\n" "${RELEASES[@]}" | sort -r))
 # Remove duplicates
 RELEASES=($(printf "%s\n" "${RELEASES[@]}" | uniq))
 
-# Go through releases ignoring patch versions in descending order until we skip the desired number of minor releases
-
-# remove patch
-CURRENT=$(echo "${RELEASES[1]}" | awk -F'.' '{print $1"."$2}')
-for r in "${RELEASES[@]}"; do
-    # remove patch from candidate
-    WANT=$(echo "${r}" | awk -F'.' '{print $1"."$2}')
-
-    if [[ "$WANT" != "$CURRENT" ]]; then
-        # check if we need to backtrack more
-        if [[ $COMPAT_BACKTRACK == 1 ]]; then
-            # Found the target release
-            TARGET=$r
-            break
-        else
-            # Still need to backtrack further
-            COMPAT_BACKTRACK=$((COMPAT_BACKTRACK - 1))
-            CURRENT=$(echo "${r}" | awk -F'.' '{print $1"."$2}')
+if [[ $COMPAT_BACKTRACK == 0 ]]; then
+    # Found the target release
+    TARGET="${RELEASES[1]}"
+else
+    # Go through releases ignoring patch versions in descending order until we skip the desired number of minor releases
+    # remove patch
+    CURRENT=$(echo "${RELEASES[1]}" | awk -F'.' '{print $1"."$2}')
+    for r in "${RELEASES[@]}"; do
+        # remove patch from candidate
+        WANT=$(echo "${r}" | awk -F'.' '{print $1"."$2}')
+        if [[ "$WANT" != "$CURRENT" ]]; then
+            # check if we need to backtrack more
+            if [[ $COMPAT_BACKTRACK == 1 ]]; then
+                # Found the target release
+                TARGET=$r
+                break
+            else
+                # Still need to backtrack further
+                COMPAT_BACKTRACK=$((COMPAT_BACKTRACK - 1))
+                CURRENT=$(echo "${r}" | awk -F'.' '{print $1"."$2}')
+            fi
         fi
-    fi
-done
+    done
+fi
 
 # Exceptional release replacements. Add a replacement pair here as follows: "release::replacement"
 # This is required when we have special releases that do not follow the regular pattern.
