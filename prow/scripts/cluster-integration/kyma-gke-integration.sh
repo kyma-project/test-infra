@@ -66,6 +66,8 @@ requiredVars=(
     GKE_CLUSTER_VERSION
 )
 
+set -x
+
 utils::check_required_vars "${requiredVars[@]}"
 
 # post_hook runs at the end of a script or on any error
