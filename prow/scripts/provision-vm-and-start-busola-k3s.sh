@@ -99,7 +99,7 @@ for ZONE in ${EU_ZONES}; do
     gcloud compute instances create "busola-ui-test-${RANDOM_ID}" \
     --metadata enable-oslogin=TRUE \
     --image "${IMAGE}" \
-    --machine-type n2-standard-4 \
+    --machine-type n2-highcpu-16 \
     --zone "${ZONE}" \
     --boot-disk-size 200 "${LABELS[@]}" && \
     log::info "Created busola-ui-test-${RANDOM_ID} in zone ${ZONE}" && break

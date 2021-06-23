@@ -51,6 +51,40 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				"installation/test/test/README.MD",
 			},
 		},
+		"Should contain the kyma-integration K3s with central Application Gateway job": {
+			givenJobName: "pre-main-kyma-integration-k3s-central-app-gateway",
+
+			expPresets: []preset.Preset{
+				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-gateway-enabled",
+			},
+
+			expRunIfChangedRegex: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
+			expRunIfChangedPaths: []string{
+				"resources/values.yaml",
+				"installation/file.yaml",
+			},
+			expNotRunIfChangedPaths: []string{
+				"installation/README.md",
+				"installation/test/test/README.MD",
+			},
+		},
+		"Should contain the kyma-integration K3s with central Application Gateway and Compass job": {
+			givenJobName: "pre-main-kyma-integration-k3s-central-app-gateway-compass",
+
+			expPresets: []preset.Preset{
+				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-gateway-enabled", "preset-kyma-integration-compass-dev", "preset-kyma-integration-compass-enabled",
+			},
+
+			expRunIfChangedRegex: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
+			expRunIfChangedPaths: []string{
+				"resources/values.yaml",
+				"installation/file.yaml",
+			},
+			expNotRunIfChangedPaths: []string{
+				"installation/README.md",
+				"installation/test/test/README.MD",
+			},
+		},
 		"Should contain the gke-integration job": {
 			givenJobName: "pre-main-kyma-gke-integration",
 
@@ -148,6 +182,20 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",
+			},
+		},
+		"Should contain the kyma-integration K3s with central Application Gateway job": {
+			givenJobName: "post-main-kyma-integration-k3s-central-app-gateway",
+
+			expPresets: []preset.Preset{
+				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-gateway-enabled",
+			},
+		},
+		"Should contain the kyma-integration K3s with central Application Gateway and Compass job": {
+			givenJobName: "post-main-kyma-integration-k3s-central-app-gateway-compass",
+
+			expPresets: []preset.Preset{
+				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-gateway-enabled", "preset-kyma-integration-compass-dev", "preset-kyma-integration-compass-enabled",
 			},
 		},
 		"Should contain the gke-integration job": {
@@ -333,7 +381,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, nightlyPeriodic)
 	assert.Equal(t, expName, nightlyPeriodic.Name)
 
-	assert.Equal(t, "0 4 * * 1-5", nightlyPeriodic.Cron)
+	assert.Equal(t, "0 3 * * 1-5", nightlyPeriodic.Cron)
 	tester.AssertThatHasPresets(t, nightlyPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration, "preset-stability-checker-slack-notifications", "preset-nightly-github-integration", preset.ClusterVersion, "preset-slack-alerts")
 	tester.AssertThatHasExtraRepoRefCustom(t, nightlyPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, nightlyPeriodic.Spec.Containers[0].Image)
@@ -354,7 +402,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, weeklyPeriodic)
 	assert.Equal(t, expName, weeklyPeriodic.Name)
 
-	assert.Equal(t, "0 6 * * 1", weeklyPeriodic.Cron)
+	assert.Equal(t, "0 5 * * 1", weeklyPeriodic.Cron)
 	tester.AssertThatHasPresets(t, weeklyPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration, "preset-stability-checker-slack-notifications", "preset-weekly-github-integration", preset.ClusterVersion, "preset-slack-alerts")
 	tester.AssertThatHasExtraRepoRefCustom(t, weeklyPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, weeklyPeriodic.Spec.Containers[0].Image)
@@ -375,7 +423,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, nightlyAksPeriodic)
 	assert.Equal(t, expName, nightlyAksPeriodic.Name)
 
-	assert.Equal(t, "0 4 * * 1-5", nightlyAksPeriodic.Cron)
+	assert.Equal(t, "0 3 * * 1-5", nightlyAksPeriodic.Cron)
 	tester.AssertThatHasPresets(t, nightlyAksPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration, preset.StabilityCheckerSlack, "preset-az-kyma-prow-credentials", "preset-docker-push-repository-gke-integration", "preset-nightly-aks-github-integration", preset.ClusterVersion, "preset-slack-alerts")
 	tester.AssertThatHasExtraRepoRefCustom(t, nightlyAksPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, nightlyAksPeriodic.Spec.Containers[0].Image)

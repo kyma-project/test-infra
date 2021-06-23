@@ -70,9 +70,6 @@ else
                 COMPAT_BACKTRACK=$((COMPAT_BACKTRACK - 1))
                 CURRENT=$(echo "${r}" | awk -F'.' '{print $1"."$2}')
             fi
-        fi
-    done
-fi
 
 # Exceptional release replacements. Add a replacement pair here as follows: "release::replacement"
 # This is required when we have special releases that do not follow the regular pattern.
