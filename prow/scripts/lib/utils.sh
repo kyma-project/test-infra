@@ -724,6 +724,7 @@ function utils::generate_vars_for_build {
         utils_generate_vars_for_build_return_kymaSource="$commitID"
     elif [ -n "$prowjobName" ]; then
         prowjobName=${prowjobName: -25:25}
+        prowjobName=${prowjobName#-}
         utils::generate_commonName \
             -n "$prowjobName"
         # shellcheck disable=SC2034
