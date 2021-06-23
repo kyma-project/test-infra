@@ -370,6 +370,9 @@ function gcp::create_dns_record {
     # set return value
     # shellcheck disable=SC2034
     gcp_create_dns_record_return_dns_domain=$dnsDomain
+    # set return value
+    # shellcheck disable=SC2034
+    gcp_create_dns_record_return_dns_subdomain=$dnsSubDomain
 
     dnsFQDN="$dnsHostname.$dnsSubDomain.$dnsDomain"
 

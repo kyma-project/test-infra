@@ -132,6 +132,7 @@ gcp::create_dns_record \
     -h "$INGRESS_GATEWAY_HOSTNAME" \
     -s "$COMMON_NAME"
 export DNS_DOMAIN=${gcp_create_dns_record_return_dns_domain:?}
+export DNS_SUBDOMAIN=${gcp_create_dns_record_return_dns_subdomain:?}
 export CLEANUP_GATEWAY_DNS_RECORD="true"
 
 # if GKE_RELEASE_CHANNEL is set, get latest possible cluster version
