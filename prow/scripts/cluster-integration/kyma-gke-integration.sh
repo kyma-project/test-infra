@@ -77,6 +77,8 @@ requiredVars=(
     GKE_CLUSTER_VERSION
 )
 
+set -x
+
 utils::check_required_vars "${requiredVars[@]}"
 
 # Using set -f to prevent path globing in post_hook arguments.
