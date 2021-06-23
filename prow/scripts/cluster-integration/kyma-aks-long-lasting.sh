@@ -81,7 +81,6 @@ function cleanup() {
 
 		log::info "\n---\nRemove DNS Record for Ingressgateway\n---"
 		GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
-		GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
 
 		GATEWAY_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${GATEWAY_DNS_FULL_NAME}" --format="value(rrdatas[0])")
 		TMP_STATUS=$?
@@ -119,14 +118,15 @@ function cleanup() {
 		  log::warn "Could not delete DNS record ${APISERVER_DNS_FULL_NAME}. Record does not exist."
 		fi
 
-		az::deprovision_k8s_cluster -c "$CLUSTER_NAME" -n "$RS_GROUP"
+		az::deprovision_k8s_cluster \
+			-c "$CLUSTER_NAME"\
+			-n "$RS_GROUP"
 
 		log::info "Remove group"
 		az::delete_resource_group -g "$RS_GROUP"
 	else
 		log::info "Azure group does not exist, skip cleanup process"
 	fi
-
 	MSG=""
 	if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
 	log::info "\n---\nCleanup function is finished ${MSG}\n---"
@@ -139,7 +139,10 @@ function createPublicIPandDNS() {
 	CLUSTER_RS_GROUP=$(az aks show -g "${RS_GROUP}" -n "${CLUSTER_NAME}" --query nodeResourceGroup -o tsv)
 
 	# IP address and DNS for Ingressgateway
-	az::reserve_ip_address -g "$CLUSTER_RS_GROUP" -n "$STANDARIZED_NAME" -r "$REGION"
+	az::reserve_ip_address \
+		-g "$CLUSTER_RS_GROUP" \
+		-n "$STANDARIZED_NAME" \
+		-r "$REGION"
 	GATEWAY_IP_ADDRESS="${az_reserve_ip_address_return_ip_address:?}"
 
 	log::info "Create DNS Record for Ingressgateway IP"
@@ -222,7 +225,9 @@ export DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 
 cleanup
 
-az::create_resource_group -g "${RS_GROUP}" -r "${REGION}"
+az::create_resource_group \
+	-g "${RS_GROUP}" \
+	-r "${REGION}"
 
 log::info "Install Kubernetes on Azure"
 
