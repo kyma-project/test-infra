@@ -133,6 +133,9 @@ function gcp::provision_k8s_cluster {
     utils::check_empty_arg "$prowjobName" "prowjob name not provided."
     utils::check_empty_arg "$prowjobID" "prowjob ID not provided."
 
+    log::info "Replacing underscore with dashes in cluster name."
+    clusterName=$(echo "$clusterName" | tr '_' '-')
+
     log::banner "Provision cluster: $clusterName"
 
     local kubeDnsPatchPath="$testInfraSourcesDir/prow/scripts/resources/kube-dns-stub-domains-patch.yaml"
