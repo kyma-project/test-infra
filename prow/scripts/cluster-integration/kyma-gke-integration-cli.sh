@@ -101,7 +101,8 @@ gcp::create_dns_record \
     -a "$GATEWAY_IP_ADDRESS" \
     -h "$INGRESS_GATEWAY_HOSTNAME" \
     -s "$COMMON_NAME"
-DNS_DOMAIN=${gcp_create_dns_record_return_dns_domain:?}
+export DNS_DOMAIN=${gcp_create_dns_record_return_dns_domain:?}
+export DNS_SUBDOMAIN=${gcp_create_dns_record_return_dns_subdomain:?}
 export CLEANUP_GATEWAY_DNS_RECORD="true"
 
 

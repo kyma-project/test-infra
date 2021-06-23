@@ -51,17 +51,17 @@ source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 ENABLE_TEST_LOG_COLLECTOR=false
 
 # Enforce lowercase
-readonly REPO_OWNER=$(echo "$REPO_OWNER" | tr '[:upper:]' '[:lower:]')
+readonly REPO_OWNER=${REPO_OWNER,,}
 export REPO_OWNER
-readonly REPO_NAME=$(echo "$REPO_NAME" | tr '[:upper:]' '[:lower:]')
+# Enforce lowercase
+readonly REPO_NAME=${REPO_NAME,,}
 export REPO_NAME
 export INGRESS_GATEWAY_HOSTNAME='*'
 export APISERVER_HOSTNAME='apiserver'
 
-#TODO: no usage in test-infra and kyma repo, remove if no failures caused by commenting out
-#KYMA_LABEL_PREFIX="kyma-project.io"
-#KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"
-#INTEGRATION_TEST_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.integration=true"
+KYMA_LABEL_PREFIX="kyma-project.io"
+KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"
+INTEGRATION_TEST_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.integration=true"
 
 requiredVars=(
     REPO_OWNER
