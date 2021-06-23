@@ -631,7 +631,7 @@ utils::generate_commonName() {
     randomNameSuffix=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
     # return value
     # shellcheck disable=SC2034
-    utils_generate_commonName_return_commonName=$(echo "$namePrefix$id$randomNameSuffix" | tr "[:upper:]" "[:lower:]")
+    utils_generate_commonName_return_commonName=$(echo "$namePrefix$id$randomNameSuffix" | tr "[:upper:]" "[:lower:]" | tr '_' '-')
 }
 
 # check_empty_arg will check if first argument is empty.
@@ -723,6 +723,7 @@ function utils::generate_vars_for_build {
         # shellcheck disable=SC2034
         utils_generate_vars_for_build_return_kymaSource="$commitID"
     elif [ -n "$prowjobName" ]; then
+        prowjobName=${prowjobName: -25:25}
         utils::generate_commonName \
             -n "$prowjobName"
         # shellcheck disable=SC2034
