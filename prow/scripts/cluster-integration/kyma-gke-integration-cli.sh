@@ -23,7 +23,6 @@
 # - Compute Network Admin
 
 set -o errexit
-set -x
 
 readonly SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
 readonly CONCURRENCY=5
