@@ -24,7 +24,9 @@ const (
 )
 
 var (
-	configFilePath  = flag.String("config", "", "Path of the config file")
+	configFilePath = flag.String("config", "", "Path of the config file")
+	showOutputDir  = flag.Bool("show-output-dir", false, "Print generated output file paths to stdout")
+
 	additionalFuncs = map[string]interface{}{
 		"matchingReleases": rt.MatchingReleases,
 		"releaseMatches":   rt.ReleaseMatches,
@@ -141,6 +143,9 @@ func renderFileFromTemplate(basePath string, templateInstance *template.Template
 
 	values := map[string]interface{}{"Values": renderConfig.Values, "Global": config.Global}
 
+	if *showOutputDir {
+		fmt.Println(destFile.Name())
+	}
 	return templateInstance.Execute(destFile, values)
 }
 
