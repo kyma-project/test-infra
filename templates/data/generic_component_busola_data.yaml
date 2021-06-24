@@ -24,6 +24,7 @@ templates:
                   postConfigs:
                     - "jobConfig_postsubmit"
                     - "disable_testgrid"
+                    - "disable_report"
       - to: ../prow/jobs/busola/busola-core-ui/busola-core-ui.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/busola"
