@@ -7,7 +7,9 @@ fi
 
 
 pushd "$(git rev-parse --show-toplevel)"
-go run development/tools/cmd/rendertemplates -config templates/config.yaml
+  if $(git diff --quiet -- "templates"); then
+    go run development/tools/cmd/rendertemplates -config templates/config.yaml
+  fi
 popd
 
 git add prow/jobs
