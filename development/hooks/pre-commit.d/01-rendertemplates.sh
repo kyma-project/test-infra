@@ -10,6 +10,5 @@ pushd "$(git rev-parse --show-toplevel)"
   if $(git diff --quiet -- "templates"); then
     go run development/tools/cmd/rendertemplates -config templates/config.yaml
   fi
+  git add -u .
 popd
-
-git add prow/jobs
