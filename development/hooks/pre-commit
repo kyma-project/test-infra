@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+# The pre-commit script runs all scripts from pre-commit.d in specific order.
+#
+
+set -e
+
+pushd "$(dirname $0)/pre-commit.d"
+for hook in *; do
+    $hook
+done
