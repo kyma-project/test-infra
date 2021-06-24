@@ -47,3 +47,23 @@ templates:
                     - "vm_job_template_k3s"
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
+              # postsubmits
+              - jobConfig:
+                  name: "post-busola-ui-test"
+                  optional: false
+                  run_if_changed: "/"
+                  labels:
+                    preset-build-pr: "false"
+                    preset-gardener-azure-kyma-integration: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_k3s"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
