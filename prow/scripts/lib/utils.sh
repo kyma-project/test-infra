@@ -48,7 +48,7 @@ function utils::generate_self_signed_cert() {
             s)
                 dnsSubDomain="$OPTARG";;
             d)
-                dnsDomain="$OPTARG";;
+                dnsDomain="${OPTARG%.}";;
             v)
                 certValidDays="${OPTARG:-$certValidDays}";;
             \?)
