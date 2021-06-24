@@ -112,6 +112,8 @@ globalSets:
     labels:
       preset-docker-push-repository-incubator: "true"
     path_alias: "github.com/kyma-incubator/compass"
+  disable_report:
+    skip_report: "true"
   # globalSet for prowjobs which don't inherit jobConfig_default globalSet
   pubsub_labels:
     <<: *pubsub_config
@@ -136,8 +138,6 @@ globalSets:
       preset-dind-enabled: "true"
       preset-sa-gcr-push: "true"
       preset-docker-push-repository-kyma: "true"
-  disable_report:
-    skip_report: "true"
 
 # Default definition of workload clusters
 cluster_default: &cluster_default
