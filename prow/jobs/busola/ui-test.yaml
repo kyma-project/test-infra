@@ -53,6 +53,8 @@ presubmits: # runs on PRs
 postsubmits: # runs on main
   kyma-project/busola:
     - name: post-busola-ui-test
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-busola-ui-test"
