@@ -128,7 +128,9 @@ eventing::create_eventing_backend_secret
 
 # uses previously set KYMA_SOURCE
 if [[ "${KYMA_ALPHA}" == "true" ]]; then
-  kyma::alpha_deploy_kyma
+  kyma::alpha_deploy_kyma \
+  -p "$EXECUTION_PROFILE" \
+  -s "$KYMA_SOURCES_DIR"
 else
   gardener::install_kyma
 fi

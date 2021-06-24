@@ -115,7 +115,8 @@ kubectl -n kyma-system annotate gateway kyma-gateway meta.helm.sh/release-namesp
 log::info "### Installing Kyma 2.0 from main"
 KYMA_SOURCE="main"
 export KYMA_SOURCE
-kyma::alpha_deploy_kyma
+kyma::alpha_deploy_kyma \
+  -s "$KYMA_SOURCES_DIR"
 
 log::info "### Run post-upgrade tests"
 gardener::post_upgrade_test_fast_integration_kyma
