@@ -12,6 +12,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^core/|^core-ui/|^service-catalog-ui/|^components/|^shared/|^package.json'
+      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -59,6 +60,7 @@ postsubmits: # runs on main
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^core/|^core-ui/|^service-catalog-ui/|^components/|^shared/|^package.json'
+      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
