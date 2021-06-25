@@ -154,9 +154,9 @@ export COMMON_NAME=${utils_generate_vars_for_build_return_commonName:?}
 export KYMA_SOURCE=${utils_generate_vars_for_build_return_kymaSource:?}
 
 if [ "$BUILD_TYPE" = "pr" ]; then
-    KYMA_INSTALLER_IMAGE="$DOCKER_PUSH_REPOSITORY/$DOCKER_PUSH_DIRECTORY/gke-external/$REPO_OWNER/$REPO_NAME:PR-$PULL_NUMBER"
+    KYMA_INSTALLER_IMAGE="$DOCKER_PUSH_REPOSITORY$DOCKER_PUSH_DIRECTORY/gke-external/$REPO_OWNER/$REPO_NAME:PR-$PULL_NUMBER"
 elif [ "$BUILD_TYPE" != "release" ]; then
-    KYMA_INSTALLER_IMAGE="$DOCKER_PUSH_REPOSITORY/$DOCKER_PUSH_DIRECTORY/gke-external/$REPO_OWNER/$REPO_NAME:PR-${PULL_BASE_SHA::8}"
+    KYMA_INSTALLER_IMAGE="$DOCKER_PUSH_REPOSITORY$DOCKER_PUSH_DIRECTORY/gke-external/$REPO_OWNER/$REPO_NAME:PR-${PULL_BASE_SHA::8}"
 fi
 
 ### For gcloud::provision_gke_cluster
