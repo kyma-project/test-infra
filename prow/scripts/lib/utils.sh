@@ -707,7 +707,9 @@ function utils::generate_vars_for_build {
         # shellcheck disable=SC2034
         utils_generate_vars_for_build_return_kymaSource="PR-$prNumber"
     elif [[ "$buildType" == "release" ]]; then
+        log::info "Reading release version from VERSION file"
         readonly releaseVersion=$(cat "VERSION")
+        log::info "Read release version: $releaseVersion"
         utils::generate_commonName \
             -n "rel"
         # shellcheck disable=SC2034
