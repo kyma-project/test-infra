@@ -76,15 +76,17 @@ utils::check_required_vars "${requiredVars[@]}"
 
 # post_hook runs at the end of a script or on any error
 function docker_cleanup() {
-  if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
-    log::info "Docker image cleanup"
-    if [ -n "${KYMA_INSTALLER_IMAGE}" ]; then
-      log::info "Delete temporary Kyma-Installer Docker image"
-      gcloud::authenticate "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
-      gcloud::delete_docker_image "${KYMA_INSTALLER_IMAGE}"
-      gcloud::set_account "${GOOGLE_APPLICATION_CREDENTIALS}"
+    set +e
+    if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
+        log::info "Docker image cleanup"
+        if [ -n "${KYMA_INSTALLER_IMAGE}" ]; then
+            log::info "Delete temporary Kyma-Installer Docker image"
+            gcloud::authenticate "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
+            gcloud::delete_docker_image "${KYMA_INSTALLER_IMAGE}"
+            gcloud::set_account "${GOOGLE_APPLICATION_CREDENTIALS}"
+        fi
     fi
-  fi
+    set -e
 }
 
 verify_internal_registry() {
@@ -136,6 +138,8 @@ function create_image() {
     echo "Kyma-Installer image pushed: ${KYMA_INSTALLER_IMAGE}"
     echo "--------------------------------------------------------------------------------"
 }
+
+set -x
 
 # Using set -f to prevent path globing in post_hook arguments.
 # utils::post_hook call set +f at the beginning.
