@@ -29,7 +29,7 @@ templates:
             jobs:
               # presubmits
               - jobConfig:
-                  name: "pre-busola-integration-test"
+                  name: "pre-busola-integration-test-k3s"
                   optional: false
                   run_if_changed: "/"
                   labels:
@@ -49,7 +49,7 @@ templates:
                     - "extra_refs_kyma-local"
               # postsubmits
               - jobConfig:
-                  name: "post-busola-integration-test"
+                  name: "post-busola-integration-test-k3s"
                   optional: false
                   run_if_changed: "/"
                   labels:

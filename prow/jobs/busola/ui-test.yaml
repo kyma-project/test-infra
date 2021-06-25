@@ -3,10 +3,10 @@
 
 presubmits: # runs on PRs
   kyma-project/busola:
-    - name: pre-busola-integration-test
+    - name: pre-busola-integration-test-k3s
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-busola-integration-test"
+        prow.k8s.io/pubsub.runID: "pre-busola-integration-test-k3s"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gardener-azure-kyma-integration: "true"
@@ -52,12 +52,12 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/busola:
-    - name: post-busola-integration-test
+    - name: post-busola-integration-test-k3s
       annotations:
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-busola-integration-test"
+        prow.k8s.io/pubsub.runID: "post-busola-integration-test-k3s"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "false"
         preset-gardener-azure-kyma-integration: "true"
