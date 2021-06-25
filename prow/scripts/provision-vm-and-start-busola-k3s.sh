@@ -29,11 +29,11 @@ cleanup() {
     set +e
     
     #shellcheck disable=SC2088
-    utils::receive_from_vm "${ZONE}" "busola-ui-test-${RANDOM_ID}" "~/busola-tests/cypress/screenshots" "${ARTIFACTS}"
+    utils::receive_from_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "~/busola-tests/cypress/screenshots" "${ARTIFACTS}"
     #shellcheck disable=SC2088
-    utils::receive_from_vm "${ZONE}" "busola-ui-test-${RANDOM_ID}" "~/busola-tests/cypress/videos" "${ARTIFACTS}"
+    utils::receive_from_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "~/busola-tests/cypress/videos" "${ARTIFACTS}"
     
-    gcloud compute instances stop --async --zone="${ZONE}" "busola-ui-test-${RANDOM_ID}"
+    gcloud compute instances stop --async --zone="${ZONE}" "busola-integration-test-${RANDOM_ID}"
     log::info "End of cleanup"
 }
 
@@ -51,9 +51,9 @@ RANDOM_ID=$(openssl rand -hex 4)
 
 LABELS=""
 if [[ -z "${PULL_NUMBER}" ]]; then
-    LABELS=(--labels "branch=$PULL_BASE_REF,job-name=busola-ui-test")
+    LABELS=(--labels "branch=$PULL_BASE_REF,job-name=busola-integration-test-k3s")
 else
-    LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=busola-ui-test")
+    LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=busola-integration-test-k3s")
 fi
 
 POSITIONAL=()
@@ -95,14 +95,14 @@ ZONE_LIMIT=${ZONE_LIMIT:-5}
 EU_ZONES=$(gcloud compute zones list --filter="name~europe" --limit="${ZONE_LIMIT}" | tail -n +2 | awk '{print $1}')
 STARTTIME=$(date +%s)
 for ZONE in ${EU_ZONES}; do
-    log::info "Attempting to create a new instance named busola-ui-test-${RANDOM_ID} in zone ${ZONE} using image ${IMAGE}"
-    gcloud compute instances create "busola-ui-test-${RANDOM_ID}" \
+    log::info "Attempting to create a new instance named busola-integration-test-${RANDOM_ID} in zone ${ZONE} using image ${IMAGE}"
+    gcloud compute instances create "busola-integration-test-${RANDOM_ID}" \
     --metadata enable-oslogin=TRUE \
     --image "${IMAGE}" \
     --machine-type n2-highcpu-16 \
     --zone "${ZONE}" \
     --boot-disk-size 200 "${LABELS[@]}" && \
-    log::info "Created busola-ui-test-${RANDOM_ID} in zone ${ZONE}" && break
+    log::info "Created busola-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
     log::error "Could not create machine in zone ${ZONE}"
 done || exit 1
 ENDTIME=$(date +%s)
@@ -117,23 +117,23 @@ kubectl get secrets "${KYMA_CLUSTER_NAME}.kubeconfig" -o jsonpath="{.data.kubeco
 
 log::info "Copying Kyma kubeconfig to the instance"
 #shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "busola-ui-test-${RANDOM_ID}" "${TMP_DIR}/kubeconfig-${KYMA_CLUSTER_NAME}.yaml" "~/kubeconfig-kyma.yaml"
+utils::send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "${TMP_DIR}/kubeconfig-${KYMA_CLUSTER_NAME}.yaml" "~/kubeconfig-kyma.yaml"
 
 log::info "Copying Busola 'tests' folder to the instance"
 #shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "busola-ui-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/tests" "~/busola-tests"
+utils::compress_send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/tests" "~/busola-tests"
 
 log::info "Copying Busola 'resources' folder to the instance"
 #shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "busola-ui-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/resources" "~/busola-resources"
+utils::compress_send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/resources" "~/busola-resources"
 
 
 log::info "Copying Kyma-Local to the instance"
 #shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "busola-ui-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/local-kyma" "~/local-kyma"
+utils::send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/local-kyma" "~/local-kyma"
 
 
-log::info "Launching the busola-ui-tests-k3s.sh script"
-gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "busola-ui-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/busola-ui-tests-k3s.sh"
+log::info "Launching the busola-integration-tests-k3s.sh script"
+gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "busola-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/busola-integration-tests-k3s.sh"
 
 log::success "all done"
