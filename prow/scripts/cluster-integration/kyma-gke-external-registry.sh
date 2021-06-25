@@ -58,6 +58,8 @@ export REPO_OWNER
 # Enforce lowercase
 readonly REPO_NAME=${REPO_NAME,,}
 export REPO_NAME
+export INGRESS_GATEWAY_HOSTNAME='*'
+export APISERVER_HOSTNAME='apiserver'
 
 requiredVars=(
     REPO_OWNER
