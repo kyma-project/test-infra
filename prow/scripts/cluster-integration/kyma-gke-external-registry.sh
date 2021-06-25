@@ -249,7 +249,7 @@ kubectl create namespace "kyma-installer"
 
 # TODO: convert create-config-map.sh to function in sourced lib script?
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
-    --data "global.domainName=${DOMAIN}" \
+    --data "global.domainName=$DNS_SUBDOMAIN$DOMAIN" \
     --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
