@@ -1447,7 +1447,7 @@ periodics: # runs on schedule
         preset-kyma-cli-stable: "true"
         preset-sa-gardener-logs: "true"
         preset-sa-test-gcr-push: "true"
-      cron: "0 0 7-17 ? * 1-5"
+      cron: "0 0 6-18/2 ? * 2-6"
       skip_report: false
       decorate: true
       decoration_config:
