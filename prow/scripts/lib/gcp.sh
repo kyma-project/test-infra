@@ -516,6 +516,8 @@ function gcp::set_vars_for_network {
 
     local OPTIND
     local jobName
+    local networkName
+    local subnetworkName
 
     while getopts ":n:" opt; do
         case $opt in
@@ -532,13 +534,24 @@ function gcp::set_vars_for_network {
 
     log::info "Replacing underscore with dashes in job name."
     jobName=$(echo "$jobName" | tr '_' '-')
+    # Add network and subnetwork suffix to prowjob name.
+    networkName="$jobName-net"
+    subnetworkName="$jobName-subnet"
+    # Trim network and subnetwork name to 62 chars.
+    networkName=${networkName: -62:62}
+    subnetworkName=${subnetworkName: -62:62}
+    # Remove leading dash or dot from network and subnetwork names.
+    networkName=${networkName#-}
+    networkName=${networkName#.}
+    subnetworkName=${subnetworkName#-}
+    subnetworkName=${subnetworkName#.}
 
     # variable hold return value for calling process
     # shellcheck disable=SC2034
-    gcp_set_vars_for_network_return_net_name="$jobName-net"
+    gcp_set_vars_for_network_return_net_name="$networkName"
     # variable hold return value for calling process
     # shellcheck disable=SC2034
-    gcp_set_vars_for_network_return_subnet_name="$jobName-subnet"
+    gcp_set_vars_for_network_return_subnet_name="$subnetworkName"
 }
 
 # gcp::create_network will create GCP network
