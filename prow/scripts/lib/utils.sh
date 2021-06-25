@@ -714,7 +714,6 @@ function utils::generate_vars_for_build {
             -n "rel"
         # shellcheck disable=SC2034
         utils_generate_vars_for_build_return_commonName=${utils_generate_commonName_return_commonName:?}
-        log::info "Reading release version from RELEASE_VERSION file, got: $releaseVersion"
         # shellcheck disable=SC2034
         utils_generate_vars_for_build_return_kymaSource="$releaseVersion"
     # Otherwise (master), operate on triggering commit id

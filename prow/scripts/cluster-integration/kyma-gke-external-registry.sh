@@ -298,7 +298,7 @@ mkdir -p /tmp/kyma-gke-integration
 
 if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
-    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-integration/downloaded-installer.yaml
+    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${KYMA_SOURCE}/kyma-installer-cluster.yaml" /tmp/kyma-gke-integration/downloaded-installer.yaml
     kubectl apply -f /tmp/kyma-gke-integration/downloaded-installer.yaml
 else
     echo "Manual concatenating yamls"
