@@ -32,6 +32,7 @@ sudo apt-get install -y \
      lsb-release \
      wget \
      build-essential \
+     conntrack \
      software-properties-common
 
 curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
@@ -87,3 +88,8 @@ sudo apt-get update
 sudo apt-cache madison google-fluentd
 sudo apt-get install -y 'google-fluentd=1.*'
 sudo apt-get install -y google-fluentd-catch-all-config
+
+# pre-fetch-docker-images
+sudo docker pull eu.gcr.io/kyma-project/external/cypress/included:7.5.0
+sudo docker pull eu.gcr.io/kyma-project/test-infra/docker-registry-2:20200202
+

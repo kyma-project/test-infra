@@ -59,7 +59,7 @@ postsubmits: # runs on main
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^core/|^core-ui/|^service-catalog-ui/|^components/|^shared/|^package.json'
-      skip_report: false
+      skip_report: true
       decorate: true
       path_alias: github.com/kyma-project/busola
       cluster: trusted-workload
