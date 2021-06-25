@@ -4,10 +4,12 @@
 #
 
 set -e
-cd "$(git rev-parse --show-toplevel)/development/hooks/post-commit.d"
-shopt -s nullglob
-for hook in *.sh; do
-    bash $hook
-done
-shopt -u nullglob
-cd - &> /dev/null
+(
+  cd "$(git rev-parse --show-toplevel)/development/hooks/post-commit.d"
+  shopt -s nullglob
+  for hook in *.sh; do
+      bash $hook
+  done
+  shopt -u nullglob
+)
+
