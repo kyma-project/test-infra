@@ -47,7 +47,7 @@ requiredVars=(
 )
 
 utils::check_required_vars "${requiredVars[@]}"
-log::info "Starting pipeline"
+log::info "### Starting pipeline"
 
 if [[ $GARDENER_PROVIDER == "azure" ]]; then
     # shellcheck source=prow/scripts/lib/gardener/azure.sh
@@ -78,8 +78,8 @@ export COMMON_NAME
 
 # Install Kyma form latest release
 LAST_RELEASE_VERSION=$(kyma::get_last_release_version "${BOT_GITHUB_TOKEN}")
-log::info "Reading release version from RELEASE_VERSION file, got: ${LAST_RELEASE_VERSION}"
-KYMA_SOURCE="${LAST_RELEASE_VERSION}"
+log::info "### Reading release version from RELEASE_VERSION file, got: ${LAST_RELEASE_VERSION}"
+KYMA_SOURCE="main"  #"${LAST_RELEASE_VERSION}" eventing in kyma 1.23 is not compatible with the test cases, so switch back to last release when kyma 1.24 is available
 
 ### Cluster name must be less than 10 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
@@ -95,26 +95,38 @@ kyma::install_cli
 # currently only Azure generates overrides, but this may change in the future
 gardener::generate_overrides
 
+log::info "### Provisioning Gardener cluster"
 gardener::provision_cluster
 
-log::info "Installing Kyma $KYMA_SOURCE"
+log::info "### Installing Kyma $KYMA_SOURCE"
 # uses previously set KYMA_SOURCE
 gardener::install_kyma
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
-if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
-    gardener::hibernate_kyma
-    sleep 120
-    gardener::wake_up_kyma
-fi
-
-# Test Kyma
+log::info "### Run pre-upgrade tests"
 gardener::pre_upgrade_test_fast_integration_kyma
 
-# Remove old Kyma components
+log::info "### Patch kyma-gateway problem"
+kubectl -n kyma-system annotate gateway kyma-gateway meta.helm.sh/release-name=certificates --overwrite=true
+kubectl -n kyma-system annotate gateway kyma-gateway meta.helm.sh/release-namespace=istio-system --overwrite=true
 
+log::info "### Installing Kyma 2.0 from main"
+KYMA_SOURCE="main"
+export KYMA_SOURCE
+kyma::alpha_deploy_kyma
+
+log::info "### Run post-upgrade tests"
+gardener::post_upgrade_test_fast_integration_kyma
+
+log::info "### waiting some time to finish cleanups"
+sleep 60
+
+log::info "### Run pre-upgrade tests again to validate component removal"
+gardener::pre_upgrade_test_fast_integration_kyma
+
+log::info "### Remove old components"
 helm delete core -n kyma-system
 helm delete console -n kyma-system
 helm delete dex -n kyma-system
@@ -126,14 +138,7 @@ helm delete permission-controller -n kyma-system
 
 kubectl delete ns kyma-installer --ignore-not-found=true
 
-# Install Kyma 2.0 from main
-KYMA_SOURCE="main"
-export KYMA_SOURCE
-
-log::info "Installing Kyma 2.0"
-kyma::alpha_deploy_kyma
-
-# Test Kyma
+log::info "### Run post-upgrade tests again to validate component removal"
 gardener::post_upgrade_test_fast_integration_kyma
 
 #!!! Must be at the end of the script !!!
