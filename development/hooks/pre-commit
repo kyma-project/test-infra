@@ -4,8 +4,10 @@
 #
 
 set -e
-
-pushd "$(dirname $0)/pre-commit.d"
-for hook in *; do
-    $hook
+cd "$(git rev-parse --show-toplevel)/development/hooks/pre-commit.d"
+shopt -s nullglob
+for hook in *.sh; do
+    bash $hook
 done
+shopt -u nullglob
+cd - &> /dev/null
