@@ -148,22 +148,56 @@ fi
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/lib/clitests.sh"
 
+# clitests::execute "test-version" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
+log::info "Checking the versions"
+clitests::assertRemoteCommand \
+    -c "sudo kyma version" \
+    -z "${ZONE}" \
+    -h "cli-integration-test-${RANDOM_ID}" \
+    -c "$SOURCE"
+
+#clitests::execute "test-function" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
+log::info "Create local resources for a sample Function"
+clitests::assertRemoteCommand \
+    -c "sudo kyma init function --name first-function --runtime nodejs12" \
+    -z "${ZONE}" \
+    -h "cli-integration-test-${RANDOM_ID}" \
+    -c "$SOURCE"
+
+log::info "Apply local resources for the Function to the Kyma cluster"
+clitests::assertRemoteCommand \
+    -c "sudo kyma apply function" \
+    -z "${ZONE}" \
+    -h "cli-integration-test-${RANDOM_ID}" \
+    -c "$SOURCE"
+
+sleep 30
+
+log::info "Check if the Function is running"
+clitests::assertRemoteCommand \
+    -c "sudo kubectl get pods -lserverless.kyma-project.io/function-name=first-function,serverless.kyma-project.io/resource=deployment -o jsonpath='{.items[0].status.phase}'" \
+    -a 'Running' \
+    -z "${ZONE}" \
+    -h "cli-integration-test-${RANDOM_ID}" \
+    -c "$SOURCE"
+
+
 # ON alpha installation there is no dex, therefore skipping the test
-if [ "$INSTALLATION" = 'alpha' ]; then
-    if clitests::testSuiteExists "test-version"; then
-        clitests::execute "test-version" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
-    else
-        log::error "Test file 'test-version.sh' not found"
-    fi
-    if clitests::testSuiteExists "test-function"; then
-        clitests::execute "test-function" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
-    else
-        log::error "Test file 'test-function.sh' not found"
-    fi
-else
-    if clitests::testSuiteExists "test-all"; then
-        clitests::execute "test-all" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
-    else
-        log::error "Test file 'test-all.sh' not found"
-    fi
+if [ "$INSTALLATION" != 'alpha' ]; then
+    #runtest
+    log::info "Running a simple test on Kyma"
+    clitests::assertRemoteCommand \
+        -c "sudo kyma test run dex-connection" \
+        -z "${ZONE}" \
+        -h "cli-integration-test-${RANDOM_ID}" \
+        -c "$SOURCE"
+
+    echo "Check if the test succeeds"
+    clitests::assertRemoteCommand \
+        -c "sudo kyma test status -o json" \
+        -a 'Succeeded' \
+        -j '.status.results[0].status' \
+        -z "${ZONE}" \
+        -h "cli-integration-test-${RANDOM_ID}" \
+        -c "$SOURCE"
 fi
