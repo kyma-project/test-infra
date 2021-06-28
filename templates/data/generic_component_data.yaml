@@ -507,29 +507,6 @@ templates:
                   postConfigs:
                     - "jobConfig_postsubmit"
                     - "disable_testgrid"
-      - to: ../prow/jobs/kyma/tests/end-to-end/external-solution-integration/external-solution-integration-tests-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: tests/end-to-end/external-solution-integration
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/tests/end-to-end/external-solution-integration"
-                  run_if_changed: "^tests/end-to-end/external-solution-integration/|^common/makefiles/"
-                  release_since: "1.10"
-                  release_until: "1.21"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    - "jobConfig_presubmit"
-                  postConfigs:
-                    - "jobConfig_postsubmit"
-                    - "disable_testgrid"
       - to: ../prow/jobs/kyma/components/apiserver-proxy/apiserver-proxy-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
@@ -784,29 +761,6 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/tests/integration/event-service"
                   run_if_changed: "^tests/integration/event-service/|^common/makefiles/"
                   release_since: "1.20"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    - "jobConfig_presubmit"
-                  postConfigs:
-                    - "jobConfig_postsubmit"
-                    - "disable_testgrid"
-      - to: ../prow/jobs/kyma/components/event-sources/event-sources-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: components/event-sources
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/event-sources"
-                  run_if_changed: "^components/event-sources/|^common/makefiles/"
-                  release_since: "1.9"
-                  release_until: "1.21"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
