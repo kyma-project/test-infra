@@ -36,6 +36,13 @@ function kyma::alpha_deploy_kyma() {
   fi
 }
 
+# kyma::alpha_delete_kyma uninstalls Kyma using alpha feature
+function kyma::alpha_delete_kyma() {
+  log::info "Uninstalling Kyma"
+
+  kyma alpha delete --ci --verbose
+}
+
 # kyma::is_installed waits for Kyma installation finish
 #
 # Arguments:

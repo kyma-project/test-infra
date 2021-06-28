@@ -401,6 +401,7 @@ templates:
                   env:
                     EXECUTION_PROFILE: "evaluation"
                     KYMA_ALPHA: "true"
+                    KYMA_ALPHA_DELETE: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -427,6 +428,7 @@ templates:
                   env:
                     EXECUTION_PROFILE: "production"
                     KYMA_ALPHA: "true"
+                    KYMA_ALPHA_DELETE: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
