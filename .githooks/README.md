@@ -23,7 +23,7 @@ The [solution](https://apple.stackexchange.com/questions/51677/how-to-set-path-f
 ```shell
 sudo launchctl config user path /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 ```
-**>CAUTION:** This change will be applied to ALL uses of a computer!
+>**CAUTION:** This change will be applied to ALL uses of a computer!
 
 After running this command, reboot your machine to apply changes.
 
