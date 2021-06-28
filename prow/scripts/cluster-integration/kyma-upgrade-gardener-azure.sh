@@ -274,7 +274,7 @@ remove_addons_if_necessary() {
   if [ -z "$tdWithAddon" ]
   then
       echo "- Removing ClusterAddonsConfiguration which provides the testing addons"
-      removeTestingAddons
+      testing::remove_testing_addons
       if [[ $? -eq 1 ]]; then
         exit 1
       fi

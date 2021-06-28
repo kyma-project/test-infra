@@ -92,7 +92,7 @@ function main() {
 
   cts::delete
 
-  inject_addons_if_necessary
+  testing::inject_addons_if_necessary
 
   log::info "- Running Kyma tests"
   # match all tests

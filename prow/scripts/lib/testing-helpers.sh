@@ -90,9 +90,29 @@ function checkTestPodTerminated() {
     fi
 }
 
-function waitForTestPodsTermination() {
+# testing::waitForTestPodsTermination wait for terminations of all pods
+# Arguments:
+# required:
+# s - suite name
+function testing::waitForTestPodsTermination() {
+
+    local OPTIND
     local retry=0
-    local suiteName=$1
+    local suiteName
+
+    while getopts ":c:a:j:z:h:" opt; do
+        case $opt in
+            s)
+                suiteName="$OPTARG" ;;
+
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+    done
+
+    utils::check_empty_arg "$suiteName" "Suite name was not provided. Exiting..."
 
     while [ ${retry} -lt 3 ]; do
         checkTestPodTerminated "${suiteName}"
@@ -128,7 +148,7 @@ cts::delete() {
 
 }
 
-inject_addons_if_necessary() {
+function testing::inject_addons_if_necessary() {
   tdWithAddon=$(${kc} get td --all-namespaces -l testing.kyma-project.io/require-testing-addon=true -o custom-columns=NAME:.metadata.name --no-headers=true)
 
   if [ -z "$tdWithAddon" ]
@@ -141,12 +161,8 @@ inject_addons_if_necessary() {
         exit 1
       fi
 
-      trap removeTestingAddons EXIT
+      trap testing::remove_testing_addons EXIT
   fi
-}
-
-function testing::inject_addons_if_necessary() {
-  inject_addons_if_necessary
 }
 
 TESTING_ADDONS_CFG_NAME="testing-addons"
@@ -185,7 +201,7 @@ EOF
         fi
         if [[ "${msg}" = "Failed" ]]; then
             log::error "Testing addons configuration failed"
-            removeTestingAddons
+            testing::remove_testing_addons
             return 1
         fi
         echo "Waiting for ready testing addons ${retry}/10.. status: ${msg}"
@@ -200,7 +216,7 @@ function testing::inject_testing_addons() {
   inject_testing_addons
 }
 
-function removeTestingAddons() {
+function testing::remove_testing_addons() {
     result=$(executeKubectlWithRetries "kubectl delete clusteraddonsconfiguration ${TESTING_ADDONS_CFG_NAME}")
     echo "${result}"
     if [[ $? -eq 1 ]]; then
@@ -208,11 +224,6 @@ function removeTestingAddons() {
     fi
     log::success "Testing addons removed"
 }
-
-function testing::remove_testing_addons() {
-  removeTestingAddons
-}
-
 
 function testing::remove_addons_if_necessary() {
   tdWithAddon=$(kubectl get td --all-namespaces -l testing.kyma-project.io/require-testing-addon=true -o custom-columns=NAME:.metadata.name --no-headers=true)

@@ -34,9 +34,9 @@ function docker::start {
     printf '=%.0s' {1..80}; echo
 
     if [[ -n "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
-      docker::authenticate "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
+      docker::authenticate -a "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
     elif [[ -n "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
-      docker::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+      docker::authenticate -a "${GOOGLE_APPLICATION_CREDENTIALS}"
     else
       echo "Skipping docker authentication in GCR. No credentials provided."
     fi
@@ -50,9 +50,27 @@ function docker::start {
 }
 
 # docker::authenticate sets the docker user based on the provided credentials
-# the script accepts one argument which should be proper auth key
+# Arguments:
+# required:
+# a - auth key
 function docker::authenticate() {
-  authKey=$1
+
+    local OPTIND
+    local authKey
+
+    while getopts ":c:a:j:z:h:" opt; do
+        case $opt in
+            a)
+                authKey="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+    done
+
+    utils::check_empty_arg "$authKey" "Auth key was not provided. Exiting..."
+
     if [[ -n "${authKey}" ]]; then
       client_email=$(jq -r '.client_email' < "${authKey}")
       echo "Authenticating in registry ${DOCKER_PUSH_REPOSITORY%%/*} as $client_email"
