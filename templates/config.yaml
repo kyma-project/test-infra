@@ -13,13 +13,13 @@ pubsub_config: &pubsub_config
 globalSets:
   # Image sets
   image_bootstrap:
-    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210402-70b4b74f"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:current"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210624-726120b6"
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
   image_buildpack-node:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:PR-2951"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20210402-70b4b74f"
   image_buildpack-golang:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210607-b7e95d8b"
   image_buildpack-golang-kubebuilder2:

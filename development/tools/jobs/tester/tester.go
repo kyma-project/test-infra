@@ -18,53 +18,20 @@ import (
 )
 
 const (
-
-	// ImageGolangBuildpackLatest means Golang buildpack image
-	ImageGolangBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd"
-	// ImageGolangBuildpack1_11 means Golang buildpack image with Go 1.11.*
-	ImageGolangBuildpack1_11 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11"
-	// ImageGolangBuildpack1_12 means Golang buildpack image with Go 1.12.*
-	ImageGolangBuildpack1_12 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12"
-	// ImageGolangBuildpack1_13 means Golang buildpack image with Go 1.13.*
-	ImageGolangBuildpack1_13 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.13"
-	// ImageGolangBuildpack1_14 means Golang buildpack image with Go 1.14.*
-	ImageGolangBuildpack1_14 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
 	// ImageGolangBuildpack1_16 means Golang buildpack image with Go 1.16.*
 	ImageGolangBuildpack1_16 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210607-b7e95d8b"
 	// ImageGolangKubebuilder2BuildpackLatest means Golang buildpack with Kubebuilder2 image
 	ImageGolangKubebuilder2BuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210607-b7e95d8b" // see https://github.com/kyma-project/test-infra/pull/3738
-	// ImageGolangKubebuilder2_20210216 contains the v20210216-1.14.0-rc1-535-gb45951c9 image
-	ImageGolangKubebuilder2_20210216 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210216-1.14.0-rc1-535-gb45951c9"
-	// ImageNode10Buildpack means Node.js buildpack image (node v10)
-	ImageNode10Buildpack = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181130-b28250b"
 	// ImageNodeBuildpackLatest means Node.js buildpack image (node v12)
-	ImageNodeBuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-node:PR-2951"
-	// ImageNodeChromiumBuildpackLatest means Node.js + Chromium buildpack image
-	ImageNodeChromiumBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-node-chromium:v20181207-d46c013"
-	// ImageBootstrapLatest means Bootstrap image
-	ImageBootstrapLatest = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce"
+	ImageNodeBuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20210402-70b4b74f"
 	// ImageBootstrapTestInfraLatest means it's used in test-infra prowjob defs.
-	ImageBootstrapTestInfraLatest = "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
-	// ImageBootstrapTestInfraCurrent means it's used in test-infra prowjob defs.
-	ImageBootstrapTestInfraCurrent = "eu.gcr.io/kyma-project/test-infra/bootstrap:current"
-	// ImageBootstrap20181204 represents boostrap image published on 2018.12.04
-	ImageBootstrap20181204 = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
-	// ImageBootstrap20190604 represents boostrap image published on 2019.06.04
-	ImageBootstrap20190604 = "eu.gcr.io/kyma-project/test-infra/bootstrap:v20190604-d08e7fe"
-	// ImageBootstrap001 represents version 0.0.1 of bootstrap image
-	ImageBootstrap001 = "eu.gcr.io/kyma-project/prow/bootstrap:0.0.1"
-	// ImageKymaIntegrationK14 represents kyma integration image with kubectl 1.14
-	ImageKymaIntegrationK14 = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200817-1.14.0-rc1-75-g625c1054-k8s1.14"
-	// ImageKymaIntegrationK15 represents kyma integration image with kubectl 1.15
-	ImageKymaIntegrationK15 = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200817-1.14.0-rc1-75-g625c1054-k8s1.15"
+	ImageBootstrapTestInfraLatest = "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210402-70b4b74f"
 	// ImageKymaIntegrationLatest represents kyma integration image with kubectl 1.16
 	ImageKymaIntegrationLatest = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
 	// ImageGolangToolboxLatest represents the latest version of the golang buildpack toolbox
 	ImageGolangToolboxLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210607-b7e95d8b" // see https://github.com/kyma-project/test-infra/pull/3738
-	// ImageProwToolsLatest represents the latest version of the prow-tools image
-	ImageProwToolsLatest = "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210401-294e46e5"
 	// ImageProwToolsCurrent represents the latest version of the prow-tools image
-	ImageProwToolsCurrent = "eu.gcr.io/kyma-project/test-infra/prow-tools:current"
+	ImageProwToolsCurrent = "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210624-726120b6"
 	// KymaProjectDir means kyma project dir
 	KymaProjectDir = "/home/prow/go/src/github.com/kyma-project"
 	// KymaIncubatorDir means kyma incubator dir
