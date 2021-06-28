@@ -27,6 +27,7 @@ templates:
         jobConfigs:
           - repoName: kyma-project/busola
             jobs:
+              # presubmits
               - jobConfig:
                   name: "pre-busola-integration-test-k3s"
                   optional: false
@@ -38,15 +39,34 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
+                    - "jobConfig_presubmit"
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
                   local:
+                    - "jobConfig_default"
                     - "request_small"
                     - "vm_job_template_k3s"
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
-                  preConfigs:
-                    - "jobConfig_presubmit"
-                  postConfigs:
+              # postsubmits
+              - jobConfig:
+                  name: "post-busola-integration-test-k3s"
+                  optional: false
+                  run_if_changed: "^backend/|^core/|^core-ui/|^service-catalog-ui/|^components/|^shared/|^package.json"
+                  skip_if_only_changed: "*.md"
+                  labels:
+                    preset-build-pr: "false"
+                    preset-gardener-azure-kyma-integration: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
                     - "jobConfig_postsubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
                     - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_k3s"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
