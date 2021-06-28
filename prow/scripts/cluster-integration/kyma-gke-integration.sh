@@ -30,6 +30,10 @@
 # - Storage Admin
 # - Compute Network Admin
 
+
+export PROVISION_REGIONAL_CLUSTER="true"
+export NODES_PER_ZONE="1"
+
 set -o errexit
 
 ENABLE_TEST_LOG_COLLECTOR=false
@@ -95,7 +99,7 @@ function post_hook() {
   exit "${EXIT_STATUS}"
 }
 
-trap post_hook EXIT INT
+#trap post_hook EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
@@ -197,6 +201,8 @@ log::info "Create Kyma CLI overrides"
 envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-installer-overrides.tpl.yaml" > "$PWD/kyma-installer-overrides.yaml"
 
 log::info "Installation triggered"
+
+KYMA_SOURCE=master
 
 yes | kyma install \
   --ci \
