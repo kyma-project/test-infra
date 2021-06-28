@@ -84,6 +84,7 @@ install_busola(){
     --selector=app.kubernetes.io/component=controller \
     --timeout=120s
     
+    #TODO: Replace images for PR ones
     pushd busola-resources
     
     for i in ./**{/*,}.yaml; do
