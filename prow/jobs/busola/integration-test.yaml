@@ -3,15 +3,17 @@
 
 presubmits: # runs on PRs
   kyma-project/busola:
-    - name: pre-busola-web
+    - name: pre-busola-integration-test-k3s
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-busola-web"
+        prow.k8s.io/pubsub.runID: "pre-busola-integration-test-k3s"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^core/|^core-ui/|^service-catalog-ui/|^components/|^shared/|^package.json'
+        preset-build-pr: "true"
+        preset-gardener-azure-kyma-integration: "true"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-vm-kyma-integration: "true"
+      run_if_changed: '/'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -21,23 +23,25 @@ presubmits: # runs on PRs
         - ^master$
         - ^main$
       extra_refs:
+        - org: kyma-incubator
+          repo: local-kyma
+          path_alias: github.com/kyma-incubator/local-kyma
+          base_ref: main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210607-b7e95d8b"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/busola"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-busola-k3s.sh"
             resources:
               requests:
-                memory: 3Gi
-                cpu: 2
+                memory: 100Mi
+                cpu: 50m
         tolerations:
           - key: dedicated
             operator: Equal
@@ -48,17 +52,19 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/busola:
-    - name: post-busola-web
+    - name: post-busola-integration-test-k3s
       annotations:
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-busola-web"
+        prow.k8s.io/pubsub.runID: "post-busola-integration-test-k3s"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^core/|^core-ui/|^service-catalog-ui/|^components/|^shared/|^package.json'
+        preset-build-pr: "false"
+        preset-gardener-azure-kyma-integration: "true"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-vm-kyma-integration: "true"
+      run_if_changed: '/'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -68,23 +74,25 @@ postsubmits: # runs on main
         - ^master$
         - ^main$
       extra_refs:
+        - org: kyma-incubator
+          repo: local-kyma
+          path_alias: github.com/kyma-incubator/local-kyma
+          base_ref: main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210607-b7e95d8b"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/busola"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-busola-k3s.sh"
             resources:
               requests:
-                memory: 3Gi
-                cpu: 2
+                memory: 100Mi
+                cpu: 50m
         tolerations:
           - key: dedicated
             operator: Equal
