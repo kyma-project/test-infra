@@ -12,6 +12,8 @@ includedConfigPaths:
   - "."
 excludedConfigPaths:
   - "prow/staging"
+extraFiles:
+  - "development/tools/jobs/tester/tester.go"
 targetVersion: "latest"
 prefixes:
   - name: "test-infra"
