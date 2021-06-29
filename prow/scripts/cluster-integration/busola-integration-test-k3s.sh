@@ -88,11 +88,13 @@ install_busola(){
     pushd busola-resources
     
     for i in ./**{/*,}.yaml; do
-        if grep -Fxq "${PULL_NUMBER}" "$i"
-        then
-            sed -i "s,%DOMAIN%,$1,g" "$i"
-        else
-            echo "PR number not found in deployment file."
+        if [ "$i" == "deployment.yaml" ]; then
+            if grep -Fxq "${PULL_NUMBER}" "$i"
+            then
+                sed -i "s,%DOMAIN%,$1,g" "$i"
+            else
+                echo "PR number not found in deployment file."
+            fi
         fi
     done
     
