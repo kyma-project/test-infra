@@ -165,10 +165,6 @@ elif [ "$BUILD_TYPE" != "release" ]; then
     KYMA_INSTALLER_IMAGE="$DOCKER_PUSH_REPOSITORY$DOCKER_PUSH_DIRECTORY/gke-external/$REPO_OWNER/$REPO_NAME:PR-${PULL_BASE_SHA::8}"
 fi
 
-### For gcloud::provision_gke_cluster
-#export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-#export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
-
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
@@ -248,19 +244,19 @@ log::info "Apply Kyma config"
 kubectl create namespace "kyma-installer"
 
 # TODO: convert create-config-map.sh to function in sourced lib script?
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
+"$TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS/create-config-map.sh" --name "installation-config-overrides" \
     --data "global.domainName=$DNS_SUBDOMAIN.${DNS_DOMAIN%.}" \
     --data "global.loadBalancerIP=$GATEWAY_IP_ADDRESS"
 
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
+"$TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
     --data "test.acceptance.ui.logging.enabled=true" \
     --label "component=core"
 
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-registry-overrides" \
+"$TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS/create-config-map.sh" --name "application-registry-overrides" \
     --data "application-registry.deployment.args.detailedErrorResponse=true" \
     --label "component=application-connector"
 
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
+"$TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS/create-config-map.sh" --name "cluster-certificate-overrides" \
     --data "global.tlsCrt=$TLS_CERT" \
     --data "global.tlsKey=$TLS_KEY"
 

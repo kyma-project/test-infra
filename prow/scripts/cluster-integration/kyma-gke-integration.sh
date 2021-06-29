@@ -185,7 +185,6 @@ yes | kyma install \
     --tls-key="$TLS_KEY" \
     --timeout 60m
 
-if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
 log::info "Patch serverless to enable containerd"
 cp -va "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/containerd-gke-patch.tpl.yaml" \
        "${KYMA_SOURCES_DIR}/resources/serverless/templates/containerd-gke-patch.yaml"
