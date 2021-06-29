@@ -23,7 +23,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20210402-70b4b74f"
             securityContext:
               privileged: true
             command:
@@ -33,8 +33,8 @@ presubmits: # runs on PRs
               - "ci-pr"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal
@@ -67,7 +67,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20210402-70b4b74f"
             securityContext:
               privileged: true
             command:
@@ -77,8 +77,8 @@ postsubmits: # runs on main
               - "ci-master"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal

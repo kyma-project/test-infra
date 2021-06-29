@@ -80,6 +80,7 @@ COMMON_NAME="${utils_generate_commonName_return_commonName:?}"
 export COMMON_NAME
 
 ### Cluster name must be less than 10 characters!
+
 export CLUSTER_NAME="${COMMON_NAME}"
 
 # set KYMA_SOURCE used by gardener::install_kyma

@@ -263,6 +263,21 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
               - jobConfig:
+                  name: "pre-kyma-docu-2.0-governance"
+                  args:
+                    - "--repository"
+                    - "kyma"
+                  path_alias: github.com/kyma-project/kyma
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_kyma20_docu"
+                    - "image_bootstrap"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+              - jobConfig:
                   name: "kyma-governance-nightly"
                   cron: "0 4 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
                   args:

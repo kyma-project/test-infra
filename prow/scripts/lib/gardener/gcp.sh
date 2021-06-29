@@ -80,7 +80,6 @@ gardener::provision_cluster() {
     log::info "Provision cluster: \"${CLUSTER_NAME}\""
 
     CLEANUP_CLUSTER="true"
-    (
       # enable trap to catch kyma provision failures
       trap gardener::reprovision_cluster ERR
       # decreasing attempts to 2 because we will try to create new cluster from scratch on exit code other than 0
@@ -96,7 +95,6 @@ gardener::provision_cluster() {
         --scaler-min 2 \
         --kube-version="${GARDENER_CLUSTER_VERSION}" \
         --attempts 2
-    )
     # trap cleanup we want other errors fail pipeline immediately
     trap - ERR
     if [ "$DEBUG_COMMANDO_OOM" = "true" ]; then

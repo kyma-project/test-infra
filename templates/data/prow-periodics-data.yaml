@@ -7,12 +7,17 @@ templates:
             skip_report: "false"
             max_concurrency: "10"
             decorate: "true"
-            branches:
-              - "^master$"
-              - "^main$"
             type_periodic: "true"
             cluster: "trusted-workload"
           github_token_mounts:
+            volumes:
+              - name: kyma-bot-github-token
+                secretName: kyma-bot-github-token
+            volumeMounts:
+              - name: kyma-bot-github-token
+                mountPath: /etc/github
+                readOnly: true
+          label_sync_mounts:
             volumes:
               - name: kyma-bot-github-token
                 secretName: kyma-bot-github-token
@@ -31,7 +36,7 @@ templates:
               - jobConfig:
                   name: ci-prow-label-sync
                   cron: "17 * * * *"
-                  image: gcr.io/k8s-prow/label_sync:v20210408-455417db0f
+                  image: gcr.io/k8s-prow/label_sync:v20210625-e1bdf10806
                   command: /app/label_sync/app.binary
                   args:
                     - --config=/etc/config/labels.yaml
@@ -44,7 +49,49 @@ templates:
                 inheritedConfigs:
                   local:
                     - periodic_config
+                    - label_sync_mounts
+                  global:
+                    - "pubsub_labels"
+                    - "disable_testgrid"
+              - jobConfig:
+                  name: ci-prow-autobump
+                  cron: "30 * * * 1-5"
+                  slack_channel: kyma-prow-alerts
+                  image: gcr.io/k8s-prow/generic-autobumper:v20210625-e1bdf10806
+                  command: /app/prow/cmd/generic-autobumper/app.binary
+                  args:
+                    - --config=prow/autobump-config/prow-cluster-autobump-config.yaml
+                inheritedConfigs:
+                  local:
+                    - periodic_config
                     - github_token_mounts
                   global:
                     - "pubsub_labels"
                     - "disable_testgrid"
+                    - extra_refs_test-infra
+              - jobConfig:
+                  name: post-test-infra-deploy-prow
+                  slack_channel: kyma-prow-alerts
+                  branches:
+                    - ^main$
+                  run_if_changed: 'prow/cluster/components/'
+                  env:
+                    GOOGLE_APPLICATION_CREDENTIALS: /etc/credentials/service-account.json
+                  command: prow/cluster/deploy.sh
+                  volumes:
+                    - name: sa-prow-deploy
+                      secretName: sa-prow-deploy
+                  volumeMounts:
+                    - name: sa-prow-deploy
+                      mountPath: /etc/credentials
+                  skip_report: "false"
+                  max_concurrency: "10"
+                  decorate: "true"
+                  type_postsubmit: "true"
+                  cluster: "trusted-workload"
+                inheritedConfigs:
+                  global:
+                    - image_kyma-integration
+                    - jobConfig_postsubmit
+                    - disable_testgrid
+                    - pubsub_labels

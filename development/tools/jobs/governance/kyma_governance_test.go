@@ -10,15 +10,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TesKymaGovernanceJobPresubmit(t *testing.T) {
+func TestKymaGovernanceJobPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/governance.yaml")
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.PresubmitsStatic, 1)
 	presubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"})
-	assert.Len(t, presubmits, 1)
+	assert.Len(t, presubmits, 3)
 
 	expName := "pre-main-kyma-governance"
 	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(presubmits, expName, "master")
@@ -37,6 +36,35 @@ func TesKymaGovernanceJobPresubmit(t *testing.T) {
 	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"--repository", "kyma"}, actualPresubmit.Spec.Containers[0].Args)
+}
+
+func TestKymaGovernanceKyma20JobPresubmit(t *testing.T) {
+	// WHEN
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/governance.yaml")
+	// THEN
+	require.NoError(t, err)
+
+	presubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"})
+	assert.Len(t, presubmits, 3)
+
+	expName := "pre-kyma-docu-2.0-governance"
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(presubmits, expName, "kyma-2.0-docu")
+	require.NotNil(t, actualPresubmit)
+	assert.Equal(t, expName, actualPresubmit.Name)
+	assert.Equal(t, []string{"^kyma-2.0-docu$"}, actualPresubmit.Branches)
+	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
+	assert.False(t, actualPresubmit.SkipReport)
+
+	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
+	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "main")
+	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.BuildPr, preset.DindEnabled)
+	assert.Equal(t, "milv.config.yaml|.md$", actualPresubmit.RunIfChanged)
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "milv.config.yaml"))
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "some_markdown.md"))
+	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualPresubmit.Spec.Containers[0].Image)
+	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPresubmit.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"--repository", "kyma"}, actualPresubmit.Spec.Containers[0].Args)
+	assert.True(t, actualPresubmit.Optional)
 }
 
 func TestKymaGovernanceJobPeriodic(t *testing.T) {

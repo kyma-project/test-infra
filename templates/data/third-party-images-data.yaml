@@ -219,6 +219,36 @@ templates:
                     - "disable_testgrid"
                   local:
                     - "default"
+              
+              - jobConfig:
+                  name: "pre-main-tpi-oauth2-proxy"
+                  run_if_changed: "^oauth2-proxy/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/oauth2-proxy"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+              - jobConfig:
+                  name: "post-main-tpi-oauth2-proxy"
+                  run_if_changed: "^oauth2-proxy/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/oauth2-proxy"
+                    - "ci-main"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "default"
 
               - jobConfig:
                   name: "pre-main-tpi-kiwigrid-sidecar"
@@ -299,36 +329,6 @@ templates:
                   run_if_changed: "^minio-mc/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/minio-mc"
-                    - "ci-main"
-                inheritedConfigs:
-                  global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "default"
-
-              - jobConfig:
-                  name: "pre-main-tpi-console-nginx"
-                  run_if_changed: "^console-nginx/"
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/console-nginx"
-                    - "ci-pr"
-                inheritedConfigs:
-                  global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "default"
-              - jobConfig:
-                  name: "post-main-tpi-console-nginx"
-                  run_if_changed: "^console-nginx/"
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/console-nginx"
                     - "ci-main"
                 inheritedConfigs:
                   global:

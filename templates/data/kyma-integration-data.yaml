@@ -118,6 +118,48 @@ templates:
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
+                  name: "pre-main-kyma-integration-k3s-central-app-gateway"
+                  optional: true
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-kyma-integration-central-app-gateway-enabled: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_k3s"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
+              - jobConfig:
+                  name: "pre-main-kyma-integration-k3s-central-app-gateway-compass"
+                  optional: true
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-kyma-integration-compass-dev: "true"
+                    preset-kyma-integration-compass-enabled: "true"
+                    preset-kyma-integration-central-app-gateway-enabled: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_k3s"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
+              - jobConfig:
                   name: "pre-main-serverless-integration-k3s"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources/serverless\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -255,6 +297,50 @@ templates:
                     preset-build-main: "true"
                     preset-kyma-integration-compass-dev: "true"
                     preset-kyma-integration-compass-enabled: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_k3s"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
+              - jobConfig:
+                  name: "post-main-kyma-integration-k3s-central-app-gateway"
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    description: Kyma integration job on k3s with central Application Gateway.
+                    testgrid-days-of-results: "60"
+                  labels:
+                    preset-build-main: "true"
+                    preset-kyma-integration-central-app-gateway-enabled: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_k3s"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
+              - jobConfig:
+                  name: "post-main-kyma-integration-k3s-central-app-gateway-compass"
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    description: Kyma integration job on k3s with central Application Gateway and Compass dev.
+                    testgrid-days-of-results: "60"
+                  labels:
+                    preset-build-main: "true"
+                    preset-kyma-integration-compass-dev: "true"
+                    preset-kyma-integration-compass-enabled: "true"
+                    preset-kyma-integration-central-app-gateway-enabled: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -443,7 +529,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "/prow-tools/vmscollector -project=${CLOUDSDK_CORE_PROJECT} -vmNameRegexp='.*-integration-test-.*|busola-ui-test-.*' -jobLabelRegexp='.*-integration$|busola-ui-test' -dryRun=false"
+                    - "/prow-tools/vmscollector -project=${CLOUDSDK_CORE_PROJECT} -vmNameRegexp='.*-integration-test-.*|busola-integration-test-.*' -jobLabelRegexp='.*-integration$|busola-integration-test-k3s' -dryRun=false"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -476,27 +562,27 @@ templates:
                     - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
-              - jobConfig:
-                  name: "firewall-cleaner"
-                  cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
-                  labels:
-                    preset-sa-gke-kyma-integration: "true"
-                    preset-gc-project-env: "true"
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "/prow-tools/firewallcleaner -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "image_prow-tools"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "jobConfig_periodic"
+#              - jobConfig:
+#                  name: "firewall-cleaner"
+#                  cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
+#                  labels:
+#                    preset-sa-gke-kyma-integration: "true"
+#                    preset-gc-project-env: "true"
+#                  command: "bash"
+#                  args:
+#                    - "-c"
+#                    - "/prow-tools/firewallcleaner -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
+#                inheritedConfigs:
+#                  global:
+#                    - "jobConfig_default"
+#                    - "jobConfig_periodic"
+#                    - "image_prow-tools"
+#                    - "extra_refs_test-infra"
+#                    - "disable_testgrid"
+#                  local:
+#                    - "jobConfig_default"
+#                    - "request_small"
+#                    - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-dns-cleaner"
                   cron: "30 * * * *" # "At minute 30 past every hour"
@@ -558,7 +644,7 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "kyma-gke-nightly"
-                  cron: "0 4 * * 1-5" # "At 04:00 on every weekday Monday through Friday"
+                  cron: "0 3 * * 1-5" # "At 03:00 UTC on every weekday Monday through Friday"
                   annotations:
                     testgrid-dashboards: kyma_integration
                     description: Kyma GKE nightly build.
@@ -606,7 +692,7 @@ templates:
                     - "gke_job_labels_template"
               - jobConfig:
                   name: "kyma-gke-weekly"
-                  cron: "0 6 * * 1" # "At 06:00 on Monday."
+                  cron: "0 5 * * 1" # "At 05:00 UTC on Monday."
                   annotations:
                     testgrid-dashboards: kyma_integration
                     description: Kyma GKE weekly build.
@@ -654,7 +740,7 @@ templates:
                     - "gke_job_labels_template"
               - jobConfig:
                   name: "kyma-aks-nightly"
-                  cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
+                  cron: "0 3 * * 1-5" # "At 03:00 UTC on every day-of-week from Monday through Friday"
                   annotations:
                     testgrid-dashboards: kyma_integration
                     description: Kyma AKS nightly build.
