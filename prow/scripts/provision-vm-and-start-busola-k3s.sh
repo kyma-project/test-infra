@@ -29,7 +29,7 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
     -org="kyma-project" \
     -repo="busola" \
     -base-ref="$PULL_PULL_SHA" \
-    -expected-contexts-regexp="(pre-busola-web)|(pre-busola-backend)|(pre-main-busola-governance)"
+    -expected-contexts-regexp="(pre-busola-web)|(pre-busola-backend)|(license\/cla)"
 fi
 
 cleanup() {
