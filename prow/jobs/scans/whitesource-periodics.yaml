@@ -764,7 +764,7 @@ periodics: # runs on schedule
         preset-kyma-keyring: "true"
         preset-kyma-wssagent-config: "true"
         preset-wssagent-keys: "true"
-        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
+        preset-sa-gke-kyma-integration-kyma-incubator-whitesource: "true"
       cron: "0 4 * * *"
       skip_report: false
       decorate: true
