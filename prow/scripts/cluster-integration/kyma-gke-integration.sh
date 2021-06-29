@@ -178,12 +178,6 @@ fi
 # if GKE_RELEASE_CHANNEL is set, get latest possible cluster version
 gcloud::set_latest_cluster_version_for_channel
 
-# serverless tests are failing when are running on a cluster with contianerD
-if [[ "${GKE_RELEASE_CHANNEL}" == "rapid" ]]; then
-  # set image type to the image that uses docker instead of containerD
-  export IMAGE_TYPE="cos"
-fi
-
 gcloud::provision_gke_cluster "$CLUSTER_NAME"
 export CLEANUP_CLUSTER="true"
 
@@ -206,6 +200,15 @@ yes | kyma install \
   --tls-cert="${TLS_CERT}" \
   --tls-key="${TLS_KEY}" \
   --timeout 60m
+
+log::info "Patch serverless to enable containerd"
+cp -va "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/containerd-gke-patch.tpl.yaml" \
+       "${KYMA_SOURCES_DIR}/resources/serverless/templates/containerd-gke-patch.yaml"
+helm template -s templates/containerd-gke-patch.yaml resources/serverless/ --dry-run > "$PWD/patch-containerd.yaml"
+kubectl apply -f "$PWD/patch-containerd.yaml"
+# This command expects serverless to be running in the namespace `kyma-system`
+# The `initialized` condition is checked because we only care about the init-container.
+kubectl -n kyma-system wait pods -l app=serverless-docker-registry-cert-update --for="condition=Initialized"
 
 if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
     log::info "Create DNS Record for Apiserver proxy IP"
