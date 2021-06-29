@@ -87,7 +87,7 @@ install_busola(){
     pushd busola-resources
     
     for i in ./**{/*,}.yaml; do
-        sed -i "s,%DOMAIN%,$1,g" "$i" 
+        sed -i "s,%DOMAIN%,$1,g" "$i"
     done
     
     kubectl apply -k .
