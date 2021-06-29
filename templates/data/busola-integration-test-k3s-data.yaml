@@ -31,8 +31,7 @@ templates:
               - jobConfig:
                   name: "pre-busola-integration-test-k3s"
                   optional: false
-                  run_if_changed: "^backend/|^core/|^core-ui/|^service-catalog-ui/|^components/|^shared/|^package.json"
-                  skip_if_only_changed: "*.md"
+                  run_if_changed: "^resources/|^tests/"
                   labels:
                     preset-build-pr: "true"
                     preset-gardener-azure-kyma-integration: "true"
@@ -52,8 +51,7 @@ templates:
               - jobConfig:
                   name: "post-busola-integration-test-k3s"
                   optional: false
-                  run_if_changed: "^backend/|^core/|^core-ui/|^service-catalog-ui/|^components/|^shared/|^package.json"
-                  skip_if_only_changed: "*.md"
+                  run_if_changed: "/"
                   labels:
                     preset-build-pr: "false"
                     preset-gardener-azure-kyma-integration: "true"

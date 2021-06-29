@@ -84,17 +84,10 @@ install_busola(){
     --selector=app.kubernetes.io/component=controller \
     --timeout=120s
     
-    #TODO: Replace images for PR ones
     pushd busola-resources
     
     for i in ./**{/*,}.yaml; do
-        sed -i "s,%DOMAIN%,$1,g" "$i"
-        if grep -Fxq "${PULL_NUMBER}" "$i"
-        then
-            echo "PR number found in deployment file."
-        else
-            echo "PR number not found in deployment file."
-        fi     
+        sed -i "s,%DOMAIN%,$1,g" "$i" 
     done
     
     kubectl apply -k .
