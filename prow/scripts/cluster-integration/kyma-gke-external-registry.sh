@@ -30,29 +30,27 @@
 
 set -o errexit
 
-set -x
-
 #Exported variables
-export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
-export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
-export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
+export TEST_INFRA_SOURCES_DIR="$KYMA_PROJECT_DIR/test-infra"
+export KYMA_SOURCES_DIR="$KYMA_PROJECT_DIR/kyma"
+export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="$TEST_INFRA_SOURCES_DIR/prow/scripts/cluster-integration/helpers"
 
 # shellcheck source=prow/scripts/lib/utils.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/log.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/gcloud.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/docker.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 
-KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
-KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
+KYMA_SCRIPTS_DIR="$KYMA_SOURCES_DIR/installation/scripts"
+KYMA_RESOURCES_DIR="$KYMA_SOURCES_DIR/installation/resources"
 
-INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
+INSTALLER_YAML="$KYMA_RESOURCES_DIR/installer.yaml"
+INSTALLER_CR="$KYMA_RESOURCES_DIR/installer-cr-cluster.yaml.tpl"
 
 # Enforce lowercase
 readonly REPO_OWNER=${REPO_OWNER,,}
@@ -78,16 +76,16 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-# post_hook runs at the end of a script or on any error
+# docker_cleanup runs at the end of a script or on any error
 function docker_cleanup() {
     set +e
-    if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
+    if [ -n "$CLEANUP_DOCKER_IMAGE" ]; then
         log::info "Docker image cleanup"
-        if [ -n "${KYMA_INSTALLER_IMAGE}" ]; then
+        if [ -n "$KYMA_INSTALLER_IMAGE" ]; then
             log::info "Delete temporary Kyma-Installer Docker image"
-            gcloud::authenticate "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
-            gcloud::delete_docker_image "${KYMA_INSTALLER_IMAGE}"
-            gcloud::set_account "${GOOGLE_APPLICATION_CREDENTIALS}"
+            gcloud::authenticate "$GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS"
+            gcloud::delete_docker_image "$KYMA_INSTALLER_IMAGE"
+            gcloud::set_account "$GOOGLE_APPLICATION_CREDENTIALS"
         fi
     fi
     set -e
@@ -97,9 +95,9 @@ verify_internal_registry() {
     local pods
     pods="$(kubectl get pods --all-namespaces | grep docker-registry || true)"
 
-    if [[ -n "${pods}" ]]; then
+    if [[ -n "$pods" ]]; then
         echo "Pods with docker registry are running:"
-        echo "${pods}"
+        echo "$pods"
         return 1
     fi
 
@@ -128,18 +126,18 @@ function create_image() {
     utils::check_required_vars "${requiredVars[@]}"
 
     echo "--------------------------------------------------------------------------------"
-    echo "Building Kyma-Installer image: ${KYMA_INSTALLER_IMAGE}"
+    echo "Building Kyma-Installer image: $KYMA_INSTALLER_IMAGE"
     echo "--------------------------------------------------------------------------------"
     echo
-    docker build "${KYMA_SOURCES_DIR}" -f "${KYMA_SOURCES_DIR}"/tools/kyma-installer/kyma.Dockerfile -t "${KYMA_INSTALLER_IMAGE}"
+    docker build "$KYMA_SOURCES_DIR" -f "$KYMA_SOURCES_DIR"/tools/kyma-installer/kyma.Dockerfile -t "$KYMA_INSTALLER_IMAGE"
 
     echo "--------------------------------------------------------------------------------"
     echo "pushing Kyma-Installer image"
     echo "--------------------------------------------------------------------------------"
     echo
-    docker push "${KYMA_INSTALLER_IMAGE}"
+    docker push "$KYMA_INSTALLER_IMAGE"
     echo "--------------------------------------------------------------------------------"
-    echo "Kyma-Installer image pushed: ${KYMA_INSTALLER_IMAGE}"
+    echo "Kyma-Installer image pushed: $KYMA_INSTALLER_IMAGE"
     echo "--------------------------------------------------------------------------------"
 }
 
@@ -252,7 +250,7 @@ kubectl create namespace "kyma-installer"
 # TODO: convert create-config-map.sh to function in sourced lib script?
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
     --data "global.domainName=$DNS_SUBDOMAIN.${DNS_DOMAIN%.}" \
-    --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
+    --data "global.loadBalancerIP=$GATEWAY_IP_ADDRESS"
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
     --data "test.acceptance.ui.logging.enabled=true" \
@@ -263,8 +261,8 @@ kubectl create namespace "kyma-installer"
     --label "component=application-connector"
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
-    --data "global.tlsCrt=${TLS_CERT}" \
-    --data "global.tlsKey=${TLS_KEY}"
+    --data "global.tlsCrt=$TLS_CERT" \
+    --data "global.tlsKey=$TLS_KEY"
 
 cat << EOF > "$PWD/kyma_istio_operator"
 apiVersion: install.istio.io/v1alpha1
@@ -282,37 +280,37 @@ spec:
 EOF
 
 # TODO: convert create-config-map.sh to function in sourced lib script?
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map-file.sh" --name "istio-overrides" \
+"$TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS/create-config-map-file.sh" --name "istio-overrides" \
     --label "component=istio" \
     --file "$PWD/kyma_istio_operator"
 
-dockerPassword=/tmp/kyma-gke-integration/dockerPassword.json
+DOCKER_PASSWORD=/tmp/kyma-gke-integration/dockerPassword.json
 mkdir -p /tmp/kyma-gke-integration
-< "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" tr -d '\n' > /tmp/kyma-gke-integration/dockerPassword.json
+< "$GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS" tr -d '\n' > /tmp/kyma-gke-integration/dockerPassword.json
 # TODO: convert create-config-map.sh to function in sourced lib script?
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-secret.sh" --name "serverless-external-registry-overrides" \
+"$TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS/create-secret.sh" --name "serverless-external-registry-overrides" \
     --data "dockerRegistry.enableInternal=false" \
     --data "dockerRegistry.username=_json_key" \
-    --file "dockerRegistry.password=${dockerPassword}" \
-    --data "dockerRegistry.serverAddress=$(echo "${DOCKER_PUSH_REPOSITORY}" | cut -d'/' -f1)" \
-    --data "dockerRegistry.registryAddress=${DOCKER_PUSH_REPOSITORY}/functions" \
+    --file "dockerRegistry.password=$DOCKER_PASSWORD" \
+    --data "dockerRegistry.serverAddress=$(echo "$DOCKER_PUSH_REPOSITORY" | cut -d'/' -f1)" \
+    --data "dockerRegistry.registryAddress=$DOCKER_PUSH_REPOSITORY/functions" \
     --label "component=serverless"
 
 if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
-    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${KYMA_SOURCE}/kyma-installer-cluster.yaml" /tmp/kyma-gke-integration/downloaded-installer.yaml
+    gsutil cp "$KYMA_ARTIFACTS_BUCKET/$KYMA_SOURCE/kyma-installer-cluster.yaml" /tmp/kyma-gke-integration/downloaded-installer.yaml
     kubectl apply -f /tmp/kyma-gke-integration/downloaded-installer.yaml
 else
     echo "Manual concatenating yamls"
-    "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
-    | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
+    "$KYMA_SCRIPTS_DIR"/concat-yamls.sh "$INSTALLER_YAML" "$INSTALLER_CR" \
+    | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: $KYMA_INSTALLER_IMAGE;" \
     | sed -e "s/__VERSION__/0.0.1/g" \
     | sed -e "s/__.*__//g" \
     | kubectl apply -f-
 fi
 
 log::info "Installation triggered"
-"${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
+"$KYMA_SCRIPTS_DIR"/is-installed.sh --timeout 30m
 
 if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
     log::info "Create DNS Record for Apiserver proxy IP"
@@ -330,7 +328,7 @@ log::info "Verify if internal docker registry is disabled"
 verify_internal_registry
 
 log::info "Test Kyma"
-KYMA_TESTS="serverless serverless-long" "${TEST_INFRA_SOURCES_DIR}/prow/scripts/kyma-testing.sh"
+KYMA_TESTS="serverless serverless-long" "$TEST_INFRA_SOURCES_DIR/prow/scripts/kyma-testing.sh"
 
 log::success "Success"
 
