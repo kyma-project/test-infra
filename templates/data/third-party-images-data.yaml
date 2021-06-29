@@ -165,7 +165,7 @@ templates:
                   run_if_changed: "^k8s-tools/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/k8s-tools"
-                    - "ci-pr"
+                    - "cosign-pr"
                 inheritedConfigs:
                   global:
                     - "image_bootstrap"

@@ -21,7 +21,7 @@ globalSets:
       KYMA_MAJOR_VERSION: 2
   # Image sets
   image_bootstrap:
-    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210402-70b4b74f"
+    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210701-e548bc20"
   image_prow-tools:
     image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210624-726120b6"
   image_kyma-integration:
