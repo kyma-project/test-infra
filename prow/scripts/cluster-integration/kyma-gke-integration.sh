@@ -180,7 +180,7 @@ yes | kyma install \
     --ci \
     -s "$KYMA_SOURCE" \
     -o "$PWD/kyma-installer-overrides.yaml" \
-    --domain "$DNS_SUBDOMAIN.${DNS_DOMAIN%?}" \
+    --domain "$DNS_SUBDOMAIN.${DNS_DOMAIN%.}" \
     --tls-cert="$TLS_CERT" \
     --tls-key="$TLS_KEY" \
     --timeout 60m

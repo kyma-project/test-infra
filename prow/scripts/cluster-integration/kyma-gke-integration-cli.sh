@@ -40,9 +40,9 @@ source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 # Enforce lowercase
-readonly REPO_OWNER=$(echo "$REPO_OWNER" | tr '[:upper:]' '[:lower:]')
+readonly REPO_OWNER=${REPO_OWNER,,}
 export REPO_OWNER
-readonly REPO_NAME=$(echo "$REPO_NAME" | tr '[:upper:]' '[:lower:]')
+readonly REPO_NAME=${REPO_NAME,,}
 export REPO_NAME
 export INGRESS_GATEWAY_HOSTNAME='*'
 export APISERVER_HOSTNAME='apiserver'
@@ -193,7 +193,7 @@ kyma install \
     --ci \
     --source main \
     -o "$COMPONENT_OVERRIDES_FILE" \
-    --domain "$DNS_SUBDOMAIN.${DNS_DOMAIN%?}" \
+    --domain "$DNS_SUBDOMAIN.${DNS_DOMAIN%.}" \
     --tls-cert "$TLS_CERT" \
     --tls-key "$TLS_KEY" \
     --timeout 90m
