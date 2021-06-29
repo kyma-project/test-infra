@@ -3,10 +3,10 @@
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-rel125-kyma-integration
+    - name: pre-rel20-kyma-integration
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel125-kyma-integration"
+        prow.k8s.io/pubsub.runID: "pre-rel20-kyma-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
@@ -17,12 +17,12 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^release-1.25$
+        - ^release-2.0$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.25
+          base_ref: release-2.0
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
@@ -41,10 +41,10 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-rel125-kyma-gke-integration
+    - name: pre-rel20-kyma-gke-integration
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel125-kyma-gke-integration"
+        prow.k8s.io/pubsub.runID: "pre-rel20-kyma-gke-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-cluster-use-ssd: "true"
@@ -63,12 +63,12 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^release-1.25$
+        - ^release-2.0$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.25
+          base_ref: release-2.0
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
@@ -93,10 +93,10 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-rel125-kyma-gke-upgrade
+    - name: pre-rel20-kyma-gke-upgrade
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel125-kyma-gke-upgrade"
+        prow.k8s.io/pubsub.runID: "pre-rel20-kyma-gke-upgrade"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-cluster-use-ssd: "true"
@@ -116,12 +116,12 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^release-1.25$
+        - ^release-2.0$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.25
+          base_ref: release-2.0
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
@@ -155,13 +155,13 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/kyma:
-    - name: post-rel125-kyma-integration
+    - name: post-rel20-kyma-integration
       annotations:
-        description: "Kyma integration job for release 1.25 ."
-        testgrid-dashboards: "kyma_release-1.25"
+        description: "Kyma integration job for release 2.0 ."
+        testgrid-dashboards: "kyma_release-2.0"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel125-kyma-integration"
+        prow.k8s.io/pubsub.runID: "post-rel20-kyma-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-gc-project-env: "true"
@@ -172,12 +172,12 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^release-1.25$
+        - ^release-2.0$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.25
+          base_ref: release-2.0
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
@@ -196,14 +196,14 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-rel125-kyma-gke-integration
+    - name: post-rel20-kyma-gke-integration
       annotations:
-        description: "Kyma GKE integration job for release 1.25."
-        testgrid-dashboards: "kyma_release-1.25"
+        description: "Kyma GKE integration job for release 2.0."
+        testgrid-dashboards: "kyma_release-2.0"
         testgrid-days-of-results: "60"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel125-kyma-gke-integration"
+        prow.k8s.io/pubsub.runID: "post-rel20-kyma-gke-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-cluster-use-ssd: "true"
@@ -222,12 +222,12 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^release-1.25$
+        - ^release-2.0$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.25
+          base_ref: release-2.0
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
@@ -252,14 +252,14 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-rel125-kyma-gke-upgrade
+    - name: post-rel20-kyma-gke-upgrade
       annotations:
-        description: "Kyma GKE upgrade job for release 1.25."
-        testgrid-dashboards: "kyma_release-1.25"
+        description: "Kyma GKE upgrade job for release 2.0."
+        testgrid-dashboards: "kyma_release-2.0"
         testgrid-days-of-results: "60"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel125-kyma-gke-upgrade"
+        prow.k8s.io/pubsub.runID: "post-rel20-kyma-gke-upgrade"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-cluster-use-ssd: "true"
@@ -279,12 +279,12 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^release-1.25$
+        - ^release-2.0$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.25
+          base_ref: release-2.0
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
@@ -315,14 +315,14 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-rel125-kyma-release-candidate
+    - name: post-rel20-kyma-release-candidate
       annotations:
-        description: "Release candidate job for Kyma 1.25."
-        testgrid-dashboards: "kyma_release-1.25"
+        description: "Release candidate job for Kyma 2.0."
+        testgrid-dashboards: "kyma_release-2.0"
         testgrid-days-of-results: "60"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel125-kyma-release-candidate"
+        prow.k8s.io/pubsub.runID: "post-rel20-kyma-release-candidate"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-cluster-version: "true"
         preset-dind-enabled: "true"
@@ -337,12 +337,12 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^1.25\.\d+(?:-.*)?$
+        - ^2.0\.\d+(?:-.*)?$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.25
+          base_ref: release-2.0
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
@@ -364,13 +364,13 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-rel125-kyma-gke-release-upgrade
+    - name: post-rel20-kyma-gke-release-upgrade
       annotations:
-        testgrid-dashboards: "kyma_release-1.25"
+        testgrid-dashboards: "kyma_release-2.0"
         testgrid-days-of-results: "90"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel125-kyma-gke-release-upgrade"
+        prow.k8s.io/pubsub.runID: "post-rel20-kyma-gke-release-upgrade"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-cluster-version: "true"
@@ -384,12 +384,12 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^1.25\.\d+(?:-.*)?$
+        - ^2.0\.\d+(?:-.*)?$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.25
+          base_ref: release-2.0
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
