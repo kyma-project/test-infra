@@ -236,14 +236,14 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-3843"
             securityContext:
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/third-party-images/k8s-tools"
-              - "ci-pr"
+              - "cosign-pr"
             resources:
               requests:
                 memory: 3Gi
