@@ -1,9 +1,9 @@
-package getFailureInstanceDetails
+package getfailureinstancedetails
 
 import (
 	"context"
-	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
-	"github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
+	"github.com/kyma-project/test-infra/development/gcp/pkg2/cloudfunctions"
+	"github.com/kyma-project/test-infra/development/gcp/pkg2/pubsub"
 	"log"
 )
 

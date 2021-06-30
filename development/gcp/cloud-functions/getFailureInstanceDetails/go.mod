@@ -1,3 +1,3 @@
-module github.com/kyma-project/test-infra/development/gcp/cloud-functions/getFailureInstanceDetails
+module github.com/kyma-project/test-infra/development/gcp/cloud-functions/getfailureinstancedetails
 
-go 1.14
+go 1.13
