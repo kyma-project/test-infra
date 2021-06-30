@@ -8,14 +8,24 @@ readonly ROOT_DIR=${CURRENT_DIR}/../../
 source "${ROOT_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${ROOT_DIR}/prow/scripts/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${ROOT_DIR}/prow/scripts/lib/gcloud.sh"
 
 cleanup() {   
-    log::info "Removing instance kyma-deps-image-vm-${RANDOM_ID}"
-    gcloud compute instances delete --quiet --zone "${ZONE}" "kyma-deps-image-vm-${RANDOM_ID}"
+    log::info "Removing instance $VM_NAME"
+    gcloud compute instances delete --quiet --zone "${ZONE}" "$VM_NAME"
+    if [ "$JOB_TYPE" == "presubmit" ]; then
+      log::info "Removing image $IMAGE"
+    fi
 }
+
+if [ "$CI" == "true" ]; then
+  gcloud::authenticate "$GOOGLE_APPLICATION_CREDENTIALS"
+fi
 
 
 RANDOM_ID=$(openssl rand -hex 4)
+VM_NAME="kyma-deps-image-vm-${RANDOM_ID}"
 DATE=$(date +v%Y%m%d)
 DEFAULT=false
 
@@ -49,40 +59,45 @@ fi
 ZONE_LIMIT=${ZONE_LIMIT:-5}
 EU_ZONES=$(gcloud compute zones list --filter="name~europe" --limit="${ZONE_LIMIT}" | tail -n +2 | awk '{print $1}')
 for ZONE in ${EU_ZONES}; do
-    log::info "Attempting to create a new instance named kyma-deps-image-vm-${RANDOM_ID} in zone ${ZONE} ..."
-    gcloud compute instances create "kyma-deps-image-vm-${RANDOM_ID}" \
+    log::info "Attempting to create a new instance named $VM_NAME in zone ${ZONE} ..."
+    gcloud compute instances create $VM_NAME \
         --metadata enable-oslogin=TRUE \
         --machine-type n1-standard-4 \
         --image-family debian-10 \
         --image-project debian-cloud \
         --zone "${ZONE}" \
         --boot-disk-size 200 \
-        --metadata-from-file startup-script=./machine-id-clean-up.sh  &&\
-    log::info "Created kyma-deps-image-vm-${RANDOM_ID} in zone ${ZONE}" && break
+        --metadata-from-file startup-script="$CURRENT_DIR"/machine-id-clean-up.sh  &&\
+    log::info "Created $VM_NAME in zone ${ZONE}" && break
     log::error "Could not create machine in zone ${ZONE}"
 done
 
 trap cleanup exit
 
-log::info "Moving install-deps-debian.sh to kyma-deps-image-vm-${RANDOM_ID} in zone ${ZONE} ..."
+log::info "Moving install-deps-debian.sh to $VM_NAME in zone ${ZONE} ..."
 #shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "kyma-deps-image-vm-${RANDOM_ID}" "./install-deps-debian.sh" "~/"
+utils::send_to_vm "${ZONE}" $VM_NAME "$CURRENT_DIR/install-deps-debian.sh" "~/"
 
 log::info "Running install-deps-debian.sh ..."
-gcloud compute ssh --quiet --zone="${ZONE}" "kyma-deps-image-vm-${RANDOM_ID}" -- ./install-deps-debian.sh
+gcloud compute ssh --quiet --zone="${ZONE}" "$VM_NAME" -- ./install-deps-debian.sh
 
-log::info "Clearing kyma-deps-image-vm-${RANDOM_ID} machine-id ..."
-gcloud compute ssh --zone "${ZONE}" "kyma-deps-image-vm-${RANDOM_ID}" --command "sudo sh -c 'echo "" > /etc/machine-id'"
-gcloud compute ssh --zone "${ZONE}" "kyma-deps-image-vm-${RANDOM_ID}" --command "sudo sh -c 'echo "" > /var/lib/dbus/machine-id'"
-
-
-log::info "Stopping kyma-deps-image-vm-${RANDOM_ID} in zone ${ZONE} ..."
-gcloud compute instances stop --zone="${ZONE}" "kyma-deps-image-vm-${RANDOM_ID}"
+log::info "Clearing $VM_NAME machine-id ..."
+gcloud compute ssh --zone "${ZONE}" $VM_NAME --command "sudo sh -c 'echo "" > /etc/machine-id'"
+gcloud compute ssh --zone "${ZONE}" $VM_NAME --command "sudo sh -c 'echo "" > /var/lib/dbus/machine-id'"
 
 
-log::info "Creating the new image kyma-deps-image-${DATE}..."
-gcloud compute images create "kyma-deps-image-${DATE}" \
-  --source-disk "kyma-deps-image-vm-${RANDOM_ID}" \
+log::info "Stopping $VM_NAME in zone ${ZONE} ..."
+gcloud compute instances stop --zone="${ZONE}" "$VM_NAME"
+
+if [ "$JOB_TYPE" == "presubmit" ]; then
+  IMAGE="$VM_NAME"
+else
+  IMAGE="kyma-deps-image-${DATE}"
+fi
+
+log::info "Creating the new image $IMAGE..."
+gcloud compute images create "$IMAGE" \
+  --source-disk "$VM_NAME" \
   --source-disk-zone "${ZONE}" \
   "${LABELS[@]}" \
   --family "custom-images"

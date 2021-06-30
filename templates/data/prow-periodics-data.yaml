@@ -111,3 +111,19 @@ templates:
                     - "pubsub_labels"
                     - "disable_testgrid"
                     - extra_refs_test-infra
+              - jobConfig:
+                  name: pre-test-infra-build-vm-image
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "development/vm-image/create-custom-image.sh"
+                  labels:
+                    preset-sa-vm-kyma-integration: "true"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - jobConfig_default
+                    - pubsub_labels
+                    - image_kyma-integration
