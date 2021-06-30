@@ -20,7 +20,16 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
-    "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
+    /prow-tools/jobguard \
+    -github-endpoint=http://ghproxy \
+    -github-endpoint=https://api.github.com \
+    -github-token-path="/etc/github/token" \
+    -fail-on-no-contexts="false" \
+    -timeout="10m" \
+    -org="kyma-project" \
+    -repo="busola" \
+    -base-ref="$PULL_PULL_SHA" \
+    -expected-contexts-regexp="(pre-busola-web)|(pre-busola-backend)"
 fi
 
 cleanup() {
