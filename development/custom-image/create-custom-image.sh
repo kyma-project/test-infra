@@ -16,6 +16,7 @@ cleanup() {
     gcloud compute instances delete --quiet --zone "${ZONE}" "$VM_NAME"
     if [ "$JOB_TYPE" == "presubmit" ]; then
       log::info "Removing image $IMAGE"
+      gcloud compute images delete "$IMAGE"
     fi
 }
 
