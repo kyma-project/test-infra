@@ -24,7 +24,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "development/vm-image/create-custom-image.sh"
+              - "development/custom-image/create-custom-image.sh"
             resources:
               requests:
                 memory: 3Gi
@@ -94,7 +94,7 @@ postsubmits: # runs on main
               - "bash"
             args:
               - "-c"
-              - "development/vm-image/create-custom-image.sh --default"
+              - "development/custom-image/create-custom-image.sh --default"
             resources:
               requests:
                 memory: 3Gi

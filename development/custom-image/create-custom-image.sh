@@ -60,7 +60,7 @@ ZONE_LIMIT=${ZONE_LIMIT:-5}
 EU_ZONES=$(gcloud compute zones list --filter="name~europe" --limit="${ZONE_LIMIT}" | tail -n +2 | awk '{print $1}')
 for ZONE in ${EU_ZONES}; do
     log::info "Attempting to create a new instance named $VM_NAME in zone ${ZONE} ..."
-    gcloud compute instances create $VM_NAME \
+    gcloud compute instances create "$VM_NAME" \
         --metadata enable-oslogin=TRUE \
         --machine-type n1-standard-4 \
         --image-family debian-10 \
@@ -74,16 +74,16 @@ done
 
 trap cleanup exit
 
-log::info "Moving install-deps-debian.sh to $VM_NAME in zone ${ZONE} ..."
+log::info "Moving install-deps-debian.sh to "$VM_NAME" in zone ${ZONE} ..."
 #shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" $VM_NAME "$CURRENT_DIR/install-deps-debian.sh" "~/"
+utils::send_to_vm "${ZONE}" "$VM_NAME" "$CURRENT_DIR/install-deps-debian.sh" "~/"
 
 log::info "Running install-deps-debian.sh ..."
 gcloud compute ssh --quiet --zone="${ZONE}" "$VM_NAME" -- ./install-deps-debian.sh
 
 log::info "Clearing $VM_NAME machine-id ..."
-gcloud compute ssh --zone "${ZONE}" $VM_NAME --command "sudo sh -c 'echo "" > /etc/machine-id'"
-gcloud compute ssh --zone "${ZONE}" $VM_NAME --command "sudo sh -c 'echo "" > /var/lib/dbus/machine-id'"
+gcloud compute ssh --zone "${ZONE}" "$VM_NAME" --command "sudo sh -c 'echo "" > /etc/machine-id'"
+gcloud compute ssh --zone "${ZONE}" "$VM_NAME" --command "sudo sh -c 'echo "" > /var/lib/dbus/machine-id'"
 
 
 log::info "Stopping $VM_NAME in zone ${ZONE} ..."

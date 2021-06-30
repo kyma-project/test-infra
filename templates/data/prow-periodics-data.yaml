@@ -116,7 +116,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "development/vm-image/create-custom-image.sh"
+                    - "development/custom-image/create-custom-image.sh"
                   labels:
                     preset-sa-vm-kyma-integration: "true"
                   branches:
@@ -132,7 +132,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "development/vm-image/create-custom-image.sh --default"
+                    - "development/custom-image/create-custom-image.sh --default"
                   labels:
                     preset-sa-vm-kyma-integration: "true"
                   branches:
