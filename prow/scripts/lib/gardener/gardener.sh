@@ -3,9 +3,9 @@
 LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
 
 # shellcheck source=prow/scripts/lib/log.sh
-source "${LIBDIR}/log.sh"
+source "${LIBDIR}/../log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
-source "${LIBDIR}/utils.sh"
+source "${LIBDIR}/../utils.sh"
 
 function gardener::deprovision_cluster() {
   if [ -z "$1" ]; then
