@@ -74,7 +74,7 @@ done
 
 trap cleanup exit
 
-log::info "Moving install-deps-debian.sh to "$VM_NAME" in zone ${ZONE} ..."
+log::info "Moving install-deps-debian.sh to $VM_NAME in zone ${ZONE} ..."
 #shellcheck disable=SC2088
 utils::send_to_vm "${ZONE}" "$VM_NAME" "$CURRENT_DIR/install-deps-debian.sh" "~/"
 
