@@ -172,7 +172,7 @@ function reserveIPsAndCreateDNSRecords() {
   log::info "Reserve IP Address for Ingressgateway"
   GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
   gcloud::reserve_ip_address "${GATEWAY_IP_ADDRESS_NAME}"
-  GATEWAY_IP_ADDRESS="${reserve_ip_address_return_1:?}"
+  GATEWAY_IP_ADDRESS="${gcloud_reserve_ip_address_return_1:?}"
   CLEANUP_GATEWAY_IP_ADDRESS="true"
   log::info "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
