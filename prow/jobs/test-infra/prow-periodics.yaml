@@ -8,6 +8,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-build-vm-image"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-gc-project-env: "true"
         preset-sa-vm-kyma-integration: "true"
       skip_report: false
       decorate: true
@@ -78,6 +79,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-test-infra-build-vm-image"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-gc-project-env: "true"
         preset-sa-vm-kyma-integration: "true"
       skip_report: false
       decorate: true

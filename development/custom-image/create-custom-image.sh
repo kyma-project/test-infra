@@ -70,7 +70,7 @@ for ZONE in ${EU_ZONES}; do
         --metadata-from-file startup-script="$CURRENT_DIR"/machine-id-clean-up.sh  &&\
     log::info "Created $VM_NAME in zone ${ZONE}" && break
     log::error "Could not create machine in zone ${ZONE}"
-done
+done || exit 1
 
 trap cleanup exit
 
