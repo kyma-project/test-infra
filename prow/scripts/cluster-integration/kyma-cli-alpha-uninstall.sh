@@ -89,7 +89,7 @@ sleep 1m
 log::info "Uninstall Kyma"
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
-kyma alpha uninstall --ci
+kyma alpha delete --ci
 )
 
 sleep 1m
@@ -101,11 +101,13 @@ kyma::alpha_deploy_kyma
 )
 
 log::info "Run Kyma tests"
+SUITE_NAME="testsuite-alpha-$(date '+%Y-%m-%d-%H-%M')"
+export SUITE_NAME
 set +e
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
 kyma test run \
-    --name "testsuite-alpha-$(date '+%Y-%m-%d-%H-%M')" \
+    --name "$SUITE_NAME" \
     --concurrency 6 \
     --max-retries 1 \
     --timeout 60m \
