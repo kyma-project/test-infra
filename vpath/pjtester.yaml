@@ -1,5 +1,6 @@
 pjNames:
-  - pjName: "skr-aws-integration-dev"
+  - pjName: "skr-azure-integration-dev"
+#  - pjName: "skr-aws-integration-dev"
 #  - pjName: "skr-trial-integration-dev"
 prConfigs:
   kyma-project:
