@@ -99,6 +99,7 @@ function testing::waitForTestPodsTermination() {
     local OPTIND
     local retry=0
     local suiteName
+    local checkTestPodTerminatedErr
 
     while getopts ":c:a:j:z:h:" opt; do
         case $opt in
@@ -116,8 +117,8 @@ function testing::waitForTestPodsTermination() {
 
     while [ ${retry} -lt 3 ]; do
         testing::checkTestPodTerminated "${suiteName}"
-        testing::checkTestPodTerminatedErr=$?
-        if [ $(testing::checkTestPodTerminatedErr) -ne 0 ]; then
+        checkTestPodTerminatedErr=$?
+        if [ ${checkTestPodTerminatedErr} -ne 0 ]; then
             echo "Waiting for test pods to terminate..."
             sleep 1
         else
