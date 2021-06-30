@@ -13,7 +13,7 @@ function context_arg() {
 kc="kubectl $(context_arg)"
 
 # retries are useful when api call can fail due to the infrastructure issue
-function executeKubectlWithRetries() {
+function testing::executeKubectlWithRetries() {
     local command="$1"
     local retry=0
     local result=""
@@ -31,13 +31,13 @@ function executeKubectlWithRetries() {
     return 1
 }
 
-function cmdGetPodsForSuite() {
+function testing::cmdGetPodsForSuite() {
     local suiteName=$1
     cmd="kubectl $(context_arg) get pods -l testing.kyma-project.io/suite-name=${suiteName} \
             --all-namespaces \
             --no-headers=true \
             -o=custom-columns=name:metadata.name,ns:metadata.namespace"
-    result=$(executeKubectlWithRetries "${cmd}")
+    result=$(testing::executeKubectlWithRetries "${cmd}")
     if [[ $? -eq 1 ]]; then
         echo "${result}"
         return 1
@@ -45,7 +45,7 @@ function cmdGetPodsForSuite() {
     echo "${result}"
 }
 
-function checkTestPodTerminated() {
+function testing::checkTestPodTerminated() {
     local suiteName=$1
     runningPods=false
 
@@ -53,7 +53,7 @@ function checkTestPodTerminated() {
     namespace=""
     idx=0
 
-    result=$(cmdGetPodsForSuite "${suiteName}")
+    result=$(testing::cmdGetPodsForSuite "${suiteName}")
     if [[ $? -eq 1 ]]; then
         echo "${result}"
         return 1
@@ -70,7 +70,7 @@ function checkTestPodTerminated() {
         namespace=${podOrNs}
         idx=$((idx+1))
 
-        phase=$(executeKubectlWithRetries "kubectl $(context_arg) get pod $pod -n ${namespace} -o jsonpath={.status.phase}")
+        phase=$(testing::executeKubectlWithRetries "kubectl $(context_arg) get pod $pod -n ${namespace} -o jsonpath={.status.phase}")
         if [[ $? -eq 1 ]]; then
             echo "${phase}"
             return 1
@@ -115,9 +115,9 @@ function testing::waitForTestPodsTermination() {
     utils::check_empty_arg "$suiteName" "Suite name was not provided. Exiting..."
 
     while [ ${retry} -lt 3 ]; do
-        checkTestPodTerminated "${suiteName}"
-        checkTestPodTerminatedErr=$?
-        if [ ${checkTestPodTerminatedErr} -ne 0 ]; then
+        testing::checkTestPodTerminated "${suiteName}"
+        testing::checkTestPodTerminatedErr=$?
+        if [ ${testing::checkTestPodTerminatedErr} -ne 0 ]; then
             echo "Waiting for test pods to terminate..."
             sleep 1
         else
@@ -156,7 +156,7 @@ function testing::inject_addons_if_necessary() {
       log::info "- Skipping injecting ClusterAddonsConfiguration"
   else
       log::info "- Creating ClusterAddonsConfiguration which provides the testing addons"
-      injectTestingAddons
+      testing::injectTestingAddons
       if [[ $? -eq 1 ]]; then
         exit 1
       fi
@@ -167,7 +167,7 @@ function testing::inject_addons_if_necessary() {
 
 TESTING_ADDONS_CFG_NAME="testing-addons"
 
-function injectTestingAddons() {
+function testing::injectTestingAddons() {
     retry=10
     while true; do
         kubectl apply -f - <<EOF
@@ -217,7 +217,7 @@ function testing::inject_testing_addons() {
 }
 
 function testing::remove_testing_addons() {
-    result=$(executeKubectlWithRetries "kubectl delete clusteraddonsconfiguration ${TESTING_ADDONS_CFG_NAME}")
+    result=$(testing::executeKubectlWithRetries "kubectl delete clusteraddonsconfiguration ${TESTING_ADDONS_CFG_NAME}")
     echo "${result}"
     if [[ $? -eq 1 ]]; then
         return 1

@@ -170,7 +170,7 @@ function installKyma() {
     )
 }
 
-function checkTestPodTerminated() {
+function testing::checkTestPodTerminated() {
     local namespace=$1
     local retry=0
     local runningPods=0

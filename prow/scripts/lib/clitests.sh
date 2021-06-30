@@ -12,11 +12,12 @@ source "${LIBDIR}/utils.sh"
 # Arguments:
 # required:
 # c - command to execute
+# z - GCP zone, defaults to $ZONE
+# h - GCP host, defaults to $HOST
 # optional:
 # a - assert
 # j - jq filter
-# z - GCP zone, defaults to $ZONE
-# h - GCP host, defaults to $HOST
+
 #
 clitests::assertRemoteCommand() {
 
@@ -24,8 +25,8 @@ clitests::assertRemoteCommand() {
     local cmd
     local assert
     local jqFilter
-    local zone="${$ZONE}"
-    local host="${$HOST}"
+    local zone
+    local host
 
     while getopts ":c:a:j:z:h:" opt; do
         case $opt in
@@ -36,13 +37,9 @@ clitests::assertRemoteCommand() {
             j)
                 jqFilter="$OPTARG" ;;
             z)
-                if [ -n "$OPTARG" ]; then
-                    zone="$OPTARG"
-                fi ;;
+                zone="$OPTARG" ;;
             h)
-                if [ -n "$OPTARG" ]; then
-                    host="$OPTARG"
-                fi ;;
+                host="$OPTARG" ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
@@ -51,6 +48,8 @@ clitests::assertRemoteCommand() {
     done
 
     utils::check_empty_arg "$cmd" "Command was not provided. Exiting..."
+    utils::check_empty_arg "$zone" "GCP zone was not provided. Exiting..."
+    utils::check_empty_arg "$host" "GCP host was not provided. Exiting..."
 
     # config values
     local interval=15
