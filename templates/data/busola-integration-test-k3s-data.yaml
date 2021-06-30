@@ -31,7 +31,7 @@ templates:
               - jobConfig:
                   name: "pre-busola-integration-test-k3s"
                   optional: false
-                  run_if_changed: "/"
+                  run_if_changed: "^resources/|^tests/"
                   labels:
                     preset-build-pr: "true"
                     preset-gardener-azure-kyma-integration: "true"
