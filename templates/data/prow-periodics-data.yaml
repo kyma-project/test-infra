@@ -143,3 +143,4 @@ templates:
                     - jobConfig_default
                     - pubsub_labels
                     - image_kyma-integration
+                    - disable_testgrid

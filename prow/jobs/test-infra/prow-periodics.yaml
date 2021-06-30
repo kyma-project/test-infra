@@ -72,6 +72,8 @@ postsubmits: # runs on main
             secret:
               secretName: sa-prow-deploy
     - name: post-test-infra-build-vm-image
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-test-infra-build-vm-image"
