@@ -59,10 +59,8 @@ function kyma::get_last_release_version {
         exit 1
     fi
     
-    version=$(curl --silent --fail --show-error -H "Authorization: token ${1}" "https://api.github.com/repos/kyma-project/kyma/releases" \
+    kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token ${1}" "https://api.github.com/repos/kyma-project/kyma/releases" \
         | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].tag_name')
-
-    echo "${version}"
 }
 
 kyma::install_cli() {
@@ -126,33 +124,48 @@ kyma::run_test_log_collector(){
     fi
 }
 
+# Arguments:
+# required:
+# s - suite name
 kyma::test_summary() {
+
+    local OPTIND
+    local suiteName
     local tests_exit=0
-    if [[ -n "${SUITE_NAME:-}" ]]; then
-        echo "Test Summary"
-        kyma test status "${SUITE_NAME}" -owide
+    local statusSucceeded
 
-        statusSucceeded=$(kubectl get cts "${SUITE_NAME}" -ojsonpath="{.status.conditions[?(@.type=='Succeeded')]}")
-        if [[ "${statusSucceeded}" != *"True"* ]]; then
-            tests_exit=1
-            echo "- Fetching logs due to test suite failure"
+    while getopts ":s:" opt; do
+        case $opt in
+            s)
+                suiteName="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+    done
 
-            echo "- Fetching logs from testing pods in Failed status..."
-            kyma test logs "${SUITE_NAME}" --test-status Failed
+    utils::check_empty_arg "$suiteName" "Suite name was not provided. Exiting..."
 
-            echo "- Fetching logs from testing pods in Unknown status..."
-            kyma test logs "${SUITE_NAME}" --test-status Unknown
+    echo "Test Summary"
+    kyma test status "${suiteName}" -owide
 
-            echo "- Fetching logs from testing pods in Running status due to running afer test suite timeout..."
-            kyma test logs "${SUITE_NAME}" --test-status Running
-        fi
-
-        echo "ClusterTestSuite details"
-        kubectl get cts "${SUITE_NAME}" -oyaml
-        return $tests_exit
-    else
+    statusSucceeded=$(kubectl get cts "${suiteName}" -ojsonpath="{.status.conditions[?(@.type=='Succeeded')]}")
+    if [[ "${statusSucceeded}" != *"True"* ]]; then
         tests_exit=1
-        echo "SUITE_NAME was not set"
-        return $tests_exit
+        echo "- Fetching logs due to test suite failure"
+
+        echo "- Fetching logs from testing pods in Failed status..."
+        kyma test logs "${suiteName}" --test-status Failed
+
+        echo "- Fetching logs from testing pods in Unknown status..."
+        kyma test logs "${suiteName}" --test-status Unknown
+
+        echo "- Fetching logs from testing pods in Running status due to running afer test suite timeout..."
+        kyma test logs "${suiteName}" --test-status Running
     fi
+
+    echo "ClusterTestSuite details"
+    kubectl get cts "${suiteName}" -oyaml
+    return $tests_exit
 }

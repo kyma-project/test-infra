@@ -90,7 +90,7 @@ cleanup() {
     kyma::run_test_log_collector "kyma-upgrade-gardener-azure"
 
     if [[ -n "${SUITE_NAME}" ]]; then
-        kyma::test_summary
+        kyma::test_summary -s "$SUITE_NAME"
     fi 
 
     if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
@@ -146,7 +146,8 @@ function getLastReleaseCandidateVersion() {
 }
 
 function installKyma() {
-    LAST_RELEASE_VERSION=$(kyma::get_last_release_version "${BOT_GITHUB_TOKEN}")
+    kyma::get_last_release_version "${BOT_GITHUB_TOKEN}"
+    LAST_RELEASE_VERSION="${kyma_get_last_release_version_return_version:?}"
     mkdir -p /tmp/kyma-gardener-upgradeability
     if [ -z "$LAST_RELEASE_VERSION" ]; then
         log::error "Couldn't grab latest version from GitHub API, stopping."

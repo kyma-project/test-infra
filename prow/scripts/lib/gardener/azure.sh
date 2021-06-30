@@ -351,7 +351,7 @@ gardener::test_kyma() {
 
     # collect logs from failed tests before deprovisioning
     kyma::run_test_log_collector "kyma-integration-gardener-azure"
-    if ! kyma::test_summary; then
+    if ! kyma::test_summary -s "$SUITE_NAME"; then
         log::error "Tests have failed"
         set -e
         return 1
