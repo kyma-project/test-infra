@@ -481,9 +481,9 @@ function gcp::delete_dns_record {
     local attempts=10
     local retryTimeInSec="5"
     for ((i=1; i<=attempts; i++)); do
-        gcloud dns --project="$projectName" record-sets transaction start --zone="$gcpDnsZoneName" && \
-        gcloud dns --project="$projectName" record-sets transaction remove "$ipAddress" --name="$dnsFQDN" --ttl=60 --type=A --zone="$gcpDnsZoneName" && \
-        if gcloud dns --project="$projectName" record-sets transaction execute --zone="$gcpDnsZoneName"; then
+        gcloud dns --project="$gcpProjectName" record-sets transaction start --zone="$gcpDnsZoneName" && \
+        gcloud dns --project="$gcpProjectName" record-sets transaction remove "$ipAddress" --name="$dnsFQDN" --ttl=60 --type=A --zone="$gcpDnsZoneName" && \
+        if gcloud dns --project="$gcpProjectName" record-sets transaction execute --zone="$gcpDnsZoneName"; then
             break
         fi
 
