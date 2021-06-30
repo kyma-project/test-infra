@@ -127,3 +127,19 @@ templates:
                     - jobConfig_default
                     - pubsub_labels
                     - image_kyma-integration
+              - jobConfig:
+                  name: post-test-infra-build-vm-image
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "development/vm-image/create-custom-image.sh --default"
+                  labels:
+                    preset-sa-vm-kyma-integration: "true"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_postsubmit
+                    - jobConfig_default
+                    - pubsub_labels
+                    - image_kyma-integration
