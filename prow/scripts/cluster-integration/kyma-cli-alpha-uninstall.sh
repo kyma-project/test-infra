@@ -81,9 +81,7 @@ log::info "Installing Kyma"
 
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
-set -x
 kyma::alpha_deploy_kyma
-set +x
 )
 
 sleep 1m
@@ -98,10 +96,8 @@ sleep 1m
 
 log::info "Install Kyma again"
 (
-set -x
 cd "${KYMA_PROJECT_DIR}/kyma"
 kyma::alpha_deploy_kyma
-set +x
 )
 
 log::info "Run Kyma tests"
