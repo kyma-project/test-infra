@@ -535,7 +535,9 @@ function gcp::set_vars_for_network {
     log::info "Replacing underscore with dashes in job name."
     jobName=$(echo "$jobName" | tr '_' '-')
     # Trim jobName to 54 chars to meet network and subnetwork name lenght requirement..
-    jobName=${jobName: -54:54}
+    if [ ${#jobName} -gt 54 ]; then
+        jobName=${jobName:(-54):54}
+    fi
     # Remove leading dash or dot from network and subnetwork names.
     jobName=${jobName#-}
     jobName=${jobName#.}
