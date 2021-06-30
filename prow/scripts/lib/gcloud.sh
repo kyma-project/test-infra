@@ -51,7 +51,7 @@ function gcloud::set_account() {
 # Arguments:
 # $1 - name of the IP address to be set in gcp
 # Returns:
-# gcloud::reserve_ip_address_return_1 - reserved ip address
+# gcloud_reserve_ip_address_return_1 - reserved ip address
 # TODO: add support for setting CLOUDSDK env vars from function args.
 function gcloud::reserve_ip_address {
     utils::check_empty_arg "${1}" "IP address name is empty. Exiting..."
@@ -80,7 +80,7 @@ function gcloud::reserve_ip_address {
   # Print reserved IP address on stdout as it's consumed by calling process and used for next steps.
   # TODO: export result as variable, change consuming command to use exported variable
   #gcloud compute addresses list --filter="name=${IP_ADDRESS_NAME}" --format="value(ADDRESS)"
-  gcloud::reserve_ip_address_return_1="$(gcloud compute addresses list --filter="name=${ipAddressName}" --format="value(ADDRESS)")"
+  gcloud_reserve_ip_address_return_1="$(gcloud compute addresses list --filter="name=${ipAddressName}" --format="value(ADDRESS)")"
   log::info "Created IP Address for Ingressgateway: ${ipAddressName}"
 }
 
