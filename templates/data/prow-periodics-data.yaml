@@ -113,6 +113,7 @@ templates:
                     - extra_refs_test-infra
               - jobConfig:
                   name: pre-test-infra-build-vm-image
+                  run_if_changed: 'development/custom-image/'
                   command: "bash"
                   args:
                     - "-c"
@@ -130,6 +131,7 @@ templates:
                     - image_kyma-integration
               - jobConfig:
                   name: post-test-infra-build-vm-image
+                  run_if_changed: 'development/custom-image/'
                   command: "bash"
                   args:
                     - "-c"
