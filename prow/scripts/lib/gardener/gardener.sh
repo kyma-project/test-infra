@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
+LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
+
 # shellcheck source=prow/scripts/lib/log.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
+source "${LIBDIR}/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+source "${LIBDIR}/utils.sh"
 
 function gardener::deprovision_cluster() {
   if [ -z "$1" ]; then
@@ -43,7 +45,10 @@ gardener::reprovision_cluster() {
     log::info "cleaning damaged cluster first"
     gardener::deprovision_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
     log::info "building new cluster name"
-    utils::generate_commonName "${COMMON_NAME_PREFIX}"
+    utils::generate_commonName -n "${COMMON_NAME_PREFIX}"
+    COMMON_NAME=${utils_generate_commonName_return_commonName:?}
+    export COMMON_NAME
     CLUSTER_NAME="${COMMON_NAME}"
+    export CLUSTER_NAME
     gardener::provision_cluster
 }

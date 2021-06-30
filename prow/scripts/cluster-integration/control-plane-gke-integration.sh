@@ -418,10 +418,12 @@ fi
 log::info "Create new cluster"
 createCluster
 
-log::info "Generate self-signed certificate"
-CERT_KEY=$(utils::generate_self_signed_cert "$DOMAIN")
-TLS_CERT=$(echo "${CERT_KEY}" | head -1)
-TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
+utils::generate_self_signed_cert \
+    -d "$DNS_DOMAIN" \
+    -s "$COMMON_NAME" \
+    -v "$SELF_SIGN_CERT_VALID_DAYS"
+export TLS_CERT="${utils_generate_self_signed_cert_return_tls_cert:?}"
+export TLS_KEY="${utils_generate_self_signed_cert_return_tls_key:?}"
 
 log::info "Install Kyma"
 installKyma
