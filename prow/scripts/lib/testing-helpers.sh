@@ -117,7 +117,7 @@ function testing::waitForTestPodsTermination() {
     while [ ${retry} -lt 3 ]; do
         testing::checkTestPodTerminated "${suiteName}"
         testing::checkTestPodTerminatedErr=$?
-        if [ ${testing::checkTestPodTerminatedErr} -ne 0 ]; then
+        if [ $(testing::checkTestPodTerminatedErr) -ne 0 ]; then
             echo "Waiting for test pods to terminate..."
             sleep 1
         else

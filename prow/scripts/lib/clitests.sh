@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
-TESTDIR="${LIBDIR}/../cli-tests"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${LIBDIR}/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
