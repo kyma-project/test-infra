@@ -1,0 +1,3 @@
+pjNames:
+  - pjName: "kyma-alpha-integration-evaluation-gardener-azure"
+  - pjName: "kyma-alpha-integration-production-gardener-azure"
