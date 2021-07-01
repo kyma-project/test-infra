@@ -195,37 +195,6 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "smaller_cluster"
-              - jobConfig:
-                  name: kyma-cli-alpha-uninstall-gke
-                  extra_refs:
-                    cli:
-                      - org: "kyma-project"
-                        repo: "cli"
-                        path_alias: "github.com/kyma-project/cli"
-                        base_ref: "main"
-                  cron: "00 */1 * * 1-5" # “At minute 0 past every hour on every day-of-week from Monday through Friday.”
-                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-cli-alpha-uninstall.sh"
-                  env:
-                    KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
-                    GARDENER_REGION: "europe-west4"
-                    GARDENER_ZONES: "europe-west4-b"
-                  labels:
-                    preset-debug-commando-oom: "true"
-                    preset-gardener-gcp-kyma-integration: "true"
-                    preset-cluster-version: "true"
-                    preset-gc-project-env: "true"
-                  slack_channel: "kyma-prow-dev-null"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "extra_refs_test-infra"
-                    - "extra_refs_kyma"
-                    - "image_kyma-integration"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "smaller_cluster"
       - to: ../prow/jobs/cli/cli-compatibility.yaml
         localSets:
           jobConfig_default:

@@ -80,6 +80,7 @@ func TestKymaGardenerAzureIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "REGION", "northeurope")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "RS_GROUP", "kyma-gardener-azure")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_ALPHA", "true")
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_ALPHA_DELETE", "true")
 	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
 }
 

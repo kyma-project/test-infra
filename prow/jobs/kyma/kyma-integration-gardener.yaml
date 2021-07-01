@@ -957,6 +957,8 @@ periodics: # runs on schedule
                 value: "1"
               - name: KYMA_ALPHA
                 value: "true"
+              - name: KYMA_ALPHA_DELETE
+                value: "true"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -1030,6 +1032,8 @@ periodics: # runs on schedule
               - name: GARDENER_ZONES
                 value: "1"
               - name: KYMA_ALPHA
+                value: "true"
+              - name: KYMA_ALPHA_DELETE
                 value: "true"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
