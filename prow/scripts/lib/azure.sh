@@ -156,6 +156,7 @@ function az::create_resource_group {
 			exit 1
 		fi
 	done
+    log::info "Resource Group created"
 }
 
 # az::delete_resource_group deletes resource group in a given region
@@ -184,16 +185,22 @@ function az::delete_resource_group {
 
     utils::check_empty_arg "$resourceGroup" "Resource group name is empty. Exiting..."
 
-    az group delete \
-        -n "${resourceGroup}" \
-        -y
-    deleteReturnCode=$?
-    if [[ ${deleteReturnCode} -ne 0 ]]; then
-        log::error "Failed to delete ResourceGrouop : ${resourceGroup}"
-        exit 1
+    log::info "Remove group"
+    if [[ $(az group exists --name "${RS_GROUP}" -o json) == true ]]; then
+        az group delete \
+            -n "${resourceGroup}" \
+            -y
+        deleteReturnCode=$?
+        if [[ ${deleteReturnCode} -ne 0 ]]; then
+            log::error "Failed to delete ResourceGrouop : ${resourceGroup}"
+            exit 1
+        else
+            log::info "ResourceGroup deleted : ${resourceGroup}"
+        fi
     else
-        log::info "ResourceGroup deleted : ${resourceGroup}"
-    fi
+		log::error "Azure group does not exist"
+        return 1
+	fi
 }
 
 # az::create_storage_account creates storage accont resource group in a given group
@@ -242,6 +249,7 @@ function az::create_storage_account {
             --name "${accountName}" \
             --resource-group "${resourceGroup}"
     fi
+    log::info "Storage Account created"
 }
 
 # az::delete_storage_account deletes storage accont resource group in a given group
@@ -278,6 +286,7 @@ function az::delete_storage_account {
         --name "${accountName}" \
         --resource-group "${resourceGroup}" \
         --yes
+    log::info "Storage Account deleted"
 }
 
 # az::provision_k8s_cluster creates an AKS cluster
@@ -459,6 +468,47 @@ function az::reserve_ip_address {
         log::error "Could not create IP address. Exiting..."
         exit 1
     fi
+}
+
+# Arguments:
+# required:
+# r - resource group
+# c - cluster name
+#
+# Returns:
+# az_get_cluster_resource_group_return_resource_group - name of the cluster resource group
+#
+function az::get_cluster_resource_group {
+
+    local OPTIND
+    local resourceGroup
+    local clusterName
+    local clusterResourceGroup
+    local tmpStatus
+
+    while getopts ":r:c:" opt; do
+        case $opt in
+            r)
+                resourceGroup="$OPTARG" ;;
+            c)
+                clusterName="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+    done
+
+    utils::check_empty_arg "$resourceGroup" "Resource group name is empty. Exiting..."
+    utils::check_empty_arg "$clusterName" "Cluster name is empty. Exiting..."
+
+    clusterResourceGroup=$(az aks show -g "${resourceGroup}" -n "${clusterName}" --query nodeResourceGroup -o tsv)
+    TMP_STATUS=$?
+    if [[ ${tmpStatus} -ne 0 ]]; then
+        log::error "Failed to get nodes resource group."
+        return 1
+    fi
+    az_get_cluster_resource_group_return_resource_group="$clusterResourceGroup"
 }
 
 # This check will trigger everytime the file is sourced.

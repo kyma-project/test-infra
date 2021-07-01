@@ -74,59 +74,47 @@ function cleanup() {
 	# Exporting for use in subshells.
 	export RS_GROUP
 
-	if [[ $(az group exists --name "${RS_GROUP}" -o json) == true ]]; then
-		CLUSTER_RS_GROUP=$(az aks show -g "${RS_GROUP}" -n "${CLUSTER_NAME}" --query nodeResourceGroup -o tsv)
-		TMP_STATUS=$?
-		check_status "${TMP_STATUS}" "Failed to get nodes resource group."
+	az::get_cluster_resource_group \
+		-r "$RS_GROUP" \
+		-c "$CLUSTER_NAME"
 
-		log::info "\n---\nRemove DNS Record for Ingressgateway\n---"
-		GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
+	log::info "\n---\nRemove DNS Record for Ingressgateway\n---"
+	GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
 
-		GATEWAY_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${GATEWAY_DNS_FULL_NAME}" --format="value(rrdatas[0])")
-		TMP_STATUS=$?
-		check_status ${TMP_STATUS} "Could not fetch IP for : ${GATEWAY_DNS_FULL_NAME}"
-		if [[ -n ${GATEWAY_IP_ADDRESS} ]];then
-			log::success "Fetched Azure Gateway IP: ${GATEWAY_IP_ADDRESS}"
-			# only try to delete the dns record if the ip address has been found
-			gcloud::delete_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
-			TMP_STATUS=$?
-			if [[ ${TMP_STATUS} -ne 0 ]]; then
-			  log::error "Failed delete dns record : ${GATEWAY_DNS_FULL_NAME}"
-			  EXIT_STATUS=${TMP_STATUS}
-			else
-			  log::success "Deleted dns record : ${GATEWAY_DNS_FULL_NAME}"
-			fi
-		else
-			log::warn "Could not delete DNS record : ${GATEWAY_DNS_FULL_NAME}. Record does not exist."
-		fi
-
-		log::info "\n---\nRemove DNS Record for Apiserver Proxy IP\n---"
-		APISERVER_DNS_FULL_NAME="apiserver.${DOMAIN}."
-		APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
-		TMP_STATUS=$?
-		check_status ${TMP_STATUS} "Could not fetch IP for : ${APISERVER_DNS_FULL_NAME}"
-		if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
-			gcloud::delete_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
-			TMP_STATUS=$?
-			if [[ ${TMP_STATUS} -ne 0 ]]; then
-			  log::error "Failed delete dns record : ${APISERVER_DNS_FULL_NAME}"
-			  EXIT_STATUS=${TMP_STATUS}
-			else
-			  log::success "Deleted dns record : ${APISERVER_DNS_FULL_NAME}"
-			fi
-		else
-		  log::warn "Could not delete DNS record ${APISERVER_DNS_FULL_NAME}. Record does not exist."
-		fi
-
-		az::deprovision_k8s_cluster \
-			-c "$CLUSTER_NAME"\
-			-n "$RS_GROUP"
-
-		log::info "Remove group"
-		az::delete_resource_group -g "$RS_GROUP"
-	else
-		log::info "Azure group does not exist, skip cleanup process"
+	GATEWAY_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${GATEWAY_DNS_FULL_NAME}" --format="value(rrdatas[0])")
+	TMP_STATUS=$?
+	check_status ${TMP_STATUS} "Could not fetch IP for : ${GATEWAY_DNS_FULL_NAME}"
+	if [[ -n ${GATEWAY_IP_ADDRESS} ]];then
+		# only try to delete the dns record if the ip address has been found
+		gcp::delete_dns_record \
+			-a "$GATEWAY_IP_ADDRESS" \
+			-p "$CLOUDSDK_CORE_PROJECT" \
+			-h "*" \
+			-s "$DNS_SUBDOMAIN" \
+			-z "$CLOUDSDK_DNS_ZONE_NAME"
 	fi
+
+	log::info "\n---\nRemove DNS Record for Apiserver Proxy IP\n---"
+	APISERVER_DNS_FULL_NAME="apiserver.${DOMAIN}."
+	APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
+	TMP_STATUS=$?
+	check_status ${TMP_STATUS} "Could not fetch IP for : ${APISERVER_DNS_FULL_NAME}"
+	if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
+		gcp::delete_dns_record \
+			-a "$APISERVER_IP_ADDRESS" \
+			-p "$CLOUDSDK_CORE_PROJECT" \
+			-h "apiserver" \
+			-s "$DNS_SUBDOMAIN" \
+			-z "$CLOUDSDK_DNS_ZONE_NAME"
+	fi
+
+	az::deprovision_k8s_cluster \
+		-c "$CLUSTER_NAME"\
+		-n "$RS_GROUP"
+
+	az::delete_resource_group \
+		-g "$RS_GROUP"
+
 	MSG=""
 	if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
 	log::info "\n---\nCleanup function is finished ${MSG}\n---"
@@ -136,7 +124,10 @@ function cleanup() {
 }
 
 function createPublicIPandDNS() {
-	CLUSTER_RS_GROUP=$(az aks show -g "${RS_GROUP}" -n "${CLUSTER_NAME}" --query nodeResourceGroup -o tsv)
+	az::get_cluster_resource_group \
+		-r "$RS_GROUP" \
+		-c "$CLUSTER_NAME"
+	CLUSTER_RS_GROUP="${az_get_cluster_resource_group_return_resource_group:?}"
 
 	# IP address and DNS for Ingressgateway
 	az::reserve_ip_address \
@@ -147,8 +138,12 @@ function createPublicIPandDNS() {
 
 	log::info "Create DNS Record for Ingressgateway IP"
 
-	GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
-	gcloud::create_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
+	gcp::create_dns_record \
+				-a "$GATEWAY_IP_ADDRESS" \
+				-p "$CLOUDSDK_CORE_PROJECT" \
+				-h "*" \
+				-s "$DNS_SUBDOMAIN" \
+				-z "$CLOUDSDK_DNS_ZONE_NAME"
 }
 
 function setupKubeconfig() {
@@ -176,10 +171,10 @@ function installKyma() {
 
 	log::info "Trigger installation"
 
-    kyma install \
+	kyma install \
 			--ci \
 			--source main \
-      -o "$PWD/kyma-installer-overrides.yaml" \
+			-o "$PWD/kyma-installer-overrides.yaml" \
 			-o "$PWD/overrides-dex-and-monitoring.yaml" \
 			-o "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/prometheus-cluster-essentials-overrides.tpl.yaml" \
 			--domain "${DOMAIN}" \
@@ -190,35 +185,41 @@ function installKyma() {
 
 	if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
 		log::info "Create DNS Record for Apiserver proxy IP"
-		APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-		APISERVER_DNS_FULL_NAME="apiserver.${DOMAIN}."
-		gcloud::create_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
+		gcp::create_dns_record \
+				-a "$APISERVER_IP_ADDRESS" \
+				-p "$CLOUDSDK_CORE_PROJECT" \
+				-h "apiserver" \
+				-s "$DNS_SUBDOMAIN" \
+				-z "$CLOUDSDK_DNS_ZONE_NAME"
 	fi
 }
 
 function apply_dex_github_kyma_admin_group() {
-    kubectl get ClusterRoleBinding kyma-admin-binding -oyaml > kyma-admin-binding.yaml && cat >> kyma-admin-binding.yaml <<EOF 
+	kubectl get ClusterRoleBinding kyma-admin-binding -oyaml > kyma-admin-binding.yaml && cat >> kyma-admin-binding.yaml <<EOF 
 - apiGroup: rbac.authorization.k8s.io
   kind: Group
   name: kyma-project:cluster-access
 EOF
 
-    kubectl replace -f kyma-admin-binding.yaml
+	kubectl replace -f kyma-admin-binding.yaml
 }
 
 function test_console_url() {
   CONSOLE_URL="https://console.${DOMAIN}"
   console_response=$(curl -L -s -o /dev/null -w "%{http_code}" "${CONSOLE_URL}")
   if [ "${console_response}" != "200" ]; then
-    log::error "Kyma console URL did not returned 200 HTTP response code. Check ingressgateway service."
-    exit 1
+	log::error "Kyma console URL did not returned 200 HTTP response code. Check ingressgateway service."
+	exit 1
   fi
 }
 
-gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+gcp::authenticate \
+	-c "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
-az::authenticate -f "$AZURE_CREDENTIALS_FILE"
-az::set_subscription -s "$AZURE_SUBSCRIPTION_ID"
+az::authenticate \
+	-f "$AZURE_CREDENTIALS_FILE"
+az::set_subscription \
+	-s "$AZURE_SUBSCRIPTION_ID"
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --project="${CLOUDSDK_CORE_PROJECT}" --format="value(dnsName)")"
 export DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"

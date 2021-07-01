@@ -28,31 +28,13 @@ beforeTest() {
     validateAzureGatewayEnvironment
     az::authenticate -f "$AZURE_CREDENTIALS_FILE"
     az::set_subscription -s "$AZURE_SUBSCRIPTION_ID"
-    createResourceGroup
-    createStorageAccount
-}
-
-createResourceGroup() {
     az::create_resource_group -g "$AZURE_RS_GROUP" -r "$AZURE_REGION" -t "created-by=prow"
-
-    log::info "Resource Group created"
-}
-
-createStorageAccount() {
     az::create_storage_account \
         -n "$AZURE_STORAGE_ACCOUNT_NAME" \
         -g "$AZURE_RS_GROUP" \
         -t "created-at=$(date +%s)" \
         -t "created-by=prow" \
         -t "ttl=10800"
-
-    log::info "Storage Account created"
-}
-
-afterTest() {
-    az::delete_storage_account -n "$AZURE_STORAGE_ACCOUNT_NAME" -g "$AZURE_RS_GROUP"
-
-    log::info "Storage Account deleted"
 }
 
 installOverrides() {
