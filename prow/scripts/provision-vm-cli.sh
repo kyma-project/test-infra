@@ -32,6 +32,148 @@ function testCustomImage() {
     fi
 }
 
+# Run a command remote on GCP host.
+# Arguments:
+# required:
+# c - command to execute
+# z - GCP zone, defaults to $ZONE
+# h - GCP host, defaults to $HOST
+# optional:
+# a - assert
+# j - jq filter
+function assertRemoteCommand() {
+
+    local OPTIND
+    local cmd
+    local assert
+    local jqFilter
+    local zone
+    local host
+
+    while getopts ":c:a:j:z:h:" opt; do
+        case $opt in
+            c)
+                cmd="$OPTARG" ;;
+            a)
+                assert="$OPTARG" ;;
+            j)
+                jqFilter="$OPTARG" ;;
+            z)
+                zone="$OPTARG" ;;
+            h)
+                host="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+    done
+
+    utils::check_empty_arg "$cmd" "Command was not provided. Exiting..."
+    utils::check_empty_arg "$zone" "GCP zone was not provided. Exiting..."
+    utils::check_empty_arg "$host" "GCP host was not provided. Exiting..."
+
+    # config values
+    local interval=15
+    local retries=10
+
+    local output
+    for loopCount in $(seq 1 $retries); do
+        output=$(gcloud compute ssh --quiet --zone="${zone}" "${host}" -- "$cmd")
+        cmdExitCode=$?
+
+        # check return code and apply assertion (if defined)
+        if [ $cmdExitCode -eq 0 ]; then
+            if [ -n "$assert" ]; then
+                # apply JQ filter (if defined)
+                if [ -n "$jqFilter" ]; then
+                    local jqOutput
+                    jqOutput=$(echo "$output" | jq -r "$jqFilter")
+                    jqExitCode=$?
+
+                    # show JQ failures
+                    if [ $jqExitCode -eq 0 ]; then
+                        output="$jqOutput"
+                    else
+                        echo "JQFilter '${jqFilter}' failed with exit code '${jqExitCode}' (JSON input: ${output})"
+                    fi
+                fi
+                # assert output
+                if [ "$output" = "$assert" ]; then
+                    break
+                else
+                    echo "Assertion failed: expected '$assert' but got '$output'"
+                fi
+            else
+                # no assertion required
+                break
+            fi
+        fi
+
+        # abort if max-retires are reached
+        if [ "$loopCount" -ge $retries ]; then
+            echo "Failed after $loopCount attempts."
+            exit 1
+        fi
+
+        echo "Retrying in $interval seconds.."
+        sleep $interval
+    done;
+}
+
+function testVersion {
+    log::info "Checking the versions"
+assertRemoteCommand \
+    -c "sudo kyma version" \
+    -z "${ZONE}" \
+    -h "cli-integration-test-${RANDOM_ID}" \
+    -c "$SOURCE"
+}
+
+function testFunction {
+    log::info "Create local resources for a sample Function"
+    assertRemoteCommand \
+        -c "sudo kyma init function --name first-function --runtime nodejs12" \
+        -z "${ZONE}" \
+        -h "cli-integration-test-${RANDOM_ID}" \
+        -c "$SOURCE"
+
+    log::info "Apply local resources for the Function to the Kyma cluster"
+    assertRemoteCommand \
+        -c "sudo kyma apply function" \
+        -z "${ZONE}" \
+        -h "cli-integration-test-${RANDOM_ID}" \
+        -c "$SOURCE"
+
+    sleep 30
+
+    log::info "Check if the Function is running"
+    assertRemoteCommand \
+        -c "sudo kubectl get pods -lserverless.kyma-project.io/function-name=first-function,serverless.kyma-project.io/resource=deployment -o jsonpath='{.items[0].status.phase}'" \
+        -a 'Running' \
+        -z "${ZONE}" \
+        -h "cli-integration-test-${RANDOM_ID}" \
+        -c "$SOURCE"
+}
+
+function testRuntest {
+    log::info "Running a simple test on Kyma"
+    assertRemoteCommand \
+        -c "sudo kyma test run dex-connection" \
+        -z "${ZONE}" \
+        -h "cli-integration-test-${RANDOM_ID}" \
+        -c "$SOURCE"
+
+    echo "Check if the test succeeds"
+    assertRemoteCommand \
+        -c "sudo kyma test status -o json" \
+        -a 'Succeeded' \
+        -j '.status.results[0].status' \
+        -z "${ZONE}" \
+        -h "cli-integration-test-${RANDOM_ID}" \
+        -c "$SOURCE"
+}
+
 gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 RANDOM_ID=$(openssl rand -hex 4)
@@ -145,59 +287,12 @@ else
 fi
 
 # Run test suite
-# shellcheck disable=SC1090
-source "${SCRIPT_DIR}/lib/clitests.sh"
+testVersion
 
-# clitests::execute "test-version" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
-log::info "Checking the versions"
-clitests::assertRemoteCommand \
-    -c "sudo kyma version" \
-    -z "${ZONE}" \
-    -h "cli-integration-test-${RANDOM_ID}" \
-    -c "$SOURCE"
-
-#clitests::execute "test-function" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
-log::info "Create local resources for a sample Function"
-clitests::assertRemoteCommand \
-    -c "sudo kyma init function --name first-function --runtime nodejs12" \
-    -z "${ZONE}" \
-    -h "cli-integration-test-${RANDOM_ID}" \
-    -c "$SOURCE"
-
-log::info "Apply local resources for the Function to the Kyma cluster"
-clitests::assertRemoteCommand \
-    -c "sudo kyma apply function" \
-    -z "${ZONE}" \
-    -h "cli-integration-test-${RANDOM_ID}" \
-    -c "$SOURCE"
-
-sleep 30
-
-log::info "Check if the Function is running"
-clitests::assertRemoteCommand \
-    -c "sudo kubectl get pods -lserverless.kyma-project.io/function-name=first-function,serverless.kyma-project.io/resource=deployment -o jsonpath='{.items[0].status.phase}'" \
-    -a 'Running' \
-    -z "${ZONE}" \
-    -h "cli-integration-test-${RANDOM_ID}" \
-    -c "$SOURCE"
+testFunction
 
 
 # ON alpha installation there is no dex, therefore skipping the test
 if [ "$INSTALLATION" != 'alpha' ]; then
-    #runtest
-    log::info "Running a simple test on Kyma"
-    clitests::assertRemoteCommand \
-        -c "sudo kyma test run dex-connection" \
-        -z "${ZONE}" \
-        -h "cli-integration-test-${RANDOM_ID}" \
-        -c "$SOURCE"
-
-    echo "Check if the test succeeds"
-    clitests::assertRemoteCommand \
-        -c "sudo kyma test status -o json" \
-        -a 'Succeeded' \
-        -j '.status.results[0].status' \
-        -z "${ZONE}" \
-        -h "cli-integration-test-${RANDOM_ID}" \
-        -c "$SOURCE"
+    testRuntest
 fi
