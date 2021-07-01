@@ -2,7 +2,7 @@ pjNames:
   - pjName: "skr-azure-integration-dev"
 #  - pjName: "skr-aws-integration-dev"
 #  - pjName: "skr-trial-integration-dev"
-#prConfigs:
-#  kyma-project:
-#    kyma:
-#      prNumber: 11548
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 11548
