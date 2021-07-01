@@ -621,12 +621,6 @@ utils::generate_commonName() {
         esac
     done
 
-    if [ ${#id} -gt 0 ]; then
-        id="-$id-"
-    elif [ -n "$namePrefix" ]; then
-        namePrefix="$namePrefix-"
-    fi
-
     namePrefix=$(echo "$namePrefix" | tr '_' '-')
     namePrefix=${namePrefix#-}
 
