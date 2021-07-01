@@ -613,19 +613,13 @@ utils::generate_commonName() {
             n)
                 local namePrefix="$OPTARG" ;;
             p)
-                local id="$OPTARG" ;;
+                local id="-$OPTARG-" ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
                 echo "Option -$OPTARG argument not provided" >&2; ;;
         esac
     done
-
-    if [ ${#id} -gt 0 ]; then
-        id="-$id-"
-    elif [ -n "$namePrefix" ]; then
-        namePrefix="$namePrefix-"
-    fi
 
     namePrefix=$(echo "$namePrefix" | tr '_' '-')
     namePrefix=${namePrefix#-}
@@ -711,7 +705,7 @@ function utils::generate_vars_for_build {
         readonly releaseVersion=$(cat "VERSION")
         log::info "Read release version: $releaseVersion"
         utils::generate_commonName \
-            -n "rel"
+            -n "rel-"
         # shellcheck disable=SC2034
         utils_generate_vars_for_build_return_commonName=${utils_generate_commonName_return_commonName:?}
         # shellcheck disable=SC2034
@@ -729,7 +723,7 @@ function utils::generate_vars_for_build {
     elif [ -n "$prowjobName" ]; then
         prowjobName=${prowjobName: -20:20}
         utils::generate_commonName \
-            -n "$prowjobName"
+            -n "$prowjobName-"
         # shellcheck disable=SC2034
         utils_generate_vars_for_build_return_commonName=${utils_generate_commonName_return_commonName:?}
         # shellcheck disable=SC2034
