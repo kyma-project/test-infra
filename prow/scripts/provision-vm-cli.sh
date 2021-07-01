@@ -126,8 +126,7 @@ function testVersion {
 assertRemoteCommand \
     -c "sudo kyma version" \
     -z "${ZONE}" \
-    -h "cli-integration-test-${RANDOM_ID}" \
-    -c "$SOURCE"
+    -h "cli-integration-test-${RANDOM_ID}"
 }
 
 function testFunction {
@@ -135,15 +134,13 @@ function testFunction {
     assertRemoteCommand \
         -c "sudo kyma init function --name first-function --runtime nodejs12" \
         -z "${ZONE}" \
-        -h "cli-integration-test-${RANDOM_ID}" \
-        -c "$SOURCE"
+        -h "cli-integration-test-${RANDOM_ID}"
 
     log::info "Apply local resources for the Function to the Kyma cluster"
     assertRemoteCommand \
         -c "sudo kyma apply function" \
         -z "${ZONE}" \
-        -h "cli-integration-test-${RANDOM_ID}" \
-        -c "$SOURCE"
+        -h "cli-integration-test-${RANDOM_ID}"
 
     sleep 30
 
@@ -152,8 +149,7 @@ function testFunction {
         -c "sudo kubectl get pods -lserverless.kyma-project.io/function-name=first-function,serverless.kyma-project.io/resource=deployment -o jsonpath='{.items[0].status.phase}'" \
         -a 'Running' \
         -z "${ZONE}" \
-        -h "cli-integration-test-${RANDOM_ID}" \
-        -c "$SOURCE"
+        -h "cli-integration-test-${RANDOM_ID}"
 }
 
 function testRuntest {
@@ -161,8 +157,7 @@ function testRuntest {
     assertRemoteCommand \
         -c "sudo kyma test run dex-connection" \
         -z "${ZONE}" \
-        -h "cli-integration-test-${RANDOM_ID}" \
-        -c "$SOURCE"
+        -h "cli-integration-test-${RANDOM_ID}"
 
     echo "Check if the test succeeds"
     assertRemoteCommand \
@@ -170,8 +165,7 @@ function testRuntest {
         -a 'Succeeded' \
         -j '.status.results[0].status' \
         -z "${ZONE}" \
-        -h "cli-integration-test-${RANDOM_ID}" \
-        -c "$SOURCE"
+        -h "cli-integration-test-${RANDOM_ID}"
 }
 
 gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
