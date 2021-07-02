@@ -57,6 +57,7 @@ function prepareDependencies() {
   done
 }
 
+# shellcheck disable=SC2153
 KYMA_SRC="${GITHUB_ORG_DIR}/${PROJECTNAME}"
 
 case "${SCAN_LANGUAGE}" in

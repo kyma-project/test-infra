@@ -24,40 +24,66 @@ function utils::check_required_vars() {
 
 # utils::generate_self_signed_cert generates self-signed certificate for the given domain
 #
-# Optional exported variables
-# CERT_VALID_DAYS - days when the certificate is valid
-# Arguments
-# $1 - domain name
+# Arguments:
+#
+# required:
+# d - domain name
+# s - subdomain
+#
+# optional:
+# v - number days certificate will be valid, default 5 days
+#
+# Return variables
+# utils_generate_self_signed_cert_return_tls_cert - generated tls certificate
+# utils_generate_self_signed_cert_return_tls_key - generated tls key
 function utils::generate_self_signed_cert() {
-  if [ -z "$1" ]; then
-    echo "Domain name is empty. Exiting..."
-    exit 1
-  fi
-  local DOMAIN
-  DOMAIN=$1
-  local CERT_PATH
-  local KEY_PATH
-  tmpDir=$(mktemp -d)
-  CERT_PATH="${tmpDir}/cert.pem"
-  KEY_PATH="${tmpDir}/key.pem"
-  CERT_VALID_DAYS=${CERT_VALID_DAYS:-5}
 
-  openssl req -x509 -nodes -days "${CERT_VALID_DAYS}" -newkey rsa:4069 \
-                   -subj "/CN=${DOMAIN}" \
-                   -reqexts SAN -extensions SAN \
-                   -config <(cat /etc/ssl/openssl.cnf \
-          <(printf "\\n[SAN]\\nsubjectAltName=DNS:*.%s" "${DOMAIN}")) \
-                   -keyout "${KEY_PATH}" \
-                   -out "${CERT_PATH}"
+    local OPTIND
+    local dnsSubDomain
+    local dnsDomain
+    local certValidDays="5"
 
-  TLS_CERT=$(base64 "${CERT_PATH}" | tr -d '\n')
-  TLS_KEY=$(base64 "${KEY_PATH}" | tr -d '\n')
+    while getopts ":s:d:v:" opt; do
+        case $opt in
+            s)
+                dnsSubDomain="$OPTARG";;
+            d)
+                dnsDomain="${OPTARG%.}";;
+            v)
+                certValidDays="${OPTARG:-$certValidDays}";;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+    done
 
-  echo "${TLS_CERT}"
-  echo "${TLS_KEY}"
+    utils::check_empty_arg "$dnsDomain" "Domain name not provided."
+    utils::check_empty_arg "$dnsSubDomain" "Subdomain not provided."
 
-  rm "${KEY_PATH}"
-  rm "${CERT_PATH}"
+    log::info "Generate self-signed certificate"
+    local dnsFQDN="$dnsSubDomain.$dnsDomain"
+    tmpDir=$(mktemp -d)
+    local certPath="$tmpDir/cert.pem"
+    local keyPath="$tmpDir/key.pem"
+
+    openssl req -x509 -nodes -days "$certValidDays" -newkey rsa:4069 \
+        -subj "/CN=$dnsFQDN" \
+        -reqexts SAN -extensions SAN \
+        -config <(cat /etc/ssl/openssl.cnf \
+        <(printf "\\n[SAN]\\nsubjectAltName=DNS:*.%s" "$dnsFQDN")) \
+        -keyout "$keyPath" \
+        -out "$certPath"
+
+    # return value
+    # shellcheck disable=SC2034
+    utils_generate_self_signed_cert_return_tls_cert=$(base64 "$certPath" | tr -d '\n')
+    # return value
+    # shellcheck disable=SC2034
+    utils_generate_self_signed_cert_return_tls_key=$(base64 "$keyPath" | tr -d '\n')
+
+    rm "$keyPath"
+    rm "$certPath"
 }
 
 # utils::generate_letsencrypt_cert generates let's encrypt certificate for the given domain
@@ -277,6 +303,7 @@ function utils::save_env_file() {
   done
 }
 
+# utils::describe_nodes call k8s statistics commands and check if oom event was recorded.
 function utils::describe_nodes() {
     {
       log::info "calling describe nodes"
@@ -293,7 +320,7 @@ function utils::describe_nodes() {
     fi
 }
 
-
+# utils::oom_get_output download output from debug command pod if exist.
 function utils::oom_get_output() {
   if [ ! -e "${ARTIFACTS}/describe_nodes.txt" ]; then
     utils::describe_nodes
@@ -321,6 +348,7 @@ function utils::oom_get_output() {
 # utils::debug_oom will create oom-debug daemonset
 # it will create necessary clusterrolebindings to allow oom-debug pods run as privileged
 function utils::debug_oom() {
+  # run oom debug pod
   kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/debug-container.yaml"
 }
 
@@ -368,61 +396,339 @@ function utils::kubeaudit_check_report() {
   fi
 }
 
-# post_hook runs at the end of a script or on any error
-function utils::post_hook() {
-  #!!! Must be at the beginning of this function !!!
-  EXIT_STATUS=$?
-
-  log::info "Cleanup"
-
-  if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
-    log::info "AN ERROR OCCURED! Take a look at preceding log entries."
-  fi
-
-  #Turn off exit-on-error so that next step is executed even if previous one fails.
-  set +e
-
-  # collect logs from failed tests before deprovisioning
-  kyma::run_test_log_collector "post-main-kyma-gke-integration"
-
-  gcloud::cleanup
-
-  MSG=""
-  if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-  log::info "Job is finished ${MSG}"
-  set -e
-
-  exit "${EXIT_STATUS}"
-}
-
-
-# run_jobguard will start jobguard if build type is set to pr
-# Arguments
-# $1 - Build type set for prowjob
-function utils::run_jobguard() {
-  buildType=$( echo "${1}" | tr "[:upper:]" "[:lower:]")
-  if [[ "${buildType}" == "pr" ]]; then
-    log::info "Execute Job Guard"
-    # shellcheck source=development/jobguard/scripts/run.sh
-    "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
-  fi
-}
-
-# utils::generate_CommonName create and export COMMON_NAME variable
-# it generates random part of COMMON_NAME and prefix it with provided arguments
+# utils::post_hook runs at the end of a script or on any error.
 #
 # Arguments:
-# $1 - string to use as a common name prefix /optional
-# $2 - pull request number or commit id to use as a common name prefix /optional
-# Exports
-# COMMON_NAME
+# required:
+# p - GCP project name
+# E - exit status to report at the end of function execution
+#
+# optional:
+# c - if set to true cleanup cluster, default false
+# g - if set to true cleanup gateway DNS, default false
+# G - gateway hostname to clean, default *
+# a - if set to true cleanup apiserver DNS, default false
+# A - apiserver hostname to clean, default apiserver
+# I - if set to true cleanup gateway IP, default false
+# l - if set to true enable error logging guard
+# z - GCP compute zone, default europe-west4-b
+# R - GCP compute region, default europe-west4
+# r - if true clean regional cluster, default false
+# d - if true deprovision cluster in async mode, default true
+# n - cluster name to deprovision
+# s - dns subdomain
+# e - gateway IP address
+# f - apiserver IP address
+# N - gateway IP address name
+# Z - GCP dns zone name
+#
+function utils::post_hook() {
+    # enabling path globbing, disabled in a trap before utils::post_hook call
+    set +f
+
+    kubectl get installation kyma-installation -o go-template --template='{{- range .status.errorLog }}{{printf "%s:\n %s\n" .component .log}}{{- end}}'
+    kubectl logs -n kyma-installer -l name=kyma-installer
+
+    local OPTIND
+    local projectName
+    local exitStatus
+    local cleanupCluster="false"
+    local cleanupGatewayDns="false"
+    local gatewayHostname='*'
+    local cleanupApiserverDns="false"
+    local apiserverHostname='apiserver'
+    local cleanupGatewayIP="false"
+    local errorLoggingGuard="false"
+    local computeZone="europe-west4-b"
+    local computeRegion="europe-west4"
+    local cleanRegionalCluster="false"
+    local asyncDeprovision="true"
+
+    while getopts ":n:c:l:p:a:G:g:z:I:r:d:R:A:e:f:s:Z:N:E:" opt; do
+        case $opt in
+            p)
+                projectName="$OPTARG" ;;
+            E)
+                exitStatus="$OPTARG" ;;
+            c)
+                cleanupCluster="${OPTARG:-$cleanupCluster}" ;;
+            g)
+                cleanupGatewayDns="${OPTARG:-$cleanupGatewayDns}" ;;
+            G)
+                gatewayHostname="${OPTARG:-$gatewayHostname}" ;;
+            a)
+                cleanupApiserverDns="${OPTARG:-$cleanupApiserverDns}" ;;
+            A)
+                apiserverHostname="${OPTARG:-$apiserverHostname}" ;;
+            I)
+                cleanupGatewayIP="${OPTARG:-$cleanupGatewayIP}" ;;
+            l)
+                errorLoggingGuard="${OPTARG:-$errorLoggingGuard}" ;;
+            z)
+                computeZone=${OPTARG:-$computeZone} ;;
+            R)
+                computeRegion=${OPTARG:-$computeRegion} ;;
+            r)
+                cleanRegionalCluster=${OPTARG:-$cleanRegionalCluster} ;;
+            d)
+                asyncDeprovision=${OPTARG:-$asyncDeprovision} ;;
+            n)
+                if [ -n "$OPTARG" ]; then
+                    local clusterName="$OPTARG"
+                fi ;;
+            s)
+                if [ -n "$OPTARG" ]; then
+                    local dnsSubDomain="$OPTARG"
+                fi ;;
+            e)
+                if [ -n "$OPTARG" ]; then
+                    local gatewayIP="$OPTARG"
+                fi ;;
+            f)
+                if [ -n "$OPTARG" ]; then
+                    local apiserverIP="$OPTARG"
+                fi ;;
+            N)
+                if [ -n "$OPTARG" ]; then
+                    local gatewayIpAddressName="$OPTARG"
+                fi ;;
+            Z)
+                if [ -n "$OPTARG" ]; then
+                    local gcpDnsZoneName="$OPTARG"
+                fi ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2; ;;
+        esac
+    done
+
+    utils::check_empty_arg "$projectName" "Project name not provided." "graceful"
+    utils::check_empty_arg "$exitStatus" "Exit status not provided." "graceful"
+
+    if [ "$errorLoggingGuard" = "true" ]; then
+        log::info "AN ERROR OCCURED! Take a look at preceding log entries."
+    fi
+
+    log::info "Collect logs"
+
+    #Turn off exit-on-error so that next step is executed even if previous one fails.
+    set +e
+
+    # collect logs from failed tests before deprovisioning
+    kyma::run_test_log_collector "post-main-kyma-gke-integration"
+
+    log::info "Cleanup"
+
+    utils::oom_get_output
+    if [ "$cleanupCluster" = "true" ]; then
+        gcp::deprovision_k8s_cluster \
+            -n "$clusterName" \
+            -p "$projectName" \
+            -z "$computeZone" \
+            -R "$computeRegion" \
+            -r "$cleanRegionalCluster" \
+            -d "$asyncDeprovision"
+    fi
+    if [ "$cleanupGatewayDns" = "true" ]; then
+        gcp::delete_dns_record \
+            -a "$gatewayIP" \
+            -p "$projectName" \
+            -h "$gatewayHostname" \
+            -s "$dnsSubDomain" \
+            -z "$gcpDnsZoneName"
+    fi
+    if [ "$cleanupGatewayIP" = "true" ]; then
+        gcp::delete_ip_address \
+            -p "$projectName" \
+            -n "$gatewayIpAddressName" \
+            -R "$computeRegion"
+    fi
+    if [ "$cleanupApiserverDns" = "true" ]; then
+        gcp::delete_dns_record \
+            -a "$apiserverIP" \
+            -p "$projectName" \
+            -h "$apiserverHostname" \
+            -s "$dnsSubDomain" \
+            -z "$gcpDnsZoneName"
+    fi
+
+    local msg=""
+    if [[ $exitStatus -ne 0 ]]; then msg="(exit status: $exitStatus)"; fi
+    log::info "Job is finished $msg"
+    set -e
+
+    exit "$exitStatus"
+}
+
+
+# utils::run_jobguard will start jobguard if build type is set to pr
+# Arguments
+# b - Build type set for prowjob
+# P - path to test-infra repository sources root directory
+function utils::run_jobguard() {
+
+    local OPTIND
+    local testInfraSourcesDir="/home/prow/go/src/github.com/kyma-project"
+
+    while getopts ":b:P:" opt; do
+        case $opt in
+            b)
+                local buildType="$OPTARG" ;;
+            P)
+                testInfraSourcesDir=${OPTARG:-$testInfraSourcesDir} ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2; ;;
+        esac
+    done
+
+    utils::check_empty_arg "$buildType"
+    buildType=$( echo "$buildType" | tr "[:upper:]" "[:lower:]")
+    if [[ "$buildType" == "pr" ]]; then
+        log::info "Execute Job Guard"
+        # shellcheck source=development/jobguard/scripts/run.sh
+        "$testInfraSourcesDir"/development/jobguard/scripts/run.sh
+    fi
+}
+
+# utils::generate_CommonName generate common name
+# It generates random string and prefix it, with provided arguments
+#
+# Arguments:
+#
+# optional:
+# n - string to use as a common name prefix
+# p - pull request number or commit id to use as a common name prefix
+#
+# Return:
+# utils_generate_commonName_return_commonName - generated common name string
 utils::generate_commonName() {
-  NAME_PREFIX=$1
-  PULL_NUMBER=$2
-  if [ ${#PULL_NUMBER} -gt 0 ]; then
-    PULL_NUMBER="-${PULL_NUMBER}-"
-  fi
-  RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
-  COMMON_NAME=$(echo "${NAME_PREFIX}${PULL_NUMBER}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-  export COMMON_NAME
+
+    local OPTIND
+
+    while getopts ":n:p:" opt; do
+        case $opt in
+            n)
+                local namePrefix="$OPTARG" ;;
+            p)
+                local id="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2; ;;
+        esac
+    done
+
+    namePrefix=$(echo "$namePrefix" | tr '_' '-')
+    namePrefix=${namePrefix#-}
+
+    local randomNameSuffix
+    randomNameSuffix=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
+    # return value
+    # shellcheck disable=SC2034
+    utils_generate_commonName_return_commonName=$(echo "$namePrefix$id$randomNameSuffix" | tr "[:upper:]" "[:lower:]" )
+}
+
+# check_empty_arg will check if first argument is empty.
+# If it's empty it will log second argument as error message and exit with code 1.
+# If second argument is empty, generic default log message will be used.
+#
+# Arguments:
+# $1 - argument to check if it's empty
+# $2 - log message to use if $1 is empty
+function utils::check_empty_arg {
+    if [ -z "$2" ]; then
+        logMessage="Mandatory argument is empty."
+    else
+        logMessage="$2"
+    fi
+    if [ -z "$1" ]; then
+        if [ -n "$3" ]; then
+            log::error "$logMessage"
+        else
+            log::error "$logMessage Exiting"
+            exit 1
+        fi
+    fi
+}
+
+# utils::generate_vars_for_build generate string values for specific build types
+#
+# Arguments:
+#
+# optional:
+# b - build type
+# p - pull request number, required for build type pr
+# s - pull request base SHA, required for build type commit
+# n - prowjob name required for other build types
+#
+# Return variables:
+# utils_set_vars_for_build_return_commonName - generated common name
+# utils_set_vars_for_build_return_kymaSource - generated kyma source
+function utils::generate_vars_for_build {
+
+    local OPTIND
+
+    while getopts ":b:p:s:n:" opt; do
+        case $opt in
+            b)
+                local buildType="$OPTARG" ;;
+            p)
+                local prNumber="$OPTARG" ;;
+            s)
+                local prBaseSha="$OPTARG" ;;
+            n)
+                local prowjobName="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+   done
+
+    if [ "$buildType" = "pr" ]; then
+        utils::check_empty_arg "$prNumber" "Pull request number not provided."
+    fi
+
+    # In case of PR, operate on PR number
+    if [[ "$buildType" == "pr" ]]; then
+        utils::generate_commonName \
+            -n "pr" \
+            -p "$prNumber"
+        utils_generate_vars_for_build_return_commonName=${utils_generate_commonName_return_commonName:?}
+        # shellcheck disable=SC2034
+        utils_generate_vars_for_build_return_kymaSource="PR-$prNumber"
+    elif [[ "$buildType" == "release" ]]; then
+        log::info "Reading release version from VERSION file"
+        readonly releaseVersion=$(cat "VERSION")
+        log::info "Read release version: $releaseVersion"
+        utils::generate_commonName \
+            -n "rel"
+        # shellcheck disable=SC2034
+        utils_generate_vars_for_build_return_commonName=${utils_generate_commonName_return_commonName:?}
+        # shellcheck disable=SC2034
+        utils_generate_vars_for_build_return_kymaSource="$releaseVersion"
+    # Otherwise (master), operate on triggering commit id
+    elif [ -n "$prBaseSha" ]; then
+        readonly commitID="${prBaseSha::8}"
+        utils::generate_commonName \
+            -n "commit" \
+            -p "$commitID"
+        # shellcheck disable=SC2034
+        utils_generate_vars_for_build_return_commonName=${utils_generate_commonName_return_commonName:?}
+        # shellcheck disable=SC2034
+        utils_generate_vars_for_build_return_kymaSource="$commitID"
+    elif [ -n "$prowjobName" ]; then
+        prowjobName=${prowjobName: -20:20}
+        utils::generate_commonName \
+            -n "$prowjobName"
+        # shellcheck disable=SC2034
+        utils_generate_vars_for_build_return_commonName=${utils_generate_commonName_return_commonName:?}
+        # shellcheck disable=SC2034
+        utils_generate_vars_for_build_return_kymaSource="main"
+    else
+        log::error "Build type not known. Set -b parameter to value 'pr' or 'release', or set -s or -n parameter."
+    fi
 }

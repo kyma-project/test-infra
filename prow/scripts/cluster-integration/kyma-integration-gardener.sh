@@ -75,7 +75,9 @@ ERROR_LOGGING_GUARD="true"
 export ERROR_LOGGING_GUARD
 
 readonly COMMON_NAME_PREFIX="grd"
-utils::generate_commonName "${COMMON_NAME_PREFIX}"
+utils::generate_commonName -n "${COMMON_NAME_PREFIX}"
+COMMON_NAME="${utils_generate_commonName_return_commonName:?}"
+export COMMON_NAME
 
 ### Cluster name must be less than 10 characters!
 
@@ -122,6 +124,12 @@ gardener::provision_cluster
 # uses previously set KYMA_SOURCE
 if [[ "${KYMA_ALPHA}" == "true" ]]; then
   kyma::alpha_deploy_kyma
+  if [[ "${KYMA_ALPHA_DELETE}" == "true" ]]; then
+    sleep 30
+    kyma::alpha_delete_kyma
+    sleep 30
+    kyma::alpha_deploy_kyma
+  fi
 # this will be extended with the next components
 elif [[ "${API_GATEWAY_INTEGRATION}" == "true" ]]; then
   api-gateway::prepare_components_file

@@ -76,6 +76,10 @@ gardener::generate_overrides() {
 
 gardener::provision_cluster() {
     log::info "Provision cluster: \"${CLUSTER_NAME}\""
+    if [ "${#CLUSTER_NAME}" -gt 9 ]; then
+        log::error "Provided cluster name is too long"
+        return 1
+    fi
 
     CLEANUP_CLUSTER="true"
       # enable trap to catch kyma provision failures

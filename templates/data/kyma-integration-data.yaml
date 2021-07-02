@@ -235,6 +235,7 @@ templates:
                   labels:
                     preset-build-pr: "true"
                     preset-gke-upgrade-pre-job: "true"
+                    preset-debug-commando-oom: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -384,6 +385,7 @@ templates:
                     preset-gke-upgrade-post-job: "true"
                     preset-log-collector-slack-token: "true"
                     preset-build-main: "true"
+                    preset-debug-commando-oom: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
