@@ -740,6 +740,7 @@ postsubmits: # runs on main
         preset-build-main: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
+        preset-debug-commando-oom: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
         preset-gc-compute-envs: "true"
