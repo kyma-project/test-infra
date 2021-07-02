@@ -57,6 +57,28 @@ templates:
                     - "jobConfig_develop"
               {{- end }}
 
+              # Exception created for release 2.0
+              {{- with .Global.nextRelease }}
+              - jobConfig:
+                  name: pre-rel{{ . | replace "." "" }}-kyma-artifacts
+                  branches:
+                    - ^release-{{ . }}$
+                  extra_refs:
+                    test-infra:
+                      - org: "kyma-project"
+                        repo: "test-infra"
+                        path_alias: "github.com/kyma-project/test-infra"
+                        base_ref: release-{{ . }}
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_bootstrap"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_develop"
+              {{- end }}
+
               # postsubmits
               - jobConfig:
                   name: "post-kyma-artifacts"
@@ -71,6 +93,29 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_develop"
               {{- range .Global.releases }}
+              - jobConfig:
+                  name: post-rel{{ . | replace "." "" }}-kyma-artifacts
+                  branches:
+                    - ^release-{{ . }}$
+                  extra_refs:
+                    test-infra:
+                      - org: "kyma-project"
+                        repo: "test-infra"
+                        path_alias: "github.com/kyma-project/test-infra"
+                        base_ref: release-{{ . }}
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_bootstrap"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_release"
+              {{- end }}
+
+              # Exception created for release 2.0
+              {{- with .Global.nextRelease }}
               - jobConfig:
                   name: post-rel{{ . | replace "." "" }}-kyma-artifacts
                   branches:
