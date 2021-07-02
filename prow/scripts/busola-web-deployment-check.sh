@@ -18,11 +18,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Check if web deployment was updated in PR"
     if grep -w "${PULL_NUMBER}" "/home/prow/go/src/github.com/kyma-project/busola/resources/web/deployment.yaml"; then
-        log::info "Pull request number found"
+        log::success "Pull request number found."
     else
-        log::info "Pull request number not found"
+        log::error "Pull request number not found. Please update deployment image in your PR."
     fi
-    log::info "Check end"
 fi
-
-log::success "all done"
