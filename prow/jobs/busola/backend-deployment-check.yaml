@@ -3,10 +3,10 @@
 
 presubmits: # runs on PRs
   kyma-project/busola:
-    - name: pre-busola-web-deployment-check
+    - name: pre-busola-backend-deployment-check
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-busola-web-deployment-check"
+        prow.k8s.io/pubsub.runID: "pre-busola-backend-deployment-check"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gardener-azure-kyma-integration: "true"

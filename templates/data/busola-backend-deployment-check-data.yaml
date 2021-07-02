@@ -29,7 +29,7 @@ templates:
             jobs:
               # presubmits
               - jobConfig:
-                  name: "pre-busola-web-deployment-check"
+                  name: "pre-busola-backend-deployment-check"
                   optional: false
                   run_if_changed: "^backend/|^components/|^shared/|^package.json"
                   labels:

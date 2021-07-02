@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "pre-busola-web-deployment-check"
+  - pjName: "pre-busola-backend-deployment-check"
 prConfigs:
   kyma-project:
     busola:
