@@ -17,7 +17,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Check if web deployment was updated in PR"
-    grep "${PULL_NUMBER}" "/home/prow/go/src/github.com/kyma-project/busola/resources/web/deployment.yaml"
+    grep -w "${PULL_NUMBER}" "/home/prow/go/src/github.com/kyma-project/busola/resources/web/deployment.yaml"
+    log::info "Check end"
 fi
 
 log::success "all done"
