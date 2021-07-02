@@ -16,5 +16,5 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
-    grep ${PULL_NUMBER} /home/prow/go/src/github.com/kyma-project/busola/resources/web/deployment.yaml
+    grep "${PULL_NUMBER}" /home/prow/go/src/github.com/kyma-project/busola/resources/web/deployment.yaml
 fi
