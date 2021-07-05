@@ -17,6 +17,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 
 requiredVars=(
     REPO_OWNER

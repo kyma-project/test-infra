@@ -13,6 +13,8 @@ readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "${SCRIPT_DIR}/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${SCRIPT_DIR}/lib/docker.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$SCRIPT_DIR/lib/gcp.sh"
 
 # copy_artifacts copies artifacts to the destined bucket path.
 # it accepts one argument BUCKET_PATH which should be formatted as:

@@ -11,6 +11,8 @@ readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "${SCRIPT_DIR}/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${SCRIPT_DIR}/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$SCRIPT_DIR/lib/gcp.sh"
 
 cleanup() {
     ARG=$?

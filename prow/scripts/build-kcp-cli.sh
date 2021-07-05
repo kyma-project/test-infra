@@ -11,6 +11,8 @@ source "${SCRIPT_DIR}/lib/log.sh"
 source "${SCRIPT_DIR}/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcloud.sh
 source "${SCRIPT_DIR}/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$SCRIPT_DIR/lib/gcp.sh"
 
 requiredVars=(
     KYMA_DEVELOPMENT_ARTIFACTS_BUCKET

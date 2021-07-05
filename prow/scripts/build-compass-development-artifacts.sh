@@ -17,6 +17,8 @@ source "${SCRIPT_DIR}/lib/utils.sh"
 source "${SCRIPT_DIR}/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${SCRIPT_DIR}/lib/docker.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$SCRIPT_DIR/lib/gcp.sh"
 
 requiredVars=(
     DOCKER_PUSH_REPOSITORY

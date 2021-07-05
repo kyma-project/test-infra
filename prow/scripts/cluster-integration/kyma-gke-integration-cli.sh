@@ -80,7 +80,8 @@ export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_return_subnet_name:?}"
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
-gcp::authenticate -c "$GOOGLE_APPLICATION_CREDENTIALS"
+gcp::authenticate \
+    -c "$GOOGLE_APPLICATION_CREDENTIALS"
 
 gcp::create_network \
     -n "$GCLOUD_NETWORK_NAME" \

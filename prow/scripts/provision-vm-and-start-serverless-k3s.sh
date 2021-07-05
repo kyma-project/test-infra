@@ -17,7 +17,9 @@ source "${SCRIPT_DIR}/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${SCRIPT_DIR}/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+source "$SCRIPT_DIR/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$SCRIPT_DIR/lib/gcp.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"

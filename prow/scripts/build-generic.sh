@@ -8,6 +8,8 @@ readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "${SCRIPT_DIR}/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${SCRIPT_DIR}/lib/docker.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$SCRIPT_DIR/lib/gcp.sh"
 
 usage () {
     echo "Usage: \$ ${BASH_SOURCE[1]} /path/to/component [Makefile targets]"
