@@ -503,11 +503,12 @@ function az::get_cluster_resource_group {
     utils::check_empty_arg "$clusterName" "Cluster name is empty. Exiting..."
 
     clusterResourceGroup=$(az aks show -g "${resourceGroup}" -n "${clusterName}" --query nodeResourceGroup -o tsv)
-    TMP_STATUS=$?
+    tmpStatus=$?
     if [[ ${tmpStatus} -ne 0 ]]; then
         log::error "Failed to get nodes resource group."
         return 1
     fi
+    # shellcheck disable=SC2034
     az_get_cluster_resource_group_return_resource_group="$clusterResourceGroup"
 }
 
