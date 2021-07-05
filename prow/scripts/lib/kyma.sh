@@ -50,17 +50,29 @@ function kyma::alpha_delete_kyma() {
 # kyma::get_last_release_version returns latest Kyma release version
 #
 # Arguments:
-#   $1 - GitHub token
+#   t - GitHub token
 # Returns:
 #   Last Kyma release version
 function kyma::get_last_release_version {
-    if [[ -z "$1" ]]; then
-        log::error "Github token is missing, please provide token"
-        exit 1
-    fi
+
+    local OPTIND
+    local githubToken
+
+    while getopts ":t:" opt; do
+        case $opt in
+            t)
+                githubToken="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+    done
+
+    utils::check_empty_arg "$githubToken" "Github token was not provided. Exiting..."
     
     # shellcheck disable=SC2034
-    kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token ${1}" "https://api.github.com/repos/kyma-project/kyma/releases" \
+    kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
         | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].tag_name')
 }
 
@@ -128,6 +140,10 @@ kyma::run_test_log_collector(){
 # Arguments:
 # required:
 # s - suite name
+#
+# Returns
+# kyma_rest_summary_return_exit_code - exit code
+#
 kyma::test_summary() {
 
     local OPTIND
@@ -168,5 +184,12 @@ kyma::test_summary() {
 
     echo "ClusterTestSuite details"
     kubectl get cts "${suiteName}" -oyaml
-    return $tests_exit
+    if [ $tests_exit -ne 0 ]; then
+        log::error "Tests have failed"
+    else
+        log::success "Tests completed"
+    fi
+
+    # shellcheck disable=SC2034
+    kyma_rest_summary_return_exit_code="$tests_exit"
 }
