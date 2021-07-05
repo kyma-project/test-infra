@@ -710,5 +710,8 @@ function gcp::delete_ip_address {
     log::info "Removing IP address $ipAddressName."
     if gcloud compute addresses delete "$ipAddressName" --project="$gcpProjectName" --region="$gcpComputeRegion"; then
         log::info "Successfully removed IP $ipAddressName!"
+    else
+        log::error "Failed to remove IP $ipAddressName!"
+        return 1
     fi
 }

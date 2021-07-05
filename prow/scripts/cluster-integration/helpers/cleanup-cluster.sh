@@ -152,9 +152,10 @@ function removeResources() {
 			exit 1
 		# Remove IP address reservation.
 		else
-			log::info "gcloud::delete_ip_address ${GATEWAY_IP_ADDRESS_NAME}"
-
-			gcloud::delete_ip_address "${GATEWAY_IP_ADDRESS_NAME}"
+			gcp::delete_ip_address \
+    			-n "${GATEWAY_IP_ADDRESS_NAME}" \
+				-p "$CLOUDSDK_CORE_PROJECT" \
+				-R "$CLOUDSDK_COMPUTE_REGION"
 			TMP_STATUS=$?
 			if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 		fi

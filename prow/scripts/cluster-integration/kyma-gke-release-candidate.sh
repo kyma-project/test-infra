@@ -105,8 +105,10 @@ cleanupOnError() {
     fi
 
     if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
-        log::info "Release Gateway IP Address"
-        gcloud::delete_ip_address "${GATEWAY_IP_ADDRESS_NAME}"
+        gcp::delete_ip_address \
+            -n "${GATEWAY_IP_ADDRESS_NAME}" \
+            -p "$CLOUDSDK_CORE_PROJECT" \
+            -R "$CLOUDSDK_COMPUTE_REGION"
     fi
 
     if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
