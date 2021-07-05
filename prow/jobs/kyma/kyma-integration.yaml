@@ -366,6 +366,50 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+    - name: pre-main-cluster-users-integration-alpha-k3s
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-cluster-users-integration-alpha-k3s"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-vm-kyma-integration: "true"
+      run_if_changed: '^((resources/cluster-users\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-cluster-users-k3s.sh"
+            env:
+              - name: USE_ALPHA
+                value: "true"
+            resources:
+              requests:
+                memory: 100Mi
+                cpu: 50m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-main-kyma-gke-integration
       annotations:
         pipeline.clusterprovisioning: "gcloud cli"
