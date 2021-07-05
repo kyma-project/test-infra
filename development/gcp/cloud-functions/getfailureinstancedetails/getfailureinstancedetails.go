@@ -68,6 +68,14 @@ func init() {
 	var err error
 	projectID = os.Getenv("GCP_PROJECT_ID")
 	ctx := context.Background()
+	if projectID == "" {
+		log.Println(LogEntry{
+			Message:   "environment variable GCP_PROJECT_ID is empty, can't setup firebase client",
+			Severity:  "CRITICAL",
+			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+		})
+		panic("environment variable GCP_PROJECT_ID is empty, can't setup firebase client")
+	}
 	firestoreClient, err = firestore.NewClient(ctx, projectID)
 	if err != nil {
 		log.Fatalf("Failed to create client: %v", err)
