@@ -181,7 +181,8 @@ function installStackdriverPrometheusCollector(){
 }
 
 log::info "Authenticate"
-gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+gcp::authenticate \
+    -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 
 

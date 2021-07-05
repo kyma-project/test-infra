@@ -22,7 +22,8 @@ if [[ ! -d "${SOURCES_DIR}" ]]; then
 fi
 
 if [[ -n "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
-    gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+    gcp::authenticate \
+      -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 fi
 if [[ "${DOCKER_IN_DOCKER_ENABLED}" == true ]]; then
     docker::start

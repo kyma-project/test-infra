@@ -21,7 +21,8 @@ cleanup() {
 }
 
 if [ "$CI" == "true" ]; then
-  gcloud::authenticate "$GOOGLE_APPLICATION_CREDENTIALS"
+  gcp::authenticate \
+    -c "$GOOGLE_APPLICATION_CREDENTIALS"
 fi
 
 

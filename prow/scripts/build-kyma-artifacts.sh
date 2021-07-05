@@ -36,7 +36,8 @@ function copy_artifacts {
   gsutil cp "${ARTIFACTS}/kyma-components.yaml" "$BUCKET_PATH/kyma-components.yaml"
 }
 
-gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+gcp::authenticate \
+  -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 
 if [ -n "${PULL_NUMBER}" ]; then
@@ -72,7 +73,8 @@ env KYMA_INSTALLER_VERSION="${DOCKER_TAG}" ARTIFACTS_DIR="${ARTIFACTS}" "install
 
 log::info "Content of the local artifacts directory"
 ls -la "${ARTIFACTS}"
-gcloud::authenticate "$SA_KYMA_ARTIFACTS_GOOGLE_APPLICATION_CREDENTIALS"
+gcp::authenticate \
+  -c "$SA_KYMA_ARTIFACTS_GOOGLE_APPLICATION_CREDENTIALS"
 
 if [ -n "$PULL_NUMBER" ]; then
   copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${DOCKER_TAG}"

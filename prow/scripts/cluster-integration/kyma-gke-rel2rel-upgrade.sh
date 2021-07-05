@@ -179,7 +179,8 @@ generateAndExportClusterName() {
 reserveIPsAndCreateDNSRecords() {
     DNS_SUBDOMAIN="${COMMON_NAME}"
     log::info "Authenticate with GCP"
-    gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+    gcp::authenticate \
+        -c "${GOOGLE_APPLICATION_CREDENTIALS}"
     docker::start
 
     DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"

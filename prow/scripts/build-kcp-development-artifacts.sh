@@ -51,7 +51,8 @@ function export_variables() {
    export BUCKET_DIR
 }
 
-gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+gcp::authenticate \
+    -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 export_variables
 
@@ -67,7 +68,8 @@ make -C "${KCP_PATH}/tools/kcp-installer" ${buildTarget}
 
 log::info "Switch to a different service account to push to GCS bucket"
 export GOOGLE_APPLICATION_CREDENTIALS=/etc/credentials/sa-kyma-artifacts/service-account.json
-gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+gcp::authenticate \
+    -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 log::info "Create development artifacts"
 # INPUTS:
