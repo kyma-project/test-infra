@@ -1,7 +1,7 @@
 templates:
   - from: templates/generic.tmpl
     render:
-      - to: ../prow/jobs/busola/web-deployment-check.yaml
+      - to: ../prow/jobs/busola-web/deployment-check.yaml
         localSets:
           extra_refs_kyma-local:
             extra_refs:
