@@ -11,6 +11,9 @@ export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
+
 requiredVars=(
 	INPUT_CLUSTER_NAME
 	DOCKER_PUSH_REPOSITORY
@@ -43,8 +46,10 @@ export STANDARIZED_NAME
 export DNS_SUBDOMAIN="${STANDARIZED_NAME}"
 
 export CLUSTER_NAME="${STANDARIZED_NAME}"
-export GCLOUD_NETWORK_NAME="gke-long-lasting-net"
-export GCLOUD_SUBNET_NAME="gke-long-lasting-subnet"
+gcp::set_vars_for_network \
+  -n "$JOB_NAME"
+export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_return_net_name:?}"
+export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_return_subnet_name:?}"
 
 # Enable Stackdriver Kubernetes Engine Monitoring support on k8s cluster. Mandatory requirement for stackdriver-prometheus collector.
 # https://cloud.google.com/monitoring/kubernetes-engine/prometheus

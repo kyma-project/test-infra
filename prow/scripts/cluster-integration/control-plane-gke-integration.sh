@@ -19,6 +19,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 
 requiredVars=(
     REPO_OWNER
@@ -78,8 +80,10 @@ readonly KCP_ARTIFACTS="${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${KCP_VERSION}"
 COMMON_NAME=$(echo "${COMMON_NAME}" | tr "[:upper:]" "[:lower:]")
 export CLUSTER_NAME="${COMMON_NAME}"
 
-export GCLOUD_NETWORK_NAME="gke-long-lasting-net"
-export GCLOUD_SUBNET_NAME="gke-long-lasting-subnet"
+gcp::set_vars_for_network \
+  -n "$JOB_NAME"
+export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_return_net_name:?}"
+export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_return_subnet_name:?}"
 
 ### For gcloud::provision_gke_cluster
 export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"

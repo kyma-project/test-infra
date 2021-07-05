@@ -73,7 +73,8 @@ utils::generate_vars_for_build \
 export COMMON_NAME=${utils_generate_vars_for_build_return_commonName:?}
 export KYMA_SOURCE=${utils_generate_vars_for_build_return_kymaSource:?}
 
-gcp::set_vars_for_network -n "$JOB_NAME"
+gcp::set_vars_for_network \
+    -n "$JOB_NAME"
 export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_return_net_name:?}"
 export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_return_subnet_name:?}"
 #Used to detect errors for logging purposes

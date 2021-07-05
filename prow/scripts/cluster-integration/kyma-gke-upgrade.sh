@@ -73,6 +73,9 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
+
 requiredVars=(
     REPO_OWNER
     REPO_NAME
@@ -153,8 +156,10 @@ function generateAndExportClusterName() {
   ### Cluster name must be less than 40 characters!
   export CLUSTER_NAME="${COMMON_NAME}"
 
-  export GCLOUD_NETWORK_NAME="${COMMON_NAME_PREFIX}-net"
-  export GCLOUD_SUBNET_NAME="${COMMON_NAME_PREFIX}-subnet"
+  gcp::set_vars_for_network \
+    -n "$JOB_NAME"
+  export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_return_net_name:?}"
+  export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_return_subnet_name:?}"
 }
 
 function reserveIPsAndCreateDNSRecords() {
