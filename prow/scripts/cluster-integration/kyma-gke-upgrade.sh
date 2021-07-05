@@ -194,7 +194,10 @@ function reserveIPsAndCreateDNSRecords() {
 function createNetwork() {
   export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
   log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-  gcloud::create_network "${GCLOUD_NETWORK_NAME}" "${GCLOUD_SUBNET_NAME}"
+  gcp::create_network \
+    -n "${GCLOUD_NETWORK_NAME}" \
+    -s "${GCLOUD_SUBNET_NAME}" \
+    -p "$CLOUDSDK_CORE_PROJECT"
 }
 
 function createCluster() {
