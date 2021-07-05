@@ -12,7 +12,7 @@ readonly TMP_DIR=$(mktemp -d)
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
-    log::info "Check if web deployment was updated in PR."
+    log::info "Check if backend deployment was updated in PR."
     if grep -w "${PULL_NUMBER}" "/home/prow/go/src/github.com/kyma-project/busola/resources/backend/deployment.yaml"; then
         log::success "Pull request number found."
     else
