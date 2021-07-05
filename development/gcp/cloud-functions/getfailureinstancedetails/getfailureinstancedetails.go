@@ -3,7 +3,6 @@ package getfailureinstancedetails
 import (
 	"cloud.google.com/go/firestore"
 	"context"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -84,14 +83,8 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 	trace = fmt.Sprintf("projects/%s/traces/%s/%d", projectID, traceFunctionName, traceRandomInt)
 
 	var prowMessage ProwMessage
-	var data []byte
 	// Decode
-	fmt.Println(m.Data)
-	_, err = base64.StdEncoding.Decode(data, m.Data)
-	if err != nil {
-		panic(err)
-	}
-	err = json.Unmarshal(data, &prowMessage)
+	err = json.Unmarshal(m.Data, &prowMessage)
 	if err != nil {
 		fmt.Println("error:", err)
 	}

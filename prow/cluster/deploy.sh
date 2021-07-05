@@ -72,6 +72,7 @@ function ensure-context() {
 #ensure-context sap-kyma-prow europe-west3-a prow
 
 echo " Deploying Prow..."
+exit 1
 #for c in "${prow_components[@]}"; do
 #  kubectl apply -f "$SCRIPT_DIR/components/$c"
 #done
