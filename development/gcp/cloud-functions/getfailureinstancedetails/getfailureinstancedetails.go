@@ -78,7 +78,12 @@ func init() {
 	}
 	firestoreClient, err = firestore.NewClient(ctx, projectID)
 	if err != nil {
-		log.Fatalf("Failed to create client: %v", err)
+		log.Println(LogEntry{
+			Message:   fmt.Sprintf("failed create firestore client, error: %s", err.Error()),
+			Severity:  "CRITICAL",
+			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+		})
+		panic(fmt.Sprintf("Failed to create client, error: %s", err.Error()))
 	}
 }
 
@@ -103,7 +108,13 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 	// Decode
 	err = json.Unmarshal(m.Data, &prowMessage)
 	if err != nil {
-		fmt.Println("error:", err)
+		log.Println(LogEntry{
+			Message:   "failed unmarshal message data field",
+			Severity:  "CRITICAL",
+			Trace:     trace,
+			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+			Labels:    map[string]string{"messageId": contextMetadata.EventID},
+		})
 	}
 	if prowMessage.JobType == "periodic" || prowMessage.JobType == "postsubmit" {
 		if prowMessage.Status == "failure" || prowMessage.Status == "error" {
@@ -129,7 +140,7 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 					Labels:    map[string]string{"messageId": contextMetadata.EventID},
 				})
 			}
-			if len(failureInstances) == 1 {
+			if len(failureInstances) == 0 {
 				// TODO: design how to extract and store commitIDs
 				_, _, err = firestoreClient.Collection("testFailures").Add(ctx, map[string]interface{}{
 					"jobName": prowMessage.JobName,
