@@ -2,6 +2,7 @@ package getfailureinstancedetails
 
 import (
 	"cloud.google.com/go/firestore"
+	"cloud.google.com/go/functions/metadata"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -78,11 +79,19 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 	var err error
 	// set trace value to use it in logEntry
 	var trace string
+	var prowMessage ProwMessage
 	traceFunctionName := "Getfailureinstancedetails"
 	traceRandomInt := rand.Int()
 	trace = fmt.Sprintf("projects/%s/traces/%s/%d", projectID, traceFunctionName, traceRandomInt)
-
-	var prowMessage ProwMessage
+	contextMetadata, err := metadata.FromContext(ctx)
+	if err != nil {
+		log.Println(LogEntry{
+			Message:   fmt.Sprintf("failed extract metadata from function call context, error: %s", err.Error()),
+			Severity:  "CRITICAL",
+			Trace:     trace,
+			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+		})
+	}
 	// Decode
 	err = json.Unmarshal(m.Data, &prowMessage)
 	if err != nil {
@@ -97,7 +106,7 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 					Severity:  "CRITICAL",
 					Trace:     trace,
 					Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-					Labels:    map[string]string{"messageId": m.MessageId},
+					Labels:    map[string]string{"messageId": contextMetadata.EventID},
 				})
 			}
 			jobID := path.Base(jobURL.Path)
@@ -105,11 +114,11 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 			failureInstances, err := iter.GetAll()
 			if err != nil {
 				log.Println(LogEntry{
-					Message:   "failed get failure instances",
+					Message:   fmt.Sprintf("failed get failure instances, error: %s", err.Error()),
 					Severity:  "CRITICAL",
 					Trace:     trace,
 					Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-					Labels:    map[string]string{"messageId": m.MessageId},
+					Labels:    map[string]string{"messageId": contextMetadata.EventID},
 				})
 			}
 			if len(failureInstances) == 1 {
@@ -130,7 +139,7 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 						Severity:  "CRITICAL",
 						Trace:     trace,
 						Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-						Labels:    map[string]string{"messageId": m.MessageId},
+						Labels:    map[string]string{"messageId": contextMetadata.EventID},
 					})
 				}
 			}
