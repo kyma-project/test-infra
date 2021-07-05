@@ -12,8 +12,6 @@ templates:
                   base_ref: "main"
           jobConfig_default:
             path_alias: github.com/kyma-project/busola
-          jobConfig_periodic:
-            cluster: "trusted-workload"
           request_small:
             request_memory: 100Mi
             request_cpu: 50m
