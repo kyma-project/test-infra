@@ -165,8 +165,11 @@ DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --fo
 
 log::info "Reserve IP Address for Ingressgateway"
 GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
-gcloud::reserve_ip_address "${GATEWAY_IP_ADDRESS_NAME}"
-GATEWAY_IP_ADDRESS="${gcloud_reserve_ip_address_return_1:?}"
+gcp::reserve_ip_address \
+    -n "${GATEWAY_IP_ADDRESS_NAME}" \
+    -p "$CLOUDSDK_CORE_PROJECT" \
+    -r "$CLOUDSDK_COMPUTE_REGION"
+GATEWAY_IP_ADDRESS="${gcp_reserve_ip_address_return_ip_address:?}"
 CLEANUP_GATEWAY_IP_ADDRESS="true"
 echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 

@@ -48,6 +48,8 @@ requiredVars=(
     GATEWAY_IP_ADDRESS_NAME
     GOOGLE_APPLICATION_CREDENTIALS
     GATEWAY_DNS_FULL_NAME
+    CLOUDSDK_CORE_PROJECT
+    CLOUDSDK_COMPUTE_REGION
 )
 
 utils::check_required_vars "${requiredVars[@]}"
@@ -56,7 +58,11 @@ gcp::authenticate \
     -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 log::info "Reserving IP address"
-GATEWAY_IP_ADDRESS=$(gcloud::reserve_ip_address "${GATEWAY_IP_ADDRESS_NAME}")
+gcp::reserve_ip_address \
+    -n "$GATEWAY_IP_ADDRESS_NAME" \
+    -p "$CLOUDSDK_CORE_PROJECT" \
+    -r "$CLOUDSDK_COMPUTE_REGION"
+export GATEWAY_IP_ADDRESS="${gcp_reserve_ip_address_return_ip_address:?}"
 
 gcloud::create_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
 
