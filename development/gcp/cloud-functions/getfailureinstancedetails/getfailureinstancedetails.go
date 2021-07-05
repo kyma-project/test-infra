@@ -84,8 +84,10 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 	trace = fmt.Sprintf("projects/%s/traces/%s/%d", projectID, traceFunctionName, traceRandomInt)
 
 	var prowMessage ProwMessage
+	var data []byte
 	// Decode
-	data, err := base64.StdEncoding.DecodeString(string(m.Data))
+	fmt.Println(m.Data)
+	_, err = base64.StdEncoding.Decode(data, m.Data)
 	if err != nil {
 		panic(err)
 	}
