@@ -98,8 +98,10 @@ for ZONE in ${EU_ZONES}; do
     gcloud compute instances create "kyma-integration-test-${RANDOM_ID}" \
         --metadata enable-oslogin=TRUE \
         --image "${IMAGE}" \
-        --machine-type n1-standard-4 \
+        --machine-type n2-standard-8 \
         --zone "${ZONE}" \
+        --enable-nested-virtualization \
+        --min-cpu-platform="Intel Haswell" \
         --boot-disk-size 200 "${LABELS[@]}" &&\
     log::info "Created kyma-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
     log::error "Could not create machine in zone ${ZONE}"
@@ -114,6 +116,6 @@ log::info "Copying Kyma to the instance"
 utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
 
 log::info "Triggering the installation"
-gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo USE_ALPHA=${USE_ALPHA} bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/cluster-users-integration-k3s.sh"
+gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo PULL_NUMBER=${PULL_NUMBER} USE_ALPHA=${USE_ALPHA} bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/cluster-users-integration-k3s.sh"
 
 log::success "all done"
