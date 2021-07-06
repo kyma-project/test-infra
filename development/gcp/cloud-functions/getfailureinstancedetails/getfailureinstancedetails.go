@@ -103,7 +103,7 @@ func addFailingTest(ctx context.Context, client *firestore.Client, message ProwM
 	})
 	if err != nil {
 		log.Println(LogEntry{
-			Message:   "could not add failing test",
+			Message:   fmt.Sprintf("could not add failing test, error: %s", err.Error()),
 			Severity:  "CRITICAL",
 			Trace:     trace,
 			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
@@ -119,7 +119,7 @@ func addTestExecution(ctx context.Context, ref *firestore.DocumentRef, message P
 	}}, firestore.Merge([]string{"failures"}))
 	if err != nil {
 		log.Println(LogEntry{
-			Message:   "could not add execution data to failing test",
+			Message:   fmt.Sprintf("could not add execution data to failing test, error: %s", err.Error()),
 			Severity:  "CRITICAL",
 			Trace:     trace,
 			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
@@ -152,7 +152,7 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 	err = json.Unmarshal(m.Data, &prowMessage)
 	if err != nil {
 		log.Println(LogEntry{
-			Message:   "failed unmarshal message data field",
+			Message:   fmt.Sprintf("failed unmarshal message data field, error: %s", err.Error()),
 			Severity:  "CRITICAL",
 			Trace:     trace,
 			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
@@ -170,7 +170,7 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 		jobURL, err := url.Parse(prowMessage.URL)
 		if err != nil {
 			log.Println(LogEntry{
-				Message:   "failed parse test URL",
+				Message:   fmt.Sprintf("failed parse test URL, error: %s", err.Error()),
 				Severity:  "CRITICAL",
 				Trace:     trace,
 				Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
