@@ -13,8 +13,6 @@
 
 set -o errexit
 export TEST_INFRA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/test-infra/"
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 

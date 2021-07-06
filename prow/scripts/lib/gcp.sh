@@ -326,7 +326,7 @@ function gcp::reserve_ip_address {
     log::info "Created IP Address for Ingressgateway: $ipAddressName"
 }
 
-# gcloud::create_dns_record creates an A dns record for corresponding ip address
+# gcp::create_dns_record creates an A dns record for corresponding ip address
 #
 # Arguments:
 # a - ip address to use for creating dns record

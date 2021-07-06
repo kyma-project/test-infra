@@ -53,8 +53,6 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/azure.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcp.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
-# shellcheck source=prow/scripts/lib/gcp.sh
-source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 
 function check_status() {
   status="${1}"

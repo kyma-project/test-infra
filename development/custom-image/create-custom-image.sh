@@ -8,8 +8,6 @@ readonly ROOT_DIR=${CURRENT_DIR}/../../
 source "${ROOT_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${ROOT_DIR}/prow/scripts/lib/utils.sh"
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${ROOT_DIR}/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "${ROOT_DIR}/prow/scripts/lib/gcp.sh"
 cleanup() {   

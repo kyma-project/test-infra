@@ -14,8 +14,6 @@ readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "${SCRIPT_DIR}/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${SCRIPT_DIR}/lib/utils.sh"
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${SCRIPT_DIR}/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${SCRIPT_DIR}/lib/docker.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh

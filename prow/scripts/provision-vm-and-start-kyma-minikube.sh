@@ -10,8 +10,6 @@ readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
 readonly TMP_DIR=$(mktemp -d)
 readonly JUNIT_REPORT_PATH="${ARTIFACTS:-${TMP_DIR}}/junit_kyma_octopus-test-suite.xml"
 
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh

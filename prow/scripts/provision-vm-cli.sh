@@ -9,8 +9,6 @@ set -o errexit
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 KYMA_PROJECT_DIR=${KYMA_PROJECT_DIR:-"/home/prow/go/src/github.com/kyma-project"}
 
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${SCRIPT_DIR}/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${SCRIPT_DIR}/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh

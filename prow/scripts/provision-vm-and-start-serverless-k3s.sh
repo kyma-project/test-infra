@@ -12,8 +12,6 @@ readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
 
 export USE_ALPHA=${USE_ALPHA:-false}
 
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${SCRIPT_DIR}/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${SCRIPT_DIR}/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh

@@ -84,8 +84,6 @@ TEST_RESULT_WINDOW_TIME=${TEST_RESULT_WINDOW_TIME:-3h}
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 
