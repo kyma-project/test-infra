@@ -140,23 +140,12 @@ function createPublicIPandDNS() {
 
 	log::info "Create DNS Record for Ingressgateway IP"
 
-<<<<<<< HEAD
 	gcp::create_dns_record \
 				-a "$GATEWAY_IP_ADDRESS" \
 				-p "$CLOUDSDK_CORE_PROJECT" \
 				-h "*" \
 				-s "$DNS_SUBDOMAIN" \
 				-z "$CLOUDSDK_DNS_ZONE_NAME"
-=======
-	GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
-	gcloud::create_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
-gcp::create_dns_record \
-    -a "$GATEWAY_IP_ADDRESS" \
-    -h "*" \
-    -s "$COMMON_NAME" \
-    -p "$CLOUDSDK_CORE_PROJECT" \
-    -z "$CLOUDSDK_DNS_ZONE_NAME"
->>>>>>> a4f0875a (create_dns_record)
 }
 
 function setupKubeconfig() {
