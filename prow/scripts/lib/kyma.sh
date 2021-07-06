@@ -142,7 +142,7 @@ kyma::run_test_log_collector(){
 # s - suite name
 #
 # Returns
-# kyma_rest_summary_return_exit_code - exit code
+# kyma_test_summary_return_exit_code - exit code
 #
 kyma::test_summary() {
 
@@ -191,5 +191,5 @@ kyma::test_summary() {
     fi
 
     # shellcheck disable=SC2034
-    kyma_rest_summary_return_exit_code="$tests_exit"
+    kyma_test_summary_return_exit_code="$tests_exit"
 }

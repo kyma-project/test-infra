@@ -355,5 +355,5 @@ gardener::test_kyma() {
     kyma::test_summary \
         -s "$SUITE_NAME"
     set -e
-    return "${kyma_rest_summary_return_exit_code:?}"
+    return "${kyma_test_summary_return_exit_code:?}"
 }
