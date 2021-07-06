@@ -123,12 +123,16 @@ gardener::provision_cluster
 
 # uses previously set KYMA_SOURCE
 if [[ "${KYMA_ALPHA}" == "true" ]]; then
-  kyma::alpha_deploy_kyma
+  kyma::alpha_deploy_kyma \
+    -p "$EXECUTION_PROFILE" \
+    -s "$KYMA_SOURCES_DIR"
   if [[ "${KYMA_ALPHA_DELETE}" == "true" ]]; then
     sleep 30
     kyma::alpha_delete_kyma
     sleep 30
-    kyma::alpha_deploy_kyma
+    kyma::alpha_deploy_kyma \
+       -p "$EXECUTION_PROFILE" \
+       -s "$KYMA_SOURCES_DIR"
   fi
 # this will be extended with the next components
 elif [[ "${API_GATEWAY_INTEGRATION}" == "true" ]]; then

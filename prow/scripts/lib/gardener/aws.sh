@@ -167,11 +167,9 @@ gardener::test_kyma() {
 
     # collect logs from failed tests before deprovisioning
     kyma::run_test_log_collector "kyma-integration-gardener-aws"
-    if ! kyma::test_summary; then
-      log::error "Tests have failed"
-      set -e
-      return 1
-    fi
+
+    kyma::test_summary \
+        -s "$SUITE_NAME"
     set -e
-    log::success "Tests completed"
+    return "${kyma_test_summary_return_exit_code:?}"
 }
