@@ -100,11 +100,12 @@ function removeResources() {
 
 	# Check if cluster IP was retrieved from DNS record. Remove cluster DNS record if IP address was retrieved.
 	if [[ -n ${GATEWAY_IP_ADDRESS} ]]; then
-		log::info "running gcloud::delete_dns_record ${GATEWAY_IP_ADDRESS} ${GATEWAY_DNS_FULL_NAME}"
-
-		gcloud::delete_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
-		TMP_STATUS=$?
-		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+		gcp::delete_dns_record \
+			-a "$GATEWAY_IP_ADDRESS" \
+			-h "*" \
+			-s "$COMMON_NAME" \
+			-p "$CLOUDSDK_CORE_PROJECT" \
+			-z "$CLOUDSDK_DNS_ZONE_NAME"
 	else
 		echo "DNS entry for ${GATEWAY_DNS_FULL_NAME} not found"
 	fi
@@ -116,11 +117,12 @@ function removeResources() {
 
 	# Check if apiserver IP was retrieved from DNS record. Remove apiserver DNS record if IP address was retrieved.
 	if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
-		log::info "running gcloud::delete_dns_record ${APISERVER_IP_ADDRESS} ${APISERVER_DNS_FULL_NAME}"
-
-		gcloud::delete_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
-		TMP_STATUS=$?
-		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+		gcp::delete_dns_record \
+			-a "$APISERVER_IP_ADDRESS" \
+			-h "apiserver" \
+			-s "$COMMON_NAME" \
+			-p "$CLOUDSDK_CORE_PROJECT" \
+			-z "$CLOUDSDK_DNS_ZONE_NAME"
 	else
 		echo "DNS entry for ${APISERVER_DNS_FULL_NAME} not found"
 	fi
