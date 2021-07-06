@@ -152,10 +152,10 @@ func addFailingTest(ctx context.Context, client *firestore.Client, message ProwM
 }
 
 func addTestExecution(ctx context.Context, ref *firestore.DocumentRef, message ProwMessage, jobID, trace, eventID string) error {
-	_, err := ref.Set(ctx, map[string]map[string]map[string]interface{}{"failures": {
+	_, err := ref.Set(ctx, map[string]map[string]interface{}{
 		jobID: {
 			"url": message.URL, "gcsPath": message.GcsPath, "refs": message.Refs,
-		}}}, firestore.Merge([]string{"failures"}))
+		}}, firestore.Merge([]string{"failures", jobID}))
 	if err != nil {
 		log.Println(LogEntry{
 			Message:   fmt.Sprintf("could not add execution data to failing test, error: %s", err.Error()),
@@ -265,6 +265,19 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 			})
 			_ = addTestExecution(ctx, failureInstances[0].Ref, prowMessage, jobID, trace, contextMetadata.EventID)
 		} else {
+			for _, failureInstance := range failureInstances {
+				githubIssueNumber, err := failureInstance.DataAt("githubIssueNumber")
+				if err != nil {
+					log.Println("gh issue not found")
+				} else {
+					issue, _, err := githubClient.Issues.Get(ctx, githubOrg, githubRepo, githubIssueNumber.(int))
+					if err != nil {
+						log.Println(err.Error())
+					} else {
+						println(issue.State)
+					}
+				}
+			}
 			//TODO: check if instance is closed in githuub This should not happen
 			log.Println(LogEntry{
 				Message:   fmt.Sprintf("more than one failure instance exist for periodic %s prowjob", prowMessage.JobName),
