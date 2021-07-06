@@ -152,10 +152,10 @@ func addFailingTest(ctx context.Context, client *firestore.Client, message ProwM
 }
 
 func addTestExecution(ctx context.Context, ref *firestore.DocumentRef, message ProwMessage, jobID, trace, eventID string) error {
-	_, err := ref.Set(ctx, map[string]map[string]interface{}{
+	_, err := ref.Set(ctx, map[string]map[string]map[string]interface{}{"failures": {
 		jobID: {
 			"url": message.URL, "gcsPath": message.GcsPath, "refs": message.Refs,
-		}}, firestore.Merge([]string{"failures", jobID}))
+		}}}, firestore.Merge([]string{"failures", jobID}))
 	if err != nil {
 		log.Println(LogEntry{
 			Message:   fmt.Sprintf("could not add execution data to failing test, error: %s", err.Error()),
