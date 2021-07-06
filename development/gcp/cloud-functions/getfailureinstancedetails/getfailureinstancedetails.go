@@ -6,8 +6,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	//"github.com/google/go-github/v36/github"
-	//"golang.org/x/oauth2"
+	"github.com/google/go-github/v36/github"
+	"golang.org/x/oauth2"
 	"log"
 	"math/rand"
 	"net/url"
@@ -15,6 +15,7 @@ import (
 	"path"
 )
 
+//TODO: move types to separate module
 // This is the Message payload of pubsub message
 type MessagePayload struct {
 	Attributes   map[string]string `json:"attributes"`
@@ -62,13 +63,20 @@ func (e LogEntry) String() string {
 }
 
 var (
-	firestoreClient *firestore.Client
-	projectID       string
+	firestoreClient   *firestore.Client
+	githubClient      *github.Client
+	projectID         string
+	githubAccessToken string
+	githubOrg         string
+	githubRepo        string
 )
 
 func init() {
 	var err error
 	projectID = os.Getenv("GCP_PROJECT_ID")
+	githubAccessToken = os.Getenv("GITHUB_ACCESS_TOKEN")
+	githubOrg = os.Getenv("GITHUB_ORG")
+	githubRepo = os.Getenv("GITHUB_REPO")
 	ctx := context.Background()
 	if projectID == "" {
 		log.Println(LogEntry{
@@ -77,6 +85,30 @@ func init() {
 			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
 		})
 		panic("environment variable GCP_PROJECT_ID is empty, can't setup firebase client")
+	}
+	if githubAccessToken == "" {
+		log.Println(LogEntry{
+			Message:   "environment variable GITHUB_ACCESS_TOKEN is empty, can't setup github client",
+			Severity:  "CRITICAL",
+			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+		})
+		panic("environment variable GITHUB_ACCESS_TOKEN is empty, can't setup github client")
+	}
+	if githubOrg == "" {
+		log.Println(LogEntry{
+			Message:   "environment variable GITHUB_ORG is empty, can't setup github client",
+			Severity:  "CRITICAL",
+			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+		})
+		panic("environment variable GITHUB_ACCESS_TOKEN is empty, can't setup github client")
+	}
+	if githubRepo == "" {
+		log.Println(LogEntry{
+			Message:   "environment variable GITHUB_REPO is empty, can't setup github client",
+			Severity:  "CRITICAL",
+			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+		})
+		panic("environment variable GITHUB_ACCESS_TOKEN is empty, can't setup github client")
 	}
 	firestoreClient, err = firestore.NewClient(ctx, projectID)
 	if err != nil {
@@ -87,6 +119,12 @@ func init() {
 		})
 		panic(fmt.Sprintf("Failed to create client, error: %s", err.Error()))
 	}
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: os.Getenv(githubAccessToken)},
+	)
+	tc := oauth2.NewClient(ctx, ts)
+
+	githubClient = github.NewClient(tc)
 }
 
 func addFailingTest(ctx context.Context, client *firestore.Client, message ProwMessage, jobID, trace, eventID string) error {
@@ -114,9 +152,10 @@ func addFailingTest(ctx context.Context, client *firestore.Client, message ProwM
 }
 
 func addTestExecution(ctx context.Context, ref *firestore.DocumentRef, message ProwMessage, jobID, trace, eventID string) error {
-	_, err := ref.Set(ctx, map[string]interface{}{jobID: map[string]interface{}{
-		"url": message.URL, "gcsPath": message.GcsPath, "refs": message.Refs,
-	}}, firestore.Merge([]string{"failures"}))
+	_, err := ref.Set(ctx, map[string]map[string]map[string]interface{}{"failures": {
+		jobID: {
+			"url": message.URL, "gcsPath": message.GcsPath, "refs": message.Refs,
+		}}}, firestore.Merge([]string{"failures"}))
 	if err != nil {
 		log.Println(LogEntry{
 			Message:   fmt.Sprintf("could not add execution data to failing test, error: %s", err.Error()),
@@ -206,6 +245,17 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 			_ = addFailingTest(ctx, firestoreClient, prowMessage, jobID, trace, contextMetadata.EventID)
 		} else if len(failureInstances) == 1 {
 			//TODO: check if instance is closed in githuub
+			githubIssueNumber, err := failureInstances[0].DataAt("githubIssueNumber")
+			if err != nil {
+				log.Println("gh isse not found")
+			} else {
+				issue, _, err := githubClient.Issues.Get(ctx, githubOrg, githubRepo, githubIssueNumber.(int))
+				if err != nil {
+					log.Println(err.Error())
+				} else {
+					println(issue.State)
+				}
+			}
 			log.Println(LogEntry{
 				Message:   "failure instance exists, adding execution data",
 				Severity:  "INFO",
