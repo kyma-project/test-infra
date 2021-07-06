@@ -129,36 +129,136 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 				})
 			}
 			jobID := path.Base(jobURL.Path)
-			iter := firestoreClient.Collection("testFailures").Where("jobName", "==", prowMessage.JobName).Where("jobType", "==", prowMessage.JobType).Where("open", "==", true).Documents(ctx)
-			failureInstances, err := iter.GetAll()
-			if err != nil {
-				log.Println(LogEntry{
-					Message:   fmt.Sprintf("failed get failure instances, error: %s", err.Error()),
-					Severity:  "CRITICAL",
-					Trace:     trace,
-					Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-					Labels:    map[string]string{"messageId": contextMetadata.EventID},
-				})
-			}
-			if len(failureInstances) == 0 {
-				// TODO: design how to extract and store commitIDs
-				_, _, err = firestoreClient.Collection("testFailures").Add(ctx, map[string]interface{}{
-					"jobName": prowMessage.JobName,
-					"jobType": prowMessage.JobType,
-					"open":    true,
-					"failures": map[string]interface{}{
-						jobID: map[string]interface{}{
-							"url": prowMessage.URL, "gcsPath": prowMessage.GcsPath, "refs": prowMessage.Refs,
-						},
-					},
-				})
+			log.Println(LogEntry{
+				Message:   fmt.Sprintf("failed %s prowjob detected, prowjob ID: %s", jobID),
+				Severity:  "INFO",
+				Trace:     trace,
+				Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+				Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": prowMessage.JobName},
+			})
+			if prowMessage.JobType == "periodic" {
+				iter := firestoreClient.Collection("testFailures").Where("jobName", "==", prowMessage.JobName).Where("jobType", "==", prowMessage.JobType).Where("open", "==", true).Documents(ctx)
+				failureInstances, err := iter.GetAll()
 				if err != nil {
 					log.Println(LogEntry{
-						Message:   "failed add failure instance to the collection",
+						Message:   fmt.Sprintf("failed get failure instances, error: %s", err.Error()),
 						Severity:  "CRITICAL",
 						Trace:     trace,
 						Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-						Labels:    map[string]string{"messageId": contextMetadata.EventID},
+						Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": prowMessage.JobName},
+					})
+				}
+				if len(failureInstances) == 0 {
+					log.Println(LogEntry{
+						Message:   "failure instance not found, creating",
+						Severity:  "INFO",
+						Trace:     trace,
+						Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+						Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": prowMessage.JobName},
+					})
+					_, _, err = firestoreClient.Collection("testFailures").Add(ctx, map[string]interface{}{
+						"jobName": prowMessage.JobName,
+						"jobType": prowMessage.JobType,
+						"open":    true,
+						"failures": map[string]interface{}{
+							jobID: map[string]interface{}{
+								"url": prowMessage.URL, "gcsPath": prowMessage.GcsPath, "refs": prowMessage.Refs,
+							},
+						},
+					})
+					if err != nil {
+						log.Println(LogEntry{
+							Message:   "failed add failure instance to the collection",
+							Severity:  "CRITICAL",
+							Trace:     trace,
+							Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+							Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": prowMessage.JobName},
+						})
+					}
+				} else if len(failureInstances) == 1 {
+					//TODO: check if instance is closed in githuub
+					log.Println(LogEntry{
+						Message:   "failure instance exists, adding execution data",
+						Severity:  "INFO",
+						Trace:     trace,
+						Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+						Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": prowMessage.JobName},
+					})
+					failureInstanceRef := failureInstances[0].Ref
+					_, err = failureInstanceRef.Set(ctx, map[string]interface{}{jobID: map[string]interface{}{
+						"url": prowMessage.URL, "gcsPath": prowMessage.GcsPath, "refs": prowMessage.Refs,
+					}}, firestore.Merge([]string{"failures"}))
+				} else {
+					//TODO: check if instance is closed in githuub
+					log.Println(LogEntry{
+						Message:   fmt.Sprintf("more than one failure instance exist for periodic %s prowjob", prowMessage.JobName),
+						Severity:  "CRITICAL",
+						Trace:     trace,
+						Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+						Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": prowMessage.JobName},
+					})
+				}
+			} else if prowMessage.JobType == "postsubmit" {
+				iter := firestoreClient.Collection("testFailures").Where("jobName", "==", prowMessage.JobName).Where("jobType", "==", prowMessage.JobType).Where("open", "==", true).WherePath([]string{"failures", "*", "refs", "*", "0", "base_sha"}, "==", prowMessage.Refs[0]["base_sha"]).Documents(ctx)
+				failureInstances, err := iter.GetAll()
+				if err != nil {
+					log.Println(LogEntry{
+						Message:   fmt.Sprintf("failed get failure instances, error: %s", err.Error()),
+						Severity:  "CRITICAL",
+						Trace:     trace,
+						Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+						Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": prowMessage.JobName},
+					})
+				}
+				if len(failureInstances) == 0 {
+					log.Println(LogEntry{
+						Message:   "failure instance not found, creating",
+						Severity:  "INFO",
+						Trace:     trace,
+						Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+						Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": prowMessage.JobName},
+					})
+					// TODO: design how to extract and store commitIDs
+					_, _, err = firestoreClient.Collection("testFailures").Add(ctx, map[string]interface{}{
+						"jobName": prowMessage.JobName,
+						"jobType": prowMessage.JobType,
+						"open":    true,
+						"failures": map[string]interface{}{
+							jobID: map[string]interface{}{
+								"url": prowMessage.URL, "gcsPath": prowMessage.GcsPath, "refs": prowMessage.Refs,
+							},
+						},
+					})
+					if err != nil {
+						log.Println(LogEntry{
+							Message:   "failed add failure instance to the collection",
+							Severity:  "CRITICAL",
+							Trace:     trace,
+							Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+							Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": prowMessage.JobName},
+						})
+					}
+				} else if len(failureInstances) == 1 {
+					//TODO: check if instance is closed in githuub
+					log.Println(LogEntry{
+						Message:   "failure instance exists, adding execution data",
+						Severity:  "INFO",
+						Trace:     trace,
+						Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+						Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": prowMessage.JobName},
+					})
+					failureInstanceRef := failureInstances[0].Ref
+					_, err = failureInstanceRef.Set(ctx, map[string]interface{}{jobID: map[string]interface{}{
+						"url": prowMessage.URL, "gcsPath": prowMessage.GcsPath, "refs": prowMessage.Refs,
+					}}, firestore.Merge([]string{"failures"}))
+				} else {
+					//TODO: check if instance is closed in githuub
+					log.Println(LogEntry{
+						Message:   fmt.Sprintf("more than one failure instance exist for periodic %s prowjob", prowMessage.JobName),
+						Severity:  "CRITICAL",
+						Trace:     trace,
+						Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+						Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": prowMessage.JobName},
 					})
 				}
 			}
