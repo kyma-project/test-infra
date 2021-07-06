@@ -199,7 +199,6 @@ function reserveIPsAndCreateDNSRecords() {
 }
 
 function createNetwork() {
-  export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
   log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
   gcp::create_network \
     -n "${GCLOUD_NETWORK_NAME}" \
@@ -211,8 +210,6 @@ function createCluster() {
   log::banner "Provision cluster: \"${COMMON_NAME}\""
   ### For gcloud::provision_gke_cluster
   export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
-  export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-  export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 
   gcp::provision_k8s_cluster \
         -c "$COMMON_NAME" \

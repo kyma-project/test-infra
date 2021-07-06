@@ -85,10 +85,6 @@ gcp::set_vars_for_network \
 export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_return_net_name:?}"
 export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_return_subnet_name:?}"
 
-### For gcloud::provision_gke_cluster
-export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
-
 #Local variables
 DNS_SUBDOMAIN="${COMMON_NAME}"
 KCP_SCRIPTS_DIR="${KCP_SOURCES_DIR}/installation/scripts"
