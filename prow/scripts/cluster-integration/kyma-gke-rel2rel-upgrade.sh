@@ -227,11 +227,19 @@ createCluster() {
     export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
     export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
     export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
-    if [[ -z "${MACHINE_TYPE}" ]]; then
-        export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
-    fi
 
-    gcloud::provision_gke_cluster "$CLUSTER_NAME"
+    gcp::provision_k8s_cluster \
+        -c "$COMMON_NAME" \
+        -p "$CLOUDSDK_CORE_PROJECT" \
+        -v "$GKE_CLUSTER_VERSION" \
+        -j "$JOB_NAME" \
+        -J "$PROW_JOB_ID" \
+        -z "$CLOUDSDK_COMPUTE_ZONE" \
+        -m "$MACHINE_TYPE" \
+        -R "$CLOUDSDK_COMPUTE_REGION" \
+        -N "$GCLOUD_NETWORK_NAME" \
+        -S "$GCLOUD_SUBNET_NAME" \
+        -P "$TEST_INFRA_SOURCES_DIR"
     CLEANUP_CLUSTER="true"
 }
 

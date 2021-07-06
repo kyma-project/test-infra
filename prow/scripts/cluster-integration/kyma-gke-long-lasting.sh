@@ -117,7 +117,22 @@ function createCluster() {
 	log::info "Provision cluster: \"${CLUSTER_NAME}\""
 	date
 	
-	gcloud::provision_gke_cluster "$CLUSTER_NAME"
+	gcp::provision_k8s_cluster \
+		-c "$CLUSTER_NAME" \
+		-p "$CLOUDSDK_CORE_PROJECT" \
+		-v "$GKE_CLUSTER_VERSION" \
+		-j "$JOB_NAME" \
+		-J "$PROW_JOB_ID" \
+		-z "$CLOUDSDK_COMPUTE_ZONE" \
+		-m "$MACHINE_TYPE" \
+		-R "$CLOUDSDK_COMPUTE_REGION" \
+        -N "$GCLOUD_NETWORK_NAME" \
+        -S "$GCLOUD_SUBNET_NAME" \
+		-r "$PROVISION_REGIONAL_CLUSTER" \
+		-s "$STACKDRIVER_KUBERNETES" \
+		-D "$CLUSTER_USE_SSD" \
+		-e "$GKE_ENABLE_POD_SECURITY_POLICY" \
+		-P "$TEST_INFRA_SOURCES_DIR"
 }
 
 function installKyma() {
@@ -166,7 +181,7 @@ function installKyma() {
 		log::info "Create DNS Record for Apiserver proxy IP"
 		APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 		gcp::create_dns_record \
-			-a "$APISERVER_IP_ADDRESS" \
+			-a "$GATEWAY_IP_ADDRESS" \
 			-h "apiserver" \
 			-s "$STANDARIZED_NAME" \
 			-p "$CLOUDSDK_CORE_PROJECT" \

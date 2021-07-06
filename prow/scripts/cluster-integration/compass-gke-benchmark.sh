@@ -146,14 +146,13 @@ function createCluster() {
   echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
   log::info "Create DNS Record for Ingressgateway IP"
-  CLEANUP_GATEWAY_DNS_RECORD="true"
   gcp::create_dns_record \
     -a "$GATEWAY_IP_ADDRESS" \
     -h "*" \
     -s "$COMMON_NAME" \
     -p "$CLOUDSDK_CORE_PROJECT" \
     -z "$CLOUDSDK_DNS_ZONE_NAME"
-
+  CLEANUP_GATEWAY_DNS_RECORD="true"
 
   log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
   gcp::create_network \
@@ -163,14 +162,18 @@ function createCluster() {
 
   log::info "Provision cluster: \"${CLUSTER_NAME}\""
   export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
-  if [ -z "$MACHINE_TYPE" ]; then
-    export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
-  fi
-  if [ -z "${CLUSTER_VERSION}" ]; then
-    export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
-  fi
+  gcp::provision_k8s_cluster \
+        -c "$COMMON_NAME" \
+        -p "$CLOUDSDK_CORE_PROJECT" \
+        -v "$GKE_CLUSTER_VERSION" \
+        -j "$JOB_NAME" \
+        -J "$PROW_JOB_ID" \
+        -z "$CLOUDSDK_COMPUTE_ZONE" \
+        -R "$CLOUDSDK_COMPUTE_REGION" \
+        -N "$GCLOUD_NETWORK_NAME" \
+        -S "$GCLOUD_SUBNET_NAME" \
+        -P "$TEST_INFRA_SOURCES_DIR"
   CLEANUP_CLUSTER="true"
-  gcloud::provision_gke_cluster "$CLUSTER_NAME"
 }
 
 function applyKymaOverrides() {

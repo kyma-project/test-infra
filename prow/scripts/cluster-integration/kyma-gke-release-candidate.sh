@@ -80,7 +80,7 @@ cleanupOnError() {
     set +e
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
-        log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
+        log::info "Deprovision cluster: \"${COMMON_NAME}\""
 
         #save disk names while the cluster still exists to remove them later
         DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
@@ -88,7 +88,7 @@ cleanupOnError() {
 
         #Delete cluster
         gcp::deprovision_k8s_cluster \
-            -n "$CLUSTER_NAME" \
+            -n "$COMMON_NAME" \
             -p "$CLOUDSDK_CORE_PROJECT" \
             -z "$CLOUDSDK_COMPUTE_ZONE" \
         #Delete orphaned disks
@@ -144,6 +144,7 @@ export REPO_OWNER
 readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
 export REPO_NAME
 
+### Cluster name must be less than 40 characters!
 readonly COMMON_NAME_PREFIX="gke-release"
 readonly RELEASE_VERSION=$(cat "VERSION")
 log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
@@ -151,8 +152,7 @@ TRIMMED_RELEASE_VERSION=${RELEASE_VERSION//./-}
 COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${TRIMMED_RELEASE_VERSION}" | tr "[:upper:]" "[:lower:]")
 
 
-### Cluster name must be less than 40 characters!
-export CLUSTER_NAME="${COMMON_NAME}"
+
 
 gcp::set_vars_for_network \
   -n "$JOB_NAME"
@@ -199,13 +199,23 @@ gcp::create_network \
     -s "${GCLOUD_SUBNET_NAME}" \
     -p "$CLOUDSDK_CORE_PROJECT"
 
-log::info "Provision cluster: \"${CLUSTER_NAME}\""
+log::info "Provision cluster: \"${COMMON_NAME}\""
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
-if [ -z "$MACHINE_TYPE" ]; then
-      export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
-fi
+
+gcp::provision_k8s_cluster \
+        -c "$COMMON_NAME" \
+        -p "$CLOUDSDK_CORE_PROJECT" \
+        -v "$GKE_CLUSTER_VERSION" \
+        -j "$JOB_NAME" \
+        -J "$PROW_JOB_ID" \
+        -t "$TTL_HOURS" \
+        -z "$CLOUDSDK_COMPUTE_ZONE" \
+        -R "$CLOUDSDK_COMPUTE_REGION" \
+        -N "$GCLOUD_NETWORK_NAME" \
+        -S "$GCLOUD_SUBNET_NAME" \
+        -g "$GCLOUD_SECURITY_GROUP_DOMAIN" \
+        -P "$TEST_INFRA_SOURCES_DIR"
 CLEANUP_CLUSTER="true"
-gcloud::provision_gke_cluster "$CLUSTER_NAME"
 
 log::info "Create CluserRoleBinding for ${GCLOUD_SECURITY_GROUP} group from ${GCLOUD_SECURITY_GROUP_DOMAIN} domain"
 kubectl create clusterrolebinding kyma-developers-group-binding --clusterrole="cluster-admin" --group="${GCLOUD_SECURITY_GROUP}@${GCLOUD_SECURITY_GROUP_DOMAIN}"
