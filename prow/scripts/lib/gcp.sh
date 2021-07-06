@@ -135,6 +135,11 @@ function gcp::provision_k8s_cluster {
 
     log::info "Replacing underscore with dashes in cluster name."
     clusterName=$(echo "$clusterName" | tr '_' '-')
+    # Cluster name must be less than 40 characters
+    if [ "$clusterName" -ge 40 ]; then
+        log::error "Cluster name must be less than 40 characters"
+        exit 1
+    fi
 
     log::banner "Provision cluster: $clusterName"
 
@@ -212,7 +217,7 @@ function gcp::provision_k8s_cluster {
     until [[ $(kubectl get cm kube-dns -n kube-system > /dev/null 2>&1; echo $?) == 0 ]]; do
         if (( counter == 5 )); then
             echo -e "kube-dns configmap not available after 5 tries, exiting"
-            hexit 1
+            exit 1
         fi
         echo -e "Waiting for kube-dns to be available. Try $(( counter + 1 )) of 5"
         counter=$(( counter + 1 ))
