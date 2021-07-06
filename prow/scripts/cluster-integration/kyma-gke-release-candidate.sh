@@ -87,8 +87,10 @@ cleanupOnError() {
         export DISKS
 
         #Delete cluster
-        gcloud::deprovision_gke_cluster "$CLUSTER_NAME"
-
+        gcp::deprovision_k8s_cluster \
+            -n "$CLUSTER_NAME" \
+            -p "$CLOUDSDK_CORE_PROJECT" \
+            -z "$CLOUDSDK_COMPUTE_ZONE" \
         #Delete orphaned disks
         log::info "Delete orphaned PVC disks..."
         for NAMEPATTERN in ${DISKS}
@@ -156,10 +158,6 @@ gcp::set_vars_for_network \
   -n "$JOB_NAME"
 export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_return_net_name:?}"
 export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_return_subnet_name:?}"
-
-### For gcloud::provision_gke_cluster
-export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 
 #Local variables
 DNS_SUBDOMAIN="${COMMON_NAME}"

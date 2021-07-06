@@ -17,6 +17,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcloud.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcp.sh"
 DNS_NAME="a.build.kyma-project.io."
 
 function cleanup() {
@@ -69,7 +71,10 @@ function removeCluster() {
 	fi
 
 	log::info "Delete cluster $CLUSTER_NAME"
-	gcloud::deprovision_gke_cluster "$CLUSTER_NAME"
+	gcp::deprovision_k8s_cluster \
+            -n "$CLUSTER_NAME" \
+            -p "$GCLOUD_PROJECT_NAME" \
+            -z "$GCLOUD_COMPUTE_ZONE" \
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
