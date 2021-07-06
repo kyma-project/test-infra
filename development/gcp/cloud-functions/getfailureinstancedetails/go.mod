@@ -7,5 +7,8 @@ replace github.com/kyma-project/test-infra v0.0.0 => /Users/i319037/go/src/githu
 require (
 	cloud.google.com/go v0.81.0
 	cloud.google.com/go/firestore v1.1.0
+	github.com/google/go-github/v36 v36.0.0
+	github.com/google/go-querystring v1.1.0 // indirect
+	golang.org/x/oauth2 v0.0.0-20210427180440-81ed05c6b58c
 	google.golang.org/api v0.46.0 // indirect
 )

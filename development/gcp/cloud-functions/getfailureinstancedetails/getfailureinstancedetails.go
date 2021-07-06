@@ -3,6 +3,8 @@ package getfailureinstancedetails
 import (
 	"cloud.google.com/go/firestore"
 	"cloud.google.com/go/functions/metadata"
+	//"github.com/google/go-github/v36/github"
+	//"golang.org/x/oauth2"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -87,6 +89,46 @@ func init() {
 	}
 }
 
+func addFailingTest(ctx context.Context, client *firestore.Client, message ProwMessage, jobID, trace, eventID string) error {
+	_, _, err := client.Collection("testFailures").Add(ctx, map[string]interface{}{
+		"jobName": message.JobName,
+		"jobType": message.JobType,
+		"open":    true,
+		"baseSha": message.Refs[0]["base_sha"],
+		"failures": map[string]interface{}{
+			jobID: map[string]interface{}{
+				"url": message.URL, "gcsPath": message.GcsPath, "refs": message.Refs,
+			},
+		},
+	})
+	if err != nil {
+		log.Println(LogEntry{
+			Message:   "could not add failing test",
+			Severity:  "CRITICAL",
+			Trace:     trace,
+			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+			Labels:    map[string]string{"messageId": eventID, "jobID": jobID, "prowjobName": message.JobName},
+		})
+	}
+	return err
+}
+
+func addTestExecution(ctx context.Context, ref *firestore.DocumentRef, message ProwMessage, jobID, trace, eventID string) error {
+	_, err := ref.Set(ctx, map[string]interface{}{jobID: map[string]interface{}{
+		"url": message.URL, "gcsPath": message.GcsPath, "refs": message.Refs,
+	}}, firestore.Merge([]string{"failures"}))
+	if err != nil {
+		log.Println(LogEntry{
+			Message:   "could not add execution data to failing test",
+			Severity:  "CRITICAL",
+			Trace:     trace,
+			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+			Labels:    map[string]string{"messageId": eventID, "jobID": jobID, "prowjobName": message.JobName},
+		})
+	}
+	return err
+}
+
 // HelloPubSub consumes a Pub/Sub message.
 func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 	var err error
@@ -148,6 +190,7 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 						Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": prowMessage.JobName},
 					})
 				}
+
 				if len(failureInstances) == 0 {
 					log.Println(LogEntry{
 						Message:   "failure instance not found, creating",
@@ -156,25 +199,7 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 						Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
 						Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": prowMessage.JobName},
 					})
-					_, _, err = firestoreClient.Collection("testFailures").Add(ctx, map[string]interface{}{
-						"jobName": prowMessage.JobName,
-						"jobType": prowMessage.JobType,
-						"open":    true,
-						"failures": map[string]interface{}{
-							jobID: map[string]interface{}{
-								"url": prowMessage.URL, "gcsPath": prowMessage.GcsPath, "refs": prowMessage.Refs,
-							},
-						},
-					})
-					if err != nil {
-						log.Println(LogEntry{
-							Message:   "failed add failure instance to the collection",
-							Severity:  "CRITICAL",
-							Trace:     trace,
-							Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-							Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": prowMessage.JobName},
-						})
-					}
+					_ = addFailingTest(ctx, firestoreClient, prowMessage, jobID, trace, contextMetadata.EventID)
 				} else if len(failureInstances) == 1 {
 					//TODO: check if instance is closed in githuub
 					log.Println(LogEntry{
@@ -184,10 +209,7 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 						Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
 						Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": prowMessage.JobName},
 					})
-					failureInstanceRef := failureInstances[0].Ref
-					_, err = failureInstanceRef.Set(ctx, map[string]interface{}{jobID: map[string]interface{}{
-						"url": prowMessage.URL, "gcsPath": prowMessage.GcsPath, "refs": prowMessage.Refs,
-					}}, firestore.Merge([]string{"failures"}))
+					_ = addTestExecution(ctx, failureInstances[0].Ref, prowMessage, jobID, trace, contextMetadata.EventID)
 				} else {
 					//TODO: check if instance is closed in githuub
 					log.Println(LogEntry{
@@ -199,7 +221,8 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 					})
 				}
 			} else if prowMessage.JobType == "postsubmit" {
-				iter := firestoreClient.Collection("testFailures").Where("jobName", "==", prowMessage.JobName).Where("jobType", "==", prowMessage.JobType).Where("open", "==", true).WherePath([]string{"failures", "*", "refs", "0", "base_sha"}, "==", prowMessage.Refs[0]["base_sha"]).Documents(ctx)
+				log.Println(prowMessage.Refs[0]["base_sha"])
+				iter := firestoreClient.Collection("testFailures").Where("jobName", "==", prowMessage.JobName).Where("jobType", "==", prowMessage.JobType).Where("open", "==", true).Where("baseSha", "==", prowMessage.Refs[0]["base_sha"]).Documents(ctx)
 				failureInstances, err := iter.GetAll()
 				if err != nil {
 					log.Println(LogEntry{
@@ -210,6 +233,7 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 						Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": prowMessage.JobName},
 					})
 				}
+
 				if len(failureInstances) == 0 {
 					log.Println(LogEntry{
 						Message:   "failure instance not found, creating",
@@ -218,26 +242,7 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 						Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
 						Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": prowMessage.JobName},
 					})
-					// TODO: design how to extract and store commitIDs
-					_, _, err = firestoreClient.Collection("testFailures").Add(ctx, map[string]interface{}{
-						"jobName": prowMessage.JobName,
-						"jobType": prowMessage.JobType,
-						"open":    true,
-						"failures": map[string]interface{}{
-							jobID: map[string]interface{}{
-								"url": prowMessage.URL, "gcsPath": prowMessage.GcsPath, "refs": prowMessage.Refs,
-							},
-						},
-					})
-					if err != nil {
-						log.Println(LogEntry{
-							Message:   "failed add failure instance to the collection",
-							Severity:  "CRITICAL",
-							Trace:     trace,
-							Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-							Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": prowMessage.JobName},
-						})
-					}
+					_ = addFailingTest(ctx, firestoreClient, prowMessage, jobID, trace, contextMetadata.EventID)
 				} else if len(failureInstances) == 1 {
 					//TODO: check if instance is closed in githuub
 					log.Println(LogEntry{
@@ -247,12 +252,9 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 						Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
 						Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": prowMessage.JobName},
 					})
-					failureInstanceRef := failureInstances[0].Ref
-					_, err = failureInstanceRef.Set(ctx, map[string]interface{}{jobID: map[string]interface{}{
-						"url": prowMessage.URL, "gcsPath": prowMessage.GcsPath, "refs": prowMessage.Refs,
-					}}, firestore.Merge([]string{"failures"}))
+					_ = addTestExecution(ctx, failureInstances[0].Ref, prowMessage, jobID, trace, contextMetadata.EventID)
 				} else {
-					//TODO: check if instance is closed in githuub
+					//TODO: This should never happen
 					log.Println(LogEntry{
 						Message:   fmt.Sprintf("more than one failure instance exist for periodic %s prowjob", prowMessage.JobName),
 						Severity:  "CRITICAL",
