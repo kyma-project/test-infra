@@ -38,8 +38,6 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcp.sh"
 
@@ -47,7 +45,7 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcp.sh"
 requiredVars=(
     GATEWAY_IP_ADDRESS_NAME
     GOOGLE_APPLICATION_CREDENTIALS
-    GATEWAY_DNS_FULL_NAME
+    GATEWAY_DNS_COMMON_NAME
     CLOUDSDK_CORE_PROJECT
     CLOUDSDK_COMPUTE_REGION
 )
@@ -57,14 +55,16 @@ utils::check_required_vars "${requiredVars[@]}"
 gcp::authenticate \
     -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
-log::info "Reserving IP address"
 gcp::reserve_ip_address \
     -n "$GATEWAY_IP_ADDRESS_NAME" \
     -p "$CLOUDSDK_CORE_PROJECT" \
     -r "$CLOUDSDK_COMPUTE_REGION"
 export GATEWAY_IP_ADDRESS="${gcp_reserve_ip_address_return_ip_address:?}"
 
-gcloud::create_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
-
-log::success "Created DNS record for ${GATEWAY_IP_ADDRESS} IP address"
+gcp::create_dns_record \
+-a "$GATEWAY_IP_ADDRESS" \
+-h "*" \
+-s "$GATEWAY_DNS_COMMON_NAME" \
+-p "$CLOUDSDK_CORE_PROJECT" \
+-z "$CLOUDSDK_DNS_ZONE_NAME"
 ```
