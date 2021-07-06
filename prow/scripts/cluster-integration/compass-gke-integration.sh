@@ -146,9 +146,13 @@ function createCluster() {
   echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
   log::info "Create DNS Record for Ingressgateway IP"
-  GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+  gcp::create_dns_record \
+    -a "$GATEWAY_IP_ADDRESS" \
+    -h "*" \
+    -s "$COMMON_NAME" \
+    -p "$CLOUDSDK_CORE_PROJECT" \
+    -z "$CLOUDSDK_DNS_ZONE_NAME"
   CLEANUP_GATEWAY_DNS_RECORD="true"
-  gcloud::create_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
 
   log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
   gcp::create_network \
@@ -345,9 +349,13 @@ function installCompass() {
   if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
     log::info "Create DNS Record for Apiserver proxy IP"
     APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+    gcp::create_dns_record \
+        -a "$APISERVER_IP_ADDRESS" \
+        -h "apiserver" \
+        -s "$COMMON_NAME" \
+        -p "$CLOUDSDK_CORE_PROJECT" \
+        -z "$CLOUDSDK_DNS_ZONE_NAME"
     CLEANUP_APISERVER_DNS_RECORD="true"
-    gcloud::create_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
   fi
 }
 

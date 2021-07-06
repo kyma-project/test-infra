@@ -166,7 +166,7 @@ function installKyma() {
 		log::info "Create DNS Record for Apiserver proxy IP"
 		APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 		gcp::create_dns_record \
-			-a "$GATEWAY_IP_ADDRESS" \
+			-a "$APISERVER_IP_ADDRESS" \
 			-h "apiserver" \
 			-s "$STANDARIZED_NAME" \
 			-p "$CLOUDSDK_CORE_PROJECT" \
