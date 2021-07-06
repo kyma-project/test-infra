@@ -130,7 +130,7 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 			}
 			jobID := path.Base(jobURL.Path)
 			log.Println(LogEntry{
-				Message:   fmt.Sprintf("failed %s prowjob detected, prowjob ID: %s", jobID),
+				Message:   fmt.Sprintf("failed %s prowjob detected, prowjob ID: %s", prowMessage.JobType, jobID),
 				Severity:  "INFO",
 				Trace:     trace,
 				Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
@@ -199,7 +199,7 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 					})
 				}
 			} else if prowMessage.JobType == "postsubmit" {
-				iter := firestoreClient.Collection("testFailures").Where("jobName", "==", prowMessage.JobName).Where("jobType", "==", prowMessage.JobType).Where("open", "==", true).WherePath([]string{"failures", "*", "refs", "*", "0", "base_sha"}, "==", prowMessage.Refs[0]["base_sha"]).Documents(ctx)
+				iter := firestoreClient.Collection("testFailures").Where("jobName", "==", prowMessage.JobName).Where("jobType", "==", prowMessage.JobType).Where("open", "==", true).WherePath([]string{"failures", "*", "refs", "0", "base_sha"}, "==", prowMessage.Refs[0]["base_sha"]).Documents(ctx)
 				failureInstances, err := iter.GetAll()
 				if err != nil {
 					log.Println(LogEntry{
