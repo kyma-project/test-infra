@@ -365,8 +365,11 @@ function az::provision_k8s_cluster {
         --generate-ssh-keys \
         --zones 1 2 3
 
-      # run oom debug pod
-      utils::debug_oom
+    # run oom debug pod
+    if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
+        # run oom debug pod
+        utils::debug_oom
+    fi
 }
 
 # az::deprovision_k8s_cluster removes an AKS cluster
