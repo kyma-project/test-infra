@@ -1,8 +1,254 @@
 templates:
-  - from: templates/generic.tmpl
+  - fromTo:
+      - from: templates/generic.tmpl
+        to: ../prow/jobs/kyma/kyma-integration.yaml
     render:
-      - to: ../prow/jobs/kyma/kyma-integration.yaml
-        localSets:
+      - localSets:
+          jobConfig_default:
+            path_alias: github.com/kyma-project/kyma
+            annotations:
+              pipeline.type: integration
+          jobConfig_periodic:
+            cluster: "trusted-workload"
+          request_small:
+            request_memory: 100Mi
+            request_cpu: 50m
+          request_big:
+            request_memory: 200Mi
+            request_cpu: 80m
+        jobConfigs:
+          - repoName: kyma-project/kyma
+            jobs:
+              - jobConfig:
+                  name: "utilities-kyma-integration-cleaner"
+                  cron: "30 * * * *" # "At 30 minutes past every hour"
+                  image: eu.gcr.io/kyma-project/prow/cleaner:0.0.1 # see test-infra/prow/images/cleaner
+                  labels:
+                    preset-sa-vm-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                  command: "./cleaner.sh"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "jobConfig_periodic"
+              - jobConfig:
+                  name: "orphaned-az-storage-accounts-cleaner"
+                  cron: "00 00 * * *" # "At 00:00 each day"
+                  labels:
+                    preset-az-kyma-prow-credentials: "true"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/minio/azure-cleaner.sh"
+                  env:
+                    MINIO_GATEWAY_MODE: azure
+                    AZURE_RS_GROUP: rafter-minio-gateway
+                    AZURE_REGION: westeurope
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "jobConfig_periodic"
+              - jobConfig:
+                  name: "orphaned-assetstore-gcp-bucket-cleaner"
+                  cron: "00 00 * * *" # "At 00:00 each day"
+                  labels:
+                    preset-sa-prow-job-resource-cleaner: "true"
+                    preset-gc-project-env: "true"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "prow/scripts/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT}"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_prow-tools"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "jobConfig_periodic"
+              - jobConfig:
+                  name: "orphaned-disks-cleaner"
+                  cron: "30 * * * *" # "At 30 minutes past every hour"
+                  labels:
+                    preset-sa-gke-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|gke-provisioner|gke-backup|weekly|nightly|gke-central|gke-minio|gke-gkecompint|restore|gke-release|gke-gkeext|gke-gke-|gke-gkekcpint|gke-test|gke-cli'"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_prow-tools"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "jobConfig_periodic"
+              - jobConfig:
+                  name: "orphaned-clusters-cleaner"
+                  cron: "0 * * * *" # "At 0 minute every hour"
+                  labels:
+                    preset-sa-gke-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "/prow-tools/clusterscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -excluded-clusters=kyma-prow,workload-kyma-prow,nightly,weekly"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_prow-tools"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "jobConfig_periodic"
+              - jobConfig:
+                  name: "orphaned-vms-cleaner"
+                  cron: "15,45 * * * *" # "At 15 and 45 past every hour"
+                  labels:
+                    preset-sa-gke-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "/prow-tools/vmscollector -project=${CLOUDSDK_CORE_PROJECT} -vmNameRegexp='.*-integration-test-.*|busola-ui-test-.*' -jobLabelRegexp='.*-integration$|busola-ui-test' -dryRun=false"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_prow-tools"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "jobConfig_periodic"
+              - jobConfig:
+                  name: "orphaned-loadbalancer-cleaner"
+                  cron: "15 * * * *" # "At 15 past every hour"
+                  labels:
+                    preset-sa-gke-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "/prow-tools/orphanremover -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_prow-tools"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "jobConfig_periodic"
+              - jobConfig:
+                  name: "firewall-cleaner"
+                  cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
+                  labels:
+                    preset-sa-gke-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "/prow-tools/firewallcleaner -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_prow-tools"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "jobConfig_periodic"
+              - jobConfig:
+                  name: "orphaned-dns-cleaner"
+                  cron: "30 * * * *" # "At minute 30 past every hour"
+                  labels:
+                    preset-sa-gke-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                    preset-gc-compute-envs: "true"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "/prow-tools/dnscollector -project=${CLOUDSDK_CORE_PROJECT} -dnsZone=${CLOUDSDK_DNS_ZONE_NAME} -ageInHours=2 -regions=${CLOUDSDK_COMPUTE_REGION} -dryRun=false"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_prow-tools"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "jobConfig_periodic"
+              - jobConfig:
+                  name: "github-stats"
+                  cron: "0 6 * * *" # "At 6:00 every day"
+                  labels:
+                    preset-bot-github-token: "true"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/github-stats.sh"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_prow-tools"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "jobConfig_periodic"
+              - jobConfig:
+                  name: "github-issues"
+                  cron: "0 6 * * *" # "At 6:00 every day"
+                  labels:
+                    preset-bot-github-token: "true"
+                    preset-bot-github-sap-token: "true"
+                    preset-sa-prow-job-github-issues: "true"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/github-issues.sh"
+                  cluster: "trusted-workload"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_prow-tools"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "jobConfig_periodic"
+  - fromTo:
+      - from: templates/generic.tmpl
+        to: ../prow/jobs/kyma/kyma-integration.yaml
+      - from: templates/test-inventory.tmpl
+        to: ../test-inventory-integration.md
+    render:
+      - localSets:
           extra_refs_kyma-local:
             extra_refs:
               local-kyma:
@@ -12,6 +258,8 @@ templates:
                   base_ref: "main"
           jobConfig_default:
             path_alias: github.com/kyma-project/kyma
+            annotations:
+              pipeline.type: integration
           jobConfig_periodic:
             cluster: "trusted-workload"
           request_small:
@@ -21,10 +269,25 @@ templates:
             request_memory: 200Mi
             request_cpu: 80m
           vm_job_template:
+            annotations:
+              pipeline.platform: minikube
+              pipeline.clusterprovisioning: minikube
+              pipeline.installer: kyma install
+              pipeline.test: octopus
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-minikube.sh"
           vm_job_template_k3s:
+            annotations:
+              pipeline.platform: k3s
+              pipeline.installer: kyma deploy
+              pipeline.test: fast-integration
+              pipeline.clusterprovisioning: k3s
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3s.sh"
           vm_job_template_serverless_k3s:
+            annotations:
+              pipeline.platform: k3s
+              pipeline.installer: kyma deploy
+              pipeline.test: helm serverless-test
+              pipeline.clusterprovisioning: k3s
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3s.sh"
           vm_job_labels_template:
             labels:
@@ -32,10 +295,19 @@ templates:
               preset-sa-vm-kyma-integration: "true"
               preset-gc-project-env: "true"
           gke_job_template:
+            annotations:
+              pipeline.platform: gke
+              pipeline.installer: kyma install
+              pipeline.test: octopus
+              pipeline.clusterprovisioning: gcloud cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
             env:
               CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
           gke_upgrade_job_template:
+            annotations:
+              pipeline.installer: kubectl-apply
+              pipeline.test: octopus
+              pipeline.clusterprovisioning: gcloud cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade.sh"
             env:
               CLOUDSDK_COMPUTE_ZONE: "europe-west4-a"
@@ -85,6 +357,8 @@ templates:
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
+                  annotations:
+                    pipeline.platform: k3s
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -101,6 +375,8 @@ templates:
                   name: "pre-main-kyma-integration-k3s-compass-dev"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  annotations:
+                    pipeline.platform: k3s
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-compass-dev: "true"
@@ -125,18 +401,18 @@ templates:
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-central-app-gateway-enabled: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "vm_job_template_k3s"
-                    - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
+                  inheritedConfigs:
+                    global:
+                      - "jobConfig_default"
+                      - "jobConfig_presubmit"
+                      - "image_kyma-integration"
+                      - "extra_refs_test-infra"
+                    local:
+                      - "jobConfig_default"
+                      - "request_small"
+                      - "vm_job_template_k3s"
+                      - "vm_job_labels_template"
+                      - "extra_refs_kyma-local"
               - jobConfig:
                   name: "pre-main-kyma-integration-k3s-central-app-gateway-compass"
                   optional: true
@@ -163,6 +439,8 @@ templates:
                   name: "pre-main-serverless-integration-k3s"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources/serverless\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  annotations:
+                    pipeline.platform: k3s
                   labels:
                     preset-build-pr: "true"
                 inheritedConfigs:
@@ -232,6 +510,8 @@ templates:
                   name: "pre-main-kyma-gke-upgrade"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  annotations:
+                    pipeline.platform: gke
                   labels:
                     preset-build-pr: "true"
                     preset-gke-upgrade-pre-job: "true"
@@ -381,6 +661,7 @@ templates:
                     testgrid-dashboards: kyma_integration
                     description: Kyma GKE upgrade job.
                     testgrid-days-of-results: "60"
+                    pipeline.platform: gke
                   labels:
                     preset-gke-upgrade-post-job: "true"
                     preset-log-collector-slack-token: "true"
@@ -422,234 +703,14 @@ templates:
               # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.
               # Purpose of this job is to avoid error: "Login profile size exceeds 32 KiB" when running kyma-integration tests
               - jobConfig:
-                  name: "utilities-kyma-integration-cleaner"
-                  cron: "30 * * * *" # "At 30 minutes past every hour"
-                  image: eu.gcr.io/kyma-project/prow/cleaner:0.0.1 # see test-infra/prow/images/cleaner
-                  command: "./cleaner.sh"
-                  labels:
-                    preset-sa-vm-kyma-integration: "true"
-                    preset-gc-project-env: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "jobConfig_periodic"
-              - jobConfig:
-                  name: "orphaned-az-storage-accounts-cleaner"
-                  cron: "00 00 * * *" # "At 00:00 each day"
-                  labels:
-                    preset-az-kyma-prow-credentials: "true"
-                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/minio/azure-cleaner.sh"
-                  env:
-                    MINIO_GATEWAY_MODE: azure
-                    AZURE_RS_GROUP: rafter-minio-gateway
-                    AZURE_REGION: westeurope
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "jobConfig_periodic"
-              - jobConfig:
-                  name: "orphaned-assetstore-gcp-bucket-cleaner"
-                  cron: "00 00 * * *" # "At 00:00 each day"
-                  labels:
-                    preset-sa-prow-job-resource-cleaner: "true"
-                    preset-gc-project-env: "true"
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "prow/scripts/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT}"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "image_prow-tools"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "jobConfig_periodic"
-              - jobConfig:
-                  name: "orphaned-disks-cleaner"
-                  cron: "30 * * * *" # "At 30 minutes past every hour"
-                  labels:
-                    preset-sa-gke-kyma-integration: "true"
-                    preset-gc-project-env: "true"
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|gke-provisioner|gke-backup|weekly|nightly|gke-central|gke-minio|gke-gkecompint|restore|gke-release|gke-gkeext|gke-gke-|gke-gkekcpint|gke-test|gke-cli'"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "image_prow-tools"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "jobConfig_periodic"
-              - jobConfig:
-                  name: "orphaned-clusters-cleaner"
-                  cron: "0 * * * *" # "At 0 minute every hour"
-                  labels:
-                    preset-sa-gke-kyma-integration: "true"
-                    preset-gc-project-env: "true"
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "/prow-tools/clusterscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -excluded-clusters=kyma-prow,workload-kyma-prow,nightly,weekly"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "image_prow-tools"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "jobConfig_periodic"
-              - jobConfig:
-                  name: "orphaned-vms-cleaner"
-                  cron: "15,45 * * * *" # "At 15 and 45 past every hour"
-                  labels:
-                    preset-sa-gke-kyma-integration: "true"
-                    preset-gc-project-env: "true"
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "/prow-tools/vmscollector -project=${CLOUDSDK_CORE_PROJECT} -vmNameRegexp='.*-integration-test-.*|busola-integration-test-.*' -jobLabelRegexp='.*-integration$|busola-integration-test-k3s' -dryRun=false"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "image_prow-tools"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "jobConfig_periodic"
-              - jobConfig:
-                  name: "orphaned-loadbalancer-cleaner"
-                  cron: "15 * * * *" # "At 15 past every hour"
-                  labels:
-                    preset-sa-gke-kyma-integration: "true"
-                    preset-gc-project-env: "true"
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "/prow-tools/orphanremover -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "image_prow-tools"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "jobConfig_periodic"
-#              - jobConfig:
-#                  name: "firewall-cleaner"
-#                  cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
-#                  labels:
-#                    preset-sa-gke-kyma-integration: "true"
-#                    preset-gc-project-env: "true"
-#                  command: "bash"
-#                  args:
-#                    - "-c"
-#                    - "/prow-tools/firewallcleaner -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
-#                inheritedConfigs:
-#                  global:
-#                    - "jobConfig_default"
-#                    - "jobConfig_periodic"
-#                    - "image_prow-tools"
-#                    - "extra_refs_test-infra"
-#                    - "disable_testgrid"
-#                  local:
-#                    - "jobConfig_default"
-#                    - "request_small"
-#                    - "jobConfig_periodic"
-              - jobConfig:
-                  name: "orphaned-dns-cleaner"
-                  cron: "30 * * * *" # "At minute 30 past every hour"
-                  labels:
-                    preset-sa-gke-kyma-integration: "true"
-                    preset-gc-project-env: "true"
-                    preset-gc-compute-envs: "true"
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "/prow-tools/dnscollector -project=${CLOUDSDK_CORE_PROJECT} -dnsZone=${CLOUDSDK_DNS_ZONE_NAME} -ageInHours=2 -regions=${CLOUDSDK_COMPUTE_REGION} -dryRun=false"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "image_prow-tools"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "jobConfig_periodic"
-              - jobConfig:
-                  name: "github-stats"
-                  cron: "0 6 * * *" # "At 6:00 every day"
-                  labels:
-                    preset-bot-github-token: "true"
-                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/github-stats.sh"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "image_prow-tools"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "jobConfig_periodic"
-              - jobConfig:
-                  name: "github-issues"
-                  cron: "0 6 * * *" # "At 6:00 every day"
-                  labels:
-                    preset-bot-github-token: "true"
-                    preset-bot-github-sap-token: "true"
-                    preset-sa-prow-job-github-issues: "true"
-                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/github-issues.sh"
-                  cluster: "trusted-workload"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "image_prow-tools"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "jobConfig_periodic"
-              - jobConfig:
                   name: "kyma-gke-nightly"
                   cron: "0 3 * * 1-5" # "At 03:00 UTC on every weekday Monday through Friday"
                   annotations:
                     testgrid-dashboards: kyma_integration
                     description: Kyma GKE nightly build.
+                    pipeline.platform: gke
+                    pipeline.installer: kyma install
+                    pipeline.clusterprovisioning: gcloud cli
                   labels:
                     preset-kyma-keyring: "true"
                     preset-kyma-encryption-key: "true"
@@ -698,6 +759,9 @@ templates:
                   annotations:
                     testgrid-dashboards: kyma_integration
                     description: Kyma GKE weekly build.
+                    pipeline.installer: kyma install
+                    pipeline.platform: gke
+                    pipeline.clusterprovisioning: gcloud cli
                   labels:
                     preset-kyma-keyring: "true"
                     preset-kyma-encryption-key: "true"
@@ -746,6 +810,10 @@ templates:
                   annotations:
                     testgrid-dashboards: kyma_integration
                     description: Kyma AKS nightly build.
+                    pipeline.platform: aks
+                    pipeline.installer: kyma install
+                    pipeline.trigger: nightly
+                    pipeline.clusterprovisioning: az cli
                   labels:
                     preset-kyma-keyring: "true"
                     preset-kyma-encryption-key: "true"

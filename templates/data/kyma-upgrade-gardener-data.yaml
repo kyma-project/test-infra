@@ -1,14 +1,19 @@
 templates:
-  - from: templates/generic.tmpl
+  - fromTo:
+      - from: templates/generic.tmpl
+        to: ../prow/jobs/kyma/kyma-upgrade-gardener.yaml
+      - from: templates/test-inventory.tmpl
+        to: ../test-inventory-integration.md
     render:
-      - to: ../prow/jobs/kyma/kyma-upgrade-gardener.yaml
-        localSets:
+      - localSets:
           jobConfig_default:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener-azure.sh"
             path_alias: github.com/kyma-project/kyma
             request_memory: 1Gi
             request_cpu: 400m
             automountServiceAccountToken: true
+            annotations:
+              pipeline.clusterprovisioning: kyma cli
             labels:
               preset-gardener-azure-kyma-integration: "true"
               preset-kyma-cli-stable: "true"
