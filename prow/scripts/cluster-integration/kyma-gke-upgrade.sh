@@ -177,7 +177,7 @@ function createNetwork() {
 
 function createCluster() {
   log::banner "Provision cluster: \"${COMMON_NAME}\""
-  ### For gcloud::provision_gke_cluster
+  ### For gcp::provision_gke_cluster
   export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 
   gcp::provision_k8s_cluster \

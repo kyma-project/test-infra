@@ -109,11 +109,11 @@ function createCluster() {
 	-s "${GCLOUD_SUBNET_NAME}" \
 	-p "$CLOUDSDK_CORE_PROJECT"
 
-	log::info "Provision cluster: \"${CLUSTER_NAME}\""
+	log::info "Provision cluster: \"${STANDARIZED_NAME}\""
 	date
 	
 	gcp::provision_k8s_cluster \
-		-c "$CLUSTER_NAME" \
+		-c "$STANDARIZED_NAME" \
 		-p "$CLOUDSDK_CORE_PROJECT" \
 		-v "$GKE_CLUSTER_VERSION" \
 		-j "$JOB_NAME" \
@@ -176,7 +176,7 @@ function installKyma() {
 		log::info "Create DNS Record for Apiserver proxy IP"
 		APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 		gcp::create_dns_record \
-			-a "$GATEWAY_IP_ADDRESS" \
+			-a "$APISERVER_IP_ADDRESS" \
 			-h "apiserver" \
 			-s "$STANDARIZED_NAME" \
 			-p "$CLOUDSDK_CORE_PROJECT" \
@@ -202,9 +202,9 @@ function installStackdriverPrometheusCollector(){
   kubectl -n kyma-system create secret generic prometheus-operator-additional-scrape-config --from-file="${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-additional-scrape-config.yaml
 	echo "Replace tags with current values in patch yaml file."
 	sed -i.bak -e 's/__SIDECAR_IMAGE_TAG__/'"${SIDECAR_IMAGE_TAG}"'/g' \
-		-e 's/__GCP_PROJECT__/'"${GCLOUD_PROJECT_NAME}"'/g' \
+		-e 's/__GCP_PROJECT__/'"${CLOUDSDK_CORE_PROJECT}"'/g' \
 		-e 's/__GCP_REGION__/'"${CLOUDSDK_COMPUTE_REGION}"'/g' \
-		-e 's/__CLUSTER_NAME__/'"${CLUSTER_NAME}"'/g' "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml
+		-e 's/__CLUSTER_NAME__/'"${STANDARIZED_NAME}"'/g' "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml
 	echo "Patch monitoring prometheus CRD to deploy stackdriver-prometheus collector as sidecar"
 	kubectl -n kyma-system patch prometheus monitoring-prometheus --type merge --patch "$(cat "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml)"
 }
@@ -268,13 +268,13 @@ if [ -z "$ARTIFACTS" ] ; then
 fi
 
 IMAGES_LIST=$(kubectl get pods --all-namespaces -o go-template --template='{{range .items}}{{range .status.containerStatuses}}{{.name}},{{.image}},{{.imageID}}{{printf "\n"}}{{end}}{{range .status.initContainerStatuses}}{{.name}},{{.image}},{{.imageID}}{{printf "\n"}}{{end}}{{end}}' | uniq | sort)
-echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${CLUSTER_NAME}.csv"
+echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${STANDARIZED_NAME}.csv"
 
 # also generate image list in json
 ## this is false-positive as we need to use single-quotes for jq
 # shellcheck disable=SC2016
 IMAGES_LIST=$(kubectl get pods --all-namespaces -o json | jq '{ images: [.items[] | .metadata.ownerReferences[0].name as $owner | (.status.containerStatuses + .status.initContainerStatuses)[] | { name: .imageID, custom_fields: {owner: $owner, image: .image, name: .name }}] | unique | group_by(.name) | map({name: .[0].name, custom_fields: {owner: map(.custom_fields.owner) | unique | join(","), container_name: map(.custom_fields.name) | unique | join(","), image: .[0].custom_fields.image}})}' )
-echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${CLUSTER_NAME}.json"
+echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${STANDARIZED_NAME}.json"
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
@@ -285,7 +285,7 @@ log::info "Install stability-checker"
 date
 (
 export TEST_INFRA_SOURCES_DIR KYMA_SCRIPTS_DIR TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS \
-        CLUSTER_NAME SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID SLACK_CLIENT_TOKEN TEST_RESULT_WINDOW_TIME
+        STANDARIZED_NAME SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID SLACK_CLIENT_TOKEN TEST_RESULT_WINDOW_TIME
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-stability-checker.sh"
 )
 

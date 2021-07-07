@@ -3,7 +3,7 @@
 #Description: Deletes a GKE cluster if exists along with DNS_RECORDS and STATIC IPs etc.
 #
 #Expected vars:
-# - CLUSTER_NAME: name of the GKE cluster
+# - STANDARIZED_NAME: name of the GKE cluster
 # - TEST_INFRA_SOURCES_DIR: absolute path for test-infra/ directory
 # - TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS: absolute path for test-infra/prow/scripts/cluster-integration/helpers directory
 # - CLOUDSDK_COMPUTE_REGION: region where the GKE cluster is e.g. europe-west1-b
@@ -24,7 +24,7 @@ function cleanup() {
 	log::info "Running cleanup-cluster process"
 
 	requiredVars=(
-		CLUSTER_NAME
+		STANDARIZED_NAME
 		TEST_INFRA_SOURCES_DIR
 		TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS
 		CLOUDSDK_COMPUTE_REGION
@@ -37,17 +37,17 @@ function cleanup() {
 
 	#Exporting variables used in subshells.
 	export CLOUDSDK_DNS_ZONE_NAME
-	export CLUSTER_NAME
+	export STANDARIZED_NAME
 	export CLOUDSDK_COMPUTE_REGION
 
-	CLUSTER_EXISTS=$(gcloud container clusters list --filter="name~^${CLUSTER_NAME}" --format json | jq '.[].name' | tr -d '"' | wc -l)
+	CLUSTER_EXISTS=$(gcloud container clusters list --filter="name~^${STANDARIZED_NAME}" --format json | jq '.[].name' | tr -d '"' | wc -l)
 	if [[ "$CLUSTER_EXISTS" -gt 0 ]]; then
-		echo "Cleaning up: $CLUSTER_NAME"
+		echo "Cleaning up: $STANDARIZED_NAME"
 		removeCluster
-		echo "Cluster: $CLUSTER_NAME cleanup completed, moving to NET and DNS resources cleanup"
+		echo "Cluster: $STANDARIZED_NAME cleanup completed, moving to NET and DNS resources cleanup"
 		removeResources
 	else
-		echo "Cluster: $CLUSTER_NAME not found, cleaning up NET and DNS resources"
+		echo "Cluster: $STANDARIZED_NAME not found, cleaning up NET and DNS resources"
 		removeResources
 	fi
 
@@ -62,17 +62,17 @@ function removeCluster() {
 		# Check if removing regionl cluster.
 		if [ "${PROVISION_REGIONAL_CLUSTER}" ] && [ "${CLOUDSDK_COMPUTE_REGION}" ]; then
 			#Pass gke region name instead zone name.
-			readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${CLOUDSDK_COMPUTE_REGION}" --project="${GCLOUD_PROJECT_NAME}" --format=json | jq --raw-output '.resourceLabels."created-at-readable"')
+			readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${STANDARIZED_NAME}" --zone="${CLOUDSDK_COMPUTE_REGION}" --project="${CLOUDSDK_CORE_PROJECT}" --format=json | jq --raw-output '.resourceLabels."created-at-readable"')
 		else
-			readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${GCLOUD_COMPUTE_ZONE}" --project="${GCLOUD_PROJECT_NAME}" --format=json | jq --raw-output '.resourceLabels."created-at-readable"')
+			readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${STANDARIZED_NAME}" --zone="${CLOUDSDK_COMPUTE_ZONE}" --project="${CLOUDSDK_CORE_PROJECT}" --format=json | jq --raw-output '.resourceLabels."created-at-readable"')
 		fi
 	fi
 
-	log::info "Delete cluster $CLUSTER_NAME"
+	log::info "Delete cluster $STANDARIZED_NAME"
 	gcp::deprovision_k8s_cluster \
-            -n "$CLUSTER_NAME" \
-            -p "$GCLOUD_PROJECT_NAME" \
-            -z "$GCLOUD_COMPUTE_ZONE" \
+            -n "$STANDARIZED_NAME" \
+            -p "$CLOUDSDK_CORE_PROJECT" \
+            -z "$CLOUDSDK_COMPUTE_ZONE" \
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
@@ -98,7 +98,7 @@ function removeResources() {
 	set +e
 
 	log::info "Delete Cluster DNS Record"
-	GATEWAY_DNS_FULL_NAME="*.${CLUSTER_NAME}.${DNS_NAME}"
+	GATEWAY_DNS_FULL_NAME="*.${STANDARIZED_NAME}.${DNS_NAME}"
 	# Get cluster IP address from DNS record.
 	GATEWAY_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${GATEWAY_DNS_FULL_NAME}" --format "value(rrdatas[0])")
 
@@ -115,7 +115,7 @@ function removeResources() {
 	fi
 
 	log::info "Delete Apiserver DNS Record"
-	APISERVER_DNS_FULL_NAME="apiserver.${CLUSTER_NAME}.${DNS_NAME}"
+	APISERVER_DNS_FULL_NAME="apiserver.${STANDARIZED_NAME}.${DNS_NAME}"
 	# Get apiserver IP address from DNS record.
 	APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
 
@@ -132,12 +132,12 @@ function removeResources() {
 	fi
 
 	log::info "Release Cluster IP Address"
-	GATEWAY_IP_ADDRESS_NAME=${CLUSTER_NAME}
+	GATEWAY_IP_ADDRESS_NAME=${STANDARIZED_NAME}
 
 	# Check if cluster IP address reservation exist.
-	if [[ -n $(gcloud compute addresses list --filter="name=${CLUSTER_NAME}" --format "value(ADDRESS)") ]]; then
+	if [[ -n $(gcloud compute addresses list --filter="name=${STANDARIZED_NAME}" --format "value(ADDRESS)") ]]; then
 		# Get usage status of IP address reservation.
-		GATEWAY_IP_STATUS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --region "${CLOUDSDK_COMPUTE_REGION}" --format "value(status)")
+		GATEWAY_IP_STATUS=$(gcloud compute addresses describe "${STANDARIZED_NAME}" --region "${CLOUDSDK_COMPUTE_REGION}" --format "value(status)")
 		# Check if it's still in use. It shouldn't as we removed DNS records earlier.
 		if [[ ${GATEWAY_IP_STATUS} == "IN_USE" ]]; then
 			SECONDS=0
@@ -146,7 +146,7 @@ function removeResources() {
 			while [ ${SECONDS} -lt ${END_TIME} ];do
 				sleep 10
 				echo "Checking if cluster IP is unassigned."
-				GATEWAY_IP_STATUS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --region "${CLOUDSDK_COMPUTE_REGION}" --format "value(status)")
+				GATEWAY_IP_STATUS=$(gcloud compute addresses describe "${STANDARIZED_NAME}" --region "${CLOUDSDK_COMPUTE_REGION}" --format "value(status)")
 				if [[ ${GATEWAY_IP_STATUS} != "IN_USE" ]]; then
 					echo "Cluster IP address sucessfully unassigned."
 					break
