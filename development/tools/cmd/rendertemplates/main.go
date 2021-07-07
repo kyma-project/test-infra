@@ -13,9 +13,10 @@ import (
 	"text/template"
 
 	"github.com/Masterminds/sprig"
-	rt "github.com/kyma-project/test-infra/development/tools/pkg/rendertemplates"
 	"gopkg.in/yaml.v2"
 	"k8s.io/apimachinery/pkg/util/sets"
+
+	rt "github.com/kyma-project/test-infra/development/tools/pkg/rendertemplates"
 )
 
 const (
@@ -37,6 +38,7 @@ var (
 	}
 	commentSignByFileExt = map[string]sets.String{
 		"//": sets.NewString(".go"),
+		"> ": sets.NewString(".md"),
 		"#":  sets.NewString(".yaml", ".yml"),
 	}
 )
@@ -68,7 +70,7 @@ func main() {
 	dataFilesDir := filepath.Join(filepath.Dir(*configFilePath), "data")
 	// read all template configs from data files
 	dataFiles, err := ioutil.ReadDir(dataFilesDir)
-	var dataFilesTemplates []rt.TemplateConfig
+	var dataFilesTemplates []*rt.TemplateConfig
 	for _, dataFile := range dataFiles {
 		if !dataFile.IsDir() {
 			var dataFileConfig rt.Config
@@ -92,7 +94,7 @@ func main() {
 	}
 
 	config.Templates = append(config.Templates, dataFilesTemplates...)
-
+	config.Merge()
 	for _, templateConfig := range config.Templates {
 		err = renderTemplate(path.Dir(*configFilePath), templateConfig, config)
 		if err != nil {
@@ -101,30 +103,27 @@ func main() {
 	}
 }
 
-func renderTemplate(basePath string, templateConfig rt.TemplateConfig, config *rt.Config) error {
-	templateInstance, err := loadTemplate(basePath, templateConfig.From)
-	if err != nil {
-		return err
-	}
-	for _, render := range templateConfig.Render {
-
-		render.MergeConfigs(config)
-
-		// check if there are any component jobs in merged config and generate config for such jobs for each supported release
-		render.GenerateComponentJobs(config.Global)
-
-		err = renderFileFromTemplate(basePath, templateInstance, render, config)
+func renderTemplate(basePath string, templateConfig *rt.TemplateConfig, config *rt.Config) error {
+	for _, fromTo := range templateConfig.FromTo {
+		log.Printf("Rendering %s", fromTo)
+		templateInstance, err := loadTemplate(basePath, fromTo.From)
 		if err != nil {
-			log.Printf("Failed render %s file", render.To)
 			return err
+		}
+		for _, render := range templateConfig.Render {
+			err = renderFileFromTemplate(basePath, templateInstance, *render, config, fromTo)
+			if err != nil {
+				log.Printf("Failed render %s file", fromTo.To)
+				return err
+			}
 		}
 	}
 
 	return nil
 }
 
-func renderFileFromTemplate(basePath string, templateInstance *template.Template, renderConfig rt.RenderConfig, config *rt.Config) error {
-	relativeDestPath := path.Join(basePath, renderConfig.To)
+func renderFileFromTemplate(basePath string, templateInstance *template.Template, renderConfig rt.RenderConfig, config *rt.Config, fromTo rt.FromTo) error {
+	relativeDestPath := path.Join(basePath, fromTo.To)
 
 	destDir := path.Dir(relativeDestPath)
 	err := os.MkdirAll(destDir, os.ModePerm)
@@ -143,9 +142,6 @@ func renderFileFromTemplate(basePath string, templateInstance *template.Template
 
 	values := map[string]interface{}{"Values": renderConfig.Values, "Global": config.Global}
 
-	if *showOutputDir {
-		fmt.Println(destFile.Name())
-	}
 	return templateInstance.Execute(destFile, values)
 }
 
