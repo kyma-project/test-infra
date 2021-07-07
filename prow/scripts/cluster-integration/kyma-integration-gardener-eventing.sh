@@ -79,8 +79,6 @@ readonly COMMON_NAME_PREFIX="grd"
 COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 export COMMON_NAME
 
-### Cluster name must be less than 10 characters!
-export CLUSTER_NAME="${COMMON_NAME}"
 
 # set KYMA_SOURCE used by gardener::install_kyma
 # at the time of writing this comment, kyma-integration-gardener never sets BUILD_TYPE to "release"

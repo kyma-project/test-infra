@@ -128,9 +128,6 @@ function generateAndExportClusterName() {
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
   fi
 
-  ### Cluster name must be less than 40 characters!
-  export CLUSTER_NAME="${COMMON_NAME}"
-
   gcp::set_vars_for_network \
     -n "$JOB_NAME"
   export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_return_net_name:?}"

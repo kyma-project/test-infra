@@ -68,7 +68,6 @@ fi
 
 ### Cluster name must be less than 40 characters!
 COMMON_NAME=$(echo "${COMMON_NAME}" | tr "[:upper:]" "[:lower:]")
-export CLUSTER_NAME="${COMMON_NAME}"
 
 gcp::set_vars_for_network \
   -n "$JOB_NAME"
@@ -140,7 +139,7 @@ function createCluster() {
     -s "${GCLOUD_SUBNET_NAME}" \
     -p "$CLOUDSDK_CORE_PROJECT"
 
-  log::info "Provision cluster: \"${CLUSTER_NAME}\""
+  log::info "Provision cluster: \"${COMMON_NAME}\""
   export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
   gcp::provision_k8s_cluster \
         -c "$COMMON_NAME" \

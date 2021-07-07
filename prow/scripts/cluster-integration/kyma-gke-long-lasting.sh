@@ -34,8 +34,6 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 
 export REPO_OWNER="kyma-project"
@@ -45,7 +43,6 @@ STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
 export STANDARIZED_NAME
 export DNS_SUBDOMAIN="${STANDARIZED_NAME}"
 
-export CLUSTER_NAME="${STANDARIZED_NAME}"
 gcp::set_vars_for_network \
   -n "$JOB_NAME"
 export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_return_net_name:?}"

@@ -150,8 +150,6 @@ generateAndExportClusterName() {
 
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${versionFrom}-${versionTo}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 
-    ### Cluster name must be less than 40 characters!
-    export CLUSTER_NAME="${COMMON_NAME}"
     gcp::set_vars_for_network \
       -n "$JOB_NAME"
     export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_return_net_name:?}"
@@ -200,7 +198,7 @@ createNetwork() {
 }
 
 createCluster() {
-    log::info "Provision cluster: \"${CLUSTER_NAME}\""
+    log::info "Provision cluster: \"${COMMON_NAME}\""
     ### For gcloud::provision_gke_cluster
     export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
     export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
