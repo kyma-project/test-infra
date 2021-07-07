@@ -185,6 +185,7 @@ function installKyma() {
 
 	if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
 		log::info "Create DNS Record for Apiserver proxy IP"
+		APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 		gcp::create_dns_record \
 				-a "$APISERVER_IP_ADDRESS" \
 				-p "$CLOUDSDK_CORE_PROJECT" \
