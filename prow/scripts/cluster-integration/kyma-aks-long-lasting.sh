@@ -232,11 +232,6 @@ az::create_resource_group \
 
 log::info "Install Kubernetes on Azure"
 
-
-log::info "Find latest cluster version for kubernetes version: ${AKS_CLUSTER_VERSION}"
-AKS_CLUSTER_VERSION_PRECISE=$(az aks get-versions -l "${REGION}" | jq '.orchestrators|.[]|select(.orchestratorVersion | contains("'"${AKS_CLUSTER_VERSION}"'"))' | jq -s '.' | jq -r 'sort_by(.orchestratorVersion | split(".") | map(tonumber)) | .[-1].orchestratorVersion')
-log::info "Latest available version is: ${AKS_CLUSTER_VERSION_PRECISE}"
-
 # shellcheck disable=SC2153
 az::provision_k8s_cluster \
 	-c "$CLUSTER_NAME" \
