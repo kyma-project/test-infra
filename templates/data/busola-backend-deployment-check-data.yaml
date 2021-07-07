@@ -29,7 +29,7 @@ templates:
               - jobConfig:
                   name: "pre-busola-backend-deployment-check"
                   optional: false
-                  run_if_changed: "^backend/|^shared/|^package.json"
+                  run_if_changed: "^backend/|^package.json"
                   labels:
                     preset-build-pr: "true"
                     preset-gardener-azure-kyma-integration: "true"
