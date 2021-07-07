@@ -222,6 +222,7 @@ az::authenticate \
 az::set_subscription \
 	-s "$AZURE_SUBSCRIPTION_ID"
 
+set -x
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --project="${CLOUDSDK_CORE_PROJECT}" --format="value(dnsName)")"
 export DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 
@@ -230,7 +231,7 @@ cleanup
 az::create_resource_group \
 	-g "${RS_GROUP}" \
 	-r "${REGION}"
-
+set +x
 log::info "Install Kubernetes on Azure"
 
 # shellcheck disable=SC2153
@@ -242,8 +243,9 @@ az::provision_k8s_cluster \
 	-v "$AKS_CLUSTER_VERSION" \
 	-a "$CLUSTER_ADDONS" \
 	-f "$AZURE_CREDENTIALS_FILE"
-
+set -x
 createPublicIPandDNS
+set +x 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-letsencrypt-cert.sh"
 TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
 export TLS_CERT
@@ -267,4 +269,5 @@ export TEST_INFRA_SOURCES_DIR KYMA_SCRIPTS_DIR TEST_INFRA_CLUSTER_INTEGRATION_SC
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-stability-checker.sh"
 )
 
+log::info "Stability checker"
 test_console_url
