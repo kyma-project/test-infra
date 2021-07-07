@@ -20,20 +20,6 @@ function gcloud::verify_deps {
   done
 }
 
-
-# gcloud::set_account activates already authenticated account
-# Arguments:
-# $1 - credentials to Google application
-function gcloud::set_account() {
-  if [[ -z $1 ]]; then
-    log::error "Missing account credentials, please provide proper credentials"
-    exit 1
-  fi
-  client_email=$(jq -r '.client_email' < "$1")
-  log::info "Activating account $client_email"
-  gcloud config set account "${client_email}" || exit 1
-}
-
 # gcloud::encrypt encrypts text using Google KMS
 # Required exported variables:
 # CLOUDSDK_KMS_PROJECT
@@ -94,21 +80,6 @@ function gcloud::decrypt {
       --ciphertext-file "${CIPHER_TEXT}" \
       --plaintext-file "${PLAIN_TEXT}" \
       --project "${CLOUDSDK_KMS_PROJECT}"
-}
-
-# gcloud::delete_docker_image deletes Docker image
-# Arguments:
-# $1 - name of the Docker image
-function gcloud::delete_docker_image() {
-  if [[ -z "$1" ]]; then
-    log::error "Name of the Docker image to delete is missing, please provide proper name"
-    exit 1
-  fi
-  gcloud container images delete "$1" || \
-  (
-    log::error "Could not remove Docker image" && \
-    exit 1
-  )
 }
 
 gcloud::verify_deps

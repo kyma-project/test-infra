@@ -259,6 +259,34 @@ function gcp::authenticate {
     gcloud auth activate-service-account --key-file "$googleAppCredentials" || exit 1
 }
 
+# gcp::set_account activates already authenticated account
+# Arguments:
+# c - credentials to Google application
+function gcp::set_account() {
+    
+    local OPTIND
+    #required arguments
+    local googleAppCredentials
+    local clientEmail
+
+    while getopts ":c:" opt; do
+        case $opt in
+            c)
+                googleAppCredentials="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+    done
+
+    utils::check_empty_arg "$googleAppCredentials" "Missing account credentials, please provide proper credentials"
+
+    clientEmail=$(jq -r '.client_email' < "$googleAppCredentials")
+    log::info "Activating account $clientEmail"
+    gcloud config set account "${clientEmail}" || exit 1
+}
+
 # gcp::reserve_ip_address requests a new IP address from GCP and prints this value to STDOUT
 #
 # Arguments:

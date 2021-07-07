@@ -104,7 +104,8 @@ function docker_cleanup() {
         -c "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
       gcp::delete_docker_image \
         -i "${KCP_INSTALLER_IMAGE}"
-      gcloud::set_account "${GOOGLE_APPLICATION_CREDENTIALS}"
+      gcp::set_account \
+        -c "${GOOGLE_APPLICATION_CREDENTIALS}"
     fi
   fi
 
