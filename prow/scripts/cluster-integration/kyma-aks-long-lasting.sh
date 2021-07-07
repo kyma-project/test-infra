@@ -74,46 +74,50 @@ function cleanup() {
 	# Exporting for use in subshells.
 	export RS_GROUP
 
-	az::get_cluster_resource_group \
-		-r "$RS_GROUP" \
-		-c "$CLUSTER_NAME"
+	if [[ $(az group exists --name "${RS_GROUP}" -o json) == true ]]; then
+		az::get_cluster_resource_group \
+			-r "$RS_GROUP" \
+			-c "$CLUSTER_NAME"
 
-	log::info "\n---\nRemove DNS Record for Ingressgateway\n---"
-	GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
+		log::info "\n---\nRemove DNS Record for Ingressgateway\n---"
+		GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
 
-	GATEWAY_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${GATEWAY_DNS_FULL_NAME}" --format="value(rrdatas[0])")
-	TMP_STATUS=$?
-	check_status ${TMP_STATUS} "Could not fetch IP for : ${GATEWAY_DNS_FULL_NAME}"
-	if [[ -n ${GATEWAY_IP_ADDRESS} ]];then
-		# only try to delete the dns record if the ip address has been found
-		gcp::delete_dns_record \
-			-a "$GATEWAY_IP_ADDRESS" \
-			-p "$CLOUDSDK_CORE_PROJECT" \
-			-h "*" \
-			-s "$DNS_SUBDOMAIN" \
-			-z "$CLOUDSDK_DNS_ZONE_NAME"
+		GATEWAY_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${GATEWAY_DNS_FULL_NAME}" --format="value(rrdatas[0])")
+		TMP_STATUS=$?
+		check_status ${TMP_STATUS} "Could not fetch IP for : ${GATEWAY_DNS_FULL_NAME}"
+		if [[ -n ${GATEWAY_IP_ADDRESS} ]];then
+			# only try to delete the dns record if the ip address has been found
+			gcp::delete_dns_record \
+				-a "$GATEWAY_IP_ADDRESS" \
+				-p "$CLOUDSDK_CORE_PROJECT" \
+				-h "*" \
+				-s "$DNS_SUBDOMAIN" \
+				-z "$CLOUDSDK_DNS_ZONE_NAME"
+		fi
+
+		log::info "\n---\nRemove DNS Record for Apiserver Proxy IP\n---"
+		APISERVER_DNS_FULL_NAME="apiserver.${DOMAIN}."
+		APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
+		TMP_STATUS=$?
+		check_status ${TMP_STATUS} "Could not fetch IP for : ${APISERVER_DNS_FULL_NAME}"
+		if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
+			gcp::delete_dns_record \
+				-a "$APISERVER_IP_ADDRESS" \
+				-p "$CLOUDSDK_CORE_PROJECT" \
+				-h "apiserver" \
+				-s "$DNS_SUBDOMAIN" \
+				-z "$CLOUDSDK_DNS_ZONE_NAME"
+		fi
+
+		az::deprovision_k8s_cluster \
+			-c "$CLUSTER_NAME"\
+			-g "$RS_GROUP"
+
+		az::delete_resource_group \
+			-g "$RS_GROUP"
+	else
+		log::info "Azure group does not exist, skip cleanup process"
 	fi
-
-	log::info "\n---\nRemove DNS Record for Apiserver Proxy IP\n---"
-	APISERVER_DNS_FULL_NAME="apiserver.${DOMAIN}."
-	APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
-	TMP_STATUS=$?
-	check_status ${TMP_STATUS} "Could not fetch IP for : ${APISERVER_DNS_FULL_NAME}"
-	if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
-		gcp::delete_dns_record \
-			-a "$APISERVER_IP_ADDRESS" \
-			-p "$CLOUDSDK_CORE_PROJECT" \
-			-h "apiserver" \
-			-s "$DNS_SUBDOMAIN" \
-			-z "$CLOUDSDK_DNS_ZONE_NAME"
-	fi
-
-	az::deprovision_k8s_cluster \
-		-c "$CLUSTER_NAME"\
-		-g "$RS_GROUP"
-
-	az::delete_resource_group \
-		-g "$RS_GROUP"
 
 	MSG=""
 	if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
@@ -262,12 +266,14 @@ installKyma
 log::info "Override kyma-admin-binding ClusterRoleBinding"
 apply_dex_github_kyma_admin_group
 
+export SLACK_CLIENT_TOKEN="temp"
+set -x
 log::info "Install stability-checker"
 (
 export TEST_INFRA_SOURCES_DIR KYMA_SCRIPTS_DIR TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS \
 		CLUSTER_NAME SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID SLACK_CLIENT_TOKEN TEST_RESULT_WINDOW_TIME
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-stability-checker.sh"
 )
-
+set +x
 log::info "Stability checker"
 test_console_url
