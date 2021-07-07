@@ -35,7 +35,8 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/busola release-local"
+              - "/home/prow/go/src/github.com/kyma-project/busola"
+              - "release-local"
             resources:
               requests:
                 memory: 3Gi
@@ -78,7 +79,8 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/busola release-local"
+              - "/home/prow/go/src/github.com/kyma-project/busola"
+              - "release-local"
             resources:
               requests:
                 memory: 3Gi

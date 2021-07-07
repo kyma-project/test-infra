@@ -52,7 +52,8 @@ templates:
               - jobConfig:
                   path: web-and-backend
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/busola release-local"
+                    - "/home/prow/go/src/github.com/kyma-project/busola"
+                    - "release-local"
                   run_if_changed: "^backend/|^core/|^core-ui/|^service-catalog-ui/|^shared/|^package.json"
                   release_since: "1.24"
                 inheritedConfigs:
