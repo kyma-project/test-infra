@@ -94,38 +94,13 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-# post_hook runs at the end of a script or on any error
-function post_hook() {
-  #!!! Must be at the beginning of this function !!!
-  EXIT_STATUS=$?
-
-  log::info "Cleanup"
-
-  if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
-    log::info "AN ERROR OCCURED! Take a look at preceding log entries."
-  fi
-
-  #Turn off exit-on-error so that next step is executed even if previous one fails.
-  set +e
-
-  # collect logs from failed tests before deprovisioning
-  kyma::run_test_log_collector "post-main-kyma-gke-upgrade"
-
-  gcloud::cleanup
-
-  MSG=""
-  if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-  log::info "Job is finished ${MSG}"
-  set -e
-
-  exit "${EXIT_STATUS}"
-}
-
 function installCli() {
   kyma::install_cli
 }
 
-trap post_hook EXIT INT
+# Using set -f to prevent path globing in post_hook arguments.
+# utils::post_hook call set +f at the beginning.
+trap 'EXIT_STATUS=$?; set -f; utils::post_hook -n "$COMMON_NAME" -p "$CLOUDSDK_CORE_PROJECT" -c "$CLEANUP_CLUSTER" -g "$CLEANUP_GATEWAY_DNS_RECORD" -G "$INGRESS_GATEWAY_HOSTNAME" -a "$CLEANUP_APISERVER_DNS_RECORD" -A "$APISERVER_HOSTNAME" -I "$CLEANUP_GATEWAY_IP_ADDRESS" -l "$ERROR_LOGGING_GUARD" -z "$CLOUDSDK_COMPUTE_ZONE" -R "$CLOUDSDK_COMPUTE_REGION" -r "$PROVISION_REGIONAL_CLUSTER" -d "$DISABLE_ASYNC_DEPROVISION" -s "$COMMON_NAME" -e "$GATEWAY_IP_ADDRESS" -f "$APISERVER_IP_ADDRESS" -N "$COMMON_NAME" -Z "$CLOUDSDK_DNS_ZONE_NAME" -E "$EXIT_STATUS" -j "$JOB_NAME"' EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
   log::info "Execute Job Guard"

@@ -226,8 +226,10 @@ function gcp::provision_k8s_cluster {
 
     kubectl -n kube-system patch cm kube-dns --type merge --patch "$(cat "$kubeDnsPatchPath")"
 
-    # run oom debug pod
-    utils::debug_oom
+    if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
+        # run oom debug pod
+        utils::debug_oom
+    fi
 }
 
 
