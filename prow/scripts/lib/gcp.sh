@@ -776,7 +776,7 @@ function gcp::delete_docker_image() {
     done
 
     utils::check_empty_arg "$imageName" "Image name is empty. Exiting..."
-    gcloud container images delete "$1" || \
+    gcloud container images delete "$imageName" || \
     (
         log::error "Could not remove Docker image" && \
         exit 1
