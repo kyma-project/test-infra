@@ -136,7 +136,10 @@ export DNS_SUBDOMAIN=${gcp_create_dns_record_return_dns_subdomain:?}
 export CLEANUP_GATEWAY_DNS_RECORD="true"
 
 # if GKE_RELEASE_CHANNEL is set, get latest possible cluster version
-gcloud::set_latest_cluster_version_for_channel
+if [ "${GKE_RELEASE_CHANNEL}" ]; then
+    gcp::set_latest_cluster_version_for_channel
+    GKE_CLUSTER_VERSION="${gcp_set_latest_cluster_version_for_channel_return_cluster_version:?}"
+fi
 
 if [ "$PROVISION_REGIONAL_CLUSTER" ]; then NUM_NODES="$NODES_PER_ZONE"; fi
 

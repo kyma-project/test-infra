@@ -722,3 +722,64 @@ function gcp::delete_ip_address {
         return 1
     fi
 }
+
+
+# gcp::delete_docker_image deletes Docker image
+# Arguments:
+# i - name of the Docker image
+function gcp::delete_docker_image() {
+
+    local OPTIND
+    local imageName
+
+    while getopts ":i:" opt; do
+        case $opt in
+            i)
+                imageName="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2; exit 1 ;;
+        esac
+    done
+
+    utils::check_empty_arg "$imageName" "Image name is empty. Exiting..."
+    gcloud container images delete "$1" || \
+    (
+        log::error "Could not remove Docker image" && \
+        exit 1
+    )
+}
+
+
+# gcp::set_latest_cluster_version_for_channel checks for latest possible version in GKE_RELEASE_CHANNEL and updates GKE_CLUSTER_VERSION accordingly
+# Arguments:
+# required:
+# C - release channel
+# Returns
+# gcp_set_latest_cluster_version_for_channel_return_cluster_version - latest cluster version for given channel
+function gcp::set_latest_cluster_version_for_channel() {
+
+    local OPTIND
+    local releaseChannel
+    local clusterVersion
+
+    while getopts ":C:" opt; do
+        case $opt in
+            C)
+                releaseChannel="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2; exit 1 ;;
+        esac
+    done
+
+    utils::check_empty_arg "$releaseChannel" "Release channel is empty. Exiting..."
+
+    clusterVersion=$(gcloud container get-server-config --zone europe-west4 --format="json" | jq -r '.channels|.[]|select(.channel | contains("'"${releaseChannel}"'"|ascii_upcase))|.validVersions|.[0]')
+    log::info "Updating GKE_CLUSTER_VERSION to newest available in ${releaseChannel}: ${clusterVersion}"
+
+    # shellcheck disable=SC2034
+    gcp_set_latest_cluster_version_for_channel_return_cluster_version="$clusterVersion"
+}

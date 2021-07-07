@@ -104,7 +104,8 @@ function docker_cleanup() {
       log::info "Delete temporary KCP-Installer Docker image"
       gcp::authenticate \
         -c "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
-      gcloud::delete_docker_image "${KCP_INSTALLER_IMAGE}"
+      gcp::delete_docker_image \
+        -i "${KCP_INSTALLER_IMAGE}"
       gcloud::set_account "${GOOGLE_APPLICATION_CREDENTIALS}"
     fi
   fi
