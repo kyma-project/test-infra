@@ -375,12 +375,6 @@ function az::provision_k8s_cluster {
 # required:
 # c - cluster name
 # g - azure resource group
-# r - azure region
-
-# s - azure cluster size
-# v - desired k8s cluster version
-# a - addidional AKS addons
-# f - credentials file, refer to az::authenticate
 #
 function az::deprovision_k8s_cluster {
 

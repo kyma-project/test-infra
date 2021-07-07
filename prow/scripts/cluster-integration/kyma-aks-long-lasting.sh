@@ -110,7 +110,7 @@ function cleanup() {
 
 	az::deprovision_k8s_cluster \
 		-c "$CLUSTER_NAME"\
-		-n "$RS_GROUP"
+		-g "$RS_GROUP"
 
 	az::delete_resource_group \
 		-g "$RS_GROUP"
