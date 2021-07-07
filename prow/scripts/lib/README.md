@@ -13,7 +13,7 @@ The folder structure looks as follows:
 ├── clitests.sh # This script contain function for deploying Kyma.
 ├── docker.sh # This script contains functions that interact with Docker.
 ├── gardener # This directory contains helper scripts used by Gardener pipeline jobs.
-├── gcloud.sh # This script contains functions that interact with Google Cloud services.
+├── gcp.sh # This script contains functions that interact with Google Cloud services.
 ├── github.sh # This script contains function that configure git.
 ├── junit.sh # This script contains functions  used for testing with JUnit.
 ├── kyma.sh # This script contains functions used for installing and interfacing with Kyma.

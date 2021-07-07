@@ -37,8 +37,6 @@ export TEST_INFRA_SOURCES_DIR="$KYMA_PROJECT_DIR/test-infra"
 export KYMA_SOURCES_DIR="$KYMA_PROJECT_DIR/kyma"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="$TEST_INFRA_SOURCES_DIR/prow/scripts/cluster-integration/helpers"
 
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/lib/log.sh

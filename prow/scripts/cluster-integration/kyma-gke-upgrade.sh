@@ -61,9 +61,6 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
-
 # shellcheck source=prow/scripts/lib/testing-helpers.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 

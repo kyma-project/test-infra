@@ -15,8 +15,6 @@
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcp.sh"
 DNS_NAME="a.build.kyma-project.io."

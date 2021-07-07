@@ -13,8 +13,6 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
