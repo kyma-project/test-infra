@@ -132,7 +132,6 @@ function removeResources() {
 	fi
 
 	log::info "Release Cluster IP Address"
-	GATEWAY_IP_ADDRESS_NAME=${STANDARIZED_NAME}
 
 	# Check if cluster IP address reservation exist.
 	if [[ -n $(gcloud compute addresses list --filter="name=${STANDARIZED_NAME}" --format "value(ADDRESS)") ]]; then
@@ -154,19 +153,19 @@ function removeResources() {
 			done
 		fi
 		if [[ ${GATEWAY_IP_STATUS} == "IN_USE" ]]; then
-			echo "${GATEWAY_IP_ADDRESS_NAME} IP address has still status IN_USE. It should be unassigned earlier. Exiting"
+			echo "${STANDARIZED_NAME} IP address has still status IN_USE. It should be unassigned earlier. Exiting"
 			exit 1
 		# Remove IP address reservation.
 		else
 			gcp::delete_ip_address \
-    			-n "${GATEWAY_IP_ADDRESS_NAME}" \
+				-n "${STANDARIZED_NAME}" \
 				-p "$CLOUDSDK_CORE_PROJECT" \
 				-R "$CLOUDSDK_COMPUTE_REGION"
 			TMP_STATUS=$?
 			if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 		fi
 	else
-		echo "${GATEWAY_IP_ADDRESS_NAME} IP address not found"
+		echo "${STANDARIZED_NAME} IP address not found"
 	fi
 
 	MSG=""
