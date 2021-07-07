@@ -77,8 +77,8 @@ requiredVars=(
     GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS
     GKE_CLUSTER_VERSION
 )
-
-
+# allow GKE_CLUSTER_VERSION to be specified explicitly for this script
+GKE_CLUSTER_VERSION=${GKE_CLUSTER_VERSION_OVERRIDE:-$GKE_CLUSTER_VERSION}
 utils::check_required_vars "${requiredVars[@]}"
 
 # Using set -f to prevent path globing in post_hook arguments.
