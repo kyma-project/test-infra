@@ -135,7 +135,8 @@ export CLEANUP_GATEWAY_DNS_RECORD="true"
 
 # if GKE_RELEASE_CHANNEL is set, get latest possible cluster version
 if [ "${GKE_RELEASE_CHANNEL}" ]; then
-    gcp::set_latest_cluster_version_for_channel
+    gcp::set_latest_cluster_version_for_channel \
+        -C "$GKE_RELEASE_CHANNEL"
     GKE_CLUSTER_VERSION="${gcp_set_latest_cluster_version_for_channel_return_cluster_version:?}"
 fi
 

@@ -235,6 +235,7 @@ function gcp::provision_k8s_cluster {
 
 # gcp::authenticate authenticates to GCP.
 # Arguments:
+# required:
 # c - google credentials file path
 function gcp::authenticate {
 
@@ -261,6 +262,7 @@ function gcp::authenticate {
 
 # gcp::set_account activates already authenticated account
 # Arguments:
+# required:
 # c - credentials to Google application
 function gcp::set_account() {
     
@@ -364,6 +366,7 @@ function gcp::reserve_ip_address {
 # gcp::create_dns_record creates an A dns record for corresponding ip address
 #
 # Arguments:
+# required:
 # a - ip address to use for creating dns record
 # h - hostname to use for creating dns record
 # s - subdomain to use for creating dns record
@@ -754,6 +757,7 @@ function gcp::delete_ip_address {
 
 # gcp::delete_docker_image deletes Docker image
 # Arguments:
+# required:
 # i - name of the Docker image
 function gcp::delete_docker_image() {
 
@@ -810,4 +814,110 @@ function gcp::set_latest_cluster_version_for_channel() {
 
     # shellcheck disable=SC2034
     gcp_set_latest_cluster_version_for_channel_return_cluster_version="$clusterVersion"
+}
+
+# gcp::encrypt encrypts text using Google KMS
+#
+# Arguments:
+# required:
+# t - plain text file to encrypt
+# c - cipher text file
+# e - encryption key
+# k - keyring
+# p - project
+function gcp::encrypt {
+    local OPTIND
+    local plainText
+    local cipherText
+    local encryptionKey
+    local keyring
+    local project
+
+    while getopts ":t:c:e:k:p:" opt; do
+        case $opt in
+            t)
+                plainText="$OPTARG" ;;
+            c)
+                cipherText="$OPTARG" ;;
+            e)
+                encryptionKey=${OPTARG} ;;
+            k)
+                keyring="$OPTARG" ;;
+            p)
+                project=${OPTARG} ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2; ;;
+        esac
+    done
+
+    utils::check_empty_arg "$plainText" "Plain text not provided"
+    utils::check_empty_arg "$cipherText" "Cipher text not provided"
+    utils::check_empty_arg "$encryptionKey" "Encryption key not provided"
+    utils::check_empty_arg "$keyring" "keyring name not provided"
+    utils::check_empty_arg "$project" "Project name not provided"
+
+
+
+  log::info "Encrypting ${plainText} as ${cipherText}"
+  gcloud kms encrypt --location global \
+      --keyring "${keyring}" \
+      --key "${encryptionKey}" \
+      --plaintext-file "${plainText}" \
+      --ciphertext-file "${cipherText}" \
+      --project "${project}"
+}
+
+# gcp::encrypt encrypts text using Google KMS
+#
+# Arguments:
+# required:
+# t - encrypted text file to decrypt
+# c - cipher text file
+# e - encryption key
+# k - keyring
+# p - project
+function gcp::decrypt {
+  local OPTIND
+    local plainText
+    local cipherText
+    local encryptionKey
+    local keyring
+    local project
+
+    while getopts ":t:c:e:k:p:" opt; do
+        case $opt in
+            t)
+                plainText="$OPTARG" ;;
+            c)
+                cipherText="$OPTARG" ;;
+            e)
+                encryptionKey=${OPTARG} ;;
+            k)
+                keyring="$OPTARG" ;;
+            p)
+                project=${OPTARG} ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2; ;;
+        esac
+    done
+
+    utils::check_empty_arg "$plainText" "Plain text file not provided"
+    utils::check_empty_arg "$cipherText" "Cipher text file not provided"
+    utils::check_empty_arg "$encryptionKey" "Encryption key not provided"
+    utils::check_empty_arg "$keyring" "keyring name not provided"
+    utils::check_empty_arg "$project" "Project name not provided"
+
+
+  log::info "Decrypting ${cipherText} to ${plainText}"
+
+  gcloud kms decrypt --location global \
+      --keyring "${keyring}" \
+      --key "${encryptionKey}" \
+      --ciphertext-file "${cipherText}" \
+      --plaintext-file "${plainText}" \
+      --project "${project}"
 }
