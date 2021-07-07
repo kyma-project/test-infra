@@ -13,7 +13,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^shared/|^package.json'
+      run_if_changed: '^backend/|^package.json'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -57,7 +57,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^shared/|^package.json'
+      run_if_changed: '^backend/|^package.json'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -100,7 +100,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^shared/|^package.json'
+      run_if_changed: '^backend/|^package.json'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -143,7 +143,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^shared/|^package.json'
+      run_if_changed: '^backend/|^package.json'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -190,7 +190,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^shared/|^package.json'
+      run_if_changed: '^backend/|^package.json'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -235,7 +235,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^shared/|^package.json'
+      run_if_changed: '^backend/|^package.json'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -279,7 +279,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^shared/|^package.json'
+      run_if_changed: '^backend/|^package.json'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -323,7 +323,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^shared/|^package.json'
+      run_if_changed: '^backend/|^package.json'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
