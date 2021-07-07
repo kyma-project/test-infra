@@ -14,6 +14,9 @@ templates:
             automountServiceAccountToken: true
             annotations:
               pipeline.clusterprovisioning: kyma cli
+              pipeline.platform: gardener_azure
+              pipeline.installer: kyma install, kyma upgrade
+              pipeline.test: octopus
             labels:
               preset-gardener-azure-kyma-integration: "true"
               preset-kyma-cli-stable: "true"

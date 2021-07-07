@@ -5,6 +5,9 @@ periodics: # runs on schedule
     - name: kyma-upgrade-gardener-azure
       annotations:
         pipeline.clusterprovisioning: "kyma cli"
+        pipeline.installer: "kyma install, kyma upgrade"
+        pipeline.platform: "gardener_azure"
+        pipeline.test: "octopus"
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:

@@ -37,6 +37,10 @@ templates:
               pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
           command_integration_eventing:
+            annotations:
+              pipeline.installer: kyma install
+              pipeline.test: octopus
+              pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing.sh"
           command_busola_long_lasting:
             annotations:
@@ -81,6 +85,8 @@ templates:
               GARDENER_REGION: "europe-west4"
               GARDENER_ZONES: "europe-west4-b"
               CREDENTIALS_DIR: "/etc/credentials/kyma-tunas-prow-event-mesh"
+            annotations:
+              pipeline.platform: gardener_gcp
           gardener_azure_job:
             annotations:
               pipeline.platform: gardener_azure
