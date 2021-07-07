@@ -4,6 +4,7 @@
 periodics: # runs on schedule
     - name: kyma-gardener-cleanup
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

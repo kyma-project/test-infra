@@ -4,6 +4,8 @@
 presubmits: # runs on PRs
   kyma-project/examples:
     - name: pre-main-examples-event-email-service
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-examples-event-email-service"
@@ -46,6 +48,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-examples-http-db-service
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-examples-http-db-service"
@@ -88,6 +92,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-examples-monitoring-custom-metrics
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-examples-monitoring-custom-metrics"
@@ -130,6 +136,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-examples-orders-service
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-examples-orders-service"
@@ -172,6 +180,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-examples-tests-http-db-service
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-examples-tests-http-db-service"
@@ -214,6 +224,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-examples-tracing
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-examples-tracing"
@@ -260,6 +272,7 @@ postsubmits: # runs on main
   kyma-project/examples:
     - name: post-main-examples-event-email-service
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -304,6 +317,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-examples-http-db-service
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -348,6 +362,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-examples-monitoring-custom-metrics
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -392,6 +407,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-examples-orders-service
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -436,6 +452,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-examples-tests-http-db-service
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -480,6 +497,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-examples-tracing
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

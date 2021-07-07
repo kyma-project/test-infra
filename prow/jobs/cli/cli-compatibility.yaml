@@ -4,6 +4,7 @@
 periodics: # runs on schedule
     - name: kyma-cli-compatibility-1
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -50,6 +51,7 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: kyma-cli-compatibility-2
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

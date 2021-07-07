@@ -4,6 +4,13 @@
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-kyma-integration
+      annotations:
+        pipeline.clusterprovisioning: "minikube"
+        pipeline.installer: "kyma install"
+        pipeline.platform: "minikube"
+        pipeline.test: "octopus"
+        pipeline.trigger: "pr-submit"
+        pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-integration"
@@ -45,6 +52,13 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-kyma-integration-k3s
+      annotations:
+        pipeline.clusterprovisioning: "k3s"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3s"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "pr-submit"
+        pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3s"
@@ -90,6 +104,13 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-kyma-integration-k3s-compass-dev
+      annotations:
+        pipeline.clusterprovisioning: "k3s"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3s"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "pr-submit"
+        pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3s-compass-dev"
@@ -137,6 +158,13 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-kyma-integration-k3s-central-app-gateway
+      annotations:
+        pipeline.clusterprovisioning: "k3s"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3s"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "pr-submit"
+        pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3s-central-app-gateway"
@@ -184,6 +212,13 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-kyma-integration-k3s-central-app-gateway-compass
+      annotations:
+        pipeline.clusterprovisioning: "k3s"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3s"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "pr-submit"
+        pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3s-central-app-gateway-compass"
@@ -233,6 +268,13 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-serverless-integration-k3s
+      annotations:
+        pipeline.clusterprovisioning: "k3s"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3s"
+        pipeline.test: "helm serverless-test"
+        pipeline.trigger: "pr-submit"
+        pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-serverless-integration-k3s"
@@ -274,6 +316,13 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-serverless-integration-alpha-k3s
+      annotations:
+        pipeline.clusterprovisioning: "k3s"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3s"
+        pipeline.test: "helm serverless-test"
+        pipeline.trigger: "pr-submit"
+        pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-serverless-integration-alpha-k3s"
@@ -318,6 +367,13 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-kyma-gke-integration
+      annotations:
+        pipeline.clusterprovisioning: "gcloud cli"
+        pipeline.installer: "kyma install"
+        pipeline.platform: "gke"
+        pipeline.test: "octopus"
+        pipeline.trigger: "pr-submit"
+        pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-gke-integration"
@@ -370,6 +426,13 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-kyma-gke-upgrade
+      annotations:
+        pipeline.clusterprovisioning: "gcloud cli"
+        pipeline.installer: "kubectl-apply"
+        pipeline.platform: "gke"
+        pipeline.test: "octopus"
+        pipeline.trigger: "pr-submit"
+        pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-gke-upgrade"
@@ -434,6 +497,12 @@ postsubmits: # runs on main
     - name: post-main-kyma-integration
       annotations:
         description: "Kyma integration job."
+        pipeline.clusterprovisioning: "minikube"
+        pipeline.installer: "kyma install"
+        pipeline.platform: "minikube"
+        pipeline.test: "octopus"
+        pipeline.trigger: "pr-merge"
+        pipeline.type: "integration"
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
       labels:
@@ -478,6 +547,12 @@ postsubmits: # runs on main
     - name: post-main-kyma-integration-k3s
       annotations:
         description: "Kyma integration job on k3s."
+        pipeline.clusterprovisioning: "k3s"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3s"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "pr-merge"
+        pipeline.type: "integration"
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
       labels:
@@ -526,6 +601,12 @@ postsubmits: # runs on main
     - name: post-main-kyma-integration-k3s-compass-dev
       annotations:
         description: "Kyma integration job on k3s with compass dev."
+        pipeline.clusterprovisioning: "k3s"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3s"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "pr-merge"
+        pipeline.type: "integration"
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
       labels:
@@ -576,6 +657,12 @@ postsubmits: # runs on main
     - name: post-main-kyma-integration-k3s-central-app-gateway
       annotations:
         description: "Kyma integration job on k3s with central Application Gateway."
+        pipeline.clusterprovisioning: "k3s"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3s"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "pr-merge"
+        pipeline.type: "integration"
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
       labels:
@@ -625,6 +712,12 @@ postsubmits: # runs on main
     - name: post-main-kyma-integration-k3s-central-app-gateway-compass
       annotations:
         description: "Kyma integration job on k3s with central Application Gateway and Compass dev."
+        pipeline.clusterprovisioning: "k3s"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3s"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "pr-merge"
+        pipeline.type: "integration"
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
       labels:
@@ -676,6 +769,12 @@ postsubmits: # runs on main
     - name: post-main-kyma-gke-integration
       annotations:
         description: "Kyma GKE integration job."
+        pipeline.clusterprovisioning: "gcloud cli"
+        pipeline.installer: "kyma install"
+        pipeline.platform: "gke"
+        pipeline.test: "octopus"
+        pipeline.trigger: "pr-merge"
+        pipeline.type: "integration"
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
       labels:
@@ -732,6 +831,12 @@ postsubmits: # runs on main
     - name: post-main-kyma-gke-upgrade
       annotations:
         description: "Kyma GKE upgrade job."
+        pipeline.clusterprovisioning: "gcloud cli"
+        pipeline.installer: "kubectl-apply"
+        pipeline.platform: "gke"
+        pipeline.test: "octopus"
+        pipeline.trigger: "pr-merge"
+        pipeline.type: "integration"
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
       labels:
@@ -794,6 +899,12 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-kyma-gke-rapid-integration
       annotations:
+        pipeline.clusterprovisioning: "gcloud cli"
+        pipeline.installer: "kyma install"
+        pipeline.platform: "gke"
+        pipeline.test: "octopus"
+        pipeline.trigger: "pr-merge"
+        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -850,6 +961,8 @@ postsubmits: # runs on main
 periodics: # runs on schedule
     - name: utilities-kyma-integration-cleaner
       annotations:
+        pipeline.trigger: "periodic"
+        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -882,6 +995,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: orphaned-az-storage-accounts-cleaner
       annotations:
+        pipeline.trigger: "periodic"
+        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -925,6 +1040,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: orphaned-assetstore-gcp-bucket-cleaner
       annotations:
+        pipeline.trigger: "periodic"
+        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -965,6 +1082,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: orphaned-disks-cleaner
       annotations:
+        pipeline.trigger: "periodic"
+        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1005,6 +1124,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: orphaned-clusters-cleaner
       annotations:
+        pipeline.trigger: "periodic"
+        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1045,6 +1166,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: orphaned-vms-cleaner
       annotations:
+        pipeline.trigger: "periodic"
+        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1085,6 +1208,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: orphaned-loadbalancer-cleaner
       annotations:
+        pipeline.trigger: "periodic"
+        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1125,6 +1250,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: orphaned-dns-cleaner
       annotations:
+        pipeline.trigger: "periodic"
+        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1166,6 +1293,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: github-stats
       annotations:
+        pipeline.trigger: "periodic"
+        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1202,6 +1331,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: github-issues
       annotations:
+        pipeline.trigger: "periodic"
+        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1241,6 +1372,11 @@ periodics: # runs on schedule
     - name: kyma-gke-nightly
       annotations:
         description: "Kyma GKE nightly build."
+        pipeline.clusterprovisioning: "gcloud cli"
+        pipeline.installer: "kyma install"
+        pipeline.platform: "gke"
+        pipeline.trigger: "periodic"
+        pipeline.type: "integration"
         testgrid-dashboards: "kyma_integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1328,6 +1464,11 @@ periodics: # runs on schedule
     - name: kyma-gke-weekly
       annotations:
         description: "Kyma GKE weekly build."
+        pipeline.clusterprovisioning: "gcloud cli"
+        pipeline.installer: "kyma install"
+        pipeline.platform: "gke"
+        pipeline.trigger: "periodic"
+        pipeline.type: "integration"
         testgrid-dashboards: "kyma_integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1415,6 +1556,11 @@ periodics: # runs on schedule
     - name: kyma-aks-nightly
       annotations:
         description: "Kyma AKS nightly build."
+        pipeline.clusterprovisioning: "az cli"
+        pipeline.installer: "kyma install"
+        pipeline.platform: "aks"
+        pipeline.trigger: "nightly"
+        pipeline.type: "integration"
         testgrid-dashboards: "kyma_integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1496,6 +1642,12 @@ periodics: # runs on schedule
     - name: kyma-integration-k3s
       annotations:
         description: "Kyma integration periodic job on k3s."
+        pipeline.clusterprovisioning: "k3s"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3s"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "periodic"
+        pipeline.type: "integration"
         testgrid-dashboards: "kyma_integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1544,6 +1696,12 @@ periodics: # runs on schedule
     - name: kyma-integration-k3s-compass-dev
       annotations:
         description: "Kyma integration periodic job on k3s with compass dev."
+        pipeline.clusterprovisioning: "k3s"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3s"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "periodic"
+        pipeline.type: "integration"
         testgrid-dashboards: "kyma_integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

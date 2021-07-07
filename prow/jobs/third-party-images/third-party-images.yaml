@@ -4,6 +4,8 @@
 presubmits: # runs on PRs
   kyma-project/third-party-images:
     - name: pre-main-tpi-cloudsql-proxy
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-cloudsql-proxy"
@@ -46,6 +48,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-tpi-etcd
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-etcd"
@@ -88,6 +92,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-tpi-docker-registry
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-docker-registry"
@@ -130,6 +136,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-tpi-fluent-bit
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-fluent-bit"
@@ -172,6 +180,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-tpi-jaeger-operator
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-jaeger-operator"
@@ -214,6 +224,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-tpi-k8s-tools
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-k8s-tools"
@@ -256,6 +268,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-tpi-kiali
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-kiali"
@@ -298,6 +312,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-tpi-oauth2-proxy
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-oauth2-proxy"
@@ -340,6 +356,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-tpi-kiwigrid-sidecar
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-kiwigrid-sidecar"
@@ -382,6 +400,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-tpi-minio
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-minio"
@@ -424,6 +444,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-tpi-minio-mc
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-minio-mc"
@@ -466,6 +488,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-tpi-node-exporter
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-node-exporter"
@@ -508,6 +532,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-tpi-grafana
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-grafana"
@@ -554,6 +580,7 @@ postsubmits: # runs on main
   kyma-project/third-party-images:
     - name: post-main-tpi-cloudsql-proxy
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -598,6 +625,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-tpi-etcd
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -642,6 +670,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-tpi-docker-registry
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -686,6 +715,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-tpi-fluent-bit
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -730,6 +760,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-tpi-jaeger-operator
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -774,6 +805,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-tpi-k8s-tools
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -818,6 +850,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-tpi-kiali
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -862,6 +895,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-tpi-oauth2-proxy
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -906,6 +940,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-tpi-kiwigrid-sidecar
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -950,6 +985,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-tpi-minio
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -994,6 +1030,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-tpi-minio-mc
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1038,6 +1075,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-tpi-node-exporter
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1082,6 +1120,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-tpi-grafana
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

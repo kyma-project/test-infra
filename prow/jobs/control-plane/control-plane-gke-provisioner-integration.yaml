@@ -4,6 +4,8 @@
 presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-main-control-plane-gke-provisioner-integration
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-control-plane-gke-provisioner-integration"
@@ -67,6 +69,7 @@ postsubmits: # runs on main
     - name: post-main-control-plane-gke-provisioner-integration
       annotations:
         description: "Kyma control-plane GKE provisioner integration job."
+        pipeline.trigger: "pr-merge"
         testgrid-dashboards: "kyma_control-plane"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

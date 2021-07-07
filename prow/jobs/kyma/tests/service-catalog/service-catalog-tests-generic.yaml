@@ -4,6 +4,8 @@
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-tests-service-catalog
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kyma-tests-service-catalog"
@@ -46,6 +48,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-rel124-kyma-tests-service-catalog
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-rel124-kyma-tests-service-catalog"
@@ -87,6 +91,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-rel123-kyma-tests-service-catalog
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-rel123-kyma-tests-service-catalog"
@@ -128,6 +134,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-rel122-kyma-tests-service-catalog
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-rel122-kyma-tests-service-catalog"
@@ -173,6 +181,7 @@ postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-kyma-tests-service-catalog
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -217,6 +226,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-rel124-kyma-tests-service-catalog
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -260,6 +270,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-rel123-kyma-tests-service-catalog
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -303,6 +314,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-rel122-kyma-tests-service-catalog
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
