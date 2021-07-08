@@ -4,6 +4,8 @@
 presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-main-compass-integration
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-compass-integration"
@@ -54,6 +56,7 @@ postsubmits: # runs on main
     - name: post-main-compass-integration
       annotations:
         description: "Compass integration job."
+        pipeline.trigger: "pr-merge"
         testgrid-dashboards: "kyma-incubator_compass"
         testgrid-days-of-results: "60"
       labels:

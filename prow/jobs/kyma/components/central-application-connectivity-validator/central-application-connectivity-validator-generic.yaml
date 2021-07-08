@@ -4,6 +4,8 @@
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-components-central-application-connectivity-validator
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kyma-components-central-application-connectivity-validator"
@@ -47,6 +49,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-rel124-kyma-components-central-application-connectivity-validator
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-rel124-kyma-components-central-application-connectivity-val"
@@ -89,6 +93,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-rel123-kyma-components-central-application-connectivity-validator
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-rel123-kyma-components-central-application-connectivity-val"
@@ -135,6 +141,7 @@ postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-kyma-components-central-application-connectivity-validator
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -183,6 +190,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-rel124-kyma-components-central-application-connectivity-validator
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -230,6 +238,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-rel123-kyma-components-central-application-connectivity-validator
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

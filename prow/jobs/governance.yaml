@@ -4,6 +4,8 @@
 presubmits: # runs on PRs
   kyma-project/addons:
     - name: pre-main-addons-governance
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-addons-governance"
@@ -48,6 +50,8 @@ presubmits: # runs on PRs
   
   kyma-project/busola:
     - name: pre-main-busola-governance
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-busola-governance"
@@ -91,6 +95,8 @@ presubmits: # runs on PRs
   
   kyma-project/community:
     - name: pre-main-community-governance
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-community-governance"
@@ -135,6 +141,8 @@ presubmits: # runs on PRs
   
   kyma-project/console:
     - name: pre-main-console-governance
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-console-governance"
@@ -179,6 +187,8 @@ presubmits: # runs on PRs
   
   kyma-project/examples:
     - name: pre-main-examples-governance
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-examples-governance"
@@ -223,6 +233,8 @@ presubmits: # runs on PRs
   
   kyma-project/kyma:
     - name: kyma-metadata-schema-governance
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "kyma-metadata-schema-governance"
@@ -267,6 +279,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-main-kyma-governance
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-governance"
@@ -309,6 +323,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-kyma-docu-2.0-governance
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kyma-docu-2.0-governance"
@@ -353,6 +369,8 @@ presubmits: # runs on PRs
   
   kyma-project/test-infra:
     - name: pre-main-test-infra-governance
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-test-infra-governance"
@@ -392,6 +410,8 @@ presubmits: # runs on PRs
   
   kyma-project/website:
     - name: pre-main-website-governance
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-website-governance"
@@ -436,6 +456,8 @@ presubmits: # runs on PRs
   
   kyma-incubator/documentation-component:
     - name: pre-documentation-component-governance
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-documentation-component-governance"
@@ -483,6 +505,7 @@ presubmits: # runs on PRs
 periodics: # runs on schedule
     - name: addons-governance-nightly
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -530,6 +553,7 @@ periodics: # runs on schedule
   
     - name: busola-governance-nightly
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -577,6 +601,7 @@ periodics: # runs on schedule
   
     - name: community-governance-nightly
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -624,6 +649,7 @@ periodics: # runs on schedule
   
     - name: console-governance-nightly
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -671,6 +697,7 @@ periodics: # runs on schedule
   
     - name: examples-governance-nightly
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -718,6 +745,7 @@ periodics: # runs on schedule
   
     - name: kyma-governance-nightly
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -765,6 +793,7 @@ periodics: # runs on schedule
   
     - name: test-infra-governance-nightly
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -808,6 +837,7 @@ periodics: # runs on schedule
   
     - name: website-governance-nightly
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -855,6 +885,7 @@ periodics: # runs on schedule
   
     - name: documentation-component-governance-nightly
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
