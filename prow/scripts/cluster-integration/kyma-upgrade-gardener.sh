@@ -81,7 +81,7 @@ kyma::get_last_release_version \
     -t "${BOT_GITHUB_TOKEN}"
 LAST_RELEASE_VERSION="${kyma_get_last_release_version_return_version:?}"
 log::info "### Reading release version from RELEASE_VERSION file, got: ${LAST_RELEASE_VERSION}"
-KYMA_SOURCE="main"  #"${LAST_RELEASE_VERSION}" eventing in kyma 1.23 is not compatible with the test cases, so switch back to last release when kyma 1.24 is available
+KYMA_SOURCE="${LAST_RELEASE_VERSION}"
 
 ### Cluster name must be less than 10 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
@@ -109,10 +109,6 @@ utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
 log::info "### Run pre-upgrade tests"
 gardener::pre_upgrade_test_fast_integration_kyma
-
-log::info "### Patch kyma-gateway problem"
-kubectl -n kyma-system annotate gateway kyma-gateway meta.helm.sh/release-name=certificates --overwrite=true
-kubectl -n kyma-system annotate gateway kyma-gateway meta.helm.sh/release-namespace=istio-system --overwrite=true
 
 log::info "### Installing Kyma 2.0 from main"
 KYMA_SOURCE="main"
