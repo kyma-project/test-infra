@@ -144,7 +144,7 @@ func mergeRenderDestinations(templates []*TemplateConfig) []*TemplateConfig {
 				template.Render[0].Values["JobConfigs"] = reposDst
 			} else {
 				var tplCfg TemplateConfig
-				if err:= copier.CopyWithOption(&tplCfg, templateConfig, copier.Option{DeepCopy: true}); err != nil {
+				if err := copier.CopyWithOption(&tplCfg, templateConfig, copier.Option{DeepCopy: true}); err != nil {
 					log.Fatalf("cannot deepcopy object: %s", err)
 				}
 				tmpl[fromTo] = &tplCfg
