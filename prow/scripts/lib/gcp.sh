@@ -380,7 +380,7 @@ function gcp::create_dns_record {
     # shellcheck disable=SC2034
     gcp_create_dns_record_return_dns_subdomain=$dnsSubDomain
 
-    dnsFQDN="$dnsHostname.$dnsSubDomain.$dnsDomain"
+    dnsFQDN="$dnsHostname.$dnsSubDomain.$dnsDomain."
 
     set +e
     local attempts=10
