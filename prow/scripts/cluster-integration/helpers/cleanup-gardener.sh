@@ -87,6 +87,6 @@ do
             gardener::deprovision_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
         fi
     else
-        echo "level=warning msg=\"Cluster is excluded, deletion will be skipped. Name: \"${CLUSTER}\"\""
+        echo "level=warning msg=\"Cluster is excluded, deletion will be skipped. Name: \"${CLUSTER}\""
     fi
 done
