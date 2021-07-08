@@ -174,10 +174,13 @@ function installKyma() {
 	kubectl apply -f "${KYMA_RESOURCES_DIR}"/azure-crb-for-healthz.yaml
 
   envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-installer-overrides.tpl.yaml" > "$PWD/kyma-installer-overrides.yaml"
+  cat "$PWD/kyma-installer-overrides.yaml"
   envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/overrides-dex-and-monitoring.tpl.yaml" > "$PWD/overrides-dex-and-monitoring.yaml"
 
 	cat "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-installer-overrides.tpl.yaml"
 	log::info "Trigger installation"
+
+    echo $DOMAIN
 
 	kyma install \
 			--ci \
@@ -264,6 +267,8 @@ setupKubeconfig
 
 kyma::install_cli
 
+export GATEWAY_IP_ADDRESS
+echo $GATEWAY_IP_ADDRESS
 installKyma
 
 log::info "Override kyma-admin-binding ClusterRoleBinding"
