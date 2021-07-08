@@ -138,6 +138,13 @@ func addFailingTest(ctx context.Context, client *firestore.Client, message ProwM
 		})
 		return fmt.Errorf("could not add failing test, error: %w", err), nil
 	}
+	log.Println(LogEntry{
+		Message:   fmt.Sprintf("failing test created in firestore, document ID: %s", doc.ID),
+		Severity:  "INFO",
+		Trace:     trace,
+		Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+		Labels:    map[string]string{"messageId": eventID, "jobID": jobID, "prowjobName": message.JobName},
+	})
 	return nil, doc
 }
 
