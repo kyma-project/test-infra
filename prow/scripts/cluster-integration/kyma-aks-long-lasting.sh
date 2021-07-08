@@ -34,6 +34,8 @@ requiredVars=(
 	DOCKER_PUSH_DIRECTORY
 )
 
+REGION="westeurope"
+
 utils::check_required_vars "${requiredVars[@]}"
 
 readonly STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
