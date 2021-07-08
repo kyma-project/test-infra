@@ -1,17 +1,17 @@
 package getGithubIssue
 
 import (
+	"cloud.google.com/go/firestore"
 	"cloud.google.com/go/functions/metadata"
 	"cloud.google.com/go/pubsub"
-	"golang.org/x/oauth2"
-	"math/rand"
-	"encoding/json"
 	"context"
+	"encoding/json"
 	"fmt"
+	"github.com/google/go-github/v36/github"
+	"golang.org/x/oauth2"
 	"log"
-	"net/url"
+	"math/rand"
 	"os"
-	"path"
 )
 
 // This is the Message payload of pubsub message
@@ -68,9 +68,10 @@ func (e LogEntry) String() string {
 }
 
 var (
-	firestoreClient     *firestore.Client
-	pubSubClient        *pubsub.Client
-	projectID           string
+	firestoreClient   *firestore.Client
+	pubSubClient      *pubsub.Client
+	githubClient      *github.Client
+	projectID         string
 	githubAccessToken string
 	githubOrg         string
 	githubRepo        string
@@ -137,17 +138,15 @@ func init() {
 		&oauth2.Token{AccessToken: os.Getenv(githubAccessToken)},
 	)
 	tc := oauth2.NewClient(ctx, ts)
-
 	githubClient = github.NewClient(tc)
 }
-
 
 func checkGithubIssueStatus(ctx context.Context, client *github.Client, message ProwMessage, githubOrg, githubRepo, trace, eventID, jobID string, githubIssueNumber interface{}) (*bool, error) {
 	issue, response, err := client.Issues.Get(ctx, githubOrg, githubRepo, githubIssueNumber.(int))
 	if err != nil {
 		log.Println(response)
 		log.Println(LogEntry{
-			Message:   fmt.Sprintf("could not get github issue number %d, error: %s",githubIssueNumber.(int), err.Error()),
+			Message:   fmt.Sprintf("could not get github issue number %d, error: %s", githubIssueNumber.(int), err.Error()),
 			Severity:  "CRITICAL",
 			Trace:     trace,
 			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
@@ -157,7 +156,7 @@ func checkGithubIssueStatus(ctx context.Context, client *github.Client, message 
 	} else {
 		log.Println(response)
 		log.Println(LogEntry{
-			Message:   fmt.Sprintf("github issue number %d has status: %s",githubIssueNumber.(int), *issue.State),
+			Message:   fmt.Sprintf("github issue number %d has status: %s", githubIssueNumber.(int), *issue.State),
 			Severity:  "INFO",
 			Trace:     trace,
 			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
@@ -172,43 +171,11 @@ func checkGithubIssueStatus(ctx context.Context, client *github.Client, message 
 	}
 }
 
-
-for index, failureInstance := range failureInstances {
-githubIssueNumber, err := failureInstance.DataAt("githubIssueNumber")
-if err != nil {
-log.Println(LogEntry{
-Message:   "github issue for failing test doesn't exists",
-Severity:  "INFO",
-Trace:     trace,
-Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": prowMessage.JobName},
-})
-} else {
-check is issue closed
-closed then close instance remove from array
-}
-}
-
-
-for _, failureInstance := range failureInstances {
-githubIssueNumber, err := failureInstance.DataAt("githubIssueNumber")
-if err != nil {
-log.Println("gh issue not found")
-} else {
-issue, _, err := githubClient.Issues.Get(ctx, githubOrg, githubRepo, githubIssueNumber.(int))
-if err != nil {
-log.Println(err.Error())
-} else {
-println(issue.State)
-}
-}
-}
-
-func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
+func GetGithubIssue(ctx context.Context, m MessagePayload) error {
 	var err error
 	// set trace value to use it in logEntry
 	var trace string
-	var iter *firestore.DocumentIterator
+	//var iter *firestore.DocumentIterator
 	var failingTestMessage FailingTest
 	traceFunctionName := "Getfailureinstancedetails"
 	traceRandomInt := rand.Int()
@@ -236,17 +203,41 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 		panic(fmt.Sprintf("failed unmarshal message data field, error: %s", err.Error()))
 	}
 	//sprawdz czy message ma gh issue
+	ghIssue, ghResponse, err := githubClient.Issues.Get(ctx, githubOrg, githubRepo, failingTestMessage.GithubIssueNumber)
+	if err != nil {
+		log.Println(LogEntry{
+			Message:   fmt.Sprintf("github API call failed, error: %s", err.Error()),
+			Severity:  "CRITICAL",
+			Trace:     trace,
+			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+			Labels:    map[string]string{"messageId": contextMetadata.EventID, "prowjobName": failingTestMessage.JobName},
+		})
+	}
+	if ghResponse != nil {
+		err = github.CheckResponse(ghResponse.Response)
+		if err != nil {
+			log.Println(LogEntry{
+				Message:   fmt.Sprintf("github API call reply with error, error: %s", err.Error()),
+				Severity:  "CRITICAL",
+				Trace:     trace,
+				Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+				Labels:    map[string]string{"messageId": contextMetadata.EventID, "prowjobName": failingTestMessage.JobName},
+			})
+		}
+	}
+	fmt.Println(ghIssue)
 	//jeśli message nie ma gh issue to utwórz i dodaj do firestore
 	//jeśli message ma gh issue sprawdź czy otwarte
 	//jeśli zamknięte to utwórz i dodaj do firestore
 	//znajdz commitera
 	//dodaj do gh issue koemntarz z linkiem do kolejnego wystąpienia błędu,
-		//link do url
-		//nazwa testu
-		//czas uruchomienia
-		//rodzaj testu
-		//base sha
-		//pr number
-		//commiter
+	//link do url
+	//nazwa testu
+	//czas uruchomienia
+	//rodzaj testu
+	//base sha
+	//pr number
+	//commiter
 	//jakie logi można dodać w komentarzu. Może oprzeć się na junit lens z prow?
+	return nil
 }
