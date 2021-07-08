@@ -1467,7 +1467,7 @@ periodics: # runs on schedule
               - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
                 value: "cluster-access"
               - name: INPUT_CLUSTER_NAME
-                value: "nightly-aks"
+                value: "dekiel-nightly-aks"
               - name: REGION
                 value: "northeurope"
               - name: RS_GROUP
@@ -1591,4 +1591,3 @@ periodics: # runs on schedule
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-  
