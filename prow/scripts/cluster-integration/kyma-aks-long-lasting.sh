@@ -108,12 +108,18 @@ function cleanup() {
 			-z "$CLOUDSDK_DNS_ZONE_NAME"
 	fi
 
-	az::deprovision_k8s_cluster \
-		-c "$CLUSTER_NAME"\
-		-g "$RS_GROUP"
+	# Exporting for use in subshells.
+	export RS_GROUP
+	if [[ $(az group exists --name "${RS_GROUP}" -o json) == true ]]; then
+		az::deprovision_k8s_cluster \
+			-c "$CLUSTER_NAME"\
+			-g "$RS_GROUP"
 
-	az::delete_resource_group \
-		-g "$RS_GROUP"
+		az::delete_resource_group \
+			-g "$RS_GROUP"
+	else
+		log::info "Azure group does not exist, skip cleanup process"
+	fi
 
 	MSG=""
 	if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
@@ -135,6 +141,7 @@ function createPublicIPandDNS() {
 		-n "$STANDARIZED_NAME" \
 		-r "$REGION"
 	GATEWAY_IP_ADDRESS="${az_reserve_ip_address_return_ip_address:?}"
+	export GATEWAY_IP_ADDRESS
 
 	log::info "Create DNS Record for Ingressgateway IP"
 
