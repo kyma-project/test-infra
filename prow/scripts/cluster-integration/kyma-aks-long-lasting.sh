@@ -34,8 +34,6 @@ requiredVars=(
 	DOCKER_PUSH_DIRECTORY
 )
 
-REGION="westeurope"
-
 utils::check_required_vars "${requiredVars[@]}"
 
 readonly STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
@@ -73,6 +71,13 @@ function cleanup() {
 	set +e
 	EXIT_STATUS=$?
 
+	# Exporting for use in subshells.
+	export RS_GROUP
+
+	az::get_cluster_resource_group \
+		-r "$RS_GROUP" \
+		-c "$CLUSTER_NAME"
+
 	log::info "\n---\nRemove DNS Record for Ingressgateway\n---"
 	GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
 
@@ -103,22 +108,12 @@ function cleanup() {
 			-z "$CLOUDSDK_DNS_ZONE_NAME"
 	fi
 
-	# Exporting for use in subshells.
-	export RS_GROUP
-	if [[ $(az group exists --name "${RS_GROUP}" -o json) == true ]]; then
-		az::get_cluster_resource_group \
-			-r "$RS_GROUP" \
-			-c "$CLUSTER_NAME"
+	az::deprovision_k8s_cluster \
+		-c "$CLUSTER_NAME"\
+		-g "$RS_GROUP"
 
-		az::deprovision_k8s_cluster \
-			-c "$CLUSTER_NAME"\
-			-g "$RS_GROUP"
-
-		az::delete_resource_group \
-			-g "$RS_GROUP"
-	else
-		log::info "Azure group does not exist, skip cleanup process"
-	fi
+	az::delete_resource_group \
+		-g "$RS_GROUP"
 
 	MSG=""
 	if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
@@ -140,6 +135,7 @@ function createPublicIPandDNS() {
 		-n "$STANDARIZED_NAME" \
 		-r "$REGION"
 	GATEWAY_IP_ADDRESS="${az_reserve_ip_address_return_ip_address:?}"
+	export GATEWAY_IP_ADDRESS
 
 	log::info "Create DNS Record for Ingressgateway IP"
 
@@ -160,8 +156,6 @@ function setupKubeconfig() {
 
 function installKyma() {
 
-	utils::check_empty_arg "$GATEWAY_IP_ADDRESS" "Gateway IP address is not set"
-
 	log::info "Prepare Kyma overrides"
 
 	export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
@@ -176,7 +170,6 @@ function installKyma() {
   envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-installer-overrides.tpl.yaml" > "$PWD/kyma-installer-overrides.yaml"
   envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/overrides-dex-and-monitoring.tpl.yaml" > "$PWD/overrides-dex-and-monitoring.yaml"
 
-	cat "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-installer-overrides.tpl.yaml"
 	log::info "Trigger installation"
 
 	kyma install \
@@ -230,7 +223,6 @@ az::authenticate \
 az::set_subscription \
 	-s "$AZURE_SUBSCRIPTION_ID"
 
-set -x
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --project="${CLOUDSDK_CORE_PROJECT}" --format="value(dnsName)")"
 export DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 
@@ -239,7 +231,7 @@ cleanup
 az::create_resource_group \
 	-g "${RS_GROUP}" \
 	-r "${REGION}"
-set +x
+
 log::info "Install Kubernetes on Azure"
 
 # shellcheck disable=SC2153
@@ -251,9 +243,8 @@ az::provision_k8s_cluster \
 	-v "$AKS_CLUSTER_VERSION" \
 	-a "$CLUSTER_ADDONS" \
 	-f "$AZURE_CREDENTIALS_FILE"
-set -x
+
 createPublicIPandDNS
-set +x 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-letsencrypt-cert.sh"
 TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
 export TLS_CERT
@@ -266,6 +257,7 @@ kyma::install_cli
 
 installKyma
 
+
 log::info "Override kyma-admin-binding ClusterRoleBinding"
 apply_dex_github_kyma_admin_group
 
@@ -276,8 +268,4 @@ export TEST_INFRA_SOURCES_DIR KYMA_SCRIPTS_DIR TEST_INFRA_CLUSTER_INTEGRATION_SC
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-stability-checker.sh"
 )
 
-log::info "Stability checker was installed"
-set -x
 test_console_url
-log::info "test console done"
-set +x
