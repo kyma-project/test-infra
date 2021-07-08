@@ -366,10 +366,17 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-cluster-users-integration-alpha-k3s
+    - name: pre-main-cluster-users-integration-minikube
+      annotations:
+        pipeline.clusterprovisioning: "minikube --driver=none"
+        pipeline.installer: "kyma install"
+        pipeline.platform: "minikube"
+        pipeline.test: "bash resources/cluster-users/files/sar-test.sh"
+        pipeline.trigger: "pr-submit"
+        pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-cluster-users-integration-alpha-k3s"
+        prow.k8s.io/pubsub.runID: "pre-main-cluster-users-integration-minikube"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
@@ -395,10 +402,10 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-cluster-users-k3s.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-minikube.sh"
             env:
-              - name: USE_ALPHA
-                value: "true"
+              - name: TEST_SUITE
+                value: "cluster-users"
             resources:
               requests:
                 memory: 100Mi

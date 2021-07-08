@@ -289,8 +289,6 @@ templates:
               pipeline.test: helm serverless-test
               pipeline.clusterprovisioning: k3s
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3s.sh"
-          vm_job_template_cluster-users_k3s:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-cluster-users-k3s.sh"
           vm_job_labels_template:
             labels:
               preset-kyma-guard-bot-github-token: "true"
@@ -476,13 +474,18 @@ templates:
                     - "vm_job_template_serverless_k3s"
                     - "vm_job_labels_template"
               - jobConfig:
-                  name: "pre-main-cluster-users-integration-alpha-k3s"
+                  name: "pre-main-cluster-users-integration-minikube"
                   # following regexp won't start build if only Markdown files were changed
+                  annotations:
+                    pipeline.platform: "minikube"
+                    pipeline.installer: "kyma install"
+                    pipeline.test: "bash resources/cluster-users/files/sar-test.sh"
+                    pipeline.clusterprovisioning: "minikube --driver=none"
                   run_if_changed: "^((resources/cluster-users\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
                   env:
-                    USE_ALPHA: "true"
+                    TEST_SUITE: "cluster-users"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -492,7 +495,7 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "request_small"
-                    - "vm_job_template_cluster-users_k3s"
+                    - "vm_job_template"
                     - "vm_job_labels_template"
               - jobConfig:
                   name: "pre-main-kyma-gke-integration"
