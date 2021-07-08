@@ -10,12 +10,10 @@ date
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
 
-export USE_ALPHA=${USE_ALPHA:-false}
-
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${SCRIPT_DIR}/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcp.sh"
 # shellcheck source=prow/scripts/lib/log.sh
-source "${SCRIPT_DIR}/lib/log.sh"
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
@@ -40,7 +38,8 @@ function testCustomImage() {
     fi
 }
 
-gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+gcp::authenticate \
+  -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 RANDOM_ID=$(openssl rand -hex 4)
 
@@ -78,17 +77,17 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 
 
 if [[ -z "$IMAGE" ]]; then
-    log::info "Provisioning vm using the latest default custom image ..."
-    
     IMAGE=$(gcloud compute images list --sort-by "~creationTimestamp" \
          --filter "family:custom images AND labels.default:yes" --limit=1 | tail -n +2 | awk '{print $1}')
     
     if [[ -z "$IMAGE" ]]; then
        log::error "There are no default custom images, the script will exit ..." && exit 1
-    fi   
+    fi
+    log::info "Found custom image to provision VM: ${IMAGE}"
  fi
 
 date
+log::info "Provisioning vm using the latest default custom image: ${IMAGE}"
 
 ZONE_LIMIT=${ZONE_LIMIT:-5}
 EU_ZONES=$(gcloud compute zones list --filter="name~europe" --limit="${ZONE_LIMIT}" | tail -n +2 | awk '{print $1}')
@@ -98,10 +97,8 @@ for ZONE in ${EU_ZONES}; do
     gcloud compute instances create "kyma-integration-test-${RANDOM_ID}" \
         --metadata enable-oslogin=TRUE \
         --image "${IMAGE}" \
-        --machine-type n2-standard-8 \
+        --machine-type n2-standard-4 \
         --zone "${ZONE}" \
-        --enable-nested-virtualization \
-        --min-cpu-platform="Intel Haswell" \
         --boot-disk-size 200 "${LABELS[@]}" &&\
     log::info "Created kyma-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
     log::error "Could not create machine in zone ${ZONE}"
@@ -116,6 +113,6 @@ log::info "Copying Kyma to the instance"
 utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
 
 log::info "Triggering the installation"
-gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo PULL_NUMBER=${PULL_NUMBER} USE_ALPHA=${USE_ALPHA} bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/cluster-users-integration-k3s.sh"
+gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo PULL_NUMBER=${PULL_NUMBER} bash " --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/cluster-users-integration-minikube.sh"
 
 log::success "all done"
