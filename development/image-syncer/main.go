@@ -124,6 +124,15 @@ func safeCopyImage(ctx context.Context, cli *client.Client, authString, sourceIm
 		// When tag value is set then image source contains digest instead of tag
 		if sourceTag != "" {
 			// TODO for new images check if the tag is consistent with the digest
+			imageName := strings.Split(sourceImage, "@sha256:")[0]
+			sourceWithTag := imageName + ":" + sourceTag
+			sourceWithTagID, sourceWithTagDigest, err := getImageIDAndRepoDigest(ctx, cli, sourceWithTag)
+			if err != nil {
+				return err
+			}
+			if sourceID != sourceWithTagID {
+				return fmt.Errorf("source IDs are different - digest and tag mismatch in config file: tag: %s, expected digest:%s, got %s", sourceTag, sourceWithTagDigest, sourceDigest)
+			}
 		}
 
 		log.Info("Image re-tagged")
