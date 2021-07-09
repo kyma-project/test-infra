@@ -414,6 +414,8 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
+              - name: GKE_CLUSTER_VERSION_OVERRIDE
+                value: "1.19"
             resources:
               requests:
                 memory: 200Mi
@@ -817,6 +819,8 @@ postsubmits: # runs on main
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
+              - name: GKE_CLUSTER_VERSION_OVERRIDE
+                value: "1.19"
             resources:
               requests:
                 memory: 200Mi

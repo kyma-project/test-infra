@@ -77,8 +77,8 @@ requiredVars=(
     GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS
     GKE_CLUSTER_VERSION
 )
-
-
+# allow GKE_CLUSTER_VERSION to be specified explicitly for this script
+GKE_CLUSTER_VERSION=${GKE_CLUSTER_VERSION_OVERRIDE:-$GKE_CLUSTER_VERSION}
 utils::check_required_vars "${requiredVars[@]}"
 
 # Using set -f to prevent path globing in post_hook arguments.
@@ -184,6 +184,15 @@ yes | kyma install \
     --tls-cert="$TLS_CERT" \
     --tls-key="$TLS_KEY" \
     --timeout 60m
+
+log::info "Patch serverless to enable containerd"
+cp -va "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/containerd-gke-patch.tpl.yaml" \
+       "${KYMA_SOURCES_DIR}/resources/serverless/templates/containerd-gke-patch.yaml"
+helm template -s templates/containerd-gke-patch.yaml resources/serverless/ --dry-run > "$PWD/patch-containerd.yaml"
+kubectl apply -f "$PWD/patch-containerd.yaml"
+# This command expects serverless to be running in the namespace `kyma-system`
+# The `initialized` condition is checked because we only care about the init-container.
+kubectl -n kyma-system wait pods -l app=serverless-docker-registry-cert-update --for="condition=Initialized"
 
 if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
     log::info "Create DNS Record for Apiserver proxy IP"
