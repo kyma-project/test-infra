@@ -121,7 +121,7 @@ func safeCopyImage(ctx context.Context, cli *client.Client, authString, sourceIm
 		}
 
 		if strings.Contains(sourceImage, "@sha256:") {
-			// TODO for new images check if the tag is consistent with the digest
+			// check if the tag is consistent with the digest
 			imageName := strings.Split(sourceImage, "@sha256:")[0]
 			sourceWithTag := imageName + ":" + targetTag
 			sourceWithTagID, sourceWithTagDigest, err := getImageIDAndRepoDigest(ctx, cli, sourceWithTag)
