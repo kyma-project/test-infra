@@ -4,7 +4,7 @@ The document outlines Prow architecture and interconnections between different s
 
 The Prow cluster is a Kubernetes instance managed by Google Kubernetes Engine (GKE) as part of the Google Cloud Platform (GCP) project called `kyma-project`.
 
-See an overview of the Prow production cluster, its components, and interactions with GitHub repositories and GCP.  
+See an overview of the Prow production cluster, its components, and interactions with GitHub repositories and GCP.
 
 ![Prow architecture overview](./assets/prow-architecture.svg)
 
@@ -41,7 +41,7 @@ Sinker scans for jobs older than one day and cleans up their Pods.
 Branch Protector is a Prow component that is responsible for defining branch protection settings on GitHub repositories. It updates protection settings on GitHub repositories every 30 minutes. It takes configuration from the `config.yaml` file on the cluster.
 
 ### gcsweb
-gcsweb is a lightweight web frontend for GCS which allows you to access the content of the **artifacts** tab in Spyglass without the need to log in. For more information on gcsweb read [this](https://github.com/kubernetes/k8s.io/tree/master/gcsweb.k8s.io) document.
+gcsweb is a lightweight web frontend for GCS which allows you to access the content of the **artifacts** tab in Spyglass without the need to log in. For more information on gcsweb read [this](https://github.com/kubernetes/k8s.io/tree/main/apps/gcsweb) document.
 
 ### Tide
 Tide is a Prow component that automatically checks the acceptance criteria against opened PRs in the repository. If the given PR passes all the criteria, Tide automatically merges it.
