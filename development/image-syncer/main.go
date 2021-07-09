@@ -100,10 +100,9 @@ func safeCopyImage(ctx context.Context, cli *client.Client, authString, sourceIm
 	log.Infof("Source repo digest: %s", sourceDigest)
 
 	target := targetRepo + sourceImage
-	// When tag value is set assume image source contains digest instead of tag
-	if sourceTag != "" {
-		if !strings.Contains(sourceImage, "@sha256:") {
-			return errors.New("invalid source syntax, could not find sha256 digest")
+	if strings.Contains(sourceImage, "@sha256:") {
+		if sourceTag != "" {
+			return errors.New("sha256 digest detected, but the \"tag\" was not specified")
 		}
 		imageName := strings.Split(sourceImage, "@sha256:")[0]
 		target = targetRepo + imageName + ":" + sourceTag
@@ -121,8 +120,7 @@ func safeCopyImage(ctx context.Context, cli *client.Client, authString, sourceIm
 			return err
 		}
 
-		// When tag value is set then image source contains digest instead of tag
-		if sourceTag != "" {
+		if strings.Contains(sourceImage, "@sha256:") {
 			// TODO for new images check if the tag is consistent with the digest
 			imageName := strings.Split(sourceImage, "@sha256:")[0]
 			sourceWithTag := imageName + ":" + sourceTag
