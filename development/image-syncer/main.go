@@ -34,6 +34,7 @@ type SyncDef struct {
 // Image stores image location
 type Image struct {
 	Source string
+	Tag    string `yaml:"tag,omitempty"`
 }
 
 // Config stores command line arguments
