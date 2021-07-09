@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -86,17 +87,27 @@ func getImageIDAndRepoDigest(ctx context.Context, cli *client.Client, image stri
 	return "", "", fmt.Errorf("unable to find digest for '%s'", image)
 }
 
-func safeCopyImage(ctx context.Context, cli *client.Client, authString, source, target string, dryRun bool) error {
-	if source == "" {
+func safeCopyImage(ctx context.Context, cli *client.Client, authString, sourceImage, sourceTag, targetRepo string, dryRun bool) error {
+	if sourceImage == "" {
 		return fmt.Errorf("source image can not be empty")
 	}
-	log.Infof("Source image: %s", source)
-	sourceID, sourceDigest, err := getImageIDAndRepoDigest(ctx, cli, source)
+	log.Infof("Source image: %s", sourceImage)
+	sourceID, sourceDigest, err := getImageIDAndRepoDigest(ctx, cli, sourceImage)
 	if err != nil {
 		return err
 	}
 	log.Infof("Source ID: %s", sourceID)
 	log.Infof("Source repo digest: %s", sourceDigest)
+
+	target := targetRepo + sourceImage
+	// When tag value is set assume image source contains digest instead of tag
+	if sourceTag != "" {
+		if !strings.Contains(sourceImage, "@sha256:") {
+			return errors.New("invalid source syntax, could not find sha256 digest")
+		}
+		imageName := strings.Split(sourceImage, "@sha256:")[0]
+		target = targetRepo + imageName + ":" + sourceTag
+	}
 
 	log.Infof("Target image: %s", target)
 	targetID, targetDigest, err := getImageIDAndRepoDigest(ctx, cli, target)
@@ -106,9 +117,15 @@ func safeCopyImage(ctx context.Context, cli *client.Client, authString, source, 
 			log.Info("Dry-run mode - tagging and pushing skipped")
 			return nil
 		}
-		if err = cli.ImageTag(ctx, source, target); err != nil {
+		if err = cli.ImageTag(ctx, sourceImage, target); err != nil {
 			return err
 		}
+
+		// When tag value is set then image source contains digest instead of tag
+		if sourceTag != "" {
+			// TODO for new images check if the tag is consistent with the digest
+		}
+
 		log.Info("Image re-tagged")
 		log.Info("Pushing to target repo")
 		reader, err := cli.ImagePush(ctx, target, types.ImagePushOptions{RegistryAuth: authString})
@@ -195,7 +212,7 @@ func copyImages(cfg Config) error {
 	}
 
 	for _, image := range syncDef.Images {
-		err = safeCopyImage(ctx, cli, authString, image.Source, syncDef.TargetRepoPrefix+image.Source, cfg.DryRun)
+		err = safeCopyImage(ctx, cli, authString, image.Source, image.Tag, syncDef.TargetRepoPrefix, cfg.DryRun)
 		if err != nil {
 			return err
 		}
