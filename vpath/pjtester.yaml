@@ -1,4 +1,0 @@
-pjNames:
-  - pjName: "pre-main-kyma-gke-integration"
-  - pjName: "post-main-kyma-gke-integration"
-  - pjName: "pre-main-kyma-gke-upgrade"
