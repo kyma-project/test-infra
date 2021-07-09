@@ -1,6 +1,7 @@
 targetRepoPrefix:  "eu.gcr.io/kyma-project/external/"
 images:
-- source: "alpine:3.13.5"
+- source: "alpine@sha256:1775bebec23e1f3ce486989bfc9ff3c4e951690df84aa9f926497d82f2ffca9d"
+  tag: "3.14.0"
 #- source: "bitnami/keycloak-gatekeeper:10.0.0"
 - source: "bitnami/postgres-exporter:0.8.0-debian-10-r28"
 #- source: "busybox:1.32.0"
