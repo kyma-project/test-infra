@@ -12,6 +12,17 @@ pubsub_config: &pubsub_config
   pubsub_topic: "prowjobs"
   
 globalSets:
+  # Kyma installation sets
+  kyma_1:
+    env:
+      KYMA_ALPHA: "false"
+    annotations:
+      pipeline.installer: kyma install
+  kyma_2:
+    env:
+      KYMA_ALPHA: "true"
+    annotations:
+      pipeline.installer: kyma install
   # Image sets
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210402-70b4b74f"
