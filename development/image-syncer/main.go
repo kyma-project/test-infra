@@ -87,7 +87,7 @@ func getImageIDAndRepoDigest(ctx context.Context, cli *client.Client, image stri
 	return "", "", fmt.Errorf("unable to find digest for '%s'", image)
 }
 
-func safeCopyImage(ctx context.Context, cli *client.Client, authString, sourceImage, sourceTag, targetRepo string, dryRun bool) error {
+func safeCopyImage(ctx context.Context, cli *client.Client, authString, sourceImage, targetTag, targetRepo string, dryRun bool) error {
 	if sourceImage == "" {
 		return fmt.Errorf("source image can not be empty")
 	}
@@ -101,11 +101,11 @@ func safeCopyImage(ctx context.Context, cli *client.Client, authString, sourceIm
 
 	target := targetRepo + sourceImage
 	if strings.Contains(sourceImage, "@sha256:") {
-		if sourceTag != "" {
+		if targetTag != "" {
 			return errors.New("sha256 digest detected, but the \"tag\" was not specified")
 		}
 		imageName := strings.Split(sourceImage, "@sha256:")[0]
-		target = targetRepo + imageName + ":" + sourceTag
+		target = targetRepo + imageName + ":" + targetTag
 	}
 
 	log.Infof("Target image: %s", target)
@@ -123,13 +123,13 @@ func safeCopyImage(ctx context.Context, cli *client.Client, authString, sourceIm
 		if strings.Contains(sourceImage, "@sha256:") {
 			// TODO for new images check if the tag is consistent with the digest
 			imageName := strings.Split(sourceImage, "@sha256:")[0]
-			sourceWithTag := imageName + ":" + sourceTag
+			sourceWithTag := imageName + ":" + targetTag
 			sourceWithTagID, sourceWithTagDigest, err := getImageIDAndRepoDigest(ctx, cli, sourceWithTag)
 			if err != nil {
 				return err
 			}
 			if sourceID != sourceWithTagID {
-				return fmt.Errorf("source IDs are different - digest and tag mismatch in config file: tag: %s, expected digest:%s, got %s", sourceTag, sourceWithTagDigest, sourceDigest)
+				return fmt.Errorf("source IDs are different - digest and tag mismatch in config file: tag: %s, expected digest:%s, got %s", targetTag, sourceWithTagDigest, sourceDigest)
 			}
 		}
 
