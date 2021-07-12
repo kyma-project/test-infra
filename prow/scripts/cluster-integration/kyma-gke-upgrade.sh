@@ -167,35 +167,6 @@ function reserveIPsAndCreateDNSRecords() {
   export DOMAIN
 }
 
-function createNetwork() {
-  log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-  gcp::create_network \
-    -n "${GCLOUD_NETWORK_NAME}" \
-    -s "${GCLOUD_SUBNET_NAME}" \
-    -p "$CLOUDSDK_CORE_PROJECT"
-}
-
-function createCluster() {
-  log::banner "Provision cluster: \"${COMMON_NAME}\""
-  ### For gcp::provision_gke_cluster
-  export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
-
-  gcp::provision_k8s_cluster \
-        -c "$COMMON_NAME" \
-        -p "$CLOUDSDK_CORE_PROJECT" \
-        -v "$GKE_CLUSTER_VERSION" \
-        -j "$JOB_NAME" \
-        -J "$PROW_JOB_ID" \
-        -z "$CLOUDSDK_COMPUTE_ZONE" \
-        -m "$MACHINE_TYPE" \
-        -R "$CLOUDSDK_COMPUTE_REGION" \
-        -N "$GCLOUD_NETWORK_NAME" \
-        -S "$GCLOUD_SUBNET_NAME" \
-        -D "$CLUSTER_USE_SSD" \
-        -P "$TEST_INFRA_SOURCES_DIR"
-  CLEANUP_CLUSTER="true"
-}
-
 function getLastRCVersion() {
   version=$(curl --silent --fail --show-error -H "Authorization: token ${BOT_GITHUB_TOKEN}" "https://api.github.com/repos/kyma-project/kyma/releases" |
     jq -r 'del( .[] | select( (.prerelease == false) or (.draft == true) )) | .[0].tag_name ')
@@ -437,9 +408,27 @@ utils::generate_self_signed_cert \
 export TLS_CERT="${utils_generate_self_signed_cert_return_tls_cert:?}"
 export TLS_KEY="${utils_generate_self_signed_cert_return_tls_key:?}"
 
-createNetwork
+gcp::create_network \
+    -n "${GCLOUD_NETWORK_NAME}" \
+    -s "${GCLOUD_SUBNET_NAME}" \
+    -p "$CLOUDSDK_CORE_PROJECT"
 
-createCluster
+export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
+
+gcp::provision_k8s_cluster \
+    -c "$COMMON_NAME" \
+    -p "$CLOUDSDK_CORE_PROJECT" \
+    -v "$GKE_CLUSTER_VERSION" \
+    -j "$JOB_NAME" \
+    -J "$PROW_JOB_ID" \
+    -z "$CLOUDSDK_COMPUTE_ZONE" \
+    -m "$MACHINE_TYPE" \
+    -R "$CLOUDSDK_COMPUTE_REGION" \
+    -N "$GCLOUD_NETWORK_NAME" \
+    -S "$GCLOUD_SUBNET_NAME" \
+    -D "$CLUSTER_USE_SSD" \
+    -P "$TEST_INFRA_SOURCES_DIR"
+CLEANUP_CLUSTER="true"
 
 installKyma
 
