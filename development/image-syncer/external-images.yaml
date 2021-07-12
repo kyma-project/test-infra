@@ -5,7 +5,7 @@ images:
 - source: "bitnami/postgres-exporter:0.8.0-debian-10-r28"
 #- source: "busybox:1.32.0"
 - source: "curlimages/curl:7.70.0"
-- source: "cypress/included:7.6.0"
+- source: "cypress/included:7.7.0"
 - source: "golang:1.16.4-alpine"
 - source: "grafana/loki:2.2.1"
 - source: "hudymi/mockice:0.1.3"
