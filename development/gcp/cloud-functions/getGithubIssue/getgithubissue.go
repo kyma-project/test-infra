@@ -107,7 +107,7 @@ func init() {
 			Severity:  "CRITICAL",
 			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
 		})
-		panic("environment variable GITHUB_ACCESS_TOKEN is empty, can't setup github client")
+		panic("environment variable GITHUB_ORG is empty, can't setup github client")
 	}
 	if githubRepo == "" {
 		log.Println(LogEntry{
@@ -115,7 +115,7 @@ func init() {
 			Severity:  "CRITICAL",
 			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
 		})
-		panic("environment variable GITHUB_ACCESS_TOKEN is empty, can't setup github client")
+		panic("environment variable GITHUB_REPO is empty, can't setup github client")
 	}
 	firestoreClient, err = firestore.NewClient(ctx, projectID)
 	if err != nil {
@@ -136,10 +136,10 @@ func init() {
 		panic(fmt.Sprintf("Failed to create pubsub client, error: %s", err.Error()))
 	}
 	ts = oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: os.Getenv(githubAccessToken)},
+		&oauth2.Token{AccessToken: githubAccessToken},
 	)
-	//tc := oauth2.NewClient(ctx, ts)
-	//githubClient = github.NewClient(tc)
+	tc := oauth2.NewClient(ctx, ts)
+	githubClient = github.NewClient(tc)
 }
 
 func checkGithubIssueStatus(ctx context.Context, client *github.Client, message ProwMessage, githubOrg, githubRepo, trace, eventID, jobID string, githubIssueNumber interface{}) (*bool, error) {
@@ -173,8 +173,8 @@ func checkGithubIssueStatus(ctx context.Context, client *github.Client, message 
 }
 
 func GetGithubIssue(ctx context.Context, m MessagePayload) error {
-	tc := oauth2.NewClient(ctx, ts)
-	githubClient = github.NewClient(tc)
+	//tc := oauth2.NewClient(ctx, ts)
+	//githubClient = github.NewClient(tc)
 	var err error
 	// set trace value to use it in logEntry
 	var trace string
