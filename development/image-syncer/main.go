@@ -122,7 +122,7 @@ func safeCopyImage(ctx context.Context, cli *client.Client, authString, sourceIm
 				return err
 			}
 			if sourceID != sourceWithTagID {
-				return fmt.Errorf("source IDs are different - digest and tag mismatch in config file")
+				log.Info("source IDs are different - digest and tag mismatch in config file")
 			}
 		}
 
