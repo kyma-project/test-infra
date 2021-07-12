@@ -141,6 +141,8 @@ templates:
                   labels:
                     preset-build-pr: "true"
                     preset-gke-pod-security-policy: "true"
+                  env:
+                    GKE_CLUSTER_VERSION_OVERRIDE: "1.19"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -258,6 +260,8 @@ templates:
                     preset-log-collector-slack-token: "true"
                     preset-build-main: "true"
                     preset-gke-pod-security-policy: "true"
+                  env:
+                   GKE_CLUSTER_VERSION_OVERRIDE: "1.19"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
