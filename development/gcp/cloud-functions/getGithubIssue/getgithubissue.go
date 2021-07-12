@@ -37,7 +37,7 @@ type ProwMessage struct {
 	JobName string                   `json:"job_name"`
 }
 
-type FailingTest struct {
+type FailingTestMessage struct {
 	ProwMessage
 	FirestoreDocumentID string `json:"firestoreDocumentId,omitempty"`
 	GithubIssueNumber   int    `json:"githubIssueNumber,omitempty"`
@@ -176,7 +176,7 @@ func GetGithubIssue(ctx context.Context, m MessagePayload) error {
 	// set trace value to use it in logEntry
 	var trace string
 	//var iter *firestore.DocumentIterator
-	var failingTestMessage FailingTest
+	var failingTestMessage FailingTestMessage
 	traceFunctionName := "Getfailureinstancedetails"
 	traceRandomInt := rand.Int()
 	trace = fmt.Sprintf("projects/%s/traces/%s/%d", projectID, traceFunctionName, traceRandomInt)
@@ -203,7 +203,7 @@ func GetGithubIssue(ctx context.Context, m MessagePayload) error {
 		panic(fmt.Sprintf("failed unmarshal message data field, error: %s", err.Error()))
 	}
 	//sprawdz czy message ma gh issue
-	ghIssue, ghResponse, err := githubClient.Issues.Get(ctx, githubOrg, githubRepo, failingTestMessage.GithubIssueNumber)
+	_, ghResponse, err := githubClient.Issues.Get(ctx, githubOrg, githubRepo, failingTestMessage.GithubIssueNumber)
 	if err != nil {
 		log.Println(LogEntry{
 			Message:   fmt.Sprintf("github API call failed, error: %s", err.Error()),
@@ -225,12 +225,16 @@ func GetGithubIssue(ctx context.Context, m MessagePayload) error {
 			})
 		}
 	}
-	fmt.Println(ghIssue)
+	rates, _, _ := githubClient.RateLimits(ctx)
+	fmt.Println(rates)
 	//jeśli message nie ma gh issue to utwórz i dodaj do firestore
 	//jeśli message ma gh issue sprawdź czy otwarte
 	//jeśli zamknięte to utwórz i dodaj do firestore
-	//znajdz commitera
-	//dodaj do gh issue koemntarz z linkiem do kolejnego wystąpienia błędu,
+	//stary failure instance w firestore oznacz jako zamknięty
+
+	//znajdz commitera - zrób to w osobnej funkcji
+
+	//dodaj do gh issue koemntarz z linkiem do kolejnego wystąpienia błędu, - zrób to w osobnej funkcji
 	//link do url
 	//nazwa testu
 	//czas uruchomienia

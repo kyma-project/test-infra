@@ -14,7 +14,7 @@ import (
 	"path"
 )
 
-//TODO: move types to separate module
+// TODO: move types to separate module
 // This is the Message payload of pubsub message
 type MessagePayload struct {
 	Attributes   map[string]string `json:"attributes"`
@@ -38,7 +38,7 @@ type ProwMessage struct {
 	JobName string                   `json:"job_name"`
 }
 
-type FailingTest struct {
+type FailingTestMessage struct {
 	ProwMessage
 	FirestoreDocumentID string `json:"firestoreDocumentId,omitempty"`
 	GithubIssueNumber   int    `json:"githubIssueNumber,omitempty"`
@@ -166,7 +166,7 @@ func addTestExecution(ctx context.Context, ref *firestore.DocumentRef, message P
 	return nil
 }
 
-func publishPubSubMessage(ctx context.Context, client *pubsub.Client, message FailingTest, trace, eventID, jobID string) error {
+func publishPubSubMessage(ctx context.Context, client *pubsub.Client, message FailingTestMessage, trace, eventID, jobID string) error {
 	bmessage, err := json.Marshal(message)
 	if err != nil {
 		log.Println(LogEntry{
@@ -210,7 +210,7 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 	var trace string
 	var prowMessage ProwMessage
 	var iter *firestore.DocumentIterator
-	var failingTestMessage FailingTest
+	var failingTestMessage FailingTestMessage
 	traceFunctionName := "Getfailureinstancedetails"
 	traceRandomInt := rand.Int()
 	trace = fmt.Sprintf("projects/%s/traces/%s/%d", projectID, traceFunctionName, traceRandomInt)
@@ -236,7 +236,7 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 		})
 		panic(fmt.Sprintf("failed unmarshal message data field, error: %s", err.Error()))
 	}
-	failingTestMessage = FailingTest{
+	failingTestMessage = FailingTestMessage{
 		ProwMessage: prowMessage,
 	}
 	if prowMessage.Status == "failure" || prowMessage.Status == "error" {
@@ -289,7 +289,7 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 			if err != nil {
 				panic(err.Error())
 			}
-			failingTestMessage = FailingTest{
+			failingTestMessage = FailingTestMessage{
 				ProwMessage:         prowMessage,
 				FirestoreDocumentID: doc.ID,
 			}
