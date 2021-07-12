@@ -71,6 +71,7 @@ var (
 	firestoreClient   *firestore.Client
 	pubSubClient      *pubsub.Client
 	githubClient      *github.Client
+	ts                oauth2.TokenSource
 	projectID         string
 	githubAccessToken string
 	githubOrg         string
@@ -134,11 +135,11 @@ func init() {
 		})
 		panic(fmt.Sprintf("Failed to create pubsub client, error: %s", err.Error()))
 	}
-	ts := oauth2.StaticTokenSource(
+	ts = oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: os.Getenv(githubAccessToken)},
 	)
-	tc := oauth2.NewClient(ctx, ts)
-	githubClient = github.NewClient(tc)
+	//tc := oauth2.NewClient(ctx, ts)
+	//githubClient = github.NewClient(tc)
 }
 
 func checkGithubIssueStatus(ctx context.Context, client *github.Client, message ProwMessage, githubOrg, githubRepo, trace, eventID, jobID string, githubIssueNumber interface{}) (*bool, error) {
@@ -172,6 +173,8 @@ func checkGithubIssueStatus(ctx context.Context, client *github.Client, message 
 }
 
 func GetGithubIssue(ctx context.Context, m MessagePayload) error {
+	tc := oauth2.NewClient(ctx, ts)
+	githubClient = github.NewClient(tc)
 	var err error
 	// set trace value to use it in logEntry
 	var trace string
