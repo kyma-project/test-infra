@@ -13,7 +13,7 @@ function context_arg() {
 kc="kubectl $(context_arg)"
 
 # retries are useful when api call can fail due to the infrastructure issue
-function executeKubectlWithRetries() {
+function testing::executeKubectlWithRetries() {
     local command="$1"
     local retry=0
     local result=""
@@ -31,13 +31,13 @@ function executeKubectlWithRetries() {
     return 1
 }
 
-function cmdGetPodsForSuite() {
+function testing::cmdGetPodsForSuite() {
     local suiteName=$1
     cmd="kubectl $(context_arg) get pods -l testing.kyma-project.io/suite-name=${suiteName} \
             --all-namespaces \
             --no-headers=true \
             -o=custom-columns=name:metadata.name,ns:metadata.namespace"
-    result=$(executeKubectlWithRetries "${cmd}")
+    result=$(testing::executeKubectlWithRetries "${cmd}")
     if [[ $? -eq 1 ]]; then
         echo "${result}"
         return 1
@@ -45,7 +45,7 @@ function cmdGetPodsForSuite() {
     echo "${result}"
 }
 
-function checkTestPodTerminated() {
+function testing::checkTestPodTerminated() {
     local suiteName=$1
     runningPods=false
 
@@ -53,7 +53,7 @@ function checkTestPodTerminated() {
     namespace=""
     idx=0
 
-    result=$(cmdGetPodsForSuite "${suiteName}")
+    result=$(testing::cmdGetPodsForSuite "${suiteName}")
     if [[ $? -eq 1 ]]; then
         echo "${result}"
         return 1
@@ -70,7 +70,7 @@ function checkTestPodTerminated() {
         namespace=${podOrNs}
         idx=$((idx+1))
 
-        phase=$(executeKubectlWithRetries "kubectl $(context_arg) get pod $pod -n ${namespace} -o jsonpath={.status.phase}")
+        phase=$(testing::executeKubectlWithRetries "kubectl $(context_arg) get pod $pod -n ${namespace} -o jsonpath={.status.phase}")
         if [[ $? -eq 1 ]]; then
             echo "${phase}"
             return 1
@@ -90,12 +90,33 @@ function checkTestPodTerminated() {
     fi
 }
 
-function waitForTestPodsTermination() {
+# testing::waitForTestPodsTermination wait for terminations of all pods
+# Arguments:
+# required:
+# s - suite name
+function testing::waitForTestPodsTermination() {
+
+    local OPTIND
     local retry=0
-    local suiteName=$1
+    local suiteName
+    local checkTestPodTerminatedErr
+
+    while getopts ":c:a:j:z:h:" opt; do
+        case $opt in
+            s)
+                suiteName="$OPTARG" ;;
+
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+    done
+
+    utils::check_empty_arg "$suiteName" "Suite name was not provided. Exiting..."
 
     while [ ${retry} -lt 3 ]; do
-        checkTestPodTerminated "${suiteName}"
+        testing::checkTestPodTerminated "${suiteName}"
         checkTestPodTerminatedErr=$?
         if [ ${checkTestPodTerminatedErr} -ne 0 ]; then
             echo "Waiting for test pods to terminate..."
@@ -128,7 +149,7 @@ cts::delete() {
 
 }
 
-inject_addons_if_necessary() {
+function testing::inject_addons_if_necessary() {
   tdWithAddon=$(${kc} get td --all-namespaces -l testing.kyma-project.io/require-testing-addon=true -o custom-columns=NAME:.metadata.name --no-headers=true)
 
   if [ -z "$tdWithAddon" ]
@@ -136,22 +157,18 @@ inject_addons_if_necessary() {
       log::info "- Skipping injecting ClusterAddonsConfiguration"
   else
       log::info "- Creating ClusterAddonsConfiguration which provides the testing addons"
-      injectTestingAddons
+      testing::injectTestingAddons
       if [[ $? -eq 1 ]]; then
         exit 1
       fi
 
-      trap removeTestingAddons EXIT
+      trap testing::remove_testing_addons EXIT
   fi
-}
-
-function testing::inject_addons_if_necessary() {
-  inject_addons_if_necessary
 }
 
 TESTING_ADDONS_CFG_NAME="testing-addons"
 
-function injectTestingAddons() {
+function testing::injectTestingAddons() {
     retry=10
     while true; do
         kubectl apply -f - <<EOF
@@ -185,7 +202,7 @@ EOF
         fi
         if [[ "${msg}" = "Failed" ]]; then
             log::error "Testing addons configuration failed"
-            removeTestingAddons
+            testing::remove_testing_addons
             return 1
         fi
         echo "Waiting for ready testing addons ${retry}/10.. status: ${msg}"
@@ -200,19 +217,14 @@ function testing::inject_testing_addons() {
   inject_testing_addons
 }
 
-function removeTestingAddons() {
-    result=$(executeKubectlWithRetries "kubectl delete clusteraddonsconfiguration ${TESTING_ADDONS_CFG_NAME}")
+function testing::remove_testing_addons() {
+    result=$(testing::executeKubectlWithRetries "kubectl delete clusteraddonsconfiguration ${TESTING_ADDONS_CFG_NAME}")
     echo "${result}"
     if [[ $? -eq 1 ]]; then
         return 1
     fi
     log::success "Testing addons removed"
 }
-
-function testing::remove_testing_addons() {
-  removeTestingAddons
-}
-
 
 function testing::remove_addons_if_necessary() {
   tdWithAddon=$(kubectl get td --all-namespaces -l testing.kyma-project.io/require-testing-addon=true -o custom-columns=NAME:.metadata.name --no-headers=true)

@@ -274,7 +274,7 @@ EOF
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_INSTALL_TIMEOUT}
 }
 
-checkTestPodTerminated() {
+testing::checkTestPodTerminated() {
     local retry=0
     local runningPods=0
     local succeededPods=0
