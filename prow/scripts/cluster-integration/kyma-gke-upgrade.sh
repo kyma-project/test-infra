@@ -61,9 +61,6 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
-
 # shellcheck source=prow/scripts/lib/testing-helpers.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 
@@ -72,6 +69,9 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
+
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 
 requiredVars=(
     REPO_OWNER
@@ -91,38 +91,13 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-# post_hook runs at the end of a script or on any error
-function post_hook() {
-  #!!! Must be at the beginning of this function !!!
-  EXIT_STATUS=$?
-
-  log::info "Cleanup"
-
-  if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
-    log::info "AN ERROR OCCURED! Take a look at preceding log entries."
-  fi
-
-  #Turn off exit-on-error so that next step is executed even if previous one fails.
-  set +e
-
-  # collect logs from failed tests before deprovisioning
-  kyma::run_test_log_collector "post-main-kyma-gke-upgrade"
-
-  gcloud::cleanup
-
-  MSG=""
-  if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-  log::info "Job is finished ${MSG}"
-  set -e
-
-  exit "${EXIT_STATUS}"
-}
-
 function installCli() {
   kyma::install_cli
 }
 
-trap post_hook EXIT INT
+# Using set -f to prevent path globing in post_hook arguments.
+# utils::post_hook call set +f at the beginning.
+trap 'EXIT_STATUS=$?; set -f; utils::post_hook -n "$COMMON_NAME" -p "$CLOUDSDK_CORE_PROJECT" -c "$CLEANUP_CLUSTER" -g "$CLEANUP_GATEWAY_DNS_RECORD" -G "$INGRESS_GATEWAY_HOSTNAME" -a "$CLEANUP_APISERVER_DNS_RECORD" -A "$APISERVER_HOSTNAME" -I "$CLEANUP_GATEWAY_IP_ADDRESS" -l "$ERROR_LOGGING_GUARD" -z "$CLOUDSDK_COMPUTE_ZONE" -R "$CLOUDSDK_COMPUTE_REGION" -r "$PROVISION_REGIONAL_CLUSTER" -d "$DISABLE_ASYNC_DEPROVISION" -s "$COMMON_NAME" -e "$GATEWAY_IP_ADDRESS" -f "$APISERVER_IP_ADDRESS" -N "$COMMON_NAME" -Z "$CLOUDSDK_DNS_ZONE_NAME" -E "$EXIT_STATUS" -j "$JOB_NAME"' EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
   log::info "Execute Job Guard"
@@ -150,11 +125,10 @@ function generateAndExportClusterName() {
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
   fi
 
-  ### Cluster name must be less than 40 characters!
-  export CLUSTER_NAME="${COMMON_NAME}"
-
-  export GCLOUD_NETWORK_NAME="${COMMON_NAME_PREFIX}-net"
-  export GCLOUD_SUBNET_NAME="${COMMON_NAME_PREFIX}-subnet"
+  gcp::set_vars_for_network \
+    -n "$JOB_NAME"
+  export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_return_net_name:?}"
+  export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_return_subnet_name:?}"
 }
 
 function reserveIPsAndCreateDNSRecords() {
@@ -162,7 +136,8 @@ function reserveIPsAndCreateDNSRecords() {
   log::info "Authenticate with GCP"
 
   # requires "${GOOGLE_APPLICATION_CREDENTIALS}"
-  gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+  gcp::authenticate \
+    -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
   # requires "$DOCKER_IN_DOCKER_ENABLED" (via preset), needed for building the new installer image
   docker::start
@@ -171,38 +146,25 @@ function reserveIPsAndCreateDNSRecords() {
 
   log::info "Reserve IP Address for Ingressgateway"
   GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
-  gcloud::reserve_ip_address "${GATEWAY_IP_ADDRESS_NAME}"
-  GATEWAY_IP_ADDRESS="${gcloud_reserve_ip_address_return_1:?}"
+  gcp::reserve_ip_address \
+    -n "${GATEWAY_IP_ADDRESS_NAME}" \
+    -p "$CLOUDSDK_CORE_PROJECT" \
+    -r "$CLOUDSDK_COMPUTE_REGION"
+  GATEWAY_IP_ADDRESS="${gcp_reserve_ip_address_return_ip_address:?}"
   CLEANUP_GATEWAY_IP_ADDRESS="true"
   log::info "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
   log::info "Create DNS Record for Ingressgateway IP"
-  GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+  gcp::create_dns_record \
+      -a "$GATEWAY_IP_ADDRESS" \
+      -h "*" \
+      -s "$COMMON_NAME" \
+      -p "$CLOUDSDK_CORE_PROJECT" \
+      -z "$CLOUDSDK_DNS_ZONE_NAME"
   CLEANUP_GATEWAY_DNS_RECORD="true"
-  gcloud::create_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
 
   DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
   export DOMAIN
-}
-
-function createNetwork() {
-  export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-  log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-  gcloud::create_network "${GCLOUD_NETWORK_NAME}" "${GCLOUD_SUBNET_NAME}"
-}
-
-function createCluster() {
-  log::banner "Provision cluster: \"${CLUSTER_NAME}\""
-  ### For gcloud::provision_gke_cluster
-  export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
-  export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-  export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
-  if [[ -z "${MACHINE_TYPE}" ]]; then
-    export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
-  fi
-
-  gcloud::provision_gke_cluster "$CLUSTER_NAME"
-  CLEANUP_CLUSTER="true"
 }
 
 function getLastRCVersion() {
@@ -381,9 +343,13 @@ function createDNSRecord() {
   if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
     log::info "Create DNS Record for Apiserver proxy IP"
     APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+    gcp::create_dns_record \
+        -a "$APISERVER_IP_ADDRESS" \
+        -h "apiserver" \
+        -s "$COMMON_NAME" \
+        -p "$CLOUDSDK_CORE_PROJECT" \
+        -z "$CLOUDSDK_DNS_ZONE_NAME"
     CLEANUP_APISERVER_DNS_RECORD="true"
-    gcloud::create_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
   fi
 }
 
@@ -442,9 +408,27 @@ utils::generate_self_signed_cert \
 export TLS_CERT="${utils_generate_self_signed_cert_return_tls_cert:?}"
 export TLS_KEY="${utils_generate_self_signed_cert_return_tls_key:?}"
 
-createNetwork
+gcp::create_network \
+    -n "${GCLOUD_NETWORK_NAME}" \
+    -s "${GCLOUD_SUBNET_NAME}" \
+    -p "$CLOUDSDK_CORE_PROJECT"
 
-createCluster
+export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
+
+gcp::provision_k8s_cluster \
+    -c "$COMMON_NAME" \
+    -p "$CLOUDSDK_CORE_PROJECT" \
+    -v "$GKE_CLUSTER_VERSION" \
+    -j "$JOB_NAME" \
+    -J "$PROW_JOB_ID" \
+    -z "$CLOUDSDK_COMPUTE_ZONE" \
+    -m "$MACHINE_TYPE" \
+    -R "$CLOUDSDK_COMPUTE_REGION" \
+    -N "$GCLOUD_NETWORK_NAME" \
+    -S "$GCLOUD_SUBNET_NAME" \
+    -D "$CLUSTER_USE_SSD" \
+    -P "$TEST_INFRA_SOURCES_DIR"
+CLEANUP_CLUSTER="true"
 
 installKyma
 

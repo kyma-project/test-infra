@@ -38,10 +38,10 @@ export TTL_HOURS=168 #7 days
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 
 requiredVars=(
     REPO_OWNER
@@ -78,15 +78,17 @@ cleanupOnError() {
     set +e
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
-        log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
+        log::info "Deprovision cluster: \"${COMMON_NAME}\""
 
         #save disk names while the cluster still exists to remove them later
         DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
         export DISKS
 
         #Delete cluster
-        gcloud::deprovision_gke_cluster "$CLUSTER_NAME"
-
+        gcp::deprovision_k8s_cluster \
+            -n "$COMMON_NAME" \
+            -p "$CLOUDSDK_CORE_PROJECT" \
+            -z "$CLOUDSDK_COMPUTE_ZONE" \
         #Delete orphaned disks
         log::info "Delete orphaned PVC disks..."
         for NAMEPATTERN in ${DISKS}
@@ -99,17 +101,29 @@ cleanupOnError() {
 
     if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
         log::info "Delete Gateway DNS Record"
-        gcloud::delete_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
+        gcp::delete_dns_record \
+            -a "$GATEWAY_IP_ADDRESS" \
+            -h "*" \
+            -s "$COMMON_NAME" \
+            -p "$CLOUDSDK_CORE_PROJECT" \
+            -z "$CLOUDSDK_DNS_ZONE_NAME"
     fi
 
     if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
-        log::info "Release Gateway IP Address"
-        gcloud::delete_ip_address "${GATEWAY_IP_ADDRESS_NAME}"
+        gcp::delete_ip_address \
+            -n "${GATEWAY_IP_ADDRESS_NAME}" \
+            -p "$CLOUDSDK_CORE_PROJECT" \
+            -R "$CLOUDSDK_COMPUTE_REGION"
     fi
 
     if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
         log::info "Delete Apiserver proxy DNS Record"
-        gcloud::delete_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
+        gcp::delete_dns_record \
+            -a "$APISERVER_IP_ADDRESS" \
+            -h "apiserver" \
+            -s "$COMMON_NAME" \
+            -p "$CLOUDSDK_CORE_PROJECT" \
+            -z "$CLOUDSDK_DNS_ZONE_NAME"
     fi
 
 
@@ -128,6 +142,7 @@ export REPO_OWNER
 readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
 export REPO_NAME
 
+### Cluster name must be less than 40 characters!
 readonly COMMON_NAME_PREFIX="gke-release"
 readonly RELEASE_VERSION=$(cat "VERSION")
 log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
@@ -135,15 +150,12 @@ TRIMMED_RELEASE_VERSION=${RELEASE_VERSION//./-}
 COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${TRIMMED_RELEASE_VERSION}" | tr "[:upper:]" "[:lower:]")
 
 
-### Cluster name must be less than 40 characters!
-export CLUSTER_NAME="${COMMON_NAME}"
 
-export GCLOUD_NETWORK_NAME="${COMMON_NAME_PREFIX}-net"
-export GCLOUD_SUBNET_NAME="${COMMON_NAME_PREFIX}-subnet"
 
-### For gcloud::provision_gke_cluster
-export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
+gcp::set_vars_for_network \
+  -n "$JOB_NAME"
+export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_return_net_name:?}"
+export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_return_subnet_name:?}"
 
 #Local variables
 DNS_SUBDOMAIN="${COMMON_NAME}"
@@ -154,34 +166,54 @@ KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 ERROR_LOGGING_GUARD="true"
 
 log::info "Authenticate"
-gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+gcp::authenticate \
+    -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
 log::info "Reserve IP Address for Ingressgateway"
 GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
-gcloud::reserve_ip_address "${GATEWAY_IP_ADDRESS_NAME}"
-GATEWAY_IP_ADDRESS="${gcloud_reserve_ip_address_return_1:?}"
+gcp::reserve_ip_address \
+    -n "${GATEWAY_IP_ADDRESS_NAME}" \
+    -p "$CLOUDSDK_CORE_PROJECT" \
+    -r "$CLOUDSDK_COMPUTE_REGION"
+GATEWAY_IP_ADDRESS="${gcp_reserve_ip_address_return_ip_address:?}"
 CLEANUP_GATEWAY_IP_ADDRESS="true"
 echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
 
 log::info "Create DNS Record for Ingressgateway IP"
-GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+gcp::create_dns_record \
+    -a "$GATEWAY_IP_ADDRESS" \
+    -h "*" \
+    -s "$COMMON_NAME" \
+    -p "$CLOUDSDK_CORE_PROJECT" \
+    -z "$CLOUDSDK_DNS_ZONE_NAME"
 CLEANUP_GATEWAY_DNS_RECORD="true"
-gcloud::create_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
-
 
 log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-gcloud::create_network "${GCLOUD_NETWORK_NAME}" "${GCLOUD_SUBNET_NAME}"
+gcp::create_network \
+    -n "${GCLOUD_NETWORK_NAME}" \
+    -s "${GCLOUD_SUBNET_NAME}" \
+    -p "$CLOUDSDK_CORE_PROJECT"
 
-log::info "Provision cluster: \"${CLUSTER_NAME}\""
+log::info "Provision cluster: \"${COMMON_NAME}\""
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
-if [ -z "$MACHINE_TYPE" ]; then
-      export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
-fi
+
+gcp::provision_k8s_cluster \
+        -c "$COMMON_NAME" \
+        -p "$CLOUDSDK_CORE_PROJECT" \
+        -v "$GKE_CLUSTER_VERSION" \
+        -j "$JOB_NAME" \
+        -J "$PROW_JOB_ID" \
+        -t "$TTL_HOURS" \
+        -z "$CLOUDSDK_COMPUTE_ZONE" \
+        -R "$CLOUDSDK_COMPUTE_REGION" \
+        -N "$GCLOUD_NETWORK_NAME" \
+        -S "$GCLOUD_SUBNET_NAME" \
+        -g "$GCLOUD_SECURITY_GROUP_DOMAIN" \
+        -P "$TEST_INFRA_SOURCES_DIR"
 CLEANUP_CLUSTER="true"
-gcloud::provision_gke_cluster "$CLUSTER_NAME"
 
 log::info "Create CluserRoleBinding for ${GCLOUD_SECURITY_GROUP} group from ${GCLOUD_SECURITY_GROUP_DOMAIN} domain"
 kubectl create clusterrolebinding kyma-developers-group-binding --clusterrole="cluster-admin" --group="${GCLOUD_SECURITY_GROUP}@${GCLOUD_SECURITY_GROUP_DOMAIN}"
@@ -269,9 +301,13 @@ log::info "Trigger installation"
 if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
     log::info "Create DNS Record for Apiserver proxy IP"
     APISERVER_IP_ADDRESS=$(kubectl get  service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+    gcp::create_dns_record \
+        -a "$APISERVER_IP_ADDRESS" \
+        -h "apiserver" \
+        -s "$COMMON_NAME" \
+        -p "$CLOUDSDK_CORE_PROJECT" \
+        -z "$CLOUDSDK_DNS_ZONE_NAME"
     CLEANUP_APISERVER_DNS_RECORD="true"
-    gcloud::create_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
 fi
 
 log::info "Collect list of images"

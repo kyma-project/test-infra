@@ -402,6 +402,7 @@ function utils::kubeaudit_check_report() {
 # required:
 # p - GCP project name
 # E - exit status to report at the end of function execution
+# j - job name
 #
 # optional:
 # c - if set to true cleanup cluster, default false
@@ -443,13 +444,16 @@ function utils::post_hook() {
     local computeRegion="europe-west4"
     local cleanRegionalCluster="false"
     local asyncDeprovision="true"
+    local jobname
 
-    while getopts ":n:c:l:p:a:G:g:z:I:r:d:R:A:e:f:s:Z:N:E:" opt; do
+    while getopts ":n:c:l:p:a:G:g:z:I:r:d:R:A:e:f:s:Z:N:E:j:" opt; do
         case $opt in
             p)
                 projectName="$OPTARG" ;;
             E)
                 exitStatus="$OPTARG" ;;
+            j)
+                jobname="$OPTARG" ;;
             c)
                 cleanupCluster="${OPTARG:-$cleanupCluster}" ;;
             g)
@@ -505,6 +509,7 @@ function utils::post_hook() {
 
     utils::check_empty_arg "$projectName" "Project name not provided." "graceful"
     utils::check_empty_arg "$exitStatus" "Exit status not provided." "graceful"
+    utils::check_empty_arg "$jobname" "Job name not provided." "graceful"
 
     if [ "$errorLoggingGuard" = "true" ]; then
         log::info "AN ERROR OCCURED! Take a look at preceding log entries."
@@ -516,7 +521,7 @@ function utils::post_hook() {
     set +e
 
     # collect logs from failed tests before deprovisioning
-    kyma::run_test_log_collector "post-main-kyma-gke-integration"
+    kyma::run_test_log_collector "$jobname"
 
     log::info "Cleanup"
 

@@ -135,6 +135,11 @@ function gcp::provision_k8s_cluster {
 
     log::info "Replacing underscore with dashes in cluster name."
     clusterName=$(echo "$clusterName" | tr '_' '-')
+    # Cluster name must be less than 40 characters
+    if [ "$clusterName" -ge 40 ]; then
+        log::error "Cluster name must be less than 40 characters"
+        exit 1
+    fi
 
     log::banner "Provision cluster: $clusterName"
 
@@ -212,7 +217,7 @@ function gcp::provision_k8s_cluster {
     until [[ $(kubectl get cm kube-dns -n kube-system > /dev/null 2>&1; echo $?) == 0 ]]; do
         if (( counter == 5 )); then
             echo -e "kube-dns configmap not available after 5 tries, exiting"
-            hexit 1
+            exit 1
         fi
         echo -e "Waiting for kube-dns to be available. Try $(( counter + 1 )) of 5"
         counter=$(( counter + 1 ))
@@ -221,13 +226,16 @@ function gcp::provision_k8s_cluster {
 
     kubectl -n kube-system patch cm kube-dns --type merge --patch "$(cat "$kubeDnsPatchPath")"
 
-    # run oom debug pod
-    utils::debug_oom
+    if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
+        # run oom debug pod
+        utils::debug_oom
+    fi
 }
 
 
 # gcp::authenticate authenticates to GCP.
 # Arguments:
+# required:
 # c - google credentials file path
 function gcp::authenticate {
 
@@ -250,6 +258,35 @@ function gcp::authenticate {
 
     log::info "Authenticating to gcloud"
     gcloud auth activate-service-account --key-file "$googleAppCredentials" || exit 1
+}
+
+# gcp::set_account activates already authenticated account
+# Arguments:
+# required:
+# c - credentials to Google application
+function gcp::set_account() {
+    
+    local OPTIND
+    #required arguments
+    local googleAppCredentials
+    local clientEmail
+
+    while getopts ":c:" opt; do
+        case $opt in
+            c)
+                googleAppCredentials="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+    done
+
+    utils::check_empty_arg "$googleAppCredentials" "Missing account credentials, please provide proper credentials"
+
+    clientEmail=$(jq -r '.client_email' < "$googleAppCredentials")
+    log::info "Activating account $clientEmail"
+    gcloud config set account "${clientEmail}" || exit 1
 }
 
 # gcp::reserve_ip_address requests a new IP address from GCP and prints this value to STDOUT
@@ -326,9 +363,10 @@ function gcp::reserve_ip_address {
     log::info "Created IP Address for Ingressgateway: $ipAddressName"
 }
 
-# gcloud::create_dns_record creates an A dns record for corresponding ip address
+# gcp::create_dns_record creates an A dns record for corresponding ip address
 #
 # Arguments:
+# required:
 # a - ip address to use for creating dns record
 # h - hostname to use for creating dns record
 # s - subdomain to use for creating dns record
@@ -710,5 +748,176 @@ function gcp::delete_ip_address {
     log::info "Removing IP address $ipAddressName."
     if gcloud compute addresses delete "$ipAddressName" --project="$gcpProjectName" --region="$gcpComputeRegion"; then
         log::info "Successfully removed IP $ipAddressName!"
+    else
+        log::error "Failed to remove IP $ipAddressName!"
+        return 1
     fi
+}
+
+
+# gcp::delete_docker_image deletes Docker image
+# Arguments:
+# required:
+# i - name of the Docker image
+function gcp::delete_docker_image() {
+
+    local OPTIND
+    local imageName
+
+    while getopts ":i:" opt; do
+        case $opt in
+            i)
+                imageName="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2; exit 1 ;;
+        esac
+    done
+
+    utils::check_empty_arg "$imageName" "Image name is empty. Exiting..."
+    gcloud container images delete "$imageName" || \
+    (
+        log::error "Could not remove Docker image" && \
+        exit 1
+    )
+}
+
+
+# gcp::set_latest_cluster_version_for_channel checks for latest possible version in GKE_RELEASE_CHANNEL and updates GKE_CLUSTER_VERSION accordingly
+# Arguments:
+# required:
+# C - release channel
+# Returns
+# gcp_set_latest_cluster_version_for_channel_return_cluster_version - latest cluster version for given channel
+function gcp::set_latest_cluster_version_for_channel() {
+
+    local OPTIND
+    local releaseChannel
+    local clusterVersion
+
+    while getopts ":C:" opt; do
+        case $opt in
+            C)
+                releaseChannel="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2; exit 1 ;;
+        esac
+    done
+
+    utils::check_empty_arg "$releaseChannel" "Release channel is empty. Exiting..."
+
+    clusterVersion=$(gcloud container get-server-config --zone europe-west4 --format="json" | jq -r '.channels|.[]|select(.channel | contains("'"${releaseChannel}"'"|ascii_upcase))|.validVersions|.[0]')
+    log::info "Updating GKE_CLUSTER_VERSION to newest available in ${releaseChannel}: ${clusterVersion}"
+
+    # shellcheck disable=SC2034
+    gcp_set_latest_cluster_version_for_channel_return_cluster_version="$clusterVersion"
+}
+
+# gcp::encrypt encrypts text using Google KMS
+#
+# Arguments:
+# required:
+# t - plain text file to encrypt
+# c - cipher text file
+# e - encryption key
+# k - keyring
+# p - project
+function gcp::encrypt {
+    local OPTIND
+    local plainText
+    local cipherText
+    local encryptionKey
+    local keyring
+    local project
+
+    while getopts ":t:c:e:k:p:" opt; do
+        case $opt in
+            t)
+                plainText="$OPTARG" ;;
+            c)
+                cipherText="$OPTARG" ;;
+            e)
+                encryptionKey=${OPTARG} ;;
+            k)
+                keyring="$OPTARG" ;;
+            p)
+                project=${OPTARG} ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2; ;;
+        esac
+    done
+
+    utils::check_empty_arg "$plainText" "Plain text not provided"
+    utils::check_empty_arg "$cipherText" "Cipher text not provided"
+    utils::check_empty_arg "$encryptionKey" "Encryption key not provided"
+    utils::check_empty_arg "$keyring" "keyring name not provided"
+    utils::check_empty_arg "$project" "Project name not provided"
+
+
+
+  log::info "Encrypting ${plainText} as ${cipherText}"
+  gcloud kms encrypt --location global \
+      --keyring "${keyring}" \
+      --key "${encryptionKey}" \
+      --plaintext-file "${plainText}" \
+      --ciphertext-file "${cipherText}" \
+      --project "${project}"
+}
+
+# gcp::encrypt encrypts text using Google KMS
+#
+# Arguments:
+# required:
+# t - encrypted text file to decrypt
+# c - cipher text file
+# e - encryption key
+# k - keyring
+# p - project
+function gcp::decrypt {
+  local OPTIND
+    local plainText
+    local cipherText
+    local encryptionKey
+    local keyring
+    local project
+
+    while getopts ":t:c:e:k:p:" opt; do
+        case $opt in
+            t)
+                plainText="$OPTARG" ;;
+            c)
+                cipherText="$OPTARG" ;;
+            e)
+                encryptionKey=${OPTARG} ;;
+            k)
+                keyring="$OPTARG" ;;
+            p)
+                project=${OPTARG} ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2; ;;
+        esac
+    done
+
+    utils::check_empty_arg "$plainText" "Plain text file not provided"
+    utils::check_empty_arg "$cipherText" "Cipher text file not provided"
+    utils::check_empty_arg "$encryptionKey" "Encryption key not provided"
+    utils::check_empty_arg "$keyring" "keyring name not provided"
+    utils::check_empty_arg "$project" "Project name not provided"
+
+
+  log::info "Decrypting ${cipherText} to ${plainText}"
+
+  gcloud kms decrypt --location global \
+      --keyring "${keyring}" \
+      --key "${encryptionKey}" \
+      --ciphertext-file "${cipherText}" \
+      --plaintext-file "${plainText}" \
+      --project "${project}"
 }

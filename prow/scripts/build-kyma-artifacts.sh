@@ -9,10 +9,10 @@
 set -e
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${SCRIPT_DIR}/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${SCRIPT_DIR}/lib/docker.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$SCRIPT_DIR/lib/gcp.sh"
 
 # copy_artifacts copies artifacts to the destined bucket path.
 # it accepts one argument BUCKET_PATH which should be formatted as:
@@ -36,7 +36,8 @@ function copy_artifacts {
   gsutil cp "${ARTIFACTS}/kyma-components.yaml" "$BUCKET_PATH/kyma-components.yaml"
 }
 
-gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+gcp::authenticate \
+  -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 
 if [ -n "${PULL_NUMBER}" ]; then
@@ -72,7 +73,8 @@ env KYMA_INSTALLER_VERSION="${DOCKER_TAG}" ARTIFACTS_DIR="${ARTIFACTS}" "install
 
 log::info "Content of the local artifacts directory"
 ls -la "${ARTIFACTS}"
-gcloud::authenticate "$SA_KYMA_ARTIFACTS_GOOGLE_APPLICATION_CREDENTIALS"
+gcp::authenticate \
+  -c "$SA_KYMA_ARTIFACTS_GOOGLE_APPLICATION_CREDENTIALS"
 
 if [ -n "$PULL_NUMBER" ]; then
   copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${DOCKER_TAG}"
