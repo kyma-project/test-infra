@@ -208,14 +208,17 @@ yes | kyma install \
   --tls-key="${TLS_KEY}" \
   --timeout 60m
 
-log::info "Patch serverless to enable containerd"
-cp -va "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/containerd-gke-patch.tpl.yaml" \
-       "${KYMA_SOURCES_DIR}/resources/serverless/templates/containerd-gke-patch.yaml"
-helm template -s templates/containerd-gke-patch.yaml resources/serverless/ --dry-run > "$PWD/patch-containerd.yaml"
-kubectl apply -f "$PWD/patch-containerd.yaml"
-# This command expects serverless to be running in the namespace `kyma-system`
-# The `initialized` condition is checked because we only care about the init-container.
-kubectl -n kyma-system wait pods -l app=serverless-docker-registry-cert-update --for="condition=Initialized"
+## We should patch serverless for containerd support
+if [[ "$GKE_CLUSTER_VERSION_OVERRIDE" == "1.19" ]]; then
+    log::info "Patch serverless to enable containerd"
+    cp -va "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/containerd-gke-patch.tpl.yaml" \
+          "${KYMA_SOURCES_DIR}/resources/serverless/templates/containerd-gke-patch.yaml"
+    helm template -s templates/containerd-gke-patch.yaml resources/serverless/ --dry-run > "$PWD/patch-containerd.yaml"
+    kubectl apply -f "$PWD/patch-containerd.yaml"
+    # This command expects serverless to be running in the namespace `kyma-system`
+    # The `initialized` condition is checked because we only care about the init-container.
+    kubectl -n kyma-system wait pods -l app=serverless-docker-registry-cert-update --for="condition=Initialized"
+fi
 
 if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
     log::info "Create DNS Record for Apiserver proxy IP"
