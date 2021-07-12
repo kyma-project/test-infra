@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -34,6 +35,7 @@ type SyncDef struct {
 // Image stores image location
 type Image struct {
 	Source string
+	Tag    string `yaml:"tag,omitempty"`
 }
 
 // Config stores command line arguments
@@ -85,29 +87,52 @@ func getImageIDAndRepoDigest(ctx context.Context, cli *client.Client, image stri
 	return "", "", fmt.Errorf("unable to find digest for '%s'", image)
 }
 
-func safeCopyImage(ctx context.Context, cli *client.Client, authString, source, target string, dryRun bool) error {
-	if source == "" {
+func safeCopyImage(ctx context.Context, cli *client.Client, authString, sourceImage, targetTag, targetRepo string, dryRun bool) error {
+	if sourceImage == "" {
 		return fmt.Errorf("source image can not be empty")
 	}
-	log.Infof("Source image: %s", source)
-	sourceID, sourceDigest, err := getImageIDAndRepoDigest(ctx, cli, source)
+	log.Infof("Source image: %s", sourceImage)
+	sourceID, sourceDigest, err := getImageIDAndRepoDigest(ctx, cli, sourceImage)
 	if err != nil {
 		return err
 	}
 	log.Infof("Source ID: %s", sourceID)
 	log.Infof("Source repo digest: %s", sourceDigest)
 
+	target := targetRepo + sourceImage
+	if strings.Contains(sourceImage, "@sha256:") {
+		if targetTag == "" {
+			return errors.New("sha256 digest detected, but the \"tag\" was not specified")
+		}
+		imageName := strings.Split(sourceImage, "@sha256:")[0]
+		target = targetRepo + imageName + ":" + targetTag
+	}
+
 	log.Infof("Target image: %s", target)
 	targetID, targetDigest, err := getImageIDAndRepoDigest(ctx, cli, target)
 	if isImageNotFoundError(err) {
 		log.Info("Target image does not exist")
+
+		if strings.Contains(sourceImage, "@sha256:") {
+			// check if the tag is consistent with the digest
+			imageName := strings.Split(sourceImage, "@sha256:")[0]
+			sourceWithTag := imageName + ":" + targetTag
+			sourceWithTagID, _, err := getImageIDAndRepoDigest(ctx, cli, sourceWithTag)
+			if err != nil {
+				log.Info("couldn't get info about the tagged image")
+			} else if sourceID != sourceWithTagID {
+				log.Info("source IDs are different - digest and tag mismatch in config file")
+			}
+		}
+
 		if dryRun {
 			log.Info("Dry-run mode - tagging and pushing skipped")
 			return nil
 		}
-		if err = cli.ImageTag(ctx, source, target); err != nil {
+		if err = cli.ImageTag(ctx, sourceImage, target); err != nil {
 			return err
 		}
+
 		log.Info("Image re-tagged")
 		log.Info("Pushing to target repo")
 		reader, err := cli.ImagePush(ctx, target, types.ImagePushOptions{RegistryAuth: authString})
@@ -194,7 +219,7 @@ func copyImages(cfg Config) error {
 	}
 
 	for _, image := range syncDef.Images {
-		err = safeCopyImage(ctx, cli, authString, image.Source, syncDef.TargetRepoPrefix+image.Source, cfg.DryRun)
+		err = safeCopyImage(ctx, cli, authString, image.Source, image.Tag, syncDef.TargetRepoPrefix, cfg.DryRun)
 		if err != nil {
 			return err
 		}
