@@ -120,8 +120,7 @@ func safeCopyImage(ctx context.Context, cli *client.Client, authString, sourceIm
 			sourceWithTagID, _, err := getImageIDAndRepoDigest(ctx, cli, sourceWithTag)
 			if err != nil {
 				log.Info("couldn't get info about the tagged image")
-			}
-			if sourceID != sourceWithTagID {
+			} else if sourceID != sourceWithTagID {
 				log.Info("source IDs are different - digest and tag mismatch in config file")
 			}
 		}
