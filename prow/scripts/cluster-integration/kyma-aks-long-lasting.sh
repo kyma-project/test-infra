@@ -36,10 +36,10 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-readonly STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
-readonly DNS_SUBDOMAIN="${STANDARIZED_NAME}"
+readonly COMMON_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
+readonly DNS_SUBDOMAIN="${COMMON_NAME}"
 
-export CLUSTER_NAME="${STANDARIZED_NAME}"
+export CLUSTER_NAME="${COMMON_NAME}"
 export CLUSTER_SIZE="Standard_F8s_v2"
 
 export CLUSTER_ADDONS="monitoring,http_application_routing"
@@ -132,7 +132,7 @@ function createPublicIPandDNS() {
 	# IP address and DNS for Ingressgateway
 	az::reserve_ip_address \
 		-g "$CLUSTER_RS_GROUP" \
-		-n "$STANDARIZED_NAME" \
+		-n "$COMMON_NAME" \
 		-r "$REGION"
 	GATEWAY_IP_ADDRESS="${az_reserve_ip_address_return_ip_address:?}"
 

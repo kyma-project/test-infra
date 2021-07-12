@@ -39,9 +39,9 @@ export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 export REPO_OWNER="kyma-project"
 export REPO_NAME="kyma"
 
-STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
-export STANDARIZED_NAME
-export DNS_SUBDOMAIN="${STANDARIZED_NAME}"
+COMMON_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
+export COMMON_NAME
+export DNS_SUBDOMAIN="${COMMON_NAME}"
 
 gcp::set_vars_for_network \
   -n "$JOB_NAME"
@@ -86,7 +86,7 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 
 function createCluster() {
 	log::info "Reserve IP Address for Ingressgateway"
-	GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
+	GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
 	export GATEWAY_IP_ADDRESS
 	gcp::reserve_ip_address \
 		-n "${GATEWAY_IP_ADDRESS_NAME}" \
@@ -99,7 +99,7 @@ function createCluster() {
 	gcp::create_dns_record \
 		-a "$GATEWAY_IP_ADDRESS" \
 		-h "*" \
-		-s "$STANDARIZED_NAME" \
+		-s "$COMMON_NAME" \
 		-p "$CLOUDSDK_CORE_PROJECT" \
 		-z "$CLOUDSDK_DNS_ZONE_NAME"
 
@@ -109,11 +109,11 @@ function createCluster() {
 	-s "${GCLOUD_SUBNET_NAME}" \
 	-p "$CLOUDSDK_CORE_PROJECT"
 
-	log::info "Provision cluster: \"${STANDARIZED_NAME}\""
+	log::info "Provision cluster: \"${COMMON_NAME}\""
 	date
 	
 	gcp::provision_k8s_cluster \
-		-c "$STANDARIZED_NAME" \
+		-c "$COMMON_NAME" \
 		-p "$CLOUDSDK_CORE_PROJECT" \
 		-v "$GKE_CLUSTER_VERSION" \
 		-j "$JOB_NAME" \
@@ -178,7 +178,7 @@ function installKyma() {
 		gcp::create_dns_record \
 			-a "$APISERVER_IP_ADDRESS" \
 			-h "apiserver" \
-			-s "$STANDARIZED_NAME" \
+			-s "$COMMON_NAME" \
 			-p "$CLOUDSDK_CORE_PROJECT" \
 			-z "$CLOUDSDK_DNS_ZONE_NAME"
 	fi
@@ -204,7 +204,7 @@ function installStackdriverPrometheusCollector(){
 	sed -i.bak -e 's/__SIDECAR_IMAGE_TAG__/'"${SIDECAR_IMAGE_TAG}"'/g' \
 		-e 's/__GCP_PROJECT__/'"${CLOUDSDK_CORE_PROJECT}"'/g' \
 		-e 's/__GCP_REGION__/'"${CLOUDSDK_COMPUTE_REGION}"'/g' \
-		-e 's/__CLUSTER_NAME__/'"${STANDARIZED_NAME}"'/g' "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml
+		-e 's/__CLUSTER_NAME__/'"${COMMON_NAME}"'/g' "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml
 	echo "Patch monitoring prometheus CRD to deploy stackdriver-prometheus collector as sidecar"
 	kubectl -n kyma-system patch prometheus monitoring-prometheus --type merge --patch "$(cat "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml)"
 }
@@ -268,13 +268,13 @@ if [ -z "$ARTIFACTS" ] ; then
 fi
 
 IMAGES_LIST=$(kubectl get pods --all-namespaces -o go-template --template='{{range .items}}{{range .status.containerStatuses}}{{.name}},{{.image}},{{.imageID}}{{printf "\n"}}{{end}}{{range .status.initContainerStatuses}}{{.name}},{{.image}},{{.imageID}}{{printf "\n"}}{{end}}{{end}}' | uniq | sort)
-echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${STANDARIZED_NAME}.csv"
+echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${COMMON_NAME}.csv"
 
 # also generate image list in json
 ## this is false-positive as we need to use single-quotes for jq
 # shellcheck disable=SC2016
 IMAGES_LIST=$(kubectl get pods --all-namespaces -o json | jq '{ images: [.items[] | .metadata.ownerReferences[0].name as $owner | (.status.containerStatuses + .status.initContainerStatuses)[] | { name: .imageID, custom_fields: {owner: $owner, image: .image, name: .name }}] | unique | group_by(.name) | map({name: .[0].name, custom_fields: {owner: map(.custom_fields.owner) | unique | join(","), container_name: map(.custom_fields.name) | unique | join(","), image: .[0].custom_fields.image}})}' )
-echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${STANDARIZED_NAME}.json"
+echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${COMMON_NAME}.json"
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
@@ -285,7 +285,7 @@ log::info "Install stability-checker"
 date
 (
 export TEST_INFRA_SOURCES_DIR KYMA_SCRIPTS_DIR TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS \
-        STANDARIZED_NAME SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID SLACK_CLIENT_TOKEN TEST_RESULT_WINDOW_TIME
+        COMMON_NAME SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID SLACK_CLIENT_TOKEN TEST_RESULT_WINDOW_TIME
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-stability-checker.sh"
 )
 
