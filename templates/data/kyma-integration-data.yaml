@@ -400,7 +400,7 @@ templates:
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
-                    preset-kyma-integration-central-app-gateway-enabled: "true"
+                    preset-kyma-integration-central-app-connectivity-enabled: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -422,7 +422,7 @@ templates:
                     preset-build-pr: "true"
                     preset-kyma-integration-compass-dev: "true"
                     preset-kyma-integration-compass-enabled: "true"
-                    preset-kyma-integration-central-app-gateway-enabled: "true"
+                    preset-kyma-integration-central-app-connectivity-enabled: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -600,7 +600,7 @@ templates:
                     testgrid-days-of-results: "60"
                   labels:
                     preset-build-main: "true"
-                    preset-kyma-integration-central-app-gateway-enabled: "true"
+                    preset-kyma-integration-central-app-connectivity-enabled: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -623,7 +623,7 @@ templates:
                     preset-build-main: "true"
                     preset-kyma-integration-compass-dev: "true"
                     preset-kyma-integration-compass-enabled: "true"
-                    preset-kyma-integration-central-app-gateway-enabled: "true"
+                    preset-kyma-integration-central-app-connectivity-enabled: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

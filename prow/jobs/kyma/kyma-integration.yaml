@@ -172,7 +172,7 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-integration-central-app-gateway-enabled: "true"
+        preset-kyma-integration-central-app-connectivity-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^((tests/fast-integration\S+|resources\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       optional: true
@@ -226,7 +226,7 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-integration-central-app-gateway-enabled: "true"
+        preset-kyma-integration-central-app-connectivity-enabled: "true"
         preset-kyma-integration-compass-dev: "true"
         preset-kyma-integration-compass-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
@@ -674,7 +674,7 @@ postsubmits: # runs on main
         preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-integration-central-app-gateway-enabled: "true"
+        preset-kyma-integration-central-app-connectivity-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
       skip_report: false
       decorate: true
@@ -729,7 +729,7 @@ postsubmits: # runs on main
         preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-integration-central-app-gateway-enabled: "true"
+        preset-kyma-integration-central-app-connectivity-enabled: "true"
         preset-kyma-integration-compass-dev: "true"
         preset-kyma-integration-compass-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
