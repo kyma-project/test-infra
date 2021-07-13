@@ -24,6 +24,8 @@ ENABLE_TEST_LOG_COLLECTOR=false
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export RECONCILER_SOURCES_DIR="/home/prow/go/src/github.com/kyma-incubator/reconciler"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
+#set to dummy value, required by gardener/gcp.sh 
+export KYMA_SOURCE="main"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
@@ -31,8 +33,6 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
-# shellcheck source=prow/scripts/cluster-integration/helpers/integration-tests.sh
-source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/integration-tests.sh"
 # shellcheck source=prow/scripts/lib/gardener/gardener.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
 
