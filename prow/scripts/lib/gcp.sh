@@ -570,7 +570,7 @@ function gcp::set_vars_for_network {
 
     utils::check_empty_arg "$jobName" "Job name is empty. Exiting..."
 
-    if [[ "$jobName" =~ ".*_test_of_prowjob_.*" ]]; then
+    if [[ "$jobName" =~ .*_test_of_prowjob_.* ]]; then
         jobName="pjtester"
     fi
 
