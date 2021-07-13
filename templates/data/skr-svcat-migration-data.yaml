@@ -1,0 +1,42 @@
+templates:
+  - fromTo:
+      - from: templates/generic.tmpl
+        to: ../prow/jobs/kyma/skr-svcat-migration.yaml
+    render:
+      - localSets:
+          jobConfig_default:
+            annotations:
+              pipeline.clusterprovisioning: keb
+              pipeline.installer: keb
+              pipeline.test: fast-integration
+            path_alias: github.com/kyma-project/kyma
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-svcat-migration.bash"
+            cluster: "trusted-workload"
+            request_memory: 100Mi
+            request_cpu: 50m
+            labels:
+              preset-build-main: "true"
+              preset-keb-dev-credentials: "true"
+              preset-btp-operator-stage-credentials: "true"
+          keb_plan_azure:
+            annotations:
+              pipeline.platform: gardener_azure
+            env:
+              KEB_PLAN_ID: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
+        jobConfigs:
+          - repoName: "kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  name: "skr-azure-svcat-migration-dev"
+                  cron: "* */4 * * *"
+                inheritedConfigs:
+                  global:
+                    - "image_kyma-integration"
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "keb_plan_azure"
