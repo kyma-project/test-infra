@@ -570,6 +570,10 @@ function gcp::set_vars_for_network {
 
     utils::check_empty_arg "$jobName" "Job name is empty. Exiting..."
 
+    if [[ "$jobName" =~ ".*_test_of_prowjob_.*" ]]; then
+        jobName="pjtester"
+    fi
+
     log::info "Replacing underscore with dashes in job name."
     jobName=$(echo "$jobName" | tr '_' '-')
     # Trim jobName to 54 chars to meet network and subnetwork name lenght requirement..
