@@ -17,7 +17,7 @@ func TestReconcilerJobsPresubmit(t *testing.T) {
 
 	assert.Len(t, jobConfig.PresubmitsStatic, 1)
 	kymaPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-incubator/reconciler"})
-	assert.Len(t, kymaPresubmits, 1)
+	assert.Len(t, kymaPresubmits, 2)
 
 	actualPresubmit := kymaPresubmits[0]
 	expName := "pre-main-kyma-incubator-reconciler"
