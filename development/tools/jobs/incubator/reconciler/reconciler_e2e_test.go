@@ -29,6 +29,6 @@ func TestReconcilerJobsE2EPresubmit(t *testing.T) {
 	assert.Empty(t, actualPresubmit.RunIfChanged)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "main")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase)
-	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPresubmit.Spec.Containers[0].Image)
+	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210713-bdbc20c8-k8s1.16", actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-gardener.sh"}, actualPresubmit.Spec.Containers[0].Command)
 }
