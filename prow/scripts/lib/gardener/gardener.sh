@@ -61,7 +61,10 @@ function gardener::deprovision_cluster() {
 gardener::reprovision_cluster() {
     log::info "cluster provisioning failed, trying provision new cluster"
     log::info "cleaning damaged cluster first"
-    gardener::deprovision_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
+    gardener::deprovision_cluster \
+      -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+      -c "${CLUSTER_NAME}" \
+      -f "${GARDENER_KYMA_PROW_KUBECONFIG}"
     log::info "building new cluster name"
     utils::generate_commonName -n "${COMMON_NAME_PREFIX}"
     COMMON_NAME=${utils_generate_commonName_return_commonName:?}
