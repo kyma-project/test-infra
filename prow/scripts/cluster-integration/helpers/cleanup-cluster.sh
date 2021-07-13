@@ -70,9 +70,10 @@ function removeCluster() {
 
 	log::info "Delete cluster $COMMON_NAME"
 	gcp::deprovision_k8s_cluster \
-            -n "$COMMON_NAME" \
-            -p "$CLOUDSDK_CORE_PROJECT" \
-            -z "$CLOUDSDK_COMPUTE_ZONE" \
+			-n "$COMMON_NAME" \
+			-p "$CLOUDSDK_CORE_PROJECT" \
+			-R "$CLOUDSDK_COMPUTE_REGION" \
+			-r "true" \
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
