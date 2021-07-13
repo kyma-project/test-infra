@@ -82,7 +82,7 @@ function kyma::get_release_version {
         # get last matching version
         # shellcheck disable=SC2034
         kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
-            | jq -r "del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(\".\") | map(tonumber)) | reverse | [ .[] | select(.tag_name|test(\"$searched_ver\"))] | .[0].tag_name")
+            | jq -r "del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(\".\") | map(tonumber)) | reverse | [ .[] | select(.tag_name|test(\"^${minorVersion}\\\.\"))] | .[0].tag_name")
     else
         #get last version
         # shellcheck disable=SC2034
