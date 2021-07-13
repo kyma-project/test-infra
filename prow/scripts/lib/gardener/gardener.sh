@@ -29,7 +29,7 @@ function gardener::deprovision_cluster() {
           c)
             clusterName="$OPTARG" ;;
           f)
-            kubeconfigFile+=("$OPTARG") ;;
+            kubeconfigFile="$OPTARG" ;;
           \?)
               echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
           :)
