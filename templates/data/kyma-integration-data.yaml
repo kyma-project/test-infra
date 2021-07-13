@@ -361,7 +361,6 @@ templates:
                     pipeline.platform: k3s
                 inheritedConfigs:
                   global:
-                    - "kyma_2"
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                     - "image_kyma-integration"

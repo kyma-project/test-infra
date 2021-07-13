@@ -92,9 +92,6 @@ presubmits: # runs on PRs
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3s.sh"
-            env:
-              - name: KYMA_ALPHA
-                value: "true"
             resources:
               requests:
                 memory: 100Mi
