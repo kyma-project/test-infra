@@ -79,6 +79,8 @@ utils::generate_commonName -n "${COMMON_NAME_PREFIX}"
 COMMON_NAME="${utils_generate_commonName_return_commonName:?}"
 export COMMON_NAME
 
+export CLUSTER_NAME="${COMMON_NAME}"
+
 # set KYMA_SOURCE used by gardener::install_kyma
 # at the time of writing this comment, kyma-integration-gardener never sets BUILD_TYPE to "release"
 if [[ -n ${PULL_NUMBER} ]]; then
