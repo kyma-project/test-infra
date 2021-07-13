@@ -77,7 +77,7 @@ COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]"
 export COMMON_NAME
 
 # Install Kyma form latest release
-kyma::get_last_release_version \
+kyma::get_release_version \
     -t "${BOT_GITHUB_TOKEN}"
 LAST_RELEASE_VERSION="${kyma_get_last_release_version_return_version:?}"
 log::info "### Reading release version from RELEASE_VERSION file, got: ${LAST_RELEASE_VERSION}"

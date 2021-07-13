@@ -47,21 +47,28 @@ function kyma::alpha_delete_kyma() {
   kyma alpha delete --ci --verbose
 }
 
-# kyma::get_last_release_version returns latest Kyma release version
+# kyma::get_release_version returns latest Kyma release version with patch 
 #
 # Arguments:
 #   t - GitHub token
+# optional:
+# v - minor version
 # Returns:
 #   Last Kyma release version
-function kyma::get_last_release_version {
+function kyma::get_release_version {
 
     local OPTIND
     local githubToken
+    local minorVersion
 
     while getopts ":t:" opt; do
         case $opt in
             t)
                 githubToken="$OPTARG" ;;
+            v)
+                if [ -n "$OPTARG" ]; then
+                    minorVersion="$OPTARG"
+                fi ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
@@ -71,9 +78,17 @@ function kyma::get_last_release_version {
 
     utils::check_empty_arg "$githubToken" "Github token was not provided. Exiting..."
     
-    # shellcheck disable=SC2034
-    kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
-        | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].tag_name')
+    if [ -n "$minorVersion" ]; then
+        # get last matching version
+        # shellcheck disable=SC2034
+        kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
+            | jq -r "del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(\".\") | map(tonumber)) | reverse | [ .[] | select(.tag_name|test(\"$searched_ver\"))] | .[0].tag_name")
+    else
+        #get last version
+        # shellcheck disable=SC2034
+        kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
+            | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].tag_name')
+    fi
 }
 
 kyma::install_cli() {

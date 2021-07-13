@@ -150,7 +150,7 @@ function getLastReleaseCandidateVersion() {
 }
 
 function installKyma() {
-    kyma::get_last_release_version \
+    kyma::get_release_version \
         -t "${BOT_GITHUB_TOKEN}"
     LAST_RELEASE_VERSION="${kyma_get_last_release_version_return_version:?}"
     mkdir -p /tmp/kyma-gardener-upgradeability
