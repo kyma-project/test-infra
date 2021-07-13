@@ -136,7 +136,7 @@ function gcp::provision_k8s_cluster {
     log::info "Replacing underscore with dashes in cluster name."
     clusterName=$(echo "$clusterName" | tr '_' '-')
     # Cluster name must be less than 40 characters
-    if [ "$clusterName" -ge 40 ]; then
+    if [ "${#clusterName}" -ge 40 ]; then
         log::error "Cluster name must be less than 40 characters"
         exit 1
     fi
