@@ -22,7 +22,7 @@ globalSets:
     env:
       KYMA_ALPHA: "true"
     annotations:
-      pipeline.installer: kyma install
+      pipeline.installer: kyma deploy
   # Image sets
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210402-70b4b74f"
