@@ -43,7 +43,7 @@ type ProwMessage struct {
 type FailingTestMessage struct {
 	ProwMessage
 	FirestoreDocumentID *string `json:"firestoreDocumentId,omitempty"`
-	GithubIssueNumber   *int    `json:"githubIssueNumber,omitempty"`
+	GithubIssueNumber   *int64  `json:"githubIssueNumber,omitempty"`
 	SlackThreadID       *string `json:"slackThreadId,omitempty"`
 }
 
@@ -100,10 +100,11 @@ func init() {
 
 func addFailingTest(ctx context.Context, client *firestore.Client, message FailingTestMessage, jobID *string) (*firestore.DocumentRef, error) {
 	doc, _, err := client.Collection("testFailures").Add(ctx, map[string]interface{}{
-		"jobName": *message.JobName,
-		"jobType": *message.JobType,
-		"open":    true,
-		"baseSha": message.Refs[0]["base_sha"],
+		"jobName":           *message.JobName,
+		"jobType":           *message.JobType,
+		"open":              true,
+		"githubIssueNumber": *message.GithubIssueNumber,
+		"baseSha":           message.Refs[0]["base_sha"],
 		"failures": map[string]interface{}{
 			*jobID: map[string]interface{}{
 				"url": *message.URL, "gcsPath": *message.GcsPath, "refs": message.Refs,
@@ -285,7 +286,7 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 					Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": *jobID, "prowjobName": *failingTestMessage.JobName},
 				})
 			} else {
-				failingTestMessage.GithubIssueNumber = github.Int(githubIssueNumber.(int))
+				failingTestMessage.GithubIssueNumber = github.Int64(githubIssueNumber.(int64))
 			}
 		} else {
 			log.Println(LogEntry{
@@ -317,12 +318,13 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
 			Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": *jobID, "prowjobName": *failingTestMessage.JobName},
 		})
+	} else {
+		log.Println(LogEntry{
+			Message:   fmt.Sprintf("failure not detected, got notification for prowjob %s", *failingTestMessage.JobName),
+			Trace:     trace,
+			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+			Labels:    map[string]string{"messageId": contextMetadata.EventID},
+		})
 	}
-	log.Println(LogEntry{
-		Message:   fmt.Sprintf("failure not detected, got notification for prowjob %s", *failingTestMessage.JobName),
-		Trace:     trace,
-		Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-		Labels:    map[string]string{"messageId": contextMetadata.EventID},
-	})
 	return nil
 }
