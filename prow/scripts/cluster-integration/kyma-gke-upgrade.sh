@@ -177,7 +177,7 @@ function getLastRCVersion() {
 function installKyma() {
   kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
   mkdir -p /tmp/kyma-gke-upgradeability
-  kyma::get_release_version \
+  kyma::get_last_release_version \
     -t "${BOT_GITHUB_TOKEN}" \
     -v "${KYMA_RELEASE_VERSION}"
   LAST_RELEASE_VERSION="${kyma_get_last_release_version_return_version:?}"

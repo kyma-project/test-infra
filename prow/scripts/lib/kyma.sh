@@ -47,7 +47,7 @@ function kyma::alpha_delete_kyma() {
   kyma alpha delete --ci --verbose
 }
 
-# kyma::get_release_version returns latest Kyma release version with patch 
+# kyma::get_last_release_version returns latest Kyma release version with patch 
 #
 # Arguments:
 #   t - GitHub token
@@ -55,7 +55,7 @@ function kyma::alpha_delete_kyma() {
 # v - minor version
 # Returns:
 #   Last Kyma release version
-function kyma::get_release_version {
+function kyma::get_last_release_version {
 
     local OPTIND
     local githubToken
