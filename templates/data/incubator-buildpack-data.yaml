@@ -211,6 +211,21 @@ templates:
               GO11MODULE: "on"
             branches:
               - ^main$
+          command_integration:
+            annotations:
+              pipeline.clusterprovisioning: kyma cli
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-gardener.sh"
+          reconciler_gardener_job:
+            labels:
+              preset-gardener-gcp-kyma-integration: "true"
+              preset-kyma-cli-stable: "true"
+              preset-cluster-version: "true"
+            env:
+              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
+              GARDENER_REGION: "europe-west4"
+              GARDENER_ZONES: "europe-west4-b"
+            annotations:
+              pipeline.platform: gardener_gcp
         jobConfigs:
           - repoName: kyma-incubator/reconciler
             jobs:
@@ -227,6 +242,18 @@ templates:
                     - jobConfig_buildpack_incubator
                   local:
                     - reconciler_jobConfig
+              - jobConfig:
+                  name: pre-main-kyma-incubator-reconciler-e2e
+                  always_run: true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_kyma-integration
+                  local:
+                    - command_integration
+                    - reconciler_gardener_job
               - jobConfig:
                   name: post-main-kyma-incubator-reconciler
                 inheritedConfigs:
