@@ -153,6 +153,7 @@ func isGithubIssueOpen(ctx context.Context, client *github.Client, message Faili
 }
 
 // TODO: move this function to separate module
+// TODO: allign it with getfailurinstance version
 func getJobId(jobUrl, eventID, jobName, jobType, trace string) (*string, error) {
 	jobURL, err := url.Parse(jobUrl)
 	if err != nil {

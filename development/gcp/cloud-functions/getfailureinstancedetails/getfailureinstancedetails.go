@@ -7,6 +7,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/google/go-github/v36/github"
 	"log"
 	"math/rand"
 	"net/url"
@@ -27,22 +28,23 @@ type MessagePayload struct {
 
 // This is the Data payload of pubsub message payload.
 type ProwMessage struct {
-	Project string                   `json:"project"`
-	Topic   string                   `json:"topic"`
-	RunID   string                   `json:"runid"`
-	Status  string                   `json:"status"`
-	URL     string                   `json:"url"`
-	GcsPath string                   `json:"gcs_path"`
+	Project *string `json:"project"`
+	Topic   *string `json:"topic"`
+	RunID   *string `json:"runid"`
+	Status  *string `json:"status"`
+	URL     *string `json:"url"`
+	GcsPath *string `json:"gcs_path"`
+	// TODO: define refs type to force using pointers
 	Refs    []map[string]interface{} `json:"refs"`
-	JobType string                   `json:"job_type"`
-	JobName string                   `json:"job_name"`
+	JobType *string                  `json:"job_type"`
+	JobName *string                  `json:"job_name"`
 }
 
 type FailingTestMessage struct {
 	ProwMessage
-	FirestoreDocumentID string `json:"firestoreDocumentId,omitempty"`
-	GithubIssueNumber   int    `json:"githubIssueNumber,omitempty"`
-	SlackThreadID       string `json:"slackThreadId,omitempty"`
+	FirestoreDocumentID *string `json:"firestoreDocumentId,omitempty"`
+	GithubIssueNumber   *int    `json:"githubIssueNumber,omitempty"`
+	SlackThreadID       *string `json:"slackThreadId,omitempty"`
 }
 
 // Entry defines a log entry.
@@ -81,144 +83,82 @@ func init() {
 	getGithubIssueTopic = os.Getenv("GITHUB_ISSUE_TOPIC")
 	ctx := context.Background()
 	if projectID == "" {
-		log.Println(LogEntry{
-			Message:   "environment variable GCP_PROJECT_ID is empty, can't setup firebase client",
-			Severity:  "CRITICAL",
-			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-		})
 		panic("environment variable GCP_PROJECT_ID is empty, can't setup firebase client")
 	}
 	if getGithubIssueTopic == "" {
-		log.Println(LogEntry{
-			Message:   "environment variable GITHUB_ISSUE_TOPIC is empty, can't setup firebase client",
-			Severity:  "CRITICAL",
-			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-		})
 		panic("environment variable GITHUB_ISSUE_TOPIC is empty, can't setup firebase client")
 	}
 	firestoreClient, err = firestore.NewClient(ctx, projectID)
 	if err != nil {
-		log.Println(LogEntry{
-			Message:   fmt.Sprintf("failed create firestore client, error: %s", err.Error()),
-			Severity:  "CRITICAL",
-			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-		})
 		panic(fmt.Sprintf("Failed to create firestore client, error: %s", err.Error()))
 	}
 	pubSubClient, err = pubsub.NewClient(ctx, projectID)
 	if err != nil {
-		log.Println(LogEntry{
-			Message:   fmt.Sprintf("failed create pubsub client, error: %s", err.Error()),
-			Severity:  "CRITICAL",
-			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-		})
 		panic(fmt.Sprintf("Failed to create pubsub client, error: %s", err.Error()))
 	}
 }
 
-func addFailingTest(ctx context.Context, client *firestore.Client, message FailingTestMessage, jobID, trace, eventID string) (error, *firestore.DocumentRef) {
+func addFailingTest(ctx context.Context, client *firestore.Client, message FailingTestMessage, jobID *string) (*firestore.DocumentRef, error) {
 	doc, _, err := client.Collection("testFailures").Add(ctx, map[string]interface{}{
-		"jobName": message.JobName,
-		"jobType": message.JobType,
+		"jobName": *message.JobName,
+		"jobType": *message.JobType,
 		"open":    true,
 		"baseSha": message.Refs[0]["base_sha"],
 		"failures": map[string]interface{}{
-			jobID: map[string]interface{}{
-				"url": message.URL, "gcsPath": message.GcsPath, "refs": message.Refs,
+			*jobID: map[string]interface{}{
+				"url": *message.URL, "gcsPath": *message.GcsPath, "refs": message.Refs,
 			},
 		},
 	})
 	if err != nil {
-		log.Println(LogEntry{
-			Message:   fmt.Sprintf("could not add failing test, error: %s", err.Error()),
-			Severity:  "CRITICAL",
-			Trace:     trace,
-			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-			Labels:    map[string]string{"messageId": eventID, "jobID": jobID, "prowjobName": message.JobName},
-		})
-		return fmt.Errorf("could not add failing test, error: %w", err), nil
+		return nil, fmt.Errorf("colud not add failing test instance to firestore collection, error: %w", err)
 	}
-	log.Println(LogEntry{
-		Message:   fmt.Sprintf("failing test created in firestore, document ID: %s", doc.ID),
-		Severity:  "INFO",
-		Trace:     trace,
-		Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-		Labels:    map[string]string{"messageId": eventID, "jobID": jobID, "prowjobName": message.JobName},
-	})
-	return nil, doc
+	return doc, nil
 }
 
-func addTestExecution(ctx context.Context, ref *firestore.DocumentRef, message FailingTestMessage, jobID, trace, eventID string) error {
+func addTestExecution(ctx context.Context, ref *firestore.DocumentRef, message FailingTestMessage, jobID *string) error {
 	_, err := ref.Set(ctx, map[string]map[string]map[string]interface{}{"failures": {
-		jobID: {
+		*jobID: {
 			"url": message.URL, "gcsPath": message.GcsPath, "refs": message.Refs,
-		}}}, firestore.Merge([]string{"failures", jobID}))
+		}}}, firestore.Merge([]string{"failures", *jobID}))
 	if err != nil {
-		log.Println(LogEntry{
-			Message:   fmt.Sprintf("could not add execution data to failing test, error: %s", err.Error()),
-			Severity:  "CRITICAL",
-			Trace:     trace,
-			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-			Labels:    map[string]string{"messageId": eventID, "jobID": jobID, "prowjobName": message.JobName},
-		})
-		return fmt.Errorf("could not add execution data to failing test, error: %w", err)
+		return fmt.Errorf("could not add execution data to firestore document, error: %w", err)
 	}
 	return nil
 }
 
 // TODO: move to separate module
-func publishPubSubMessage(ctx context.Context, client *pubsub.Client, message FailingTestMessage, trace, eventID, jobID string) error {
+func publishPubSubMessage(ctx context.Context, client *pubsub.Client, message FailingTestMessage, topicName string) (*string, error) {
 	bmessage, err := json.Marshal(message)
 	if err != nil {
-		log.Println(LogEntry{
-			Message:   fmt.Sprintf("failed marshal failing test message, error: %s", err.Error()),
-			Severity:  "CRITICAL",
-			Trace:     trace,
-			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-			Labels:    map[string]string{"messageId": eventID, "jobID": jobID, "prowjobName": message.JobName},
-		})
-		return fmt.Errorf("failed marshal failing test message, error: %w", err)
+		return nil, fmt.Errorf("failed marshaling FailingTestMessage to json, error: %w", err)
 	}
-	topic := client.Topic(getGithubIssueTopic)
+	topic := client.Topic(topicName)
 	result := topic.Publish(ctx, &pubsub.Message{
 		Data: bmessage,
 	})
 	publishedID, err := result.Get(ctx)
 	if err != nil {
-		log.Println(LogEntry{
-			Message:   fmt.Sprintf("failed publish failing test message, error: %s", err.Error()),
-			Severity:  "CRITICAL",
-			Trace:     trace,
-			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-			Labels:    map[string]string{"messageId": eventID, "jobID": jobID, "prowjobName": message.JobName},
-		})
-		return fmt.Errorf("failed publish failing test message, error: %w", err)
+		return nil, fmt.Errorf("failed publishing to topic %s, error: %w", topicName, err)
 	}
-	log.Println(LogEntry{
-		Message:   fmt.Sprintf("published failing test message, id: %s", publishedID),
-		Severity:  "INFO",
-		Trace:     trace,
-		Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-		Labels:    map[string]string{"messageId": eventID, "jobID": jobID, "prowjobName": message.JobName},
-	})
-	return nil
+	return github.String(publishedID), nil
 }
 
 // TODO: move to imported module
-func getJobId(message FailingTestMessage, eventID, trace string) (string, error) {
-	jobURL, err := url.Parse(message.URL)
+func getJobId(message FailingTestMessage, eventID, trace string) (*string, error) {
+	jobURL, err := url.Parse(*message.URL)
 	if err != nil {
-		return "", fmt.Errorf("failed parse test URL, error: %w", err)
+		return nil, fmt.Errorf("failed parse test URL, error: %w", err)
 	}
 	jobID := path.Base(jobURL.Path)
 	log.Println(LogEntry{
-		Message:   fmt.Sprintf("failed %s prowjob detected, prowjob ID: %s", message.JobType, jobID),
+		Message:   fmt.Sprintf("failed %s prowjob detected, prowjob ID: %s", *message.JobType, jobID),
 		Severity:  "INFO",
 		Trace:     trace,
 		Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-		Labels:    map[string]string{"messageId": eventID, "jobID": jobID, "prowjobName": message.JobName},
+		Labels:    map[string]string{"messageId": eventID, "jobID": jobID, "prowjobName": *message.JobName},
 	})
-	return jobID, nil
+	return github.String(jobID), nil
 }
 
 // HelloPubSub consumes a Pub/Sub message.
@@ -226,7 +166,7 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 	var err error
 	// set trace value to use it in logEntry
 	var trace string
-	var prowMessage ProwMessage
+	//var prowMessage ProwMessage
 	var iter *firestore.DocumentIterator
 	var failingTestMessage FailingTestMessage
 	traceFunctionName := "Getfailureinstancedetails"
@@ -257,11 +197,11 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 	//failingTestMessage = FailingTestMessage{
 	//	ProwMessage: prowMessage,
 	//}
-	if failingTestMessage.Status == "failure" || failingTestMessage.Status == "error" {
-		if prowMessage.JobType == "periodic" {
-			iter = firestoreClient.Collection("testFailures").Where("jobName", "==", failingTestMessage.JobName).Where("jobType", "==", failingTestMessage.JobType).Where("open", "==", true).Documents(ctx)
-		} else if prowMessage.JobType == "postsubmit" {
-			iter = firestoreClient.Collection("testFailures").Where("jobName", "==", failingTestMessage.JobName).Where("jobType", "==", failingTestMessage.JobType).Where("open", "==", true).Where("baseSha", "==", prowMessage.Refs[0]["base_sha"]).Documents(ctx)
+	if *failingTestMessage.Status == "failure" || *failingTestMessage.Status == "error" {
+		if *failingTestMessage.JobType == "periodic" {
+			iter = firestoreClient.Collection("testFailures").Where("jobName", "==", *failingTestMessage.JobName).Where("jobType", "==", *failingTestMessage.JobType).Where("open", "==", true).Documents(ctx)
+		} else if *failingTestMessage.JobType == "postsubmit" {
+			iter = firestoreClient.Collection("testFailures").Where("jobName", "==", *failingTestMessage.JobName).Where("jobType", "==", *failingTestMessage.JobType).Where("open", "==", true).Where("baseSha", "==", failingTestMessage.Refs[0]["base_sha"]).Documents(ctx)
 		} else {
 			return nil
 		}
@@ -272,7 +212,7 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 				Severity:  "CRITICAL",
 				Trace:     trace,
 				Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-				Labels:    map[string]string{"messageId": contextMetadata.EventID},
+				Labels:    map[string]string{"messageId": contextMetadata.EventID, "prowjobName": *failingTestMessage.JobName},
 			})
 			panic(fmt.Sprintf("failed get job ID, error: %s", err.Error()))
 		}
@@ -283,23 +223,37 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 				Severity:  "CRITICAL",
 				Trace:     trace,
 				Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-				Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": failingTestMessage.JobName},
+				Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": *jobID, "prowjobName": *failingTestMessage.JobName},
 			})
 			panic(fmt.Sprintf("failed get failure instances, error: %s", err.Error()))
 		}
 		if len(failureInstances) == 0 {
 			log.Println(LogEntry{
-				Message:   "failure instance not found, creating",
+				Message:   "failure instance not found, creating it",
 				Severity:  "INFO",
 				Trace:     trace,
 				Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-				Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": failingTestMessage.JobName},
+				Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": *jobID, "prowjobName": *failingTestMessage.JobName},
 			})
-			err, doc := addFailingTest(ctx, firestoreClient, failingTestMessage, jobID, trace, contextMetadata.EventID)
+			doc, err := addFailingTest(ctx, firestoreClient, failingTestMessage, jobID)
 			if err != nil {
-				panic(err.Error())
+				log.Println(LogEntry{
+					Message:   fmt.Sprintf("could not add failing test, error: %s", err.Error()),
+					Severity:  "CRITICAL",
+					Trace:     trace,
+					Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+					Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": *jobID, "prowjobName": *failingTestMessage.JobName},
+				})
+				panic(fmt.Sprintf("could not add failed test, error: %s", err.Error()))
 			}
-			failingTestMessage.FirestoreDocumentID = doc.ID
+			log.Println(LogEntry{
+				Message:   fmt.Sprintf("failing test created in firestore, document ID: %s", doc.ID),
+				Severity:  "INFO",
+				Trace:     trace,
+				Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+				Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": *jobID, "prowjobName": *failingTestMessage.JobName},
+			})
+			failingTestMessage.FirestoreDocumentID = github.String(doc.ID)
 		} else if len(failureInstances) == 1 {
 			failureInstance := failureInstances[0]
 			log.Println(LogEntry{
@@ -307,40 +261,68 @@ func Getfailureinstancedetails(ctx context.Context, m MessagePayload) error {
 				Severity:  "INFO",
 				Trace:     trace,
 				Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-				Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": failingTestMessage.JobName},
+				Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": *jobID, "prowjobName": *failingTestMessage.JobName},
 			})
-			err = addTestExecution(ctx, failureInstance.Ref, failingTestMessage, jobID, trace, contextMetadata.EventID)
+			err = addTestExecution(ctx, failureInstance.Ref, failingTestMessage, jobID)
 			if err != nil {
-				panic(err.Error())
+				log.Println(LogEntry{
+					Message:   fmt.Sprintf("failed adding failed test execution data, error: %s", err.Error()),
+					Severity:  "CRITICAL",
+					Trace:     trace,
+					Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+					Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": *jobID, "prowjobName": *failingTestMessage.JobName},
+				})
+				//TODO: need error reporting api call
 			}
-			failingTestMessage.FirestoreDocumentID = failureInstance.Ref.ID
+			failingTestMessage.FirestoreDocumentID = github.String(failureInstance.Ref.ID)
 			githubIssueNumber, err := failureInstance.DataAt("githubIssueNumber")
 			if err != nil {
-				//TODO: check if error it NOT FOUND ERROR
 				log.Println(LogEntry{
-					Message:   fmt.Sprintf("github issue for failing test doesn't exists, error: %s", err.Error()),
+					Message:   fmt.Sprintf("could not get github issue for failing test, error: %s", err.Error()),
 					Severity:  "INFO",
 					Trace:     trace,
 					Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-					Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": failingTestMessage.JobName},
+					Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": *jobID, "prowjobName": *failingTestMessage.JobName},
 				})
 			} else {
-				failingTestMessage.GithubIssueNumber = githubIssueNumber.(int)
+				failingTestMessage.GithubIssueNumber = github.Int(githubIssueNumber.(int))
 			}
 		} else {
 			log.Println(LogEntry{
-				Message:   fmt.Sprintf("more than one failure instance exists for %s prowjob", prowMessage.JobName),
+				Message:   fmt.Sprintf("more than one failure instance exists for %s prowjob", *failingTestMessage.JobName),
 				Severity:  "CRITICAL",
 				Trace:     trace,
 				Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
-				Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": jobID, "prowjobName": failingTestMessage.JobName},
+				Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": *jobID, "prowjobName": *failingTestMessage.JobName},
 			})
-			panic(fmt.Sprintf("more than one failure instance exists for %s prowjob", prowMessage.JobName))
+			panic(fmt.Sprintf("more than one failure instance exists for %s prowjob", *failingTestMessage.JobName))
 		}
-		err = publishPubSubMessage(ctx, pubSubClient, failingTestMessage, trace, contextMetadata.EventID, jobID)
+		publlishedMessageID, err := publishPubSubMessage(ctx, pubSubClient, failingTestMessage, getGithubIssueTopic)
 		if err != nil {
-			panic(err.Error())
+			//log error publishing message to pubsub
+			log.Println(LogEntry{
+				Message:   fmt.Sprintf("failed publishing to pubsub, error: %s", err.Error()),
+				Severity:  "CRITICAL",
+				Trace:     trace,
+				Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+				Labels:    map[string]string{"jobID": *jobID, "messageId": contextMetadata.EventID, "prowjobName": *failingTestMessage.JobName},
+			})
+			panic(fmt.Sprintf("failed publishing to pubsub, error: %s", err.Error()))
 		}
+		// log publishin message to pubsub
+		log.Println(LogEntry{
+			Message:   fmt.Sprintf("published pubsub message to topic %s, id: %s", getGithubIssueTopic, *publlishedMessageID),
+			Severity:  "INFO",
+			Trace:     trace,
+			Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+			Labels:    map[string]string{"messageId": contextMetadata.EventID, "jobID": *jobID, "prowjobName": *failingTestMessage.JobName},
+		})
 	}
+	log.Println(LogEntry{
+		Message:   fmt.Sprintf("failure not detected, got notification for prowjob %s", *failingTestMessage.JobName),
+		Trace:     trace,
+		Component: "kyma.prow.cloud-function.Getfailureinstancedetails",
+		Labels:    map[string]string{"messageId": contextMetadata.EventID},
+	})
 	return nil
 }
