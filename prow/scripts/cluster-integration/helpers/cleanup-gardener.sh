@@ -84,7 +84,10 @@ do
         elif [[ ${HOURS_OLD} -ge 4 && ! "$CLUSTER" =~ np?[0-9].* ]]; then
             # clusters older than 4h get deleted
             log::info "Deprovision cluster: \"${CLUSTER}\" (${HOURS_OLD}h old)"
-            gardener::deprovision_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
+            gardener::deprovision_cluster \
+                -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+                -c "${CLUSTER}" \
+                -f "${GARDENER_KYMA_PROW_KUBECONFIG}"
         fi
     else
         echo "level=warning msg=\"Cluster is excluded, deletion will be skipped. Name: \"${CLUSTER}\""
