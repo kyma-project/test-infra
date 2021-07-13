@@ -357,6 +357,7 @@ templates:
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
+                    preset-kyma-2-installer: "true"
                   annotations:
                     pipeline.platform: k3s
                 inheritedConfigs:
