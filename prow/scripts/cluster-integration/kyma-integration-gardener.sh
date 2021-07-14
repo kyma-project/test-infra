@@ -106,6 +106,9 @@ else
     fi
 fi
 
+#KYMA_SOURCE="PR-11390"
+export KYMA_SOURCE
+
 # checks required vars and initializes gcloud/docker if necessary
 gardener::init
 
