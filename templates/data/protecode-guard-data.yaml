@@ -76,7 +76,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-main-reconciler-protecode-guard
-                  run_if_changed: "^((.*)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  always_run: true
                   env:
                     JOB_NAME_PATTERN: "pre-main-kyma-incubator-reconciler.*"
                     JOBGUARD_TIMEOUT: "25m"
