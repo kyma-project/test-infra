@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+readonly BACKEND_SECRET_NAME=eventing-backend
+readonly BACKEND_SECRET_NAMESPACE=default
+readonly BACKEND_SECRET_LABEL_KEY=kyma-project.io/eventing-backend
+readonly BACKEND_SECRET_LABEL_VALUE=NATS
+readonly EVENTING_BACKEND_CR_NAME=eventing-backend
+readonly EVENTING_BACKEND_CR_NAMESPACE=kyma-system
+
 # Check if required vars are set or not
 function eventing::check_required_vars() {
   if [[ -z ${CREDENTIALS_DIR} ]]; then
@@ -41,8 +48,8 @@ function eventing::create_eventing_backend_secret() {
 
   pushd "${CREDENTIALS_DIR}"
 
-  SECRET_NAME=eventing-backend
-  SECRET_NAMESPACE=default
+  SECRET_NAME="${BACKEND_SECRET_NAME}"
+  SECRET_NAMESPACE="${BACKEND_SECRET_NAMESPACE}"
 
   MANAGEMENT=$(jq -r  '.management' < serviceKey | tr -d '[:space:]' | base64 | tr -d '\n')
   MESSAGING=$(jq -r '.messaging' < serviceKey | tr -d '[:space:]' | base64 | tr -d '\n')
@@ -104,4 +111,51 @@ data:
 EOF
 
   popd
+}
+
+# Switches the eventing backend based on the passed parameter (NATS or BEB).
+# If there is no parameter passed, NATS is used as the default backend.
+function eventing::switch_backend() {
+  labelValue="$(echo "${1}" | tr -s '[:upper:]' '[:lower:]')"
+  if [[ -z "${labelValue}" ]]; then
+      labelValue="$(echo "${BACKEND_SECRET_LABEL_VALUE}" | tr -s '[:upper:]' '[:lower:]')"
+  fi
+
+  echo "label backend secret with ${BACKEND_SECRET_LABEL_KEY}=${labelValue}"
+  kubectl label secret --namespace "${BACKEND_SECRET_NAMESPACE}" "${BACKEND_SECRET_NAME}" "${BACKEND_SECRET_LABEL_KEY}=${labelValue}" --overwrite
+}
+
+# Waits for Eventing backend to be ready by checking the EventingBackend custom resource status
+function eventing::wait_for_backend_ready() {
+  if [[ -z "${1}" ]]; then
+    echo "backend type is missing"
+    exit 1
+  fi
+
+  # wait for Eventing backend custom resource old status to be cleared
+  sleep 10s
+
+  retry=0
+  maxRetires=20
+  wantReady="$(echo "true" | tr -s '[:upper:]' '[:lower:]')"
+  wantBackend="$(echo "${1}" | tr -s '[:upper:]' '[:lower:]')"
+
+  while [[ ${retry} -lt ${maxRetires} ]]; do
+      ready=$(kubectl get eventingbackends.eventing.kyma-project.io --namespace "${EVENTING_BACKEND_CR_NAMESPACE}" "${EVENTING_BACKEND_CR_NAME}" -ojsonpath="{.status.eventingReady}" | tr -s '[:upper:]' '[:lower:]')
+      backend=$(kubectl get eventingbackends.eventing.kyma-project.io --namespace "${EVENTING_BACKEND_CR_NAMESPACE}" "${EVENTING_BACKEND_CR_NAME}" -ojsonpath="{.status.backendType}" | tr -s '[:upper:]' '[:lower:]')
+
+      if [[ "${ready}" == "${wantReady}" && "${backend}" == "${wantBackend}" ]]; then
+          echo "Eventing backend [${1}] is ready"
+          kubectl get eventingbackends.eventing.kyma-project.io --namespace "${EVENTING_BACKEND_CR_NAMESPACE}" "${EVENTING_BACKEND_CR_NAME}"
+          return 0
+      fi
+
+      echo "try $((retry + 1))/${maxRetires} waiting for Eventing backend ${1} to be ready - current backend status ${backend}/${ready}"
+      retry=$((retry + 1))
+      sleep 10
+  done
+
+  echo "Eventing backend [${1}] is not ready"
+  kubectl get eventingbackends.eventing.kyma-project.io --namespace "${EVENTING_BACKEND_CR_NAMESPACE}" "${EVENTING_BACKEND_CR_NAME}"
+  return 1
 }
