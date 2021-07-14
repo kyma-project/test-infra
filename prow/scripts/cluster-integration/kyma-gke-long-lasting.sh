@@ -223,7 +223,7 @@ export DOMAIN
 
 log::info "Cleanup"
 export SKIP_IMAGE_REMOVAL=true
-export DISABLE_ASYNC_DEPROVISION=true
+export ASYNC_DEPROVISION=false
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/cleanup-cluster.sh"
 
 log::info "Create new cluster"
