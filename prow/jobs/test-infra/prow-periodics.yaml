@@ -48,7 +48,8 @@ postsubmits: # runs on main
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        #prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.project: "sap-kyma-neighbors-dev"
         prow.k8s.io/pubsub.runID: "post-test-infra-deploy-prow"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: 'prow/cluster/components/'
@@ -69,13 +70,13 @@ postsubmits: # runs on main
             env:
               - name: GOOGLE_APPLICATION_CREDENTIALS
                 value: "/etc/credentials/service-account.json"
-            volumeMounts:
-              - name: sa-prow-deploy
-                mountPath: /etc/credentials
-        volumes:
-          - name: sa-prow-deploy
-            secret:
-              secretName: sa-prow-deploy
+            #volumeMounts:
+            #  - name: sa-prow-deploy
+            #    mountPath: /etc/credentials
+        #volumes:
+        #  - name: sa-prow-deploy
+        #    secret:
+        #      secretName: sa-prow-deploy
     - name: post-test-infra-build-vm-image
       annotations:
         pipeline.trigger: "pr-merge"
@@ -222,4 +223,3 @@ periodics: # runs on schedule
           - name: kyma-bot-github-token
             secret:
               secretName: kyma-bot-github-token
-  
