@@ -35,8 +35,6 @@ cleanup() {
   log::info "End of cleanup"
 }
 
-printenv
-
 function testCustomImage() {
   CUSTOM_IMAGE="$1"
   IMAGE_EXISTS=$(gcloud compute images list --filter "name:${CUSTOM_IMAGE}" | tail -n +2 | awk '{print $1}')
@@ -119,6 +117,7 @@ envVars=(
   COMPASS_CLIENT_SECRET
   COMPASS_INTEGRATION_ENABLED
   CENTRAL_APPLICATION_GATEWAY_ENABLED
+  KYMA_ALPHA
 )
 utils::save_env_file "${envVars[@]}"
 #shellcheck disable=SC2088
