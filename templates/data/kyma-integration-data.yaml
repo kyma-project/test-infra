@@ -394,7 +394,7 @@ templates:
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "pre-main-kyma-integration-k3s-central-app-gateway"
+                  name: "pre-main-kyma-integration-k3s-central-app-connectivity"
                   optional: true
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -414,7 +414,7 @@ templates:
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "pre-main-kyma-integration-k3s-central-app-gateway-compass"
+                  name: "pre-main-kyma-integration-k3s-central-app-connectivity-compass"
                   optional: true
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -593,7 +593,7 @@ templates:
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "post-main-kyma-integration-k3s-central-app-gateway"
+                  name: "post-main-kyma-integration-k3s-central-app-connectivity"
                   annotations:
                     testgrid-dashboards: kyma_integration
                     description: Kyma integration job on k3s with central Application Gateway.
@@ -614,7 +614,7 @@ templates:
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "post-main-kyma-integration-k3s-central-app-gateway-compass"
+                  name: "post-main-kyma-integration-k3s-central-app-connectivity-compass"
                   annotations:
                     testgrid-dashboards: kyma_integration
                     description: Kyma integration job on k3s with central Application Gateway and Compass dev.

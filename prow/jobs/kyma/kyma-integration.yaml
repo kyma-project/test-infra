@@ -157,7 +157,7 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-kyma-integration-k3s-central-app-gateway
+    - name: pre-main-kyma-integration-k3s-central-app-connectivity
       annotations:
         pipeline.clusterprovisioning: "k3s"
         pipeline.installer: "kyma deploy"
@@ -167,7 +167,7 @@ presubmits: # runs on PRs
         pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3s-central-app-gateway"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3s-central-app-connectivity"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
@@ -211,7 +211,7 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-kyma-integration-k3s-central-app-gateway-compass
+    - name: pre-main-kyma-integration-k3s-central-app-connectivity-compass
       annotations:
         pipeline.clusterprovisioning: "k3s"
         pipeline.installer: "kyma deploy"
@@ -221,7 +221,7 @@ presubmits: # runs on PRs
         pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3s-central-app-gateway-compass"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3s-central-app-connectivity-compass"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
@@ -656,7 +656,7 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-main-kyma-integration-k3s-central-app-gateway
+    - name: post-main-kyma-integration-k3s-central-app-connectivity
       annotations:
         description: "Kyma integration job on k3s with central Application Gateway."
         pipeline.clusterprovisioning: "k3s"
@@ -669,7 +669,7 @@ postsubmits: # runs on main
         testgrid-days-of-results: "60"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3s-central-app-gateway"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3s-central-app-connectivity"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-gc-project-env: "true"
@@ -711,7 +711,7 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-main-kyma-integration-k3s-central-app-gateway-compass
+    - name: post-main-kyma-integration-k3s-central-app-connectivity-compass
       annotations:
         description: "Kyma integration job on k3s with central Application Gateway and Compass dev."
         pipeline.clusterprovisioning: "k3s"
@@ -724,7 +724,7 @@ postsubmits: # runs on main
         testgrid-days-of-results: "60"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3s-central-app-gateway-compass"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3s-central-app-connectivity-compass"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-gc-project-env: "true"
