@@ -34,8 +34,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
-# shellcheck source=prow/scripts/cluster-integration/helpers/create-eventing-secret.sh
-source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-eventing-secret.sh"
+# shellcheck source=prow/scripts/cluster-integration/helpers/eventing.sh
+source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/eventing.sh"
 
 # All provides require these values, each of them may check for additional variables
 requiredVars=(
@@ -147,6 +147,28 @@ fi
 
 
 if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
+    # test the default Eventing backend which comes with Kyma
+    log::banner "Execute tests"
+    gardener::test_fast_integration_kyma
+
+    # test BEB as the Eventing backend
+    log::banner "Switch Eventing backend to BEB"
+    eventing::switch_backend "BEB"
+
+    log::banner "Wait for Eventing backend to be ready"
+    eventing::wait_for_backend_ready "BEB"
+
+    log::banner "Execute tests"
+    gardener::test_fast_integration_kyma
+
+    # test NATS as the Eventing backend
+    log::banner "Switch Eventing backend to NATS"
+    eventing::switch_backend "NATS"
+
+    log::banner "Wait for Eventing backend to be ready"
+    eventing::wait_for_backend_ready "NATS"
+
+    log::banner "Execute tests"
     gardener::test_fast_integration_kyma
 else
     # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
