@@ -3,6 +3,7 @@
 set -e
 
 readonly driver="none"
+readonly kubeversion="1.18.17"
 readonly testsuiteName="testsuite-all"
 KYMA_TEST_TIMEOUT=${KYMA_TEST_TIMEOUT:=1h}
 
@@ -45,6 +46,15 @@ host::os() {
   echo "${host_os}"
 }
 
+rm -f /usr/local/bin/minikube
+curl -Lo /tmp/minikube https://storage.googleapis.com/minikube/releases/v1.19.0/minikube-linux-amd64 && \
+chmod +x /tmp/minikube && \
+sudo mv /tmp/minikube /usr/local/bin/minikube
+
+apt-get update && apt-get -y install conntrack ethtool
+sudo iptables -F && sudo iptables -t nat -F && sudo iptables -t mangle -F && sudo iptables -X
+minikube version
+
 echo "--> Installing Kyma CLI"
 if ! [[ -x "$(command -v kyma)" ]]; then
   echo "Kyma CLI not found"
@@ -61,9 +71,11 @@ echo "--> Provision Kyma cluster on minikube using VM driver ${driver}"
 STARTTIME=$(date +%s)
 yes | kyma provision minikube \
                --ci \
-               --vm-driver="${driver}"
+               --vm-driver="${driver}" \
+               --kube-version="${kubeversion}"
 ENDTIME=$(date +%s)
 echo "  Execution time: $((ENDTIME - STARTTIME)) seconds."
+kubectl version
 echo "--> Done"
 
 echo "--> Installing Kyma on minikube cluster"
