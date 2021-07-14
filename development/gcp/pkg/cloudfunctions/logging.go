@@ -2,7 +2,9 @@ package cloudfunctions
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
+	"math/rand"
 )
 
 // Entry defines a log entry.
@@ -26,4 +28,47 @@ func (e LogEntry) String() string {
 		log.Printf("json.Marshal: %v", err)
 	}
 	return string(out)
+}
+
+func NewLogger() *LogEntry {
+	return &LogEntry{}
+}
+func (e *LogEntry) GenerateTraceValue(projectID, traceFunctionName string) *LogEntry {
+	randomInt := rand.Int()
+	e.Trace = fmt.Sprintf("projects/%s/traces/%s/%d", projectID, traceFunctionName, randomInt)
+	return e
+}
+
+func (e *LogEntry) WithLabel(key, value string) *LogEntry {
+	e.Labels[key] = value
+	return e
+}
+
+func (e *LogEntry) WithTrace(trace string) *LogEntry {
+	e.Trace = trace
+	return e
+}
+
+func (e *LogEntry) WithComponent(component string) *LogEntry {
+	e.Component = component
+	return e
+}
+
+func (e LogEntry) LogCritical(message string) {
+	e.Severity = "CRITICAL"
+	e.Message = message
+	log.Println(e)
+	panic(message)
+}
+
+func (e LogEntry) LogError(message string) {
+	e.Severity = "ERROR"
+	e.Message = message
+	log.Println(e)
+}
+
+func (e LogEntry) LogInfo(message string) {
+	e.Severity = "INFO"
+	e.Message = message
+	log.Println(e)
 }
