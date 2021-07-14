@@ -19,6 +19,6 @@ fi
 
 pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
 
-make ci-skr
+DEBUG=true make ci-skr
 
 log::success "all done"
