@@ -35,6 +35,8 @@ cleanup() {
   log::info "End of cleanup"
 }
 
+printenv
+
 function testCustomImage() {
   CUSTOM_IMAGE="$1"
   IMAGE_EXISTS=$(gcloud compute images list --filter "name:${CUSTOM_IMAGE}" | tail -n +2 | awk '{print $1}')
