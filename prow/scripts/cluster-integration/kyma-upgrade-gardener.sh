@@ -110,6 +110,7 @@ utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 log::info "### Run pre-upgrade tests"
 gardener::pre_upgrade_test_fast_integration_kyma
 
+export KYMA_ALPHA="true"
 log::info "### Installing Kyma 2.0 from main"
 KYMA_SOURCE="main"
 export KYMA_SOURCE

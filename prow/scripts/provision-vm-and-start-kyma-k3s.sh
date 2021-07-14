@@ -117,6 +117,7 @@ envVars=(
   COMPASS_CLIENT_SECRET
   COMPASS_INTEGRATION_ENABLED
   CENTRAL_APPLICATION_GATEWAY_ENABLED
+  KYMA_ALPHA
 )
 utils::save_env_file "${envVars[@]}"
 #shellcheck disable=SC2088
