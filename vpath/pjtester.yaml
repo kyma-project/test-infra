@@ -1,6 +1,7 @@
 pjNames:
   - pjName: "pre-main-kyma-integration-k3s"
   - pjName: "pre-main-kyma-gardener-azure-fast-integration"
+  - pjName: "kyma-upgrade-gardener-kyma-to-kyma2"
 prConfigs:
   kyma-project:
     kyma:
