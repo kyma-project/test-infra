@@ -42,8 +42,11 @@ func init() {
 	getProwjobErrorsTopic = os.Getenv("GET_PROWJOB_ERRORS_TOPIC")
 	getFailureInstanceTopic = os.Getenv("GET_FAILURE_INSTANCE_TOPIC")
 	// check if variables were set with values
-	if enrichInstanceWithDataTopic == "" {
+	if getGithubCommiterTopic == "" {
 		panic("environment variable GET_GITHUB_COMMITER_TOPIC is empty")
+	}
+	if getProwjobErrorsTopic == "" {
+		panic("environment variable GET_PROWJOB_ERRORS_TOPIC is empty")
 	}
 	if getFailureInstanceTopic == "" {
 		panic("environment variable GET_FAILURE_INSTANCE_TOPIC is empty")
