@@ -218,3 +218,4 @@ periodics: # runs on schedule
           - name: kyma-bot-github-token
             secret:
               secretName: kyma-bot-github-token
+  
