@@ -70,4 +70,6 @@ const (
 	SaProwJobResourceCleaner Preset = "preset-sa-prow-job-resource-cleaner"
 	// ClusterVersion contains Kubernetes versions for each provider
 	ClusterVersion Preset = "preset-cluster-version"
+	// Kyma2Installer means that Kyma 2 is installed on the cluster
+	Kyma2Installer Preset = "preset-kyma-2-installer"
 )

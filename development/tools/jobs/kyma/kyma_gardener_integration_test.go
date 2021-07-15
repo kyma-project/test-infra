@@ -70,7 +70,7 @@ func TestKymaGardenerAzureIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, "5 * * * *", job.Cron)
 	assert.Equal(t, job.DecorationConfig.Timeout.Get(), 2*time.Hour)
 	assert.Equal(t, job.DecorationConfig.GracePeriod.Get(), 10*time.Minute)
-	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAzureIntegration, preset.KymaCLIStable, preset.ClusterVersion)
+	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAzureIntegration, preset.KymaCLIStable, preset.ClusterVersion, preset.Kyma2Installer)
 	tester.AssertThatHasExtraRepoRefCustom(t, job.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, job.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"}, job.Spec.Containers[0].Command)
@@ -79,7 +79,6 @@ func TestKymaGardenerAzureIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "REGION", "northeurope")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "RS_GROUP", "kyma-gardener-azure")
-	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_ALPHA", "true")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_ALPHA_DELETE", "true")
 	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
 }
@@ -166,7 +165,7 @@ func TestKymaGardenerAzureIntegrationPresubmit(t *testing.T) {
 	assert.Equal(t, jobName, job.Name)
 
 	assert.True(t, job.Optional)
-	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAzureIntegration, preset.KymaCLIStable, preset.ClusterVersion)
+	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAzureIntegration, preset.KymaCLIStable, preset.ClusterVersion, preset.Kyma2Installer)
 	tester.AssertThatHasExtraRef(t, job.JobBase.UtilityConfig, []prowapi.Refs{{
 		Org:       "kyma-project",
 		Repo:      "test-infra",
@@ -181,6 +180,5 @@ func TestKymaGardenerAzureIntegrationPresubmit(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_ZONES", "1")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "RS_GROUP", "kyma-gardener-azure")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "REGION", "northeurope")
-	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_ALPHA", "true")
 	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
 }
