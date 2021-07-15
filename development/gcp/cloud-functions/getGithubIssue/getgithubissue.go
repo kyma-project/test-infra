@@ -240,7 +240,7 @@ func GetGithubIssue(ctx context.Context, m kymapubsub.MessagePayload) error {
 		if err != nil {
 			logger.LogCritical(fmt.Sprintf("failed publishing to pubsub, error: %s", err.Error()))
 		}
-		logger.LogInfo(fmt.Sprintf("published pubsub message to topic %s, id: %s", getGithubCommiterTopic, *publlishedMessageID))
+		logger.LogInfo(fmt.Sprintf("published pubsub message to topic %s, id: %s", enrichInstanceWithDataTopic, *publlishedMessageID))
 	}
 	return nil
 }
