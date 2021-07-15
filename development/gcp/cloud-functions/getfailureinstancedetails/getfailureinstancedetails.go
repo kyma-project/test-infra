@@ -120,6 +120,15 @@ func GetFailureInstanceDetails(ctx context.Context, m kymapubsub.MessagePayload)
 	// Set label with prowjob name for logging.
 	logger.WithLabel("prowjobName", *failingTestMessage.JobName)
 
+	// Get prowjob execution ID from gcs URL path.
+	jobID, err := kymapubsub.GetJobId(failingTestMessage.URL)
+	if err != nil {
+		logger.LogCritical(fmt.Sprintf("failed get job ID, error: %s", err.Error()))
+	}
+	// Set label with execution ID for logging.
+	logger.WithLabel("jobID", *jobID)
+	logger.LogInfo(fmt.Sprintf("found prowjob execution ID: %s", *jobID))
+
 	// Detect failed prowjobs
 	if *failingTestMessage.Status == "failure" || *failingTestMessage.Status == "error" {
 		// For periodic prowjob get documents for open failing test instances for matching periodic.
@@ -131,16 +140,6 @@ func GetFailureInstanceDetails(ctx context.Context, m kymapubsub.MessagePayload)
 		} else {
 			return nil
 		}
-
-		// Get prowjob execution ID from gcs URL path.
-		jobID, err := kymapubsub.GetJobId(failingTestMessage.URL)
-		if err != nil {
-			logger.LogCritical(fmt.Sprintf("failed get job ID, error: %s", err.Error()))
-		}
-		// Set label with execution ID for logging.
-		logger.WithLabel("jobID", *jobID)
-		logger.LogInfo(fmt.Sprintf("found prowjob execution ID: %s", *jobID))
-
 		// Get all matched documents retrieved from firestore db.
 		failureInstances, err := iter.GetAll()
 		if err != nil {
