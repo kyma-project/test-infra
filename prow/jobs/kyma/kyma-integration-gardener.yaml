@@ -94,7 +94,6 @@ presubmits: # runs on PRs
         preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
-        preset-kyma-1-installer: "true"
         preset-kyma-cli-stable: "true"
         preset-sa-gardener-logs: "true"
         preset-sa-test-gcr-push: "true"
@@ -128,6 +127,8 @@ presubmits: # runs on PRs
               - name: GARDENER_REGION
                 value: "northeurope"
               - name: GARDENER_ZONES
+                value: "1"
+              - name: KYMA_MAJOR_VERSION
                 value: "1"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"

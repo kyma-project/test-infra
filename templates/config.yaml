@@ -12,6 +12,13 @@ pubsub_config: &pubsub_config
   pubsub_topic: "prowjobs"
   
 globalSets:
+  # Kyma major version sets
+  kyma_major_version_1:
+    env:
+      KYMA_MAJOR_VERSION: 1
+  kyma_major_version_2:
+    env:
+      KYMA_MAJOR_VERSION: 2
   # Image sets
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210402-70b4b74f"

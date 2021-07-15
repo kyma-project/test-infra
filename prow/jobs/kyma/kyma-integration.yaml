@@ -65,7 +65,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
-        preset-kyma-2-installer: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^((tests/fast-integration\S+|resources\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
@@ -93,6 +92,9 @@ presubmits: # runs on PRs
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3s.sh"
+            env:
+              - name: KYMA_MAJOR_VERSION
+                value: "2"
             resources:
               requests:
                 memory: 100Mi

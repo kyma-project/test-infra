@@ -146,8 +146,6 @@ templates:
                     - gardener_azure_job
               - jobConfig:
                   name: pre-main-kyma-gardener-azure-fast-integration
-                  labels:
-                    preset-kyma-1-installer: "true"
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -157,6 +155,7 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
+                    - kyma_major_version_1
                   local:
                     - jobConfig_default
                     - jobConfig_presubmit
