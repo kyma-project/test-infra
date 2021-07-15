@@ -376,7 +376,7 @@ presubmits: # runs on PRs
       decorate: true
       decoration_config:
         grace_period: 600000000000
-        run_if_changed: ^(((resources/eventing)\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))
+        run_if_changed: ^((tests/fast-integration\S+|resources/eventing\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))
         timeout: 14400000000000
       path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
@@ -399,6 +399,8 @@ presubmits: # runs on PRs
             env:
               - name: CREDENTIALS_DIR
                 value: "/etc/credentials/kyma-tunas-prow-event-mesh"
+              - name: EXECUTION_PROFILE
+                value: "evaluation"
               - name: GARDENER_REGION
                 value: "europe-west4"
               - name: GARDENER_ZONES
