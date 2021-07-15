@@ -1065,13 +1065,3 @@ presets:
     env:
     - name: LETSENCRYPT_LIMITS_PROTECTION
       value: "true"
-  - labels:
-      preset-kyma-1-installer: "true"
-    env:
-    - name: KYMA_ALPHA
-      value: "false"
-  - labels:
-      preset-kyma-2-installer: "true"
-    env:
-    - name: KYMA_ALPHA
-      value: "true"

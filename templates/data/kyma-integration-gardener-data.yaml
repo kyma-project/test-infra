@@ -108,6 +108,8 @@ templates:
               preset-sa-gardener-logs: "true"               # required for writing logs to Stackdriver
               preset-cluster-version: "true"
           installer_alpha:
+            env:
+              KYMA_ALPHA: "true"
             annotations:
               pipeline.installer: kyma deploy
           evaluation_profile:
@@ -164,8 +166,6 @@ templates:
                     - evaluation_profile
               - jobConfig:
                   name: pre-main-kyma-gardener-azure-alpha-eval
-                  labels:
-                    preset-kyma-2-installer: "true"
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -177,6 +177,7 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
+                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -186,8 +187,6 @@ templates:
                     - installer_alpha
               - jobConfig:
                   name: pre-main-kyma-gardener-azure-alpha-prod
-                  labels:
-                    preset-kyma-2-installer: "true"
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -199,6 +198,7 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
+                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -234,7 +234,6 @@ templates:
                     grace_period: 600000000000 # 10min
                   labels:
                     preset-build-main: "true"
-                    preset-kyma-2-installer: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -242,6 +241,7 @@ templates:
                     - extra_refs_test-infra
                     - image_kyma-integration
                     - disable_testgrid
+                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - command_integration
@@ -255,7 +255,6 @@ templates:
                     grace_period: 600000000000 # 10min
                   labels:
                     preset-build-main: "true"
-                    preset-kyma-2-installer: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -263,6 +262,7 @@ templates:
                     - extra_refs_test-infra
                     - image_kyma-integration
                     - disable_testgrid
+                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - command_integration
@@ -391,7 +391,6 @@ templates:
                   cron: "5 * * * *"
                   labels:
                     preset-log-collector-slack-token: "true"
-                    preset-kyma-1-installer: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -399,6 +398,7 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - image_kyma-integration
+                    - kyma_major_version_1
                   local:
                     - jobConfig_default
                     - gardener_azure_job
@@ -416,7 +416,6 @@ templates:
                   cron: "5 * * * *"
                   labels:
                     preset-log-collector-slack-token: "true"
-                    preset-kyma-1-installer: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -424,6 +423,7 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - image_kyma-integration
+                    - kyma_major_version_1
                   local:
                     - jobConfig_default
                     - gardener_azure_job
@@ -441,7 +441,6 @@ templates:
                   cron: "5 * * * *"
                   labels:
                     preset-log-collector-slack-token: "true"
-                    preset-kyma-2-installer: "true"
                   env:
                     KYMA_ALPHA_DELETE: "true"
                 inheritedConfigs:
@@ -451,6 +450,7 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - image_kyma-integration
+                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - gardener_azure_job
@@ -469,7 +469,6 @@ templates:
                   cron: "5 * * * *"
                   labels:
                     preset-log-collector-slack-token: "true"
-                    preset-kyma-2-installer: "true"
                   env:
                     KYMA_ALPHA_DELETE: "true"
                 inheritedConfigs:
@@ -479,6 +478,7 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - image_kyma-integration
+                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - gardener_azure_job
@@ -494,7 +494,6 @@ templates:
                   cron: "0 5,8,11,14 * * *"
                   labels:
                     preset-log-collector-slack-token: "true"
-                    preset-kyma-1-installer: "true"
                   env:
                     HIBERNATION_ENABLED: "true"
                 inheritedConfigs:
@@ -505,6 +504,7 @@ templates:
                     - extra_refs_kyma
                     - image_kyma-integration
                     - disable_testgrid
+                    - kyma_major_version_1
                   local:
                     - jobConfig_default
                     - gardener_azure_job
@@ -665,7 +665,6 @@ templates:
                   cron: "0 0 6-18/2 ? * 2-6"
                   labels:
                     preset-bot-github-token: "true"
-                    preset-kyma-1-installer: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -673,6 +672,7 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - image_kyma-integration
+                    - kyma_major_version_1
                   local:
                     - jobConfig_default
                     - gardener_azure_job

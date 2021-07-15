@@ -168,7 +168,6 @@ presubmits: # runs on PRs
         preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
-        preset-kyma-2-installer: "true"
         preset-kyma-cli-stable: "true"
         preset-sa-gardener-logs: "true"
         preset-sa-test-gcr-push: "true"
@@ -204,6 +203,10 @@ presubmits: # runs on PRs
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
+              - name: KYMA_ALPHA
+                value: "true"
+              - name: KYMA_MAJOR_VERSION
+                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -242,7 +245,6 @@ presubmits: # runs on PRs
         preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
-        preset-kyma-2-installer: "true"
         preset-kyma-cli-stable: "true"
         preset-sa-gardener-logs: "true"
         preset-sa-test-gcr-push: "true"
@@ -278,6 +280,10 @@ presubmits: # runs on PRs
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
+              - name: KYMA_ALPHA
+                value: "true"
+              - name: KYMA_MAJOR_VERSION
+                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -449,7 +455,6 @@ postsubmits: # runs on main
         preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
-        preset-kyma-2-installer: "true"
         preset-kyma-cli-stable: "true"
         preset-sa-gardener-logs: "true"
         preset-sa-test-gcr-push: "true"
@@ -483,6 +488,10 @@ postsubmits: # runs on main
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
+              - name: KYMA_ALPHA
+                value: "true"
+              - name: KYMA_MAJOR_VERSION
+                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -522,7 +531,6 @@ postsubmits: # runs on main
         preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
-        preset-kyma-2-installer: "true"
         preset-kyma-cli-stable: "true"
         preset-sa-gardener-logs: "true"
         preset-sa-test-gcr-push: "true"
@@ -556,6 +564,10 @@ postsubmits: # runs on main
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
+              - name: KYMA_ALPHA
+                value: "true"
+              - name: KYMA_MAJOR_VERSION
+                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -847,7 +859,6 @@ periodics: # runs on schedule
         preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
-        preset-kyma-1-installer: "true"
         preset-kyma-cli-stable: "true"
         preset-log-collector-slack-token: "true"
         preset-sa-gardener-logs: "true"
@@ -886,6 +897,8 @@ periodics: # runs on schedule
               - name: GARDENER_REGION
                 value: "northeurope"
               - name: GARDENER_ZONES
+                value: "1"
+              - name: KYMA_MAJOR_VERSION
                 value: "1"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
@@ -926,7 +939,6 @@ periodics: # runs on schedule
         preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
-        preset-kyma-1-installer: "true"
         preset-kyma-cli-stable: "true"
         preset-log-collector-slack-token: "true"
         preset-sa-gardener-logs: "true"
@@ -965,6 +977,8 @@ periodics: # runs on schedule
               - name: GARDENER_REGION
                 value: "northeurope"
               - name: GARDENER_ZONES
+                value: "1"
+              - name: KYMA_MAJOR_VERSION
                 value: "1"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
@@ -1005,7 +1019,6 @@ periodics: # runs on schedule
         preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
-        preset-kyma-2-installer: "true"
         preset-kyma-cli-stable: "true"
         preset-log-collector-slack-token: "true"
         preset-sa-gardener-logs: "true"
@@ -1045,8 +1058,12 @@ periodics: # runs on schedule
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
+              - name: KYMA_ALPHA
+                value: "true"
               - name: KYMA_ALPHA_DELETE
                 value: "true"
+              - name: KYMA_MAJOR_VERSION
+                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -1086,7 +1103,6 @@ periodics: # runs on schedule
         preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
-        preset-kyma-2-installer: "true"
         preset-kyma-cli-stable: "true"
         preset-log-collector-slack-token: "true"
         preset-sa-gardener-logs: "true"
@@ -1126,8 +1142,12 @@ periodics: # runs on schedule
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
+              - name: KYMA_ALPHA
+                value: "true"
               - name: KYMA_ALPHA_DELETE
                 value: "true"
+              - name: KYMA_MAJOR_VERSION
+                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -1166,7 +1186,6 @@ periodics: # runs on schedule
         preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
-        preset-kyma-1-installer: "true"
         preset-kyma-cli-stable: "true"
         preset-log-collector-slack-token: "true"
         preset-sa-gardener-logs: "true"
@@ -1208,6 +1227,8 @@ periodics: # runs on schedule
                 value: "1"
               - name: HIBERNATION_ENABLED
                 value: "true"
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -1573,7 +1594,6 @@ periodics: # runs on schedule
         preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
-        preset-kyma-1-installer: "true"
         preset-kyma-cli-stable: "true"
         preset-sa-gardener-logs: "true"
         preset-sa-test-gcr-push: "true"
@@ -1605,6 +1625,8 @@ periodics: # runs on schedule
               - name: GARDENER_REGION
                 value: "northeurope"
               - name: GARDENER_ZONES
+                value: "1"
+              - name: KYMA_MAJOR_VERSION
                 value: "1"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
