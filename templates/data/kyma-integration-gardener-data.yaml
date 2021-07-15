@@ -108,8 +108,6 @@ templates:
               preset-sa-gardener-logs: "true"               # required for writing logs to Stackdriver
               preset-cluster-version: "true"
           installer_alpha:
-            env:
-              KYMA_ALPHA: "true"
             annotations:
               pipeline.installer: kyma deploy
           evaluation_profile:
@@ -167,6 +165,8 @@ templates:
                     - evaluation_profile
               - jobConfig:
                   name: pre-main-kyma-gardener-azure-alpha-eval
+                  labels:
+                    preset-kyma-2-installer: "true"
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -187,6 +187,8 @@ templates:
                     - installer_alpha
               - jobConfig:
                   name: pre-main-kyma-gardener-azure-alpha-prod
+                  labels:
+                    preset-kyma-2-installer: "true"
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -233,6 +235,7 @@ templates:
                     grace_period: 600000000000 # 10min
                   labels:
                     preset-build-main: "true"
+                    preset-kyma-2-installer: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -253,6 +256,7 @@ templates:
                     grace_period: 600000000000 # 10min
                   labels:
                     preset-build-main: "true"
+                    preset-kyma-2-installer: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -388,6 +392,7 @@ templates:
                   cron: "5 * * * *"
                   labels:
                     preset-log-collector-slack-token: "true"
+                    preset-kyma-1-installer: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -412,6 +417,7 @@ templates:
                   cron: "5 * * * *"
                   labels:
                     preset-log-collector-slack-token: "true"
+                    preset-kyma-1-installer: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -436,6 +442,7 @@ templates:
                   cron: "5 * * * *"
                   labels:
                     preset-log-collector-slack-token: "true"
+                    preset-kyma-2-installer: "true"
                   env:
                     KYMA_ALPHA_DELETE: "true"
                 inheritedConfigs:
@@ -463,6 +470,7 @@ templates:
                   cron: "5 * * * *"
                   labels:
                     preset-log-collector-slack-token: "true"
+                    preset-kyma-2-installer: "true"
                   env:
                     KYMA_ALPHA_DELETE: "true"
                 inheritedConfigs:
@@ -487,6 +495,7 @@ templates:
                   cron: "0 5,8,11,14 * * *"
                   labels:
                     preset-log-collector-slack-token: "true"
+                    preset-kyma-1-installer: "true"
                   env:
                     HIBERNATION_ENABLED: "true"
                 inheritedConfigs:

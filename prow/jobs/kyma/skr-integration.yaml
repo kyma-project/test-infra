@@ -16,6 +16,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-keb-dev-credentials: "true"
+        preset-kyma-1-installer: "true"
         preset-kyma-integration-compass-dev: "true"
       cron: "5 1 * * *"
       skip_report: false
@@ -67,6 +68,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-keb-dev-credentials: "true"
+        preset-kyma-1-installer: "true"
         preset-kyma-integration-compass-dev: "true"
       cron: "5 1 * * *"
       skip_report: false
@@ -117,6 +119,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-keb-dev-credentials: "true"
+        preset-kyma-1-installer: "true"
         preset-kyma-integration-compass-dev: "true"
         preset-skr-al-service-key: "true"
       cron: "5 1 * * *"
@@ -169,6 +172,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-keb-dev-credentials: "true"
+        preset-kyma-1-installer: "true"
         preset-kyma-integration-compass-dev: "true"
       cron: "5 * * * *"
       skip_report: false
@@ -220,6 +224,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-keb-dev-credentials: "true"
+        preset-kyma-1-installer: "true"
         preset-kyma-integration-compass-dev: "true"
       cron: "5 1 * * *"
       skip_report: false
