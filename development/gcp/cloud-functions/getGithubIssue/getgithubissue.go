@@ -15,17 +15,18 @@ import (
 )
 
 var (
-	firestoreClient             *firestore.Client
-	pubSubClient                *pubsub.Client
-	githubClient                *github.Client
-	ts                          oauth2.TokenSource
-	projectID                   string
-	githubAccessToken           string
-	githubOrg                   string
-	githubRepo                  string
-	firestoreCollection         string
-	enrichInstanceWithDataTopic string
-	getFailureInstanceTopic     string
+	firestoreClient         *firestore.Client
+	pubSubClient            *pubsub.Client
+	githubClient            *github.Client
+	ts                      oauth2.TokenSource
+	projectID               string
+	githubAccessToken       string
+	githubOrg               string
+	githubRepo              string
+	firestoreCollection     string
+	getGithubCommiterTopic  string
+	getProwjobErrorsTopic   string
+	getFailureInstanceTopic string
 )
 
 func init() {
@@ -37,7 +38,8 @@ func init() {
 	githubOrg = os.Getenv("GITHUB_ORG")
 	githubRepo = os.Getenv("GITHUB_REPO")
 	firestoreCollection = os.Getenv("FIRESTORE_COLLECTION")
-	enrichInstanceWithDataTopic = os.Getenv("ENRICH_INSTANCE_WITH_DATA_TOPIC")
+	getGithubCommiterTopic = os.Getenv("GET_GITHUB_COMMITER_TOPIC")
+	getProwjobErrorsTopic = os.Getenv("GET_PROWJOB_ERRORS_TOPIC")
 	getFailureInstanceTopic = os.Getenv("GET_FAILURE_INSTANCE_TOPIC")
 	// check if variables were set with values
 	if enrichInstanceWithDataTopic == "" {
@@ -236,11 +238,16 @@ func GetGithubIssue(ctx context.Context, m kymapubsub.MessagePayload) error {
 			// TODO: need error reporting for such case, without failing whole function
 		}
 		// Publish message to topic further enriching failing test instance.
-		publlishedMessageID, err := kymapubsub.PublishPubSubMessage(ctx, pubSubClient, failingTestMessage, enrichInstanceWithDataTopic)
+		commiterPubllishedMessageID, err := kymapubsub.PublishPubSubMessage(ctx, pubSubClient, failingTestMessage, getGithubCommiterTopic)
 		if err != nil {
 			logger.LogCritical(fmt.Sprintf("failed publishing to pubsub, error: %s", err.Error()))
 		}
-		logger.LogInfo(fmt.Sprintf("published pubsub message to topic %s, id: %s", enrichInstanceWithDataTopic, *publlishedMessageID))
+		logger.LogInfo(fmt.Sprintf("published pubsub message to topic %s, id: %s", getGithubCommiterTopic, *commiterPubllishedMessageID))
+		errorsPubllishedMessageID, err := kymapubsub.PublishPubSubMessage(ctx, pubSubClient, failingTestMessage, getProwjobErrorsTopic)
+		if err != nil {
+			logger.LogCritical(fmt.Sprintf("failed publishing to pubsub, error: %s", err.Error()))
+		}
+		logger.LogInfo(fmt.Sprintf("published pubsub message to topic %s, id: %s", getProwjobErrorsTopic, *errorsPubllishedMessageID))
 	}
 	return nil
 }
