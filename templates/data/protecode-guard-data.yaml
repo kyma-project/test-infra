@@ -77,6 +77,7 @@ templates:
               - jobConfig:
                   name: pre-main-reconciler-protecode-guard
                   always_run: true
+                  optional: true
                   env:
                     JOB_NAME_PATTERN: "pre-main-kyma-incubator-reconciler.*"
                     JOBGUARD_TIMEOUT: "25m"
