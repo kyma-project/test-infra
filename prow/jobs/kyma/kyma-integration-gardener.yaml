@@ -128,6 +128,8 @@ presubmits: # runs on PRs
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -203,6 +205,8 @@ presubmits: # runs on PRs
                 value: "1"
               - name: KYMA_ALPHA
                 value: "true"
+              - name: KYMA_MAJOR_VERSION
+                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -278,6 +282,8 @@ presubmits: # runs on PRs
                 value: "1"
               - name: KYMA_ALPHA
                 value: "true"
+              - name: KYMA_MAJOR_VERSION
+                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -486,6 +492,8 @@ postsubmits: # runs on main
                 value: "1"
               - name: KYMA_ALPHA
                 value: "true"
+              - name: KYMA_MAJOR_VERSION
+                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -560,6 +568,8 @@ postsubmits: # runs on main
                 value: "1"
               - name: KYMA_ALPHA
                 value: "true"
+              - name: KYMA_MAJOR_VERSION
+                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -890,6 +900,8 @@ periodics: # runs on schedule
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -967,6 +979,8 @@ periodics: # runs on schedule
               - name: GARDENER_REGION
                 value: "northeurope"
               - name: GARDENER_ZONES
+                value: "1"
+              - name: KYMA_MAJOR_VERSION
                 value: "1"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
@@ -1050,6 +1064,8 @@ periodics: # runs on schedule
                 value: "true"
               - name: KYMA_ALPHA_DELETE
                 value: "true"
+              - name: KYMA_MAJOR_VERSION
+                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -1132,6 +1148,8 @@ periodics: # runs on schedule
                 value: "true"
               - name: KYMA_ALPHA_DELETE
                 value: "true"
+              - name: KYMA_MAJOR_VERSION
+                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -1211,6 +1229,8 @@ periodics: # runs on schedule
                 value: "1"
               - name: HIBERNATION_ENABLED
                 value: "true"
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -1607,6 +1627,8 @@ periodics: # runs on schedule
               - name: GARDENER_REGION
                 value: "northeurope"
               - name: GARDENER_ZONES
+                value: "1"
+              - name: KYMA_MAJOR_VERSION
                 value: "1"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
