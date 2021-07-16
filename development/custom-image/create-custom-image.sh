@@ -93,7 +93,7 @@ gcloud compute instances stop --zone="${ZONE}" "$VM_NAME"
 if [ "$JOB_TYPE" == "presubmit" ]; then
   IMAGE="$VM_NAME"
 else
-  IMAGE="kyma-deps-image-${DATE}"
+  IMAGE="kyma-deps-image-${DATE}-${PULL_BASE_SHA::6}"
 fi
 
 log::info "Creating the new image $IMAGE..."

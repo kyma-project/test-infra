@@ -73,6 +73,7 @@ function removeCluster() {
 			-n "$COMMON_NAME" \
 			-p "$CLOUDSDK_CORE_PROJECT" \
 			-R "$CLOUDSDK_COMPUTE_REGION" \
+			-d "$ASYNC_DEPROVISION" \
 			-r "true" \
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi

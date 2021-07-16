@@ -80,6 +80,7 @@ templates:
                     - "extra_refs_test-infra"
                     - "extra_refs_kyma"
                     - "disable_testgrid"
+                    - "kyma_major_version_1"
                   local:
                     - "jobConfig_default"
                     - "keb_plan_azure"
@@ -94,6 +95,7 @@ templates:
                     - "extra_refs_test-infra"
                     - "extra_refs_kyma"
                     - "disable_testgrid"
+                    - "kyma_major_version_1"
                   local:
                     - "jobConfig_default"
                     - "keb_plan_azure_lite"
@@ -110,6 +112,7 @@ templates:
                     - "extra_refs_test-infra"
                     - "extra_refs_kyma"
                     - "disable_testgrid"
+                    - "kyma_major_version_1"
                   local:
                     - "jobConfig_default"
                     - "keb_plan_aws"
@@ -124,6 +127,7 @@ templates:
                     - "extra_refs_test-infra"
                     - "extra_refs_kyma"
                     - "disable_testgrid"
+                    - "kyma_major_version_1"
                   local:
                     - "jobConfig_default"
                     - "keb_plan_trial"
@@ -138,6 +142,7 @@ templates:
                     - "extra_refs_test-infra"
                     - "extra_refs_kyma"
                     - "disable_testgrid"
+                    - "kyma_major_version_1"
                   local:
                     - "jobConfig_default"
                     - "keb_plan_free_aws"

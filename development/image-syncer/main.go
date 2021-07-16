@@ -112,19 +112,6 @@ func safeCopyImage(ctx context.Context, cli *client.Client, authString, sourceIm
 	targetID, targetDigest, err := getImageIDAndRepoDigest(ctx, cli, target)
 	if isImageNotFoundError(err) {
 		log.Info("Target image does not exist")
-
-		if strings.Contains(sourceImage, "@sha256:") {
-			// check if the tag is consistent with the digest
-			imageName := strings.Split(sourceImage, "@sha256:")[0]
-			sourceWithTag := imageName + ":" + targetTag
-			sourceWithTagID, _, err := getImageIDAndRepoDigest(ctx, cli, sourceWithTag)
-			if err != nil {
-				log.Info("couldn't get info about the tagged image")
-			} else if sourceID != sourceWithTagID {
-				log.Info("source IDs are different - digest and tag mismatch in config file")
-			}
-		}
-
 		if dryRun {
 			log.Info("Dry-run mode - tagging and pushing skipped")
 			return nil

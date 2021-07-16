@@ -72,3 +72,20 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "jobConfig_labels"
+          - repoName: "github.com/kyma-incubator/reconciler"
+            jobs:
+              - jobConfig:
+                  name: pre-main-reconciler-protecode-guard
+                  always_run: true
+                  env:
+                    JOB_NAME_PATTERN: "pre-main-kyma-incubator-reconciler.*"
+                    JOBGUARD_TIMEOUT: "25m"
+                inheritedConfigs:
+                  global:
+                  - "jobConfig_default"
+                  - "image_kyma-integration"
+                  - "extra_refs_test-infra"
+                  - "jobConfig_presubmit"
+                  local:
+                  - "jobConfig_default"
+                  - "jobConfig_labels"
