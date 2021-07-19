@@ -1,0 +1,9 @@
+pjNames:
+  - pjName: "pre-main-kyma-integration-k3s"
+    report: true
+  - pjName: "pre-main-kyma-integration-k3s-compass-dev"
+# prConfigs:
+#   kyma-project:
+#     kyma:
+#       prNumber: 1212
+# configPath: "test-infra/prow/custom_config.yaml"
