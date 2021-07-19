@@ -6,12 +6,13 @@ Kubernetes secrets are synchronized with GCP Secret Manager using [Kubernetes Ex
 
 # Installation
 
-Follow these steps to install `kubernetes-external-secrets` on an untrusted cluster in the `external-secrets` namespace:
+Follow these steps to install `kubernetes-external-secrets` on an untrusted cluster in the `external-secrets` Namespace:
 
-1. Create the `external-secrets` namespace. Run `kubectl create namespace external-secrets`.
-2. Add the `sa-secret-manager-untrusted` secret containing credentials for GCP service account with permission to access secrets.
-3. Add `external-secrets` Helm repo. Run `helm repo add external-secrets https://external-secrets.github.io/kubernetes-external-secrets/`.
-4. Install `external-secrets/kubernetes-external-secrets` Helm chart. Run `helm install -f prow/cluster/resources/external-secrets/values_untrusted.yaml -n external-secrets kubernetes-external-secrets external-secrets/kubernetes-external-secrets`.
+1. Create the `external-secrets` Namespace. Run `kubectl create namespace external-secrets`.
+2. Add the `sa-secret-manager-untrusted` secret containing credentials for a GCP service account with permission to access secrets.
+3. Add the `external-secrets` Helm repository. Use the following command: `helm repo add external-secrets https://external-secrets.github.io/kubernetes-external-secrets/`.
+4. Install the `external-secrets/kubernetes-external-secrets` Helm chart. Run `helm install -f prow/cluster/resources/external-secrets/values_untrusted.yaml -n external-secrets kubernetes-external-secrets external-secrets/kubernetes-external-secrets`.
+
 # Configuration
 
 Secrets can be stored as text in GCP Secret Manager and be mapped to a Kubernetes secret with one key. 
