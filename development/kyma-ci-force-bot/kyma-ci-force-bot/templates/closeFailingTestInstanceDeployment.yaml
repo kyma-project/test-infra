@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name}}-{{ .Values.closeFailingInstance.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.appName | quote }}
+    release: {{ .Release.Name | quote }}
+    service: {{ .Values.closeFailingInstance.name | quote }}
+spec:
+  replicas: {{ .Values.closeFailingInstance.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName | quote }}
+        release: {{ .Release.Name | quote }}
+    spec:
+      containers:
+      - name: {{ .Values.closeFailingInstance.closefailingtestinstanceContainer.name }}
+        imagePullPolicy: Always
+        image: {{ .Values.closeFailingInstance.closefailingtestinstanceContainer.image }}
+        resources:
+          limits:
+            memory: {{ .Values.closeFailingInstance.closefailingtestinstanceContainer.limitsMem }}
+            cpu: {{ .Values.closeFailingInstance.closefailingtestinstanceContainer.limitsCpu }}
+        ports:
+        - containerPort: {{ .Values.webhookGateway.containerPort }}
+        env:
+        - name: EVENTING_SERVICE
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-{{ .Values.closeFailingInstance.name }}-config
+              key: kymaEventingProxy
+        - name: LISTEN_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-{{ .Values.closeFailingInstance.name }}-config
+              key: listenPort
+        - name: APP_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-{{ .Values.closeFailingInstance.name }}-config
+              key: appName

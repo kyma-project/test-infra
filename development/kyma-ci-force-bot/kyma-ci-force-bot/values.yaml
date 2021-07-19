@@ -1,0 +1,19 @@
+# Github connector application name. Must match name from Application resource.
+appName: "ci-force-bot"
+kymaEventingProxy: "http://eventing-event-publisher-proxy.kyma-system/publish"
+# Event type published to Kyma
+eventType: "issuesevent"
+# Event type published to Kyma
+eventAction: "labeled"
+# Event type published to Kyma
+eventVersion: "v1"
+closeFailingInstance:
+  name: closeFailingInstance
+  replicas: 1
+  closefailingtestinstanceContainer:
+    name: closefailingtestinstance
+    # change to match value from makefile
+    image: eu.gcr.io/sap-kyma-neighbors-dev/closefailingtestinstance:0.1.0
+    limitsMem: 256Mi
+    limitsCpu: 500m
+    containerPort: 8080
