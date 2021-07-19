@@ -4,24 +4,33 @@ import (
 	"bytes"
 	"encoding/gob"
 	"errors"
+	"fmt"
 	"log"
 
 	"github.com/Masterminds/semver"
 	"github.com/forestgiant/sliceutil"
 	"github.com/imdario/mergo"
+	"github.com/jinzhu/copier"
 )
 
 // Config represents configuration of all templates to render along with global values
 type Config struct {
-	Templates  []TemplateConfig
+	Templates  []*TemplateConfig
 	Global     map[string]interface{}
 	GlobalSets map[string]ConfigSet `yaml:"globalSets,omitempty"`
 }
 
 // TemplateConfig specifies template to use and files to render
 type TemplateConfig struct {
+	FromTo []FromTo `yaml:"fromTo,omitempty"`
 	From   string
-	Render []RenderConfig
+	Render []*RenderConfig
+}
+
+// FromTo defines what template should be used and where to store the render output
+type FromTo struct {
+	From string
+	To   string
 }
 
 // RenderConfig specifies where to render template and values to use
@@ -66,17 +75,128 @@ func Map(m map[string]interface{}) (map[string]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	var copy map[string]interface{}
-	err = dec.Decode(&copy)
+	var deepcopy map[string]interface{}
+	err = dec.Decode(&deepcopy)
 	if err != nil {
 		return nil, err
 	}
-	return copy, nil
+	return deepcopy, nil
 }
 
-// MergeConfigs merges values from GlobalSets, LocalSets and local values for each job
-func (r *RenderConfig) MergeConfigs(config *Config) {
-	globalConfigSets := config.GlobalSets
+// Merge merges all jobconfigs using local / globalsets defined in the configuration
+func (cfg *Config) Merge() {
+	cfg.Templates = generateFromTo(cfg.Templates)
+
+	for _, templateConfig := range cfg.Templates {
+		templateConfig.mergeConfigs(cfg)
+	}
+
+	cfg.Templates = mergeRenderDestinations(cfg.Templates)
+}
+
+// generateFromTo for datafiles without FromTo a new FromTo will be created from From and To fields
+func generateFromTo(templates []*TemplateConfig) []*TemplateConfig {
+	var tmpls []*TemplateConfig
+	for _, templateConfig := range templates {
+		if len(templateConfig.FromTo) == 0 {
+			if templateConfig.From != "" {
+				for _, renderConfig := range templateConfig.Render {
+					fromTo := FromTo{
+						From: templateConfig.From,
+						To:   renderConfig.To,
+					}
+					var rc RenderConfig
+					err := copier.CopyWithOption(&rc, &renderConfig, copier.Option{DeepCopy: true})
+					if err != nil {
+						log.Fatalf("Cannot deepcopy object: %s", err)
+					}
+					tmpls = append(tmpls, &TemplateConfig{
+						FromTo: []FromTo{fromTo},
+						Render: []*RenderConfig{&rc},
+					})
+				}
+			}
+		} else {
+			tmpls = append(tmpls, templateConfig)
+		}
+	}
+	return tmpls
+}
+
+// mergeRenderDestinations merges and deduplicates renderconfigurations for destinations so that a file can be used as a target in multiple data files
+func mergeRenderDestinations(templates []*TemplateConfig) []*TemplateConfig {
+	tmpl := make(map[FromTo]*TemplateConfig)
+	for _, templateConfig := range templates {
+		for _, fromTo := range templateConfig.FromTo {
+			if template, ok := tmpl[fromTo]; ok {
+				reposDst, ok := template.Render[0].Values["JobConfigs"].([]Repo)
+				if !ok {
+					log.Fatalf("dst JobConfigs not of Type []Repo")
+				}
+				reposSrc, ok := templateConfig.Render[0].Values["JobConfigs"].([]Repo)
+				if !ok {
+					log.Fatalf("src JobConfigs not of Type []Repo")
+				}
+				reposDst = mergeRepos(reposDst, reposSrc)
+				// mergo.Merge(&reposDst,&reposSrc)
+				// reposDst = append(reposDst, reposSrc...)
+
+				template.Render[0].Values["JobConfigs"] = reposDst
+			} else {
+				var tplCfg TemplateConfig
+				if err := copier.CopyWithOption(&tplCfg, templateConfig, copier.Option{DeepCopy: true}); err != nil {
+					log.Fatalf("cannot deepcopy object: %s", err)
+				}
+				tmpl[fromTo] = &tplCfg
+				tmpl[fromTo].FromTo = []FromTo{fromTo}
+			}
+		}
+	}
+	v := make([]*TemplateConfig, 0)
+	for _, value := range tmpl {
+		v = append(v, value)
+	}
+	return v
+}
+
+func mergeRepos(dst []Repo, src []Repo) []Repo {
+	repos := make(map[string]Repo)
+
+	for _, item := range dst {
+		repos[item.RepoName] = item
+	}
+
+	for _, item := range src {
+		if _, ok := repos[item.RepoName]; !ok {
+			repos[item.RepoName] = item
+		} else {
+			repo := repos[item.RepoName]
+			repo.Jobs = append(repo.Jobs, item.Jobs...)
+			repos[item.RepoName] = repo
+		}
+	}
+
+	v := make([]Repo, 0)
+	for _, value := range repos {
+		v = append(v, value)
+	}
+	return v
+}
+
+func (ft FromTo) String() string {
+	return fmt.Sprintf("%s -> %s", ft.From, ft.To)
+}
+
+func (tplCfg *TemplateConfig) mergeConfigs(config *Config) {
+	for _, render := range tplCfg.Render {
+		render.mergeConfigs(config.GlobalSets)
+		// check if there are any component jobs in merged config and generate config for such jobs for each supported release
+		render.GenerateComponentJobs(config.Global)
+	}
+}
+
+// mergeConfigs merges values from GlobalSets, LocalSets and local values for each job
+func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 	if present := len(r.JobConfigs); present > 0 {
 		r.Values = make(map[string]interface{})
 		for repoIndex, repo := range r.JobConfigs {

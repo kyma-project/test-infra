@@ -39,8 +39,6 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="$TEST_INFRA_SOURCES_DIR/prow/scri
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/log.sh"
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/docker.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
@@ -83,9 +81,12 @@ function docker_cleanup() {
         log::info "Docker image cleanup"
         if [ -n "$KYMA_INSTALLER_IMAGE" ]; then
             log::info "Delete temporary Kyma-Installer Docker image"
-            gcloud::authenticate "$GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS"
-            gcloud::delete_docker_image "$KYMA_INSTALLER_IMAGE"
-            gcloud::set_account "$GOOGLE_APPLICATION_CREDENTIALS"
+            gcp::authenticate \
+                -c "$GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS"
+            gcp::delete_docker_image \
+                -i "$KYMA_INSTALLER_IMAGE"
+            gcp::set_account \
+                -c "$GOOGLE_APPLICATION_CREDENTIALS"
         fi
     fi
     set -e
@@ -143,7 +144,7 @@ function create_image() {
 
 # Using set -f to prevent path globing in post_hook arguments.
 # utils::post_hook call set +f at the beginning.
-trap 'EXIT_STATUS=$?; docker_cleanup; set -f; utils::post_hook -n "$COMMON_NAME" -p "$CLOUDSDK_CORE_PROJECT" -c "$CLEANUP_CLUSTER" -g "$CLEANUP_GATEWAY_DNS_RECORD" -G "$INGRESS_GATEWAY_HOSTNAME" -a "$CLEANUP_APISERVER_DNS_RECORD" -A "$APISERVER_HOSTNAME" -I "$CLEANUP_GATEWAY_IP_ADDRESS" -l "$ERROR_LOGGING_GUARD" -z "$CLOUDSDK_COMPUTE_ZONE" -R "$CLOUDSDK_COMPUTE_REGION" -r "$PROVISION_REGIONAL_CLUSTER" -d "$DISABLE_ASYNC_DEPROVISION" -s "$COMMON_NAME" -e "$GATEWAY_IP_ADDRESS" -f "$APISERVER_IP_ADDRESS" -N "$COMMON_NAME" -Z "$CLOUDSDK_DNS_ZONE_NAME" -E "$EXIT_STATUS"' EXIT INT
+trap 'EXIT_STATUS=$?; docker_cleanup; set -f; utils::post_hook -n "$COMMON_NAME" -p "$CLOUDSDK_CORE_PROJECT" -c "$CLEANUP_CLUSTER" -g "$CLEANUP_GATEWAY_DNS_RECORD" -G "$INGRESS_GATEWAY_HOSTNAME" -a "$CLEANUP_APISERVER_DNS_RECORD" -A "$APISERVER_HOSTNAME" -I "$CLEANUP_GATEWAY_IP_ADDRESS" -l "$ERROR_LOGGING_GUARD" -z "$CLOUDSDK_COMPUTE_ZONE" -R "$CLOUDSDK_COMPUTE_REGION" -r "$PROVISION_REGIONAL_CLUSTER" -d "$DISABLE_ASYNC_DEPROVISION" -s "$COMMON_NAME" -e "$GATEWAY_IP_ADDRESS" -f "$APISERVER_IP_ADDRESS" -N "$COMMON_NAME" -Z "$CLOUDSDK_DNS_ZONE_NAME" -E "$EXIT_STATUS" -j "$JOB_NAME"' EXIT INT
 
 utils::run_jobguard \
     -b "$BUILD_TYPE" \

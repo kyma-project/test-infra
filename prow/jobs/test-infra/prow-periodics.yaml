@@ -4,6 +4,8 @@
 presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-test-infra-build-vm-image
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-build-vm-image"
@@ -43,6 +45,7 @@ postsubmits: # runs on main
   kyma-project/test-infra:
     - name: post-test-infra-deploy-prow
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -75,6 +78,7 @@ postsubmits: # runs on main
               secretName: sa-prow-deploy
     - name: post-test-infra-build-vm-image
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -125,7 +129,7 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/label_sync:v20210625-e1bdf10806"
+          - image: "gcr.io/k8s-prow/label_sync:v20210714-62f15287bd"
             command:
               - "/app/label_sync/app.binary"
             args:
@@ -171,7 +175,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20210625-e1bdf10806"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20210714-62f15287bd"
             command:
               - "/app/prow/cmd/generic-autobumper/app.binary"
             args:
@@ -205,7 +209,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20210617-c78e5916da"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20210714-62f15287bd"
             command:
               - "/app/prow/cmd/generic-autobumper/app.binary"
             args:

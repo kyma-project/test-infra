@@ -4,6 +4,8 @@
 presubmits: # runs on PRs
   kyma-incubator/knative-kafka:
     - name: pre-main-knative-kafka
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-knative-kafka"
@@ -51,6 +53,7 @@ postsubmits: # runs on main
   kyma-incubator/knative-kafka:
     - name: post-main-knative-kafka
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

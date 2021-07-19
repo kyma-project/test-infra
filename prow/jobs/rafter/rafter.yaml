@@ -4,6 +4,8 @@
 presubmits: # runs on PRs
   kyma-project/rafter:
     - name: pre-rafter
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-rafter"
@@ -55,6 +57,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-rafter-integration-test
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-rafter-integration-test"
@@ -107,6 +111,7 @@ postsubmits: # runs on main
   kyma-project/rafter:
     - name: post-rafter
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -158,6 +163,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: release-rafter
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -208,6 +214,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-rafter-integration-test
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -256,6 +263,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: release-rafter-integration-test
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

@@ -29,6 +29,7 @@ require (
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/imdario/mergo v0.3.11
 	github.com/jamiealquiza/envy v1.1.0
+	github.com/jinzhu/copier v0.3.2
 	github.com/moby/term v0.0.0-20201216013528-df9cb8a40635 // indirect
 	github.com/novln/docker-parser v1.0.0
 	github.com/onsi/gomega v1.10.3

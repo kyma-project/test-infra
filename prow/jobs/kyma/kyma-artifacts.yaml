@@ -4,6 +4,8 @@
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-artifacts
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kyma-artifacts"
@@ -30,7 +32,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210402-70b4b74f"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210701-e548bc20"
             securityContext:
               privileged: true
             command:
@@ -47,6 +49,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-rel124-kyma-artifacts
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-rel124-kyma-artifacts"
@@ -72,7 +76,7 @@ presubmits: # runs on PRs
           base_ref: release-1.24
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210402-70b4b74f"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210701-e548bc20"
             securityContext:
               privileged: true
             command:
@@ -89,6 +93,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-rel123-kyma-artifacts
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-rel123-kyma-artifacts"
@@ -114,7 +120,7 @@ presubmits: # runs on PRs
           base_ref: release-1.23
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210402-70b4b74f"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210701-e548bc20"
             securityContext:
               privileged: true
             command:
@@ -131,6 +137,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-rel122-kyma-artifacts
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-rel122-kyma-artifacts"
@@ -156,7 +164,7 @@ presubmits: # runs on PRs
           base_ref: release-1.22
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210402-70b4b74f"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210701-e548bc20"
             securityContext:
               privileged: true
             command:
@@ -173,6 +181,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-rel20-kyma-artifacts
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-rel20-kyma-artifacts"
@@ -198,7 +208,7 @@ presubmits: # runs on PRs
           base_ref: release-2.0
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210402-70b4b74f"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210701-e548bc20"
             securityContext:
               privileged: true
             command:
@@ -219,6 +229,7 @@ postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-kyma-artifacts
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -246,7 +257,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210402-70b4b74f"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210701-e548bc20"
             securityContext:
               privileged: true
             command:
@@ -264,6 +275,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-rel124-kyma-artifacts
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -290,7 +302,7 @@ postsubmits: # runs on main
           base_ref: release-1.24
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210402-70b4b74f"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210701-e548bc20"
             securityContext:
               privileged: true
             command:
@@ -308,6 +320,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-rel123-kyma-artifacts
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -334,7 +347,7 @@ postsubmits: # runs on main
           base_ref: release-1.23
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210402-70b4b74f"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210701-e548bc20"
             securityContext:
               privileged: true
             command:
@@ -352,6 +365,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-rel122-kyma-artifacts
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -378,7 +392,7 @@ postsubmits: # runs on main
           base_ref: release-1.22
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210402-70b4b74f"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210701-e548bc20"
             securityContext:
               privileged: true
             command:
@@ -396,6 +410,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-rel20-kyma-artifacts
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -422,7 +437,7 @@ postsubmits: # runs on main
           base_ref: release-2.0
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210402-70b4b74f"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210701-e548bc20"
             securityContext:
               privileged: true
             command:

@@ -3,13 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
+	"sync"
+	"time"
+
 	"github.com/containerd/containerd"
 	"github.com/containerd/containerd/namespaces"
 	dockerclient "github.com/fsouza/go-dockerclient"
 	log "github.com/sirupsen/logrus"
-	"os"
-	"sync"
-	"time"
 )
 
 // dockerOOMListener create channel to get events from docker daemon.

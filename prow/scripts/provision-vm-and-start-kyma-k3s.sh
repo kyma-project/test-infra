@@ -8,12 +8,12 @@ set -o errexit
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
 
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
   log::info "Execute Job Guard"
@@ -43,7 +43,8 @@ function testCustomImage() {
   fi
 }
 
-gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+gcp::authenticate \
+  -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 RANDOM_ID=$(openssl rand -hex 4)
 
@@ -116,6 +117,7 @@ envVars=(
   COMPASS_CLIENT_SECRET
   COMPASS_INTEGRATION_ENABLED
   CENTRAL_APPLICATION_GATEWAY_ENABLED
+  KYMA_MAJOR_VERSION
 )
 utils::save_env_file "${envVars[@]}"
 #shellcheck disable=SC2088

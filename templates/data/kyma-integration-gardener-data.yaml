@@ -1,8 +1,11 @@
 templates:
-  - from: templates/generic.tmpl
+  - fromTo:
+      - from: templates/generic.tmpl
+        to: ../prow/jobs/kyma/kyma-integration-gardener.yaml
+      - from: templates/test-inventory.tmpl
+        to: ../test-inventory-integration.md
     render:
-      - to: ../prow/jobs/kyma/kyma-integration-gardener.yaml
-        localSets:
+      - localSets:
           extra_refs_kyma-local:
             extra_refs:
               kyma-local:
@@ -28,18 +31,35 @@ templates:
             labels:
               preset-build-pr: "true"
           command_integration:
+            annotations:
+              pipeline.installer: kyma install
+              pipeline.test: octopus
+              pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
           command_integration_eventing:
+            annotations:
+              pipeline.installer: kyma install
+              pipeline.test: octopus
+              pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing.sh"
           command_busola_long_lasting:
+            annotations:
+              pipeline.installer: kyma deploy
+              pipeline.clusterprovisioning: kubectl shootspec
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-busola-long-lasting.sh"
           command_upgrade_1_to_2:
+            annotations:
+              pipeline.installer: kyma install, kyma deploy
+              pipeline.test: upgrade-fast-integration
+              pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener.sh"
           gardener_aws_job:
             labels:
               preset-gardener-aws-kyma-integration: "true"
               preset-kyma-cli-stable: "true"
               preset-cluster-version: "true"
+            annotations:
+              pipeline.platform: gardener_aws
             env:
               KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
               GARDENER_REGION: "eu-west-3"
@@ -53,6 +73,8 @@ templates:
               KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
               GARDENER_REGION: "europe-west4"
               GARDENER_ZONES: "europe-west4-b"
+            annotations:
+              pipeline.platform: gardener_gcp
           gardener_gcp_job_eventing:
             labels:
               preset-gardener-gcp-kyma-integration: "true"
@@ -63,7 +85,11 @@ templates:
               GARDENER_REGION: "europe-west4"
               GARDENER_ZONES: "europe-west4-b"
               CREDENTIALS_DIR: "/etc/credentials/kyma-tunas-prow-event-mesh"
+            annotations:
+              pipeline.platform: gardener_gcp
           gardener_azure_job:
+            annotations:
+              pipeline.platform: gardener_azure
             env:
               RS_GROUP: "kyma-gardener-azure"
               REGION: "northeurope"
@@ -81,6 +107,23 @@ templates:
               preset-sa-test-gcr-push: "true"               # required for pushing images
               preset-sa-gardener-logs: "true"               # required for writing logs to Stackdriver
               preset-cluster-version: "true"
+          installer_alpha:
+            env:
+              KYMA_ALPHA: "true"
+            annotations:
+              pipeline.installer: kyma deploy
+          evaluation_profile:
+            env:
+              EXECUTION_PROFILE: "evaluation"
+            annotations:
+              pipeline.test: fast-integration
+              pipeline.profile: evaluation
+          production_profile:
+            env:
+              EXECUTION_PROFILE: "production"
+            annotations:
+              pipeline.test: fast-integration
+              pipeline.profile: production
         jobConfigs:
           - repoName: kyma-project/kyma
             jobs:
@@ -108,19 +151,19 @@ templates:
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
-                  env:
-                    EXECUTION_PROFILE: "evaluation"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
+                    - kyma_major_version_1
                   local:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - command_integration
                     - gardener_azure_job
+                    - evaluation_profile
               - jobConfig:
                   name: pre-main-kyma-gardener-azure-alpha-eval
                   decoration_config:
@@ -128,20 +171,20 @@ templates:
                     grace_period: 600000000000 # 10min
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  env:
-                    EXECUTION_PROFILE: "evaluation"
-                    KYMA_ALPHA: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
+                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - command_integration
                     - gardener_azure_job
+                    - evaluation_profile
+                    - installer_alpha
               - jobConfig:
                   name: pre-main-kyma-gardener-azure-alpha-prod
                   decoration_config:
@@ -149,20 +192,20 @@ templates:
                     grace_period: 600000000000 # 10min
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  env:
-                    EXECUTION_PROFILE: "production"
-                    KYMA_ALPHA: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
+                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - command_integration
                     - gardener_azure_job
+                    - production_profile
+                    - installer_alpha
               - jobConfig:
                   name: pre-main-kyma-gardener-gcp-api-gateway
                   labels:
@@ -191,9 +234,6 @@ templates:
                     grace_period: 600000000000 # 10min
                   labels:
                     preset-build-main: "true"
-                  env:
-                    EXECUTION_PROFILE: "evaluation"
-                    KYMA_ALPHA: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -201,10 +241,13 @@ templates:
                     - extra_refs_test-infra
                     - image_kyma-integration
                     - disable_testgrid
+                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - command_integration
                     - gardener_azure_job
+                    - evaluation_profile
+                    - installer_alpha
               - jobConfig:
                   name: post-main-kyma-gardener-azure-alpha-prod
                   decoration_config:
@@ -212,9 +255,6 @@ templates:
                     grace_period: 600000000000 # 10min
                   labels:
                     preset-build-main: "true"
-                  env:
-                    EXECUTION_PROFILE: "production"
-                    KYMA_ALPHA: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -222,10 +262,13 @@ templates:
                     - extra_refs_test-infra
                     - image_kyma-integration
                     - disable_testgrid
+                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - command_integration
                     - gardener_azure_job
+                    - production_profile
+                    - installer_alpha
               - jobConfig:
                   name: post-main-kyma-gardener-gcp-api-gateway
                   decoration_config:
@@ -252,7 +295,9 @@ templates:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
                     # following regexp won't start build if only Markdown files were changed
-                    run_if_changed: "^(((resources/eventing)\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                    run_if_changed: "^((tests/fast-integration\\S+|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  env:
+                    EXECUTION_PROFILE: "evaluation"
                   volumes:
                     - name: kyma-tunas-prow-event-mesh
                       secretName: kyma-tunas-prow-event-mesh
@@ -348,8 +393,6 @@ templates:
                   cron: "5 * * * *"
                   labels:
                     preset-log-collector-slack-token: "true"
-                  env:
-                    EXECUTION_PROFILE: "evaluation"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -357,11 +400,13 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - image_kyma-integration
+                    - kyma_major_version_1
                   local:
                     - jobConfig_default
                     - gardener_azure_job
                     - extra_refs_kyma-local
                     - command_integration
+                    - evaluation_profile
               - jobConfig:
                   name: kyma-integration-production-gardener-azure
                   annotations:
@@ -373,8 +418,6 @@ templates:
                   cron: "5 * * * *"
                   labels:
                     preset-log-collector-slack-token: "true"
-                  env:
-                    EXECUTION_PROFILE: "production"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -382,11 +425,13 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - image_kyma-integration
+                    - kyma_major_version_1
                   local:
                     - jobConfig_default
                     - gardener_azure_job
                     - extra_refs_kyma-local
                     - command_integration
+                    - production_profile
               - jobConfig:
                   name: kyma-alpha-integration-evaluation-gardener-azure
                   annotations:
@@ -399,8 +444,6 @@ templates:
                   labels:
                     preset-log-collector-slack-token: "true"
                   env:
-                    EXECUTION_PROFILE: "evaluation"
-                    KYMA_ALPHA: "true"
                     KYMA_ALPHA_DELETE: "true"
                 inheritedConfigs:
                   global:
@@ -409,11 +452,14 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - image_kyma-integration
+                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - gardener_azure_job
                     - extra_refs_kyma-local
                     - command_integration
+                    - evaluation_profile
+                    - installer_alpha
               - jobConfig:
                   name: kyma-alpha-integration-production-gardener-azure
                   annotations:
@@ -426,8 +472,6 @@ templates:
                   labels:
                     preset-log-collector-slack-token: "true"
                   env:
-                    EXECUTION_PROFILE: "production"
-                    KYMA_ALPHA: "true"
                     KYMA_ALPHA_DELETE: "true"
                 inheritedConfigs:
                   global:
@@ -436,11 +480,14 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - image_kyma-integration
+                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - gardener_azure_job
                     - extra_refs_kyma-local
                     - command_integration
+                    - production_profile
+                    - installer_alpha
               - jobConfig:
                   name: kyma-integration-hibernation-gardener-azure
                   decoration_config:
@@ -450,7 +497,6 @@ templates:
                   labels:
                     preset-log-collector-slack-token: "true"
                   env:
-                    EXECUTION_PROFILE: "evaluation"
                     HIBERNATION_ENABLED: "true"
                 inheritedConfigs:
                   global:
@@ -460,11 +506,13 @@ templates:
                     - extra_refs_kyma
                     - image_kyma-integration
                     - disable_testgrid
+                    - kyma_major_version_1
                   local:
                     - jobConfig_default
                     - gardener_azure_job
                     - extra_refs_kyma-local
                     - command_integration
+                    - evaluation_profile
               - jobConfig:
                   name: kyma-weekly-gardener-gcp-busola
                   decoration_config:
@@ -619,9 +667,6 @@ templates:
                   cron: "0 0 6-18/2 ? * 2-6"
                   labels:
                     preset-bot-github-token: "true"
-#                  env:
-#                    EXECUTION_PROFILE: "production"
-#                    KYMA_ALPHA: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -629,8 +674,8 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - image_kyma-integration
+                    - kyma_major_version_1
                   local:
                     - jobConfig_default
                     - gardener_azure_job
-#                    - extra_refs_kyma-local
                     - command_upgrade_1_to_2

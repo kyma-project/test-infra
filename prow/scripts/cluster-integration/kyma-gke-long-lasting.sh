@@ -11,6 +11,9 @@ export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
+
 requiredVars=(
 	INPUT_CLUSTER_NAME
 	DOCKER_PUSH_REPOSITORY
@@ -31,20 +34,20 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 
 export REPO_OWNER="kyma-project"
 export REPO_NAME="kyma"
 
-STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
-export STANDARIZED_NAME
-export DNS_SUBDOMAIN="${STANDARIZED_NAME}"
+COMMON_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
+export COMMON_NAME
+export DNS_SUBDOMAIN="${COMMON_NAME}"
+export CLUSTER_NAME="${COMMON_NAME}"
 
-export CLUSTER_NAME="${STANDARIZED_NAME}"
-export GCLOUD_NETWORK_NAME="gke-long-lasting-net"
-export GCLOUD_SUBNET_NAME="gke-long-lasting-subnet"
+gcp::set_vars_for_network \
+  -n "$JOB_NAME"
+export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_return_net_name:?}"
+export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_return_subnet_name:?}"
 
 # Enable Stackdriver Kubernetes Engine Monitoring support on k8s cluster. Mandatory requirement for stackdriver-prometheus collector.
 # https://cloud.google.com/monitoring/kubernetes-engine/prometheus
@@ -79,30 +82,53 @@ TEST_RESULT_WINDOW_TIME=${TEST_RESULT_WINDOW_TIME:-3h}
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 
 function createCluster() {
 	log::info "Reserve IP Address for Ingressgateway"
-	GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
+	GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
 	export GATEWAY_IP_ADDRESS
-	gcloud::reserve_ip_address "${GATEWAY_IP_ADDRESS_NAME}"
-	GATEWAY_IP_ADDRESS="${gcloud_reserve_ip_address_return_1:?}"
+	gcp::reserve_ip_address \
+		-n "${GATEWAY_IP_ADDRESS_NAME}" \
+		-p "$CLOUDSDK_CORE_PROJECT" \
+		-r "$CLOUDSDK_COMPUTE_REGION"
+	GATEWAY_IP_ADDRESS="${gcp_reserve_ip_address_return_ip_address:?}"
 	echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
 	log::info "Create DNS Record for Ingressgateway IP"
-	GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-	gcloud::create_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
+	gcp::create_dns_record \
+		-a "$GATEWAY_IP_ADDRESS" \
+		-h "*" \
+		-s "$COMMON_NAME" \
+		-p "$CLOUDSDK_CORE_PROJECT" \
+		-z "$CLOUDSDK_DNS_ZONE_NAME"
 
 	log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-	gcloud::create_network "${GCLOUD_NETWORK_NAME}" "${GCLOUD_SUBNET_NAME}"
+	gcp::create_network \
+    -n "${GCLOUD_NETWORK_NAME}" \
+	-s "${GCLOUD_SUBNET_NAME}" \
+	-p "$CLOUDSDK_CORE_PROJECT"
 
-	log::info "Provision cluster: \"${CLUSTER_NAME}\""
+	log::info "Provision cluster: \"${COMMON_NAME}\""
 	date
 	
-	gcloud::provision_gke_cluster "$CLUSTER_NAME"
+	gcp::provision_k8s_cluster \
+		-c "$COMMON_NAME" \
+		-p "$CLOUDSDK_CORE_PROJECT" \
+		-v "$GKE_CLUSTER_VERSION" \
+		-j "$JOB_NAME" \
+		-J "$PROW_JOB_ID" \
+		-z "$CLOUDSDK_COMPUTE_ZONE" \
+		-m "$MACHINE_TYPE" \
+		-R "$CLOUDSDK_COMPUTE_REGION" \
+		-N "$GCLOUD_NETWORK_NAME" \
+		-S "$GCLOUD_SUBNET_NAME" \
+		-r "$PROVISION_REGIONAL_CLUSTER" \
+		-s "$STACKDRIVER_KUBERNETES" \
+		-D "$CLUSTER_USE_SSD" \
+		-e "$GKE_ENABLE_POD_SECURITY_POLICY" \
+		-P "$TEST_INFRA_SOURCES_DIR"
 }
 
 function installKyma() {
@@ -150,8 +176,12 @@ function installKyma() {
 	if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
 		log::info "Create DNS Record for Apiserver proxy IP"
 		APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-		APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-		gcloud::create_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
+		gcp::create_dns_record \
+			-a "$APISERVER_IP_ADDRESS" \
+			-h "apiserver" \
+			-s "$COMMON_NAME" \
+			-p "$CLOUDSDK_CORE_PROJECT" \
+			-z "$CLOUDSDK_DNS_ZONE_NAME"
 	fi
 }
 
@@ -173,15 +203,16 @@ function installStackdriverPrometheusCollector(){
   kubectl -n kyma-system create secret generic prometheus-operator-additional-scrape-config --from-file="${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-additional-scrape-config.yaml
 	echo "Replace tags with current values in patch yaml file."
 	sed -i.bak -e 's/__SIDECAR_IMAGE_TAG__/'"${SIDECAR_IMAGE_TAG}"'/g' \
-		-e 's/__GCP_PROJECT__/'"${GCLOUD_PROJECT_NAME}"'/g' \
+		-e 's/__GCP_PROJECT__/'"${CLOUDSDK_CORE_PROJECT}"'/g' \
 		-e 's/__GCP_REGION__/'"${CLOUDSDK_COMPUTE_REGION}"'/g' \
-		-e 's/__CLUSTER_NAME__/'"${CLUSTER_NAME}"'/g' "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml
+		-e 's/__CLUSTER_NAME__/'"${COMMON_NAME}"'/g' "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml
 	echo "Patch monitoring prometheus CRD to deploy stackdriver-prometheus collector as sidecar"
 	kubectl -n kyma-system patch prometheus monitoring-prometheus --type merge --patch "$(cat "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml)"
 }
 
 log::info "Authenticate"
-gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+gcp::authenticate \
+    -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 
 
@@ -192,7 +223,7 @@ export DOMAIN
 
 log::info "Cleanup"
 export SKIP_IMAGE_REMOVAL=true
-export DISABLE_ASYNC_DEPROVISION=true
+export ASYNC_DEPROVISION=false
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/cleanup-cluster.sh"
 
 log::info "Create new cluster"
@@ -238,13 +269,13 @@ if [ -z "$ARTIFACTS" ] ; then
 fi
 
 IMAGES_LIST=$(kubectl get pods --all-namespaces -o go-template --template='{{range .items}}{{range .status.containerStatuses}}{{.name}},{{.image}},{{.imageID}}{{printf "\n"}}{{end}}{{range .status.initContainerStatuses}}{{.name}},{{.image}},{{.imageID}}{{printf "\n"}}{{end}}{{end}}' | uniq | sort)
-echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${CLUSTER_NAME}.csv"
+echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${COMMON_NAME}.csv"
 
 # also generate image list in json
 ## this is false-positive as we need to use single-quotes for jq
 # shellcheck disable=SC2016
 IMAGES_LIST=$(kubectl get pods --all-namespaces -o json | jq '{ images: [.items[] | .metadata.ownerReferences[0].name as $owner | (.status.containerStatuses + .status.initContainerStatuses)[] | { name: .imageID, custom_fields: {owner: $owner, image: .image, name: .name }}] | unique | group_by(.name) | map({name: .[0].name, custom_fields: {owner: map(.custom_fields.owner) | unique | join(","), container_name: map(.custom_fields.name) | unique | join(","), image: .[0].custom_fields.image}})}' )
-echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${CLUSTER_NAME}.json"
+echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${COMMON_NAME}.json"
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"

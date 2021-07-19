@@ -7,34 +7,52 @@ source "${LIBDIR}/../log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${LIBDIR}/../utils.sh"
 
+# gardener::deprovision_cluster removes a Gardener cluster
+#
+# Arguments:
+#
+# required:
+# p - project name
+# c - lcuster name
+# f - kubeconfig file path
 function gardener::deprovision_cluster() {
-  if [ -z "$1" ]; then
-    echo "Project name is empty. Exiting..."
-    exit 1
-  fi
-  if [ -z "$2" ]; then
-    echo "Cluster name is empty. Exiting..."
-    exit 1
-  fi
-  if [ -z "$3" ]; then
-    echo "Kubeconfig path is empty. Exiting..."
-    exit 1
-  fi
-  log::info "Deprovision cluster: ${CLUSTER_NAME}"
-  GARDENER_PROJECT_NAME=$1
-  GARDENER_CLUSTER_NAME=$2
-  GARDENER_CREDENTIALS=$3
+  local OPTIND
+  local projectName
+  local clusterName
+  local kubeconfigFile
+  local namespace
 
-  local NAMESPACE="garden-${GARDENER_PROJECT_NAME}"
+  while getopts ":p:c:f:" opt; do
+      case $opt in
+          p)
+            projectName="$OPTARG" ;;
+          c)
+            clusterName="$OPTARG" ;;
+          f)
+            kubeconfigFile="$OPTARG" ;;
+          \?)
+              echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+          :)
+              echo "Option -$OPTARG argument not provided" >&2 ;;
+      esac
+  done
 
-  kubectl annotate shoot "${GARDENER_CLUSTER_NAME}" confirmation.gardener.cloud/deletion=true \
+  utils::check_empty_arg "$projectName" "Project name is empty. Exiting..."
+  utils::check_empty_arg "$clusterName" "Cluster name is empty. Exiting..."
+  utils::check_empty_arg "$kubeconfigFile" "Kubeconfig file path is empty. Exiting..."
+
+  log::info "Deprovision cluster: ${clusterName}"
+
+  namespace="garden-${projectName}"
+
+  kubectl annotate shoot "${clusterName}" confirmation.gardener.cloud/deletion=true \
     --overwrite \
-    -n "${NAMESPACE}" \
-    --kubeconfig "${GARDENER_CREDENTIALS}"
-  kubectl delete shoot "${GARDENER_CLUSTER_NAME}" \
+    -n "${namespace}" \
+    --kubeconfig "${kubeconfigFile}"
+  kubectl delete shoot "${clusterName}" \
     --wait=false \
-    --kubeconfig "${GARDENER_CREDENTIALS}" \
-    -n "${NAMESPACE}"
+    --kubeconfig "${kubeconfigFile}" \
+    -n "${namespace}"
 }
 
 
@@ -43,7 +61,10 @@ function gardener::deprovision_cluster() {
 gardener::reprovision_cluster() {
     log::info "cluster provisioning failed, trying provision new cluster"
     log::info "cleaning damaged cluster first"
-    gardener::deprovision_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
+    gardener::deprovision_cluster \
+      -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+      -c "${CLUSTER_NAME}" \
+      -f "${GARDENER_KYMA_PROW_KUBECONFIG}"
     log::info "building new cluster name"
     utils::generate_commonName -n "${COMMON_NAME_PREFIX}"
     COMMON_NAME=${utils_generate_commonName_return_commonName:?}

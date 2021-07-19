@@ -37,8 +37,6 @@ export TEST_INFRA_SOURCES_DIR="$KYMA_PROJECT_DIR/test-infra"
 export KYMA_SOURCES_DIR="$KYMA_PROJECT_DIR/kyma"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="$TEST_INFRA_SOURCES_DIR/prow/scripts/cluster-integration/helpers"
 
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/lib/log.sh
@@ -77,13 +75,13 @@ requiredVars=(
     GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS
     GKE_CLUSTER_VERSION
 )
-
-
+# allow GKE_CLUSTER_VERSION to be specified explicitly for this script
+GKE_CLUSTER_VERSION=${GKE_CLUSTER_VERSION_OVERRIDE:-$GKE_CLUSTER_VERSION}
 utils::check_required_vars "${requiredVars[@]}"
 
 # Using set -f to prevent path globing in post_hook arguments.
 # utils::post_hook call set +f at the beginning.
-trap 'EXIT_STATUS=$?; set -f; utils::post_hook -n "$COMMON_NAME" -p "$CLOUDSDK_CORE_PROJECT" -c "$CLEANUP_CLUSTER" -g "$CLEANUP_GATEWAY_DNS_RECORD" -G "$INGRESS_GATEWAY_HOSTNAME" -a "$CLEANUP_APISERVER_DNS_RECORD" -A "$APISERVER_HOSTNAME" -I "$CLEANUP_GATEWAY_IP_ADDRESS" -l "$ERROR_LOGGING_GUARD" -z "$CLOUDSDK_COMPUTE_ZONE" -R "$CLOUDSDK_COMPUTE_REGION" -r "$PROVISION_REGIONAL_CLUSTER" -d "$DISABLE_ASYNC_DEPROVISION" -s "$COMMON_NAME" -e "$GATEWAY_IP_ADDRESS" -f "$APISERVER_IP_ADDRESS" -N "$COMMON_NAME" -Z "$CLOUDSDK_DNS_ZONE_NAME" -E "$EXIT_STATUS"' EXIT INT
+trap 'EXIT_STATUS=$?; set -f; utils::post_hook -n "$COMMON_NAME" -p "$CLOUDSDK_CORE_PROJECT" -c "$CLEANUP_CLUSTER" -g "$CLEANUP_GATEWAY_DNS_RECORD" -G "$INGRESS_GATEWAY_HOSTNAME" -a "$CLEANUP_APISERVER_DNS_RECORD" -A "$APISERVER_HOSTNAME" -I "$CLEANUP_GATEWAY_IP_ADDRESS" -l "$ERROR_LOGGING_GUARD" -z "$CLOUDSDK_COMPUTE_ZONE" -R "$CLOUDSDK_COMPUTE_REGION" -r "$PROVISION_REGIONAL_CLUSTER" -d "$DISABLE_ASYNC_DEPROVISION" -s "$COMMON_NAME" -e "$GATEWAY_IP_ADDRESS" -f "$APISERVER_IP_ADDRESS" -N "$COMMON_NAME" -Z "$CLOUDSDK_DNS_ZONE_NAME" -E "$EXIT_STATUS" -j "$JOB_NAME"' EXIT INT
 
 utils::run_jobguard \
     -b "$BUILD_TYPE" \
@@ -136,7 +134,11 @@ export DNS_SUBDOMAIN=${gcp_create_dns_record_return_dns_subdomain:?}
 export CLEANUP_GATEWAY_DNS_RECORD="true"
 
 # if GKE_RELEASE_CHANNEL is set, get latest possible cluster version
-gcloud::set_latest_cluster_version_for_channel
+if [ "${GKE_RELEASE_CHANNEL}" ]; then
+    gcp::set_latest_cluster_version_for_channel \
+        -C "$GKE_RELEASE_CHANNEL"
+    GKE_CLUSTER_VERSION="${gcp_set_latest_cluster_version_for_channel_return_cluster_version:?}"
+fi
 
 if [ "$PROVISION_REGIONAL_CLUSTER" ]; then NUM_NODES="$NODES_PER_ZONE"; fi
 
@@ -184,6 +186,15 @@ yes | kyma install \
     --tls-cert="$TLS_CERT" \
     --tls-key="$TLS_KEY" \
     --timeout 60m
+
+log::info "Patch serverless to enable containerd"
+cp -va "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/containerd-gke-patch.tpl.yaml" \
+       "${KYMA_SOURCES_DIR}/resources/serverless/templates/containerd-gke-patch.yaml"
+helm template -s templates/containerd-gke-patch.yaml resources/serverless/ --dry-run > "$PWD/patch-containerd.yaml"
+kubectl apply -f "$PWD/patch-containerd.yaml"
+# This command expects serverless to be running in the namespace `kyma-system`
+# The `initialized` condition is checked because we only care about the init-container.
+kubectl -n kyma-system wait pods -l app=serverless-docker-registry-cert-update --for="condition=Initialized"
 
 if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
     log::info "Create DNS Record for Apiserver proxy IP"

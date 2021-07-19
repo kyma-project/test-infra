@@ -90,8 +90,9 @@ cleanup() {
     kyma::run_test_log_collector "kyma-upgrade-gardener-azure"
 
     if [[ -n "${SUITE_NAME}" ]]; then
-        kyma::test_summary
-    fi 
+        kyma::test_summary \
+            -s "$SUITE_NAME"
+    fi
 
     if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
         log::error "AN ERROR OCCURED! Take a look at preceding log entries."
@@ -100,7 +101,10 @@ cleanup() {
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
 
-        gardener::deprovision_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
+        gardener::deprovision_cluster \
+            -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+            -c "${CLUSTER_NAME}" \
+            -f "${GARDENER_KYMA_PROW_KUBECONFIG}"
     fi
 
     rm -rf "${TMP_DIR}"
@@ -146,7 +150,9 @@ function getLastReleaseCandidateVersion() {
 }
 
 function installKyma() {
-    LAST_RELEASE_VERSION=$(kyma::get_last_release_version "${BOT_GITHUB_TOKEN}")
+    kyma::get_last_release_version \
+        -t "${BOT_GITHUB_TOKEN}"
+    LAST_RELEASE_VERSION="${kyma_get_last_release_version_return_version:?}"
     mkdir -p /tmp/kyma-gardener-upgradeability
     if [ -z "$LAST_RELEASE_VERSION" ]; then
         log::error "Couldn't grab latest version from GitHub API, stopping."

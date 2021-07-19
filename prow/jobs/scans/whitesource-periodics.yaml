@@ -4,6 +4,7 @@
 periodics: # runs on schedule
     - name: control-plane-whitesource-scan
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         preset-gc-project-env: "true"
@@ -51,6 +52,7 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: control-plane-dep-whitesource-scan
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         preset-gc-project-env: "true"
@@ -98,6 +100,7 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: kyma-whitesource-scan
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         preset-gc-project-env: "true"
@@ -145,6 +148,7 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: kyma-mod-whitesource-scan
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         preset-gc-project-env: "true"
@@ -192,6 +196,7 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: console-whitesource-scan
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         preset-gc-project-env: "true"
@@ -239,6 +244,7 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: busola-whitesource-scan
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         preset-gc-project-env: "true"
@@ -286,6 +292,7 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: cli-whitesource-scan
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         preset-gc-project-env: "true"
@@ -333,6 +340,7 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: helm-broker-whitesource-scan
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         preset-gc-project-env: "true"
@@ -380,6 +388,7 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: rafter-whitesource-scan
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         preset-gc-project-env: "true"
@@ -427,6 +436,7 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: api-gateway-whitesource-scan
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         preset-gc-project-env: "true"
@@ -474,6 +484,7 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: dex-whitesource-scan
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         preset-gc-project-env: "true"
@@ -521,6 +532,7 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: hydroform-whitesource-scan
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         preset-gc-project-env: "true"
@@ -568,6 +580,7 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: terraform-provider-gardener-whitesource-scan
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         preset-gc-project-env: "true"
@@ -615,6 +628,7 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: octopus-whitesource-scan
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         preset-gc-project-env: "true"
@@ -662,6 +676,7 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: website-whitesource-scan
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         preset-gc-project-env: "true"
@@ -709,6 +724,7 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: podpreset-whitesource-scan
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         preset-gc-project-env: "true"
@@ -756,6 +772,7 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: reconciler-whitesource-scan
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         preset-gc-project-env: "true"
@@ -805,6 +822,7 @@ periodics: # runs on schedule
 #-------------Release-----------------------------
     - name: release-kyma-1.24-whitesource-scan
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         preset-gc-project-env: "true"
@@ -852,6 +870,7 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: release-kyma-mod-1.24-whitesource-scan
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         preset-gc-project-env: "true"
@@ -899,6 +918,7 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: release-cli-1.24-whitesource-scan
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         preset-gc-project-env: "true"

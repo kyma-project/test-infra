@@ -4,6 +4,8 @@
 presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-test-infra-validate-testgrid-config
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-validate-testgrid-config"
@@ -18,7 +20,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/transfigure:v20210625-e1bdf10806"
+          - image: "gcr.io/k8s-prow/transfigure:v20210714-62f15287bd"
             securityContext:
               privileged: false
             command:
@@ -45,6 +47,7 @@ postsubmits: # runs on main
   kyma-project/test-infra:
     - name: post-test-infra-upload-testgrid-config
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -61,7 +64,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/transfigure:v20210625-e1bdf10806"
+          - image: "gcr.io/k8s-prow/transfigure:v20210714-62f15287bd"
             securityContext:
               privileged: false
             command:

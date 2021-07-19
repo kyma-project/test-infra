@@ -4,10 +4,10 @@ set -e
 set -o pipefail
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${SCRIPT_DIR}/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${SCRIPT_DIR}/lib/docker.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$SCRIPT_DIR/lib/gcp.sh"
 
 usage () {
     echo "Usage: \$ ${BASH_SOURCE[1]} /path/to/component [Makefile targets]"
@@ -22,7 +22,8 @@ if [[ ! -d "${SOURCES_DIR}" ]]; then
 fi
 
 if [[ -n "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
-    gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+    gcp::authenticate \
+      -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 fi
 if [[ "${DOCKER_IN_DOCKER_ENABLED}" == true ]]; then
     docker::start

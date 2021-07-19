@@ -4,6 +4,7 @@
 periodics: # runs on schedule
     - name: kyma-gardener-cleanup
       annotations:
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -31,7 +32,7 @@ periodics: # runs on schedule
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/cleanup-gardener.sh"
             args:
               - "--excluded-clusters"
-              - "(nbusola|nkyma|np[0-9].*)"
+              - "(nbusola|nkyma)"
             env:
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"

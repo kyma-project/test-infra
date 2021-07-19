@@ -13,10 +13,10 @@ readonly COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCK
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 
 requiredVars=(
     REPO_OWNER
@@ -66,17 +66,13 @@ fi
 
 ### Cluster name must be less than 40 characters!
 COMMON_NAME=$(echo "${COMMON_NAME}" | tr "[:upper:]" "[:lower:]")
-export CLUSTER_NAME="${COMMON_NAME}"
 
-export GCLOUD_NETWORK_NAME="gke-long-lasting-net"
-export GCLOUD_SUBNET_NAME="gke-long-lasting-subnet"
-
-### For gcloud::provision_gke_cluster
-export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
+gcp::set_vars_for_network \
+  -n "$JOB_NAME"
+export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_return_net_name:?}"
+export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_return_subnet_name:?}"
 
 #Local variables
-DNS_SUBDOMAIN="${COMMON_NAME}"
 COMPASS_SCRIPTS_DIR="${COMPASS_SOURCES_DIR}/installation/scripts"
 COMPASS_RESOURCES_DIR="${COMPASS_SOURCES_DIR}/installation/resources"
 
@@ -84,37 +80,23 @@ INSTALLER_YAML="${COMPASS_RESOURCES_DIR}/installer.yaml"
 INSTALLER_CR="${COMPASS_RESOURCES_DIR}/installer-cr.yaml.tpl"
 
 # post_hook runs at the end of a script or on any error
-function post_hook() {
-  #!!! Must be at the beginning of this function !!!
-  EXIT_STATUS=$?
-
-  log::info "Cleanup"
-
-  if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
-    log::info "AN ERROR OCCURED! Take a look at preceding log entries."
-  fi
-
+function docker_cleanup() {
   #Turn off exit-on-error so that next step is executed even if previous one fails.
   set +e
-
-  gcloud::cleanup
 
   if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
     log::info "Docker image cleanup"
     if [ -n "${COMPASS_INSTALLER_IMAGE}" ]; then
       log::info "Delete temporary Compass-Installer Docker image"
-      gcloud::authenticate "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
-      gcloud::delete_docker_image "${COMPASS_INSTALLER_IMAGE}"
-      gcloud::set_account "${GOOGLE_APPLICATION_CREDENTIALS}"
+      gcp::authenticate \
+        -c "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
+      gcp::delete_docker_image \
+        -i "${COMPASS_INSTALLER_IMAGE}"
+      gcp::set_account \
+        -c "${GOOGLE_APPLICATION_CREDENTIALS}"
     fi
   fi
-
-  MSG=""
-  if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-  log::info "Job is finished ${MSG}"
   set -e
-
-  exit "${EXIT_STATUS}"
 }
 
 function createCluster() {
@@ -122,38 +104,53 @@ function createCluster() {
   ERROR_LOGGING_GUARD="true"
 
   log::info "Authenticate"
-  gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+  gcp::authenticate \
+    -c "${GOOGLE_APPLICATION_CREDENTIALS}"
   docker::start
   DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
   export DNS_DOMAIN
-  DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
+  DOMAIN="${COMMON_NAME}.${DNS_DOMAIN%?}"
   export DOMAIN
 
   log::info "Reserve IP Address for Ingressgateway"
   GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
-  gcloud::reserve_ip_address "${GATEWAY_IP_ADDRESS_NAME}"
-  GATEWAY_IP_ADDRESS="${gcloud_reserve_ip_address_return_1:?}"
+  gcp::reserve_ip_address \
+    -n "${GATEWAY_IP_ADDRESS_NAME}" \
+    -p "$CLOUDSDK_CORE_PROJECT" \
+    -r "$CLOUDSDK_COMPUTE_REGION"
+  GATEWAY_IP_ADDRESS="${gcp_reserve_ip_address_return_ip_address:?}"
   CLEANUP_GATEWAY_IP_ADDRESS="true"
   echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
   log::info "Create DNS Record for Ingressgateway IP"
-  GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+  gcp::create_dns_record \
+    -a "$GATEWAY_IP_ADDRESS" \
+    -h "*" \
+    -s "$COMMON_NAME" \
+    -p "$CLOUDSDK_CORE_PROJECT" \
+    -z "$CLOUDSDK_DNS_ZONE_NAME"
   CLEANUP_GATEWAY_DNS_RECORD="true"
-  gcloud::create_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
 
   log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-  gcloud::create_network "${GCLOUD_NETWORK_NAME}" "${GCLOUD_SUBNET_NAME}"
+  gcp::create_network \
+    -n "${GCLOUD_NETWORK_NAME}" \
+    -s "${GCLOUD_SUBNET_NAME}" \
+    -p "$CLOUDSDK_CORE_PROJECT"
 
-  log::info "Provision cluster: \"${CLUSTER_NAME}\""
+  log::info "Provision cluster: \"${COMMON_NAME}\""
   export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
-  if [ -z "$MACHINE_TYPE" ]; then
-    export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
-  fi
-  if [ -z "${CLUSTER_VERSION}" ]; then
-    export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
-  fi
+  gcp::provision_k8s_cluster \
+        -c "$COMMON_NAME" \
+        -p "$CLOUDSDK_CORE_PROJECT" \
+        -v "$GKE_CLUSTER_VERSION" \
+        -j "$JOB_NAME" \
+        -J "$PROW_JOB_ID" \
+        -z "$CLOUDSDK_COMPUTE_ZONE" \
+        -R "$CLOUDSDK_COMPUTE_REGION" \
+        -N "$GCLOUD_NETWORK_NAME" \
+        -S "$GCLOUD_SUBNET_NAME" \
+        -P "$TEST_INFRA_SOURCES_DIR"
   CLEANUP_CLUSTER="true"
-  gcloud::provision_gke_cluster "$CLUSTER_NAME"
 }
 
 function applyKymaOverrides() {
@@ -239,6 +236,16 @@ function applyCompassOverrides() {
     --data "global.externalServicesMock.auditlog=true" \
     --data "gateway.gateway.auditlog.enabled=true" \
     --data "gateway.gateway.auditlog.authMode=oauth" \
+    --data "global.systemFetcher.enabled=true" \
+    --data "global.systemFetcher.systemsAPIEndpoint=http://compass-external-services-mock:8080/systemfetcher/systems" \
+    --data "global.systemFetcher.systemsAPIFilterCriteria=no" \
+    --data "global.systemFetcher.systemsAPIFilterTenantCriteriaPattern=tenant=%s" \
+    --data 'global.systemFetcher.systemToTemplateMappings=[{"Name": "temp1", "SourceKey": ["prop"], "SourceValue": ["val1"] }]' \
+    --data "global.systemFetcher.oauth.client=admin" \
+    --data "global.systemFetcher.oauth.secret=admin" \
+    --data "global.systemFetcher.oauth.tokenURLPattern=http://compass-external-services-mock:8080/systemfetcher/oauth/token" \
+    --data "global.systemFetcher.oauth.scopesClaim=scopes" \
+    --data "global.systemFetcher.oauth.tenantHeaderName=x-zid" \
     --label "component=compass"
 }
 
@@ -339,13 +346,19 @@ function installCompassNew() {
   if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
     log::info "Create DNS Record for Apiserver proxy IP"
     APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+    gcp::create_dns_record \
+      -a "$APISERVER_IP_ADDRESS" \
+      -h "apiserver" \
+      -s "$COMMON_NAME" \
+      -p "$CLOUDSDK_CORE_PROJECT" \
+      -z "$CLOUDSDK_DNS_ZONE_NAME"
     CLEANUP_APISERVER_DNS_RECORD="true"
-    gcloud::create_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
   fi
 }
 
-trap post_hook EXIT INT
+# Using set -f to prevent path globing in post_hook arguments.
+# utils::post_hook call set +f at the beginning.
+trap 'EXIT_STATUS=$?; docker_cleanup; set -f; utils::post_hook -n "$COMMON_NAME" -p "$CLOUDSDK_CORE_PROJECT" -c "$CLEANUP_CLUSTER" -g "$CLEANUP_GATEWAY_DNS_RECORD" -G "$INGRESS_GATEWAY_HOSTNAME" -a "$CLEANUP_APISERVER_DNS_RECORD" -A "$APISERVER_HOSTNAME" -I "$CLEANUP_GATEWAY_IP_ADDRESS" -l "$ERROR_LOGGING_GUARD" -z "$CLOUDSDK_COMPUTE_ZONE" -R "$CLOUDSDK_COMPUTE_REGION" -r "$PROVISION_REGIONAL_CLUSTER" -d "$DISABLE_ASYNC_DEPROVISION" -s "$COMMON_NAME" -e "$GATEWAY_IP_ADDRESS" -f "$APISERVER_IP_ADDRESS" -N "$COMMON_NAME" -Z "$CLOUDSDK_DNS_ZONE_NAME" -E "$EXIT_STATUS" -j "$JOB_NAME"; ' EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"

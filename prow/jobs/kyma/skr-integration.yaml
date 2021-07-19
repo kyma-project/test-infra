@@ -4,6 +4,11 @@
 periodics: # runs on schedule
     - name: skr-azure-integration-dev
       annotations:
+        pipeline.clusterprovisioning: "keb"
+        pipeline.installer: "keb"
+        pipeline.platform: "gardener_azure"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -11,7 +16,6 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-keb-dev-credentials: "true"
-        preset-keb-plan-azure: "true"
         preset-kyma-integration-compass-dev: "true"
       cron: "5 1 * * *"
       skip_report: false
@@ -34,6 +38,11 @@ periodics: # runs on schedule
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
+            env:
+              - name: KEB_PLAN_ID
+                value: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
             resources:
               requests:
                 memory: 100Mi
@@ -47,6 +56,12 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: skr-azure-lite-integration-dev
       annotations:
+        pipeline.clusterprovisioning: "keb"
+        pipeline.installer: "keb"
+        pipeline.platform: "gardener_azure"
+        pipeline.profile: "evaluation"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -54,7 +69,6 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-keb-dev-credentials: "true"
-        preset-keb-plan-azure-lite: "true"
         preset-kyma-integration-compass-dev: "true"
       cron: "5 1 * * *"
       skip_report: false
@@ -77,6 +91,11 @@ periodics: # runs on schedule
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
+            env:
+              - name: KEB_PLAN_ID
+                value: "8cb22518-aa26-44c5-91a0-e669ec9bf443"
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
             resources:
               requests:
                 memory: 100Mi
@@ -90,6 +109,11 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: skr-aws-integration-dev
       annotations:
+        pipeline.clusterprovisioning: "keb"
+        pipeline.installer: "keb"
+        pipeline.platform: "gardener_aws"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -97,7 +121,6 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-keb-dev-credentials: "true"
-        preset-keb-plan-aws: "true"
         preset-kyma-integration-compass-dev: "true"
         preset-skr-al-service-key: "true"
       cron: "5 1 * * *"
@@ -121,6 +144,11 @@ periodics: # runs on schedule
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
+            env:
+              - name: KEB_PLAN_ID
+                value: "361c511f-f939-4621-b228-d0fb79a1fe15"
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
             resources:
               requests:
                 memory: 100Mi
@@ -134,6 +162,12 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: skr-trial-integration-dev
       annotations:
+        pipeline.clusterprovisioning: "keb"
+        pipeline.installer: "keb"
+        pipeline.platform: "gardener_azure"
+        pipeline.profile: "evaluation"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -141,7 +175,6 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-keb-dev-credentials: "true"
-        preset-keb-plan-trial: "true"
         preset-kyma-integration-compass-dev: "true"
       cron: "5 * * * *"
       skip_report: false
@@ -164,6 +197,11 @@ periodics: # runs on schedule
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
+            env:
+              - name: KEB_PLAN_ID
+                value: "7d55d31d-35ae-4438-bf13-6ffdfa107d9f"
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
             resources:
               requests:
                 memory: 100Mi
@@ -177,6 +215,12 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: skr-free-aws-integration-dev
       annotations:
+        pipeline.clusterprovisioning: "keb"
+        pipeline.installer: "keb"
+        pipeline.platform: "gardener_aws"
+        pipeline.profile: "evaluation"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -184,7 +228,6 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-keb-dev-credentials: "true"
-        preset-keb-plan-free-aws: "true"
         preset-kyma-integration-compass-dev: "true"
       cron: "5 1 * * *"
       skip_report: false
@@ -207,6 +250,13 @@ periodics: # runs on schedule
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
+            env:
+              - name: KEB_PLAN_ID
+                value: "b1a5764e-2ea1-4f95-94c0-2b4538b37b55"
+              - name: KEB_REGION
+                value: "cf-eu10"
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
             resources:
               requests:
                 memory: 100Mi

@@ -4,6 +4,8 @@
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-release-pr-image-guard
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-release-pr-image-guard"
@@ -25,7 +27,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210402-70b4b74f"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210701-e548bc20"
             securityContext:
               privileged: true
             command:

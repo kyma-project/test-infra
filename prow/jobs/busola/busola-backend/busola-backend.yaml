@@ -4,6 +4,8 @@
 presubmits: # runs on PRs
   kyma-project/busola:
     - name: pre-busola-backend
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-busola-backend"
@@ -11,7 +13,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^components/|^shared/|^package.json'
+      run_if_changed: '^backend/|^package.json'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -46,6 +48,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-rel124-busola-backend
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-rel124-busola-backend"
@@ -53,7 +57,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^components/|^shared/|^package.json'
+      run_if_changed: '^backend/|^package.json'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -87,6 +91,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-rel123-busola-backend
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-rel123-busola-backend"
@@ -94,7 +100,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^components/|^shared/|^package.json'
+      run_if_changed: '^backend/|^package.json'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -128,6 +134,8 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-rel122-busola-backend
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-rel122-busola-backend"
@@ -135,7 +143,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^components/|^shared/|^package.json'
+      run_if_changed: '^backend/|^package.json'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -173,6 +181,7 @@ postsubmits: # runs on main
   kyma-project/busola:
     - name: post-busola-backend
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -181,7 +190,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^components/|^shared/|^package.json'
+      run_if_changed: '^backend/|^package.json'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -217,6 +226,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-rel124-busola-backend
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -225,7 +235,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^components/|^shared/|^package.json'
+      run_if_changed: '^backend/|^package.json'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -260,6 +270,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-rel123-busola-backend
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -268,7 +279,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^components/|^shared/|^package.json'
+      run_if_changed: '^backend/|^package.json'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -303,6 +314,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-rel122-busola-backend
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -311,7 +323,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^components/|^shared/|^package.json'
+      run_if_changed: '^backend/|^package.json'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola

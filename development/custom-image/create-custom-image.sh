@@ -8,9 +8,8 @@ readonly ROOT_DIR=${CURRENT_DIR}/../../
 source "${ROOT_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${ROOT_DIR}/prow/scripts/lib/utils.sh"
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${ROOT_DIR}/prow/scripts/lib/gcloud.sh"
-
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "${ROOT_DIR}/prow/scripts/lib/gcp.sh"
 cleanup() {   
     log::info "Removing instance $VM_NAME"
     gcloud compute instances delete --quiet --zone "${ZONE}" "$VM_NAME"
@@ -21,7 +20,8 @@ cleanup() {
 }
 
 if [ "$CI" == "true" ]; then
-  gcloud::authenticate "$GOOGLE_APPLICATION_CREDENTIALS"
+  gcp::authenticate \
+    -c "$GOOGLE_APPLICATION_CREDENTIALS"
 fi
 
 
@@ -93,7 +93,7 @@ gcloud compute instances stop --zone="${ZONE}" "$VM_NAME"
 if [ "$JOB_TYPE" == "presubmit" ]; then
   IMAGE="$VM_NAME"
 else
-  IMAGE="kyma-deps-image-${DATE}"
+  IMAGE="kyma-deps-image-${DATE}-${PULL_BASE_SHA::6}"
 fi
 
 log::info "Creating the new image $IMAGE..."

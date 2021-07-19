@@ -48,7 +48,10 @@ gardener::cleanup() {
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         if [ -z "${CLEANUP_ONLY_SUCCEEDED}" ] || [[ -n "${CLEANUP_ONLY_SUCCEEDED}" && ${EXIT_STATUS} -eq 0 ]]; then
             log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
-            gardener::deprovision_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
+            gardener::deprovision_cluster \
+                -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+                -c "${CLUSTER_NAME}" \
+                -f "${GARDENER_KYMA_PROW_KUBECONFIG}"
         fi
     fi
 
@@ -351,11 +354,9 @@ gardener::test_kyma() {
 
     # collect logs from failed tests before deprovisioning
     kyma::run_test_log_collector "kyma-integration-gardener-azure"
-    if ! kyma::test_summary; then
-        log::error "Tests have failed"
-        set -e
-        return 1
-    fi
+
+    kyma::test_summary \
+        -s "$SUITE_NAME"
     set -e
-    log::success "Tests completed"
+    return "${kyma_test_summary_return_exit_code:?}"
 }
