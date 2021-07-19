@@ -10,6 +10,7 @@
 | pre-main-kyma-integration-k3s-central-app-gateway-compass | k3s | k3s | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-serverless-integration-k3s | k3s | k3s | kyma deploy |  | pr-submit |  helm serverless-test  |
 | pre-main-serverless-integration-alpha-k3s | k3s | k3s | kyma deploy |  | pr-submit |  helm serverless-test  |
+| pre-main-cluster-users-integration-minikube | minikube | minikube --driver=none | kyma install |  | pr-submit |  bash resources/cluster-users/files/sar-test.sh  |
 | pre-main-kyma-gke-integration | gke | gcloud cli | kyma install |  | pr-submit |  octopus  |
 | pre-main-kyma-gke-upgrade | gke | gcloud cli | kubectl-apply |  | pr-submit |  octopus  |
 | post-main-kyma-integration | minikube | minikube | kyma install |  | pr-merge |  octopus  |
