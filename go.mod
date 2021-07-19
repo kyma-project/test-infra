@@ -10,7 +10,9 @@ replace (
 )
 
 require (
+	cloud.google.com/go v0.81.0
 	cloud.google.com/go/bigquery v1.8.0
+	cloud.google.com/go/pubsub v1.4.0
 	cloud.google.com/go/storage v1.12.0
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
@@ -21,6 +23,7 @@ require (
 	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/google/go-github/v31 v31.0.0
+	github.com/google/go-github/v36 v36.0.0
 	github.com/google/go-querystring v1.0.0
 	github.com/google/gofuzz v1.2.1-0.20210504230335-f78f29fc09ea // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
