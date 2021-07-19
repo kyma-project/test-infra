@@ -24,7 +24,6 @@ This document lists all types of Secrets used in the `kyma-prow` and `workload-k
 | **whitesource** keys | Copied directly from the bucket when executing a job. These Secrets are not stored on the cluster. |
 | **github-integration** | Used to authorize GitHub applications configured in the `kyma-project` organization. See the **[OAuth Apps](https://developer.github.com/apps/building-oauth-apps/)** section in GitHub.|
 | **sa-*** | Service Accounts used in pipelines. Find more information [here](/docs/prow/authorization.md).|
-| **kyma-website-bot-zenhub-token** | ZenHub token for the `kyma-website-bot` account.|
 | **kyma-bot-github-token**| Personal access token called `prow-job` used by the `kyma-bot` GitHub user.|
 | **kyma-guard-bot-github-token** | Personal access token for the `kyma-guard-bot` GitHub account.|
 | **kyma-bot@sap.com**| Stores credentials to the `kyma-bot` GitHub account. |
