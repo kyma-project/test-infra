@@ -10,7 +10,7 @@ Follow these steps to install `kubernetes-external-secrets` on an untrusted clus
 
 1. Create the `external-secrets` namespace. Run `kubectl create namespace external-secrets`.
 2. Add the `sa-secret-manager-untrusted` secret containing credentials for GCP service account with permission to access secrets.
-3. Add `external-secrets` Helm repo. Run `helm repo add external-secrets https://external-secrets.github.io/kubernetes-external-secrets`.
+3. Add `external-secrets` Helm repo. Run `helm repo add external-secrets https://external-secrets.github.io/kubernetes-external-secrets/`.
 4. Install `external-secrets/kubernetes-external-secrets` Helm chart. Run `helm install -f prow/cluster/resources/external-secrets/values_untrusted.yaml -n external-secrets kubernetes-external-secrets external-secrets/kubernetes-external-secrets`.
 # Configuration
 
