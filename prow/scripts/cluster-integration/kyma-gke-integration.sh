@@ -83,9 +83,9 @@ utils::check_required_vars "${requiredVars[@]}"
 # utils::post_hook call set +f at the beginning.
 trap 'EXIT_STATUS=$?; set -f; utils::post_hook -n "$COMMON_NAME" -p "$CLOUDSDK_CORE_PROJECT" -c "$CLEANUP_CLUSTER" -g "$CLEANUP_GATEWAY_DNS_RECORD" -G "$INGRESS_GATEWAY_HOSTNAME" -a "$CLEANUP_APISERVER_DNS_RECORD" -A "$APISERVER_HOSTNAME" -I "$CLEANUP_GATEWAY_IP_ADDRESS" -l "$ERROR_LOGGING_GUARD" -z "$CLOUDSDK_COMPUTE_ZONE" -R "$CLOUDSDK_COMPUTE_REGION" -r "$PROVISION_REGIONAL_CLUSTER" -d "$DISABLE_ASYNC_DEPROVISION" -s "$COMMON_NAME" -e "$GATEWAY_IP_ADDRESS" -f "$APISERVER_IP_ADDRESS" -N "$COMMON_NAME" -Z "$CLOUDSDK_DNS_ZONE_NAME" -E "$EXIT_STATUS" -j "$JOB_NAME"' EXIT INT
 
-#utils::run_jobguard \
-#    -b "$BUILD_TYPE" \
-#    -P "$TEST_INFRA_SOURCES_DIR"
+utils::run_jobguard \
+    -b "$BUILD_TYPE" \
+    -P "$TEST_INFRA_SOURCES_DIR"
 
 utils::generate_vars_for_build \
     -b "$BUILD_TYPE" \
@@ -165,16 +165,6 @@ gcp::provision_k8s_cluster \
     -e "$GKE_ENABLE_POD_SECURITY_POLICY" \
     -P "$TEST_INFRA_SOURCES_DIR"
 export CLEANUP_CLUSTER="true"
-
-
-## Cosigned integration
-if ! [ -z "${COSIGNED_ENABLED}" ]; then
-    echo "Cosigned integration enabled"
-
-
-fi
-
-exit
 
 utils::generate_self_signed_cert \
     -d "$DNS_DOMAIN" \
