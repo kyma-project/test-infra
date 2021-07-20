@@ -5,10 +5,9 @@ set -o pipefail
 
 export KYMA_SOURCES_DIR="./kyma"
 export LOCAL_KYMA_DIR="./local-kyma"
-export TEST_INFRA_SOURCES_DIR="./test-infra"
 
-# shellcheck source=prow/scripts/lib/kyma.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
+# shellcheck source=home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/lib/kyma.sh
+source "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/lib/kyma.sh"
 
 prereq_test() {
     command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
