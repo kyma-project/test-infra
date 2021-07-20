@@ -173,3 +173,11 @@ RUN wget -q https://github.com/Peripli/service-manager-cli/releases/download/${S
     tar xzf smctl-${SMCTL_VERSION}-linux-amd64.tar.gz && \
     rm smctl-${SMCTL_VERSION}-linux-amd64.tar.gz && \
     mv smctl /usr/local/go/bin
+
+
+#################################################################
+################ Install Cosign ####################
+#################################################################
+ENV COSIGN_VERSION=v0.2.0
+RUN wget https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64 -O /usr/local/bin/cosign &&\
+    chmod +x /usr/local/bin/cosign
