@@ -29,11 +29,11 @@ globalSets:
   image_buildpack-node:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20210402-70b4b74f"
   image_buildpack-golang:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210713-bdbc20c8"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210720-85a868a0"
   image_buildpack-golang-kubebuilder2:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210713-bdbc20c8"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210720-85a868a0"
   image_buildpack-golang-toolbox:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210713-bdbc20c8"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210720-85a868a0"
   image_wssagent:
     image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
   # JobConfig sets
