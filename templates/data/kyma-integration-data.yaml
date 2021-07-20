@@ -521,6 +521,29 @@ templates:
                     - "request_big"
                     - "gke_job_template"
                     - "gke_job_labels_template"
+              - jobConfig:
+                  name: "pre-main-kyma-gke-integration-cosigned"
+                  # following regexp won't start build if only Markdown files were changed
+                  optional: true
+                  labels:
+                    preset-build-pr: "true"
+                    preset-gke-pod-security-policy: "true"
+                  env:
+                    GKE_CLUSTER_VERSION_OVERRIDE: "1.19"
+                    COSIGNED_ENABLED: "true"
+                inheritedConfigs:
+                  global:
+                  - "jobConfig_default"
+                  - "jobConfig_presubmit"
+                  - "image_kyma-integration"
+                  - "extra_refs_test-infra"
+                  local:
+                  - "jobConfig_default"
+                  - "request_big"
+                  - "gke_job_template"
+                  - "gke_job_labels_template"
+
+
               # - jobConfig:
               #     name: "pre-main-kyma-gke-rapid-integration"
               #     labels:
