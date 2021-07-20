@@ -83,9 +83,9 @@ utils::check_required_vars "${requiredVars[@]}"
 # utils::post_hook call set +f at the beginning.
 trap 'EXIT_STATUS=$?; set -f; utils::post_hook -n "$COMMON_NAME" -p "$CLOUDSDK_CORE_PROJECT" -c "$CLEANUP_CLUSTER" -g "$CLEANUP_GATEWAY_DNS_RECORD" -G "$INGRESS_GATEWAY_HOSTNAME" -a "$CLEANUP_APISERVER_DNS_RECORD" -A "$APISERVER_HOSTNAME" -I "$CLEANUP_GATEWAY_IP_ADDRESS" -l "$ERROR_LOGGING_GUARD" -z "$CLOUDSDK_COMPUTE_ZONE" -R "$CLOUDSDK_COMPUTE_REGION" -r "$PROVISION_REGIONAL_CLUSTER" -d "$DISABLE_ASYNC_DEPROVISION" -s "$COMMON_NAME" -e "$GATEWAY_IP_ADDRESS" -f "$APISERVER_IP_ADDRESS" -N "$COMMON_NAME" -Z "$CLOUDSDK_DNS_ZONE_NAME" -E "$EXIT_STATUS" -j "$JOB_NAME"' EXIT INT
 
-utils::run_jobguard \
-    -b "$BUILD_TYPE" \
-    -P "$TEST_INFRA_SOURCES_DIR"
+#utils::run_jobguard \
+#    -b "$BUILD_TYPE" \
+#    -P "$TEST_INFRA_SOURCES_DIR"
 
 utils::generate_vars_for_build \
     -b "$BUILD_TYPE" \
@@ -165,6 +165,36 @@ gcp::provision_k8s_cluster \
     -e "$GKE_ENABLE_POD_SECURITY_POLICY" \
     -P "$TEST_INFRA_SOURCES_DIR"
 export CLEANUP_CLUSTER="true"
+
+
+## Cosigned integration
+if ! [ -z "${COSIGNED_ENABLED}" ]; then
+    echo "Cosigned integration enabled"
+    
+    # Installing ko, used to create a binary for cosigned
+    go install github.com/google/ko
+
+    # Setting the repo for KO binary
+    export KO_DOCKER_REPO="eu.gcr.io/sap-kyma-neighbors-dev/cosign"
+    
+    # Installing cert-manager, might need elevating permissions for GKE
+    kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.4.0/cert-manager.yaml
+    
+    # Installing Kustomize
+    curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+
+    # Installing Cosigned
+    git clone https://github.com/dlorenc/cosigned.git
+    cd cosigned && make deploy
+
+
+    # Pushing public key to the Cosigned configMap. To be modified with the publicly hosted key on GH.
+    curl https://raw.githubusercontent.com/kyma-project/test-infra/main/prow/scripts/resources/cosigned/public-key.pub
+    kubectl create configmap cosigned-config -n cosigned-system --dry-run=client -oyaml --from-file=keys=public-key.pub  | kubectl apply -f -
+
+fi
+
+exit
 
 utils::generate_self_signed_cert \
     -d "$DNS_DOMAIN" \
