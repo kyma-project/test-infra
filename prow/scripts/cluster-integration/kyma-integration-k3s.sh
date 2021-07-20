@@ -5,6 +5,9 @@ set -o pipefail
 
 export KYMA_SOURCES_DIR="./kyma"
 export LOCAL_KYMA_DIR="./local-kyma"
+export TEST_INFRA_SOURCES_DIR="./test-infra"
+
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 
 prereq_test() {
     command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
@@ -31,6 +34,11 @@ prepare_k3s() {
     popd
 }
 
+deploy_kyma() {
+    kyma::install_cli
+    kyma::alpha_deploy_kyma
+}
+
 run_tests() {
     pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
     if [[ -v COMPASS_INTEGRATION_ENABLED && -v CENTRAL_APPLICATION_GATEWAY_ENABLED ]]; then
@@ -48,4 +56,5 @@ run_tests() {
 prereq_test
 load_env
 prepare_k3s
+deploy_kyma
 run_tests
