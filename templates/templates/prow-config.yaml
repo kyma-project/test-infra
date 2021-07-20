@@ -207,6 +207,7 @@ tide:
     kyma-incubator/opensap: squash
 #    kyma-incubator/wormhole: squash
 #    kyma-incubator/k8s-service-catalog: squash
+    kyma-incubator/Kyma-Showcase: squash
   target_url: https://status.build.kyma-project.io/tide
   pr_status_base_urls:
     '*': https://status.build.kyma-project.io/pr
