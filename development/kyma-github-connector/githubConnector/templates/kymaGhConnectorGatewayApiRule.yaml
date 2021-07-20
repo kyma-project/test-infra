@@ -10,10 +10,10 @@ spec:
     gateway: kyma-gateway.kyma-system.svc.cluster.local
     service:
       name: {{ .Release.Name}}-gh-webhook-gateway
-      port: {{ .Values.webhookGateway.sapToolsRepo.containerPort }}
+      port: {{ .Values.webhookGateway.kymaRepo.containerPort }}
       host: ghwebhook.{{ .Values.kymaClusterHostname }}
     rules:
-      - path: {{ .Values.webhookGateway.sapToolsRepo.githubWebhookUrlPath }}
+      - path: {{ .Values.webhookGateway.kymaRepo.githubWebhookUrlPath }}
         methods: ["POST"]
         accessStrategies:
           - handler: noop

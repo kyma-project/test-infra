@@ -10,5 +10,8 @@ data:
   kymaEventingProxy: {{ .Values.webhookGateway.eventPublisherProxyURL | quote }}
   notificationSlackChannel: {{ default "kyma-prow-dev-null" .Values.slackConnector.notificationSlackChannel | quote}}
   appName: {{ .Values.appName | quote }}
-  ghWebhookGatewayPodPort: {{ .Values.webhookGateway.containerPort | quote }}
+  sapToolsGithubWebhookGatewayContainerPort: {{ .Values.webhookGateway.sapToolsRepo.containerPort | quote }}
+  kymaGithubWebhookGatewayContainerPort: {{ .Values.webhookGateway.kymaRepo.containerPort | quote }}
   slackConnectorApiId: {{ .Values.slackConnector.apiId | upper }}
+  sapToolsGithubWebhookUrlPath: {{ .Values.webhookGateway.sapToolsRepo.githubWebhookUrlPath }}
+  kymaGithubWebhookUrlPath: {{ .Values.webhookGateway.kymaRepo.githubWebhookUrlPath }}

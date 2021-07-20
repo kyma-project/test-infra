@@ -18,7 +18,7 @@ spec:
         release: {{ .Release.Name | quote }}
     spec:
       containers:
-      - name: ghwebhookgateway
+      - name: saptoolsghwebhookgateway
         imagePullPolicy: Always
         image: {{ .Values.webhookGateway.image }}
         resources:
@@ -26,7 +26,7 @@ spec:
             memory: 256Mi
             cpu: 500m
         ports:
-        - containerPort: {{ .Values.webhookGateway.containerPort }}
+        - containerPort: {{ .Values.webhookGateway.sapToolsRepo.containerPort }}
         env:
         - name: GITHUB_WEBHOOK_GATEWAY_NAME
           value: {{ .Release.Name }}-gh-webhook-gateway
@@ -34,7 +34,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ .Release.Name }}-ghsecret
-              key: secret
+              key: sapToolsGithubWebhookSecret
         - name: EVENTING_SERVICE
           valueFrom:
             configMapKeyRef:
@@ -44,9 +44,50 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: {{ .Release.Name }}-gh-webhook-gateway-config
-              key: ghWebhookGatewayPodPort
+              key: sapToolsGithubWebhookGatewayContainerPort
         - name: APP_NAME
           valueFrom:
             configMapKeyRef:
               key: appName
               name: {{ .Release.Name }}-gh-webhook-gateway-config
+        - name: GITHUB_WEBHOOK_URL_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: sapToolsGithubWebhookUrlPath
+              name: {{ .Release.Name }}-gh-webhook-gateway-config
+      - name: kymaghwebhookgateway
+        imagePullPolicy: Always
+        image: {{ .Values.webhookGateway.image }}
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 500m
+        ports:
+          - containerPort: {{ .Values.webhookGateway.kymaRepo.containerPort }}
+        env:
+          - name: GITHUB_WEBHOOK_GATEWAY_NAME
+            value: {{ .Release.Name }}-gh-webhook-gateway
+          - name: GITHUB_WEBHOOK_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}-ghsecret
+                key: kymaGithubWebhookSecret
+          - name: EVENTING_SERVICE
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Release.Name }}-gh-webhook-gateway-config
+                key: kymaEventingProxy
+          - name: LISTEN_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Release.Name }}-gh-webhook-gateway-config
+                key: kymaGithubWebhookGatewayContainerPort
+          - name: APP_NAME
+            valueFrom:
+              configMapKeyRef:
+                key: appName
+                name: {{ .Release.Name }}-gh-webhook-gateway-config
+          - name: GITHUB_WEBHOOK_URL_PATH
+            valueFrom:
+              configMapKeyRef:
+                key: kymaGithubWebhookUrlPath

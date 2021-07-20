@@ -2,15 +2,31 @@
 appName: "github-connector"
 webhookGateway:
   # Github webhook gateway container listening port for incoming webhooks.
-  containerPort: 8080
+  #containerPort: 8080
   # Github webhook gateway image.
   image: "eu.gcr.io/kyma-project/test-infra/github-webhook-gateway:PR-3701"
   # Secret set for Github webhooks.
-  webhookSecretValue: "dummy-secret"
+  #webhookSecretValue: "dummy-secret"
   # Kyma cluster FQDN.
   eventPublisherProxyURL: "http://eventing-event-publisher-proxy.kyma-system/publish"
   # Event type published to Kyma
   eventType: "issuesevent.labeled.v1"
+  # API gateway URL path for receiving github webhooks.
+  githubWebhookUrlPath: "/webhook"
+  sapToolsRepo:
+    # Github webhook gateway container listening port for incoming webhooks.
+    containerPort: 8080
+    # Secret set for Github webhooks.
+    webhookSecretValue: "dummy-secret"
+    # API gateway URL path for receiving github webhooks.
+    githubWebhookUrlPath: "/webhook"
+  kymaRepo:
+    # Github webhook gateway container listening port for incoming webhooks.
+    containerPort: 8081
+    # Secret set for Github webhooks.
+    webhookSecretValue: "dummy-secret"
+    # API gateway URL path for receiving github webhooks.
+    githubWebhookUrlPath: "/kyma-webhook"
 # Kyma cluster FQDN.
 kymaClusterHostname: "c-6751197.kyma.shoot.live.k8s-hana.ondemand.com"
 
