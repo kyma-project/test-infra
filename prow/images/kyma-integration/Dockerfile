@@ -163,3 +163,13 @@ RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cl
 #################################################################
 
 RUN go get golang.org/x/perf/cmd/...
+
+#################################################################
+####################### Install smctl ###########################
+#################################################################
+
+ENV SMCTL_VERSION=v1.11.10
+RUN wget -q https://github.com/Peripli/service-manager-cli/releases/download/${SMCTL_VERSION}/smctl-${SMCTL_VERSION}-linux-amd64.tar.gz && \
+    tar xzf smctl-${SMCTL_VERSION}-linux-amd64.tar.gz && \
+    rm smctl-${SMCTL_VERSION}-linux-amd64.tar.gz && \
+    mv smctl /usr/local/go/bin
