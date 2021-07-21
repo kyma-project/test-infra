@@ -15,7 +15,7 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-type ExternalSecretData struct {
+type externalSecretData struct {
 	Key      string `json:"key,omitempty"`
 	Name     string `json:"name,omitempty"`
 	Version  string `json:"version,omitempty"`
@@ -23,20 +23,22 @@ type ExternalSecretData struct {
 	IsBinary bool   `json:"isBinary,omitempty"`
 }
 
-type ExternalSecretSpec struct {
+type externalSecretSpec struct {
 	BackendType string
-	Data        []ExternalSecretData
-	ProjectId   string `json:"projectId"`
+	Data        []externalSecretData
+	ProjectID   string `json:"projectId"`
 }
 
+// ExternalSecret stores one externalSecret data
 type ExternalSecret struct {
 	ApiVersion string
 	Kind       string
 	Metadata   v1.ObjectMeta
-	Spec       ExternalSecretSpec
+	Spec       externalSecretSpec
 	Status     v1.Status
 }
 
+// ExternalSecretsList stores list of external secrets returned by the REST API
 type ExternalSecretsList struct {
 	ApiVersion string
 	Items      []ExternalSecret
@@ -112,7 +114,7 @@ func main() {
 	}
 	if !externalSecretsSuccesful {
 		fmt.Println("At least one externalsecret was not synchronized succesfully")
-		exitCode += 1
+		exitCode++
 	}
 
 	if !secretsDeclaredAsExternal {
