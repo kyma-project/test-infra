@@ -31,7 +31,7 @@ type externalSecretSpec struct {
 
 // ExternalSecret stores one externalSecret data
 type ExternalSecret struct {
-	ApiVersion string
+	APIVersion string `json:"apiVersion"`
 	Kind       string
 	Metadata   v1.ObjectMeta
 	Spec       externalSecretSpec
@@ -40,7 +40,7 @@ type ExternalSecret struct {
 
 // ExternalSecretsList stores list of external secrets returned by the REST API
 type ExternalSecretsList struct {
-	ApiVersion string
+	APIVersion string `json:"apiVersion"`
 	Items      []ExternalSecret
 	Kind       string
 	Metadata   v1.ListMeta
