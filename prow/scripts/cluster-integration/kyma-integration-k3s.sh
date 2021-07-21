@@ -6,9 +6,9 @@ set -o pipefail
 export KYMA_SOURCES_DIR="./kyma"
 export LOCAL_KYMA_DIR="./local-kyma"
 
-readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# shellcheck source=prow/scripts/lib/kyma.sh
-source "${CURRENT_DIR}/test-infra/prow/scripts/lib/kyma.sh"
+# readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# # shellcheck source=prow/scripts/lib/kyma.sh
+# source "${CURRENT_DIR}/test-infra/prow/scripts/lib/kyma.sh"
 
 prereq_test() {
     command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
@@ -35,10 +35,49 @@ prepare_k3s() {
     popd
 }
 
-deploy_kyma() {
-    kyma::install_cli
-    kyma::alpha_deploy_kyma
+host::os() {
+  local host_os
+  case "$(uname -s)" in
+  Darwin)
+    host_os=darwin
+    ;;
+  Linux)
+    host_os=linux
+    ;;
+  *)
+    echo >&2 -e "Unsupported host OS. Must be Linux or Mac OS X."
+    exit 1
+    ;;
+  esac
+  echo "${host_os}"
 }
+
+install_kyma_cli() {
+  local settings
+  local kyma_version
+  mkdir -p "/usr/local/bin"
+  os=$(host::os)
+
+  pushd "/usr/local/bin" || exit
+
+  echo "Install kyma CLI ${os} locally to /usr/local/bin..."
+
+  curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}?alt=media"
+  chmod +x kyma
+  kyma_version=$(kyma version --client)
+  echo "Kyma CLI version: ${kyma_version}"
+
+  echo "OK"
+
+  popd || exit
+
+  eval "${settings}"
+}
+
+# deploy_kyma() {
+#     kyma::install_cli
+#     kyma::alpha_deploy_kyma
+# }
 
 run_tests() {
     pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
@@ -57,5 +96,6 @@ run_tests() {
 prereq_test
 load_env
 prepare_k3s
-deploy_kyma
+install_kyma_cli
+# deploy_kyma
 run_tests
