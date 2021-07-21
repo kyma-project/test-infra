@@ -74,10 +74,13 @@ install_kyma_cli() {
   eval "${settings}"
 }
 
-# deploy_kyma() {
-#     kyma::install_cli
-#     kyma::alpha_deploy_kyma
-# }
+deploy_kyma() {
+
+    # kyma alpha deploy -p evaluation --component cluster-essentials,serverless --atomic --ci --value "$REGISTRY_VALUES" --value global.ingress.domainName="$DOMAIN" --value "serverless.webhook.values.function.resources.defaultPreset=M" -s local -w $KYMA_SOURCES_DIR
+    # kyma alpha deploy --ci --profile "$executionProfile" --value global.isBEBEnabled=true --source=local --workspace "${kymaSourcesDir}" --verbose
+    kyma alpha deploy --ci --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
+    # kyma alpha deploy --ci --components-file "$PWD/components.yaml" --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
+}
 
 run_tests() {
     pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
@@ -97,5 +100,5 @@ prereq_test
 load_env
 prepare_k3s
 install_kyma_cli
-# deploy_kyma
+deploy_kyma
 run_tests
