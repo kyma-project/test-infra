@@ -47,6 +47,10 @@ prepare_k3s() {
     REGISTRY_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' /registry.localhost)
     echo "${REGISTRY_IP} registry.localhost" >> /etc/hosts
     
+    kubectl version
+    kubectl get nodes
+    kubectl get pods
+
     popd
 }
 
@@ -91,11 +95,10 @@ install_kyma_cli() {
 
 deploy_kyma() {
 
-    kyma alpha provision k3s --ci --verbose
-
     # kyma alpha deploy -p evaluation --component cluster-essentials,serverless --atomic --ci --value "$REGISTRY_VALUES" --value global.ingress.domainName="$DOMAIN" --value "serverless.webhook.values.function.resources.defaultPreset=M" -s local -w $KYMA_SOURCES_DIR
     # kyma alpha deploy --ci --profile "$executionProfile" --value global.isBEBEnabled=true --source=local --workspace "${kymaSourcesDir}" --verbose
-    kyma alpha deploy --ci --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
+    # kyma alpha deploy --ci --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
+    kyma alpha deploy --ci --verbose
     # kyma alpha deploy --ci --components-file "$PWD/components.yaml" --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
 }
 
@@ -115,7 +118,7 @@ run_tests() {
 
 prereq_test
 load_env
-# prepare_k3s
+prepare_k3s
 install_kyma_cli
 deploy_kyma
 run_tests
