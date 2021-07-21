@@ -114,8 +114,7 @@ func main() {
 			for _, externalSecret := range externalSecretsList.Items {
 				if !o.skipStatusCheck {
 					if externalSecret.Status.Status != "SUCCESS" {
-						// externalSecretName := externalSecret.Metadata.Name
-						fmt.Printf("ExternalSecret \"%s\" in %s namespace failed to synchronize with status \"%s\"\n", externalSecret.Metadata.Name, namespace.Name, externalSecret.Status.Status)
+						fmt.Printf("ExternalSecret \"%s\" in namespace \"%s\" failed to synchronize with status \"%s\"\n", externalSecret.Metadata.Name, namespace.Name, externalSecret.Status.Status)
 						externalSecretsSuccesful = false
 					}
 				}
@@ -133,7 +132,7 @@ func main() {
 						// omit ignored ones
 						if !nameInSlice(sec.Name, ignoredSecrets[namespace.Name]) {
 							if !nameInSlice(sec.Name, externalSecretsNames) {
-								fmt.Printf("Secret \"%s\" in %s namespace was not declared as ExternalSecret\n", sec.Name, namespace.Name)
+								fmt.Printf("Secret \"%s\" in namespace \"%s\" was not declared as ExternalSecret\n", sec.Name, namespace.Name)
 								secretsDeclaredAsExternal = false
 							}
 						}
@@ -154,7 +153,7 @@ func main() {
 	}
 
 	if exitCode == 0 {
-		fmt.Println("No issues detected :)")
+		fmt.Println("No issues detected.")
 	}
 
 	os.Exit(exitCode)
