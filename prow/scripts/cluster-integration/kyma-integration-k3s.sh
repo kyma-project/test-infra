@@ -6,10 +6,6 @@ set -o pipefail
 export KYMA_SOURCES_DIR="./kyma"
 export LOCAL_KYMA_DIR="./local-kyma"
 
-# readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# # shellcheck source=prow/scripts/lib/kyma.sh
-# source "${CURRENT_DIR}/test-infra/prow/scripts/lib/kyma.sh"
-
 prereq_test() {
     command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
     command -v npm >/dev/null 2>&1 || { echo >&2 "npm not found"; exit 1; }
@@ -27,7 +23,26 @@ load_env() {
 
 prepare_k3s() {
     pushd ${LOCAL_KYMA_DIR}
-    ./create-cluster-k3s.sh
+    # ./create-cluster-k3s.sh
+    # copied here
+    set -o errexit
+
+    echo "starting docker registry"
+    sudo mkdir -p /etc/rancher/k3s
+    sudo cp registries.yaml /etc/rancher/k3s
+    docker run -d \
+    -p 5000:5000 \
+    --restart=always \
+    --name registry.localhost \
+    -v $PWD/registry:/var/lib/registry \
+    eu.gcr.io/kyma-project/test-infra/docker-registry-2:20200202
+
+    echo "starting cluster"
+    curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION="v1.19.7+k3s1" K3S_KUBECONFIG_MODE=777 INSTALL_K3S_EXEC="server --disable traefik" sh -
+    mkdir -p ~/.kube
+    cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
+    chmod 600 ~/.kube/config
+    # end
 
     REGISTRY_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' /registry.localhost)
     echo "${REGISTRY_IP} registry.localhost" >> /etc/hosts
@@ -76,6 +91,8 @@ install_kyma_cli() {
 
 deploy_kyma() {
 
+    kyma alpha provision k3s --ci --verbose
+
     # kyma alpha deploy -p evaluation --component cluster-essentials,serverless --atomic --ci --value "$REGISTRY_VALUES" --value global.ingress.domainName="$DOMAIN" --value "serverless.webhook.values.function.resources.defaultPreset=M" -s local -w $KYMA_SOURCES_DIR
     # kyma alpha deploy --ci --profile "$executionProfile" --value global.isBEBEnabled=true --source=local --workspace "${kymaSourcesDir}" --verbose
     kyma alpha deploy --ci --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
@@ -98,7 +115,7 @@ run_tests() {
 
 prereq_test
 load_env
-prepare_k3s
+# prepare_k3s
 install_kyma_cli
 deploy_kyma
 run_tests
