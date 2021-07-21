@@ -58,7 +58,7 @@ func gatherOptions() options {
 	o := options{}
 	flag.BoolVar(&o.skipStatusCheck, "skip-status-check", false, "Skip status check of externalSecrets.")
 	// TODO this is ugly help message
-	flag.BoolVar(&o.skipSecretsCheck, "skip-secrets-check", false, "Skip secret to externalSecret conenction check.")
+	flag.BoolVar(&o.skipSecretsCheck, "skip-secrets-check", false, "Skip check if each secret is connected to externalSecret.")
 	flag.StringVar(&o.namespaces, "namespaces", "", "names of namespaces to check, separated by comma. If empty checks all.")
 	flag.StringVar(&o.ignoredSecrets, "ignored-secrets", "", "names of ignored secrets in namespace/secretName format, separated by comma.")
 	flag.StringVar(&o.kubeconfig, "kubeconfig", "", "Path to kubeconfig file.")
@@ -87,14 +87,17 @@ func main() {
 	}
 
 	ignoredSecrets := make(map[string][]string)
-	ignoredSecretsSplit := strings.Split(o.ignoredSecrets, ",")
-	for _, ignored := range ignoredSecretsSplit {
-		split := strings.Split(ignored, "/")
+	if o.ignoredSecrets != "" {
+		ignoredSecretsSplit := strings.Split(o.ignoredSecrets, ",")
+		for _, ignored := range ignoredSecretsSplit {
+			split := strings.Split(ignored, "/")
 
-		ignoredSecrets[split[0]] = append(ignoredSecrets[split[0]], split[1])
+			ignoredSecrets[split[0]] = append(ignoredSecrets[split[0]], split[1])
+		}
 	}
 
 	for _, namespace := range namespaces.Items {
+		// check if we have defined list of namespaces to check, otherwise check all
 		if len(checkedNamespaces) == 0 || nameInSlice(namespace.Name, checkedNamespaces) {
 			// get all externalSecrets in a namespace
 			externalSecretsJSON, err := client.RESTClient().Get().AbsPath("/apis/kubernetes-client.io/v1").Namespace(namespace.Name).Resource("externalsecrets").DoRaw(context.Background())
@@ -127,6 +130,7 @@ func main() {
 				for _, sec := range secrets.Items {
 					// get only user-created secrets
 					if sec.Type == "Opaque" {
+						// omit ignored ones
 						if !nameInSlice(sec.Name, ignoredSecrets[namespace.Name]) {
 							if !nameInSlice(sec.Name, externalSecretsNames) {
 								fmt.Printf("Secret \"%s\" in %s namespace was not declared as ExternalSecret\n", sec.Name, namespace.Name)
