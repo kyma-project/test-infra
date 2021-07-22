@@ -22,12 +22,14 @@ load_env() {
 }
 
 prepare_k3s() {
+    echo " --- Preparing k3s --- "
+
     pushd ${LOCAL_KYMA_DIR}
     # ./create-cluster-k3s.sh
     # copied here
     set -o errexit
 
-    echo "starting docker registry"
+    echo "-> Starting Docker registry"
     sudo mkdir -p /etc/rancher/k3s
     sudo cp registries.yaml /etc/rancher/k3s
     docker run -d \
@@ -37,7 +39,7 @@ prepare_k3s() {
     -v $PWD/registry:/var/lib/registry \
     eu.gcr.io/kyma-project/test-infra/docker-registry-2:20200202
 
-    echo "starting cluster"
+    echo "-> Starting cluster"
     curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION="v1.19.7+k3s1" K3S_KUBECONFIG_MODE=777 INSTALL_K3S_EXEC="server --disable traefik" sh -
     mkdir -p ~/.kube
     cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
@@ -45,10 +47,12 @@ prepare_k3s() {
     # end
 
     REGISTRY_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' /registry.localhost)
-    echo "${REGISTRY_IP} registry.localhost" >> /etc/hosts
-    
+    echo "Registry IP: ${REGISTRY_IP} registry.localhost" >> /etc/hosts
+    echo "-> Kubernetes version:"
     kubectl version
+    echo "get nodes:"
     kubectl get nodes
+    echo "get pods:"
     kubectl get pods
 
     popd
@@ -85,7 +89,6 @@ install_kyma_cli() {
   chmod +x kyma
   kyma_version=$(kyma version --client)
   echo "Kyma CLI version: ${kyma_version}"
-
   echo "OK"
 
   popd || exit
@@ -94,12 +97,15 @@ install_kyma_cli() {
 }
 
 deploy_kyma() {
-
+    echo "-> Starting Kyma deploy:"
     # kyma alpha deploy -p evaluation --component cluster-essentials,serverless --atomic --ci --value "$REGISTRY_VALUES" --value global.ingress.domainName="$DOMAIN" --value "serverless.webhook.values.function.resources.defaultPreset=M" -s local -w $KYMA_SOURCES_DIR
     # kyma alpha deploy --ci --profile "$executionProfile" --value global.isBEBEnabled=true --source=local --workspace "${kymaSourcesDir}" --verbose
     # kyma alpha deploy --ci --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
     kyma alpha deploy --ci --verbose
     # kyma alpha deploy --ci --components-file "$PWD/components.yaml" --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
+
+    echo "Kyma deploy done"
+    kubectl get pods
 }
 
 run_tests() {
