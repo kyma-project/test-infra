@@ -97,8 +97,6 @@ install_kyma_cli() {
 }
 
 deploy_kyma() {
-    cat "${KYMA_SOURCES_DIR}/sources/installation/resources/components.yaml"
-
     echo "-> Starting Kyma deploy:"
     # kyma alpha deploy -p evaluation --component cluster-essentials,serverless --atomic --ci --value "$REGISTRY_VALUES" --value global.ingress.domainName="$DOMAIN" --value "serverless.webhook.values.function.resources.defaultPreset=M" -s local -w $KYMA_SOURCES_DIR
     # kyma alpha deploy --ci --profile "$executionProfile" --value global.isBEBEnabled=true --source=local --workspace "${kymaSourcesDir}" --verbose
