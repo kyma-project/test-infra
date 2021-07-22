@@ -47,18 +47,13 @@ type ExternalSecretsList struct {
 	Metadata   v1.ListMeta
 }
 type options struct {
-	skipStatusCheck  bool
-	skipSecretsCheck bool
-	namespaces       string
-	ignoredSecrets   string
-	kubeconfig       string
+	namespaces     string
+	ignoredSecrets string
+	kubeconfig     string
 }
 
 func gatherOptions() options {
 	o := options{}
-	flag.BoolVar(&o.skipStatusCheck, "skip-status-check", false, "Skip status check of externalSecrets.")
-	// TODO this is ugly help message
-	flag.BoolVar(&o.skipSecretsCheck, "skip-secrets-check", false, "Skip check if each secret is connected to externalSecret.")
 	flag.StringVar(&o.namespaces, "namespaces", "", "names of namespaces to check, separated by comma. If empty checks all.")
 	flag.StringVar(&o.ignoredSecrets, "ignored-secrets", "", "names of ignored secrets in namespace/secretName format, separated by comma.")
 	flag.StringVar(&o.kubeconfig, "kubeconfig", "", "Path to kubeconfig file.")
@@ -112,29 +107,26 @@ func main() {
 
 			// check if externalSecrets synced successfully
 			for _, externalSecret := range externalSecretsList.Items {
-				if !o.skipStatusCheck {
-					if externalSecret.Status.Status != "SUCCESS" {
-						fmt.Printf("ExternalSecret \"%s\" in namespace \"%s\" failed to synchronize with status \"%s\"\n", externalSecret.Metadata.Name, namespace.Name, externalSecret.Status.Status)
-						externalSecretsSuccesful = false
-					}
+				if externalSecret.Status.Status != "SUCCESS" {
+					fmt.Printf("ExternalSecret \"%s\" in namespace \"%s\" failed to synchronize with status \"%s\"\n", externalSecret.Metadata.Name, namespace.Name, externalSecret.Status.Status)
+					externalSecretsSuccesful = false
 				}
 
 				externalSecretsNames = append(externalSecretsNames, externalSecret.Metadata.Name)
 			}
 
 			// check if all Opaque secrets are also declared as externalSecrets
-			if !o.skipSecretsCheck {
-				secrets, err := client.CoreV1().Secrets(namespace.Name).List(context.Background(), v1.ListOptions{})
-				exitOnError(err, "while reading namespaces list")
-				for _, sec := range secrets.Items {
-					// get only user-created secrets
-					if sec.Type == "Opaque" {
-						// omit ignored ones
-						if !nameInSlice(sec.Name, ignoredSecrets[namespace.Name]) {
-							if !nameInSlice(sec.Name, externalSecretsNames) {
-								fmt.Printf("Secret \"%s\" in namespace \"%s\" was not declared as ExternalSecret\n", sec.Name, namespace.Name)
-								secretsDeclaredAsExternal = false
-							}
+
+			secrets, err := client.CoreV1().Secrets(namespace.Name).List(context.Background(), v1.ListOptions{})
+			exitOnError(err, "while reading namespaces list")
+			for _, sec := range secrets.Items {
+				// get only user-created secrets
+				if sec.Type == "Opaque" {
+					// omit ignored ones
+					if !nameInSlice(sec.Name, ignoredSecrets[namespace.Name]) {
+						if !nameInSlice(sec.Name, externalSecretsNames) {
+							fmt.Printf("Secret \"%s\" in namespace \"%s\" was not declared as ExternalSecret\n", sec.Name, namespace.Name)
+							secretsDeclaredAsExternal = false
 						}
 					}
 				}
