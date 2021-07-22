@@ -108,7 +108,8 @@ func main() {
 			// check if externalSecrets synced successfully
 			for _, externalSecret := range externalSecretsList.Items {
 				if externalSecret.Status.Status != "SUCCESS" {
-					fmt.Printf("ExternalSecret \"%s\" in namespace \"%s\" failed to synchronize with status \"%s\"\n", externalSecret.Metadata.Name, namespace.Name, externalSecret.Status.Status)
+					sanitizedStatus := externalSecret.Status.Status[:strings.IndexByte(externalSecret.Status.Status, ':')]
+					fmt.Printf("ExternalSecret \"%s\" in namespace \"%s\" failed to synchronize with status \"%s\"\n", externalSecret.Metadata.Name, namespace.Name, sanitizedStatus)
 					externalSecretsSuccesful = false
 				}
 
