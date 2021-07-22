@@ -36,7 +36,7 @@ prepare_k3s() {
     -p 5000:5000 \
     --restart=always \
     --name registry.localhost \
-    -v $PWD/registry:/var/lib/registry \
+    -v "${PWD}/registry:/var/lib/registry" \
     eu.gcr.io/kyma-project/test-infra/docker-registry-2:20200202
 
     echo "-> Starting cluster"
