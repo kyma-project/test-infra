@@ -44,3 +44,8 @@ spec:
             configMapKeyRef:
               name: {{ .Release.Name }}-{{ .Values.closeFailingInstance.name }}-config
               key: appName
+        - name: FIRESTORE_GCP_PROJECT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-{{ .Values.closeFailingInstance.name }}-config
+              key: appName
