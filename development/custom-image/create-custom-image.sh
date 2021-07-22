@@ -85,6 +85,9 @@ gcloud compute ssh --quiet --zone="${ZONE}" "$VM_NAME" -- ./install-deps-debian.
 log::info "Clearing $VM_NAME machine-id ..."
 gcloud compute ssh --zone "${ZONE}" "$VM_NAME" --command "sudo sh -c 'echo "" > /etc/machine-id'"
 gcloud compute ssh --zone "${ZONE}" "$VM_NAME" --command "sudo sh -c 'echo "" > /var/lib/dbus/machine-id'"
+gcloud compute ssh --zone "${ZONE}" "$VM_NAME" --command "sudo sh -c 'echo \"RateLimitInterval=30s\" > /etc/systemd/journald.conf'"
+gcloud compute ssh --zone "${ZONE}" "$VM_NAME" --command "sudo sh -c 'echo \"RateLimitBurst=1500\" >> /etc/systemd/journald.conf'"
+utils::send_to_vm "${ZONE}" "$VM_NAME" "$CURRENT_DIR/resources/dbus-1_system-local.conf" "/etc/dbus-1/system-local.conf"
 
 
 log::info "Stopping $VM_NAME in zone ${ZONE} ..."
