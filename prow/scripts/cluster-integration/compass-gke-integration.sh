@@ -323,7 +323,7 @@ function installCompass() {
   NODE=$(kubectl get nodes | tail -n 1 | cut -d ' ' -f 1)
 
   log::info "DB migration up and down jobs will be executed on node: $NODE"
-  kubectl label node "$NODE" migrationJobs: true
+  kubectl label node "$NODE" migrationJobs=true
 
   echo "Manual concatenating yamls"
   "${COMPASS_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
