@@ -103,7 +103,7 @@ deploy_kyma() {
     # kyma alpha deploy -p evaluation --component cluster-essentials,serverless --atomic --ci --value "$REGISTRY_VALUES" --value global.ingress.domainName="$DOMAIN" --value "serverless.webhook.values.function.resources.defaultPreset=M" -s local -w $KYMA_SOURCES_DIR
     # kyma alpha deploy --ci --profile "$executionProfile" --value global.isBEBEnabled=true --source=local --workspace "${kymaSourcesDir}" --verbose
     # kyma alpha deploy --ci --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
-    kyma alpha deploy --ci -v -s local -w $KYMA_SOURCES_DIR
+    kyma alpha deploy --ci --verbose --source=local --workspace "${KYMA_SOURCES_DIR}"
     # kyma alpha deploy --ci --components-file "$PWD/components.yaml" --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
 
     echo "Kyma deploy done"
