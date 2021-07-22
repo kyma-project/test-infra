@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "pre-main-compass-integration"
+prConfigs:
+  kyma-incubator:
+    local-kyma:
+      prNumber: 82
