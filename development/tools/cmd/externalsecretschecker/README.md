@@ -9,7 +9,7 @@ This command checks external secrets synchronization status, and if every secret
 To run it, use:
 
 ```bash
-go run main.go --kubeconfig=/Users/i542853/.kube/config --ignored-secrets "namespace/secretName,namespace/secretName2"
+go run main.go --kubeconfig=~/.kube/config --ignored-secrets "namespace/secretName,namespace/secretName2"
 ```
 
 ### Flags
