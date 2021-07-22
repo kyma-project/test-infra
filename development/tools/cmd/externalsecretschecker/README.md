@@ -16,8 +16,8 @@ go run main.go --kubeconfig=~/.kube/config --ignored-secrets "namespace/secretNa
 
 See the list of available flags:
 
-| Name                      | Required | Description                                                                                                      |
-| :------------------------ | :------: | :--------------------------------------------------------------------------------------------------------------- |
-| **--kubeconfig**          |   Yes    | The path to the `kubeconfig` file needed to connect to a cluster.                                                |
-| **--ignored-secrets**     |    No    | The list of ignored secrets. The secrets are in the `namespace/secretName` format and are separated with commas. |
-| **--namespaces**          |    No    | The list of analyzed namespaces. The program scans all namespaces if the namespaces list is empty.               |
+| Name                      | Required | Description                                                                                                           |
+| :------------------------ | :------: | :-------------------------------------------------------------------------------------------------------------------- |
+| **--kubeconfig**          |   Yes    | The path to the `kubeconfig` file needed to connect to a cluster.                                                     |
+| **--ignored-secrets**     |    No    | The list of ignored secrets. The secrets are in the `namespace/secretName` format and are separated with commas.      |
+| **--namespaces**          |    No    | The list of analyzed namespaces separated by bomma. The program scans all namespaces if the namespaces list is empty. |
