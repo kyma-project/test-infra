@@ -1,8 +1,8 @@
-# External secrets checker
+# External Secrets Checker
 
 ## Overview
 
-This command checks external secrets synchronization status, and if every secret have corresponding external secret.
+This command checks external secrets synchronization status, and if every secret has a corresponding external secret.
 
 ## Usage
 
@@ -16,8 +16,8 @@ go run main.go --kubeconfig=~/.kube/config --ignored-secrets "namespace/secretNa
 
 See the list of available flags:
 
-| Name                      | Required | Description                                                                                             |
-| :------------------------ | :------: | :------------------------------------------------------------------------------------------------------ |
-| **--kubeconfig**          |   Yes    | The path to the `kubeconfig` file, needed to connect to a cluster.                                      |
-| **--ignored-secrets**     |    No    | List of ignored secrets. List contains of secrets in `namespace/secretName` format, separated by comma. |
-| **--namespaces**          |    No    | List of analyzed namespaces. The program scans all namespaces if the list is empty.                     |
+| Name                      | Required | Description                                                                                                      |
+| :------------------------ | :------: | :--------------------------------------------------------------------------------------------------------------- |
+| **--kubeconfig**          |   Yes    | The path to the `kubeconfig` file needed to connect to a cluster.                                                |
+| **--ignored-secrets**     |    No    | The list of ignored secrets. The secrets are in the `namespace/secretName` format and are separated with commas. |
+| **--namespaces**          |    No    | The list of analyzed namespaces. The program scans all namespaces if the namespaces list is empty.               |
