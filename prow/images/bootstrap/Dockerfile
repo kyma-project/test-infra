@@ -79,6 +79,9 @@ COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20210401-294e46e5 /pro
 # for better access to prow-tools
 ENV PATH=$PATH:/prow-tools
 
-# Adding Cosign
-RUN wget https://github.com/sigstore/cosign/releases/download/v0.2.0/cosign-linux-amd64 -O /usr/local/bin/cosign &&\
+#################################################################
+################ Install Cosign ####################
+#################################################################
+ENV COSIGN_VERSION=0.6.0
+RUN wget https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign_linux_amd64_${COSIGN_VERSION}_linux_amd64 -O /usr/local/bin/cosign &&\
     chmod +x /usr/local/bin/cosign
