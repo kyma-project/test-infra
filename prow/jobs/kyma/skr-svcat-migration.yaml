@@ -37,7 +37,11 @@ periodics: # runs on schedule
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-svcat-migration.bash"
+              - "make"
+            args:
+              - "-C"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
+              - "ci-skr-svcat-migration"
             env:
               - name: KEB_PLAN_ID
                 value: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
