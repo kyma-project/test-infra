@@ -87,7 +87,8 @@ gcloud compute ssh --zone "${ZONE}" "$VM_NAME" --command "sudo sh -c 'echo "" > 
 gcloud compute ssh --zone "${ZONE}" "$VM_NAME" --command "sudo sh -c 'echo "" > /var/lib/dbus/machine-id'"
 gcloud compute ssh --zone "${ZONE}" "$VM_NAME" --command "sudo sh -c 'echo \"RateLimitInterval=30s\" > /etc/systemd/journald.conf'"
 gcloud compute ssh --zone "${ZONE}" "$VM_NAME" --command "sudo sh -c 'echo \"RateLimitBurst=1500\" >> /etc/systemd/journald.conf'"
-utils::send_to_vm "${ZONE}" "$VM_NAME" "$CURRENT_DIR/resources/dbus-1_system-local.conf" "/etc/dbus-1/system-local.conf"
+utils::send_to_vm "${ZONE}" "$VM_NAME" "$CURRENT_DIR/resources/dbus-1_system-local.conf" "/tmp/system-local.conf"
+gcloud compute ssh --zone "${ZONE}" "$VM_NAME" --command "sudo sh -c 'mv /tmp/system-local.conf /etc/dbus-1/system-local.conf'"
 
 
 log::info "Stopping $VM_NAME in zone ${ZONE} ..."
