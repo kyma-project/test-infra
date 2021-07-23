@@ -37,6 +37,9 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
+            env:
+              - name: KMS_KEY_URL
+                value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
             resources:
               requests:
                 memory: 3Gi
@@ -81,6 +84,9 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
+            env:
+              - name: KMS_KEY_URL
+                value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
             resources:
               requests:
                 memory: 3Gi
@@ -125,6 +131,9 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
+            env:
+              - name: KMS_KEY_URL
+                value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
             resources:
               requests:
                 memory: 3Gi
@@ -169,6 +178,9 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
+            env:
+              - name: KMS_KEY_URL
+                value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
             resources:
               requests:
                 memory: 3Gi
@@ -221,6 +233,9 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
+            env:
+              - name: KMS_KEY_URL
+                value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
             resources:
               requests:
                 memory: 3Gi
@@ -269,6 +284,9 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
+            env:
+              - name: KMS_KEY_URL
+                value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
             resources:
               requests:
                 memory: 3Gi
@@ -317,6 +335,9 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
+            env:
+              - name: KMS_KEY_URL
+                value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
             resources:
               requests:
                 memory: 3Gi
@@ -365,6 +386,9 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
+            env:
+              - name: KMS_KEY_URL
+                value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
             resources:
               requests:
                 memory: 3Gi

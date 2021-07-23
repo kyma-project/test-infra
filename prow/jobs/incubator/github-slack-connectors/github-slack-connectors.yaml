@@ -36,6 +36,9 @@ presubmits: # runs on PRs
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/github-slack-connectors/github-connector"
               - "ci-pr"
+            env:
+              - name: KMS_KEY_URL
+                value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
             resources:
               requests:
                 memory: 3Gi
@@ -80,6 +83,9 @@ presubmits: # runs on PRs
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/github-slack-connectors/slack-connector"
               - "ci-pr"
+            env:
+              - name: KMS_KEY_URL
+                value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
             resources:
               requests:
                 memory: 3Gi
@@ -128,6 +134,9 @@ postsubmits: # runs on main
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/github-slack-connectors/github-connector"
               - "ci-master"
+            env:
+              - name: KMS_KEY_URL
+                value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
             resources:
               requests:
                 memory: 3Gi
@@ -173,6 +182,9 @@ postsubmits: # runs on main
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/github-slack-connectors/slack-connector"
               - "ci-master"
+            env:
+              - name: KMS_KEY_URL
+                value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
             resources:
               requests:
                 memory: 3Gi
