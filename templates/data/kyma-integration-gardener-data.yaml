@@ -290,7 +290,7 @@ templates:
                     - command_integration
               - jobConfig:
                   name: pre-main-kyma-gardener-gcp-eventing
-                  optional: true # TODO make required when Eventing E2E tests are available
+                  optional: false
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
