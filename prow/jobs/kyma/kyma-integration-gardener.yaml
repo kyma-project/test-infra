@@ -377,7 +377,6 @@ presubmits: # runs on PRs
         preset-debug-commando-oom: "true"
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
-      optional: true
       skip_report: false
       decorate: true
       decoration_config:
