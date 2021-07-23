@@ -16,7 +16,7 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-type externalSecretData struct {
+type ExternalSecretData struct {
 	Key      string `json:"key,omitempty"`
 	Name     string `json:"name,omitempty"`
 	Version  string `json:"version,omitempty"`
@@ -24,9 +24,9 @@ type externalSecretData struct {
 	IsBinary bool   `json:"isBinary,omitempty"`
 }
 
-type externalSecretSpec struct {
+type ExternalSecretSpec struct {
 	BackendType string
-	Data        []externalSecretData
+	Data        []ExternalSecretData
 	ProjectID   string `json:"projectId"`
 }
 
@@ -35,7 +35,7 @@ type ExternalSecret struct {
 	APIVersion string `json:"apiVersion"`
 	Kind       string
 	Metadata   v1.ObjectMeta
-	Spec       externalSecretSpec
+	Spec       ExternalSecretSpec
 	Status     v1.Status
 }
 
@@ -81,55 +81,21 @@ func main() {
 		checkedNamespaces = strings.Split(o.namespaces, ",")
 	}
 
-	ignoredSecrets := make(map[string][]string)
-	if o.ignoredSecrets != "" {
-		ignoredSecretsSplit := strings.Split(o.ignoredSecrets, ",")
-		for _, ignored := range ignoredSecretsSplit {
-			split := strings.Split(ignored, "/")
-
-			ignoredSecrets[split[0]] = append(ignoredSecrets[split[0]], split[1])
-		}
-	}
+	ignoredSecrets := parseIgnoredSecrets(o.ignoredSecrets)
 
 	for _, namespace := range namespaces.Items {
 		// check if we have defined list of namespaces to check, otherwise check all
 		if len(checkedNamespaces) == 0 || nameInSlice(namespace.Name, checkedNamespaces) {
-			// get all externalSecrets in a namespace
-			externalSecretsJSON, err := client.RESTClient().Get().AbsPath("/apis/kubernetes-client.io/v1").Namespace(namespace.Name).Resource("externalsecrets").DoRaw(context.Background())
-			exitOnError(err, "while reading externalsecrets list")
-
-			var externalSecretsList ExternalSecretsList
-			err = json.Unmarshal(externalSecretsJSON, &externalSecretsList)
-			exitOnError(err, "while unmarshalling externalSecrets list")
-
-			// generate a list of names for easier comparison with rest of the secrets
-			var externalSecretsNames []string
-
-			// check if externalSecrets synced successfully
-			for _, externalSecret := range externalSecretsList.Items {
-				if externalSecret.Status.Status != "SUCCESS" {
-					fmt.Printf("ExternalSecret \"%s\" in namespace \"%s\" failed to synchronize with status \"%s\"\n", externalSecret.Metadata.Name, namespace.Name, externalSecret.Status.Status)
-					externalSecretsSuccesful = false
-				}
-
-				externalSecretsNames = append(externalSecretsNames, externalSecret.Metadata.Name)
+			// check status for all external secrets
+			externalSecretsInNamespaceSuccesfull := checkExternalSecretsStatus(client, namespace.Name)
+			if !externalSecretsInNamespaceSuccesfull {
+				externalSecretsSuccesful = false
 			}
 
 			// check if all Opaque secrets are also declared as externalSecrets
-
-			secrets, err := client.CoreV1().Secrets(namespace.Name).List(context.Background(), v1.ListOptions{})
-			exitOnError(err, "while reading namespaces list")
-			for _, sec := range secrets.Items {
-				// get only user-created secrets
-				if sec.Type == "Opaque" {
-					// omit ignored ones
-					if !nameInSlice(sec.Name, ignoredSecrets[namespace.Name]) {
-						if !nameInSlice(sec.Name, externalSecretsNames) {
-							fmt.Printf("Secret \"%s\" in namespace \"%s\" was not declared as ExternalSecret\n", sec.Name, namespace.Name)
-							secretsDeclaredAsExternal = false
-						}
-					}
-				}
+			secretsInnamespaceDeclaredAsExternal := checkSecrets(client, namespace.Name, ignoredSecrets)
+			if !secretsInnamespaceDeclaredAsExternal {
+				secretsDeclaredAsExternal = false
 			}
 		}
 	}
@@ -165,4 +131,76 @@ func nameInSlice(name string, slice []string) bool {
 		}
 	}
 	return false
+}
+
+func parseIgnoredSecrets(ignoredSecretsString string) map[string][]string {
+	ignoredSecrets := make(map[string][]string)
+	if ignoredSecretsString != "" {
+		ignoredSecretsSplit := strings.Split(ignoredSecretsString, ",")
+		for _, ignored := range ignoredSecretsSplit {
+			split := strings.Split(ignored, "/")
+
+			ignoredSecrets[split[0]] = append(ignoredSecrets[split[0]], split[1])
+		}
+	}
+	return ignoredSecrets
+}
+
+func getExternalSecretsList(client *kubernetes.Clientset, namespace string) ExternalSecretsList {
+	externalSecretsJSON, err := client.RESTClient().Get().AbsPath("/apis/kubernetes-client.io/v1").Namespace(namespace).Resource("externalsecrets").DoRaw(context.Background())
+	exitOnError(err, "while reading externalsecrets list")
+
+	var externalSecretsList ExternalSecretsList
+	err = json.Unmarshal(externalSecretsJSON, &externalSecretsList)
+	exitOnError(err, "while unmarshalling externalSecrets list")
+	return externalSecretsList
+}
+
+func checkExternalSecretsStatus(client *kubernetes.Clientset, namespace string) bool {
+	success := true
+
+	externalSecretsList := getExternalSecretsList(client, namespace)
+
+	// check if externalSecrets synced successfully
+	for _, externalSecret := range externalSecretsList.Items {
+		if externalSecret.Status.Status != "SUCCESS" {
+			fmt.Printf("ExternalSecret \"%s\" in namespace \"%s\" failed to synchronize with status \"%s\"\n", externalSecret.Metadata.Name, namespace, externalSecret.Status.Status)
+			success = false
+		}
+	}
+
+	return success
+}
+
+func getListofExternalSecretnames(client *kubernetes.Clientset, externalSecretsList ExternalSecretsList) []string {
+	var externalSecretsNames []string
+
+	for _, externalSecret := range externalSecretsList.Items {
+		externalSecretsNames = append(externalSecretsNames, externalSecret.Metadata.Name)
+	}
+
+	return externalSecretsNames
+}
+
+func checkSecrets(client *kubernetes.Clientset, namespace string, ignoredSecrets map[string][]string) bool {
+	allSecretsVerified := true
+	externalSecretsList := getExternalSecretsList(client, namespace)
+	externalSecretsNames := getListofExternalSecretnames(client, externalSecretsList)
+
+	secrets, err := client.CoreV1().Secrets(namespace).List(context.Background(), v1.ListOptions{})
+	exitOnError(err, "while reading namespaces list")
+
+	for _, sec := range secrets.Items {
+		// get only user-created secrets
+		if sec.Type == "Opaque" {
+			// omit ignored ones
+			if !nameInSlice(sec.Name, ignoredSecrets[namespace]) {
+				if !nameInSlice(sec.Name, externalSecretsNames) {
+					fmt.Printf("Secret \"%s\" in namespace \"%s\" was not declared as ExternalSecret\n", sec.Name, namespace)
+					allSecretsVerified = false
+				}
+			}
+		}
+	}
+	return allSecretsVerified
 }
