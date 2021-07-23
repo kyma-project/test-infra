@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Run fast-integration tests.
-# Install k3s and Kyma CLI to provision Kyma on k3d cluster as prerequisite.
+# Install k3d and Kyma CLI to provision Kyma on k3d cluster as prerequisite.
 
 set -o errexit
 set -o pipefail
@@ -24,44 +24,14 @@ load_env() {
 }
 
 install_k3d() {
-  echo "Installing k3d..."
-  # TODO pin version and explore flags
+  # TODO pin version?
   curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
-
-  echo "Verifying version:"
   k3d --version 
-
-  # echo "Setting kube config env var "
-  # export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-
-  # echo "Setting kube config for outside access"
-  # mkdir -p ~/.kube
-  # cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
-  # chmod 600 ~/.kube/config
 }
 
-# get_os() {
-#   local host_os
-#   case "$(uname -s)" in
-#   Darwin)
-#     host_os=darwin
-#     ;;
-#   Linux)
-#     host_os=linux
-#     ;;
-#   *)
-#     echo >&2 -e "Unsupported host OS. Must be Linux or Mac OS X."
-#     exit 1
-#     ;;
-#   esac
-#   echo "$host_os"
-# }
-
 install_cli() {
-  echo "Installing Kyma CLI..."
   local install_dir
   declare -r install_dir="/usr/local/bin"
-  # mkdir -p "/usr/local/bin"
   mkdir -p "$install_dir"
 
   local os
@@ -75,33 +45,18 @@ install_cli() {
 
   pushd "$install_dir" || exit
 
-  echo "Install Kyma CLI for ${os} in ${install_dir}"
-
   curl -Lo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}"
   chmod +x kyma
-  # curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}?alt=media"
-  # chmod +x kyma
 
   popd
   kyma version --client
 }
 
 deploy_kyma() {
-  echo "Provisioning Kyma via k3d ..."
-  
-  # TODO pin version 
+  # TODO pin version?
   kyma alpha provision k3s --ci
-
-  # kyma alpha deploy -p evaluation --component cluster-essentials,serverless --atomic --ci --value "$REGISTRY_VALUES" --value global.ingress.domainName="$DOMAIN" --value "serverless.webhook.values.function.resources.defaultPreset=M" -s local -w $KYMA_SOURCES_DIR
-  # kyma alpha deploy --ci --profile "$executionProfile" --value global.isBEBEnabled=true --source=local --workspace "${kymaSourcesDir}" --verbose
-  # kyma alpha deploy --ci --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
-
-  echo "Deploying Kyma..."
   kyma alpha deploy --ci --verbose --source=local --workspace "${KYMA_SOURCES_DIR}"
-  # kyma alpha deploy --ci --components-file "$PWD/components.yaml" --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
-
-  echo "Kyma deploy done"
-  kubectl get pods
+  kubectl get pods -n kyma-system
 }
 
 run_tests() {
