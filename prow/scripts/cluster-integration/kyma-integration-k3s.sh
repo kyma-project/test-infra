@@ -62,7 +62,7 @@ install_cli() {
   mkdir -p "$install_dir"
 
   local os
-  os="$(uname -s | tr A-Z a-z)"
+  os="$(uname -s | tr '[:upper:]' '[:lower:]')"
   if [[ -z "$os" || "$os" =~ ^(darwin|linux)$ ]]; then
     echo >&2 -e "Unsupported host OS. Must be Linux or Mac OS X."
     exit 1
