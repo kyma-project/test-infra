@@ -2,7 +2,7 @@
 
 ## Overview
 
-This command checks external secrets synchronization status, and if every secret has a corresponding external secret.
+This command checks external Secrets synchronization status, and if every Secret has a corresponding external Secret.
 
 ## Usage
 
@@ -19,5 +19,5 @@ See the list of available flags:
 | Name                      | Required | Description                                                                                                           |
 | :------------------------ | :------: | :-------------------------------------------------------------------------------------------------------------------- |
 | **--kubeconfig**          |   Yes    | The path to the `kubeconfig` file needed to connect to a cluster.                                                     |
-| **--ignored-secrets**     |    No    | The list of ignored secrets. The secrets are in the `namespace/secretName` format and are separated with commas.      |
-| **--namespaces**          |    No    | The list of analyzed namespaces separated by bomma. The program scans all namespaces if the namespaces list is empty. |
+| **--ignored-secrets**     |    No    | The list of ignored Secrets. The Secrets are in the `namespace/secretName` format and are separated with commas.      |
+| **--namespaces**          |    No    | The list of analyzed Namespaces. The Namespaces names are separated with commas. The program scans all Namespaces if the Namespaces list is empty. |
