@@ -16,6 +16,7 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
+// ExternalSecretData stores data of one externalsecret key
 type ExternalSecretData struct {
 	Key      string `json:"key,omitempty"`
 	Name     string `json:"name,omitempty"`
@@ -24,6 +25,7 @@ type ExternalSecretData struct {
 	IsBinary bool   `json:"isBinary,omitempty"`
 }
 
+// ExternalSecretSpec stores data of externalsecret keys and used backend information
 type ExternalSecretSpec struct {
 	BackendType string
 	Data        []ExternalSecretData
