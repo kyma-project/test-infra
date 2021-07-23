@@ -23,10 +23,13 @@ load_env() {
   fi
 }
 
-install_k3s() {
-  echo "Installing k3s..."
+install_k3d() {
+  echo "Installing k3d..."
   # TODO pin version and explore flags
-  curl -sfL https://get.k3s.io | sh -
+  curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+
+  echo "Verifying version:"
+  k3d --version 
 
   # echo "Setting kube config env var "
   # export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
@@ -117,7 +120,7 @@ run_tests() {
 
 prereq_test
 load_env
-install_k3s
+install_k3d
 install_cli
 deploy_kyma
 run_tests
