@@ -148,3 +148,17 @@ templates:
                     - pubsub_labels
                     - image_kyma-integration
                     - disable_testgrid
+              - jobConfig:
+                  name: external-secrets-checker
+                  command: "./externalsecretschecker"
+                  args:
+                    - "--ignored-secrets"
+                    - "external-secrets/sa-secret-manager-untrusted"
+                  image : "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-3944"
+
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - disable_testgrid
+

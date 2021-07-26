@@ -222,4 +222,11 @@ periodics: # runs on schedule
           - name: kyma-bot-github-token
             secret:
               secretName: kyma-bot-github-token
-  
+    - name: external-secrets-checker
+      annotations:
+        pipeline.trigger: "periodic"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "external-secrets-checker"
+        prow.k8s.io/pubsub.topic: "prowjobs"
