@@ -141,7 +141,6 @@ log::info "Copying Kyma-Local to the instance"
 #shellcheck disable=SC2088
 utils::send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/local-kyma" "~/local-kyma"
 
-
 log::info "Launching the busola-integration-test-k3s.sh script"
 gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "busola-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/busola-integration-test-k3s.sh"
 
