@@ -1,7 +1,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ .Release.Name}}-gh-webhook-gateway
+  name: {{ .Release.Name}}-{{ .Values.webhookGateway.name }}
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.appName | quote }}
@@ -12,9 +12,9 @@ spec:
     release: {{ .Release.Name | quote }}
   type: ClusterIP
   ports:
-    - name: sap-tools-http
+    - name: {{ .Values.webhookGateway.sapToolsRepo.repo }}
       protocol: TCP
       port: {{ .Values.webhookGateway.sapToolsRepo.containerPort }}
-    - name: kyma-http
+    - name: {{ .Values.webhookGateway.kymaRepo.repo }}
       protocol: TCP
       port: {{ .Values.webhookGateway.kymaRepo.containerPort }}

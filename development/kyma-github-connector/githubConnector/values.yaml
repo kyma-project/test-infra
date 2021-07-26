@@ -1,6 +1,7 @@
-# Github connector application name. Must match name from Application resource.
+# Github connector application name.
 appName: "github-connector"
 webhookGateway:
+  name: "webhook-gateway"
   # Github webhook gateway container listening port for incoming webhooks.
   #containerPort: 8080
   # Github webhook gateway image.
@@ -14,6 +15,7 @@ webhookGateway:
   # API gateway URL path for receiving github webhooks.
   githubWebhookUrlPath: "/webhook"
   sapToolsRepo:
+    repo: "backlog"
     # Github webhook gateway container listening port for incoming webhooks.
     containerPort: 8080
     # Secret set for Github webhooks.
@@ -21,6 +23,7 @@ webhookGateway:
     # API gateway URL path for receiving github webhooks.
     githubWebhookUrlPath: "/webhook"
   kymaRepo:
+    repo: "kyma"
     # Github webhook gateway container listening port for incoming webhooks.
     containerPort: 8081
     # Secret set for Github webhooks.
@@ -29,31 +32,3 @@ webhookGateway:
     githubWebhookUrlPath: "/kyma-webhook"
 # Kyma cluster FQDN.
 kymaClusterHostname: "ddf1313.kyma-stage.shoot.live.k8s-hana.ondemand.com"
-
-slackConnector:
-  # Slack channel name to send messages.
-  notificationSlackChannel: "kyma-team"
-  # Slack connector application name. Must match name from Application resource.
-  slackAppName: "mp-slack-connector"
-  # Slack connector API ID
-  apiId: "85ded56e-303b-43b3-a950-8b1c3d519561"
-  # Slack application plan base name
-  cmpSlackAppPlan: "slack-connector"
-  # Slack application plan suffix. Must match suffix from CMP.
-  cmpSlackAppPlanSuffix: "36130"
-  # Secret name with slack bot token.
-  botTokenSecret: "slack-bot-token"
-  # Secret key name with slack bot token.
-  botTokenSecretKey: "token"
-  # Token fake value.
-  botToken: "fake_token"
-
-function:
-  issues:
-    labeled:
-      # Repository URL with function code.
-      repositoryUrl: "https://github.com/kyma-project/test-infra.git"
-      # Path to directory with function code. Relative to repository root.
-      functionBaseDir: "/development/kyma-github-connector/issueLabeledFunction"
-      # Branch name with function code.
-      branch: "main"
