@@ -230,7 +230,6 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "external-secrets-checker"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       cron: "0 1 * * 1-5"
       skip_report: false
       decorate: true
@@ -238,13 +237,12 @@ periodics: # runs on schedule
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-3944"
+            automountServiceAccountToken: true
             securityContext:
               privileged: true
             command:
               - "./externalsecretschecker"
             args:
-              - "--kubeconfig"
-              - "/etc/kubeconfig/pjtester/config"
               - "--ignored-secrets"
               - "external-secrets/sa-secret-manager-untrusted"
             resources:

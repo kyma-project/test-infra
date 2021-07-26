@@ -153,13 +153,10 @@ templates:
                   command: "./externalsecretschecker"
                   cron: "0 1 * * 1-5"
                   args:
-                    - "--kubeconfig"
-                    - "/etc/kubeconfig/pjtester/config"
                     - "--ignored-secrets"
                     - "external-secrets/sa-secret-manager-untrusted"
                   image : "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-3944"
-                  labels:
-                    preset-pjtester-kubeconfig: "true"
+                  automountServiceAccountToken: true
                 inheritedConfigs:
                   global:
                     - jobConfig_default
