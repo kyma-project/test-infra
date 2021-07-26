@@ -27,7 +27,7 @@ spec:
             memory: {{ .Values.closeFailingInstance.closefailingtestinstanceContainer.limitsMem }}
             cpu: {{ .Values.closeFailingInstance.closefailingtestinstanceContainer.limitsCpu }}
         ports:
-        - containerPort: {{ .Values.webhookGateway.containerPort }}
+        - containerPort: {{ .Values.closeFailingInstance.closefailingtestinstanceContainer.containerPort }}
         env:
         - name: EVENTING_SERVICE
           valueFrom:
@@ -48,4 +48,4 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: {{ .Release.Name }}-{{ .Values.closeFailingInstance.name }}-config
-              key: appName
+              key: firebaseProjectID

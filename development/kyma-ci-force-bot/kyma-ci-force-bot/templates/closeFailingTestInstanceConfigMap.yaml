@@ -11,3 +11,4 @@ data:
   kymaEventingProxy: {{ .Values.kymaEventingProxy | quote }}
   appName: {{ .Values.appName | quote }}
   listenPort: {{ .Values.closeFailingInstance.closefailingtestinstanceContainer.containerPort | quote }}
+  firebaseProjectID: {{ .Values.closeFailingInstance.firebaseProjectID | quote }}

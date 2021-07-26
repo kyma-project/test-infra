@@ -1,7 +1,7 @@
 # Github connector application name. Must match name from Application resource.
 appName: "ci-force-bot"
 # Kyma cluster FQDN.
-kymaClusterHostname: "ddf1313.kyma-stage.shoot.live.k8s-hana.ondemand.com"
+kymaClusterHostname: "c-6751197.kyma.shoot.live.k8s-hana.ondemand.com"
 kymaEventingProxy: "http://eventing-event-publisher-proxy.kyma-system/publish"
 closeFailingInstance:
   name: closeFailingInstance
@@ -10,7 +10,7 @@ closeFailingInstance:
   # Event type published to Kyma
   eventType: "issuesevent"
   # Event type published to Kyma
-  eventAction: "closed"
+  eventAction: "labeled"
   # Event type published to Kyma
   eventVersion: "v1"
   closefailingtestinstanceContainer:

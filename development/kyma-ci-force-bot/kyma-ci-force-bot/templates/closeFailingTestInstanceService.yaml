@@ -14,7 +14,11 @@ spec:
     service: {{ .Values.closeFailingInstance.name | quote }}
   type: ClusterIP
   ports:
-    - name: http
+    - name: http-8080
       protocol: TCP
       port: {{ .Values.closeFailingInstance.closefailingtestinstanceContainer.containerPort }}
+      targetPort: {{ .Values.closeFailingInstance.closefailingtestinstanceContainer.containerPort }}
+    - name: http-80
+      protocol: TCP
+      port: 80
       targetPort: {{ .Values.closeFailingInstance.closefailingtestinstanceContainer.containerPort }}

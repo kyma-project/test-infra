@@ -28,7 +28,7 @@ webhookGateway:
     # API gateway URL path for receiving github webhooks.
     githubWebhookUrlPath: "/kyma-webhook"
 # Kyma cluster FQDN.
-kymaClusterHostname: "ddf1313.kyma-stage.shoot.live.k8s-hana.ondemand.com"
+kymaClusterHostname: "c-6751197.kyma.shoot.live.k8s-hana.ondemand.com"
 
 slackConnector:
   # Slack channel name to send messages.
