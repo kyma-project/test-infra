@@ -174,20 +174,18 @@ func checkExternalSecretsStatus(client *kubernetes.Clientset, namespace string) 
 	return success
 }
 
-func getListofExternalSecretnames(client *kubernetes.Clientset, externalSecretsList ExternalSecretsList) []string {
-	var externalSecretsNames []string
-
-	for _, externalSecret := range externalSecretsList.Items {
-		externalSecretsNames = append(externalSecretsNames, externalSecret.Metadata.Name)
+func secretInExternals(secret string, externelSecrets ExternalSecretsList) bool {
+	for _, externalSecret := range externelSecrets.Items {
+		if secret == externalSecret.Metadata.Name {
+			return true
+		}
 	}
-
-	return externalSecretsNames
+	return false
 }
 
 func checkSecrets(client *kubernetes.Clientset, namespace string, ignoredSecrets map[string][]string) bool {
 	allSecretsVerified := true
 	externalSecretsList := getExternalSecretsList(client, namespace)
-	externalSecretsNames := getListofExternalSecretnames(client, externalSecretsList)
 
 	secrets, err := client.CoreV1().Secrets(namespace).List(context.Background(), v1.ListOptions{})
 	exitOnError(err, "while reading namespaces list")
@@ -197,7 +195,7 @@ func checkSecrets(client *kubernetes.Clientset, namespace string, ignoredSecrets
 		if sec.Type == "Opaque" {
 			// omit ignored ones
 			if !nameInSlice(sec.Name, ignoredSecrets[namespace]) {
-				if !nameInSlice(sec.Name, externalSecretsNames) {
+				if !secretInExternals(sec.Name, externalSecretsList) {
 					fmt.Printf("Secret \"%s\" in namespace \"%s\" was not declared as ExternalSecret\n", sec.Name, namespace)
 					allSecretsVerified = false
 				}
