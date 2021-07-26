@@ -157,6 +157,7 @@ templates:
                     - "external-secrets/sa-secret-manager-untrusted"
                   image : "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-3944"
                   automountServiceAccountToken: true
+                  privileged: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
