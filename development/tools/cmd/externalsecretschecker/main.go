@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"flag"
-	"fmt"
 	"os"
 	"strings"
 
@@ -32,7 +31,7 @@ type ExternalSecretSpec struct {
 	ProjectID   string `json:"projectId"`
 }
 
-// ExternalSecret stores one externalSecret data
+// ExternalSecret stores one ExternalSecret data
 type ExternalSecret struct {
 	APIVersion string `json:"apiVersion"`
 	Kind       string
@@ -103,17 +102,17 @@ func main() {
 	}
 
 	if !externalSecretsSuccesful {
-		fmt.Println("At least one externalsecret was not synchronized succesfully")
+		logrus.Info("At least one ExternalSecret was not synchronized succesfully")
 		exitCode++
 	}
 
 	if !secretsDeclaredAsExternal {
-		fmt.Println("At least one secret was not declared as ExternalSecret")
+		logrus.Info("At least one secret was not declared as ExternalSecret")
 		exitCode += 2
 	}
 
 	if exitCode == 0 {
-		fmt.Println("No issues detected.")
+		logrus.Info("No issues detected.")
 	}
 
 	os.Exit(exitCode)
@@ -150,11 +149,11 @@ func parseIgnoredSecrets(ignoredSecretsString string) map[string][]string {
 
 func getExternalSecretsList(client *kubernetes.Clientset, namespace string) ExternalSecretsList {
 	externalSecretsJSON, err := client.RESTClient().Get().AbsPath("/apis/kubernetes-client.io/v1").Namespace(namespace).Resource("externalsecrets").DoRaw(context.Background())
-	exitOnError(err, "while reading externalsecrets list")
+	exitOnError(err, "while reading ExternalSecrets list")
 
 	var externalSecretsList ExternalSecretsList
 	err = json.Unmarshal(externalSecretsJSON, &externalSecretsList)
-	exitOnError(err, "while unmarshalling externalSecrets list")
+	exitOnError(err, "while unmarshalling ExternalSecrets list")
 	return externalSecretsList
 }
 
@@ -163,10 +162,10 @@ func checkExternalSecretsStatus(client *kubernetes.Clientset, namespace string) 
 
 	externalSecretsList := getExternalSecretsList(client, namespace)
 
-	// check if externalSecrets synced successfully
+	// check if ExternalSecrets synced successfully
 	for _, externalSecret := range externalSecretsList.Items {
 		if externalSecret.Status.Status != "SUCCESS" {
-			fmt.Printf("ExternalSecret \"%s\" in namespace \"%s\" failed to synchronize with status \"%s\"\n", externalSecret.Metadata.Name, namespace, externalSecret.Status.Status)
+			logrus.Warn("ExternalSecret \"%s\" in namespace \"%s\" failed to synchronize with status \"%s\"\n", externalSecret.Metadata.Name, namespace, externalSecret.Status.Status)
 			success = false
 		}
 	}
@@ -196,7 +195,7 @@ func checkSecrets(client *kubernetes.Clientset, namespace string, ignoredSecrets
 			// omit ignored ones
 			if !nameInSlice(sec.Name, ignoredSecrets[namespace]) {
 				if !nameInExternals(sec.Name, externalSecretsList) {
-					fmt.Printf("Secret \"%s\" in namespace \"%s\" was not declared as ExternalSecret\n", sec.Name, namespace)
+					logrus.Warn("Secret \"%s\" in namespace \"%s\" was not declared as ExternalSecret\n", sec.Name, namespace)
 					allSecretsVerified = false
 				}
 			}
