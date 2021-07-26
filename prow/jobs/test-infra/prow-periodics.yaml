@@ -230,7 +230,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "external-secrets-checker"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        0: "map[preset-pjtester-kubeconfig:true]"
+        preset-pjtester-kubeconfig: "true"
       cron: "0 1 * * 1-5"
       skip_report: false
       decorate: true

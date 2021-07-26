@@ -159,7 +159,7 @@ templates:
                     - "external-secrets/sa-secret-manager-untrusted"
                   image : "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-3944"
                   labels:
-                    - preset-pjtester-kubeconfig: "true"
+                    preset-pjtester-kubeconfig: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
