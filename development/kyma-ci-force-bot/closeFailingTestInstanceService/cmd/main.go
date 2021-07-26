@@ -6,7 +6,6 @@ import (
 	"fmt"
 	cloudevents "github.com/cloudevents/sdk-go/v2"
 	"github.com/google/go-github/github"
-	"github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway/pkg/gateway"
 	log "github.com/sirupsen/logrus"
 	"github.com/vrischmann/envconfig"
 )
