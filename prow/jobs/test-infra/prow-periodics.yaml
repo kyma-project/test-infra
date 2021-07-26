@@ -230,3 +230,29 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "external-secrets-checker"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      cron: "0 1 * * 1-5"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-3944"
+            securityContext:
+              privileged: true
+            command:
+              - "./externalsecretschecker"
+            args:
+              - "--ignored-secrets"
+              - "external-secrets/sa-secret-manager-untrusted"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+  

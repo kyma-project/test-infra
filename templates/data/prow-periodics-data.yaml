@@ -151,6 +151,7 @@ templates:
               - jobConfig:
                   name: external-secrets-checker
                   command: "./externalsecretschecker"
+                  cron: "0 1 * * 1-5"
                   args:
                     - "--ignored-secrets"
                     - "external-secrets/sa-secret-manager-untrusted"
