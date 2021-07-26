@@ -165,7 +165,7 @@ func checkExternalSecretsStatus(client *kubernetes.Clientset, namespace string) 
 	// check if ExternalSecrets synced successfully
 	for _, externalSecret := range externalSecretsList.Items {
 		if externalSecret.Status.Status != "SUCCESS" {
-			logrus.Warn("ExternalSecret \"%s\" in namespace \"%s\" failed to synchronize with status \"%s\"\n", externalSecret.Metadata.Name, namespace, externalSecret.Status.Status)
+			logrus.Warnf("ExternalSecret \"%s\" in namespace \"%s\" failed to synchronize with status \"%s\"\n", externalSecret.Metadata.Name, namespace, externalSecret.Status.Status)
 			success = false
 		}
 	}
@@ -195,7 +195,7 @@ func checkSecrets(client *kubernetes.Clientset, namespace string, ignoredSecrets
 			// omit ignored ones
 			if !nameInSlice(sec.Name, ignoredSecrets[namespace]) {
 				if !nameInExternals(sec.Name, externalSecretsList) {
-					logrus.Warn("Secret \"%s\" in namespace \"%s\" was not declared as ExternalSecret\n", sec.Name, namespace)
+					logrus.Warnf("Secret \"%s\" in namespace \"%s\" was not declared as ExternalSecret\n", sec.Name, namespace)
 					allSecretsVerified = false
 				}
 			}
