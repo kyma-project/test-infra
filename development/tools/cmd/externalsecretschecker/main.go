@@ -50,14 +50,16 @@ type ExternalSecretsList struct {
 }
 type options struct {
 	namespaces     string
+	context        string
 	ignoredSecrets string
 	kubeconfig     string
 }
 
 func gatherOptions() options {
 	o := options{}
-	flag.StringVar(&o.namespaces, "namespaces", "", "names of namespaces to check, separated by comma. If empty checks all.")
-	flag.StringVar(&o.ignoredSecrets, "ignored-secrets", "", "names of ignored secrets in namespace/secretName format, separated by comma.")
+	flag.StringVar(&o.namespaces, "namespaces", "", "Names of namespaces to check, separated by comma. If empty checks all.")
+	flag.StringVar(&o.context, "context", "", "Name of the kubernetes context to use.")
+	flag.StringVar(&o.ignoredSecrets, "ignored-secrets", "", "Names of ignored secrets in namespace/secretName format, separated by comma.")
 	flag.StringVar(&o.kubeconfig, "kubeconfig", "", "Path to kubeconfig file.")
 	flag.Parse()
 	return o
@@ -73,7 +75,7 @@ func main() {
 	var config *rest.Config
 
 	if o.kubeconfig != "" {
-		config, err = clientcmd.BuildConfigFromFlags("", o.kubeconfig)
+		config, err = buildConfigFromFlagsWithContext(o.context, o.kubeconfig)
 		exitOnError(err, "while loading kubeconfig")
 	} else {
 		config, err = rest.InClusterConfig()
@@ -125,6 +127,14 @@ func main() {
 	}
 
 	os.Exit(exitCode)
+}
+
+func buildConfigFromFlagsWithContext(context, kubeconfigPath string) (*rest.Config, error) {
+	return clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
+		&clientcmd.ClientConfigLoadingRules{ExplicitPath: kubeconfigPath},
+		&clientcmd.ConfigOverrides{
+			CurrentContext: context,
+		}).ClientConfig()
 }
 
 func exitOnError(err error, context string) {
