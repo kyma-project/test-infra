@@ -20,7 +20,7 @@ functions:
   issues:
     eventType: "issuesevent"
     labeled:
-      name: "issuesLabeledFunction"
+      name: "issues-labeled-function"
       eventAction: "labeled"
       eventVersion: "v1"
       # Slack channel name to send messages.

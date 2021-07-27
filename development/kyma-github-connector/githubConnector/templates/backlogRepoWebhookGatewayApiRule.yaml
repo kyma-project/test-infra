@@ -11,7 +11,7 @@ spec:
     service:
       name: {{ .Release.Name}}-{{ .Values.webhookGateway.name }}
       port: {{ .Values.webhookGateway.sapToolsRepo.containerPort }}
-      host: ghwebhook.{{ .Values.kymaClusterHostname }}
+      host: {{ .Values.webhookGateway.sapToolsRepo.hostPrefix }}.{{ .Values.kymaClusterHostname }}
     rules:
       - path: {{ .Values.webhookGateway.sapToolsRepo.githubWebhookUrlPath }}
         methods: ["POST"]

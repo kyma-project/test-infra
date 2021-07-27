@@ -6,6 +6,6 @@ metadata:
   labels:
     app: {{ .Values.appName | quote }}
     release: {{ .Release.Name | quote }}
-    function: "{{ .Release.Name }}-{{ .Values.functions.issues.labeled.name | quote }}
+    function: "{{ .Release.Name }}-{{ .Values.functions.issues.labeled.name }}"
 spec:
   url: {{ .Values.functions.issues.labeled.repositoryUrl }}

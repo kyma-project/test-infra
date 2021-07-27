@@ -8,7 +8,7 @@ metadata:
     release: {{ .Release.Name | quote }}
 data:
   kymaEventingProxy: {{ .Values.webhookGateway.eventPublisherProxyURL | quote }}
-  appName: {{ .Values.appName | quote }}
+  destinationEventingAppName: {{ .Values.slackConnectorAppName | quote }}
   sapToolsGithubWebhookGatewayContainerPort: {{ .Values.webhookGateway.sapToolsRepo.containerPort | quote }}
   kymaGithubWebhookGatewayContainerPort: {{ .Values.webhookGateway.kymaRepo.containerPort | quote }}
   sapToolsGithubWebhookUrlPath: {{ .Values.webhookGateway.sapToolsRepo.githubWebhookUrlPath }}

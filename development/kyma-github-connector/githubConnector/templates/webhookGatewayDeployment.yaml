@@ -45,10 +45,10 @@ spec:
             configMapKeyRef:
               name: {{ .Release.Name}}-{{ .Values.webhookGateway.name }}
               key: sapToolsGithubWebhookGatewayContainerPort
-        - name: APP_NAME
+        - name: DESTINATION_EVENTING_APP_NAME
           valueFrom:
             configMapKeyRef:
-              key: appName
+              key: destinationEventingAppName
               name: {{ .Release.Name}}-{{ .Values.webhookGateway.name }}
         - name: GITHUB_WEBHOOK_URL_PATH
           valueFrom:
@@ -82,10 +82,10 @@ spec:
               configMapKeyRef:
                 name: {{ .Release.Name}}-{{ .Values.webhookGateway.name }}
                 key: kymaGithubWebhookGatewayContainerPort
-          - name: APP_NAME
+          - name: DESTINATION_EVENTING_APP_NAME
             valueFrom:
               configMapKeyRef:
-                key: appName
+                key: destinationEventingAppName
                 name: {{ .Release.Name}}-{{ .Values.webhookGateway.name }}
           - name: GITHUB_WEBHOOK_URL_PATH
             valueFrom:
