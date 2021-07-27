@@ -95,6 +95,7 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
 			jobsuite.AllReleases(),
+			jobsuite.Optional(),
 		},
 	},
 	{
