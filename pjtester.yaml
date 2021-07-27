@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "pre-compass-components-tenant-fetcher"
+    pjPath: "test-infra/prow/jobs/incubator/compass/"
+prConfigs:
+  kyma-incubator:
+    compass:
+      prNumber: 1964
