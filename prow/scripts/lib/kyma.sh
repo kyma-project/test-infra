@@ -26,7 +26,8 @@ function kyma::alpha_deploy_kyma() {
                 fi ;;
             s)
                 kymaSourcesDir="$OPTARG" ;;
-            u)  upgrade="$OPTARG"
+            u)
+                upgrade="$OPTARG" ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
