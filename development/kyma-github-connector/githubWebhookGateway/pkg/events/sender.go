@@ -36,7 +36,7 @@ func (k Sender) SendToKyma(eventType, sourceID string, data json.RawMessage) app
 
 	t := fmt.Sprintf("sap.kyma.custom.%s.%s.v1", k.destinationEventingAppName, eventType)
 	kymaEventingType := strings.Replace(t, "-", "", -1)
-	log.Info(fmt.Sprintf("publishing event to sap.kyma.custom.%s", kymaEventingType))
+	log.Info(fmt.Sprintf("publishing event to %s", kymaEventingType))
 	event := cloudevents.NewEvent()
 	// SourceID is set to value of env variable GITHUB_WEBHOOK_GATEWAY_NAME
 	event.SetSource(sourceID)
