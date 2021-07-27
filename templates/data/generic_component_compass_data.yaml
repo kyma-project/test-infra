@@ -99,6 +99,7 @@ templates:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
               - jobConfig:
+                  optional: true
                   path: components/tenant-fetcher
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/components/tenant-fetcher"
