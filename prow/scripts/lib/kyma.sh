@@ -42,11 +42,13 @@ function kyma::alpha_deploy_kyma() {
             kyma alpha deploy --reuse-values=false --ci --profile "$executionProfile" --value global.isBEBEnabled=true --source=local --workspace "${kymaSourcesDir}" --verbose
         else
             kyma alpha deploy --ci --profile "$executionProfile" --value global.isBEBEnabled=true --source=local --workspace "${kymaSourcesDir}" --verbose
+        fi
     else
         if [[ -n "$upgrade" ]]; then
             kyma alpha deploy --reuse-values=false --ci --value global.isBEBEnabled=true --source=local --workspace "${kymaSourcesDir}" --verbose
         else
             kyma alpha deploy --ci --value global.isBEBEnabled=true --source=local --workspace "${kymaSourcesDir}" --verbose
+        fi
     fi
 }
 
