@@ -12,6 +12,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^components/busola-migrator/|^common/makefiles/'
       optional: true
@@ -37,9 +38,6 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
-            env:
-              - name: KMS_KEY_URL
-                value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
             resources:
               requests:
                 memory: 3Gi
@@ -60,6 +58,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^components/busola-migrator/|^common/makefiles/'
       optional: true
@@ -84,9 +83,6 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
-            env:
-              - name: KMS_KEY_URL
-                value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
             resources:
               requests:
                 memory: 3Gi
@@ -107,6 +103,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^components/busola-migrator/|^common/makefiles/'
       optional: true
@@ -131,9 +128,6 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
-            env:
-              - name: KMS_KEY_URL
-                value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
             resources:
               requests:
                 memory: 3Gi
@@ -154,6 +148,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^components/busola-migrator/|^common/makefiles/'
       optional: true
@@ -178,9 +173,6 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
-            env:
-              - name: KMS_KEY_URL
-                value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
             resources:
               requests:
                 memory: 3Gi
@@ -205,6 +197,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^components/busola-migrator/|^common/makefiles/'
       optional: true
@@ -233,9 +226,6 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
-            env:
-              - name: KMS_KEY_URL
-                value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
             resources:
               requests:
                 memory: 3Gi
@@ -257,6 +247,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^components/busola-migrator/|^common/makefiles/'
       optional: true
@@ -284,9 +275,6 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
-            env:
-              - name: KMS_KEY_URL
-                value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
             resources:
               requests:
                 memory: 3Gi
@@ -308,6 +296,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^components/busola-migrator/|^common/makefiles/'
       optional: true
@@ -335,9 +324,6 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
-            env:
-              - name: KMS_KEY_URL
-                value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
             resources:
               requests:
                 memory: 3Gi
@@ -359,6 +345,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^components/busola-migrator/|^common/makefiles/'
       optional: true
@@ -386,9 +373,6 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
-            env:
-              - name: KMS_KEY_URL
-                value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
             resources:
               requests:
                 memory: 3Gi

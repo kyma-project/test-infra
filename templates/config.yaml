@@ -105,9 +105,8 @@ globalSets:
     labels:
       preset-dind-enabled: "true"
       preset-sa-gcr-push: "true"
+      preset-kyma-kms-sign-key: "true"
     command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-    env:
-      KMS_KEY_URL: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
   jobConfig_generic_component_kyma:
     labels:
       preset-docker-push-repository-kyma: "true"
