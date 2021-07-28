@@ -114,7 +114,7 @@ function provisionKyma2(){
 
     kyma::install_cli
 
-    #kyma alpha deploy --ci --profile production --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
+    #kyma alpha deploy --ci --profile production --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
     #return
     set -x
     TERM=dumb kyma alpha deploy \
