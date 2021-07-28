@@ -1,4 +1,4 @@
-module github.com/kyma-project/test-infra/development/kyma-ci-force-bot/closeFailingTestInstanceService
+module github.com/kyma-project/test-infra/development/kyma-ci-force-bot/closefailingtestinstance
 
 go 1.14
 
