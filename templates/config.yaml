@@ -105,6 +105,7 @@ globalSets:
     labels:
       preset-dind-enabled: "true"
       preset-sa-gcr-push: "true"
+      preset-kyma-kms-sign-key: "true"
     command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
   jobConfig_generic_component_kyma:
     labels:

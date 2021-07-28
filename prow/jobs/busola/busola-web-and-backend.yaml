@@ -13,6 +13,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^backend/|^core/|^core-ui/|^service-catalog-ui/|^shared/|^package.json'
       skip_report: false
@@ -59,6 +60,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^backend/|^core/|^core-ui/|^service-catalog-ui/|^shared/|^package.json'
       skip_report: false
