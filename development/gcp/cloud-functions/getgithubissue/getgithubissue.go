@@ -1,4 +1,4 @@
-package getGithubIssue
+package getgithubissue
 
 import (
 	"cloud.google.com/go/firestore"
