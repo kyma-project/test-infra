@@ -17,6 +17,7 @@ spec:
       labels:
         app: {{ .Values.appName | quote }}
         release: {{ .Release.Name | quote }}
+        service: {{ .Values.closeFailingInstance.name | quote }}
     spec:
       containers:
       - name: {{ .Values.closeFailingInstance.closefailingtestinstanceContainer.name }}
@@ -32,20 +33,30 @@ spec:
         - name: EVENTING_SERVICE
           valueFrom:
             configMapKeyRef:
-              name: {{ .Release.Name }}-{{ .Values.closeFailingInstance.name }}-config
+              name: {{ .Release.Name }}-{{ .Values.closeFailingInstance.name }}
               key: kymaEventingProxy
         - name: LISTEN_PORT
           valueFrom:
             configMapKeyRef:
-              name: {{ .Release.Name }}-{{ .Values.closeFailingInstance.name }}-config
+              name: {{ .Release.Name }}-{{ .Values.closeFailingInstance.name }}
               key: listenPort
         - name: APP_NAME
           valueFrom:
             configMapKeyRef:
-              name: {{ .Release.Name }}-{{ .Values.closeFailingInstance.name }}-config
+              name: {{ .Release.Name }}-{{ .Values.closeFailingInstance.name }}
               key: appName
         - name: FIRESTORE_GCP_PROJECT_ID
           valueFrom:
             configMapKeyRef:
-              name: {{ .Release.Name }}-{{ .Values.closeFailingInstance.name }}-config
+              name: {{ .Release.Name }}-{{ .Values.closeFailingInstance.name }}
               key: firebaseProjectID
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: "/etc/googleServiceAccountKey/key"
+        volumeMounts:
+        - name: googleServiceAccountKey
+          mountPath: "/etc/googleServiceAccountKey"
+          readOnly: true
+      volumes:
+      - name: googleServiceAccountKey
+        secret:
+          secretName: {{ .Release.Namespace }}-{{ .Values.closeFailingInstance.name }}-{{ .Values.closeFailingInstance.serviceAccount }}

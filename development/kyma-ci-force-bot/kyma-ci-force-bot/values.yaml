@@ -6,6 +6,9 @@ kymaEventingProxy: "http://eventing-event-publisher-proxy.kyma-system/publish"
 closeFailingInstance:
   name: closeFailingInstance
   firebaseProjectID: "sap-kyma-neighbors-dev"
+  serviceAccount: "dev-kyma-tooling-ci-force-bot"
+  base64SerivceAccountKey: "dummy"
+  subscriptionAppName: "github-connector"
   replicas: 1
   # Event type published to Kyma
   eventType: "issuesevent"

@@ -14,15 +14,15 @@ import (
 
 //Sender is a struct used to allow mocking the SendToKyma function
 type Sender struct {
-	validator                  Validator
-	client                     HTTPClient
-	serviceURL                 string
-	destinationEventingAppName string
+	validator  Validator
+	client     HTTPClient
+	serviceURL string
+	appName    string
 }
 
 //NewSender is a function that creates new Sender with the passed in interfaces
 func NewSender(c HTTPClient, v Validator, serviceURL, appName string) Sender {
-	return Sender{client: c, validator: v, serviceURL: serviceURL, destinationEventingAppName: appName}
+	return Sender{client: c, validator: v, serviceURL: serviceURL, appName: appName}
 }
 
 //HTTPClient is an interface use to allow mocking the http.Client methods
@@ -34,7 +34,7 @@ type HTTPClient interface {
 //func (k Sender) SendToKyma(eventType, eventTypeVersion, eventID, sourceID string, data json.RawMessage) apperrors.AppError {
 func (k Sender) SendToKyma(eventType, sourceID string, data json.RawMessage) apperrors.AppError {
 
-	t := fmt.Sprintf("sap.kyma.custom.%s.%s.v1", k.destinationEventingAppName, eventType)
+	t := fmt.Sprintf("sap.kyma.custom.%s.%s.v1", k.appName, eventType)
 	kymaEventingType := strings.Replace(t, "-", "", -1)
 	log.Info(fmt.Sprintf("publishing event to %s", kymaEventingType))
 	event := cloudevents.NewEvent()

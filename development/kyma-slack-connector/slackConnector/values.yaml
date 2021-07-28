@@ -23,6 +23,7 @@ functions:
       name: "issues-labeled-function"
       eventAction: "labeled"
       eventVersion: "v1"
+      subscriptionAppName: "github-connector"
       # Slack channel name to send messages.
       notificationSlackChannel: "neighbors-dev-test"
       # Repository URL with function code.

@@ -50,6 +50,11 @@ spec:
             configMapKeyRef:
               key: destinationEventingAppName
               name: {{ .Release.Name}}-{{ .Values.webhookGateway.name }}
+        - name: APP_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: appName
+              name: {{ .Release.Name}}-{{ .Values.webhookGateway.name }}
         - name: GITHUB_WEBHOOK_URL_PATH
           valueFrom:
             configMapKeyRef:
@@ -82,6 +87,11 @@ spec:
               configMapKeyRef:
                 name: {{ .Release.Name}}-{{ .Values.webhookGateway.name }}
                 key: kymaGithubWebhookGatewayContainerPort
+          - name: APP_NAME
+            valueFrom:
+              configMapKeyRef:
+                key: appName
+                name: {{ .Release.Name}}-{{ .Values.webhookGateway.name }}
           - name: DESTINATION_EVENTING_APP_NAME
             valueFrom:
               configMapKeyRef:

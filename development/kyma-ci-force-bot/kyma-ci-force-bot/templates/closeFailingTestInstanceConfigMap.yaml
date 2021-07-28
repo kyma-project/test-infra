@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name}}-{{ .Values.closeFailingInstance.name }}-config
+  name: {{ .Release.Name}}-{{ .Values.closeFailingInstance.name }}
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.appName | quote }}
