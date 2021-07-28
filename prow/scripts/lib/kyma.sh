@@ -39,15 +39,15 @@ function kyma::alpha_deploy_kyma() {
 
     if [[ -n "$executionProfile" ]]; then
         if [[ -n "$upgrade" ]]; then
-            kyma alpha deploy --reuse-values=false --ci --profile "$executionProfile" --value global.isBEBEnabled=true --source=local --workspace "${kymaSourcesDir}" --verbose
+            kyma alpha deploy --reuse-values=false --ci --profile "$executionProfile" --source=local --workspace "${kymaSourcesDir}" --verbose
         else
-            kyma alpha deploy --ci --profile "$executionProfile" --value global.isBEBEnabled=true --source=local --workspace "${kymaSourcesDir}" --verbose
+            kyma alpha deploy --ci --profile "$executionProfile" --source=local --workspace "${kymaSourcesDir}" --verbose
         fi
     else
         if [[ -n "$upgrade" ]]; then
-            kyma alpha deploy --reuse-values=false --ci --value global.isBEBEnabled=true --source=local --workspace "${kymaSourcesDir}" --verbose
+            kyma alpha deploy --reuse-values=false --ci --source=local --workspace "${kymaSourcesDir}" --verbose
         else
-            kyma alpha deploy --ci --value global.isBEBEnabled=true --source=local --workspace "${kymaSourcesDir}" --verbose
+            kyma alpha deploy --ci --source=local --workspace "${kymaSourcesDir}" --verbose
         fi
     fi
 }
