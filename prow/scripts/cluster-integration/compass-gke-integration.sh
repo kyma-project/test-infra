@@ -348,7 +348,19 @@ trap 'EXIT_STATUS=$?; docker_cleanup; set -f; utils::post_hook -n "$COMMON_NAME"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
-    export JOB_NAME_PATTERN="(pre-compass-components-.*)|(^pre-compass-tests$)"
+    export JOB_NAME_PATTERN="(^pre-compass-components-director$)|
+    (^pre-compass-components-connector$)|
+    (^pre-compass-components-schema-migrator$)|
+    (^pre-compass-components-development-artifacts$)|
+    (^pre-compass-components-schema-migrator$)|
+    (^pre-compass-components-pairing-adapter$)|
+    (^pre-compass-components-external-services-mock$)|
+    (^pre-compass-components-operations-controller$)|
+    (^pre-compass-components-system-broker$)|
+    (^pre-compass-components-gateway$)|
+    (^pre-compass-components-connectivity-adapter$)|
+    (^pre-main-compass-gke-benchmark$)|
+    (^pre-compass-tests$)"
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
