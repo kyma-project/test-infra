@@ -595,10 +595,10 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-test-infra-closefailinginstance
+    - name: pre-test-infra-ci-force-bot
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-test-infra-closefailinginstance"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-ci-force-bot"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
@@ -1259,12 +1259,12 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-test-infra-closefailinginstance
+    - name: post-test-infra-ci-force-bot
       annotations:
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-test-infra-closefailinginstance"
+        prow.k8s.io/pubsub.runID: "post-test-infra-ci-force-bot"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-dind-enabled: "true"
