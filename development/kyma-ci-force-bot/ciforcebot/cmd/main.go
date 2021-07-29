@@ -2,16 +2,19 @@ package main
 
 import (
 	"cloud.google.com/go/firestore"
+	"cloud.google.com/go/logging"
 	"context"
 	"fmt"
 	cloudevents "github.com/cloudevents/sdk-go/v2"
 	"github.com/google/go-github/github"
+	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
 	log "github.com/sirupsen/logrus"
 	"github.com/vrischmann/envconfig"
 )
 
 var (
 	firestoreClient *firestore.Client
+	loggingClient   *logging.Client
 	conf            Config
 )
 
@@ -36,11 +39,16 @@ func init() {
 	if err != nil {
 		log.Fatalf(fmt.Sprintf("Failed creating firestore client, error: %s", err.Error()))
 	}
+	loggingClient, err = logging.NewClient(ctx, conf.ProjectID)
+	if err != nil {
+		log.Fatalf("Failed to create goggle logging client: %v", err)
+	}
 }
 
 func receive(event cloudevents.Event) {
 	// do something with event.
 	ctx := context.Background()
+	log.Infof("got event of type %s", event.Type())
 	issueEvent := new(github.IssuesEvent)
 	err := event.DataAs(issueEvent)
 	if err != nil {
@@ -59,10 +67,10 @@ func receive(event cloudevents.Event) {
 		// TODO: add comment on github issue about closing test instance with respective number.
 		// TODO: add logging to stackdriver.
 	} else if len(failureInstances) == 0 {
-		log.Infof("Open failing test instance for github issue number %d not found.", issueEvent.Issue.GetNumber())
+		log.Infof("could not found open failing test instance for github issue number %d", issueEvent.Issue.GetNumber())
 	} else if len(failureInstances) > 1 {
 		// TODO: Report failure to stackdriver.
-		log.Fatalf("To many open failing test instance found in firestore")
+		log.Fatalf("to many open failing test instance found in firestore")
 	}
 }
 
