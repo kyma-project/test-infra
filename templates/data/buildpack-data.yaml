@@ -424,7 +424,7 @@ templates:
                       name: "post-test-infra-closefailinginstance"
                       run_if_changed: '^development/kyma-ci-force-bot/ciforcebot/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-ci-force-bot/ciforcebotu"
+                        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-ci-force-bot/ciforcebot"
                     inheritedConfigs:
                       global:
                         - "image_buildpack-golang"
