@@ -604,7 +604,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^development/kyma-ci-force-bot/closefailingtestinstance/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+      run_if_changed: '^development/kyma-ci-force-bot/ciforcebot/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -620,7 +620,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-ci-force-bot/closefailingtestinstance"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-ci-force-bot/ciforcebot"
             resources:
               requests:
                 memory: 3Gi
@@ -1270,7 +1270,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^development/kyma-ci-force-bot/closefailingtestinstance/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+      run_if_changed: '^development/kyma-ci-force-bot/ciforcebot/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -1286,7 +1286,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-ci-force-bot/closefailingtestinstance"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-ci-force-bot/ciforcebot"
             resources:
               requests:
                 memory: 3Gi

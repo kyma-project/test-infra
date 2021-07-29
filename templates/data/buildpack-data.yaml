@@ -410,9 +410,9 @@ templates:
                         - "postsubmit"
                   - jobConfig:
                       name: "pre-test-infra-closefailinginstance"
-                      run_if_changed: '^development/kyma-ci-force-bot/closefailingtestinstance/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+                      run_if_changed: '^development/kyma-ci-force-bot/ciforcebot/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-ci-force-bot/closefailingtestinstance"
+                        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-ci-force-bot/ciforcebot"
                     inheritedConfigs:
                       global:
                         - "image_buildpack-golang"
@@ -422,9 +422,9 @@ templates:
                         - "presubmit"
                   - jobConfig:
                       name: "post-test-infra-closefailinginstance"
-                      run_if_changed: '^development/kyma-ci-force-bot/closefailingtestinstance/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+                      run_if_changed: '^development/kyma-ci-force-bot/ciforcebot/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-ci-force-bot/closefailingtestinstance"
+                        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-ci-force-bot/ciforcebotu"
                     inheritedConfigs:
                       global:
                         - "image_buildpack-golang"
