@@ -24,8 +24,7 @@ function load_env() {
 }
 
 function install_k3d() {
-  # TODO pin version?
-  curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+  curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v4.4.7 bash
   k3d --version
 }
 
@@ -52,7 +51,6 @@ function install_cli() {
 }
 
 function deploy_kyma() {
-  # TODO pin version?
   kyma alpha provision k3s --ci
   kyma alpha deploy --ci --verbose --source=local --workspace "${KYMA_SOURCES_DIR}" --value application-connector.central_application_gateway.enabled=true
   kubectl get pods -n kyma-system
