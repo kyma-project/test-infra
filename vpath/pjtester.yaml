@@ -1,6 +1,4 @@
 pjNames:
-  - pjName: "pre-compass-components-tenant-fetcher"
-    pjPath: "test-infra/prow/jobs/incubator/compass/"
   - pjName: "pre-main-compass-gke-benchmark"
     pjPath: "test-infra/prow/jobs/incubator/compass/"
   - pjName: "pre-main-compass-gke-integration"
