@@ -29,7 +29,6 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
     (^pre-compass-components-system-broker$)|
     (^pre-compass-components-gateway$)|
     (^pre-compass-components-connectivity-adapter$)|
-    (^pre-main-compass-gke-benchmark$)|
     (^pre-compass-tests$)"
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
