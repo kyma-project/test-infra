@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Run fast-integration tests.
-# Install k3d and Kyma CLI to provision Kyma on a k3d cluster as prerequisite.
+# Install k3d and Kyma CLI as prerequisites to provision Kyma on a k3d cluster.
 
 set -o errexit
 set -o pipefail
