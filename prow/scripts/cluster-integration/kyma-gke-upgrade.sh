@@ -418,7 +418,7 @@ export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 gcp::provision_k8s_cluster \
     -c "$COMMON_NAME" \
     -p "$CLOUDSDK_CORE_PROJECT" \
-    -v "$GKE_CLUSTER_VERSION" \
+    -v "1.18.20-gke.501" \
     -j "$JOB_NAME" \
     -J "$PROW_JOB_ID" \
     -z "$CLOUDSDK_COMPUTE_ZONE" \
