@@ -38,8 +38,8 @@ type Config struct {
 
 type loggingPayload struct {
 	Message   string `json:"message"`
-	Operation string `json,omitempty:"operation"`
-	Type      string `json,omitempty:"@type"`
+	Operation string `json:"operation,omitempty"`
+	Type      string `json:"@type,omitempty"`
 }
 
 func init() {
