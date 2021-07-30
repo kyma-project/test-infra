@@ -1,15 +1,16 @@
 package main
 
 import (
-	"cloud.google.com/go/firestore"
-	"cloud.google.com/go/logging"
 	"context"
 	"fmt"
+	"time"
+
+	"cloud.google.com/go/firestore"
+	"cloud.google.com/go/logging"
 	cloudevents "github.com/cloudevents/sdk-go/v2"
 	"github.com/google/go-github/github"
 	log "github.com/sirupsen/logrus"
 	"github.com/vrischmann/envconfig"
-	"time"
 )
 
 var (

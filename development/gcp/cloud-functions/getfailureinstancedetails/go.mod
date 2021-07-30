@@ -2,7 +2,6 @@ module github.com/kyma-project/test-infra/development/gcp/cloud-functions/getfai
 
 go 1.14
 
-replace github.com/kyma-project/test-infra v0.0.0 => /Users/i319037/go/src/github.com/kyma-project/test-infra
 
 require (
 	cloud.google.com/go v0.81.0
