@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"github.com/google/go-containerregistry/pkg/authn"
-	"github.com/google/go-containerregistry/pkg/crane"
+	"github.com/google/go-containerregistry/pkg/name"
+	v1 "github.com/google/go-containerregistry/pkg/v1"
+	"github.com/google/go-containerregistry/pkg/v1/remote"
 	"io/ioutil"
 	"os"
 	"os/signal"
@@ -67,23 +69,41 @@ func cancelOnInterrupt(ctx context.Context, cancel context.CancelFunc) {
 	}()
 }
 
-func SyncImage(ctx context.Context, src, dest string, dryRun bool, opts ...crane.Option) error {
+func Pull(ctx context.Context, ref string) (v1.Image, error) {
+	imageRef, err := name.ParseReference(ref)
+	if err != nil {
+		return nil, fmt.Errorf("source ref parse error: %w", err)
+	}
+	return remote.Image(imageRef, remote.WithContext(ctx))
+}
+
+func Push(ctx context.Context, image v1.Image, ref string, opts ...remote.Option) error {
+	imageRef, err := name.ParseReference(ref)
+	if err != nil {
+		return fmt.Errorf("destination ref parse error: %w", err)
+	}
+	opts = append(opts, remote.WithContext(ctx))
+	return remote.Write(imageRef, image, opts...)
+}
+
+func SyncImage(ctx context.Context, src, dest string, dryRun bool, auth authn.Authenticator) error {
 	log.Debug("source ", src)
 	log.Debug("destination ", dest)
-	srcImg, err := crane.Pull(src)
+	srcImg, err := Pull(ctx, src)
 	if err != nil {
 		return fmt.Errorf("source image pull error: %w", err)
 	}
-	destImg, err := crane.Pull(dest)
+	destImg, err := Pull(ctx, dest)
 	if isImageNotFoundError(err) {
 		log.Debug("Target image does not exist. Pushing image...")
 		if dryRun {
-			log.Info("Dry-Run enabled. Skipping push.")
-			return nil
-		}
-		err := crane.Push(srcImg, dest, opts...)
-		if err != nil {
-			return fmt.Errorf("push image error: %w", err)
+			log.Debug("Dry-Run enabled. Skipping push.")
+		} else {
+			err := Push(ctx, srcImg, dest, remote.WithAuth(auth))
+			if err != nil {
+				return fmt.Errorf("push image error: %w", err)
+			}
+
 		}
 		return nil
 	} else if err != nil {
@@ -160,14 +180,17 @@ func main() {
 			if err != nil {
 				log.WithError(err).Fatal("Could not open target auth key JSON")
 			}
-			authOption := crane.WithAuth(&authn.Basic{Username: "_json_key", Password: string(authCfg)})
-			var failed bool
 
+			if cfg.DryRun {
+				log.Info("Dry-Run enabled. Program will not make any changes to the target repository.")
+			}
+			auth := &authn.Basic{Username: "_json_key", Password: string(authCfg)}
+
+			var failed bool
 		loop:
 			for _, img := range imagesFile.Images {
 				select {
 				case <-ctx.Done():
-					log.Error("Context cancelled")
 					break loop
 				default:
 				}
@@ -177,7 +200,7 @@ func main() {
 					log.WithError(err).Error("Failed to get target url")
 					failed = true
 				}
-				err = SyncImage(ctx, img.Source, target, cfg.DryRun, authOption)
+				err = SyncImage(ctx, img.Source, target, cfg.DryRun, auth)
 				if err != nil {
 					log.WithError(err).Error("Failed to sync image")
 					failed = true
