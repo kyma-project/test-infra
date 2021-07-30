@@ -18,22 +18,24 @@ source "$KYMA_PROJECT_DIR/test-infra/prow/scripts/lib/utils.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
 
 log::info "Install Kyma CLI"
-kyma::install_cli
+#kyma::install_cli
 
 log::info "Provision Gardener cluster in GCP"
 RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c4)
 CLUSTER_NAME="nghbrs$RANDOM_NAME_SUFFIX"
-kyma provision gardener gcp \
-        --secret "${GARDENER_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
-        --project "${GARDENER_PROJECT_NAME}" --credentials "${GARDENER_KUBECONFIG}" \
-        --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
-        --scaler-max 4 --scaler-min 2
+#kyma provision gardener gcp \
+#        --secret "${GARDENER_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
+#        --project "${GARDENER_PROJECT_NAME}" --credentials "${GARDENER_KUBECONFIG}" \
+#        --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
+#        --scaler-max 4 --scaler-min 2
 
 log::info "Cluster provisioned. Now deleting it..."
 
-gardener::deprovision_cluster \
-        -p "${GARDENER_PROJECT_NAME}" \
-        -c "${CLUSTER_NAME}" \
-        -f "${GARDENER_KUBECONFIG}"
+#gardener::deprovision_cluster \
+#        -p "${GARDENER_PROJECT_NAME}" \
+#        -c "${CLUSTER_NAME}" \
+#        -f "${GARDENER_KUBECONFIG}"
 
-log::success "Done! See you next time!"
+#log::success "Done! See you next time!"
+log::error "Forcing exit code 1"
+exit 1
