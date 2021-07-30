@@ -178,6 +178,6 @@ RUN wget -q https://github.com/Peripli/service-manager-cli/releases/download/${S
 #################################################################
 ################ Install Cosign ####################
 #################################################################
-ENV COSIGN_VERSION=0.6.0
-RUN wget https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign_linux_amd64_${COSIGN_VERSION}_linux_amd64 -O /usr/local/bin/cosign &&\
+ENV COSIGN_VERSION=1.0.0
+RUN wget https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64 -O /usr/local/bin/cosign &&\
     chmod +x /usr/local/bin/cosign
