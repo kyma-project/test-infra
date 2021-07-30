@@ -3,7 +3,7 @@
 # DOCKER_PUSH_REPOSITORY - URL set by prow preset
 # DOCKER_PUSH_DIRECTORY
 
-IMG_NAME = close-failing-test-instance
+IMG_NAME = ci-force-bot
 IMG = $(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(IMG_NAME)
 
 

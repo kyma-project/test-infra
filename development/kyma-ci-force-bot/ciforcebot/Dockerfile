@@ -20,4 +20,4 @@ COPY --from=builder /build/closefailingtestinstance /
 # add ca-certs to scratch image
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
-ENTRYPOINT ["/closefailingtestinstance"]
+ENTRYPOINT ["/ciforcebot"]
