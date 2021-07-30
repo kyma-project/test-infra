@@ -7,14 +7,15 @@ import (
 	"fmt"
 	cloudevents "github.com/cloudevents/sdk-go/v2"
 	"github.com/google/go-github/github"
-	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
 	log "github.com/sirupsen/logrus"
 	"github.com/vrischmann/envconfig"
+	"time"
 )
 
 var (
 	firestoreClient *firestore.Client
 	loggingClient   *logging.Client
+	logger          *logging.Logger
 	conf            Config
 )
 
@@ -25,6 +26,7 @@ type Config struct {
 	ProjectID         string `envconfig:"FIRESTORE_GCP_PROJECT_ID"`
 	//EventType         string `envconfig:"EVENT_TYPE"`             // Event type published to Event Publisher Proxy.
 	AppName string `envconfig:"APP_NAME"` // PubSub Connector application name as set in Compass.
+	LogName string `envconfig:"LOG_NAME"` // Google cloud logging log name.
 }
 
 func init() {
@@ -43,9 +45,11 @@ func init() {
 	if err != nil {
 		log.Fatalf("Failed to create goggle logging client: %v", err)
 	}
+	logger = loggingClient.Logger(conf.LogName)
 }
 
 func receive(event cloudevents.Event) {
+	defer logger.Flush()
 	// do something with event.
 	ctx := context.Background()
 	log.Infof("got event of type %s", event.Type())
@@ -75,6 +79,24 @@ func receive(event cloudevents.Event) {
 }
 
 func main() {
+	defer logger.Flush()
+	logger.Log(logging.Entry{
+		Timestamp: time.Now(),
+		Severity:  logging.Info,
+		Payload: struct {
+			Message   string
+			Component string
+			Operation string
+		}{
+			Message:   "Test log message",
+			Component: "kyma.tooling.ci-force-bot",
+			Operation: "closeFailingTestInstance",
+		},
+		Labels: map[string]string{
+			"appName":  conf.AppName,
+			"function": "closeFailingTestInstance"},
+		Trace: "testTrace",
+	})
 	var conf Config
 	err := envconfig.Init(&conf)
 	if err != nil {
