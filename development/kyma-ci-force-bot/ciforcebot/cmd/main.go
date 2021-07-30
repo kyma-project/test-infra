@@ -204,6 +204,9 @@ func main() {
 	defer logger.Flush()
 	randomInt := rand.Int()
 	trace := fmt.Sprintf("projects/%s/traces/%s/%d", conf.ProjectID, conf.Component, randomInt)
+	logger := loggingClient.Logger(conf.LogName, logging.CommonLabels(map[string]string{
+		"appName":   conf.AppName,
+		"component": conf.Component}))
 	logger.Log(logging.Entry{
 		Timestamp: time.Now(),
 		Severity:  logging.Info,
