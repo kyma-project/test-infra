@@ -29,6 +29,12 @@ type Config struct {
 	LogName string `envconfig:"LOG_NAME"` // Google cloud logging log name.
 }
 
+type loggingPayload struct {
+	Message   string
+	Component string
+	Operation string
+}
+
 func init() {
 	var err error
 	ctx := context.Background()
@@ -45,7 +51,9 @@ func init() {
 	if err != nil {
 		log.Fatalf("Failed to create goggle logging client: %v", err)
 	}
-	logger = loggingClient.Logger(conf.LogName)
+	logger = loggingClient.Logger(conf.LogName, logging.CommonLabels(map[string]string{
+		"appName":  conf.AppName,
+		"function": "closeFailingTestInstance"}))
 }
 
 func receive(event cloudevents.Event) {
@@ -83,18 +91,11 @@ func main() {
 	logger.Log(logging.Entry{
 		Timestamp: time.Now(),
 		Severity:  logging.Info,
-		Payload: struct {
-			Message   string
-			Component string
-			Operation string
-		}{
+		Payload: loggingPayload{
 			Message:   "Test log message",
 			Component: "kyma.tooling.ci-force-bot",
 			Operation: "closeFailingTestInstance",
 		},
-		Labels: map[string]string{
-			"appName":  conf.AppName,
-			"function": "closeFailingTestInstance"},
 		Trace: "testTrace",
 	})
 	var conf Config
