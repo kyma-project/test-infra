@@ -9,6 +9,7 @@ ciForceBot:
   serviceAccount: "dev-kyma-tooling-ci-force-bot"
   base64SerivceAccountKey: "dummy"
   subscriptionAppName: "github-connector"
+  component: "ci-force-bot.tooling.kyma"
   replicas: 1
   # Event type published to Kyma
   eventType: "issuesevent"

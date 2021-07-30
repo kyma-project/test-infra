@@ -50,6 +50,11 @@ spec:
             configMapKeyRef:
               name: {{ .Release.Name }}-{{ .Values.ciForceBot.name }}
               key: appName
+        - name: COMPONENT
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-{{ .Values.ciForceBot.name }}
+              key: component
         - name: FIRESTORE_GCP_PROJECT_ID
           valueFrom:
             configMapKeyRef:

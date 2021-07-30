@@ -12,3 +12,4 @@ data:
   appName: {{ .Values.appName | quote }}
   listenPort: {{ .Values.ciForceBot.ciForceBotContainer.containerPort | quote }}
   firebaseProjectID: {{ .Values.ciForceBot.firebaseProjectID | quote }}
+  component: {{ .Values.ciForceBot.component | quote }}
