@@ -1,7 +1,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ .Release.Name}}-{{ .Values.ciForceBot.name }}
+  name: {{ .Release.Name }}-{{ .Values.ciForceBot.name }}
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.appName | quote }}

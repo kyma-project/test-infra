@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name}}-{{ .Values.ciForceBot.name }}
+  name: {{ .Release.Name }}-{{ .Values.ciForceBot.name }}
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.appName | quote }}
@@ -33,17 +33,17 @@ spec:
         - name: EVENTING_SERVICE
           valueFrom:
             configMapKeyRef:
-              name: {{ .Release.Name }}-{{ .Values.closeFailingInstance.name }}
+              name: {{ .Release.Name }}-{{ .Values.ciForceBot.name }}
               key: kymaEventingProxy
         - name: LISTEN_PORT
           valueFrom:
             configMapKeyRef:
-              name: {{ .Release.Name }}-{{ .Values.closeFailingInstance.name }}
+              name: {{ .Release.Name }}-{{ .Values.ciForceBot.name }}
               key: listenPort
         - name: APP_NAME
           valueFrom:
             configMapKeyRef:
-              name: {{ .Release.Name }}-{{ .Values.closeFailingInstance.name }}
+              name: {{ .Release.Name }}-{{ .Values.ciForceBot.name }}
               key: appName
         - name: FIRESTORE_GCP_PROJECT_ID
           valueFrom:
@@ -53,10 +53,10 @@ spec:
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: "/etc/googleServiceAccountKey/key"
         volumeMounts:
-        - name: googleServiceAccountKey
+        - name: google-service-account-key
           mountPath: "/etc/googleServiceAccountKey"
           readOnly: true
       volumes:
-      - name: googleServiceAccountKey
+      - name: google-service-account-key
         secret:
-          secretName: {{ .Release.Namespace }}-{{ .Values.ciForceBot.name }}-{{ .Values.ciForceBot.serviceAccount }}
+          secretName: {{ .Release.Name }}-{{ .Values.ciForceBot.serviceAccount }}

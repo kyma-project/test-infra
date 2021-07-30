@@ -4,7 +4,7 @@ appName: "ci-force-bot"
 kymaClusterHostname: "ddf1313.kyma-stage.shoot.live.k8s-hana.ondemand.com"
 kymaEventingProxy: "http://eventing-event-publisher-proxy.kyma-system/publish"
 ciForceBot:
-  name: ciForceBot
+  name: ci-force-bot
   firebaseProjectID: "sap-kyma-neighbors-dev"
   serviceAccount: "dev-kyma-tooling-ci-force-bot"
   base64SerivceAccountKey: "dummy"
