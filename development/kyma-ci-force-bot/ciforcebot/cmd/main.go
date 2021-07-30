@@ -85,6 +85,10 @@ func receive(event cloudevents.Event) {
 		// TODO: Report failure to stackdriver.
 		log.Fatalf("to many open failing test instance found in firestore")
 	}
+	err = logger.Flush()
+	if err != nil {
+		log.Errorf("failed send log entry to cloud logging: got error %v", err)
+	}
 }
 
 func main() {
@@ -109,6 +113,10 @@ func main() {
 	client, err := cloudevents.NewClientHTTP(cloudevents.WithPort(conf.ListenPort))
 	if err != nil {
 		log.Fatalf("failed create cloudevents client: %s", err.Error())
+	}
+	err = logger.Flush()
+	if err != nil {
+		log.Errorf("failed send log entry to cloud logging: got error %v", err)
 	}
 	err = client.StartReceiver(context.Background(), receive)
 	if err != nil {
