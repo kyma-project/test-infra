@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "pre-kyma-components-telemetry-operator"
+  - pjName: "post-kyma-components-telemetry-operator"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 11813
