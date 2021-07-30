@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: skr-trial-integration-dev
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 11808
