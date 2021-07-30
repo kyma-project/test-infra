@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name}}-{{ .Values.closeFailingInstance.name }}
+  name: {{ .Release.Name}}-{{ .Values.ciForceBot.name }}
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.appName | quote }}
     release: {{ .Release.Name | quote }}
-    service: {{ .Values.closeFailingInstance.name | quote }}
+    service: {{ .Values.ciForceBot.name | quote }}
 spec:
-  replicas: {{ .Values.closeFailingInstance.replicas }}
+  replicas: {{ .Values.ciForceBot.replicas }}
   selector:
     matchLabels:
       app: {{ .Values.appName }}
@@ -17,18 +17,18 @@ spec:
       labels:
         app: {{ .Values.appName | quote }}
         release: {{ .Release.Name | quote }}
-        service: {{ .Values.closeFailingInstance.name | quote }}
+        service: {{ .Values.ciForceBot.name | quote }}
     spec:
       containers:
-      - name: {{ .Values.closeFailingInstance.closefailingtestinstanceContainer.name }}
+      - name: {{ .Values.ciForceBot.ciForceBotContainer.name }}
         imagePullPolicy: Always
-        image: {{ .Values.closeFailingInstance.closefailingtestinstanceContainer.image }}
+        image: {{ .Values.ciForceBot.ciForceBotContainer.image }}
         resources:
           limits:
-            memory: {{ .Values.closeFailingInstance.closefailingtestinstanceContainer.limitsMem }}
-            cpu: {{ .Values.closeFailingInstance.closefailingtestinstanceContainer.limitsCpu }}
+            memory: {{ .Values.ciForceBot.ciForceBotContainer.limitsMem }}
+            cpu: {{ .Values.ciForceBot.ciForceBotContainer.limitsCpu }}
         ports:
-        - containerPort: {{ .Values.closeFailingInstance.closefailingtestinstanceContainer.containerPort }}
+        - containerPort: {{ .Values.ciForceBot.ciForceBotContainer.containerPort }}
         env:
         - name: EVENTING_SERVICE
           valueFrom:
@@ -48,7 +48,7 @@ spec:
         - name: FIRESTORE_GCP_PROJECT_ID
           valueFrom:
             configMapKeyRef:
-              name: {{ .Release.Name }}-{{ .Values.closeFailingInstance.name }}
+              name: {{ .Release.Name }}-{{ .Values.ciForceBot.name }}
               key: firebaseProjectID
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: "/etc/googleServiceAccountKey/key"
@@ -59,4 +59,4 @@ spec:
       volumes:
       - name: googleServiceAccountKey
         secret:
-          secretName: {{ .Release.Namespace }}-{{ .Values.closeFailingInstance.name }}-{{ .Values.closeFailingInstance.serviceAccount }}
+          secretName: {{ .Release.Namespace }}-{{ .Values.ciForceBot.name }}-{{ .Values.ciForceBot.serviceAccount }}
