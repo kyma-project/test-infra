@@ -6,7 +6,8 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        #prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.project: "sap-kyma-neighbors-dev"
         prow.k8s.io/pubsub.runID: "unstale-gardener-project"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gardener-neighbors: "true"
@@ -31,4 +32,3 @@ periodics: # runs on schedule
                 value: "europe-west4-b"
               - name: MACHINE_TYPE
                 value: "n1-standard-4"
-  
