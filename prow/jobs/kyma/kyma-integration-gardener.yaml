@@ -46,7 +46,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -116,7 +116,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -191,7 +191,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -268,7 +268,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -336,7 +336,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -377,7 +377,6 @@ presubmits: # runs on PRs
         preset-debug-commando-oom: "true"
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
-      optional: true
       skip_report: false
       decorate: true
       decoration_config:
@@ -397,7 +396,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -478,7 +477,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -554,7 +553,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -622,7 +621,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -686,7 +685,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -745,7 +744,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -812,7 +811,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -888,7 +887,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -968,7 +967,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -1048,7 +1047,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -1132,7 +1131,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -1215,7 +1214,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -1289,7 +1288,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -1352,7 +1351,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -1416,7 +1415,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -1482,7 +1481,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -1549,7 +1548,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -1618,7 +1617,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210519-51c0242d-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
             securityContext:
               privileged: true
             command:

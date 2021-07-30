@@ -10,13 +10,15 @@ source "${LIBDIR}/log.sh"
 # optional:
 # s - Kyma sources directory
 # p - execution profile
+# u - upgrade (this will not reuse helm values which is already set)
 function kyma::alpha_deploy_kyma() {
 
     local OPTIND
     local executionProfile=
     local kymaSourcesDir=""
+    local upgrade=
 
-    while getopts ":p:s:" opt; do
+    while getopts ":p:s:u:" opt; do
         case $opt in
             p)
                 if [ -n "$OPTARG" ]; then
@@ -24,6 +26,8 @@ function kyma::alpha_deploy_kyma() {
                 fi ;;
             s)
                 kymaSourcesDir="$OPTARG" ;;
+            u)
+                upgrade="$OPTARG" ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
@@ -34,9 +38,17 @@ function kyma::alpha_deploy_kyma() {
     log::info "Deploying Kyma"
 
     if [[ -n "$executionProfile" ]]; then
-        kyma alpha deploy --ci --profile "$executionProfile" --value global.isBEBEnabled=true --source=local --workspace "${kymaSourcesDir}" --verbose
+        if [[ -n "$upgrade" ]]; then
+            kyma alpha deploy --reuse-values=false --ci --profile "$executionProfile" --source=local --workspace "${kymaSourcesDir}" --verbose
+        else
+            kyma alpha deploy --ci --profile "$executionProfile" --source=local --workspace "${kymaSourcesDir}" --verbose
+        fi
     else
-        kyma alpha deploy --ci --value global.isBEBEnabled=true --source=local --workspace "${kymaSourcesDir}" --verbose
+        if [[ -n "$upgrade" ]]; then
+            kyma alpha deploy --reuse-values=false --ci --source=local --workspace "${kymaSourcesDir}" --verbose
+        else
+            kyma alpha deploy --ci --source=local --workspace "${kymaSourcesDir}" --verbose
+        fi
     fi
 }
 

@@ -12,6 +12,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
+        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       always_run: true
       skip_report: false

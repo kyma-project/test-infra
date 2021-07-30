@@ -209,6 +209,8 @@ tide:
     kyma-incubator/opensap: squash
 #    kyma-incubator/wormhole: squash
 #    kyma-incubator/k8s-service-catalog: squash
+    kyma-incubator/Kyma-Showcase: squash
+    kyma-incubator/sc-removal: squash
   target_url: https://status.build.kyma-project.io/tide
   pr_status_base_urls:
     '*': https://status.build.kyma-project.io/pr
@@ -675,35 +677,6 @@ presets:
         value: "kyma.bot@sap.com"
       - name: BOT_GITHUB_USER
         value: "Kyma Bot"
-  # Kyma-website-bot
-  - labels:
-      preset-website-bot-github-token: "true"
-    env:
-      - name: BOT_GITHUB_TOKEN
-        valueFrom:
-          secretKeyRef:
-            name: kyma-website-bot-github-token
-            key: token
-  - labels:
-      preset-website-bot-github-identity: "true"
-    env:
-      - name: BOT_GITHUB_EMAIL
-        value: "kymaopensource@gmail.com"
-      - name: BOT_GITHUB_USER
-        value: "kyma-website-bot"
-  - labels:
-      preset-website-bot-github-ssh: "true"
-    env:
-      - name: BOT_GITHUB_SSH_PATH
-        value: /etc/credentials/kyma-website-bot-github-ssh/key.pem
-    volumes:
-      - name: kyma-website-bot-github-ssh
-        secret:
-          secretName: kyma-website-bot-github-ssh
-    volumeMounts:
-      - name: kyma-website-bot-github-ssh
-        mountPath: /etc/credentials/kyma-website-bot-github-ssh
-        readOnly: true
   # Kyma Guard Bot
   - labels:
       preset-kyma-guard-bot-github-token: "true"
@@ -978,6 +951,34 @@ presets:
         mountPath: "/gardener"
         readOnly: true
   - labels:
+      preset-btp-operator-stage-credentials: "true"
+    env:
+      - name: BTP_OPERATOR_CLIENTID
+        valueFrom:
+          secretKeyRef:
+            name: btp-operator-credentials
+            key: clientid
+      - name: BTP_OPERATOR_CLIENTSECRET
+        valueFrom:
+          secretKeyRef:
+            name: btp-operator-credentials
+            key: clientsecret
+      - name: BTP_OPERATOR_URL
+        valueFrom:
+          secretKeyRef:
+            name: btp-operator-credentials
+            key: url
+      - name: BTP_OPERATOR_TOKENURL
+        valueFrom:
+          secretKeyRef:
+            name: btp-operator-credentials
+            key: tokenurl
+      - name: BTP_OPERATOR_CLUSTERID
+        valueFrom:
+          secretKeyRef:
+            name: btp-operator-credentials
+            key: clusterid
+  - labels:
       preset-keb-plan-azure: "true"
     env:
       - name: KEB_PLAN_ID
@@ -1059,3 +1060,8 @@ presets:
     env:
     - name: LETSENCRYPT_LIMITS_PROTECTION
       value: "true"
+  - labels:
+      preset-kyma-kms-sign-key: "true"
+    env:
+    - name: KMS_KEY_URL
+      value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
