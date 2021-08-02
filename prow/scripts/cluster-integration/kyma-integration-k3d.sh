@@ -51,8 +51,9 @@ function install_cli() {
 }
 
 function deploy_kyma() {
-  kyma alpha provision k3s --ci --verbose --k3d-arg "--registry-config ${KYMA_SOURCES_DIR}/tests/fast-integration/provisioner/registries.yaml"
-  
+  pwd
+  ls
+  kyma alpha provision k3s --ci --verbose --k3d-arg "--registry-config=${KYMA_SOURCES_DIR}/tests/fast-integration/provisioner/registries.yaml"
   k3d cluster list
 
   if [[ -v CENTRAL_APPLICATION_GATEWAY_ENABLED ]]; then
