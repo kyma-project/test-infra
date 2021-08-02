@@ -1025,3 +1025,25 @@ templates:
                     - "jobConfig_postsubmit"
                     - "jobConfig_slack_dev_null"
                     - "disable_testgrid"
+      - to: ../prow/jobs/kyma/components/telemetry-operator/telemetry-operator-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  path: components/telemetry-operator
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/telemetry-operator"
+                  run_if_changed: "^components/telemetry-operator/|^common/makefiles/"
+                  release_since: "2.0"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_generic_component"
+                    - "jobConfig_generic_component_kyma"
+                    - "extra_refs_test-infra"
+                  preConfigs:
+                    - "jobConfig_presubmit"
+                  postConfigs:
+                    - "jobConfig_postsubmit"
+                    - "disable_testgrid"
