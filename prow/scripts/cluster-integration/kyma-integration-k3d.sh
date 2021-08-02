@@ -51,9 +51,22 @@ function install_cli() {
 }
 
 function deploy_kyma() {
-  kyma alpha provision k3s --ci
-  kyma alpha deploy --ci --verbose --source=local --workspace "${KYMA_SOURCES_DIR}" --value application-connector.central_application_gateway.enabled=true
+  kyma alpha provision k3s --ci --verbose
+  k3d cluster list
+
+  if [[ -v CENTRAL_APPLICATION_GATEWAY_ENABLED ]]; then
+      kyma alpha deploy --ci --verbose --source=local --workspace "${KYMA_SOURCES_DIR}" --value application-connector.central_application_gateway.enabled=true
+  else
+      kyma alpha deploy --ci --verbose --source=local --workspace "${KYMA_SOURCES_DIR}"
+  fi
+
   kubectl get pods -n kyma-system
+
+  if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
+    kubectl create namespace compass-system
+    kubectl label namespace compass-system istio-injection=enabled --overwrite
+    kubectl get namespace -L istio-injection
+  fi
 }
 
 function run_tests() {
