@@ -39,15 +39,15 @@ function kyma::alpha_deploy_kyma() {
 
     if [[ -n "$executionProfile" ]]; then
         if [[ -n "$upgrade" ]]; then
-            kyma alpha deploy --reuse-values=false --ci --profile "$executionProfile" --source=local --workspace "${kymaSourcesDir}" --verbose
+            kyma deploy --reuse-values=false --ci --profile "$executionProfile" --source=local --workspace "${kymaSourcesDir}" --verbose
         else
-            kyma alpha deploy --ci --profile "$executionProfile" --source=local --workspace "${kymaSourcesDir}" --verbose
+            kyma deploy --ci --profile "$executionProfile" --source=local --workspace "${kymaSourcesDir}" --verbose
         fi
     else
         if [[ -n "$upgrade" ]]; then
-            kyma alpha deploy --reuse-values=false --ci --source=local --workspace "${kymaSourcesDir}" --verbose
+            kyma deploy --reuse-values=false --ci --source=local --workspace "${kymaSourcesDir}" --verbose
         else
-            kyma alpha deploy --ci --source=local --workspace "${kymaSourcesDir}" --verbose
+            kyma deploy --ci --source=local --workspace "${kymaSourcesDir}" --verbose
         fi
     fi
 }
@@ -56,7 +56,7 @@ function kyma::alpha_deploy_kyma() {
 function kyma::alpha_delete_kyma() {
   log::info "Uninstalling Kyma"
 
-  kyma alpha delete --ci --verbose
+  kyma delete --ci --verbose
 }
 
 # kyma::get_last_release_version returns latest Kyma release version
