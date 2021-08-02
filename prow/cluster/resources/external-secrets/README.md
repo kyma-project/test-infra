@@ -55,3 +55,10 @@ spec:
       version: latest # version of the GCP secret
       property: anotherKey # name of the field in the GCP secret JSON, unused for plain values
 ```
+
+
+# External Secrets Checker
+
+External Secrets Checker checks if all External Secrets have synchronized succesfully, and if all Secrets have corresponding External Secrets.
+
+It can be installed with the `kubectl apply -f external_secrets_checker_prow.yaml` command.
