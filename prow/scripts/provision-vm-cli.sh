@@ -150,7 +150,7 @@ fi
 source "${SCRIPT_DIR}/lib/clitests.sh"
 
 # ON alpha installation there is no dex, therefore skipping the test
-if [ "$KUBERNETES_RUNTIME" = 'k3s']; then
+if [ "$KUBERNETES_RUNTIME" = 'k3s' ]; then
     if clitests::testSuiteExists "test-version"; then
         clitests::execute "test-version" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
     else
