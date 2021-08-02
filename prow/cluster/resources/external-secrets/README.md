@@ -61,4 +61,6 @@ spec:
 
 External Secrets Checker checks if all External Secrets synchronized successfully, and if all Secrets have corresponding External Secrets.
 
-It can be installed with the `kubectl apply -f external_secrets_checker_prow.yaml` command.
+To install External Secrets Checker run the following command: 
+
+`kubectl apply -f external_secrets_checker_prow.yaml`
