@@ -397,7 +397,6 @@ templates:
                     - "extra_refs_kyma-local"
               - jobConfig:
                   name: "pre-main-kyma-integration-k3s-central-app-connectivity"
-                  optional: true
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -418,7 +417,6 @@ templates:
                     - "extra_refs_kyma-local"
               - jobConfig:
                   name: "pre-main-kyma-integration-k3s-central-app-connectivity-compass"
-                  optional: true
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
