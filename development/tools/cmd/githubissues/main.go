@@ -76,7 +76,10 @@ func main() {
 
 	fmt.Println("Authenticating to Github")
 	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: *githubToken},
+		&oauth2.Token{
+			AccessToken: *githubToken,
+			TokenType:   "token",
+		},
 	)
 	tc := oauth2.NewClient(ctx, ts)
 
