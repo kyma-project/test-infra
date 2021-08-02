@@ -69,7 +69,10 @@ var (
 
 func getStats(cfg Config) {
 	src := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: cfg.GithubAccessToken},
+		&oauth2.Token{
+			AccessToken: cfg.GithubAccessToken,
+			TokenType:   "token",
+		},
 	)
 	ctx, cancelFunc := context.WithCancel(context.Background())
 	defer cancelFunc()

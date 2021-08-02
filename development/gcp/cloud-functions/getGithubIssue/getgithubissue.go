@@ -1,17 +1,18 @@
 package getGithubIssue
 
 import (
-	"cloud.google.com/go/firestore"
-	"cloud.google.com/go/functions/metadata"
-	"cloud.google.com/go/pubsub"
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
+
+	"cloud.google.com/go/firestore"
+	"cloud.google.com/go/functions/metadata"
+	"cloud.google.com/go/pubsub"
 	"github.com/google/go-github/v36/github"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
 	kymapubsub "github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
 	"golang.org/x/oauth2"
-	"os"
 )
 
 var (
@@ -75,7 +76,10 @@ func init() {
 	}
 	// create github client with user token authentication, it will be reused by multiple function calls
 	ts = oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: githubAccessToken},
+		&oauth2.Token{
+			AccessToken: githubAccessToken,
+			TokenType:   "token",
+		},
 	)
 	tc := oauth2.NewClient(ctx, ts)
 	githubClient = github.NewClient(tc)
