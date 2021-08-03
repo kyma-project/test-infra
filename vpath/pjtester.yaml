@@ -9,3 +9,7 @@ pjNames:
   - pjName: "post-main-kyma-integration-k3s-central-app-gateway-compass"
   - pjName: "kyma-integration-k3s"
   - pjName: "kyma-integration-k3s-compass-dev"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 11832
