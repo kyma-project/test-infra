@@ -33,10 +33,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: true
             command:
-              - "bash"
-            args:
-              - "-c"
-              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
@@ -88,10 +85,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: true
             command:
-              - "bash"
-            args:
-              - "-c"
-              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
@@ -145,10 +139,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: true
             command:
-              - "bash"
-            args:
-              - "-c"
-              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"
             env:
               - name: CLUSTER_PROVIDER
                 value: "azure"

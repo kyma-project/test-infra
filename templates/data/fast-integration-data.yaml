@@ -3,10 +3,7 @@ templates:
     render:
       - localSets:
           jobConfig_default:
-            command: "bash"
-            args:
-              - "-c"
-              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"
             annotations:
               pipeline.type: integration
         to: ../prow/jobs/kyma/kyma-integration-fast-integration.yaml
