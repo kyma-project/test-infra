@@ -41,6 +41,8 @@ elif [[ $CLUSTER_PROVIDER == "gcp" ]]; then
     gcp::authenticate \
         -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
+    log::info "get kubeconfig"
+
     gcp::get_cluster_kubeconfig \
     -c "$COMMON_NAME" \
     -p "$CLOUDSDK_CORE_PROJECT" \
@@ -56,7 +58,8 @@ fi
 log::info "Running Kyma Fast Integration tests"
 
 pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
-make ci-no-install
+# make ci-no-install
+log:info "fast-ingetgartion goes here"
 popd
 
 log::success "Tests completed"
