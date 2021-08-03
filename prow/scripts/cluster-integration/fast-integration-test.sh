@@ -64,9 +64,7 @@ fi
 log::info "Running Kyma Fast Integration tests"
 
 pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
-# make ci-no-install
-log::info "fast-integration goes here"
-kubectl config current-context
+make ci-no-install
 popd
 
 log::success "Tests completed"
