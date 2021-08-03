@@ -16,9 +16,6 @@ requiredVars=(
     CLUSTER_PROVIDER
 	INPUT_CLUSTER_NAME
 	KYMA_PROJECT_DIR
-	CLOUDSDK_CORE_PROJECT
-	CLOUDSDK_COMPUTE_REGION
-	CLOUDSDK_COMPUTE_ZONE
 	GOOGLE_APPLICATION_CREDENTIALS
 )
 
@@ -36,6 +33,13 @@ if [[ $CLUSTER_PROVIDER == "azure" ]]; then
 elif [[ $CLUSTER_PROVIDER == "gcp" ]]; then
     # shellcheck source=prow/scripts/lib/gcp.sh
     source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcp.sh"
+
+    requiredVars=(
+        CLOUDSDK_CORE_PROJECT
+	    CLOUDSDK_COMPUTE_REGION
+	    CLOUDSDK_COMPUTE_ZONE
+    )
+    utils::check_required_vars "${requiredVars[@]}"
 
     log::info "Authenticate"
     gcp::authenticate \

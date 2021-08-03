@@ -23,6 +23,7 @@ templates:
                     pipeline.trigger: nightly
                   labels:
                     preset-kms-gc-project-env: "true"
+                    preset-gc-compute-envs: "true"
                   env:
                     PROVISION_REGIONAL_CLUSTER: "true"
                     INPUT_CLUSTER_NAME: "nightly"
@@ -48,6 +49,7 @@ templates:
                     pipeline.trigger: weekly
                   labels:
                     preset-weekly-github-integration: "true"
+                    preset-gc-compute-envs: "true"
                   env:
                     PROVISION_REGIONAL_CLUSTER: "true"
                     INPUT_CLUSTER_NAME: "weekly"
