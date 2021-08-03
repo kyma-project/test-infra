@@ -333,7 +333,8 @@ templates:
           fast_integration_template:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"
             annotations:
-              pipeline.type: integration
+              pipeline.trigger: nightly
+              pipeline.test: fast-integration
             labels:
               preset-sa-gke-kyma-integration: "true"
         jobConfigs:
@@ -950,7 +951,6 @@ templates:
                     testgrid-dashboards: kyma_integration
                     description: Kyma GKE nightly fast integration tests.
                     pipeline.platform: gke
-                    pipeline.trigger: nightly
                   labels:
                     preset-gc-compute-envs: "true"
                     preset-gc-project-env: "true"
@@ -975,7 +975,6 @@ templates:
                     testgrid-dashboards: kyma_integration
                     description: Kyma GKE weekly fast integration tests.
                     pipeline.platform: gke
-                    pipeline.trigger: weekly
                   labels:
                     preset-gc-compute-envs: "true"
                     preset-gc-project-env: "true"
@@ -1000,7 +999,6 @@ templates:
                     testgrid-dashboards: kyma_integration
                     description: Kyma AKS nightly fast integration tests.
                     pipeline.platform: aks
-                    pipeline.trigger: nightly
                   labels:
                     preset-nightly-aks-github-integration: "true"
                     preset-kms-gc-project-env: "true"

@@ -26,9 +26,9 @@
 | kyma-aks-nightly | aks | az cli | kyma install |  | nightly |    |
 | kyma-integration-k3s | k3s | k3s | kyma deploy |  | periodic |  fast-integration  |
 | kyma-integration-k3s-compass-dev | k3s | k3s | kyma deploy |  | periodic |  fast-integration  |
-| kyma-gke-nightly-fast-integration | gke |  |  |  | nightly |    |
-| kyma-gke-weekly-fast-integration | gke |  |  |  | weekly |    |
-| kyma-aks-nightly-fast-integration | aks |  |  |  | nightly |    |
+| kyma-gke-nightly-fast-integration | gke |  |  |  | nightly |  fast-integration  |
+| kyma-gke-weekly-fast-integration | gke |  |  |  | nightly |  fast-integration  |
+| kyma-aks-nightly-fast-integration | aks |  |  |  | nightly |  fast-integration  |
 | pre-main-kyma-gardener-azure-integration | gardener_azure | kyma cli | kyma install |  | pr-submit |  octopus  |
 | pre-main-kyma-gardener-azure-fast-integration | gardener_azure | kyma cli | kyma install | evaluation | pr-submit |  fast-integration  |
 | pre-main-kyma-gardener-azure-alpha-eval | gardener_azure | kyma cli | kyma deploy | evaluation | pr-submit |  fast-integration  |

@@ -1838,8 +1838,8 @@ periodics: # runs on schedule
       annotations:
         description: "Kyma GKE nightly fast integration tests."
         pipeline.platform: "gke"
+        pipeline.test: "fast-integration"
         pipeline.trigger: "nightly"
-        pipeline.type: "integration"
         testgrid-dashboards: "kyma_integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1888,8 +1888,8 @@ periodics: # runs on schedule
       annotations:
         description: "Kyma GKE weekly fast integration tests."
         pipeline.platform: "gke"
-        pipeline.trigger: "weekly"
-        pipeline.type: "integration"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "nightly"
         testgrid-dashboards: "kyma_integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1938,8 +1938,8 @@ periodics: # runs on schedule
       annotations:
         description: "Kyma AKS nightly fast integration tests."
         pipeline.platform: "aks"
+        pipeline.test: "fast-integration"
         pipeline.trigger: "nightly"
-        pipeline.type: "integration"
         testgrid-dashboards: "kyma_integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
