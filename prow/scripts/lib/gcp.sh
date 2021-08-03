@@ -981,7 +981,7 @@ function gcp::get_cluster_kubeconfig {
         params+=("--zone=$computeZone")
     fi
 
-    params+=("--project "$gcpProjectName"")
+    params+=("--project=$gcpProjectName")
 
     gcloud container clusters get-credentials "$clusterName" "${params[@]}"
 }

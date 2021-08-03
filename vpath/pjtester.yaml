@@ -1,4 +1,4 @@
 pjNames:
 # - pjName: kyma-gke-nightly-fast-integrations-integration
 #  - pjName: kyma-gke-weekly-fast-integrations-integration
-#  - pjName: kyma-aks-nightly-fast-integrations-integration
+  - pjName: kyma-aks-nightly-fast-integrations-integration
