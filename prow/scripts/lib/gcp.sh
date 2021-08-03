@@ -211,6 +211,7 @@ function gcp::provision_k8s_cluster {
     fi
 
     log::info "Provisioning GKE cluster"
+    log::info "${params[@]}"
     gcloud beta container clusters create "$clusterName" "${params[@]}"
     log::info "Successfully created cluster $clusterName!"
 
