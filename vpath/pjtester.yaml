@@ -1,0 +1,15 @@
+pjNames:
+  - pjName: "pre-main-kyma-integration-k3s"
+  - pjName: "pre-main-kyma-integration-k3s-compass-dev"
+  - pjName: "pre-main-kyma-integration-k3s-central-app-gateway"
+  - pjName: "pre-main-kyma-integration-k3s-central-app-gateway-compass"
+  - pjName: "post-main-kyma-integration-k3s"
+  - pjName: "post-main-kyma-integration-k3s-compass-dev"
+  - pjName: "post-main-kyma-integration-k3s-central-app-gateway"
+  - pjName: "post-main-kyma-integration-k3s-central-app-gateway-compass"
+  - pjName: "kyma-integration-k3s"
+  - pjName: "kyma-integration-k3s-compass-dev"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 11832
