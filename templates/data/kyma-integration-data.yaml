@@ -965,6 +965,7 @@ templates:
                     - "jobConfig_periodic"
                     - "image_kyma-integration"
                     - "extra_refs_kyma"
+                    - "extra_refs_test-infra"
                   local:
                     - "fast_integration_template"
 
@@ -989,6 +990,7 @@ templates:
                     - "jobConfig_periodic"
                     - "image_kyma-integration"
                     - "extra_refs_kyma"
+                    - "extra_refs_test-infra"
                   local:
                     - "fast_integration_template"
 
@@ -1013,5 +1015,6 @@ templates:
                     - "jobConfig_periodic"
                     - "image_kyma-integration"
                     - "extra_refs_kyma"
+                    - "extra_refs_test-infra"
                   local:
                     - "fast_integration_template"
