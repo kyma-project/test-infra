@@ -56,9 +56,9 @@ function install_cli() {
 function deploy_kyma() {
 
   if [[ -v CENTRAL_APPLICATION_GATEWAY_ENABLED ]]; then
-      kyma alpha deploy --ci --verbose --source=local --workspace "${KYMA_SOURCES_DIR}" --value application-connector.central_application_gateway.enabled=true
+      kyma alpha deploy -p evaluation --ci --verbose --source=local --workspace "${KYMA_SOURCES_DIR}" --value application-connector.central_application_gateway.enabled=true
   else
-      kyma alpha deploy --ci --verbose --source=local --workspace "${KYMA_SOURCES_DIR}"
+      kyma alpha deploy -p evaluation --ci --verbose --source=local --workspace "${KYMA_SOURCES_DIR}"
   fi
 
   kubectl get pods -n kyma-system
