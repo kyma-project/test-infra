@@ -82,7 +82,7 @@ function deploy_kyma() {
 #     kubectl label namespace compass-system istio-injection=enabled --overwrite
 #     kubectl get namespace -L istio-injection
 #   fi
-kyma deploy \
+kyma deploy --ci \
 --component istio \
 --value "global.ingress.domainName=local.kyma.dev"
 
