@@ -7,8 +7,8 @@ templates:
             annotations:
               pipeline.type: integration
             labels:
-              preset-sa-gke-kyma-integration
-              
+              preset-sa-gke-kyma-integration: "true"
+
         to: ../prow/jobs/kyma/kyma-integration-fast-integration.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
