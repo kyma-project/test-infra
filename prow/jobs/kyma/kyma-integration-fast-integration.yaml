@@ -14,7 +14,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.runID: "kyma-gke-nightly-fast-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-compute-envs: "true"
-        preset-kms-gc-project-env: "true"
+        preset-gc-project-env: "true"
         preset-sa-gke-kyma-integration: "true"
       cron: "0 3 * * 1-5"
       skip_report: false
@@ -68,8 +68,8 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.runID: "kyma-gke-weekly-fast-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-compute-envs: "true"
+        preset-gc-project-env: "true"
         preset-sa-gke-kyma-integration: "true"
-        preset-weekly-github-integration: "true"
       cron: "0 5 * * 1"
       skip_report: false
       decorate: true

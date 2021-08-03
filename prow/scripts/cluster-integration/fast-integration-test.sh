@@ -28,7 +28,8 @@ if [[ $CLUSTER_PROVIDER == "azure" ]]; then
 
     az::authenticate \
         -f "$AZURE_CREDENTIALS_FILE"
-    # az::set_subscription -s ???
+
+    # az::set_subscription -s "$AZURE_SUBSCRIPTION_ID"
     az aks get-credentials --resource-group "${RS_GROUP}" --name "${INPUT_CLUSTER_NAME}"
 
 elif [[ $CLUSTER_PROVIDER == "gcp" ]]; then
