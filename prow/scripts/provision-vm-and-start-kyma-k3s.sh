@@ -107,7 +107,8 @@ done || exit 1
 ENDTIME=$(date +%s)
 echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
-trap cleanup exit INT
+# TODO temporary for debugging VM
+# trap cleanup exit INT
 
 log::info "Preparing environment variables for the instance"
 envVars=(
