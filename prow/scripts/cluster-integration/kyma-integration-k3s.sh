@@ -72,7 +72,7 @@ function deploy_kyma() {
   if [[ -v CENTRAL_APPLICATION_GATEWAY_ENABLED ]]; then
       kyma deploy -d "local.kyma.dev" -p evaluation --ci --verbose --source=local --workspace "${KYMA_SOURCES_DIR}" --value application-connector.central_application_gateway.enabled=true
   else
-      kyma deploy -d "local.kyma.dev" -p evaluation --ci --verbose --source=local --workspace "${KYMA_SOURCES_DIR}" 
+      kyma deploy -d "local.kyma.dev" -p evaluation --ci --verbose --source=local --workspace "${KYMA_SOURCES_DIR}" --value istio.global.ingress.domainName="local.kyma.dev"
   fi
 
   kubectl get pods -n kyma-system
@@ -82,11 +82,6 @@ function deploy_kyma() {
 #     kubectl label namespace compass-system istio-injection=enabled --overwrite
 #     kubectl get namespace -L istio-injection
 #   fi
-kyma deploy --ci \
---component istio \
---value "global.ingress.domainName=local.kyma.dev"
-
-  kubectl get pods -n kyma-system
 }
 
 prereq_test
