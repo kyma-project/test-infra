@@ -6,6 +6,9 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"
             annotations:
               pipeline.type: integration
+            labels:
+              preset-sa-gke-kyma-integration
+              
         to: ../prow/jobs/kyma/kyma-integration-fast-integration.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
