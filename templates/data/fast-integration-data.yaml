@@ -9,7 +9,7 @@ templates:
               - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"
             annotations:
               pipeline.type: integration
-        to: ../prow/jobs/kyma/kyma-integration.yaml
+        to: ../prow/jobs/kyma/kyma-integration-fast-integration.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
