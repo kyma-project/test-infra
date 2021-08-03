@@ -2,6 +2,8 @@ pjNames:
   - pjName: "pre-kyma-cli-integration"
   - pjName: "kyma-periodic-gardener-gcp-busola-kyma"
   - pjName: "pre-main-serverless-integration-k3s"
+  - pjName: "kyma-integration-k3s-compass-dev"
+  - pjName: "kyma-integration-k3s"
 prConfigs:
   kyma-project:
     cli:
