@@ -6,7 +6,7 @@ set -o pipefail
 export KYMA_SOURCES_DIR="./kyma"
 export LOCAL_KYMA_DIR="./local-kyma"
 
-prereq_test() {
+function prereq_test() {
     command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
     command -v npm >/dev/null 2>&1 || { echo >&2 "npm not found"; exit 1; }
     command -v jq >/dev/null 2>&1 || { echo >&2 "jq not found"; exit 1; }
@@ -21,7 +21,7 @@ load_env() {
     fi
 }
 
-prepare_k3s() {
+function prepare_k3s() {
     pushd ${LOCAL_KYMA_DIR}
     ./create-cluster-k3s.sh
 
@@ -31,7 +31,7 @@ prepare_k3s() {
     popd
 }
 
-run_tests() {
+function run_tests() {
     pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
     if [[ -v COMPASS_INTEGRATION_ENABLED && -v CENTRAL_APPLICATION_GATEWAY_ENABLED ]]; then
         make ci-application-connectivity-2-compass
@@ -44,8 +44,48 @@ run_tests() {
     fi
     popd
 }
+function install_cli() {
+  local install_dir
+  declare -r install_dir="/usr/local/bin"
+  mkdir -p "$install_dir"
+
+  local os
+  os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+  if [[ -z "$os" || ! "$os" =~ ^(darwin|linux)$ ]]; then
+    echo >&2 -e "Unsupported host OS. Must be Linux or Mac OS X."
+    exit 1
+  else
+    readonly os
+  fi
+
+  pushd "$install_dir" || exit
+  curl -Lo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}"
+  chmod +x kyma
+  popd
+
+  kyma version --client
+}
+
+function deploy_kyma() {
+
+  if [[ -v CENTRAL_APPLICATION_GATEWAY_ENABLED ]]; then
+      kyma alpha deploy -p evaluation --ci --verbose --source=local --workspace "${KYMA_SOURCES_DIR}" --value application-connector.central_application_gateway.enabled=true
+  else
+      kyma alpha deploy -p evaluation --ci --verbose --source=local --workspace "${KYMA_SOURCES_DIR}"
+  fi
+
+  kubectl get pods -n kyma-system
+
+#   if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
+#     kubectl create namespace compass-system
+#     kubectl label namespace compass-system istio-injection=enabled --overwrite
+#     kubectl get namespace -L istio-injection
+#   fi
+}
 
 prereq_test
 load_env
 prepare_k3s
+install_cli
+deploy_kyma
 run_tests
