@@ -89,7 +89,6 @@ func init() {
 }
 
 func receive(event cloudevents.Event) {
-	defer logger.Flush()
 	ctx := context.Background()
 
 	randomInt := rand.Int()
@@ -98,6 +97,7 @@ func receive(event cloudevents.Event) {
 		"appName":   conf.AppName,
 		"component": conf.Component,
 		"function":  "closeFailingTestInstance"}))
+	defer logger.Flush()
 	// do something with event.
 	logger.Log(logging.Entry{
 		Timestamp: time.Now(),
@@ -201,12 +201,12 @@ func receive(event cloudevents.Event) {
 }
 
 func main() {
-	defer logger.Flush()
 	randomInt := rand.Int()
 	trace := fmt.Sprintf("projects/%s/traces/%s/%d", conf.ProjectID, conf.Component, randomInt)
 	logger := loggingClient.Logger(conf.LogName, logging.CommonLabels(map[string]string{
 		"appName":   conf.AppName,
 		"component": conf.Component}))
+	defer logger.Flush()
 	logger.Log(logging.Entry{
 		Timestamp: time.Now(),
 		Severity:  logging.Info,
