@@ -171,9 +171,11 @@ function gcp::provision_k8s_cluster {
     # Conditional parameters
     params+=("--machine-type=$machineType")
     if [ "$provisionRegionalCluster" = "true" ] ; then
+        log::info "I'm making regional! $provisionRegionalCluster"
         params+=("--region=$computeRegion")
         params+=("--num-nodes=${nodesCount:-$nodesPerZone}")
     else
+        log::info "I'm making zonal! $provisionRegionalCluster"
         params+=("--zone=$computeZone")
         params+=("--num-nodes=${nodesCount:-$numNodes}")
     fi
