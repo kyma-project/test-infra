@@ -1,0 +1,91 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - localSets:
+          jobConfig_default:
+            command: "bash"
+            args:
+              - "-c"
+              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"
+            annotations:
+              pipeline.type: integration
+        to: ../prow/jobs/kyma/kyma-integration.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  name: "kyma-gke-nightly-fast-integration"
+                  cron: "0 3 * * 1-5" # "At 03:00 UTC on every weekday Monday through Friday"
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    description: Kyma GKE nightly fast integration tests.
+                    pipeline.platform: gke
+                    pipeline.trigger: nightly
+                  labels:
+                    preset-kms-gc-project-env: "true"
+                  env:
+                    PROVISION_REGIONAL_CLUSTER: "true"
+                    INPUT_CLUSTER_NAME: "nightly"
+                    CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
+                    CLUSTER_PROVIDER: "gcp"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                  local:
+                    - "jobConfig_default"
+
+              - jobConfig:
+                  name: "kyma-gke-weekly-fast-integration"
+                  cron: "0 5 * * 1" # "At 05:00 UTC on Monday."
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    description: Kyma GKE weekly fast integration tests.
+                    pipeline.platform: gke
+                    pipeline.trigger: weekly
+                  labels:
+                    preset-weekly-github-integration: "true"
+                  env:
+                    PROVISION_REGIONAL_CLUSTER: "true"
+                    INPUT_CLUSTER_NAME: "weekly"
+                    CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
+                    CLUSTER_PROVIDER: "gcp"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                  local:
+                    - "jobConfig_default"
+
+              - jobConfig:
+                  name: "kyma-aks-nightly-fast-integration"
+                  cron: "0 3 * * 1-5" # "At 03:00 UTC on every day-of-week from Monday through Friday"
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    description: Kyma AKS nightly fast integration tests.
+                    pipeline.platform: aks
+                    pipeline.trigger: nightly
+                  labels:
+                    preset-nightly-aks-github-integration: "true"
+                    preset-kms-gc-project-env: "true"
+                    preset-az-kyma-prow-credentials: "true"
+                  env:
+                    RS_GROUP: "kyma-nightly-aks"
+                    # REGION: "northeurope"
+                    INPUT_CLUSTER_NAME: "nightly-aks"
+                    CLUSTER_PROVIDER: "azure"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                  local:
+                    - "jobConfig_default"
