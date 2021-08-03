@@ -443,12 +443,12 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, expName, nightlyFastIntegrationPeriodic.Name)
 
 	assert.Equal(t, "0 3 * * 1-5", nightlyFastIntegrationPeriodic.Cron)
-	tester.AssertThatHasPresets(t, nightlyFastIntegrationPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
+	tester.AssertThatHasPresets(t, nightlyFastIntegrationPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration, "preset-gc-compute-envs")
 	tester.AssertThatHasExtraRepoRefCustom(t, nightlyFastIntegrationPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, nightlyFastIntegrationPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"}, nightlyFastIntegrationPeriodic.Spec.Containers[0].Command)
 	tester.AssertThatSpecifiesResourceRequests(t, nightlyFastIntegrationPeriodic.JobBase)
-	assert.Len(t, nightlyFastIntegrationPeriodic.Spec.Containers[0].Env, 8)
+	assert.Len(t, nightlyFastIntegrationPeriodic.Spec.Containers[0].Env, 4)
 	tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "PROVISION_REGIONAL_CLUSTER", "true")
 	tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "nightly")
 
@@ -458,12 +458,12 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, expName, weeklyFastIntegrationPeriodic.Name)
 
 	assert.Equal(t, "0 5 * * 1", weeklyFastIntegrationPeriodic.Cron)
-	tester.AssertThatHasPresets(t, weeklyFastIntegrationPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration, "preset-stability-checker-slack-notifications", "preset-weekly-github-integration", preset.ClusterVersion, "preset-slack-alerts")
+	tester.AssertThatHasPresets(t, weeklyFastIntegrationPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration, "preset-gc-compute-envs")
 	tester.AssertThatHasExtraRepoRefCustom(t, weeklyFastIntegrationPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, weeklyFastIntegrationPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"}, weeklyFastIntegrationPeriodic.Spec.Containers[0].Command)
 	tester.AssertThatSpecifiesResourceRequests(t, weeklyFastIntegrationPeriodic.JobBase)
-	assert.Len(t, weeklyFastIntegrationPeriodic.Spec.Containers[0].Env, 8)
+	assert.Len(t, weeklyFastIntegrationPeriodic.Spec.Containers[0].Env, 4)
 	tester.AssertThatContainerHasEnv(t, weeklyFastIntegrationPeriodic.Spec.Containers[0], "PROVISION_REGIONAL_CLUSTER", "true")
 	tester.AssertThatContainerHasEnv(t, weeklyFastIntegrationPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "weekly")
 
@@ -473,7 +473,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, expName, nightlyAksFastIntegrationPeriodic.Name)
 
 	assert.Equal(t, "0 3 * * 1-5", nightlyAksFastIntegrationPeriodic.Cron)
-	tester.AssertThatHasPresets(t, nightlyAksFastIntegrationPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration, preset.StabilityCheckerSlack, "preset-az-kyma-prow-credentials", "preset-docker-push-repository-gke-integration", "preset-nightly-aks-github-integration", preset.ClusterVersion, "preset-slack-alerts")
+	tester.AssertThatHasPresets(t, nightlyAksFastIntegrationPeriodic.JobBase, preset.SaGKEKymaIntegration, "preset-az-kyma-prow-credentials")
 	tester.AssertThatHasExtraRepoRefCustom(t, nightlyAksFastIntegrationPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, nightlyAksFastIntegrationPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"}, nightlyAksFastIntegrationPeriodic.Spec.Containers[0].Command)
