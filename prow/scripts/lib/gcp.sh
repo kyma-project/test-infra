@@ -967,9 +967,9 @@ function gcp::get_cluster_kubeconfig {
                 echo "Option -$OPTARG argument not provided" >&2; ;;
         esac
     done
-
-    utils::check_empty_arg "$clusterName" "Plain text file not provided"
-    utils::check_empty_arg "$gcpProjectName" "Cipher text file not provided"
+    
+    utils::check_empty_arg "$clusterName" "Cluster name not provided."
+    utils::check_empty_arg "$gcpProjectName" "GCP project name not provided."
 
 
     log::info "Getting kubeconfig for cluster $clusterName"

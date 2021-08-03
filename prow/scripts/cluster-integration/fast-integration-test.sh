@@ -50,7 +50,7 @@ elif [[ $CLUSTER_PROVIDER == "gcp" ]]; then
     log::info "get kubeconfig"
 
     gcp::get_cluster_kubeconfig \
-    -c "$COMMON_NAME" \
+    -c "$INPUT_CLUSTER_NAME" \
     -p "$CLOUDSDK_CORE_PROJECT" \
     -z "$CLOUDSDK_COMPUTE_ZONE" \
     -R "$CLOUDSDK_COMPUTE_REGION" \
