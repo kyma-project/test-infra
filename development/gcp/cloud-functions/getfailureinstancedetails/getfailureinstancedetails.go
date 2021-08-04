@@ -180,7 +180,8 @@ func GetFailureInstanceDetails(ctx context.Context, m kymapubsub.MessagePayload)
 			githubIssueNumber, err := failureInstance.DataAt("githubIssueNumber")
 			if err != nil {
 				logger.LogInfo(fmt.Sprintf("could not get github issue for failing test, error: %s", err.Error()))
-			} else {
+			}
+			if githubIssueNumber != nil {
 				// Add github issue number to pubsub message data payload.
 				failingTestMessage.GithubIssueNumber = github.Int64(githubIssueNumber.(int64))
 			}
