@@ -72,10 +72,12 @@ function deploy_kyma() {
       --workspace "${KYMA_SOURCES_DIR}" \
       --value global.ingress.domainName="local.kyma.dev" \
       --value global.disableLegacyConnectivity=false \
-      --value tracing.authProxy.config.useDex=false \
       --value serverless.dockerRegistry.enableInternal=false \
       --value serverless.dockerRegistry.serverAddress=registry.localhost:5000 \
       --value serverless.dockerRegistry.registryAddress=registry.localhost:5000
+    #   --value tracing.authProxy.config.useDex=false \
+    #   --value tracing.kcproxy.enabled=false \
+    #   --value tracing.virtualservice.enabled=false
   fi
 
   kubectl get pods -n kyma-system
