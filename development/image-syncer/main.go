@@ -211,7 +211,7 @@ func main() {
 	rootCmd.PersistentFlags().StringVarP(&cfg.ImagesFile, "images-file", "i", "", "yaml file containing list of images")
 	rootCmd.PersistentFlags().StringVarP(&cfg.TargetKeyFile, "target-repo-auth-key", "t", "", "JSON key file used for authorization to target repo")
 	rootCmd.PersistentFlags().StringVarP(&cfg.KeyRef, "kms-key", "k", "", "path to KMS key resource (eg. gcpkms://...)")
-	rootCmd.PersistentFlags().BoolVarP(&cfg.DryRun, "dry-run", "d", true, "dry run mode")
+	rootCmd.PersistentFlags().BoolVarP(&cfg.DryRun, "dry-run", "d", false, "dry run mode")
 	rootCmd.PersistentFlags().BoolVar(&cfg.Debug, "debug", false, "enable debug mode")
 
 	rootCmd.MarkPersistentFlagRequired("images-file")
