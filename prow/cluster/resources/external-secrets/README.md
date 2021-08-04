@@ -14,7 +14,7 @@ Follow these steps to install `kubernetes-external-secrets` on an untrusted clus
    kubectl create namespace external-secrets
    ```
 
-2. Add the `sa-secret-manager-untrusted` Secret containing credentials for a GCP service account with permission to access Secrets. Run:
+2. Add the `sa-secret-manager-untrusted` Secret containing credentials for a GCP service account with permission to access Secrets.
 
 3. Add the `external-secrets` Helm repository. Use the following command:
 
