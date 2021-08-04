@@ -71,7 +71,6 @@ function deploy_kyma() {
       --source=local \
       --workspace "${KYMA_SOURCES_DIR}" \
       --value global.ingress.domainName="local.kyma.dev" \
-      --value global.tlsCrt=ZHVtbXkK \
       --value global.disableLegacyConnectivity=false \
       --value tracing.authProxy.config.useDex=false \
       --value serverless.dockerRegistry.enableInternal=false \
