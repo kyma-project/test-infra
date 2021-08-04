@@ -107,6 +107,7 @@ templates:
               preset-sa-test-gcr-push: "true"               # required for pushing images
               preset-sa-gardener-logs: "true"               # required for writing logs to Stackdriver
               preset-cluster-version: "true"
+          installer_2:
             annotations:
               pipeline.installer: kyma deploy
           evaluation_profile:
@@ -181,6 +182,7 @@ templates:
                     - command_integration
                     - gardener_azure_job
                     - evaluation_profile
+                    - installer_2
               - jobConfig:
                   name: pre-main-kyma-gardener-azure-alpha-prod
                   decoration_config:
@@ -201,6 +203,7 @@ templates:
                     - command_integration
                     - gardener_azure_job
                     - production_profile
+                    - installer_2
               - jobConfig:
                   name: pre-main-kyma-gardener-gcp-api-gateway
                   labels:
@@ -242,6 +245,7 @@ templates:
                     - command_integration
                     - gardener_azure_job
                     - evaluation_profile
+                    - installer_2
               - jobConfig:
                   name: post-main-kyma-gardener-azure-alpha-prod
                   decoration_config:
@@ -262,6 +266,7 @@ templates:
                     - command_integration
                     - gardener_azure_job
                     - production_profile
+                    - installer_2
               - jobConfig:
                   name: post-main-kyma-gardener-gcp-api-gateway
                   decoration_config:
@@ -452,6 +457,7 @@ templates:
                     - extra_refs_kyma-local
                     - command_integration
                     - evaluation_profile
+                    - installer_2
               - jobConfig:
                   name: kyma-alpha-integration-production-gardener-azure
                   annotations:
@@ -479,6 +485,7 @@ templates:
                     - extra_refs_kyma-local
                     - command_integration
                     - production_profile
+                    - installer_2
               - jobConfig:
                   name: kyma-integration-hibernation-gardener-azure
                   decoration_config:

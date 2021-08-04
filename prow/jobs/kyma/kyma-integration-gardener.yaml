@@ -6,7 +6,8 @@ presubmits: # runs on PRs
     - name: pre-main-kyma-gardener-azure-integration
       annotations:
         pipeline.clusterprovisioning: "kyma cli"
-        pipeline.installer: "kyma deploy"
+        pipeline.installer: "kyma install"
+        pipeline.platform: "gardener_azure"
         pipeline.test: "octopus"
         pipeline.trigger: "pr-submit"
       labels:
@@ -75,7 +76,8 @@ presubmits: # runs on PRs
     - name: pre-main-kyma-gardener-azure-fast-integration
       annotations:
         pipeline.clusterprovisioning: "kyma cli"
-        pipeline.installer: "kyma deploy"
+        pipeline.installer: "kyma install"
+        pipeline.platform: "gardener_azure"
         pipeline.profile: "evaluation"
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
@@ -149,6 +151,7 @@ presubmits: # runs on PRs
       annotations:
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma deploy"
+        pipeline.platform: "gardener_azure"
         pipeline.profile: "evaluation"
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
@@ -223,6 +226,7 @@ presubmits: # runs on PRs
       annotations:
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma deploy"
+        pipeline.platform: "gardener_azure"
         pipeline.profile: "production"
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
@@ -430,6 +434,7 @@ postsubmits: # runs on main
       annotations:
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma deploy"
+        pipeline.platform: "gardener_azure"
         pipeline.profile: "evaluation"
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-merge"
@@ -503,6 +508,7 @@ postsubmits: # runs on main
       annotations:
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma deploy"
+        pipeline.platform: "gardener_azure"
         pipeline.profile: "production"
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-merge"
@@ -758,6 +764,7 @@ periodics: # runs on schedule
         description: "Kyma Azure Gardener integration job."
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma install"
+        pipeline.platform: "gardener_azure"
         pipeline.test: "octopus"
         pipeline.trigger: "periodic"
         testgrid-dashboards: "kyma_integration"
@@ -828,6 +835,7 @@ periodics: # runs on schedule
         description: "Evaluation profile Kyma Azure Gardener integration job."
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma install"
+        pipeline.platform: "gardener_azure"
         pipeline.profile: "evaluation"
         pipeline.test: "fast-integration"
         pipeline.trigger: "periodic"
@@ -907,6 +915,7 @@ periodics: # runs on schedule
         description: "Production profile Kyma Azure Gardener integration job."
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma install"
+        pipeline.platform: "gardener_azure"
         pipeline.profile: "production"
         pipeline.test: "fast-integration"
         pipeline.trigger: "periodic"
@@ -985,7 +994,8 @@ periodics: # runs on schedule
       annotations:
         description: "Evaluation profile for Kyma 2 Azure Gardener integration job."
         pipeline.clusterprovisioning: "kyma cli"
-        pipeline.installer: "kyma install"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "gardener_azure"
         pipeline.profile: "evaluation"
         pipeline.test: "fast-integration"
         pipeline.trigger: "periodic"
@@ -1066,7 +1076,8 @@ periodics: # runs on schedule
       annotations:
         description: "Production profile for Kyma 2 Azure Gardener integration job."
         pipeline.clusterprovisioning: "kyma cli"
-        pipeline.installer: "kyma install"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "gardener_azure"
         pipeline.profile: "production"
         pipeline.test: "fast-integration"
         pipeline.trigger: "periodic"
@@ -1147,6 +1158,7 @@ periodics: # runs on schedule
       annotations:
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma install"
+        pipeline.platform: "gardener_azure"
         pipeline.profile: "evaluation"
         pipeline.test: "fast-integration"
         pipeline.trigger: "periodic"
@@ -1554,6 +1566,7 @@ periodics: # runs on schedule
         description: "Azure Kyma 1.x to Kyma 2.0 upgrade."
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma install, kyma deploy"
+        pipeline.platform: "gardener_azure"
         pipeline.test: "upgrade-fast-integration"
         pipeline.trigger: "periodic"
         testgrid-dashboards: "kyma_integration"
