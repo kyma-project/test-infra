@@ -26,29 +26,29 @@
 | kyma-aks-nightly | aks | az cli | kyma install |  | nightly |    |
 | kyma-integration-k3s | k3s | k3s | kyma deploy |  | periodic |  fast-integration  |
 | kyma-integration-k3s-compass-dev | k3s | k3s | kyma deploy |  | periodic |  fast-integration  |
-| pre-main-kyma-gardener-azure-integration | gardener_azure | kyma cli | kyma install |  | pr-submit |  octopus  |
-| pre-main-kyma-gardener-azure-fast-integration | gardener_azure | kyma cli | kyma install | evaluation | pr-submit |  fast-integration  |
-| pre-main-kyma-gardener-azure-alpha-eval | gardener_azure | kyma cli | kyma deploy | evaluation | pr-submit |  fast-integration  |
-| pre-main-kyma-gardener-azure-alpha-prod | gardener_azure | kyma cli | kyma deploy | production | pr-submit |  fast-integration  |
+| pre-main-kyma-gardener-azure-integration |  | kyma cli | kyma deploy |  | pr-submit |  octopus  |
+| pre-main-kyma-gardener-azure-fast-integration |  | kyma cli | kyma deploy | evaluation | pr-submit |  fast-integration  |
+| pre-main-kyma-gardener-azure-alpha-eval |  | kyma cli | kyma deploy | evaluation | pr-submit |  fast-integration  |
+| pre-main-kyma-gardener-azure-alpha-prod |  | kyma cli | kyma deploy | production | pr-submit |  fast-integration  |
 | pre-main-kyma-gardener-gcp-api-gateway | gardener_gcp | kyma cli | kyma install |  | pr-submit |  octopus  |
-| post-main-kyma-gardener-azure-alpha-eval | gardener_azure | kyma cli | kyma deploy | evaluation | pr-merge |  fast-integration  |
-| post-main-kyma-gardener-azure-alpha-prod | gardener_azure | kyma cli | kyma deploy | production | pr-merge |  fast-integration  |
+| post-main-kyma-gardener-azure-alpha-eval |  | kyma cli | kyma deploy | evaluation | pr-merge |  fast-integration  |
+| post-main-kyma-gardener-azure-alpha-prod |  | kyma cli | kyma deploy | production | pr-merge |  fast-integration  |
 | post-main-kyma-gardener-gcp-api-gateway | gardener_gcp | kyma cli | kyma install |  | pr-merge |  octopus  |
 | pre-main-kyma-gardener-gcp-eventing | gardener_gcp | kyma cli | kyma install |  | pr-submit |  octopus  |
 | kyma-integration-gardener-gcp | gardener_gcp | kyma cli | kyma install |  | periodic |  octopus  |
 | kyma-integration-gardener-aws | gardener_aws | kyma cli | kyma install |  | periodic |  octopus  |
-| kyma-integration-gardener-azure | gardener_azure | kyma cli | kyma install |  | periodic |  octopus  |
-| kyma-integration-evaluation-gardener-azure | gardener_azure | kyma cli | kyma install | evaluation | periodic |  fast-integration  |
-| kyma-integration-production-gardener-azure | gardener_azure | kyma cli | kyma install | production | periodic |  fast-integration  |
-| kyma-alpha-integration-evaluation-gardener-azure | gardener_azure | kyma cli | kyma deploy | evaluation | periodic |  fast-integration  |
-| kyma-alpha-integration-production-gardener-azure | gardener_azure | kyma cli | kyma deploy | production | periodic |  fast-integration  |
-| kyma-integration-hibernation-gardener-azure | gardener_azure | kyma cli | kyma install | evaluation | periodic |  fast-integration  |
+| kyma-integration-gardener-azure |  | kyma cli | kyma install |  | periodic |  octopus  |
+| kyma-integration-evaluation-gardener-azure |  | kyma cli | kyma install | evaluation | periodic |  fast-integration  |
+| kyma-integration-production-gardener-azure |  | kyma cli | kyma install | production | periodic |  fast-integration  |
+| kyma-alpha-integration-evaluation-gardener-azure |  | kyma cli | kyma install | evaluation | periodic |  fast-integration  |
+| kyma-alpha-integration-production-gardener-azure |  | kyma cli | kyma install | production | periodic |  fast-integration  |
+| kyma-integration-hibernation-gardener-azure |  | kyma cli | kyma install | evaluation | periodic |  fast-integration  |
 | kyma-weekly-gardener-gcp-busola | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
 | kyma-nightly-gardener-gcp-busola | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
 | kyma-weekly-gardener-gcp-busola-kyma | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
 | kyma-periodic-gardener-gcp-busola-init-kyma | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
 | kyma-periodic-gardener-gcp-busola-kyma | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
-| kyma-upgrade-gardener-kyma-to-kyma2 | gardener_azure | kyma cli | kyma install, kyma deploy |  | periodic |  upgrade-fast-integration  |
+| kyma-upgrade-gardener-kyma-to-kyma2 |  | kyma cli | kyma install, kyma deploy |  | periodic |  upgrade-fast-integration  |
 | kyma-upgrade-gardener-azure | gardener_azure | kyma cli | kyma install, kyma upgrade |  | periodic |  octopus  |
 | skr-azure-integration-dev | gardener_azure | keb | keb |  | periodic |  fast-integration  |
 | skr-azure-lite-integration-dev | gardener_azure | keb | keb | evaluation | periodic |  fast-integration  |

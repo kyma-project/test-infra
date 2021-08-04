@@ -126,7 +126,7 @@ log::banner "Create Eventing Backend Secret"
 eventing::create_eventing_backend_secret
 
 # uses previously set KYMA_SOURCE
-if [[ "${KYMA_ALPHA}" == "true" ]]; then
+if [[ "${KYMA_MAJOR_VERSION}" == "2" ]]; then
   kyma::deploy_kyma \
     -p "$EXECUTION_PROFILE" \
     -s "$KYMA_SOURCES_DIR"

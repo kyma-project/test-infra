@@ -5,7 +5,7 @@ LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${LIBDIR}/log.sh"
 
-# kyma::deploy_kyma starts Kyma deployment using alpha feature
+# kyma::deploy_kyma starts Kyma deployment using new installation method
 # Arguments:
 # optional:
 # s - Kyma sources directory
@@ -52,7 +52,7 @@ function kyma::deploy_kyma() {
     fi
 }
 
-# kyma::delete_kyma uninstalls Kyma using alpha feature
+# kyma::delete_kyma uninstalls Kyma using new deletion method
 function kyma::delete_kyma() {
   log::info "Uninstalling Kyma"
 

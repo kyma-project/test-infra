@@ -6,8 +6,7 @@ presubmits: # runs on PRs
     - name: pre-main-kyma-gardener-azure-integration
       annotations:
         pipeline.clusterprovisioning: "kyma cli"
-        pipeline.installer: "kyma install"
-        pipeline.platform: "gardener_azure"
+        pipeline.installer: "kyma deploy"
         pipeline.test: "octopus"
         pipeline.trigger: "pr-submit"
       labels:
@@ -76,8 +75,7 @@ presubmits: # runs on PRs
     - name: pre-main-kyma-gardener-azure-fast-integration
       annotations:
         pipeline.clusterprovisioning: "kyma cli"
-        pipeline.installer: "kyma install"
-        pipeline.platform: "gardener_azure"
+        pipeline.installer: "kyma deploy"
         pipeline.profile: "evaluation"
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
@@ -151,7 +149,6 @@ presubmits: # runs on PRs
       annotations:
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma deploy"
-        pipeline.platform: "gardener_azure"
         pipeline.profile: "evaluation"
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
@@ -203,8 +200,6 @@ presubmits: # runs on PRs
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
-              - name: KYMA_ALPHA
-                value: "true"
               - name: KYMA_MAJOR_VERSION
                 value: "2"
               - name: KYMA_PROJECT_DIR
@@ -228,7 +223,6 @@ presubmits: # runs on PRs
       annotations:
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma deploy"
-        pipeline.platform: "gardener_azure"
         pipeline.profile: "production"
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
@@ -280,8 +274,6 @@ presubmits: # runs on PRs
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
-              - name: KYMA_ALPHA
-                value: "true"
               - name: KYMA_MAJOR_VERSION
                 value: "2"
               - name: KYMA_PROJECT_DIR
@@ -438,7 +430,6 @@ postsubmits: # runs on main
       annotations:
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma deploy"
-        pipeline.platform: "gardener_azure"
         pipeline.profile: "evaluation"
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-merge"
@@ -489,8 +480,6 @@ postsubmits: # runs on main
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
-              - name: KYMA_ALPHA
-                value: "true"
               - name: KYMA_MAJOR_VERSION
                 value: "2"
               - name: KYMA_PROJECT_DIR
@@ -514,7 +503,6 @@ postsubmits: # runs on main
       annotations:
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma deploy"
-        pipeline.platform: "gardener_azure"
         pipeline.profile: "production"
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-merge"
@@ -565,8 +553,6 @@ postsubmits: # runs on main
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
-              - name: KYMA_ALPHA
-                value: "true"
               - name: KYMA_MAJOR_VERSION
                 value: "2"
               - name: KYMA_PROJECT_DIR
@@ -772,7 +758,6 @@ periodics: # runs on schedule
         description: "Kyma Azure Gardener integration job."
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma install"
-        pipeline.platform: "gardener_azure"
         pipeline.test: "octopus"
         pipeline.trigger: "periodic"
         testgrid-dashboards: "kyma_integration"
@@ -843,7 +828,6 @@ periodics: # runs on schedule
         description: "Evaluation profile Kyma Azure Gardener integration job."
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma install"
-        pipeline.platform: "gardener_azure"
         pipeline.profile: "evaluation"
         pipeline.test: "fast-integration"
         pipeline.trigger: "periodic"
@@ -923,7 +907,6 @@ periodics: # runs on schedule
         description: "Production profile Kyma Azure Gardener integration job."
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma install"
-        pipeline.platform: "gardener_azure"
         pipeline.profile: "production"
         pipeline.test: "fast-integration"
         pipeline.trigger: "periodic"
@@ -1000,10 +983,9 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: kyma-alpha-integration-evaluation-gardener-azure
       annotations:
-        description: "Evaluation profile Kyma Alpha Azure Gardener integration job."
+        description: "Evaluation profile for Kyma 2 Azure Gardener integration job."
         pipeline.clusterprovisioning: "kyma cli"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "gardener_azure"
+        pipeline.installer: "kyma install"
         pipeline.profile: "evaluation"
         pipeline.test: "fast-integration"
         pipeline.trigger: "periodic"
@@ -1059,8 +1041,6 @@ periodics: # runs on schedule
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
-              - name: KYMA_ALPHA
-                value: "true"
               - name: KYMA_DELETE
                 value: "true"
               - name: KYMA_MAJOR_VERSION
@@ -1084,10 +1064,9 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: kyma-alpha-integration-production-gardener-azure
       annotations:
-        description: "Production profile Kyma Alpha Azure Gardener integration job."
+        description: "Production profile for Kyma 2 Azure Gardener integration job."
         pipeline.clusterprovisioning: "kyma cli"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "gardener_azure"
+        pipeline.installer: "kyma install"
         pipeline.profile: "production"
         pipeline.test: "fast-integration"
         pipeline.trigger: "periodic"
@@ -1143,8 +1122,6 @@ periodics: # runs on schedule
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
-              - name: KYMA_ALPHA
-                value: "true"
               - name: KYMA_DELETE
                 value: "true"
               - name: KYMA_MAJOR_VERSION
@@ -1170,7 +1147,6 @@ periodics: # runs on schedule
       annotations:
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma install"
-        pipeline.platform: "gardener_azure"
         pipeline.profile: "evaluation"
         pipeline.test: "fast-integration"
         pipeline.trigger: "periodic"
@@ -1578,7 +1554,6 @@ periodics: # runs on schedule
         description: "Azure Kyma 1.x to Kyma 2.0 upgrade."
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma install, kyma deploy"
-        pipeline.platform: "gardener_azure"
         pipeline.test: "upgrade-fast-integration"
         pipeline.trigger: "periodic"
         testgrid-dashboards: "kyma_integration"

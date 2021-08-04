@@ -107,9 +107,6 @@ templates:
               preset-sa-test-gcr-push: "true"               # required for pushing images
               preset-sa-gardener-logs: "true"               # required for writing logs to Stackdriver
               preset-cluster-version: "true"
-          installer_alpha:
-            env:
-              KYMA_ALPHA: "true"
             annotations:
               pipeline.installer: kyma deploy
           evaluation_profile:
@@ -184,7 +181,6 @@ templates:
                     - command_integration
                     - gardener_azure_job
                     - evaluation_profile
-                    - installer_alpha
               - jobConfig:
                   name: pre-main-kyma-gardener-azure-alpha-prod
                   decoration_config:
@@ -205,7 +201,6 @@ templates:
                     - command_integration
                     - gardener_azure_job
                     - production_profile
-                    - installer_alpha
               - jobConfig:
                   name: pre-main-kyma-gardener-gcp-api-gateway
                   labels:
@@ -247,7 +242,6 @@ templates:
                     - command_integration
                     - gardener_azure_job
                     - evaluation_profile
-                    - installer_alpha
               - jobConfig:
                   name: post-main-kyma-gardener-azure-alpha-prod
                   decoration_config:
@@ -268,7 +262,6 @@ templates:
                     - command_integration
                     - gardener_azure_job
                     - production_profile
-                    - installer_alpha
               - jobConfig:
                   name: post-main-kyma-gardener-gcp-api-gateway
                   decoration_config:
@@ -436,7 +429,7 @@ templates:
                   name: kyma-alpha-integration-evaluation-gardener-azure
                   annotations:
                     testgrid-dashboards: kyma_integration
-                    description: Evaluation profile Kyma Alpha Azure Gardener integration job.
+                    description: Evaluation profile for Kyma 2 Azure Gardener integration job.
                   decoration_config:
                     timeout: 7200000000000 # 2h
                     grace_period: 600000000000 # 10min
@@ -459,12 +452,11 @@ templates:
                     - extra_refs_kyma-local
                     - command_integration
                     - evaluation_profile
-                    - installer_alpha
               - jobConfig:
                   name: kyma-alpha-integration-production-gardener-azure
                   annotations:
                     testgrid-dashboards: kyma_integration
-                    description: Production profile Kyma Alpha Azure Gardener integration job.
+                    description: Production profile for Kyma 2 Azure Gardener integration job.
                   decoration_config:
                     timeout: 7200000000000 # 2h
                     grace_period: 600000000000 # 10min
@@ -487,7 +479,6 @@ templates:
                     - extra_refs_kyma-local
                     - command_integration
                     - production_profile
-                    - installer_alpha
               - jobConfig:
                   name: kyma-integration-hibernation-gardener-azure
                   decoration_config:
