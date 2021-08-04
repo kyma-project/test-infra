@@ -1,4 +1,4 @@
-FROM golang:1.16.2-alpine3.13 AS builder
+FROM golang:1.16.6-alpine3.14 AS builder
 
 # Commit details
 
