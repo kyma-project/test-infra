@@ -32,7 +32,10 @@ type githubAPIWrapper struct {
 func NewGithubAPI(ctx context.Context, githubAccessToken, repoOwner, repoName string) GithubAPI {
 
 	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: githubAccessToken},
+		&oauth2.Token{
+			AccessToken: githubAccessToken,
+			TokenType:   "token",
+		},
 	)
 
 	tc := oauth2.NewClient(ctx, ts)

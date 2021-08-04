@@ -10,9 +10,7 @@ replace (
 )
 
 require (
-	cloud.google.com/go v0.88.0
 	cloud.google.com/go/bigquery v1.8.0
-	cloud.google.com/go/firestore v1.5.0
 	cloud.google.com/go/pubsub v1.10.3
 	cloud.google.com/go/storage v1.16.0
 	github.com/Masterminds/semver v1.5.0
@@ -33,7 +31,7 @@ require (
 	github.com/satori/go.uuid v1.2.0
 	github.com/shurcooL/githubv4 v0.0.0-20191102174205-af46314aec7b
 	github.com/sigstore/cosign v1.0.1
-	github.com/sigstore/sigstore v0.0.0-20210726180807-7e34e36ecda1
+	github.com/sigstore/sigstore v0.0.0-20210729211320-56a91f560f44
 	github.com/sirupsen/logrus v1.8.1
 	github.com/smartystreets/goconvey v1.6.4
 	github.com/spf13/cobra v1.2.1

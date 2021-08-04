@@ -40,6 +40,9 @@ func (e *LogEntry) GenerateTraceValue(projectID, traceFunctionName string) *LogE
 }
 
 func (e *LogEntry) WithLabel(key, value string) *LogEntry {
+	if e.Labels == nil {
+		e.Labels = make(map[string]string)
+	}
 	e.Labels[key] = value
 	return e
 }

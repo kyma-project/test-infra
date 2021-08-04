@@ -102,7 +102,7 @@ templates:
           k3s_template:
             env:
               INSTALLATION: "alpha"
-              KUBERNETES_RUNTIME: "k3s"
+              KUBERNETES_RUNTIME: "k3d"
           smaller_cluster:
             request_memory: 1Gi
             request_cpu: 400m
