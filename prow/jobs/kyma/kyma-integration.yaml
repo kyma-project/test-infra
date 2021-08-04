@@ -1954,8 +1954,6 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.runID: "kyma-aks-nightly-fast-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
-        preset-kms-gc-project-env: "true"
-        preset-nightly-aks-github-integration: "true"
         preset-sa-gke-kyma-integration: "true"
       cron: "0 3 * * 1-5"
       skip_report: false

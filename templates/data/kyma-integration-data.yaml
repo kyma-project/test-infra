@@ -1002,8 +1002,6 @@ templates:
                     description: Kyma AKS nightly fast integration tests.
                     pipeline.platform: aks
                   labels:
-                    preset-nightly-aks-github-integration: "true"
-                    preset-kms-gc-project-env: "true"
                     preset-az-kyma-prow-credentials: "true"
                   env:
                     RS_GROUP: "kyma-nightly-aks"
