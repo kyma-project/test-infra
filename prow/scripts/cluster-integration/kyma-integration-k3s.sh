@@ -21,14 +21,19 @@ function load_env() {
   fi
 }
 
-function prepare_k3s() {
-  pushd ${LOCAL_KYMA_DIR}
-  ./create-cluster-k3s.sh
+# function prepare_k3s() {
+#   pushd ${LOCAL_KYMA_DIR}
+#   ./create-cluster-k3s.sh
 
-  REGISTRY_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' /registry.localhost)
-  echo "${REGISTRY_IP} registry.localhost" >> /etc/hosts
+#   REGISTRY_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' /registry.localhost)
+#   echo "${REGISTRY_IP} registry.localhost" >> /etc/hosts
 
-  popd
+#   popd
+# }
+
+function prepare_k3d(){
+    wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v4.4.7 bash
+    k3d version
 }
 
 function install_cli() {
@@ -64,17 +69,18 @@ function deploy_kyma() {
       --value application-connector.central_application_gateway.enabled=true \
       --value global.ingress.domainName="local.kyma.dev"
   else
-    kyma alpha deploy -p evaluation \
-      -d "local.kyma.dev" \
-      --ci \
-      --verbose \
-      --source=local \
-      --workspace "${KYMA_SOURCES_DIR}" \
-      --value global.ingress.domainName="local.kyma.dev" \
-      --value global.disableLegacyConnectivity=false \
-      --value serverless.dockerRegistry.enableInternal=false \
-      --value serverless.dockerRegistry.serverAddress=registry.localhost:5000 \
-      --value serverless.dockerRegistry.registryAddress=registry.localhost:5000
+    echo "KYMA DEPLOY"
+    kyma alpha deploy -p evaluation --ci
+    #   -d "local.kyma.dev" \
+    #   --ci \
+    #   --verbose \
+    #   --source=local \
+    #   --workspace "${KYMA_SOURCES_DIR}" \
+    #   --value global.ingress.domainName="local.kyma.dev" \
+    #   --value global.disableLegacyConnectivity=false \
+    #   --value serverless.dockerRegistry.enableInternal=false \
+    #   --value serverless.dockerRegistry.serverAddress=registry.localhost:5000 \
+    #   --value serverless.dockerRegistry.registryAddress=registry.localhost:5000
     #   --value tracing.authProxy.config.useDex=false \
     #   --value tracing.kcproxy.enabled=false \
     #   --value tracing.virtualservice.enabled=false
@@ -105,7 +111,8 @@ function run_tests() {
 
 prereq_test
 load_env
-prepare_k3s
+# prepare_k3s
+prepare_k3d
 install_cli
 deploy_kyma
 run_tests
