@@ -30,8 +30,6 @@ function connect_to_azure_cluster() {
 
     az::authenticate \
         -f "$AZURE_CREDENTIALS_FILE"
-
-    # az::set_subscription -s "$AZURE_SUBSCRIPTION_ID"
     az aks get-credentials --resource-group "${RS_GROUP}" --name "${INPUT_CLUSTER_NAME}"
 }
 

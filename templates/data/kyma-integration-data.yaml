@@ -946,7 +946,7 @@ templates:
                     - "extra_refs_kyma-local"
               - jobConfig:
                   name: "kyma-gke-nightly-fast-integration"
-                  cron: "0 3 * * 1-5" # "At 03:00 UTC on every weekday Monday through Friday"
+                  cron: "0 0-2,4-23 * * 1-5" # "At every hour except 03:00 UTC on every weekday Monday through Friday"
                   annotations:
                     testgrid-dashboards: kyma_integration
                     description: Kyma GKE nightly fast integration tests.
@@ -966,12 +966,13 @@ templates:
                     - "image_kyma-integration"
                     - "extra_refs_kyma"
                     - "extra_refs_test-infra"
+                    - "jobConfig_slack_dev_null"
                   local:
                     - "fast_integration_template"
 
               - jobConfig:
                   name: "kyma-gke-weekly-fast-integration"
-                  cron: "0 5 * * 1" # "At 05:00 UTC on Monday."
+                  cron: "0 0-4,6-23 * * 1" # "At every hour except 05:00 UTC, on Monday."
                   annotations:
                     testgrid-dashboards: kyma_integration
                     description: Kyma GKE weekly fast integration tests.
@@ -991,12 +992,13 @@ templates:
                     - "image_kyma-integration"
                     - "extra_refs_kyma"
                     - "extra_refs_test-infra"
+                    - "jobConfig_slack_dev_null"
                   local:
                     - "fast_integration_template"
 
               - jobConfig:
                   name: "kyma-aks-nightly-fast-integration"
-                  cron: "0 3 * * 1-5" # "At 03:00 UTC on every day-of-week from Monday through Friday"
+                  cron: "0 0-2,4-23 * * 1-5" # "At every hour except 03:00 UTC on every day-of-week from Monday through Friday"
                   annotations:
                     testgrid-dashboards: kyma_integration
                     description: Kyma AKS nightly fast integration tests.
@@ -1014,5 +1016,6 @@ templates:
                     - "image_kyma-integration"
                     - "extra_refs_kyma"
                     - "extra_refs_test-infra"
+                    - "jobConfig_slack_dev_null"
                   local:
                     - "fast_integration_template"

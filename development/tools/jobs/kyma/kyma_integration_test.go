@@ -442,7 +442,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, nightlyFastIntegrationPeriodic)
 	assert.Equal(t, expName, nightlyFastIntegrationPeriodic.Name)
 
-	assert.Equal(t, "0 3 * * 1-5", nightlyFastIntegrationPeriodic.Cron)
+	assert.Equal(t, "0 0-2,4-23 * * 1-5", nightlyFastIntegrationPeriodic.Cron)
 	tester.AssertThatHasPresets(t, nightlyFastIntegrationPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration, "preset-gc-compute-envs")
 	tester.AssertThatHasExtraRepoRefCustom(t, nightlyFastIntegrationPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, nightlyFastIntegrationPeriodic.Spec.Containers[0].Image)
@@ -459,7 +459,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, weeklyFastIntegrationPeriodic)
 	assert.Equal(t, expName, weeklyFastIntegrationPeriodic.Name)
 
-	assert.Equal(t, "0 5 * * 1", weeklyFastIntegrationPeriodic.Cron)
+	assert.Equal(t, "0 0-4,6-23 * * 1", weeklyFastIntegrationPeriodic.Cron)
 	tester.AssertThatHasPresets(t, weeklyFastIntegrationPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration, "preset-gc-compute-envs")
 	tester.AssertThatHasExtraRepoRefCustom(t, weeklyFastIntegrationPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, weeklyFastIntegrationPeriodic.Spec.Containers[0].Image)
@@ -476,7 +476,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, nightlyAksFastIntegrationPeriodic)
 	assert.Equal(t, expName, nightlyAksFastIntegrationPeriodic.Name)
 
-	assert.Equal(t, "0 3 * * 1-5", nightlyAksFastIntegrationPeriodic.Cron)
+	assert.Equal(t, "0 0-2,4-23 * * 1-5", nightlyAksFastIntegrationPeriodic.Cron)
 	tester.AssertThatHasPresets(t, nightlyAksFastIntegrationPeriodic.JobBase, preset.SaGKEKymaIntegration, "preset-az-kyma-prow-credentials")
 	tester.AssertThatHasExtraRepoRefCustom(t, nightlyAksFastIntegrationPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, nightlyAksFastIntegrationPeriodic.Spec.Containers[0].Image)

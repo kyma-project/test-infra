@@ -1848,7 +1848,7 @@ periodics: # runs on schedule
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
         preset-sa-gke-kyma-integration: "true"
-      cron: "0 3 * * 1-5"
+      cron: "0 0-2,4-23 * * 1-5"
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1861,6 +1861,9 @@ periodics: # runs on schedule
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-prow-dev-null
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
@@ -1902,7 +1905,7 @@ periodics: # runs on schedule
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
         preset-sa-gke-kyma-integration: "true"
-      cron: "0 5 * * 1"
+      cron: "0 0-4,6-23 * * 1"
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1915,6 +1918,9 @@ periodics: # runs on schedule
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-prow-dev-null
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
@@ -1955,7 +1961,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
         preset-sa-gke-kyma-integration: "true"
-      cron: "0 3 * * 1-5"
+      cron: "0 0-2,4-23 * * 1-5"
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1968,6 +1974,9 @@ periodics: # runs on schedule
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-prow-dev-null
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
