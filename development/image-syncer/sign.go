@@ -18,6 +18,7 @@ import (
 	"strings"
 )
 
+// NewKMSSignerVerifier returns signature.SignerVerifier for a provider based on a keyRef.
 func NewKMSSignerVerifier(ctx context.Context, keyRef string) (signature.SignerVerifier, error) {
 	for prefix := range kms.ProvidersMux().Providers() {
 		if strings.HasPrefix(keyRef, prefix) {
@@ -27,6 +28,7 @@ func NewKMSSignerVerifier(ctx context.Context, keyRef string) (signature.SignerV
 	return nil, fmt.Errorf("unsupported keyRef: %v", keyRef)
 }
 
+// Sign generates signature for the image ref using provides signature.SignerVerifier and pushes it to the registry.
 func Sign(ctx context.Context, sv signature.SignerVerifier, ref name.Reference, dryRun bool, auth authn.Authenticator) error {
 	get, err := remote.Get(ref, remote.WithContext(ctx))
 	if err != nil {
@@ -64,6 +66,7 @@ func Sign(ctx context.Context, sv signature.SignerVerifier, ref name.Reference, 
 	return nil
 }
 
+// Verify checks the provided image signature against the provided signature.SignerVerifier. It returns error if the check fails.
 func Verify(ctx context.Context, sv signature.SignerVerifier, sigRef name.Reference, auth authn.Authenticator) error {
 	co := cosign.CheckOpts{
 		SigVerifier:        sv,

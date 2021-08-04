@@ -72,6 +72,7 @@ func cancelOnInterrupt(ctx context.Context, cancel context.CancelFunc) {
 	}()
 }
 
+// SyncImage syncs specific image between two registries for current architecture.
 func SyncImage(ctx context.Context, src, dest string, dryRun bool, auth authn.Authenticator) (name.Reference, error) {
 	log.Debug("source ", src)
 	log.Debug("destination ", dest)
@@ -101,9 +102,8 @@ func SyncImage(ctx context.Context, src, dest string, dryRun bool, auth authn.Au
 					return nil, fmt.Errorf("push image error: %w", err)
 				}
 				return dr, nil
-			} else {
-				log.Debug("Dry-Run enabled. Skipping push.")
 			}
+			log.Debug("Dry-Run enabled. Skipping push.")
 		}
 		return nil, err
 	}
@@ -130,6 +130,7 @@ func SyncImage(ctx context.Context, src, dest string, dryRun bool, auth authn.Au
 	return dr, nil
 }
 
+// SyncImages is a main syncing function that takes care of copying and signing/verifying images.
 func SyncImages(ctx context.Context, cfg *Config, images *SyncDef, sv signature.SignerVerifier, authCfg []byte) error {
 	auth := &authn.Basic{Username: "_json_key", Password: string(authCfg)}
 	for _, img := range images.Images {
