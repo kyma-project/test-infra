@@ -33,6 +33,10 @@ func NewKMSSignerVerifier(ctx context.Context, keyRef string) (signature.SignerV
 func Sign(ctx context.Context, sv signature.SignerVerifier, ref name.Reference, dryRun bool, auth authn.Authenticator) error {
 	get, err := remote.Get(ref, remote.WithContext(ctx))
 	if err != nil {
+		if ifRefNotFound(err) && dryRun {
+			log.Debug("Skipped signature signing in dry-run mode")
+			return nil
+		}
 		return err
 	}
 	repo := ref.Context()
@@ -56,8 +60,8 @@ func Sign(ctx context.Context, sv signature.SignerVerifier, ref name.Reference, 
 		DupeDetector: sv,
 		RemoteOpts:   []remote.Option{remote.WithAuth(auth), remote.WithContext(ctx)},
 	}
-
 	if !dryRun {
+		log.Debug("Uploading signature to the registry")
 		_, err = cremote.UploadSignature(sig, pl, sigRef, uo)
 		if err != nil {
 			return fmt.Errorf("upload signature %w", err)

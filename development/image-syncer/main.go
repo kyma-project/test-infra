@@ -75,8 +75,8 @@ func cancelOnInterrupt(ctx context.Context, cancel context.CancelFunc) {
 
 // SyncImage syncs specific image between two registries for current architecture.
 func SyncImage(ctx context.Context, src, dest string, dryRun bool, auth authn.Authenticator) (name.Reference, error) {
-	log.Debug("source ", src)
-	log.Debug("destination ", dest)
+	log.Debug("Source ", src)
+	log.Debug("Destination ", dest)
 
 	sr, err := name.ParseReference(src)
 	if err != nil {
@@ -92,9 +92,8 @@ func SyncImage(ctx context.Context, src, dest string, dryRun bool, auth authn.Au
 		return nil, fmt.Errorf("source image pull error: %w", err)
 	}
 
-	// lookup on target registry if image exists
-	// HEAD requests usually do not count in rate limits
-	if _, err := remote.Head(dr, remote.WithContext(ctx)); err != nil {
+	d, err := remote.Image(dr, remote.WithContext(ctx))
+	if err != nil {
 		if ifRefNotFound(err) {
 			log.Debug("Target image does not exist. Pushing image...")
 			if !dryRun {
@@ -102,15 +101,11 @@ func SyncImage(ctx context.Context, src, dest string, dryRun bool, auth authn.Au
 				if err != nil {
 					return nil, fmt.Errorf("push image error: %w", err)
 				}
-				return dr, nil
+			} else {
+				log.Debug("Dry-Run enabled. Skipping push.")
 			}
-			log.Debug("Dry-Run enabled. Skipping push.")
+			return dr, nil
 		}
-		return nil, err
-	}
-
-	d, err := remote.Image(dr, remote.WithContext(ctx))
-	if err != nil {
 		return nil, err
 	}
 
@@ -122,12 +117,12 @@ func SyncImage(ctx context.Context, src, dest string, dryRun bool, auth authn.Au
 	if err != nil {
 		return nil, err
 	}
-	log.Debug("src digest: ", ds)
-	log.Debug("dest digest: ", dd)
+	log.Debug("Src digest: ", ds)
+	log.Debug("Dest digest: ", dd)
 	if ds != dd {
 		return nil, fmt.Errorf("digests are not equal: %v, %v - probably source image has been changed", ds, dd)
 	}
-	log.Debug("Digests are equal. Nothing to do.")
+	log.Debug("Digests are equal - nothing to sync")
 	return dr, nil
 }
 
@@ -139,7 +134,7 @@ func SyncImages(ctx context.Context, cfg *Config, images *SyncDef, sv signature.
 		if err != nil {
 			return err
 		}
-		log.WithField("image", img.Source).Info("Start scan on image")
+		log.WithField("image", img.Source).Info("Start sync")
 		targetImg, err := SyncImage(ctx, img.Source, target, cfg.DryRun, auth)
 		if err != nil {
 			return err
@@ -155,10 +150,12 @@ func SyncImages(ctx context.Context, cfg *Config, images *SyncDef, sv signature.
 					if err != nil {
 						return fmt.Errorf("image sign error: %w", err)
 					}
+					log.Debug("Image signed successfully")
 				} else {
 					return fmt.Errorf("image verify error: %w", err)
 				}
 			}
+			log.Debug("Image signature verified successfully")
 		}
 		log.WithField("target", target).Info("Image synced successfully")
 	}
