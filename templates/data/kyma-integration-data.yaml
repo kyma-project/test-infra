@@ -972,7 +972,7 @@ templates:
 
               - jobConfig:
                   name: "kyma-gke-weekly-fast-integration"
-                  cron: "0 0-4,6-23 * * 1" # "At every hour except 05:00 UTC, on Monday."
+                  cron: "0 0-4,6-23 * * 1-5" # "At every hour except 05:00 UTC, on every weekday Monday through Friday"
                   annotations:
                     testgrid-dashboards: kyma_integration
                     description: Kyma GKE weekly fast integration tests.
