@@ -5,18 +5,18 @@ import (
 	"fmt"
 	"github.com/google/go-containerregistry/pkg/authn"
 	"github.com/google/go-containerregistry/pkg/name"
-	v1 "github.com/google/go-containerregistry/pkg/v1"
 	"github.com/google/go-containerregistry/pkg/v1/remote"
+	"github.com/google/go-containerregistry/pkg/v1/remote/transport"
+	"github.com/pkg/errors"
+	"github.com/sigstore/sigstore/pkg/signature"
 	"io/ioutil"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 
 	"github.com/jamiealquiza/envy"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v2"
 )
 
 var (
@@ -26,32 +26,35 @@ var (
 // SyncDef stores synchronisation definition
 type SyncDef struct {
 	TargetRepoPrefix string `yaml:"targetRepoPrefix"`
-	Sign             bool   `yaml:"sign,omitempty"`
+	Sign             bool   `yaml:"sign"`
 	Images           []Image
 }
 
 // Image stores image location
 type Image struct {
 	Source string
-	Sign   bool   `yaml:"sign,omitempty"`
 	Tag    string `yaml:"tag,omitempty"`
+	Sign   *bool  `yaml:"sign,omitempty"`
 }
 
 // Config stores command line arguments
 type Config struct {
 	ImagesFile    string
 	TargetKeyFile string
+	KeyRef        string
 	DryRun        bool
 	Debug         bool
 }
 
-//TODO: we should check for error type not match strings
-func isImageNotFoundError(err error) bool {
+func ifRefNotFound(err error) bool {
 	if err == nil {
 		return false
 	}
-	if strings.Contains(err.Error(), "MANIFEST_UNKNOWN") {
-		return true
+	var e *transport.Error
+	if errors.As(err, &e) {
+		if e.StatusCode == 404 {
+			return true
+		}
 	}
 	return false
 }
@@ -69,89 +72,95 @@ func cancelOnInterrupt(ctx context.Context, cancel context.CancelFunc) {
 	}()
 }
 
-func Pull(ctx context.Context, ref string) (v1.Image, error) {
-	imageRef, err := name.ParseReference(ref)
-	if err != nil {
-		return nil, fmt.Errorf("source ref parse error: %w", err)
-	}
-	return remote.Image(imageRef, remote.WithContext(ctx))
-}
-
-func Push(ctx context.Context, image v1.Image, ref string, opts ...remote.Option) error {
-	imageRef, err := name.ParseReference(ref)
-	if err != nil {
-		return fmt.Errorf("destination ref parse error: %w", err)
-	}
-	opts = append(opts, remote.WithContext(ctx))
-	return remote.Write(imageRef, image, opts...)
-}
-
-func SyncImage(ctx context.Context, src, dest string, dryRun bool, auth authn.Authenticator) error {
+func SyncImage(ctx context.Context, src, dest string, dryRun bool, auth authn.Authenticator) (name.Reference, error) {
 	log.Debug("source ", src)
 	log.Debug("destination ", dest)
-	srcImg, err := Pull(ctx, src)
+
+	sr, err := name.ParseReference(src)
 	if err != nil {
-		return fmt.Errorf("source image pull error: %w", err)
+		return nil, err
 	}
-	destImg, err := Pull(ctx, dest)
-	if isImageNotFoundError(err) {
-		log.Debug("Target image does not exist. Pushing image...")
-		if dryRun {
-			log.Debug("Dry-Run enabled. Skipping push.")
-		} else {
-			err := Push(ctx, srcImg, dest, remote.WithAuth(auth))
-			if err != nil {
-				return fmt.Errorf("push image error: %w", err)
+	dr, err := name.ParseReference(dest)
+	if err != nil {
+		return nil, err
+	}
+
+	s, err := remote.Image(sr, remote.WithContext(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("source image pull error: %w", err)
+	}
+
+	// lookup on target registry if image exists
+	// HEAD requests usually do not count in rate limits
+	if _, err := remote.Head(dr, remote.WithContext(ctx)); err != nil {
+		if ifRefNotFound(err) {
+			log.Debug("Target image does not exist. Pushing image...")
+			if !dryRun {
+				err := remote.Write(dr, s, remote.WithContext(ctx), remote.WithAuth(auth))
+				if err != nil {
+					return nil, fmt.Errorf("push image error: %w", err)
+				}
+				return dr, nil
+			} else {
+				log.Debug("Dry-Run enabled. Skipping push.")
 			}
-
 		}
-		return nil
-	} else if err != nil {
-		return err
-	}
-	d1, err := srcImg.Digest()
-	log.Debug("source digest ", d1)
-	if err != nil {
-		return err
-	}
-	d2, err := destImg.Digest()
-	log.Debug("target digest ", d2)
-	if err != nil {
-		return err
+		return nil, err
 	}
 
-	if d1 != d2 {
-		return fmt.Errorf("digests are not equal: %v, %v - probably source image has been changed", d1, d2)
+	d, err := remote.Image(dr, remote.WithContext(ctx))
+	if err != nil {
+		return nil, err
+	}
+
+	ds, err := s.Digest()
+	if err != nil {
+		return nil, err
+	}
+	dd, err := d.Digest()
+	if err != nil {
+		return nil, err
+	}
+	log.Debug("src digest: ", ds)
+	log.Debug("dest digest: ", dd)
+	if ds != dd {
+		return nil, fmt.Errorf("digests are not equal: %v, %v - probably source image has been changed", ds, dd)
 	}
 	log.Debug("Digests are equal. Nothing to do.")
-	return nil
+	return dr, nil
 }
 
-func GetTarget(source, targetRepo, targetTag string) (string, error) {
-	target := targetRepo + source
-	if strings.Contains(source, "@sha256:") {
-		if targetTag == "" {
-			return "", fmt.Errorf("sha256 digest detected, but the \"tag\" was not specified")
+func SyncImages(ctx context.Context, cfg *Config, images *SyncDef, sv signature.SignerVerifier, authCfg []byte) error {
+	auth := &authn.Basic{Username: "_json_key", Password: string(authCfg)}
+	for _, img := range images.Images {
+		target, err := getTarget(img.Source, images.TargetRepoPrefix, img.Tag)
+		if err != nil {
+			return err
 		}
-		imageName := strings.Split(source, "@sha256:")[0]
-		target = targetRepo + imageName + ":" + targetTag
+		log.WithField("image", img.Source).Info("Start scan on image")
+		targetImg, err := SyncImage(ctx, img.Source, target, cfg.DryRun, auth)
+		if err != nil {
+			return err
+		}
+		if shouldSign(images.Sign, img.Sign) {
+			log.Debug("Verifying image signature")
+			err = Verify(ctx, sv, targetImg, auth)
+			if err != nil {
+				if ifRefNotFound(err) {
+					// no signature found
+					log.Debug("Signature not found. Signing the image")
+					err := Sign(ctx, sv, targetImg, cfg.DryRun, auth)
+					if err != nil {
+						return fmt.Errorf("image sign error: %w", err)
+					}
+				} else {
+					return fmt.Errorf("image verify error: %w", err)
+				}
+			}
+		}
+		log.WithField("target", target).Info("Image synced successfully")
 	}
-	return target, nil
-}
-
-func ParseImagesFile(file string) (*SyncDef, error) {
-	f, err := ioutil.ReadFile(file)
-	if err != nil {
-		return nil, err
-	}
-	var syncDef SyncDef
-	if err := yaml.Unmarshal(f, &syncDef); err != nil {
-		return nil, err
-	}
-	if syncDef.TargetRepoPrefix == "" {
-		return nil, fmt.Errorf("targetRepoPrefix can not be empty")
-	}
-	return &syncDef, nil
+	return nil
 }
 
 func main() {
@@ -172,7 +181,7 @@ func main() {
 			defer cancel()
 			cancelOnInterrupt(ctx, cancel)
 
-			imagesFile, err := ParseImagesFile(cfg.ImagesFile)
+			imagesFile, err := parseImagesFile(cfg.ImagesFile)
 			if err != nil {
 				log.WithError(err).Fatal("Could not parse images file")
 			}
@@ -184,33 +193,13 @@ func main() {
 			if cfg.DryRun {
 				log.Info("Dry-Run enabled. Program will not make any changes to the target repository.")
 			}
-			auth := &authn.Basic{Username: "_json_key", Password: string(authCfg)}
 
-			var failed bool
-		loop:
-			for _, img := range imagesFile.Images {
-				select {
-				case <-ctx.Done():
-					break loop
-				default:
-				}
-				log.WithField("image", img.Source).Info("Start scan on image")
-				target, err := GetTarget(img.Source, imagesFile.TargetRepoPrefix, img.Tag)
-				if err != nil {
-					log.WithError(err).Error("Failed to get target url")
-					failed = true
-				}
-				err = SyncImage(ctx, img.Source, target, cfg.DryRun, auth)
-				if err != nil {
-					log.WithError(err).Error("Failed to sync image")
-					failed = true
-				}
-				if err == nil {
-					log.WithField("target", target).Info("Image synced succesfully")
-				}
+			sv, err := NewKMSSignerVerifier(ctx, cfg.KeyRef)
+			if err != nil {
+				log.WithError(err).Fatal("Failed to create signer instance")
 			}
-			if failed {
-				log.Fatal("Some errors occurred during image sync")
+			if err := SyncImages(ctx, &cfg, imagesFile, sv, authCfg); err != nil {
+				log.WithError(err).Fatal("Failed to sync images")
 			} else {
 				log.Info("All images synced successfully")
 			}
@@ -219,11 +208,13 @@ func main() {
 
 	rootCmd.PersistentFlags().StringVarP(&cfg.ImagesFile, "images-file", "i", "", "yaml file containing list of images")
 	rootCmd.PersistentFlags().StringVarP(&cfg.TargetKeyFile, "target-repo-auth-key", "t", "", "JSON key file used for authorization to target repo")
+	rootCmd.PersistentFlags().StringVarP(&cfg.KeyRef, "kms-key", "k", "", "path to KMS key resource (eg. gcpkms://...)")
 	rootCmd.PersistentFlags().BoolVarP(&cfg.DryRun, "dry-run", "d", true, "dry run mode")
 	rootCmd.PersistentFlags().BoolVar(&cfg.Debug, "debug", false, "enable debug mode")
 
 	rootCmd.MarkPersistentFlagRequired("images-file")
 	rootCmd.MarkPersistentFlagRequired("target-repo-auth-key")
+	rootCmd.MarkPersistentFlagRequired("kms-key")
 	envy.ParseCobra(rootCmd, envy.CobraConfig{Prefix: "SYNCER", Persistent: true, Recursive: false})
 
 	if err := rootCmd.Execute(); err != nil {
