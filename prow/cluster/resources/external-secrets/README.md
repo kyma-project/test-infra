@@ -4,16 +4,31 @@
 
 Kubernetes Secrets are synchronized with GCP Secret Manager using [Kubernetes External Secrets](https://github.com/external-secrets/kubernetes-external-secrets).
 
-# Installation
+## Installation
 
-Follow these steps to install `kubernetes-external-secrets` on an untrusted cluster in the `external-secrets` Namespace:
+Follow these steps to install `kubernetes-external-secrets` on an untrusted cluster in the `external-secrets` Namespace.
 
-1. Create the `external-secrets` Namespace. Run `kubectl create namespace external-secrets`.
-2. Add the `sa-secret-manager-untrusted` Secret containing credentials for a GCP service account with permission to access Secrets.
-3. Add the `external-secrets` Helm repository. Use the following command: `helm repo add external-secrets https://external-secrets.github.io/kubernetes-external-secrets/`.
-4. Install the `external-secrets/kubernetes-external-secrets` Helm chart. Run `helm install -f prow/cluster/resources/external-secrets/values_untrusted.yaml -n external-secrets kubernetes-external-secrets external-secrets/kubernetes-external-secrets`.
+1. Create the `external-secrets` Namespace. Run:
 
-# Configuration
+   ```bash
+   kubectl create namespace external-secrets
+   ```
+
+2. Add the `sa-secret-manager-untrusted` Secret containing credentials for a GCP service account with permission to access Secrets. Run:
+
+3. Add the `external-secrets` Helm repository. Use the following command:
+
+   ```bash
+   helm repo add external-secrets https://external-secrets.github.io/kubernetes-external-secrets/
+   ```
+
+4. Install the `external-secrets/kubernetes-external-secrets` Helm chart. Run:
+
+   ```bash
+   helm install -f prow/cluster/resources/external-secrets/values_untrusted.yaml -n external-secrets kubernetes-external-secrets external-secrets/kubernetes-external-secrets
+   ```
+
+## Configuration
 
 Secrets can be stored as text in GCP Secret Manager and be mapped to a Kubernetes Secret with one key. 
 
@@ -56,11 +71,10 @@ spec:
       property: anotherKey # name of the field in the GCP Secret JSON, unused for plain values
 ```
 
-
-# External Secrets Checker
+## External Secrets Checker
 
 External Secrets Checker checks if all External Secrets synchronized successfully, and if all Secrets have corresponding External Secrets.
 
-To install External Secrets Checker run the following command: 
+To install External Secrets Checker run the following command:
 
 `kubectl apply -f external_secrets_checker_prow.yaml`
