@@ -72,7 +72,7 @@ function deploy_kyma() {
   if [[ -v CENTRAL_APPLICATION_GATEWAY_ENABLED ]]; then
       kyma deploy -d "local.kyma.dev" -p evaluation --ci --verbose --source=local --workspace "${KYMA_SOURCES_DIR}" --value application-connector.central_application_gateway.enabled=true
   else
-      kyma deploy -d "local.kyma.dev" -p evaluation --ci --verbose --source=local --workspace "${KYMA_SOURCES_DIR}" --value istio.global.ingress.domainName="local.kyma.dev"
+      kyma deploy -d "local.kyma.dev" -p evaluation --ci --verbose --source=local --workspace "${KYMA_SOURCES_DIR}" --value global.ingress.domainName="local.kyma.dev"
   fi
 
   kubectl get pods -n kyma-system
