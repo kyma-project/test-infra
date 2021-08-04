@@ -7,28 +7,28 @@ export KYMA_SOURCES_DIR="./kyma"
 export LOCAL_KYMA_DIR="./local-kyma"
 
 function prereq_test() {
-    command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
-    command -v npm >/dev/null 2>&1 || { echo >&2 "npm not found"; exit 1; }
-    command -v jq >/dev/null 2>&1 || { echo >&2 "jq not found"; exit 1; }
-    command -v helm >/dev/null 2>&1 || { echo >&2 "helm not found"; exit 1; }
-    command -v kubectl >/dev/null 2>&1 || { echo >&2 "kubectl not found"; exit 1; }
+  command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
+  command -v npm >/dev/null 2>&1 || { echo >&2 "npm not found"; exit 1; }
+  command -v jq >/dev/null 2>&1 || { echo >&2 "jq not found"; exit 1; }
+  command -v helm >/dev/null 2>&1 || { echo >&2 "helm not found"; exit 1; }
+  command -v kubectl >/dev/null 2>&1 || { echo >&2 "kubectl not found"; exit 1; }
 }
 
 function load_env() {
-    ENV_FILE=".env"
-    if [ -f "${ENV_FILE}" ]; then
-        export $(xargs < "${ENV_FILE}")
-    fi
+  ENV_FILE=".env"
+  if [ -f "${ENV_FILE}" ]; then
+    export $(xargs < "${ENV_FILE}")
+  fi
 }
 
 function prepare_k3s() {
-    pushd ${LOCAL_KYMA_DIR}
-    ./create-cluster-k3s.sh
+  pushd ${LOCAL_KYMA_DIR}
+  ./create-cluster-k3s.sh
 
-    REGISTRY_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' /registry.localhost)
-    echo "${REGISTRY_IP} registry.localhost" >> /etc/hosts
-    
-    popd
+  REGISTRY_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' /registry.localhost)
+  echo "${REGISTRY_IP} registry.localhost" >> /etc/hosts
+
+  popd
 }
 
 function install_cli() {
@@ -54,11 +54,23 @@ function install_cli() {
 }
 
 function deploy_kyma() {
-
   if [[ -v CENTRAL_APPLICATION_GATEWAY_ENABLED ]]; then
-      kyma alpha deploy -p evaluation --ci --verbose --source=local --workspace "${KYMA_SOURCES_DIR}" --value application-connector.central_application_gateway.enabled=true
+    kyma alpha deploy -p evaluation \
+      -d "local.kyma.dev" \
+      --ci \
+      --verbose \
+      --source=local \
+      --workspace "${KYMA_SOURCES_DIR}" \
+      --value application-connector.central_application_gateway.enabled=true \
+      --value global.ingress.domainName="local.kyma.dev"
   else
-      kyma alpha deploy -p evaluation --ci --verbose --source=local --workspace "${KYMA_SOURCES_DIR}"
+    kyma alpha deploy -p evaluation \
+      -d "local.kyma.dev" \
+      --ci \
+      --verbose \
+      --source=local \
+      --workspace "${KYMA_SOURCES_DIR}" \
+      --value global.ingress.domainName="local.kyma.dev"
   fi
 
   kubectl get pods -n kyma-system
@@ -71,17 +83,17 @@ function deploy_kyma() {
 }
 
 function run_tests() {
-    pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
-    if [[ -v COMPASS_INTEGRATION_ENABLED && -v CENTRAL_APPLICATION_GATEWAY_ENABLED ]]; then
-        make ci-application-connectivity-2-compass
-    elif [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
-        make ci-compass
-    elif [[ -v CENTRAL_APPLICATION_GATEWAY_ENABLED ]]; then
-        make ci-application-connectivity-2
-    else
-        make ci
-    fi
-    popd
+  pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
+  if [[ -v COMPASS_INTEGRATION_ENABLED && -v CENTRAL_APPLICATION_GATEWAY_ENABLED ]]; then
+    make ci-application-connectivity-2-compass
+  elif [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
+    make ci-compass
+  elif [[ -v CENTRAL_APPLICATION_GATEWAY_ENABLED ]]; then
+    make ci-application-connectivity-2
+  else
+    make ci
+  fi
+  popd
 }
 
 prereq_test
