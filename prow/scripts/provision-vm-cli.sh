@@ -46,7 +46,7 @@ fi
 
 # Support configuration via ENV vars (can be be overwritten by CLI args)
 KUBERNETES_RUNTIME="${KUBERNETES_RUNTIME:=minikube}"
-# Either use the default Kyma install command or the new alpha command.
+# Either use the default Kyma install command or kyma deploy.
 INSTALLATION="${INSTALLATION:=default}"
 
 POSITIONAL=()
@@ -133,14 +133,14 @@ if [ "$KUBERNETES_RUNTIME" = 'minikube' ]; then
     gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma provision minikube --non-interactive"
 else
     gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "curl -s -o install-k3d.sh https://raw.githubusercontent.com/rancher/k3d/main/install.sh && chmod +x ./install-k3d.sh && ./install-k3d.sh && k3d --version"
-    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma alpha provision k3s --ci"
+    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma provision k3s --ci"
 fi
 
 # Install kyma
 log::info "Installing Kyma"
 date
-if [ "$INSTALLATION" = 'alpha' ]; then
-    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma alpha deploy --ci ${SOURCE}"
+if [ "$KUBERNETES_RUNTIME" = 'k3s' ]; then
+    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma deploy --ci ${SOURCE}"
 else
     gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma install --non-interactive ${SOURCE}"
 fi
@@ -149,8 +149,8 @@ fi
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/lib/clitests.sh"
 
-# ON alpha installation there is no dex, therefore skipping the test
-if [ "$INSTALLATION" = 'alpha' ]; then
+# ON Kyma2 installation there is no dex, therefore skipping the test
+if [ "$KUBERNETES_RUNTIME" = 'k3s' ]; then
     if clitests::testSuiteExists "test-version"; then
         clitests::execute "test-version" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
     else
