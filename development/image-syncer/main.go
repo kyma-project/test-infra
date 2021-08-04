@@ -3,16 +3,17 @@ package main
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
+	"os"
+	"os/signal"
+	"syscall"
+
 	"github.com/google/go-containerregistry/pkg/authn"
 	"github.com/google/go-containerregistry/pkg/name"
 	"github.com/google/go-containerregistry/pkg/v1/remote"
 	"github.com/google/go-containerregistry/pkg/v1/remote/transport"
 	"github.com/pkg/errors"
 	"github.com/sigstore/sigstore/pkg/signature"
-	"io/ioutil"
-	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/jamiealquiza/envy"
 	"github.com/sirupsen/logrus"

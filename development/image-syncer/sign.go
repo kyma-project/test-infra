@@ -5,6 +5,8 @@ import (
 	"context"
 	"crypto"
 	"fmt"
+	"strings"
+
 	"github.com/google/go-containerregistry/pkg/authn"
 	"github.com/google/go-containerregistry/pkg/name"
 	v1 "github.com/google/go-containerregistry/pkg/v1"
@@ -15,7 +17,6 @@ import (
 	"github.com/sigstore/sigstore/pkg/signature/kms"
 	"github.com/sigstore/sigstore/pkg/signature/options"
 	"github.com/sigstore/sigstore/pkg/signature/payload"
-	"strings"
 )
 
 // NewKMSSignerVerifier returns signature.SignerVerifier for a provider based on a keyRef.

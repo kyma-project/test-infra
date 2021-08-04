@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"strings"
+
+	"gopkg.in/yaml.v2"
 )
 
 func getTarget(source, targetRepo, targetTag string) (string, error) {
