@@ -925,3 +925,63 @@ function gcp::decrypt {
       --plaintext-file "${plainText}" \
       --project "${project}"
 }
+
+# gcp::get_cluster_kubeconfig gets kubeconfig for the chosen cluster
+#
+# Arguments:
+#
+# Required arguments:
+# c - GKE cluster name
+# p - GCP project name
+#
+# Optional arguments:
+# z - zone in which the cluster is located
+# R - region in which the cluster is located
+# r - it true it is regional cluster
+function gcp::get_cluster_kubeconfig {
+    local OPTIND
+    # required arguments
+    local clusterName
+    local gcpProjectName
+
+    # default values
+    local computeZone="europe-west4-b"
+    local computeRegion="europe-west4"
+    local provisionRegionalCluster="false"
+
+    while getopts ":c:p:z:R:r:" opt; do
+        case $opt in
+            c)
+                clusterName="${OPTARG:0:40}" ;;
+            p)
+                gcpProjectName="$OPTARG" ;;
+            z)
+                computeZone=${OPTARG:-$computeZone} ;;
+            R)
+                computeRegion=${OPTARG:-$computeRegion} ;;
+            r)
+                provisionRegionalCluster=${OPTARG:-$provisionRegionalCluster} ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2; ;;
+        esac
+    done
+    
+    utils::check_empty_arg "$clusterName" "Cluster name not provided."
+    utils::check_empty_arg "$gcpProjectName" "GCP project name not provided."
+
+
+    log::info "Getting kubeconfig for cluster $clusterName"
+    local params
+
+    if [ "$provisionRegionalCluster" = "true" ] ; then
+        params+=("--region=$computeRegion")
+    else
+        params+=("--zone=$computeZone")
+    fi
+
+    params+=("--project=$gcpProjectName")
+
+    gcloud container clusters get-credentials "$clusterName" "${params[@]}"
+}
