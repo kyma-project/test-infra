@@ -88,10 +88,14 @@ templates:
                   args:
                     - "-c"
 <<<<<<< HEAD
+<<<<<<< HEAD
                     - "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-'"
 =======
                     - "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|gke-provisioner|gke-backup|weekly|nightly|gke-central|gke-minio|gke-gkecompint|restore|gke-release|gke-gkeext|gke-gke-|gke-gkekcpint|gke-test|gke-cli|gke-commit|gke-pr'"
 >>>>>>> 831a6406 (regen)
+=======
+                    - "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-'"
+>>>>>>> 395d207f (simplicity)
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
