@@ -10,7 +10,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-neighbors-dev"
         prow.k8s.io/pubsub.runID: "unstale-gardener-project"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-gardener-neighbors: "true"
+        #preset-gardener-neighbors: "true"
       cron: "0 5 1 * *"
       skip_report: false
       decorate: true
