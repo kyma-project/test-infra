@@ -444,7 +444,7 @@ templates:
                   labels:
                     preset-log-collector-slack-token: "true"
                   env:
-                    KYMA_ALPHA_DELETE: "true"
+                    KYMA_DELETE: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -472,7 +472,7 @@ templates:
                   labels:
                     preset-log-collector-slack-token: "true"
                   env:
-                    KYMA_ALPHA_DELETE: "true"
+                    KYMA_DELETE: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default

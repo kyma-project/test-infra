@@ -1061,7 +1061,7 @@ periodics: # runs on schedule
                 value: "1"
               - name: KYMA_ALPHA
                 value: "true"
-              - name: KYMA_ALPHA_DELETE
+              - name: KYMA_DELETE
                 value: "true"
               - name: KYMA_MAJOR_VERSION
                 value: "2"
@@ -1145,7 +1145,7 @@ periodics: # runs on schedule
                 value: "1"
               - name: KYMA_ALPHA
                 value: "true"
-              - name: KYMA_ALPHA_DELETE
+              - name: KYMA_DELETE
                 value: "true"
               - name: KYMA_MAJOR_VERSION
                 value: "2"

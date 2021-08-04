@@ -5,13 +5,13 @@ LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${LIBDIR}/log.sh"
 
-# kyma::alpha_deploy_kyma starts Kyma deployment using alpha feature
+# kyma::deploy_kyma starts Kyma deployment using alpha feature
 # Arguments:
 # optional:
 # s - Kyma sources directory
 # p - execution profile
 # u - upgrade (this will not reuse helm values which is already set)
-function kyma::alpha_deploy_kyma() {
+function kyma::deploy_kyma() {
 
     local OPTIND
     local executionProfile=
@@ -52,8 +52,8 @@ function kyma::alpha_deploy_kyma() {
     fi
 }
 
-# kyma::alpha_delete_kyma uninstalls Kyma using alpha feature
-function kyma::alpha_delete_kyma() {
+# kyma::delete_kyma uninstalls Kyma using alpha feature
+function kyma::delete_kyma() {
   log::info "Uninstalling Kyma"
 
   kyma delete --ci --verbose
