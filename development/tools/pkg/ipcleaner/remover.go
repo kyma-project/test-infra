@@ -29,11 +29,11 @@ type AddressAPI interface {
 type IPRemover struct {
 	addressAPI   AddressAPI
 	regionAPI    RegionAPI
-	shouldRemove IpRemovalPredicate
+	shouldRemove IPRemovalPredicate
 }
 
 // New returns a new instance of IPRemover
-func New(addressAPI AddressAPI, regionAPI RegionAPI, shouldRemove IpRemovalPredicate) *IPRemover {
+func New(addressAPI AddressAPI, regionAPI RegionAPI, shouldRemove IPRemovalPredicate) *IPRemover {
 	return &IPRemover{addressAPI, regionAPI, shouldRemove}
 }
 
@@ -110,15 +110,15 @@ func (ipr *IPRemover) list(project string) ([]*garbageAddress, error) {
 	return toRemove, nil
 }
 
-// IpRemovalPredicate returns true when address should be deleted (matches removal criteria)
-type IpRemovalPredicate func(*compute.Address) (bool, error)
+// IPRemovalPredicate returns true when address should be deleted (matches removal criteria)
+type IPRemovalPredicate func(*compute.Address) (bool, error)
 
-// NewIpFilter is a default IpRemovalPredicate factory
+// NewIPFilter is a default IPRemovalPredicate factory
 // Address is matching the criteria if it's:
 // - Name does not match ipNameIgnoreRegexp
 // - CreationTimestamp indicates that it is created more than ageInHours ago.
 // - Users list is empty
-func NewIpFilter(ipNameIgnoreRegexp *regexp.Regexp, ageInHours int) IpRemovalPredicate {
+func NewIPFilter(ipNameIgnoreRegexp *regexp.Regexp, ageInHours int) IPRemovalPredicate {
 	return func(address *compute.Address) (bool, error) {
 		nameMatches := ipNameIgnoreRegexp.MatchString(address.Name)
 		useCountIsZero := len(address.Users) == 0

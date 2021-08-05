@@ -7,12 +7,13 @@ import (
 	compute "google.golang.org/api/compute/v1"
 )
 
-// ComputeAPIWrapper abstracts GCP Compute Service API
+// AddressAPIWrapper abstracts GCP Address Compute Service API
 type AddressAPIWrapper struct {
 	Context context.Context
 	Service *compute.AddressesService
 }
 
+// ListAddresses implements AddressAPI.ListAddresses function
 func (aaw *AddressAPIWrapper) ListAddresses(project, region string) ([]*compute.Address, error) {
 	var addresses = []*compute.Address{}
 	pageFunc := func(addressList *compute.AddressList) error {
@@ -45,11 +46,13 @@ func (aaw *AddressAPIWrapper) RemoveIP(project, region, name string) error {
 	return nil
 }
 
+// ZoneAPIWrapper abstracts GCP RegionsService API
 type RegionAPIWrapper struct {
 	Context context.Context
 	Service *compute.RegionsService
 }
 
+// ListRegions implements RegionAPI.ListRegions function
 func (raw *RegionAPIWrapper) ListRegions(project string) ([]string, error) {
 	call := raw.Service.List(project)
 
