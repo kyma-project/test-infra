@@ -59,31 +59,23 @@ function install_cli() {
 }
 
 function deploy_kyma() {
+
+  kyma provision k3d -p 80:80@loadbalancer -p 443:443@loadbalancer
+
   if [[ -v CENTRAL_APPLICATION_GATEWAY_ENABLED ]]; then
-    kyma alpha deploy -p evaluation \
-      -d "local.kyma.dev" \
+    kyma deploy -p evaluation \
       --ci \
       --verbose \
       --source=local \
       --workspace "${KYMA_SOURCES_DIR}" \
-      --value application-connector.central_application_gateway.enabled=true \
-      --value global.ingress.domainName="local.kyma.dev"
+      --value application-connector.central_application_gateway.enabled=true
   else
     echo "KYMA DEPLOY"
-    kyma alpha deploy -p evaluation --ci
-    #   -d "local.kyma.dev" \
-    #   --ci \
-    #   --verbose \
-    #   --source=local \
-    #   --workspace "${KYMA_SOURCES_DIR}" \
-    #   --value global.ingress.domainName="local.kyma.dev" \
-    #   --value global.disableLegacyConnectivity=false \
-    #   --value serverless.dockerRegistry.enableInternal=false \
-    #   --value serverless.dockerRegistry.serverAddress=registry.localhost:5000 \
-    #   --value serverless.dockerRegistry.registryAddress=registry.localhost:5000
-    #   --value tracing.authProxy.config.useDex=false \
-    #   --value tracing.kcproxy.enabled=false \
-    #   --value tracing.virtualservice.enabled=false
+    kyma deploy -p evaluation \
+      --ci \
+      --verbose \
+      --source=local \
+      --workspace "${KYMA_SOURCES_DIR}"
   fi
 
   kubectl get pods -n kyma-system
