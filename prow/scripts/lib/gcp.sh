@@ -925,3 +925,44 @@ function gcp::decrypt {
       --plaintext-file "${plainText}" \
       --project "${project}"
 }
+
+# gcp::get_kms_public_key fetches kms public key for provided key and prints it
+# k - key name
+# v - key version
+# r - keyring name
+# l - location
+# p - project
+function gcp::get_kms_public_key {
+  local OPTIND
+  local key
+  local keyring
+  local version
+  local location
+  local project
+  location="global"
+
+  while getopts ":k:v:r:l:p:" opt; do
+    case $opt in
+      k)
+        key="$OPTARG" ;;
+      v)
+        version="$OPTARG" ;;
+      r)
+        keyRing="$OPTARG" ;;
+      l)
+        location="${OPTARG:-global}" ;;
+      p)
+        project="$OPTARG" ;;
+      \?)
+        echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+      :)
+        echo "Option -$OPTARG argument not provided" >&2 ;;
+    esac
+  done
+
+  gcloud kms keys versions get-public-key "$version" \
+    --keyring="$keyRing" \
+    --location="$location" \
+    --key="$key" \
+    --project="$project"
+}
