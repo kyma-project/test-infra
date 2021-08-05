@@ -58,12 +58,12 @@ Usage:
   image-syncer [flags]
 
 Flags:
-      --debug                         enable debug mode [SYNCER_DEBUG]
-  -d, --dry-run                       dry run mode [SYNCER_DRY_RUN] (default true)
+      --debug                         Enables the debug mode [SYNCER_DEBUG]
+      --dry-run                       Enables the dry-run mode [SYNCER_DRY_RUN]
   -h, --help                          help for image-syncer
-  -i, --images-file string            yaml file containing list of images [SYNCER_IMAGES_FILE]
-  -k, --kms-key string                path to KMS key resource (eg. gcpkms://...) [SYNCER_KMS_KEY]
-  -t, --target-repo-auth-key string   JSON key file used for authorization to target repo [SYNCER_TARGET_REPO_AUTH_KEY]
+  -i, --images-file string            Specifies the path to the YAML file that contains list of images [SYNCER_IMAGES_FILE]
+  -k, --kms-key string                Specifies the path to KMS key resource (for example gcpkms://...) [SYNCER_KMS_KEY]
+  -t, --target-repo-auth-key string   Specifies the JSON key file used for authorization to the target repository [SYNCER_TARGET_REPO_AUTH_KEY]
 ```
 
 

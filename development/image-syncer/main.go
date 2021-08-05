@@ -205,11 +205,11 @@ func main() {
 		},
 	}
 
-	rootCmd.PersistentFlags().StringVarP(&cfg.ImagesFile, "images-file", "i", "", "yaml file containing list of images")
-	rootCmd.PersistentFlags().StringVarP(&cfg.TargetKeyFile, "target-repo-auth-key", "t", "", "JSON key file used for authorization to target repo")
-	rootCmd.PersistentFlags().StringVarP(&cfg.KeyRef, "kms-key", "k", "", "path to KMS key resource (eg. gcpkms://...)")
-	rootCmd.PersistentFlags().BoolVarP(&cfg.DryRun, "dry-run", "d", false, "dry run mode")
-	rootCmd.PersistentFlags().BoolVar(&cfg.Debug, "debug", false, "enable debug mode")
+	rootCmd.PersistentFlags().StringVarP(&cfg.ImagesFile, "images-file", "i", "", "Specifies the path to the YAML file that contains list of images")
+	rootCmd.PersistentFlags().StringVarP(&cfg.TargetKeyFile, "target-repo-auth-key", "t", "", "Specifies the JSON key file used for authorization to the target repository")
+	rootCmd.PersistentFlags().StringVarP(&cfg.KeyRef, "kms-key", "k", "", "Specifies the path to KMS key resource (for example gcpkms://...)")
+	rootCmd.PersistentFlags().BoolVar(&cfg.DryRun, "dry-run", false, "Enables the dry-run mode")
+	rootCmd.PersistentFlags().BoolVar(&cfg.Debug, "debug", false, "Enables the debug mode")
 
 	rootCmd.MarkPersistentFlagRequired("images-file")
 	rootCmd.MarkPersistentFlagRequired("target-repo-auth-key")
