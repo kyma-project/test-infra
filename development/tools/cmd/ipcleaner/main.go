@@ -23,13 +23,9 @@ const defaultIpNameIgnoreRegex = "^nightly|weekly|nat-auto-ip"
 
 var (
 	project           = flag.String("project", "", "Project ID [Required]")
-	dryRun            = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
-	ageInHours        = flag.Int("ageInHours", 2, "Disk age in hours. Disks older than: now()-ageInHours are considered for removal.")
-	ipNameIgnoreRegex = flag.String("diskNameRegex", defaultIpNameIgnoreRegex, "Ignored IP name regex. Matching IPs are not considered for removal.")
-
-	region      = flag.String("region", "", "Region name [Required]")
-	maxAttempts = flag.Uint("attempts", 3, "Maximal number of attempts until scripts stops trying to delete IP (default: 3)")
-	backoff     = flag.Uint("backoff", 5, "Initial backoff in seconds for the first retry, will increase after this (default: 5)")
+	dryRun            = flag.Bool("dry-run", true, "Dry Run enabled, nothing is deleted")
+	ageInHours        = flag.Int("age-in-hours", 2, "Disk age in hours. Disks older than: now()-ageInHours are considered for removal.")
+	ipNameIgnoreRegex = flag.String("disk-name-regex", defaultIpNameIgnoreRegex, "Ignored IP name regex. Matching IPs are not considered for removal.")
 )
 
 func main() {
@@ -37,12 +33,6 @@ func main() {
 
 	if *project == "" {
 		fmt.Fprintln(os.Stderr, "missing -project flag")
-		flag.Usage()
-		os.Exit(2)
-	}
-
-	if *region == "" {
-		fmt.Fprintln(os.Stderr, "missing -region flag")
 		flag.Usage()
 		os.Exit(2)
 	}
