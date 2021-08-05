@@ -172,7 +172,7 @@ if ! [ -z "${COSIGNED_ENABLED}" ]; then
     echo "Cosigned integration enabled"
 
     # Installing ko, used to create a binary for cosigned
-    go install github.com/google/ko
+    go install github.com/google/ko@latest
     
     # Installing cert-manager, might need elevating permissions for GKE
     kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.4.0/cert-manager.yaml
@@ -181,7 +181,7 @@ if ! [ -z "${COSIGNED_ENABLED}" ]; then
     curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
 
     # Installing Cosigned
-    git clone https://github.com/dlorenc/cosigned.git /tmp/cosigned && cd cosigned
+    git clone https://github.com/dlorenc/cosigned.git /tmp/cosigned && cd /tmp/cosigned
 
     # create cosigned secret with public key from KMS
     # TODO: set it in env variables or parse cosign URI
