@@ -19,7 +19,7 @@ const sampleAddressName = "gkekcpint-commit-abc-zyx"
 var (
 	ipNameIgnoreRegexPattern = "^otherName"
 	ipNameIgnoreRegex        = regexp.MustCompile(ipNameIgnoreRegexPattern)
-	filterFunc               = NewIpFilter(ipNameIgnoreRegex, 1) //age is 1 hour
+	filterFunc               = NewIPFilter(ipNameIgnoreRegex, 1) //age is 1 hour
 	timeNow                  = time.Now()
 	timeNowFormatted         = timeNow.Format(time.RFC3339Nano)
 	timeTwoHoursAgo          = timeNow.Add(time.Duration(-1) * time.Hour)
@@ -228,7 +228,7 @@ func createAddress(name string, creationTimestamp string, users []string) *compu
 // 		mockAddressAPI.On("RemoveIP", testProject, testRegion, shouldDeleteIPByName).Return(nil)
 
 // 		//When
-// 		//filter := //ipcleaner.NewIpFilter(rx, *ageInHours)
+// 		//filter := //ipcleaner.NewIPFilter(rx, *ageInHours)
 // 		ipr := New(mockAddressAPI, mockRegionAPI, filter)
 // 		err := ipr.Run(testProject, testRegion, shouldDeleteIPByName)
 
