@@ -108,7 +108,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "/prow-tools/ipcleaner -project=${CLOUDSDK_CORE_PROJECT} -dry-run=false -ip-name-regex='^nightly|weekly|nat-auto-ip'"
+                    - "/prow-tools/ipcleaner -project=${CLOUDSDK_CORE_PROJECT} -dry-run=false -ip-exclude-name-regex='^nightly|weekly|nat-auto-ip'"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

@@ -1231,7 +1231,7 @@ periodics: # runs on schedule
               - "bash"
             args:
               - "-c"
-              - "/prow-tools/ipcleaner -project=${CLOUDSDK_CORE_PROJECT} -dry-run=false -ip-name-regex='^nightly|weekly|nat-auto-ip'"
+              - "/prow-tools/ipcleaner -project=${CLOUDSDK_CORE_PROJECT} -dry-run=false -ip-exclude-name-regex='^nightly|weekly|nat-auto-ip'"
             resources:
               requests:
                 memory: 100Mi
