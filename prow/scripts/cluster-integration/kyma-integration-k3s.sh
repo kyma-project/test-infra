@@ -80,11 +80,11 @@ function deploy_kyma() {
 
   kubectl get pods -n kyma-system
 
-#   if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
-#     kubectl create namespace compass-system
-#     kubectl label namespace compass-system istio-injection=enabled --overwrite
-#     kubectl get namespace -L istio-injection
-#   fi
+  if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
+    kubectl create namespace compass-system
+    kubectl label namespace compass-system istio-injection=enabled --overwrite
+    kubectl get namespace -L istio-injection
+  fi
 }
 
 function run_tests() {
