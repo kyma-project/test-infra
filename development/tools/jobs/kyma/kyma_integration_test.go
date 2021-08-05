@@ -276,7 +276,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatHasExtraRepoRefCustom(t, addressesCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
 	assert.Equal(t, tester.ImageProwToolsLatest, addressesCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, addressesCleanerPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "/prow-tools/ipcleaner -project=${CLOUDSDK_CORE_PROJECT} -dry-run=false -ip-name-regex='^nightly|weekly|nat-auto-ip'"}, addressesCleanerPeriodic.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"-c", "/prow-tools/ipcleaner -project=${CLOUDSDK_CORE_PROJECT} -dry-run=false -ip-exclude-name-regex='^nightly|weekly|nat-auto-ip'"}, addressesCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, addressesCleanerPeriodic.JobBase)
 
 	expName = "orphaned-az-storage-accounts-cleaner"
