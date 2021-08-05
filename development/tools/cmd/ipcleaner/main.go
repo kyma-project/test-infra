@@ -53,8 +53,6 @@ func main() {
 	rx := regexp.MustCompile(*ipNameIgnoreRegex)
 	filter := ipcleaner.NewIPFilter(rx, *ageInHours)
 
-	// TODO
-
 	addressAPI := &ipcleaner.AddressAPIWrapper{Context: ctx, Service: computeSvc.Addresses}
 	regionAPI := &ipcleaner.RegionAPIWrapper{Context: ctx, Service: computeSvc.Regions}
 
