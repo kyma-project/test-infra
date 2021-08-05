@@ -36,7 +36,7 @@ See the list of available flags:
 | **--project**             |   YES    | GCP project name.
 | **--dry-run**             |    No    | The Boolean value that controls the dry-run mode. It defaults to `true`.
 | **--age-in-hours**         |    No    | The integer value for the number of hours. It only matches disks older than `now()-ageInHours`. It defaults to `2`.
-| **--ip-name-regex**       |    No    | The string value with a valid Golang regexp. It is used to exclude matched addresses by their name. It defaults to `^nightly|weekly|nat-auto-ip`.
+| **--ip--exclude-name-regex**       |    No    | The string value with a valid Golang regexp. It is used to exclude matched addresses by their name. It defaults to `^nightly|weekly|nat-auto-ip`.
 ### Environment variables
 
 See the list of available environment variables:
