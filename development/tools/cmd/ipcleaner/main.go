@@ -37,7 +37,7 @@ func main() {
 		os.Exit(2)
 	}
 
-	common.ShoutFirst("Running with arguments: project: \"%s\", dryRun: %t, ageInHours: %d, ipNameIgnorRegex: \"%s\"", *project, *dryRun, *ageInHours, *ipNameIgnoreRegex)
+	common.ShoutFirst("Running with arguments: project: \"%s\", dryRun: %t, ageInHours: %d, ipNameIgnoreRegex: \"%s\"", *project, *dryRun, *ageInHours, *ipNameIgnoreRegex)
 	ctx := context.Background()
 
 	connection, err := google.DefaultClient(ctx, container.CloudPlatformScope)
