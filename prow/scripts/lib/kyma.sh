@@ -5,18 +5,20 @@ LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${LIBDIR}/log.sh"
 
-# kyma::alpha_deploy_kyma starts Kyma deployment using alpha feature
+# kyma::deploy_kyma starts Kyma deployment using new installation method
 # Arguments:
 # optional:
 # s - Kyma sources directory
 # p - execution profile
-function kyma::alpha_deploy_kyma() {
+# u - upgrade (this will not reuse helm values which is already set)
+function kyma::deploy_kyma() {
 
     local OPTIND
     local executionProfile=
     local kymaSourcesDir=""
+    local upgrade=
 
-    while getopts ":p:s:" opt; do
+    while getopts ":p:s:u:" opt; do
         case $opt in
             p)
                 if [ -n "$OPTARG" ]; then
@@ -24,6 +26,8 @@ function kyma::alpha_deploy_kyma() {
                 fi ;;
             s)
                 kymaSourcesDir="$OPTARG" ;;
+            u)
+                upgrade="$OPTARG" ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
@@ -34,17 +38,25 @@ function kyma::alpha_deploy_kyma() {
     log::info "Deploying Kyma"
 
     if [[ -n "$executionProfile" ]]; then
-        kyma alpha deploy --ci --profile "$executionProfile" --value global.isBEBEnabled=true --source=local --workspace "${kymaSourcesDir}" --verbose
+        if [[ -n "$upgrade" ]]; then
+            kyma deploy --reuse-values=false --ci --profile "$executionProfile" --source=local --workspace "${kymaSourcesDir}" --verbose
+        else
+            kyma deploy --ci --profile "$executionProfile" --source=local --workspace "${kymaSourcesDir}" --verbose
+        fi
     else
-        kyma alpha deploy --ci --value global.isBEBEnabled=true --source=local --workspace "${kymaSourcesDir}" --verbose
+        if [[ -n "$upgrade" ]]; then
+            kyma deploy --reuse-values=false --ci --source=local --workspace "${kymaSourcesDir}" --verbose
+        else
+            kyma deploy --ci --source=local --workspace "${kymaSourcesDir}" --verbose
+        fi
     fi
 }
 
-# kyma::alpha_delete_kyma uninstalls Kyma using alpha feature
-function kyma::alpha_delete_kyma() {
+# kyma::delete_kyma uninstalls Kyma using new deletion method
+function kyma::delete_kyma() {
   log::info "Uninstalling Kyma"
 
-  kyma alpha delete --ci --verbose
+  kyma delete --ci --verbose
 }
 
 # kyma::get_last_release_version returns latest Kyma release version

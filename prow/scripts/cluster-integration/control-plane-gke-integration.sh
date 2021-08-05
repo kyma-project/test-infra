@@ -430,8 +430,8 @@ export TLS_KEY="${utils_generate_self_signed_cert_return_tls_key:?}"
 log::info "Install Kyma"
 installKyma
 
-log::info "Install Compass"
-installCompass
+#log::info "Install Compass"
+#installCompass
 
 log::info "Install Control Plane"
 installControlPlane

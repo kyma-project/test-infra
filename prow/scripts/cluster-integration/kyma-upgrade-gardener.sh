@@ -114,8 +114,9 @@ export KYMA_MAJOR_VERSION="2"
 log::info "### Installing Kyma 2.0 from main"
 KYMA_SOURCE="main"
 export KYMA_SOURCE
-kyma::alpha_deploy_kyma \
-    -s "$KYMA_SOURCES_DIR"
+kyma::deploy_kyma \
+    -s "$KYMA_SOURCES_DIR" \
+    -u "true"
 
 log::info "### Run post-upgrade tests"
 gardener::post_upgrade_test_fast_integration_kyma

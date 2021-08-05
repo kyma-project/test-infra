@@ -14,31 +14,6 @@ if [ -z "$PULL_PULL_SHA" ]; then
   exit 0
 fi
 
-function jobguard_fallback() {
-  if [ -x "/prow-tools/jobguard" ]; then
-    env GITHUB_TOKEN="${BOT_GITHUB_TOKEN}" \
-      INITIAL_SLEEP_TIME=1m \
-      TIMEOUT="${TIMEOUT}" \
-      COMMIT_SHA="${PULL_PULL_SHA}" \
-      JOB_NAME_PATTERN="${JOB_NAME_PATTERN}" \
-      PROW_CONFIG_FILE="${TEST_INFRA_SOURCES_DIR}/prow/config.yaml" \
-      PROW_JOBS_DIRECTORY="${TEST_INFRA_SOURCES_DIR}/prow/jobs" \
-      GO111MODULE=on \
-      /prow-tools/jobguard
-  else
-    cd "${ROOT_PATH}/cmd/jobguard" || exit 1
-    env GITHUB_TOKEN="${BOT_GITHUB_TOKEN}" \
-      INITIAL_SLEEP_TIME=1m \
-      TIMEOUT="${TIMEOUT}" \
-      COMMIT_SHA="${PULL_PULL_SHA}" \
-      JOB_NAME_PATTERN="${JOB_NAME_PATTERN}" \
-      PROW_CONFIG_FILE="${TEST_INFRA_SOURCES_DIR}/prow/config.yaml" \
-      PROW_JOBS_DIRECTORY="${TEST_INFRA_SOURCES_DIR}/prow/jobs" \
-      GO111MODULE=on \
-      go run main.go
-  fi
-}
-
 args=(
   -github-endpoint="http://ghproxy"
   -github-endpoint="https://api.github.com"
@@ -52,8 +27,8 @@ args=(
 )
 
 if [ -x "/prow-tools/jobguard" ]; then
-  /prow-tools/jobguard "${args[@]}" || jobguard_fallback # try to fall back to older configuration
+  /prow-tools/jobguard "${args[@]}"
 else
   cd "${ROOT_PATH}/cmd/jobguard" || exit 1
-  go run main.go "${args[@]}" || jobguard_fallback # try to fall back to older configuration
+  go run main.go "${args[@]}"
 fi

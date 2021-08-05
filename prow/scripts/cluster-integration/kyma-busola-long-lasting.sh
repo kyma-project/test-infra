@@ -114,10 +114,10 @@ function provisionKyma2(){
 
     kyma::install_cli
 
-    #kyma alpha deploy --ci --profile production --value global.isBEBEnabled=true --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
+    #kyma deploy --ci --profile production --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
     #return
     set -x
-    TERM=dumb kyma alpha deploy \
+    TERM=dumb kyma deploy \
     --kubeconfig="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml" \
     --profile=production \
     --source="${KYMA_VERSION}" \
@@ -140,7 +140,7 @@ function deleteKyma(){
     kyma::install_cli
 
     set -x
-    TERM=dumb kyma alpha delete \
+    TERM=dumb kyma delete \
     --kubeconfig="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml" \
     --concurrency="${CPU_COUNT}" \
     --non-interactive \
