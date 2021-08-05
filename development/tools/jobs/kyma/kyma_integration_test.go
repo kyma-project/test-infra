@@ -268,8 +268,8 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 
 	expName = "orphaned-ips-cleaner"
 	addressesCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
-	require.NotNil(t, disksCleanerPeriodic)
-	assert.Equal(t, expName, disksCleanerPeriodic.Name)
+	require.NotNil(t, addressesCleanerPeriodic)
+	assert.Equal(t, expName, addressesCleanerPeriodic.Name)
 
 	assert.Equal(t, "0 1 * * *", addressesCleanerPeriodic.Cron)
 	tester.AssertThatHasPresets(t, addressesCleanerPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
