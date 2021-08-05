@@ -46,7 +46,7 @@ func (aaw *AddressAPIWrapper) RemoveIP(project, region, name string) error {
 	return nil
 }
 
-// ZoneAPIWrapper abstracts GCP RegionsService API
+// RegionAPIWrapper abstracts GCP RegionsService API
 type RegionAPIWrapper struct {
 	Context context.Context
 	Service *compute.RegionsService
