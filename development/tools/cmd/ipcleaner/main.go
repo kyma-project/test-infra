@@ -19,13 +19,13 @@ import (
 )
 
 // nat-auto-ip is *probably* from Gardener, let them handle removal
-const defaultIpNameIgnoreRegex = "^nightly|weekly|nat-auto-ip"
+const defaultIPNameIgnoreRegex = "^nightly|weekly|nat-auto-ip"
 
 var (
 	project           = flag.String("project", "", "Project ID [Required]")
 	dryRun            = flag.Bool("dry-run", true, "Dry Run enabled, nothing is deleted")
 	ageInHours        = flag.Int("age-in-hours", 2, "Disk age in hours. Disks older than: now()-ageInHours are considered for removal.")
-	ipNameIgnoreRegex = flag.String("disk-name-regex", defaultIpNameIgnoreRegex, "Ignored IP name regex. Matching IPs are not considered for removal.")
+	ipNameIgnoreRegex = flag.String("disk-name-regex", defaultIPNameIgnoreRegex, "Ignored IP name regex. Matching IPs are not considered for removal.")
 )
 
 func main() {
@@ -51,7 +51,7 @@ func main() {
 	}
 
 	rx := regexp.MustCompile(*ipNameIgnoreRegex)
-	filter := ipcleaner.NewIpFilter(rx, *ageInHours)
+	filter := ipcleaner.NewIPFilter(rx, *ageInHours)
 
 	// TODO
 
