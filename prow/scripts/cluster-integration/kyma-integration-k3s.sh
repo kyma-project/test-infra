@@ -59,32 +59,25 @@ function install_cli() {
 }
 
 function deploy_kyma() {
-
   kyma provision k3d -p 80:80@loadbalancer -p 443:443@loadbalancer
 
-  if [[ -v CENTRAL_APPLICATION_GATEWAY_ENABLED ]]; then
-    kyma deploy -p evaluation \
-      --ci \
-      --verbose \
-      --source=local \
-      --workspace "${KYMA_SOURCES_DIR}" \
-      --value application-connector.central_application_gateway.enabled=true
-  else
-    echo "KYMA DEPLOY"
-    kyma deploy -p evaluation \
-      --ci \
-      --verbose \
-      --source=local \
-      --workspace "${KYMA_SOURCES_DIR}"
-  fi
+  local kyma_deploy_cmd
+  kyma_deploy_cmd="kyma deploy -p evaluation --ci --verbose --source=local --workspace ${KYMA_SOURCES_DIR}"
 
-  kubectl get pods -n kyma-system
+  if [[ -v CENTRAL_APPLICATION_GATEWAY_ENABLED ]]; then
+    kyma_deploy_cmd+=" --value application-connector.central_application_gateway.enabled=true"
+  fi
 
   if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
     kubectl create namespace compass-system
     kubectl label namespace compass-system istio-injection=enabled --overwrite
     kubectl get namespace -L istio-injection
+    kyma_deploy_cmd+=" --value global.disableLegacyConnectivity=true"
   fi
+
+  $kyma_deploy_cmd
+
+  kubectl get pods -n kyma-system
 }
 
 function run_tests() {
