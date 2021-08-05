@@ -12,7 +12,7 @@ Syncing process steps:
 4. Check if image exists in target.
 5. If image does not exist, re-tag image and push to target registry.  
 If image exists: compare IDs. If they are different, synchronization is interrupted. It means that something is wrong and the source image was changed (this should not happen).
-6. If the image signing is enabled, verify if the image matches with the given KMS key. If the signature does not exist, sign the image and push the signature to the target repository. If the signature is not valid with the provided KMS key, synchronisation is interrupted.
+6. If the image signing is enabled, verify if the image matches the given KMS key. If the signature does not exist, sign the image and push the signature to the target repository. If the signature is not valid with the provided KMS key, the synchronization is interrupted.
 
 These steps guarantee that images in our registry are immutable and verified.
 
@@ -30,11 +30,10 @@ go run main.go \
 ### Image signing
 
 image-syncer supports safe image signing using [cosign](https://github.com/sigstore/cosign).
-However, it supports only the signing using KMS providers supported by sigstore package, although only GCP KMS was tested.
-For this functionality to be working the application must have `--key-ref` flag set to path to the KMS resource with appropriate prefix, eg. `gcpkms://path/to/key`, for GCP.
-For more information refer to the KMS documentation in [cosign repository](https://github.com/sigstore/cosign/blob/main/KMS.md).
+It supports only the signing that uses KMS providers supported by the sigstore package. For more information, refer to the [KMS documentation](https://github.com/sigstore/cosign/blob/main/KMS.md) in the `cosign` repository.
+For this functionality to work, the application must have the `--key-ref` flag set to the path to the KMS resource. The resource must have the appropriate prefix, for example: `gcpkms://path/to/key` for GCP.
 
-image-syncer also supports fine-grained control on which images to sign. Local `sign` option always has higher priority than global `sign` option.
+image-syncer also supports fine-grained control on which images to sign. The local `sign` option always has a higher priority than the global `sign` option.
 
 ### Definition file
 
@@ -77,4 +76,4 @@ All flags can also be set using these environment variables:
 | **SYNCER_TARGET_REPO_AUTH_KEY**|    Yes   | Path to the JSON key file, provided as a string.|
 | **SYNCER_DRY_RUN**             |    No    | Value controlling the `dry run` mode, provided as a boolean.|
 | **SYNCER_KMS_KEY**| Yes | URI of the KMS key from the supported provider.|
-|**SYNCER_DEBUG**|No|Enable debug mode.|
+|**SYNCER_DEBUG**|No|Variable that enables the debug mode.|
