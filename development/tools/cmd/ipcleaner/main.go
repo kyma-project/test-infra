@@ -58,8 +58,6 @@ func main() {
 
 	ipr := ipcleaner.New(addressAPI, regionAPI, filter)
 
-	// removalErr := ipr.Run(*project, *region, *ipName)
-
 	allSucceeded, err := ipr.Run(*project, !(*dryRun))
 	if err != nil {
 		log.Fatalf("IP clenaer error: %v", err)
