@@ -1212,7 +1212,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-sa-gke-kyma-integration: "true"
-      cron: "30 * * * *"
+      cron: "0 1 * * *"
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -1224,14 +1224,14 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-4013"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210728-v0.1.0-6-g19d375e9"
             securityContext:
               privileged: true
             command:
               - "bash"
             args:
               - "-c"
-              - "/prow-tools/ipcleaner -project=${CLOUDSDK_CORE_PROJECT} -dry-run=true -ip-name-regex='^nightly|weekly|nat-auto-ip'"
+              - "/prow-tools/ipcleaner -project=${CLOUDSDK_CORE_PROJECT} -dry-run=false -ip-name-regex='^nightly|weekly|nat-auto-ip'"
             resources:
               requests:
                 memory: 100Mi

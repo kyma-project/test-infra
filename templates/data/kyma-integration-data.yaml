@@ -101,20 +101,20 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-ips-cleaner"
-                  cron: "30 * * * *" # "At 30 minutes past every hour"
+                  cron: "0 1 * * *" # "At 1:00 each day"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
                     preset-gc-project-env: "true"
                   command: "bash"
                   args:
                     - "-c"
-                    - "/prow-tools/ipcleaner -project=${CLOUDSDK_CORE_PROJECT} -dry-run=true -ip-name-regex='^nightly|weekly|nat-auto-ip'"
-                  image: "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-4013"
+                    - "/prow-tools/ipcleaner -project=${CLOUDSDK_CORE_PROJECT} -dry-run=false -ip-name-regex='^nightly|weekly|nat-auto-ip'"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_test-infra"
+                    - "image_prow-tools"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
