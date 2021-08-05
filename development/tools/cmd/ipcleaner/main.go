@@ -24,8 +24,8 @@ const defaultIPNameIgnoreRegex = "^nightly|weekly|nat-auto-ip"
 var (
 	project           = flag.String("project", "", "Project ID [Required]")
 	dryRun            = flag.Bool("dry-run", true, "Dry Run enabled, nothing is deleted")
-	ageInHours        = flag.Int("age-in-hours", 2, "Disk age in hours. Disks older than: now()-ageInHours are considered for removal.")
-	ipNameIgnoreRegex = flag.String("disk-name-regex", defaultIPNameIgnoreRegex, "Ignored IP name regex. Matching IPs are not considered for removal.")
+	ageInHours        = flag.Int("age-in-hours", 2, "Address age in hours. Addresses older than: now()-ageInHours are considered for removal.")
+	ipNameIgnoreRegex = flag.String("ip-name-regex", defaultIPNameIgnoreRegex, "Ignored IP name regex. Matching IPs are not considered for removal.")
 )
 
 func main() {
