@@ -10,7 +10,6 @@ replace (
 )
 
 require (
-	cloud.google.com/go v0.81.0
 	cloud.google.com/go/bigquery v1.8.0
 	cloud.google.com/go/pubsub v1.4.0
 	cloud.google.com/go/storage v1.12.0

@@ -949,6 +949,34 @@ presets:
         mountPath: "/gardener"
         readOnly: true
   - labels:
+      preset-btp-operator-stage-credentials: "true"
+    env:
+      - name: BTP_OPERATOR_CLIENTID
+        valueFrom:
+          secretKeyRef:
+            name: btp-operator-credentials
+            key: clientid
+      - name: BTP_OPERATOR_CLIENTSECRET
+        valueFrom:
+          secretKeyRef:
+            name: btp-operator-credentials
+            key: clientsecret
+      - name: BTP_OPERATOR_URL
+        valueFrom:
+          secretKeyRef:
+            name: btp-operator-credentials
+            key: url
+      - name: BTP_OPERATOR_TOKENURL
+        valueFrom:
+          secretKeyRef:
+            name: btp-operator-credentials
+            key: tokenurl
+      - name: BTP_OPERATOR_CLUSTERID
+        valueFrom:
+          secretKeyRef:
+            name: btp-operator-credentials
+            key: clusterid
+  - labels:
       preset-keb-plan-azure: "true"
     env:
       - name: KEB_PLAN_ID
@@ -1030,3 +1058,8 @@ presets:
     env:
     - name: LETSENCRYPT_LIMITS_PROTECTION
       value: "true"
+  - labels:
+      preset-kyma-kms-sign-key: "true"
+    env:
+    - name: KMS_KEY_URL
+      value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"

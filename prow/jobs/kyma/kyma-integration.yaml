@@ -35,7 +35,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -87,7 +87,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -144,7 +144,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -201,7 +201,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -260,7 +260,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -311,7 +311,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -359,7 +359,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -410,7 +410,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -469,7 +469,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -530,7 +530,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -594,7 +594,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -656,7 +656,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -710,7 +710,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -769,7 +769,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -827,7 +827,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -887,7 +887,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -949,7 +949,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -1014,7 +1014,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -1080,7 +1080,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -1157,7 +1157,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -1203,7 +1203,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210708-71b88f01"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210728-v0.1.0-6-g19d375e9"
             securityContext:
               privileged: true
             command:
@@ -1245,14 +1245,14 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210708-71b88f01"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210728-v0.1.0-6-g19d375e9"
             securityContext:
               privileged: true
             command:
               - "bash"
             args:
               - "-c"
-              - "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|gke-provisioner|gke-backup|weekly|nightly|gke-central|gke-minio|gke-gkecompint|restore|gke-release|gke-gkeext|gke-gke-|gke-gkekcpint|gke-test|gke-cli'"
+              - "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-'"
             resources:
               requests:
                 memory: 100Mi
@@ -1287,7 +1287,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210708-71b88f01"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210728-v0.1.0-6-g19d375e9"
             securityContext:
               privileged: true
             command:
@@ -1329,7 +1329,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210708-71b88f01"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210728-v0.1.0-6-g19d375e9"
             securityContext:
               privileged: true
             command:
@@ -1371,7 +1371,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210708-71b88f01"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210728-v0.1.0-6-g19d375e9"
             securityContext:
               privileged: true
             command:
@@ -1414,7 +1414,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210708-71b88f01"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210728-v0.1.0-6-g19d375e9"
             securityContext:
               privileged: true
             command:
@@ -1455,7 +1455,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210708-71b88f01"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210728-v0.1.0-6-g19d375e9"
             securityContext:
               privileged: true
             command:
@@ -1495,7 +1495,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210708-71b88f01"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210728-v0.1.0-6-g19d375e9"
             securityContext:
               privileged: true
             command:
@@ -1559,7 +1559,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -1651,7 +1651,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -1743,7 +1743,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -1819,7 +1819,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -1878,7 +1878,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
             securityContext:
               privileged: true
             command:
@@ -1890,6 +1890,174 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: kyma-gke-nightly-fast-integration
+      annotations:
+        description: "Kyma GKE nightly fast integration tests."
+        pipeline.platform: "gke"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "nightly"
+        testgrid-dashboards: "kyma_integration"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-gke-nightly-fast-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-gc-compute-envs: "true"
+        preset-gc-project-env: "true"
+        preset-sa-gke-kyma-integration: "true"
+      cron: "0 0-2,4-23 * * 1-5"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-prow-dev-null
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"
+            env:
+              - name: CLOUDSDK_COMPUTE_ZONE
+                value: "europe-west4-b"
+              - name: CLUSTER_PROVIDER
+                value: "gcp"
+              - name: INPUT_CLUSTER_NAME
+                value: "nightly"
+              - name: PROVISION_REGIONAL_CLUSTER
+                value: "true"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: kyma-gke-weekly-fast-integration
+      annotations:
+        description: "Kyma GKE weekly fast integration tests."
+        pipeline.platform: "gke"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "nightly"
+        testgrid-dashboards: "kyma_integration"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-gke-weekly-fast-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-gc-compute-envs: "true"
+        preset-gc-project-env: "true"
+        preset-sa-gke-kyma-integration: "true"
+      cron: "0 0-4,6-23 * * 1-5"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-prow-dev-null
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"
+            env:
+              - name: CLOUDSDK_COMPUTE_ZONE
+                value: "europe-west4-b"
+              - name: CLUSTER_PROVIDER
+                value: "gcp"
+              - name: INPUT_CLUSTER_NAME
+                value: "weekly"
+              - name: PROVISION_REGIONAL_CLUSTER
+                value: "true"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: kyma-aks-nightly-fast-integration
+      annotations:
+        description: "Kyma AKS nightly fast integration tests."
+        pipeline.platform: "aks"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "nightly"
+        testgrid-dashboards: "kyma_integration"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-aks-nightly-fast-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-az-kyma-prow-credentials: "true"
+        preset-sa-gke-kyma-integration: "true"
+      cron: "0 0-2,4-23 * * 1-5"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-prow-dev-null
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"
+            env:
+              - name: CLUSTER_PROVIDER
+                value: "azure"
+              - name: INPUT_CLUSTER_NAME
+                value: "nightly-aks"
+              - name: RS_GROUP
+                value: "kyma-nightly-aks"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal

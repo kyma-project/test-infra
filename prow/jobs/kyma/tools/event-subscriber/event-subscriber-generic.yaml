@@ -12,6 +12,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^tools/event-subscriber/|^common/makefiles/'
       optional: true
@@ -30,7 +31,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210723-91c9654f"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210730-77854f92"
             securityContext:
               privileged: true
             command:
@@ -57,6 +58,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^tools/event-subscriber/|^common/makefiles/'
       optional: true
@@ -74,7 +76,7 @@ presubmits: # runs on PRs
           base_ref: release-1.24
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210723-91c9654f"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210730-77854f92"
             securityContext:
               privileged: true
             command:
@@ -101,6 +103,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^tools/event-subscriber/|^common/makefiles/'
       optional: true
@@ -118,7 +121,7 @@ presubmits: # runs on PRs
           base_ref: release-1.23
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210723-91c9654f"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210730-77854f92"
             securityContext:
               privileged: true
             command:
@@ -145,6 +148,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^tools/event-subscriber/|^common/makefiles/'
       optional: true
@@ -162,7 +166,7 @@ presubmits: # runs on PRs
           base_ref: release-1.22
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210723-91c9654f"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210730-77854f92"
             securityContext:
               privileged: true
             command:
@@ -193,6 +197,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^tools/event-subscriber/|^common/makefiles/'
       optional: true
@@ -214,7 +219,7 @@ postsubmits: # runs on main
           channel: kyma-prow-dev-null
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210723-91c9654f"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210730-77854f92"
             securityContext:
               privileged: true
             command:
@@ -242,6 +247,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^tools/event-subscriber/|^common/makefiles/'
       optional: true
@@ -262,7 +268,7 @@ postsubmits: # runs on main
           channel: kyma-prow-dev-null
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210723-91c9654f"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210730-77854f92"
             securityContext:
               privileged: true
             command:
@@ -290,6 +296,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^tools/event-subscriber/|^common/makefiles/'
       optional: true
@@ -310,7 +317,7 @@ postsubmits: # runs on main
           channel: kyma-prow-dev-null
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210723-91c9654f"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210730-77854f92"
             securityContext:
               privileged: true
             command:
@@ -338,6 +345,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^tools/event-subscriber/|^common/makefiles/'
       optional: true
@@ -358,7 +366,7 @@ postsubmits: # runs on main
           channel: kyma-prow-dev-null
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210723-91c9654f"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210730-77854f92"
             securityContext:
               privileged: true
             command:

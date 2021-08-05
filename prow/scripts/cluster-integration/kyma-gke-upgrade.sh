@@ -427,7 +427,9 @@ gcp::provision_k8s_cluster \
     -N "$GCLOUD_NETWORK_NAME" \
     -S "$GCLOUD_SUBNET_NAME" \
     -D "$CLUSTER_USE_SSD" \
-    -P "$TEST_INFRA_SOURCES_DIR"
+    -P "$TEST_INFRA_SOURCES_DIR" \
+    -r "$PROVISION_REGIONAL_CLUSTER"
+
 CLEANUP_CLUSTER="true"
 
 installKyma

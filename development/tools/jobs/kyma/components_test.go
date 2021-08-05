@@ -124,12 +124,6 @@ var components = []struct {
 			jobsuite.AllReleases(),
 		},
 	},
-	{path: "event-service", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.AllReleases(),
-		},
-	},
 	{path: "nats-init", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -180,6 +174,12 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Since(releases.Release123),
 			jobsuite.Optional(),
+		},
+	},
+	{path: "telemetry-operator", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.AllReleases(),
 		},
 	},
 }

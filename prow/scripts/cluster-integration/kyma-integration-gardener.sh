@@ -120,15 +120,15 @@ gardener::generate_overrides
 gardener::provision_cluster
 
 # uses previously set KYMA_SOURCE
-if [[ "${KYMA_ALPHA}" == "true" ]]; then
-  kyma::alpha_deploy_kyma \
+if [[ "${KYMA_MAJOR_VERSION}" == "2" ]]; then
+  kyma::deploy_kyma \
     -p "$EXECUTION_PROFILE" \
     -s "$KYMA_SOURCES_DIR"
-  if [[ "${KYMA_ALPHA_DELETE}" == "true" ]]; then
+  if [[ "${KYMA_DELETE}" == "true" ]]; then
     sleep 30
-    kyma::alpha_delete_kyma
+    kyma::delete_kyma
     sleep 30
-    kyma::alpha_deploy_kyma \
+    kyma::deploy_kyma \
        -p "$EXECUTION_PROFILE" \
        -s "$KYMA_SOURCES_DIR"
   fi
