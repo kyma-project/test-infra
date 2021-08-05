@@ -1,4 +1,5 @@
 targetRepoPrefix:  "eu.gcr.io/kyma-project/external/"
+sign: true
 images:
 - source: "alpine:3.13.5"
 - source: "bitnami/keycloak-gatekeeper@sha256:f0f09bdc936029a254b7fae679ca0215571f48c57a2db6d3edfce9b4b9a20643"
@@ -6,7 +7,7 @@ images:
 - source: "bitnami/postgres-exporter:0.8.0-debian-10-r28"
 - source: "busybox@sha256:31a54a0cf86d7354788a8265f60ae6acb4b348a67efbcf7c1007dd3cf7af05ab"
   tag: "1.32.0-v1"
-- source: "curlimages/curl:7.70.0"
+- source: "curlimages/curl:7.78.0"
 - source: "cypress/included:8.0.0"
 - source: "golang:1.16.4-alpine"
 - source: "grafana/loki:2.2.1"
@@ -37,4 +38,4 @@ images:
 - source: "nats:2.1.8"
 - source: "nats:2.1.9"
 - source: "nats:2.2.4"
-- source: "natsio/prometheus-nats-exporter:0.7.0"
+# - source: "natsio/prometheus-nats-exporter:0.7.0"
