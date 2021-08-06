@@ -66,7 +66,7 @@ function deploy_kyma() {
 
   if [[ -v CENTRAL_APPLICATION_GATEWAY_ENABLED ]]; then
     kyma_deploy_cmd+=" --value application-connector.central_application_gateway.enabled=true"
-    kyma_deploy_cmd+=" --value application-connector.central_application_connectivity_validator.enabled=true"
+    kyma_deploy_cmd+=" --value global.centralApplicationConnectivityValidatorEnabled=true"
   fi
 
   if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
