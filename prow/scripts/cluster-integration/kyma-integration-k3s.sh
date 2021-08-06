@@ -70,10 +70,10 @@ function deploy_kyma() {
   fi
 
   if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
-    kubectl create namespace compass-system
-    kubectl label namespace compass-system istio-injection=enabled --overwrite
-    kubectl get namespace -L istio-injection
-    kyma_deploy_cmd+=" --value global.disableLegacyConnectivity=true"
+    # kubectl create namespace compass-system
+    # kubectl label namespace compass-system istio-injection=enabled --overwrite
+    # kubectl get namespace -L istio-injection
+    kyma_deploy_cmd+=" --value global.disableLegacyConnectivity=true --component compass-runtime-agent@compass-system"
   fi
 
   $kyma_deploy_cmd
