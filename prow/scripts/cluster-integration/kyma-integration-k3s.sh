@@ -74,9 +74,8 @@ function deploy_kyma() {
     # kubectl label namespace compass-system istio-injection=enabled --overwrite
     # kubectl get namespace -L istio-injection
     kyma_deploy_cmd+=" --value global.disableLegacyConnectivity=true"
-    kyma_deploy_cmd+=" --component compass-runtime-agent@compass-system"
     kyma_deploy_cmd+=" --component cluster-essentials@kyma-system"
-    kyma_deploy_cmd+=" --component istio@kyma-system@istio-system"
+    kyma_deploy_cmd+=" --component istio@istio-system"
     kyma_deploy_cmd+=" --component certificates@istio-system"
     kyma_deploy_cmd+=" --component eventing@kyma-system"
     kyma_deploy_cmd+=" --component ory@kyma-system"
