@@ -188,11 +188,10 @@ if ! [ -z "${COSIGNED_ENABLED}" ]; then
     kubectl create secret generic cosigned-config -n cosigned --from-literal=keys="$publicKey"
 
     export SECRET_KEY_REF="k8s://cosigned/cosigned-config"
-
     envsubst \
       < config/manager/kustomization.template.yaml \
       > config/manager/kustomization.yaml
-
+    cat config/manager/kustomization.yaml
     # Setting the repo for KO binary
     export KO_DOCKER_REPO="eu.gcr.io/sap-kyma-neighbors-dev/cosign"
     IMG="ko://github.com/dlorenc/cosigned" make deploy
