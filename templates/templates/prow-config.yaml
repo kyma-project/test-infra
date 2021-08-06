@@ -907,9 +907,9 @@ presets:
       - name: COMPASS_INTEGRATION_ENABLED
         value: "true"
   - labels:
-      preset-kyma-integration-central-app-gateway-enabled: "true"
+      preset-kyma-integration-central-app-connectivity-enabled: "true"
     env:
-      - name: CENTRAL_APPLICATION_GATEWAY_ENABLED
+      - name: CENTRAL_APPLICATION_CONNECTIVITY_ENABLED
         value: "true"
   - labels:
       preset-keb-dev-credentials: "true"
