@@ -154,13 +154,6 @@ globalSets:
       preset-sa-gcr-push: "true"
       preset-docker-push-repository-kyma: "true"
 
-# Default definition of workload clusters
-cluster_default: &cluster_default
-  cluster:
-    presubmit: untrusted-workload
-    postsubmit: trusted-workload
-    periodic: trusted-workload
-
 templates:
 #  - from: templates/kyma-release-upgrade.yaml
 #    render:
@@ -183,7 +176,10 @@ templates:
     render:
       - to: ../prow/config.yaml
         values:
-          <<: *cluster_default
+          cluster:
+            presubmit: untrusted-workload
+            postsubmit: trusted-workload
+            periodic: trusted-workload
           contexts:
             - name: kyma-integration
             - name: kyma-gke-integration
