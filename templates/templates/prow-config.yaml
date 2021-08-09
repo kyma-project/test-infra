@@ -1065,14 +1065,14 @@ presets:
       value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
   - labels:
       preset-prowjob-gcp-logging: "true"
-      env:
-        - name: SA_PROWJOB_GCP_LOGGING_CLIENT_KEY_PATH
-          value: "/etc/credentials/sa-prowjob-gcp-logging-client/secret.json"
-      volumes:
-        - name: sa-prowjob-gcp-logging-client-key
-          secret:
-            secretName: sa-prowjob-gcp-logging-client-key
-        volumeMounts:
-          - name: sa-prowjob-gcp-logging-client-key
-            mountPath: /etc/credentials/sa-prowjob-gcp-logging-client
-            readOnly: true
+    env:
+      - name: SA_PROWJOB_GCP_LOGGING_CLIENT_KEY_PATH
+        value: "/etc/credentials/sa-prowjob-gcp-logging-client/secret.json"
+    volumes:
+      - name: sa-prowjob-gcp-logging-client-key
+        secret:
+          secretName: sa-prowjob-gcp-logging-client-key
+    volumeMounts:
+      - name: sa-prowjob-gcp-logging-client-key
+        mountPath: /etc/credentials/sa-prowjob-gcp-logging-client
+        readOnly: true
