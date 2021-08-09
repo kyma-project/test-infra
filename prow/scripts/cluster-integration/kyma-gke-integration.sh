@@ -169,33 +169,11 @@ export CLEANUP_CLUSTER="true"
 
 ## Cosigned integration
 if ! [ -z "${COSIGNED_ENABLED}" ]; then
-    echo "Cosigned integration enabled"
-    
-    # Installing cert-manager, might need elevating permissions for GKE
-    kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.4.0/cert-manager.yaml
-    # Installing Kustomize
-    curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash -s "/usr/local/bin"
-    # Installing ko, used to create a binary for cosigned
-    curl -sL "https://github.com/google/ko/releases/download/v0.8.3/ko_0.8.3_Linux_x86_64.tar.gz" | tar xzO ko > /usr/local/bin/ko && chmod +x /usr/local/bin/ko
+  echo "Image verification enabled"
 
-    # Installing Cosigned
-    git clone https://github.com/dlorenc/cosigned.git /tmp/cosigned && cd /tmp/cosigned
-
-    # create cosigned secret with public key from KMS
-    # TODO: set it in env variables or parse cosign URI
-    publicKey="$(gcp::get_kms_public_key -p sap-kyma-prow -r kyma-prow -k image-signing -l global -v 1)"
-    kubectl create namespace cosigned
-    kubectl create secret generic cosigned-config -n cosigned --from-literal=keys="$publicKey"
-
-    export SECRET_KEY_REF="k8s://cosigned/cosigned-config"
-    envsubst \
-      < config/manager/kustomization.template.yaml \
-      > config/manager/kustomization.yaml
-    cat config/manager/kustomization.yaml
-    # Setting the repo for KO binary
-    export KO_DOCKER_REPO="eu.gcr.io/sap-kyma-neighbors-dev/cosign"
-    IMG="ko://github.com/dlorenc/cosigned" make deploy
-    cd -
+#  publicKey="$(gcp::get_kms_public_key -p sap-kyma-prow -r kyma-prow -k image-signing -l global -v 1)"
+  git clone https://github.com/sse-secure-systems/connaisseur.git /tmp/connaisseur
+  helm install -f "$TEST_INFRA_SOURCES_DIR/prow/scripts/resources/connaisseur.values.tpl.yaml" connaisseur /tmp/connaisseur/helm --atomic --create-namespace --namespace connaisseur
 fi
 
 exit

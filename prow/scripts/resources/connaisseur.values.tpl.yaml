@@ -1,0 +1,164 @@
+# configure Connaisseur deployment
+deployment:
+  replicasCount: 3
+  image: securesystemsengineering/connaisseur:v2.1.0
+  helmHookImage: securesystemsengineering/connaisseur:helm-hook-v1.0
+  imagePullPolicy: Always
+  resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+# configure Connaisseur service
+service:
+  type: ClusterIP
+  port: 443
+
+### VALIDATORS ###
+# validators are a set of configurations (types, public keys, authentication)
+# that can be used for validating one or multiple images (or image signatures).
+# they are tied to their respective image(s) via the image policy below. there
+# are a few handy validators pre-configured.
+validators:
+  # static validator that allows each image
+  - name: allow
+    type: static
+    approve: true
+  # static validator that denies each image
+  - name: deny
+    type: static
+    approve: false
+  # the `default` validator is used if no validator is specified in image policy
+#  - name: default
+#    type: notaryv1  # or other supported validator (e.g. "cosign")
+#    host: notary.docker.io # in case of notaryv1, configure the notary server to be used
+#    trust_roots:
+#    # # the `default` key is used if no key is specified in image policy
+#    #- name: default
+#    #  key: |  # enter your public key below
+#    #    -----BEGIN PUBLIC KEY-----
+#    #    <add your public key here>
+#    #    -----END PUBLIC KEY-----
+#    #cert: |  # in case the trust data host is using a self-signed certificate
+#    #  -----BEGIN CERTIFICATE-----
+#    #  ...
+#    #  -----END CERTIFICATE-----
+#    #auth:  # credentials in case the trust data requires authentication
+#    #  # either (preferred solution)
+#    #  secret_name: mysecret  # reference a k8s secret in the form required by the validator type (check the docs)
+#    #  # or (only for notaryv1 validator)
+#    #  username: myuser
+#    #  password: mypass
+#  # pre-configured nv1 validator for public notary from Docker Hub
+  - name: dockerhub_basics
+    type: notaryv1
+    host: notary.docker.io
+    trust_roots:
+      # public key for official docker images (https://hub.docker.com/search?q=&type=image&image_filter=official)
+      # !if not needed feel free to remove the key!
+      - name: docker_official
+        key: |
+          -----BEGIN PUBLIC KEY-----
+          MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEOXYta5TgdCwXTCnLU09W5T4M4r9f
+          QQrqJuADP6U7g5r9ICgPSmZuRHP/1AYUfOQW3baveKsT969EfELKj1lfCA==
+          -----END PUBLIC KEY-----
+      # public key securesystemsengineering repo including Connaisseur images
+      # !this key is critical for Connaisseur!
+      - name: securesystemsengineering_official
+        key: |
+          -----BEGIN PUBLIC KEY-----
+          MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEsx28WV7BsQfnHF1kZmpdCTTLJaWe
+          d0CA+JOi8H4REuBaWSZ5zPDe468WuOJ6f71E7WFg3CVEVYHuoZt2UYbN/Q==
+          -----END PUBLIC KEY-----
+  - name: cosign_kyma-project
+    type: cosign
+    trust_roots:
+      - name: kyma-project_signed
+        key: |
+          -----BEGIN PUBLIC KEY-----
+          MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEkGzl+yi+HKoJQLamq01P3i990F8c
+          xqYp5303cf7x19fBfyoVPvEWPyGllAthGJkZx0uvhcdX4Q4I4HQSX98x9A==
+          -----END PUBLIC KEY-----
+
+### IMAGE POLICY ###
+# the image policy ties validators and images together whereby always only the most specific rule (pattern)
+# is applied. specify if and how images should be validated by which validator via the validator name.
+policy:
+  - pattern: "*:*"
+    validator: deny
+  - pattern: "docker.io/library/*:*"
+    validator: dockerhub_basics
+    with:
+      trust_root: docker_official
+  - pattern: "k8s.gcr.io/*:*"
+    validator: allow
+  - pattern: "docker.io/securesystemsengineering/*:*"
+    validator: dockerhub_basics
+    with:
+      trust_root: securesystemsengineering_official
+  - pattern: "eu.gcr.io/kyma-project/*:*"
+    validator: cosign_kyma-project
+    with:
+      trust_root: kyma-project_signed
+
+# in detection mode, deployment will not be denied, but only prompted
+# and logged. this allows testing the functionality without
+# interrupting operation.
+detectionMode: false
+
+# namespaced validation allows to restrict the namespaces that will be subject to Connaisseur verification.
+# when enabled, based on namespaced validation mode ('ignore' or 'validate')
+# - either all namespaces with label "securesystemsengineering.connaisseur/webhook=ignore" are ignored
+# - or only namespaces with label "securesystemsengineering.connaisseur/webhook=validate" are validated.
+# warning: enabling namespaced validation, allows roles with edit permission on a namespace to disable
+# validation for that namespace
+namespacedValidation:
+  enabled: false
+  mode: ignore  # 'ignore' or 'validate'
+
+# debug: true
+
+# alerting is implemented in form of simple POST requests with json payload
+# you can use and/or adapt the predefined Slack/OpsGenie/Keybase templates and the examples below
+# to channel alert notifications to Slack/OpsGenie/Keybase or create a custom template for a customized alert
+# payload to use with a simple POST request to the receiver_url to receive alerts.
+# Parameters you can use in your templates are "alert_message", "priority", "connaisseur_pod_id", "cluster",
+# "timestamp", "request_id" and "images" each one basically meaning what their names indicate
+#
+# Below is an example config
+
+#alerting:
+#  cluster_identifier: example-cluster-staging-europe # defaults to "not specified"
+#  admit_request:
+#    templates:
+#      # <template> needs to be chosen such that <template>.json matches one of the file names
+#      # in the ./alert_payload_templates directory
+#      - template: opsgenie #REQUIRED!
+#        receiver_url: https://api.eu.opsgenie.com/v2/alerts #REQUIRED!
+#        priority: 4 #(defaults to 3)
+#        custom_headers: ["Authorization: GenieKey <Your-Genie-Key>"]
+#        payload_fields:
+#          responders:
+#            - username: "testuser@testcompany.de"
+#              type: user
+#          visibleTo:
+#            - username: "testuser@testcompany.de"
+#              type: user
+#          tags:
+#            - "deployed_an_image"
+#        fail_if_alert_sending_fails: True  # (defaults to False, turning it to True will make Connaisseur deny your
+#                                           # deployment (even in detection mode))
+#      - template: slack #REQUIRED!
+#        receiver_url: https://hooks.slack.com/services/<Your-Slack-Hook-Path>
+#        priority: 1
+#  reject_request:
+#    templates:
+#      - template: keybase  #REQUIRED!
+#        receiver_url: https://bots.keybase.io/webhookbot/<Your-Keybase-Hook-Token>
+#        fail_if_alert_sending_fails: True
