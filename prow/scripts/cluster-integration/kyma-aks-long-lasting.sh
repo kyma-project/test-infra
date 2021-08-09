@@ -267,6 +267,9 @@ installKyma
 log::info "Override kyma-admin-binding ClusterRoleBinding"
 apply_dex_github_kyma_admin_group
 
+# temporarily diabled, let's see how well fast-integration will work
+# see also: https://github.com/kyma-project/kyma/issues/11777
+
 # log::info "Install stability-checker"
 # (
 # export TEST_INFRA_SOURCES_DIR KYMA_SCRIPTS_DIR TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS \
