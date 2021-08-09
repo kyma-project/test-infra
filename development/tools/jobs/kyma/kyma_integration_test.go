@@ -51,11 +51,11 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				"installation/test/test/README.MD",
 			},
 		},
-		"Should contain the kyma-integration K3s with central Application Gateway job": {
-			givenJobName: "pre-main-kyma-integration-k3s-central-app-gateway",
+		"Should contain the kyma-integration K3s with central Application Connectivity job": {
+			givenJobName: "pre-main-kyma-integration-k3s-central-app-connectivity",
 
 			expPresets: []preset.Preset{
-				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-gateway-enabled",
+				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-connectivity-enabled",
 			},
 
 			expRunIfChangedRegex: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
@@ -68,11 +68,11 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				"installation/test/test/README.MD",
 			},
 		},
-		"Should contain the kyma-integration K3s with central Application Gateway and Compass job": {
-			givenJobName: "pre-main-kyma-integration-k3s-central-app-gateway-compass",
+		"Should contain the kyma-integration K3s with central Application Connectivity and Compass job": {
+			givenJobName: "pre-main-kyma-integration-k3s-central-app-connectivity-compass",
 
 			expPresets: []preset.Preset{
-				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-gateway-enabled", "preset-kyma-integration-compass-dev", "preset-kyma-integration-compass-enabled",
+				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-connectivity-enabled", "preset-kyma-integration-compass-dev", "preset-kyma-integration-compass-enabled",
 			},
 
 			expRunIfChangedRegex: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
@@ -184,18 +184,18 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",
 			},
 		},
-		"Should contain the kyma-integration K3s with central Application Gateway job": {
-			givenJobName: "post-main-kyma-integration-k3s-central-app-gateway",
+		"Should contain the kyma-integration K3s with central Application Connectivity job": {
+			givenJobName: "post-main-kyma-integration-k3s-central-app-connectivity",
 
 			expPresets: []preset.Preset{
-				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-gateway-enabled",
+				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-connectivity-enabled",
 			},
 		},
-		"Should contain the kyma-integration K3s with central Application Gateway and Compass job": {
-			givenJobName: "post-main-kyma-integration-k3s-central-app-gateway-compass",
+		"Should contain the kyma-integration K3s with central Application Connectivity and Compass job": {
+			givenJobName: "post-main-kyma-integration-k3s-central-app-connectivity-compass",
 
 			expPresets: []preset.Preset{
-				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-gateway-enabled", "preset-kyma-integration-compass-dev", "preset-kyma-integration-compass-enabled",
+				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-connectivity-enabled", "preset-kyma-integration-compass-dev", "preset-kyma-integration-compass-enabled",
 			},
 		},
 		"Should contain the gke-integration job": {
@@ -251,7 +251,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.AllPeriodics()
-	assert.Len(t, periodics, 18)
+	assert.Len(t, periodics, 19)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -265,6 +265,19 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, []string{"bash"}, disksCleanerPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-'"}, disksCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, disksCleanerPeriodic.JobBase)
+
+	expName = "orphaned-ips-cleaner"
+	addressesCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, addressesCleanerPeriodic)
+	assert.Equal(t, expName, addressesCleanerPeriodic.Name)
+
+	assert.Equal(t, "0 1 * * *", addressesCleanerPeriodic.Cron)
+	tester.AssertThatHasPresets(t, addressesCleanerPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
+	tester.AssertThatHasExtraRepoRefCustom(t, addressesCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
+	assert.Equal(t, tester.ImageProwToolsLatest, addressesCleanerPeriodic.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"bash"}, addressesCleanerPeriodic.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"-c", "/prow-tools/ipcleaner -project=${CLOUDSDK_CORE_PROJECT} -dry-run=false -ip-exclude-name-regex='^nightly|weekly|nat-auto-ip'"}, addressesCleanerPeriodic.Spec.Containers[0].Args)
+	tester.AssertThatSpecifiesResourceRequests(t, addressesCleanerPeriodic.JobBase)
 
 	expName = "orphaned-az-storage-accounts-cleaner"
 	orphanedAZStorageAccountsCleaner := tester.FindPeriodicJobByName(periodics, expName)
