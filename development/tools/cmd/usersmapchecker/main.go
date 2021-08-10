@@ -45,9 +45,9 @@ func main() {
 	wg.Add(len(authors))
 	for _, author := range authors {
 		go func(wg *sync.WaitGroup, author string) {
-			defer wg.Done()
 			for _, user := range usersMap {
 				if user.ComGithubUsername == author {
+					wg.Done()
 					return
 				}
 			}
