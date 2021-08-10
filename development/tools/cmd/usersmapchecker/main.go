@@ -21,9 +21,11 @@ func main() {
 		log.Errorf("creating gcp logging client failed, got error: %v", err)
 	}
 	logger := logClient.NewProwjobLogger().WithGeneratedTrace()
+	defer logger.Flush()
 	// provided by preset-bot-github-sap-token
 	accessToken := os.Getenv("BOT_GITHUB_SAP_TOKEN")
 	contextLogger := logger.WithContext("checking if user exists in users map")
+	defer contextLogger.Flush()
 	saptoolsClient, err := client.NewSapToolsClient(ctx, accessToken)
 	if err != nil {
 		contextLogger.LogError(fmt.Sprintf("failed creating sap tools github client, got error: %v", err))
