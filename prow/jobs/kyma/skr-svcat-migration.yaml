@@ -45,6 +45,8 @@ periodics: # runs on schedule
             env:
               - name: KEB_PLAN_ID
                 value: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
+              - name: KEB_SUBACCOUNT_ID
+                value: "19ea2000-865d-42fd-8d6f-3e3e2dcce3c8"
             resources:
               requests:
                 memory: 100Mi
