@@ -30,6 +30,7 @@ func newClient(ctx context.Context, credentialsFilePath, logName string) (*Clien
 }
 
 // TODO: consider moving this to development/prow/logging.go
+// Prow preset with service account credentials for logging to gcp: preset-prowjob-gcp-logging
 func NewProwjobClient(ctx context.Context, credentialsFilePath string) (*Client, error) {
 	client, err := newClient(ctx, credentialsFilePath, ProwjobsLogName)
 	if err != nil {
