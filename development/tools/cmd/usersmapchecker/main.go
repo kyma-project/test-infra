@@ -3,12 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
+	"sync"
+
 	gcplogging "github.com/kyma-project/test-infra/development/gcp/pkg/logging"
 	"github.com/kyma-project/test-infra/development/github/pkg/client"
 	"github.com/kyma-project/test-infra/development/prow"
 	log "github.com/sirupsen/logrus"
-	"os"
-	"sync"
 )
 
 func main() {

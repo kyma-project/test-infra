@@ -1,14 +1,15 @@
 package logging
 
 import (
-	"cloud.google.com/go/logging"
 	"context"
 	"fmt"
-	log "github.com/sirupsen/logrus"
-	"google.golang.org/api/option"
 	"math/rand"
 	"os"
 	"time"
+
+	"cloud.google.com/go/logging"
+	log "github.com/sirupsen/logrus"
+	"google.golang.org/api/option"
 )
 
 const (
