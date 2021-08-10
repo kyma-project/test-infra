@@ -13,8 +13,8 @@ templates:
                   labels:
                     preset-dind-enabled: "true"
                     preset-sa-gcr-push: "true"
-                    preset-docker-push-repository-workloads: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
+                    - "image_prow-tools"
