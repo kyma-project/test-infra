@@ -1,14 +1,14 @@
 pjNames:
-  # - pjName: "pre-main-kyma-integration-k3s"
-  # - pjName: "pre-main-kyma-integration-k3s-compass-dev"
-  # - pjName: "pre-main-kyma-integration-k3s-central-app-connectivity"
-  # - pjName: "pre-main-kyma-integration-k3s-central-app-connectivity-compass"
-  # - pjName: "post-main-kyma-integration-k3s"
-  # - pjName: "post-main-kyma-integration-k3s-compass-dev"
-  # - pjName: "post-main-kyma-integration-k3s-central-app-connectivity"
+  - pjName: "pre-main-kyma-integration-k3s"
+  - pjName: "pre-main-kyma-integration-k3s-compass-dev"
+  - pjName: "pre-main-kyma-integration-k3s-central-app-connectivity"
+  - pjName: "pre-main-kyma-integration-k3s-central-app-connectivity-compass"
+  - pjName: "post-main-kyma-integration-k3s"
+  - pjName: "post-main-kyma-integration-k3s-compass-dev"
+  - pjName: "post-main-kyma-integration-k3s-central-app-connectivity"
   - pjName: "post-main-kyma-integration-k3s-central-app-connectivity-compass"
-  # - pjName: "kyma-integration-k3s"
-  # - pjName: "kyma-integration-k3s-compass-dev"
+  - pjName: "kyma-integration-k3s"
+  - pjName: "kyma-integration-k3s-compass-dev"
 prConfigs:
   kyma-project:
     kyma:
