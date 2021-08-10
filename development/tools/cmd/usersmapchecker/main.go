@@ -42,10 +42,10 @@ func main() {
 			contextLogger.LogError(fmt.Sprintf("error when getting pr author for presubmit: got error %v", err))
 		}
 	}
+	wg.Add(len(authors))
 	for _, author := range authors {
 		go func(wg *sync.WaitGroup, author string) {
 			defer wg.Done()
-			wg.Add(1)
 			for _, user := range usersMap {
 				if user.ComGithubUsername == author {
 					return
