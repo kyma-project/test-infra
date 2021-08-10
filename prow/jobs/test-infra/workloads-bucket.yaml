@@ -11,7 +11,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-workloads-bucket"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-gke-kyma-integration: "true"
       skip_report: false
       decorate: true
       cluster: untrusted-workload

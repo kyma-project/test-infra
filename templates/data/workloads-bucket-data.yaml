@@ -10,7 +10,7 @@ templates:
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/workloads-bucket.sh"
                   labels:
                     preset-dind-enabled: "true"
-                    preset-sa-gcr-push: "true"
+                    preset-sa-gke-kyma-integration: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
