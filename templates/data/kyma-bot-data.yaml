@@ -9,6 +9,7 @@ templates:
                   name: "pre-main-check-users-map"
                   command: "usersmapchecker"
                   always_run: "true"
+                  image: "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-4026"
                   labels:
                     preset-bot-github-sap-token: "true"
                     preset-prowjob-gcp-logging: "true"
