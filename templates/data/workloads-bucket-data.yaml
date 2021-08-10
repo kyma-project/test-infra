@@ -1,0 +1,20 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/test-infra/workloads-bucket.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/test-infra"
+            jobs:
+              - jobConfig:
+                  name: pre-workloads-bucket
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/workloads-bucket.sh"
+                  args:
+                    - "test"
+                  labels:
+                    preset-dind-enabled: "true"
+                    preset-sa-gcr-push: "true"
+                    preset-docker-push-repository-workloads: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
