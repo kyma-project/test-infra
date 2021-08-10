@@ -83,7 +83,7 @@ func (l Logger) WithContext(entryContext string) Logger {
 	return l
 }
 
-func (l Logger) LogError(message string) {
+func (l *Logger) LogError(message string) {
 	entry := logging.Entry{
 		Timestamp: time.Now(),
 		Severity:  logging.Error,
@@ -103,7 +103,7 @@ func (l Logger) LogError(message string) {
 	log.Error(message)
 }
 
-func (l Logger) LogInfo(message string) {
+func (l *Logger) LogInfo(message string) {
 	entry := logging.Entry{
 		Timestamp: time.Now(),
 		Severity:  logging.Info,

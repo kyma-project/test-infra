@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"sync"
+	"sync/atomic"
 
 	gcplogging "github.com/kyma-project/test-infra/development/gcp/pkg/logging"
 	"github.com/kyma-project/test-infra/development/github/pkg/client"
@@ -13,6 +14,8 @@ import (
 )
 
 func main() {
+	var exitCode interface{}
+	defer func() { os.Exit(exitCode.(int)) }()
 	ctx := context.Background()
 	var wg sync.WaitGroup
 	saProwjobGcpLoggingClientKeyPath := os.Getenv("SA_PROWJOB_GCP_LOGGING_CLIENT_KEY_PATH")
@@ -44,17 +47,20 @@ func main() {
 	}
 	wg.Add(len(authors))
 	for _, author := range authors {
-		go func(wg *sync.WaitGroup, author string) {
+		go func(wg *sync.WaitGroup, author string, exitCode *int32) {
+			defer wg.Done()
 			for _, user := range usersMap {
 				if user.ComGithubUsername == author {
-					wg.Done()
 					return
 				}
 			}
 			contextLogger.LogError(fmt.Sprintf("user %s is not present in users map, please add user", author))
-			os.Exit(1)
-		}(&wg, author)
+			atomic.StoreInt32(exitCode, 1)
+		}(&wg, author, exitCode.(*int32))
 	}
 	wg.Wait()
-	contextLogger.LogInfo("all authors present in users map")
+	if exitCode == nil {
+		contextLogger.LogInfo("all authors present in users map")
+		exitCode = 0
+	}
 }
