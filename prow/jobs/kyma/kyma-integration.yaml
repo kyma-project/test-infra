@@ -163,7 +163,7 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-kyma-integration-k3s-central-app-gateway
+    - name: pre-main-kyma-integration-k3s-central-app-connectivity
       annotations:
         pipeline.clusterprovisioning: "k3s"
         pipeline.installer: "kyma deploy"
@@ -173,15 +173,14 @@ presubmits: # runs on PRs
         pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3s-central-app-gateway"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3s-central-app-connectivity"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-integration-central-app-gateway-enabled: "true"
+        preset-kyma-integration-central-app-connectivity-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^((tests/fast-integration\S+|resources\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -220,7 +219,7 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-kyma-integration-k3s-central-app-gateway-compass
+    - name: pre-main-kyma-integration-k3s-central-app-connectivity-compass
       annotations:
         pipeline.clusterprovisioning: "k3s"
         pipeline.installer: "kyma deploy"
@@ -230,17 +229,16 @@ presubmits: # runs on PRs
         pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3s-central-app-gateway-compass"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3s-central-app-connectivity-compass"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-integration-central-app-gateway-enabled: "true"
+        preset-kyma-integration-central-app-connectivity-enabled: "true"
         preset-kyma-integration-compass-dev: "true"
         preset-kyma-integration-compass-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^((tests/fast-integration\S+|resources\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -725,7 +723,7 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-main-kyma-integration-k3s-central-app-gateway
+    - name: post-main-kyma-integration-k3s-central-app-connectivity
       annotations:
         description: "Kyma integration job on k3s with central Application Gateway."
         pipeline.clusterprovisioning: "k3s"
@@ -738,12 +736,12 @@ postsubmits: # runs on main
         testgrid-days-of-results: "60"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3s-central-app-gateway"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3s-central-app-connectivity"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-integration-central-app-gateway-enabled: "true"
+        preset-kyma-integration-central-app-connectivity-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
       skip_report: false
       decorate: true
@@ -783,7 +781,7 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-main-kyma-integration-k3s-central-app-gateway-compass
+    - name: post-main-kyma-integration-k3s-central-app-connectivity-compass
       annotations:
         description: "Kyma integration job on k3s with central Application Gateway and Compass dev."
         pipeline.clusterprovisioning: "k3s"
@@ -796,12 +794,12 @@ postsubmits: # runs on main
         testgrid-days-of-results: "60"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3s-central-app-gateway-compass"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3s-central-app-connectivity-compass"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-integration-central-app-gateway-enabled: "true"
+        preset-kyma-integration-central-app-connectivity-enabled: "true"
         preset-kyma-integration-compass-dev: "true"
         preset-kyma-integration-compass-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
@@ -1140,7 +1138,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210728-v0.1.0-6-g19d375e9"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210805-9bab875b"
             securityContext:
               privileged: true
             command:
@@ -1182,7 +1180,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210728-v0.1.0-6-g19d375e9"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210805-9bab875b"
             securityContext:
               privileged: true
             command:
@@ -1190,6 +1188,48 @@ periodics: # runs on schedule
             args:
               - "-c"
               - "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-'"
+            resources:
+              requests:
+                memory: 100Mi
+                cpu: 50m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: orphaned-ips-cleaner
+      annotations:
+        pipeline.trigger: "periodic"
+        pipeline.type: "integration"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "orphaned-ips-cleaner"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-gc-project-env: "true"
+        preset-sa-gke-kyma-integration: "true"
+      cron: "0 1 * * *"
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: trusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210805-9bab875b"
+            securityContext:
+              privileged: true
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "/prow-tools/ipcleaner -project=${CLOUDSDK_CORE_PROJECT} -dry-run=false -ip-exclude-name-regex='^nightly|weekly|nat-auto-ip'"
             resources:
               requests:
                 memory: 100Mi
@@ -1224,7 +1264,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210728-v0.1.0-6-g19d375e9"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210805-9bab875b"
             securityContext:
               privileged: true
             command:
@@ -1266,7 +1306,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210728-v0.1.0-6-g19d375e9"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210805-9bab875b"
             securityContext:
               privileged: true
             command:
@@ -1308,7 +1348,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210728-v0.1.0-6-g19d375e9"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210805-9bab875b"
             securityContext:
               privileged: true
             command:
@@ -1351,7 +1391,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210728-v0.1.0-6-g19d375e9"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210805-9bab875b"
             securityContext:
               privileged: true
             command:
@@ -1392,7 +1432,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210728-v0.1.0-6-g19d375e9"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210805-9bab875b"
             securityContext:
               privileged: true
             command:
@@ -1432,7 +1472,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210728-v0.1.0-6-g19d375e9"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210805-9bab875b"
             securityContext:
               privileged: true
             command:

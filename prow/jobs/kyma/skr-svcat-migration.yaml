@@ -17,7 +17,7 @@ periodics: # runs on schedule
         preset-btp-operator-stage-credentials: "true"
         preset-build-main: "true"
         preset-keb-dev-credentials: "true"
-      cron: "* */4 * * *"
+      cron: "0 */4 * * *"
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
