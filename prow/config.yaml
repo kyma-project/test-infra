@@ -921,9 +921,9 @@ presets:
         value: "prow-keb-integration"
   - labels:
       preset-svcat-migration-subaccounnt: "true"
-      env:
-        - name: KEB_SUBACCOUNT_ID
-          value: "19ea2000-865d-42fd-8d6f-3e3e2dcce3c8"
+    env:
+      - name: KEB_SUBACCOUNT_ID
+        value: "19ea2000-865d-42fd-8d6f-3e3e2dcce3c8"
   - labels:
       preset-keb-dev-credentials: "true"
     env:
