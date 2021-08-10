@@ -21,13 +21,13 @@ templates:
             labels:
               preset-build-main: "true"
               preset-keb-dev-credentials: "true"
+              preset-svcat-migration-subaccounnt: "true"
               preset-btp-operator-stage-credentials: "true"
           keb_plan_azure:
             annotations:
               pipeline.platform: gardener_azure
             env:
               KEB_PLAN_ID: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
-              KEB_SUBACCOUNT_ID: "19ea2000-865d-42fd-8d6f-3e3e2dcce3c8"
         jobConfigs:
           - repoName: "kyma-project/kyma"
             jobs:
