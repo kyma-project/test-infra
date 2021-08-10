@@ -1,0 +1,21 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/test-infra/kyma-bot.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/application-broker"
+                  always_run: "true"
+                  labels:
+                    preset-bot-github-sap-token: "true"
+                    preset-prowjob-gcp-logging: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_prow-tools"
+                    - "extra_refs_test-infra"
+                  preConfigs:
+                    - "jobConfig_presubmit"
