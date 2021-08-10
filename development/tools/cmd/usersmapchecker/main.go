@@ -1,4 +1,4 @@
-package usersmapchecker
+package main
 
 import (
 	"context"
