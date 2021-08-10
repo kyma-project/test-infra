@@ -11,6 +11,7 @@ templates:
                   labels:
                     preset-dind-enabled: "true"
                     preset-sa-gke-kyma-integration: "true"
+                    preset-docker-push-repository-workloads: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
