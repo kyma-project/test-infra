@@ -100,7 +100,7 @@ func (l Logger) LogError(message string) {
 		entry.Trace = l.trace
 	}
 	l.Log(entry)
-	log.Errorf(message)
+	log.Error(message)
 }
 
 func (l Logger) LogInfo(message string) {
@@ -119,5 +119,5 @@ func (l Logger) LogInfo(message string) {
 		entry.Trace = l.trace
 	}
 	l.Log(entry)
-	log.Errorf(message)
+	log.Info(message)
 }
