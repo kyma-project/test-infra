@@ -52,6 +52,7 @@ func main() {
 			defer wg.Done()
 			for _, user := range usersMap {
 				if user.ComGithubUsername == author {
+					contextLogger.LogInfo(fmt.Sprintf("user %s is present in users map", author))
 					return
 				}
 			}
@@ -60,7 +61,7 @@ func main() {
 		}(&wg, author, exitCode.(*int32))
 	}
 	wg.Wait()
-	if exitCode == nil {
+	if exitCode == 0 {
 		contextLogger.LogInfo("all authors present in users map")
 		err := contextLogger.Flush()
 		if err != nil {
