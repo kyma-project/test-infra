@@ -1,2 +1,3 @@
 pjNames:
+  - pjname: pre-kyma-artifacts
   - pjName: pre-main-kyma-gke-integration
