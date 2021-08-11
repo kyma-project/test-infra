@@ -13,6 +13,50 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// Example fields for test por in gcp logging.
+// logName: "projects/sap-kyma-prow/logs/stdout"
+// resource: {
+//   labels: {
+//     cluster_name: "trusted-workload-kyma-prow"
+//     container_name: "test"
+//     location: "europe-west3"
+//     namespace_name: "default"
+//     pod_name: "cbb59657-fa91-11eb-baea-4e9acc7ce5e6"
+//     project_id: "sap-kyma-prow"
+//   }
+//   type: "k8s_container"
+// labels: {
+//   compute.googleapis.com/resource_name: "gke-trusted-workload-k-high-cpu-16-32-c8294afe-skrq"
+//   k8s-pod/created-by-prow: "true"
+//   k8s-pod/event-GUID: "cb549a8a-fa91-11eb-80a9-35f1ac609512"
+//   k8s-pod/preset-build-main: "true"
+//   k8s-pod/preset-cluster-use-ssd: "true"
+//   k8s-pod/preset-cluster-version: "true"
+//   k8s-pod/preset-debug-commando-oom: "true"
+//   k8s-pod/preset-dind-enabled: "true"
+//   k8s-pod/preset-docker-push-repository-gke-integration: "true"
+//   k8s-pod/preset-gc-compute-envs: "true"
+//   k8s-pod/preset-gc-project-env: "true"
+//   k8s-pod/preset-gke-upgrade-post-job: "true"
+//   k8s-pod/preset-kyma-artifacts-bucket: "true"
+//   k8s-pod/preset-kyma-guard-bot-github-token: "true"
+//   k8s-pod/preset-log-collector-slack-token: "true"
+//   k8s-pod/preset-sa-gke-kyma-integration: "true"
+//   k8s-pod/preset-sa-test-gcr-push: "true"
+//   k8s-pod/prow_k8s_io/build-id: "1425409012446269440"
+//   k8s-pod/prow_k8s_io/context: "post-main-kyma-gke-upgrade"
+//   k8s-pod/prow_k8s_io/id: "cbb59657-fa91-11eb-baea-4e9acc7ce5e6"
+//   k8s-pod/prow_k8s_io/job: "post-main-kyma-gke-upgrade"
+//   k8s-pod/prow_k8s_io/plank-version: "v20210714-62f15287bd"
+//   k8s-pod/prow_k8s_io/pubsub_project: "sap-kyma-prow"
+//   k8s-pod/prow_k8s_io/pubsub_runID: "post-main-kyma-gke-upgrade"
+//   k8s-pod/prow_k8s_io/pubsub_topic: "prowjobs"
+//   k8s-pod/prow_k8s_io/refs_base_ref: "main"
+//   k8s-pod/prow_k8s_io/refs_org: "kyma-project"
+//   k8s-pod/prow_k8s_io/refs_repo: "kyma"
+//   k8s-pod/prow_k8s_io/type: "postsubmit"
+// }
+
 func main() {
 	var exitCode atomic.Value
 	defer func() { os.Exit(exitCode.Load().(int)) }()
@@ -56,7 +100,7 @@ func main() {
 					return
 				}
 			}
-			contextLogger.LogError(fmt.Sprintf("user %s is not present in users map, please add user", author))
+			contextLogger.LogError(fmt.Sprintf("user %s is not present in users map, please add user to https://github.tools.sap/kyma/test-infra/blob/main/users-map.yaml", author))
 			exitCode.Store(1)
 		}(&wg, author, &exitCode)
 	}
