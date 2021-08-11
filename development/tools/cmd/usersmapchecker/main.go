@@ -14,9 +14,8 @@ import (
 )
 
 func main() {
-	var exitCode interface{}
-	exitCode = 0
-	defer func() { os.Exit(exitCode.(int)) }()
+	var exitCode atomic.Value
+	defer func() { os.Exit(exitCode.Load().(int)) }()
 	ctx := context.Background()
 	var wg sync.WaitGroup
 	saProwjobGcpLoggingClientKeyPath := os.Getenv("SA_PROWJOB_GCP_LOGGING_CLIENT_KEY_PATH")
@@ -48,7 +47,7 @@ func main() {
 	}
 	wg.Add(len(authors))
 	for _, author := range authors {
-		go func(wg *sync.WaitGroup, author string, exitCode *int32) {
+		go func(wg *sync.WaitGroup, author string, exitCode *atomic.Value) {
 			defer wg.Done()
 			for _, user := range usersMap {
 				if user.ComGithubUsername == author {
@@ -57,16 +56,16 @@ func main() {
 				}
 			}
 			contextLogger.LogError(fmt.Sprintf("user %s is not present in users map, please add user", author))
-			atomic.StoreInt32(exitCode, 1)
-		}(&wg, author, exitCode.(*int32))
+			exitCode.Store(1)
+		}(&wg, author, &exitCode)
 	}
 	wg.Wait()
-	if exitCode == 0 {
+	if exitCode.Load() == nil {
 		contextLogger.LogInfo("all authors present in users map")
 		err := contextLogger.Flush()
 		if err != nil {
 			fmt.Println(err.Error())
 		}
-		exitCode = 0
+		exitCode.Store(1)
 	}
 }
