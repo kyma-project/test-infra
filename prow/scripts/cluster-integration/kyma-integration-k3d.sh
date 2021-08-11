@@ -11,6 +11,7 @@ function prereq_test() {
   command -v jq >/dev/null 2>&1 || { echo >&2 "jq not found"; exit 1; }
   command -v helm >/dev/null 2>&1 || { echo >&2 "helm not found"; exit 1; }
   command -v kubectl >/dev/null 2>&1 || { echo >&2 "kubectl not found"; exit 1; }
+  command -v k3d >/dev/null 2>&1 || { echo >&2 "k3d not found"; exit 1; }
 }
 
 function load_env() {
@@ -18,11 +19,6 @@ function load_env() {
   if [ -f "${ENV_FILE}" ]; then
     export $(xargs < "${ENV_FILE}")
   fi
-}
-
-function prepare_k3d(){
-    wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v4.4.7 bash
-    k3d version
 }
 
 function install_cli() {
@@ -97,7 +93,6 @@ function run_tests() {
 
 prereq_test
 load_env
-prepare_k3d
 install_cli
 deploy_kyma
 run_tests
