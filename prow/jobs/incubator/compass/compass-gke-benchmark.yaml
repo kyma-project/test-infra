@@ -24,7 +24,6 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-kyma-keyring: "true"
         preset-sa-gke-kyma-integration: "true"
-        preset-sa-test-gcr-push: "true"
       run_if_changed: '^((chart\S+|installation\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       optional: true
       skip_report: false
@@ -85,7 +84,6 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-kyma-keyring: "true"
         preset-sa-gke-kyma-integration: "true"
-        preset-sa-test-gcr-push: "true"
       optional: true
       skip_report: false
       decorate: true
@@ -144,7 +142,6 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-kyma-keyring: "true"
         preset-sa-gke-kyma-integration: "true"
-        preset-sa-test-gcr-push: "true"
       optional: true
       skip_report: false
       decorate: true
@@ -203,7 +200,6 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-kyma-keyring: "true"
         preset-sa-gke-kyma-integration: "true"
-        preset-sa-test-gcr-push: "true"
       optional: true
       skip_report: false
       decorate: true

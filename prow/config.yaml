@@ -416,7 +416,7 @@ presets:
     volumes:
       - name: sa-test-gcr-push
         secret:
-          secretName: sa-gke-kyma-integration
+          secretName: sa-gcr-push-kyma-project
     volumeMounts:
       - name: sa-test-gcr-push
         mountPath: /etc/credentials/sa-test-gcr-push

@@ -24,7 +24,6 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-kyma-keyring: "true"
         preset-sa-gke-kyma-integration: "true"
-        preset-sa-test-gcr-push: "true"
       run_if_changed: '^((resources\S+|installation\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
@@ -87,7 +86,6 @@ postsubmits: # runs on main
         preset-kyma-keyring: "true"
         preset-log-collector-slack-token: "true"
         preset-sa-gke-kyma-integration: "true"
-        preset-sa-test-gcr-push: "true"
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/control-plane

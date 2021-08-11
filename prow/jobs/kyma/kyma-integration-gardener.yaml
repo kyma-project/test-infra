@@ -25,7 +25,7 @@ presubmits: # runs on PRs
         preset-gc-project-env: "true"
         preset-kyma-cli-stable: "true"
         preset-sa-gardener-logs: "true"
-        preset-sa-test-gcr-push: "true"
+        preset-sa-gke-kyma-integration: "true"
       run_if_changed: '^(((resources/application-connector)\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       optional: true
       skip_report: false
@@ -96,7 +96,7 @@ presubmits: # runs on PRs
         preset-gc-project-env: "true"
         preset-kyma-cli-stable: "true"
         preset-sa-gardener-logs: "true"
-        preset-sa-test-gcr-push: "true"
+        preset-sa-gke-kyma-integration: "true"
       optional: true
       skip_report: false
       decorate: true
@@ -170,7 +170,7 @@ presubmits: # runs on PRs
         preset-gc-project-env: "true"
         preset-kyma-cli-stable: "true"
         preset-sa-gardener-logs: "true"
-        preset-sa-test-gcr-push: "true"
+        preset-sa-gke-kyma-integration: "true"
       run_if_changed: '^((resources\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       optional: true
       skip_report: false
@@ -245,7 +245,7 @@ presubmits: # runs on PRs
         preset-gc-project-env: "true"
         preset-kyma-cli-stable: "true"
         preset-sa-gardener-logs: "true"
-        preset-sa-test-gcr-push: "true"
+        preset-sa-gke-kyma-integration: "true"
       run_if_changed: '^((resources\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       optional: true
       skip_report: false
@@ -454,7 +454,7 @@ postsubmits: # runs on main
         preset-gc-project-env: "true"
         preset-kyma-cli-stable: "true"
         preset-sa-gardener-logs: "true"
-        preset-sa-test-gcr-push: "true"
+        preset-sa-gke-kyma-integration: "true"
       skip_report: false
       decorate: true
       decoration_config:
@@ -528,7 +528,7 @@ postsubmits: # runs on main
         preset-gc-project-env: "true"
         preset-kyma-cli-stable: "true"
         preset-sa-gardener-logs: "true"
-        preset-sa-test-gcr-push: "true"
+        preset-sa-gke-kyma-integration: "true"
       skip_report: false
       decorate: true
       decoration_config:
@@ -783,7 +783,7 @@ periodics: # runs on schedule
         preset-kyma-cli-stable: "true"
         preset-log-collector-slack-token: "true"
         preset-sa-gardener-logs: "true"
-        preset-sa-test-gcr-push: "true"
+        preset-sa-gke-kyma-integration: "true"
       cron: "0 4,7,10,13 * * *"
       skip_report: false
       decorate: true
@@ -855,7 +855,7 @@ periodics: # runs on schedule
         preset-kyma-cli-stable: "true"
         preset-log-collector-slack-token: "true"
         preset-sa-gardener-logs: "true"
-        preset-sa-test-gcr-push: "true"
+        preset-sa-gke-kyma-integration: "true"
       cron: "5 * * * *"
       skip_report: false
       decorate: true
@@ -935,7 +935,7 @@ periodics: # runs on schedule
         preset-kyma-cli-stable: "true"
         preset-log-collector-slack-token: "true"
         preset-sa-gardener-logs: "true"
-        preset-sa-test-gcr-push: "true"
+        preset-sa-gke-kyma-integration: "true"
       cron: "5 * * * *"
       skip_report: false
       decorate: true
@@ -1015,7 +1015,7 @@ periodics: # runs on schedule
         preset-kyma-cli-stable: "true"
         preset-log-collector-slack-token: "true"
         preset-sa-gardener-logs: "true"
-        preset-sa-test-gcr-push: "true"
+        preset-sa-gke-kyma-integration: "true"
       cron: "5 * * * *"
       skip_report: false
       decorate: true
@@ -1097,7 +1097,7 @@ periodics: # runs on schedule
         preset-kyma-cli-stable: "true"
         preset-log-collector-slack-token: "true"
         preset-sa-gardener-logs: "true"
-        preset-sa-test-gcr-push: "true"
+        preset-sa-gke-kyma-integration: "true"
       cron: "5 * * * *"
       skip_report: false
       decorate: true
@@ -1178,7 +1178,7 @@ periodics: # runs on schedule
         preset-kyma-cli-stable: "true"
         preset-log-collector-slack-token: "true"
         preset-sa-gardener-logs: "true"
-        preset-sa-test-gcr-push: "true"
+        preset-sa-gke-kyma-integration: "true"
       cron: "0 5,8,11,14 * * *"
       skip_report: false
       decorate: true
@@ -1585,7 +1585,7 @@ periodics: # runs on schedule
         preset-gc-project-env: "true"
         preset-kyma-cli-stable: "true"
         preset-sa-gardener-logs: "true"
-        preset-sa-test-gcr-push: "true"
+        preset-sa-gke-kyma-integration: "true"
       cron: "0 0 6-18/2 ? * 2-6"
       skip_report: false
       decorate: true
