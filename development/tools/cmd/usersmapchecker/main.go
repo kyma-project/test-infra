@@ -46,6 +46,7 @@ func main() {
 		}
 	}
 	wg.Add(len(authors))
+	contextLogger.LogInfo(fmt.Sprintf("found %d authors in job spec env variable", len(authors)))
 	for _, author := range authors {
 		go func(wg *sync.WaitGroup, author string, exitCode *atomic.Value) {
 			defer wg.Done()
