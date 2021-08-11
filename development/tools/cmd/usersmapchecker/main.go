@@ -61,6 +61,10 @@ func main() {
 	wg.Wait()
 	if exitCode == nil {
 		contextLogger.LogInfo("all authors present in users map")
+		err := contextLogger.Flush()
+		if err != nil {
+			fmt.Println(err.Error())
+		}
 		exitCode = 0
 	}
 }
