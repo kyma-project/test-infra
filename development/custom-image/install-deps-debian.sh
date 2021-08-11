@@ -19,7 +19,6 @@ CRICTL_VERSION=v1.12.0
 HELM_VERSION="v3.4.2"
 DOCKER_VERSION=5:20.10.5~3-0~debian-buster
 NODEJS_VERSION="14.x"
-K3D_VERSION="4.4.7"
 
 # install docker
 sudo apt-get update
@@ -72,9 +71,6 @@ curl -sL https://deb.nodesource.com/setup_${NODEJS_VERSION} | sudo bash -
 sudo apt-get -y install \
      jq \
      nodejs
-
-# install k3d
-wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v${K3D_VERSION} bash
 
 # install monitoring agent
 # https://cloud.google.com/monitoring/agent/installation
