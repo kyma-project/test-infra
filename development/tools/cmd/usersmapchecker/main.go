@@ -15,6 +15,7 @@ import (
 
 func main() {
 	var exitCode interface{}
+	exitCode = 0
 	defer func() { os.Exit(exitCode.(int)) }()
 	ctx := context.Background()
 	var wg sync.WaitGroup
