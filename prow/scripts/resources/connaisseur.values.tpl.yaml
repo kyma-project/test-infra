@@ -119,7 +119,7 @@ detectionMode: false
 # warning: enabling namespaced validation, allows roles with edit permission on a namespace to disable
 # validation for that namespace
 namespacedValidation:
-  enabled: false
+  enabled: true
   mode: ignore  # 'ignore' or 'validate'
 
 # debug: true
@@ -162,3 +162,7 @@ namespacedValidation:
 #      - template: keybase  #REQUIRED!
 #        receiver_url: https://bots.keybase.io/webhookbot/<Your-Keybase-Hook-Token>
 #        fail_if_alert_sending_fails: True
+
+psp:
+  enabled: true
+  name: "gce.unprivileged-addon"
