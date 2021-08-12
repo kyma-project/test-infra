@@ -393,6 +393,20 @@ presets:
       - name: sa-gke-kyma-integration
         mountPath: /etc/credentials/sa-gke-kyma-integration
         readOnly: true
+  # Gardener needs the credentials, we can't use preset-sa-gke-kyma-integration, as KYMA_PROJECT_DIR is colliding with another preset
+  - labels:
+      preset-sa-test-gcr-push: "true" # Service account with write access to test gcr.
+    env:
+      - name: GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-test-gcr-push/service-account.json
+    volumes:
+      - name: sa-test-gcr-push
+        secret:
+          secretName: sa-gke-kyma-integration
+    volumeMounts:
+      - name: sa-test-gcr-push
+        mountPath: /etc/credentials/sa-test-gcr-push
+        readOnly: true
   - labels:
       preset-sa-gcr-push: "true" # Service account with "Storage Admin" role
     env:
