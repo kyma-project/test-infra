@@ -1,3 +1,2 @@
 pjNames:
-  - pjName: pre-main-test-infra-image-syncer-dry-run
-  - pjName: pre-main-kyma-gke-upgrade
+  - pjName: pre-main-kyma-gardener-azure-integration
