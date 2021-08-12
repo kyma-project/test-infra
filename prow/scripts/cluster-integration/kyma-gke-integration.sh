@@ -179,8 +179,6 @@ if ! [ -z "${COSIGNED_ENABLED}" ]; then
   kubectl label namespaces kube-node-lease securesystemsengineering.connaisseur/webhook=ignore
 fi
 
-exit
-
 utils::generate_self_signed_cert \
     -d "$DNS_DOMAIN" \
     -s "$COMMON_NAME" \
