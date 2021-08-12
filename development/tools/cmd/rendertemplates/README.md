@@ -78,7 +78,7 @@ jobConfigs:
             - "presubmit"
 ```
 
-Component job defined in **jobConfig** can be used to generate multiple job definitions for a single component. It is defined by having a `path` value, and by not having a `name` value. This type of config holds two additional lists of configSets named **preConfigs** and **postConfigs**, which hold a list of global ConfigSets used for presubmit and postsubmit jobs.
+Component job defined in **jobConfig** can be used to generate multiple job definitions for a single component. It is defined by having a `path` value, and by not having a `name` value. This type of config holds two additional lists of configSets named **preConfigs** and **postConfigs**, which hold lists of global and local ConfigSets used for presubmit and postsubmit jobs.
 
 ```yaml
 jobConfigs:
@@ -98,10 +98,12 @@ jobConfigs:
             - "jobConfig_generic_component_kyma"
             - "extra_refs_test-infra"
           preConfigs:
-            - "jobConfig_presubmit"
+            global:
+              - "jobConfig_presubmit"
           postConfigs:
-            - "jobConfig_postsubmit"
-            - "disable_testgrid"
+            global:
+              - "jobConfig_postsubmit"
+              - "disable_testgrid"
 ```
 
 The Render Templates builds the **Values** variable by merging ConfigSets from **globalSets** first. If the job inherits the `default` ConfigSet from **globalSets**, it is merged first and all other ConfigSets from **globalSets** are merged afterwards. Then, the Render Templates merges ConfigSets from **localSets**. Again, if the job inherits the `default` ConfigSet from **localSets**, it's merged first and then all the other ConfigSets from **localSets** are merged. ConfigSets other than default are merged in any order during the **globalSets** and **localSets** phases. ConfigSets from **jobConfig** are merged as the last ones. Existing keys in the **Values** variable are overwritten by values from the merged ConfigSets.

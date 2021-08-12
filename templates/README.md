@@ -56,10 +56,12 @@ templates:
                     - "jobConfig_generic_component_kyma"
                     - "extra_refs_test-infra"
                   preConfigs:
-                    - "jobConfig_presubmit"
+                    global:
+                      - "jobConfig_presubmit"
                   postConfigs:
-                    - "jobConfig_postsubmit"
-                    - "disable_testgrid"
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
         - to: ../prow/jobs/kyma/tests/application-gateway-tests/application-gateway-tests-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
@@ -78,10 +80,12 @@ templates:
                     - "jobConfig_generic_component_kyma"
                     - "extra_refs_test-infra"
                   preConfigs:
-                    - "jobConfig_presubmit"
+                    global:
+                      - "jobConfig_presubmit"
                   postConfigs:
-                    - "jobConfig_postsubmit"
-                    - "disable_testgrid"
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
 ```
 
 ### Component templates
