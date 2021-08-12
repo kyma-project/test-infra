@@ -1,2 +1,3 @@
 pjNames:
-  - pjName: pre-main-control-plane-gke-integration
+  - pjName: pre-main-test-infra-image-syncer-dry-run
+  - pjName: pre-main-kyma-gke-upgrade
