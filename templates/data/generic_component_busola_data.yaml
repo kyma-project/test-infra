@@ -50,7 +50,7 @@ templates:
           - repoName: "github.com/kyma-project/busola"
             jobs:
               - jobConfig:
-                  path: web-and-backend
+                  path: local
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/busola"
                     - "release-local"
