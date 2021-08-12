@@ -17,14 +17,18 @@ const (
 	ProwGithubProxyURL = "http://ghproxy"
 )
 
+// SapToolsClient wraps kyma implementation github Client and provides additional methods.
 type SapToolsClient struct {
 	*Client
 }
 
+// Client wraps google github Client and provides additional methods.
 type Client struct {
 	*github.Client
 }
 
+// newOauthHttpClient creates HTTP client with oauth authentication.
+// It authenticates with Bearer token.
 func newOauthHttpClient(ctx context.Context, accessToken string) *http.Client {
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{
@@ -36,7 +40,8 @@ func newOauthHttpClient(ctx context.Context, accessToken string) *http.Client {
 	return oauth2.NewClient(ctx, ts)
 }
 
-// TODO: create client with prow ghproxy as endpoint.
+// TODO: create client with support for github cache or ghproxy.
+// NeClient creates kyma implementation of github client with oauth authentication.
 func NewClient(ctx context.Context, accessToken string) (*Client, error) {
 	tc := newOauthHttpClient(ctx, accessToken)
 	c := github.NewClient(tc)
@@ -44,6 +49,8 @@ func NewClient(ctx context.Context, accessToken string) (*Client, error) {
 	return &Client{Client: c}, nil
 }
 
+// NewSapToolsClient creates kyma implementation github Client with SapToolsGithubURL as an endpoint.
+// Client uses oauth authentication with bearer token.
 func NewSapToolsClient(ctx context.Context, accessToken string) (*SapToolsClient, error) {
 	tc := newOauthHttpClient(ctx, accessToken)
 	c, err := github.NewEnterpriseClient(SapToolsGithubURL, SapToolsGithubURL, tc)
@@ -54,25 +61,33 @@ func NewSapToolsClient(ctx context.Context, accessToken string) (*SapToolsClient
 	return &SapToolsClient{Client: &Client{Client: c}}, nil
 }
 
-//func (c *Client) GetPrAuthorLogin(ctx context.Context, prNumber int, repoName, repoOwner string) (string, error) {
-//	pr, resp, err := c.PullRequests.Get(ctx, repoOwner, repoName, prNumber)
-//	return pr.GetUser().GetLogin(), nil
-//}
+// IsStatusOK will check if http response code is 200.
+// On not OK status it will read response body to expose details about error.
+func (c *Client) IsStatusOK(resp *github.Response) (bool, error) {
+	if resp.StatusCode != http.StatusOK {
+		bodyBytes, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return false, fmt.Errorf("got error when reading response body for non 200 HTTP reponse code, error: %w", err)
+		}
+		bodyString := string(bodyBytes)
+		return false, fmt.Errorf("got non 200 response code in HTTP response, body: %s", bodyString)
+	}
+	return true, nil
+}
 
+// GetUserMap will get users-map.yaml file from github.tools.sap instance.
 func (c *SapToolsClient) GetUsersMap(ctx context.Context) ([]types.User, error) {
 	var usersMap []types.User
+	// Get file from github.
 	usersMapFile, _, resp, err := c.Client.Repositories.GetContents(ctx, "kyma", "test-infra", "/users-map.yaml", &github.RepositoryContentGetOptions{Ref: "main"})
 	if err != nil {
 		return nil, fmt.Errorf("got error when getting users-map.yaml file from github.tools.sap, error: %w", err)
 	}
-	if resp.StatusCode != http.StatusOK {
-		bodyBytes, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return nil, fmt.Errorf("got error when reading response body for non 200 HTTP reponse code, error: %w", err)
-		}
-		bodyString := string(bodyBytes)
-		return nil, fmt.Errorf("got non 200 response code when getting users-map.taml file from github.tools.sap, body: %w", bodyString)
+	// Check HTTP response code
+	if ok, err := c.IsStatusOK(resp); !ok {
+		return nil, err
 	}
+	// Read file content.
 	usersMapString, err := usersMapFile.GetContent()
 	if err != nil {
 		return nil, fmt.Errorf("got error when getting content of users-map.yaml file, error: %w", err)
@@ -82,4 +97,20 @@ func (c *SapToolsClient) GetUsersMap(ctx context.Context) ([]types.User, error) 
 		return nil, fmt.Errorf("got error when unmarshaling usres-map.yaml file content, error: %w", err)
 	}
 	return usersMap, nil
+}
+
+// GetAuthorLoginForSHA will provide commit author github Login for given SHA.
+func (c *Client) GetAuthorLoginForSHA(ctx context.Context, sha, owner, repo string) (*string, error) {
+	// Get commit for SHA.
+	commit, resp, err := c.Repositories.GetCommit(ctx, owner, repo, sha)
+	if err != nil {
+		return nil, fmt.Errorf("got error when getting users-map.yaml file from github.tools.sap, error: %w", err)
+	}
+	// Check HTTP response code.
+	if ok, err := c.IsStatusOK(resp); !ok {
+		return nil, err
+	}
+	// Read commit author Login.
+	l := commit.GetAuthor().GetLogin()
+	return &l, nil
 }
