@@ -45,12 +45,12 @@ templates:
                   postConfigs:
                     - "jobConfig_postsubmit"
                     - "disable_testgrid"
-      - to: ../prow/jobs/busola/busola-web-and-backend.yaml
+      - to: ../prow/jobs/busola/busola.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/busola"
             jobs:
               - jobConfig:
-                  path: web-and-backend
+                  path: local
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/busola"
                     - "release-local"

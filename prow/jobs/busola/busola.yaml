@@ -3,13 +3,13 @@
 
 postsubmits: # runs on main
   kyma-project/busola:
-    - name: post-busola-web-and-backend
+    - name: post-busola-local
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-busola-web-and-backend"
+        prow.k8s.io/pubsub.runID: "post-busola-local"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -50,13 +50,13 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-rel124-busola-web-and-backend
+    - name: post-rel124-busola-local
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel124-busola-web-and-backend"
+        prow.k8s.io/pubsub.runID: "post-rel124-busola-local"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
