@@ -110,7 +110,7 @@ policy:
 # in detection mode, deployment will not be denied, but only prompted
 # and logged. this allows testing the functionality without
 # interrupting operation.
-detectionMode: false
+detectionMode: true
 
 # namespaced validation allows to restrict the namespaces that will be subject to Connaisseur verification.
 # when enabled, based on namespaced validation mode ('ignore' or 'validate')
