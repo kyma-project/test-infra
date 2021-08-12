@@ -34,8 +34,8 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				"installation/test/test/README.MD",
 			},
 		},
-		"Should contain the kyma-integration K3s job": {
-			givenJobName: "pre-main-kyma-integration-k3s",
+		"Should contain the kyma-integration k3d job": {
+			givenJobName: "pre-main-kyma-integration-k3d",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration",
@@ -51,8 +51,8 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				"installation/test/test/README.MD",
 			},
 		},
-		"Should contain the kyma-integration K3s with central Application Connectivity job": {
-			givenJobName: "pre-main-kyma-integration-k3s-central-app-connectivity",
+		"Should contain the kyma-integration k3d with central Application Connectivity job": {
+			givenJobName: "pre-main-kyma-integration-k3d-central-app-connectivity",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-connectivity-enabled",
@@ -68,8 +68,8 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				"installation/test/test/README.MD",
 			},
 		},
-		"Should contain the kyma-integration K3s with central Application Connectivity and Compass job": {
-			givenJobName: "pre-main-kyma-integration-k3s-central-app-connectivity-compass",
+		"Should contain the kyma-integration k3d with central Application Connectivity and Compass job": {
+			givenJobName: "pre-main-kyma-integration-k3d-central-app-connectivity-compass",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-connectivity-enabled", "preset-kyma-integration-compass-dev", "preset-kyma-integration-compass-enabled",
@@ -177,22 +177,22 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",
 			},
 		},
-		"Should contain the kyma-integration-k3s job": {
-			givenJobName: "post-main-kyma-integration-k3s",
+		"Should contain the kyma-integration-k3d job": {
+			givenJobName: "post-main-kyma-integration-k3d",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",
 			},
 		},
-		"Should contain the kyma-integration K3s with central Application Connectivity job": {
-			givenJobName: "post-main-kyma-integration-k3s-central-app-connectivity",
+		"Should contain the kyma-integration k3d with central Application Connectivity job": {
+			givenJobName: "post-main-kyma-integration-k3d-central-app-connectivity",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-connectivity-enabled",
 			},
 		},
-		"Should contain the kyma-integration K3s with central Application Connectivity and Compass job": {
-			givenJobName: "post-main-kyma-integration-k3s-central-app-connectivity-compass",
+		"Should contain the kyma-integration k3d with central Application Connectivity and Compass job": {
+			givenJobName: "post-main-kyma-integration-k3d-central-app-connectivity-compass",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-connectivity-enabled", "preset-kyma-integration-compass-dev", "preset-kyma-integration-compass-enabled",
