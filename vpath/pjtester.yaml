@@ -1,0 +1,4 @@
+pjNames:
+  - pjName: "post-main-kyma-integration-k3d-central-app-connectivity-compass"
+  - pjName: "pre-main-kyma-integration-k3d-compass-dev"
+  - pjName: "kyma-integration-k3d"
