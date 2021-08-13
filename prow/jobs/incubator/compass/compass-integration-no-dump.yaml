@@ -50,7 +50,7 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-
+  
 postsubmits: # runs on main
   kyma-incubator/compass:
     - name: post-main-compass-integration-no-dump
@@ -101,3 +101,4 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+  

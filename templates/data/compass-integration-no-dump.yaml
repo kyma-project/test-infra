@@ -40,7 +40,7 @@ templates:
                     preset-build-main: "true"
                   annotations:
                     testgrid-dashboards: kyma-incubator_compass
-                    description: Compass integration job.
+                    description: Compass integration job without db dump.
                     testgrid-days-of-results: "60"
                 inheritedConfigs:
                   global:
