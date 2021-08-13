@@ -127,6 +127,12 @@ log::info "Copying Kyma to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
 
+if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
+  log::info "Copying components file for compass tests"
+  #shellcheck disable=SC2088
+  utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-compass-components.yaml" "~/kyma-integration-k3d-compass-components.yaml"
+fi
+
 log::info "Triggering the installation"
 gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d.sh"
 
