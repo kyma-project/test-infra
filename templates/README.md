@@ -63,29 +63,40 @@ templates:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
         - to: ../prow/jobs/kyma/tests/application-gateway-tests/application-gateway-tests-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: tests/application-gateway-tests
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/tests/application-gateway-tests"
-                  run_if_changed: "^tests/application-gateway-tests/|^common/makefiles/"
-                  release_since: "1.7"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
+          localSets:
+            jobConfig_pre:
+              labels:
+                preset-build-pr: "true"
+            jobConfig_post:
+              labels:
+                preset-build-main: "true"
+          jobConfigs:
+            - repoName: "github.com/kyma-project/kyma"
+              jobs:
+                - jobConfig:
+                    path: tests/application-gateway-tests
+                    args:
+                      - "/home/prow/go/src/github.com/kyma-project/kyma/tests/application-gateway-tests"
+                    run_if_changed: "^tests/application-gateway-tests/|^common/makefiles/"
+                    release_since: "1.7"
+                  inheritedConfigs:
                     global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
+                      - "jobConfig_default"
+                      - "image_buildpack-golang"
+                      - "jobConfig_generic_component"
+                      - "jobConfig_generic_component_kyma"
+                      - "extra_refs_test-infra"
+                    preConfigs:
+                      global:
+                        - "jobConfig_presubmit"
+                      local:
+                        - "jobConfig_pre"
+                    postConfigs:
+                      global:
+                        - "jobConfig_postsubmit"
+                        - "disable_testgrid"
+                      local:
+                        - "jobConfig_post"
 ```
 
 ### Component templates
