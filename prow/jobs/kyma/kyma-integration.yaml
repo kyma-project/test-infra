@@ -450,7 +450,6 @@ presubmits: # runs on PRs
         preset-kyma-artifacts-bucket: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-gke-kyma-integration: "true"
-        preset-sa-test-gcr-push: "true"
       run_if_changed: '^((resources\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
@@ -512,7 +511,6 @@ presubmits: # runs on PRs
         preset-kyma-artifacts-bucket: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-gke-kyma-integration: "true"
-        preset-sa-test-gcr-push: "true"
       run_if_changed: '^((resources\S+|installation\S+|tests/end-to-end/upgrade/chart/upgrade/\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
@@ -868,7 +866,6 @@ postsubmits: # runs on main
         preset-kyma-guard-bot-github-token: "true"
         preset-log-collector-slack-token: "true"
         preset-sa-gke-kyma-integration: "true"
-        preset-sa-test-gcr-push: "true"
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -933,7 +930,6 @@ postsubmits: # runs on main
         preset-kyma-guard-bot-github-token: "true"
         preset-log-collector-slack-token: "true"
         preset-sa-gke-kyma-integration: "true"
-        preset-sa-test-gcr-push: "true"
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -999,7 +995,6 @@ postsubmits: # runs on main
         preset-kyma-guard-bot-github-token: "true"
         preset-log-collector-slack-token: "true"
         preset-sa-gke-kyma-integration: "true"
-        preset-sa-test-gcr-push: "true"
       skip_report: true
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -1517,7 +1512,6 @@ periodics: # runs on schedule
         preset-kyma-keyring: "true"
         preset-nightly-github-integration: "true"
         preset-sa-gke-kyma-integration: "true"
-        preset-sa-test-gcr-push: "true"
         preset-slack-alerts: "true"
         preset-stability-checker-slack-notifications: "true"
       cron: "0 3 * * 1-5"
@@ -1608,7 +1602,6 @@ periodics: # runs on schedule
         preset-kyma-guard-bot-github-token: "true"
         preset-kyma-keyring: "true"
         preset-sa-gke-kyma-integration: "true"
-        preset-sa-test-gcr-push: "true"
         preset-slack-alerts: "true"
         preset-stability-checker-slack-notifications: "true"
         preset-weekly-github-integration: "true"
@@ -1701,7 +1694,6 @@ periodics: # runs on schedule
         preset-kyma-keyring: "true"
         preset-nightly-aks-github-integration: "true"
         preset-sa-gke-kyma-integration: "true"
-        preset-sa-test-gcr-push: "true"
         preset-slack-alerts: "true"
         preset-stability-checker-slack-notifications: "true"
       cron: "0 3 * * 1-5"
