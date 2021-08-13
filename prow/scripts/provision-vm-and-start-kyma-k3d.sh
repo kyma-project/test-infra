@@ -129,6 +129,7 @@ utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home
 
 if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
   log::info "Copying components file for compass tests"
+  #shellcheck disable=SC2088
   utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-compass-components.yaml" "~/kyma-integration-k3d-compass-components.yaml"
 fi
 
