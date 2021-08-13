@@ -82,10 +82,10 @@ Component job defined in **jobConfig** can be used to generate multiple job defi
 
 ```yaml
 localSets:
-  jobConfig_presubmit:
+  jobConfig_pre:
     labels:
       preset-build-pr: "true"
-  jobConfig_postsubmit:
+  jobConfig_post:
     labels:
       preset-build-main: "true"
 jobConfigs:
@@ -108,13 +108,13 @@ jobConfigs:
             global:
               - "jobConfig_presubmit"
             local:
-              - "jobConfig_presubmit"
+              - "jobConfig_pre"
           postConfigs:
             global:
               - "jobConfig_postsubmit"
               - "disable_testgrid"
             local:
-              - "jobConfig_postsubmit"
+              - "jobConfig_post"
 ```
 
 The Render Templates builds the **Values** variable by merging ConfigSets from **globalSets** first. If the job inherits the `default` ConfigSet from **globalSets**, it is merged first and all other ConfigSets from **globalSets** are merged afterwards. Then, the Render Templates merges ConfigSets from **localSets**. Again, if the job inherits the `default` ConfigSet from **localSets**, it's merged first and then all the other ConfigSets from **localSets** are merged. ConfigSets other than default are merged in any order during the **globalSets** and **localSets** phases. ConfigSets from **jobConfig** are merged as the last ones. Existing keys in the **Values** variable are overwritten by values from the merged ConfigSets.
