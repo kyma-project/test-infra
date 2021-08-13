@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "push-artefacts"
+  - pjName: "pre-main-compass-development-artifacts"
     pjPath: "test-infra/prow/jobs/incubator/compass/compass-development-artifacts.yaml"
 prConfigs:
   kyma-incubator:
