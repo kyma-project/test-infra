@@ -296,13 +296,13 @@ templates:
               pipeline.installer: kyma install
               pipeline.test: octopus
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-minikube.sh"
-          vm_job_template_k3s:
+          vm_job_template_k3d:
             annotations:
-              pipeline.platform: k3s
+              pipeline.platform: k3d
               pipeline.installer: kyma deploy
               pipeline.test: fast-integration
-              pipeline.clusterprovisioning: k3s
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3s.sh"
+              pipeline.clusterprovisioning: k3d
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
           vm_job_template_serverless_k3s:
             annotations:
               pipeline.platform: k3s
@@ -380,13 +380,13 @@ templates:
                     - "vm_job_template"
                     - "vm_job_labels_template"
               - jobConfig:
-                  name: "pre-main-kyma-integration-k3s"
+                  name: "pre-main-kyma-integration-k3d"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
                   annotations:
-                    pipeline.platform: k3s
+                    pipeline.platform: k3d
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -397,15 +397,15 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "request_small"
-                    - "vm_job_template_k3s"
+                    - "vm_job_template_k3d"
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "pre-main-kyma-integration-k3s-compass-dev"
+                  name: "pre-main-kyma-integration-k3d-compass-dev"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   annotations:
-                    pipeline.platform: k3s
+                    pipeline.platform: k3d
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-compass-dev: "true"
@@ -420,11 +420,11 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "request_small"
-                    - "vm_job_template_k3s"
+                    - "vm_job_template_k3d"
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "pre-main-kyma-integration-k3s-central-app-connectivity"
+                  name: "pre-main-kyma-integration-k3d-central-app-connectivity"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -440,11 +440,11 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "request_small"
-                    - "vm_job_template_k3s"
+                    - "vm_job_template_k3d"
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "pre-main-kyma-integration-k3s-central-app-connectivity-compass"
+                  name: "pre-main-kyma-integration-k3d-central-app-connectivity-compass"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -462,7 +462,7 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "request_small"
-                    - "vm_job_template_k3s"
+                    - "vm_job_template_k3d"
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
@@ -628,10 +628,10 @@ templates:
                     - "vm_job_template"
                     - "vm_job_labels_template"
               - jobConfig:
-                  name: "post-main-kyma-integration-k3s"
+                  name: "post-main-kyma-integration-k3d"
                   annotations:
                     testgrid-dashboards: kyma_integration
-                    description: Kyma integration job on k3s.
+                    description: Kyma integration job on k3d.
                     testgrid-days-of-results: "60"
                   labels:
                     preset-build-main: "true"
@@ -645,14 +645,14 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "request_small"
-                    - "vm_job_template_k3s"
+                    - "vm_job_template_k3d"
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "post-main-kyma-integration-k3s-compass-dev"
+                  name: "post-main-kyma-integration-k3d-compass-dev"
                   annotations:
                     testgrid-dashboards: kyma_integration
-                    description: Kyma integration job on k3s with compass dev.
+                    description: Kyma integration job on k3d with compass dev.
                     testgrid-days-of-results: "60"
                   labels:
                     preset-build-main: "true"
@@ -668,14 +668,14 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "request_small"
-                    - "vm_job_template_k3s"
+                    - "vm_job_template_k3d"
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "post-main-kyma-integration-k3s-central-app-connectivity"
+                  name: "post-main-kyma-integration-k3d-central-app-connectivity"
                   annotations:
                     testgrid-dashboards: kyma_integration
-                    description: Kyma integration job on k3s with central Application Gateway.
+                    description: Kyma integration job on k3d with central Application Gateway.
                     testgrid-days-of-results: "60"
                   labels:
                     preset-build-main: "true"
@@ -690,14 +690,14 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "request_small"
-                    - "vm_job_template_k3s"
+                    - "vm_job_template_k3d"
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "post-main-kyma-integration-k3s-central-app-connectivity-compass"
+                  name: "post-main-kyma-integration-k3d-central-app-connectivity-compass"
                   annotations:
                     testgrid-dashboards: kyma_integration
-                    description: Kyma integration job on k3s with central Application Gateway and Compass dev.
+                    description: Kyma integration job on k3d with central Application Gateway and Compass dev.
                     testgrid-days-of-results: "60"
                   labels:
                     preset-build-main: "true"
@@ -714,7 +714,7 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "request_small"
-                    - "vm_job_template_k3s"
+                    - "vm_job_template_k3d"
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
@@ -939,10 +939,10 @@ templates:
                     - "jobConfig_periodic"
                     - "gke_job_labels_template"
               - jobConfig:
-                  name: "kyma-integration-k3s"
+                  name: "kyma-integration-k3d"
                   annotations:
                     testgrid-dashboards: kyma_integration
-                    description: Kyma integration periodic job on k3s.
+                    description: Kyma integration periodic job on k3d.
                   cron: "5 * * * *"
                   labels:
                     preset-build-main: "true"
@@ -958,14 +958,14 @@ templates:
                     - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
-                    - "vm_job_template_k3s"
+                    - "vm_job_template_k3d"
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "kyma-integration-k3s-compass-dev"
+                  name: "kyma-integration-k3d-compass-dev"
                   annotations:
                     testgrid-dashboards: kyma_integration
-                    description: Kyma integration periodic job on k3s with compass dev.
+                    description: Kyma integration periodic job on k3d with compass dev.
                   cron: "5 * * * *"
                   labels:
                     preset-build-main: "true"
@@ -983,7 +983,7 @@ templates:
                     - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
-                    - "vm_job_template_k3s"
+                    - "vm_job_template_k3d"
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:

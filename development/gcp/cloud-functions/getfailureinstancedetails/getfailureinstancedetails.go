@@ -49,8 +49,7 @@ func init() {
 // Created document represent failing prowjob and holds data about failed runs of prowjob.
 func addFailingTest(ctx context.Context, client *firestore.Client, message kymapubsub.FailingTestMessage, jobID *string) (*firestore.DocumentRef, error) {
 	// TODO: create struct to represent failing test document
-	// Add document to firestore collection
-	doc, _, err := client.Collection("testFailures").Add(ctx, map[string]interface{}{
+	failingTest := map[string]interface{}{
 		// jobName is a failed prowjob name
 		"jobName": *message.JobName,
 		// jobType is a failed prowjob type
@@ -58,7 +57,7 @@ func addFailingTest(ctx context.Context, client *firestore.Client, message kymap
 		// open indicate if this failure instance is currently active or it's already closed
 		"open": true,
 		// githubIssueNumber holds Github issue number created for this failure instance
-		"githubIssueNumber": *message.GithubIssueNumber,
+		"githubIssueNumber": nil,
 		// baseSha holds sha for which postsubmit prowjob was run.
 		"baseSha": message.Refs[0]["base_sha"],
 		// failures holds a map with all reported failures of prowjob for which this failure instance was created and active.
@@ -68,7 +67,14 @@ func addFailingTest(ctx context.Context, client *firestore.Client, message kymap
 				"url": *message.URL, "gcsPath": *message.GcsPath, "refs": message.Refs,
 			},
 		},
-	})
+	}
+	if message.GithubIssueNumber != nil {
+		// githubIssueNumber holds Github issue number created for this failure instance
+		failingTest["githubIssueNumber"] = *message.GithubIssueNumber
+	}
+
+	// Add document to firestore collection
+	doc, _, err := client.Collection("testFailures").Add(ctx, failingTest)
 	if err != nil {
 		return nil, fmt.Errorf("colud not add failing test instance to firestore collection, error: %w", err)
 	}
@@ -174,7 +180,8 @@ func GetFailureInstanceDetails(ctx context.Context, m kymapubsub.MessagePayload)
 			githubIssueNumber, err := failureInstance.DataAt("githubIssueNumber")
 			if err != nil {
 				logger.LogInfo(fmt.Sprintf("could not get github issue for failing test, error: %s", err.Error()))
-			} else {
+			}
+			if githubIssueNumber != nil {
 				// Add github issue number to pubsub message data payload.
 				failingTestMessage.GithubIssueNumber = github.Int64(githubIssueNumber.(int64))
 			}
