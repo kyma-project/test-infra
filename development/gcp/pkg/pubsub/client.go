@@ -37,7 +37,7 @@ func GetJobId(jobUrl *string) (*string, error) {
 	return github.String(jobID), nil
 }
 
-// TODO: remove calls to this function. Calls should be replaced with calls to client method PublisMessage.
+// TODO: remove calls to this function. Calls should be replaced with calls to client method PublishMessage.
 func PublishPubSubMessage(ctx context.Context, client *pubsub.Client, message interface{}, topicName string) (*string, error) {
 	bmessage, err := json.Marshal(message)
 	if err != nil {
