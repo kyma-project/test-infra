@@ -3,7 +3,7 @@
 # This script is designed to provision a new vm and start kyma with control-plane. It takes an optional positional parameter using --image flag
 # Use this flag to specify the custom image for provisining vms. If no flag is provided, the latest custom image is used.
 
-set -o errexit
+#set -o errexit
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
@@ -121,7 +121,7 @@ gcloud compute ssh --quiet --zone="${ZONE}" "control-plane-integration-test-${RA
 log::info "Triggering the installation"
 
 gcloud compute ssh --quiet --zone="${ZONE}" "control-plane-integration-test-${RANDOM_ID}" -- "yes | ./control-plane/installation/scripts/prow/deploy-and-test.sh"
-
+sleep 18h
 log::info "Copying test artifacts from VM"
 utils::receive_from_vm "${ZONE}" "control-plane-integration-test-${RANDOM_ID}" "/var/log/prow_artifacts" "${ARTIFACTS}"
 

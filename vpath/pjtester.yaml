@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "pre-main-control-plane-integration"
+prConfigs:
+  kyma-project:
+    control-plane:
+      prNumber: 877
