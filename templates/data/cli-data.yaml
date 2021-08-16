@@ -125,7 +125,7 @@ templates:
                     - "jobConfig_submit"
                     - "jobConfig_presubmit"
               - jobConfig:
-                  path: cli/integration-k3s
+                  path: integration-k3s
                   release_since: "1.7"
                 inheritedConfigs:
                   global:
@@ -144,6 +144,7 @@ templates:
                   postConfigs:
                     global:
                       - "jobConfig_postsubmit"
+                      - "disable_testgrid"
                     local:
                       - "jobConfig_postsubmit"
               - jobConfig:
@@ -157,20 +158,6 @@ templates:
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
-                    - "jobConfig_submit"
-                    - "jobConfig_postsubmit"
-              - jobConfig:
-                  name: post-kyma-cli-integration-k3s
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "extra_refs_test-infra"
-                    - "image_buildpack-golang-kubebuilder2"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "k3s_template"
                     - "jobConfig_submit"
                     - "jobConfig_postsubmit"
               - jobConfig:
