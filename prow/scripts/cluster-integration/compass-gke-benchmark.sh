@@ -236,7 +236,7 @@ function applyCompassOverrides() {
     --data "global.systemFetcher.systemsAPIEndpoint=http://compass-external-services-mock:8080/systemfetcher/systems" \
     --data "global.systemFetcher.systemsAPIFilterCriteria=no" \
     --data "global.systemFetcher.systemsAPIFilterTenantCriteriaPattern=tenant=%s" \
-    --data 'global.systemFetcher.systemToTemplateMappings=[{"Name": "temp1", "SourceKey": ["prop"], "SourceValue": ["val1"] }]' \
+    --data 'global.systemFetcher.systemToTemplateMappings=[{"Name": "temp1", "SourceKey": ["prop"], "SourceValue": ["val1"] },{"Name": "temp2", "SourceKey": ["prop"], "SourceValue": ["val2"] }]' \
     --data "global.systemFetcher.oauth.client=admin" \
     --data "global.systemFetcher.oauth.secret=admin" \
     --data "global.systemFetcher.oauth.tokenURLPattern=http://compass-external-services-mock:8080/systemfetcher/oauth/token" \
