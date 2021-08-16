@@ -7,6 +7,12 @@ readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly KUBECONFIG=${KUBECONFIG:-"${HOME}/.kube/config"}
 readonly PROW_WORKLOAD_CLUSTER_DIR="$( cd "${CURRENT_DIR}/workload-cluster" && pwd )"
 
+
+if [ -z "$CLUSTER_NAME" ]; then
+      echo "\$CLUSTER_NAME is empty"
+      exit 1
+fi
+
 if [ -z "$BUCKET_NAME" ]; then
       echo "\$BUCKET_NAME is empty"
       exit 1
@@ -60,5 +66,18 @@ kubectl -n kube-system patch cm kube-dns --type merge --patch \
 
 
 # Create secrets
-go run "${CURRENT_DIR}/../development/tools/cmd/secretspopulator/main.go" --project="${PROJECT}" --location "${LOCATION}" --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}" --kubeconfig "${KUBECONFIG}" --secrets-def-file="${PROW_WORKLOAD_CLUSTER_DIR}/required-secrets.yaml"
-
+# namespace
+kubectl create namespace external-secrets
+# Service account
+# TODO use correct file!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  This won't work properly as it is right now
+kubectl create secret generic sa-secret-manager-"$CLUSTER_NAME" --namespace "external-secrets" --from-file=service-account.json=./service-account.json
+# install helm chart
+helm repo add external-secrets https://external-secrets.github.io/kubernetes-external-secrets/
+helm install 8.2.1 external-secrets/kubernetes-external-secrets
+helm install -f "${CLUSTER_DIR}/resources/external-secrets/values_${CLUSTER_NAME}.yaml" -n external-secrets kubernetes-external-secrets external-secrets/kubernetes-external-secrets
+# kubectl apply
+kubectl apply -f "${CLUSTER_DIR}/resources/external-secrets/external_secrets_workloads.yaml"
+# apply additional external secrets if they exist
+if [[ -f "${CLUSTER_DIR}/resources/external-secrets/external_secrets_${CLUSTER_NAME}.yaml" ]]; then
+      kubectl apply -f "${CLUSTER_DIR}/resources/external-secrets/external_secrets_${CLUSTER_NAME}.yaml"
+fi
