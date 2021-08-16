@@ -15,7 +15,7 @@ source "$KYMA_PROJECT_DIR/test-infra/prow/scripts/lib/kyma.sh"
 #shellcheck source=prow/scripts/lib/utils.sh
 source "$KYMA_PROJECT_DIR/test-infra/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gardener/gardener.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
+source "$KYMA_PROJECT_DIR/test-infra/prow/scripts/lib/gardener/gardener.sh"
 
 log::info "Install Kyma CLI"
 kyma::install_cli
