@@ -100,7 +100,7 @@ func main() {
 					return
 				}
 			}
-			contextLogger.LogError(fmt.Sprintf("user %s is not present in users map, please add user to https://github.tools.sap/kyma/test-infra/blob/main/users-map.yaml", author))
+			contextLogger.LogError(fmt.Sprintf("user %s is not present in users map, please add user to users-map.yaml file.", author))
 			exitCode.Store(1)
 		}(&wg, author, &exitCode)
 	}
