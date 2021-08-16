@@ -231,7 +231,7 @@ func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 				}
 
 				if len(job.InheritedConfigs.PreConfigs.Global) > 0 || len(job.InheritedConfigs.PreConfigs.Local) > 0 {
-					jobConfigPost = deepCopyConfigSet(jobConfig)
+					jobConfigPre = deepCopyConfigSet(jobConfig)
 				}
 				if len(job.InheritedConfigs.PostConfigs.Global) > 0 || len(job.InheritedConfigs.PostConfigs.Local) > 0 {
 					jobConfigPost = deepCopyConfigSet(jobConfig)
