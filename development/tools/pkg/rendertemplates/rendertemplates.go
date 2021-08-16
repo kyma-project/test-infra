@@ -244,6 +244,7 @@ func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 						}
 					}
 				}
+
 				if len(job.InheritedConfigs.PostConfigs.Global) > 0 {
 					for _, v := range job.InheritedConfigs.PostConfigs.Global {
 						if err := jobConfigPost.mergeConfigSet(deepCopyConfigSet(globalConfigSets[v])); err != nil {
