@@ -12,6 +12,12 @@ readonly PROW_DIR="$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 readonly KUBECONFIG=${KUBECONFIG:-"${HOME}/.kube/config"}
 readonly CLUSTER_DIR="$( cd "${PROW_DIR}/cluster" && pwd )"
 
+# requried by External Secrets Syncer to access Secret Manager
+if [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
+      echo "\$GOOGLE_APPLICATION_CREDENTIALS is empty"
+      exit 1
+fi
+
 # We are using GKE so we need initialize our user as a cluster-admin
 kubectl create clusterrolebinding cluster-admin-binding \
   --clusterrole cluster-admin --user "$(gcloud config get-value account)"
@@ -27,8 +33,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/ngin
 # namespace
 kubectl create namespace external-secrets
 # Service account
-# TODO use correct file!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  This won't work properly as it is right now
-kubectl create secret generic sa-secret-manager-prow --namespace "external-secrets" --from-file=service-account.json=./service-account.json
+kubectl create secret generic sa-secret-manager-prow --namespace "external-secrets" --from-file=service-account.json="$GOOGLE_APPLICATION_CREDENTIALS"
 # install helm chart
 helm repo add external-secrets https://external-secrets.github.io/kubernetes-external-secrets/
 helm install 8.2.1 external-secrets/kubernetes-external-secrets
