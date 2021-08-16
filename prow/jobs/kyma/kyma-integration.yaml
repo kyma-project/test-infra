@@ -510,7 +510,6 @@ presubmits: # runs on PRs
         preset-kyma-artifacts-bucket: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-gke-kyma-integration: "true"
-        preset-sa-test-gcr-push: "true"
       optional: true
       skip_report: false
       decorate: true
