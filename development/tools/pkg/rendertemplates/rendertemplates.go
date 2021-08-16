@@ -289,6 +289,17 @@ func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 					log.Fatalf("Failed merge job configset %s", err)
 				}
 
+				if len(jobConfigPre) > 0 {
+					if err := jobConfigPre.mergeConfigSet(deepCopyConfigSet(jobConfig)); err != nil {
+						log.Fatalf("Failed merge job configset: %s", err)
+					}
+				}
+				if len(jobConfigPost) > 0 {
+					if err := jobConfigPost.mergeConfigSet(deepCopyConfigSet(jobConfig)); err != nil {
+						log.Fatalf("Failed merge job configset: %s", err)
+					}
+				}
+
 				r.JobConfigs[repoIndex].Jobs[jobIndex].JobConfig = jobConfig
 				if len(jobConfigPre) > 0 {
 					r.JobConfigs[repoIndex].Jobs[jobIndex].jobConfigPre = jobConfigPre
