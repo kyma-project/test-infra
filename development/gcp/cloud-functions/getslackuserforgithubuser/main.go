@@ -1,30 +1,27 @@
 package getslackuserforgithubuser
 
 import (
-"context"
-"encoding/json"
-"fmt"
-"os"
+	"context"
+	"encoding/json"
+	"fmt"
+	"os"
+	"sync"
 
-"cloud.google.com/go/functions/metadata"
-"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
-"github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
-"github.com/kyma-project/test-infra/development/github/pkg/client"
-prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
-)
-
-const (
-	TestInfraRepoName = "test-infra"
+	"cloud.google.com/go/functions/metadata"
+	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
+	"github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
+	"github.com/kyma-project/test-infra/development/github/pkg/client"
+	"github.com/kyma-project/test-infra/development/types"
 )
 
 var (
-	pubSubClient            *pubsub.Client
-	githubClient            *client.Client
-	githubAccessToken string
-	projectID string
-	githubOrg               string
-	githubRepo              string
-	getSlackUserForCommiterTopic  string
+	pubSubClient        *pubsub.Client
+	githubClient        *client.SapToolsClient
+	githubAccessToken   string
+	projectID           string
+	githubOrg           string
+	githubRepo          string
+	notifyCommiterTopic string
 )
 
 func init() {
@@ -35,10 +32,10 @@ func init() {
 	githubAccessToken = os.Getenv("GITHUB_ACCESS_TOKEN")
 	githubOrg = os.Getenv("GITHUB_ORG")
 	githubRepo = os.Getenv("GITHUB_REPO")
-	getSlackUserForCommiterTopic = os.Getenv("GET_SLACK_USER_FOR_COMMITER_TOPIC")
+	notifyCommiterTopic = os.Getenv("NOTIFY_COMMITER_TOPIC")
 	// check if variables were set with values
-	if getSlackUserForCommiterTopic == "" {
-		panic("environment variable GET_SLACK_USER_FOR_COMMITER_TOPIC is empty")
+	if notifyCommiterTopic == "" {
+		panic("environment variable NOTIFY_COMMITER_TOPIC is empty")
 	}
 	if projectID == "" {
 		panic("environment variable GCP_PROJECT_ID is empty")
@@ -53,7 +50,7 @@ func init() {
 		panic("environment variable GITHUB_REPO is empty")
 	}
 	// create github client
-	githubClient, err = client.NewClient(ctx, githubAccessToken)
+	githubClient, err = client.NewSapToolsClient(ctx, githubAccessToken)
 	if err != nil {
 		panic(fmt.Sprintf("Failed creating github client, error: %v", err))
 	}
@@ -64,21 +61,25 @@ func init() {
 	}
 }
 
-
 // GetGithubCommiter gets commiter github Login for Refs BaseSHA from pubsub ProwMessage.
 // It will find Login for commiter of first Ref in Refs slice because Prow crier pubsub reporter place ProwJobSpec.Refs first.
 // ProwJobSpec ExtraRefs are appended second.
-func GetGithubCommiter(ctx context.Context, m pubsub.MessagePayload) {
+func GetSlackUserForGithubUser(ctx context.Context, m pubsub.MessagePayload) {
 	var err error
+	var wg sync.WaitGroup
+	out := make(chan string)
+	done := make(chan int)
 	// set trace value to use it in logEntry
 	var failingTestMessage pubsub.FailingTestMessage
 
+	// TODO: Move setting up logging for cloudfunction to separate method in logging package
 	// Create logger to use google cloud functions structured logging
 	logger := cloudfunctions.NewLogger()
 	// Set component for log entries to identify all messages for this function.
-	logger.WithComponent("kyma.prow.cloud-function.GetGithubCommiter")
+	// TODO: pass function name as constant or variable.
+	logger.WithComponent("kyma.prow.cloud-function.GetSlackUserForGithubUser")
 	// Set trace value for log entries to identify messages from one function call.
-	logger.GenerateTraceValue(projectID, "GetGithubCommiter")
+	logger.GenerateTraceValue(projectID, "GetSlackUserForGithubUser")
 
 	// Get metadata from context and set eventID label for logging.
 	contextMetadata, err := metadata.FromContext(ctx)
@@ -104,3 +105,46 @@ func GetGithubCommiter(ctx context.Context, m pubsub.MessagePayload) {
 	logger.WithLabel("jobID", *jobID)
 
 	logger.LogInfo(fmt.Sprintf("found prowjob execution ID: %s", *jobID))
+
+	if failingTestMessage.SlackCommitersLogins == nil || len(failingTestMessage.SlackCommitersLogins) == 0 {
+		usersMap, err := githubClient.GetUsersMap(ctx)
+		if err != nil {
+			logger.LogCritical(fmt.Sprintf("failed get users-map.yaml file from sap tools github, got error: %v", err))
+		}
+
+		wg.Add(len(failingTestMessage.GithubCommitersLogins))
+		for _, commiter := range failingTestMessage.GithubCommitersLogins {
+			go func(commiter string, usersMap []types.User, logger *cloudfunctions.LogEntry, out chan<- string, done chan<- int) {
+				defer func() { done <- 1 }()
+				for _, user := range usersMap {
+					if user.ComGithubUsername == commiter {
+						logger.LogInfo(fmt.Sprintf("user %s is present in users map", commiter))
+						out <- user.ComEnterpriseSlackUsername
+						return
+					}
+				}
+				logger.LogError(fmt.Sprintf("user %s is not present in users map, please add user to https://github.tools.sap/kyma/test-infra/blob/main/users-map.yaml", commiter))
+			}(commiter, usersMap, logger, out, done)
+		}
+		go func(wg *sync.WaitGroup, message *pubsub.FailingTestMessage, logger *cloudfunctions.LogEntry, out <-chan string, done <-chan int) {
+			for {
+				select {
+				case slackUser := <-out:
+					message.SlackCommitersLogins = append(message.SlackCommitersLogins, slackUser)
+				case <-done:
+					wg.Done()
+				}
+			}
+		}(&wg, &failingTestMessage, logger, out, done)
+		wg.Wait()
+		if len(failingTestMessage.GithubCommitersLogins) == len(failingTestMessage.SlackCommitersLogins) {
+			logger.LogInfo("all authors present in users map")
+		}
+		// TODO: Add saving slack users in a firestore.
+	}
+	publlishedMessageID, err := pubSubClient.PublishMessage(ctx, failingTestMessage, notifyCommiterTopic)
+	if err != nil {
+		logger.LogCritical(fmt.Sprintf("failed publishing to pubsub, error: %s", err.Error()))
+	}
+	logger.LogInfo(fmt.Sprintf("published pubsub message to topic %s, id: %s", notifyCommiterTopic, *publlishedMessageID))
+}

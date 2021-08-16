@@ -89,6 +89,7 @@ func main() {
 			contextLogger.LogError(fmt.Sprintf("error when getting pr author for presubmit: got error %v", err))
 		}
 	}
+	// TODO: move searching of user in to kymabot package
 	wg.Add(len(authors))
 	contextLogger.LogInfo(fmt.Sprintf("found %d authors in job spec env variable", len(authors)))
 	for _, author := range authors {
