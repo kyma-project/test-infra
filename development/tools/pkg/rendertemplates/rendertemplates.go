@@ -262,7 +262,7 @@ func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 				}
 
 				if len(jobConfigPre) > 0 {
-					if err := jobConfigPre.mergeConfigSet(jobConfig); err != nil {
+					if err := jobConfigPre.mergeConfigSet(deepCopyConfigSet(jobConfig)); err != nil {
 						log.Fatalf("Failed merge job configset %s", err)
 					}
 					if len(job.InheritedConfigs.PreConfigs.Local) > 0 {
@@ -274,7 +274,7 @@ func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 					}
 				}
 				if len(jobConfigPost) > 0 {
-					if err := jobConfigPost.mergeConfigSet(jobConfig); err != nil {
+					if err := jobConfigPost.mergeConfigSet(deepCopyConfigSet(jobConfig)); err != nil {
 						log.Fatalf("Failed merge job configset %s", err)
 					}
 					if len(job.InheritedConfigs.PostConfigs.Local) > 0 {
@@ -286,7 +286,7 @@ func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 					}
 				}
 
-				if err := jobConfig.mergeConfigSet(job.JobConfig); err != nil {
+				if err := jobConfig.mergeConfigSet(deepCopyConfigSet(job.JobConfig)); err != nil {
 					log.Fatalf("Failed merge job configset %s", err)
 				}
 
