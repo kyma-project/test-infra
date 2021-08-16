@@ -259,9 +259,6 @@ func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 						}
 					}
 				}
-				if err := jobConfig.mergeConfigSet(job.JobConfig); err != nil {
-					log.Fatalf("Failed merge job configset %s", err)
-				}
 
 				if len(jobConfigPre) > 0 {
 					if err := jobConfigPre.mergeConfigSet(jobConfig); err != nil {
@@ -286,6 +283,10 @@ func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 							}
 						}
 					}
+				}
+
+				if err := jobConfig.mergeConfigSet(job.JobConfig); err != nil {
+					log.Fatalf("Failed merge job configset %s", err)
 				}
 
 				r.JobConfigs[repoIndex].Jobs[jobIndex].JobConfig = jobConfig
