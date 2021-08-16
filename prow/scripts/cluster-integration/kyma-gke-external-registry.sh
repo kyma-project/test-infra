@@ -69,7 +69,6 @@ requiredVars=(
     CLOUDSDK_DNS_ZONE_NAME
     GOOGLE_APPLICATION_CREDENTIALS
     KYMA_ARTIFACTS_BUCKET
-    GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS
 )
 
 utils::check_required_vars "${requiredVars[@]}"
@@ -81,12 +80,8 @@ function docker_cleanup() {
         log::info "Docker image cleanup"
         if [ -n "$KYMA_INSTALLER_IMAGE" ]; then
             log::info "Delete temporary Kyma-Installer Docker image"
-            gcp::authenticate \
-                -c "$GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS"
             gcp::delete_docker_image \
                 -i "$KYMA_INSTALLER_IMAGE"
-            gcp::set_account \
-                -c "$GOOGLE_APPLICATION_CREDENTIALS"
         fi
     fi
     set -e
@@ -281,7 +276,7 @@ EOF
 
 DOCKER_PASSWORD=/tmp/kyma-gke-integration/dockerPassword.json
 mkdir -p /tmp/kyma-gke-integration
-< "$GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS" tr -d '\n' > /tmp/kyma-gke-integration/dockerPassword.json
+< "$GOOGLE_APPLICATION_CREDENTIALS" tr -d '\n' > /tmp/kyma-gke-integration/dockerPassword.json
 # TODO: convert create-config-map.sh to function in sourced lib script?
 "$TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS/create-secret.sh" --name "serverless-external-registry-overrides" \
     --data "dockerRegistry.enableInternal=false" \

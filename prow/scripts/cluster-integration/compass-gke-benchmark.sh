@@ -88,12 +88,8 @@ function docker_cleanup() {
     log::info "Docker image cleanup"
     if [ -n "${COMPASS_INSTALLER_IMAGE}" ]; then
       log::info "Delete temporary Compass-Installer Docker image"
-      gcp::authenticate \
-        -c "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
       gcp::delete_docker_image \
         -i "${COMPASS_INSTALLER_IMAGE}"
-      gcp::set_account \
-        -c "${GOOGLE_APPLICATION_CREDENTIALS}"
     fi
   fi
   set -e
@@ -240,7 +236,7 @@ function applyCompassOverrides() {
     --data "global.systemFetcher.systemsAPIEndpoint=http://compass-external-services-mock:8080/systemfetcher/systems" \
     --data "global.systemFetcher.systemsAPIFilterCriteria=no" \
     --data "global.systemFetcher.systemsAPIFilterTenantCriteriaPattern=tenant=%s" \
-    --data 'global.systemFetcher.systemToTemplateMappings=[{"Name": "temp1", "SourceKey": ["prop"], "SourceValue": ["val1"] }]' \
+    --data 'global.systemFetcher.systemToTemplateMappings=[{"Name": "temp1", "SourceKey": ["prop"], "SourceValue": ["val1"] },{"Name": "temp2", "SourceKey": ["prop"], "SourceValue": ["val2"] }]' \
     --data "global.systemFetcher.oauth.client=admin" \
     --data "global.systemFetcher.oauth.secret=admin" \
     --data "global.systemFetcher.oauth.tokenURLPattern=http://compass-external-services-mock:8080/systemfetcher/oauth/token" \
