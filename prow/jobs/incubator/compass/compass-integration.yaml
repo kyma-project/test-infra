@@ -35,7 +35,9 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-compass.sh --dump-db"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-compass.sh"
+            args:
+              - "--dump-db"
             env:
               - name: GO111MODULE
                 value: "on"
@@ -86,7 +88,9 @@ postsubmits: # runs on main
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-compass.sh --dump-db"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-compass.sh"
+            args:
+              - "--dump-db"
             env:
               - name: GO111MODULE
                 value: "on"
