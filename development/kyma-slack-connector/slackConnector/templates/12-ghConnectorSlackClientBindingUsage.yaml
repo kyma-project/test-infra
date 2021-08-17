@@ -2,17 +2,17 @@ apiVersion: servicecatalog.kyma-project.io/v1alpha1
 kind: ServiceBindingUsage
 metadata:
   labels:
-    function: "{{ .Release.Name }}-issue-labeled"
+    function: "{{ .Release.Name }}-{{ .Values.functions.issues.labeled.name }}"
     app: {{ .Values.appName | quote }}
     serviceBinding: {{ .Values.slackConnector.slackAppName | quote }}
-  name: {{ .Release.Name }}-issue-labeled
+  name: {{ .Release.Name }}-{{ .Values.functions.issues.labeled.name }}
   namespace: {{ .Release.Namespace }}
 spec:
   serviceBindingRef:
     name: {{ .Values.slackConnector.slackAppName }}
   usedBy:
     kind: serverless-function
-    name: {{ .Release.Name }}-issue-labeled
+    name: {{ .Release.Name }}-{{ .Values.functions.issues.labeled.name }}
   parameters:
     envPrefix:
       name: "KYMA_SLACK_"

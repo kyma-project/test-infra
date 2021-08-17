@@ -1,11 +1,11 @@
 apiVersion: serverless.kyma-project.io/v1alpha1
 kind: GitRepository
 metadata:
-  name: {{ .Release.Name }}-test-infra
+  name: {{ .Release.Name }}-{{ .Values.functions.issues.labeled.name }}
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.appName | quote }}
     release: {{ .Release.Name | quote }}
-    function: "{{ .Release.Name }}-issue-labeled"
+    function: "{{ .Release.Name }}-{{ .Values.functions.issues.labeled.name }}"
 spec:
-  url: {{ .Values.function.issues.labeled.repositoryUrl }}
+  url: {{ .Values.functions.issues.labeled.repositoryUrl }}
