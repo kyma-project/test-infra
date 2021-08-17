@@ -49,5 +49,5 @@ type FailingTestMessage struct {
 	GithubIssueNumber     *int64   `json:"githubIssueNumber,omitempty"`
 	SlackThreadID         *string  `json:"slackThreadId,omitempty"`
 	GithubCommitersLogins []string `json:"githubCommitersLogins,omitempty"`
-	SlackCommitersLogins  []string `json:"slackCommitersLogins,omitempty"`
+	CommitersSlackLogins  []string `json:"slackCommitersLogins,omitempty"`
 }
