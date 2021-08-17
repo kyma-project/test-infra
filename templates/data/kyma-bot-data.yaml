@@ -9,7 +9,7 @@ templates:
                   name: "pre-main-check-users-map"
                   command: "usersmapchecker"
                   always_run: "true"
-                  image: "eu.gcr.io/kyma-project/test-infra/prow-tools:PR-4026"
+                  image: "eu.gcr.io/kyma-project/test-infra/prow-tools:PR-4048"
                   cluster: "trusted-workload"
                   optional: "true"
                   imagePullPolicy: "Always"
