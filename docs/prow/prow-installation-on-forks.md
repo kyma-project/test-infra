@@ -108,7 +108,7 @@ Follow these steps to install Prow:
 
 - **KUBECONFIG** is a path to a `kubeconfig` file.
 - **PROJECT** is a GCP project name.
-- **GOOGLE_APPLICATION_CREDENTIALS** is a path to a service account file. This service account requires read access to secretes stored in Secret Manager.
+- **GOOGLE_APPLICATION_CREDENTIALS** is a path to a service account file. This service account requires read access to Secrets stored in the Secret Manager.
 
 2. Go to the `development` folder and run the following script to start the installation process:
 
