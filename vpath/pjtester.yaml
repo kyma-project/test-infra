@@ -3,4 +3,4 @@ pjNames:
 prConfigs:
   kyma-project:
     control-plane:
-      prNumber: 877
+      prNumber: 890

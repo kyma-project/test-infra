@@ -101,7 +101,8 @@ for ZONE in ${EU_ZONES}; do
     log::error "Could not create machine in zone ${ZONE}"
 done || exit 1
 
-trap cleanup exit INT
+#trap cleanup exit INT
+
 
 log::info "Copying control-plane to the instance"
 #shellcheck disable=SC2088
@@ -121,7 +122,8 @@ gcloud compute ssh --quiet --zone="${ZONE}" "control-plane-integration-test-${RA
 log::info "Triggering the installation"
 
 gcloud compute ssh --quiet --zone="${ZONE}" "control-plane-integration-test-${RANDOM_ID}" -- "yes | ./control-plane/installation/scripts/prow/deploy-and-test.sh"
-sleep 18h
+log::info "Waiting for 5h to troubleshoot"
+sleep 5h
 log::info "Copying test artifacts from VM"
 utils::receive_from_vm "${ZONE}" "control-plane-integration-test-${RANDOM_ID}" "/var/log/prow_artifacts" "${ARTIFACTS}"
 
