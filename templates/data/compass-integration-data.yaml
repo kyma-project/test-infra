@@ -6,8 +6,8 @@ templates:
           jobConfig_default:
             path_alias: github.com/kyma-incubator/compass
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-compass.sh"
-          args:
-            - "--dump-db"
+            args:
+              - "--dump-db"
             request_memory: 100Mi
             request_mcpu: 50m
             env:
