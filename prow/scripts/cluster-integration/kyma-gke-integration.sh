@@ -166,17 +166,17 @@ gcp::provision_k8s_cluster \
 export CLEANUP_CLUSTER="true"
 
 
-## Cosigned integration
-#if ! [ -z "${COSIGNED_ENABLED}" ]; then
-#  echo "Image verification enabled"
-#
-##  publicKey="$(gcp::get_kms_public_key -p sap-kyma-prow -r kyma-prow -k image-signing -l global -v 1)"
-#  git clone https://github.com/youssefazrak/connaisseur.git -b add-psp-helm /tmp/connaisseur
-#  helm install -f "$TEST_INFRA_SOURCES_DIR/prow/scripts/resources/connaisseur.values.tpl.yaml" connaisseur /tmp/connaisseur/helm --atomic --create-namespace --namespace connaisseur
-#  kubectl label namespaces kube-system securesystemsengineering.connaisseur/webhook=ignore
-#  kubectl label namespaces kube-public securesystemsengineering.connaisseur/webhook=ignore
-#  kubectl label namespaces kube-node-lease securesystemsengineering.connaisseur/webhook=ignore
-#fi
+# Cosigned integration
+if ! [ -z "${COSIGNED_ENABLED}" ]; then
+  echo "Image verification enabled"
+
+#  publicKey="$(gcp::get_kms_public_key -p sap-kyma-prow -r kyma-prow -k image-signing -l global -v 1)"
+  git clone https://github.com/youssefazrak/connaisseur.git -b add-psp-helm /tmp/connaisseur
+  helm install -f "$TEST_INFRA_SOURCES_DIR/prow/scripts/resources/connaisseur.values.tpl.yaml" connaisseur /tmp/connaisseur/helm --atomic --create-namespace --namespace connaisseur
+  kubectl label namespaces kube-system securesystemsengineering.connaisseur/webhook=ignore
+  kubectl label namespaces kube-public securesystemsengineering.connaisseur/webhook=ignore
+  kubectl label namespaces kube-node-lease securesystemsengineering.connaisseur/webhook=ignore
+fi
 
 utils::generate_self_signed_cert \
     -d "$DNS_DOMAIN" \
@@ -235,9 +235,9 @@ fi
 log::info "Test Kyma"
 # shellcheck disable=SC2031
 # TODO (@Ressetkk): Kyma test functions as a separate library
-"$TEST_INFRA_SOURCES_DIR"/prow/scripts/kyma-testing.sh "$INTEGRATION_TEST_LABEL_QUERY"
+#"$TEST_INFRA_SOURCES_DIR"/prow/scripts/kyma-testing.sh "$INTEGRATION_TEST_LABEL_QUERY"
 
-log::success "Integration Test successful"
+#log::success "Integration Test successful"
 
 #!!! Must be at the end of the script !!!
 export ERROR_LOGGING_GUARD="false"
