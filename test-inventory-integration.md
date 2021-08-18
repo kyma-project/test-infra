@@ -31,9 +31,11 @@
 | kyma-gke-weekly-fast-integration | gke |  |  |  | nightly |  fast-integration  |
 | kyma-aks-nightly-fast-integration | aks |  |  |  | nightly |  fast-integration  |
 | pre-main-kyma-gardener-azure-integration | gardener_azure | kyma cli | kyma install |  | pr-submit |  octopus  |
+| pre-main-kyma-gardener-azure-integration-cosigned | gardener_azure | kyma cli | kyma install |  | pr-submit |  octopus  |
 | pre-main-kyma-gardener-azure-fast-integration | gardener_azure | kyma cli | kyma install | evaluation | pr-submit |  fast-integration  |
 | pre-main-kyma-gardener-azure-alpha-eval | gardener_azure | kyma cli | kyma deploy | evaluation | pr-submit |  fast-integration  |
 | pre-main-kyma-gardener-azure-alpha-prod | gardener_azure | kyma cli | kyma deploy | production | pr-submit |  fast-integration  |
+| pre-main-kyma-gardener-azure-alpha-prod-cosigned | gardener_azure | kyma cli | kyma deploy | production | pr-submit |  fast-integration  |
 | pre-main-kyma-gardener-gcp-api-gateway | gardener_gcp | kyma cli | kyma install |  | pr-submit |  octopus  |
 | post-main-kyma-gardener-azure-alpha-eval | gardener_azure | kyma cli | kyma deploy | evaluation | pr-merge |  fast-integration  |
 | post-main-kyma-gardener-azure-alpha-prod | gardener_azure | kyma cli | kyma deploy | production | pr-merge |  fast-integration  |

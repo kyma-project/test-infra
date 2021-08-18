@@ -119,6 +119,15 @@ gardener::generate_overrides
 
 gardener::provision_cluster
 
+if ! [ -z "${COSIGNED_ENABLED}" ]; then
+  echo "Image verification enabled"
+
+#  publicKey="$(gcp::get_kms_public_key -p sap-kyma-prow -r kyma-prow -k image-signing -l global -v 1)"
+  git clone https://github.com/youssefazrak/connaisseur.git -b add-psp-helm /tmp/connaisseur
+  helm install -f "$TEST_INFRA_SOURCES_DIR/prow/scripts/resources/connaisseur.values.tpl.yaml" connaisseur /tmp/connaisseur/helm --atomic --create-namespace --namespace connaisseur
+  kubectl label namespaces kube-system securesystemsengineering.connaisseur/webhook=ignore
+fi
+
 # uses previously set KYMA_SOURCE
 if [[ "${KYMA_MAJOR_VERSION}" == "2" ]]; then
   kyma::deploy_kyma \
@@ -143,6 +152,8 @@ fi
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
+# get logs from connaisseur deployment about images
+kubectl logs -n connaisseur deployment/connaisseur-deployment | grep "image\|ERROR\|Error" > "$ARTIFACTS/connaisseur.log"
 
 if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
     gardener::hibernate_kyma

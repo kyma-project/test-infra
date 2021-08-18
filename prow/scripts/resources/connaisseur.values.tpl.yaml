@@ -165,4 +165,4 @@ namespacedValidation:
 
 psp:
   enabled: true
-  name: "gce.unprivileged-addon"
+  name: "gardener.unprivileged"

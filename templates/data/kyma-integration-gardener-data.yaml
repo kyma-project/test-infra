@@ -133,6 +133,26 @@ templates:
                     grace_period: 600000000000 # 10min
                     # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^(((resources/application-connector)\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  env:
+                    COSIGNED_ENABLED: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_kyma-integration
+                  local:
+                    - jobConfig_default
+                    - command_integration
+                    - jobConfig_presubmit
+                    - gardener_azure_job
+              - jobConfig:
+                  name: pre-main-kyma-gardener-azure-integration-cosigned
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                    # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^(((resources/application-connector)\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -190,6 +210,29 @@ templates:
                     grace_period: 600000000000 # 10min
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_kyma-integration
+                    - kyma_major_version_2
+                  local:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - command_integration
+                    - gardener_azure_job
+                    - production_profile
+                    - installer_2
+              - jobConfig:
+                  name: pre-main-kyma-gardener-azure-alpha-prod-cosigned
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  env:
+                    COSIGNED_ENABLED: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
