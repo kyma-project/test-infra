@@ -39,7 +39,9 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/tidwall/gjson v1.7.5
 	github.com/vrischmann/envconfig v1.3.0
+	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
 	golang.org/x/oauth2 v0.0.0-20210628180205-a41e5a781914
+	golang.org/x/tools v0.1.5 // indirect
 	google.golang.org/api v0.50.0
 	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/api v0.21.3

@@ -1,0 +1,35 @@
+{
+  "runtimeID": "6f8ec1bc-f300-4f00-bb65-6fec5dcd0ba5",
+  "runtimeInput": {
+    "name": "demo",
+    "description": "",
+    "labels": {
+      "scenarios": [
+        "DEFAULT"
+      ]
+    }
+  },
+  "kymaConfig": {
+    "version": "1.24.0",
+    "profile": "Evaluation",
+    "components": [
+      {
+        "component": "cluster-users",
+        "namespace": "kyma-system",
+        "configuration": []
+      }
+    ],
+    "administrators": [
+      "test2@test.pl"
+    ]
+  },
+  "metadata": {
+    "globalAccountID": "3e64ebae-38b5-46a0-b1ed-9ccee153a0ae",
+    "subAccountID": "f7d129fa-b2fe-11eb-8529-0242ac130003",
+    "serviceID": "47c9dcbf-ff30-448e-ab36-d3bad66ba281",
+    "servicePlanID": "4deee563-e5ec-4731-b9b1-53b42d855f0c",
+    "shootName": "4deee563",
+    "instanceID": "6f8ec1bc-f300-4f00-bb65-6fec5dcd0ba5"
+  },
+  "kubeconfig": ""
+}
