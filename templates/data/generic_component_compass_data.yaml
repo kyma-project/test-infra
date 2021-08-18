@@ -99,8 +99,6 @@ templates:
                     global:
                       - "jobConfig_presubmit"
                   postConfigs:
-                    - "jobConfig_postsubmit"
-                    - "disable_testgrid"
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
