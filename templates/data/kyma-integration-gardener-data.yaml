@@ -133,8 +133,6 @@ templates:
                     grace_period: 600000000000 # 10min
                     # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^(((resources/application-connector)\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  env:
-                    COSIGNED_ENABLED: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -153,6 +151,8 @@ templates:
                     grace_period: 600000000000 # 10min
                     # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^(((resources/application-connector)\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  env:
+                    COSIGNED_ENABLED: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default

@@ -52,8 +52,6 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
             env:
-              - name: COSIGNED_ENABLED
-                value: "true"
               - name: GARDENER_REGION
                 value: "northeurope"
               - name: GARDENER_ZONES
@@ -124,6 +122,8 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
             env:
+              - name: COSIGNED_ENABLED
+                value: "true"
               - name: GARDENER_REGION
                 value: "northeurope"
               - name: GARDENER_ZONES
