@@ -1,0 +1,24 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/test-infra/kyma-bot.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  name: "pre-main-check-users-map"
+                  command: "usersmapchecker"
+                  always_run: "true"
+                  image: "eu.gcr.io/kyma-project/test-infra/prow-tools:PR-4048"
+                  cluster: "trusted-workload"
+                  optional: "true"
+                  imagePullPolicy: "Always"
+                  labels:
+                    preset-bot-github-sap-token: "true"
+                    preset-prowjob-gcp-logging: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_prow-tools"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_presubmit"

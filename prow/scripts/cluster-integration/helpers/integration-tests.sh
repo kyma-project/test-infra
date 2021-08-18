@@ -2,7 +2,7 @@
 
 function integration_tests::install_kyma() {
   log::info "Installing Kyma from local source using components file"
-  kyma alpha deploy --ci --components-file "$PWD/components.yaml" --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
+  kyma deploy --ci --components-file "$PWD/components.yaml" --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
 }
 
 function api-gateway::prepare_components_file() {

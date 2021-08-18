@@ -50,12 +50,18 @@ type Repo struct {
 	Jobs     []Job  `yaml:"jobs,omitempty"`
 }
 
+// InheritedConfigsElement specify named configs to use for generating component prowjob from template
+type InheritedConfigsElement struct {
+	Global []string `yaml:"global,omitempty"`
+	Local  []string `yaml:"local,omitempty"`
+}
+
 // InheritedConfigs specify named configs to use for generating prowjob from template
 type InheritedConfigs struct {
-	Global      []string `yaml:"global,omitempty"`
-	Local       []string `yaml:"local,omitempty"`
-	PreConfigs  []string `yaml:"preConfigs,omitempty"`
-	PostConfigs []string `yaml:"postConfigs,omitempty"`
+	Global      []string                `yaml:"global,omitempty"`
+	Local       []string                `yaml:"local,omitempty"`
+	PreConfigs  InheritedConfigsElement `yaml:"preConfigs,omitempty"`
+	PostConfigs InheritedConfigsElement `yaml:"postConfigs,omitempty"`
 }
 
 // Job holds data for generating prowjob from template
@@ -224,17 +230,23 @@ func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 					}
 				}
 
-				if len(job.InheritedConfigs.PreConfigs) > 0 {
+				if len(job.InheritedConfigs.PreConfigs.Global) > 0 || len(job.InheritedConfigs.PreConfigs.Local) > 0 {
 					jobConfigPre = deepCopyConfigSet(jobConfig)
-					for _, v := range job.InheritedConfigs.PreConfigs {
+				}
+				if len(job.InheritedConfigs.PostConfigs.Global) > 0 || len(job.InheritedConfigs.PostConfigs.Local) > 0 {
+					jobConfigPost = deepCopyConfigSet(jobConfig)
+				}
+
+				if len(job.InheritedConfigs.PreConfigs.Global) > 0 {
+					for _, v := range job.InheritedConfigs.PreConfigs.Global {
 						if err := jobConfigPre.mergeConfigSet(deepCopyConfigSet(globalConfigSets[v])); err != nil {
 							log.Fatalf("Failed merge global %s named configset: %s", v, err)
 						}
 					}
 				}
-				if len(job.InheritedConfigs.PostConfigs) > 0 {
-					jobConfigPost = deepCopyConfigSet(jobConfig)
-					for _, v := range job.InheritedConfigs.PostConfigs {
+
+				if len(job.InheritedConfigs.PostConfigs.Global) > 0 {
+					for _, v := range job.InheritedConfigs.PostConfigs.Global {
 						if err := jobConfigPost.mergeConfigSet(deepCopyConfigSet(globalConfigSets[v])); err != nil {
 							log.Fatalf("Failed merge global %s named configset: %s", v, err)
 						}
@@ -248,18 +260,44 @@ func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 						}
 					}
 				}
-				if err := jobConfig.mergeConfigSet(job.JobConfig); err != nil {
+
+				if len(jobConfigPre) > 0 {
+					if err := jobConfigPre.mergeConfigSet(deepCopyConfigSet(jobConfig)); err != nil {
+						log.Fatalf("Failed merge job configset %s", err)
+					}
+					if len(job.InheritedConfigs.PreConfigs.Local) > 0 {
+						for _, v := range job.InheritedConfigs.PreConfigs.Local {
+							if err := jobConfigPre.mergeConfigSet(deepCopyConfigSet(r.LocalSets[v])); err != nil {
+								log.Fatalf("Failed merge local %s named configset: %s", v, err)
+							}
+						}
+					}
+				}
+				if len(jobConfigPost) > 0 {
+					if err := jobConfigPost.mergeConfigSet(deepCopyConfigSet(jobConfig)); err != nil {
+						log.Fatalf("Failed merge job configset %s", err)
+					}
+					if len(job.InheritedConfigs.PostConfigs.Local) > 0 {
+						for _, v := range job.InheritedConfigs.PostConfigs.Local {
+							if err := jobConfigPost.mergeConfigSet(deepCopyConfigSet(r.LocalSets[v])); err != nil {
+								log.Fatalf("Failed merge local %s named configset: %s", v, err)
+							}
+						}
+					}
+				}
+
+				if err := jobConfig.mergeConfigSet(deepCopyConfigSet(job.JobConfig)); err != nil {
 					log.Fatalf("Failed merge job configset %s", err)
 				}
 
 				if len(jobConfigPre) > 0 {
-					if err := jobConfigPre.mergeConfigSet(job.JobConfig); err != nil {
-						log.Fatalf("Failed merge job configset %s", err)
+					if err := jobConfigPre.mergeConfigSet(deepCopyConfigSet(job.JobConfig)); err != nil {
+						log.Fatalf("Failed merge job configset: %s", err)
 					}
 				}
 				if len(jobConfigPost) > 0 {
-					if err := jobConfigPost.mergeConfigSet(job.JobConfig); err != nil {
-						log.Fatalf("Failed merge job configset %s", err)
+					if err := jobConfigPost.mergeConfigSet(deepCopyConfigSet(job.JobConfig)); err != nil {
+						log.Fatalf("Failed merge job configset: %s", err)
 					}
 				}
 

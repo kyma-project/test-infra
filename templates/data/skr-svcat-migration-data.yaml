@@ -32,7 +32,7 @@ templates:
             jobs:
               - jobConfig:
                   name: "skr-azure-svcat-migration-dev"
-                  cron: "* */4 * * *"
+                  cron: "0 */4 * * *"
                 inheritedConfigs:
                   global:
                     - "image_kyma-integration"

@@ -21,19 +21,19 @@ globalSets:
       KYMA_MAJOR_VERSION: 2
   # Image sets
   image_bootstrap:
-    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210723-34432f29"
+    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210730-c3e07ed7"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210708-71b88f01"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210805-9bab875b"
   image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210723-34432f29-k8s1.16"
+    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
   image_buildpack-node:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20210402-70b4b74f"
   image_buildpack-golang:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210723-91c9654f"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210804-d3a9d497"
   image_buildpack-golang-kubebuilder2:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210723-91c9654f"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210804-d3a9d497"
   image_buildpack-golang-toolbox:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210723-91c9654f"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210804-d3a9d497"
   image_wssagent:
     image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
   # JobConfig sets
@@ -154,13 +154,6 @@ globalSets:
       preset-sa-gcr-push: "true"
       preset-docker-push-repository-kyma: "true"
 
-# Default definition of workload clusters
-cluster_default: &cluster_default
-  cluster:
-    presubmit: untrusted-workload
-    postsubmit: trusted-workload
-    periodic: trusted-workload
-
 templates:
 #  - from: templates/kyma-release-upgrade.yaml
 #    render:
@@ -183,7 +176,10 @@ templates:
     render:
       - to: ../prow/config.yaml
         values:
-          <<: *cluster_default
+          cluster:
+            presubmit: untrusted-workload
+            postsubmit: trusted-workload
+            periodic: trusted-workload
           contexts:
             - name: kyma-integration
             - name: kyma-gke-integration

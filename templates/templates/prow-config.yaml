@@ -393,6 +393,20 @@ presets:
       - name: sa-gke-kyma-integration
         mountPath: /etc/credentials/sa-gke-kyma-integration
         readOnly: true
+  # Gardener needs the credentials, we can't use preset-sa-gke-kyma-integration, as KYMA_PROJECT_DIR is colliding with another preset
+  - labels:
+      preset-sa-test-gcr-push: "true" # Service account with write access to test gcr.
+    env:
+      - name: GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-test-gcr-push/service-account.json
+    volumes:
+      - name: sa-test-gcr-push
+        secret:
+          secretName: sa-gke-kyma-integration
+    volumeMounts:
+      - name: sa-test-gcr-push
+        mountPath: /etc/credentials/sa-test-gcr-push
+        readOnly: true
   - labels:
       preset-sa-gcr-push: "true" # Service account with "Storage Admin" role
     env:
@@ -405,19 +419,6 @@ presets:
     volumeMounts:
       - name: sa-gcr-push-kyma-project
         mountPath: /etc/credentials/sa-gcr-push-kyma-project
-        readOnly: true
-  - labels:
-      preset-sa-test-gcr-push: "true" # Service account with write access to test gcr.
-    env:
-      - name: GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS
-        value: /etc/credentials/sa-test-gcr-push/service-account.json
-    volumes:
-      - name: sa-test-gcr-push
-        secret:
-          secretName: sa-gcr-push-kyma-project
-    volumeMounts:
-      - name: sa-test-gcr-push
-        mountPath: /etc/credentials/sa-test-gcr-push
         readOnly: true
   - labels:
       preset-sa-kyma-artifacts: "true"
@@ -583,7 +584,7 @@ presets:
       preset-docker-push-repository-gke-integration: "true" # Needed for kyma installer image
     env:
       - name: DOCKER_PUSH_REPOSITORY
-        value: "eu.gcr.io/sap-kyma-prow"
+        value: "eu.gcr.io/sap-kyma-prow-workloads"
   - labels:
       preset-docker-push-repository-test-infra: "true"
     env:
@@ -907,9 +908,9 @@ presets:
       - name: COMPASS_INTEGRATION_ENABLED
         value: "true"
   - labels:
-      preset-kyma-integration-central-app-gateway-enabled: "true"
+      preset-kyma-integration-central-app-connectivity-enabled: "true"
     env:
-      - name: CENTRAL_APPLICATION_GATEWAY_ENABLED
+      - name: CENTRAL_APPLICATION_CONNECTIVITY_ENABLED
         value: "true"
   - labels:
       preset-keb-dev-credentials: "true"
@@ -1063,3 +1064,16 @@ presets:
     env:
     - name: KMS_KEY_URL
       value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
+  - labels:
+      preset-prowjob-gcp-logging: "true"
+    env:
+      - name: SA_PROWJOB_GCP_LOGGING_CLIENT_KEY_PATH
+        value: "/etc/credentials/sa-prowjob-gcp-logging-client/secret.json"
+    volumes:
+      - name: sa-prowjob-gcp-logging-client-key
+        secret:
+          secretName: sa-prowjob-gcp-logging-client-key
+    volumeMounts:
+      - name: sa-prowjob-gcp-logging-client-key
+        mountPath: /etc/credentials/sa-prowjob-gcp-logging-client
+        readOnly: true

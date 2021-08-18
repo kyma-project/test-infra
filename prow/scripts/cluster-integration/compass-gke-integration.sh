@@ -88,12 +88,8 @@ function docker_cleanup() {
     log::info "Docker image cleanup"
     if [ -n "${COMPASS_INSTALLER_IMAGE}" ]; then
       log::info "Delete temporary Compass-Installer Docker image"
-      gcp::authenticate \
-        -c "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
       gcp::delete_docker_image \
         -i "${COMPASS_INSTALLER_IMAGE}"
-      gcp::set_account \
-        -c "${GOOGLE_APPLICATION_CREDENTIALS}"
     fi
   fi
 
@@ -246,6 +242,7 @@ function applyCompassOverrides() {
     --data "global.systemFetcher.oauth.tokenURLPattern=http://compass-external-services-mock:8080/systemfetcher/oauth/token" \
     --data "global.systemFetcher.oauth.scopesClaim=scopes" \
     --data "global.systemFetcher.oauth.tenantHeaderName=x-zid" \
+    --data "global.migratorJob.nodeSelectorEnabled=true" \
     --label "component=compass"
 }
 
@@ -317,6 +314,12 @@ function installCompass() {
   kubectl create namespace "compass-installer"
   applyCommonOverrides "compass-installer"
   applyCompassOverrides
+
+  log::info "Choose node for migration jobs execution"
+  NODE=$(kubectl get nodes | tail -n 1 | cut -d ' ' -f 1)
+
+  log::info "DB migration up and down jobs will be executed on node: $NODE"
+  kubectl label node "$NODE" migrationJobs=true
 
   echo "Manual concatenating yamls"
   "${COMPASS_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
