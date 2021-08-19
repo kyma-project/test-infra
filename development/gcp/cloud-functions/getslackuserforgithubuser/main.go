@@ -68,9 +68,9 @@ func init() {
 	}
 }
 
-// GetGithubCommiter gets commiter github Login for Refs BaseSHA from pubsub ProwMessage.
-// It will find Login for commiter of first Ref in Refs slice because Prow crier pubsub reporter place ProwJobSpec.Refs first.
-// ProwJobSpec ExtraRefs are appended second.
+// GetSlackUserForGithubUser finds slack username for all github usernames from FailingTestMessage.GithubCommitersLogins.
+// It search for slack usernames in users-map.yaml file in github. Results are stored in FailingTestMessage.CommitersSlackLogin.
+// It publish message to pubsub NotifyCommiterTopic and update failing prowjob instance in firestore.
 func GetSlackUserForGithubUser(ctx context.Context, m pubsub.MessagePayload) {
 	var err error
 	var wg sync.WaitGroup
@@ -114,19 +114,28 @@ func GetSlackUserForGithubUser(ctx context.Context, m pubsub.MessagePayload) {
 		logger.LogInfo(fmt.Sprintf("found prowjob execution ID: %s", *jobID))
 	}
 
+	// Check if FailingTestMessage.CommitersSlackLogins is empty. If not empty, nothing to do.
+	// Only pass message to pubsub NotifyCommiterTopic.
 	if failingTestMessage.CommitersSlackLogins == nil || len(failingTestMessage.CommitersSlackLogins) == 0 {
+		// Get content of users-map.yaml.
 		usersMap, err := githubClient.GetUsersMap(ctx)
 		if err != nil {
 			logger.LogCritical(fmt.Sprintf("failed get users-map.yaml file from sap tools github, got error: %v", err))
 		}
 
+		// Increase waiting group with number github commiters to check.
 		wg.Add(len(failingTestMessage.GithubCommitersLogins))
 		for _, commiter := range failingTestMessage.GithubCommitersLogins {
+			// Run goroutine to find entry in usersMap for one commiter. One goroutine for each commiter.
 			go func(commiter string, usersMap []types.User, logger *cloudfunctions.LogEntry, out chan<- string, done chan<- int) {
+				// Signal close channel when done.
 				defer func() { done <- 1 }()
+				// Search usersMap.
 				for _, user := range usersMap {
 					if user.ComGithubUsername == commiter {
 						logger.LogInfo(fmt.Sprintf("user %s is present in users map", commiter))
+						// Send slack username to output channel.
+						// TODO: consider creating an User type to store matching github and slack user in one object.
 						out <- user.ComEnterpriseSlackUsername
 						return
 					}
@@ -134,22 +143,31 @@ func GetSlackUserForGithubUser(ctx context.Context, m pubsub.MessagePayload) {
 				logger.LogError(fmt.Sprintf("user %s is not present in users map, please add user to users-map.yaml", commiter))
 			}(commiter, usersMap, logger, out, done)
 		}
+
+		// Routine receiving results from search go routines. It saves results in FailingTestMessage.CommiterSlackLogins.
 		go func(wg *sync.WaitGroup, message *pubsub.FailingTestMessage, logger *cloudfunctions.LogEntry, out <-chan string, done <-chan int) {
 			for {
 				select {
 				case slackUser := <-out:
+					// Save slack username in FailingTestMessage.CommiterSlackLogins
 					message.CommitersSlackLogins = append(message.CommitersSlackLogins, slackUser)
 				case <-done:
+					// Decrease waiting group count.
 					wg.Done()
 				}
 			}
 		}(&wg, &failingTestMessage, logger, out, done)
+		// Wait until all search goroutines finish.
 		wg.Wait()
+		// Check if we found all authors.
 		if len(failingTestMessage.GithubCommitersLogins) == len(failingTestMessage.CommitersSlackLogins) {
 			logger.LogInfo("all authors present in users map")
 		}
+		// Update failing prowjob instance in firestore with slack usernames.
 		var ref *gcpfirestore.DocumentRef
+		// If FailingTestMessage hold firestore ID, use it.
 		if failingTestMessage.FirestoreDocumentID != nil {
+			// Create firestore document ref.
 			ref = firestoreClient.Doc(fmt.Sprintf("testFailures/%s", *failingTestMessage.FirestoreDocumentID))
 			err = firestoreClient.StoreSlackUsernames(ctx, failingTestMessage.CommitersSlackLogins, ref)
 			if err != nil {
@@ -160,6 +178,8 @@ func GetSlackUserForGithubUser(ctx context.Context, m pubsub.MessagePayload) {
 			logger.LogError(fmt.Sprintf("failingTestMessage.FirestoreDocumentID is empty, can not store commiters slack usernames in firestore"))
 		}
 	}
+
+	// Publish message to pubsub.
 	publlishedMessageID, err := pubSubClient.PublishMessage(ctx, failingTestMessage, notifyCommiterTopic)
 	if err != nil {
 		logger.LogCritical(fmt.Sprintf("failed publishing to pubsub, error: %s", err.Error()))
