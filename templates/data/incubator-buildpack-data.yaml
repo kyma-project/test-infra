@@ -540,20 +540,20 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_test-infra
-                    - image_buildpack-golang
+                    - image_buildpack-node
                     - jobConfig_generic_component
                     - jobConfig_buildpack_incubator
               - jobConfig:
                   name: post-main-hydra-login-consent
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/hydra-login-consent"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
                     - extra_refs_test-infra
                     - disable_testgrid
-                    - image_buildpack-golang
+                    - image_buildpack-node
                     - jobConfig_generic_component
                     - jobConfig_buildpack_incubator
