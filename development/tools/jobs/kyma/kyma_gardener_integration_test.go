@@ -107,7 +107,7 @@ func TestKymaGardenerGCPIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
 }
 
-func TestKymaGardenerAWSIntegrationJobPeriodics(t *testing.T) {
+/*func TestKymaGardenerAWSIntegrationJobPeriodics(t *testing.T) {
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration-gardener.yaml")
 	require.NoError(t, err)
 
@@ -129,7 +129,7 @@ func TestKymaGardenerAWSIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_REGION", "eu-west-3")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_ZONES", "eu-west-3a")
 	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
-}
+}*/
 
 func TestKymaGardenerAzureIntegrationPresubmit(t *testing.T) {
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration-gardener.yaml")
