@@ -56,10 +56,7 @@ func (gcrc *GCRCleaner) Run(repoName string, makeChanges bool) (allSucceeded boo
 	}
 
 	for _, repo := range repos {
-		shouldRemoveRepo, err := gcrc.shouldRemoveRepo(repo)
-		if err != nil {
-
-		} else if shouldRemoveRepo {
+		if gcrc.shouldRemoveRepo(repo) {
 			log.Infof("Cleaning images in %s/%s repository", registry, repo)
 
 			// get all images for each repo
@@ -89,7 +86,7 @@ func (gcrc *GCRCleaner) Run(repoName string, makeChanges bool) (allSucceeded boo
 }
 
 // RepoRemovalPredicate returns true when images in repo should be considered for deletion (name matches removal criteria)
-type RepoRemovalPredicate func(string) (bool, error)
+type RepoRemovalPredicate func(string) bool
 
 // ImageRemovalPredicate returns true when image should be deleted (matches removal criteria)
 type ImageRemovalPredicate func(*gcrgoogle.ManifestInfo) bool
@@ -98,12 +95,9 @@ type ImageRemovalPredicate func(*gcrgoogle.ManifestInfo) bool
 // Repo is matching the criteria if it's:
 // - Name does not match gcrNameIgnoreRegex
 func NewRepoFilter(gcrNameIgnoreRegex *regexp.Regexp) RepoRemovalPredicate {
-	return func(repo string) (bool, error) {
+	return func(repo string) bool {
 		nameMatches := gcrNameIgnoreRegex.MatchString(repo)
-		if !nameMatches {
-			return true, nil
-		}
-		return false, nil
+		return !nameMatches
 	}
 }
 

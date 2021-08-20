@@ -42,10 +42,9 @@ func TestNewRepoFilter(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			//when
-			collected, err := repoFilter(testCase.repo)
+			collected := repoFilter(testCase.repo)
 
 			//then
-			require.NoError(t, err)
 			assert.Equal(t, testCase.expectedFilterValue, collected)
 		})
 	}
@@ -59,12 +58,12 @@ func TestNewImageFilter(t *testing.T) {
 	}{
 		{
 			name:                "should filter older image",
-			expectedFilterValue: false,
+			expectedFilterValue: true,
 			created:             timeTwoHoursAgo,
 		},
 		{
 			name:                "should skip recently created image",
-			expectedFilterValue: true,
+			expectedFilterValue: false,
 			created:             timeNow,
 		},
 	}
@@ -72,7 +71,7 @@ func TestNewImageFilter(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 			//when
 			manifest := createImageManifest(testCase.created, make([]string, 0))
-			collected := imageFilter(manifest)
+			collected := imageFilter(&manifest)
 
 			//then
 			assert.Equal(t, testCase.expectedFilterValue, collected)
@@ -116,8 +115,8 @@ func TestImageRemoval(t *testing.T) {
 		repository := registry + "/" + repo
 		mockRepoAPI.On("ListSubrepositories", "eu.gcr.io/test").Return([]string{"test/repo", "test/another"}, nil)
 
-		mockImageAPI.On("ListImages", "eu.gcr.io", "test/repo").Return(map[string]gcrgoogle.ManifestInfo{"sha256:abcd": *imageCorrect}, nil)
-		mockImageAPI.On("ListImages", "eu.gcr.io", "test/another").Return(map[string]gcrgoogle.ManifestInfo{"sha256:efgh": *imageCorrect}, nil)
+		mockImageAPI.On("ListImages", "eu.gcr.io", "test/repo").Return(map[string]gcrgoogle.ManifestInfo{"sha256:abcd": imageCorrect}, nil)
+		mockImageAPI.On("ListImages", "eu.gcr.io", "test/another").Return(map[string]gcrgoogle.ManifestInfo{"sha256:efgh": imageCorrect}, nil)
 
 		mockImageAPI.On("DeleteImage", registry, "test/repo", "sha256:abcd", imageCorrect).Return(errors.New("test error")) // Called first, returns error
 		mockImageAPI.On("DeleteImage", registry, "test/another", "sha256:efgh", imageCorrect).Return(nil)                   // Called although the previous call failed
@@ -139,8 +138,8 @@ func TestImageRemoval(t *testing.T) {
 		repository := "eu.gcr.io/test"
 		mockRepoAPI.On("ListSubrepositories", "eu.gcr.io/test").Return([]string{"test/repo", "test/another"}, nil)
 
-		mockImageAPI.On("ListImages", "eu.gcr.io", "test/repo").Return(map[string]gcrgoogle.ManifestInfo{"sha256:abcd": *imageCorrect}, nil)
-		mockImageAPI.On("ListImages", "eu.gcr.io", "test/another").Return(map[string]gcrgoogle.ManifestInfo{"sha256:efgh": *imageCorrect}, nil)
+		mockImageAPI.On("ListImages", "eu.gcr.io", "test/repo").Return(map[string]gcrgoogle.ManifestInfo{"sha256:abcd": imageCorrect}, nil)
+		mockImageAPI.On("ListImages", "eu.gcr.io", "test/another").Return(map[string]gcrgoogle.ManifestInfo{"sha256:efgh": imageCorrect}, nil)
 
 		gcrc := New(mockRepoAPI, mockImageAPI, repoFilter, imageFilter)
 
@@ -149,8 +148,8 @@ func TestImageRemoval(t *testing.T) {
 		assert.True(t, allSucceeded)
 	})
 }
-func createImageManifest(created time.Time, tags []string) *gcrgoogle.ManifestInfo {
-	return &gcrgoogle.ManifestInfo{
+func createImageManifest(created time.Time, tags []string) gcrgoogle.ManifestInfo {
+	return gcrgoogle.ManifestInfo{
 		Created: created,
 		Tags:    tags,
 	}
