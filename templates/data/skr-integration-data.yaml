@@ -100,6 +100,7 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "keb_plan_azure_lite"
+              # this job is temporarily disabled due to insufficient permissions to cleanup cluster afterwards. It will be reeanbled after the problem is fixed
               # - jobConfig:
               #     name: "skr-aws-integration-dev"
               #     cron: "5 1 * * *" # "At minute 30 past every hour"
