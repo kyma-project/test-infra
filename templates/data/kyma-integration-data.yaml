@@ -546,6 +546,7 @@ templates:
                     - "request_big"
                     - "gke_job_template"
                     - "gke_job_labels_template"
+              # Rapid channel is unstable and the job never succeeds. See https://github.com/kyma-project/test-infra/issues/4063
               # - jobConfig:
               #     name: "pre-main-kyma-gke-rapid-integration"
               #     labels:
@@ -739,25 +740,26 @@ templates:
                     - "request_big"
                     - "gke_upgrade_job_template"
                     - "gke_job_labels_template"
-              - jobConfig:
-                  name: "post-main-kyma-gke-rapid-integration"
-                  skip_report: true
-                  labels:
-                    preset-log-collector-slack-token: "true"
-                    preset-build-main: "true"
-                    preset-gke-rapid: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "request_big"
-                    - "gke_job_template"
-                    - "gke_job_labels_template"
+              # Rapid channel is unstable and the job never succeeds. See https://github.com/kyma-project/test-infra/issues/4063
+              # - jobConfig:
+              #     name: "post-main-kyma-gke-rapid-integration"
+              #     skip_report: true
+              #     labels:
+              #       preset-log-collector-slack-token: "true"
+              #       preset-build-main: "true"
+              #       preset-gke-rapid: "true"
+              #   inheritedConfigs:
+              #     global:
+              #       - "jobConfig_default"
+              #       - "jobConfig_postsubmit"
+              #       - "image_kyma-integration"
+              #       - "extra_refs_test-infra"
+              #       - "disable_testgrid"
+              #     local:
+              #       - "jobConfig_default"
+              #       - "request_big"
+              #       - "gke_job_template"
+              #       - "gke_job_labels_template"
 
               # periodics
 
