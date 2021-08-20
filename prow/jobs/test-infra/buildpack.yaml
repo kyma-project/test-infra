@@ -114,6 +114,43 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+    - name: pre-test-infra-buildpack-golang-libgit2
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-buildpack-golang-libgit2"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/buildpack-golang/'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210730-c3e07ed7"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-libgit2"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-test-infra-buildpack-node
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
