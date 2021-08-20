@@ -71,18 +71,21 @@ func (iw *ImageAPIWrapper) DeleteImage(registry, repoName string, digest string,
 		return err
 	}
 
+	// if the image has tags, it is silently removed with the last tag, so we need to skip removal by SHA if the image has tags
 	// delete all tags
-	for _, tag := range manifest.Tags {
-		taggedName := repo.Tag(tag)
-		log.Info(taggedName)
-		if err := gcrremote.Delete(taggedName, gcrremote.WithAuth(iw.Auth)); err != nil {
+	if len(manifest.Tags) > 0 {
+		for _, tag := range manifest.Tags {
+			taggedName := repo.Tag(tag)
+			log.Info(taggedName)
+			err := gcrremote.Delete(taggedName, gcrremote.WithAuth(iw.Auth))
 			return err
 		}
+	} else {
+		// delete image
+		reference := repo.Digest(digest)
+		log.Info(reference)
+		err = gcrremote.Delete(reference, gcrremote.WithAuth(iw.Auth))
+		return err
 	}
-
-	// delete image
-	reference := repo.Digest(digest)
-	log.Info(reference)
-	err = gcrremote.Delete(reference, gcrremote.WithAuth(iw.Auth))
-	return err
+	return nil
 }
