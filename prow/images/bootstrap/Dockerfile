@@ -67,7 +67,7 @@ RUN curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID"
 ENV DOCKER_VERSION=18.06.1*
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends docker-ce=${DOCKER_VERSION} && \
+    apt-get install -y --no-install-recommends docker-ce && \
     sed -i 's/cgroupfs_mount$/#cgroupfs_mount\n/' /etc/init.d/docker
 
 # Move Docker's storage location
