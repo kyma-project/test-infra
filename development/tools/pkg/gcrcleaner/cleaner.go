@@ -4,7 +4,6 @@ import (
 	"regexp"
 	"time"
 
-	gcrauth "github.com/google/go-containerregistry/pkg/authn"
 	gcrname "github.com/google/go-containerregistry/pkg/name"
 	gcrgoogle "github.com/google/go-containerregistry/pkg/v1/google"
 	log "github.com/sirupsen/logrus"
@@ -27,7 +26,6 @@ type ImageAPI interface {
 
 // GCRCleaner deletes Docker images created by prow jobs.
 type GCRCleaner struct {
-	auth              gcrauth.Authenticator
 	repoAPI           RepoAPI
 	imageAPI          ImageAPI
 	shouldRemoveRepo  RepoRemovalPredicate
@@ -35,8 +33,8 @@ type GCRCleaner struct {
 }
 
 // New returns a new instance of GCRCleaner
-func New(auth gcrauth.Authenticator, repoAPI RepoAPI, imageAPI ImageAPI, shouldRemoveRepo RepoRemovalPredicate, shouldRemoveImage ImageRemovalPredicate) *GCRCleaner {
-	return &GCRCleaner{auth, repoAPI, imageAPI, shouldRemoveRepo, shouldRemoveImage}
+func New(repoAPI RepoAPI, imageAPI ImageAPI, shouldRemoveRepo RepoRemovalPredicate, shouldRemoveImage ImageRemovalPredicate) *GCRCleaner {
+	return &GCRCleaner{repoAPI, imageAPI, shouldRemoveRepo, shouldRemoveImage}
 }
 
 // Run executes image removal process for specified Docker repository
@@ -80,14 +78,14 @@ func (gcrc *GCRCleaner) Run(repoName string, makeChanges bool) (allSucceeded boo
 						log.Errorf("deleting image %s/%s@%s: %#v", registry, repo, sha, err)
 						allSucceeded = false
 					} else {
-						log.Infof("%s Image %s/%s@%s deleted", msgPrefix, registry, repo, sha)
+						log.Infof("%sImage %s/%s@%s deleted", msgPrefix, registry, repo, sha)
 					}
 
 				}
 			}
 		}
 	}
-	return false, nil
+	return true, nil
 }
 
 // RepoRemovalPredicate returns true when images in repo should be considered for deletion (name matches removal criteria)

@@ -58,7 +58,7 @@ func main() {
 
 	imageAPI := &gcrcleaner.ImageAPIWrapper{Context: ctx, Auth: auth}
 
-	gcrCleaner := gcrcleaner.New(auth, repoAPI, imageAPI, repoFilter, imageFilter)
+	gcrCleaner := gcrcleaner.New(repoAPI, imageAPI, repoFilter, imageFilter)
 
 	allSucceeded, err := gcrCleaner.Run(*repository, !(*dryRun))
 	if err != nil {
