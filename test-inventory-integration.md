@@ -39,6 +39,7 @@
 | post-main-kyma-gardener-gcp-api-gateway | gardener_gcp | kyma cli | kyma install |  | pr-merge |  octopus  |
 | pre-main-kyma-gardener-gcp-eventing | gardener_gcp | kyma cli | kyma install |  | pr-submit |  octopus  |
 | kyma-integration-gardener-gcp | gardener_gcp | kyma cli | kyma install |  | periodic |  octopus  |
+| kyma-integration-gardener-aws | gardener_aws | kyma cli | kyma install |  | periodic |  octopus  |
 | kyma-integration-gardener-azure | gardener_azure | kyma cli | kyma install |  | periodic |  octopus  |
 | kyma-integration-evaluation-gardener-azure | gardener_azure | kyma cli | kyma install | evaluation | periodic |  fast-integration  |
 | kyma-integration-production-gardener-azure | gardener_azure | kyma cli | kyma install | production | periodic |  fast-integration  |
@@ -54,5 +55,6 @@
 | kyma-upgrade-gardener-azure | gardener_azure | kyma cli | kyma install, kyma upgrade |  | periodic |  octopus  |
 | skr-azure-integration-dev | gardener_azure | keb | keb |  | periodic |  fast-integration  |
 | skr-azure-lite-integration-dev | gardener_azure | keb | keb | evaluation | periodic |  fast-integration  |
+| skr-aws-integration-dev | gardener_aws | keb | keb |  | periodic |  fast-integration  |
 | skr-trial-integration-dev | gardener_azure | keb | keb | evaluation | periodic |  fast-integration  |
 | skr-free-aws-integration-dev | gardener_aws | keb | keb | evaluation | periodic |  fast-integration  |

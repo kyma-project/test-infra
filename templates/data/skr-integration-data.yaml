@@ -100,24 +100,23 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "keb_plan_azure_lite"
-              # this job is temporarily disabled due to insufficient permissions to cleanup cluster afterwards. It will be reeanbled after the problem is fixed
-              # - jobConfig:
-              #     name: "skr-aws-integration-dev"
-              #     cron: "5 1 * * *" # "At minute 30 past every hour"
-              #     labels:
-              #       preset-skr-al-service-key: "true"
-              #   inheritedConfigs:
-              #     global:
-              #       - "image_kyma-integration"
-              #       - "jobConfig_default"
-              #       - "jobConfig_periodic"
-              #       - "extra_refs_test-infra"
-              #       - "extra_refs_kyma"
-              #       - "disable_testgrid"
-              #       - "kyma_major_version_1"
-              #     local:
-              #       - "jobConfig_default"
-              #       - "keb_plan_aws"
+              - jobConfig:
+                  name: "skr-aws-integration-dev"
+                  cron: "5 1 * * *" # "At minute 30 past every hour"
+                  labels:
+                    preset-skr-al-service-key: "true"
+                inheritedConfigs:
+                  global:
+                    - "image_kyma-integration"
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                    - "disable_testgrid"
+                    - "kyma_major_version_1"
+                  local:
+                    - "jobConfig_default"
+                    - "keb_plan_aws"
               - jobConfig:
                   name: "skr-trial-integration-dev"
                   cron: "5 * * * *" # "At minute 30 past every hour"
