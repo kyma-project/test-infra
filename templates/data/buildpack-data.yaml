@@ -85,18 +85,6 @@ templates:
                         - "default"
                         - "presubmit"
                   - jobConfig:
-                      name: "pre-test-infra-buildpack-golang-libgit2"
-                      run_if_changed: "^prow/images/buildpack-golang/"
-                      args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-libgit2"
-                    inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
-                      local:
-                        - "default"
-                        - "presubmit"
-                  - jobConfig:
                       name: "post-test-infra-buildpack-golang"
                       run_if_changed: "^prow/images/buildpack-golang/"
                       args:

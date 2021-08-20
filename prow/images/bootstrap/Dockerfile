@@ -1,6 +1,6 @@
 # Basic setup for Prow jobs
 
-FROM debian:stretch
+FROM debian:bullseye
 
 # Add commit details
 
@@ -31,6 +31,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     lsb-release \
     gettext \
     libpcsclite1 \
+    libgit2-dev \
+    pkg-config \
     && apt-get clean
 
 # Install gcloud
