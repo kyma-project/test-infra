@@ -338,27 +338,26 @@ templates:
                     - jobConfig_default
                     - gardener_gcp_job
                     - command_integration
-              # this job is temporarily disabled due to insufficient permissions to cleanup cluster afterwards. It will be reeanbled after the problem is fixed
-              # - jobConfig:
-              #     name: kyma-integration-gardener-aws
-              #     annotations:
-              #       testgrid-dashboards: kyma_integration
-              #       description: Kyma AWS Gardener integration job.
-              #     decoration_config:
-              #       timeout: 14400000000000 # 4h
-              #       grace_period: 600000000000 # 10min
-              #     cron: "00 14 * * *"
-              #   inheritedConfigs:
-              #     global:
-              #       - jobConfig_default
-              #       - jobConfig_periodic
-              #       - extra_refs_test-infra
-              #       - extra_refs_kyma
-              #       - image_kyma-integration
-              #     local:
-              #       - jobConfig_default
-              #       - gardener_aws_job
-              #       - command_integration
+              - jobConfig:
+                  name: kyma-integration-gardener-aws
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    description: Kyma AWS Gardener integration job.
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  cron: "00 14 * * *"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                    - image_kyma-integration
+                  local:
+                    - jobConfig_default
+                    - gardener_aws_job
+                    - command_integration
               - jobConfig:
                   name: kyma-integration-gardener-azure
                   annotations:
