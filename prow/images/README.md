@@ -16,6 +16,7 @@ The structure of the folder looks as follows:
   ├── buildpack-golang      # The image for building Golang components
   ├── buildpack-node        # The image for building Node.js components
   ├── buildpack-java        # The image for building Java components
+  ├── buildpack-golang-gitlib2 # The image for golang components with libgit2-dev for building
   ├── cleaner               # The image with a script for cleaning SSH keys on service accounts in Google Cloud Storage
   └── whitesource-scanner   # The image for performing whitesource scans
 ```
