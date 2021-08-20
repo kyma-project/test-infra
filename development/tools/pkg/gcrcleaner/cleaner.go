@@ -94,7 +94,7 @@ type RepoRemovalPredicate func(string) (bool, error)
 // ImageRemovalPredicate returns true when image should be deleted (matches removal criteria)
 type ImageRemovalPredicate func(*gcrgoogle.ManifestInfo) bool
 
-// NewRepoFilter is a default IPRemovalPredicate factory
+// NewRepoFilter is a default RepoRemovalPredicate factory
 // Repo is matching the criteria if it's:
 // - Name does not match gcrNameIgnoreRegex
 func NewRepoFilter(gcrNameIgnoreRegex *regexp.Regexp) RepoRemovalPredicate {
@@ -107,7 +107,7 @@ func NewRepoFilter(gcrNameIgnoreRegex *regexp.Regexp) RepoRemovalPredicate {
 	}
 }
 
-// NewIPFilter is a default IPRemovalPredicate factory
+// NewImageFilter is a default ImageRemovalPredicate factory
 // Image is matching the criteria if it's:
 // - CreationTimestamp indicates that it is created more than ageInHours ago.
 func NewImageFilter(ageInHours int) ImageRemovalPredicate {
