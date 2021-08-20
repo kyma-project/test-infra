@@ -165,4 +165,4 @@ namespacedValidation:
 
 psp:
   enabled: true
-  name: "gardener.unprivileged"
+  name: "gardener.privileged"
