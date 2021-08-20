@@ -39,7 +39,6 @@
 | post-main-kyma-gardener-gcp-api-gateway | gardener_gcp | kyma cli | kyma install |  | pr-merge |  octopus  |
 | pre-main-kyma-gardener-gcp-eventing | gardener_gcp | kyma cli | kyma install |  | pr-submit |  octopus  |
 | kyma-integration-gardener-gcp | gardener_gcp | kyma cli | kyma install |  | periodic |  octopus  |
-| kyma-integration-gardener-aws | gardener_aws | kyma cli | kyma install |  | periodic |  octopus  |
 | kyma-integration-gardener-azure | gardener_azure | kyma cli | kyma install |  | periodic |  octopus  |
 | kyma-integration-evaluation-gardener-azure | gardener_azure | kyma cli | kyma install | evaluation | periodic |  fast-integration  |
 | kyma-integration-production-gardener-azure | gardener_azure | kyma cli | kyma install | production | periodic |  fast-integration  |
