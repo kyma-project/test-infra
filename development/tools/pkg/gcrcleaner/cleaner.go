@@ -1,7 +1,6 @@
 package gcrcleaner
 
 import (
-	"errors"
 	"regexp"
 	"time"
 
@@ -13,19 +12,20 @@ import (
 
 //go:generate mockery --name=RepoAPI --output=automock --outpkg=automock --case=underscore
 
-// aaa
+// RepoAPI abstracts access to Docker repos
 type RepoAPI interface {
 	ListSubrepositories(repoName string) ([]string, error)
 }
 
-//go:generate mockery --name=Image --output=automock --outpkg=automock --case=underscore
+//go:generate mockery --name=ImageAPI --output=automock --outpkg=automock --case=underscore
 
-// aaa
+// ImageAPI abstracts access to Docker images
 type ImageAPI interface {
 	ListImages(registry, repoName string) (map[string]gcrgoogle.ManifestInfo, error)
-	DeleteImage(registry, repoName string, imageSHA string) error
+	DeleteImage(registry, repoName string, digest string, manifest gcrgoogle.ManifestInfo) error
 }
 
+// GCRCleaner deletes Docker images created by prow jobs.
 type GCRCleaner struct {
 	auth              gcrauth.Authenticator
 	repoAPI           RepoAPI
@@ -34,10 +34,12 @@ type GCRCleaner struct {
 	shouldRemoveImage ImageRemovalPredicate
 }
 
+// New returns a new instance of GCRCleaner
 func New(auth gcrauth.Authenticator, repoAPI RepoAPI, imageAPI ImageAPI, shouldRemoveRepo RepoRemovalPredicate, shouldRemoveImage ImageRemovalPredicate) *GCRCleaner {
 	return &GCRCleaner{auth, repoAPI, imageAPI, shouldRemoveRepo, shouldRemoveImage}
 }
 
+// Run executes image removal process for specified Docker repository
 func (gcrc *GCRCleaner) Run(repoName string, makeChanges bool) (allSucceeded bool, err error) {
 	var msgPrefix string
 	if !makeChanges {
@@ -71,26 +73,24 @@ func (gcrc *GCRCleaner) Run(repoName string, makeChanges bool) (allSucceeded boo
 
 				// check if the image is a candidate for deletion
 				if gcrc.shouldRemoveImage(&image) {
-
 					if makeChanges {
-						err = gcrc.imageAPI.DeleteImage(registry, repo, sha)
+						err = gcrc.imageAPI.DeleteImage(registry, repo, sha, image)
 					}
 					if err != nil {
 						log.Errorf("deleting image %s/%s@%s: %#v", registry, repo, sha, err)
+						allSucceeded = false
 					} else {
 						log.Infof("%s Image %s/%s@%s deleted", msgPrefix, registry, repo, sha)
 					}
 
 				}
 			}
-		} else {
-			log.Infof("%s won't be considered for deletion", repo)
 		}
 	}
-	return false, errors.New("run not implemented")
+	return false, nil
 }
 
-// RepoRemovalPredicate returns true when images in repo should be considered for deletion (matches removal criteria)
+// RepoRemovalPredicate returns true when images in repo should be considered for deletion (name matches removal criteria)
 type RepoRemovalPredicate func(string) (bool, error)
 
 // ImageRemovalPredicate returns true when image should be deleted (matches removal criteria)
@@ -119,107 +119,6 @@ func NewImageFilter(ageInHours int) ImageRemovalPredicate {
 		imageAgeHours := time.Since(image.Created).Hours() - float64(ageInHours)
 		oldEnough = imageAgeHours > 0
 
-		if oldEnough {
-			return true
-		}
-		return false
+		return oldEnough
 	}
 }
-
-/*
-func (c *Cleaner) Clean(repo string, since time.Time, allowTagged bool, keep int, tagFilterRegexp *regexp.Regexp, dryRun bool) ([]string, error) {
-	gcrrepo, err := gcrname.NewRepository(repo)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get repo %s: %w", repo, err)
-	}
-	tags, err := gcrgoogle.List(gcrrepo, gcrgoogle.WithAuth(c.auther))
-	if err != nil {
-		return nil, fmt.Errorf("failed to list tags for repo %s: %w", repo, err)
-	}
-
-	// Create a worker pool for parallel deletion
-	pool := workerpool.New(c.concurrency)
-
-	var keepCount = 0
-	var deleted = make([]string, 0, len(tags.Manifests))
-	var deletedLock sync.Mutex
-	var errs = make(map[string]error)
-	var errsLock sync.RWMutex
-
-	var manifests = make([]manifest, 0, len(tags.Manifests))
-	for k, m := range tags.Manifests {
-		manifests = append(manifests, manifest{k, m})
-	}
-
-	// Sort manifest by Created from the most recent to the least
-	sort.Slice(manifests, func(i, j int) bool {
-		return manifests[j].Info.Created.Before(manifests[i].Info.Created)
-	})
-
-	for _, m := range manifests {
-		if c.shouldDelete(m.Info, since, allowTagged, tagFilterRegexp) {
-			// Keep a certain amount of images
-			if keepCount < keep {
-				keepCount++
-				continue
-			}
-
-			// Deletes all tags before deleting the image
-			for _, tag := range m.Info.Tags {
-				tagged := gcrrepo.Tag(tag)
-				if err := c.deleteOne(tagged, dryRun); err != nil {
-					return nil, fmt.Errorf("failed to delete %s: %w", tagged, err)
-				}
-			}
-
-			ref := gcrrepo.Digest(m.Digest)
-			pool.Submit(func() {
-				// Do not process if previous invocations failed. This prevents a large
-				// build-up of failed requests and rate limit exceeding (e.g. bad auth).
-				errsLock.RLock()
-				if len(errs) > 0 {
-					errsLock.RUnlock()
-					return
-				}
-				errsLock.RUnlock()
-
-				if err := c.deleteOne(ref, dryRun); err != nil {
-					cause := errors.Unwrap(err).Error()
-
-					errsLock.Lock()
-					if _, ok := errs[cause]; !ok {
-						errs[cause] = err
-						errsLock.Unlock()
-						return
-					}
-					errsLock.Unlock()
-				}
-
-				deletedLock.Lock()
-				deleted = append(deleted, m.Digest)
-				deletedLock.Unlock()
-			})
-		}
-	}
-
-	// Wait for everything to finish
-	pool.StopWait()
-
-	// Aggregate any errors
-	if len(errs) > 0 {
-		var errStrings []string
-		for _, v := range errs {
-			errStrings = append(errStrings, v.Error())
-		}
-
-		if len(errStrings) == 1 {
-			return nil, fmt.Errorf(errStrings[0])
-		}
-
-		return nil, fmt.Errorf("%d errors occurred: %s",
-			len(errStrings), strings.Join(errStrings, ", "))
-	}
-
-	return deleted, nil
-}
-*/
