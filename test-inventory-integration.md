@@ -54,6 +54,5 @@
 | kyma-upgrade-gardener-azure | gardener_azure | kyma cli | kyma install, kyma upgrade |  | periodic |  octopus  |
 | skr-azure-integration-dev | gardener_azure | keb | keb |  | periodic |  fast-integration  |
 | skr-azure-lite-integration-dev | gardener_azure | keb | keb | evaluation | periodic |  fast-integration  |
-| skr-aws-integration-dev | gardener_aws | keb | keb |  | periodic |  fast-integration  |
 | skr-trial-integration-dev | gardener_azure | keb | keb | evaluation | periodic |  fast-integration  |
 | skr-free-aws-integration-dev | gardener_aws | keb | keb | evaluation | periodic |  fast-integration  |
