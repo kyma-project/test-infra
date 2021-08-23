@@ -119,7 +119,7 @@ KYMA_CLI_VERSION="0c56892"
 log::info "Installing Kyma CLI version: $KYMA_CLI_VERSION"
 
 PREV_WD=$(pwd)
-git clone git@github.com:DimitarPetrov/cli.git && cd cli && git checkout $KYMA_CLI_VERSION # TODO: remove fork once the PR is merged
+git clone https://github.com/DimitarPetrov/cli.git && cd cli && git checkout $KYMA_CLI_VERSION # TODO: remove fork once the PR is merged
 make build-linux && cd ./bin && mv ./kyma-linux ./kyma
 chmod +x kyma
 
