@@ -242,6 +242,7 @@ function applyCompassOverrides() {
     --data "global.systemFetcher.oauth.tokenURLPattern=http://compass-external-services-mock:8080/systemfetcher/oauth/token" \
     --data "global.systemFetcher.oauth.scopesClaim=scopes" \
     --data "global.systemFetcher.oauth.tenantHeaderName=x-zid" \
+    --data "global.kubernetes.serviceAccountTokenJWKS=https://container.googleapis.com/v1beta1/projects/$CLOUDSDK_CORE_PROJECT/locations/$CLOUDSDK_COMPUTE_REGION/clusters/$COMMON_NAME/jwks" \
     --label "component=compass"
 }
 
