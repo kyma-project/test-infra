@@ -400,6 +400,10 @@ done
 
 kubectl delete cts $SUITE_NAME
 
+# Because of sequential compass installation, the second one fails due to compass-migration job patching failure. K8s job's fields are immutable.
+log::info "Deleting the old compass-migration job"
+kubectl delete jobs -n compass-system compass-migration
+
 log::info "Install New Compass version"
 installCompassNew
 
