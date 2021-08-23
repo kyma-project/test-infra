@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     jq \
     dnsutils \
     openssh-client \
-    python \
+    python3 \
     wget \
     apt-transport-https \
     gnupg2 \
@@ -36,20 +36,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean
 
 # Install gcloud
-ENV CLOUD_SDK_VERSION=299.0.0
+ENV CLOUD_SDK_VERSION=353.0.0
 ENV PATH=/google-cloud-sdk/bin:/workspace:${PATH} \
     CLOUDSDK_CORE_DISABLE_PROMPTS=1
 
-#RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz && \
-#    tar xzf google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz -C / && \
-#    rm google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz && \
-#    /google-cloud-sdk/install.sh \
-#    --disable-installation-options \
-#    --bash-completion=false \
-#    --path-update=false \
-#    --usage-reporting=false && \
-#    gcloud components install alpha beta kubectl docker-credential-gcr && \
-#    gcloud info | tee /workspace/gcloud-info.txt
+RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz && \
+    tar xzf google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz -C / && \
+    rm google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz && \
+    /google-cloud-sdk/install.sh \
+    --disable-installation-options \
+    --bash-completion=false \
+    --path-update=false \
+    --usage-reporting=false && \
+    gcloud components install alpha beta kubectl docker-credential-gcr && \
+    gcloud info | tee /workspace/gcloud-info.txt
 
 # Cluster Version
 ENV CLUSTER_VERSION=1.16
