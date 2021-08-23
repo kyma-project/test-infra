@@ -82,7 +82,7 @@ func (gcrc *GCRCleaner) Run(repoName string, makeChanges bool) (allSucceeded boo
 			}
 		}
 	}
-	return true, nil
+	return allSucceeded, nil
 }
 
 // RepoRemovalPredicate returns true when images in repo should be considered for deletion (name matches removal criteria)
