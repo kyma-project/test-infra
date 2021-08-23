@@ -1,3 +1,5 @@
+pjNames:
+  - pjName: "pre-kyma-components-function-controller"
 prConfigs:
   kyma-project:
     kyma:
