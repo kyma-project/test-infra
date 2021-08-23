@@ -43,6 +43,7 @@ func (gcrc *GCRCleaner) Run(repoName string, makeChanges bool) (allSucceeded boo
 	if !makeChanges {
 		msgPrefix = "[DRY RUN] "
 	}
+	allSucceeded = true
 
 	repo, err := gcrname.NewRepository(repoName)
 	if err != nil {

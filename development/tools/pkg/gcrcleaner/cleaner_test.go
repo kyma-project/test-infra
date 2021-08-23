@@ -125,7 +125,7 @@ func TestImageRemoval(t *testing.T) {
 
 		allSucceeded, err := gcrc.Run(repository, true)
 		require.NoError(t, err)
-		assert.True(t, allSucceeded)
+		assert.False(t, allSucceeded)
 	})
 
 	t.Run("Run(makeChanges=false) should not remove anything (dry run)", func(t *testing.T) {
