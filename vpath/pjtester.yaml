@@ -1,6 +1,0 @@
-pjNames:
-  - pjName: "pre-kyma-components-function-controller"
-prConfigs:
-  kyma-project:
-    kyma:
-      prNumber: 11912
