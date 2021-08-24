@@ -1,6 +1,6 @@
 # Basic setup for Prow jobs
 
-FROM debian:bullseye
+FROM debian:stretch
 
 # Add commit details
 
@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     jq \
     dnsutils \
     openssh-client \
-    python3 \
+    python \
     wget \
     apt-transport-https \
     gnupg2 \
@@ -31,12 +31,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     lsb-release \
     gettext \
     libpcsclite1 \
-    libgit2-dev \
-    pkg-config \
     && apt-get clean
 
 # Install gcloud
-ENV CLOUD_SDK_VERSION=353.0.0
+ENV CLOUD_SDK_VERSION=299.0.0
 ENV PATH=/google-cloud-sdk/bin:/workspace:${PATH} \
     CLOUDSDK_CORE_DISABLE_PROMPTS=1
 
@@ -55,7 +53,7 @@ RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cl
 ENV CLUSTER_VERSION=1.16
 
 # Kubectl 1.16
-#RUN mv /google-cloud-sdk/bin/kubectl.${CLUSTER_VERSION} /google-cloud-sdk/bin/kubectl
+RUN mv /google-cloud-sdk/bin/kubectl.${CLUSTER_VERSION} /google-cloud-sdk/bin/kubectl
 
 # Docker-in-docker
 RUN curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg \
@@ -67,7 +65,7 @@ RUN curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID"
 ENV DOCKER_VERSION=18.06.1*
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends docker-ce && \
+    apt-get install -y --no-install-recommends docker-ce=${DOCKER_VERSION} && \
     sed -i 's/cgroupfs_mount$/#cgroupfs_mount\n/' /etc/init.d/docker
 
 # Move Docker's storage location
