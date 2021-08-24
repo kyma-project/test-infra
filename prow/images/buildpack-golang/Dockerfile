@@ -1,7 +1,6 @@
 # Basic golang buildpack
 
-#FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20210730-c3e07ed7
-FROM eu.gcr.io/kyma-project/test-infra/pr/bootstrap:PR-4060
+FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20210730-c3e07ed7
 
 # Commit details
 
@@ -62,6 +61,10 @@ RUN go get golang.org/x/tools/cmd/goimports \
 
 COPY ./license-puller.sh /license-puller.sh
 ENV LICENSE_PULLER_PATH=/license-puller.sh
+
+# libgit2
+COPY ./sources.list /etc/apt/sources.list
+RUN apt update && apt install libgit2-dev=1.1.0+dfsg.1-4 -y
 
 # Prow Tools
 COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20210804-d55639f9 /prow-tools /prow-tools
