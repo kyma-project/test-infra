@@ -67,7 +67,7 @@ spec:
     spec:
       containers:
         - name: login-consent
-          image: piotrkpc/hydra-login-consent:test_0.1
+          image: ${TEST_ORY_IMAGE}
           env:
             - name: HYDRA_ADMIN_URL
               value: http://ory-hydra-admin.kyma-system.svc.cluster.local:4445
