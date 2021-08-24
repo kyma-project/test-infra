@@ -8,10 +8,11 @@ def main(event, context):
 	# Using SLACK_BOT_TOKEN environment variable
 	app = App(
 	)
+	slack_api_id = os.environ['SLACK_API_ID'].replace('-', '_')
+	env_prefix = os.environ['ENV_PREFIX']
+	base_url = os.environ['{}_SLACK_CONNECTOR_{}_GATEWAY_URL'.format(env_prefix, slack_api_id)]
 	# Set Slack API base URL to the URL of slack-connector application gateway.
-	app.client.base_url = "{}/".format(
-		os.environ['KYMA_SLACK_SLACK_CONNECTOR_{}_GATEWAY_URL'.format(os.environ['SLACK_API_ID']).replace('-', '_')]
-	)
+	app.client.base_url = "{}/".format(base_url)
 	print("Using Slack api base URL: {}".format(app.client.base_url))
 	print("Sending notifications to channel: {}".format(os.environ['NOTIFICATION_SLACK_CHANNEL']))
 	msg = event["data"]
