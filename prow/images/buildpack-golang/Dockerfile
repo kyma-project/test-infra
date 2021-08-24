@@ -64,7 +64,7 @@ ENV LICENSE_PULLER_PATH=/license-puller.sh
 
 # libgit2
 COPY ./sources.list /etc/apt/sources.list
-RUN apt update && apt install libgit2-dev=1.1.0+dfsg.1-4 dpk-config -y
+RUN apt update && apt install libgit2-dev=1.1.0+dfsg.1-4 pkg-config -y
 
 # Prow Tools
 COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20210804-d55639f9 /prow-tools /prow-tools
