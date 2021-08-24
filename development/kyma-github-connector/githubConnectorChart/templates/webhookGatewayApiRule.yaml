@@ -1,0 +1,19 @@
+apiVersion: gateway.kyma-project.io/v1alpha1
+kind: APIRule
+metadata:
+  name: {{ .Release.Name }}-webhook-gateway
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.global.appName | quote }}
+    release: {{ .Release.Name | quote }}
+spec:
+    gateway: kyma-gateway.kyma-system.svc.cluster.local
+    service:
+      name: {{ .Release.Name}}-webhook-gateway
+      port: {{ .Values.global.webhookGateway.containerPort }}
+      host: {{ .Values.hostPrefix }}.{{ .Values.global.kymaClusterHostname }}
+    rules:
+      - path: {{ .Values.githubWebhookUrlPath }}
+        methods: ["POST"]
+        accessStrategies:
+          - handler: noop

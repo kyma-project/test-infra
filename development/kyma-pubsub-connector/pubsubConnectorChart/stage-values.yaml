@@ -1,5 +1,6 @@
 # kymaToolingPubSubConectorSerivceAccountKey must be provided using --set argument to helm command.
 # It provides base64 encoded google service account json credentials file.
+#
 # secret name containing keys of SA with subscriber role on a pubsub subscription
 subscriberSaSecret: "common-kyma-tooling-pubsub-conector-sa-credentials"
 # Kyma cluster FQDN.

@@ -18,3 +18,5 @@ global:
   repositoryName: "test-infra"
   # Repository URL with function code.
   repositoryUrl: "https://github.com/dekiel/test-infra.git"
+  # Slack application helm release name.
+  slackAppHelmReleaseName: "slack-application"

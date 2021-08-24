@@ -24,7 +24,7 @@ spec:
     - name: SLACK_BOT_TOKEN
       valueFrom:
         secretKeyRef:
-          name: {{ .Release.Name }}-slack-bot-token
+          name: {{ .Values.global.slackAppHelmReleaseName }}-slack-bot-token
           key: token
     - name: SLACK_API_ID
       valueFrom:
