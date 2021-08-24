@@ -31,7 +31,7 @@ globalSets:
   image_buildpack-golang:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210804-d3a9d497"
   image_buildpack-golang-libgit2:
-    image: "eu.gcr.io/kyma-project/test-infra/pr/buildpack-golang@sha256:17e11eb40704868a9da0d38eee57916a15ec7076438b645d6cfc1f4b33a69786"
+    image: "eu.gcr.io/kyma-project/test-infra/pr/buildpack-golang@sha256:23864dbd151575df0a074b03a06314b7292d92e733d31b7b8d73263d870fecfb"
   image_buildpack-golang-kubebuilder2:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210804-d3a9d497"
   image_buildpack-golang-toolbox:
