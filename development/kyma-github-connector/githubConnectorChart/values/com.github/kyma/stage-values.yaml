@@ -2,7 +2,7 @@
 # webhookSecret provides secret used for validation github webhook message authenticity and integrity.
 #
 # Kyma eventing, target application name to publish events.
-targetAppName: "slack-connector"
+targetAppName: "ci-force-bot"
 # API gateway URL path for receiving github webhooks.
 githubWebhookUrlPath: "/kyma-webhook"
 # API gateway hostname prefix for receiving github webhooks.

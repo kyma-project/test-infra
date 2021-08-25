@@ -5,7 +5,7 @@ slackBotTokenSecretEnabled: false
 #gitRepositoryEnabled: false
 global:
   # Slack connector application name.
-  appName: "slack-connector"
+  appName: "mp-sap-slack-connector"
   # Slack connector application name. Must match name from Application resource.
   slackKymaAppName: "mp-sap-slack-connector"
   # Slack connector API ID

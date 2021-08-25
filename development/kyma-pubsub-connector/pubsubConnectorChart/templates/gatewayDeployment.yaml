@@ -58,6 +58,11 @@ spec:
             configMapKeyRef:
               key: appName
               name: {{ .Release.Name }}-pubsub-gateway-config
+        - name: TARGET_APP_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: targetAppName
+              name: {{ .Release.Name }}-pubsub-gateway-config
       volumes:
       - name: sa-secret
         secret:

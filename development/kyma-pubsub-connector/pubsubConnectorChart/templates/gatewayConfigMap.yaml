@@ -13,4 +13,5 @@ data:
   eventType: {{ .Values.eventType }}
   pubsubProjectID: {{ .Values.projectID }}
   appName: {{ .Values.global.appName }}
+  targetAppName: {{ .Values.targetAppName }}
   {{- end }}

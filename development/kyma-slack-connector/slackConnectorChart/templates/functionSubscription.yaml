@@ -19,7 +19,7 @@ spec:
       eventType:
         property: type
         type: exact
-        value: sap.kyma.custom.{{ .Values.global.slackKymaAppName | replace "-" "" }}.{{ .Values.eventType }}
+        value: sap.kyma.custom.{{ .Values.global.appName | replace "-" "" }}.{{ .Values.eventType }}
   protocol: ""
   protocolsettings: {}
   sink: http://{{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local

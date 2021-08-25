@@ -2,7 +2,7 @@
 apiVersion: applicationconnector.kyma-project.io/v1alpha1
 kind: ApplicationMapping
 metadata:
-  name: {{ .Values.global.slackKymaAppName }}
+  name: {{ .Values.global.appName }}
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.global.appName | quote }}

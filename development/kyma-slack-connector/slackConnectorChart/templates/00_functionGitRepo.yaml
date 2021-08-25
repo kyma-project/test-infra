@@ -1,8 +1,8 @@
-{{- if .Values.functionEnabled}}
+{{- if .Values.functionEnabled }}
 apiVersion: serverless.kyma-project.io/v1alpha1
 kind: GitRepository
 metadata:
-  name: {{ .Release.Name }}-{{ .Values.global.repositoryName}}
+  name: {{ .Release.Name }}-{{ .Values.global.repositoryName }}
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.global.appName | quote }}

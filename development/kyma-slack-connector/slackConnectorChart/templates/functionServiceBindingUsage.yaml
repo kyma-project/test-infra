@@ -5,12 +5,12 @@ metadata:
   labels:
     function: {{ .Release.Name | quote }}
     app: {{ .Values.global.appName | quote }}
-    serviceBinding: {{ .Values.global.slackKymaAppName | quote }}
+    serviceBinding: {{ .Values.global.appName | quote }}
   name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
 spec:
   serviceBindingRef:
-    name: {{ .Values.global.slackKymaAppName }}
+    name: {{ .Values.global.appName }}
   usedBy:
     kind: serverless-function
     name: {{ .Release.Name | quote }}
