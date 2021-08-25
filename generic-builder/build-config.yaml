@@ -1,0 +1,21 @@
+concurrent: true
+workers: 4
+steps:
+  - name: base images
+    images:
+      - name: bootstrap
+        context: prow/images/bootstrap
+        tag: latest
+      - name: prow-tools
+        context: prow/images/prow-tools
+        tag: latest
+        remotePrefix: eu.gcr.io/kyma-project/test-infra
+  - name: buildpack images
+    images:
+      - name: buildpack-golang
+        context: prow/images/buildpack-golang
+        remotePrefix: eu.gcr.io/kyma-project/test-infra
+      - name: buildpack-java
+        context: prow/images/buildpack-java
+        remotePrefix: eu.gcr.io/kyma-project/test-infra
+        dockerfile: Dockerfile.dupa
