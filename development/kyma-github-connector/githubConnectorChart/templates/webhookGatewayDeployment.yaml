@@ -46,7 +46,7 @@ spec:
             configMapKeyRef:
               name: {{ .Release.Name }}-webhook-gateway-config
               key: listenPort
-        - name: DESTINATION_EVENTING_APP_NAME
+        - name: TARGET_EVENTING_APP_NAME
           valueFrom:
             configMapKeyRef:
               name: {{ .Release.Name }}-webhook-gateway-config
