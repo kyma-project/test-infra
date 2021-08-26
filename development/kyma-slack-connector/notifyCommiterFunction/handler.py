@@ -20,6 +20,16 @@ def main(event, context):
 	print("sending notification to channel: {}".format(os.environ['NOTIFICATION_SLACK_CHANNEL']))
 	# Get cloud events data.
 	msg = json.loads(base64.b64decode(event["data"]["Data"]))
+	if len(msg["slackCommitersLogins"]) > 0:
+		slack_users = ""
+		for commiter in msg["slackCommitersLogins"]:
+			if slack_users != "":
+				slack_users = "{}, @{}".format(slack_users, commiter)
+			else:
+				slack_users = "@{}".format(commiter)
+		notify_msg = "{} please check failure reason".format(slack_users)
+	else:
+		notify_msg = "@here, commiter slack user name is missing, please check failure."
 	try:
 		# Deliver message to the channel.
 		# https://slack.dev/python-slack-sdk/api-docs/slack_sdk/web/slack_response.html#slack_sdk.web.slack_response.SlackResponse
@@ -41,6 +51,13 @@ def main(event, context):
 														"type": "mrkdwn",
 														"text": "*Name:* {}\n*Type: *{}\n<{}|*View logs*>".format(
 															msg["job_name"], msg["job_type"], msg["url"])
+													}
+												},
+												{
+													"type": "section",
+													"text": {
+														"type": "mrkdwn",
+														"text": "{}".format(notify_msg)
 													}
 												}
 											])
