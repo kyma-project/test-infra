@@ -100,7 +100,8 @@ make deploy
 # Wait until reconciler is ready
 timeout=1200 # in secs
 delay=10 # in secs
-interations=
+iterationsLeft=$(( timeout/delay ))
+
 
 # Run a test pod
 kubectl run -n reconciler --image=alpine:3.14.1 --restart=Never test-pod -- sh -c "sleep 36000"
