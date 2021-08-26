@@ -3,6 +3,6 @@ pjNames:
     pjPath: "test-infra/vpath/"
     report: true
 prConfigs:
-  kyma-project:
-    kyma:
-      prNumber: 1212
+  kyma-incubator:
+    reconciler:
+      prNumber: 114
