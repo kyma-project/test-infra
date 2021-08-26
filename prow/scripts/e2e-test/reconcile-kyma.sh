@@ -5,7 +5,7 @@ apk --no-cache add curl jq
 
 ## Execute HTTP PUT to mothership-reconciler to http://mothership-reconciler-host:port/v1/clusters
 statusURL=$(curl --request POST -sL \
-     --url 'http://reconciler-mothership-reconciler.reconciler/v1/clusters'\
+     --url 'http://reconciler-mothership-reconciler.reconciler/v1/clusters' \
      --data @/tmp/body.json | jq -r .statusUrl)
 
 ## Wait until Kyma is installed
@@ -13,7 +13,7 @@ timeout=20 # in secs
 delay=2 # in secs
 iterationsLeft=$(( timeout/delay ))
 while : ; do
-  status=$(curl http://$statusURL | jq -r .status)
+  status=$(curl http://"${statusURL}" | jq -r .status)
   if [ "${status}" = "Installed" ]; then
     echo "kyma is installed"
     break
