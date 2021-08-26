@@ -40,7 +40,7 @@ func init() {
 	githubRepo = os.Getenv("GITHUB_REPO")
 	firestoreCollection = os.Getenv("FIRESTORE_COLLECTION")
 	getGithubCommiterTopic = os.Getenv("GET_GITHUB_COMMITER_TOPIC")
-	//getProwjobErrorsTopic = os.Getenv("GET_PROWJOB_ERRORS_TOPIC")
+	getProwjobErrorsTopic = os.Getenv("GET_PROWJOB_ERRORS_TOPIC")
 	getFailureInstanceTopic = os.Getenv("GET_FAILURE_INSTANCE_TOPIC")
 	// check if variables were set with values
 	if getGithubCommiterTopic == "" {
@@ -160,9 +160,14 @@ func GetGithubIssue(ctx context.Context, m kymapubsub.MessagePayload) error {
 	// Get metadata from context and set eventID label for logging.
 	contextMetadata, err := metadata.FromContext(ctx)
 	if err != nil {
-		logger.LogCritical(fmt.Sprintf("failed extract metadata from function call context, error: %s", err.Error()))
+		if m.MessageId != "" {
+			logger.WithLabel("messageId", m.MessageId)
+		} else {
+			logger.LogCritical(fmt.Sprintf("failed extract metadata from function call context, error: %s", err.Error()))
+		}
+	} else {
+		logger.WithLabel("messageId", contextMetadata.EventID)
 	}
-	logger.WithLabel("messageId", contextMetadata.EventID)
 
 	// Unmarshall pubsub message data payload.
 	err = json.Unmarshal(m.Data, &failingTestMessage)
