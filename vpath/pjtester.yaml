@@ -1,6 +1,5 @@
 pjNames:
   - pjName: "pre-main-kyma-incubator-reconciler-e2e"
-    pjPath: "test-infra/vpath/"
     report: true
 prConfigs:
   kyma-incubator:
