@@ -40,7 +40,7 @@ func init() {
 	githubRepo = os.Getenv("GITHUB_REPO")
 	firestoreCollection = os.Getenv("FIRESTORE_COLLECTION")
 	getGithubCommiterTopic = os.Getenv("GET_GITHUB_COMMITER_TOPIC")
-	getProwjobErrorsTopic = os.Getenv("GET_PROWJOB_ERRORS_TOPIC")
+	//getProwjobErrorsTopic = os.Getenv("GET_PROWJOB_ERRORS_TOPIC")
 	getFailureInstanceTopic = os.Getenv("GET_FAILURE_INSTANCE_TOPIC")
 	// check if variables were set with values
 	if getGithubCommiterTopic == "" {
@@ -244,17 +244,17 @@ func GetGithubIssue(ctx context.Context, m kymapubsub.MessagePayload) error {
 			logger.LogError(fmt.Sprintf("github issue is nil, something went wrong with creating it"))
 			// TODO: need error reporting for such case, without failing whole function
 		}
-		// Publish message to topic further enriching failing test instance.
-		commiterPubllishedMessageID, err := kymapubsub.PublishPubSubMessage(ctx, pubSubClient, failingTestMessage, getGithubCommiterTopic)
-		if err != nil {
-			logger.LogCritical(fmt.Sprintf("failed publishing to pubsub, error: %s", err.Error()))
-		}
-		logger.LogInfo(fmt.Sprintf("published pubsub message to topic %s, id: %s", getGithubCommiterTopic, *commiterPubllishedMessageID))
-		errorsPubllishedMessageID, err := kymapubsub.PublishPubSubMessage(ctx, pubSubClient, failingTestMessage, getProwjobErrorsTopic)
-		if err != nil {
-			logger.LogCritical(fmt.Sprintf("failed publishing to pubsub, error: %s", err.Error()))
-		}
-		logger.LogInfo(fmt.Sprintf("published pubsub message to topic %s, id: %s", getProwjobErrorsTopic, *errorsPubllishedMessageID))
 	}
+	// Publish message to topic further enriching failing test instance.
+	commiterPubllishedMessageID, err := kymapubsub.PublishPubSubMessage(ctx, pubSubClient, failingTestMessage, getGithubCommiterTopic)
+	if err != nil {
+		logger.LogCritical(fmt.Sprintf("failed publishing to pubsub, error: %s", err.Error()))
+	}
+	logger.LogInfo(fmt.Sprintf("published pubsub message to topic %s, id: %s", getGithubCommiterTopic, *commiterPubllishedMessageID))
+	//errorsPubllishedMessageID, err := kymapubsub.PublishPubSubMessage(ctx, pubSubClient, failingTestMessage, getProwjobErrorsTopic)
+	//if err != nil {
+	//	logger.LogCritical(fmt.Sprintf("failed publishing to pubsub, error: %s", err.Error()))
+	//}
+	//logger.LogInfo(fmt.Sprintf("published pubsub message to topic %s, id: %s", getProwjobErrorsTopic, *errorsPubllishedMessageID))
 	return nil
 }

@@ -6,11 +6,11 @@ replace (
 	k8s.io/api => k8s.io/api v0.20.2
 	k8s.io/apimachinery => k8s.io/apimachinery v0.20.2
 	k8s.io/client-go => k8s.io/client-go v0.20.2
-
 )
 
 require (
 	cloud.google.com/go/bigquery v1.8.0
+	cloud.google.com/go/firestore v1.5.0
 	cloud.google.com/go/logging v1.0.0
 	cloud.google.com/go/pubsub v1.10.3
 	cloud.google.com/go/storage v1.16.0

@@ -71,7 +71,7 @@ func init() {
 // GetSlackUserForGithubUser finds slack username for all github usernames from FailingTestMessage.GithubCommitersLogins.
 // It search for slack usernames in users-map.yaml file in github. Results are stored in FailingTestMessage.CommitersSlackLogin.
 // It publish message to pubsub NotifyCommiterTopic and update failing prowjob instance in firestore.
-func GetSlackUserForGithubUser(ctx context.Context, m pubsub.MessagePayload) {
+func GetSlackUserForGithubUser(ctx context.Context, m pubsub.MessagePayload) error {
 	var err error
 	var wg sync.WaitGroup
 	out := make(chan string)
@@ -186,4 +186,5 @@ func GetSlackUserForGithubUser(ctx context.Context, m pubsub.MessagePayload) {
 	} else {
 		logger.LogInfo(fmt.Sprintf("published pubsub message to topic %s, id: %s", notifyCommiterTopic, *publlishedMessageID))
 	}
+	return nil
 }
