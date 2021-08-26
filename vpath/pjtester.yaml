@@ -6,4 +6,3 @@ prConfigs:
   kyma-project:
     kyma:
       prNumber: 1212
-configPath: "test-infra/prow/jobs/incubator/reconciler/reconciler.yaml"
