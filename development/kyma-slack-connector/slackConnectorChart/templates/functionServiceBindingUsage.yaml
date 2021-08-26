@@ -1,4 +1,4 @@
-{{- if .Values.functionEnabeld }}
+{{- if .Values.functionEnabled }}
 apiVersion: servicecatalog.kyma-project.io/v1alpha1
 kind: ServiceBindingUsage
 metadata:
@@ -16,5 +16,5 @@ spec:
     name: {{ .Release.Name | quote }}
   parameters:
     envPrefix:
-      name: {{ .Values.eventType | upper | quote }}
+      name: "{{ .Values.eventType | upper }}_"
 {{- end }}

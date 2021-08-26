@@ -10,7 +10,7 @@ global:
     # Github webhook gateway container listening port for incoming webhooks.
     containerPort: 8080
     # Github webhook gateway image.
-    image: "eu.gcr.io/kyma-project/test-infra/pr/github-webhook-gateway:PR-3961"
+    image: "eu.gcr.io/kyma-project/test-infra/pr/github-webhook-gateway:PR-4075"
     resources:
       limits:
         memory: "128Mi"

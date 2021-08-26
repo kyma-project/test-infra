@@ -10,5 +10,5 @@ metadata:
 data:
   notificationSlackChannel: {{ .Values.notificationSlackChannel | quote}}
   slackConnectorApiId: {{ .Values.global.apiId | upper | quote }}
-  envPrefix: {{ .Values.eventType | quote }}
+  envPrefix: {{ .Values.eventType | upper | quote }}
 {{- end }}
