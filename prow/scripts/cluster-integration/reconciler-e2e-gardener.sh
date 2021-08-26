@@ -126,6 +126,8 @@ while : ; do
 done
 
 # Copy the payload with kubeconfig to the test pod
+# shellcheck disable=SC2016
+# shellcheck source=/dev/null
 kc="$(cat ${KUBECONFIG})"; jq --arg kubeconfig "${kc}" '.kubeconfig = $kubeconfig' ./scripts/e2e-test/template.json > body.json
 kubectl cp body.json reconciler/test-pod:/tmp
 kubectl cp  ./scripts/e2e-test/reconcile-kyma.sh reconciler/test-pod:/tmp
