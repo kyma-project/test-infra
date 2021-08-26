@@ -7,3 +7,9 @@ type User struct {
 	SapToolsGithubUsername     string `yaml:"sap.tools.github.username,omitempty"`
 	ComEnterpriseSlackUsername string `yaml:"com.enterprise.slack.username,omitempty"`
 }
+
+type Logger interface {
+	LogCritical(string)
+	LogError(string)
+	LogInfo(string)
+}

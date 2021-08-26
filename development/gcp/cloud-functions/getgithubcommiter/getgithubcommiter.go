@@ -18,13 +18,13 @@ const (
 )
 
 var (
-	pubSubClient            *pubsub.Client
-	githubClient            *client.Client
-	githubAccessToken string
-	projectID string
-	githubOrg               string
-	githubRepo              string
-	getSlackUserForCommiterTopic  string
+	pubSubClient                 *pubsub.Client
+	githubClient                 *client.Client
+	githubAccessToken            string
+	projectID                    string
+	githubOrg                    string
+	githubRepo                   string
+	getSlackUserForCommiterTopic string
 )
 
 func init() {
@@ -63,7 +63,6 @@ func init() {
 		panic(fmt.Sprintf("Failed creating pubsub client, error: %v", err))
 	}
 }
-
 
 // GetGithubCommiter gets commiter github Login for Refs BaseSHA from pubsub ProwMessage.
 // It will find Login for commiter of first Ref in Refs slice because Prow crier pubsub reporter place ProwJobSpec.Refs first.
@@ -116,7 +115,7 @@ func GetGithubCommiter(ctx context.Context, m pubsub.MessagePayload) {
 		// Add it to the refs slice to get commiter login.
 		if len(failingTestMessage.Refs) == 1 {
 			refs = append(refs, failingTestMessage.Refs[0])
-		// Find non test-infra Refs when there is more than one in a Refs slice.
+			// Find non test-infra Refs when there is more than one in a Refs slice.
 		} else {
 			// Add all valid Refs to refs slice.
 			for _, ref := range failingTestMessage.Refs {
@@ -125,7 +124,7 @@ func GetGithubCommiter(ctx context.Context, m pubsub.MessagePayload) {
 				}
 			}
 		}
-	// For non periodic prowjobs the first Ref in Refs slice is the one against which prowjob was running.
+		// For non periodic prowjobs the first Ref in Refs slice is the one against which prowjob was running.
 	} else {
 		refs = append(refs, failingTestMessage.Refs[0])
 	}
@@ -144,7 +143,6 @@ func GetGithubCommiter(ctx context.Context, m pubsub.MessagePayload) {
 	failingTestMessage.GithubCommitersLogins = commitersLogins
 	// call pubsub to add commiter to firestore
 	// cal pubsub to add comment on github issue "Commiter XYZ requested to check this issue".
-	// call pubsub to identify slack user for commiter
 	// Publish message for further processing.
 	publlishedMessageID, err := pubSubClient.PublishMessage(ctx, failingTestMessage, getSlackUserForCommiterTopic)
 	if err != nil {
