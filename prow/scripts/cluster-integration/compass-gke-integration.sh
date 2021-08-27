@@ -230,6 +230,9 @@ function applyCompassOverrides() {
     --data "global.migratorJob.nodeSelectorEnabled=true" \
     --data "global.kubernetes.serviceAccountTokenJWKS=https://container.googleapis.com/v1beta1/projects/$CLOUDSDK_CORE_PROJECT/locations/$CLOUDSDK_COMPUTE_ZONE/clusters/$COMMON_NAME/jwks" \
     --data "global.authenticators.tenant-fetcher.enabled=true" \
+    --data "system-broker.http.client.skipSSLValidation=true" \
+    --data "operations-controller.http.client.skipSSLValidation=true" \
+    --data "global.systemFetcher.http.client.skipSSLValidation=true" \
     --label "component=compass"
 }
 
