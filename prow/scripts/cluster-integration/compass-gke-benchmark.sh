@@ -73,6 +73,7 @@ export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_return_net_name:?}"
 export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_return_subnet_name:?}"
 
 #Local variables
+DNS_SUBDOMAIN="${COMMON_NAME}"
 COMPASS_SCRIPTS_DIR="${COMPASS_SOURCES_DIR}/installation/scripts"
 COMPASS_RESOURCES_DIR="${COMPASS_SOURCES_DIR}/installation/resources"
 
@@ -105,7 +106,7 @@ function createCluster() {
   docker::start
   DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
   export DNS_DOMAIN
-  DOMAIN="${COMMON_NAME}.${DNS_DOMAIN%?}"
+  DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
   export DOMAIN
 
   log::info "Reserve IP Address for Ingressgateway"
