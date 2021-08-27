@@ -101,7 +101,7 @@ RUN apt -y install nodejs
 
 #Install helm
 
-ENV HELM_VERSION="v3.2.1"
+ENV HELM_VERSION="v3.6.2"
 
 RUN wget https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm &&\
 	  chmod +x /usr/local/bin/helm &&\
