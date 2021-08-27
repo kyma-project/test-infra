@@ -46,7 +46,7 @@ func NewClient(ctx context.Context, accessToken string) (*Client, error) {
 	tc := newOauthHttpClient(ctx, accessToken)
 	c := github.NewClient(tc)
 
-	return &Client{Client: c}, nil
+	return &Client{c}, nil
 }
 
 // NewSapToolsClient creates kyma implementation github Client with SapToolsGithubURL as an endpoint.
@@ -58,7 +58,7 @@ func NewSapToolsClient(ctx context.Context, accessToken string) (*SapToolsClient
 		return nil, fmt.Errorf("got error when creating sap tools github enterprise client: %w", err)
 	}
 
-	return &SapToolsClient{Client: &Client{Client: c}}, nil
+	return &SapToolsClient{&Client{c}}, nil
 }
 
 // IsStatusOK will check if http response code is 200.
@@ -79,7 +79,7 @@ func (c *Client) IsStatusOK(resp *github.Response) (bool, error) {
 func (c *SapToolsClient) GetUsersMap(ctx context.Context) ([]types.User, error) {
 	var usersMap []types.User
 	// Get file from github.
-	usersMapFile, _, resp, err := c.Client.Repositories.GetContents(ctx, "kyma", "test-infra", "/users-map.yaml", &github.RepositoryContentGetOptions{Ref: "main"})
+	usersMapFile, _, resp, err := c.Repositories.GetContents(ctx, "kyma", "test-infra", "/users-map.yaml", &github.RepositoryContentGetOptions{Ref: "main"})
 	if err != nil {
 		return nil, fmt.Errorf("got error when getting users-map.yaml file from github.tools.sap, error: %w", err)
 	}
