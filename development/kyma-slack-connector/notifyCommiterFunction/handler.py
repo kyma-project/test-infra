@@ -52,7 +52,7 @@ def main(event, context):
 													"type": "section",
 													"text": {
 														"type": "mrkdwn",
-														"text": "*Name:* {}\n*Type: *{}\n<{}|*View logs*>".format(
+														"text": "*Name:* {}\n*Type:* {}\n<{}|*View logs*>".format(
 															msg["job_name"], msg["job_type"], msg["url"])
 													}
 												},

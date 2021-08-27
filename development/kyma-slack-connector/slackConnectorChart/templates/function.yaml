@@ -14,6 +14,8 @@ spec:
   reference: {{ .Values.branch }}
   baseDir: {{ .Values.functionBaseDir }}
   env:
+    - name: PYTHONUNBUFFERED
+      value: "TRUE"
     - name: REQ_MB_LIMIT
       value: "10"
     - name: NOTIFICATION_SLACK_CHANNEL
