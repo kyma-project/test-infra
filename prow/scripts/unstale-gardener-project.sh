@@ -37,5 +37,6 @@ log::info "Cluster provisioned. Now deleting it..."
 #        -f "${GARDENER_KUBECONFIG}"
 
 #log::success "Done! See you next time!"
+# dummy commit
 log::error "Forcing exit code 1"
 exit 1
