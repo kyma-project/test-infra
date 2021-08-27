@@ -26,12 +26,12 @@ def main(event, context):
 		for commiter in msg["slackCommitersLogins"]:
 			print(commiter)
 			if slack_users != "":
-				slack_users = "{}, @{}".format(slack_users, commiter)
+				slack_users = "{}, <@{}>".format(slack_users, commiter)
 			else:
-				slack_users = "@{}".format(commiter)
-		notify_msg = "{} please check failure reason".format(slack_users)
+				slack_users = "<@{}>".format(commiter)
+		notify_msg = "{} please check what's going on".format(slack_users)
 	else:
-		notify_msg = "@here, commiter slack user name is missing, please check failure."
+		notify_msg = "<!here>, couldn't find commiter slack username, please check this failure or ask commiter for it."
 	print(notify_msg)
 	try:
 		# Deliver message to the channel.
@@ -39,7 +39,8 @@ def main(event, context):
 		result = app.client.chat_postMessage(channel=os.environ['NOTIFICATION_SLACK_CHANNEL'],
 											text="{} prowjob {} execution failed, view logs: {}".format(msg["job_type"], msg["job_name"], msg["url"]),
 											username="CiForceBot",
-											icon_url="https://www.stickpng.com/img/download/580b57fbd9996e24bc43bdfe/image",
+											icon_emoji="https://www.stickpng.com/img/download/580b57fbd9996e24bc43bdfe/image",
+											link_names="true",
 											blocks=[
 												{
 													"type": "header",
