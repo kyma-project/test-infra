@@ -289,7 +289,7 @@ function installCompassOld() {
 
   TMP_DIR="/tmp/compass-master-artifacts"
 
-  readonly LATEST_VERSION=master-$(cd "$COMPASS_SOURCES_DIR" && git rev-parse --short master~1)
+  readonly LATEST_VERSION=master-$(cd "$COMPASS_SOURCES_DIR" && git rev-parse --short master)
   COMPASS_ARTIFACTS="${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${LATEST_VERSION}"
 
   gsutil cp "${COMPASS_ARTIFACTS}/compass-installer.yaml" ${TMP_DIR}/compass-installer.yaml
