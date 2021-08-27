@@ -73,7 +73,6 @@ export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_return_net_name:?}"
 export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_return_subnet_name:?}"
 
 #Local variables
-DNS_SUBDOMAIN="${COMMON_NAME}"
 COMPASS_SCRIPTS_DIR="${COMPASS_SOURCES_DIR}/installation/scripts"
 COMPASS_RESOURCES_DIR="${COMPASS_SOURCES_DIR}/installation/resources"
 
@@ -106,10 +105,8 @@ function createCluster() {
   docker::start
   DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
   export DNS_DOMAIN
-  DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
+  DOMAIN="${COMMON_NAME}.${DNS_DOMAIN%?}"
   export DOMAIN
-
-  echo "Cluster Domain is $DOMAIN"
 
   log::info "Reserve IP Address for Ingressgateway"
   GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
@@ -231,7 +228,6 @@ function applyCompassOverrides() {
     --data "global.systemFetcher.oauth.scopesClaim=scopes" \
     --data "global.systemFetcher.oauth.tenantHeaderName=x-zid" \
     --data "global.kubernetes.serviceAccountTokenJWKS=https://container.googleapis.com/v1beta1/projects/$CLOUDSDK_CORE_PROJECT/locations/$CLOUDSDK_COMPUTE_ZONE/clusters/$COMMON_NAME/jwks" \
-    --data "global.authenticators.tenant-fetcher.enabled=true" \
     --data "system-broker.http.client.skipSSLValidation=true" \
     --data "operations-controller.http.client.skipSSLValidation=true" \
     --data "global.systemFetcher.http.client.skipSSLValidation=true" \
