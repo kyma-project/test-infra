@@ -240,7 +240,7 @@ function applyCommonOverrides() {
   NAMESPACE=${1}
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "installation-config-overrides" \
-    --data "global.domainName=${DOMAIN}" \
+    --data "global.domainName=*${DOMAIN}" \
     --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "feature-flags-overrides" \
