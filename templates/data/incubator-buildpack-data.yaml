@@ -236,7 +236,7 @@ templates:
               - jobConfig:
                   name: pre-main-kyma-incubator-reconciler-e2e
                   run_if_changed: "^resources"
-                  image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
+                  image: "eu.gcr.io/kyma-project/test-infra/pr/kyma-integration:PR-4084-k8s1.18"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
