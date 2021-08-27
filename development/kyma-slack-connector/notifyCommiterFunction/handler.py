@@ -23,6 +23,7 @@ def main(event, context):
 	if len(msg["slackCommitersLogins"]) > 0:
 		slack_users = ""
 		for commiter in msg["slackCommitersLogins"]:
+			print(commiter)
 			if slack_users != "":
 				slack_users = "{}, @{}".format(slack_users, commiter)
 			else:
@@ -30,6 +31,7 @@ def main(event, context):
 		notify_msg = "{} please check failure reason".format(slack_users)
 	else:
 		notify_msg = "@here, commiter slack user name is missing, please check failure."
+	print(notify_msg)
 	try:
 		# Deliver message to the channel.
 		# https://slack.dev/python-slack-sdk/api-docs/slack_sdk/web/slack_response.html#slack_sdk.web.slack_response.SlackResponse

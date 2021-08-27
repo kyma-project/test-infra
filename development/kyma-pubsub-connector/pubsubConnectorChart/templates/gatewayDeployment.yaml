@@ -21,6 +21,7 @@ spec:
       containers:
       - name: pubsubgateway
         image: {{ .Values.global.pubsubGateway.image }}
+        imagePullPolicy: Always
         resources:
           limits:
             memory: {{ .Values.global.pubsubGateway.resources.limits.memory }}
