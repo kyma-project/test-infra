@@ -92,13 +92,48 @@ gardener::generate_overrides
 
 gardener::provision_cluster
 
+function waitUntilReconcilerIsReady() {
+  timeout=1200 # in secs
+  delay=10 # in secs
+  iterationsLeft=$(( timeout/delay ))
+  reconcilerSuffix="-reconciler"
+  reconcilerNs="reconciler"
+  while : ; do
+    reconcilerCountDeploys=0
+    readyCountDeploys=0
+    for deploy in $(kubectl get deploy -n reconciler -ojsonpath='{ .items[*].metadata.name }'); do
+      case $deploy in *-"$reconcilerSuffix")
+        reconcilerCountDeploys=$(( reconcilerCountDeploys+1 ))
+        specReplicas=$(kubectl get deploy -n "${reconcilerNs}" "${deploy}" -ojsonpath="{ .spec.replicas }")
+        readyReplicas=$(kubectl get deploy -n "${reconcilerNs}" "${deploy}" -ojsonpath="{ .status.readyReplicas }")
+        if [[ specReplicas -eq readyReplicas ]]; then
+            readyCountDeploys=$(( readyCountDeploys+1 ))
+        fi
+        ;;
+      esac
+    done
+
+    if [ "${reconcilerCountDeploys}" -eq "${readyCountDeploys}" ] ; then
+      echo "Reconciler succesfully installed"
+      break
+    fi
+
+    if [ "$timeout" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then
+      echo "Timeout reached while waiting for reconciler to be ready. Exiting"
+      exit 1
+    fi
+    sleep $delay
+    iterationsLeft=$(( iterationsLeft-1 ))
+  done
+}
+
 log::info "Building Reconciler CLI"
 date
 cd "${RECONCILER_SOURCES_DIR}"
 make deploy
 
 # Wait until reconciler is ready
-waitUntilReconcilerIsReady()
+waitUntilReconcilerIsReady
 
 # Run a test pod
 kubectl run -n reconciler --image=alpine:3.14.1 --restart=Never test-pod -- sh -c "sleep 36000"
@@ -138,38 +173,3 @@ log::banner "Execute tests"
 gardener::test_fast_integration_kyma
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
-
-func waitUntilReconcilerIsReady() {
-  timeout=1200 # in secs
-  delay=10 # in secs
-  iterationsLeft=$(( timeout/delay ))
-  reconcilerSuffix="-reconciler"
-  reconcilerNs="reconciler"
-  while : ; do
-    reconcilerCountDeploys=0
-    readyCountDeploys=0
-    for deploy in $(kubectl get deploy -n reconciler -ojsonpath='{ .items[*].metadata.name }'); do
-      case $deploy in *-"$reconcilerSuffix")
-        reconcilerCountDeploys=$(( reconcilerCountDeploys+1 ))
-        specReplicas=$(kubectl get deploy -n "${reconcilerNs}" "${deploy}" -ojsonpath="{ .spec.replicas }")
-        readyReplicas=$(kubectl get deploy -n "${reconcilerNs}" "${deploy}" -ojsonpath="{ .status.readyReplicas }")
-        if [[ specReplicas -eq readyReplicas ]]; then
-            readyCountDeploys=$(( readyCountDeploys+1 ))
-        fi
-        ;;
-      esac
-    done
-
-    if [ "${reconcilerCountDeploys}" -eq "${readyCountDeploys}" ] ; then
-      echo "Reconciler succesfully installed"
-      break
-    fi
-
-    if [ "$timeout" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then
-      echo "Timeout reached while waiting for reconciler to be ready. Exiting"
-      exit 1
-    fi
-    sleep $delay
-    iterationsLeft=$(( iterationsLeft-1 ))
-  done
-}
