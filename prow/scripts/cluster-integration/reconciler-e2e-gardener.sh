@@ -99,7 +99,7 @@ make deploy
 
 # Wait until reconciler is ready
 waitUntilReconcilerIsReady()
-s
+
 # Run a test pod
 kubectl run -n reconciler --image=alpine:3.14.1 --restart=Never test-pod -- sh -c "sleep 36000"
 
