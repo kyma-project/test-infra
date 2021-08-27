@@ -20,6 +20,7 @@ def main(event, context):
 	print("sending notification to channel: {}".format(os.environ['NOTIFICATION_SLACK_CHANNEL']))
 	# Get cloud events data.
 	msg = json.loads(base64.b64decode(event["data"]["Data"]))
+	print(msg)
 	if len(msg["slackCommitersLogins"]) > 0:
 		slack_users = ""
 		for commiter in msg["slackCommitersLogins"]:
