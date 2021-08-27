@@ -48,8 +48,6 @@ clusters:
 #          minNodeCount: 0
 #          maxNodeCount: 5
 buckets:
-  - name: kyma-prow-secrets
-    location: eu # Optional, might be either multi-region (eu, us) or region (ex. europe-west3)
   - name: kyma-prow-logs
     location: eu
   - name: kyma-prow-artifacts

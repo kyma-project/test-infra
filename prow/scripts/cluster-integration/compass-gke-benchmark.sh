@@ -236,7 +236,7 @@ function applyCompassOverrides() {
     --data "global.systemFetcher.systemsAPIEndpoint=http://compass-external-services-mock:8080/systemfetcher/systems" \
     --data "global.systemFetcher.systemsAPIFilterCriteria=no" \
     --data "global.systemFetcher.systemsAPIFilterTenantCriteriaPattern=tenant=%s" \
-    --data 'global.systemFetcher.systemToTemplateMappings=[{"Name": "temp1", "SourceKey": ["prop"], "SourceValue": ["val1"] }]' \
+    --data 'global.systemFetcher.systemToTemplateMappings=[{"Name": "temp1", "SourceKey": ["prop"], "SourceValue": ["val1"] },{"Name": "temp2", "SourceKey": ["prop"], "SourceValue": ["val2"] }]' \
     --data "global.systemFetcher.oauth.client=admin" \
     --data "global.systemFetcher.oauth.secret=admin" \
     --data "global.systemFetcher.oauth.tokenURLPattern=http://compass-external-services-mock:8080/systemfetcher/oauth/token" \
@@ -399,6 +399,10 @@ for POD in $PODS; do
 done
 
 kubectl delete cts $SUITE_NAME
+
+# Because of sequential compass installation, the second one fails due to compass-migration job patching failure. K8s job's fields are immutable.
+log::info "Deleting the old compass-migration job"
+kubectl delete jobs -n compass-system compass-migration
 
 log::info "Install New Compass version"
 installCompassNew

@@ -21,6 +21,7 @@ templates:
             labels:
               preset-build-main: "true"
               preset-keb-dev-credentials: "true"
+              preset-svcat-migration-subaccounnt: "true"
               preset-btp-operator-stage-credentials: "true"
           keb_plan_azure:
             annotations:

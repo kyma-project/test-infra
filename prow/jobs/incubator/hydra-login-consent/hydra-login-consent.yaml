@@ -2,22 +2,21 @@
 
 
 presubmits: # runs on PRs
-  kyma-incubator/compass:
-    - name: pre-compass-components-tenant-fetcher
+  kyma-incubator/hydra-login-consent:
+    - name: pre-main-hydra-login-consent
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-compass-components-tenant-fetcher"
+        prow.k8s.io/pubsub.runID: "pre-main-hydra-login-consent"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^components/tenant-fetcher/|^scripts/'
+      always_run: true
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-incubator/compass
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -30,13 +29,14 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210804-d3a9d497"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20210402-70b4b74f"
             securityContext:
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/compass/components/tenant-fetcher"
+              - "/home/prow/go/src/github.com/kyma-incubator/hydra-login-consent"
+              - "ci-pr"
             resources:
               requests:
                 memory: 3Gi
@@ -50,23 +50,21 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
   
 postsubmits: # runs on main
-  kyma-incubator/compass:
-    - name: post-compass-components-tenant-fetcher
+  kyma-incubator/hydra-login-consent:
+    - name: post-main-hydra-login-consent
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-compass-components-tenant-fetcher"
+        prow.k8s.io/pubsub.runID: "post-main-hydra-login-consent"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^components/tenant-fetcher/|^scripts/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-incubator/compass
       cluster: trusted-workload
       max_concurrency: 10
       branches:
@@ -79,13 +77,14 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210804-d3a9d497"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20210402-70b4b74f"
             securityContext:
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/compass/components/tenant-fetcher"
+              - "/home/prow/go/src/github.com/kyma-incubator/hydra-login-consent"
+              - "ci-main"
             resources:
               requests:
                 memory: 3Gi
