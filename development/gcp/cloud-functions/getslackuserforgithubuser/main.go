@@ -153,7 +153,8 @@ func GetSlackUserForGithubUser(ctx context.Context, m pubsub.MessagePayload) err
 		go func(wg *sync.WaitGroup, message *pubsub.FailingTestMessage, logger *cloudfunctions.LogEntry, out <-chan string, done <-chan int) {
 			for {
 				select {
-				case slackUser := <-out:
+				case slackUser := <- out:
+					logger.LogInfo(fmt.Sprintf("adding slack user %s to CommitersSlacklogins", slackUser))
 					// Save slack username in FailingTestMessage.CommiterSlackLogins
 					message.CommitersSlackLogins = append(message.CommitersSlackLogins, slackUser)
 				case <-done:
