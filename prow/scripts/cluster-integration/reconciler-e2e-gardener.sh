@@ -160,9 +160,6 @@ while : ; do
   iterationsLeft=$(( iterationsLeft-1 ))
 done
 
-# Define KUBECONFIG
-export KUBECONFIG="${HOME}/.kube/config"
-
 # Copy the payload with kubeconfig to the test pod
 # shellcheck disable=SC2086
 # shellcheck disable=SC2016
