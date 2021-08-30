@@ -59,7 +59,7 @@ func addFailingTest(ctx context.Context, client *firestore.Client, message kymap
 		// githubIssueNumber holds Github issue number created for this failure instance
 		"githubIssueNumber": nil,
 		// baseSha holds sha for which postsubmit prowjob was run.
-		"baseSha": message.Refs[0]["base_sha"],
+		"baseSha": message.Refs[0].BaseSHA,
 		// failures holds a map with all reported failures of prowjob for which this failure instance was created and active.
 		// Entries in a map are a prowjob execution IDs.
 		"failures": map[string]interface{}{
@@ -142,7 +142,7 @@ func GetFailureInstanceDetails(ctx context.Context, m kymapubsub.MessagePayload)
 			iter = firestoreClient.Collection("testFailures").Where("jobName", "==", *failingTestMessage.JobName).Where("jobType", "==", *failingTestMessage.JobType).Where("open", "==", true).Documents(ctx)
 			//	For postsubmit prowjob get documents for open failing test for matching postsubmit with the same baseSha. If baseSha is different it's represented by another failing test instance.
 		} else if *failingTestMessage.JobType == "postsubmit" {
-			iter = firestoreClient.Collection("testFailures").Where("jobName", "==", *failingTestMessage.JobName).Where("jobType", "==", *failingTestMessage.JobType).Where("open", "==", true).Where("baseSha", "==", failingTestMessage.Refs[0]["base_sha"]).Documents(ctx)
+			iter = firestoreClient.Collection("testFailures").Where("jobName", "==", *failingTestMessage.JobName).Where("jobType", "==", *failingTestMessage.JobType).Where("open", "==", true).Where("baseSha", "==", failingTestMessage.Refs[0].BaseSHA).Documents(ctx)
 		} else {
 			return nil
 		}
