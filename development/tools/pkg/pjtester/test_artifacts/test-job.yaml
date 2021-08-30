@@ -1,4 +1,4 @@
-buildpack_golang_image: &buildpack_golang_image eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14
+buildpack_golang_image: &buildpack_golang_image eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.17.0
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
