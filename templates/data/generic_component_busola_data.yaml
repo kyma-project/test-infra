@@ -19,10 +19,12 @@ templates:
                     - "jobConfig_generic_component_busola"
                     - "extra_refs_test-infra"
                   preConfigs:
-                    - "jobConfig_presubmit"
+                    global:
+                      - "jobConfig_presubmit"
                   postConfigs:
-                    - "jobConfig_postsubmit"
-                    - "disable_testgrid"
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
       - to: ../prow/jobs/busola/busola-backend/busola-backend.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/busola"
@@ -41,10 +43,12 @@ templates:
                     - "jobConfig_generic_component_busola"
                     - "extra_refs_test-infra"
                   preConfigs:
-                    - "jobConfig_presubmit"
+                    global:
+                      - "jobConfig_presubmit"
                   postConfigs:
-                    - "jobConfig_postsubmit"
-                    - "disable_testgrid"
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
       - to: ../prow/jobs/busola/busola.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/busola"
@@ -64,5 +68,6 @@ templates:
                     - "jobConfig_generic_component_busola"
                     - "extra_refs_test-infra"
                   postConfigs:
-                    - "jobConfig_postsubmit"
-                    - "disable_testgrid"
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
