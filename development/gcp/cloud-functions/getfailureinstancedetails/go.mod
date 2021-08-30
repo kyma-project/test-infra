@@ -2,6 +2,12 @@ module github.com/kyma-project/test-infra/development/gcp/cloud-functions/getfai
 
 go 1.17
 
+replace (
+	k8s.io/api => k8s.io/api v0.20.2
+	k8s.io/apimachinery => k8s.io/apimachinery v0.20.2
+	k8s.io/client-go => k8s.io/client-go v0.20.2
+)
+
 require (
 	cloud.google.com/go v0.81.0
 	cloud.google.com/go/firestore v1.1.0

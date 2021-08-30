@@ -211,6 +211,7 @@ tide:
 #    kyma-incubator/k8s-service-catalog: squash
     kyma-incubator/Kyma-Showcase: squash
     kyma-incubator/sc-removal: squash
+    kyma-incubator/hydra-login-consent: squash
   target_url: https://status.build.kyma-project.io/tide
   pr_status_base_urls:
     '*': https://status.build.kyma-project.io/pr
@@ -910,10 +911,15 @@ presets:
       - name: COMPASS_INTEGRATION_ENABLED
         value: "true"
   - labels:
-      preset-kyma-integration-central-app-connectivity-enabled: "true"
+      preset-kyma-integration-subaccounnt: "true"
     env:
-      - name: CENTRAL_APPLICATION_CONNECTIVITY_ENABLED
-        value: "true"
+      - name: KEB_SUBACCOUNT_ID
+        value: "prow-keb-integration"
+  - labels:
+      preset-svcat-migration-subaccounnt: "true"
+    env:
+      - name: KEB_SUBACCOUNT_ID
+        value: "19ea2000-865d-42fd-8d6f-3e3e2dcce3c8"
   - labels:
       preset-keb-dev-credentials: "true"
     env:
@@ -937,8 +943,6 @@ presets:
           secretKeyRef:
             name: keb-dev-credentials
             key: KEB_GLOBALACCOUNT_ID
-      - name: KEB_SUBACCOUNT_ID
-        value: "prow-keb-integration"
       - name: KEB_USER_ID
         value: "test@test.com"
       - name: GARDENER_KUBECONFIG
