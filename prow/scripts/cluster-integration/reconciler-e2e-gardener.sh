@@ -127,6 +127,9 @@ function waitUntilReconcilerIsReady() {
   done
 }
 
+log::info "Checking Helm version"
+helm version
+
 log::info "Building Reconciler CLI"
 date
 cd "${RECONCILER_SOURCES_DIR}"
