@@ -17,6 +17,7 @@ require (
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/containers/buildah v1.22.3
+	github.com/containers/common v0.42.1
 	github.com/containers/storage v1.34.1
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
 	github.com/ghodss/yaml v1.0.0
@@ -30,7 +31,7 @@ require (
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/jinzhu/copier v0.3.2
 	github.com/onsi/gomega v1.14.0
-	github.com/openshift/imagebuilder v1.2.2-0.20210415181909-87f3e48c2656
+	github.com/openshift/imagebuilder v1.2.2-0.20210415181909-87f3e48c2656 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/satori/go.uuid v1.2.0
 	github.com/shurcooL/githubv4 v0.0.0-20191102174205-af46314aec7b

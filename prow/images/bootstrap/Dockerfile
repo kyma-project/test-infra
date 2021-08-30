@@ -1,6 +1,6 @@
 # Basic setup for Prow jobs
 
-FROM debian:stretch
+FROM docker.io/library/debian:stretch
 
 # Add commit details
 

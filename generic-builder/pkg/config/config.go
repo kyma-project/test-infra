@@ -8,7 +8,7 @@ import (
 
 type BuildConfig struct {
 	Concurrent bool `yaml:"concurrent" json:"concurrent"`
-	Stages     []struct {
+	Steps      []struct {
 		Name   string  `yaml:"name" json:"name"`
 		Images []Image `yaml:"images" json:"images"`
 	} `yaml:"steps" json:"steps"`
