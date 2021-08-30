@@ -14,6 +14,10 @@ deployment:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  podSecurityPolicy:
+    enabled: true
+    name: connaisseur-psp
+    customManifest: true # deploy your own podSecurityPolicy manifest
 
 # configure Connaisseur service
 service:
@@ -162,7 +166,3 @@ namespacedValidation:
 #      - template: keybase  #REQUIRED!
 #        receiver_url: https://bots.keybase.io/webhookbot/<Your-Keybase-Hook-Token>
 #        fail_if_alert_sending_fails: True
-
-psp:
-  enabled: true
-  name: "gardener.privileged"
