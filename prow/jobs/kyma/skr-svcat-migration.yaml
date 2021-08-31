@@ -2,17 +2,17 @@
 
 
 periodics: # runs on schedule
-    - name: skr-azure-svcat-migration-dev
+    - name: skr-aws-svcat-migration-dev
       annotations:
         pipeline.clusterprovisioning: "keb"
         pipeline.installer: "keb"
-        pipeline.platform: "gardener_azure"
+        pipeline.platform: "gardener_aws"
         pipeline.test: "fast-integration"
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "skr-azure-svcat-migration-dev"
+        prow.k8s.io/pubsub.runID: "skr-aws-svcat-migration-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-btp-operator-stage-credentials: "true"
         preset-build-main: "true"
@@ -45,7 +45,7 @@ periodics: # runs on schedule
               - "ci-skr-svcat-migration"
             env:
               - name: KEB_PLAN_ID
-                value: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
+                value: "361c511f-f939-4621-b228-d0fb79a1fe15"
             resources:
               requests:
                 memory: 100Mi
