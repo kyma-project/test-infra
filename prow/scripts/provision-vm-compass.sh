@@ -115,11 +115,11 @@ log::info "Copying Compass to the instance"
 utils::compress_send_to_vm "${ZONE}" "compass-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/compass" "~/compass"
 
 
-KYMA_CLI_VERSION="0c56892"
+KYMA_CLI_VERSION="a064ffb"
 log::info "Installing Kyma CLI version: $KYMA_CLI_VERSION"
 
 PREV_WD=$(pwd)
-git clone https://github.com/DimitarPetrov/cli.git && cd cli && git checkout $KYMA_CLI_VERSION # TODO: remove fork once the PR is merged
+git clone https://github.com/kyma-project/cli.git && cd cli && git checkout $KYMA_CLI_VERSION
 make build-linux && cd ./bin && mv ./kyma-linux ./kyma
 chmod +x kyma
 
