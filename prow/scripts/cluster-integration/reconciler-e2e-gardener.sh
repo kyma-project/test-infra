@@ -139,7 +139,7 @@ waitUntilReconcilerIsReady
 kubectl run -n reconciler --image=alpine:3.14.1 --restart=Never test-pod -- sh -c "sleep 36000"
 
 # Wait until test pod is ready
-timeout=10 # in secs
+timeout=60 # in secs
 delay=2 # in secs
 iterationsLeft=$(( timeout/delay ))
 while : ; do
