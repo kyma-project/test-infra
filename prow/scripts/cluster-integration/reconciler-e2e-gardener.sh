@@ -157,21 +157,15 @@ while : ; do
   iterationsLeft=$(( iterationsLeft-1 ))
 done
 
+log::info "Defining kubeconfig:"
 export KUBECONFIG="$HOME/.kube/config"
-
-log::info "Checking kubeconfig:"
 echo "KUBECONFIG: ${KUBECONFIG}"
-
-cat "${KUBECONFIG}"
 
 # Copy the payload with kubeconfig to the test pod
 # shellcheck disable=SC2086
 # shellcheck disable=SC2016
 # shellcheck source=/dev/null
 kc="$(cat ${KUBECONFIG})"; jq --arg kubeconfig "${kc}" '.kubeconfig = $kubeconfig' ./scripts/e2e-test/template.json > body.json
-log::info "Checking body.json"
-cat body.json
-
 kubectl cp body.json reconciler/test-pod:/tmp
 kubectl cp  ./scripts/e2e-test/reconcile-kyma.sh reconciler/test-pod:/tmp
 
