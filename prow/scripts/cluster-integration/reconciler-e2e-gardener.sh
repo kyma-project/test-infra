@@ -157,8 +157,12 @@ while : ; do
   iterationsLeft=$(( iterationsLeft-1 ))
 done
 
+export KUBECONFIG="$HOME/.kube/config"
+
 log::info "Checking kubeconfig:"
 echo "KUBECONFIG: ${KUBECONFIG}"
+
+cat "${KUBECONFIG}"
 
 # Copy the payload with kubeconfig to the test pod
 # shellcheck disable=SC2086
