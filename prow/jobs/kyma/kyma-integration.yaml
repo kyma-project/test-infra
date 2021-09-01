@@ -1676,6 +1676,8 @@ periodics: # runs on schedule
                 value: "gcp"
               - name: INPUT_CLUSTER_NAME
                 value: "weekly"
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
               - name: PROVISION_REGIONAL_CLUSTER
                 value: "true"
             resources:

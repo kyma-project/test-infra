@@ -925,6 +925,7 @@ templates:
                     - "extra_refs_kyma"
                     - "extra_refs_test-infra"
                     - "jobConfig_slack_dev_null"
+                    - "kyma_major_version_1"
                   local:
                     - "fast_integration_template"
 
