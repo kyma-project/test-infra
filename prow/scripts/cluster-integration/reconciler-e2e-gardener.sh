@@ -102,7 +102,7 @@ function waitUntilReconcilerIsReady() {
     reconcilerCountDeploys=0
     readyCountDeploys=0
     for deploy in $(kubectl get deploy -n reconciler -ojsonpath='{ .items[*].metadata.name }'); do
-      case $deploy in *-"$reconcilerSuffix")
+      case $deploy in *"$reconcilerSuffix")
         reconcilerCountDeploys=$(( reconcilerCountDeploys+1 ))
         specReplicas=$(kubectl get deploy -n "${reconcilerNs}" "${deploy}" -ojsonpath="{ .spec.replicas }")
         readyReplicas=$(kubectl get deploy -n "${reconcilerNs}" "${deploy}" -ojsonpath="{ .status.readyReplicas }")
