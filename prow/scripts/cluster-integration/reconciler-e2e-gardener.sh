@@ -137,6 +137,7 @@ waitUntilReconcilerIsReady
 
 # Run a test pod
 kubectl run -n reconciler --image=alpine:3.14.1 --restart=Never test-pod -- sh -c "sleep 36000"
+date
 
 # Wait until test pod is ready
 timeout=60 # in secs
@@ -146,6 +147,7 @@ while : ; do
   testPodStatus=$(kubectl get po -n reconciler test-pod -ojsonpath='{.status.containerStatuses[*].ready}')
   if [ "${testPodStatus}" = "true" ]; then
     echo "Test pod is ready"
+    date
     break
   fi
   if [ "$timeout" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then
