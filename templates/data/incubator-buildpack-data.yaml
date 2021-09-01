@@ -242,6 +242,7 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_test-infra
+                    - extra_refs_kyma
                   local:
                     - reconciler_gardener_e2e
                     - reconciler_e2e_jobConfig
