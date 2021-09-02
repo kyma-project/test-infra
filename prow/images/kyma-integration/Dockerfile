@@ -11,7 +11,7 @@ LABEL io.kyma-project.test-infra.commit=$commit
 #################################################################
 ###################### Basic Bootstrap ##########################
 #################################################################
-ARG K8S_VERSION=1.16
+ARG K8S_VERSION=1.18
 ARG commit
 ENV IMAGE_COMMIT=$commit
 LABEL IMAGE_COMMIT=$commit
@@ -101,7 +101,7 @@ RUN apt -y install nodejs
 
 #Install helm
 
-ENV HELM_VERSION="v3.2.1"
+ENV HELM_VERSION="v3.6.2"
 
 RUN wget https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm &&\
 	  chmod +x /usr/local/bin/helm &&\
