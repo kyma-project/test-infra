@@ -34,7 +34,7 @@ function reconciler::wait_until_is_ready() {
       break
     fi
 
-    if [ "$timeout" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then
+    if [ "$RECONCILER_TIMEOUT" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then
       log::info "Timeout reached while waiting for reconciler to be ready. Exiting"
       exit 1
     fi
@@ -45,8 +45,6 @@ function reconciler::wait_until_is_ready() {
 
 # Waits until the test-pod deployment is in ready state
 function reconciler::wait_until_test_pod_is_ready() {
-  timeout=60 # in secs
-  delay=2 # in secs
   iterationsLeft=$(( RECONCILER_TIMEOUT/RECONCILER_DELAY ))
   while : ; do
     testPodStatus=$(kubectl get po -n reconciler test-pod -ojsonpath='{.status.containerStatuses[*].ready}')
@@ -54,7 +52,7 @@ function reconciler::wait_until_test_pod_is_ready() {
       log::info "Test pod is ready"
       break
     fi
-    if [ "$timeout" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then
+    if [ "$RECONCILER_TIMEOUT" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then
       log::info "Timeout reached while initializing test pod. Exiting"
       exit 1
     fi
@@ -64,6 +62,7 @@ function reconciler::wait_until_test_pod_is_ready() {
   done
 }
 
+# Initializes test pod which will send reconcile requests to reconciler
 function reconciler::initialize_test_pod() {
   # Define KUBECONFIG env variable
   export KUBECONFIG="$HOME/.kube/config"
@@ -81,12 +80,14 @@ function reconciler::initialize_test_pod() {
 
 }
 
+# Triggers reconciliation of Kyma
 function reconciler::reconcile_kyma() {
   # Trigger Kyma reconciliation using reconciler
   log::banner "Reconcile Kyma in the same cluster until it is ready"
   kubectl exec -it -n reconciler test-pod -- sh -c ". /tmp/reconcile-kyma.sh"
 }
 
+# Deploy test pod
 function reconciler::deploy_test_pod() {
   # Trigger Kyma reconciliation using reconciler
   log::banner "Reconcile Kyma in the same cluster until it is ready"
