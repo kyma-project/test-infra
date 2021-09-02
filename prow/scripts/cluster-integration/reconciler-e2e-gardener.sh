@@ -101,38 +101,26 @@ kyma::install_cli
 # Provision garderner cluster
 gardener::provision_cluster
 
-# Define KUBECONFIG env variable
-export KUBECONFIG="$HOME/.kube/config"
-log::info "KUBECONFIG: ${KUBECONFIG}"
-
 # Install reconciler to cluster
 log::banner "Installing Reconciler in the cluster"
-cd "${RECONCILER_SOURCES_DIR}"
-make deploy
+
+# Deploy reconciler
+reconciler::deploy
 
 # Wait until reconciler is ready
-wait_until_reconciler_is_ready
+reconciler::wait_until_is_ready
 
-# Run a test pod from where the reconciliation will be triggered
-log::banner "Running test-pod in the cluster"
-kubectl run -n reconciler --image=alpine:3.14.1 --restart=Never test-pod -- sh -c "sleep 36000"
+# Deploy test pod which will trigger reconciliation
+reconciler::deploy_test_pod
 
 # Wait until test-pod is ready
 reconciler::wait_until_test_pod_is_ready
 
-# Create reconcile request payload with kubeconfig to the test-pod
-# shellcheck disable=SC2086
-kc="$(cat ${KUBECONFIG})"
-# shellcheck disable=SC2016
-jq --arg kubeconfig "${kc}" '.kubeconfig = $kubeconfig' ./scripts/e2e-test/template.json > body.json
+# Set up test pod environment
+reconciler::initialize_test_pod
 
-# Copy the reconcile request payload and kyma reconciliation script to the test-pod
-kubectl cp body.json reconciler/test-pod:/tmp
-kubectl cp  ./scripts/e2e-test/reconcile-kyma.sh reconciler/test-pod:/tmp
-
-# Trigger Kyma reconciliation using reconciler
-log::banner "Reconcile Kyma in the same cluster until it is ready"
-kubectl exec -it -n reconciler test-pod -- sh -c ". /tmp/reconcile-kyma.sh"
+# Run a test pod from where the reconciliation will be triggered
+reconciler::reconcile_kyma
 
 log::banner "Executing test"
 ### Once Kyma is installed run the fast integration test

@@ -5,8 +5,14 @@ readonly RECONCILER_NAMESPACE=reconciler
 readonly RECONCILER_TIMEOUT=1200 # in secs
 readonly RECONCILER_DELAY=10 # in secs
 
+
+function reconciler::deploy() {
+  cd "${RECONCILER_SOURCES_DIR}"
+  make deploy
+}
+
 # Checks whether reconciler is ready
-function reconciler::wait_until_reconciler_is_ready() {
+function reconciler::wait_until_is_ready() {
   iterationsLeft=$(( RECONCILER_TIMEOUT/RECONCILER_DELAY ))
   while : ; do
     reconcilerCountDeploys=0
@@ -56,4 +62,34 @@ function reconciler::wait_until_test_pod_is_ready() {
     sleep $delay
     iterationsLeft=$(( iterationsLeft-1 ))
   done
+}
+
+function reconciler::initialize_test_pod() {
+  # Define KUBECONFIG env variable
+  export KUBECONFIG="$HOME/.kube/config"
+
+  # Create reconcile request payload with kubeconfig to the test-pod
+  # shellcheck disable=SC2086
+  kc="$(cat ${KUBECONFIG})"
+  # shellcheck disable=SC2016
+  jq --arg kubeconfig "${kc}" '.kubeconfig = $kubeconfig' ./scripts/e2e-test/template.json > body.json
+
+  # Copy the reconcile request payload and kyma reconciliation script to the test-pod
+  kubectl cp body.json reconciler/test-pod:/tmp
+  kubectl cp  ./scripts/e2e-test/reconcile-kyma.sh reconciler/test-pod:/tmp
+
+
+}
+
+function reconciler::reconcile_kyma() {
+  # Trigger Kyma reconciliation using reconciler
+  log::banner "Reconcile Kyma in the same cluster until it is ready"
+  kubectl exec -it -n reconciler test-pod -- sh -c ". /tmp/reconcile-kyma.sh"
+}
+
+function reconciler::deploy_test_pod() {
+  # Trigger Kyma reconciliation using reconciler
+  log::banner "Reconcile Kyma in the same cluster until it is ready"
+  kubectl exec -it -n reconciler test-pod -- sh -c ". /tmp/reconcile-kyma.sh"
+
 }
