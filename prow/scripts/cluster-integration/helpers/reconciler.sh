@@ -38,7 +38,7 @@ function reconciler::wait_until_is_ready() {
       log::info "Timeout reached while waiting for reconciler to be ready. Exiting"
       exit 1
     fi
-    sleep $delay
+    sleep $RECONCILER_DELAY
     iterationsLeft=$(( iterationsLeft-1 ))
   done
 }
@@ -57,7 +57,7 @@ function reconciler::wait_until_test_pod_is_ready() {
       exit 1
     fi
     log::info "Waiting for test pod to be ready..."
-    sleep $delay
+    sleep $RECONCILER_DELAY
     iterationsLeft=$(( iterationsLeft-1 ))
   done
 }
