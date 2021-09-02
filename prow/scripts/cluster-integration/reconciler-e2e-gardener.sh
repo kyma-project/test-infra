@@ -39,6 +39,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/lib/gardener/gardener.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
+# shellcheck source=prow/scripts/cluster-integration/helpers/reconciler.sh
+source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reconciler.sh"
 
 # All provides require these values, each of them may check for additional variables
 requiredVars=(
@@ -86,41 +88,6 @@ export CLUSTER_NAME="${COMMON_NAME}"
 ## Function definitions
 ## ---------------------------------------------------------------------------------------
 
-# wait_until_reconciler_is_ready waits until the reconciler deployments are in ready state
-function wait_until_reconciler_is_ready() {
-  timeout=1200 # in secs
-  delay=10 # in secs
-  iterationsLeft=$(( timeout/delay ))
-  reconcilerSuffix="-reconciler"
-  reconcilerNs="reconciler"
-  while : ; do
-    reconcilerCountDeploys=0
-    readyCountDeploys=0
-    for deploy in $(kubectl get deploy -n reconciler -ojsonpath='{ .items[*].metadata.name }'); do
-      case $deploy in *"$reconcilerSuffix")
-        reconcilerCountDeploys=$(( reconcilerCountDeploys+1 ))
-        specReplicas=$(kubectl get deploy -n "${reconcilerNs}" "${deploy}" -ojsonpath="{ .spec.replicas }")
-        readyReplicas=$(kubectl get deploy -n "${reconcilerNs}" "${deploy}" -ojsonpath="{ .status.readyReplicas }")
-        if [[ specReplicas -eq readyReplicas ]]; then
-            readyCountDeploys=$(( readyCountDeploys+1 ))
-        fi
-        ;;
-      esac
-    done
-
-    if [ "${reconcilerCountDeploys}" -eq "${readyCountDeploys}" ] ; then
-      log::info "Reconciler succesfully installed"
-      break
-    fi
-
-    if [ "$timeout" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then
-      log::info "Timeout reached while waiting for reconciler to be ready. Exiting"
-      exit 1
-    fi
-    sleep $delay
-    iterationsLeft=$(( iterationsLeft-1 ))
-  done
-}
 
 # wait_until_test_pod_is_ready waits until the test-pod deployment are in ready state
 function wait_until_test_pod_is_ready() {
@@ -172,12 +139,12 @@ make deploy
 # Wait until reconciler is ready
 wait_until_reconciler_is_ready
 
-# Run a test pod
+# Run a test pod from where the reconciliation will be triggered
 log::banner "Running test-pod in the cluster"
 kubectl run -n reconciler --image=alpine:3.14.1 --restart=Never test-pod -- sh -c "sleep 36000"
 
 # Wait until test-pod is ready
-wait_until_test_pod_is_ready
+reconciler::wait_until_test_pod_is_ready
 
 # Create reconcile request payload with kubeconfig to the test-pod
 # shellcheck disable=SC2086
