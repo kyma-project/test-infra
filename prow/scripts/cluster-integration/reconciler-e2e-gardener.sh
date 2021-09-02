@@ -85,32 +85,6 @@ export COMMON_NAME
 export CLUSTER_NAME="${COMMON_NAME}"
 
 ## ---------------------------------------------------------------------------------------
-## Function definitions
-## ---------------------------------------------------------------------------------------
-
-
-# wait_until_test_pod_is_ready waits until the test-pod deployment are in ready state
-function wait_until_test_pod_is_ready() {
-  timeout=60 # in secs
-  delay=2 # in secs
-  iterationsLeft=$(( timeout/delay ))
-  while : ; do
-    testPodStatus=$(kubectl get po -n reconciler test-pod -ojsonpath='{.status.containerStatuses[*].ready}')
-    if [ "${testPodStatus}" = "true" ]; then
-      log::info "Test pod is ready"
-      break
-    fi
-    if [ "$timeout" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then
-      log::info "Timeout reached while initializing test pod. Exiting"
-      exit 1
-    fi
-    log::info "Waiting for test pod to be ready..."
-    sleep $delay
-    iterationsLeft=$(( iterationsLeft-1 ))
-  done
-}
-
-## ---------------------------------------------------------------------------------------
 ## Prow job execution steps
 ## ---------------------------------------------------------------------------------------
 
@@ -156,7 +130,7 @@ jq --arg kubeconfig "${kc}" '.kubeconfig = $kubeconfig' ./scripts/e2e-test/templ
 kubectl cp body.json reconciler/test-pod:/tmp
 kubectl cp  ./scripts/e2e-test/reconcile-kyma.sh reconciler/test-pod:/tmp
 
-# Trigger Kyma reconciliation using Reconciler
+# Trigger Kyma reconciliation using reconciler
 log::banner "Reconcile Kyma in the same cluster until it is ready"
 kubectl exec -it -n reconciler test-pod -- sh -c ". /tmp/reconcile-kyma.sh"
 
