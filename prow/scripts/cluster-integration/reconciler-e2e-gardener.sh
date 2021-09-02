@@ -24,8 +24,6 @@ ENABLE_TEST_LOG_COLLECTOR=false
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export RECONCILER_SOURCES_DIR="/home/prow/go/src/github.com/kyma-incubator/reconciler"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
-#set to dummy value, required by gardener/gcp.sh
-export KYMA_SOURCE="main"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
@@ -86,9 +84,6 @@ gardener::init
 gardener::set_machine_type
 
 kyma::install_cli
-
-# currently only Azure generates overrides, but this may change in the future
-gardener::generate_overrides
 
 gardener::provision_cluster
 
