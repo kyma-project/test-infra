@@ -39,6 +39,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/lib/gardener/gardener.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
+# shellcheck source=prow/scripts/cluster-integration/helpers/reconciler.sh
+source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reconciler.sh"
 
 # All provides require these values, each of them may check for additional variables
 requiredVars=(
