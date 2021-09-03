@@ -111,7 +111,7 @@ reconciler::wait_until_is_ready
 reconciler::deploy_test_pod
 
 # Wait until test-pod is ready
-wait_until_test_pod_is_ready
+reconciler::wait_until_test_pod_is_ready
 
 # Set up test pod environment
 reconciler::initialize_test_pod
