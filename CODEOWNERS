@@ -39,4 +39,4 @@
 /templates/templates @kyma-project/prow @sjanota
 
 # All .md files
-*.md @klaudiagrz @mmitoraj @majakurcius @alexandra-simeonova @NHingerl
+*.md @kazydek @klaudiagrz @mmitoraj @majakurcius @alexandra-simeonova @NHingerl
