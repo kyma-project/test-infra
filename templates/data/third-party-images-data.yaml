@@ -230,6 +230,37 @@ templates:
                   local:
                     - "default"
                     - "image-signing"
+
+              - jobConfig:
+                  name: "pre-main-tpi-loki"
+                  run_if_changed: "^loki/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/loki"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+              - jobConfig:
+                  name: "post-main-tpi-loki"
+                  run_if_changed: "^loki/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/loki"
+                    - "ci-main"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "default"
+                    - "image-signing"
               
               - jobConfig:
                   name: "pre-main-tpi-oauth2-proxy"
