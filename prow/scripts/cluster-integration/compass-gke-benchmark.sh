@@ -88,12 +88,8 @@ function docker_cleanup() {
     log::info "Docker image cleanup"
     if [ -n "${COMPASS_INSTALLER_IMAGE}" ]; then
       log::info "Delete temporary Compass-Installer Docker image"
-      gcp::authenticate \
-        -c "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
       gcp::delete_docker_image \
         -i "${COMPASS_INSTALLER_IMAGE}"
-      gcp::set_account \
-        -c "${GOOGLE_APPLICATION_CREDENTIALS}"
     fi
   fi
   set -e
@@ -216,36 +212,26 @@ EOF
 function applyCompassOverrides() {
   NAMESPACE="compass-installer"
 
-  if [ "${RUN_PROVISIONER_TESTS}" == "true" ]; then
-    # Change timeout for kyma test to 3h
-    export KYMA_TEST_TIMEOUT=3h
-
-    # Create Config map for Provisioner Tests
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "provisioner-tests-overrides" \
-      --data "global.provisioning.enabled=true" \
-      --data "provisioner.security.skipTLSCertificateVeryfication=true" \
-      --data "provisioner.tests.enabled=true" \
-      --data "provisioner.gardener.kubeconfig=$(base64 -w 0 < "${GARDENER_APPLICATION_CREDENTIALS}")" \
-      --data "provisioner.gardener.project=$GARDENER_PROJECT_NAME" \
-      --data "provisioner.tests.gardener.azureSecret=$GARDENER_AZURE_SECRET_NAME" \
-      --label "component=compass"
-  fi
-
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-auditlog-mock-tests" \
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-overrides" \
     --data "global.externalServicesMock.enabled=true" \
     --data "global.externalServicesMock.auditlog=true" \
     --data "gateway.gateway.auditlog.enabled=true" \
     --data "gateway.gateway.auditlog.authMode=oauth" \
     --data "global.systemFetcher.enabled=true" \
-    --data "global.systemFetcher.systemsAPIEndpoint=http://compass-external-services-mock:8080/systemfetcher/systems" \
+    --data "global.systemFetcher.systemsAPIEndpoint=http://compass-external-services-mock.compass-system.svc.cluster.local:8080/systemfetcher/systems" \
     --data "global.systemFetcher.systemsAPIFilterCriteria=no" \
     --data "global.systemFetcher.systemsAPIFilterTenantCriteriaPattern=tenant=%s" \
-    --data 'global.systemFetcher.systemToTemplateMappings=[{"Name": "temp1", "SourceKey": ["prop"], "SourceValue": ["val1"] }]' \
+    --data 'global.systemFetcher.systemToTemplateMappings=[{"Name": "temp1", "SourceKey": ["prop"], "SourceValue": ["val1"] },{"Name": "temp2", "SourceKey": ["prop"], "SourceValue": ["val2"] }]' \
     --data "global.systemFetcher.oauth.client=admin" \
     --data "global.systemFetcher.oauth.secret=admin" \
-    --data "global.systemFetcher.oauth.tokenURLPattern=http://compass-external-services-mock:8080/systemfetcher/oauth/token" \
+    --data "global.systemFetcher.oauth.tokenURLPattern=http://compass-external-services-mock.compass-system.svc.cluster.local:8080/systemfetcher/oauth/token" \
     --data "global.systemFetcher.oauth.scopesClaim=scopes" \
     --data "global.systemFetcher.oauth.tenantHeaderName=x-zid" \
+    --data "global.kubernetes.serviceAccountTokenJWKS=https://container.googleapis.com/v1beta1/projects/$CLOUDSDK_CORE_PROJECT/locations/$CLOUDSDK_COMPUTE_ZONE/clusters/$COMMON_NAME/jwks" \
+    --data "global.authenticators.tenant-fetcher.enabled=true" \
+    --data "system-broker.http.client.skipSSLValidation=true" \
+    --data "operations-controller.http.client.skipSSLValidation=true" \
+    --data "global.systemFetcher.http.client.skipSSLValidation=true" \
     --label "component=compass"
 }
 
@@ -304,6 +290,8 @@ function installCompassOld() {
   TMP_DIR="/tmp/compass-master-artifacts"
 
   readonly LATEST_VERSION=master-$(cd "$COMPASS_SOURCES_DIR" && git rev-parse --short master~1)
+  echo "Deploying compass version $LATEST_VERSION"
+
   COMPASS_ARTIFACTS="${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${LATEST_VERSION}"
 
   gsutil cp "${COMPASS_ARTIFACTS}/compass-installer.yaml" ${TMP_DIR}/compass-installer.yaml
@@ -403,6 +391,10 @@ for POD in $PODS; do
 done
 
 kubectl delete cts $SUITE_NAME
+
+# Because of sequential compass installation, the second one fails due to compass-migration job patching failure. K8s job's fields are immutable.
+log::info "Deleting the old compass-migration job"
+kubectl delete jobs -n compass-system compass-migration
 
 log::info "Install New Compass version"
 installCompassNew

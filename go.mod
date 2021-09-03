@@ -11,6 +11,7 @@ replace (
 
 require (
 	cloud.google.com/go/bigquery v1.8.0
+	cloud.google.com/go/logging v1.0.0
 	cloud.google.com/go/pubsub v1.10.3
 	cloud.google.com/go/storage v1.16.0
 	github.com/Masterminds/semver v1.5.0

@@ -62,6 +62,10 @@ do
             shift
             shift
             ;;
+        --dump-db)
+            DUMP_DB="--dump-db"
+            shift
+            ;;
         --*)
             echo "Unknown flag ${1}"
             exit 1
@@ -110,8 +114,13 @@ log::info "Copying Compass to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "compass-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/compass" "~/compass"
 
-log::info "Download stable Kyma CLI"
-curl -Lo kyma https://storage.googleapis.com/kyma-cli-stable/kyma-linux
+
+KYMA_CLI_VERSION="a064ffb"
+log::info "Installing Kyma CLI version: $KYMA_CLI_VERSION"
+
+PREV_WD=$(pwd)
+git clone https://github.com/kyma-project/cli.git && cd cli && git checkout $KYMA_CLI_VERSION
+make build-linux && cd ./bin && mv ./kyma-linux ./kyma
 chmod +x kyma
 
 gcloud compute ssh --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" -- "mkdir \$HOME/bin"
@@ -121,9 +130,12 @@ utils::send_to_vm "${ZONE}" "compass-integration-test-${RANDOM_ID}" "kyma" "~/bi
 
 gcloud compute ssh --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" -- "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
 
+cd "$PREV_WD"
+log::info "Successfully installed Kyma CLI version: $KYMA_CLI_VERSION"
+
 log::info "Triggering the installation"
 
-gcloud compute ssh --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" -- "yes | ./compass/installation/scripts/prow/deploy-and-test.sh --dump-db"
+gcloud compute ssh --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" -- "yes | ./compass/installation/scripts/prow/deploy-and-test.sh ${DUMP_DB}"
 
 log::info "Copying test artifacts from VM"
 utils::receive_from_vm "${ZONE}" "compass-integration-test-${RANDOM_ID}" "/var/log/prow_artifacts" "${ARTIFACTS}"

@@ -39,8 +39,6 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/lib/gardener/gardener.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
-# shellcheck source=prow/scripts/cluster-integration/helpers/reconciler.sh
-source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reconciler.sh"
 
 # All provides require these values, each of them may check for additional variables
 requiredVars=(
@@ -111,7 +109,7 @@ reconciler::wait_until_is_ready
 reconciler::deploy_test_pod
 
 # Wait until test-pod is ready
-reconciler::wait_until_test_pod_is_ready
+wait_until_test_pod_is_ready
 
 # Set up test pod environment
 reconciler::initialize_test_pod

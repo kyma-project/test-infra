@@ -209,6 +209,7 @@ tide:
 #    kyma-incubator/k8s-service-catalog: squash
     kyma-incubator/Kyma-Showcase: squash
     kyma-incubator/sc-removal: squash
+    kyma-incubator/hydra-login-consent: squash
   target_url: https://status.build.kyma-project.io/tide
   pr_status_base_urls:
     '*': https://status.build.kyma-project.io/pr
@@ -393,6 +394,20 @@ presets:
       - name: sa-gke-kyma-integration
         mountPath: /etc/credentials/sa-gke-kyma-integration
         readOnly: true
+  # Gardener needs the credentials, we can't use preset-sa-gke-kyma-integration, as KYMA_PROJECT_DIR is colliding with another preset
+  - labels:
+      preset-sa-test-gcr-push: "true" # Service account with write access to test gcr.
+    env:
+      - name: GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-test-gcr-push/service-account.json
+    volumes:
+      - name: sa-test-gcr-push
+        secret:
+          secretName: sa-gke-kyma-integration
+    volumeMounts:
+      - name: sa-test-gcr-push
+        mountPath: /etc/credentials/sa-test-gcr-push
+        readOnly: true
   - labels:
       preset-sa-gcr-push: "true" # Service account with "Storage Admin" role
     env:
@@ -405,19 +420,6 @@ presets:
     volumeMounts:
       - name: sa-gcr-push-kyma-project
         mountPath: /etc/credentials/sa-gcr-push-kyma-project
-        readOnly: true
-  - labels:
-      preset-sa-test-gcr-push: "true" # Service account with write access to test gcr.
-    env:
-      - name: GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS
-        value: /etc/credentials/sa-test-gcr-push/service-account.json
-    volumes:
-      - name: sa-test-gcr-push
-        secret:
-          secretName: sa-gcr-push-kyma-project
-    volumeMounts:
-      - name: sa-test-gcr-push
-        mountPath: /etc/credentials/sa-test-gcr-push
         readOnly: true
   - labels:
       preset-sa-kyma-artifacts: "true"
@@ -583,7 +585,7 @@ presets:
       preset-docker-push-repository-gke-integration: "true" # Needed for kyma installer image
     env:
       - name: DOCKER_PUSH_REPOSITORY
-        value: "eu.gcr.io/sap-kyma-prow"
+        value: "eu.gcr.io/sap-kyma-prow-workloads"
   - labels:
       preset-docker-push-repository-test-infra: "true"
     env:
@@ -907,10 +909,15 @@ presets:
       - name: COMPASS_INTEGRATION_ENABLED
         value: "true"
   - labels:
-      preset-kyma-integration-central-app-connectivity-enabled: "true"
+      preset-kyma-integration-subaccounnt: "true"
     env:
-      - name: CENTRAL_APPLICATION_CONNECTIVITY_ENABLED
-        value: "true"
+      - name: KEB_SUBACCOUNT_ID
+        value: "prow-keb-integration"
+  - labels:
+      preset-svcat-migration-subaccounnt: "true"
+    env:
+      - name: KEB_SUBACCOUNT_ID
+        value: "19ea2000-865d-42fd-8d6f-3e3e2dcce3c8"
   - labels:
       preset-keb-dev-credentials: "true"
     env:
@@ -934,8 +941,6 @@ presets:
           secretKeyRef:
             name: keb-dev-credentials
             key: KEB_GLOBALACCOUNT_ID
-      - name: KEB_SUBACCOUNT_ID
-        value: "prow-keb-integration"
       - name: KEB_USER_ID
         value: "test@test.com"
       - name: GARDENER_KUBECONFIG

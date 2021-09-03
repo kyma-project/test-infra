@@ -19,10 +19,12 @@ templates:
                     - "jobConfig_generic_component_console"
                     - "extra_refs_test-infra"
                   preConfigs:
-                    - "jobConfig_presubmit"
+                    global:
+                      - "jobConfig_presubmit"
                   postConfigs:
-                    - "jobConfig_postsubmit"
-                    - "disable_testgrid"
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
       - to: ../prow/jobs/console/add-ons/add-ons.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/console"
@@ -41,10 +43,12 @@ templates:
                     - "jobConfig_generic_component_console"
                     - "extra_refs_test-infra"
                   preConfigs:
-                    - "jobConfig_presubmit"
+                    global:
+                      - "jobConfig_presubmit"
                   postConfigs:
-                    - "jobConfig_postsubmit"
-                    - "disable_testgrid"
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
       - to: ../prow/jobs/console/service-catalog-ui/service-catalog-ui.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/console"
@@ -63,10 +67,12 @@ templates:
                     - "jobConfig_generic_component_console"
                     - "extra_refs_test-infra"
                   preConfigs:
-                    - "jobConfig_presubmit"
+                    global:
+                      - "jobConfig_presubmit"
                   postConfigs:
-                    - "jobConfig_postsubmit"
-                    - "disable_testgrid"
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
       - to: ../prow/jobs/console/logging/console-logging.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/console"
@@ -85,10 +91,12 @@ templates:
                     - "jobConfig_generic_component_console"
                     - "extra_refs_test-infra"
                   preConfigs:
-                    - "jobConfig_presubmit"
+                    global:
+                      - "jobConfig_presubmit"
                   postConfigs:
-                    - "jobConfig_postsubmit"
-                    - "disable_testgrid"
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
       - to: ../prow/jobs/console/tests/tests.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/console"
@@ -107,10 +115,12 @@ templates:
                     - "jobConfig_generic_component_console"
                     - "extra_refs_test-infra"
                   preConfigs:
-                    - "jobConfig_presubmit"
+                    global:
+                      - "jobConfig_presubmit"
                   postConfigs:
-                    - "jobConfig_postsubmit"
-                    - "disable_testgrid"
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
       - to: ../prow/jobs/console/core/core.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/console"
@@ -129,7 +139,9 @@ templates:
                     - "jobConfig_generic_component_console"
                     - "extra_refs_test-infra"
                   preConfigs:
-                    - "jobConfig_presubmit"
+                    global:
+                      - "jobConfig_presubmit"
                   postConfigs:
-                    - "jobConfig_postsubmit"
-                    - "disable_testgrid"
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
