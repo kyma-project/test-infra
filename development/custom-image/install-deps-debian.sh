@@ -19,6 +19,7 @@ CRICTL_VERSION=v1.12.0
 HELM_VERSION="v3.4.2"
 DOCKER_VERSION=5:20.10.5~3-0~debian-buster
 NODEJS_VERSION="14.x"
+K3D_VERSION="4.4.7"
 
 # install docker
 sudo apt-get update
@@ -72,6 +73,9 @@ sudo apt-get -y install \
      jq \
      nodejs
 
+# install k3d
+wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v${K3D_VERSION} bash
+
 # install monitoring agent
 # https://cloud.google.com/monitoring/agent/installation
 curl -sSO https://dl.google.com/cloudagents/add-monitoring-agent-repo.sh && \
@@ -90,6 +94,6 @@ sudo apt-get install -y 'google-fluentd=1.*'
 sudo apt-get install -y google-fluentd-catch-all-config
 
 # pre-fetch-docker-images
-sudo docker pull eu.gcr.io/kyma-project/external/cypress/included:8.0.0
+sudo docker pull eu.gcr.io/kyma-project/external/cypress/included:8.3.0
 sudo docker pull eu.gcr.io/kyma-project/test-infra/docker-registry-2:20200202
 
