@@ -101,9 +101,6 @@ kyma::install_cli
 # Provision garderner cluster
 gardener::provision_cluster
 
-# Install reconciler to cluster
-log::banner "Installing Reconciler in the cluster"
-
 # Deploy reconciler
 reconciler::deploy
 
@@ -124,9 +121,7 @@ reconciler::reconcile_kyma
 
 log::banner "Executing test"
 ### Once Kyma is installed run the fast integration test
-echo "Disabled tests until reconciler is stable enough to install Kyma properly"
-## @TODO: Commented out tests until reconcile is stable to install Kyma properly
-# log::banner "Execute tests"
+echo "###--> NOTE: Disabled tests until reconciler is stable enough to install Kyma properly"
 # gardener::test_fast_integration_kyma
 
 #!!! Must be at the end of the script !!!

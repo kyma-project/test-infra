@@ -7,7 +7,9 @@ readonly RECONCILER_DELAY=10 # in secs
 
 
 function reconciler::deploy() {
-  cd "${RECONCILER_SOURCES_DIR}"
+  # Deploy reconciler to cluster
+  log::banner "Deploying Reconciler in the cluster"
+  cd "${RECONCILER_SOURCES_DIR}"  || { echo "Failed to change dir to: ${RECONCILER_SOURCES_DIR}"; exit 1; }
   make deploy
 }
 
@@ -89,8 +91,8 @@ function reconciler::reconcile_kyma() {
 
 # Deploy test pod
 function reconciler::deploy_test_pod() {
-  # Trigger Kyma reconciliation using reconciler
-  log::banner "Reconcile Kyma in the same cluster until it is ready"
-  kubectl exec -it -n reconciler test-pod -- sh -c ". /tmp/reconcile-kyma.sh"
+  # Deploy a test pod
+  log::banner "Deploying test-pod in the cluster"
+  kubectl run -n reconciler --image=alpine:3.14.1 --restart=Never test-pod -- sh -c "sleep 36000"
 
 }
