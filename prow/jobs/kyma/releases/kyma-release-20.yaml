@@ -60,7 +60,6 @@ presubmits: # runs on PRs
         preset-kyma-artifacts-bucket: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-gke-kyma-integration: "true"
-        preset-sa-test-gcr-push: "true"
       run_if_changed: '^((resources\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
@@ -115,7 +114,6 @@ presubmits: # runs on PRs
         preset-kyma-artifacts-bucket: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-gke-kyma-integration: "true"
-        preset-sa-test-gcr-push: "true"
       run_if_changed: '^((resources\S+|installation\S+|tests/end-to-end/upgrade/chart/upgrade/\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
@@ -224,7 +222,6 @@ postsubmits: # runs on main
         preset-kyma-guard-bot-github-token: "true"
         preset-log-collector-slack-token: "true"
         preset-sa-gke-kyma-integration: "true"
-        preset-sa-test-gcr-push: "true"
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -282,7 +279,6 @@ postsubmits: # runs on main
         preset-kyma-guard-bot-github-token: "true"
         preset-log-collector-slack-token: "true"
         preset-sa-gke-kyma-integration: "true"
-        preset-sa-test-gcr-push: "true"
       skip_report: false
       decorate: true
       cluster: trusted-workload

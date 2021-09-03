@@ -107,7 +107,7 @@ templates:
             request_memory: 1Gi
             request_cpu: 400m
         jobConfigs:
-          - repoName:  kyma-project/cli
+          - repoName: "github.com/kyma-project/cli"
             jobs:
               - jobConfig:
                   name: pre-kyma-cli-integration
@@ -125,21 +125,28 @@ templates:
                     - "jobConfig_submit"
                     - "jobConfig_presubmit"
               - jobConfig:
-                  name: pre-kyma-cli-integration-k3s
-                  branches:
-                    - ^main$
-                    - ^release-.*$
+                  path: integration-k3s
+                  release_since: "1.7"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
                     - "image_buildpack-golang-kubebuilder2"
+                    - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
                     - "k3s_template"
                     - "jobConfig_submit"
-                    - "jobConfig_presubmit"
+                  preConfigs:
+                    global:
+                      - "jobConfig_presubmit"
+                    local:
+                      - "jobConfig_presubmit"
+                  postConfigs:
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
+                    local:
+                      - "jobConfig_postsubmit"
               - jobConfig:
                   name: post-kyma-cli-integration
                 inheritedConfigs:
@@ -151,20 +158,6 @@ templates:
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
-                    - "jobConfig_submit"
-                    - "jobConfig_postsubmit"
-              - jobConfig:
-                  name: post-kyma-cli-integration-k3s
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "extra_refs_test-infra"
-                    - "image_buildpack-golang-kubebuilder2"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "k3s_template"
                     - "jobConfig_submit"
                     - "jobConfig_postsubmit"
               - jobConfig:
