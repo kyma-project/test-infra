@@ -5,7 +5,8 @@ go 1.14
 require (
 	github.com/cloudevents/sdk-go/v2 v2.4.1
 	github.com/google/go-github v17.0.0+incompatible
-	github.com/kyma-project/test-infra/development/github-slack-connector/githubWebhookGateway v0.0.0-20210521093151-b074fd213fc2
+	github.com/google/go-querystring v1.1.0 // indirect
+	github.com/kyma-project/test-infra/development/github-slack-connector/githubWebhookGateway v0.0.0-20210528091155-95eb95378149
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.5.1
 	github.com/vrischmann/envconfig v1.2.0

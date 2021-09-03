@@ -34,45 +34,11 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				"installation/test/test/README.MD",
 			},
 		},
-		"Should contain the kyma-integration K3s job": {
-			givenJobName: "pre-main-kyma-integration-k3s",
+		"Should contain the kyma-integration k3d job": {
+			givenJobName: "pre-main-kyma-integration-k3d",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration",
-			},
-
-			expRunIfChangedRegex: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
-			expRunIfChangedPaths: []string{
-				"resources/values.yaml",
-				"installation/file.yaml",
-			},
-			expNotRunIfChangedPaths: []string{
-				"installation/README.md",
-				"installation/test/test/README.MD",
-			},
-		},
-		"Should contain the kyma-integration K3s with central Application Connectivity job": {
-			givenJobName: "pre-main-kyma-integration-k3s-central-app-connectivity",
-
-			expPresets: []preset.Preset{
-				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-connectivity-enabled",
-			},
-
-			expRunIfChangedRegex: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
-			expRunIfChangedPaths: []string{
-				"resources/values.yaml",
-				"installation/file.yaml",
-			},
-			expNotRunIfChangedPaths: []string{
-				"installation/README.md",
-				"installation/test/test/README.MD",
-			},
-		},
-		"Should contain the kyma-integration K3s with central Application Connectivity and Compass job": {
-			givenJobName: "pre-main-kyma-integration-k3s-central-app-connectivity-compass",
-
-			expPresets: []preset.Preset{
-				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-connectivity-enabled", "preset-kyma-integration-compass-dev", "preset-kyma-integration-compass-enabled",
 			},
 
 			expRunIfChangedRegex: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
@@ -177,25 +143,11 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",
 			},
 		},
-		"Should contain the kyma-integration-k3s job": {
-			givenJobName: "post-main-kyma-integration-k3s",
+		"Should contain the kyma-integration-k3d job": {
+			givenJobName: "post-main-kyma-integration-k3d",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",
-			},
-		},
-		"Should contain the kyma-integration K3s with central Application Connectivity job": {
-			givenJobName: "post-main-kyma-integration-k3s-central-app-connectivity",
-
-			expPresets: []preset.Preset{
-				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-connectivity-enabled",
-			},
-		},
-		"Should contain the kyma-integration K3s with central Application Connectivity and Compass job": {
-			givenJobName: "post-main-kyma-integration-k3s-central-app-connectivity-compass",
-
-			expPresets: []preset.Preset{
-				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-connectivity-enabled", "preset-kyma-integration-compass-dev", "preset-kyma-integration-compass-enabled",
 			},
 		},
 		"Should contain the gke-integration job": {
@@ -478,7 +430,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, weeklyFastIntegrationPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"}, weeklyFastIntegrationPeriodic.Spec.Containers[0].Command)
 	tester.AssertThatSpecifiesResourceRequests(t, weeklyFastIntegrationPeriodic.JobBase)
-	assert.Len(t, weeklyFastIntegrationPeriodic.Spec.Containers[0].Env, 4)
+	assert.Len(t, weeklyFastIntegrationPeriodic.Spec.Containers[0].Env, 5)
 	tester.AssertThatContainerHasEnv(t, weeklyFastIntegrationPeriodic.Spec.Containers[0], "PROVISION_REGIONAL_CLUSTER", "true")
 	tester.AssertThatContainerHasEnv(t, weeklyFastIntegrationPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "weekly")
 	tester.AssertThatContainerHasEnv(t, weeklyFastIntegrationPeriodic.Spec.Containers[0], "CLUSTER_PROVIDER", "gcp")
