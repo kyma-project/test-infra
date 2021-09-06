@@ -651,6 +651,7 @@ templates:
                     - extra_refs_kyma
                     - image_kyma-integration
                     - disable_testgrid
+                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - command_busola_long_lasting
