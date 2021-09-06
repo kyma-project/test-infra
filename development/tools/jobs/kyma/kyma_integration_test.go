@@ -326,12 +326,12 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, gcrCleanerPeriodic)
 	assert.Equal(t, expName, gcrCleanerPeriodic.Name)
 
-	assert.Equal(t, "30 * * * *", gcrCleanerPeriodic.Cron)
+	assert.Equal(t, "0 1 * * *", gcrCleanerPeriodic.Cron)
 	tester.AssertThatHasPresets(t, gcrCleanerPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
 	tester.AssertThatHasExtraRepoRefCustom(t, gcrCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
 	assert.Equal(t, tester.ImageProwToolsLatest, gcrCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/prow-tools/gcrcleaner"}, gcrCleanerPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"--repository=eu.gcr.io/sap-kyma-prow-workloads --ageInHours=120 --gcr-exclude-name-regex=/functions/ --dryRun=false"}, gcrCleanerPeriodic.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"--repository=eu.gcr.io/sap-kyma-prow-workloads --ageInHours=168 --gcr-exclude-name-regex=/functions/ --dryRun=false"}, gcrCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, gcrCleanerPeriodic.JobBase)
 
 	expName = "github-stats"
