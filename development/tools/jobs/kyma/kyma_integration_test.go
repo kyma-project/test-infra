@@ -327,7 +327,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, expName, gcrCleanerPeriodic.Name)
 
 	assert.Equal(t, "0 1 * * *", gcrCleanerPeriodic.Cron)
-	tester.AssertThatHasPresets(t, gcrCleanerPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
+	tester.AssertThatHasPresets(t, gcrCleanerPeriodic.JobBase, preset.SaGKEKymaIntegration)
 	tester.AssertThatHasExtraRepoRefCustom(t, gcrCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
 	assert.Equal(t, tester.ImageProwToolsLatest, gcrCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/prow-tools/gcrcleaner"}, gcrCleanerPeriodic.Spec.Containers[0].Command)
