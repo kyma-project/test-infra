@@ -1602,9 +1602,6 @@ periodics: # runs on schedule
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
-      reporter_config:
-        slack:
-          channel: kyma-prow-dev-null
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
@@ -1619,6 +1616,8 @@ periodics: # runs on schedule
                 value: "gcp"
               - name: INPUT_CLUSTER_NAME
                 value: "nightly"
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
               - name: PROVISION_REGIONAL_CLUSTER
                 value: "true"
             resources:
@@ -1659,9 +1658,6 @@ periodics: # runs on schedule
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
-      reporter_config:
-        slack:
-          channel: kyma-prow-dev-null
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
@@ -1717,9 +1713,6 @@ periodics: # runs on schedule
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
-      reporter_config:
-        slack:
-          channel: kyma-prow-dev-null
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
@@ -1732,6 +1725,8 @@ periodics: # runs on schedule
                 value: "azure"
               - name: INPUT_CLUSTER_NAME
                 value: "nightly-aks"
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
               - name: RS_GROUP
                 value: "kyma-nightly-aks"
             resources:
