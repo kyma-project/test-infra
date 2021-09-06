@@ -1114,6 +1114,48 @@ periodics: # runs on schedule
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+    - name: old-images-gcr-cleaner
+      annotations:
+        pipeline.trigger: "periodic"
+        pipeline.type: "integration"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "old-images-gcr-cleaner"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-gc-compute-envs: "true"
+        preset-gc-project-env: "true"
+        preset-sa-gke-kyma-integration: "true"
+      cron: "30 * * * *"
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: trusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210831-b387d3eb"
+            securityContext:
+              privileged: true
+            command:
+              - "/prow-tools/gcrcleaner"
+            args:
+              - "--repository=eu.gcr.io/sap-kyma-prow-workloads --ageInHours=120 --gcr-exclude-name-regex=/functions/ --dryRun=false"
+            resources:
+              requests:
+                memory: 100Mi
+                cpu: 50m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: github-stats
       annotations:
         pipeline.trigger: "periodic"
