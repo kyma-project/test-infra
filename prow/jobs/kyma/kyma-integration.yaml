@@ -1140,9 +1140,10 @@ periodics: # runs on schedule
             securityContext:
               privileged: true
             command:
-              - "/prow-tools/gcrcleaner"
+              - "bash"
             args:
-              - "--repository=eu.gcr.io/sap-kyma-prow-workloads --ageInHours=168 --gcr-exclude-name-regex=/functions/ --dryRun=false"
+              - "-c"
+              - "/prow-tools/gcrcleaner --repository=eu.gcr.io/sap-kyma-prow-workloads --ageInHours=168 --gcr-exclude-name-regex=/functions/ --dryRun=false"
             resources:
               requests:
                 memory: 100Mi

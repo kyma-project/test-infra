@@ -231,9 +231,10 @@ templates:
                   cron: "0 1 * * *" # "At 1:00am every day"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
-                  command: "/prow-tools/gcrcleaner"
+                  command: "bash"
                   args:
-                    - "--repository=eu.gcr.io/sap-kyma-prow-workloads --ageInHours=168 --gcr-exclude-name-regex=/functions/ --dryRun=false"
+                    - "-c"
+                    - "/prow-tools/gcrcleaner --repository=eu.gcr.io/sap-kyma-prow-workloads --ageInHours=168 --gcr-exclude-name-regex=/functions/ --dryRun=false"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
