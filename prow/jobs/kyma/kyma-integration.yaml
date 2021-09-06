@@ -1142,7 +1142,7 @@ periodics: # runs on schedule
             command:
               - "/prow-tools/gcrcleaner"
             args:
-              - "--repository=eu.gcr.io/sap-kyma-prow-workloads --ageInHours=120 --gcr-exclude-name-regex=/functions/ --dryRun=false"
+              - "--repository=eu.gcr.io/sap-kyma-prow-workloads --ageInHours=168 --gcr-exclude-name-regex=/functions/ --dryRun=false"
             resources:
               requests:
                 memory: 100Mi
