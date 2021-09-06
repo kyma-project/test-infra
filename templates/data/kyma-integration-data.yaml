@@ -228,7 +228,7 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "gcr-cleaner-prow-workloads"
-                  cron: "0 1 * * *" # "At 1:30am every day"
+                  cron: "0 1 * * *" # "At 1:00am every day"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
                   command: "/prow-tools/gcrcleaner"
