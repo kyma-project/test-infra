@@ -1124,7 +1124,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.runID: "gcr-cleaner-prow-workloads"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-gke-kyma-integration: "true"
-      cron: "30 * * * *"
+      cron: "0 1 * * *"
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
