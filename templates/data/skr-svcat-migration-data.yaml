@@ -23,16 +23,16 @@ templates:
               preset-keb-dev-credentials: "true"
               preset-svcat-migration-subaccounnt: "true"
               preset-btp-operator-stage-credentials: "true"
-          keb_plan_azure:
+          keb_plan_aws:
             annotations:
-              pipeline.platform: gardener_azure
+              pipeline.platform: gardener_aws
             env:
-              KEB_PLAN_ID: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
+              KEB_PLAN_ID: "361c511f-f939-4621-b228-d0fb79a1fe15"
         jobConfigs:
           - repoName: "kyma-project/kyma"
             jobs:
               - jobConfig:
-                  name: "skr-azure-svcat-migration-dev"
+                  name: "skr-aws-svcat-migration-dev"
                   cron: "0 */4 * * *"
                 inheritedConfigs:
                   global:
@@ -44,4 +44,4 @@ templates:
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
-                    - "keb_plan_azure"
+                    - "keb_plan_aws"
