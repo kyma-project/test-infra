@@ -234,7 +234,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "/prow-tools/gcrcleaner --repository=eu.gcr.io/sap-kyma-prow-workloads --age-in-hours=168 --gcr-exclude-name-regex=/functions/ --dry-run=false"
+                    - "/prow-tools/gcrcleaner --repository=eu.gcr.io/sap-kyma-prow-workloads --age-in-hours=168 --dry-run=false"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
