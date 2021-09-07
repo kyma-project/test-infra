@@ -119,10 +119,9 @@ reconciler::initialize_test_pod
 # Run a test pod from where the reconciliation will be triggered
 reconciler::reconcile_kyma
 
-log::banner "Executing test"
 ### Once Kyma is installed run the fast integration test
-echo "###--> NOTE: Disabled tests until reconciler is stable enough to install Kyma properly"
-# gardener::test_fast_integration_kyma
+log::banner "Executing test"
+gardener::test_fast_integration_kyma
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
