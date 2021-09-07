@@ -16,8 +16,7 @@ deployment:
   affinity: {}
   podSecurityPolicy:
     enabled: true
-    name: connaisseur-psp
-    customManifest: true # deploy your own podSecurityPolicy manifest
+    name: ["connaisseur-psp"] # list of PSPs to use, "connaisseur-psp" is the project-provided
 
 # configure Connaisseur service
 service:
