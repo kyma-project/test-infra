@@ -51,7 +51,7 @@ RUN curl -L -O "https://github.com/kubernetes-sigs/kubebuilder/releases/download
     mv kustomize /usr/local/bin/kustomize
 
 # Install golang toolbox
-RUN go get golang.org/x/tools/cmd/goimports \
+RUN go install golang.org/x/tools/cmd/goimports@latest \
     golang.org/x/lint/golint \
     github.com/ericchiang/pup \
     github.com/kisielk/errcheck && \
