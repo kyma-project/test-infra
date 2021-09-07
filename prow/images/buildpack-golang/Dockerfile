@@ -51,10 +51,10 @@ RUN curl -L -O "https://github.com/kubernetes-sigs/kubebuilder/releases/download
     mv kustomize /usr/local/bin/kustomize
 
 # Install golang toolbox
-RUN go get golang.org/x/tools/cmd/goimports \
-    golang.org/x/lint/golint \
-    github.com/ericchiang/pup \
-    github.com/kisielk/errcheck && \
+RUN go install golang.org/x/tools/cmd/goimports@latest && \
+    go install golang.org/x/lint/golint@latest && \
+    go install github.com/ericchiang/pup@latest && \
+    go install github.com/kisielk/errcheck@latest && \
     GO111MODULE="on" go get github.com/vektra/mockery && \
     GO111MODULE="off" go get -u github.com/maxbrunsfeld/counterfeiter && \
     curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- -b ${GOPATH}/bin ${GOLANGCI_LINT_VERSION}

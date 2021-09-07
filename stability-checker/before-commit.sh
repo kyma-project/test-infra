@@ -49,10 +49,10 @@ done
 ##
 #  GO LINT
 ##
-go get golang.org/x/lint/golint
+go install golang.org/x/lint/golint
 buildLintResult=$?
 if [ ${buildLintResult} != 0 ]; then
-  echo -e "${RED}✗ go get golint${NC}\n$buildLintResult${NC}"
+  echo -e "${RED}✗ go install golint${NC}\n$buildLintResult${NC}"
   exit 1
 fi
 
@@ -68,10 +68,10 @@ fi
 ##
 # GO IMPORTS & FMT
 ##
-go get golang.org/x/tools/cmd/goimports
+go install golang.org/x/tools/cmd/goimports
 buildGoImportResult=$?
 if [ ${buildGoImportResult} != 0 ]; then
-  echo -e "${RED}✗ go build goimports${NC}\n$buildGoImportResult${NC}"
+  echo -e "${RED}✗ go install goimports${NC}\n$buildGoImportResult${NC}"
   exit 1
 fi
 

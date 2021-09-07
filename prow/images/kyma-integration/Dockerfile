@@ -162,7 +162,7 @@ RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cl
 ################ Install Benchmark utilities ####################
 #################################################################
 
-RUN go get golang.org/x/perf/cmd/...
+RUN go install golang.org/x/perf/cmd/...
 
 #################################################################
 ####################### Install smctl ###########################
