@@ -97,8 +97,12 @@ type ImageRemovalPredicate func(*gcrgoogle.ManifestInfo) bool
 // - Name does not match gcrNameIgnoreRegex
 func NewRepoFilter(gcrNameIgnoreRegex *regexp.Regexp) RepoRemovalPredicate {
 	return func(repo string) bool {
-		nameMatches := gcrNameIgnoreRegex.MatchString(repo)
+		nameMatches := false
+		if gcrNameIgnoreRegex.String() != "" {
+			nameMatches = gcrNameIgnoreRegex.MatchString(repo)
+		}
 		return !nameMatches
+
 	}
 }
 

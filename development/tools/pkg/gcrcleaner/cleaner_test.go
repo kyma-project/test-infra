@@ -16,7 +16,9 @@ import (
 var (
 	gcrNameIgnoreRegexPattern = "test/filtered/repo"
 	regexRepo                 = regexp.MustCompile(gcrNameIgnoreRegexPattern)
+	emptyRegex                = regexp.MustCompile("")
 	repoFilter                = NewRepoFilter(regexRepo)
+	emptyFilter               = NewRepoFilter(emptyRegex)
 	imageFilter               = NewImageFilter(1) // age is 1 hour
 	timeNow                   = time.Now()
 	timeTwoHoursAgo           = timeNow.Add(time.Duration(-1) * time.Hour)
@@ -46,6 +48,15 @@ func TestNewRepoFilter(t *testing.T) {
 
 			//then
 			assert.Equal(t, testCase.expectedFilterValue, collected)
+		})
+
+		// test that empty filter will take all images into consideration
+		t.Run("Should delete all images", func(t *testing.T) {
+			//when
+			collected := emptyFilter(testCase.repo)
+
+			//then
+			assert.Equal(t, true, collected)
 		})
 	}
 }
@@ -148,6 +159,7 @@ func TestImageRemoval(t *testing.T) {
 		assert.True(t, allSucceeded)
 	})
 }
+
 func createImageManifest(created time.Time, tags []string) gcrgoogle.ManifestInfo {
 	return gcrgoogle.ManifestInfo{
 		Created: created,
