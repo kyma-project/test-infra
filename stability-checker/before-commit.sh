@@ -49,7 +49,7 @@ done
 ##
 #  GO LINT
 ##
-go install golang.org/x/lint/golint@latest
+go install golang.org/x/lint/golint
 buildLintResult=$?
 if [ ${buildLintResult} != 0 ]; then
   echo -e "${RED}✗ go install golint${NC}\n$buildLintResult${NC}"
@@ -68,7 +68,7 @@ fi
 ##
 # GO IMPORTS & FMT
 ##
-go install golang.org/x/tools/cmd/goimports@latest
+go install golang.org/x/tools/cmd/goimports
 buildGoImportResult=$?
 if [ ${buildGoImportResult} != 0 ]; then
   echo -e "${RED}✗ go install goimports${NC}\n$buildGoImportResult${NC}"

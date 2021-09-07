@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y \
     && yes | pip install cgroup-utils \
     && apt-get clean
 
-RUN GO111MODULE="on" go install golang.org/x/tools/cmd/goimports@latest  \
+RUN GO111MODULE="on" go install golang.org/x/tools/cmd/goimports  \
     github.com/hashicorp/hcl/hcl/printer \
     golang.org/x/lint/golint \
     github.com/vektra/mockery \
