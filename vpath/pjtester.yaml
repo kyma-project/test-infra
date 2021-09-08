@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "periodic-main-kyma-incubator-reconciler-e2e-upgrade"
+    report: true
+prConfigs:
+  kyma-incubator:
+    reconciler:
+      prNumber: 143

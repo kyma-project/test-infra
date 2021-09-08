@@ -204,7 +204,11 @@ templates:
                     - milv_jobConfig
       - to: ../prow/jobs/incubator/reconciler/reconciler.yaml
         localSets:
+          command_integration:
+            annotations:
+              pipeline.clusterprovisioning: kyma cli
           reconciler_jobConfig:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
             env:
@@ -260,7 +264,7 @@ templates:
                   name: periodic-main-kyma-incubator-reconciler-e2e-upgrade
                   image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18"
                   annotations:
-                    testgrid-dashboards: kyma_integration //@TODO check this line
+                    testgrid-dashboards: kyma_integration # @TODO check this line
                     description: Reconciler e2e upgrade test job.
                   decoration_config:
                     timeout: 14400000000000 # 4h
@@ -275,7 +279,7 @@ templates:
                       - extra_refs_test-infra
                       - extra_refs_kyma
                     local:
-#                      - jobConfig_default // check this line
+#                      - jobConfig_default # TODO: check this line
                       - reconciler_gardener_e2e_upgrade
                       - reconciler_e2e_upgrade_jobConfig
       - to: ../prow/jobs/incubator/octopus/octopus.yaml
