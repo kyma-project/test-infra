@@ -110,6 +110,15 @@ kyma::install_cli
 # Provision garderner cluster
 gardener::provision_cluster
 
+log::banner "Executing pre-upgrade tests"
+
+### @TODO: Deploy reconciler
+## Deploy reconciler
+#reconciler::deploy
+#
+## Wait until reconciler is ready
+#reconciler::wait_until_is_ready
+
 # Install Kyma with version previously set in KYMA_SOURCE
 log::banner "Installing Kyma $KYMA_SOURCE"
 gardener::install_kyma
@@ -120,6 +129,26 @@ utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 log::banner "Executing pre-upgrade tests"
 gardener::pre_upgrade_test_fast_integration_kyma
 
+## @TODO: Should we run pre_upgrade_test_fast_integration_kyma or test_fast_integration_kyma ??
 ### Once Kyma is installed run the fast integration test
 #log::banner "Executing test"
 #gardener::test_fast_integration_kyma
+
+#### @TODO: Reconcile Kyma using reconciler
+## Deploy test pod which will trigger reconciliation
+#reconciler::deploy_test_pod
+#
+## Wait until test-pod is ready
+#reconciler::wait_until_test_pod_is_ready
+#
+## Set up test pod environment
+#reconciler::initialize_test_pod
+#
+## Run a test pod from where the reconciliation will be triggered
+#reconciler::reconcile_kyma
+
+log::banner "### Executing post-upgrade tests"
+gardener::post_upgrade_test_fast_integration_kyma
+
+#!!! Must be at the end of the script !!!
+ERROR_LOGGING_GUARD="false"
