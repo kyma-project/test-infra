@@ -126,13 +126,13 @@ gardener::install_kyma
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
-log::banner "Executing pre-upgrade tests"
-gardener::pre_upgrade_test_fast_integration_kyma
+#log::banner "Executing pre-upgrade tests"
+#gardener::pre_upgrade_test_fast_integration_kyma
 
 ## @TODO: Should we run pre_upgrade_test_fast_integration_kyma or test_fast_integration_kyma ??
 ### Once Kyma is installed run the fast integration test
-#log::banner "Executing test"
-#gardener::test_fast_integration_kyma
+log::banner "Executing test"
+gardener::test_fast_integration_kyma
 
 #### @TODO: Reconcile Kyma using reconciler
 ## Deploy test pod which will trigger reconciliation
