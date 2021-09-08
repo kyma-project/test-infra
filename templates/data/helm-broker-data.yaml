@@ -31,6 +31,7 @@ templates:
                     - "ci-master"
                   labels:
                     preset-bot-github-token: "true"
+                    preset-kyma-kms-sign-key: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
