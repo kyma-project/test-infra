@@ -15,7 +15,7 @@
 #
 #Please look in each provider script for provider specific requirements
 
-log::info "Starting pipeline..."
+echo "Starting pipeline..."
 
 ## ---------------------------------------------------------------------------------------
 ## Configurations and Variables
