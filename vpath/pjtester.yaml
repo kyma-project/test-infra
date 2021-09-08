@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: kyma-preview-integration-dev
+prConfigs:
+  kyma-project:
+    test-infra:
+      prNumber: 4110
