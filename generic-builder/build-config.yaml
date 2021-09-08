@@ -5,10 +5,12 @@ steps:
     images:
       - name: bootstrap
         context: prow/images/bootstrap
-        tag: latest
+        tags:
+          - latest
       - name: prow-tools
         context: prow/images/prow-tools
-        tag: latest
+        tags:
+          - latest
         remotePrefix: eu.gcr.io/kyma-project/test-infra
   - name: buildpack images
     images:
@@ -18,4 +20,3 @@ steps:
       - name: buildpack-java
         context: prow/images/buildpack-java
         remotePrefix: eu.gcr.io/kyma-project/test-infra
-        dockerfile: Dockerfile.dupa
