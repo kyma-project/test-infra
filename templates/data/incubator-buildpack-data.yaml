@@ -236,6 +236,9 @@ templates:
               GARDENER_ZONES: "europe-west4-b"
             annotations:
               pipeline.platform: gardener_gcp
+              pipeline.installer: kyma install, kyma deploy
+              pipeline.test: upgrade-fast-integration
+              pipeline.clusterprovisioning: kyma cli
         jobConfigs:
           - repoName: kyma-incubator/reconciler
             jobs:

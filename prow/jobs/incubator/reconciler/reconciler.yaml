@@ -103,7 +103,10 @@ periodics: # runs on schedule
     - name: periodic-main-kyma-incubator-reconciler-e2e-upgrade
       annotations:
         description: "Reconciler e2e upgrade test job."
+        pipeline.clusterprovisioning: "kyma cli"
+        pipeline.installer: "kyma install, kyma deploy"
         pipeline.platform: "gardener_gcp"
+        pipeline.test: "upgrade-fast-integration"
         pipeline.trigger: "periodic"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
