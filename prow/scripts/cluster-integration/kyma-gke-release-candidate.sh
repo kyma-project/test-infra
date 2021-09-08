@@ -268,6 +268,8 @@ echo "Use released artifacts"
 n=0
 until [ $n -ge 2 ]
 do
+    kubectl apply -f /tmp/kyma-installer.yaml || true
+    sleep 2
     kubectl apply -f /tmp/kyma-installer.yaml && break
     echo "Failed to apply kyma-installer.yaml"
     n=$((n+1))
