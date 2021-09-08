@@ -14,7 +14,7 @@ templates:
             args:
               - "-C"
               - "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration" 
-              - "ci-kyma-preview"
+              - "ci-skr"
             cluster: "trusted-workload"
             request_memory: 100Mi
             request_cpu: 50m
