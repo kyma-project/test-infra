@@ -288,31 +288,6 @@ templates:
                     - production_profile
                     - installer_2
               - jobConfig:
-                  name: kyma-integration-hibernation-gardener-azure
-                  decoration_config:
-                    timeout: 5400000000000  # 90min
-                    grace_period: 600000000000 # 10min
-                  cron: "0 5,8,11,14 * * *"
-                  labels:
-                    preset-log-collector-slack-token: "true"
-                  env:
-                    HIBERNATION_ENABLED: "true"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_periodic
-                    - extra_refs_test-infra
-                    - extra_refs_kyma
-                    - image_kyma-integration
-                    - disable_testgrid
-                    - kyma_major_version_1
-                  local:
-                    - jobConfig_default
-                    - gardener_azure_job
-                    - extra_refs_kyma-local
-                    - command_integration
-                    - evaluation_profile
-              - jobConfig:
                   name: kyma-weekly-gardener-gcp-busola
                   decoration_config:
                     timeout: 7200000000000 # 2h
