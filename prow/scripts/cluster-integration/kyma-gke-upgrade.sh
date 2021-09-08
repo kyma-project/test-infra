@@ -231,6 +231,8 @@ EOF
     curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer.yaml" --output /tmp/kyma-gke-upgradeability/kyma-installer.yaml
     curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cr-cluster.yaml" --output /tmp/kyma-gke-upgradeability/kyma-installer-cr-cluster.yaml
 
+    kubectl apply -f /tmp/kyma-gke-upgradeability/kyma-installer.yaml || true
+    sleep 2
     kubectl apply -f /tmp/kyma-gke-upgradeability/kyma-installer.yaml
     kubectl apply -f /tmp/kyma-gke-upgradeability/kyma-installer-cr-cluster.yaml
   fi
