@@ -127,24 +127,6 @@ templates:
             jobs:
               # presubmits
               - jobConfig:
-                  name: pre-main-kyma-gardener-azure-integration
-                  decoration_config:
-                    timeout: 14400000000000 # 4h
-                    grace_period: 600000000000 # 10min
-                    # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^(((resources/application-connector)\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_kyma-integration
-                  local:
-                    - jobConfig_default
-                    - command_integration
-                    - jobConfig_presubmit
-                    - gardener_azure_job
-              - jobConfig:
                   name: pre-main-kyma-gardener-azure-fast-integration
                   decoration_config:
                     timeout: 14400000000000 # 4h
