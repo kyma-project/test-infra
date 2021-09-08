@@ -108,6 +108,7 @@ periodics: # runs on schedule
         pipeline.platform: "gardener_gcp"
         pipeline.test: "upgrade-fast-integration"
         pipeline.trigger: "periodic"
+        testgrid-dashboards: "kyma_integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "periodic-main-kyma-incubator-reconciler-e2e-upgrade"
