@@ -581,28 +581,6 @@ templates:
                     - command_busola_long_lasting
                     - gardener_gcp_job
                     - extra_refs_busola
-#              - jobConfig:
-#                  name: kyma-nightly-gardener-gcp-busola-kyma
-#                  decoration_config:
-#                    timeout: 7200000000000 # 2h
-#                    grace_period: 600000000000 # 10min
-#                  cron: "0 3 * * 2-5" # "At 03:00 UTC on Tuesday-Friday."
-#                  labels:
-#                    preset-busola-nightly-provision-type-kyma: "true"
-#                    preset-log-collector-slack-token: "true"
-#                inheritedConfigs:
-#                  global:
-#                    - jobConfig_default
-#                    - jobConfig_periodic
-#                    - extra_refs_test-infra
-#                    - extra_refs_kyma
-#                    - image_kyma-integration
-#                    - disable_testgrid
-#                  local:
-#                    - jobConfig_default
-#                    - command_busola_long_lasting
-#                    - gardener_gcp_job
-#                    - extra_refs_busola
               - jobConfig:
                   name: kyma-periodic-gardener-gcp-busola-init-kyma
                   decoration_config:
