@@ -112,6 +112,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "periodic-main-kyma-incubator-reconciler-e2e-upgrade"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-bot-github-token: "true"
         preset-cluster-version: "true"
         preset-debug-commando-oom: "true"
         preset-gardener-gcp-kyma-integration: "true"

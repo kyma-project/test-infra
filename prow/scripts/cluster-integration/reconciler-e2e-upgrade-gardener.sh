@@ -11,6 +11,7 @@
 # - GARDENER_KYMA_PROW_KUBECONFIG - Kubeconfig of the Gardener service account
 # - GARDENER_KYMA_PROW_PROJECT_NAME - Name of the gardener project where the cluster will be integrated.
 # - GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME - Name of the secret configured in the gardener project to access the cloud provider
+# - BOT_GITHUB_TOKEN: Bot github token used for API queries
 # - MACHINE_TYPE - (optional) machine type
 #
 #Please look in each provider script for provider specific requirements
@@ -44,6 +45,7 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
 
 # All provides require these values, each of them may check for additional variables
 requiredVars=(
+    BOT_GITHUB_TOKEN
     GARDENER_PROVIDER
     KYMA_PROJECT_DIR
     GARDENER_REGION

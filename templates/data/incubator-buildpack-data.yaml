@@ -280,6 +280,7 @@ templates:
                   cron: "30 * * * *" # "At 30 minutes past every hour"
                   labels:
                     preset-log-collector-slack-token: "true"
+                    preset-bot-github-token: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
