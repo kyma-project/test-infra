@@ -464,26 +464,6 @@ templates:
                     - "request_small"
                     - "vm_job_template_serverless_k3s"
                     - "vm_job_labels_template"
-              - jobConfig:
-                  name: "pre-main-kyma-gke-integration"
-                  # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  labels:
-                    preset-build-pr: "true"
-                    preset-gke-pod-security-policy: "true"
-                  env:
-                    GKE_CLUSTER_VERSION_OVERRIDE: "1.19"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "request_big"
-                    - "gke_job_template"
-                    - "gke_job_labels_template"
               # Rapid channel is unstable and the job never succeeds. See https://github.com/kyma-project/test-infra/issues/4063
               # - jobConfig:
               #     name: "pre-main-kyma-gke-rapid-integration"
