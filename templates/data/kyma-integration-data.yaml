@@ -548,29 +548,6 @@ templates:
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "post-main-kyma-gke-integration"
-                  annotations:
-                    testgrid-dashboards: kyma_integration
-                    description: Kyma GKE integration job.
-                    testgrid-days-of-results: "60"
-                  labels:
-                    preset-log-collector-slack-token: "true"
-                    preset-build-main: "true"
-                    preset-gke-pod-security-policy: "true"
-                  env:
-                   GKE_CLUSTER_VERSION_OVERRIDE: "1.19"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "request_big"
-                    - "gke_job_template"
-                    - "gke_job_labels_template"
-              - jobConfig:
                   name: "post-main-kyma-gke-upgrade"
                   annotations:
                     testgrid-dashboards: kyma_integration
