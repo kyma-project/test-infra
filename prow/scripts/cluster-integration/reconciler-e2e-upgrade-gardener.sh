@@ -31,7 +31,7 @@ export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export RECONCILER_SOURCES_DIR="/home/prow/go/src/github.com/kyma-incubator/reconciler"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 ## KYMA_SOURCE set to dummy value, required by gardener/gcp.sh
-#export KYMA_SOURCE="main"
+export KYMA_SOURCE="main"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
@@ -84,12 +84,12 @@ COMMON_NAME="${utils_generate_commonName_return_commonName:?}"
 export COMMON_NAME
 export CLUSTER_NAME="${COMMON_NAME}"
 
-# Get Kyma latest release version
-kyma::get_last_release_version \
-    -t "${BOT_GITHUB_TOKEN}"
-LAST_RELEASE_VERSION="${kyma_get_last_release_version_return_version:?}"
-log::info "### Reading release version from RELEASE_VERSION file, got: ${LAST_RELEASE_VERSION}"
-KYMA_SOURCE="${LAST_RELEASE_VERSION}"
+## Get Kyma latest release version
+#kyma::get_last_release_version \
+#    -t "${BOT_GITHUB_TOKEN}"
+#LAST_RELEASE_VERSION="${kyma_get_last_release_version_return_version:?}"
+#log::info "### Reading release version from RELEASE_VERSION file, got: ${LAST_RELEASE_VERSION}"
+#KYMA_SOURCE="${LAST_RELEASE_VERSION}"
 
 ## ---------------------------------------------------------------------------------------
 ## Prow job execution steps
