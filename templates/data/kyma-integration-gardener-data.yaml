@@ -232,56 +232,6 @@ templates:
 
               # periodics
               - jobConfig:
-                  name: kyma-integration-evaluation-gardener-azure
-                  annotations:
-                    testgrid-dashboards: kyma_integration
-                    description: Evaluation profile Kyma Azure Gardener integration job.
-                  decoration_config:
-                    timeout: 7200000000000 # 2h
-                    grace_period: 600000000000 # 10min
-                  cron: "5 * * * *"
-                  labels:
-                    preset-log-collector-slack-token: "true"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_periodic
-                    - extra_refs_test-infra
-                    - extra_refs_kyma
-                    - image_kyma-integration
-                    - kyma_major_version_1
-                  local:
-                    - jobConfig_default
-                    - gardener_azure_job
-                    - extra_refs_kyma-local
-                    - command_integration
-                    - evaluation_profile
-              - jobConfig:
-                  name: kyma-integration-production-gardener-azure
-                  annotations:
-                    testgrid-dashboards: kyma_integration
-                    description: Production profile Kyma Azure Gardener integration job.
-                  decoration_config:
-                    timeout: 7200000000000 # 2h
-                    grace_period: 600000000000 # 10min
-                  cron: "5 * * * *"
-                  labels:
-                    preset-log-collector-slack-token: "true"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_periodic
-                    - extra_refs_test-infra
-                    - extra_refs_kyma
-                    - image_kyma-integration
-                    - kyma_major_version_1
-                  local:
-                    - jobConfig_default
-                    - gardener_azure_job
-                    - extra_refs_kyma-local
-                    - command_integration
-                    - production_profile
-              - jobConfig:
                   name: kyma-alpha-integration-evaluation-gardener-azure
                   annotations:
                     testgrid-dashboards: kyma_integration
