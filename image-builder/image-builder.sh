@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # builder.sh rebuilds all images in prow/images directory in specific order.
+# This ensures that the test-infra images used in the pipelines are consistent between each other and always contain latest changes from main.
 # TODO (@Ressetkk) rewrite this script in Go using buildah as a library...
 
 required=( yq jq )
@@ -14,8 +15,9 @@ function usage() {
   echo 'Chain build test-infra images.
 
 Options:
--c path   Path to build config YAML file.
--d        Enable debug output.'
+-c path     Path to build config YAML file.
+-d          Enable debug output.
+--dry-run   Enable dry-run mode.'
 }
 
 function debug() {
@@ -27,6 +29,18 @@ function debug() {
 function info() {
   echo -e "$(date "+%d/%m/%Y %X") INFO: $@"
 }
+
+function run() {
+  debug "running command: $@"
+  cmdLogFile="$buildName.log"
+  cmdLogPath="/tmp/$cmdLogFile"
+  if [ "$DRY_RUN" != "true" ]; then
+    "$@" &> "$cmdLogPath" && cp "$cmdLogPath" "$ARTIFACTS/$cmdLogFile" || cat "$cmdLogPath"
+  fi
+
+}
+
+ARTIFACTS="${ARTIFACTS:-/tmp/artifacts}"
 
 while [ $# -gt 0 ]; do
   case $1 in
@@ -54,8 +68,11 @@ done
 debug "$DEBUG"
 debug "$BUILD_CONFIG_PATH"
 
-BASE_TAG="$(date +v%Y%m%d)-$(git rev-parse --short HEAD)"
-
+if [ $JOB_TYPE == "presubmit" ]; then
+  BASE_TAG="PR-$PULL_NUMBER"
+else
+  BASE_TAG="$(date +v%Y%m%d)-$(git rev-parse --short HEAD)"
+fi
 
 IFS=''
 while read -r s; do
@@ -88,11 +105,16 @@ for step in ${steps[@]}; do
         # TODO tagging based on a list of tags instead of hardcode it
         remoteName="$remotePrefix/$buildName"
         TAGS+=( "-t=$remoteName:$BASE_TAG" )
+        REMOTE_PUSH+=( "$remoteName" )
       fi
-      debug "buildah bud -f=\"$dockerfile\" ${TAGS[@]} \"$context\""
-      buildah bud -f "$dockerfile" -t "${TAGS[@]}" "$context"
-
-      # TODO authentication and push to the remote
+      run 'buildah bud -f="$dockerfile" "${TAGS[@]}" "$context"'
     done
+    # push to GCR
+    if ! [ -z ${GOOGLE_APPLICATION_CREDENTIALS+x} ]; then
+      run 'cat "$GOOGLE_APPLICATION_CREDENTIALS" | buildah login -u _json_key --password-stdin https://eu.gcr.io'
+      for r in ${REMOTE_PUSH[@]}; do
+        run 'buildah push "$r"'
+      done
+    fi
   )
 done

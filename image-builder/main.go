@@ -12,7 +12,7 @@ import (
 
 	"github.com/containers/storage"
 	"github.com/containers/storage/pkg/unshare"
-	bc "github.com/kyma-project/test-infra/generic-builder/pkg/config"
+	bc "github.com/kyma-project/test-infra/image-builder/pkg/config"
 	"os"
 	"path/filepath"
 )
