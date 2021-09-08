@@ -110,6 +110,10 @@ kyma::install_cli
 # Provision garderner cluster
 gardener::provision_cluster
 
+# Install Kyma with version previously set in KYMA_SOURCE
+log::banner "Installing Kyma $KYMA_SOURCE"
+gardener::install_kyma
+
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
