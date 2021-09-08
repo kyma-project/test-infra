@@ -99,3 +99,61 @@ postsubmits: # runs on main
         nodeSelector:
             dedicated: "high-cpu"
   
+periodics: # runs on schedule
+    - name: periodic-main-kyma-incubator-reconciler-e2e-upgrade
+      annotations:
+        description: "Reconciler e2e upgrade test job."
+        pipeline.platform: "gardener_gcp"
+        pipeline.trigger: "periodic"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "periodic-main-kyma-incubator-reconciler-e2e-upgrade"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-cluster-version: "true"
+        preset-gardener-gcp-kyma-integration: "true"
+        preset-kyma-cli-stable: "true"
+        preset-log-collector-slack-token: "true"
+      cron: "30 * * * *"
+      skip_report: false
+      decorate: true
+      decoration_config:
+        grace_period: 600000000000
+        timeout: 14400000000000
+      cluster: untrusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-upgrade-gardener.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
+            env:
+              - name: GARDENER_REGION
+                value: "europe-west4"
+              - name: GARDENER_ZONES
+                value: "europe-west4-b"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+  
