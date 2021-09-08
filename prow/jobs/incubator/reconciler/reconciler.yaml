@@ -110,6 +110,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.runID: "periodic-main-kyma-incubator-reconciler-e2e-upgrade"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-cluster-version: "true"
+        preset-debug-commando-oom: "true"
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
         preset-log-collector-slack-token: "true"
@@ -119,6 +120,7 @@ periodics: # runs on schedule
       decoration_config:
         grace_period: 600000000000
         timeout: 14400000000000
+      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       extra_refs:
         - org: kyma-project
@@ -143,12 +145,14 @@ periodics: # runs on schedule
                 value: "europe-west4"
               - name: GARDENER_ZONES
                 value: "europe-west4-b"
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
-                memory: 3Gi
-                cpu: 2
+                memory: 1Gi
+                cpu: 400m
         tolerations:
           - key: dedicated
             operator: Equal

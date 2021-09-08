@@ -215,6 +215,12 @@ templates:
               GO11MODULE: "on"
             branches:
               - ^main$
+          jobConfig_default:
+            path_alias: github.com/kyma-project/kyma
+            request_memory: 1Gi
+            request_cpu: 400m
+            labels:
+              preset-debug-commando-oom: "true"
           reconciler_e2e_upgrade_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-upgrade-gardener.sh"
             args:
@@ -277,8 +283,9 @@ templates:
                     - jobConfig_periodic
                     - extra_refs_test-infra
                     - extra_refs_kyma
+                    - kyma_major_version_1
                   local:
-#                      - jobConfig_default # TODO: check this line
+                    - jobConfig_default # TODO: check this line
                     - reconciler_gardener_e2e_upgrade
                     - reconciler_e2e_upgrade_jobConfig
       - to: ../prow/jobs/incubator/octopus/octopus.yaml
