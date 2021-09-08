@@ -42,7 +42,7 @@ periodics: # runs on schedule
             args:
               - "-C"
               - "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
-              - "ci-kyma-preview"
+              - "ci-skr"
             env:
               - name: KEB_PLAN_ID
                 value: "5cb3d976-b85c-42ea-a636-79cadda109a9"
