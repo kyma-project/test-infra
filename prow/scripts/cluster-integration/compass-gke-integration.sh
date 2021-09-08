@@ -212,37 +212,27 @@ EOF
 function applyCompassOverrides() {
   NAMESPACE="compass-installer"
 
-  if [ "${RUN_PROVISIONER_TESTS}" == "true" ]; then
-    # Change timeout for kyma test to 3h
-    export KYMA_TEST_TIMEOUT=3h
-
-    # Create Config map for Provisioner Tests
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "provisioner-tests-overrides" \
-      --data "global.provisioning.enabled=true" \
-      --data "provisioner.security.skipTLSCertificateVeryfication=true" \
-      --data "provisioner.tests.enabled=true" \
-      --data "provisioner.gardener.kubeconfig=$(base64 -w 0 < "${GARDENER_APPLICATION_CREDENTIALS}")" \
-      --data "provisioner.gardener.project=$GARDENER_PROJECT_NAME" \
-      --data "provisioner.tests.gardener.azureSecret=$GARDENER_AZURE_SECRET_NAME" \
-      --label "component=compass"
-  fi
-
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-auditlog-mock-tests" \
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-overrides" \
     --data "global.externalServicesMock.enabled=true" \
     --data "global.externalServicesMock.auditlog=true" \
     --data "gateway.gateway.auditlog.enabled=true" \
     --data "gateway.gateway.auditlog.authMode=oauth" \
     --data "global.systemFetcher.enabled=true" \
-    --data "global.systemFetcher.systemsAPIEndpoint=http://compass-external-services-mock:8080/systemfetcher/systems" \
+    --data "global.systemFetcher.systemsAPIEndpoint=http://compass-external-services-mock.compass-system.svc.cluster.local:8080/systemfetcher/systems" \
     --data "global.systemFetcher.systemsAPIFilterCriteria=no" \
     --data "global.systemFetcher.systemsAPIFilterTenantCriteriaPattern=tenant=%s" \
-    --data 'global.systemFetcher.systemToTemplateMappings=[{"Name": "temp1", "SourceKey": ["prop"], "SourceValue": ["val1"] }]' \
+    --data 'global.systemFetcher.systemToTemplateMappings=[{"Name": "temp1", "SourceKey": ["prop"], "SourceValue": ["val1"] },{"Name": "temp2", "SourceKey": ["prop"], "SourceValue": ["val2"] }]' \
     --data "global.systemFetcher.oauth.client=admin" \
     --data "global.systemFetcher.oauth.secret=admin" \
-    --data "global.systemFetcher.oauth.tokenURLPattern=http://compass-external-services-mock:8080/systemfetcher/oauth/token" \
+    --data "global.systemFetcher.oauth.tokenURLPattern=http://compass-external-services-mock.compass-system.svc.cluster.local:8080/systemfetcher/oauth/token" \
     --data "global.systemFetcher.oauth.scopesClaim=scopes" \
     --data "global.systemFetcher.oauth.tenantHeaderName=x-zid" \
     --data "global.migratorJob.nodeSelectorEnabled=true" \
+    --data "global.kubernetes.serviceAccountTokenJWKS=https://container.googleapis.com/v1beta1/projects/$CLOUDSDK_CORE_PROJECT/locations/$CLOUDSDK_COMPUTE_ZONE/clusters/$COMMON_NAME/jwks" \
+    --data "global.authenticators.tenant-fetcher.enabled=true" \
+    --data "system-broker.http.client.skipSSLValidation=true" \
+    --data "operations-controller.http.client.skipSSLValidation=true" \
+    --data "global.systemFetcher.http.client.skipSSLValidation=true" \
     --label "component=compass"
 }
 
@@ -286,6 +276,8 @@ function installKyma() {
   gsutil cp "${COMPASS_ARTIFACTS}/kyma-installer.yaml" ${TMP_DIR}/kyma-installer.yaml
   gsutil cp "${COMPASS_ARTIFACTS}/is-kyma-installed.sh" ${TMP_DIR}/is-kyma-installed.sh
   chmod +x ${TMP_DIR}/is-kyma-installed.sh
+  kubectl apply -f ${TMP_DIR}/kyma-installer.yaml || true
+  sleep 2
   kubectl apply -f ${TMP_DIR}/kyma-installer.yaml
 
   log::info "Installation triggered"

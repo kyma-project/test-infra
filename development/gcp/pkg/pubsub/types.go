@@ -48,5 +48,6 @@ type FailingTestMessage struct {
 	FirestoreDocumentID   *string  `json:"firestoreDocumentId,omitempty"`
 	GithubIssueNumber     *int64   `json:"githubIssueNumber,omitempty"`
 	SlackThreadID         *string  `json:"slackThreadId,omitempty"`
-	GithubCommitersLogins []string `json:"githubCommiterLogin,omitempty"`
+	GithubCommitersLogins []string `json:"githubCommitersLogins,omitempty"`
+	CommitersSlackLogins  []string `json:"slackCommitersLogins,omitempty"`
 }

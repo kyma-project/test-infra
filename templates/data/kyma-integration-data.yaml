@@ -227,6 +227,26 @@ templates:
                     - "request_small"
                     - "jobConfig_periodic"
               - jobConfig:
+                  name: "gcr-cleaner-prow-workloads"
+                  cron: "0 1 * * *" # "At 1:00am every day"
+                  labels:
+                    preset-sa-gke-kyma-integration: "true"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "/prow-tools/gcrcleaner --repository=eu.gcr.io/sap-kyma-prow-workloads --age-in-hours=168 --dry-run=false"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_prow-tools"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "jobConfig_periodic"
+              - jobConfig:
                   name: "github-stats"
                   cron: "0 6 * * *" # "At 6:00 every day"
                   labels:
@@ -403,54 +423,13 @@ templates:
                   name: "pre-main-kyma-integration-k3d-compass-dev"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  optional: true
                   annotations:
                     pipeline.platform: k3d
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-compass-dev: "true"
                     preset-kyma-integration-compass-enabled: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                    - "kyma_major_version_2"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "vm_job_template_k3d"
-                    - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
-              - jobConfig:
-                  name: "pre-main-kyma-integration-k3d-central-app-connectivity"
-                  # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  labels:
-                    preset-build-pr: "true"
-                    preset-kyma-integration-central-app-connectivity-enabled: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                    - "kyma_major_version_2"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "vm_job_template_k3d"
-                    - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
-              - jobConfig:
-                  name: "pre-main-kyma-integration-k3d-central-app-connectivity-compass"
-                  # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  labels:
-                    preset-build-pr: "true"
-                    preset-kyma-integration-compass-dev: "true"
-                    preset-kyma-integration-compass-enabled: "true"
-                    preset-kyma-integration-central-app-connectivity-enabled: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -546,6 +525,7 @@ templates:
                     - "request_big"
                     - "gke_job_template"
                     - "gke_job_labels_template"
+              # Rapid channel is unstable and the job never succeeds. See https://github.com/kyma-project/test-infra/issues/4063
               # - jobConfig:
               #     name: "pre-main-kyma-gke-rapid-integration"
               #     labels:
@@ -648,52 +628,6 @@ templates:
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "post-main-kyma-integration-k3d-central-app-connectivity"
-                  annotations:
-                    testgrid-dashboards: kyma_integration
-                    description: Kyma integration job on k3d with central Application Gateway.
-                    testgrid-days-of-results: "60"
-                  labels:
-                    preset-build-main: "true"
-                    preset-kyma-integration-central-app-connectivity-enabled: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                    - "kyma_major_version_2"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "vm_job_template_k3d"
-                    - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
-              - jobConfig:
-                  name: "post-main-kyma-integration-k3d-central-app-connectivity-compass"
-                  annotations:
-                    testgrid-dashboards: kyma_integration
-                    description: Kyma integration job on k3d with central Application Gateway and Compass dev.
-                    testgrid-days-of-results: "60"
-                  labels:
-                    preset-build-main: "true"
-                    preset-kyma-integration-compass-dev: "true"
-                    preset-kyma-integration-compass-enabled: "true"
-                    preset-kyma-integration-central-app-connectivity-enabled: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                    - "kyma_major_version_2"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "vm_job_template_k3d"
-                    - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
-              - jobConfig:
                   name: "post-main-kyma-gke-integration"
                   annotations:
                     testgrid-dashboards: kyma_integration
@@ -739,25 +673,26 @@ templates:
                     - "request_big"
                     - "gke_upgrade_job_template"
                     - "gke_job_labels_template"
-              - jobConfig:
-                  name: "post-main-kyma-gke-rapid-integration"
-                  skip_report: true
-                  labels:
-                    preset-log-collector-slack-token: "true"
-                    preset-build-main: "true"
-                    preset-gke-rapid: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "request_big"
-                    - "gke_job_template"
-                    - "gke_job_labels_template"
+              # Rapid channel is unstable and the job never succeeds. See https://github.com/kyma-project/test-infra/issues/4063
+              # - jobConfig:
+              #     name: "post-main-kyma-gke-rapid-integration"
+              #     skip_report: true
+              #     labels:
+              #       preset-log-collector-slack-token: "true"
+              #       preset-build-main: "true"
+              #       preset-gke-rapid: "true"
+              #   inheritedConfigs:
+              #     global:
+              #       - "jobConfig_default"
+              #       - "jobConfig_postsubmit"
+              #       - "image_kyma-integration"
+              #       - "extra_refs_test-infra"
+              #       - "disable_testgrid"
+              #     local:
+              #       - "jobConfig_default"
+              #       - "request_big"
+              #       - "gke_job_template"
+              #       - "gke_job_labels_template"
 
               # periodics
 
@@ -984,7 +919,7 @@ templates:
                     - "image_kyma-integration"
                     - "extra_refs_kyma"
                     - "extra_refs_test-infra"
-                    - "jobConfig_slack_dev_null"
+                    - "kyma_major_version_1"
                   local:
                     - "fast_integration_template"
 
@@ -1010,7 +945,7 @@ templates:
                     - "image_kyma-integration"
                     - "extra_refs_kyma"
                     - "extra_refs_test-infra"
-                    - "jobConfig_slack_dev_null"
+                    - "kyma_major_version_1"
                   local:
                     - "fast_integration_template"
 
@@ -1034,6 +969,6 @@ templates:
                     - "image_kyma-integration"
                     - "extra_refs_kyma"
                     - "extra_refs_test-infra"
-                    - "jobConfig_slack_dev_null"
+                    - "kyma_major_version_1"
                   local:
                     - "fast_integration_template"

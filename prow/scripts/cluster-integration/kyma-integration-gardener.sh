@@ -136,6 +136,7 @@ if [[ "${KYMA_MAJOR_VERSION}" == "2" ]]; then
 elif [[ "${API_GATEWAY_INTEGRATION}" == "true" ]]; then
   api-gateway::prepare_components_file
   integration_tests::install_kyma
+  api-gateway::deploy_login_consent_app
 else
   gardener::install_kyma
 fi
@@ -155,6 +156,7 @@ if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == 
     gardener::test_fast_integration_kyma
 # this will be extended with the next components
 elif [[ "${API_GATEWAY_INTEGRATION}" == "true" ]]; then
+    api-gateway::configure_ory_hydra
     api-gateway::prepare_test_environments
     api-gateway::launch_tests
 else

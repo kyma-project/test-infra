@@ -6,8 +6,6 @@
 | pre-main-kyma-integration | minikube | minikube | kyma install |  | pr-submit |  octopus  |
 | pre-main-kyma-integration-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-integration-k3d-compass-dev | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
-| pre-main-kyma-integration-k3d-central-app-connectivity | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
-| pre-main-kyma-integration-k3d-central-app-connectivity-compass | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-serverless-integration-k3s | k3s | k3s | kyma deploy |  | pr-submit |  helm serverless-test  |
 | pre-main-serverless-integration-alpha-k3s | k3s | k3s | kyma deploy |  | pr-submit |  helm serverless-test  |
 | pre-main-cluster-users-integration-minikube | minikube | minikube --driver=none | kyma install |  | pr-submit |  bash resources/cluster-users/files/sar-test.sh  |
@@ -16,11 +14,8 @@
 | post-main-kyma-integration | minikube | minikube | kyma install |  | pr-merge |  octopus  |
 | post-main-kyma-integration-k3d | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-kyma-integration-k3d-compass-dev | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
-| post-main-kyma-integration-k3d-central-app-connectivity | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
-| post-main-kyma-integration-k3d-central-app-connectivity-compass | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-kyma-gke-integration | gke | gcloud cli | kyma install |  | pr-merge |  octopus  |
 | post-main-kyma-gke-upgrade | gke | gcloud cli | kubectl-apply |  | pr-merge |  octopus  |
-| post-main-kyma-gke-rapid-integration | gke | gcloud cli | kyma install |  | pr-merge |  octopus  |
 | kyma-gke-nightly | gke | gcloud cli | kyma install |  | periodic |    |
 | kyma-gke-weekly | gke | gcloud cli | kyma install |  | periodic |    |
 | kyma-aks-nightly | aks | az cli | kyma install |  | nightly |    |

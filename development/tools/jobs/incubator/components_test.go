@@ -88,16 +88,6 @@ var components = []struct {
 		},
 	},
 	{
-		name:  "tenant-fetcher",
-		image: tester.ImageGolangBuildpack1_16,
-		suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.CompassRepo(),
-			jobsuite.AllReleases(),
-		},
-	},
-	{
 		name:  "system-broker",
 		image: tester.ImageGolangBuildpack1_16,
 		suite: tester.NewGenericComponentSuite,

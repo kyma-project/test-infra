@@ -47,16 +47,17 @@ function deploy_kyma() {
   kyma provision k3d -p 80:80@loadbalancer -p 443:443@loadbalancer
 
   local kyma_deploy_cmd
-  kyma_deploy_cmd="kyma deploy -p evaluation --ci --verbose --source=local --workspace ${KYMA_SOURCES_DIR}"
-
-  if [[ -v CENTRAL_APPLICATION_CONNECTIVITY_ENABLED ]]; then
-    kyma_deploy_cmd+=" --value application-connector.central_application_gateway.enabled=true"
-    kyma_deploy_cmd+=" --value global.centralApplicationConnectivityValidatorEnabled=true"
-  fi
+  kyma_deploy_cmd="kyma deploy -p evaluation \
+                  --ci \
+                  --verbose \
+                  --source=local \
+                  --workspace ${KYMA_SOURCES_DIR} \
+                  --value application-connector.central_application_gateway.enabled=true \
+                  --value global.centralApplicationConnectivityValidatorEnabled=true"
 
   if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
-    kyma_deploy_cmd+=" --value global.disableLegacyConnectivity=true"
-    kyma_deploy_cmd+=" --components-file kyma-integration-k3d-compass-components.yaml"
+    kyma_deploy_cmd+=" --value global.disableLegacyConnectivity=true \
+                       --components-file kyma-integration-k3d-compass-components.yaml"
   fi
 
   $kyma_deploy_cmd
@@ -66,12 +67,8 @@ function deploy_kyma() {
 
 function run_tests() {
   pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
-  if [[ -v COMPASS_INTEGRATION_ENABLED && -v CENTRAL_APPLICATION_CONNECTIVITY_ENABLED ]]; then
-    make ci-application-connectivity-2-compass
-  elif [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
+  if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
     make ci-compass
-  elif [[ -v CENTRAL_APPLICATION_CONNECTIVITY_ENABLED ]]; then
-    make ci-application-connectivity-2
   else
     make ci
   fi
