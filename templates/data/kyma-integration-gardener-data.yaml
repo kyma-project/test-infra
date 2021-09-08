@@ -186,27 +186,6 @@ templates:
                     - gardener_azure_job
                     - production_profile
                     - installer_2
-              - jobConfig:
-                  name: pre-main-kyma-gardener-gcp-api-gateway
-                  labels:
-                    preset-build-pr: "true"
-                  decoration_config:
-                    timeout: 14400000000000 # 4h
-                    grace_period: 600000000000 # 10min
-                  run_if_changed: "^((tests/integration/api-gateway\\S+|resources/api-gateway\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  env:
-                    API_GATEWAY_INTEGRATION: "true"
-                    TEST_ORY_IMAGE: "eu.gcr.io/kyma-project/incubator/test-hydra-login-consent:d6e6d3bc"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_kyma-integration
-                  local:
-                    - jobConfig_default
-                    - gardener_gcp_job
-                    - command_integration
               # postsubmits
               - jobConfig:
                   name: post-main-kyma-gardener-azure-alpha-eval
