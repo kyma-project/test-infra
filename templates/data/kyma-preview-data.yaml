@@ -1,0 +1,50 @@
+templates:
+  - fromTo:
+      - from: templates/generic.tmpl
+        to: ../prow/jobs/kyma/kyma-preview.yaml
+    render:
+      - localSets:
+          jobConfig_default:
+            annotations:
+              pipeline.clusterprovisioning: keb
+              pipeline.installer: keb
+              pipeline.test: fast-integration
+            path_alias: github.com/kyma-project/kyma
+            command: "make"
+            args:
+              - "-C"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration" 
+              - "ci-kyma-preview"
+            cluster: "trusted-workload"
+            request_memory: 100Mi
+            request_cpu: 50m
+            labels:
+              preset-build-main: "true"
+              preset-keb-dev-credentials: "true"
+              preset-kyma-integration-compass-dev: "true"
+              preset-kyma-integration-subaccounnt: "true"
+          keb_plan_aws:
+            annotations:
+              pipeline.platform: gardener_aws
+            env:
+              KEB_PLAN_ID: "5cb3d976-b85c-42ea-a636-79cadda109a9"
+        jobConfigs:
+          - repoName: "kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  name: "kyma-preview-integration-dev"
+                  cron: "5 1 * * *" # "At minute 30 past every hour"
+                  # labels:
+                  #   preset-skr-al-service-key: "true"
+                inheritedConfigs:
+                  global:
+                    - "image_kyma-integration"
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                    - "disable_testgrid"
+                    - "kyma_major_version_1"
+                  local:
+                    - "jobConfig_default"
+                    - "keb_plan_aws"
