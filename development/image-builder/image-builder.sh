@@ -7,7 +7,7 @@ set -e
 
 required=( yq jq buildah )
 for p in "${required[@]}"; do
-  if ! $(command -v "$p" &> /dev/null); then
+  if ! command -v "$p"; then
     echo -e "$p not found. Exiting..."
   fi
 done
@@ -23,20 +23,20 @@ Options:
 
 function debug() {
   if [ "$DEBUG" == "true" ]; then
-    echo -e "$(date "+%d/%m/%Y %X") DEBUG: $@"
+    echo -e "$(date "+%d/%m/%Y %X") DEBUG: $*"
   fi
 }
 
 function info() {
-  echo -e "$(date "+%d/%m/%Y %X") INFO: $@"
+  echo -e "$(date "+%d/%m/%Y %X") INFO: $*"
 }
 
 function error() {
-  echo -e "$(date "+%d/%m/%Y %X") ERROR: $@"
+  echo -e "$(date "+%d/%m/%Y %X") ERROR: $*"
 }
 
 function run() {
-  debug "running command: $@"
+  debug "running command: $*"
   cmdLogFile="$buildName.log"
   cmdLogPath="/tmp/$cmdLogFile"
   if [ "$DRY_RUN" != "true" ]; then
