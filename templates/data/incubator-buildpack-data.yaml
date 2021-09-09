@@ -225,6 +225,8 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-upgrade-gardener.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
+            branches:
+              - ^main$
           reconciler_gardener_e2e_upgrade:
             labels:
               preset-gardener-gcp-kyma-integration: "true"

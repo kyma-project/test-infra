@@ -30,6 +30,7 @@ ENABLE_TEST_LOG_COLLECTOR=false
 # Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export RECONCILER_SOURCES_DIR="/home/prow/go/src/github.com/kyma-incubator/reconciler"
+export KYMA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/kyma/"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
 # shellcheck source=prow/scripts/lib/log.sh
@@ -98,13 +99,6 @@ export KYMA_SOURCE="${LAST_RELEASE_VERSION}"
 ## Prow job execution steps
 ## ---------------------------------------------------------------------------------------
 
-export KYMA_SOURCE_DIR="/home/prow/go/src/github.com/kyma-project/kyma/"
-cd "${KYMA_SOURCE_DIR}"
-git status
-git checkout "${KYMA_SOURCE}"
-
-exit 0
-
 log::banner "Provisioning Gardener cluster"
 # Checks required vars and initializes gcloud/docker if necessary
 gardener::init
@@ -131,24 +125,30 @@ gardener::install_kyma
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
-
+# Just for Testing @TODO: find a better approach
+# checkout Kyma source for release KYMA_SOURCE (for fast-integration)
+cd "${KYMA_SOURCES_DIR}"
+git status
+git checkout "${KYMA_SOURCE}"
+cd /
 
 # run the fast integration test before reconciliation
 log::banner "Executing test - before reconciliation"
 gardener::test_fast_integration_kyma
 
-#### @TODO: Reconcile Kyma using reconciler
-## Deploy test pod which will trigger reconciliation
-#reconciler::deploy_test_pod
-#
-## Wait until test-pod is ready
-#reconciler::wait_until_test_pod_is_ready
-#
-## Set up test pod environment
-#reconciler::initialize_test_pod
-#
-## Run a test pod from where the reconciliation will be triggered
-#reconciler::reconcile_kyma
+
+# Deploy test pod which will trigger reconciliation
+reconciler::deploy_test_pod
+
+# Wait until test-pod is ready
+reconciler::wait_until_test_pod_is_ready
+
+#### @TODO: change version of kyma to reconcile
+# Set up test pod environment
+reconciler::initialize_test_pod
+
+# Run a test pod from where the reconciliation will be triggered
+reconciler::reconcile_kyma
 
 # run the fast integration test after reconciliation
 log::banner "Executing test - after reconciliation"
