@@ -1194,13 +1194,13 @@ periodics:
           requests:
             memory: 1Gi
             cpu: 400m
-    tolerations:
-      - key: dedicated
-        operator: Equal
-        value: high-cpu
-        effect: NoSchedule
-    nodeSelector:
-      dedicated: "high-cpu"
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: high-cpu
+          effect: NoSchedule
+      nodeSelector:
+        dedicated: "high-cpu"
   - name: kyma-integration-evaluation-gardener-azure-rel124
     annotations:
       description: "Evaluation profile Kyma Azure Gardener integration job. (release 1.24)"
@@ -1350,17 +1350,17 @@ periodics:
               value: "northeurope"
             - name: RS_GROUP
               value: "kyma-gardener-azure"
-        resources:
-          requests:
-            memory: 1Gi
-            cpu: 400m
-    tolerations:
-      - key: dedicated
-        operator: Equal
-        value: high-cpu
-        effect: NoSchedule
-    nodeSelector:
-      dedicated: "high-cpu"
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 400m
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: high-cpu
+          effect: NoSchedule
+      nodeSelector:
+        dedicated: "high-cpu"
   - name: kyma-integration-hibernation-gardener-azure-rel124
     annotations:
       pipeline.clusterprovisioning: "kyma cli"
@@ -1435,10 +1435,10 @@ periodics:
             requests:
               memory: 1Gi
               cpu: 400m
-    tolerations:
-      - key: dedicated
-        operator: Equal
-        value: high-cpu
-        effect: NoSchedule
-    nodeSelector:
-      dedicated: "high-cpu"
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: high-cpu
+          effect: NoSchedule
+      nodeSelector:
+        dedicated: "high-cpu"
