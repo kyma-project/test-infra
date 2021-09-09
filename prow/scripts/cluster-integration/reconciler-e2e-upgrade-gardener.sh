@@ -31,8 +31,6 @@ ENABLE_TEST_LOG_COLLECTOR=false
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export RECONCILER_SOURCES_DIR="/home/prow/go/src/github.com/kyma-incubator/reconciler"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
-### KYMA_SOURCE set to dummy value, required by gardener/gcp.sh
-#export KYMA_SOURCE="main"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
@@ -42,12 +40,15 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/lib/gardener/gardener.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
+# shellcheck source=prow/scripts/cluster-integration/helpers/reconciler.sh
+source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reconciler.sh"
 
 # All provides require these values, each of them may check for additional variables
 requiredVars=(
     BOT_GITHUB_TOKEN
     GARDENER_PROVIDER
     KYMA_PROJECT_DIR
+    RECONCILER_SOURCES_DIR
     GARDENER_REGION
     GARDENER_ZONES
     GARDENER_CLUSTER_VERSION
@@ -87,13 +88,11 @@ export COMMON_NAME
 export CLUSTER_NAME="${COMMON_NAME}"
 
 ## Get Kyma latest release version
-#kyma::get_last_release_version \
-#    -t "${BOT_GITHUB_TOKEN}"
-#LAST_RELEASE_VERSION="${kyma_get_last_release_version_return_version:?}"
-#log::info "### Reading release version from RELEASE_VERSION file, got: ${LAST_RELEASE_VERSION}"
-#export KYMA_SOURCE="${LAST_RELEASE_VERSION}"
-
-export KYMA_SOURCE="main"
+kyma::get_last_release_version \
+    -t "${BOT_GITHUB_TOKEN}"
+LAST_RELEASE_VERSION="${kyma_get_last_release_version_return_version:?}"
+log::info "### Reading release version from RELEASE_VERSION file, got: ${LAST_RELEASE_VERSION}"
+export KYMA_SOURCE="${LAST_RELEASE_VERSION}"
 
 ## ---------------------------------------------------------------------------------------
 ## Prow job execution steps
@@ -112,28 +111,26 @@ kyma::install_cli
 # Provision garderner cluster
 gardener::provision_cluster
 
-log::banner "Executing pre-upgrade tests"
+# Deploy reconciler in the cluster
+reconciler::deploy
 
-### @TODO: Deploy reconciler
-## Deploy reconciler
-#reconciler::deploy
-#
-## Wait until reconciler is ready
-#reconciler::wait_until_is_ready
+# Wait until reconciler is ready
+reconciler::wait_until_is_ready
 
-# Install Kyma with version previously set in KYMA_SOURCE
+# Install Kyma using cli with version previously set in KYMA_SOURCE
 log::banner "Installing Kyma $KYMA_SOURCE"
 gardener::install_kyma
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
-#log::banner "Executing pre-upgrade tests"
-#gardener::pre_upgrade_test_fast_integration_kyma
+export KYMA_SOURCE_DIR="/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
+cd "${KYMA_SOURCE_DIR}"
+git status
+git checkout "${KYMA_SOURCE}"
 
-## @TODO: Should we run pre_upgrade_test_fast_integration_kyma or test_fast_integration_kyma ??
-### Once Kyma is installed run the fast integration test
-log::banner "Executing test"
+# run the fast integration test before reconciliation
+log::banner "Executing test - before reconciliation"
 gardener::test_fast_integration_kyma
 
 #### @TODO: Reconcile Kyma using reconciler
@@ -149,8 +146,9 @@ gardener::test_fast_integration_kyma
 ## Run a test pod from where the reconciliation will be triggered
 #reconciler::reconcile_kyma
 
-log::banner "### Executing post-upgrade tests"
-gardener::post_upgrade_test_fast_integration_kyma
+# run the fast integration test after reconciliation
+log::banner "Executing test - after reconciliation"
+gardener::test_fast_integration_kyma
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
