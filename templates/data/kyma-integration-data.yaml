@@ -520,7 +520,7 @@ templates:
                     pipeline.installer: "kyma install"
                     pipeline.test: "bash resources/cluster-users/files/sar-test.sh"
                     pipeline.clusterprovisioning: "k3d"
-                  run_if_changed: "^((resources/cluster-users\\S+|tests/integration/cluster-users\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  run_if_changed: "^((resources/cluster-users\\S+|tests/integration/cluster-users)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
                   env:
@@ -656,6 +656,31 @@ templates:
                     - "jobConfig_default"
                     - "request_small"
                     - "vm_job_template_k3d"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
+              - jobConfig:
+                  name: "post-main-cluster-users-integration-k3d"
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    description: Kyma's cluster-users integration job on k3d.
+                    testgrid-days-of-results: "60"
+                    pipeline.platform: "k3d"
+                    pipeline.installer: "kyma install"
+                    pipeline.test: "bash resources/cluster-users/files/sar-test.sh"
+                    pipeline.clusterprovisioning: "k3d"
+                  labels:
+                    preset-build-main: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "kyma_major_version_2"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_cluster_users_k3d"
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
