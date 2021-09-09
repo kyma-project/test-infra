@@ -35,8 +35,8 @@ function export_variables() {
         DOCKER_TAG="PR-${PULL_NUMBER}-${COMMIT_ID}"
         BUCKET_DIR="PR-${PULL_NUMBER}"
    elif [[ "${PULL_BASE_REF}" == "master" || "${PULL_BASE_REF}" == "main" ]]; then
-        DOCKER_TAG="master-${COMMIT_ID}-${CURRENT_TIMESTAMP}"
-        BUCKET_DIR="master-${COMMIT_ID}"
+        DOCKER_TAG="main-${COMMIT_ID}-${CURRENT_TIMESTAMP}"
+        BUCKET_DIR="main-${COMMIT_ID}"
    else
         DOCKER_TAG="${PULL_BASE_REF}"
         SKIP_ARTIFACT_UPLOAD=true
@@ -96,10 +96,10 @@ gsutil cp  "${ARTIFACTS}/kyma-installer.yaml" "${COMPASS_DEVELOPMENT_ARTIFACTS_B
 gsutil cp  "${COMPASS_PATH}/installation/scripts/is-installed.sh" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/is-installed.sh"
 gsutil cp  "${ARTIFACTS}/is-kyma-installed.sh" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/is-kyma-installed.sh"
 
-if [[ "${BUILD_TYPE}" == "master" ]]; then
-  log::info "Copy artifacts to ${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
-  gsutil cp "${ARTIFACTS}/compass-installer.yaml" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/master/compass-installer.yaml"
-  gsutil cp  "${ARTIFACTS}/is-kyma-installed.sh" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/master/is-kyma-installed.sh"
-  gsutil cp  "${COMPASS_PATH}/installation/scripts/is-installed.sh" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/master/is-installed.sh"
-  gsutil cp  "${ARTIFACTS}/kyma-installer.yaml" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-installer.yaml"
+if [[ "${BUILD_TYPE}" == "master" || "${BUILD_TYPE}" == "main" ]]; then
+  log::info "Copy artifacts to ${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/main"
+  gsutil cp "${ARTIFACTS}/compass-installer.yaml" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/main/compass-installer.yaml"
+  gsutil cp  "${ARTIFACTS}/is-kyma-installed.sh" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/main/is-kyma-installed.sh"
+  gsutil cp  "${COMPASS_PATH}/installation/scripts/is-installed.sh" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/main/is-installed.sh"
+  gsutil cp  "${ARTIFACTS}/kyma-installer.yaml" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/main/kyma-installer.yaml"
 fi
