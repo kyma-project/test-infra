@@ -1,0 +1,24 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/test-infra/image-builder.yaml
+        localSets:
+          image_builder_image:
+            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:test
+        jobConfigs:
+          - repoName: kyma-project/test-infra
+            jobs:
+              - jobConfig:
+                  name: pre-test-infra-build-testimages
+                  run_if_changed: ^prow/images/
+                  command: /image-builder.sh
+                  args:
+                    - -c
+                    - prow/images/build-config.yaml
+                    - --debug
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - jobConfig_default
+                  local:
+                    - image_builder_image

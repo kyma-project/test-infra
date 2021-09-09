@@ -3,8 +3,9 @@
 # builder.sh rebuilds all images in prow/images directory in specific order.
 # This ensures that the test-infra images used in the pipelines are consistent between each other and always contain latest changes from main.
 # TODO (@Ressetkk) rewrite this script in Go using buildah as a library...
+set -e
 
-required=( yq jq )
+required=( yq jq buildah )
 for p in "${required[@]}"; do
   if ! $(command -v "$p" &> /dev/null); then
     echo -e "$p not found. Exiting..."
@@ -16,7 +17,7 @@ function usage() {
 
 Options:
 -c path     Path to build config YAML file.
--d          Enable debug output.
+--debug     Enable debug output.
 --dry-run   Enable dry-run mode.'
 }
 
@@ -30,17 +31,21 @@ function info() {
   echo -e "$(date "+%d/%m/%Y %X") INFO: $@"
 }
 
+function error() {
+  echo -e "$(date "+%d/%m/%Y %X") ERROR: $@"
+}
+
 function run() {
   debug "running command: $@"
   cmdLogFile="$buildName.log"
   cmdLogPath="/tmp/$cmdLogFile"
   if [ "$DRY_RUN" != "true" ]; then
-    "$@" &> "$cmdLogPath" && cp "$cmdLogPath" "$ARTIFACTS/$cmdLogFile" || cat "$cmdLogPath"
+    "$@" &> "$cmdLogPath" && (cp "$cmdLogPath" "$ARTIFACTS/$cmdLogFile"; info "Image $buildName built successfully!") || ( error "An error occured during image build \"$buildName\""; cat "$cmdLogPath"; exit 1 )
   fi
 
 }
 
-ARTIFACTS="${ARTIFACTS:-/tmp/artifacts}"
+ARTIFACTS="${ARTIFACTS:-/tmp}"
 
 while [ $# -gt 0 ]; do
   case $1 in
@@ -50,7 +55,7 @@ while [ $# -gt 0 ]; do
     shift
     shift
     ;;
-  "-d")
+  "--debug")
     DEBUG="true"
     shift
     ;;
@@ -68,7 +73,7 @@ done
 debug "$DEBUG"
 debug "$BUILD_CONFIG_PATH"
 
-if [ $JOB_TYPE == "presubmit" ]; then
+if [ "$JOB_TYPE" == "presubmit" ]; then
   BASE_TAG="PR-$PULL_NUMBER"
 else
   BASE_TAG="$(date +v%Y%m%d)-$(git rev-parse --short HEAD)"
@@ -107,14 +112,15 @@ for step in ${steps[@]}; do
         TAGS+=( "-t=$remoteName:$BASE_TAG" )
         REMOTE_PUSH+=( "$remoteName" )
       fi
-      run 'buildah bud -f="$dockerfile" "${TAGS[@]}" "$context"'
+      run buildah bud -f="$dockerfile" "${TAGS[@]}" "$context"
     done
-    # push to GCR
-    if ! [ -z ${GOOGLE_APPLICATION_CREDENTIALS+x} ]; then
-      run 'cat "$GOOGLE_APPLICATION_CREDENTIALS" | buildah login -u _json_key --password-stdin https://eu.gcr.io'
-      for r in ${REMOTE_PUSH[@]}; do
-        run 'buildah push "$r"'
-      done
-    fi
   )
 done
+
+  # push to GCR
+  if ! [ -z ${GOOGLE_APPLICATION_CREDENTIALS+x} ]; then
+    run 'cat "$GOOGLE_APPLICATION_CREDENTIALS" | buildah login -u _json_key --password-stdin https://eu.gcr.io'
+    for r in ${REMOTE_PUSH[@]}; do
+      run buildah push "$r"
+    done
+  fi

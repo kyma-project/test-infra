@@ -9,10 +9,10 @@ import (
 	"github.com/containers/buildah/imagebuildah"
 	"github.com/containers/common/pkg/config"
 	"github.com/containers/storage/pkg/archive"
+	bc "github.com/kyma-project/test-infra/development/image-builder/pkg/config"
 
 	"github.com/containers/storage"
 	"github.com/containers/storage/pkg/unshare"
-	bc "github.com/kyma-project/test-infra/image-builder/pkg/config"
 	"os"
 	"path/filepath"
 )

@@ -4,14 +4,13 @@
 
 FROM alpine:edge
 
-RUN apk add --no-cache buildah bash yq jq
-RUN addgroup -g 1000 builder && \
+RUN apk add --no-cache buildah bash yq jq git fuse-overlayfs shadow slirp4netns
+RUN sed -i 's/^#mount_program/mount_program/' /etc/containers/storage.conf && \
+    addgroup -g 1000 builder && \
     adduser -S -s /bin/ash -u 1000 -G builder builder && \
-    echo builder:10000:65536 >> /etc/subuid && \
-    echo builder:10000:65536 >> /etc/subgid && \
-    chmod 4755 /usr/bin/newgidmap && \
-    chmod 4755 /usr/bin/newuidmap
-USER builder
+    usermod --add-subuids 100000-165535 builder && \
+    usermod --add-subgids 100000-165535 builder
+#USER builder
 COPY image-builder.sh /image-builder.sh
 
 ENTRYPOINT ["/image-builder.sh"]
