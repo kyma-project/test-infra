@@ -294,7 +294,7 @@ if [[ "$BUILD_TYPE" == "release" ]]; then
     kubectl apply -f /tmp/kyma-gke-integration/downloaded-installer.yaml
 else
     echo "Manual concatenating yamls"
-    local installer_yaml=$("$KYMA_SCRIPTS_DIR"/concat-yamls.sh "$INSTALLER_YAML" "$INSTALLER_CR" \
+    installer_yaml=$("$KYMA_SCRIPTS_DIR"/concat-yamls.sh "$INSTALLER_YAML" "$INSTALLER_CR" \
     | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: $KYMA_INSTALLER_IMAGE;" \
     | sed -e "s/__VERSION__/0.0.1/g" \
     | sed -e "s/__.*__//g")
