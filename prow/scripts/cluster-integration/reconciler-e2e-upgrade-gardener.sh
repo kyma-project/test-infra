@@ -98,6 +98,13 @@ export KYMA_SOURCE="${LAST_RELEASE_VERSION}"
 ## Prow job execution steps
 ## ---------------------------------------------------------------------------------------
 
+export KYMA_SOURCE_DIR="/home/prow/go/src/github.com/kyma-project/kyma/"
+cd "${KYMA_SOURCE_DIR}"
+git status
+git checkout "${KYMA_SOURCE}"
+
+exit 0
+
 log::banner "Provisioning Gardener cluster"
 # Checks required vars and initializes gcloud/docker if necessary
 gardener::init
@@ -124,10 +131,7 @@ gardener::install_kyma
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
-export KYMA_SOURCE_DIR="/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
-cd "${KYMA_SOURCE_DIR}"
-git status
-git checkout "${KYMA_SOURCE}"
+
 
 # run the fast integration test before reconciliation
 log::banner "Executing test - before reconciliation"
