@@ -41,7 +41,7 @@ function run() {
   cmdLogFile="${buildName:-$randomstr}.log"
   cmdLogPath="/tmp/$cmdLogFile"
   if [ "$DRY_RUN" != "true" ]; then
-    "$@" &> "$cmdLogPath" && (cp "$cmdLogPath" "$ARTIFACTS/$cmdLogFile"; info "Image $buildName built successfully!") || ( error "An error occured during command execution"; cat "$cmdLogPath"; exit 1 )
+    ( eval "$@" ) &> "$cmdLogPath" && (cp "$cmdLogPath" "$ARTIFACTS/$cmdLogFile"; info "Image $buildName built successfully!") || ( error "An error occured during command execution"; cat "$cmdLogPath"; exit 1 )
   fi
 
 }

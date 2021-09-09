@@ -21,7 +21,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:test"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20210909-9d112899"
             securityContext:
               privileged: true
             command:
