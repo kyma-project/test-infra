@@ -1190,10 +1190,10 @@ periodics:
               value: "northeurope"
             - name: RS_GROUP
             value: "kyma-gardener-azure"
-        resources:
-          requests:
-            memory: 1Gi
-            cpu: 400m
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 400m
       tolerations:
         - key: dedicated
           operator: Equal
