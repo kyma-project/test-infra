@@ -119,6 +119,9 @@ reconciler::initialize_test_pod
 # Run a test pod from where the reconciliation will be triggered
 reconciler::reconcile_kyma
 
+# Wait for Kyma to be ready
+reconciler::wait_until_kyma_is_ready
+
 ### Once Kyma is installed run the fast integration test
 log::banner "Executing test"
 gardener::test_fast_integration_kyma

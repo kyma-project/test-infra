@@ -94,5 +94,25 @@ function reconciler::deploy_test_pod() {
   # Deploy a test pod
   log::banner "Deploying test-pod in the cluster"
   kubectl run -n reconciler --image=alpine:3.14.1 --restart=Never test-pod -- sh -c "sleep 36000"
+}
 
+# Waits until Kyma is ready
+function reconciler::wait_until_kyma_is_ready() {
+  iterationsLeft=$(( RECONCILER_TIMEOUT/RECONCILER_DELAY ))
+  while : ; do
+    if [ "$RECONCILER_TIMEOUT" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then
+      log::info "Timeout reached while waiting for Kyma to be ready. Exiting"
+      exit 1
+    fi
+
+    # Check eventing is ready
+    eventingReady="$(k get eventingbackends.eventing.kyma-project.io -n kyma-system eventing-backend -ojsonpath='{ .status.eventingReady }')"
+
+    if [ "${eventingReady}"="true" ]; then
+      log::info "Kyma is ready!"
+      break
+    fi
+  done
+
+  log::banner "Wait Kyma in the same cluster until it is ready"
 }
