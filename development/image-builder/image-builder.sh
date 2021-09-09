@@ -37,10 +37,11 @@ function error() {
 
 function run() {
   debug "running command: $*"
-  cmdLogFile="$buildName.log"
+  randomstr=$(tr -dc '[:alnum:]' < /dev/urandom | dd bs=4 count=2 2>/dev/null)
+  cmdLogFile="${buildName:-$randomstr}.log"
   cmdLogPath="/tmp/$cmdLogFile"
   if [ "$DRY_RUN" != "true" ]; then
-    "$@" &> "$cmdLogPath" && (cp "$cmdLogPath" "$ARTIFACTS/$cmdLogFile"; info "Image $buildName built successfully!") || ( error "An error occured during image build \"$buildName\""; cat "$cmdLogPath"; exit 1 )
+    "$@" &> "$cmdLogPath" && (cp "$cmdLogPath" "$ARTIFACTS/$cmdLogFile"; info "Image $buildName built successfully!") || ( error "An error occured during command execution"; cat "$cmdLogPath"; exit 1 )
   fi
 
 }

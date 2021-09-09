@@ -16,8 +16,8 @@ templates:
                     - -c
                     - prow/images/build-config.yaml
                     - --debug
-                labels:
-                  preset-sa-gcr-push: "true"
+                  labels:
+                    preset-sa-gcr-push: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit

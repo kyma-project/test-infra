@@ -10,6 +10,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-build-testimages"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/'
       skip_report: false
       decorate: true
