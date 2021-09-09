@@ -290,7 +290,7 @@ if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
     gsutil cp "$KYMA_ARTIFACTS_BUCKET/$KYMA_SOURCE/kyma-installer-cluster.yaml" /tmp/kyma-gke-integration/downloaded-installer.yaml
     kubectl apply -f /tmp/kyma-gke-integration/downloaded-installer.yaml || true
-    wait 2
+    sleep 2
     kubectl apply -f /tmp/kyma-gke-integration/downloaded-installer.yaml
 else
     echo "Manual concatenating yamls"
@@ -299,7 +299,7 @@ else
     | sed -e "s/__VERSION__/0.0.1/g" \
     | sed -e "s/__.*__//g")
     echo "$installer_yaml" | kubectl apply -f- || true
-    wait 2
+    sleep 2
     echo "$installer_yaml" | kubectl apply -f- 
 fi
 
