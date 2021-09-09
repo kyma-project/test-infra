@@ -56,7 +56,7 @@ if [[ "$BUILD_TYPE" == "pr" ]]; then
   COMPASS_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-compass-benchmark/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
   export COMPASS_INSTALLER_IMAGE
 else
-  # Otherwise (master), operate on triggering commit id
+  # Otherwise (main), operate on triggering commit id
   readonly COMMON_NAME_PREFIX="gkecompint-commit"
   readonly COMMIT_ID=$(cd "$COMPASS_SOURCES_DIR" && git rev-parse --short HEAD)
   COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}")
@@ -266,7 +266,7 @@ function installKyma() {
   if [[ "$BUILD_TYPE" == "pr" ]]; then
     COMPASS_VERSION="PR-${PULL_NUMBER}"
   else
-    COMPASS_VERSION="master-${COMMIT_ID}"
+    COMPASS_VERSION="main-${COMMIT_ID}"
   fi
   COMPASS_ARTIFACTS="${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${COMPASS_VERSION}"
   
@@ -289,9 +289,9 @@ function installCompassOld() {
   applyCommonOverrides "compass-installer"
   applyCompassOverrides
 
-  TMP_DIR="/tmp/compass-master-artifacts"
+  TMP_DIR="/tmp/compass-main-artifacts"
 
-  readonly LATEST_VERSION=master-$(cd "$COMPASS_SOURCES_DIR" && git rev-parse --short master~1)
+  readonly LATEST_VERSION=main-$(cd "$COMPASS_SOURCES_DIR" && git rev-parse --short main~1)
   echo "Deploying compass version $LATEST_VERSION"
 
   COMPASS_ARTIFACTS="${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${LATEST_VERSION}"
@@ -376,12 +376,12 @@ kubectl cordon "$NODE"
 log::info "Install Kyma"
 installKyma
 
-log::info "Install Compass version from master"
+log::info "Install Compass version from main"
 installCompassOld
 
 readonly SUITE_NAME="testsuite-all"
 
-log::info "Execute benchmarks on the current master"
+log::info "Execute benchmarks on the current main"
 kubectl uncordon "$NODE"
 CONCURRENCY=1 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l "benchmark=true"
 kubectl cordon "$NODE"
