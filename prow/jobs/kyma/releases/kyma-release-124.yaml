@@ -1011,9 +1011,6 @@ periodics:
         - name: sa-stability-fluentd-storage-writer
           secret:
             secretName: sa-stability-fluentd-storage-write
-
-
-
   - name: kyma-integration-gardener-gcp-rel124
     annotations:
       description: "Kyma GCP Gardener integration job. (release 1.24)"
@@ -1204,7 +1201,6 @@ periodics:
         effect: NoSchedule
     nodeSelector:
       dedicated: "high-cpu"
-
   - name: kyma-integration-evaluation-gardener-azure-rel124
     annotations:
       description: "Evaluation profile Kyma Azure Gardener integration job. (release 1.24)"
@@ -1365,7 +1361,6 @@ periodics:
         effect: NoSchedule
     nodeSelector:
       dedicated: "high-cpu"
-
   - name: kyma-integration-hibernation-gardener-azure-rel124
     annotations:
       pipeline.clusterprovisioning: "kyma cli"
@@ -1440,8 +1435,8 @@ periodics:
             requests:
               memory: 1Gi
               cpu: 400m
-      tolerations:
-        - key: dedicated
+    tolerations:
+      - key: dedicated
         operator: Equal
         value: high-cpu
         effect: NoSchedule
