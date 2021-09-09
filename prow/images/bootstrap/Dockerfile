@@ -73,11 +73,11 @@ RUN echo 'DOCKER_OPTS="${DOCKER_OPTS} --data-root=/docker-graph"' | \
     tee --append /etc/default/docker
 RUN mkdir /docker-graph
 
-# Prow Tools
-
-COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20210401-294e46e5 /prow-tools /prow-tools
-# for better access to prow-tools
-ENV PATH=$PATH:/prow-tools
+## Prow Tools
+#
+#COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20210401-294e46e5 /prow-tools /prow-tools
+## for better access to prow-tools
+#ENV PATH=$PATH:/prow-tools
 
 #################################################################
 ################ Install Cosign ####################
