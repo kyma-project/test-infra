@@ -124,7 +124,7 @@ branch-protection:
         compass:
           protect: false
           branches:
-            master:
+            main:
               protect: true
               required_status_checks:
                 strict: true
