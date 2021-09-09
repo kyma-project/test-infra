@@ -1189,7 +1189,7 @@ periodics:
             - name: REGION
               value: "northeurope"
             - name: RS_GROUP
-            value: "kyma-gardener-azure"
+              value: "kyma-gardener-azure"
           resources:
             requests:
               memory: 1Gi
