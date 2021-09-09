@@ -330,7 +330,7 @@ presubmits: # runs on PRs
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^((resources/cluster-users\S+|tests/integration/cluster-users)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      run_if_changed: '^((resources/cluster-users\S+|tests/integration/cluster-users\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma

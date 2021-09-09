@@ -520,7 +520,7 @@ templates:
                     pipeline.installer: "kyma install"
                     pipeline.test: "bash resources/cluster-users/files/sar-test.sh"
                     pipeline.clusterprovisioning: "k3d"
-                  run_if_changed: "^((resources/cluster-users\\S+|tests/integration/cluster-users)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  run_if_changed: "^((resources/cluster-users\\S+|tests/integration/cluster-users\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
                   env:
