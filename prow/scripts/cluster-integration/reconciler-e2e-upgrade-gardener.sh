@@ -95,8 +95,6 @@ LAST_RELEASE_VERSION="${kyma_get_last_release_version_return_version:?}"
 log::info "### Reading release version from RELEASE_VERSION file, got: ${LAST_RELEASE_VERSION}"
 export KYMA_SOURCE="${LAST_RELEASE_VERSION}"
 
-ls "${RECONCILER_SOURCES_DIR}"
-
 ## ---------------------------------------------------------------------------------------
 ## Prow job execution steps
 ## ---------------------------------------------------------------------------------------
