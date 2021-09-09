@@ -120,7 +120,7 @@ done
 
   # push to GCR
   if ! [ -z ${GOOGLE_APPLICATION_CREDENTIALS+x} ]; then
-    run 'cat "$GOOGLE_APPLICATION_CREDENTIALS" | buildah login -u _json_key --password-stdin https://eu.gcr.io'
+    run "cat $GOOGLE_APPLICATION_CREDENTIALS | buildah login -u _json_key --password-stdin https://eu.gcr.io"
     for r in ${REMOTE_PUSH[@]}; do
       run buildah push "$r"
     done
