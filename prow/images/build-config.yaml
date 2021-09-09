@@ -8,10 +8,11 @@ steps:
         tags:
           - latest
       - name: prow-tools
-        context: prow/images/prow-tools
+        context: .
         tags:
           - latest
         remotePrefix: eu.gcr.io/kyma-project/test-infra
+        dockerfile: prow/images/prow-tools/Dockerfile
   - name: buildpack images
     images:
       - name: buildpack-golang
