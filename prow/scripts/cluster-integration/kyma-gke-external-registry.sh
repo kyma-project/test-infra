@@ -289,14 +289,18 @@ mkdir -p /tmp/kyma-gke-integration
 if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
     gsutil cp "$KYMA_ARTIFACTS_BUCKET/$KYMA_SOURCE/kyma-installer-cluster.yaml" /tmp/kyma-gke-integration/downloaded-installer.yaml
+    kubectl apply -f /tmp/kyma-gke-integration/downloaded-installer.yaml || true
+    sleep 2
     kubectl apply -f /tmp/kyma-gke-integration/downloaded-installer.yaml
 else
     echo "Manual concatenating yamls"
-    "$KYMA_SCRIPTS_DIR"/concat-yamls.sh "$INSTALLER_YAML" "$INSTALLER_CR" \
+    installer_yaml=$("$KYMA_SCRIPTS_DIR"/concat-yamls.sh "$INSTALLER_YAML" "$INSTALLER_CR" \
     | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: $KYMA_INSTALLER_IMAGE;" \
     | sed -e "s/__VERSION__/0.0.1/g" \
-    | sed -e "s/__.*__//g" \
-    | kubectl apply -f-
+    | sed -e "s/__.*__//g")
+    echo "$installer_yaml" | kubectl apply -f- || true
+    sleep 2
+    echo "$installer_yaml" | kubectl apply -f- 
 fi
 
 log::info "Installation triggered"
