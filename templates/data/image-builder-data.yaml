@@ -4,7 +4,7 @@ templates:
       - to: ../prow/jobs/test-infra/image-builder.yaml
         localSets:
           image_builder_image:
-            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20210909-9d112899
+            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20210909-aaab474e
         jobConfigs:
           - repoName: kyma-project/test-infra
             jobs:
