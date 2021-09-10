@@ -204,16 +204,48 @@ templates:
                     - milv_jobConfig
       - to: ../prow/jobs/incubator/reconciler/reconciler.yaml
         localSets:
+          command_integration:
+            annotations:
+              pipeline.clusterprovisioning: kyma cli
           reconciler_jobConfig:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
             env:
               GO11MODULE: "on"
             branches:
               - ^main$
+          reconciler_e2e_jobConfig:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-gardener.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
+          reconciler_gardener_e2e:
+            labels:
+              preset-gardener-gcp-kyma-integration: "true"
+              preset-kyma-cli-stable: "true"
+              preset-cluster-version: "true"
+            env:
+              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
+              GARDENER_REGION: "europe-west4"
+              GARDENER_ZONES: "europe-west4-b"
+            annotations:
+              pipeline.platform: gardener_gcp
         jobConfigs:
           - repoName: kyma-incubator/reconciler
             jobs:
+              - jobConfig:
+                  name: pre-main-kyma-incubator-reconciler-e2e
+                  run_if_changed: "^resources"
+                  image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                  local:
+                    - reconciler_gardener_e2e
+                    - reconciler_e2e_jobConfig
               - jobConfig:
                   name: pre-main-kyma-incubator-reconciler
                   always_run: true
