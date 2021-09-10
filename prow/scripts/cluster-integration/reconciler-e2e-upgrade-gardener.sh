@@ -136,9 +136,9 @@ cd /
 export KUBECONFIG="$HOME/.kube/config"
 
 # run the fast integration test before reconciliation
-log::banner "Executing test - before reconciliation"
-gardener::test_fast_integration_kyma
-
+log::banner "Executing pre-upgrade test - before reconciliation"
+gardener::pre_upgrade_test_fast_integration_kyma
+#gardener::test_fast_integration_kyma
 
 # Deploy test pod which will trigger reconciliation
 reconciler::deploy_test_pod
@@ -146,7 +146,6 @@ reconciler::deploy_test_pod
 # Wait until test-pod is ready
 reconciler::wait_until_test_pod_is_ready
 
-#### @TODO: change version of kyma to reconcile
 # Set up test pod environment
 reconciler::initialize_test_pod
 
@@ -154,8 +153,9 @@ reconciler::initialize_test_pod
 reconciler::reconcile_kyma
 
 # run the fast integration test after reconciliation
-log::banner "Executing test - after reconciliation"
-gardener::test_fast_integration_kyma
+log::banner "Executing post-upgrade test - after reconciliation"
+gardener::post_upgrade_test_fast_integration_kyma
+#gardener::test_fast_integration_kyma
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
