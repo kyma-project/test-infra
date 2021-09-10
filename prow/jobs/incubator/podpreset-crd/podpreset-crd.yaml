@@ -17,7 +17,7 @@ presubmits: # runs on PRs
       always_run: true
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-incubator/podpreset-crd
+      path_alias: github.com/jpeeler/podpreset-crd
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -36,7 +36,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/podpreset-crd"
+              - "/home/prow/go/src/github.com/jpeeler/podpreset-crd"
               - "ci-pr"
             resources:
               requests:
@@ -66,6 +66,7 @@ postsubmits: # runs on main
         preset-sa-gcr-push: "true"
       skip_report: false
       decorate: true
+      path_alias: github.com/jpeeler/podpreset-crd
       cluster: trusted-workload
       max_concurrency: 10
       branches:
@@ -84,7 +85,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/podpreset-crd"
+              - "/home/prow/go/src/github.com/jpeeler/podpreset-crd"
               - "ci-master"
             resources:
               requests:
