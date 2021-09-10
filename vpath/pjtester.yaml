@@ -1,3 +1,2 @@
 pjNames:
   - pjName: "pre-main-cluster-users-integration-k3d"
-  - pjName: "post-main-cluster-users-integration-k3d"
