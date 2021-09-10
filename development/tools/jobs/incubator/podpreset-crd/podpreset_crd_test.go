@@ -32,7 +32,7 @@ func TestPodpresetCrdJobsPresubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush)
 	assert.Equal(t, tester.ImageGolangKubebuilder2BuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/podpreset-crd", "ci-pr"}, actualPresubmit.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/jpeeler/podpreset-crd", "ci-pr"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
 func TestPodpresetCrdJobPostsubmit(t *testing.T) {
@@ -57,5 +57,5 @@ func TestPodpresetCrdJobPostsubmit(t *testing.T) {
 	assert.Equal(t, tester.ImageGolangKubebuilder2BuildpackLatest, actualPost.Spec.Containers[0].Image)
 	assert.Empty(t, actualPost.RunIfChanged)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, actualPost.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/podpreset-crd", "ci-master"}, actualPost.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/jpeeler/podpreset-crd", "ci-master"}, actualPost.Spec.Containers[0].Args)
 }
