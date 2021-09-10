@@ -115,6 +115,9 @@ gardener::provision_cluster
 # Deploy reconciler in the cluster
 reconciler::deploy
 
+# Disable sidecar injection for reconciler namespace
+kubectl label namespace reconciler istio-injection=disabled --overwrite
+
 # Wait until reconciler is ready
 reconciler::wait_until_is_ready
 
