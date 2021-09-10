@@ -13,6 +13,8 @@ function provision_k3d_and_run_testsuite() {
     pushd $KYMA_SOURCES_DIR
     echo 'git status:'
     git status
+    echo 'git log -n5:'
+    git log -n5
     echo 'git branch -v:'
     git branch -v
     echo 'git remote -v:'
@@ -20,11 +22,14 @@ function provision_k3d_and_run_testsuite() {
     #echo 'git pull:'
     #git pull
     echo "show filesystem:"
+    echo $PWD
+    popd
+
     ls -al $KYMA_SOURCES_DIR
     ls -al $KYMA_SOURCES_DIR/tests
     ls -al $KYMA_SOURCES_DIR/integration
     ls -al $KYMA_SOURCES_DIR/cluster-users
-    popd
+
     pushd $KYMA_SOURCES_DIR/tests/integration/cluster-users
     ls -latr .
     bash k3d-cluster-users.sh
