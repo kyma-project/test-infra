@@ -132,6 +132,9 @@ git status
 git checkout "${KYMA_SOURCE}"
 cd /
 
+# Define KUBECONFIG env variable
+export KUBECONFIG="$HOME/.kube/config"
+
 # run the fast integration test before reconciliation
 log::banner "Executing test - before reconciliation"
 gardener::test_fast_integration_kyma
