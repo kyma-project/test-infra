@@ -297,6 +297,7 @@ templates:
                     - jobConfig_buildpack_incubator
               - jobConfig:
                   name: post-main-podpreset-crd
+                  path_alias: github.com/jpeeler/podpreset-crd
                   args:
                     - "/home/prow/go/src/github.com/jpeeler/podpreset-crd"
                     - "ci-master"
