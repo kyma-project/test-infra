@@ -56,7 +56,7 @@ if [[ "$BUILD_TYPE" == "pr" ]]; then
   COMPASS_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-compass-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
   export COMPASS_INSTALLER_IMAGE
 else
-  # Otherwise (master), operate on triggering commit id
+  # Otherwise (main), operate on triggering commit id
   readonly COMMON_NAME_PREFIX="gkecompint-commit"
   readonly COMMIT_ID=$(cd "$COMPASS_SOURCES_DIR" && git rev-parse --short HEAD)
   COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}")
@@ -267,7 +267,7 @@ function installKyma() {
   if [[ "$BUILD_TYPE" == "pr" ]]; then
     COMPASS_VERSION="PR-${PULL_NUMBER}"
   else
-    COMPASS_VERSION="master-${COMMIT_ID}"
+    COMPASS_VERSION="main-${COMMIT_ID}"
   fi
   readonly COMPASS_ARTIFACTS="${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${COMPASS_VERSION}"
   
@@ -276,6 +276,8 @@ function installKyma() {
   gsutil cp "${COMPASS_ARTIFACTS}/kyma-installer.yaml" ${TMP_DIR}/kyma-installer.yaml
   gsutil cp "${COMPASS_ARTIFACTS}/is-kyma-installed.sh" ${TMP_DIR}/is-kyma-installed.sh
   chmod +x ${TMP_DIR}/is-kyma-installed.sh
+  kubectl apply -f ${TMP_DIR}/kyma-installer.yaml || true
+  sleep 2
   kubectl apply -f ${TMP_DIR}/kyma-installer.yaml
 
   log::info "Installation triggered"
