@@ -78,7 +78,7 @@ function reconciler::initialize_test_pod() {
   # shellcheck disable=SC2086
   kc="$(cat ${KUBECONFIG})"
   # shellcheck disable=SC2016
-  jq --arg kubeconfig "${kc}" --arg "${KYMA_UPGRADE_SOURCE}" "main" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./scripts/e2e-test/template.json > body.json
+  jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./scripts/e2e-test/template.json > body.json
 
   # Copy the reconcile request payload and kyma reconciliation script to the test-pod
   kubectl cp body.json reconciler/test-pod:/tmp
