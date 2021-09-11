@@ -74,6 +74,9 @@ function reconciler::initialize_test_pod() {
   fi
   log::info "Kyma version to reconcile: ${KYMA_UPGRADE_SOURCE}"
 
+  # move to reconciler directory
+  cd "${RECONCILER_SOURCES_DIR}"  || { echo "Failed to change dir to: ${RECONCILER_SOURCES_DIR}"; exit 1; }
+
   # Create reconcile request payload with kubeconfig to the test-pod
   # shellcheck disable=SC2086
   kc="$(cat ${KUBECONFIG})"
