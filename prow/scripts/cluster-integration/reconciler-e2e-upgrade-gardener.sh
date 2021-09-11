@@ -128,12 +128,12 @@ gardener::install_kyma
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
-# Just for Testing @TODO: find a better approach
-# checkout Kyma source for release KYMA_SOURCE (for fast-integration)
-cd "${KYMA_SOURCES_DIR}"
-git status
-git checkout "${KYMA_SOURCE}"
-cd /
+## Just for Testing @TODO: find a better approach
+## checkout Kyma source for release KYMA_SOURCE (for fast-integration)
+#cd "${KYMA_SOURCES_DIR}"
+#git status
+#git checkout "${KYMA_SOURCE}"
+#cd /
 
 # Define KUBECONFIG env variable
 export KUBECONFIG="$HOME/.kube/config"
