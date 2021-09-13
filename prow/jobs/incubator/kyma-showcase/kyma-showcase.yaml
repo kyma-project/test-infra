@@ -3,12 +3,12 @@
 
 presubmits: # runs on PRs
   kyma-incubator/Kyma-Showcase/:
-    - name: pre-Kyma-Showcase-kyma-showcase-backend
+    - name: pre-Kyma-Showcase-kyma-showcase
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-Kyma-Showcase-kyma-showcase-backend"
+        prow.k8s.io/pubsub.runID: "pre-Kyma-Showcase-kyma-showcase"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -51,13 +51,13 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-incubator/Kyma-Showcase/:
-    - name: post-Kyma-Showcase-kyma-showcase-backend
+    - name: post-Kyma-Showcase-kyma-showcase
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-Kyma-Showcase-kyma-showcase-backend"
+        prow.k8s.io/pubsub.runID: "post-Kyma-Showcase-kyma-showcase"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
