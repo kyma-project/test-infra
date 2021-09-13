@@ -3,18 +3,18 @@
 
 presubmits: # runs on PRs
   kyma-incubator/Kyma-Showcase/:
-    - name: pre-Kyma-Showcase-kyma-showcase
+    - name: pre-Kyma-Showcase-frontend
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-Kyma-Showcase-kyma-showcase"
+        prow.k8s.io/pubsub.runID: "pre-Kyma-Showcase-frontend"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^components/application-broker/|^common/makefiles/'
+      run_if_changed: '^frontend/|^Makefile|^resources/'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -37,6 +37,55 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/Kyma-Showcase"
+              - "ci-frontend"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+  
+  kyma-incubator/Kyma-Showcase/:
+    - name: pre-Kyma-Showcase-backend
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-Kyma-Showcase-backend"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^backend/|^Makefile|^resources/'
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210831-b387d3eb"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/Kyma-Showcase"
+              - "ci-backend"
             resources:
               requests:
                 memory: 3Gi
@@ -51,19 +100,19 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-incubator/Kyma-Showcase/:
-    - name: post-Kyma-Showcase-kyma-showcase
+    - name: post-Kyma-Showcase-frontend
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-Kyma-Showcase-kyma-showcase"
+        prow.k8s.io/pubsub.runID: "post-Kyma-Showcase-frontend"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^components/application-broker/|^common/makefiles/'
+      run_if_changed: '^frontend/|^Makefile|^resources/'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -86,6 +135,56 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/Kyma-Showcase"
+              - "ci-frontend"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+  
+  kyma-incubator/Kyma-Showcase/:
+    - name: post-Kyma-Showcase-backend
+      annotations:
+        pipeline.trigger: "pr-merge"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-Kyma-Showcase-backend"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^backend/|^Makefile|^resources/'
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210831-b387d3eb"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/Kyma-Showcase"
+              - "ci-backend"
             resources:
               requests:
                 memory: 3Gi

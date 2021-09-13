@@ -6,10 +6,11 @@ templates:
           - repoName: "github.com/kyma-incubator/Kyma-Showcase/"
             jobs:
               - jobConfig:
-                  path: kyma-showcase
+                  path: frontend
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/Kyma-Showcase"
-                  run_if_changed: "^components/application-broker/|^common/makefiles/"
+                    - "ci-frontend"
+                  run_if_changed: "^frontend/|^Makefile|^resources/"
                   release_since: "1.24"
                   skipReleaseJobs: "true"
                 inheritedConfigs:
@@ -26,3 +27,28 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
+          - repoName: "github.com/kyma-incubator/Kyma-Showcase/"
+            jobs:
+              - jobConfig:
+                  path: backend
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/Kyma-Showcase"
+                    - "ci-backend"
+                  run_if_changed: "^backend/|^Makefile|^resources/"
+                  release_since: "1.24"
+                  skipReleaseJobs: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_generic_component"
+                    - "jobConfig_generic_component_kyma"
+                    - "extra_refs_test-infra"
+                  preConfigs:
+                    global:
+                      - "jobConfig_presubmit"
+                  postConfigs:
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
+
