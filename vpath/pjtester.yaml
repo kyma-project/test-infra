@@ -3,5 +3,5 @@ pjNames:
   - pjName: pre-Kyma-Showcase-backend
 prConfigs:
   kyma-incubator:
-    Kaym-Showcase:
+    Kyma-Showcase:
       prNumber: 121
