@@ -7,6 +7,8 @@ import (
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
 )
 
 func TestReconcilerJobsPresubmit(t *testing.T) {
@@ -76,13 +78,34 @@ func TestReconcilerJobsPeriodicE2EUpgrade(t *testing.T) {
 	expName := "periodic-main-kyma-incubator-reconciler-e2e-upgrade"
 	actualPeriodic := tester.FindPeriodicJobByName(kymaPeriodics, expName)
 	assert.Equal(t, expName, actualPeriodic.Name)
-	//assert.Equal(t, []string{"^master$", "^main$"}, actualPeriodic.Branches)
-	//assert.Equal(t, 10, actualPeriodic.MaxConcurrency)
-	//assert.False(t, actualPeriodic.SkipReport)
-	//
-	//assert.False(t, actualPeriodic.AlwaysRun)
+	assert.Equal(t, "30 * * * *", actualPeriodic.Cron)
+	assert.Equal(t, 0, actualPeriodic.JobBase.MaxConcurrency)
 
 	tester.AssertThatHasExtraRefTestInfra(t, actualPeriodic.JobBase.UtilityConfig, "main")
+	tester.AssertThatHasExtraRef(t, actualPeriodic.JobBase.UtilityConfig, []prowapi.Refs{
+		{
+			Org:       "kyma-project",
+			Repo:      "kyma",
+			BaseRef:   "main",
+			PathAlias: "github.com/kyma-project/kyma",
+		},
+	})
+	tester.AssertThatHasExtraRef(t, actualPeriodic.JobBase.UtilityConfig, []prowapi.Refs{
+		{
+			Org:       "kyma-project",
+			Repo:      "kyma",
+			BaseRef:   "release-1.24",
+			PathAlias: "github.com/kyma-project/kyma-1.24",
+		},
+	})
+	tester.AssertThatHasExtraRef(t, actualPeriodic.JobBase.UtilityConfig, []prowapi.Refs{
+		{
+			Org:       "kyma-incubator",
+			Repo:      "reconciler",
+			BaseRef:   "main",
+			PathAlias: "github.com/kyma-incubator/reconciler",
+		},
+	})
 
 	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18", actualPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-upgrade-gardener.sh"}, actualPeriodic.Spec.Containers[0].Command)
