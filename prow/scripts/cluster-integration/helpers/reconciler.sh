@@ -93,6 +93,7 @@ function reconciler::reconcile_kyma() {
   # Trigger Kyma reconciliation using reconciler
   log::banner "Reconcile Kyma in the same cluster until it is ready"
   kubectl exec -it -n reconciler test-pod -- sh -c ". /tmp/reconcile-kyma.sh"
+  log::info "test-pod exited!"
 }
 
 # Deploy test pod
@@ -100,7 +101,6 @@ function reconciler::deploy_test_pod() {
   # Deploy a test pod
   log::banner "Deploying test-pod in the cluster"
   kubectl run -n reconciler --image=alpine:3.14.1 --restart=Never test-pod -- sh -c "sleep 36000"
-
 }
 
 function reconciler::disable_sidecar_injection_reconciler_ns() {
