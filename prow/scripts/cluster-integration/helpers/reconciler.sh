@@ -102,3 +102,16 @@ function reconciler::deploy_test_pod() {
   kubectl run -n reconciler --image=alpine:3.14.1 --restart=Never test-pod -- sh -c "sleep 36000"
 
 }
+
+function reconciler::pre_upgrade_test_fast_integration_kyma_1_24() {
+    log::info "Running pre-upgrade Kyma Fast Integration tests"
+
+    # Define KUBECONFIG env variable
+    export KUBECONFIG="$HOME/.kube/config"
+
+    pushd "${KYMA_PROJECT_DIR}/kyma-1.24/tests/fast-integration"
+    make ci-pre-upgrade
+    popd
+
+    log::success "Tests completed"
+}

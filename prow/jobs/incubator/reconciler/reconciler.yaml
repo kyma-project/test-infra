@@ -187,6 +187,10 @@ periodics: # runs on schedule
           repo: kyma
           path_alias: github.com/kyma-project/kyma
           base_ref: main
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma-1.24
+          base_ref: release-1.24
         - org: kyma-incubator
           repo: reconciler
           path_alias: github.com/kyma-incubator/reconciler

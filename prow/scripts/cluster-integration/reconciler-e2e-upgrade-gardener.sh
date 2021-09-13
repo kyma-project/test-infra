@@ -30,7 +30,6 @@ ENABLE_TEST_LOG_COLLECTOR=false
 # Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export RECONCILER_SOURCES_DIR="/home/prow/go/src/github.com/kyma-incubator/reconciler"
-export KYMA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/kyma/"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
 # shellcheck source=prow/scripts/lib/log.sh
@@ -99,6 +98,11 @@ export KYMA_SOURCE="${LAST_RELEASE_VERSION}"
 ## Prow job execution steps
 ## ---------------------------------------------------------------------------------------
 
+# for debug only
+cd "${KYMA_PROJECT_DIR}/kyma-1.24"
+ls
+cd /
+
 log::banner "Provisioning Gardener cluster"
 # Checks required vars and initializes gcloud/docker if necessary
 gardener::init
@@ -128,19 +132,9 @@ gardener::install_kyma
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
-## Just for Testing @TODO: find a better approach
-## checkout Kyma source for release KYMA_SOURCE (for fast-integration)
-#cd "${KYMA_SOURCES_DIR}"
-#git status
-#git checkout "${KYMA_SOURCE}"
-#cd /
-
-# Define KUBECONFIG env variable
-export KUBECONFIG="$HOME/.kube/config"
-
 # run the fast integration test before reconciliation
 log::banner "Executing pre-upgrade test - before reconciliation"
-gardener::pre_upgrade_test_fast_integration_kyma
+reconciler::pre_upgrade_test_fast_integration_kyma_1_24
 #gardener::test_fast_integration_kyma
 
 # Deploy test pod which will trigger reconciliation

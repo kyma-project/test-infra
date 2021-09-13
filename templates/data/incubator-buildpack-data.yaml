@@ -207,6 +207,13 @@ templates:
           command_integration:
             annotations:
               pipeline.clusterprovisioning: kyma cli
+          extra_refs_kyma-1-24:
+            extra_refs:
+              kyma-1-24:
+                - org: "kyma-project"
+                  repo: "kyma"
+                  path_alias: "github.com/kyma-project/kyma-1.24"
+                  base_ref: "release-1.24"
           reconciler_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
@@ -320,7 +327,8 @@ templates:
                     - extra_refs_reconciler
                     - kyma_major_version_1
                   local:
-                    - jobConfig_default # TODO: check this line
+                    - jobConfig_default
+                    - extra_refs_kyma-1-24
                     - reconciler_gardener_e2e_upgrade
                     - reconciler_e2e_upgrade_jobConfig
       - to: ../prow/jobs/incubator/octopus/octopus.yaml
