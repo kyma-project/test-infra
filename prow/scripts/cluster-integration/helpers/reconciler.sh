@@ -103,6 +103,11 @@ function reconciler::deploy_test_pod() {
 
 }
 
+function reconciler::disable_sidecar_injection_reconciler_ns() {
+    log::info "Disabling sidecar injection for reconciler namespace"
+    kubectl label namespace reconciler istio-injection=disabled --overwrite
+}
+
 function reconciler::pre_upgrade_test_fast_integration_kyma_1_24() {
     log::info "Running pre-upgrade Kyma Fast Integration tests"
 

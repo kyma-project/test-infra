@@ -222,12 +222,6 @@ templates:
               GO11MODULE: "on"
             branches:
               - ^main$
-          jobConfig_default:
-            path_alias: github.com/kyma-project/kyma
-            request_memory: 1Gi
-            request_cpu: 400m
-            labels:
-              preset-debug-commando-oom: "true"
           reconciler_e2e_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-gardener.sh"
             args:
@@ -261,7 +255,7 @@ templates:
             annotations:
               pipeline.platform: gardener_gcp
               pipeline.installer: kyma install, kyma deploy
-              pipeline.test: fast-integration
+              pipeline.test: "upgrade-fast-integration"
               pipeline.clusterprovisioning: kyma cli
         jobConfigs:
           - repoName: kyma-incubator/reconciler
@@ -309,7 +303,6 @@ templates:
                   name: periodic-main-kyma-incubator-reconciler-e2e-upgrade
                   image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18"
                   annotations:
-                    testgrid-dashboards: kyma_integration # @TODO check this line
                     description: Reconciler e2e upgrade test job.
                   decoration_config:
                     timeout: 14400000000000 # 4h
@@ -326,8 +319,8 @@ templates:
                     - extra_refs_kyma
                     - extra_refs_reconciler
                     - kyma_major_version_1
+                    - disable_testgrid
                   local:
-                    - jobConfig_default
                     - extra_refs_kyma-1-24
                     - reconciler_gardener_e2e_upgrade
                     - reconciler_e2e_upgrade_jobConfig

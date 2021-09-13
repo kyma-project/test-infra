@@ -97,12 +97,6 @@ export KYMA_SOURCE="${LAST_RELEASE_VERSION}"
 ## ---------------------------------------------------------------------------------------
 ## Prow job execution steps
 ## ---------------------------------------------------------------------------------------
-
-# for debug only
-cd "${KYMA_PROJECT_DIR}/kyma-1.24"
-ls
-cd /
-
 log::banner "Provisioning Gardener cluster"
 # Checks required vars and initializes gcloud/docker if necessary
 gardener::init
@@ -120,7 +114,7 @@ gardener::provision_cluster
 reconciler::deploy
 
 # Disable sidecar injection for reconciler namespace
-kubectl label namespace reconciler istio-injection=disabled --overwrite
+reconciler::disable_sidecar_injection_reconciler_ns
 
 # Wait until reconciler is ready
 reconciler::wait_until_is_ready
