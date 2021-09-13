@@ -155,7 +155,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
   
 periodics: # runs on schedule
-    - name: periodic-main-kyma-incubator-reconciler-e2e-upgrade
+    - name: periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade
       annotations:
         description: "Reconciler e2e upgrade test job."
         pipeline.clusterprovisioning: "kyma cli"
@@ -166,7 +166,7 @@ periodics: # runs on schedule
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "periodic-main-kyma-incubator-reconciler-e2e-upgrade"
+        prow.k8s.io/pubsub.runID: "periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-cluster-version: "true"

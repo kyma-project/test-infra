@@ -300,7 +300,7 @@ templates:
                   local:
                     - reconciler_jobConfig
               - jobConfig:
-                  name: periodic-main-kyma-incubator-reconciler-e2e-upgrade
+                  name: periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade
                   image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18"
                   annotations:
                     description: Reconciler e2e upgrade test job.

@@ -75,7 +75,7 @@ func TestReconcilerJobsPeriodicE2EUpgrade(t *testing.T) {
 	kymaPeriodics := jobConfig.AllPeriodics()
 	assert.Len(t, kymaPeriodics, 1)
 
-	expName := "periodic-main-kyma-incubator-reconciler-e2e-upgrade"
+	expName := "periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade"
 	actualPeriodic := tester.FindPeriodicJobByName(kymaPeriodics, expName)
 	assert.Equal(t, expName, actualPeriodic.Name)
 	assert.Equal(t, "30 * * * *", actualPeriodic.Cron)
