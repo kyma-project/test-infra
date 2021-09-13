@@ -226,34 +226,11 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-gardener.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
-          reconciler_gardener_e2e:
-            labels:
-              preset-gardener-gcp-kyma-integration: "true"
-              preset-kyma-cli-stable: "true"
-              preset-cluster-version: "true"
-            env:
-              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
-              GARDENER_REGION: "europe-west4"
-              GARDENER_ZONES: "europe-west4-b"
-            annotations:
-              pipeline.platform: gardener_gcp
           reconciler_e2e_upgrade_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-upgrade-gardener.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
-            branches:
-              - ^main$
-          reconciler_gardener_e2e_upgrade:
-            labels:
-              preset-gardener-gcp-kyma-integration: "true"
-              preset-kyma-cli-stable: "true"
-              preset-cluster-version: "true"
-            env:
-              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
-              GARDENER_REGION: "europe-west4"
-              GARDENER_ZONES: "europe-west4-b"
             annotations:
-              pipeline.platform: gardener_gcp
               pipeline.installer: kyma install, kyma deploy
               pipeline.test: "upgrade-fast-integration"
               pipeline.clusterprovisioning: kyma cli
@@ -268,10 +245,10 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
+                    - gardener_gcp_job
                     - extra_refs_test-infra
                     - extra_refs_kyma
                   local:
-                    - reconciler_gardener_e2e
                     - reconciler_e2e_jobConfig
               - jobConfig:
                   name: pre-main-kyma-incubator-reconciler
@@ -315,6 +292,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_periodic
+                    - gardener_gcp_job
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - extra_refs_reconciler
@@ -322,7 +300,6 @@ templates:
                     - disable_testgrid
                   local:
                     - extra_refs_kyma-1-24
-                    - reconciler_gardener_e2e_upgrade
                     - reconciler_e2e_upgrade_jobConfig
       - to: ../prow/jobs/incubator/octopus/octopus.yaml
         jobConfigs:

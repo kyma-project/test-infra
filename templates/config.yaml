@@ -164,6 +164,18 @@ globalSets:
       preset-dind-enabled: "true"
       preset-sa-gcr-push: "true"
       preset-docker-push-repository-kyma: "true"
+  # gardener configs
+  gardener_gcp_job:
+    labels:
+      preset-gardener-gcp-kyma-integration: "true"
+      preset-kyma-cli-stable: "true"
+      preset-cluster-version: "true"
+    env:
+      KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
+      GARDENER_REGION: "europe-west4"
+      GARDENER_ZONES: "europe-west4-b"
+    annotations:
+      pipeline.platform: gardener_gcp
 
 templates:
 #  - from: templates/kyma-release-upgrade.yaml

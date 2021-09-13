@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "periodic-main-kyma-incubator-reconciler-e2e-upgrade"
+  - pjName: "periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade"
     report: false
 prConfigs:
   kyma-incubator:

@@ -69,7 +69,6 @@ elif [[ $GARDENER_PROVIDER == "gcp" ]]; then
     # shellcheck source=prow/scripts/lib/gardener/gcp.sh
     source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gcp.sh"
 else
-    ## TODO what should I put here? Is this a backend?
     log::error "GARDENER_PROVIDER ${GARDENER_PROVIDER} is not yet supported"
     exit 1
 fi
@@ -123,13 +122,9 @@ reconciler::wait_until_is_ready
 log::banner "Installing Kyma $KYMA_SOURCE"
 gardener::install_kyma
 
-# generate pod-security-policy list in json
-utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
-
 # run the fast integration test before reconciliation
 log::banner "Executing pre-upgrade test - before reconciliation"
 reconciler::pre_upgrade_test_fast_integration_kyma_1_24
-#gardener::test_fast_integration_kyma
 
 # Deploy test pod which will trigger reconciliation
 reconciler::deploy_test_pod
@@ -146,7 +141,6 @@ reconciler::reconcile_kyma
 # run the fast integration test after reconciliation
 log::banner "Executing post-upgrade test - after reconciliation"
 gardener::post_upgrade_test_fast_integration_kyma
-#gardener::test_fast_integration_kyma
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
