@@ -68,7 +68,7 @@ else
 fi
 
 # nice cleanup on exit, be it succesful or on fail
-#trap gardener::cleanup EXIT INT
+trap gardener::cleanup EXIT INT
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
@@ -121,9 +121,8 @@ gardener::provision_cluster
 
 if ! [ -z "${COSIGNED_ENABLED}" ]; then
   echo "Image verification enabled"
-
 #  publicKey="$(gcp::get_kms_public_key -p sap-kyma-prow -r kyma-prow -k image-signing -l global -v 1)"
-  git clone https://github.com/youssefazrak/connaisseur.git -b add-psp-helm /tmp/connaisseur
+  git clone https://github.com/sse-secure-systems/connaisseur.git -b develop /tmp/connaisseur
   helm install -f "$TEST_INFRA_SOURCES_DIR/prow/scripts/resources/connaisseur.values.tpl.yaml" connaisseur /tmp/connaisseur/helm --atomic --create-namespace --namespace connaisseur
   kubectl label namespaces kube-system securesystemsengineering.connaisseur/webhook=ignore
   kubectl label namespaces kube-public securesystemsengineering.connaisseur/webhook=ignore

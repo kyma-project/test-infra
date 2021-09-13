@@ -1,3 +1,4 @@
 pjNames:
 - pjName: "pre-main-kyma-gardener-azure-integration-cosigned"
 - pjName: "pre-main-kyma-gardener-azure-alpha-prod-cosigned"
+- pjName: pre-main-kyma-gke-integration-cosigned
