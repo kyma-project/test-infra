@@ -1,0 +1,28 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/incubator/kyma-showcase/kyma-showcase.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-incubator/Kyma-Showcase/"
+            jobs:
+              - jobConfig:
+                  path: kyma-showcase
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/Kyma-Showcase"
+                  run_if_changed: "^components/application-broker/|^common/makefiles/"
+                  release_since: "1.24"
+                  skipReleaseJobs: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_generic_component"
+                    - "jobConfig_generic_component_kyma"
+                    - "extra_refs_test-infra"
+                  preConfigs:
+                    global:
+                      - "jobConfig_presubmit"
+                  postConfigs:
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
