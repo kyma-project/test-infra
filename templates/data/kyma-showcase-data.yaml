@@ -8,8 +8,7 @@ templates:
               - jobConfig:
                   path: frontend
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/Kyma-Showcase"
-                    - "ci-frontend"
+                    - "/home/prow/go/src/github.com/kyma-incubator/Kyma-Showcase/frontend"
                   run_if_changed: "^frontend/|^Makefile|^resources/"
                   release_since: "1.24"
                   skipReleaseJobs: "true"
@@ -32,8 +31,7 @@ templates:
               - jobConfig:
                   path: backend
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/Kyma-Showcase"
-                    - "ci-backend"
+                    - "/home/prow/go/src/github.com/kyma-incubator/Kyma-Showcase/backend"
                   run_if_changed: "^backend/|^Makefile|^resources/"
                   release_since: "1.24"
                   skipReleaseJobs: "true"

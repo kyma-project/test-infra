@@ -36,8 +36,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/Kyma-Showcase"
-              - "ci-frontend"
+              - "/home/prow/go/src/github.com/kyma-incubator/Kyma-Showcase/frontend"
             resources:
               requests:
                 memory: 3Gi
@@ -84,8 +83,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/Kyma-Showcase"
-              - "ci-backend"
+              - "/home/prow/go/src/github.com/kyma-incubator/Kyma-Showcase/backend"
             resources:
               requests:
                 memory: 3Gi
@@ -134,8 +132,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/Kyma-Showcase"
-              - "ci-frontend"
+              - "/home/prow/go/src/github.com/kyma-incubator/Kyma-Showcase/frontend"
             resources:
               requests:
                 memory: 3Gi
@@ -183,8 +180,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/Kyma-Showcase"
-              - "ci-backend"
+              - "/home/prow/go/src/github.com/kyma-incubator/Kyma-Showcase/backend"
             resources:
               requests:
                 memory: 3Gi
