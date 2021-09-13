@@ -37,6 +37,9 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/Kyma-Showcase/frontend"
+            env:
+              - name: DOCKER_PUSH_DIRECTORY
+                value: "/kyma-showcase"
             resources:
               requests:
                 memory: 3Gi
@@ -84,6 +87,9 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/Kyma-Showcase/backend"
+            env:
+              - name: DOCKER_PUSH_DIRECTORY
+                value: "/kyma-showcase"
             resources:
               requests:
                 memory: 3Gi
@@ -133,6 +139,9 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/Kyma-Showcase/frontend"
+            env:
+              - name: DOCKER_PUSH_DIRECTORY
+                value: "/kyma-showcase"
             resources:
               requests:
                 memory: 3Gi
@@ -181,6 +190,9 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/Kyma-Showcase/backend"
+            env:
+              - name: DOCKER_PUSH_DIRECTORY
+                value: "/kyma-showcase"
             resources:
               requests:
                 memory: 3Gi
