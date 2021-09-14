@@ -17,7 +17,7 @@ presubmits: # runs on PRs
       run_if_changed: '^frontend/|^resources/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
+      path_alias: github.com/kyma-incubator/kyma-showcase
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -65,7 +65,7 @@ presubmits: # runs on PRs
       run_if_changed: '^backend/|^resources/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
+      path_alias: github.com/kyma-incubator/kyma-showcase
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -117,7 +117,7 @@ postsubmits: # runs on main
       run_if_changed: '^frontend/|^resources/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
+      path_alias: github.com/kyma-incubator/kyma-showcase
       cluster: trusted-workload
       max_concurrency: 10
       branches:
@@ -166,7 +166,7 @@ postsubmits: # runs on main
       run_if_changed: '^backend/|^resources/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
+      path_alias: github.com/kyma-incubator/kyma-showcase
       cluster: trusted-workload
       max_concurrency: 10
       branches:

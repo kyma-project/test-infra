@@ -3,6 +3,10 @@ templates:
     render:
       - to: ../prow/jobs/incubator/kyma-showcase/kyma-showcase.yaml
         localSets:
+          jobConfig_generic_component_kyma_showcase:
+            labels:
+              preset-docker-push-repository-kyma: "true"
+            path_alias: "github.com/kyma-incubator/kyma-showcase"
           push_directory_kyma_showcase:
             env:
               DOCKER_PUSH_DIRECTORY: "/kyma-showcase"
@@ -21,10 +25,10 @@ templates:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
                     - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
                     - "extra_refs_test-infra"
                   local:
                     - "push_directory_kyma_showcase"
+                    - "jobConfig_generic_component_kyma_showcase"
                   preConfigs:
                     global:
                       - "jobConfig_presubmit"
@@ -44,10 +48,10 @@ templates:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
                     - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
                     - "extra_refs_test-infra"
                   local:
                     - "push_directory_kyma_showcase"
+                    - "jobConfig_generic_component_kyma_showcase"
                   preConfigs:
                     global:
                       - "jobConfig_presubmit"
