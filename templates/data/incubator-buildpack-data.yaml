@@ -207,6 +207,9 @@ templates:
           command_integration:
             annotations:
               pipeline.clusterprovisioning: kyma cli
+          jobConfig_resources:
+            request_memory: 8Gi
+            request_cpu: 4
           extra_refs_kyma-1-24:
             extra_refs:
               kyma-1-24:
@@ -299,6 +302,7 @@ templates:
                     - kyma_major_version_1
                     - disable_testgrid
                   local:
+                    - jobConfig_resources
                     - extra_refs_kyma-1-24
                     - reconciler_e2e_upgrade_jobConfig
       - to: ../prow/jobs/incubator/octopus/octopus.yaml

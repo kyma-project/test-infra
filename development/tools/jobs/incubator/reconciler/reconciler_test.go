@@ -98,14 +98,14 @@ func TestReconcilerJobsPeriodicE2EUpgrade(t *testing.T) {
 			PathAlias: "github.com/kyma-project/kyma-1.24",
 		},
 	})
-	tester.AssertThatHasExtraRef(t, actualPeriodic.JobBase.UtilityConfig, []prowapi.Refs{
-		{
-			Org:       "kyma-incubator",
-			Repo:      "reconciler",
-			BaseRef:   "main",
-			PathAlias: "github.com/kyma-incubator/reconciler",
-		},
-	})
+	//tester.AssertThatHasExtraRef(t, actualPeriodic.JobBase.UtilityConfig, []prowapi.Refs{
+	//	{
+	//		Org:       "kyma-incubator",
+	//		Repo:      "reconciler",
+	//		BaseRef:   "main",
+	//		PathAlias: "github.com/kyma-incubator/reconciler",
+	//	},
+	//})
 
 	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18", actualPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-upgrade-gardener.sh"}, actualPeriodic.Spec.Containers[0].Command)

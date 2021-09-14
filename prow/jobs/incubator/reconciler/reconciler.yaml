@@ -189,10 +189,10 @@ periodics: # runs on schedule
           repo: kyma
           path_alias: github.com/kyma-project/kyma-1.24
           base_ref: release-1.24
-        - org: kyma-incubator
+        - org: mfaizanse
           repo: reconciler
           path_alias: github.com/kyma-incubator/reconciler
-          base_ref: main
+          base_ref: e2e-test-update
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
@@ -217,8 +217,8 @@ periodics: # runs on schedule
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
-                memory: 3Gi
-                cpu: 2
+                memory: 8Gi
+                cpu: 4
         tolerations:
           - key: dedicated
             operator: Equal

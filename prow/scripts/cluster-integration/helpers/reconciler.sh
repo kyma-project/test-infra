@@ -77,23 +77,57 @@ function reconciler::initialize_test_pod() {
   # move to reconciler directory
   cd "${RECONCILER_SOURCES_DIR}"  || { echo "Failed to change dir to: ${RECONCILER_SOURCES_DIR}"; exit 1; }
 
-  # Create reconcile request payload with kubeconfig to the test-pod
+  # Create reconcile request payload with kubeconfig and version to the test-pod
   # shellcheck disable=SC2086
   kc="$(cat ${KUBECONFIG})"
   # shellcheck disable=SC2016
   jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./scripts/e2e-test/template.json > body.json
 
-  # Copy the reconcile request payload and kyma reconciliation script to the test-pod
+  # Copy the reconcile request payload and kyma reconciliation scripts to the test-pod
   kubectl cp body.json reconciler/test-pod:/tmp
   kubectl cp  ./scripts/e2e-test/reconcile-kyma.sh reconciler/test-pod:/tmp
+  kubectl cp  ./scripts/e2e-test/get-reconcile-status.sh reconciler/test-pod:/tmp
+  kubectl cp  ./scripts/e2e-test/request-reconcile.sh reconciler/test-pod:/tmp
 }
 
-# Triggers reconciliation of Kyma
+# Triggers reconciliation of Kyma and waits until reconciliation is in ready state
 function reconciler::reconcile_kyma() {
   # Trigger Kyma reconciliation using reconciler
   log::banner "Reconcile Kyma in the same cluster until it is ready"
   kubectl exec -it -n reconciler test-pod -- sh -c ". /tmp/reconcile-kyma.sh"
-  log::info "test-pod exited!"
+  log::info "test-pod exited"
+}
+
+# Only triggers reconciliation of Kyma
+function reconciler::trigger_kyma_reconcile() {
+  # Trigger Kyma reconciliation using reconciler
+  log::banner "Reconcile Kyma in the same cluster"
+  kubectl exec -n reconciler test-pod -- sh -c ". /tmp/request-reconcile.sh"
+  if [[ $? -ne 0 ]]; then
+      echo "Failed to reconcile"
+      exit 1
+  fi
+}
+
+# Waits until Kyma reconciliation is in ready state
+function reconciler::wait_until_kyma_reconciled() {
+  iterationsLeft=$(( RECONCILER_TIMEOUT/RECONCILER_DELAY ))
+  while : ; do
+    status=$(kubectl exec -n reconciler test-pod -- sh -c ". /tmp/get-reconcile-status.sh" | xargs)
+    if [ "${status}" = "ready" ]; then
+      echo "Kyma is installed"
+      exit 0
+    fi
+
+    if [ "$RECONCILER_TIMEOUT" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then
+      echo "timeout reached on Kyma installation error. Exiting"
+      exit 1
+    fi
+
+    sleep $RECONCILER_DELAY
+    echo "waiting to get Kyma installed, current status: ${status} ...."
+    iterationsLeft=$(( iterationsLeft-1 ))
+  done
 }
 
 # Deploy test pod

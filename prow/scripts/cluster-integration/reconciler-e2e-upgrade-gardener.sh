@@ -16,8 +16,6 @@
 #
 #Please look in each provider script for provider specific requirements
 
-echo "Starting pipeline..."
-
 ## ---------------------------------------------------------------------------------------
 ## Configurations and Variables
 ## ---------------------------------------------------------------------------------------
@@ -135,8 +133,11 @@ reconciler::wait_until_test_pod_is_ready
 # Set up test pod environment
 reconciler::initialize_test_pod
 
-# Run a test pod from where the reconciliation will be triggered
-reconciler::reconcile_kyma
+# Trigger the reconciliation through test pod
+reconciler::trigger_kyma_reconcile
+
+# Wait until reconciliation is complete
+reconciler::wait_until_kyma_reconciled
 
 # run the fast integration test after reconciliation
 log::banner "Executing post-upgrade test - after reconciliation"
