@@ -207,7 +207,7 @@ tide:
     kyma-incubator/opensap: squash
 #    kyma-incubator/wormhole: squash
 #    kyma-incubator/k8s-service-catalog: squash
-    kyma-incubator/Kyma-Showcase: squash
+    kyma-incubator/kyma-showcase: squash
     kyma-incubator/sc-removal: squash
     kyma-incubator/hydra-login-consent: squash
   target_url: https://status.build.kyma-project.io/tide
