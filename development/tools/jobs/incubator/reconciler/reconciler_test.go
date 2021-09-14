@@ -87,3 +87,24 @@ func TestReconcilerJobPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/reconciler"}, actualPost.Spec.Containers[0].Args)
 }
+
+func TestReconcilerJobNightlyE2E(t *testing.T) {
+	// WHEN
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/reconciler/reconciler.yaml")
+	// THEN
+	require.NoError(t, err)
+	allPeriodics := jobConfig.AllPeriodics()
+	assert.Len(t, allPeriodics, 1)
+	kymaNightlyJob := allPeriodics
+	assert.Len(t, kymaNightlyJob, 1)
+
+	actualNightlyJob := kymaNightlyJob[0]
+	expName := "nightly-main-reconciler-e2e"
+	assert.Equal(t, expName, actualNightlyJob.Name)
+
+	tester.AssertThatHasExtraRefTestInfra(t, actualNightlyJob.JobBase.UtilityConfig, "main")
+	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18", actualNightlyJob.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"}, actualNightlyJob.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/reconciler"}, actualNightlyJob.Spec.Containers[0].Args)
+	tester.AssertThatContainerHasEnv(t, actualNightlyJob.Spec.Containers[0], "RECONCILE_COUNTS", "5")
+}

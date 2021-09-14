@@ -157,7 +157,21 @@ globalSets:
       preset-dind-enabled: "true"
       preset-sa-gcr-push: "true"
       preset-docker-push-repository-kyma: "true"
-
+  # gardener configs
+  gardener_gcp_job:
+    env:
+      KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
+      GARDENER_REGION: "europe-west4"
+      GARDENER_ZONES: "europe-west4-b"
+    annotations:
+      pipeline.platform: gardener_gcp
+  extra_refs_reconciler:
+    extra_refs:
+      reconciler:
+        - org: "kyma-incubator"
+          repo: "reconciler"
+          path_alias: "github.com/kyma-incubator/reconciler"
+          base_ref: "main"
 templates:
 #  - from: templates/kyma-release-upgrade.yaml
 #    render:

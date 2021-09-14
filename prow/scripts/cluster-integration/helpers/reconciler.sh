@@ -94,5 +94,31 @@ function reconciler::deploy_test_pod() {
   # Deploy a test pod
   log::banner "Deploying test-pod in the cluster"
   kubectl run -n reconciler --image=alpine:3.14.1 --restart=Never test-pod -- sh -c "sleep 36000"
+}
 
+# Break Kyma to test reconciler repair mechanism
+function reconciler::break_kyma() {
+  log::banner "Delete all deployments from kyma-system ns"
+  kubectl delete deploy -n kyma-system --all
+}
+
+function reconciler::test_periodic_reconciliation() {
+  iterationsLeft="${RECONCILE_COUNTS}"
+  while : ; do
+    iterationsLeft=$(( iterationsLeft-1 ))
+    # Trigger reconciliation of Kyma
+    reconciler::reconcile_kyma
+
+    # Once Kyma is installed run the fast integration test
+    log::banner "Executing fast integration test"
+    gardener::test_fast_integration_kyma
+
+    # Break Kyma
+    reconciler::break_kyma
+    ## Check the execution count is within threshold
+    if [ "$iterationsLeft" -le 0 ]; then
+        log::info "periodic reconciliations are successfully done!"
+        exit 0
+    fi
+  done
 }
