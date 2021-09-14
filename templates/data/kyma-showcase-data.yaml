@@ -7,7 +7,7 @@ templates:
             env:
               DOCKER_PUSH_DIRECTORY: "/kyma-showcase"
         jobConfigs:
-          - repoName: "github.com/kyma-incubator/kyma-showcase/"
+          - repoName: "github.com/kyma-incubator/kyma-showcase"
             jobs:
               - jobConfig:
                   path: frontend
@@ -32,8 +32,6 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-          - repoName: "github.com/kyma-incubator/kyma-showcase/"
-            jobs:
               - jobConfig:
                   path: backend
                   args:

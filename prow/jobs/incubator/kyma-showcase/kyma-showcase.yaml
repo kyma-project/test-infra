@@ -2,7 +2,7 @@
 
 
 presubmits: # runs on PRs
-  kyma-incubator/kyma-showcase/:
+  kyma-incubator/kyma-showcase:
     - name: pre-kyma-showcase-frontend
       annotations:
         pipeline.trigger: "pr-submit"
@@ -51,8 +51,6 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-  
-  kyma-incubator/kyma-showcase/:
     - name: pre-kyma-showcase-backend
       annotations:
         pipeline.trigger: "pr-submit"
@@ -103,7 +101,7 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
   
 postsubmits: # runs on main
-  kyma-incubator/kyma-showcase/:
+  kyma-incubator/kyma-showcase:
     - name: post-kyma-showcase-frontend
       annotations:
         pipeline.trigger: "pr-merge"
@@ -153,8 +151,6 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-  
-  kyma-incubator/kyma-showcase/:
     - name: post-kyma-showcase-backend
       annotations:
         pipeline.trigger: "pr-merge"
