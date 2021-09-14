@@ -67,12 +67,66 @@ templates:
             env:
               KEB_PLAN_ID: "b1a5764e-2ea1-4f95-94c0-2b4538b37b55"
               KEB_REGION: "cf-eu20"
+
+          fast_integration_skip_provisioning:
+            env:
+              FI_SKIP_PROVISIONING: "true"
+          fast_integration_skip_testing:
+            env:
+              FI_SKIP_TESTING: "true"
+          fast_integration_skip_deprovisioning:
+            env:
+              FI_SKIP_DEPROVISIONING: "true"
+          fast_integration_suffix:
+            env:
+              FI_SUFFIX: "nightly"
+          fast_integration_runtimeid:
+            env:
+              FI_RUNTIME_ID: "f0f05646-2fc7-441f-b1ec-ffc2ec766e8b"
+
         jobConfigs:
           - repoName: "kyma-project/kyma"
             jobs:
               - jobConfig:
+                  name: "skr-azure-nightly-cleanup"
+                  cron: "5 0 * * *" # "At 00:05"
+                inheritedConfigs:
+                  global:
+                    - "image_kyma-integration"
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                    - "disable_testgrid"
+                    - "kyma_major_version_1"
+                  local:
+                    - "jobConfig_default"
+                    - "keb_plan_azure"
+                    - "fast_integration_skip_provisioning"
+                    - "fast_integration_skip_testing"
+                    - "fast_integration_suffix"
+                    - "fast_integration_runtimeid"
+              - jobConfig:
+                  name: "skr-azure-nightly"
+                  cron: "5 1 * * *" # "At 01:05"
+                inheritedConfigs:
+                  global:
+                    - "image_kyma-integration"
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                    - "disable_testgrid"
+                    - "kyma_major_version_1"
+                  local:
+                    - "jobConfig_default"
+                    - "keb_plan_azure"
+                    - "fast_integration_skip_deprovisioning"
+                    - "fast_integration_suffix"
+                    - "fast_integration_runtimeid"
+              - jobConfig:
                   name: "skr-azure-integration-dev"
-                  cron: "5 1 * * *" # "At minute 30 past every hour"
+                  cron: "5 1 * * *" # "At 01:05"
                 inheritedConfigs:
                   global:
                     - "image_kyma-integration"
@@ -87,7 +141,7 @@ templates:
                     - "keb_plan_azure"
               - jobConfig:
                   name: "skr-azure-lite-integration-dev"
-                  cron: "5 1 * * *" # "At minute 30 past every hour"
+                  cron: "5 1 * * *" # "At 01:05"
                 inheritedConfigs:
                   global:
                     - "image_kyma-integration"
@@ -102,7 +156,7 @@ templates:
                     - "keb_plan_azure_lite"
               - jobConfig:
                   name: "skr-aws-integration-dev"
-                  cron: "5 1 * * *" # "At minute 30 past every hour"
+                  cron: "5 1 * * *" # "At 01:05"
                   labels:
                     preset-skr-al-service-key: "true"
                 inheritedConfigs:
@@ -119,7 +173,7 @@ templates:
                     - "keb_plan_aws"
               - jobConfig:
                   name: "skr-trial-integration-dev"
-                  cron: "5 * * * *" # "At minute 30 past every hour"
+                  cron: "5 1 * * *" # "At 01:05"
                 inheritedConfigs:
                   global:
                     - "image_kyma-integration"

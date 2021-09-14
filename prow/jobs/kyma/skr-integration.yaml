@@ -2,6 +2,126 @@
 
 
 periodics: # runs on schedule
+    - name: skr-azure-nightly-cleanup
+      annotations:
+        pipeline.clusterprovisioning: "keb"
+        pipeline.installer: "keb"
+        pipeline.platform: "gardener_azure"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "periodic"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "skr-azure-nightly-cleanup"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-main: "true"
+        preset-keb-dev-credentials: "true"
+        preset-kyma-integration-compass-dev: "true"
+        preset-kyma-integration-subaccounnt: "true"
+      cron: "5 0 * * *"
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: trusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210906-858d6909"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
+            env:
+              - name: FI_RUNTIME_ID
+                value: "f0f05646-2fc7-441f-b1ec-ffc2ec766e8b"
+              - name: FI_SKIP_PROVISIONING
+                value: "true"
+              - name: FI_SKIP_TESTING
+                value: "true"
+              - name: FI_SUFFIX
+                value: "nightly"
+              - name: KEB_PLAN_ID
+                value: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
+            resources:
+              requests:
+                memory: 100Mi
+                cpu: 50m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: skr-azure-nightly
+      annotations:
+        pipeline.clusterprovisioning: "keb"
+        pipeline.installer: "keb"
+        pipeline.platform: "gardener_azure"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "periodic"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "skr-azure-nightly"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-main: "true"
+        preset-keb-dev-credentials: "true"
+        preset-kyma-integration-compass-dev: "true"
+        preset-kyma-integration-subaccounnt: "true"
+      cron: "5 1 * * *"
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: trusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210906-858d6909"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
+            env:
+              - name: FI_RUNTIME_ID
+                value: "f0f05646-2fc7-441f-b1ec-ffc2ec766e8b"
+              - name: FI_SKIP_DEPROVISIONING
+                value: "true"
+              - name: FI_SUFFIX
+                value: "nightly"
+              - name: KEB_PLAN_ID
+                value: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
+            resources:
+              requests:
+                memory: 100Mi
+                cpu: 50m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: skr-azure-integration-dev
       annotations:
         pipeline.clusterprovisioning: "keb"
@@ -180,7 +300,7 @@ periodics: # runs on schedule
         preset-keb-dev-credentials: "true"
         preset-kyma-integration-compass-dev: "true"
         preset-kyma-integration-subaccounnt: "true"
-      cron: "5 * * * *"
+      cron: "5 1 * * *"
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
