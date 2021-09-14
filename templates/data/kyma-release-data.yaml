@@ -27,6 +27,34 @@ templates:
                   repo: test-infra
                   path_alias: github.com/kyma-project/test-infra
                   base_ref: release-{{ $rel }}
+          command_integration_eventing:
+            annotations:
+              pipeline.installer: kyma install
+              pipeline.test: octopus
+              pipeline.clusterprovisioning: kyma cli
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing.sh"
+          gardener_gcp_job_eventing:
+            labels:
+              preset-gardener-gcp-kyma-integration: "true"
+              preset-kyma-cli-stable: "true"
+              preset-cluster-version: "true"
+            env:
+              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
+              GARDENER_REGION: "europe-west4"
+              GARDENER_ZONES: "europe-west4-b"
+              CREDENTIALS_DIR: "/etc/credentials/kyma-tunas-prow-event-mesh"
+            annotations:
+              pipeline.platform: gardener_gcp
+          jobConfig_default:
+            path_alias: github.com/kyma-project/kyma
+            request_memory: 1Gi
+            request_cpu: 400m
+            labels:
+              preset-debug-commando-oom: "true"
+          jobConfig_presubmit:
+            optional: true
+            labels:
+              preset-build-pr: "true"
         jobConfigs:
           - repoName: kyma-project/kyma
             jobs:
@@ -96,6 +124,36 @@ templates:
                     - "test-infra"
                     - "bot_token"
                     - "gke_config"
+              - jobConfig:
+                  name: pre-rel{{ $relShort }}-kyma-gardener-gcp-eventing
+                  run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  branches:
+                    - ^release-{{ $rel }}$
+                  env:
+                    EXECUTION_PROFILE: "evaluation"
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                    # following regexp won't start build if only Markdown files were changed
+                  volumes:
+                    - name: kyma-tunas-prow-event-mesh
+                      secretName: kyma-tunas-prow-event-mesh
+                  volumeMounts:
+                    - name: kyma-tunas-prow-event-mesh
+                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
+                      readOnly: true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_kyma-integration
+                    - kyma_major_version_2
+                  local:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - gardener_gcp_job_eventing
+                    - command_integration_eventing
               - jobConfig:
                   name: post-rel{{ $relShort }}-kyma-integration
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-minikube.sh"
