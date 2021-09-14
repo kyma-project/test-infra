@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "skr-azure-nightly"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 12101
