@@ -1,7 +1,7 @@
 pjNames:
-  - pjName: pre-Kyma-Showcase-frontend
-  - pjName: pre-Kyma-Showcase-backend
+  - pjName: pre-kyma-showcase-frontend
+  - pjName: pre-kyma-showcase-backend
 prConfigs:
   kyma-incubator:
-    Kyma-Showcase:
+    kyma-showcase:
       prNumber: 121
