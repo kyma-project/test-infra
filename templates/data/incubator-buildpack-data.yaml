@@ -428,7 +428,6 @@ templates:
                   branches:
                     - ^master$
                     - ^main$
-                    - release
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -457,7 +456,7 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-incubator/varkes/"
                     - "ci-release"
                   branches:
-                    - release
+                    - ^\d+\.\d+\.\d+$
                 inheritedConfigs:
                   global:
                     - jobConfig_default
