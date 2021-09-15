@@ -1,0 +1,9 @@
+pjNames:
+  - pjName: "pre-compass-components-director"
+    pjPath: "test-infra/prow/jobs/incubator/compass/"
+  - pjName: "pre-compass-tests"
+    pjPath: "test-infra/prow/jobs/incubator/compass/"
+prConfigs:
+  kyma-incubator:
+    compass:
+      prNumber: 2020
