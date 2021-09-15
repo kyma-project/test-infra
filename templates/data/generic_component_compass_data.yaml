@@ -14,6 +14,7 @@ templates:
                   skipReleaseJobs: "true"
                   branches:
                     - ^main$
+                    - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
@@ -42,6 +43,7 @@ templates:
                   skipReleaseJobs: "true"
                   branches:
                     - ^main$
+                    - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
@@ -70,6 +72,7 @@ templates:
                   skipReleaseJobs: "true"
                   branches:
                     - ^main$
+                    - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
@@ -99,6 +102,7 @@ templates:
                   skipReleaseJobs: "true"
                   branches:
                     - ^main$
+                    - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
@@ -127,6 +131,7 @@ templates:
                   skipReleaseJobs: "true"
                   branches:
                     - ^main$
+                    - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
@@ -156,6 +161,7 @@ templates:
                   skipReleaseJobs: "true"
                   branches:
                     - ^main$
+                    - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
@@ -184,6 +190,7 @@ templates:
                   skipReleaseJobs: "true"
                   branches:
                     - ^main$
+                    - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
@@ -212,6 +219,7 @@ templates:
                   skipReleaseJobs: "true"
                   branches:
                     - ^main$
+                    - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
@@ -240,6 +248,7 @@ templates:
                   skipReleaseJobs: "true"
                   branches:
                     - ^main$
+                    - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
@@ -268,6 +277,7 @@ templates:
                   skipReleaseJobs: "true"
                   branches:
                     - ^main$
+                    - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
@@ -296,6 +306,7 @@ templates:
                   skipReleaseJobs: "true"
                   branches:
                     - ^main$
+                    - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
@@ -324,6 +335,7 @@ templates:
                   skipReleaseJobs: "true"
                   branches:
                     - ^main$
+                    - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
