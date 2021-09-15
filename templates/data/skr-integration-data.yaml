@@ -83,29 +83,13 @@ templates:
           fast_integration_runtimeid:
             env:
               FI_RUNTIME_ID: "f0f05646-2fc7-441f-b1ec-ffc2ec766e8b"
+          fast_integration_run_initial_cleanup:
+            env:
+              FI_RUN_INITIAL_CLEANUP: "true"
 
         jobConfigs:
           - repoName: "kyma-project/kyma"
             jobs:
-              - jobConfig:
-                  name: "skr-azure-nightly-cleanup"
-                  cron: "5 0 * * *" # "At 00:05"
-                inheritedConfigs:
-                  global:
-                    - "image_kyma-integration"
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "extra_refs_test-infra"
-                    - "extra_refs_kyma"
-                    - "disable_testgrid"
-                    - "kyma_major_version_1"
-                  local:
-                    - "jobConfig_default"
-                    - "keb_plan_azure"
-                    - "fast_integration_skip_provisioning"
-                    - "fast_integration_skip_testing"
-                    - "fast_integration_suffix"
-                    - "fast_integration_runtimeid"
               - jobConfig:
                   name: "skr-azure-nightly"
                   cron: "5 1 * * *" # "At 01:05"
@@ -124,6 +108,7 @@ templates:
                     - "fast_integration_skip_deprovisioning"
                     - "fast_integration_suffix"
                     - "fast_integration_runtimeid"
+                    - "fast_integration_run_initial_cleanup"
               - jobConfig:
                   name: "skr-azure-integration-dev"
                   cron: "5 1 * * *" # "At 01:05"
