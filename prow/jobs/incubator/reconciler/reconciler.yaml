@@ -217,8 +217,8 @@ periodics: # runs on schedule
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
-                memory: 8Gi
-                cpu: 4
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal
