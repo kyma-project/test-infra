@@ -511,27 +511,6 @@ templates:
               #       - "request_big"
               #       - "gke_job_template"
               #       - "gke_job_labels_template"
-              - jobConfig:
-                  name: "pre-main-kyma-gke-upgrade"
-                  # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  annotations:
-                    pipeline.platform: gke
-                  labels:
-                    preset-build-pr: "true"
-                    preset-gke-upgrade-pre-job: "true"
-                    preset-debug-commando-oom: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "request_big"
-                    - "gke_upgrade_job_template"
-                    - "gke_job_labels_template"
 
               # postsubmits
               - jobConfig:
@@ -603,29 +582,6 @@ templates:
                     - "vm_job_template_cluster_users_k3d"
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
-              - jobConfig:
-                  name: "post-main-kyma-gke-upgrade"
-                  annotations:
-                    testgrid-dashboards: kyma_integration
-                    description: Kyma GKE upgrade job.
-                    testgrid-days-of-results: "60"
-                    pipeline.platform: gke
-                  labels:
-                    preset-gke-upgrade-post-job: "true"
-                    preset-log-collector-slack-token: "true"
-                    preset-build-main: "true"
-                    preset-debug-commando-oom: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "request_big"
-                    - "gke_upgrade_job_template"
-                    - "gke_job_labels_template"
               # Rapid channel is unstable and the job never succeeds. See https://github.com/kyma-project/test-infra/issues/4063
               # - jobConfig:
               #     name: "post-main-kyma-gke-rapid-integration"
