@@ -70,10 +70,10 @@ func TestVarkesJobReleasePostsubmit(t *testing.T) {
 	varkesPostsubmits := jobConfig.AllStaticPostsubmits([]string{"kyma-incubator/varkes"})
 	assert.Len(t, varkesPostsubmits, 2)
 
-	releasePostsubmit := tester.FindPostsubmitJobByNameAndBranch(varkesPostsubmits, jobName, "release")
+	releasePostsubmit := tester.FindPostsubmitJobByName(varkesPostsubmits, jobName)
 	expName := jobName
 	assert.Equal(t, expName, releasePostsubmit.Name)
-	assert.Equal(t, []string{"^\\d+\\.\\d+\\.\\d+$"}, releasePostsubmit.Branches)
+	assert.Equal(t, []string{`^\d+\.\d+\.\d+$`}, releasePostsubmit.Branches)
 	assert.Equal(t, 10, releasePostsubmit.MaxConcurrency)
 
 	tester.AssertThatHasExtraRefTestInfra(t, releasePostsubmit.JobBase.UtilityConfig, "main")
