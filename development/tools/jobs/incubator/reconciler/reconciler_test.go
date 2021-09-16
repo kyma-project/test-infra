@@ -71,9 +71,9 @@ func TestReconcilerJobsPeriodicE2EUpgrade(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Periodics, 1)
+	assert.Len(t, jobConfig.Periodics, 2)
 	kymaPeriodics := jobConfig.AllPeriodics()
-	assert.Len(t, kymaPeriodics, 1)
+	assert.Len(t, kymaPeriodics, 2)
 
 	expName := "periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade"
 	actualPeriodic := tester.FindPeriodicJobByName(kymaPeriodics, expName)
@@ -143,14 +143,35 @@ func TestReconcilerJobNightlyE2E(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 	allPeriodics := jobConfig.AllPeriodics()
-	assert.Len(t, allPeriodics, 1)
-	kymaNightlyJob := allPeriodics
-	assert.Len(t, kymaNightlyJob, 1)
+	assert.Len(t, allPeriodics, 2)
 
-	actualNightlyJob := kymaNightlyJob[0]
 	expName := "nightly-main-reconciler-e2e"
+	actualNightlyJob := tester.FindPeriodicJobByName(allPeriodics, expName)
 	assert.Equal(t, expName, actualNightlyJob.Name)
-
+	tester.AssertThatHasExtraRef(t, actualNightlyJob.JobBase.UtilityConfig, []prowapi.Refs{
+		{
+			Org:       "kyma-incubator",
+			Repo:      "reconciler",
+			BaseRef:   "main",
+			PathAlias: "github.com/kyma-incubator/reconciler",
+		},
+	})
+	tester.AssertThatHasExtraRef(t, actualNightlyJob.JobBase.UtilityConfig, []prowapi.Refs{
+		{
+			Org:       "kyma-project",
+			Repo:      "kyma",
+			BaseRef:   "main",
+			PathAlias: "github.com/kyma-project/kyma",
+		},
+	})
+	tester.AssertThatHasExtraRef(t, actualNightlyJob.JobBase.UtilityConfig, []prowapi.Refs{
+		{
+			Org:       "kyma-project",
+			Repo:      "test-infra",
+			BaseRef:   "main",
+			PathAlias: "github.com/kyma-project/test-infra",
+		},
+	})
 	tester.AssertThatHasExtraRefTestInfra(t, actualNightlyJob.JobBase.UtilityConfig, "main")
 	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18", actualNightlyJob.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"}, actualNightlyJob.Spec.Containers[0].Command)
