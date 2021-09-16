@@ -207,62 +207,36 @@ templates:
           command_integration:
             annotations:
               pipeline.clusterprovisioning: kyma cli
+          extra_refs_kyma-1-24:
+            extra_refs:
+              kyma-1-24:
+                - org: "kyma-project"
+                  repo: "kyma"
+                  path_alias: "github.com/kyma-project/kyma-1.24"
+                  base_ref: "release-1.24"
           reconciler_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
             env:
               GO11MODULE: "on"
             branches:
               - ^main$
           reconciler_e2e_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-gardener.sh"
-          reconciler_e2e_jobConfig_args:
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
-          jobConfig_nightly_e2e_reconciler:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"
-            env:
-              RECONCILE_COUNTS: 5 # Number of reconcile counts in the job
-          reconciler_gardener_e2e:
-            labels:
-              preset-gardener-gcp-kyma-integration: "true"
-              preset-kyma-cli-stable: "true"
-              preset-cluster-version: "true"
-            env:
-              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
-              GARDENER_REGION: "europe-west4"
-              GARDENER_ZONES: "europe-west4-b"
+          reconciler_e2e_upgrade_jobConfig:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-upgrade-gardener.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
             annotations:
-              pipeline.platform: gardener_gcp
+              pipeline.installer: kyma install, kyma deploy
+              pipeline.test: "upgrade-fast-integration"
+              pipeline.clusterprovisioning: kyma cli
         jobConfigs:
           - repoName: kyma-incubator/reconciler
             jobs:
-              - jobConfig:
-                  name: nightly-main-reconciler-e2e
-                  image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18"
-                  annotations:
-                    description: Reconciler e2e nightly reconcile job.
-                  decoration_config:
-                    timeout: 36000000000000 # 10h
-                    grace_period: 600000000000 # 10min
-                  cron: "0 0 * * *" # "At 00:00 everday"
-                  labels:
-                    preset-log-collector-slack-token: "true"
-                    preset-bot-github-token: "true"
-                    preset-gardener-gcp-kyma-integration: "true"
-                    preset-cluster-version: "true"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_periodic
-                    - gardener_gcp_job
-                    - extra_refs_test-infra
-                    - extra_refs_kyma
-                    - extra_refs_reconciler
-                    - kyma_major_version_1
-                    - disable_testgrid
-                  local:
-                    - reconciler_e2e_jobConfig_args
-                    - jobConfig_nightly_e2e_reconciler
               - jobConfig:
                   name: pre-main-kyma-incubator-reconciler-e2e
                   run_if_changed: "^resources"
@@ -272,12 +246,11 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
+                    - gardener_gcp_job
                     - extra_refs_test-infra
                     - extra_refs_kyma
                   local:
-                    - reconciler_gardener_e2e
                     - reconciler_e2e_jobConfig
-                    - reconciler_e2e_jobConfig_args
               - jobConfig:
                   name: pre-main-kyma-incubator-reconciler
                   always_run: true
@@ -291,7 +264,6 @@ templates:
                     - jobConfig_buildpack_incubator
                   local:
                     - reconciler_jobConfig
-                    - reconciler_e2e_jobConfig_args
               - jobConfig:
                   name: post-main-kyma-incubator-reconciler
                 inheritedConfigs:
@@ -305,7 +277,32 @@ templates:
                     - jobConfig_buildpack_incubator
                   local:
                     - reconciler_jobConfig
-                    - reconciler_e2e_jobConfig_args
+              - jobConfig:
+                  name: periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade
+                  image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18"
+                  annotations:
+                    description: Reconciler e2e upgrade test job.
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  cron: "30 * * * *" # "At 30 minutes past every hour"
+                  labels:
+                    preset-log-collector-slack-token: "true"
+                    preset-bot-github-token: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - gardener_gcp_job
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                    - extra_refs_reconciler
+                    - kyma_major_version_1
+                    - disable_testgrid
+                    - jobConfig_slack_dev_null
+                  local:
+                    - extra_refs_kyma-1-24
+                    - reconciler_e2e_upgrade_jobConfig
       - to: ../prow/jobs/incubator/octopus/octopus.yaml
         jobConfigs:
           - repoName: kyma-incubator/octopus
@@ -461,7 +458,6 @@ templates:
                   branches:
                     - ^master$
                     - ^main$
-                    - release
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -490,7 +486,7 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-incubator/varkes/"
                     - "ci-release"
                   branches:
-                    - release
+                    - ^\d+\.\d+\.\d+$
                 inheritedConfigs:
                   global:
                     - jobConfig_default
