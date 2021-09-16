@@ -299,6 +299,7 @@ templates:
                     - extra_refs_reconciler
                     - kyma_major_version_1
                     - disable_testgrid
+                    - jobConfig_slack_dev_null
                   local:
                     - extra_refs_kyma-1-24
                     - reconciler_e2e_upgrade_jobConfig
