@@ -35,6 +35,7 @@ templates:
                   name: "post-main-kyma-incubator-dex"
                   labels:
                     preset-build-main: "true"
+                    preset-kyma-kms-sign-key: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

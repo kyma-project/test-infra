@@ -204,16 +204,53 @@ templates:
                     - milv_jobConfig
       - to: ../prow/jobs/incubator/reconciler/reconciler.yaml
         localSets:
+          command_integration:
+            annotations:
+              pipeline.clusterprovisioning: kyma cli
+          extra_refs_kyma-1-24:
+            extra_refs:
+              kyma-1-24:
+                - org: "kyma-project"
+                  repo: "kyma"
+                  path_alias: "github.com/kyma-project/kyma-1.24"
+                  base_ref: "release-1.24"
           reconciler_jobConfig:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
             env:
               GO11MODULE: "on"
             branches:
               - ^main$
+          reconciler_e2e_jobConfig:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-gardener.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
+          reconciler_e2e_upgrade_jobConfig:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-upgrade-gardener.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
+            annotations:
+              pipeline.installer: kyma install, kyma deploy
+              pipeline.test: "upgrade-fast-integration"
+              pipeline.clusterprovisioning: kyma cli
         jobConfigs:
           - repoName: kyma-incubator/reconciler
             jobs:
+              - jobConfig:
+                  name: pre-main-kyma-incubator-reconciler-e2e
+                  run_if_changed: "^resources"
+                  image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18"
+                  optional: true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - gardener_gcp_job
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                  local:
+                    - reconciler_e2e_jobConfig
               - jobConfig:
                   name: pre-main-kyma-incubator-reconciler
                   always_run: true
@@ -240,6 +277,31 @@ templates:
                     - jobConfig_buildpack_incubator
                   local:
                     - reconciler_jobConfig
+              - jobConfig:
+                  name: periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade
+                  image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18"
+                  annotations:
+                    description: Reconciler e2e upgrade test job.
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  cron: "30 * * * *" # "At 30 minutes past every hour"
+                  labels:
+                    preset-log-collector-slack-token: "true"
+                    preset-bot-github-token: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - gardener_gcp_job
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                    - extra_refs_reconciler
+                    - kyma_major_version_1
+                    - disable_testgrid
+                  local:
+                    - extra_refs_kyma-1-24
+                    - reconciler_e2e_upgrade_jobConfig
       - to: ../prow/jobs/incubator/octopus/octopus.yaml
         jobConfigs:
           - repoName: kyma-incubator/octopus
@@ -297,6 +359,7 @@ templates:
                     - jobConfig_buildpack_incubator
               - jobConfig:
                   name: post-main-podpreset-crd
+                  path_alias: github.com/jpeeler/podpreset-crd
                   args:
                     - "/home/prow/go/src/github.com/jpeeler/podpreset-crd"
                     - "ci-master"
@@ -394,7 +457,6 @@ templates:
                   branches:
                     - ^master$
                     - ^main$
-                    - release
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -423,7 +485,7 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-incubator/varkes/"
                     - "ci-release"
                   branches:
-                    - release
+                    - ^\d+\.\d+\.\d+$
                 inheritedConfigs:
                   global:
                     - jobConfig_default

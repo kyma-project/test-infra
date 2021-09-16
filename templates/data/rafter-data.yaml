@@ -30,6 +30,7 @@ templates:
             labels:
               preset-sa-gcr-push: "true"
               preset-docker-push-repository-kyma: "true"
+              preset-kyma-kms-sign-key: "true"
           jobconfig_release:
             labels:
               preset-build-release: "true"
