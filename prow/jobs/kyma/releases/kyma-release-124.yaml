@@ -94,6 +94,13 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
     - name: pre-rel124-kyma-gke-upgrade
+      annotations:
+        pipeline.clusterprovisioning: "gcloud cli"
+        pipeline.installer: "kubectl-apply"
+        pipeline.platform: "gke"
+        pipeline.test: "octopus"
+        pipeline.trigger: "pr-submit"
+        pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-rel124-kyma-gke-upgrade"
@@ -101,6 +108,7 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
+        preset-debug-commando-oom: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
         preset-gc-compute-envs: "true"
@@ -113,6 +121,7 @@ presubmits: # runs on PRs
       run_if_changed: '^((resources\S+|installation\S+|tests/end-to-end/upgrade/chart/upgrade/\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
+      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -124,17 +133,14 @@ presubmits: # runs on PRs
           base_ref: release-1.24
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210906-858d6909"
             securityContext:
               privileged: true
             command:
-              - "bash"
-            args:
-              - "-c"
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade.sh"
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
-                value: "europe-west4-b"
+                value: "europe-west4-a"
               - name: MACHINE_TYPE
                 value: "n1-highcpu-16"
               - name: NODES_PER_ZONE
@@ -151,7 +157,7 @@ presubmits: # runs on PRs
             value: high-cpu
             effect: NoSchedule
         nodeSelector:
-            dedicated: "high-cpu"
+          dedicated: "high-cpu"
 
     # additional jobs from main -> 1.24 PRE 2.0!
     - name: pre-rel124-cluster-users-integration-minikube
@@ -409,6 +415,8 @@ presubmits: # runs on PRs
             secret:
               secretName: kyma-tunas-prow-event-mesh
 
+
+
 postsubmits: # runs on release 1.24
   kyma-project/kyma:
     - name: post-rel124-kyma-integration
@@ -511,8 +519,14 @@ postsubmits: # runs on release 1.24
             dedicated: "high-cpu"
     - name: post-rel124-kyma-gke-upgrade
       annotations:
-        description: "Kyma GKE upgrade job for release 1.24."
-        testgrid-dashboards: "kyma_release-1.24"
+        description: "Kyma GKE upgrade job."
+        pipeline.clusterprovisioning: "gcloud cli"
+        pipeline.installer: "kubectl-apply"
+        pipeline.platform: "gke"
+        pipeline.test: "octopus"
+        pipeline.trigger: "pr-merge"
+        pipeline.type: "integration"
+        testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -521,6 +535,7 @@ postsubmits: # runs on release 1.24
         preset-build-release: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
+        preset-debug-commando-oom: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
         preset-gc-compute-envs: "true"
@@ -533,6 +548,7 @@ postsubmits: # runs on release 1.24
         preset-sa-test-gcr-push: "true"
       skip_report: false
       decorate: true
+      path_alias: github.com/kyma-project/kyma
       cluster: trusted-workload
       max_concurrency: 10
       branches:
@@ -544,7 +560,7 @@ postsubmits: # runs on release 1.24
           base_ref: release-1.24
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210730-c3e07ed7-k8s1.16"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210906-858d6909"
             securityContext:
               privileged: true
             command:
@@ -571,7 +587,7 @@ postsubmits: # runs on release 1.24
             value: high-cpu
             effect: NoSchedule
         nodeSelector:
-            dedicated: "high-cpu"
+          dedicated: "high-cpu"
 
     - name: post-rel124-kyma-release-candidate
       annotations:
@@ -741,6 +757,7 @@ postsubmits: # runs on release 1.24
             effect: NoSchedule
         nodeSelector:
           dedicated: "high-cpu"
+
 
 
 periodics:
