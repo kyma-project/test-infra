@@ -3,10 +3,11 @@ package kyma_test
 import (
 	"testing"
 
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 )
 
 func TestKymaIntegrationJobsPresubmit(t *testing.T) {
@@ -17,23 +18,6 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 		expRunIfChangedPaths    []string
 		expNotRunIfChangedPaths []string
 	}{
-		"Should contain the kyma-integration job": {
-			givenJobName: "pre-main-kyma-integration",
-
-			expPresets: []preset.Preset{
-				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration",
-			},
-
-			expRunIfChangedRegex: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
-			expRunIfChangedPaths: []string{
-				"resources/values.yaml",
-				"installation/file.yaml",
-			},
-			expNotRunIfChangedPaths: []string{
-				"installation/README.md",
-				"installation/test/test/README.MD",
-			},
-		},
 		"Should contain the kyma-integration k3d job": {
 			givenJobName: "pre-main-kyma-integration-k3d",
 
@@ -153,46 +137,12 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 	}
 }
 
-// add test here
-func TestKymaGKEUpgradeJobsPresubmit(t *testing.T) {
-	// given
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
-	require.NoError(t, err)
-
-	// when
-	actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"}), "pre-main-kyma-gke-upgrade", "main")
-	require.NotNil(t, actualJob)
-
-	// then
-	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
-	assert.Equal(t, "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
-	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualJob, true, "resources/values.yaml"))
-	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualJob, true, "installation/file.yaml"))
-	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualJob, true, "tests/end-to-end/upgrade/chart/upgrade/Chart.yaml"))
-	assert.False(t, tester.IfPresubmitShouldRunAgainstChanges(*actualJob, true, "tests/end-to-end/upgrade/chart/upgrade/README.md"))
-
-	assert.False(t, actualJob.SkipReport)
-	assert.Equal(t, 10, actualJob.MaxConcurrency)
-	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "main")
-	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
-	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualJob.Spec.Containers[0].Image)
-	tester.AssertThatHasPresets(t, actualJob.JobBase, preset.GCProjectEnv, preset.BuildPr,
-		preset.DindEnabled, preset.KymaGuardBotGithubToken, "preset-sa-gke-kyma-integration",
-		"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration")
-}
-
 func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 	tests := map[string]struct {
 		givenJobName string
 		expPresets   []preset.Preset
 	}{
-		"Should contain the kyma-integration job": {
-			givenJobName: "post-main-kyma-integration",
 
-			expPresets: []preset.Preset{
-				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",
-			},
-		},
 		"Should contain the kyma-integration-k3d job": {
 			givenJobName: "post-main-kyma-integration-k3d",
 
@@ -232,7 +182,6 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
 			},
 		},
-
 		"Should contain the cluster-users integration post-main job": {
 			givenJobName: "post-main-cluster-users-integration-k3d",
 
@@ -275,7 +224,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.AllPeriodics()
-	assert.Len(t, periodics, 20)
+	assert.Len(t, periodics, 17)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -367,18 +316,18 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, []string{"-c", "/prow-tools/orphanremover -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"}, loadbalancerCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, loadbalancerCleanerPeriodic.JobBase)
 
-	//expName = "firewall-cleaner"
-	//firewallCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
-	//require.NotNil(t, firewallCleanerPeriodic)
-	//assert.Equal(t, expName, firewallCleanerPeriodic.Name)
+	// expName = "firewall-cleaner"
+	// firewallCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	// require.NotNil(t, firewallCleanerPeriodic)
+	// assert.Equal(t, expName, firewallCleanerPeriodic.Name)
 	//
-	//assert.Equal(t, "45 */4 * * 1-5", firewallCleanerPeriodic.Cron)
-	//tester.AssertThatHasPresets(t, firewallCleanerPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
-	//tester.AssertThatHasExtraRepoRefCustom(t, firewallCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
-	//assert.Equal(t, tester.ImageProwToolsLatest, firewallCleanerPeriodic.Spec.Containers[0].Image)
-	//assert.Equal(t, []string{"bash"}, firewallCleanerPeriodic.Spec.Containers[0].Command)
-	//assert.Equal(t, []string{"-c", "/prow-tools/firewallcleaner -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"}, firewallCleanerPeriodic.Spec.Containers[0].Args)
-	//tester.AssertThatSpecifiesResourceRequests(t, firewallCleanerPeriodic.JobBase)
+	// assert.Equal(t, "45 */4 * * 1-5", firewallCleanerPeriodic.Cron)
+	// tester.AssertThatHasPresets(t, firewallCleanerPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
+	// tester.AssertThatHasExtraRepoRefCustom(t, firewallCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
+	// assert.Equal(t, tester.ImageProwToolsLatest, firewallCleanerPeriodic.Spec.Containers[0].Image)
+	// assert.Equal(t, []string{"bash"}, firewallCleanerPeriodic.Spec.Containers[0].Command)
+	// assert.Equal(t, []string{"-c", "/prow-tools/firewallcleaner -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"}, firewallCleanerPeriodic.Spec.Containers[0].Args)
+	// tester.AssertThatSpecifiesResourceRequests(t, firewallCleanerPeriodic.JobBase)
 
 	expName = "orphaned-dns-cleaner"
 	dnsCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -425,67 +374,6 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, tester.ImageProwToolsLatest, githubIssuesPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/github-issues.sh"}, githubIssuesPeriodic.Spec.Containers[0].Command)
 	tester.AssertThatSpecifiesResourceRequests(t, githubIssuesPeriodic.JobBase)
-
-	expName = "kyma-gke-nightly"
-	nightlyPeriodic := tester.FindPeriodicJobByName(periodics, expName)
-	require.NotNil(t, nightlyPeriodic)
-	assert.Equal(t, expName, nightlyPeriodic.Name)
-
-	assert.Equal(t, "0 3 * * 1-5", nightlyPeriodic.Cron)
-	tester.AssertThatHasPresets(t, nightlyPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration, "preset-stability-checker-slack-notifications", "preset-nightly-github-integration", preset.ClusterVersion, "preset-slack-alerts")
-	tester.AssertThatHasExtraRepoRefCustom(t, nightlyPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
-	assert.Equal(t, tester.ImageKymaIntegrationLatest, nightlyPeriodic.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"bash"}, nightlyPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"}, nightlyPeriodic.Spec.Containers[0].Args)
-	tester.AssertThatSpecifiesResourceRequests(t, nightlyPeriodic.JobBase)
-	assert.Len(t, nightlyPeriodic.Spec.Containers[0].Env, 8)
-	tester.AssertThatContainerHasEnv(t, nightlyPeriodic.Spec.Containers[0], "MACHINE_TYPE", "custom-8-15360")
-	tester.AssertThatContainerHasEnv(t, nightlyPeriodic.Spec.Containers[0], "PROVISION_REGIONAL_CLUSTER", "true")
-	tester.AssertThatContainerHasEnv(t, nightlyPeriodic.Spec.Containers[0], "NODES_PER_ZONE", "1")
-	tester.AssertThatContainerHasEnv(t, nightlyPeriodic.Spec.Containers[0], "STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG", "0.6.4")
-	tester.AssertThatContainerHasEnv(t, nightlyPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "nightly")
-	tester.AssertThatContainerHasEnv(t, nightlyPeriodic.Spec.Containers[0], "TEST_RESULT_WINDOW_TIME", "6h")
-	tester.AssertThatContainerHasEnv(t, nightlyPeriodic.Spec.Containers[0], "GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS", "cluster-access")
-
-	expName = "kyma-gke-weekly"
-	weeklyPeriodic := tester.FindPeriodicJobByName(periodics, expName)
-	require.NotNil(t, weeklyPeriodic)
-	assert.Equal(t, expName, weeklyPeriodic.Name)
-
-	assert.Equal(t, "0 5 * * 1", weeklyPeriodic.Cron)
-	tester.AssertThatHasPresets(t, weeklyPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration, "preset-stability-checker-slack-notifications", "preset-weekly-github-integration", preset.ClusterVersion, "preset-slack-alerts")
-	tester.AssertThatHasExtraRepoRefCustom(t, weeklyPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
-	assert.Equal(t, tester.ImageKymaIntegrationLatest, weeklyPeriodic.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"bash"}, weeklyPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"}, weeklyPeriodic.Spec.Containers[0].Args)
-	tester.AssertThatSpecifiesResourceRequests(t, weeklyPeriodic.JobBase)
-	assert.Len(t, weeklyPeriodic.Spec.Containers[0].Env, 8)
-	tester.AssertThatContainerHasEnv(t, weeklyPeriodic.Spec.Containers[0], "MACHINE_TYPE", "custom-12-15360")
-	tester.AssertThatContainerHasEnv(t, weeklyPeriodic.Spec.Containers[0], "PROVISION_REGIONAL_CLUSTER", "true")
-	tester.AssertThatContainerHasEnv(t, weeklyPeriodic.Spec.Containers[0], "NODES_PER_ZONE", "1")
-	tester.AssertThatContainerHasEnv(t, weeklyPeriodic.Spec.Containers[0], "STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG", "0.6.4")
-	tester.AssertThatContainerHasEnv(t, weeklyPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "weekly")
-	tester.AssertThatContainerHasEnv(t, weeklyPeriodic.Spec.Containers[0], "TEST_RESULT_WINDOW_TIME", "24h")
-	tester.AssertThatContainerHasEnv(t, weeklyPeriodic.Spec.Containers[0], "GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS", "cluster-access")
-
-	expName = "kyma-aks-nightly"
-	nightlyAksPeriodic := tester.FindPeriodicJobByName(periodics, expName)
-	require.NotNil(t, nightlyAksPeriodic)
-	assert.Equal(t, expName, nightlyAksPeriodic.Name)
-
-	assert.Equal(t, "0 3 * * 1-5", nightlyAksPeriodic.Cron)
-	tester.AssertThatHasPresets(t, nightlyAksPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration, preset.StabilityCheckerSlack, "preset-az-kyma-prow-credentials", "preset-docker-push-repository-gke-integration", "preset-nightly-aks-github-integration", preset.ClusterVersion, "preset-slack-alerts")
-	tester.AssertThatHasExtraRepoRefCustom(t, nightlyAksPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
-	assert.Equal(t, tester.ImageKymaIntegrationLatest, nightlyAksPeriodic.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"bash"}, nightlyAksPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-aks-long-lasting.sh"}, nightlyAksPeriodic.Spec.Containers[0].Args)
-	tester.AssertThatSpecifiesResourceRequests(t, nightlyAksPeriodic.JobBase)
-	assert.Len(t, nightlyAksPeriodic.Spec.Containers[0].Env, 5)
-	tester.AssertThatContainerHasEnv(t, nightlyAksPeriodic.Spec.Containers[0], "RS_GROUP", "kyma-nightly-aks")
-	tester.AssertThatContainerHasEnv(t, nightlyAksPeriodic.Spec.Containers[0], "REGION", "northeurope")
-	tester.AssertThatContainerHasEnv(t, nightlyAksPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "nightly-aks")
-	tester.AssertThatContainerHasEnv(t, nightlyAksPeriodic.Spec.Containers[0], "TEST_RESULT_WINDOW_TIME", "6h")
-	tester.AssertThatContainerHasEnv(t, nightlyAksPeriodic.Spec.Containers[0], "GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS", "cluster-access")
 
 	expName = "kyma-gke-nightly-fast-integration"
 	nightlyFastIntegrationPeriodic := tester.FindPeriodicJobByName(periodics, expName)
