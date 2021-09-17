@@ -1093,7 +1093,7 @@ periodics: # runs on schedule
               - name: CLUSTER_PROVIDER
                 value: "gcp"
               - name: INPUT_CLUSTER_NAME
-                value: "nightly"
+                value: "nightly-124"
               - name: KYMA_MAJOR_VERSION
                 value: "1"
               - name: PROVISION_REGIONAL_CLUSTER
@@ -1149,7 +1149,7 @@ periodics: # runs on schedule
               - name: CLUSTER_PROVIDER
                 value: "gcp"
               - name: INPUT_CLUSTER_NAME
-                value: "weekly"
+                value: "weekly-124"
               - name: KYMA_MAJOR_VERSION
                 value: "1"
               - name: PROVISION_REGIONAL_CLUSTER
@@ -1202,7 +1202,7 @@ periodics: # runs on schedule
               - name: CLUSTER_PROVIDER
                 value: "azure"
               - name: INPUT_CLUSTER_NAME
-                value: "nightly-aks"
+                value: "nightly-aks-124"
               - name: KYMA_MAJOR_VERSION
                 value: "1"
               - name: RS_GROUP

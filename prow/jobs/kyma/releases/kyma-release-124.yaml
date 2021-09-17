@@ -1027,7 +1027,7 @@ periodics:
       volumes:
         - name: sa-stability-fluentd-storage-writer
           secret:
-            secretName: sa-stability-fluentd-storage-write
+            secretName: sa-stability-fluentd-storage-writer
   - name: kyma-integration-gardener-gcp-rel124
     annotations:
       description: "Kyma GCP Gardener integration job. (release 1.24)"
