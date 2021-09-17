@@ -69,24 +69,6 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				"installation/test/test/README.MD",
 			},
 		},
-		"Should contain the gke-integration job": {
-			givenJobName: "pre-main-kyma-gke-integration",
-
-			expPresets: []preset.Preset{
-				preset.GCProjectEnv, preset.BuildPr,
-				preset.DindEnabled, preset.KymaGuardBotGithubToken, "preset-sa-gke-kyma-integration",
-				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
-			},
-			expRunIfChangedRegex: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
-			expRunIfChangedPaths: []string{
-				"resources/values.yaml",
-				"installation/file.yaml",
-			},
-			expNotRunIfChangedPaths: []string{
-				"installation/README.md",
-				"installation/test/test/README.MD",
-			},
-		},
 		"Should contain the cluster-users pre-main job": {
 			givenJobName: "pre-main-cluster-users-integration-k3d",
 
@@ -162,24 +144,6 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-connectivity-enabled", "preset-kyma-integration-compass-dev", "preset-kyma-integration-compass-enabled",
-			},
-		},
-		"Should contain the gke-integration job": {
-			givenJobName: "post-main-kyma-gke-integration",
-
-			expPresets: []preset.Preset{
-				preset.GCProjectEnv, preset.BuildMaster,
-				preset.DindEnabled, preset.KymaGuardBotGithubToken, "preset-sa-gke-kyma-integration",
-				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
-			},
-		},
-		"Should contain the gke-upgrade job": {
-			givenJobName: "post-main-kyma-gke-upgrade",
-
-			expPresets: []preset.Preset{
-				preset.GCProjectEnv, preset.BuildMaster,
-				preset.DindEnabled, preset.KymaGuardBotGithubToken, "preset-sa-gke-kyma-integration",
-				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
 			},
 		},
 		"Should contain the cluster-users integration post-main job": {
