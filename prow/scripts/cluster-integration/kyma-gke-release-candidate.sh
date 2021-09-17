@@ -289,5 +289,7 @@ echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-release-${RELEASE_VERSION}.jso
 
 log::success "Success"
 
+log::info "Starting Eventing E2E release testing"
+
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
