@@ -1,7 +1,7 @@
 pjNames:
   - pjName: "pre-main-kyma-integration-k3d"
   - pjName: "pre-main-kyma-integration-k3d-compass-dev"
-  - pjName: "pre-main-kyma-integration-k3d-central-app-connectivity-compass"
+  - pjName: "pre-main-kyma-integration-k3d-central-app-connectivity"
   - pjName: "kyma-upgrade-gardener-kyma-to-kyma2"
   - pjName: "skr-azure-lite-integration-dev"
   - pjName: "skr-trial-integration-dev"
