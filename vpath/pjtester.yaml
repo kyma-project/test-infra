@@ -1,0 +1,3 @@
+pjNames:
+  - pjName: "post-rel20-kyma-release-candidate"
+    pjPath: "test-infra/prow/jobs/kyma/releases/kyma-release-20.yaml"
