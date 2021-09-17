@@ -1,6 +1,6 @@
 # Basic golang buildpack
 
-FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20210730-c3e07ed7
+FROM eu.gcr.io/kyma-project/test-infra/bootstrap:PR-4145
 
 # Commit details
 
@@ -55,7 +55,7 @@ RUN go install golang.org/x/tools/cmd/goimports@latest && \
     go install golang.org/x/lint/golint@latest && \
     go install github.com/ericchiang/pup@latest && \
     go install github.com/kisielk/errcheck@latest && \
-    go install github.com/deepmap/oapi-codegen/cmd/oapi-codegen && \
+    go install github.com/deepmap/oapi-codegen/cmd/oapi-codegen@v1.8.2 && \
     GO111MODULE="on" go get github.com/vektra/mockery && \
     GO111MODULE="off" go get -u github.com/maxbrunsfeld/counterfeiter && \
     curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- -b ${GOPATH}/bin ${GOLANGCI_LINT_VERSION}

@@ -20,8 +20,10 @@ import (
 const (
 	// ImageGolangBuildpack1_16 means Golang buildpack image with Go 1.16.*
 	ImageGolangBuildpack1_16 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210831-b387d3eb"
-	// ImageGolangBuildpack1_16LibGit2_1_1 means Golang buildpack image with G 1.16.1 and libgit2-dev 1.1
+	// ImageGolangBuildpack1_16LibGit2_1_1 means Golang buildpack image with Go 1.16.1 and libgit2-dev 1.1
 	ImageGolangBuildpack1_16LibGit2_1_1 = "eu.gcr.io/kyma-project/test-infra/pr/buildpack-golang:PR-4060"
+	// ImageGolangBuildpack1_16LibGit2_1_1 means Golang buildpack image with oepnapi-codegen 1.8.2 and spctral to validate open api
+	ImageGolangBuildpack1_16OpenAPITooling = "eu.gcr.io/kyma-project/test-infra/pr/buildpack-golang:PR-4145"
 	// ImageGolangKubebuilder2BuildpackLatest means Golang buildpack with Kubebuilder2 image
 	ImageGolangKubebuilder2BuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210831-b387d3eb" // see https://github.com/kyma-project/test-infra/pull/3738
 	// ImageNodeBuildpackLatest means Node.js buildpack image (node v12)

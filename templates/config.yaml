@@ -34,6 +34,8 @@ globalSets:
   # As a workaround, I built the needed image on this PR: https://github.com/kyma-project/test-infra/pull/4060
   image_buildpack-golang-libgit2:
     image: "eu.gcr.io/kyma-project/test-infra/pr/buildpack-golang:PR-4060"
+  image_buildpack-golang-oapi:
+    image: "eu.gcr.io/kyma-project/test-infra/pr/buildpack-golang:PR-4145"
   image_buildpack-golang-kubebuilder2:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210831-b387d3eb"
   image_buildpack-golang-toolbox:
