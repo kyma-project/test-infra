@@ -667,7 +667,7 @@ templates:
                     preset-gc-project-env: "true"
                   env:
                     PROVISION_REGIONAL_CLUSTER: "true"
-                    INPUT_CLUSTER_NAME: "nightly"
+                    INPUT_CLUSTER_NAME: "nightly-124"
                     CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
                     CLUSTER_PROVIDER: "gcp"
                 inheritedConfigs:
@@ -693,7 +693,7 @@ templates:
                     preset-gc-project-env: "true"
                   env:
                     PROVISION_REGIONAL_CLUSTER: "true"
-                    INPUT_CLUSTER_NAME: "weekly"
+                    INPUT_CLUSTER_NAME: "weekly-124"
                     CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
                     CLUSTER_PROVIDER: "gcp"
                 inheritedConfigs:
@@ -718,7 +718,7 @@ templates:
                     preset-az-kyma-prow-credentials: "true"
                   env:
                     RS_GROUP: "kyma-nightly-aks"
-                    INPUT_CLUSTER_NAME: "nightly-aks"
+                    INPUT_CLUSTER_NAME: "nightly-aks-124"
                     CLUSTER_PROVIDER: "azure"
                 inheritedConfigs:
                   global:
