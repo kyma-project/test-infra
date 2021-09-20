@@ -911,6 +911,11 @@ presets:
       - name: COMPASS_INTEGRATION_ENABLED
         value: "true"
   - labels:
+      preset-kyma-integration-central-app-connectivity-enabled: "true"
+    env:
+      - name: CENTRAL_APPLICATION_CONNECTIVITY_ENABLED
+        value: "true"
+  - labels:
       preset-kyma-integration-subaccounnt: "true"
     env:
       - name: KEB_SUBACCOUNT_ID
