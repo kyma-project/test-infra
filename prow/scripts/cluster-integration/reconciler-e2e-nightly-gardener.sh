@@ -92,20 +92,8 @@ log::banner "Provisioning Gardener cluster"
 # Checks required vars and initializes gcloud/docker if necessary
 gardener::init
 
-# If MACHINE_TYPE is not set then use default one
-gardener::set_machine_type
-
-# Install Kyma CLI
-kyma::install_cli
-
-# Provision garderner cluster
-gardener::provision_cluster
-
-# Deploy reconciler
-reconciler::deploy
-
-# Wait until reconciler is ready
-reconciler::wait_until_is_ready
+# Connect to nightly reconciler cluster based on INPUT_CLUSTER_NAME
+reconciler::connect_to_reconciler_cluster
 
 # Deploy test pod which will trigger reconciliation
 reconciler::deploy_test_pod
@@ -116,8 +104,14 @@ reconciler::wait_until_test_pod_is_ready
 # Set up test pod environment
 reconciler::initialize_test_pod
 
-# Reconciler -> test -> break Kyma -> repeat
-reconciler::test_periodic_reconciliation
+# Trigger reconciliation of Kyma
+reconciler::reconcile_kyma
+
+# Once Kyma is installed run the fast integration test
+gardener::test_fast_integration_kyma
+
+# Break Kyma
+reconciler::break_kyma
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"

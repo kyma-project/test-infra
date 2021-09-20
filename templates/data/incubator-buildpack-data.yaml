@@ -225,7 +225,7 @@ templates:
           reconciler_nightly_e2e_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"
             env:
-              RECONCILE_COUNTS: 5 # Number of reconcile counts in the job
+              INPUT_CLUSTER_NAME: "reconciler-nightly"
           reconciler_jobConfig_args:
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
@@ -313,8 +313,12 @@ templates:
                   image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18"
                   annotations:
                     description: Reconciler e2e nightly reconcile job.
+                    pipeline.installer: "reconciler"
+                    pipeline.platform: "gcp"
+                    pipeline.test: "fast-integration"
+                    pipeline.trigger: "nightly"
                   decoration_config:
-                    timeout: 36000000000000 # 10h
+                    timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
                   cron: "0 0 * * *" # "At 00:00 everday"
                   labels:
