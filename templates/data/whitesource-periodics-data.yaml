@@ -221,7 +221,7 @@ templates:
                     - "jobConfig_default"
               - jobConfig:
                   name: "podpreset-crd"
-                  language: "golang"
+                  language: "golang-mod"
                   project: "kyma-incubator"
                   custom_projectname: "podpreset"
                 inheritedConfigs:
