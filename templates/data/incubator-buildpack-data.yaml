@@ -234,6 +234,17 @@ templates:
               pipeline.installer: kyma install, kyma deploy
               pipeline.test: "upgrade-fast-integration"
               pipeline.clusterprovisioning: kyma cli
+          reconciler_nightly_cluster_jobConfig:
+            env:
+              INPUT_CLUSTER_NAME: "rec-nightly"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
+            annotations:
+              pipeline.platform: "gardener_gcp"
+              pipeline.installer: reconciler
+              pipeline.test: "fast-integration"
+              pipeline.clusterprovisioning: reconciler
         jobConfigs:
           - repoName: kyma-incubator/reconciler
             jobs:
@@ -303,6 +314,29 @@ templates:
                   local:
                     - extra_refs_kyma-1-24
                     - reconciler_e2e_upgrade_jobConfig
+              - jobConfig:
+                  name: nightly-main-reconciler
+                  image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18"
+                  annotations:
+                    description: Creates and installs reconciler from main every night.
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  cron: "0 0 * * *" # "At 30 minutes past every hour"
+                  labels:
+                    preset-log-collector-slack-token: "true"
+                    preset-bot-github-token: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - gardener_gcp_job
+                    - extra_refs_test-infra
+                    - extra_refs_reconciler
+                    - disable_testgrid
+                    - jobConfig_slack_dev_null
+                  local:
+                    - reconciler_nightly_cluster_jobConfig
       - to: ../prow/jobs/incubator/octopus/octopus.yaml
         jobConfigs:
           - repoName: kyma-incubator/octopus
