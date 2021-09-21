@@ -33,7 +33,7 @@ templates:
             jobs:
               - jobConfig:
                   name: "kyma-preview-integration-dev"
-                  cron: "5 1 * * *" # "At minute 30 past every hour"
+                  cron: "0 */4 * * *" # "Every four hours"
                   # labels:
                   #   preset-skr-al-service-key: "true"
                 inheritedConfigs:
