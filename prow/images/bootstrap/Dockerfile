@@ -73,6 +73,9 @@ RUN echo 'DOCKER_OPTS="${DOCKER_OPTS} --data-root=/docker-graph"' | \
     tee --append /etc/default/docker
 RUN mkdir /docker-graph
 
+#spectral openapi validator
+RUN curl -L https://raw.github.com/stoplightio/spectral/v6.0.0/scripts/install.sh | sh
+
 # Prow Tools
 
 COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20210401-294e46e5 /prow-tools /prow-tools
