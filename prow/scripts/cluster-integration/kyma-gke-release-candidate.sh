@@ -64,10 +64,11 @@ cleanupOnError() {
     EXIT_STATUS=$?
 
     # Do not cleanup cluster if job finished successfully
-    if [ "$EXIT_STATUS" == "0" ] ; then
-        log::info "Job finished successfully, cleanup will not be performed"
-        exit
-    fi
+    # TODO: Once PR is final uncomment. For now, always clean up!
+#    if [ "$EXIT_STATUS" == "0" ] ; then
+#        log::info "Job finished successfully, cleanup will not be performed"
+#        exit
+#    fi
 
     if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
         log::error "AN ERROR OCCURED! Take a look at preceding log entries."
@@ -120,6 +121,17 @@ cleanupOnError() {
     set -e
 
     exit "${EXIT_STATUS}"
+}
+
+
+test_fast_integration_eventing() {
+    log::info "Running Eventing E2E release tests"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    make ci-test-eventing
+    popd
+
+    log::success "Eventing tests completed"
 }
 
 # Enforce lowercase
@@ -288,6 +300,8 @@ IMAGES_LIST=$(kubectl get pods --all-namespaces -o json | jq '{ images: [.items[
 echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-release-${RELEASE_VERSION}.json"
 
 log::success "Success"
+
+test_fast_integration_eventing
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
