@@ -161,16 +161,13 @@ function installKyma() {
 
 	log::info "Trigger installation"
 
-	kyma install \
+	kyma deploy \
 			--ci \
 			--source main \
-			-o "$PWD/kyma-installer-overrides.yaml" \
-			-o "$PWD/overrides-dex-and-monitoring.yaml" \
-			-o "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/prometheus-cluster-essentials-overrides.tpl.yaml" \
 			--domain "${DOMAIN}" \
 			--profile production \
-			--tls-cert "${TLS_CERT}" \
-			--tls-key "${TLS_KEY}" \
+			--tls-crt "./letsencrypt/live/${DOMAIN}/fullchain.pem" \
+			--tls-key "./letsencrypt/live/${DOMAIN}/privkey.pem" \
 			--timeout 60m
 
 	if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
