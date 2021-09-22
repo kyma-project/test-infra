@@ -27,7 +27,7 @@ presubmits: # runs on PRs
           base_ref: release-2.0
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210906-858d6909"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210907-0699b236"
             securityContext:
               privileged: true
             command:
@@ -74,7 +74,7 @@ presubmits: # runs on PRs
           base_ref: release-2.0
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210906-858d6909"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210907-0699b236"
             securityContext:
               privileged: true
             command:
@@ -128,7 +128,7 @@ presubmits: # runs on PRs
           base_ref: release-2.0
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210906-858d6909"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210907-0699b236"
             securityContext:
               privileged: true
             command:
@@ -185,7 +185,7 @@ postsubmits: # runs on main
           base_ref: release-2.0
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210906-858d6909"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210907-0699b236"
             securityContext:
               privileged: true
             command:
@@ -235,7 +235,7 @@ postsubmits: # runs on main
           base_ref: release-2.0
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210906-858d6909"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210907-0699b236"
             securityContext:
               privileged: true
             command:
@@ -292,7 +292,7 @@ postsubmits: # runs on main
           base_ref: release-2.0
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210906-858d6909"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210907-0699b236"
             securityContext:
               privileged: true
             command:
@@ -351,7 +351,7 @@ postsubmits: # runs on main
           base_ref: release-2.0
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210906-858d6909"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210907-0699b236"
             securityContext:
               privileged: true
             command:
@@ -399,7 +399,7 @@ postsubmits: # runs on main
           base_ref: release-2.0
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210906-858d6909"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210907-0699b236"
             securityContext:
               privileged: true
             command:
