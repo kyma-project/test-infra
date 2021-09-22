@@ -64,11 +64,10 @@ cleanupOnError() {
     EXIT_STATUS=$?
 
     # Do not cleanup cluster if job finished successfully
-    # TODO: Once PR is final uncomment. For now, always clean up!
-#    if [ "$EXIT_STATUS" == "0" ] ; then
-#        log::info "Job finished successfully, cleanup will not be performed"
-#        exit
-#    fi
+    if [ "$EXIT_STATUS" == "0" ] ; then
+        log::info "Job finished successfully, cleanup will not be performed"
+        exit
+    fi
 
     if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
         log::error "AN ERROR OCCURED! Take a look at preceding log entries."
@@ -139,7 +138,7 @@ export REPO_OWNER
 readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
 export REPO_NAME
 
-readonly COMMON_NAME_PREFIX="pjtest-gke-release"
+readonly COMMON_NAME_PREFIX="gke-release"
 readonly RELEASE_VERSION=$(cat "VERSION")
 log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
 TRIMMED_RELEASE_VERSION=${RELEASE_VERSION//./-}
@@ -301,11 +300,6 @@ echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-release-${RELEASE_VERSION}.jso
 log::success "Success"
 
 test_fast_integration_eventing
-
-log::info "List of subscriptions"
-sleep 10
-kubectl get subscriptions -A
-log::info "Done"
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
