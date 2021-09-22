@@ -28,7 +28,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210831-b387d3eb"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210922-22259cf7"
             securityContext:
               privileged: true
             command:
@@ -75,7 +75,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210831-b387d3eb"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210922-22259cf7"
             securityContext:
               privileged: true
             command:
