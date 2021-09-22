@@ -101,6 +101,3 @@ reconciler::deploy
 
 # Wait until reconciler is ready
 reconciler::wait_until_is_ready
-
-#!!! Must be at the end of the script !!!
-ERROR_LOGGING_GUARD="false"
