@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "pre-main-kyma-gardener-gcp-eventing"
+    pjPath: "test-infra/prow/jobs/kyma/kyma-integration-gardener.yaml"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 12156
