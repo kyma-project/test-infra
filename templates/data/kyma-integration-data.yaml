@@ -749,7 +749,7 @@ templates:
                   annotations:
                     description: Kyma GKE nightly build (depraceted, needed for sec scans)
                     pipeline.platform: gke
-                    pipeline.installer: kyma install
+                    pipeline.installer: kyma deploy
                     pipeline.clusterprovisioning: gcloud cli
                   labels:
                     preset-kyma-keyring: "true"

@@ -1289,7 +1289,7 @@ periodics: # runs on schedule
       annotations:
         description: "Kyma GKE nightly build (depraceted, needed for sec scans)"
         pipeline.clusterprovisioning: "gcloud cli"
-        pipeline.installer: "kyma install"
+        pipeline.installer: "kyma deploy"
         pipeline.platform: "gke"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
