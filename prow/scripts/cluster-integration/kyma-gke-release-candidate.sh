@@ -64,11 +64,10 @@ cleanupOnError() {
     EXIT_STATUS=$?
 
     # Do not cleanup cluster if job finished successfully
-    # TODO: Once PR is final uncomment. For now, always clean up!
-#    if [ "$EXIT_STATUS" == "0" ] ; then
-#        log::info "Job finished successfully, cleanup will not be performed"
-#        exit
-#    fi
+    if [ "$EXIT_STATUS" == "0" ] ; then
+        log::info "Job finished successfully, cleanup will not be performed"
+        exit
+    fi
 
     if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
         log::error "AN ERROR OCCURED! Take a look at preceding log entries."
@@ -122,7 +121,6 @@ cleanupOnError() {
 
     exit "${EXIT_STATUS}"
 }
-
 
 test_fast_integration_eventing() {
     log::info "Running Eventing E2E release tests"
@@ -299,9 +297,9 @@ echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-release-${RELEASE_VERSION}.csv
 IMAGES_LIST=$(kubectl get pods --all-namespaces -o json | jq '{ images: [.items[] | .metadata.ownerReferences[0].name as $owner | (.status.containerStatuses + .status.initContainerStatuses)[] | { name: .imageID, custom_fields: {owner: $owner, image: .image, name: .name }}] | unique | group_by(.name) | map({name: .[0].name, custom_fields: {owner: map(.custom_fields.owner) | unique | join(","), container_name: map(.custom_fields.name) | unique | join(","), image: .[0].custom_fields.image}})}' )
 echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-release-${RELEASE_VERSION}.json"
 
-log::success "Success"
-
 test_fast_integration_eventing
+
+log::success "Success"
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
