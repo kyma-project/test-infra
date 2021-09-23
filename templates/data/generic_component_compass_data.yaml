@@ -12,6 +12,10 @@ templates:
                   run_if_changed: "^components/operations-controller/|^scripts/"
                   release_since: "1.19"
                   skipReleaseJobs: "true"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -37,6 +41,10 @@ templates:
                   run_if_changed: "^components/connector/|^scripts/"
                   release_since: "1.7"
                   skipReleaseJobs: "true"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -62,6 +70,10 @@ templates:
                   run_if_changed: "^components/director/|^scripts/"
                   release_since: "1.7"
                   skipReleaseJobs: "true"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -88,6 +100,10 @@ templates:
                   run_if_changed: "^components/ord-service/|^scripts/"
                   release_since: "1.17"
                   skipReleaseJobs: "true"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -113,6 +129,10 @@ templates:
                   run_if_changed: "^components/system-broker/|^scripts/"
                   release_since: "1.16"
                   skipReleaseJobs: "true"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -139,6 +159,10 @@ templates:
                   run_if_changed: "^compass/|^components/|^shared/|^package.json"
                   release_since: "1.16"
                   skipReleaseJobs: "true"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -164,6 +188,10 @@ templates:
                   run_if_changed: "^components/external-services-mock/|^scripts/"
                   release_since: "1.12"
                   skipReleaseJobs: "true"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -189,6 +217,10 @@ templates:
                   run_if_changed: "^components/connectivity-adapter/|^scripts/"
                   release_since: "1.10"
                   skipReleaseJobs: "true"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -214,6 +246,10 @@ templates:
                   run_if_changed: "^components/pairing-adapter/|^scripts/"
                   release_since: "1.11"
                   skipReleaseJobs: "true"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -239,6 +275,10 @@ templates:
                   run_if_changed: "^components/gateway/|^scripts/"
                   release_since: "1.7"
                   skipReleaseJobs: "true"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -264,6 +304,10 @@ templates:
                   run_if_changed: "^components/schema-migrator/|^scripts/"
                   release_since: "1.7"
                   skipReleaseJobs: "true"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -289,6 +333,10 @@ templates:
                   run_if_changed: "^tests/|^scripts/"
                   release_since: "1.17"
                   skipReleaseJobs: "true"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
