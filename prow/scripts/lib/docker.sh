@@ -12,6 +12,12 @@ function docker::start {
         log::info "Docker already started"
         return 0
     fi
+    mkdir -p /etc/docker
+    cat <<EOF >> /etc/docker/daemon.json
+{
+    "mtu": 1200
+}
+EOF
 
     printf '=%.0s' {1..80}; echo
     # If we have opted in to docker in docker, start the docker daemon,
