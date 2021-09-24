@@ -27,7 +27,8 @@ function delete_cluster_if_exists(){
       gardener::deprovision_cluster \
             -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
             -c "${INPUT_CLUSTER_NAME}" \
-            -f "${GARDENER_KYMA_PROW_KUBECONFIG}"
+            -f "${GARDENER_KYMA_PROW_KUBECONFIG}" \
+            -w "true"
 
       log::info "We wait 120s for Gardener Shoot to settle after cluster deletion"
       sleep 120
