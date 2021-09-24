@@ -88,7 +88,10 @@ export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
 RESOURCES_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/reconciler"
 
 # Delete cluster with reconciler if exists
-delete_cluster_if_exists
+gardener::deprovision_cluster \
+            -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+            -c "${INPUT_CLUSTER_NAME}" \
+            -f "${GARDENER_KYMA_PROW_KUBECONFIG}"
 
 # Provisioning gardener long lasting cluster
 provision_cluster

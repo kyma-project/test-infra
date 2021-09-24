@@ -235,6 +235,7 @@ templates:
               pipeline.test: "upgrade-fast-integration"
               pipeline.clusterprovisioning: kyma cli
           reconciler_nightly_cluster_jobConfig:
+            privileged: false
             env:
               INPUT_CLUSTER_NAME: "rec-nightly"
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"
