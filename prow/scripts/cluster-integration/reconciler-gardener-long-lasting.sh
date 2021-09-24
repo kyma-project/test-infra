@@ -24,8 +24,10 @@ function delete_cluster_if_exists(){
     existing_shoot=$(kubectl get shoot "${name}" -ojsonpath="{ .metadata.name }")
     if [ ! -z "${existing_shoot}" ]; then
       log::info "Cluster found and deleting '${name}'"
-      kubectl annotate shoot "${name}" confirmation.gardener.cloud/deletion=true --overwrite
-      kubectl delete shoot "${name}" --wait=true
+      gardener::deprovision_cluster \
+            -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+            -c "${INPUT_CLUSTER_NAME}" \
+            -f "${GARDENER_KYMA_PROW_KUBECONFIG}"
 
       log::info "We wait 120s for Gardener Shoot to settle after cluster deletion"
       sleep 120
@@ -90,10 +92,7 @@ export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
 RESOURCES_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/reconciler"
 
 # Delete cluster with reconciler if exists
-gardener::deprovision_cluster \
-            -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
-            -c "${INPUT_CLUSTER_NAME}" \
-            -f "${GARDENER_KYMA_PROW_KUBECONFIG}"
+delete_cluster_if_exists
 
 # Provisioning gardener long lasting cluster
 provision_cluster
