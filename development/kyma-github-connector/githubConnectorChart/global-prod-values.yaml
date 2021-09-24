@@ -4,8 +4,7 @@ global:
   # Kyma eventing proxy.
   eventPublisherProxyURL: "http://eventing-event-publisher-proxy.kyma-system/publish"
   # Kyma cluster FQDN.
-  kymaClusterHostname: "ddf1313.kyma-stage.shoot.live.k8s-hana.ondemand.com"
-  #name: "webhook-gateway"
+  kymaClusterHostname: "c-6751197.kyma.shoot.live.k8s-hana.ondemand.com"
   webhookGateway:
     # Github webhook gateway container listening port for incoming webhooks.
     containerPort: 8080

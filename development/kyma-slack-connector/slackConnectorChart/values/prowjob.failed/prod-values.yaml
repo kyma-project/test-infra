@@ -1,9 +1,9 @@
 functionEnabled: true
 # Forwarded event type
-eventType: "oomevent.found.v1"
+eventType: "prowjob.failed.v1"
 # Slack channel name to send messages.
 notificationSlackChannel: "kyma-ci-force"
 # Path to directory with function code. Relative to repository root.
-functionBaseDir: "/development/kyma-slack-connector/oomFoundFunction"
+functionBaseDir: "/development/kyma-slack-connector/notifyCommiterFunction"
 # Branch name with function code.
 branch: "main"

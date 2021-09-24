@@ -1,7 +1,9 @@
 # webhookSecret must be provided using --set argument to helm command.
 # webhookSecret provides secret used for validation github webhook message authenticity and integrity.
-targetAppName: "slack-connector"
+#
+# Kyma eventing, target application name to publish events.
+targetAppName: "ci-force-bot"
 # API gateway URL path for receiving github webhooks.
-githubWebhookUrlPath: "/webhook"
+githubWebhookUrlPath: "/kyma-webhook"
 # API gateway hostname prefix for receiving github webhooks.
-hostPrefix: "ghwebhook"
+hostPrefix: "kyma"

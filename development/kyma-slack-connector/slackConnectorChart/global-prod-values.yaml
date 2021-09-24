@@ -2,10 +2,9 @@
 # It provides token value used to communicate with slack.
 slackApplicationEnabled: false
 slackBotTokenSecretEnabled: false
-gitRepositoryEnabled: false
 global:
   # Slack connector application name.
-  appName: "slack-connector"
+  appName: "mp-slack-connector"
   # Slack connector application name. Must match name from Application resource.
   slackKymaAppName: "mp-slack-connector"
   # Slack connector API ID
@@ -18,3 +17,6 @@ global:
   repositoryName: "test-infra"
   # Repository URL with function code.
   repositoryUrl: "https://github.com/kyma-project/test-infra.git"
+  # Slack application helm release name.
+  #slackAppHelmReleaseName: "slack-application"
+  slackAppHelmReleaseName: "common"

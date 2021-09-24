@@ -6,3 +6,5 @@ pubsubSubscriptionID: "notifyCommiter-toolingKymaSubscription"
 eventType: "prowjob.failed.v1"
 # GCP project with pubsub subscription
 projectID: "sap-kyma-prow"
+# Kyma eventing target application name where publish events.
+targetAppName: "mp-slack-connector"
