@@ -159,3 +159,14 @@ function eventing::wait_for_backend_ready() {
   kubectl get eventingbackends.eventing.kyma-project.io --namespace "${EVENTING_BACKEND_CR_NAMESPACE}" "${EVENTING_BACKEND_CR_NAME}"
   return 1
 }
+
+# Runs eventing specific fast-integration tests
+function eventing::test_fast_integration_eventing() {
+    log::info "Running Eventing E2E release tests"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    make ci-test-eventing
+    popd
+
+    log::success "Eventing tests completed"
+}
