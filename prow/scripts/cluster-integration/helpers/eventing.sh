@@ -133,7 +133,7 @@ function eventing::wait_for_backend_ready() {
   fi
 
   # wait for Eventing backend custom resource old status to be cleared
-  sleep 10s
+  sleep 30s
 
   retry=0
   maxRetires=20
