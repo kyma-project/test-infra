@@ -118,7 +118,7 @@ function reconciler::wait_until_kyma_reconciled() {
     status=$(kubectl exec -n reconciler test-pod -- sh -c ". /tmp/get-reconcile-status.sh" | xargs)
     if [ "${status}" = "ready" ]; then
       echo "Kyma is installed"
-      exit 0
+      break
     fi
 
     if [ "$RECONCILER_TIMEOUT" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then
