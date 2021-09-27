@@ -794,34 +794,32 @@ templates:
                   - "request_big"
                   - "jobConfig_periodic"
                   - "gke_job_labels_template"
-
+              - jobConfig:
+                  name: "kyma-gke-nightly-fast-integration"
+                  cron: "0 0-2,4-23 * * 1-5" # "At every hour except 03:00 UTC on every weekday Monday through Friday"
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    description: Kyma GKE nightly fast integration tests.
+                    pipeline.platform: gke
+                  labels:
+                    preset-gc-compute-envs: "true"
+                    preset-gc-project-env: "true"
+                  env:
+                    PROVISION_REGIONAL_CLUSTER: "true"
+                    INPUT_CLUSTER_NAME: "nightly"
+                    CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
+                    CLUSTER_PROVIDER: "gcp"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_kyma-integration"
+                    - "extra_refs_kyma"
+                    - "extra_refs_test-infra"
+                    - "kyma_major_version_1"
+                  local:
+                    - "fast_integration_template"
               # these jobs are disabled due to failing tests, until Kyma 2.0 long lasting clusters are introduced
-              # - jobConfig:
-              #     name: "kyma-gke-nightly-fast-integration"
-              #     cron: "0 0-2,4-23 * * 1-5" # "At every hour except 03:00 UTC on every weekday Monday through Friday"
-              #     annotations:
-              #       testgrid-dashboards: kyma_integration
-              #       description: Kyma GKE nightly fast integration tests.
-              #       pipeline.platform: gke
-              #     labels:
-              #       preset-gc-compute-envs: "true"
-              #       preset-gc-project-env: "true"
-              #     env:
-              #       PROVISION_REGIONAL_CLUSTER: "true"
-              #       INPUT_CLUSTER_NAME: "nightly-124"
-              #       CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
-              #       CLUSTER_PROVIDER: "gcp"
-              #   inheritedConfigs:
-              #     global:
-              #       - "jobConfig_default"
-              #       - "jobConfig_periodic"
-              #       - "image_kyma-integration"
-              #       - "extra_refs_kyma"
-              #       - "extra_refs_test-infra"
-              #       - "kyma_major_version_1"
-              #     local:
-              #       - "fast_integration_template"
-
               # - jobConfig:
               #     name: "kyma-gke-weekly-fast-integration"
               #     cron: "0 0-4,6-23 * * 1-5" # "At every hour except 05:00 UTC, on every weekday Monday through Friday"
