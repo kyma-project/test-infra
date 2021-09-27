@@ -21,8 +21,9 @@ function gardener::deprovision_cluster() {
   local clusterName
   local kubeconfigFile
   local namespace
+  local wait="false"
 
-  while getopts ":p:c:f:" opt; do
+  while getopts ":p:c:f:w:" opt; do
       case $opt in
           p)
             projectName="$OPTARG" ;;
@@ -30,12 +31,15 @@ function gardener::deprovision_cluster() {
             clusterName="$OPTARG" ;;
           f)
             kubeconfigFile="$OPTARG" ;;
+          w)
+            wait=${OPTARG:-$wait} ;;
           \?)
               echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
           :)
               echo "Option -$OPTARG argument not provided" >&2 ;;
       esac
   done
+
 
   utils::check_empty_arg "$projectName" "Project name is empty. Exiting..."
   utils::check_empty_arg "$clusterName" "Cluster name is empty. Exiting..."
@@ -50,7 +54,7 @@ function gardener::deprovision_cluster() {
     -n "${namespace}" \
     --kubeconfig "${kubeconfigFile}"
   kubectl delete shoot "${clusterName}" \
-    --wait=false \
+    --wait="${wait}" \
     --kubeconfig "${kubeconfigFile}" \
     -n "${namespace}"
 }
