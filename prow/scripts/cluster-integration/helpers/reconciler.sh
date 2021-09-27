@@ -32,7 +32,7 @@ function reconciler::wait_until_is_ready() {
     done
 
     if [ "${reconcilerCountDeploys}" -eq "${readyCountDeploys}" ] ; then
-      log::info "Reconciler succesfully installed"
+      log::info "Reconciler is successfully installed"
       break
     fi
 
