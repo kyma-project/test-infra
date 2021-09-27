@@ -187,6 +187,6 @@ RUN wget https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}
 
 # Note: kcp-cli doesn't provide releases
 # https://github.com/kyma-project/control-plane/blob/main/docs/cli/01-01-overview.md
-ENV KCPCLI_VERSION=master
+ENV KCPCLI_VERSION=master-32a8aa52
 RUN wget https://storage.googleapis.com/kyma-development-artifacts/kcp/${KCPCLI_VERSION}/kcp-linux -O /usr/local/bin/kcp &&\
     chmod +x /usr/local/bin/kcp
