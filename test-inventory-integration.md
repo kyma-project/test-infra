@@ -18,6 +18,7 @@
 | kyma-integration-k3d | k3d | k3d | kyma deploy |  | periodic |  fast-integration  |
 | kyma-integration-k3d-compass-dev | k3d | k3d | kyma deploy |  | periodic |  fast-integration  |
 | kyma-gke-nightly | gke | gcloud cli | kyma deploy |  | periodic |    |
+| kyma-gke-nightly-fast-integration | gke |  |  |  | nightly |  fast-integration  |
 | pre-main-kyma-gardener-azure-fast-integration | gardener_azure | kyma cli | kyma install | evaluation | pr-submit |  fast-integration  |
 | pre-main-kyma-gardener-azure-alpha-eval | gardener_azure | kyma cli | kyma deploy | evaluation | pr-submit |  fast-integration  |
 | pre-main-kyma-gardener-azure-alpha-prod | gardener_azure | kyma cli | kyma deploy | production | pr-submit |  fast-integration  |
