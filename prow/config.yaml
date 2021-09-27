@@ -1088,3 +1088,17 @@ presets:
       - name: sa-prowjob-gcp-logging-client-key
         mountPath: /etc/credentials/sa-prowjob-gcp-logging-client
         readOnly: true
+  - labels:
+      preset-kyma-integration-kcp-tech-user: "true"
+    env:
+    - name: KCP_TECH_USER_LOGIN
+      valueFrom:
+        secretKeyRef:
+          name: kcp-tech-user
+          key: KCP_TECH_USER_LOGIN
+    - name: KCP_TECH_USER_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: kcp-tech-user
+          key: KCP_TECH_USER_PASSWORD
+
