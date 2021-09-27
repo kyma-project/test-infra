@@ -39,7 +39,7 @@ templates:
           command_integration_eventing:
             annotations:
               pipeline.installer: kyma delpoy
-              pipeline.test: octopus
+              pipeline.test: "fast-integration"
               pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing.sh"
           command_busola_long_lasting:
