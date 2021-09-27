@@ -230,7 +230,7 @@ presubmits: # runs on PRs
     - name: pre-main-kyma-gardener-gcp-eventing
       annotations:
         pipeline.clusterprovisioning: "kyma cli"
-        pipeline.installer: "kyma delpoy"
+        pipeline.installer: "kyma deploy"
         pipeline.platform: "gardener_gcp"
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
