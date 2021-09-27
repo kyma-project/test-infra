@@ -52,7 +52,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210907-0699b236"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210927-76bcfd5e"
             imagePullPolicy: Always
             securityContext:
               privileged: false
