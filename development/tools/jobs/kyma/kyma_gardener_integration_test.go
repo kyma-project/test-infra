@@ -49,7 +49,6 @@ func TestKymaGardenerGCPEventingPresubmit(t *testing.T) {
 	require.NotNil(t, job)
 	assert.Equal(t, jobName, job.Name)
 
-	assert.False(t, job.Optional)
 	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerGCPIntegration, preset.KymaCLIStable, preset.ClusterVersion)
 	tester.AssertThatHasExtraRef(t, job.JobBase.UtilityConfig, []prowapi.Refs{{
 		Org:       "kyma-project",
