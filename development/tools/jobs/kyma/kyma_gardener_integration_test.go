@@ -6,6 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
@@ -34,5 +35,34 @@ func TestKymaGardenerGCPKymaToKyma2JobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "REGION", "northeurope")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "RS_GROUP", "kyma-gardener-azure")
+	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
+}
+
+func TestKymaGardenerGCPEventingPresubmit(t *testing.T) {
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration-gardener.yaml")
+	require.NoError(t, err)
+
+	presubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"})
+
+	jobName := "pre-main-kyma-gardener-gcp-eventing"
+	job := tester.FindPresubmitJobByName(presubmits, jobName)
+	require.NotNil(t, job)
+	assert.Equal(t, jobName, job.Name)
+
+	assert.False(t, job.Optional)
+	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerGCPIntegration, preset.KymaCLIStable, preset.ClusterVersion)
+	tester.AssertThatHasExtraRef(t, job.JobBase.UtilityConfig, []prowapi.Refs{{
+		Org:       "kyma-project",
+		Repo:      "test-infra",
+		BaseRef:   "main",
+		PathAlias: "github.com/kyma-project/test-infra",
+	}})
+	assert.Equal(t, tester.ImageKymaIntegrationLatest, job.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing.sh"}, job.Spec.Containers[0].Command)
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_REGION", "europe-west4")
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_ZONES", "europe-west4-b")
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_MAJOR_VERSION", "2")
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "CREDENTIALS_DIR", "/etc/credentials/kyma-tunas-prow-event-mesh")
 	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
 }
