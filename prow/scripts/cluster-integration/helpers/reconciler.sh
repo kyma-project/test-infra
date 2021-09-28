@@ -4,6 +4,7 @@ readonly RECONCILER_SUFFIX="-reconciler"
 readonly RECONCILER_NAMESPACE=reconciler
 readonly RECONCILER_TIMEOUT=1200 # in secs
 readonly RECONCILER_DELAY=10 # in secs
+readonly LOCAL_KUBECONFIG="$HOME/.kube/config"
 
 
 function reconciler::deploy() {
@@ -67,7 +68,7 @@ function reconciler::wait_until_test_pod_is_ready() {
 # Initializes test pod which will send reconcile requests to reconciler
 function reconciler::initialize_test_pod() {
   # Define KUBECONFIG env variable
-  export KUBECONFIG="$HOME/.kube/config"
+  export KUBECONFIG="${LOCAL_KUBECONFIG}"
 
   if [[ ! $KYMA_UPGRADE_SOURCE ]]; then
     KYMA_UPGRADE_SOURCE="main"
@@ -148,11 +149,31 @@ function reconciler::pre_upgrade_test_fast_integration_kyma_1_24() {
     log::info "Running pre-upgrade Kyma Fast Integration tests"
 
     # Define KUBECONFIG env variable
-    export KUBECONFIG="$HOME/.kube/config"
+    export KUBECONFIG="${LOCAL_KUBECONFIG}"
 
     pushd "${KYMA_PROJECT_DIR}/kyma-1.24/tests/fast-integration"
     make ci-pre-upgrade
     popd
 
     log::success "Tests completed"
+}
+
+# Connect to Gardener cluster
+function reconciler::connect_to_gardener_cluster() {
+    export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
+}
+
+# Connect to reconciler long running cluster
+function reconciler::connect_to_shoot_cluster() {
+  reconciler::connect_to_gardener_cluster
+  local shoot_kubeconfig="/tmp/shoot-kubeconfig.yaml"
+  kubectl get secret "${INPUT_CLUSTER_NAME}.kubeconfig"  -ogo-template="{{ .data.kubeconfig | base64decode }}" > "${shoot_kubeconfig}"
+  cat ${shoot_kubeconfig} > ${LOCAL_KUBECONFIG}
+  export KUBECONFIG="${shoot_kubeconfig}"
+}
+
+# Break Kyma to test reconciler repair mechanism
+function reconciler::break_kyma() {
+  log::banner "Delete all deployments from kyma-system ns"
+  kubectl delete deploy -n kyma-system --all
 }
