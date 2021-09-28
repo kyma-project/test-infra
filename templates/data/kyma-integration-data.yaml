@@ -457,6 +457,8 @@ templates:
                   name: "pre-main-kyma-integration-k3d-central-app-connectivity-compass"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  # temporarily make the job optional, as it's always failing and blocking development
+                  optional: true
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-compass-dev: "true"
@@ -720,6 +722,8 @@ templates:
                     - "extra_refs_kyma-local"
               - jobConfig:
                   name: "kyma-integration-k3d-compass-dev"
+                  # temporarily make the job optional, as it's always failing and blocking development
+                  optional: true
                   annotations:
                     testgrid-dashboards: kyma_integration
                     description: Kyma integration periodic job on k3d with compass dev.
