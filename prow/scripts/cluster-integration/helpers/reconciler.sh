@@ -32,7 +32,7 @@ function reconciler::wait_until_is_ready() {
     done
 
     if [ "${reconcilerCountDeploys}" -eq "${readyCountDeploys}" ] ; then
-      log::info "Reconciler succesfully installed"
+      log::info "Reconciler is successfully installed"
       break
     fi
 
@@ -77,7 +77,9 @@ function reconciler::initialize_test_pod() {
   # move to reconciler directory
   cd "${RECONCILER_SOURCES_DIR}"  || { echo "Failed to change dir to: ${RECONCILER_SOURCES_DIR}"; exit 1; }
 
-  # Create reconcile request payload with kubeconfig and version to the test-pod
+  # Create reconcile request payload with kubeconfig, domain, and version to the test-pod
+  domain="$(kubectl get cm shoot-info -n kube-system -o jsonpath='{.data.domain}')"
+  sed "s/example.com/$domain/" ./scripts/e2e-test/template.json
   # shellcheck disable=SC2086
   kc="$(cat ${KUBECONFIG})"
   # shellcheck disable=SC2016
@@ -116,7 +118,7 @@ function reconciler::wait_until_kyma_reconciled() {
     status=$(kubectl exec -n reconciler test-pod -- sh -c ". /tmp/get-reconcile-status.sh" | xargs)
     if [ "${status}" = "ready" ]; then
       echo "Kyma is installed"
-      exit 0
+      break
     fi
 
     if [ "$RECONCILER_TIMEOUT" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then

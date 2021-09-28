@@ -16,8 +16,9 @@
 #
 #Please look in each provider script for provider specific requirements
 
-
-
+## ---------------------------------------------------------------------------------------
+## Configurations and Variables
+## ---------------------------------------------------------------------------------------
 
 # exit on error, and raise error when variable is not set when used
 set -e
@@ -27,6 +28,7 @@ ENABLE_TEST_LOG_COLLECTOR=false
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
+export EVENTMESH_SECRET_FILE="${CREDENTIALS_DIR}/serviceKey" # For eventing E2E fast-integration tests
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
@@ -48,6 +50,7 @@ requiredVars=(
     GARDENER_KYMA_PROW_PROJECT_NAME
     GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
     CREDENTIALS_DIR
+    EVENTMESH_SECRET_FILE
 )
 
 utils::check_required_vars "${requiredVars[@]}"
@@ -106,6 +109,10 @@ else
     fi
 fi
 
+## ---------------------------------------------------------------------------------------
+## Prow job execution steps
+## ---------------------------------------------------------------------------------------
+
 # checks required vars and initializes gcloud/docker if necessary
 gardener::init
 
@@ -118,12 +125,6 @@ kyma::install_cli
 gardener::generate_overrides
 
 gardener::provision_cluster
-
-log::banner "Create EventMesh Secret"
-eventing::create_eventmesh_secret
-
-log::banner "Create Eventing Backend Secret"
-eventing::create_eventing_backend_secret
 
 # uses previously set KYMA_SOURCE
 if [[ "${KYMA_MAJOR_VERSION}" == "2" ]]; then
@@ -148,28 +149,9 @@ fi
 
 if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
     # test the default Eventing backend which comes with Kyma
-    log::banner "Execute tests"
-    gardener::test_fast_integration_kyma
+    log::banner "Execute eventing E2E fast-integration tests"
+    eventing::test_fast_integration_eventing
 
-    # test BEB as the Eventing backend
-    log::banner "Switch Eventing backend to BEB"
-    eventing::switch_backend "BEB"
-
-    log::banner "Wait for Eventing backend to be ready"
-    eventing::wait_for_backend_ready "BEB"
-
-    log::banner "Execute tests"
-    gardener::test_fast_integration_kyma
-
-    # test NATS as the Eventing backend
-    log::banner "Switch Eventing backend to NATS"
-    eventing::switch_backend "NATS"
-
-    log::banner "Wait for Eventing backend to be ready"
-    eventing::wait_for_backend_ready "NATS"
-
-    log::banner "Execute tests"
-    gardener::test_fast_integration_kyma
 else
     # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
     if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then

@@ -18,10 +18,10 @@ plank:
       timeout: 3h
       grace_period: 10m
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20210910-fbe2c6dbbe
-        initupload: gcr.io/k8s-prow/initupload:v20210910-fbe2c6dbbe
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20210910-fbe2c6dbbe
-        sidecar: gcr.io/k8s-prow/sidecar:v20210910-fbe2c6dbbe
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20210925-32993b3b20
+        initupload: gcr.io/k8s-prow/initupload:v20210925-32993b3b20
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20210925-32993b3b20
+        sidecar: gcr.io/k8s-prow/sidecar:v20210925-32993b3b20
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -1086,3 +1086,17 @@ presets:
       - name: sa-prowjob-gcp-logging-client-key
         mountPath: /etc/credentials/sa-prowjob-gcp-logging-client
         readOnly: true
+  - labels:
+      preset-kyma-integration-kcp-tech-user: "true"
+    env:
+    - name: KCP_TECH_USER_LOGIN
+      valueFrom:
+        secretKeyRef:
+          name: kcp-tech-user
+          key: KCP_TECH_USER_LOGIN
+    - name: KCP_TECH_USER_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: kcp-tech-user
+          key: KCP_TECH_USER_PASSWORD
+

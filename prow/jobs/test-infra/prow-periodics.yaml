@@ -21,7 +21,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210907-0699b236"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210927-76bcfd5e"
             securityContext:
               privileged: true
             command:
@@ -63,7 +63,7 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210907-0699b236"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210927-76bcfd5e"
             command:
               - "prow/cluster/deploy.sh"
             env:
@@ -95,7 +95,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210907-0699b236"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210927-76bcfd5e"
             securityContext:
               privileged: true
             command:
@@ -129,7 +129,7 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/label_sync:v20210910-fbe2c6dbbe"
+          - image: "gcr.io/k8s-prow/label_sync:v20210925-32993b3b20"
             command:
               - "/app/label_sync/app.binary"
             args:
@@ -175,7 +175,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20210910-fbe2c6dbbe"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20210925-32993b3b20"
             command:
               - "/app/prow/cmd/generic-autobumper/app.binary"
             args:
@@ -209,7 +209,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20210910-fbe2c6dbbe"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20210925-32993b3b20"
             command:
               - "/app/prow/cmd/generic-autobumper/app.binary"
             args:

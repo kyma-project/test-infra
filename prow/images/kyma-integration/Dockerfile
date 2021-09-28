@@ -174,10 +174,19 @@ RUN wget -q https://github.com/Peripli/service-manager-cli/releases/download/${S
     rm smctl-${SMCTL_VERSION}-linux-amd64.tar.gz && \
     mv smctl /usr/local/go/bin
 
-
 #################################################################
-################ Install Cosign ####################
+################ Install Cosign #################################
 #################################################################
 ENV COSIGN_VERSION=1.0.0
 RUN wget https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64 -O /usr/local/bin/cosign &&\
     chmod +x /usr/local/bin/cosign
+
+#################################################################
+################ Install kcp-cli ################################
+#################################################################
+
+# Note: kcp-cli doesn't provide releases
+# https://github.com/kyma-project/control-plane/blob/main/docs/cli/01-01-overview.md
+ENV KCPCLI_VERSION=master-32a8aa52
+RUN wget https://storage.googleapis.com/kyma-development-artifacts/kcp/${KCPCLI_VERSION}/kcp-linux -O /usr/local/bin/kcp &&\
+    chmod +x /usr/local/bin/kcp

@@ -188,7 +188,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.AllPeriodics()
-	assert.Len(t, periodics, 15)
+	assert.Len(t, periodics, 16)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -339,25 +339,25 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/github-issues.sh"}, githubIssuesPeriodic.Spec.Containers[0].Command)
 	tester.AssertThatSpecifiesResourceRequests(t, githubIssuesPeriodic.JobBase)
 
+	expName = "kyma-gke-nightly-fast-integration"
+	nightlyFastIntegrationPeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, nightlyFastIntegrationPeriodic)
+	assert.Equal(t, expName, nightlyFastIntegrationPeriodic.Name)
+
+	assert.Equal(t, "0 0-2,4-23 * * 1-5", nightlyFastIntegrationPeriodic.Cron)
+	tester.AssertThatHasPresets(t, nightlyFastIntegrationPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration, "preset-gc-compute-envs")
+	tester.AssertThatHasExtraRepoRefCustom(t, nightlyFastIntegrationPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
+	assert.Equal(t, tester.ImageKymaIntegrationLatest, nightlyFastIntegrationPeriodic.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"}, nightlyFastIntegrationPeriodic.Spec.Containers[0].Command)
+	tester.AssertThatSpecifiesResourceRequests(t, nightlyFastIntegrationPeriodic.JobBase)
+	assert.Len(t, nightlyFastIntegrationPeriodic.Spec.Containers[0].Env, 5)
+	tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "PROVISION_REGIONAL_CLUSTER", "true")
+	tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "nightly")
+	tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "CLUSTER_PROVIDER", "gcp")
+	tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-b")
+	tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "KYMA_MAJOR_VERSION", "1")
+
 	// these jobs are disabled due to failing tests, until Kyma 2.0 long lasting clusters are introduced
-	// expName = "kyma-gke-nightly-fast-integration"
-	// nightlyFastIntegrationPeriodic := tester.FindPeriodicJobByName(periodics, expName)
-	// require.NotNil(t, nightlyFastIntegrationPeriodic)
-	// assert.Equal(t, expName, nightlyFastIntegrationPeriodic.Name)
-
-	// assert.Equal(t, "0 0-2,4-23 * * 1-5", nightlyFastIntegrationPeriodic.Cron)
-	// tester.AssertThatHasPresets(t, nightlyFastIntegrationPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration, "preset-gc-compute-envs")
-	// tester.AssertThatHasExtraRepoRefCustom(t, nightlyFastIntegrationPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
-	// assert.Equal(t, tester.ImageKymaIntegrationLatest, nightlyFastIntegrationPeriodic.Spec.Containers[0].Image)
-	// assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"}, nightlyFastIntegrationPeriodic.Spec.Containers[0].Command)
-	// tester.AssertThatSpecifiesResourceRequests(t, nightlyFastIntegrationPeriodic.JobBase)
-	// assert.Len(t, nightlyFastIntegrationPeriodic.Spec.Containers[0].Env, 5)
-	// tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "PROVISION_REGIONAL_CLUSTER", "true")
-	// tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "nightly-124")
-	// tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "CLUSTER_PROVIDER", "gcp")
-	// tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-b")
-	// tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "KYMA_MAJOR_VERSION", "1")
-
 	// expName = "kyma-gke-weekly-fast-integration"
 	// weeklyFastIntegrationPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	// require.NotNil(t, weeklyFastIntegrationPeriodic)
