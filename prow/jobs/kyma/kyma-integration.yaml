@@ -1248,6 +1248,7 @@ periodics: # runs on schedule
         preset-kyma-integration-compass-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
       cron: "5 * * * *"
+      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
