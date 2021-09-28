@@ -46,7 +46,7 @@ function reconciler::wait_until_is_ready() {
   done
 }
 
-# Waits until the test-pod deployment is in ready state
+# Waits until the test-pod is in ready state
 function reconciler::wait_until_test_pod_is_ready() {
   iterationsLeft=$(( RECONCILER_TIMEOUT/RECONCILER_DELAY ))
   while : ; do
@@ -60,6 +60,25 @@ function reconciler::wait_until_test_pod_is_ready() {
       exit 1
     fi
     log::info "Waiting for test pod to be ready..."
+    sleep $RECONCILER_DELAY
+    iterationsLeft=$(( iterationsLeft-1 ))
+  done
+}
+
+# Waits until the test-pod is deleted completely
+function reconciler::wait_until_test_pod_is_deleted() {
+  iterationsLeft=$(( RECONCILER_TIMEOUT/RECONCILER_DELAY ))
+  while : ; do
+    testPodName=$(kubectl get po -n reconciler test-pod -ojsonpath='{.metadata.name}' --ignore-not-found)
+    if [ -z "${testPodName}" ]; then
+      log::info "Test pod is deleted"
+      break
+    fi
+    if [ "$RECONCILER_TIMEOUT" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then
+      log::info "Timeout reached while initializing test pod. Exiting"
+      exit 1
+    fi
+    log::info "Waiting for test pod to be deleted..."
     sleep $RECONCILER_DELAY
     iterationsLeft=$(( iterationsLeft-1 ))
   done
@@ -137,6 +156,12 @@ function reconciler::wait_until_kyma_reconciled() {
 function reconciler::deploy_test_pod() {
   # Deploy a test pod
   log::banner "Deploying test-pod in the cluster"
+  test_pod_name=$(kubectl get po test-pod -n reconciler -ojsonpath="{ .metadata.name }" --ignore-not-found)
+  if [ ! -z "${test_pod_name}" ]; then
+    log::info "Found existing pod: test-pod"
+    kubectl delete po test-pod -n reconciler
+    reconciler::wait_until_test_pod_is_deleted
+  fi
   kubectl run -n reconciler --image=alpine:3.14.1 --restart=Never test-pod -- sh -c "sleep 36000"
 }
 
@@ -168,7 +193,7 @@ function reconciler::connect_to_shoot_cluster() {
   reconciler::connect_to_gardener_cluster
   local shoot_kubeconfig="/tmp/shoot-kubeconfig.yaml"
   kubectl get secret "${INPUT_CLUSTER_NAME}.kubeconfig"  -ogo-template="{{ .data.kubeconfig | base64decode }}" > "${shoot_kubeconfig}"
-  cat ${shoot_kubeconfig} > ${LOCAL_KUBECONFIG}
+  cat "${shoot_kubeconfig}" > "${LOCAL_KUBECONFIG}"
   export KUBECONFIG="${shoot_kubeconfig}"
 }
 

@@ -95,9 +95,6 @@ log::banner "Connecting to nightly cluster"
 # Connect to nightly reconciler cluster based on INPUT_CLUSTER_NAME
 reconciler::connect_to_shoot_cluster
 
-log::info "Printing ns"
-kubectl get ns
-
 # Deploy test pod which will trigger reconciliation
 reconciler::deploy_test_pod
 
