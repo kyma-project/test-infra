@@ -231,7 +231,8 @@ templates:
                     - installer_2
               - jobConfig:
                   name: pre-main-kyma-gardener-gcp-eventing
-                  optional: false
+                  # temporarily make the job optional, as it's falky and blocking development
+                  optional: true
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
