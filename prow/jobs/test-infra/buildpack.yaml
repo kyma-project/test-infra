@@ -540,7 +540,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210927-df59d959"
+          - image: "eu.gcr.io/kyma-project/test-infra/pr/buildpack-golang:PR-4201"
             securityContext:
               privileged: true
             command:
@@ -577,7 +577,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210927-df59d959"
+          - image: "eu.gcr.io/kyma-project/test-infra/pr/buildpack-golang:PR-4201"
             securityContext:
               privileged: true
             command:
@@ -614,7 +614,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210927-df59d959"
+          - image: "eu.gcr.io/kyma-project/test-infra/pr/buildpack-golang:PR-4201"
             securityContext:
               privileged: true
             command:
@@ -1202,7 +1202,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210927-df59d959"
+          - image: "eu.gcr.io/kyma-project/test-infra/pr/buildpack-golang:PR-4201"
             securityContext:
               privileged: true
             command:
@@ -1241,7 +1241,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210927-df59d959"
+          - image: "eu.gcr.io/kyma-project/test-infra/pr/buildpack-golang:PR-4201"
             securityContext:
               privileged: true
             command:
@@ -1280,7 +1280,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210927-df59d959"
+          - image: "eu.gcr.io/kyma-project/test-infra/pr/buildpack-golang:PR-4201"
             securityContext:
               privileged: true
             command:

@@ -29,15 +29,15 @@ globalSets:
   image_buildpack-node:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20210402-70b4b74f"
   image_buildpack-golang:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210927-df59d959"
+    image: "eu.gcr.io/kyma-project/test-infra/pr/buildpack-golang:PR-4201"
   # TODO: function-controller needs libgit2 in version 1.1.0 which is available in bullseye debian, which is not available now.
   # As a workaround, I built the needed image on this PR: https://github.com/kyma-project/test-infra/pull/4060
   image_buildpack-golang-libgit2:
-    image: "eu.gcr.io/kyma-project/test-infra/pr/buildpack-golang:PR-4060"
+    image: "eu.gcr.io/kyma-project/test-infra/pr/buildpack-golang:PR-4201"
   image_buildpack-golang-kubebuilder2:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210927-df59d959"
+    image: "eu.gcr.io/kyma-project/test-infra/pr/buildpack-golang:PR-4201"
   image_buildpack-golang-toolbox:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210927-df59d959"
+    image: "eu.gcr.io/kyma-project/test-infra/pr/buildpack-golang:PR-4201"
   image_wssagent:
     image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
   # JobConfig sets
