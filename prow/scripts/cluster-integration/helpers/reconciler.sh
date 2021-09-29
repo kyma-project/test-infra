@@ -101,26 +101,23 @@ function reconciler::initialize_test_pod() {
   domain="$(kubectl get cm shoot-info -n kube-system -o jsonpath='{.data.domain}')"
   sed -i "s/example.com/$domain/" ./scripts/e2e-test/template.json
 
-  log::info "printing template json"
-  cat ./scripts/e2e-test/template.json
-
   # shellcheck disable=SC2086
   kc="$(cat ${KUBECONFIG})"
   # shellcheck disable=SC2016
   jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./scripts/e2e-test/template.json > body.json
 
   # Copy the reconcile request payload and kyma reconciliation scripts to the test-pod
-  kubectl cp body.json reconciler/test-pod:/tmp
-  kubectl cp  ./scripts/e2e-test/reconcile-kyma.sh reconciler/test-pod:/tmp
-  kubectl cp  ./scripts/e2e-test/get-reconcile-status.sh reconciler/test-pod:/tmp
-  kubectl cp  ./scripts/e2e-test/request-reconcile.sh reconciler/test-pod:/tmp
+  kubectl cp body.json -c test-pod reconciler/test-pod:/tmp
+  kubectl cp ./scripts/e2e-test/reconcile-kyma.sh -c test-pod reconciler/test-pod:/tmp
+  kubectl cp ./scripts/e2e-test/get-reconcile-status.sh -c test-pod reconciler/test-pod:/tmp
+  kubectl cp ./scripts/e2e-test/request-reconcile.sh -c test-pod reconciler/test-pod:/tmp
 }
 
 # Triggers reconciliation of Kyma and waits until reconciliation is in ready state
 function reconciler::reconcile_kyma() {
   # Trigger Kyma reconciliation using reconciler
   log::banner "Reconcile Kyma in the same cluster until it is ready"
-  kubectl exec -it -n reconciler test-pod -- sh -c ". /tmp/reconcile-kyma.sh"
+  kubectl exec -it -n reconciler test-pod -c test-pod -- sh -c ". /tmp/reconcile-kyma.sh"
   log::info "test-pod exited"
 }
 
@@ -128,7 +125,7 @@ function reconciler::reconcile_kyma() {
 function reconciler::trigger_kyma_reconcile() {
   # Trigger Kyma reconciliation using reconciler
   log::banner "Reconcile Kyma in the same cluster"
-  kubectl exec -n reconciler test-pod -- sh -c ". /tmp/request-reconcile.sh"
+  kubectl exec -n reconciler test-pod -c test-pod -- sh -c ". /tmp/request-reconcile.sh"
   if [[ $? -ne 0 ]]; then
       echo "Failed to reconcile"
       exit 1
@@ -139,7 +136,7 @@ function reconciler::trigger_kyma_reconcile() {
 function reconciler::wait_until_kyma_reconciled() {
   iterationsLeft=$(( RECONCILER_TIMEOUT/RECONCILER_DELAY ))
   while : ; do
-    status=$(kubectl exec -n reconciler test-pod -- sh -c ". /tmp/get-reconcile-status.sh" | xargs)
+    status=$(kubectl exec -n reconciler test-pod -c test-pod -- sh -c ". /tmp/get-reconcile-status.sh" | xargs)
     if [ "${status}" = "ready" ]; then
       echo "Kyma is installed"
       break

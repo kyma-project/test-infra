@@ -354,7 +354,7 @@ periodics: # runs on schedule
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
         preset-log-collector-slack-token: "true"
-      cron: "0 0-23 * * *"
+      cron: "0 1-22/2 * * *"
       skip_report: false
       decorate: true
       decoration_config:
