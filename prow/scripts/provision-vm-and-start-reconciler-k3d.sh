@@ -28,8 +28,6 @@ cleanup() {
   # do not fail the job regardless of the vm deletion result
   set +e
 
-  #shellcheck disable=SC2088
-  utils::receive_from_vm "${ZONE}" "reconciler-integration-test-${RANDOM_ID}" "~/kyma/tests/fast-integration/junit_kyma-fast-integration.xml" "${ARTIFACTS}"
   gcloud compute instances stop --async --zone="${ZONE}" "reconciler-integration-test-${RANDOM_ID}"
 
   log::info "End of cleanup"
