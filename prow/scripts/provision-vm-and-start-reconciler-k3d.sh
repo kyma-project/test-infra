@@ -109,9 +109,9 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
 trap cleanup exit INT
 
-log::info "Copying Go binary to the instance"
+log::info "Install Go in the instance"
 #shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "reconciler-integration-test-${RANDOM_ID}" "/usr/local/go" "/usr/local/bin/go"
+gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo wget https://golang.org/dl/go1.16.6.linux-amd64.tar.gz && sudo tar -C /usr/local -xzf go1.16.6.linux-amd64.tar.gz" --ssh-flag="-o ServerAliveInterval=30" "reconciler-integration-test-${RANDOM_ID}"
 
 log::info "Copying Reconciler to the instance"
 #shellcheck disable=SC2088
