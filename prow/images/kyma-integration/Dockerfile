@@ -141,7 +141,7 @@ ENV PATH=$PATH:/prow-tools
 ######################## Install gcloud #########################
 #################################################################
 
-ENV CLOUD_SDK_VERSION=324.0.0 \
+ENV CLOUD_SDK_VERSION=359.0.0 \
     PATH=/google-cloud-sdk/bin:/workspace:${PATH} \
     CLOUDSDK_CORE_DISABLE_PROMPTS=1 \
     CLUSTER_VERSION=$K8S_VERSION
