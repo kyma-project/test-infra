@@ -1,6 +1,6 @@
 # Basic golang buildpack
 
-FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20210922-ab7a4307
+FROM eu.gcr.io/kyma-project/test-infra/bootstrap:PR-4195
 
 # Commit details
 
@@ -20,8 +20,8 @@ ENV GOLANGCI_LINT_VERSION v1.40.1
 
 # apt and install additional packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        rsync=3.1.2-1+deb9u2 \
-        procps=2:3.3.12-3+deb9u1 \
+        rsync=3.2.3-4 \
+        procps=2:3.3.17-5 \
         && apt-get clean
 
 # Install Go and Dep
