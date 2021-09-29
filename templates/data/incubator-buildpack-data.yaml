@@ -222,6 +222,8 @@ templates:
               GO11MODULE: "on"
             branches:
               - ^main$
+          reconciler_integration_jobConfig:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"
           reconciler_e2e_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-gardener.sh"
             args:
@@ -249,6 +251,22 @@ templates:
         jobConfigs:
           - repoName: kyma-incubator/reconciler
             jobs:
+              - jobConfig:
+                  name: "pre-main-reconciler-integration-k3d"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  labels:
+                    preset-build-pr: "true"
+                  annotations:
+                    pipeline.platform: k3d
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "reconciler_integration_jobConfig"
               - jobConfig:
                   name: pre-main-kyma-incubator-reconciler-e2e
                   run_if_changed: "^resources"
