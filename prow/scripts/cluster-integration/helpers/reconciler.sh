@@ -50,7 +50,7 @@ function reconciler::wait_until_is_ready() {
 function reconciler::wait_until_test_pod_is_ready() {
   iterationsLeft=$(( RECONCILER_TIMEOUT/RECONCILER_DELAY ))
   while : ; do
-    testPodStatus=$(kubectl get po -n reconciler test-pod -ojsonpath='{.status.containerStatuses[*].ready}')
+    testPodStatus=$(kubectl get po -n reconciler test-pod -ojsonpath='{.status.containerStatuses[?(@.name == "test-pod")].ready}')
     if [ "${testPodStatus}" = "true" ]; then
       log::info "Test pod is ready"
       break
@@ -99,7 +99,11 @@ function reconciler::initialize_test_pod() {
 
   # Create reconcile request payload with kubeconfig, domain, and version to the test-pod
   domain="$(kubectl get cm shoot-info -n kube-system -o jsonpath='{.data.domain}')"
-  sed "s/example.com/$domain/" ./scripts/e2e-test/template.json
+  sed -i "s/example.com/$domain/" ./scripts/e2e-test/template.json
+
+  log::info "printing template json"
+  cat ./scripts/e2e-test/template.json
+
   # shellcheck disable=SC2086
   kc="$(cat ${KUBECONFIG})"
   # shellcheck disable=SC2016

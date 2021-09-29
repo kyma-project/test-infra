@@ -71,19 +71,6 @@ else
     exit 1
 fi
 
-# nice cleanup on exit, be it succesful or on fail
-trap gardener::cleanup EXIT INT
-
-# Used to detect errors for logging purposes
-ERROR_LOGGING_GUARD="true"
-export ERROR_LOGGING_GUARD
-
-readonly COMMON_NAME_PREFIX="grd"
-utils::generate_commonName -n "${COMMON_NAME_PREFIX}"
-COMMON_NAME="${utils_generate_commonName_return_commonName:?}"
-export COMMON_NAME
-export CLUSTER_NAME="${COMMON_NAME}"
-
 ## ---------------------------------------------------------------------------------------
 ## Prow job execution steps
 ## ---------------------------------------------------------------------------------------
@@ -112,6 +99,3 @@ gardener::test_fast_integration_kyma
 
 # Break Kyma
 reconciler::break_kyma
-
-#!!! Must be at the end of the script !!!
-ERROR_LOGGING_GUARD="false"
