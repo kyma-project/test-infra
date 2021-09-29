@@ -27,7 +27,7 @@ const (
 	// ImageNodeBuildpackLatest means Node.js buildpack image (node v12)
 	ImageNodeBuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20210402-70b4b74f"
 	// ImageBootstrapTestInfraLatest means it's used in test-infra prowjob defs.
-	ImageBootstrapTestInfraLatest = "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-4195"
+	ImageBootstrapTestInfraLatest = "eu.gcr.io/kyma-project/test-infra/pr/bootstrap:PR-4195"
 
 	// ImageKymaIntegrationLatest represents kyma integration image with kubectl 1.16
 	ImageKymaIntegrationLatest = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210927-76bcfd5e"
