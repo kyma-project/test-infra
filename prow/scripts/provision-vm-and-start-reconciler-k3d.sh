@@ -109,10 +109,6 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
 trap cleanup exit INT
 
-log::info "Install Go in the instance"
-#shellcheck disable=SC2088
-gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo wget -q https://golang.org/dl/go1.16.6.linux-amd64.tar.gz && sudo tar -C /usr/local -xzf go1.16.6.linux-amd64.tar.gz && export PATH=$PATH:/usr/local/go/bin && go version" --ssh-flag="-o ServerAliveInterval=30" "reconciler-integration-test-${RANDOM_ID}"
-
 log::info "Copying Reconciler to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "reconciler-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/reconciler" "~/reconciler"
