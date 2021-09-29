@@ -6,4 +6,5 @@ notificationSlackChannel: "kyma-ci-force"
 # Path to directory with function code. Relative to repository root.
 functionBaseDir: "/development/kyma-slack-connector/oomFoundFunction"
 # Branch name with function code.
-branch: "main"
+#branch: "main"
+branch: "notify_commiter"
