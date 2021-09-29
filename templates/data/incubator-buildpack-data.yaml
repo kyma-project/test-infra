@@ -257,6 +257,9 @@ templates:
                   run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
+                    preset-kyma-guard-bot-github-token: "true"
+                    preset-sa-vm-kyma-integration: "true"
+                    preset-gc-project-env: "true"
                   annotations:
                     pipeline.platform: k3d
                 inheritedConfigs:
