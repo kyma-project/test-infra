@@ -111,7 +111,7 @@ trap cleanup exit INT
 
 log::info "Copying Go binary to the instance"
 #shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "reconciler-integration-test-${RANDOM_ID}" "/usr/local/go" "/usr/local/go"
+utils::compress_send_to_vm "${ZONE}" "reconciler-integration-test-${RANDOM_ID}" "/usr/local/go" "/usr/local/bin/go"
 
 log::info "Copying Reconciler to the instance"
 #shellcheck disable=SC2088
