@@ -163,7 +163,7 @@ function reconciler::deploy_test_pod() {
     kubectl delete po test-pod -n reconciler
     reconciler::wait_until_test_pod_is_deleted
   fi
-  kubectl run --annotations="sidecar.istio.io/inject=false" -n reconciler --image=alpine:3.14.1 --restart=Never test-pod -- sh -c "sleep 36000"
+  kubectl run -n reconciler --image=alpine:3.14.1 --restart=Never test-pod -- sh -c "sleep 36000"
 }
 
 function reconciler::disable_sidecar_injection_reconciler_ns() {
