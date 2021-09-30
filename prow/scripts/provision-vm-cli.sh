@@ -46,8 +46,6 @@ fi
 
 # Support configuration via ENV vars (can be be overwritten by CLI args)
 KUBERNETES_RUNTIME="${KUBERNETES_RUNTIME:=minikube}"
-# Either use the default Kyma install command or kyma deploy.
-INSTALLATION="${INSTALLATION:=default}"
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]
@@ -67,10 +65,6 @@ do
             ;;
         --kubernetes-runtime|-kr)
             KUBERNETES_RUNTIME="$2"
-            shift 2
-            ;;
-        --installation)
-            INSTALLATION="$2"
             shift 2
             ;;
         --*)

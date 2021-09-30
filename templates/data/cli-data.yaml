@@ -99,9 +99,8 @@ templates:
           jobConfig_postsubmit:
             labels:
               preset-build-main: "true"
-          k3s_template:
+          kyma_2_template:
             env:
-              INSTALLATION: "alpha"
               KUBERNETES_RUNTIME: "k3d"
           smaller_cluster:
             request_memory: 1Gi
@@ -110,7 +109,7 @@ templates:
           - repoName: "github.com/kyma-project/cli"
             jobs:
               - jobConfig:
-                  name: pre-kyma-cli-integration
+                  name: pre-cli-integration-kyma-1
                   branches:
                     - ^main$
                     - ^release-.*$
@@ -125,7 +124,7 @@ templates:
                     - "jobConfig_submit"
                     - "jobConfig_presubmit"
               - jobConfig:
-                  path: integration-k3s
+                  path: integration-kyma-2
                   release_since: "1.7"
                 inheritedConfigs:
                   global:
@@ -134,7 +133,7 @@ templates:
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
-                    - "k3s_template"
+                    - "kyma_2_template"
                     - "jobConfig_submit"
                   preConfigs:
                     global:
@@ -148,7 +147,7 @@ templates:
                     local:
                       - "jobConfig_postsubmit"
               - jobConfig:
-                  name: post-kyma-cli-integration
+                  name: post-cli-integration-kyma-1
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
