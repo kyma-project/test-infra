@@ -19,7 +19,7 @@ func TestReconcilerJobsPresubmit(t *testing.T) {
 
 	assert.Len(t, jobConfig.PresubmitsStatic, 1)
 	kymaPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-incubator/reconciler"})
-	assert.Len(t, kymaPresubmits, 2)
+	assert.Len(t, kymaPresubmits, 3)
 
 	expName := "pre-main-kyma-incubator-reconciler"
 	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName)
@@ -37,6 +37,30 @@ func TestReconcilerJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/reconciler"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
+func TestReconcilerIntegrationJobsPresubmit(t *testing.T) {
+	// WHEN
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/reconciler/reconciler.yaml")
+	// THEN
+	require.NoError(t, err)
+
+	assert.Len(t, jobConfig.PresubmitsStatic, 1)
+	kymaPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-incubator/reconciler"})
+	assert.Len(t, kymaPresubmits, 3)
+
+	expName := "pre-main-reconciler-integration-k3d"
+	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName)
+	assert.Equal(t, expName, actualPresubmit.Name)
+	assert.Equal(t, []string{"^master$", "^main$"}, actualPresubmit.Branches)
+	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
+	assert.False(t, actualPresubmit.SkipReport)
+	assert.False(t, actualPresubmit.Optional)
+	assert.False(t, actualPresubmit.AlwaysRun)
+	assert.Equal(t, actualPresubmit.RunIfChanged, "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))")
+	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "main")
+	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPresubmit.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"}, actualPresubmit.Spec.Containers[0].Command)
+}
+
 func TestReconcilerJobsPresubmitE2E(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/reconciler/reconciler.yaml")
@@ -45,7 +69,7 @@ func TestReconcilerJobsPresubmitE2E(t *testing.T) {
 
 	assert.Len(t, jobConfig.PresubmitsStatic, 1)
 	kymaPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-incubator/reconciler"})
-	assert.Len(t, kymaPresubmits, 2)
+	assert.Len(t, kymaPresubmits, 3)
 
 	expName := "pre-main-kyma-incubator-reconciler-e2e"
 	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName)
