@@ -366,10 +366,10 @@ periodics: # runs on schedule
           repo: kyma
           path_alias: github.com/kyma-project/kyma
           base_ref: main
-        - org: sayanh
+        - org: kyma-incubator
           repo: reconciler
           path_alias: github.com/kyma-incubator/reconciler
-          base_ref: fix-e2e-script
+          base_ref: main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
