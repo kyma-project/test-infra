@@ -3,7 +3,8 @@
 set -o errexit
 set -o pipefail
 
-export RECONCILER_DIR="./reconciler"
+readonly RECONCILER_DIR="./reconciler"
+readonly GO_VERSION=1.16.6
 
 function prereq_test() {
   command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
@@ -42,7 +43,7 @@ function provision_k3d() {
 
 function run_tests() {
   echo "Install Go"
-  wget -q https://golang.org/dl/go1.16.6.linux-amd64.tar.gz && sudo tar -C /usr/local -xzf go1.16.6.linux-amd64.tar.gz && export PATH=$PATH:/usr/local/go/bin && go version
+  wget -q https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz && sudo tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz && export PATH=$PATH:/usr/local/go/bin && go version
 
   export KUBECONFIG=~/.kube/config
   pushd "${RECONCILER_DIR}"
