@@ -104,5 +104,8 @@ connect_to_shoot_cluster
 # Deploy reconciler
 reconciler::deploy
 
+# Disable sidecar injection for reconciler namespace
+reconciler::disable_sidecar_injection_reconciler_ns
+
 # Wait until reconciler is ready
 reconciler::wait_until_is_ready
