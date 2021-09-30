@@ -231,6 +231,14 @@ templates:
             privileged: false
             env:
               INPUT_CLUSTER_NAME: "rec-nightly"
+
+          test_ref:
+            extra_refs:
+              reconciler:
+                - org: "sayanh"
+                  repo: "reconciler"
+                  path_alias: "github.com/kyma-incubator/reconciler"
+                  base_ref: "fix-e2e-script"
           reconciler_jobConfig_args:
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
@@ -391,12 +399,13 @@ templates:
                     - gardener_gcp_job
                     - extra_refs_test-infra
                     - extra_refs_kyma
-                    - extra_refs_reconciler
+                    # - extra_refs_reconciler
                     - kyma_major_version_1
                     - disable_testgrid
                   local:
                     - reconciler_nightly_e2e_jobConfig
                     - reconciler_jobConfig_args
+                    - test_ref
       - to: ../prow/jobs/incubator/octopus/octopus.yaml
         jobConfigs:
           - repoName: kyma-incubator/octopus
