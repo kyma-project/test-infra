@@ -205,14 +205,14 @@ func TestReconcilerJobNightlyE2E(t *testing.T) {
 	actualNightlyJob := tester.FindPeriodicJobByName(allPeriodics, expName)
 	assert.Equal(t, expName, actualNightlyJob.Name)
 	assert.Equal(t, "0 1-22/2 * * *", actualNightlyJob.Cron)
-	//tester.AssertThatHasExtraRef(t, actualNightlyJob.JobBase.UtilityConfig, []prowapi.Refs{
-	//	{
-	//		Org:       "kyma-incubator",
-	//		Repo:      "reconciler",
-	//		BaseRef:   "main",
-	//		PathAlias: "github.com/kyma-incubator/reconciler",
-	//	},
-	//})
+	tester.AssertThatHasExtraRef(t, actualNightlyJob.JobBase.UtilityConfig, []prowapi.Refs{
+		{
+			Org:       "kyma-incubator",
+			Repo:      "reconciler",
+			BaseRef:   "main",
+			PathAlias: "github.com/kyma-incubator/reconciler",
+		},
+	})
 	tester.AssertThatHasExtraRef(t, actualNightlyJob.JobBase.UtilityConfig, []prowapi.Refs{
 		{
 			Org:       "kyma-project",
