@@ -17,7 +17,7 @@ func TestKymaCliIntegrationPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	expName := "pre-kyma-cli-integration"
+	expName := "pre-cli-integration-kyma-1"
 	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/cli"}), expName, "main")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -39,7 +39,7 @@ func TestKymaCliIntegrationJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	expName := "post-kyma-cli-integration"
+	expName := "post-cli-integration-kyma-2"
 	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/cli"}), expName, "main")
 	require.NotNil(t, actualPost)
 
