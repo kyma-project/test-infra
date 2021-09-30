@@ -1077,6 +1077,8 @@ periodics:
               value: "europe-west4-b"
             - name: KYMA_PROJECT_DIR
               value: "/home/prow/go/src/github.com/kyma-project"
+            - name: BUILD_TYPE
+              value: "release"
           resources:
             requests:
               memory: 1Gi
@@ -1136,6 +1138,8 @@ periodics:
               value: "eu-west-3a"
             - name: KYMA_PROJECT_DIR
               value: "/home/prow/go/src/github.com/kyma-project"
+            - name: BUILD_TYPE
+              value: "release"
           resources:
             requests:
               memory: 1Gi
@@ -1207,6 +1211,8 @@ periodics:
               value: "northeurope"
             - name: RS_GROUP
               value: "kyma-gardener-azure"
+            - name: BUILD_TYPE
+              value: "release"
           resources:
             requests:
               memory: 1Gi
@@ -1287,6 +1293,8 @@ periodics:
               value: "northeurope"
             - name: RS_GROUP
               value: "kyma-gardener-azure"
+            - name: BUILD_TYPE
+              value: "release"
           resources:
             requests:
               memory: 1Gi
@@ -1367,6 +1375,8 @@ periodics:
               value: "northeurope"
             - name: RS_GROUP
               value: "kyma-gardener-azure"
+            - name: BUILD_TYPE
+              value: "release"
           resources:
             requests:
               memory: 1Gi
@@ -1448,6 +1458,8 @@ periodics:
               value: "northeurope"
             - name: RS_GROUP
               value: "kyma-gardener-azure"
+            - name: BUILD_TYPE
+              value: "release"
           resources:
             requests:
               memory: 1Gi
