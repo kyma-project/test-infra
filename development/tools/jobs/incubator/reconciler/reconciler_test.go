@@ -231,7 +231,7 @@ func TestReconcilerJobNightlyE2E(t *testing.T) {
 	})
 	tester.AssertThatHasExtraRefTestInfra(t, actualNightlyJob.JobBase.UtilityConfig, "main")
 	// TODO: use a non-pr tagged image
-	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/pr/kyma-integration:v20210902-035ae0cc-k8s1.18", actualNightlyJob.Spec.Containers[0].Image)
+	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18", actualNightlyJob.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"}, actualNightlyJob.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/reconciler"}, actualNightlyJob.Spec.Containers[0].Args)
 	tester.AssertThatContainerHasEnv(t, actualNightlyJob.Spec.Containers[0], "INPUT_CLUSTER_NAME", "rec-nightly")
