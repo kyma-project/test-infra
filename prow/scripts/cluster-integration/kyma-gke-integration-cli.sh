@@ -245,7 +245,6 @@ log::info "Running Kyma tests"
 
 kyma test run \
     --name "${SUITE_NAME}" \
-    --concurrency "${CONCURRENCY}" \
     --max-retries 1 \
     --timeout "1h" \
     --watch \
