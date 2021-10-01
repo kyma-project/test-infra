@@ -126,7 +126,7 @@ if [[ "${KYMA_MAJOR_VERSION}" == "2" ]]; then
     -s "$KYMA_SOURCES_DIR"
   if [[ "${KYMA_DELETE}" == "true" ]]; then
     sleep 30
-    kyma::delete_kyma
+    kyma::undeploy_kyma
     sleep 30
     kyma::deploy_kyma \
        -p "$EXECUTION_PROFILE" \
