@@ -62,6 +62,11 @@ spec:
             configMapKeyRef:
               name: {{ .Release.Name }}
               key: firebaseProjectID
+        - name: FIRESTORE_COLLECTION
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}
+              key: firestoreCollectionName
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: "/etc/googleServiceAccountKey/key"
         volumeMounts:

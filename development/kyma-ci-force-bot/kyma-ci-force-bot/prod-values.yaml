@@ -7,7 +7,8 @@ appName: "ci-force-bot"
 kymaClusterHostname: "c-6751197.kyma.shoot.live.k8s-hana.ondemand.com"
 kymaEventingProxy: "http://eventing-event-publisher-proxy.kyma-system/publish"
 firebaseProjectID: "sap-kyma-prow"
-gcpServiceAccount: "kyma-tooling-ci-force-bot"
+firestoreCollectionName: "failed-prowjobs"
+gcpServiceAccount: "ci-force-bot-tooling-kyma"
 component: "ci-force-bot.tooling.kyma"
 replicas: 1
 # Event type published to Kyma

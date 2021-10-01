@@ -58,7 +58,7 @@ func init() {
 		panic(fmt.Sprintf("Failed creating github client, error: %v", err))
 	}
 	// create pubsub client
-	pubSubClient, err = pubsub.NewClient(ctx, pubsub.PubSubProjectID)
+	pubSubClient, err = pubsub.NewClient(ctx, projectID)
 	if err != nil {
 		panic(fmt.Sprintf("Failed creating pubsub client, error: %v", err))
 	}
@@ -67,7 +67,7 @@ func init() {
 // GetGithubCommiter gets commiter github Login for Refs BaseSHA from pubsub ProwMessage.
 // It will find Login for commiter of first Ref in Refs slice because Prow crier pubsub reporter place ProwJobSpec.Refs first.
 // ProwJobSpec ExtraRefs are appended second.
-func GetGithubCommiter(ctx context.Context, m pubsub.MessagePayload) {
+func GetGithubCommiter(ctx context.Context, m pubsub.MessagePayload) error {
 	var err error
 	// set trace value to use it in logEntry
 	var failingTestMessage pubsub.FailingTestMessage
@@ -149,4 +149,5 @@ func GetGithubCommiter(ctx context.Context, m pubsub.MessagePayload) {
 		logger.LogCritical(fmt.Sprintf("failed publishing to pubsub, error: %s", err.Error()))
 	}
 	logger.LogInfo(fmt.Sprintf("published pubsub message to topic %s, id: %s", getSlackUserForCommiterTopic, *publlishedMessageID))
+	return nil
 }
