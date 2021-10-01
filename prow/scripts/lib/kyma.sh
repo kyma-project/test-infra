@@ -39,13 +39,13 @@ function kyma::deploy_kyma() {
 
     if [[ -n "$executionProfile" ]]; then
         if [[ -n "$upgrade" ]]; then
-            kyma deploy --reuse-values=false --ci --profile "$executionProfile" --source=local --workspace "${kymaSourcesDir}" --verbose
+            kyma deploy --ci --profile "$executionProfile" --source=local --workspace "${kymaSourcesDir}" --verbose
         else
             kyma deploy --ci --profile "$executionProfile" --source=local --workspace "${kymaSourcesDir}" --verbose
         fi
     else
         if [[ -n "$upgrade" ]]; then
-            kyma deploy --reuse-values=false --ci --source=local --workspace "${kymaSourcesDir}" --verbose
+            kyma deploy --ci --source=local --workspace "${kymaSourcesDir}" --verbose
         else
             kyma deploy --ci --source=local --workspace "${kymaSourcesDir}" --verbose
         fi
