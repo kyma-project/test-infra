@@ -227,8 +227,8 @@ if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
     else
         echo "Delete kyma"
         undeployKyma "${KYMA_COMMON_NAME}"
-        log::info "We wait 60s for Kyma cluster to settle"
-        sleep 60
+        log::info "We wait 180s for Kyma cluster to settle"
+        sleep 180
     fi
 
     provisionKyma2 "main" "${KYMA_COMMON_NAME}"
