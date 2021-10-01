@@ -11,14 +11,16 @@ import (
 	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
 	kymapubsub "github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
 	"os"
+	"regexp"
 )
 
 var (
-	firestoreClient     *firestore.Client
-	pubSubClient        *pubsub.Client
-	projectID           string
-	getGithubIssueTopic string
-	firestoreCollection string
+	firestoreClient      *firestore.Client
+	pubSubClient         *pubsub.Client
+	projectID            string
+	getGithubIssueTopic  string
+	firestoreCollection  string
+	pjtesterProwjobRegex *regexp.Regexp
 )
 
 func init() {
@@ -38,6 +40,7 @@ func init() {
 	if firestoreCollection == "" {
 		panic("environment variable FIRESTORE_COLLECTION is empty, can't setup firebase client")
 	}
+	pjtesterProwjobRegex = regexp.MustCompile(`.+_test_of_prowjob_.+`)
 	// create firestore client, it will be reused by multiple function calls
 	firestoreClient, err = firestore.NewClient(ctx, projectID)
 	if err != nil {
@@ -140,6 +143,10 @@ func GetFailureInstanceDetails(ctx context.Context, m kymapubsub.MessagePayload)
 	logger.WithLabel("jobID", *jobID)
 	logger.LogInfo(fmt.Sprintf("found prowjob execution ID: %s", *jobID))
 
+	if pjtesterProwjobRegex.FindStringIndex(*failingTestMessage.JobName) != nil {
+		logger.LogInfo(fmt.Sprintf("prowjob scheduled by pjtester detected, got message for prowjob %s, ignoring", *failingTestMessage.JobName))
+		return nil
+	}
 	// Detect failed prowjobs
 	if *failingTestMessage.Status == "failure" || *failingTestMessage.Status == "error" {
 		// For periodic prowjob get documents for open failing test instances for matching periodic.
@@ -200,7 +207,7 @@ func GetFailureInstanceDetails(ctx context.Context, m kymapubsub.MessagePayload)
 		}
 		logger.LogInfo(fmt.Sprintf("published pubsub message to topic %s, id: %s", getGithubIssueTopic, *publlishedMessageID))
 	} else {
-		logger.LogInfo(fmt.Sprintf("failure not detected, got notification for prowjob %s", *failingTestMessage.JobName))
+		logger.LogInfo(fmt.Sprintf("failure not detected, got message for prowjob %s, ignoring", *failingTestMessage.JobName))
 	}
 	// Do nothing if prwojob status doesn't mean a failure.
 	return nil

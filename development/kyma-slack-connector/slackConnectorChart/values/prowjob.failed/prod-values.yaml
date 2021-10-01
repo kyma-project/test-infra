@@ -7,4 +7,4 @@ notificationSlackChannel: "kyma-ci-force"
 functionBaseDir: "/development/kyma-slack-connector/notifyCommiterFunction"
 # Branch name with function code.
 #branch: "main"
-branch: "notify_commiter"
+branch: "fix_getGithubCommiter"
