@@ -38,16 +38,8 @@ periodics: # runs on schedule
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-nightly.sh"
             env:
-              - name: FI_RUNTIME_ID
-                value: "f0f05646-2fc7-441f-b1ec-ffc2ec766e8b"
-              - name: FI_RUN_INITIAL_CLEANUP
-                value: "true"
-              - name: FI_SKIP_DEPROVISIONING
-                value: "true"
-              - name: FI_SUFFIX
-                value: "nightly"
               - name: KEB_PLAN_ID
                 value: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
               - name: KYMA_MAJOR_VERSION
