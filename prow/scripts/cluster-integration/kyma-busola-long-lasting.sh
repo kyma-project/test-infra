@@ -142,7 +142,6 @@ function undeployKyma(){
     set -x
     TERM=dumb kyma undeploy \
     --kubeconfig="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml" \
-    --concurrency="${CPU_COUNT}" \
     --non-interactive \
     --verbose \
     --ci
