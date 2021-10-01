@@ -128,7 +128,7 @@ function provisionKyma2(){
     set +x
 }
 
-function deleteKyma(){
+function undeployKyma(){
     export DOMAIN_NAME=$1
 
     log::info "Uninstalling Kyma on the cluster : ${DOMAIN_NAME} using ${CPU_COUNT} cpus"
@@ -140,7 +140,7 @@ function deleteKyma(){
     kyma::install_cli
 
     set -x
-    TERM=dumb kyma delete \
+    TERM=dumb kyma undeploy \
     --kubeconfig="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml" \
     --concurrency="${CPU_COUNT}" \
     --non-interactive \
@@ -217,7 +217,7 @@ if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
     log::info "Kyma cluster name: ${KYMA_COMMON_NAME}"
     if [[ $RECREATE_CLUSTER == "true" ]]; then
         set +e
-        deleteKyma "${KYMA_COMMON_NAME}"
+        undeployKyma "${KYMA_COMMON_NAME}"
         set -e
 
         export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
@@ -228,7 +228,7 @@ if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
         provisionCluster "${KYMA_COMMON_NAME}" "${RESOURCES_PATH}/cluster-kyma.yaml"
     else
         echo "Delete kyma"
-        deleteKyma "${KYMA_COMMON_NAME}"
+        undeployKyma "${KYMA_COMMON_NAME}"
         log::info "We wait 60s for Kyma cluster to settle"
         sleep 60
     fi
