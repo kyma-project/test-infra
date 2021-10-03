@@ -740,6 +740,7 @@ templates:
                     - "extra_refs_test-infra"
                     - "extra_refs_kyma"
                     - "kyma_major_version_2"
+                    - "jobConfig_slack_dev_null"
                   local:
                     - "jobConfig_default"
                     - "request_small"
