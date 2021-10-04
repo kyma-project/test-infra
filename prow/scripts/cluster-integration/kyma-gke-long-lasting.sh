@@ -167,8 +167,7 @@ function installKyma() {
 			--domain "${DOMAIN}" \
 			--profile production \
 			--tls-crt "./letsencrypt/live/${DOMAIN}/fullchain.pem" \
-			--tls-key "./letsencrypt/live/${DOMAIN}/privkey.pem" \
-			--timeout 60m
+			--tls-key "./letsencrypt/live/${DOMAIN}/privkey.pem"
 
 	if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
 		log::info "Create DNS Record for Apiserver proxy IP"
