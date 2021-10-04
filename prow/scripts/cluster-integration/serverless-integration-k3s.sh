@@ -164,7 +164,7 @@ if [ "$USE_ALPHA" == "true" ]; then
 
   echo "--> Deploying Serverless"
   # The python38 function requires 40M+ of memory to work. Mostly used by kubeless. I need to overrride the defaultPreset to M to avoid OOMkill.
-  kyma deploy -p evaluation --component cluster-essentials,serverless --atomic --ci --value "$REGISTRY_VALUES" --value global.ingress.domainName="$DOMAIN" --value "serverless.webhook.values.function.resources.defaultPreset=M" -s local -w $KYMA_SOURCES_DIR
+  kyma deploy -p evaluation --component cluster-essentials,serverless --ci --value "$REGISTRY_VALUES" --value global.ingress.domainName="$DOMAIN" --value "serverless.webhook.values.function.resources.defaultPreset=M" -s local -w $KYMA_SOURCES_DIR
 
 else
   host::create_coredns_template
