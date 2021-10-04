@@ -330,13 +330,6 @@ templates:
               pipeline.test: helm serverless-test
               pipeline.clusterprovisioning: k3s
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3s.sh"
-          vm_job_template_cluster_users_k3d:
-            annotations:
-              pipeline.platform: k3d
-              pipeline.installer: kyma deploy
-              pipeline.test: shell script
-              pipeline.clusterprovisioning: k3d
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-cluster-users-k3d.sh"
           vm_job_labels_template:
             labels:
               preset-kyma-guard-bot-github-token: "true"
@@ -515,30 +508,6 @@ templates:
                     - "request_small"
                     - "vm_job_template_serverless_k3s"
                     - "vm_job_labels_template"
-              - jobConfig:
-                  name: "pre-main-cluster-users-integration-k3d"
-                  # following regexp won't start build if only Markdown files were changed
-                  annotations:
-                    pipeline.platform: "k3d"
-                    pipeline.installer: "kyma install"
-                    pipeline.test: "bash resources/cluster-users/files/sar-test.sh"
-                    pipeline.clusterprovisioning: "k3d"
-                  run_if_changed: "^((resources/cluster-users\\S+|tests/integration/cluster-users\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  labels:
-                    preset-build-pr: "true"
-                  env:
-                    TEST_SUITE: "cluster-users"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "vm_job_template_cluster_users_k3d"
-                    - "vm_job_labels_template"
               # Rapid channel is unstable and the job never succeeds. See https://github.com/kyma-project/test-infra/issues/4063
               # - jobConfig:
               #     name: "pre-main-kyma-gke-rapid-integration"
@@ -645,31 +614,6 @@ templates:
                     - "jobConfig_default"
                     - "request_small"
                     - "vm_job_template_k3d"
-                    - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
-              - jobConfig:
-                  name: "post-main-cluster-users-integration-k3d"
-                  annotations:
-                    testgrid-dashboards: kyma_integration
-                    description: Kyma's cluster-users integration job on k3d.
-                    testgrid-days-of-results: "60"
-                    pipeline.platform: "k3d"
-                    pipeline.installer: "kyma install"
-                    pipeline.test: "bash resources/cluster-users/files/sar-test.sh"
-                    pipeline.clusterprovisioning: "k3d"
-                  labels:
-                    preset-build-main: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                    - "kyma_major_version_2"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "vm_job_template_cluster_users_k3d"
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               # Rapid channel is unstable and the job never succeeds. See https://github.com/kyma-project/test-infra/issues/4063
