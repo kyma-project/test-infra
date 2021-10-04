@@ -96,9 +96,8 @@ function provisionBusola() {
     kubectl apply --namespace "$busola_namespace" -k "${BUSOLA_SOURCES_DIR}/resources"
 
     TERM=dumb kubectl cluster-info
-    log::info "Please generate params for using k8s http://enkode.surge.sh/"
-    log::info "Kyma busola Url:"
-    log::info "https://busola.${DOMAIN_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com?auth=generated_params_in_previous_step"
+    log::info "Kyma Dashboard URL:"
+    log::info "https://busola.${DOMAIN_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com"
 }
 
 function provisionKyma2(){
