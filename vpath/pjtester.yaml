@@ -1,2 +1,3 @@
 pjNames:
-- pjName: "pre-kyma-components-kyma-operator"
+- pjName: "pre-kyma-components-kyma-operator" # test buildpack-golang
+- pjName: "pre-main-console-react-components" # test buildpack-node
