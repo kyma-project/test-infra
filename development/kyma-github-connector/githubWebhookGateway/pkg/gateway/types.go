@@ -8,4 +8,5 @@ type Config struct {
 	KymaEventsService        string `envconfig:"EVENTING_SERVICE"` //http://test-gh-connector-app-event-service.kyma-integration:8081/test-gh-connector-app/events
 	ListenPort               string `envconfig:"LISTEN_PORT"`
 	AppName                  string `envconfig:"APP_NAME"`
+	TargetEventingAppName    string `envconfig:"TARGET_EVENTING_APP_NAME"`
 }

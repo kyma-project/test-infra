@@ -1,8 +1,0 @@
-apiVersion: applicationconnector.kyma-project.io/v1alpha1
-kind: ApplicationMapping
-metadata:
-  name: {{ .Values.slackConnector.slackAppName }}
-  namespace: {{ .Release.Namespace }}
-  labels:
-    app: {{ .Values.appName | quote }}
-    release: {{ .Release.Name | quote }}

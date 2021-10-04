@@ -1,14 +1,12 @@
 apiVersion: eventing.kyma-project.io/v1alpha1
 kind: Subscription
 metadata:
-  name: {{ .Release.Name }}-{{ .Values.ciForceBot.eventType }}-{{ .Values.ciForceBot.eventAction }}
+  name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.appName | quote }}
     release: {{ .Release.Name | quote }}
-    service: {{ .Values.ciForceBot.name | quote }}
-    event: {{ .Values.ciForceBot.eventType | quote }}
-    action: {{ .Values.ciForceBot.eventAction | quote }}
+    event: {{ .Values.eventType | quote }}
 spec:
   filter:
     filters:
@@ -19,7 +17,7 @@ spec:
       eventType:
         property: type
         type: exact
-        value: sap.kyma.custom.{{ .Values.ciForceBot.subscriptionAppName | replace "-" "" }}.{{ .Values.ciForceBot.eventType }}.{{ .Values.ciForceBot.eventAction }}.{{ .Values.ciForceBot.eventVersion }}
+        value: sap.kyma.custom.{{ .Values.appName | replace "-" "" }}.{{ .Values.eventType }}
   protocol: ""
   protocolsettings: {}
-  sink: http://{{ .Release.Name}}-{{ .Values.ciForceBot.name }}.{{ .Release.Namespace }}.svc.cluster.local
+  sink: http://{{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local

@@ -1,0 +1,17 @@
+{{- if .Values.connectorDeploymentEnabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name}}-pubsub-gateway-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.global.appName | quote }}
+    release: {{ .Release.Name | quote }}
+data:
+  kymaEventsService: {{ .Values.eventPublisherProxyURL }}
+  pubsubSubscriptionID: {{ .Values.pubsubSubscriptionID }}
+  eventType: {{ .Values.eventType }}
+  pubsubProjectID: {{ .Values.projectID }}
+  appName: {{ .Values.global.appName }}
+  targetAppName: {{ .Values.targetAppName }}
+  {{- end }}

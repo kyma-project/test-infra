@@ -1,20 +1,20 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ .Release.Name }}-{{ .Values.ciForceBot.name }}
+  name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.appName | quote }}
     release: {{ .Release.Name | quote }}
-    service: {{ .Values.ciForceBot.name | quote }}
+    event: {{ .Values.eventType | quote }}
 spec:
   selector:
     app: {{ .Values.appName }}
     release: {{ .Release.Name | quote }}
-    service: {{ .Values.ciForceBot.name | quote }}
+    event: {{ .Values.eventType | quote }}
   type: ClusterIP
   ports:
-    - name: http
+    - name: {{ .Values.eventType | replace "." "-" }}
       protocol: TCP
       port: 80
-      targetPort: {{ .Values.ciForceBot.ciForceBotContainer.containerPort }}
+      targetPort: {{ .Values.container.containerPort }}
