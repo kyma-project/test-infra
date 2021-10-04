@@ -64,6 +64,9 @@ func init() {
 	if githubRepo == "" {
 		panic("environment variable GITHUB_REPO is empty")
 	}
+	if firestoreCollection == "" {
+		panic("environment variable FIRESTORE_COLLECTION is empty, can't setup firebase client")
+	}
 	// create firestore client, it will be reused by multiple function calls
 	firestoreClient, err = firestore.NewClient(ctx, projectID)
 	if err != nil {

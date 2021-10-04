@@ -25,6 +25,7 @@ var (
 	githubOrg           string
 	githubRepo          string
 	notifyCommiterTopic string
+	firestoreCollection string
 )
 
 func init() {
@@ -36,6 +37,7 @@ func init() {
 	githubOrg = os.Getenv("GITHUB_ORG")
 	githubRepo = os.Getenv("GITHUB_REPO")
 	notifyCommiterTopic = os.Getenv("NOTIFY_COMMITER_TOPIC")
+	firestoreCollection = os.Getenv("FIRESTORE_COLLECTION")
 	// check if variables were set with values
 	if notifyCommiterTopic == "" {
 		panic("environment variable NOTIFY_COMMITER_TOPIC is empty")
@@ -51,6 +53,9 @@ func init() {
 	}
 	if githubRepo == "" {
 		panic("environment variable GITHUB_REPO is empty")
+	}
+	if firestoreCollection == "" {
+		panic("environment variable FIRESTORE_COLLECTION is empty, can't setup firebase client")
 	}
 	// create github client
 	githubClient, err = client.NewSapToolsClient(ctx, githubAccessToken)
