@@ -69,22 +69,6 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				"installation/test/test/README.MD",
 			},
 		},
-		"Should contain the cluster-users pre-main job": {
-			givenJobName: "pre-main-cluster-users-integration-k3d",
-
-			expPresets: []preset.Preset{
-				preset.BuildPr,
-			},
-			expRunIfChangedRegex: "^((resources/cluster-users\\S+|tests/integration/cluster-users\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
-			expRunIfChangedPaths: []string{
-				"resources/cluster-users/templates/rbac-roles.yaml",
-				"tests/integration/cluster-users/k3d-cluster-users.sh",
-			},
-			expNotRunIfChangedPaths: []string{
-				"installation/README.md",
-				"installation/test/test/README.MD",
-			},
-		},
 	}
 
 	for tn, tc := range tests {
@@ -144,13 +128,6 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-connectivity-enabled", "preset-kyma-integration-compass-dev", "preset-kyma-integration-compass-enabled",
-			},
-		},
-		"Should contain the cluster-users integration post-main job": {
-			givenJobName: "post-main-cluster-users-integration-k3d",
-
-			expPresets: []preset.Preset{
-				preset.BuildMaster,
 			},
 		},
 	}
