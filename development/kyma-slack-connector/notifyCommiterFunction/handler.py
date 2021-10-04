@@ -37,6 +37,43 @@ def main(event, context):
 	else:
 		notify_msg = "<!here>, couldn't find commiter slack username, please check this failure or ask commiter for it."
 	print(notify_msg)
+	channel_name = "kyma-prow-dev-null"
+	conversation_id = None
+	thread_id = None
+	try:
+		# Call the conversations.list method using the WebClient
+		for response in app.client.conversations_list():
+			if conversation_id is not None:
+				break
+			for channel in response["channels"]:
+				if channel["name"] == channel_name:
+					conversation_id = channel["id"]
+					#Print result
+					print(f"Found conversation ID: {conversation_id}")
+					break
+# https://api.slack.com/messaging/retrieving
+# https://api.slack.com/methods/conversations.history#response
+# https://api.slack.com/methods/search.messages
+# https://slack.dev/bolt-python/tutorial/getting-started
+# https://api.slack.com/start/building/bolt-python
+# https://api.slack.com/messaging/retrieving
+# https://api.slack.com/methods/conversations.list
+# https://console.cloud.google.com/logs/query;query=error_group%2528%22CPec6unB58T4nQE%22%2529%0AlogName:%22prowjobs%22%0Aresource.type%3D%22gce_instance%22%0Aresource.labels.instance_id%3D%225616924538911123302%22;timeRange=2021-10-01T13:57:51.670Z%2F2021-10-01T14:57:51.670Z?project=sap-kyma-prow&supportedpurview=project - this should not be an error in gcp.
+	except SlackApiError as e:
+		print(f"Error: {e}")
+	conversation_history = []
+	try:
+	# Call the conversations.history method using the WebClient
+	# conversations.history returns the first 100 messages by default
+	# These results are paginated, see: https://api.slack.com/methods/conversations.history$pagination
+		result = app.client.conversations_history(channel=conversation_id, limit=10)
+		conversation_history = result["messages"]
+	except SlackApiError as e:
+		print("Error creating conversation: {}".format(e))
+	for message in conversation_history:
+		if msg["url"] in message["text"]:
+			thread_id = message["ts"]
+			break
 	try:
 		# Deliver message to the channel.
 		# https://slack.dev/python-slack-sdk/api-docs/slack_sdk/web/slack_response.html#slack_sdk.web.slack_response.SlackResponse

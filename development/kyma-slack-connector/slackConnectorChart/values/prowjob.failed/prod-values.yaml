@@ -2,7 +2,8 @@ functionEnabled: true
 # Forwarded event type
 eventType: "prowjob.failed.v1"
 # Slack channel name to send messages.
-notificationSlackChannel: "kyma-ci-force"
+#notificationSlackChannel: "kyma-ci-force"
+notificationSlackChannel: "kyma-prow-dev-null"
 # Path to directory with function code. Relative to repository root.
 functionBaseDir: "/development/kyma-slack-connector/notifyCommiterFunction"
 # Branch name with function code.
