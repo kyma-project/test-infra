@@ -137,13 +137,6 @@ install::k3s() {
     date
 }
 
-install::k3d() {
-  echo "--> Installing k3d"
-  curl -sfL https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v4.4.8 bash
-  k3d --version
-  date
-}
-
 function host::patch_coredns() {
   echo "Patching CoreDns with REGISTRY_IP=$REGISTRY_IP"
   sed "s/REGISTRY_IP/$REGISTRY_IP/" coredns-patch.tpl >coredns-patch.yaml
@@ -153,9 +146,6 @@ function host::patch_coredns() {
 date
 
 if [ "$USE_ALPHA" == "true" ]; then
-  echo "--> Installing k3d for kyma-cli"
-  install::k3d
-
   echo "--> Installing kyma-cli"
   install::kyma_cli
 
