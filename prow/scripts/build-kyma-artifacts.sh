@@ -9,6 +9,8 @@
 set -e
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+KYMA_RESOURCES_DIR="/home/prow/go/src/github.com/kyma-project/kyma/installation/resources"
+
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${SCRIPT_DIR}/lib/docker.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
@@ -21,19 +23,8 @@ function copy_artifacts {
   BUCKET_PATH=$1
   log::info "Copying artifacts to $BUCKET_PATH..."
 
-  gsutil cp  "installation/scripts/is-installed.sh" "$BUCKET_PATH/is-installed.sh"
-  gsutil cp "${ARTIFACTS}/kyma-installer-cluster.yaml" "$BUCKET_PATH/kyma-installer-cluster.yaml"
-  gsutil cp "${ARTIFACTS}/kyma-installer-cluster-runtime.yaml" "$BUCKET_PATH/kyma-installer-cluster-runtime.yaml"
-
-  gsutil cp "${ARTIFACTS}/kyma-config-local.yaml" "$BUCKET_PATH/kyma-config-local.yaml"
-  gsutil cp "${ARTIFACTS}/kyma-installer-local.yaml" "$BUCKET_PATH/kyma-installer-local.yaml"
-
-  gsutil cp "${ARTIFACTS}/kyma-installer.yaml" "$BUCKET_PATH/kyma-installer.yaml"
-  gsutil cp "${ARTIFACTS}/kyma-installer-cr-cluster.yaml" "$BUCKET_PATH/kyma-installer-cr-cluster.yaml"
-  gsutil cp "${ARTIFACTS}/kyma-installer-cr-local.yaml" "$BUCKET_PATH/kyma-installer-cr-local.yaml"
-  gsutil cp "${ARTIFACTS}/kyma-installer-cr-cluster-runtime.yaml" "$BUCKET_PATH/kyma-installer-cr-cluster-runtime.yaml"
-
-  gsutil cp "${ARTIFACTS}/kyma-components.yaml" "$BUCKET_PATH/kyma-components.yaml"
+  cp "${KYMA_RESOURCES_DIR}/components.yaml" "${ARTIFACTS_DIR}/kyma-components.yaml"
+  gsutil cp "${KYMA_RESOURCES_DIR}/components.yaml" "$BUCKET_PATH/kyma-components.yaml"
 }
 
 gcp::authenticate \
@@ -58,18 +49,6 @@ else
 fi
 export DOCKER_TAG
 echo "DOCKER_TAG: ${DOCKER_TAG}"
-
-log::info "Building kyma-installer"
-make -C "tools/kyma-installer" release
-
-log::info "Create Kyma artifacts"
-if [[ -n "${PULL_NUMBER}" ]] && [[ "${PULL_BASE_REF}" =~ ^release-.* ]]; then
-  # work only on presubmit release branch.
-  log::info "workaround for release presubmits - rollback release kyma-installer to develop for the PRs"
-  cp "installation/resources/installer.yaml" "/tmp/installer.tpl.yaml"
-  sed -E ";s;image: eu.gcr.io\/kyma-project\/kyma-installer:.+;image: eu.gcr.io\/kyma-project\/develop\/installer:latest;" < "/tmp/installer.tpl.yaml" > "installation/resources/installer.yaml"
-fi
-env KYMA_INSTALLER_VERSION="${DOCKER_TAG}" ARTIFACTS_DIR="${ARTIFACTS}" "installation/scripts/release-generate-kyma-installer-artifacts.sh"
 
 log::info "Content of the local artifacts directory"
 ls -la "${ARTIFACTS}"
