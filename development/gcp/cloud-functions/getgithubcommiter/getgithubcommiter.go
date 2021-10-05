@@ -67,7 +67,7 @@ func init() {
 // GetGithubCommiter gets commiter github Login for Refs BaseSHA from pubsub ProwMessage.
 // It will find Login for commiter of first Ref in Refs slice because Prow crier pubsub reporter place ProwJobSpec.Refs first.
 // ProwJobSpec ExtraRefs are appended second.
-func GetGithubCommiter(ctx context.Context, m pubsub.MessagePayload) {
+func GetGithubCommiter(ctx context.Context, m pubsub.MessagePayload) error {
 	var err error
 	// set trace value to use it in logEntry
 	var failingTestMessage pubsub.FailingTestMessage
@@ -82,9 +82,14 @@ func GetGithubCommiter(ctx context.Context, m pubsub.MessagePayload) {
 	// Get metadata from context and set eventID label for logging.
 	contextMetadata, err := metadata.FromContext(ctx)
 	if err != nil {
-		logger.LogCritical(fmt.Sprintf("failed extract metadata from function call context, error: %s", err.Error()))
+		if m.MessageId != "" {
+			logger.WithLabel("messageId", m.MessageId)
+		} else {
+			logger.LogError(fmt.Sprintf("failed extract metadata from function call context, error: %s", err.Error()))
+		}
+	} else {
+		logger.WithLabel("messageId", contextMetadata.EventID)
 	}
-	logger.WithLabel("messageId", contextMetadata.EventID)
 
 	// Unmarshall pubsub message data payload.
 	err = json.Unmarshal(m.Data, &failingTestMessage)
@@ -149,4 +154,5 @@ func GetGithubCommiter(ctx context.Context, m pubsub.MessagePayload) {
 		logger.LogCritical(fmt.Sprintf("failed publishing to pubsub, error: %s", err.Error()))
 	}
 	logger.LogInfo(fmt.Sprintf("published pubsub message to topic %s, id: %s", getSlackUserForCommiterTopic, *publlishedMessageID))
+	return nil
 }

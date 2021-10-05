@@ -3,10 +3,9 @@ module github.com/kyma-project/test-infra/development/gcp/cloud-functions/getgit
 go 1.14
 
 replace (
-	k8s.io/api => k8s.io/api v0.20.2
-	k8s.io/apimachinery => k8s.io/apimachinery v0.20.2
-	k8s.io/client-go => k8s.io/client-go v0.20.2
-
+	k8s.io/api => k8s.io/api v0.21.1
+	k8s.io/apimachinery => k8s.io/apimachinery v0.21.1
+	k8s.io/client-go => k8s.io/client-go v0.21.1
 )
 
 require (
