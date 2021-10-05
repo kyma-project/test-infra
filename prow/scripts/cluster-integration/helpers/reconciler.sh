@@ -39,7 +39,7 @@ function reconciler::wait_until_is_ready() {
 
     if [ "$RECONCILER_TIMEOUT" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then
       log::info "Current state of pods in reconciler namespace"
-      pods_info=$(kubectl get po -n reconciler)
+      pods_info=$(kubectl get po -n "${RECONCILER_NAMESPACE}")
       log::info "${pods_info}"
       log::info "Timeout reached while waiting for reconciler to be ready. Exiting"
       exit 1
@@ -53,7 +53,7 @@ function reconciler::wait_until_is_ready() {
 function reconciler::wait_until_test_pod_is_ready() {
   iterationsLeft=$(( RECONCILER_TIMEOUT/RECONCILER_DELAY ))
   while : ; do
-    testPodStatus=$(kubectl get po -n reconciler test-pod -ojsonpath='{.status.containerStatuses[?(@.name == "test-pod")].ready}')
+    testPodStatus=$(kubectl get po -n "${RECONCILER_NAMESPACE}" test-pod -ojsonpath='{.status.containerStatuses[?(@.name == "test-pod")].ready}')
     if [ "${testPodStatus}" = "true" ]; then
       log::info "Test pod is ready"
       break
@@ -72,7 +72,7 @@ function reconciler::wait_until_test_pod_is_ready() {
 function reconciler::wait_until_test_pod_is_deleted() {
   iterationsLeft=$(( RECONCILER_TIMEOUT/RECONCILER_DELAY ))
   while : ; do
-    testPodName=$(kubectl get po -n reconciler test-pod -ojsonpath='{.metadata.name}' --ignore-not-found)
+    testPodName=$(kubectl get po -n "${RECONCILER_NAMESPACE}" test-pod -ojsonpath='{.metadata.name}' --ignore-not-found)
     if [ -z "${testPodName}" ]; then
       log::info "Test pod is deleted"
       break
@@ -120,7 +120,7 @@ function reconciler::initialize_test_pod() {
 function reconciler::reconcile_kyma() {
   # Trigger Kyma reconciliation using reconciler
   log::banner "Reconcile Kyma in the same cluster until it is ready"
-  kubectl exec -it -n reconciler test-pod -c test-pod -- sh -c ". /tmp/reconcile-kyma.sh"
+  kubectl exec -it -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/reconcile-kyma.sh"
   log::info "test-pod exited"
 }
 
@@ -128,7 +128,7 @@ function reconciler::reconcile_kyma() {
 function reconciler::trigger_kyma_reconcile() {
   # Trigger Kyma reconciliation using reconciler
   log::banner "Reconcile Kyma in the same cluster"
-  kubectl exec -n reconciler test-pod -c test-pod -- sh -c ". /tmp/request-reconcile.sh"
+  kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/request-reconcile.sh"
   if [[ $? -ne 0 ]]; then
       echo "Failed to reconcile"
       exit 1
@@ -139,7 +139,7 @@ function reconciler::trigger_kyma_reconcile() {
 function reconciler::wait_until_kyma_reconciled() {
   iterationsLeft=$(( RECONCILER_TIMEOUT/RECONCILER_DELAY ))
   while : ; do
-    status=$(kubectl exec -n reconciler test-pod -c test-pod -- sh -c ". /tmp/get-reconcile-status.sh" | xargs)
+    status=$(kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/get-reconcile-status.sh" | xargs)
     if [ "${status}" = "ready" ]; then
       echo "Kyma is installed"
       break
@@ -160,18 +160,18 @@ function reconciler::wait_until_kyma_reconciled() {
 function reconciler::deploy_test_pod() {
   # Deploy a test pod
   log::banner "Deploying test-pod in the cluster"
-  test_pod_name=$(kubectl get po test-pod -n reconciler -ojsonpath="{ .metadata.name }" --ignore-not-found)
+  test_pod_name=$(kubectl get po test-pod -n "${RECONCILER_NAMESPACE}" -ojsonpath="{ .metadata.name }" --ignore-not-found)
   if [ ! -z "${test_pod_name}" ]; then
     log::info "Found existing pod: test-pod"
-    kubectl delete po test-pod -n reconciler
+    kubectl delete po test-pod -n "${RECONCILER_NAMESPACE}"
     reconciler::wait_until_test_pod_is_deleted
   fi
-  kubectl run -n reconciler --image=alpine:3.14.1 --restart=Never test-pod -- sh -c "sleep 36000"
+  kubectl run -n "${RECONCILER_NAMESPACE}" --image=alpine:3.14.1 --restart=Never test-pod -- sh -c "sleep 36000"
 }
 
 function reconciler::disable_sidecar_injection_reconciler_ns() {
     log::info "Disabling sidecar injection for reconciler namespace"
-    kubectl label namespace reconciler istio-injection=disabled --overwrite
+    kubectl label namespace "${RECONCILER_NAMESPACE}" istio-injection=disabled --overwrite
 }
 
 function reconciler::pre_upgrade_test_fast_integration_kyma_1_24() {
