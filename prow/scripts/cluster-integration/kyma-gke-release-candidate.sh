@@ -138,7 +138,7 @@ export REPO_OWNER
 readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
 export REPO_NAME
 
-readonly COMMON_NAME_PREFIX="tunas11-gke-release"
+readonly COMMON_NAME_PREFIX="gke-release"
 readonly RELEASE_VERSION=$(cat "VERSION")
 log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
 TRIMMED_RELEASE_VERSION=${RELEASE_VERSION//./-}
