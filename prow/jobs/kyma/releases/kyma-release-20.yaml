@@ -364,14 +364,14 @@ postsubmits: # runs on main
               - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-release-candidate.sh"
             env:
               - name: EVENTMESH_SECRET_FILE
-                value: "/etc/credentials/kyma-tunas-prow-event-mesh/serviceKey"
+                value: "/etc/credentials/kyma-tunas-release-testing-event-mesh/serviceKey"
             resources:
               requests:
                 memory: 200Mi
                 cpu: 80m
             volumeMounts:
-              - name: kyma-tunas-prow-event-mesh
-                mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
+              - name: kyma-tunas-release-testing-event-mesh
+                mountPath: /etc/credentials/kyma-tunas-release-testing-event-mesh
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -381,9 +381,9 @@ postsubmits: # runs on main
         nodeSelector:
             dedicated: "high-cpu"
         volumes:
-          - name: kyma-tunas-prow-event-mesh
+          - name: kyma-tunas-release-testing-event-mesh
             secret:
-              secretName: kyma-tunas-prow-event-mesh
+              secretName: kyma-tunas-release-testing-event-mesh
     - name: post-rel20-kyma-gke-release-upgrade
       annotations:
         pipeline.trigger: "pr-merge"

@@ -191,16 +191,16 @@ templates:
                     preset-cluster-version: "true"
                     preset-gc-compute-envs: "true"
                   env:
-                    EVENTMESH_SECRET_FILE: "/etc/credentials/kyma-tunas-prow-event-mesh/serviceKey"
+                    EVENTMESH_SECRET_FILE: "/etc/credentials/kyma-tunas-release-testing-event-mesh/serviceKey"
                   decoration_config:
                     timeout: 3600000000000 # 1h
                     grace_period: 600000000000 # 10min
                   volumes:
-                    - name: kyma-tunas-prow-event-mesh
-                      secretName: kyma-tunas-prow-event-mesh
+                    - name: kyma-tunas-release-testing-event-mesh
+                      secretName: kyma-tunas-release-testing-event-mesh
                   volumeMounts:
-                    - name: kyma-tunas-prow-event-mesh
-                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
+                    - name: kyma-tunas-release-testing-event-mesh
+                      mountPath: /etc/credentials/kyma-tunas-release-testing-event-mesh
                       readOnly: true
                   command: "bash"
                   request_memory: 200Mi
