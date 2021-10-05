@@ -64,6 +64,9 @@ func init() {
 	if githubRepo == "" {
 		panic("environment variable GITHUB_REPO is empty")
 	}
+	if firestoreCollection == "" {
+		panic("environment variable FIRESTORE_COLLECTION is empty, can't setup firebase client")
+	}
 	// create firestore client, it will be reused by multiple function calls
 	firestoreClient, err = firestore.NewClient(ctx, projectID)
 	if err != nil {
@@ -256,6 +259,7 @@ func GetGithubIssue(ctx context.Context, m kymapubsub.MessagePayload) error {
 		logger.LogCritical(fmt.Sprintf("failed publishing to pubsub, error: %s", err.Error()))
 	}
 	logger.LogInfo(fmt.Sprintf("published pubsub message to topic %s, id: %s", getGithubCommiterTopic, *commiterPubllishedMessageID))
+	// Publishing to this topic will be enabled after creating cloud-function for it. This task is postponed utnil we will get some feedback about solution.
 	//errorsPubllishedMessageID, err := kymapubsub.PublishPubSubMessage(ctx, pubSubClient, failingTestMessage, getProwjobErrorsTopic)
 	//if err != nil {
 	//	logger.LogCritical(fmt.Sprintf("failed publishing to pubsub, error: %s", err.Error()))

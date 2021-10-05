@@ -10,14 +10,14 @@ metadata:
 spec:
   filter:
     filters:
-    - eventSource:
-        property: source
-        type: exact
-        value: ""
-      eventType:
-        property: type
-        type: exact
-        value: sap.kyma.custom.{{ .Values.appName | replace "-" "" }}.{{ .Values.eventType }}
+      - eventSource:
+          property: source
+          type: exact
+          value: ""
+        eventType:
+          property: type
+          type: exact
+          value: sap.kyma.custom.{{ .Values.appName | replace "-" "" }}.{{ .Values.eventType }}
   protocol: ""
   protocolsettings: {}
   sink: http://{{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
