@@ -139,7 +139,7 @@ install::k3s() {
 
 install::k3d() {
   echo "--> Installing k3d"
-  curl -sfL https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+  curl -sfL https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v4.4.8 bash
   k3d --version
   date
 }
