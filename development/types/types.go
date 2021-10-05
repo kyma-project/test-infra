@@ -5,7 +5,7 @@ package types
 type User struct {
 	ComGithubUsername          string `yaml:"com.github.username,omitempty"`
 	SapToolsGithubUsername     string `yaml:"sap.tools.github.username,omitempty"`
-	ComEnterpriseSlackUsername string `yaml:"com.slack.enterprise.username,omitempty"`
+	ComEnterpriseSlackUsername string `yaml:"com.slack.enterprise.sap.username,omitempty"`
 }
 
 type Logger interface {

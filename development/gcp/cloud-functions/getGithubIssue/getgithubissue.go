@@ -163,9 +163,14 @@ func GetGithubIssue(ctx context.Context, m kymapubsub.MessagePayload) error {
 	// Get metadata from context and set eventID label for logging.
 	contextMetadata, err := metadata.FromContext(ctx)
 	if err != nil {
-		logger.LogCritical(fmt.Sprintf("failed extract metadata from function call context, error: %s", err.Error()))
+		if m.MessageId != "" {
+			logger.WithLabel("messageId", m.MessageId)
+		} else {
+			logger.LogError(fmt.Sprintf("failed extract metadata from function call context, error: %s", err.Error()))
+		}
+	} else {
+		logger.WithLabel("messageId", contextMetadata.EventID)
 	}
-	logger.WithLabel("messageId", contextMetadata.EventID)
 
 	// Unmarshall pubsub message data payload.
 	err = json.Unmarshal(m.Data, &failingTestMessage)
@@ -247,17 +252,18 @@ func GetGithubIssue(ctx context.Context, m kymapubsub.MessagePayload) error {
 			logger.LogError(fmt.Sprintf("github issue is nil, something went wrong with creating it"))
 			// TODO: need error reporting for such case, without failing whole function
 		}
-		// Publish message to topic further enriching failing test instance.
-		commiterPubllishedMessageID, err := kymapubsub.PublishPubSubMessage(ctx, pubSubClient, failingTestMessage, getGithubCommiterTopic)
-		if err != nil {
-			logger.LogCritical(fmt.Sprintf("failed publishing to pubsub, error: %s", err.Error()))
-		}
-		logger.LogInfo(fmt.Sprintf("published pubsub message to topic %s, id: %s", getGithubCommiterTopic, *commiterPubllishedMessageID))
-		//errorsPubllishedMessageID, err := kymapubsub.PublishPubSubMessage(ctx, pubSubClient, failingTestMessage, getProwjobErrorsTopic)
-		//if err != nil {
-		//	logger.LogCritical(fmt.Sprintf("failed publishing to pubsub, error: %s", err.Error()))
-		//}
-		//logger.LogInfo(fmt.Sprintf("published pubsub message to topic %s, id: %s", getProwjobErrorsTopic, *errorsPubllishedMessageID))
 	}
+	// Publish message to topic further enriching failing test instance.
+	commiterPubllishedMessageID, err := kymapubsub.PublishPubSubMessage(ctx, pubSubClient, failingTestMessage, getGithubCommiterTopic)
+	if err != nil {
+		logger.LogCritical(fmt.Sprintf("failed publishing to pubsub, error: %s", err.Error()))
+	}
+	logger.LogInfo(fmt.Sprintf("published pubsub message to topic %s, id: %s", getGithubCommiterTopic, *commiterPubllishedMessageID))
+	// Publishing to this topic will be enabled after creating cloud-function for it. This task is postponed utnil we will get some feedback about solution.
+	//errorsPubllishedMessageID, err := kymapubsub.PublishPubSubMessage(ctx, pubSubClient, failingTestMessage, getProwjobErrorsTopic)
+	//if err != nil {
+	//	logger.LogCritical(fmt.Sprintf("failed publishing to pubsub, error: %s", err.Error()))
+	//}
+	//logger.LogInfo(fmt.Sprintf("published pubsub message to topic %s, id: %s", getProwjobErrorsTopic, *errorsPubllishedMessageID))
 	return nil
 }

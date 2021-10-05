@@ -96,7 +96,11 @@ func GetSlackUserForGithubUser(ctx context.Context, m pubsub.MessagePayload) err
 	// Get metadata from context and set eventID label for logging.
 	contextMetadata, err := metadata.FromContext(ctx)
 	if err != nil {
-		logger.LogCritical(fmt.Sprintf("failed extract metadata from function call context, error: %s", err.Error()))
+		if m.MessageId != "" {
+			logger.WithLabel("messageId", m.MessageId)
+		} else {
+			logger.LogError(fmt.Sprintf("failed extract metadata from function call context, error: %s", err.Error()))
+		}
 	} else {
 		logger.WithLabel("messageId", contextMetadata.EventID)
 	}
@@ -153,7 +157,7 @@ func GetSlackUserForGithubUser(ctx context.Context, m pubsub.MessagePayload) err
 		go func(wg *sync.WaitGroup, message *pubsub.FailingTestMessage, logger *cloudfunctions.LogEntry, out <-chan string, done <-chan int) {
 			for {
 				select {
-				case slackUser := <- out:
+				case slackUser := <-out:
 					logger.LogInfo(fmt.Sprintf("adding slack user %s to CommitersSlacklogins", slackUser))
 					// Save slack username in FailingTestMessage.CommiterSlackLogins
 					message.CommitersSlackLogins = append(message.CommitersSlackLogins, slackUser)

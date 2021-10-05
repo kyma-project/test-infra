@@ -1,6 +1,6 @@
 # Basic setup for Prow jobs
 
-FROM debian:stretch
+FROM debian:bullseye
 
 # Add commit details
 
@@ -34,7 +34,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean
 
 # Install gcloud
-ENV CLOUD_SDK_VERSION=299.0.0
+ENV CLOUD_SDK_VERSION=358.0.0
 ENV PATH=/google-cloud-sdk/bin:/workspace:${PATH} \
     CLOUDSDK_CORE_DISABLE_PROMPTS=1
 
@@ -50,9 +50,9 @@ RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cl
     gcloud info | tee /workspace/gcloud-info.txt
 
 # Cluster Version
-ENV CLUSTER_VERSION=1.16
+ENV CLUSTER_VERSION=1.20
 
-# Kubectl 1.16
+# Kubectl 1.20
 RUN mv /google-cloud-sdk/bin/kubectl.${CLUSTER_VERSION} /google-cloud-sdk/bin/kubectl
 
 # Docker-in-docker
@@ -62,7 +62,7 @@ RUN curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID"
     "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
     $(lsb_release -cs) stable"
 
-ENV DOCKER_VERSION=18.06.1*
+ENV DOCKER_VERSION=5:20.10.8*
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends docker-ce=${DOCKER_VERSION} && \
@@ -88,3 +88,7 @@ ENV PATH=$PATH:/prow-tools
 ENV COSIGN_VERSION=1.0.0
 RUN wget https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64 -O /usr/local/bin/cosign &&\
     chmod +x /usr/local/bin/cosign
+
+# The following lines needed for using dind since debian is using nftables by default
+RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
+    update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
