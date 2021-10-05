@@ -62,8 +62,8 @@ def main(event, context):
 		conversation_history = response["messages"]
 	except SlackApiError as e:
 		print("Error creating conversation: {}".format(e))
-	for message in conversation_history:
-		try:
+	try:
+		for message in conversation_history:
 			if msg["url"] in message["text"]:
 				if "thread_ts" in message:
 					thread_id = message["thread_ts"]
@@ -103,18 +103,17 @@ def main(event, context):
 														 }
 													 ])
 				break
-			if thread_id is None:
-				result = app.client.chat_postMessage(channel=os.environ['NOTIFICATION_SLACK_CHANNEL'],
-													 thread_ts=thread_id,
-													 text="{} prowjob {} execution failed, view logs: {}, issue #{}: https://github.com/kyma-test-infra-dev/kyma/issues/{}".format(
-														 msg["job_type"],
-														 msg["job_name"],
-														 msg["url"],
-														 msg["githubIssueNumber"],
-														 msg["githubIssueNumber"]),
-													 username="CiForceBot",
-													 link_names=True,
-													 blocks=[
+		if thread_id is None:
+			result = app.client.chat_postMessage(channel=os.environ['NOTIFICATION_SLACK_CHANNEL'],
+												 text="{} prowjob {} execution failed, view logs: {}, issue #{}: https://github.com/kyma-test-infra-dev/kyma/issues/{}".format(
+													 msg["job_type"],
+													 msg["job_name"],
+													 msg["url"],
+													 msg["githubIssueNumber"],
+													 msg["githubIssueNumber"]),
+												 username="CiForceBot",
+												 link_names=True,
+												 blocks=[
 														 {
 															 "type": "header",
 															 "text": {
@@ -142,12 +141,12 @@ def main(event, context):
 															 }
 														 }
 													 ])
-			assert result.get("ok", False), "Assert response from slack API is OK failed. This is critical error."
-			print("sent notification for message id: {}".format(event["data"]["ID"]))
-		# https://slack.dev/python-slack-sdk/api-docs/slack_sdk/errors/index.html#slack_sdk.errors.SlackApiError
-		except SlackApiError as e:
-			# https://slack.dev/python-slack-sdk/api-docs/slack_sdk/web/slack_response.html#slack_sdk.web.slack_response.SlackResponse
-			assert e.response.get("ok", False) is False, \
-				"Assert response from slack API is not OK failed. This should not be error."
-			print(f"Got an error: {e.response['error']}")
-			print("failed sent notification for message id: {}".format(event["data"]["ID"]))
+		assert result.get("ok", False), "Assert response from slack API is OK failed. This is critical error."
+		print("sent notification for message id: {}".format(event["data"]["ID"]))
+	# https://slack.dev/python-slack-sdk/api-docs/slack_sdk/errors/index.html#slack_sdk.errors.SlackApiError
+	except SlackApiError as e:
+		# https://slack.dev/python-slack-sdk/api-docs/slack_sdk/web/slack_response.html#slack_sdk.web.slack_response.SlackResponse
+		assert e.response.get("ok", False) is False, \
+			"Assert response from slack API is not OK failed. This should not be error."
+		print(f"Got an error: {e.response['error']}")
+		print("failed sent notification for message id: {}".format(event["data"]["ID"]))
