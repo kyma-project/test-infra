@@ -1,6 +1,6 @@
 # Basic golang buildpack
 
-FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20210922-ab7a4307
+FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20211005-0e8c8173
 
 # Commit details
 
