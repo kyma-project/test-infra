@@ -38,6 +38,9 @@ function reconciler::wait_until_is_ready() {
     fi
 
     if [ "$RECONCILER_TIMEOUT" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then
+      log::info "Current state of pods in reconciler namespace"
+      pods_info=$(kubectl get po -n reconciler)
+      log::info "${pods_info}"
       log::info "Timeout reached while waiting for reconciler to be ready. Exiting"
       exit 1
     fi
