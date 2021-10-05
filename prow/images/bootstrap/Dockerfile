@@ -88,3 +88,7 @@ ENV PATH=$PATH:/prow-tools
 ENV COSIGN_VERSION=1.0.0
 RUN wget https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64 -O /usr/local/bin/cosign &&\
     chmod +x /usr/local/bin/cosign
+
+# The following lines needed for using dind since debian is using nftables by default
+RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
+    update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
