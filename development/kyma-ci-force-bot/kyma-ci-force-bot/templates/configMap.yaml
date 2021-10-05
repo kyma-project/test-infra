@@ -12,4 +12,5 @@ data:
   appName: {{ .Values.appName | quote }}
   listenPort: {{ .Values.container.containerPort | quote }}
   firebaseProjectID: {{ .Values.firebaseProjectID | quote }}
+  firestoreCollectionName: {{ .Values.firestoreCollectionName | quote }}
   component: {{ .Values.component | quote }}

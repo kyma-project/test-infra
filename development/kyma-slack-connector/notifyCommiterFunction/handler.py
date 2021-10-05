@@ -24,12 +24,16 @@ def main(event, context):
 	if len(msg["slackCommitersLogins"]) > 0:
 		slack_users = ""
 		for commiter in msg["slackCommitersLogins"]:
-			print(commiter)
-			if slack_users != "":
-				slack_users = "{}, <@{}>".format(slack_users, commiter)
-			else:
-				slack_users = "<@{}>".format(commiter)
-		notify_msg = "{} please check what's going on".format(slack_users)
+			if commiter != "":
+				print(commiter)
+				if slack_users != "":
+					slack_users = "{}, <@{}>".format(slack_users, commiter)
+				else:
+					slack_users = "<@{}>".format(commiter)
+		if slack_users != "":
+			notify_msg = "{} please check what's going on".format(slack_users)
+		else:
+			notify_msg = "<!here>, couldn't find commiter slack username, please check this failure or ask commiter for it."
 	else:
 		notify_msg = "<!here>, couldn't find commiter slack username, please check this failure or ask commiter for it."
 	print(notify_msg)

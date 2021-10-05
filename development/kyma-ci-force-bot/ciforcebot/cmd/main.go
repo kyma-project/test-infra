@@ -28,12 +28,13 @@ var (
 
 //Config containing all program configs
 type Config struct {
-	KymaEventsService string `envconfig:"EVENTING_SERVICE"` //http://test-gh-connector-app-event-service.kyma-integration:8081/test-gh-connector-app/events
-	ListenPort        int    `envconfig:"LISTEN_PORT"`
-	ProjectID         string `envconfig:"FIRESTORE_GCP_PROJECT_ID"`
-	AppName           string `envconfig:"APP_NAME"` // PubSub Connector application name as set in Compass.
-	LogName           string `envconfig:"LOG_NAME"` // Google cloud logging log name.
-	Component         string `envconfig:"COMPONENT"`
+	KymaEventsService   string `envconfig:"EVENTING_SERVICE"` //http://test-gh-connector-app-event-service.kyma-integration:8081/test-gh-connector-app/events
+	ListenPort          int    `envconfig:"LISTEN_PORT"`
+	ProjectID           string `envconfig:"FIRESTORE_GCP_PROJECT_ID"`
+	AppName             string `envconfig:"APP_NAME"` // PubSub Connector application name as set in Compass.
+	LogName             string `envconfig:"LOG_NAME"` // Google cloud logging log name.
+	Component           string `envconfig:"COMPONENT"`
+	FirestoreCollection string `envconfig:"FIRESTORE_COLLECTION"`
 }
 
 type loggingPayload struct {

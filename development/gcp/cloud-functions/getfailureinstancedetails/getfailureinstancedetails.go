@@ -11,13 +11,16 @@ import (
 	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
 	kymapubsub "github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
 	"os"
+	"regexp"
 )
 
 var (
-	firestoreClient     *firestore.Client
-	pubSubClient        *pubsub.Client
-	projectID           string
-	getGithubIssueTopic string
+	firestoreClient      *firestore.Client
+	pubSubClient         *pubsub.Client
+	projectID            string
+	getGithubIssueTopic  string
+	firestoreCollection  string
+	pjtesterProwjobRegex *regexp.Regexp
 )
 
 func init() {
@@ -26,13 +29,18 @@ func init() {
 	// set variables from environment variables
 	projectID = os.Getenv("GCP_PROJECT_ID")
 	getGithubIssueTopic = os.Getenv("GITHUB_ISSUE_TOPIC")
+	firestoreCollection = os.Getenv("FIRESTORE_COLLECTION")
 	// check if variables were set with values
 	if projectID == "" {
 		panic("environment variable GCP_PROJECT_ID is empty, can't setup firebase client")
 	}
 	if getGithubIssueTopic == "" {
-		panic("environment variable GITHUB_ISSUE_TOPIC is empty, can't setup firebase client")
+		panic("environment variable GITHUB_ISSUE_TOPIC is empty, can't setup pubsub client")
 	}
+	if firestoreCollection == "" {
+		panic("environment variable FIRESTORE_COLLECTION is empty, can't setup firebase client")
+	}
+	pjtesterProwjobRegex = regexp.MustCompile(`.+_test_of_prowjob_.+`)
 	// create firestore client, it will be reused by multiple function calls
 	firestoreClient, err = firestore.NewClient(ctx, projectID)
 	if err != nil {
@@ -74,7 +82,7 @@ func addFailingTest(ctx context.Context, client *firestore.Client, message kymap
 	}
 
 	// Add document to firestore collection
-	doc, _, err := client.Collection("testFailures").Add(ctx, failingTest)
+	doc, _, err := client.Collection(firestoreCollection).Add(ctx, failingTest)
 	if err != nil {
 		return nil, fmt.Errorf("colud not add failing test instance to firestore collection, error: %w", err)
 	}
@@ -135,14 +143,18 @@ func GetFailureInstanceDetails(ctx context.Context, m kymapubsub.MessagePayload)
 	logger.WithLabel("jobID", *jobID)
 	logger.LogInfo(fmt.Sprintf("found prowjob execution ID: %s", *jobID))
 
+	if pjtesterProwjobRegex.FindStringIndex(*failingTestMessage.JobName) != nil {
+		logger.LogInfo(fmt.Sprintf("prowjob scheduled by pjtester detected, got message for prowjob %s, ignoring", *failingTestMessage.JobName))
+		return nil
+	}
 	// Detect failed prowjobs
 	if *failingTestMessage.Status == "failure" || *failingTestMessage.Status == "error" {
 		// For periodic prowjob get documents for open failing test instances for matching periodic.
 		if *failingTestMessage.JobType == "periodic" {
-			iter = firestoreClient.Collection("testFailures").Where("jobName", "==", *failingTestMessage.JobName).Where("jobType", "==", *failingTestMessage.JobType).Where("open", "==", true).Documents(ctx)
+			iter = firestoreClient.Collection(firestoreCollection).Where("jobName", "==", *failingTestMessage.JobName).Where("jobType", "==", *failingTestMessage.JobType).Where("open", "==", true).Documents(ctx)
 			//	For postsubmit prowjob get documents for open failing test for matching postsubmit with the same baseSha. If baseSha is different it's represented by another failing test instance.
 		} else if *failingTestMessage.JobType == "postsubmit" {
-			iter = firestoreClient.Collection("testFailures").Where("jobName", "==", *failingTestMessage.JobName).Where("jobType", "==", *failingTestMessage.JobType).Where("open", "==", true).Where("baseSha", "==", failingTestMessage.Refs[0].BaseSHA).Documents(ctx)
+			iter = firestoreClient.Collection(firestoreCollection).Where("jobName", "==", *failingTestMessage.JobName).Where("jobType", "==", *failingTestMessage.JobType).Where("open", "==", true).Where("baseSha", "==", failingTestMessage.Refs[0].BaseSHA).Documents(ctx)
 		} else {
 			return nil
 		}
@@ -195,7 +207,7 @@ func GetFailureInstanceDetails(ctx context.Context, m kymapubsub.MessagePayload)
 		}
 		logger.LogInfo(fmt.Sprintf("published pubsub message to topic %s, id: %s", getGithubIssueTopic, *publlishedMessageID))
 	} else {
-		logger.LogInfo(fmt.Sprintf("failure not detected, got notification for prowjob %s", *failingTestMessage.JobName))
+		logger.LogInfo(fmt.Sprintf("failure not detected, got message for prowjob %s, ignoring", *failingTestMessage.JobName))
 	}
 	// Do nothing if prwojob status doesn't mean a failure.
 	return nil

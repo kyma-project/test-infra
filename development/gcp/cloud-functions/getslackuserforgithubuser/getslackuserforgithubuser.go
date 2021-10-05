@@ -25,6 +25,7 @@ var (
 	githubOrg           string
 	githubRepo          string
 	notifyCommiterTopic string
+	firestoreCollection string
 )
 
 func init() {
@@ -36,6 +37,7 @@ func init() {
 	githubOrg = os.Getenv("GITHUB_ORG")
 	githubRepo = os.Getenv("GITHUB_REPO")
 	notifyCommiterTopic = os.Getenv("NOTIFY_COMMITER_TOPIC")
+	firestoreCollection = os.Getenv("FIRESTORE_COLLECTION")
 	// check if variables were set with values
 	if notifyCommiterTopic == "" {
 		panic("environment variable NOTIFY_COMMITER_TOPIC is empty")
@@ -52,17 +54,20 @@ func init() {
 	if githubRepo == "" {
 		panic("environment variable GITHUB_REPO is empty")
 	}
+	if firestoreCollection == "" {
+		panic("environment variable FIRESTORE_COLLECTION is empty, can't setup firebase client")
+	}
 	// create github client
 	githubClient, err = client.NewSapToolsClient(ctx, githubAccessToken)
 	if err != nil {
 		panic(fmt.Sprintf("Failed creating github client, error: %s", err.Error()))
 	}
 	// create pubsub client
-	pubSubClient, err = pubsub.NewClient(ctx, pubsub.PubSubProjectID)
+	pubSubClient, err = pubsub.NewClient(ctx, projectID)
 	if err != nil {
 		panic(fmt.Sprintf("Failed creating pubsub client, error: %s", err.Error()))
 	}
-	firestoreClient, err = firestore.NewClient(ctx, firestore.PubSubProjectID)
+	firestoreClient, err = firestore.NewClient(ctx, projectID)
 	if err != nil {
 		panic(fmt.Sprintf("failed creating firestore client, error: %s", err.Error()))
 	}
@@ -152,7 +157,7 @@ func GetSlackUserForGithubUser(ctx context.Context, m pubsub.MessagePayload) err
 		go func(wg *sync.WaitGroup, message *pubsub.FailingTestMessage, logger *cloudfunctions.LogEntry, out <-chan string, done <-chan int) {
 			for {
 				select {
-				case slackUser := <- out:
+				case slackUser := <-out:
 					logger.LogInfo(fmt.Sprintf("adding slack user %s to CommitersSlacklogins", slackUser))
 					// Save slack username in FailingTestMessage.CommiterSlackLogins
 					message.CommitersSlackLogins = append(message.CommitersSlackLogins, slackUser)

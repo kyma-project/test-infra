@@ -58,7 +58,7 @@ func init() {
 		panic(fmt.Sprintf("Failed creating github client, error: %v", err))
 	}
 	// create pubsub client
-	pubSubClient, err = pubsub.NewClient(ctx, pubsub.PubSubProjectID)
+	pubSubClient, err = pubsub.NewClient(ctx, projectID)
 	if err != nil {
 		panic(fmt.Sprintf("Failed creating pubsub client, error: %v", err))
 	}

@@ -1,7 +1,7 @@
 # Enable rendering pubsub-connector objects from templates.
 connectorDeploymentEnabled: true
 # Subscription ID to pull messages from.
-pubsubSubscriptionID: "notifyCommiter-toolingKymaSubscription"
+pubsubSubscriptionID: "prowjob.failed-toolingKyma"
 # Forwarded event type
 eventType: "prowjob.failed.v1"
 # GCP project with pubsub subscription
