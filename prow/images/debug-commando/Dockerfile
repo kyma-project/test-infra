@@ -11,8 +11,8 @@ LABEL io.kyma-project.test-infra.commit=$commit
 # Install additional tools
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    rsync=3.1.2-1+deb9u2 \
-    procps=2:3.3.12-3+deb9u1 \
+    rsync \
+    procps \
     && apt-get clean
 
 # Install python
