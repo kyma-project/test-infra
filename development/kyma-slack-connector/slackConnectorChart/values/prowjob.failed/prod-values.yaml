@@ -6,5 +6,6 @@ notificationSlackChannel: "kyma-ci-force"
 # Path to directory with function code. Relative to repository root.
 functionBaseDir: "/development/kyma-slack-connector/notifyCommiterFunction"
 # Branch name with function code.
+# switch to main branch after merging all changes
 #branch: "main"
 branch: "fix_getGithubCommiter"

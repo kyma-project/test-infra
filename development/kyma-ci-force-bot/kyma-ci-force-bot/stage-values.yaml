@@ -9,8 +9,6 @@ kymaEventingProxy: "http://eventing-event-publisher-proxy.kyma-system/publish"
 firebaseProjectID: "sap-kyma-neighbors-dev"
 firestoreCollectionName: "testFailures"
 gcpServiceAccount: "dev-kyma-tooling-ci-force-bot"
-# base64SerivceAccountKey: "dummy"
-#subscriptionAppName: "github-connector"
 component: "ci-force-bot.tooling.kyma"
 replicas: 1
 # Event type published to Kyma
