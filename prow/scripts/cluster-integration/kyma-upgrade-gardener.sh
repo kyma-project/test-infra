@@ -116,7 +116,8 @@ KYMA_SOURCE="main"
 export KYMA_SOURCE
 kyma::deploy_kyma \
     -s "$KYMA_SOURCES_DIR" \
-    -u "true"
+    -u "true" \
+    --non-interactive
 
 log::info "### Run post-upgrade tests"
 gardener::post_upgrade_test_fast_integration_kyma
