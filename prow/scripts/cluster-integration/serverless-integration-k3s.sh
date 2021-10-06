@@ -5,8 +5,7 @@ set -o pipefail  # Fail a pipe if any sub-command fails.
 
 date
 
-# https://github.com/kyma-project/test-infra/pull/2967 - explanation for that kaniko image
-export KANIKO_IMAGE="eu.gcr.io/kyma-project/external/aerfio/kaniko:v1.5.1"
+export KANIKO_IMAGE="eu.gcr.io/kyma-project/tpi/kaniko-executor:1.6.0-7b6e8d78"
 export DOMAIN=${KYMA_DOMAIN:-local.kyma.dev}
 if [[ -z $REGISTRY_VALUES ]]; then
   export REGISTRY_VALUES="dockerRegistry.enableInternal=false,dockerRegistry.serverAddress=registry.localhost:5000,dockerRegistry.registryAddress=registry.localhost:5000,containers.manager.envs.functionBuildExecutorImage.value=${KANIKO_IMAGE}"
