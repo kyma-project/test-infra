@@ -46,7 +46,7 @@ RUN curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID"
     "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
     $(lsb_release -cs) stable"
 
-ENV DOCKER_VERSION=5:19.03.8~3-0~debian-buster
+ENV DOCKER_VERSION=5:20.10.8*
 
 RUN apt-get update && \
     echo Y | apt-get install docker-ce=${DOCKER_VERSION} docker-ce-cli=${DOCKER_VERSION} containerd.io && \
@@ -92,7 +92,7 @@ RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 ###################### Node.js ##################################
 #################################################################
 
-RUN curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt -y install nodejs
 
 #################################################################
@@ -119,7 +119,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     dirmngr \
     gnupg2
 
-ENV AZURE_CLI_VERSION="2.2.0-1~buster"
+ENV AZURE_CLI_VERSION="2.18.0-2*"
 
 RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | \
     tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null && \
