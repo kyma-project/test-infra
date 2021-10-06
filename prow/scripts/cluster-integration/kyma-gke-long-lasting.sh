@@ -167,18 +167,9 @@ function installKyma() {
 			--domain "${DOMAIN}" \
 			--profile production \
 			--tls-crt "./letsencrypt/live/${DOMAIN}/fullchain.pem" \
-			--tls-key "./letsencrypt/live/${DOMAIN}/privkey.pem"
+			--tls-key "./letsencrypt/live/${DOMAIN}/privkey.pem" \
+      --value istio-configuration.components.ingressGateways.config.service.loadBalancerIP=${GATEWAY_IP_ADDRESS}
 
-	if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
-		log::info "Create DNS Record for Apiserver proxy IP"
-		APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-		gcp::create_dns_record \
-			-a "$APISERVER_IP_ADDRESS" \
-			-h "apiserver" \
-			-s "$COMMON_NAME" \
-			-p "$CLOUDSDK_CORE_PROJECT" \
-			-z "$CLOUDSDK_DNS_ZONE_NAME"
-	fi
 }
 
 function apply_dex_github_kyma_admin_group() {
