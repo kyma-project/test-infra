@@ -32,7 +32,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210922-ab7a4307"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211005-0e8c8173"
             securityContext:
               privileged: true
             command:
@@ -90,7 +90,7 @@ postsubmits: # runs on main
           channel: kyma-prow-dev-null
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210922-ab7a4307"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211005-0e8c8173"
             securityContext:
               privileged: true
             command:
