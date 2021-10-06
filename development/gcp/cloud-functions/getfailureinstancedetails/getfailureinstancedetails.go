@@ -1,17 +1,18 @@
 package getfailureinstancedetails
 
 import (
-	"cloud.google.com/go/firestore"
-	"cloud.google.com/go/functions/metadata"
-	"cloud.google.com/go/pubsub"
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
+	"regexp"
+
+	"cloud.google.com/go/firestore"
+	"cloud.google.com/go/functions/metadata"
+	"cloud.google.com/go/pubsub"
 	"github.com/google/go-github/v36/github"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
 	kymapubsub "github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
-	"os"
-	"regexp"
 )
 
 var (
