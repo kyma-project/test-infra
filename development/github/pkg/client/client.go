@@ -100,11 +100,27 @@ func (c *SapToolsClient) GetUsersMap(ctx context.Context) ([]types.User, error) 
 }
 
 // GetAuthorLoginForSHA will provide commit author github Login for given SHA.
+func (c *Client) GetAuthorLoginForBranch(ctx context.Context, branchName, owner, repo string) (*string, error) {
+	branch, resp, err := c.Repositories.GetBranch(ctx, owner, repo, branchName)
+	if err != nil {
+		return nil, fmt.Errorf("got error when getting commit, error: %w", err)
+	}
+	// Check HTTP response code.
+	if ok, err := c.IsStatusOK(resp); !ok {
+		return nil, err
+	}
+	commit := branch.GetCommit()
+	// Read commit author Login.
+	l := commit.GetAuthor().GetLogin()
+	return &l, nil
+}
+
+// GetAuthorLoginForSHA will provide commit author github Login for given SHA.
 func (c *Client) GetAuthorLoginForSHA(ctx context.Context, sha, owner, repo string) (*string, error) {
 	// Get commit for SHA.
 	commit, resp, err := c.Repositories.GetCommit(ctx, owner, repo, sha)
 	if err != nil {
-		return nil, fmt.Errorf("got error when getting users-map.yaml file from github.tools.sap, error: %w", err)
+		return nil, fmt.Errorf("got error when getting commit, error: %w", err)
 	}
 	// Check HTTP response code.
 	if ok, err := c.IsStatusOK(resp); !ok {
