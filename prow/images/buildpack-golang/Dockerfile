@@ -22,6 +22,8 @@ ENV GOLANGCI_LINT_VERSION v1.40.1
 RUN apt-get update && apt-get install -y --no-install-recommends \
         rsync \
         procps \
+        pkg-config \
+        libgit2-dev \
         && apt-get clean
 
 # Install Go and Dep
