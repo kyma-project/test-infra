@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     procps \
     nodejs \
     yarn \
+    npm \
     && apt-get clean
 
 RUN npm install -g eslint-config-react-app@^3.0.4 \
