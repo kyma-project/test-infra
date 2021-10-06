@@ -9,6 +9,7 @@ replace (
 )
 
 require (
+	cloud.google.com/go v0.88.0
 	cloud.google.com/go/bigquery v1.8.0
 	cloud.google.com/go/firestore v1.5.0
 	cloud.google.com/go/logging v1.0.0
