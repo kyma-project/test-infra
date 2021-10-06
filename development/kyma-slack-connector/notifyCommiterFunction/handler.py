@@ -9,6 +9,7 @@ from slack_sdk.errors import SlackApiError
 def main(event, context):
 	# Using SLACK_BOT_TOKEN environment variable
 	app = App()
+	notify_msg = None
 	slack_api_id = os.environ['SLACK_API_ID'].replace('-', '_')
 	env_prefix = os.environ['ENV_PREFIX']
 	base_url = os.environ['{}_SLACK_CONNECTOR_{}_GATEWAY_URL'.format(env_prefix, slack_api_id)]
@@ -21,21 +22,22 @@ def main(event, context):
 	# Get cloud events data.
 	msg = json.loads(base64.b64decode(event["data"]["Data"]))
 	print(msg)
-	if len(msg["slackCommitersLogins"]) > 0:
-		slack_users = ""
-		for commiter in msg["slackCommitersLogins"]:
-			if commiter != "":
-				print(commiter)
-				if slack_users != "":
-					slack_users = "{}, <@{}>".format(slack_users, commiter)
-				else:
-					slack_users = "<@{}>".format(commiter)
-		if slack_users != "":
-			notify_msg = "{} please check what's wrong".format(slack_users)
+	if "slackCommitersLogins" in msg:
+		if len(msg["slackCommitersLogins"]) > 0:
+			slack_users = ""
+			for commiter in msg["slackCommitersLogins"]:
+				if commiter != "":
+					print(commiter)
+					if slack_users != "":
+						slack_users = "{}, <@{}>".format(slack_users, commiter)
+					else:
+						slack_users = "<@{}>".format(commiter)
+			if slack_users != "":
+				notify_msg = "{} please check what's wrong".format(slack_users)
+			else:
+				notify_msg = "<!here>, couldn't find commiter slack username, please check what's wrong or ask commiter for it."
 		else:
 			notify_msg = "<!here>, couldn't find commiter slack username, please check what's wrong or ask commiter for it."
-	else:
-		notify_msg = "<!here>, couldn't find commiter slack username, please check what's wrong or ask commiter for it."
 	print(notify_msg)
 	channel_name = "kyma-prow-dev-null"
 	conversation_id = None
