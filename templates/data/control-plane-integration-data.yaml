@@ -7,6 +7,9 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/control-plane-gke-integration.sh"
             env:
               CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
+              PROVISION_REGIONAL_CLUSTER: "true"
+              NODES_PER_ZONE: "1"
+              MACHINE_TYPE: "n1-highcpu-16"
             path_alias: "github.com/kyma-project/control-plane"
             request_memory: 200Mi
             request_cpu: 80m
