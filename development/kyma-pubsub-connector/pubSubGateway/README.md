@@ -6,7 +6,7 @@ The PubSub Gateway is written in Golang. It pulls messages from PubSub, converts
 
 ## Prerequisites
 
-The PubSub Gateway is meant to run in a Pod within the Kyma Runtime. To get one, check the [Installation guides](https://kyma-project.io/docs/root/kyma#installation-installation) for details.
+The PubSub Gateway is meant to run in a Pod within the Kyma Runtime. To get one, check the [Installation guides](https://kyma-project.io/docs/kyma/latest/04-operation-guides/operations/02-install-kyma/) for details.
 
 ## Installation
 
