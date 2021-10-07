@@ -135,7 +135,7 @@ func receive(event cloudevents.Event) {
 		},
 	})
 
-	iter := firestoreClient.Collection("testFailures").Where("open", "==", true).Where("githubIssueNumber", "==", issueEvent.Issue.GetNumber()).Documents(ctx)
+	iter := firestoreClient.Collection(conf.FirestoreCollection).Where("open", "==", true).Where("githubIssueNumber", "==", issueEvent.Issue.GetNumber()).Documents(ctx)
 	failureInstances, err := iter.GetAll()
 
 	if err != nil {
