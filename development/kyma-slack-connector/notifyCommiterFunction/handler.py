@@ -17,17 +17,17 @@ def main(event, context):
 	app.client.base_url = "{}/".format(base_url)
 	result = None
 	print("received message with id: {}".format(event["data"]["ID"]))
-	print("slack api base URL: {}".format(app.client.base_url))
-	print("sending notification to channel: {}".format(os.environ['NOTIFICATION_SLACK_CHANNEL']))
+	print("using slack api base URL: {}".format(app.client.base_url))
+	print("using slack channel: {}".format(os.environ['NOTIFICATION_SLACK_CHANNEL']))
 	# Get cloud events data.
 	msg = json.loads(base64.b64decode(event["data"]["Data"]))
-	print(msg)
+	# Uncomment to get printed received messages payload
+	#print(msg)
 	if "slackCommitersLogins" in msg:
 		if len(msg["slackCommitersLogins"]) > 0:
 			slack_users = ""
 			for commiter in msg["slackCommitersLogins"]:
 				if commiter != "":
-					print(commiter)
 					if slack_users != "":
 						slack_users = "{}, <@{}>".format(slack_users, commiter)
 					else:
@@ -38,7 +38,9 @@ def main(event, context):
 				notify_msg = "<!here>, couldn't find commiter slack username, please check what's wrong or ask commiter for it."
 		else:
 			notify_msg = "<!here>, couldn't find commiter slack username, please check what's wrong or ask commiter for it."
-	print(notify_msg)
+	# Uncomment to get printed @notification message
+	#print(notify_msg)
+	# channel_name is a channel where function will search for messages to use threads.
 	channel_name = "kyma-prow-dev-null"
 	conversation_id = None
 	thread_id = None
@@ -71,6 +73,7 @@ def main(event, context):
 					thread_id = message["thread_ts"]
 				else:
 					thread_id = message["ts"]
+				print(f"Found matching message, sending notification in a thread, thread_id: {thread_id}.")
 				result = app.client.chat_postMessage(channel=os.environ['NOTIFICATION_SLACK_CHANNEL'],
 													 thread_ts=thread_id,
 													 text="Created issue #{} https://github.com/kyma-test-infra-dev/kyma/issues/{}".format(
@@ -106,6 +109,7 @@ def main(event, context):
 													 ])
 				break
 		if thread_id is None:
+			print(f"Matching message not found, sending notification as a standalone message.")
 			result = app.client.chat_postMessage(channel=os.environ['NOTIFICATION_SLACK_CHANNEL'],
 												 text="{} prowjob {} execution failed, view logs: {}, issue #{}: https://github.com/kyma-test-infra-dev/kyma/issues/{}".format(
 													 msg["job_type"],
@@ -144,7 +148,7 @@ def main(event, context):
 													 }
 												 ])
 		assert result.get("ok", False), "Assert response from slack API is OK failed. This is critical error."
-		print("sent notification for message id: {}".format(event["data"]["ID"]))
+		print(f"sent notification for incoming message id: {event.data.ID}")
 	# https://slack.dev/python-slack-sdk/api-docs/slack_sdk/errors/index.html#slack_sdk.errors.SlackApiError
 	except SlackApiError as e:
 		# https://slack.dev/python-slack-sdk/api-docs/slack_sdk/web/slack_response.html#slack_sdk.web.slack_response.SlackResponse
