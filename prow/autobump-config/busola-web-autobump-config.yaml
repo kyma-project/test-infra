@@ -1,0 +1,22 @@
+gitHubLogin: "kyma-bot"
+gitHubToken: "/etc/github/token"
+gitName: "Kyma Bot"
+gitEmail: "kyma.bot@sap.com"
+skipPullRequest: false
+gitHubOrg: "kyma-project"
+gitHubRepo: "busola"
+remoteName: "busola-1"
+upstreamURLBase: "https://raw.githubusercontent.com/kyma-project/busola/main"
+includedConfigPaths:
+  - "."
+excludedConfigPaths:
+  - "prow/staging"
+targetVersion: "latest"
+prefixes:
+  - name: "Prow"
+    prefix: "eu.gcr.io/kyma-project/busola-backend"
+    refConfigFile: "resources/web/deployment.yaml"
+    stagingRefConfigFile: "resources/web/deployment.yaml"
+    repo: "https://github.com/kubernetes/test-infra"
+    summarise: true
+    consistentImages: true
