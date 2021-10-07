@@ -132,7 +132,6 @@ func GetSlackUserForGithubUser(ctx context.Context, m pubsub.MessagePayload) err
 				// Search usersMap.
 				for _, user := range usersMap {
 					if user.ComGithubUsername == commiter {
-						logger.LogInfo(fmt.Sprintf("%v", user))
 						logger.LogInfo(fmt.Sprintf("user %s is present in users map", commiter))
 						// Send slack username to output channel.
 						// TODO: consider creating an User type to store matching github and slack user in one object.
@@ -152,7 +151,6 @@ func GetSlackUserForGithubUser(ctx context.Context, m pubsub.MessagePayload) err
 					logger.LogInfo(fmt.Sprintf("adding slack user %s to CommitersSlacklogins", slackUser))
 					// Save slack username in FailingTestMessage.CommiterSlackLogins
 					message.CommitersSlackLogins = append(message.CommitersSlackLogins, slackUser)
-					logger.LogInfo(fmt.Sprintf("%v", message.CommitersSlackLogins))
 				case <-done:
 					// Decrease waiting group count.
 					wg.Done()
@@ -182,7 +180,6 @@ func GetSlackUserForGithubUser(ctx context.Context, m pubsub.MessagePayload) err
 	}
 
 	// Publish message to pubsub.
-	logger.LogInfo(fmt.Sprintf("%v", failingTestMessage.CommitersSlackLogins))
 	publlishedMessageID, err := pubSubClient.PublishMessage(ctx, failingTestMessage, notifyCommiterTopic)
 	if err != nil {
 		logger.LogCritical(fmt.Sprintf("failed publishing to pubsub, error: %s", err.Error()))
