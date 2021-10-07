@@ -148,7 +148,7 @@ def main(event, context):
 													 }
 												 ])
 		assert result.get("ok", False), "Assert response from slack API is OK failed. This is critical error."
-		print(f"sent notification for incoming message id: {event.data.ID}")
+		print("sent notification for incoming message id: {}".format(event["data"]["ID"]))
 	# https://slack.dev/python-slack-sdk/api-docs/slack_sdk/errors/index.html#slack_sdk.errors.SlackApiError
 	except SlackApiError as e:
 		# https://slack.dev/python-slack-sdk/api-docs/slack_sdk/web/slack_response.html#slack_sdk.web.slack_response.SlackResponse
