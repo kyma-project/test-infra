@@ -1,0 +1,10 @@
+{{- if .Values.slackApplicationEnabled }}
+apiVersion: applicationconnector.kyma-project.io/v1alpha1
+kind: ApplicationMapping
+metadata:
+  name: {{ .Values.global.appName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.global.appName | quote }}
+    release: {{ .Release.Name | quote }}
+  {{- end }}

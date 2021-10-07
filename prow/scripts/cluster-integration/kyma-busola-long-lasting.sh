@@ -96,9 +96,8 @@ function provisionBusola() {
     kubectl apply --namespace "$busola_namespace" -k "${BUSOLA_SOURCES_DIR}/resources"
 
     TERM=dumb kubectl cluster-info
-    log::info "Please generate params for using k8s http://enkode.surge.sh/"
-    log::info "Kyma busola Url:"
-    log::info "https://busola.${DOMAIN_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com?auth=generated_params_in_previous_step"
+    log::info "Kyma Dashboard URL:"
+    log::info "https://busola.${DOMAIN_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com"
 }
 
 function provisionKyma2(){
@@ -121,14 +120,13 @@ function provisionKyma2(){
     --kubeconfig="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml" \
     --profile=production \
     --source="${KYMA_VERSION}" \
-    --concurrency="${CPU_COUNT}" \
     --non-interactive \
     --verbose \
     --ci
     set +x
 }
 
-function deleteKyma(){
+function undeployKyma(){
     export DOMAIN_NAME=$1
 
     log::info "Uninstalling Kyma on the cluster : ${DOMAIN_NAME} using ${CPU_COUNT} cpus"
@@ -140,9 +138,8 @@ function deleteKyma(){
     kyma::install_cli
 
     set -x
-    TERM=dumb kyma delete \
+    TERM=dumb kyma undeploy \
     --kubeconfig="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml" \
-    --concurrency="${CPU_COUNT}" \
     --non-interactive \
     --verbose \
     --ci
@@ -217,7 +214,7 @@ if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
     log::info "Kyma cluster name: ${KYMA_COMMON_NAME}"
     if [[ $RECREATE_CLUSTER == "true" ]]; then
         set +e
-        deleteKyma "${KYMA_COMMON_NAME}"
+        undeployKyma "${KYMA_COMMON_NAME}"
         set -e
 
         export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
@@ -228,7 +225,7 @@ if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
         provisionCluster "${KYMA_COMMON_NAME}" "${RESOURCES_PATH}/cluster-kyma.yaml"
     else
         echo "Delete kyma"
-        deleteKyma "${KYMA_COMMON_NAME}"
+        undeployKyma "${KYMA_COMMON_NAME}"
         log::info "We wait 60s for Kyma cluster to settle"
         sleep 60
     fi

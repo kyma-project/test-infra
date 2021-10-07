@@ -31,6 +31,7 @@ type Config struct {
 	EventType         string `envconfig:"EVENT_TYPE"`             // Event type published to Event Publisher Proxy.
 	ProjectID         string `envconfig:"PUBSUB_PROJECT_ID"`      // Google PubSub project ID.
 	AppName           string `envconfig:"APP_NAME"`               // PubSub Connector application name as set in Compass.
+	TargetAppName     string `envconfig:"TARGET_APP_NAME"`        // Kyma eventing target application name where publish events.
 }
 
 func main() {
@@ -65,7 +66,7 @@ func main() {
 	}
 	log.Infof("subscription %s exists: %t", conf.SubscriptionID, ok)
 	// Removing dashes from event type to comply with eventing requirements.
-	eventingEventType := strings.Replace(fmt.Sprintf("sap.kyma.custom.mp-%s.%s", conf.AppName, conf.EventType), "-", "", -1)
+	eventingEventType := strings.Replace(fmt.Sprintf("sap.kyma.custom.%s.%s", conf.TargetAppName, conf.EventType), "-", "", -1)
 	log.Infof("using event type : %s", eventingEventType)
 	// Create a channel to handle messages from PubSub as they come in.
 	cm := make(chan *pubsub.Message)

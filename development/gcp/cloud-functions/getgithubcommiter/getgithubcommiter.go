@@ -58,7 +58,7 @@ func init() {
 		panic(fmt.Sprintf("Failed creating github client, error: %v", err))
 	}
 	// create pubsub client
-	pubSubClient, err = pubsub.NewClient(ctx, pubsub.PubSubProjectID)
+	pubSubClient, err = pubsub.NewClient(ctx, projectID)
 	if err != nil {
 		panic(fmt.Sprintf("Failed creating pubsub client, error: %v", err))
 	}
@@ -67,7 +67,7 @@ func init() {
 // GetGithubCommiter gets commiter github Login for Refs BaseSHA from pubsub ProwMessage.
 // It will find Login for commiter of first Ref in Refs slice because Prow crier pubsub reporter place ProwJobSpec.Refs first.
 // ProwJobSpec ExtraRefs are appended second.
-func GetGithubCommiter(ctx context.Context, m pubsub.MessagePayload) {
+func GetGithubCommiter(ctx context.Context, m pubsub.MessagePayload) error {
 	var err error
 	// set trace value to use it in logEntry
 	var failingTestMessage pubsub.FailingTestMessage
@@ -82,9 +82,14 @@ func GetGithubCommiter(ctx context.Context, m pubsub.MessagePayload) {
 	// Get metadata from context and set eventID label for logging.
 	contextMetadata, err := metadata.FromContext(ctx)
 	if err != nil {
-		logger.LogCritical(fmt.Sprintf("failed extract metadata from function call context, error: %s", err.Error()))
+		if m.MessageId != "" {
+			logger.WithLabel("messageId", m.MessageId)
+		} else {
+			logger.LogError(fmt.Sprintf("failed extract metadata from function call context, error: %s", err.Error()))
+		}
+	} else {
+		logger.WithLabel("messageId", contextMetadata.EventID)
 	}
-	logger.WithLabel("messageId", contextMetadata.EventID)
 
 	// Unmarshall pubsub message data payload.
 	err = json.Unmarshal(m.Data, &failingTestMessage)
@@ -129,11 +134,19 @@ func GetGithubCommiter(ctx context.Context, m pubsub.MessagePayload) {
 		refs = append(refs, failingTestMessage.Refs[0])
 	}
 	// Finding github commiters Logins for all collected Refs.
+	var comiterLogin *string
 	for _, ref := range refs {
 		// Find commiter Login.
-		comiterLogin, err := githubClient.GetAuthorLoginForSHA(ctx, ref.BaseSHA, ref.Org, ref.Repo)
-		if err != nil {
-			logger.LogCritical(fmt.Sprintf("failed find commiter login for %s/%s commit SHA %s, got error %v", githubOrg, githubRepo, failingTestMessage.Refs[0].BaseSHA, err))
+		if ref.BaseSHA == "" {
+			comiterLogin, err = githubClient.GetAuthorLoginForBranch(ctx, ref.BaseRef, ref.Org, ref.Repo)
+			if err != nil {
+				logger.LogError(fmt.Sprintf("failed find commiter login for %s/%s branch %s, got error %v", ref.Org, ref.Repo, ref.BaseRef, err))
+			}
+		} else {
+			comiterLogin, err = githubClient.GetAuthorLoginForSHA(ctx, ref.BaseSHA, ref.Org, ref.Repo)
+			if err != nil {
+				logger.LogError(fmt.Sprintf("failed find commiter login for %s/%s commit SHA %s, got error %v", ref.Org, ref.Repo, ref.BaseSHA, err))
+			}
 		}
 		// Add commiter Login to the slice with all Logins.
 		commitersLogins = append(commitersLogins, *comiterLogin)
@@ -149,4 +162,5 @@ func GetGithubCommiter(ctx context.Context, m pubsub.MessagePayload) {
 		logger.LogCritical(fmt.Sprintf("failed publishing to pubsub, error: %s", err.Error()))
 	}
 	logger.LogInfo(fmt.Sprintf("published pubsub message to topic %s, id: %s", getSlackUserForCommiterTopic, *publlishedMessageID))
+	return nil
 }

@@ -187,8 +187,7 @@ function installKyma() {
 			--domain "${DOMAIN}" \
 			--profile production \
 			--tls-cert "${TLS_CERT}" \
-			--tls-key "${TLS_KEY}" \
-			--timeout 60m
+			--tls-key "${TLS_KEY}"
 
 	if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
 		log::info "Create DNS Record for Apiserver proxy IP"

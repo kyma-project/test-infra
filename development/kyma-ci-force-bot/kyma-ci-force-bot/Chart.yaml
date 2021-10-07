@@ -1,6 +1,6 @@
 apiVersion: v2
 name: kyma-ci-force-bot
-description: Bot for automated commiter notification on ci-force.
+description: Ci-force automation component running on tooling Kyma instance.
 type: application
-version: 0.1.0
+version: 2.0.0
 appVersion: 0.1.0

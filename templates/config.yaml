@@ -21,23 +21,19 @@ globalSets:
       KYMA_MAJOR_VERSION: 2
   # Image sets
   image_bootstrap:
-    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210730-c3e07ed7"
+    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211005-0e8c8173"
   image_prow-tools:
     image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210907-d10c077a"
   image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210906-858d6909"
+    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210927-76bcfd5e"
   image_buildpack-node:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20210402-70b4b74f"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20211006-af227109"
   image_buildpack-golang:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210831-b387d3eb"
-  # TODO: function-controller needs libgit2 in version 1.1.0 which is available in bullseye debian, which is not available now.
-  # As a workaround, I built the needed image on this PR: https://github.com/kyma-project/test-infra/pull/4060
-  image_buildpack-golang-libgit2:
-    image: "eu.gcr.io/kyma-project/test-infra/pr/buildpack-golang:PR-4060"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211006-af227109"
   image_buildpack-golang-kubebuilder2:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210831-b387d3eb"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211006-af227109"
   image_buildpack-golang-toolbox:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210831-b387d3eb"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211006-af227109"
   image_wssagent:
     image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
   # JobConfig sets
@@ -151,12 +147,31 @@ globalSets:
           repo: "kyma"
           path_alias: "github.com/kyma-project/kyma"
           base_ref: "main"
+  extra_refs_reconciler:
+    extra_refs:
+      reconciler:
+        - org: "kyma-incubator"
+          repo: "reconciler"
+          path_alias: "github.com/kyma-incubator/reconciler"
+          base_ref: "main"
   # labels sets
   build_labels:
     labels:
       preset-dind-enabled: "true"
       preset-sa-gcr-push: "true"
       preset-docker-push-repository-kyma: "true"
+  # gardener configs
+  gardener_gcp_job:
+    labels:
+      preset-gardener-gcp-kyma-integration: "true"
+      preset-kyma-cli-stable: "true"
+      preset-cluster-version: "true"
+    env:
+      KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
+      GARDENER_REGION: "europe-west4"
+      GARDENER_ZONES: "europe-west4-b"
+    annotations:
+      pipeline.platform: gardener_gcp
 
 templates:
 #  - from: templates/kyma-release-upgrade.yaml

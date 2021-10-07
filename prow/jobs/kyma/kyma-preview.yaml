@@ -18,7 +18,7 @@ periodics: # runs on schedule
         preset-keb-dev-credentials: "true"
         preset-kyma-integration-compass-dev: "true"
         preset-kyma-integration-subaccounnt: "true"
-      cron: "5 1 * * *"
+      cron: "0 */4 * * *"
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -34,7 +34,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210906-858d6909"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210927-76bcfd5e"
             securityContext:
               privileged: true
             command:

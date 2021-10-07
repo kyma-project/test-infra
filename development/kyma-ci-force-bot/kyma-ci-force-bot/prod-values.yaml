@@ -1,0 +1,25 @@
+# base64GcpServiceAccountKey must be provided using --set argument to helm command.
+# base64GcpServiceAccountKey provides base64 encoded google service account json key file.
+#
+# Github connector application name. Must match name from Application resource.
+appName: "ci-force-bot"
+# Kyma cluster FQDN.
+kymaClusterHostname: "c-6751197.kyma.shoot.live.k8s-hana.ondemand.com"
+kymaEventingProxy: "http://eventing-event-publisher-proxy.kyma-system/publish"
+firebaseProjectID: "sap-kyma-prow"
+firestoreCollectionName: "failed-prowjobs"
+gcpServiceAccount: "ci-force-bot-tooling-kyma"
+component: "ci-force-bot.tooling.kyma"
+replicas: 1
+# Event type published to Kyma
+eventType: "issuesevent.closed.v1"
+container:
+  name: "ciforcebot"
+  # change to match value from makefile
+  image: eu.gcr.io/kyma-project/test-infra/pr/ci-force-bot:PR-4216
+  containerPort: 8080
+  resources:
+    limits:
+      mem: 256Mi
+      cpu: 500m
+    containerPort: 8080

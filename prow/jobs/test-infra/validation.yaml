@@ -17,7 +17,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210730-c3e07ed7"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211005-0e8c8173"
             command:
               - "prow/scripts/validate-scripts.sh"
             resources:
@@ -38,7 +38,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20210910-fbe2c6dbbe"
+          - image: "gcr.io/k8s-prow/checkconfig:v20210925-32993b3b20"
             command:
               - "/app/prow/cmd/checkconfig/app.binary"
             args:
@@ -67,7 +67,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210831-b387d3eb"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211006-af227109"
             securityContext:
               privileged: false
             command:
@@ -105,7 +105,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210831-b387d3eb"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211006-af227109"
             securityContext:
               privileged: false
             command:
@@ -144,7 +144,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210831-b387d3eb"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211006-af227109"
             securityContext:
               privileged: true
             command:
@@ -178,7 +178,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210831-b387d3eb"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211006-af227109"
             securityContext:
               privileged: false
             command:

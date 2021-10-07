@@ -137,13 +137,6 @@ install::k3s() {
     date
 }
 
-install::k3d() {
-  echo "--> Installing k3d"
-  curl -sfL https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
-  k3d --version
-  date
-}
-
 function host::patch_coredns() {
   echo "Patching CoreDns with REGISTRY_IP=$REGISTRY_IP"
   sed "s/REGISTRY_IP/$REGISTRY_IP/" coredns-patch.tpl >coredns-patch.yaml
@@ -153,9 +146,6 @@ function host::patch_coredns() {
 date
 
 if [ "$USE_ALPHA" == "true" ]; then
-  echo "--> Installing k3d for kyma-cli"
-  install::k3d
-
   echo "--> Installing kyma-cli"
   install::kyma_cli
 
@@ -164,7 +154,7 @@ if [ "$USE_ALPHA" == "true" ]; then
 
   echo "--> Deploying Serverless"
   # The python38 function requires 40M+ of memory to work. Mostly used by kubeless. I need to overrride the defaultPreset to M to avoid OOMkill.
-  kyma deploy -p evaluation --component cluster-essentials,serverless --atomic --ci --value "$REGISTRY_VALUES" --value global.ingress.domainName="$DOMAIN" --value "serverless.webhook.values.function.resources.defaultPreset=M" -s local -w $KYMA_SOURCES_DIR
+  kyma deploy -p evaluation --component cluster-essentials,serverless --ci --value "$REGISTRY_VALUES" --value global.ingress.domainName="$DOMAIN" --value "serverless.webhook.values.function.resources.defaultPreset=M" -s local -w $KYMA_SOURCES_DIR
 
 else
   host::create_coredns_template

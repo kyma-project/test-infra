@@ -27,20 +27,6 @@ templates:
           - repoName: kyma-project/kyma
             jobs:
               # presubmits
-              - jobConfig:
-                  name: "pre-main-kyma-gke-external-registry"
-                  # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((resources/serverless\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  labels:
-                    preset-build-pr: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
               {{- range .Global.releases }}
               - jobConfig:
                   name: pre-rel{{ . | replace "." "" }}-kyma-gke-external-registry

@@ -10,13 +10,6 @@ import (
 	"path"
 )
 
-const (
-	// This is a default google project ID for pubsub workloads.
-	//PubSubProjectID = "sap-kyma-prow"
-	// TODO: change to sap-kyma-prow for production usage
-	PubSubProjectID = "sap-kyma-neighbors-dev"
-)
-
 // NewClient create kyma implementation of pubsub Client.
 // It wraps google pubsub client.
 func NewClient(ctx context.Context, projectID string) (*Client, error) {

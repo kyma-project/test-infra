@@ -190,6 +190,18 @@ templates:
                     preset-docker-push-repository-kyma: "true"
                     preset-cluster-version: "true"
                     preset-gc-compute-envs: "true"
+                  env:
+                    EVENTMESH_SECRET_FILE: "/etc/credentials/kyma-tunas-release-testing-event-mesh/serviceKey"
+                  decoration_config:
+                    timeout: 3600000000000 # 1h
+                    grace_period: 600000000000 # 10min
+                  volumes:
+                    - name: kyma-tunas-release-testing-event-mesh
+                      secretName: kyma-tunas-release-testing-event-mesh
+                  volumeMounts:
+                    - name: kyma-tunas-release-testing-event-mesh
+                      mountPath: /etc/credentials/kyma-tunas-release-testing-event-mesh
+                      readOnly: true
                   command: "bash"
                   request_memory: 200Mi
                   request_cpu: 80m

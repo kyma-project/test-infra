@@ -1,6 +1,6 @@
 # Basic setup for Prow jobs
 
-FROM debian:10
+FROM debian:11
 
 # Commit details
 
@@ -46,7 +46,7 @@ RUN curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID"
     "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
     $(lsb_release -cs) stable"
 
-ENV DOCKER_VERSION=5:19.03.8~3-0~debian-buster
+ENV DOCKER_VERSION=5:20.10.8*
 
 RUN apt-get update && \
     echo Y | apt-get install docker-ce=${DOCKER_VERSION} docker-ce-cli=${DOCKER_VERSION} containerd.io && \
@@ -92,7 +92,7 @@ RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 ###################### Node.js ##################################
 #################################################################
 
-RUN curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt -y install nodejs
 
 #################################################################
@@ -119,7 +119,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     dirmngr \
     gnupg2
 
-ENV AZURE_CLI_VERSION="2.2.0-1~buster"
+ENV AZURE_CLI_VERSION="2.18.0-2*"
 
 RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | \
     tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null && \
@@ -174,10 +174,19 @@ RUN wget -q https://github.com/Peripli/service-manager-cli/releases/download/${S
     rm smctl-${SMCTL_VERSION}-linux-amd64.tar.gz && \
     mv smctl /usr/local/go/bin
 
-
 #################################################################
-################ Install Cosign ####################
+################ Install Cosign #################################
 #################################################################
 ENV COSIGN_VERSION=1.0.0
 RUN wget https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64 -O /usr/local/bin/cosign &&\
     chmod +x /usr/local/bin/cosign
+
+#################################################################
+################ Install kcp-cli ################################
+#################################################################
+
+# Note: kcp-cli doesn't provide releases
+# https://github.com/kyma-project/control-plane/blob/main/docs/cli/01-01-overview.md
+ENV KCPCLI_VERSION=master-32a8aa52
+RUN wget https://storage.googleapis.com/kyma-development-artifacts/kcp/${KCPCLI_VERSION}/kcp-linux -O /usr/local/bin/kcp &&\
+    chmod +x /usr/local/bin/kcp
