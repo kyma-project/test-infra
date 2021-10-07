@@ -40,7 +40,7 @@ templates:
                   image: gcr.io/k8s-prow/generic-autobumper:v20210925-32993b3b20
                   command: /app/prow/cmd/generic-autobumper/app.binary
                   args:
-                    - --config=prow/autobump-config/busola-backend-autobump-config.yaml
+                    - --config=autobump-config/busola-backend-autobump-config.yaml
                 inheritedConfigs:
                   local:
                     - periodic_config
@@ -48,7 +48,6 @@ templates:
                   global:
                     - "pubsub_labels"
                     - "disable_testgrid"
-                    - extra_refs_test-infra
               - jobConfig:
                   name: busola-web-autobump
                   cron: "30 * * * 1-5"
@@ -56,7 +55,7 @@ templates:
                   image: gcr.io/k8s-prow/generic-autobumper:v20210925-32993b3b20
                   command: /app/prow/cmd/generic-autobumper/app.binary
                   args:
-                    - --config=prow/autobump-config/busola-web-autobump-config.yaml
+                    - --config=autobump-config/busola-web-autobump-config.yaml
                 inheritedConfigs:
                   local:
                     - periodic_config
@@ -64,4 +63,3 @@ templates:
                   global:
                     - "pubsub_labels"
                     - "disable_testgrid"
-                    - extra_refs_test-infra

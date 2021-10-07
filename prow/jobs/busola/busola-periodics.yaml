@@ -13,11 +13,6 @@ periodics: # runs on schedule
       skip_report: false
       decorate: true
       cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       reporter_config:
         slack:
           channel: kyma-prow-alerts
@@ -27,7 +22,7 @@ periodics: # runs on schedule
             command:
               - "/app/prow/cmd/generic-autobumper/app.binary"
             args:
-              - "--config=prow/autobump-config/busola-backend-autobump-config.yaml"
+              - "--config=autobump-config/busola-backend-autobump-config.yaml"
             volumeMounts:
               - name: kyma-bot-github-token
                 mountPath: /etc/github
@@ -47,11 +42,6 @@ periodics: # runs on schedule
       skip_report: false
       decorate: true
       cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       reporter_config:
         slack:
           channel: kyma-prow-alerts
@@ -61,7 +51,7 @@ periodics: # runs on schedule
             command:
               - "/app/prow/cmd/generic-autobumper/app.binary"
             args:
-              - "--config=prow/autobump-config/busola-web-autobump-config.yaml"
+              - "--config=autobump-config/busola-web-autobump-config.yaml"
             volumeMounts:
               - name: kyma-bot-github-token
                 mountPath: /etc/github
