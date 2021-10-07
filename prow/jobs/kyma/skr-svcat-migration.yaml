@@ -34,7 +34,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210927-76bcfd5e"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211006-2635dc4d"
             securityContext:
               privileged: true
             command:

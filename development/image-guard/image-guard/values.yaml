@@ -2,7 +2,7 @@ service:
   port: 443
 
 deployment:
-  image: eu.gcr.io/kyma-project/test-infra/image-guard:v20201023-a6c1745c
+  image: eu.gcr.io/kyma-project/test-infra/image-guard:v20211006-2635dc4d
   replicas: 1
   imagePullPolicy: Always
   resources:
