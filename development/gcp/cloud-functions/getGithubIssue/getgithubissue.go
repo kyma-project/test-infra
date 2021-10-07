@@ -242,7 +242,7 @@ func GetGithubIssue(ctx context.Context, m kymapubsub.MessagePayload) error {
 					logger.LogError(fmt.Sprintf("failed adding github issue number %d, to failing test instance, error: %s", ghIssue.GetNumber(), err.Error()))
 					// TODO: need error reporting for such case, without failing whole function
 				} else {
-					logger.LogError(fmt.Sprintf("github issue, number %d, added to failing test instance", ghIssue.GetNumber()))
+					logger.LogInfo(fmt.Sprintf("github issue, number %d, added to failing test instance", ghIssue.GetNumber()))
 				}
 			} else {
 				logger.LogError(fmt.Sprintf("github issue number is nil, something went wrong with creating github issue"))
