@@ -30,10 +30,6 @@ globalSets:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20211006-af227109"
   image_buildpack-golang:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211006-af227109"
-  # TODO: function-controller needs libgit2 in version 1.1.0 which is available in bullseye debian, which is not available now.
-  # As a workaround, I built the needed image on this PR: https://github.com/kyma-project/test-infra/pull/4060
-  image_buildpack-golang-libgit2:
-    image: "eu.gcr.io/kyma-project/test-infra/pr/buildpack-golang:PR-4060"
   image_buildpack-golang-kubebuilder2:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211006-af227109"
   image_buildpack-golang-toolbox:

@@ -907,7 +907,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-libgit2"
+                    - "image_buildpack-golang"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_kyma"
                     - "extra_refs_test-infra"
