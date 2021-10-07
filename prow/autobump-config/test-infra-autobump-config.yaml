@@ -12,6 +12,7 @@ includedConfigPaths:
   - "."
 excludedConfigPaths:
   - "prow/staging"
+  - "prow/jobs/kyma/releases"
 extraFiles:
   - "development/tools/jobs/tester/tester.go"
 targetVersion: "latest"
