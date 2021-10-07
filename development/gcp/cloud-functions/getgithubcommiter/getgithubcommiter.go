@@ -134,11 +134,19 @@ func GetGithubCommiter(ctx context.Context, m pubsub.MessagePayload) error {
 		refs = append(refs, failingTestMessage.Refs[0])
 	}
 	// Finding github commiters Logins for all collected Refs.
+	var comiterLogin *string
 	for _, ref := range refs {
 		// Find commiter Login.
-		comiterLogin, err := githubClient.GetAuthorLoginForSHA(ctx, ref.BaseSHA, ref.Org, ref.Repo)
-		if err != nil {
-			logger.LogCritical(fmt.Sprintf("failed find commiter login for %s/%s commit SHA %s, got error %v", githubOrg, githubRepo, failingTestMessage.Refs[0].BaseSHA, err))
+		if ref.BaseSHA == "" {
+			comiterLogin, err = githubClient.GetAuthorLoginForBranch(ctx, ref.BaseRef, ref.Org, ref.Repo)
+			if err != nil {
+				logger.LogError(fmt.Sprintf("failed find commiter login for %s/%s branch %s, got error %v", ref.Org, ref.Repo, ref.BaseRef, err))
+			}
+		} else {
+			comiterLogin, err = githubClient.GetAuthorLoginForSHA(ctx, ref.BaseSHA, ref.Org, ref.Repo)
+			if err != nil {
+				logger.LogError(fmt.Sprintf("failed find commiter login for %s/%s commit SHA %s, got error %v", ref.Org, ref.Repo, ref.BaseSHA, err))
+			}
 		}
 		// Add commiter Login to the slice with all Logins.
 		commitersLogins = append(commitersLogins, *comiterLogin)
