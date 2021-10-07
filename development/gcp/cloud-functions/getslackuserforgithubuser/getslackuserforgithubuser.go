@@ -22,8 +22,6 @@ var (
 	firestoreClient     *firestore.Client
 	githubAccessToken   string
 	projectID           string
-	githubOrg           string
-	githubRepo          string
 	notifyCommiterTopic string
 	firestoreCollection string
 )
@@ -34,8 +32,6 @@ func init() {
 	// set variables from environment variables
 	projectID = os.Getenv("GCP_PROJECT_ID")
 	githubAccessToken = os.Getenv("GITHUB_ACCESS_TOKEN")
-	githubOrg = os.Getenv("GITHUB_ORG")
-	githubRepo = os.Getenv("GITHUB_REPO")
 	notifyCommiterTopic = os.Getenv("NOTIFY_COMMITER_TOPIC")
 	firestoreCollection = os.Getenv("FIRESTORE_COLLECTION")
 	// check if variables were set with values
@@ -47,12 +43,6 @@ func init() {
 	}
 	if githubAccessToken == "" {
 		panic("environment variable GITHUB_ACCESS_TOKEN is empty")
-	}
-	if githubOrg == "" {
-		panic("environment variable GITHUB_ORG is empty")
-	}
-	if githubRepo == "" {
-		panic("environment variable GITHUB_REPO is empty")
 	}
 	if firestoreCollection == "" {
 		panic("environment variable FIRESTORE_COLLECTION is empty, can't setup firebase client")
@@ -178,7 +168,7 @@ func GetSlackUserForGithubUser(ctx context.Context, m pubsub.MessagePayload) err
 		// If FailingTestMessage hold firestore ID, use it.
 		if failingTestMessage.FirestoreDocumentID != nil {
 			// Create firestore document ref.
-			ref = firestoreClient.Doc(fmt.Sprintf("testFailures/%s", *failingTestMessage.FirestoreDocumentID))
+			ref = firestoreClient.Doc(fmt.Sprintf("%s/%s", firestoreCollection, *failingTestMessage.FirestoreDocumentID))
 			err = firestoreClient.StoreSlackUsernames(ctx, failingTestMessage.CommitersSlackLogins, ref)
 			if err != nil {
 				logger.LogError(fmt.Sprintf("failed store commiters slack usernames in firestore, got error: %s", err.Error()))
