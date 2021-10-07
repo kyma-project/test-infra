@@ -14,7 +14,7 @@ excludedConfigPaths:
 targetVersion: "latest"
 prefixes:
   - name: "Prow"
-    prefix: "eu.gcr.io/kyma-project/busola-backend"
+    prefix: "eu.gcr.io/kyma-project/busola-web"
     refConfigFile: "resources/web/deployment.yaml"
     stagingRefConfigFile: "resources/web/deployment.yaml"
     repo: "https://github.com/kubernetes/test-infra"
