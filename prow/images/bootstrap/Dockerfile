@@ -26,7 +26,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     apt-transport-https \
     gnupg2 \
-    shellcheck \
     software-properties-common \
     lsb-release \
     gettext \
@@ -92,3 +91,8 @@ RUN wget https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}
 # The following lines needed for using dind since debian is using nftables by default
 RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
     update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+
+RUN wget https://github.com/koalaman/shellcheck/releases/download/v0.5.0/shellcheck-v0.5.0.linux.x86_64.tar.xz \
+    && tar xvf shellcheck-v0.5.0.linux.x86_64.tar.xz \
+    && mv shellcheck-v0.5.0/shellcheck /usr/bin/ \
+    && rm -rf shellcheck-v0.5.0 shellcheck-v0.5.0.linux.x86_64.tar.xz
