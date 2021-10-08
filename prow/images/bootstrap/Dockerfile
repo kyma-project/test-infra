@@ -91,9 +91,11 @@ RUN wget https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}
 # The following lines needed for using dind since debian is using nftables by default
 RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
     update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
-ENV SHELLCHECK_VERSION=0.4.6
 
-RUN wget https://github.com/koalaman/shellcheck/releases/download/v${SHELLCHECK_VERSION}/shellcheck-v${SHELLCHECK_VERSION}.linux.x86_64.tar.xz \
-    && tar xvf shellcheck-v${SHELLCHECK_VERSION}.linux.x86_64.tar.xz \
-    && mv shellcheck-v${SHELLCHECK_VERSION}/shellcheck /usr/bin/ \
-    && rm -rf shellcheck-v${SHELLCHECK_VERSION} shellcheck-v${SHELLCHECK_VERSION}.linux.x86_64.tar.xz
+# RUN wget https://github.com/koalaman/shellcheck/releases/download/v${SHELLCHECK_VERSION}/shellcheck-v${SHELLCHECK_VERSION}.linux.x86_64.tar.xz \
+#     && tar xvf shellcheck-v${SHELLCHECK_VERSION}.linux.x86_64.tar.xz \
+#     && mv shellcheck-v${SHELLCHECK_VERSION}/shellcheck /usr/bin/ \
+#     && rm -rf shellcheck-v${SHELLCHECK_VERSION} shellcheck-v${SHELLCHECK_VERSION}.linux.x86_64.tar.xz
+
+RUN wget http://ftp.de.debian.org/debian/pool/main/s/shellcheck/shellcheck_0.4.4-4_amd64.deb && \
+    dpkg -i shellcheck_0.4.4-4_amd64.deb
