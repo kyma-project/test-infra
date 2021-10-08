@@ -7,8 +7,9 @@ set -o pipefail
 
 export LC_ALL=C.UTF-8
 
-# Scripts were checked with shellcheck 0.4.4, but the newer versions adds additional checks that blocks development, so we had to sidable them for now
-
+# Scripts were checked with shellcheck 0.4.4, but the newer versions adds additional checks that blocks development, so we had to disable them for now
+# unknown version
+export SHELLCHECK_OPTS="-e SC2164"
 # 0.4.5
 export SHELLCHECK_OPTS="${SHELLCHECK_OPTS} -e SC2185 -e SC2184 -e SC2183 -e SC2182 -e SC2181 -e SC1106"
 # 0.4.6
