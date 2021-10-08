@@ -121,7 +121,11 @@ function reconciler::reconcile_kyma() {
   # Trigger Kyma reconciliation using reconciler
   log::banner "Reconcile Kyma in the same cluster until it is ready"
   kubectl exec -it -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/reconcile-kyma.sh"
-  log::info "test-pod exited"
+  if [[ $? -ne 0 ]]; then
+      log::error "Failed to reconcile Kyma"
+      kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler
+      exit 1
+  fi
 }
 
 # Only triggers reconciliation of Kyma
