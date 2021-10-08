@@ -79,6 +79,7 @@ function reconciler::wait_until_test_pod_is_deleted() {
     fi
     if [ "$RECONCILER_TIMEOUT" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then
       log::info "Timeout reached while initializing test pod. Exiting"
+      kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler
       exit 1
     fi
     log::info "Waiting for test pod to be deleted..."
