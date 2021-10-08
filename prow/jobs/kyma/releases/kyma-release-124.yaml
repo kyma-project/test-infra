@@ -359,6 +359,14 @@ postsubmits: # runs on main
             env:
               - name: EVENTMESH_SECRET_FILE
                 value: "/etc/credentials/kyma-tunas-release-testing-event-mesh/serviceKey"
+              - name: CLOUDSDK_COMPUTE_ZONE
+                value: "europe-west4-b"
+              - name: MACHINE_TYPE
+                value: "n1-highcpu-16"
+              - name: NODES_PER_ZONE
+                value: "1"
+              - name: PROVISION_REGIONAL_CLUSTER
+                value: "true"
             resources:
               requests:
                 memory: 200Mi
@@ -434,4 +442,3 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-  
