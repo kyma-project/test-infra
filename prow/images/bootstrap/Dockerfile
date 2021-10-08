@@ -98,4 +98,4 @@ RUN wget https://github.com/koalaman/shellcheck/releases/download/v${SHELLCHECK_
     && mv shellcheck-v${SHELLCHECK_VERSION}/shellcheck /usr/bin/ \
     && rm -rf shellcheck-v${SHELLCHECK_VERSION} shellcheck-v${SHELLCHECK_VERSION}.linux.x86_64.tar.xz
 
-ADD .shellcheckrc .shellcheckrc
+ADD .shellcheckrc /root/.shellcheckrc
