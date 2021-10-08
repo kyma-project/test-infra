@@ -98,5 +98,4 @@ RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
 #     && rm -rf shellcheck-v${SHELLCHECK_VERSION} shellcheck-v${SHELLCHECK_VERSION}.linux.x86_64.tar.xz
 
 RUN wget http://ftp.de.debian.org/debian/pool/main/s/shellcheck/shellcheck_0.4.4-4_amd64.deb && \
-    dpkg -i shellcheck_0.4.4-4_amd64.deb || true && \
-    sudo apt-get install -f
+    apt install ./shellcheck_0.4.4-4_amd64.deb
