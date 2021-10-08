@@ -91,11 +91,9 @@ RUN wget https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}
 # The following lines needed for using dind since debian is using nftables by default
 RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
     update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
-ENV SHELLCHECK_VERSION=0.4.6
 
+ENV SHELLCHECK_VERSION=0.4.6
 RUN wget https://github.com/koalaman/shellcheck/releases/download/v${SHELLCHECK_VERSION}/shellcheck-v${SHELLCHECK_VERSION}.linux.x86_64.tar.xz \
     && tar xvf shellcheck-v${SHELLCHECK_VERSION}.linux.x86_64.tar.xz \
     && mv shellcheck-v${SHELLCHECK_VERSION}/shellcheck /usr/bin/ \
     && rm -rf shellcheck-v${SHELLCHECK_VERSION} shellcheck-v${SHELLCHECK_VERSION}.linux.x86_64.tar.xz
-
-ENV SHELLCHECK_OPTS="-e SC2204 -e SC2205 -e SC2200 -e SC2201 -e SC2198 -e SC2199 -e SC2196 -e SC2197 -e SC2195 -e SC2194 -e SC2193 -e SC2188 -e SC2189 -e SC2186 -e SC1109 -e SC1108 -e SC2185 -e SC2184 -e SC2183 -e SC2182 -e SC2181 -e SC1106"
