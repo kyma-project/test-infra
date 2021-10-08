@@ -79,7 +79,7 @@ templates:
                   always_run: true
                   optional: true
                   env:
-                    JOB_NAME_PATTERN: "pre-main-kyma-incubator-reconciler.*"
+                    JOB_NAME_PATTERN: "pre-main-kyma-incubator-reconciler"
                     JOBGUARD_TIMEOUT: "25m"
                 inheritedConfigs:
                   global:
