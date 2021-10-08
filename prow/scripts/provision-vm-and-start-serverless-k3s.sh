@@ -27,7 +27,7 @@ fi
 cleanup() {
     ARG=$?
     log::info "Removing instance kyma-integration-test-${RANDOM_ID}"
-    gcloud compute instances delete --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" || true ### Workaround: not failing the job regardless of the vm deletion result
+    # gcloud compute instances delete --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" || true ### Workaround: not failing the job regardless of the vm deletion result
     date
     exit $ARG
 }
