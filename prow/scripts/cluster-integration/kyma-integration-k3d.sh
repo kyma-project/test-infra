@@ -17,6 +17,7 @@ function prereq_test() {
 function load_env() {
   ENV_FILE=".env"
   if [ -f "${ENV_FILE}" ]; then
+    # shellcheck disable=SC2046
     export $(xargs < "${ENV_FILE}")
   fi
 }
