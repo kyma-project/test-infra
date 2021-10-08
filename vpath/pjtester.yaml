@@ -1,6 +1,0 @@
-pjNames:
-  - pjName: pre-test-infra-validate-scripts
-prConfigs:
-  kyma-project:
-    test-infra:
-      prNumber: 4274
