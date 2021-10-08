@@ -152,13 +152,13 @@ function reconciler::wait_until_kyma_reconciled() {
     fi
 
     if [ "$RECONCILER_TIMEOUT" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then
-      log::error "timeout reached on Kyma installation error. Exiting"
+      log::error "Timeout reached on Kyma reconciliation. Exiting"
       kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler
       exit 1
     fi
 
     sleep $RECONCILER_DELAY
-    log::info "waiting to get Kyma reconciled, current status: ${status} ...."
+    log::info "Waiting for reconciliation to finish, current status: ${status} ...."
     iterationsLeft=$(( iterationsLeft-1 ))
   done
 }
