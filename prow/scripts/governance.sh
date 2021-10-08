@@ -2,14 +2,17 @@
 
 set -e
 
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly SCRIPT_DIR
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${SCRIPT_DIR}/lib/docker.sh"
 # shellcheck source=prow/scripts/lib/log.sh
-source "${SCRIPT_DIR}/lib/log.sh"
+. "${SCRIPT_DIR}/lib/log.sh"
 
-readonly ARGS=("$@")
-readonly MILV_IMAGE="eu.gcr.io/kyma-project/incubator/milv:4499ea8d"
+readonly ARGS
+ARGS=("$@")
+readonly MILV_IMAGE
+MILV_IMAGE="eu.gcr.io/kyma-project/incubator/milv:4499ea8d"
 VOLUME_DIR=""
 OUTPUT=0
 
@@ -19,27 +22,32 @@ function read_arguments() {
         case "$1" in
             --repository)
                 shift
-                readonly REPOSITORY_NAME=$1
+                readonly REPOSITORY_NAME
+REPOSITORY_NAME=$1
                 shift
                 ;;
             --repository-org)
                 shift
-                readonly REPOSITORY_ORG=$1
+                readonly REPOSITORY_ORG
+REPOSITORY_ORG=$1
                 shift
                 ;;
             --repository-dir)
                 shift
-                readonly REPOSITORY_DIR=$1
+                readonly REPOSITORY_DIR
+REPOSITORY_DIR=$1
                 shift
                 ;;
             --main-branch)
                 shift
-                readonly MAIN_BRANCH=$1
+                readonly MAIN_BRANCH
+MAIN_BRANCH=$1
                 shift
                 ;;
             --full-validation)
                 shift
-                readonly FULL_VALIDATION=$1
+                readonly FULL_VALIDATION
+FULL_VALIDATION=$1
                 shift
                 ;;
             *)

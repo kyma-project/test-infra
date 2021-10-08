@@ -94,7 +94,7 @@ install::kyma_cli() {
     mkdir -p "/usr/local/bin"
     os=$(host::os)
 
-    pushd "/usr/local/bin" || exit
+    pushd "/usr/local/bin" || exit || exit
 
     echo "Install kyma CLI ${os} locally to /usr/local/bin..."
 

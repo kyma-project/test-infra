@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-readonly CI_FLAG=ci
+readonly CI_FLAG
+CI_FLAG=ci
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -25,7 +26,7 @@ else
   echo -e "${GREEN}√ go mod verify${NC}"
 fi
 
-goFilesToCheck=$(find . -type f -name "*.go" | egrep -v "\/vendor\/|_*/automock/|_*/testdata/|/pkg\/|_*export_test.go")
+goFilesToCheck=$(find . -type f -name "*.go" | grep -E -v "\/vendor\/|_*/automock/|_*/testdata/|/pkg\/|_*export_test.go")
 
 ##
 # GO BUILD
@@ -105,9 +106,7 @@ done
 # GO TEST
 ##
 echo "? go test"
-go test ./...
-# Check if tests passed
-if [ $? != 0 ]; then
+if go test ./...; then
   echo -e "${RED}✗ go test\n${NC}"
   exit 1
 else

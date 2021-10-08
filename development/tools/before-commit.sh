@@ -5,7 +5,8 @@
 #
 # Usage: ./before-commit.sh ./dir/... ./dir/...
 
-readonly CI_FLAG=ci
+readonly CI_FLAG
+CI_FLAG=ci
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'

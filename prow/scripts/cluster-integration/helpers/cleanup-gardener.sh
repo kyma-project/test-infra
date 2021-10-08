@@ -12,7 +12,8 @@
 # Arguments:
 # --excluded-clusters -  regexp of clusters that won't get removed
 
-readonly SECONDS_PER_HOUR=3600
+readonly SECONDS_PER_HOUR
+SECONDS_PER_HOUR=3600
 
 set -e
 
@@ -60,7 +61,7 @@ echo "--------------------------------------------------------------------------
 # get all cluster names in project
 # shellcheck disable=SC2016
 CLUSTERS=$(kubectl --kubeconfig "${GARDENER_KYMA_PROW_KUBECONFIG}" -n garden-"${GARDENER_KYMA_PROW_PROJECT_NAME}" get shoots -o go-template='{{range $i, $c :=.items}}{{if $i}},{{end}}{{$c.metadata.name}}{{end}}')
-CLUSTERS=(${CLUSTERS//,/ }) # convert comma separated clusters string to array
+CLUSTERS=("${CLUSTERS//,/ }") # convert comma separated clusters string to array
 
 # cleanup all clusters
 for CLUSTER in "${CLUSTERS[@]}"

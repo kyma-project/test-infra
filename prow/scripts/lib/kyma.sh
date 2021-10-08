@@ -97,7 +97,7 @@ kyma::install_cli() {
         export PATH="/tmp/bin:${PATH}"
         os=$(host::os)
 
-        pushd "/tmp/bin" || exit
+        pushd "/tmp/bin" || exit || exit
 
         echo "--> Install kyma CLI ${os} locally to /tmp/bin"
 

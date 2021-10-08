@@ -72,7 +72,8 @@ ERROR_LOGGING_GUARD="true"
 export ERROR_LOGGING_GUARD
 
 RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
-readonly COMMON_NAME_PREFIX="grd"
+readonly COMMON_NAME_PREFIX
+COMMON_NAME_PREFIX="grd"
 COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 export COMMON_NAME
 

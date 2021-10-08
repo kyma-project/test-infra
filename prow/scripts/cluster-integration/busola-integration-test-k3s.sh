@@ -8,17 +8,17 @@ K3S_DOMAIN="local.kyma.dev"
 CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included:8.5.0"
 
 prepare_k3s() {
-    pushd ${LOCAL_KYMA_DIR}
+    pushd ${LOCAL_KYMA_DIR} || exit
     ./create-cluster-k3s.sh
     echo "k3s cluster created √"
     kubectl cluster-info
-    popd
+    popd || exit
 }
 
 generate_cert(){
     # $1 is the domain
     mkdir ssl
-    pushd ssl
+    pushd ssl || exit
     
     # Generate private key
     openssl genrsa -out ca.key 2048
@@ -58,7 +58,7 @@ EOF
     -sha256
     
     echo "Certificate generated for the $1 domain √"
-    popd
+    popd || exit
 }
 
 install_busola(){
@@ -84,7 +84,7 @@ install_busola(){
     --selector=app.kubernetes.io/component=controller \
     --timeout=120s
     
-    pushd busola-resources
+    pushd busola-resources || exit
     
     for i in ./**{/*,}.yaml; do
         sed -i "s,%DOMAIN%,$1,g" "$i"
@@ -92,7 +92,7 @@ install_busola(){
     
     kubectl apply -k .
     
-    popd
+    popd || exit
     echo "Busola resources applied √"
 }
 

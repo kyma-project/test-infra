@@ -57,8 +57,10 @@ function gcp::provision_k8s_cluster {
     local enableStackdriver="false"
     local currentTimestampReadableParam
     local currentTimestampParam
-    readonly currentTimestampReadableParam=$(date +%Y%m%d)
-    readonly currentTimestampParam=$(date +%s)
+    readonly currentTimestampReadableParam
+currentTimestampReadableParam=$(date +%Y%m%d)
+    readonly currentTimestampParam
+currentTimestampParam=$(date +%s)
     local testInfraSourcesDir="/home/prow/go/src/github.com/kyma-project"
 
 

@@ -3,9 +3,12 @@
 set -o errexit
 set -o pipefail
 
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
-readonly TMP_DIR=$(mktemp -d)
+readonly SCRIPT_DIR
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly TEST_INFRA_SOURCES_DIR
+TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
+readonly TMP_DIR
+TMP_DIR=$(mktemp -d)
 
 
 # shellcheck source=prow/scripts/lib/log.sh

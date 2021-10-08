@@ -2,7 +2,8 @@
 
 set -eu
 
-readonly TOOLS_DIR="${PWD}/development/tools"
+readonly TOOLS_DIR
+TOOLS_DIR="${PWD}/development/tools"
 cd "${TOOLS_DIR}"
 
 mkdir -p ./bin

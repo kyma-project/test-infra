@@ -2,8 +2,10 @@
 
 set -e
 
-readonly driver="none"
-readonly testSuiteName=${TEST_SUITE:-"testsuite-all"}
+readonly driver
+driver="none"
+readonly testSuiteName
+testSuiteName=${TEST_SUITE:-"testsuite-all"}
 KYMA_TEST_TIMEOUT=${KYMA_TEST_TIMEOUT:=1h}
 
 export KYMA_SOURCES_DIR="./kyma"
@@ -14,7 +16,7 @@ install::kyma_cli() {
   mkdir -p "/usr/local/bin"
   os=$(host::os)
 
-  pushd "/usr/local/bin" || exit
+  pushd "/usr/local/bin" || exit || exit
 
   echo "Install kyma CLI ${os} locally to /usr/local/bin..."
 

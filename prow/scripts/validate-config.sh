@@ -8,9 +8,12 @@ usage () {
     exit 1
 }
 
-readonly PLUGINS_PATH=$1
-readonly CONFIG_PATH=$2
-readonly JOBS_CONFIG_PATH=$3
+readonly PLUGINS_PATH
+PLUGINS_PATH=$1
+readonly CONFIG_PATH
+CONFIG_PATH=$2
+readonly JOBS_CONFIG_PATH
+JOBS_CONFIG_PATH=$3
 
 if [[ -z "${PLUGINS_PATH}" ]] || [[ -z "${CONFIG_PATH}" ]] || [[ -z "${JOBS_CONFIG_PATH}" ]]; then
     usage

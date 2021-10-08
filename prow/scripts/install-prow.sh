@@ -8,9 +8,12 @@
 
 set -o errexit
 
-readonly PROW_DIR="$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )"
-readonly KUBECONFIG=${KUBECONFIG:-"${HOME}/.kube/config"}
-readonly CLUSTER_DIR="$( cd "${PROW_DIR}/cluster" && pwd )"
+readonly PROW_DIR
+PROW_DIR="$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )"
+readonly KUBECONFIG
+KUBECONFIG=${KUBECONFIG:-"${HOME}/.kube/config"}
+readonly CLUSTER_DIR
+CLUSTER_DIR="$( cd "${PROW_DIR}/cluster" && pwd )"
 
 # requried by External Secrets Syncer to access Secret Manager
 if [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ]; then

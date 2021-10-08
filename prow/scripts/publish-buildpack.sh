@@ -2,7 +2,8 @@
 
 set -e
 
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly SCRIPT_DIR
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${SCRIPT_DIR}/lib/docker.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
@@ -13,7 +14,8 @@ usage () {
     exit 1
 }
 
-readonly SOURCES_DIR=$1
+readonly SOURCES_DIR
+SOURCES_DIR=$1
 
 if [[ -z "${SOURCES_DIR}" ]]; then
     usage

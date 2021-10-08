@@ -78,7 +78,8 @@ ERROR_LOGGING_GUARD="true"
 export ERROR_LOGGING_GUARD
 
 RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
-readonly COMMON_NAME_PREFIX="grd"
+readonly COMMON_NAME_PREFIX
+COMMON_NAME_PREFIX="grd"
 COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 export COMMON_NAME
 
@@ -92,14 +93,16 @@ if [[ -n ${PULL_NUMBER} ]]; then
     export KYMA_SOURCE
     # TODO maybe can be replaced with PULL_BASE_REF?
 elif [[ "${BUILD_TYPE}" == "release" ]]; then
-    readonly RELEASE_VERSION=$(cat "VERSION")
+    readonly RELEASE_VERSION
+RELEASE_VERSION=$(cat "VERSION")
     log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
     KYMA_SOURCE="${RELEASE_VERSION}"
     export KYMA_SOURCE
 else
     # Otherwise (master), operate on triggering commit id
     if [[ -n ${PULL_BASE_SHA} ]]; then
-        readonly COMMIT_ID="${PULL_BASE_SHA::8}"
+        readonly COMMIT_ID
+COMMIT_ID="${PULL_BASE_SHA::8}"
         KYMA_SOURCE="${COMMIT_ID}"
         export KYMA_SOURCE
     else

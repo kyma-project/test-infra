@@ -24,8 +24,10 @@
 
 set -o errexit
 
-readonly SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
-readonly CONCURRENCY=5
+readonly SUITE_NAME
+SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
+readonly CONCURRENCY
+CONCURRENCY=5
 #Exported variables
 export TEST_INFRA_SOURCES_DIR="$KYMA_PROJECT_DIR/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="$TEST_INFRA_SOURCES_DIR/prow/scripts/cluster-integration/helpers"
@@ -38,9 +40,11 @@ source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 # Enforce lowercase
-readonly REPO_OWNER=${REPO_OWNER,,}
+readonly REPO_OWNER
+REPO_OWNER=${REPO_OWNER,,}
 export REPO_OWNER
-readonly REPO_NAME=${REPO_NAME,,}
+readonly REPO_NAME
+REPO_NAME=${REPO_NAME,,}
 export REPO_NAME
 export INGRESS_GATEWAY_HOSTNAME='*'
 export APISERVER_HOSTNAME='apiserver'

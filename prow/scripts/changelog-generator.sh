@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 set -e
 
-readonly KYMA_DIR="/home/prow/go/src/github.com/kyma-project/kyma"
-readonly RELEASE_VERSION=$(cat "${KYMA_DIR}/VERSION")
+readonly KYMA_DIR
+KYMA_DIR="/home/prow/go/src/github.com/kyma-project/kyma"
+readonly RELEASE_VERSION
+RELEASE_VERSION=$(cat "${KYMA_DIR}/VERSION")
 
 # find latest tag from which the generator should started
 # shellcheck disable=SC2046
 TAG_LIST_STRING=$(git describe --tags $(git rev-list --tags) --always | grep -F . | grep -v "-")
-TAG_LIST=($(echo "${TAG_LIST_STRING}" | tr " " "\n"))
+TAG_LIST=("$(echo "${TAG_LIST_STRING}" | tr " " "\n")")
 PENULTIMATE=${TAG_LIST[0]}
 
 if [ "${PENULTIMATE}" = "" ]; then

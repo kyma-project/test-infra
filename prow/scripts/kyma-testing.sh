@@ -3,18 +3,20 @@ CURRENT_PATH=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 KYMA_TEST_TIMEOUT=${KYMA_TEST_TIMEOUT:=1h}
 
 
-readonly TMP_DIR=$(mktemp -d)
-readonly JUNIT_REPORT_PATH="${ARTIFACTS:-${TMP_DIR}}/junit_Kyma_octopus-test-suite-$(date +%s).xml"
+readonly TMP_DIR
+TMP_DIR=$(mktemp -d)
+readonly JUNIT_REPORT_PATH
+JUNIT_REPORT_PATH="${ARTIFACTS:-${TMP_DIR}}/junit_Kyma_octopus-test-suite-$(date +%s).xml"
 if [ -z "$CONCURRENCY" ]; then
   CONCURRENCY=5
 fi
 # Should be fixed name, it is displayed in TestGrid
 SUITE_NAME="testsuite-all"
 
-# shellcheck disable=SC1090
-source "${CURRENT_PATH}/lib/testing-helpers.sh"
+# shellcheck source=prow/scripts/lib/testing-helpers.sh
+. "${CURRENT_PATH}/lib/testing-helpers.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
-source "${CURRENT_PATH}/lib/kyma.sh"
+. "${CURRENT_PATH}/lib/kyma.sh"
 
 kc="kubectl $(context_arg)"
 

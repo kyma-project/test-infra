@@ -4,12 +4,18 @@
 
 set -e
 
-readonly ARGS=("$@")
-readonly CWD=$PWD
-readonly TMP_DIR_NAME=".license-puller"
-readonly TMP_DIR="./${TMP_DIR_NAME}"
-readonly LICENSES_DIR_NAME="licenses"
-readonly LICENSES_DIR="./${LICENSES_DIR_NAME}"
+readonly ARGS
+ARGS=("$@")
+readonly CWD
+CWD=$PWD
+readonly TMP_DIR_NAME
+TMP_DIR_NAME=".license-puller"
+readonly TMP_DIR
+TMP_DIR="./${TMP_DIR_NAME}"
+readonly LICENSES_DIR_NAME
+LICENSES_DIR_NAME="licenses"
+readonly LICENSES_DIR
+LICENSES_DIR="./${LICENSES_DIR_NAME}"
 
 DIRS_TO_PULLING=()
 VERBOSE=false
@@ -18,7 +24,7 @@ function read_arguments() {
     do
         case $arg in
             --dirs-to-pulling=*)
-              local dirs_to_pulling=($( echo "${arg#*=}" | tr "," "\n" ))
+              local dirs_to_pulling=("$( echo "${arg#*=}" | tr "," "\n" )")
               shift # remove --dirs-to-pulling=
             ;;
             --verbose)
@@ -33,7 +39,7 @@ function read_arguments() {
 
     if [ "${#dirs_to_pulling[@]}" -ne 0 ]; then
         for d in "${dirs_to_pulling[@]}"; do
-            DIRS_TO_PULLING+=($( cd "${CWD}/${d}" && pwd ))
+            DIRS_TO_PULLING+=("$( cd "${CWD}/${d}" && pwd )")
         done
     fi
     readonly DIRS_TO_PULLING

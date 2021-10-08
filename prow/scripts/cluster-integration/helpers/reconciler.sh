@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 
-readonly RECONCILER_SUFFIX="-reconciler"
-readonly RECONCILER_NAMESPACE=reconciler
-readonly RECONCILER_TIMEOUT=1200 # in secs
-readonly RECONCILER_DELAY=10 # in secs
-readonly LOCAL_KUBECONFIG="$HOME/.kube/config"
+readonly RECONCILER_SUFFIX
+RECONCILER_SUFFIX="-reconciler"
+readonly RECONCILER_NAMESPACE
+RECONCILER_NAMESPACE=reconciler
+readonly RECONCILER_TIMEOUT
+RECONCILER_TIMEOUT=1200 # in secs
+readonly RECONCILER_DELAY
+RECONCILER_DELAY=10 # in secs
+readonly LOCAL_KUBECONFIG
+LOCAL_KUBECONFIG="$HOME/.kube/config"
 
 
 function reconciler::deploy() {
@@ -129,6 +134,7 @@ function reconciler::trigger_kyma_reconcile() {
   # Trigger Kyma reconciliation using reconciler
   log::banner "Reconcile Kyma in the same cluster"
   kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/request-reconcile.sh"
+  # shellcheck disable=SC2181
   if [[ $? -ne 0 ]]; then
       echo "Failed to reconcile"
       exit 1
@@ -161,7 +167,7 @@ function reconciler::deploy_test_pod() {
   # Deploy a test pod
   log::banner "Deploying test-pod in the cluster"
   test_pod_name=$(kubectl get po test-pod -n "${RECONCILER_NAMESPACE}" -ojsonpath="{ .metadata.name }" --ignore-not-found)
-  if [ ! -z "${test_pod_name}" ]; then
+  if [ -n "${test_pod_name}" ]; then
     log::info "Found existing pod: test-pod"
     kubectl delete po test-pod -n "${RECONCILER_NAMESPACE}"
     reconciler::wait_until_test_pod_is_deleted
@@ -180,9 +186,9 @@ function reconciler::pre_upgrade_test_fast_integration_kyma_1_24() {
     # Define KUBECONFIG env variable
     export KUBECONFIG="${LOCAL_KUBECONFIG}"
 
-    pushd "${KYMA_PROJECT_DIR}/kyma-1.24/tests/fast-integration"
+    pushd "${KYMA_PROJECT_DIR}/kyma-1.24/tests/fast-integration" || exit
     make ci-pre-upgrade
-    popd
+    popd || exit
 
     log::success "Tests completed"
 }

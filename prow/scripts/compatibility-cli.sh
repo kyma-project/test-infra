@@ -41,13 +41,13 @@ RELEASES=${RELEASES//[,\"]}
 RELEASES=${RELEASES//\-rc[0-9]}
 
 # Split into array
-RELEASES=(${RELEASES})
+RELEASES=("${RELEASES}")
 
 # sort the releases in case there was a patch release after another higher minor release (e.g. chronologically: 1.0.1, 1.1.0, 1.0.0)
-RELEASES=($(printf "%s\n" "${RELEASES[@]}" | sort -r))
+RELEASES=("$(printf "%s\n" "${RELEASES[@]}" | sort -r)")
 
 # Remove duplicates
-RELEASES=($(printf "%s\n" "${RELEASES[@]}" | uniq))
+RELEASES=("$(printf "%s\n" "${RELEASES[@]}" | uniq)")
 
 if [[ $COMPAT_BACKTRACK == 1 ]]; then
     # Found the target release

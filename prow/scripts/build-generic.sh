@@ -3,7 +3,8 @@
 set -e
 set -o pipefail
 
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly SCRIPT_DIR
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${SCRIPT_DIR}/lib/docker.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
@@ -15,7 +16,8 @@ usage () {
 }
 
 # get first argument and assume it's a path to the sources.
-readonly SOURCES_DIR=$1; shift
+readonly SOURCES_DIR
+SOURCES_DIR=$1; shift
 if [[ ! -d "${SOURCES_DIR}" ]]; then
   echo -e "Error: Directory \"$SOURCES_DIR\" does not exist."
   usage

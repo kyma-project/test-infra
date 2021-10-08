@@ -6,9 +6,12 @@
 ######################################
 set -o errexit
 
-readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-readonly PROW_CLUSTER_DIR="$( cd "${CURRENT_DIR}/../prow/cluster" && pwd )"
-readonly KUBECONFIG=${KUBECONFIG:-"${HOME}/.kube/config"}
+readonly CURRENT_DIR
+CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly PROW_CLUSTER_DIR
+PROW_CLUSTER_DIR="$( cd "${CURRENT_DIR}/../prow/cluster" && pwd )"
+readonly KUBECONFIG
+KUBECONFIG=${KUBECONFIG:-"${HOME}/.kube/config"}
 
 if [ -z "$BUCKET_NAME" ]; then
       echo "\$BUCKET_NAME is empty"
@@ -57,7 +60,7 @@ echo
 
 if [ ${#oauth_token} -lt 1 ]; then
   echo "OAuth2 token not provided";
-  exit -1;
+  exit 255;
 fi
 
 kubectl create clusterrolebinding cluster-admin-binding \

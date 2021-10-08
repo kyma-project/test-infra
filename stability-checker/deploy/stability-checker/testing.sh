@@ -2,11 +2,13 @@
 CURRENT_PATH=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 KYMA_TEST_TIMEOUT=${KYMA_TEST_TIMEOUT:=1h}
 
-readonly CONCURRENCY=5
+readonly CONCURRENCY
+CONCURRENCY=5
 # Should be fixed name, it is displayed in TestGrid
-readonly SUITE_NAME="testsuite-all"
+readonly SUITE_NAME
+SUITE_NAME="testsuite-all"
 
-# shellcheck disable=SC1090
+# shellcheck source=prow/scripts/lib/testing-helpers.sh
 source "${CURRENT_PATH}/testing-helpers.sh"
 
 kc="kubectl $(context_arg)"

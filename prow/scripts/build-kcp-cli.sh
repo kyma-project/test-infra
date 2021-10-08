@@ -4,9 +4,10 @@
 
 set -e
 
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly SCRIPT_DIR
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # shellcheck source=prow/scripts/lib/log.sh
-source "${SCRIPT_DIR}/lib/log.sh"
+. "${SCRIPT_DIR}/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${SCRIPT_DIR}/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
@@ -18,8 +19,10 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-readonly KCP_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/kcp"
-readonly CURRENT_TIMESTAMP=$(date +%s)
+readonly KCP_DEVELOPMENT_ARTIFACTS_BUCKET
+KCP_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/kcp"
+readonly CURRENT_TIMESTAMP
+CURRENT_TIMESTAMP=$(date +%s)
 
 
 

@@ -7,7 +7,8 @@ export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export COMPASS_SOURCES_DIR="/home/prow/go/src/github.com/kyma-incubator/compass"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
-readonly COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/compass"
+readonly COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET
+COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/compass"
 
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
@@ -44,23 +45,29 @@ export GARDENER_APPLICATION_CREDENTIALS="${GARDENER_KYMA_PROW_KUBECONFIG}"
 export GARDENER_AZURE_SECRET_NAME="${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}"
 
 # Enforce lowercase
-readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
+readonly REPO_OWNER
+REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
 export REPO_OWNER
-readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
+readonly REPO_NAME
+REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
 export REPO_NAME
 
-readonly RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
+readonly RANDOM_NAME_SUFFIX
+RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
 
 if [[ "$BUILD_TYPE" == "pr" ]]; then
   # In case of PR, operate on PR number
-  readonly COMMON_NAME_PREFIX="gkecompint-pr"
+  readonly COMMON_NAME_PREFIX
+COMMON_NAME_PREFIX="gkecompint-pr"
   COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}")
   COMPASS_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-compass-benchmark/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
   export COMPASS_INSTALLER_IMAGE
 else
   # Otherwise (main), operate on triggering commit id
-  readonly COMMON_NAME_PREFIX="gkecompint-commit"
-  readonly COMMIT_ID=$(cd "$COMPASS_SOURCES_DIR" && git rev-parse --short HEAD)
+  readonly COMMON_NAME_PREFIX
+COMMON_NAME_PREFIX="gkecompint-commit"
+  readonly COMMIT_ID
+COMMIT_ID=$(cd "$COMPASS_SOURCES_DIR" && git rev-parse --short HEAD)
   COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}")
   COMPASS_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-compass-benchmark/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
   export COMPASS_INSTALLER_IMAGE
@@ -293,7 +300,8 @@ function installCompassOld() {
 
   TMP_DIR="/tmp/compass-main-artifacts"
 
-  readonly LATEST_VERSION=main-$(cd "$COMPASS_SOURCES_DIR" && git rev-parse --short main~1)
+  readonly LATEST_VERSION
+LATEST_VERSION=main-$(cd "$COMPASS_SOURCES_DIR" && git rev-parse --short main~1)
   echo "Deploying compass version $LATEST_VERSION"
 
   COMPASS_ARTIFACTS="${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${LATEST_VERSION}"
@@ -381,7 +389,8 @@ installKyma
 log::info "Install Compass version from main"
 installCompassOld
 
-readonly SUITE_NAME="testsuite-all"
+readonly SUITE_NAME
+SUITE_NAME="testsuite-all"
 
 log::info "Execute benchmarks on the current main"
 kubectl uncordon "$NODE"

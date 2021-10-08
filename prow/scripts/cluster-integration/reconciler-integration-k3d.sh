@@ -3,8 +3,10 @@
 set -o errexit
 set -o pipefail
 
-readonly RECONCILER_DIR="./reconciler"
-readonly GO_VERSION=1.16.6
+readonly RECONCILER_DIR
+RECONCILER_DIR="./reconciler"
+readonly GO_VERSION
+GO_VERSION=1.16.6
 
 function prereq_test() {
   command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
@@ -29,10 +31,10 @@ function install_cli() {
     readonly os
   fi
 
-  pushd "$install_dir" || exit
+  pushd "$install_dir" || exit || exit
   curl -Lo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}"
   chmod +x kyma
-  popd
+  popd || exit
 
   kyma version --client
 }
@@ -46,9 +48,9 @@ function run_tests() {
   wget -q https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz && sudo tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz && export PATH=$PATH:/usr/local/go/bin && go version
 
   export KUBECONFIG=~/.kube/config
-  pushd "${RECONCILER_DIR}"
+  pushd "${RECONCILER_DIR}" || exit
   make test-all
-  popd
+  popd || exit
 }
 
 prereq_test

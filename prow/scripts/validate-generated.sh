@@ -4,11 +4,13 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
+readonly SCRIPT_DIR
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly TEST_INFRA_SOURCES_DIR
+TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
 
 # shellcheck source=prow/scripts/lib/log.sh
-source "${SCRIPT_DIR}/lib/log.sh"
+. "${SCRIPT_DIR}/lib/log.sh"
 
 log::info "Running jobs generator tool..."
 

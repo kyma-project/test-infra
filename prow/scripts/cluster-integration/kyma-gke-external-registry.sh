@@ -51,10 +51,12 @@ INSTALLER_YAML="$KYMA_RESOURCES_DIR/installer.yaml"
 INSTALLER_CR="$KYMA_RESOURCES_DIR/installer-cr-cluster.yaml.tpl"
 
 # Enforce lowercase
-readonly REPO_OWNER=${REPO_OWNER,,}
+readonly REPO_OWNER
+REPO_OWNER=${REPO_OWNER,,}
 export REPO_OWNER
 # Enforce lowercase
-readonly REPO_NAME=${REPO_NAME,,}
+readonly REPO_NAME
+REPO_NAME=${REPO_NAME,,}
 export REPO_NAME
 export INGRESS_GATEWAY_HOSTNAME='*'
 export APISERVER_HOSTNAME='apiserver'

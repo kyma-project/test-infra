@@ -49,10 +49,12 @@ source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 ENABLE_TEST_LOG_COLLECTOR=false
 
 # Enforce lowercase
-readonly REPO_OWNER=${REPO_OWNER,,}
+readonly REPO_OWNER
+REPO_OWNER=${REPO_OWNER,,}
 export REPO_OWNER
 # Enforce lowercase
-readonly REPO_NAME=${REPO_NAME,,}
+readonly REPO_NAME
+REPO_NAME=${REPO_NAME,,}
 export REPO_NAME
 export INGRESS_GATEWAY_HOSTNAME='*'
 export APISERVER_HOSTNAME='apiserver'

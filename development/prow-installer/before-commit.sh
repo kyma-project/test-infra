@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-readonly CI_FLAG=ci
+readonly CI_FLAG
+CI_FLAG=ci
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
@@ -46,8 +47,7 @@ fi
 # Validate dependencies
 ##
 echo "? go mod verify"
-depResult=$(go mod verify)
-if [ $? != 0 ]; then
+if depResult=$(go mod verify); then
 	echo -e "${RED}✗ go mod verify\n$depResult${NC}"
 	exit 1
 else echo -e "${GREEN}√ go mod verify${NC}"
@@ -57,9 +57,8 @@ fi
 # GO TEST
 ##
 echo "? go test"
-go test -race -coverprofile=cover.out ./...
 # Check if tests passed
-if [[ $? != 0 ]]; then
+if go test -race -coverprofile=cover.out ./...; then
 	echo -e "${RED}✗ go test\n${NC}"
 	rm cover.out
 	exit 1
@@ -69,7 +68,7 @@ else
 	echo -e "${GREEN}√ go test${NC}"
 fi
 
-goFilesToCheck=$(find . -type f -name "*.go" | egrep -v "\/vendor\/|_*/automock/|_*/testdata/|_*export_test.go|mock_api.go")
+goFilesToCheck=$(find . -type f -name "*.go" | grep -E -v "\/vendor\/|_*/automock/|_*/testdata/|_*export_test.go|mock_api.go")
 
 #
 # GO FMT

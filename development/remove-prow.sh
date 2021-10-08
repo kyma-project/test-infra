@@ -1,7 +1,9 @@
 #!/bin/bash
 
-readonly DEVELOPMENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-readonly PROW_CLUSTER_DIR="$( cd "${DEVELOPMENT_DIR}/../prow/cluster" && pwd )"
+readonly DEVELOPMENT_DIR
+DEVELOPMENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly PROW_CLUSTER_DIR
+PROW_CLUSTER_DIR="$( cd "${DEVELOPMENT_DIR}/../prow/cluster" && pwd )"
 
 kubectl delete -f "${PROW_CLUSTER_DIR}/starter.yaml"
 kubectl delete pods -l created-by-prow=true

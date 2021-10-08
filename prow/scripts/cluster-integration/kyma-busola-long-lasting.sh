@@ -197,8 +197,10 @@ if [[ $LETSENCRYPT_LIMITS_PROTECTION == "true" ]]; then
     log::info "New COMMON_NAME_PREFIX: ${COMMON_NAME_PREFIX}"
 fi
 
-readonly KYMA_NAME_SUFFIX="kyma"
-readonly BUSOLA_NAME_SUFFIX="busola"
+readonly KYMA_NAME_SUFFIX
+KYMA_NAME_SUFFIX="kyma"
+readonly BUSOLA_NAME_SUFFIX
+BUSOLA_NAME_SUFFIX="busola"
 
 RESOURCES_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/busola"
 CPU_COUNT=$(python -c 'import multiprocessing as mp; print(mp.cpu_count())')

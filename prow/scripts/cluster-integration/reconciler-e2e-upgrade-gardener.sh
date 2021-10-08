@@ -78,7 +78,8 @@ trap gardener::cleanup EXIT INT
 ERROR_LOGGING_GUARD="true"
 export ERROR_LOGGING_GUARD
 
-readonly COMMON_NAME_PREFIX="grd"
+readonly COMMON_NAME_PREFIX
+COMMON_NAME_PREFIX="grd"
 utils::generate_commonName -n "${COMMON_NAME_PREFIX}"
 COMMON_NAME="${utils_generate_commonName_return_commonName:?}"
 export COMMON_NAME

@@ -17,7 +17,7 @@ function prereq_test() {
 function load_env() {
   ENV_FILE=".env"
   if [ -f "${ENV_FILE}" ]; then
-    export $(xargs < "${ENV_FILE}")
+    export "$(xargs < "${ENV_FILE}")"
   fi
 }
 
@@ -35,10 +35,10 @@ function install_cli() {
     readonly os
   fi
 
-  pushd "$install_dir" || exit
+  pushd "$install_dir" || exit || exit
   curl -Lo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}"
   chmod +x kyma
-  popd
+  popd || exit
 
   kyma version --client
 }
@@ -65,7 +65,7 @@ function deploy_kyma() {
 }
 
 function run_tests() {
-  pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
+  pushd "${KYMA_SOURCES_DIR}/tests/fast-integration" || exit
   if [[ -v COMPASS_INTEGRATION_ENABLED && -v CENTRAL_APPLICATION_CONNECTIVITY_ENABLED ]]; then
     make ci-application-connectivity-2-compass
   elif [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
@@ -75,7 +75,7 @@ function run_tests() {
   else
     make ci
   fi
-  popd
+  popd || exit
 }
 
 prereq_test

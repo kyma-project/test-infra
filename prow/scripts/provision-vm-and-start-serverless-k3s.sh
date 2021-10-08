@@ -7,13 +7,15 @@ set -o errexit
 
 date
 
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
+readonly SCRIPT_DIR
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly TEST_INFRA_SOURCES_DIR
+TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
 
 export USE_ALPHA=${USE_ALPHA:-false}
 
 # shellcheck source=prow/scripts/lib/log.sh
-source "${SCRIPT_DIR}/lib/log.sh"
+. "${SCRIPT_DIR}/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "$SCRIPT_DIR/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh

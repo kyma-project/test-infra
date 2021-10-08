@@ -4,8 +4,10 @@
 
 set -o errexit
 
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
+readonly SCRIPT_DIR
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly TEST_INFRA_SOURCES_DIR
+TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
@@ -17,7 +19,7 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
   "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
-pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration || exit
 
 make ci-skr
 

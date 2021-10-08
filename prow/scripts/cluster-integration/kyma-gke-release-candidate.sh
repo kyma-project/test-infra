@@ -139,22 +139,26 @@ cleanupOnError() {
 test_fast_integration_eventing() {
     log::info "Running Eventing E2E release tests"
 
-    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration || exit
     make ci-test-eventing
-    popd
+    popd || exit
 
     log::success "Eventing tests completed"
 }
 
 # Enforce lowercase
-readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
+readonly REPO_OWNER
+REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
 export REPO_OWNER
-readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
+readonly REPO_NAME
+REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
 export REPO_NAME
 
 ### Cluster name must be less than 40 characters!
-readonly COMMON_NAME_PREFIX="gke-release"
-readonly RELEASE_VERSION=$(cat "VERSION")
+readonly COMMON_NAME_PREFIX
+COMMON_NAME_PREFIX="gke-release"
+readonly RELEASE_VERSION
+RELEASE_VERSION=$(cat "VERSION")
 log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
 TRIMMED_RELEASE_VERSION=${RELEASE_VERSION//./-}
 COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${TRIMMED_RELEASE_VERSION}" | tr "[:upper:]" "[:lower:]")
@@ -324,7 +328,7 @@ fi
 
 log::info "Collect list of images"
 if [ -z "$ARTIFACTS" ] ; then
-    ARTIFACTS:=/tmp/artifacts
+    ARTIFACTS=/tmp/artifacts
 fi
 
 IMAGES_LIST=$(kubectl get pods --all-namespaces -o go-template --template='{{range .items}}{{range .status.containerStatuses}}{{.name}},{{.image}},{{.imageID}}{{printf "\n"}}{{end}}{{range .status.initContainerStatuses}}{{.name}},{{.image}},{{.imageID}}{{printf "\n"}}{{end}}{{end}}' | uniq | sort)

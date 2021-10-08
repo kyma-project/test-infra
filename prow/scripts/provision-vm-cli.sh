@@ -6,11 +6,12 @@
 
 set -o errexit
 
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly SCRIPT_DIR
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 KYMA_PROJECT_DIR=${KYMA_PROJECT_DIR:-"/home/prow/go/src/github.com/kyma-project"}
 
 # shellcheck source=prow/scripts/lib/log.sh
-source "${SCRIPT_DIR}/lib/log.sh"
+. "${SCRIPT_DIR}/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${SCRIPT_DIR}/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
@@ -139,7 +140,7 @@ else
 fi
 
 # Run test suite
-# shellcheck disable=SC1090
+# shellcheck disable=SC1091
 source "${SCRIPT_DIR}/lib/clitests.sh"
 
 # ON Kyma2 installation there is no dex, therefore skipping the test

@@ -62,9 +62,11 @@ function removeCluster() {
 		# Check if removing regionl cluster.
 		if [ "${PROVISION_REGIONAL_CLUSTER}" ] && [ "${CLOUDSDK_COMPUTE_REGION}" ]; then
 			#Pass gke region name instead zone name.
-			readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${COMMON_NAME}" --zone="${CLOUDSDK_COMPUTE_REGION}" --project="${CLOUDSDK_CORE_PROJECT}" --format=json | jq --raw-output '.resourceLabels."created-at-readable"')
+			readonly OLD_TIMESTAMP
+OLD_TIMESTAMP=$(gcloud container clusters describe "${COMMON_NAME}" --zone="${CLOUDSDK_COMPUTE_REGION}" --project="${CLOUDSDK_CORE_PROJECT}" --format=json | jq --raw-output '.resourceLabels."created-at-readable"')
 		else
-			readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${COMMON_NAME}" --zone="${CLOUDSDK_COMPUTE_ZONE}" --project="${CLOUDSDK_CORE_PROJECT}" --format=json | jq --raw-output '.resourceLabels."created-at-readable"')
+			readonly OLD_TIMESTAMP
+OLD_TIMESTAMP=$(gcloud container clusters describe "${COMMON_NAME}" --zone="${CLOUDSDK_COMPUTE_ZONE}" --project="${CLOUDSDK_CORE_PROJECT}" --format=json | jq --raw-output '.resourceLabels."created-at-readable"')
 		fi
 	fi
 

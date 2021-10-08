@@ -36,8 +36,10 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-readonly COMMON_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
-readonly DNS_SUBDOMAIN="${COMMON_NAME}"
+readonly COMMON_NAME
+COMMON_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
+readonly DNS_SUBDOMAIN
+DNS_SUBDOMAIN="${COMMON_NAME}"
 
 export CLUSTER_NAME="${COMMON_NAME}"
 export CLUSTER_SIZE="Standard_F8s_v2"

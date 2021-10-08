@@ -44,35 +44,43 @@ export GARDENER_APPLICATION_CREDENTIALS="${GARDENER_KYMA_PROW_KUBECONFIG}"
 export GARDENER_AZURE_SECRET_NAME="${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}"
 
 # Enforce lowercase
-readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
+readonly REPO_OWNER
+REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
 export REPO_OWNER
-readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
+readonly REPO_NAME
+REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
 export REPO_NAME
 
-readonly RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
+readonly RANDOM_NAME_SUFFIX
+RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
 
 if [[ "$BUILD_TYPE" == "pr" ]]; then
   # In case of PR, operate on PR number
-  readonly COMMON_NAME_PREFIX="gkekcpint-pr"
+  readonly COMMON_NAME_PREFIX
+COMMON_NAME_PREFIX="gkekcpint-pr"
   COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}")
   KCP_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-control-plane-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
   export KCP_INSTALLER_IMAGE
 else
   # Otherwise (master), operate on triggering commit id
-  readonly COMMON_NAME_PREFIX="gkekcpint-commit"
-  readonly COMMIT_ID=$(cd "$KCP_SOURCES_DIR" && git rev-parse --short HEAD)
+  readonly COMMON_NAME_PREFIX
+COMMON_NAME_PREFIX="gkekcpint-commit"
+  readonly COMMIT_ID
+COMMIT_ID=$(cd "$KCP_SOURCES_DIR" && git rev-parse --short HEAD)
   COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}")
   KCP_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-control-plane-integration/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
   export KCP_INSTALLER_IMAGE
 fi
 
-readonly KCP_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/kcp"
+readonly KCP_DEVELOPMENT_ARTIFACTS_BUCKET
+KCP_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/kcp"
 if [[ "$BUILD_TYPE" == "pr" ]]; then
   KCP_VERSION="PR-${PULL_NUMBER}"
 else
   KCP_VERSION="master-${COMMIT_ID}"
 fi
-readonly KCP_ARTIFACTS="${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${KCP_VERSION}"
+readonly KCP_ARTIFACTS
+KCP_ARTIFACTS="${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${KCP_VERSION}"
 
 COMMON_NAME=$(echo "${COMMON_NAME}" | tr "[:upper:]" "[:lower:]")
 

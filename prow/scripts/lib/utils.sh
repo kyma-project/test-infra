@@ -707,7 +707,8 @@ function utils::generate_vars_for_build {
         utils_generate_vars_for_build_return_kymaSource="PR-$prNumber"
     elif [[ "$buildType" == "release" ]]; then
         log::info "Reading release version from VERSION file"
-        readonly releaseVersion=$(cat "VERSION")
+        readonly releaseVersion
+releaseVersion=$(cat "VERSION")
         log::info "Read release version: $releaseVersion"
         utils::generate_commonName \
             -n "rel"
@@ -717,7 +718,8 @@ function utils::generate_vars_for_build {
         utils_generate_vars_for_build_return_kymaSource="$releaseVersion"
     # Otherwise (master), operate on triggering commit id
     elif [ -n "$prBaseSha" ]; then
-        readonly commitID="${prBaseSha::8}"
+        readonly commitID
+commitID="${prBaseSha::8}"
         utils::generate_commonName \
             -n "commit" \
             -p "$commitID"

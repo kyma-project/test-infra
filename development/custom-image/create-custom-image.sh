@@ -2,8 +2,10 @@
 
 set -o errexit
 
-readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-readonly ROOT_DIR=${CURRENT_DIR}/../../
+readonly CURRENT_DIR
+CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly ROOT_DIR
+ROOT_DIR="${CURRENT_DIR}/../../"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${ROOT_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh

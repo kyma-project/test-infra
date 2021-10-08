@@ -57,7 +57,7 @@ POST_UPGRADE_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.after-upgrade=true"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
-# shellcheck disable=SC1090
+# shellcheck disable=SC1090,SC1091
 source "${KYMA_SCRIPTS_DIR}/testing-common.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
@@ -135,10 +135,14 @@ downloadAssets() {
 }
 
 generateAndExportClusterName() {
-    readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
-    readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
-    readonly RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c5)
-    readonly COMMON_NAME_PREFIX="gke-rel-upgrade"
+    readonly REPO_OWNER
+REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
+    readonly REPO_NAME
+REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
+    readonly RANDOM_NAME_SUFFIX
+RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c5)
+    readonly COMMON_NAME_PREFIX
+COMMON_NAME_PREFIX="gke-rel-upgrade"
 
     local versionFrom
     versionFrom=$(echo "${SOURCE_VERSION}" | tr -d ".-")

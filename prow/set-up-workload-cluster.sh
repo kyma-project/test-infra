@@ -3,9 +3,12 @@
 set -o errexit
 
 ### 
-readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-readonly KUBECONFIG=${KUBECONFIG:-"${HOME}/.kube/config"}
-readonly PROW_WORKLOAD_CLUSTER_DIR="$( cd "${CURRENT_DIR}/workload-cluster" && pwd )"
+readonly CURRENT_DIR
+CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly KUBECONFIG
+KUBECONFIG=${KUBECONFIG:-"${HOME}/.kube/config"}
+readonly PROW_WORKLOAD_CLUSTER_DIR
+PROW_WORKLOAD_CLUSTER_DIR="$( cd "${CURRENT_DIR}/workload-cluster" && pwd )"
 
 
 if [ -z "$CLUSTER_NAME" ]; then

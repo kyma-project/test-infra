@@ -3,12 +3,18 @@
 # Description: This script is responsible for downloading license files for dependencies
 set -e
 
-readonly ARGS=("$@")
-readonly CWD=$PWD
-readonly TMP_DIR_NAME=".license-puller"
-readonly TMP_DIR="./${TMP_DIR_NAME}"
-readonly LICENSES_DIR_NAME="licenses"
-readonly LICENSES_DIR="./${LICENSES_DIR_NAME}"
+readonly ARGS
+ARGS=("$@")
+readonly CWD
+CWD=$PWD
+readonly TMP_DIR_NAME
+TMP_DIR_NAME=".license-puller"
+readonly TMP_DIR
+TMP_DIR="./${TMP_DIR_NAME}"
+readonly LICENSES_DIR_NAME
+LICENSES_DIR_NAME="licenses"
+readonly LICENSES_DIR
+LICENSES_DIR="./${LICENSES_DIR_NAME}"
 
 DIRS_TO_PULLING=()
 function read_arguments() {

@@ -41,14 +41,14 @@ function checkIfExists {
 }
 
 function createConfigmap {
-    kubectl create configmap -n ${NAMESPACE} ${NAME}  --from-file "${FILE}"
-    kubectl label configmap -n ${NAMESPACE} ${NAME} "${LABELS[@]}"
+    kubectl create configmap -n "${NAMESPACE}" "${NAME}"  --from-file "${FILE}"
+    kubectl label configmap -n "${NAMESPACE}" "${NAME}" "${LABELS[@]}"
 }
 
 while [[ $# -gt 0 ]]
 do
     key="$1"
-    case ${key} in
+    case "${key}" in
         --name)
             checkScriptInput "$2"
             NAME="$2"

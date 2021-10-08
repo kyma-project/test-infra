@@ -104,22 +104,29 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
 fi
 
 function generateAndExportClusterName() {
-  readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
-  readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
-  readonly RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' </dev/urandom | head -c10)
+  readonly REPO_OWNER
+REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
+  readonly REPO_NAME
+REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
+  readonly RANDOM_NAME_SUFFIX
+RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' </dev/urandom | head -c10)
 
   if [[ "$BUILD_TYPE" == "pr" ]]; then
-    readonly COMMON_NAME_PREFIX="gke-upgrade-pr"
+    readonly COMMON_NAME_PREFIX
+COMMON_NAME_PREFIX="gke-upgrade-pr"
     # In case of PR, operate on PR number
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
   elif [[ "$BUILD_TYPE" == "release" ]]; then
-    readonly COMMON_NAME_PREFIX="gke-upgrade-rel"
-    readonly RELEASE_VERSION=$(cat "VERSION")
+    readonly COMMON_NAME_PREFIX
+COMMON_NAME_PREFIX="gke-upgrade-rel"
+    readonly RELEASE_VERSION
+RELEASE_VERSION=$(cat "VERSION")
     log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
   else
     # Otherwise (master), operate on triggering commit id
-    readonly COMMON_NAME_PREFIX="gke-upgrade-commit"
+    readonly COMMON_NAME_PREFIX
+COMMON_NAME_PREFIX="gke-upgrade-commit"
     COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
   fi

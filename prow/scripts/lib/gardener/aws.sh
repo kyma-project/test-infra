@@ -134,9 +134,9 @@ gardener::test_fast_integration_kyma() {
 gardener::pre_upgrade_test_fast_integration_kyma() {
     log::info "Running pre-upgrade Kyma Fast Integration tests"
 
-    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration || exit
     make ci-pre-upgrade
-    popd
+    popd || exit
 
     log::success "Tests completed"
 }
@@ -144,9 +144,9 @@ gardener::pre_upgrade_test_fast_integration_kyma() {
 gardener::post_upgrade_test_fast_integration_kyma() {
     log::info "Running post-upgrade Kyma Fast Integration tests"
 
-    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration || exit
     make ci-post-upgrade
-    popd
+    popd || exit
 
     log::success "Tests completed"
 }
@@ -154,8 +154,10 @@ gardener::post_upgrade_test_fast_integration_kyma() {
 gardener::test_kyma() {
     log::info "Running Kyma tests"
 
-    readonly SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
-    readonly CONCURRENCY=5
+    readonly SUITE_NAME
+SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
+    readonly CONCURRENCY
+CONCURRENCY=5
     set +e
     (
     set -x
