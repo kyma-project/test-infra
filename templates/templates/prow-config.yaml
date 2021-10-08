@@ -273,7 +273,7 @@ presets:
       - name: AKS_CLUSTER_VERSION
         value: "1.19"
       - name: GKE_CLUSTER_VERSION
-        value: "1.18"
+        value: "1.19"
       - name: GARDENER_CLUSTER_VERSION
         value: "1.20"
   # test clusters log collector
