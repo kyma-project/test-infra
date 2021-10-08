@@ -1,6 +1,6 @@
 pjNames:
   - pjName: "pre-main-serverless-integration-k3s"
-prConfigs:
-  kyma-project:
-    kyma:
-      prNumber: 12165
+# prConfigs:
+#   kyma-project:
+#     kyma:
+#       prNumber: 12165
