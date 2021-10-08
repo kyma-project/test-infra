@@ -109,8 +109,7 @@ function reconciler::initialize_test_pod() {
   domain="$(kubectl get cm shoot-info -n kube-system -o jsonpath='{.data.domain}')"
   sed -i "s/example.com/$domain/" ./scripts/e2e-test/template.json
 
-  # shellcheck disable=SC2086
-  kc="$(cat ${KUBECONFIG})"
+  kc="$(cat "${KUBECONFIG}")"
   # shellcheck disable=SC2016
   jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./scripts/e2e-test/template.json > body.json
 

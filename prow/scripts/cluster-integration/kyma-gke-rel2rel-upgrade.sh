@@ -410,8 +410,7 @@ function testKyma() {
 #     log::info "Test Kyma end-to-end upgrade scenarios"
 
 #     set +o errexit
-#     # shellcheck disable=SC2086
-#     helm test -n "${UPGRADE_TEST_NAMESPACE}" "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" ${HELM_ARGS}
+#     helm test -n "${UPGRADE_TEST_NAMESPACE}" "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" "${HELM_ARGS}"
 #     testEndToEndResult=$?
 
 #     echo "Test e2e upgrade logs: "
