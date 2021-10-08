@@ -22,7 +22,6 @@ function executeKubectlWithRetries() {
 
     while [[ ${retry} -lt 10 ]]; do
         result=$(${command})
-        # shellcheck disable=SC2181
         if [[ $? -eq 0 ]]; then
             echo "${result}"
             return 0
@@ -165,7 +164,6 @@ spec:
   repositories:
   - url: "https://github.com/kyma-project/addons/releases/download/0.8.0/index-testing.yaml"
 EOF
-        # shellcheck disable=SC2181
         if [[ $? -eq 0 ]]; then
             break
         fi
