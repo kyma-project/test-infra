@@ -7,6 +7,7 @@ set -o pipefail
 
 export LC_ALL=C.UTF-8
 
+
 # 0.4.5
 export SHELLCHECK_OPTS="${SHELLCHECK_OPTS} -e SC2185 -e SC2184 -e SC2183 -e SC2182 -e SC2181 -e SC1106"
 # 0.4.6
