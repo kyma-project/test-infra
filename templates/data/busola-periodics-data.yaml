@@ -48,6 +48,7 @@ templates:
                   global:
                     - "pubsub_labels"
                     - "disable_testgrid"
+                    - extra_refs_busola
               - jobConfig:
                   name: busola-web-autobump
                   cron: "30 * * * 1-5"
@@ -63,3 +64,4 @@ templates:
                   global:
                     - "pubsub_labels"
                     - "disable_testgrid"
+                    - extra_refs_busola
