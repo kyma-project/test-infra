@@ -110,8 +110,7 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 trap cleanup exit INT
 
 log::info "Copying Reconciler to the instance"
-#shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "reconciler-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/reconciler" "~/reconciler"
+utils::compress_send_to_vm "${ZONE}" "reconciler-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/reconciler" "$HOME/reconciler"
 
 log::info "Triggering the installation"
 gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "reconciler-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/reconciler-integration-k3d.sh"

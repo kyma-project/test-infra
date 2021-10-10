@@ -30,8 +30,7 @@ cleanup() {
   # do not fail the job regardless of the vm deletion result
   set +e
 
-  #shellcheck disable=SC2088
-  utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/fast-integration/junit_kyma-fast-integration.xml" "${ARTIFACTS}"
+  utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "$HOME/kyma/tests/fast-integration/junit_kyma-fast-integration.xml" "${ARTIFACTS}"
   gcloud compute instances stop --async --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}"
 
   log::info "End of cleanup"
@@ -122,17 +121,14 @@ envVars=(
   KYMA_MAJOR_VERSION
 )
 utils::save_env_file "${envVars[@]}"
-#shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" ".env" "~/.env"
+utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" ".env" "$HOME/.env"
 
 log::info "Copying Kyma to the instance"
-#shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
+utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "$HOME/kyma"
 
 if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
   log::info "Copying components file for compass tests"
-  #shellcheck disable=SC2088
-  utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-compass-components.yaml" "~/kyma-integration-k3d-compass-components.yaml"
+  utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-compass-components.yaml" "$HOME/kyma-integration-k3d-compass-components.yaml"
 fi
 
 log::info "Triggering the installation"

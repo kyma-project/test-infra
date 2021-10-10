@@ -113,8 +113,7 @@ chmod -R 0777 /home/prow/go/src/github.com/kyma-incubator/compass/.git
 mkdir -p /home/prow/go/src/github.com/kyma-incubator/compass/components/console/shared/build
 
 log::info "Copying Compass to the instance"
-#shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "compass-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/compass" "~/compass"
+utils::compress_send_to_vm "${ZONE}" "compass-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/compass" "$HOME/compass"
 
 
 KYMA_CLI_VERSION="a064ffb"
@@ -127,8 +126,7 @@ chmod +x kyma
 
 gcloud compute ssh --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" -- "mkdir \$HOME/bin"
 
-#shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "compass-integration-test-${RANDOM_ID}" "kyma" "~/bin/kyma"
+utils::send_to_vm "${ZONE}" "compass-integration-test-${RANDOM_ID}" "kyma" "$HOME/bin/kyma"
 
 gcloud compute ssh --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" -- "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
 

@@ -39,10 +39,8 @@ cleanup() {
     # do not fail the job regardless of the vm deletion result
     set +e
     
-    #shellcheck disable=SC2088
-    utils::receive_from_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "~/busola-tests/cypress/screenshots" "${ARTIFACTS}"
-    #shellcheck disable=SC2088
-    utils::receive_from_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "~/busola-tests/cypress/videos" "${ARTIFACTS}"
+    utils::receive_from_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "$HOME/busola-tests/cypress/screenshots" "${ARTIFACTS}"
+    utils::receive_from_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "$HOME/busola-tests/cypress/videos" "${ARTIFACTS}"
     
     gcloud compute instances stop --async --zone="${ZONE}" "busola-integration-test-${RANDOM_ID}"
     log::info "End of cleanup"
@@ -128,21 +126,17 @@ log::info "KYMA_CLUSTER_NAME=${KYMA_CLUSTER_NAME}"
 kubectl get secrets "${KYMA_CLUSTER_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${TMP_DIR}/kubeconfig-${KYMA_CLUSTER_NAME}.yaml"
 
 log::info "Copying Kyma kubeconfig to the instance"
-#shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "${TMP_DIR}/kubeconfig-${KYMA_CLUSTER_NAME}.yaml" "~/kubeconfig-kyma.yaml"
+utils::send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "${TMP_DIR}/kubeconfig-${KYMA_CLUSTER_NAME}.yaml" "$HOME/kubeconfig-kyma.yaml"
 
 log::info "Copying Busola 'tests' folder to the instance"
-#shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/tests" "~/busola-tests"
+utils::compress_send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/tests" "$HOME/busola-tests"
 
 log::info "Copying Busola 'resources' folder to the instance"
-#shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/resources" "~/busola-resources"
+utils::compress_send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/resources" "$HOME/busola-resources"
 
 
 log::info "Copying Kyma-Local to the instance"
-#shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/local-kyma" "~/local-kyma"
+utils::send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/local-kyma" "$HOME/local-kyma"
 
 
 log::info "Launching the busola-integration-test-k3s.sh script"

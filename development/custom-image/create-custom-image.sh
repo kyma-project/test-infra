@@ -78,8 +78,8 @@ done || exit 1
 trap cleanup exit
 
 log::info "Moving install-deps-debian.sh to $VM_NAME in zone ${ZONE} ..."
-#shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "$VM_NAME" "$CURRENT_DIR/install-deps-debian.sh" "~/"
+
+utils::send_to_vm "${ZONE}" "$VM_NAME" "$CURRENT_DIR/install-deps-debian.sh" "$HOME/"
 
 log::info "Running install-deps-debian.sh ..."
 gcloud compute ssh --quiet --zone="${ZONE}" "$VM_NAME" -- ./install-deps-debian.sh

@@ -120,8 +120,7 @@ if [[ ${TEST_SUITE} == "testsuite-all" ]]; then
 fi
 
 log::info "Copying Kyma to the instance"
-#shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
+utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "$HOME/kyma"
 
 log::info "Triggering the installation"
 log::info "Running testsuite ${testSuiteScript}"

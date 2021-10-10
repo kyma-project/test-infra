@@ -106,8 +106,7 @@ done || exit 1
 trap cleanup exit INT
 
 log::info "Copying control-plane to the instance"
-#shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "control-plane-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/control-plane" "~/control-plane"
+utils::send_to_vm "${ZONE}" "control-plane-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/control-plane" "$HOME/control-plane"
 
 log::info "Download stable Kyma CLI"
 curl -Lo kyma https://storage.googleapis.com/kyma-cli-stable/kyma-linux
@@ -115,8 +114,7 @@ chmod +x kyma
 
 gcloud compute ssh --quiet --zone="${ZONE}" "control-plane-integration-test-${RANDOM_ID}" -- "mkdir \$HOME/bin"
 
-#shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "control-plane-integration-test-${RANDOM_ID}" "kyma" "~/bin/kyma"
+utils::send_to_vm "${ZONE}" "control-plane-integration-test-${RANDOM_ID}" "kyma" "$HOME/bin/kyma"
 
 gcloud compute ssh --quiet --zone="${ZONE}" "control-plane-integration-test-${RANDOM_ID}" -- "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
 
