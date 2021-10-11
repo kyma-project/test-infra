@@ -93,7 +93,7 @@ function reconciler::initialize_test_pod() {
   export KUBECONFIG="${LOCAL_KUBECONFIG}"
 
   if [[ ! $KYMA_UPGRADE_SOURCE ]]; then
-    KYMA_UPGRADE_SOURCE="main"
+    KYMA_UPGRADE_SOURCE="PR-12189"
   fi
   log::info "Kyma version to reconcile: ${KYMA_UPGRADE_SOURCE}"
 
