@@ -1,0 +1,52 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/halamix2-test.yaml
+        localSets:
+          jobConfig_default:
+            command: "bash"
+        jobConfigs:
+          - repoName: kyma-project/kyma
+            jobs:
+              - jobConfig:
+                  args:
+                    - "one"
+                jobConfigPre:
+                  name: "pre-classic-config"
+                jobConfigPost:
+                  name: "post-classic-config"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                  local:
+                    - "jobConfig_default"
+                  preConfigs:
+                    global:
+                      - "jobConfig_presubmit"
+                  postConfigs:
+                    global:
+                      - "jobConfig_postsubmit"
+              - jobConfig:
+                  path: component
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/console/core-ui"
+                  run_if_changed: "^core-ui/|^components/|^shared/|^package.json"
+                  release_since: "1.11"
+                  skipReleaseJobs: "true"
+                jobConfigPre:
+                  command: "replacedCommandPre"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_generic_component"
+                    - "jobConfig_generic_component_console"
+                    - "extra_refs_test-infra"
+                  preConfigs:
+                    global:
+                      - "jobConfig_presubmit"
+                  postConfigs:
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
