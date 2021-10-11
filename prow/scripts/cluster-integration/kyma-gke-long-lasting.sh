@@ -152,13 +152,6 @@ function installKyma() {
 	TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
 	export TLS_KEY
 
-	log::info "Prepare Kyma overrides"
-
-	export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
-
-    envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-installer-overrides.tpl.yaml" > "$PWD/kyma-installer-overrides.yaml"
-    envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/overrides-dex-and-monitoring.tpl.yaml" > "$PWD/overrides-dex-and-monitoring.yaml"
-
 	log::info "Trigger installation"
 
 	kyma deploy \
@@ -167,28 +160,9 @@ function installKyma() {
 			--domain "${DOMAIN}" \
 			--profile production \
 			--tls-crt "./letsencrypt/live/${DOMAIN}/fullchain.pem" \
-			--tls-key "./letsencrypt/live/${DOMAIN}/privkey.pem"
+			--tls-key "./letsencrypt/live/${DOMAIN}/privkey.pem" \
+			--value "istio-configuration.components.ingressGateways.config.service.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
 
-	if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
-		log::info "Create DNS Record for Apiserver proxy IP"
-		APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-		gcp::create_dns_record \
-			-a "$APISERVER_IP_ADDRESS" \
-			-h "apiserver" \
-			-s "$COMMON_NAME" \
-			-p "$CLOUDSDK_CORE_PROJECT" \
-			-z "$CLOUDSDK_DNS_ZONE_NAME"
-	fi
-}
-
-function apply_dex_github_kyma_admin_group() {
-    kubectl get ClusterRoleBinding kyma-admin-binding -oyaml > kyma-admin-binding.yaml && cat >> kyma-admin-binding.yaml <<EOF 
-- apiGroup: rbac.authorization.k8s.io
-  kind: Group
-  name: kyma-project:cluster-access
-EOF
-
-    kubectl replace -f kyma-admin-binding.yaml
 }
 
 function installStackdriverPrometheusCollector(){
@@ -232,9 +206,6 @@ kyma::install_cli
 
 log::info "Install kyma"
 installKyma
-
-log::info "Override kyma-admin-binding ClusterRoleBinding"
-apply_dex_github_kyma_admin_group
 
 log::info "Install stackdriver-prometheus collector"
 installStackdriverPrometheusCollector
