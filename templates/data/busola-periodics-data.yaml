@@ -1,6 +1,14 @@
 templates:
   - from: templates/generic.tmpl
     render:
+      - localSets:
+          extra_refs_busola:
+            extra_refs:
+              busola:
+                - org: "I355770"
+                  repo: "busola"
+                  path_alias: "github.com/kyma-project/busola"
+                  base_ref: "main"
       - to: ../prow/jobs/busola/busola-periodics.yaml
         localSets:
           periodic_config:
@@ -45,10 +53,10 @@ templates:
                   local:
                     - periodic_config
                     - github_token_mounts
+                    -  extra_refs_busola
                   global:
                     - "pubsub_labels"
                     - "disable_testgrid"
-                    - extra_refs_busola
               - jobConfig:
                   name: busola-web-autobump
                   cron: "30 * * * 1-5"
@@ -61,7 +69,7 @@ templates:
                   local:
                     - periodic_config
                     - github_token_mounts
+                    -  extra_refs_busola
                   global:
                     - "pubsub_labels"
                     - "disable_testgrid"
-                    - extra_refs_busola
