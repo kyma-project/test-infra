@@ -409,6 +409,10 @@ CONCURRENCY=1 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l "bench
 kubectl cordon "$NODE"
 
 PODS=$(kubectl get cts $SUITE_NAME -o=go-template --template='{{range .status.results}}{{range .executions}}{{printf "%s\n" .id}}{{end}}{{end}}')
+
+CHECK_FAILED=false
+FAILED_TEST=''
+
 for POD in $PODS; do
   CONTAINER=$(kubectl -n kyma-system get pod "$POD" -o jsonpath='{.spec.containers[*].name}' | sed s/istio-proxy//g | awk '{$1=$1};1')
   kubectl logs -n kyma-system "$POD" -c "$CONTAINER" > "$CONTAINER"-new
@@ -427,12 +431,18 @@ for POD in $PODS; do
     DELTA=$(echo -n "$STATS" | tail +2 | { grep -v '~' || true; } | awk '{print $(NF-2)}')
     if [[ $DELTA == +* ]]; then # If delta is positive
       log::error "There is significant performance degradation in the new release!"
-      exit 1
+      CHECK_FAILED=true
+      FAILED_TEST="$CONTAINER\n$FAILED_TEST"
     fi
   else
     benchstat "$CONTAINER"-new
   fi
 done
+
+if [ $CHECK_FAILED = true ]; then
+  log::error "The following benchmark tests failed:\n $FAILED_TEST"
+  exit 1
+fi
 
 log::success "Success"
 
