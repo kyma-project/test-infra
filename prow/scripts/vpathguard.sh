@@ -3,9 +3,8 @@
 readonly SCRIPT_DIR
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# shellcheck disable=SC1091
 # shellcheck source=/dev/null
-source "$SCRIPT_DIR/lib/log.sh"
+. "$SCRIPT_DIR/lib/log.sh"
 
 # Print test-infra commit on which image was built.
 if [ -n "${IMAGE_COMMIT:+set}" ]; then

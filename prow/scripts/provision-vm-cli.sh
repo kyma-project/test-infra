@@ -139,8 +139,8 @@ else
 fi
 
 # Run test suite
-# shellcheck disable=SC1091
-source "${SCRIPT_DIR}/lib/clitests.sh"
+# shellcheck source=/dev/null
+. "${SCRIPT_DIR}/lib/clitests.sh"
 
 # ON Kyma2 installation there is no dex, therefore skipping the test
 if [ "$KUBERNETES_RUNTIME" = 'k3d' ]; then
