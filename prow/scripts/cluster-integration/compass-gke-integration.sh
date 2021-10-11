@@ -236,7 +236,7 @@ function applyCompassOverrides() {
     --data "connector.http.client.skipSSLValidation=true" \
     --data "operations-controller.http.client.skipSSLValidation=true" \
     --data "global.systemFetcher.http.client.skipSSLValidation=true" \
-    --data "global.systemFetcher.http.client.skipSSLValidation=true" \
+    --data "global.ordAggregator.http.client.skipSSLValidation=true" \
     --label "component=compass"
 }
 
