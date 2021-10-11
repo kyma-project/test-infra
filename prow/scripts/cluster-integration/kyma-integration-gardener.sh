@@ -124,14 +124,6 @@ if [[ "${KYMA_MAJOR_VERSION}" == "2" ]]; then
   kyma::deploy_kyma \
     -p "$EXECUTION_PROFILE" \
     -s "$KYMA_SOURCES_DIR"
-  if [[ "${KYMA_DELETE}" == "true" ]]; then
-    sleep 30
-    kyma::undeploy_kyma
-    sleep 30
-    kyma::deploy_kyma \
-       -p "$EXECUTION_PROFILE" \
-       -s "$KYMA_SOURCES_DIR"
-  fi
 # this will be extended with the next components
 elif [[ "${API_GATEWAY_INTEGRATION}" == "true" ]]; then
   api-gateway::prepare_components_file
