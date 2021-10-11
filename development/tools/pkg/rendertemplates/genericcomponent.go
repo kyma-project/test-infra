@@ -33,16 +33,16 @@ func (r *RenderConfig) GenerateComponentJobs(global map[string]interface{}) {
 
 					// generate pre- and post-submit jobs for the next release
 					if ReleaseMatches(global["nextRelease"], job.JobConfig["release_since"], job.JobConfig["release_until"]) {
-						if len(job.jobConfigPre) > 0 {
+						if len(job.JobConfigPre) > 0 {
 							preSubmit := Job{}
-							preSubmit.JobConfig = deepCopyConfigSet(job.jobConfigPre)
+							preSubmit.JobConfig = deepCopyConfigSet(job.JobConfigPre)
 							preSubmit.JobConfig["name"] = "pre-" + nameSuffix
 							jobs = append(jobs, preSubmit)
 						}
 
-						if len(job.jobConfigPost) > 0 {
+						if len(job.JobConfigPost) > 0 {
 							postSubmit := Job{}
-							postSubmit.JobConfig = deepCopyConfigSet(job.jobConfigPost)
+							postSubmit.JobConfig = deepCopyConfigSet(job.JobConfigPost)
 							postSubmit.JobConfig["name"] = "post-" + nameSuffix
 							jobs = append(jobs, postSubmit)
 						}
@@ -57,18 +57,18 @@ func (r *RenderConfig) GenerateComponentJobs(global map[string]interface{}) {
 							nameRelease := "rel" + strings.Replace(rel, ".", "", -1)
 							commonRelBranches := []string{"release-" + rel}
 
-							if len(job.jobConfigPre) > 0 {
+							if len(job.JobConfigPre) > 0 {
 								preSubmitRel := Job{}
-								preSubmitRel.JobConfig = deepCopyConfigSet(job.jobConfigPre)
+								preSubmitRel.JobConfig = deepCopyConfigSet(job.JobConfigPre)
 								preSubmitRel.JobConfig["name"] = "pre-" + nameRelease + "-" + nameSuffix
 								preSubmitRel.JobConfig["branches"] = commonRelBranches
 								preSubmitRel.changeExtraRefsBase("release-" + rel)
 								jobs = append(jobs, preSubmitRel)
 							}
 
-							if len(job.jobConfigPost) > 0 {
+							if len(job.JobConfigPost) > 0 {
 								postSubmitRel := Job{}
-								postSubmitRel.JobConfig = deepCopyConfigSet(job.jobConfigPost)
+								postSubmitRel.JobConfig = deepCopyConfigSet(job.JobConfigPost)
 								postSubmitRel.JobConfig["name"] = "post-" + nameRelease + "-" + nameSuffix
 								postSubmitRel.JobConfig["branches"] = commonRelBranches
 								postSubmitRel.changeExtraRefsBase("release-" + rel)
@@ -77,8 +77,20 @@ func (r *RenderConfig) GenerateComponentJobs(global map[string]interface{}) {
 						}
 					}
 				} else {
-					// append the job to the list, making it possible to mix component job definitions and regular ones
+					// append the job to the list, making it possible to mix component job definitions and regular ones in one data file
 					jobs = append(jobs, job)
+
+					if len(job.JobConfigPre) > 0 {
+						preSubmit := Job{}
+						preSubmit.JobConfig = deepCopyConfigSet(job.JobConfigPre)
+						jobs = append(jobs, preSubmit)
+					}
+
+					if len(job.JobConfigPost) > 0 {
+						postSubmit := Job{}
+						postSubmit.JobConfig = deepCopyConfigSet(job.JobConfigPost)
+						jobs = append(jobs, postSubmit)
+					}
 				}
 			}
 

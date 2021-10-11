@@ -68,8 +68,8 @@ type InheritedConfigs struct {
 type Job struct {
 	InheritedConfigs InheritedConfigs `yaml:"inheritedConfigs,omitempty"`
 	JobConfig        ConfigSet        `yaml:"jobConfig,omitempty"`
-	jobConfigPre     ConfigSet
-	jobConfigPost    ConfigSet
+	JobConfigPre     ConfigSet        `yaml:"jobConfigPre,omitempty"`
+	JobConfigPost    ConfigSet        `yaml:"jobConfigPost,omitempty"`
 }
 
 // Map performs a deep copy of the given map m.
@@ -294,19 +294,29 @@ func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 					if err := jobConfigPre.mergeConfigSet(deepCopyConfigSet(job.JobConfig)); err != nil {
 						log.Fatalf("Failed merge job configset: %s", err)
 					}
+					if len(job.JobConfigPre) > 0 {
+						if err := jobConfigPre.mergeConfigSet(deepCopyConfigSet(job.JobConfigPre)); err != nil {
+							log.Fatalf("Failed merge job configsetpre: %s", err)
+						}
+					}
 				}
 				if len(jobConfigPost) > 0 {
 					if err := jobConfigPost.mergeConfigSet(deepCopyConfigSet(job.JobConfig)); err != nil {
 						log.Fatalf("Failed merge job configset: %s", err)
 					}
+					if len(job.JobConfigPost) > 0 {
+						if err := jobConfigPost.mergeConfigSet(deepCopyConfigSet(job.JobConfigPost)); err != nil {
+							log.Fatalf("Failed merge job configsetpost: %s", err)
+						}
+					}
 				}
 
 				r.JobConfigs[repoIndex].Jobs[jobIndex].JobConfig = jobConfig
 				if len(jobConfigPre) > 0 {
-					r.JobConfigs[repoIndex].Jobs[jobIndex].jobConfigPre = jobConfigPre
+					r.JobConfigs[repoIndex].Jobs[jobIndex].JobConfigPre = jobConfigPre
 				}
 				if len(jobConfigPost) > 0 {
-					r.JobConfigs[repoIndex].Jobs[jobIndex].jobConfigPost = jobConfigPost
+					r.JobConfigs[repoIndex].Jobs[jobIndex].JobConfigPost = jobConfigPost
 				}
 			}
 		}
