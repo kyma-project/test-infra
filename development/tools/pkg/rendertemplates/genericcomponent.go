@@ -26,7 +26,9 @@ func (r *RenderConfig) GenerateComponentJobs(global map[string]interface{}) {
 					hasComponentJobs = true
 					// generate component jobs
 
-					repository := strings.Split(repo.RepoName, "/")[2]
+					// get last element of repoName, this way "github.com/" part can be omitted
+					repoNameSlice := strings.Split(repo.RepoName, "/")
+					repository := repoNameSlice[len(repoNameSlice)-1]
 					nameSuffix := repository + "-" + strings.Replace(job.JobConfig["path"].(string), "/", "-", -1)
 
 					// generate pre- and post-submit jobs for the next release
