@@ -18,12 +18,10 @@ func (r *RenderConfig) GenerateComponentJobs(global map[string]interface{}) {
 	if present := len(r.JobConfigs); present > 0 {
 		for repoIndex, repo := range r.JobConfigs {
 			var jobs []Job
-			hasComponentJobs := false
 
 			for _, job := range repo.Jobs {
 				// check if the jobConfig is a component job
 				if job.JobConfig["name"] == nil && job.JobConfig["path"] != nil {
-					hasComponentJobs = true
 					// generate component jobs
 
 					// get last element of repoName, this way "github.com/" part can be omitted
@@ -78,7 +76,9 @@ func (r *RenderConfig) GenerateComponentJobs(global map[string]interface{}) {
 					}
 				} else {
 					// append the job to the list, making it possible to mix component job definitions and regular ones in one data file
-					jobs = append(jobs, job)
+					if len(job.JobConfig) > 0 {
+						jobs = append(jobs, job)
+					}
 
 					if len(job.JobConfigPre) > 0 {
 						preSubmit := Job{}
@@ -94,10 +94,7 @@ func (r *RenderConfig) GenerateComponentJobs(global map[string]interface{}) {
 				}
 			}
 
-			// replace jobs if there were generated ones, don't change anything otherwise
-			if hasComponentJobs {
-				r.JobConfigs[repoIndex].Jobs = jobs
-			}
+			r.JobConfigs[repoIndex].Jobs = jobs
 		}
 		r.Values["JobConfigs"] = r.JobConfigs
 	}
