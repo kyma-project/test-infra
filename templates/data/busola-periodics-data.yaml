@@ -1,16 +1,15 @@
 templates:
   - from: templates/generic.tmpl
     render:
-      - localSets:
+      - to: ../prow/jobs/busola/busola-periodics.yaml
+        localSets:
           extra_refs_busola:
             extra_refs:
               busola:
-                - org: "I355770"
+                - org: "Sawthis"
                   repo: "busola"
                   path_alias: "github.com/kyma-project/busola"
-                  base_ref: "main"
-      - to: ../prow/jobs/busola/busola-periodics.yaml
-        localSets:
+                  base_ref: "feature/autobump-deployments"
           periodic_config:
             skip_report: "false"
             max_concurrency: "10"
@@ -51,9 +50,9 @@ templates:
                     - --config=autobump-config/busola-backend-autobump-config.yaml
                 inheritedConfigs:
                   local:
+                    - extra_refs_busola
                     - periodic_config
                     - github_token_mounts
-                    -  extra_refs_busola
                   global:
                     - "pubsub_labels"
                     - "disable_testgrid"
@@ -67,9 +66,9 @@ templates:
                     - --config=autobump-config/busola-web-autobump-config.yaml
                 inheritedConfigs:
                   local:
+                    - extra_refs_busola
                     - periodic_config
                     - github_token_mounts
-                    -  extra_refs_busola
                   global:
                     - "pubsub_labels"
                     - "disable_testgrid"
