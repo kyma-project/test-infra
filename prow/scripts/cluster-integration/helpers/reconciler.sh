@@ -118,10 +118,16 @@ function reconciler::initialize_test_pod() {
 
 # Triggers reconciliation of Kyma and waits until reconciliation is in ready state
 function reconciler::reconcile_kyma() {
+  set +e
   # Trigger Kyma reconciliation using reconciler
   log::banner "Reconcile Kyma in the same cluster until it is ready"
   kubectl exec -it -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/reconcile-kyma.sh"
-  log::info "test-pod exited"
+  if [[ $? -ne 0 ]]; then
+      log::error "Failed to reconcile Kyma"
+      kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler --tail -1
+      exit 1
+  fi
+  set -e
 }
 
 # Only triggers reconciliation of Kyma
@@ -130,7 +136,7 @@ function reconciler::trigger_kyma_reconcile() {
   log::banner "Reconcile Kyma in the same cluster"
   kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/request-reconcile.sh"
   if [[ $? -ne 0 ]]; then
-      echo "Failed to reconcile"
+      log::error "Failed to trigger reconciliation"
       exit 1
   fi
 }
@@ -141,17 +147,24 @@ function reconciler::wait_until_kyma_reconciled() {
   while : ; do
     status=$(kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/get-reconcile-status.sh" | xargs)
     if [ "${status}" = "ready" ]; then
-      echo "Kyma is installed"
+      log::info "Kyma is reconciled"
       break
     fi
 
+    if [ "${status}" = "error" ]; then
+      log::error "Failed to reconcile Kyma. Exiting"
+      kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler --tail -1
+      exit 1
+    fi
+
     if [ "$RECONCILER_TIMEOUT" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then
-      echo "timeout reached on Kyma installation error. Exiting"
+      log::error "Timeout reached on Kyma reconciliation. Exiting"
+      kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler --tail -1
       exit 1
     fi
 
     sleep $RECONCILER_DELAY
-    echo "waiting to get Kyma installed, current status: ${status} ...."
+    log::info "Waiting for reconciliation to finish, current status: ${status} ...."
     iterationsLeft=$(( iterationsLeft-1 ))
   done
 }
