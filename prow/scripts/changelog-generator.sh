@@ -7,8 +7,7 @@ readonly RELEASE_VERSION
 RELEASE_VERSION=$(cat "${KYMA_DIR}/VERSION")
 
 # find latest tag from which the generator should started
-# shellcheck disable=SC2046
-TAG_LIST_STRING=$(git describe --tags $(git rev-list --tags) --always | grep -F . | grep -v "-")
+TAG_LIST_STRING=$(git describe --tags "$(git rev-list --tags)" --always | grep -F . | grep -v "-")
 TAG_LIST=("$(echo "${TAG_LIST_STRING}" | tr " " "\n")")
 PENULTIMATE=${TAG_LIST[0]}
 

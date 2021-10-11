@@ -57,8 +57,7 @@ done
 function printImagesWithLatestTag() {
     retry=10
     while true; do
-        # shellcheck disable=SC2046
-        images=$(kubectl $(context_arg)  get pods --all-namespaces -o jsonpath="{..image}" |\
+        images=$(kubectl "$(context_arg)"  get pods --all-namespaces -o jsonpath="{..image}" |\
         tr -s '[:space:]' '\n' |\
         grep ":latest")
 
