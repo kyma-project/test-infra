@@ -5,9 +5,45 @@ templates:
         localSets:
           jobConfig_default:
             command: "bash"
+          jobConfig_default_kcp:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kcp-cli.sh"
+            path_alias: "github.com/kyma-project/control-plane"
+            request_memory: 1Gi
+            request_cpu: 0.2
+            labels:
+              preset-kyma-development-artifacts-bucket: "true"
+              preset-sa-gcr-push: "true"
+            volumeMounts:
+              - name: sa-kyma-artifacts
+                mountPath: /etc/credentials/sa-kyma-artifacts
+            volumes:
+              # we cannot use preset-sa-kyma-artifacts because we are using preset-sa-gcr-push which also set environment variable: GOOGLE_APPLICATION_CREDENTIALS.
+              - name: sa-kyma-artifacts
+                secretName: sa-kyma-artifacts
         jobConfigs:
           - repoName: kyma-project/kyma
             jobs:
+              - jobConfigPre:
+                  name: pre-main-kcp-cli
+                  run_if_changed: "^tools/cli"
+                jobConfigPost:
+                  name: post-main-kcp-cli
+                  labels:
+                    preset-build-artifacts-main: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - extra_refs_test-infra
+                    - image_buildpack-golang-toolbox
+                  local:
+                    - jobConfig_default_kcp
+                  preConfigs:
+                    global:
+                      - "jobConfig_presubmit"
+                  postConfigs:
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
               - jobConfig:
                   args:
                     - "one"
