@@ -59,8 +59,7 @@ echo "Removing Gardener clusters allocated by failed/terminated integration jobs
 echo "--------------------------------------------------------------------------------"
 
 # get all cluster names in project
-# shellcheck disable=SC2016
-CLUSTERS=$(kubectl --kubeconfig "${GARDENER_KYMA_PROW_KUBECONFIG}" -n garden-"${GARDENER_KYMA_PROW_PROJECT_NAME}" get shoots -o go-template='{{range $i, $c :=.items}}{{if $i}},{{end}}{{$c.metadata.name}}{{end}}')
+CLUSTERS=$(kubectl --kubeconfig "${GARDENER_KYMA_PROW_KUBECONFIG}" -n garden-"${GARDENER_KYMA_PROW_PROJECT_NAME}" get shoots -o go-template='{{range _i, _c :=.items}}{{if _i}},{{end}}{{_c.metadata.name}}{{end}}')
 CLUSTERS=("${CLUSTERS//,/ }") # convert comma separated clusters string to array
 
 # cleanup all clusters
@@ -68,7 +67,6 @@ for CLUSTER in "${CLUSTERS[@]}"
 do
     if [[ ! "$CLUSTER" =~ ${EXCLUDED_CLUSTERS_REGEX} ]]; then
         # check cluster age
-        # shellcheck disable=SC2016
         CREATION_TIME="$(kubectl --kubeconfig "${GARDENER_KYMA_PROW_KUBECONFIG}" -n garden-"${GARDENER_KYMA_PROW_PROJECT_NAME}" get shoots "$CLUSTER" -o go-template='{{.metadata.creationTimestamp}}')"
 
         # convert to timestamp for age calculation

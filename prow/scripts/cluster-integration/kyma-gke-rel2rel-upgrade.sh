@@ -91,7 +91,6 @@ getSourceVersion() {
         releaseIndex=1
     fi
 
-    # shellcheck disable=SC2016
     version=$(curl --silent --fail --show-error -H "Authorization: token ${BOT_GITHUB_TOKEN}" "https://api.github.com/repos/kyma-project/kyma/releases" \
      | jq -r --argjson index "${releaseIndex}" 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-$index].tag_name')
 

@@ -110,7 +110,6 @@ function reconciler::initialize_test_pod() {
   sed -i "s/example.com/$domain/" ./scripts/e2e-test/template.json
 
   kc="$(cat "${KUBECONFIG}")"
-  # shellcheck disable=SC2016
   jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./scripts/e2e-test/template.json > body.json
 
   # Copy the reconcile request payload and kyma reconciliation scripts to the test-pod

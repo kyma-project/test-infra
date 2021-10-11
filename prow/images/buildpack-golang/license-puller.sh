@@ -58,7 +58,6 @@ function pullLicensesByDir() {
     go list -json ./... > "${TMP_DIR}/golang.json"
 
     echo "Downloading license files to '${LICENSES_DIR}'"
-    # shellcheck disable=SC2016
     jq -sr '[{ data: map(.) } | .data[] | select(has("ImportMap")) | .ImportMap | keys[]] | unique | values[]' "${TMP_DIR}/golang.json" \
         | grep -oE "^[^\/]+\/[^\/]+\/[^\/]+" \
         | sort -u \

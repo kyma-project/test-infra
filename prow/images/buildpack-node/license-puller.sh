@@ -65,7 +65,6 @@ function pullNodeLicensesByDir() {
     npx license-checker --production --json --direct --out "${TMP_DIR}/node.json"
 
     echo "Copying license files to '${LICENSES_DIR}'"
-    # shellcheck disable=SC2016
     jq -r '. | keys[] as $key | [$key, (.[$key] | .licenseFile)] | @tsv' "${TMP_DIR}/node.json" |
         while IFS=$'\t' read -r key licenseFile; do
             if [[ -z "${licenseFile}" ]]; then
