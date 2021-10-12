@@ -124,7 +124,13 @@ function reconciler::reconcile_kyma() {
   kubectl exec -it -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/reconcile-kyma.sh"
   if [[ $? -ne 0 ]]; then
       log::error "Failed to reconcile Kyma"
+
+      log::banner "Eventing reconciler logs"
+      kubectl logs -n "${RECONCILER_NAMESPACE}" -l component=eventing --tail -1
+
+      log::banner "Mothership reconciler logs"
       kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler --tail -1
+
       exit 1
   fi
   set -e
