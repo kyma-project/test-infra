@@ -1,6 +1,6 @@
 # Basic setup for Prow jobs
 
-FROM debian:bullseye
+FROM debian:11
 
 # Add commit details
 
@@ -14,32 +14,34 @@ RUN mkdir -p /workspace
 ENV WORKSPACE=/workspace \
     TERM=xterm
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    ca-certificates \
-    curl \
-    git \
-    jq \
-    dnsutils \
-    openssh-client \
-    python \
-    wget \
-    apt-transport-https \
-    gnupg2 \
-    software-properties-common \
-    lsb-release \
-    gettext \
-    libpcsclite1 \
-    && apt-get clean
+    build-essential=12.9 \
+    ca-certificates=20210119 \
+    curl=7.74.0-1.3+b1 \
+    git=1:2.30.2-1 \
+    jq=1.6-2.1 \
+    dnsutils=1:9.16.15-1 \
+    openssh-client=1:8.4p1-5 \
+    python2=2.7.18-3 \
+    wget=1.21-1+b1 \
+    apt-transport-https=2.2.4 \
+    gnupg2=2.2.27-2 \
+    software-properties-common=0.96.20.2-2.1 \
+    lsb-release=11.1.0 \
+    gettext=0.21-4 \
+    libpcsclite1=1.9.1-1 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install gcloud
 ENV CLOUD_SDK_VERSION=358.0.0
 ENV PATH=/google-cloud-sdk/bin:/workspace:${PATH} \
     CLOUDSDK_CORE_DISABLE_PROMPTS=1
 
-RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz && \
-    tar xzf google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz -C / && \
-    rm google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz && \
+RUN curl -fLSs -o gc-sdk.tar.gz https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz && \
+    tar xzf gc-sdk.tar.gz -C / && \
+    rm gc-sdk.tar.gz && \
     /google-cloud-sdk/install.sh \
     --disable-installation-options \
     --bash-completion=false \
@@ -55,19 +57,22 @@ ENV CLUSTER_VERSION=1.20
 RUN mv /google-cloud-sdk/bin/kubectl.${CLUSTER_VERSION} /google-cloud-sdk/bin/kubectl
 
 # Docker-in-docker
-RUN curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg \
+# hadolint ignore=SC1091
+RUN . /etc/os-release && \
+    curl -fsSL "https://download.docker.com/linux/$ID/gpg" \
     | apt-key add - && \
     add-apt-repository \
-    "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
-    $(lsb_release -cs) stable"
+    "deb [arch=amd64] https://download.docker.com/linux/$ID $VERSION_CODENAME stable"
 
 ENV DOCKER_VERSION=5:20.10.8*
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends docker-ce=${DOCKER_VERSION} && \
-    sed -i 's/cgroupfs_mount$/#cgroupfs_mount\n/' /etc/init.d/docker
+    sed -i 's/cgroupfs_mount$/#cgroupfs_mount\n/' /etc/init.d/docker && \
+    rm -rf /var/lib/apt/lists/*
 
 # Move Docker's storage location
+# hadolint ignore=SC2016
 RUN echo 'DOCKER_OPTS="${DOCKER_OPTS} --data-root=/docker-graph"' | \
     tee --append /etc/default/docker
 RUN mkdir /docker-graph
@@ -76,7 +81,7 @@ RUN mkdir /docker-graph
 RUN curl -L https://raw.github.com/stoplightio/spectral/v6.0.0/scripts/install.sh | sh
 
 # Prow Tools
-
+# hadolint ignore=DL3022
 COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20210401-294e46e5 /prow-tools /prow-tools
 # for better access to prow-tools
 ENV PATH=$PATH:/prow-tools
@@ -85,14 +90,14 @@ ENV PATH=$PATH:/prow-tools
 ################ Install Cosign ####################
 #################################################################
 ENV COSIGN_VERSION=1.0.0
-RUN wget https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64 -O /usr/local/bin/cosign &&\
+RUN curl -fLSs -o /usr/local/bin/cosign https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64 &&\
     chmod +x /usr/local/bin/cosign
 
 # The following lines needed for using dind since debian is using nftables by default
 RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
     update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
 
-RUN wget https://github.com/koalaman/shellcheck/releases/download/v0.5.0/shellcheck-v0.5.0.linux.x86_64.tar.xz \
-    && tar xvf shellcheck-v0.5.0.linux.x86_64.tar.xz \
+RUN curl -fLSs -o shellcheck.tar.xz https://github.com/koalaman/shellcheck/releases/download/v0.5.0/shellcheck-v0.5.0.linux.x86_64.tar.xz \
+    && tar xvf shellcheck.tar.xz \
     && mv shellcheck-v0.5.0/shellcheck /usr/bin/ \
-    && rm -rf shellcheck-v0.5.0 shellcheck-v0.5.0.linux.x86_64.tar.xz
+    && rm -rf shellcheck-v0.5.0 shellcheck.tar.xz
