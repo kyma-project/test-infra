@@ -378,7 +378,7 @@ presets:
         mountPath: /etc/credentials/sa-vm-kyma-integration
         readOnly: true
       - name: sa-vm-kyma-ssh-key
-        mountPath: /root/.ssh
+        mountPath: /root/.ssh/user
   - labels:
       preset-sa-gke-kyma-integration: "true"
     env:
