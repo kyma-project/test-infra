@@ -52,13 +52,6 @@ function kyma::deploy_kyma() {
     fi
 }
 
-# kyma::undeploy_kyma uninstalls Kyma using new deletion method
-function kyma::undeploy_kyma() {
-  log::info "Uninstalling Kyma"
-
-  kyma undeploy --ci --verbose
-}
-
 # kyma::get_last_release_version returns latest Kyma release version
 #
 # Arguments:
