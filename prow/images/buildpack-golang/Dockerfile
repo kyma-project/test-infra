@@ -17,39 +17,41 @@ ENV KUBEBUILDER_VERSION 2.3.2
 ENV KUSTOMIZE_VERSION 3.8.4
 ENV GOLANGCI_LINT_VERSION v1.40.1
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # apt and install additional packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        rsync \
-        procps \
-        pkg-config \
-        libgit2-dev \
-        && apt-get clean
+        rsync=3.2.3-4+deb11u1 \
+        procps=2:3.3.17-5 \
+        pkg-config=0.29.2-1 \
+        libgit2-dev=1.1.0+dfsg.1-4 \
+        && apt-get clean \
+        && rm -rf /var/lib/apt/lists/*
 
 # Install Go and Dep
 ENV GOPATH /workspace/go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
-RUN wget -q https://dl.google.com/go/go${GO_VERSION}.linux-${ARCH}.tar.gz && \
-    tar xzf go${GO_VERSION}.linux-${ARCH}.tar.gz && \
-    rm go${GO_VERSION}.linux-${ARCH}.tar.gz && \
+RUN curl -fLSs -o go.tar.gz "https://dl.google.com/go/go${GO_VERSION}.linux-${ARCH}.tar.gz" && \
+    tar xzf go.tar.gz && \
+    rm go.tar.gz && \
     mv go /usr/local && \
-    mkdir -p ${GOPATH}/bin && \
-    mkdir -p ${GOPATH}/src && \
+    mkdir -p "${GOPATH}/bin" && \
+    mkdir -p "${GOPATH}/src" && \
     curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
 # Install kubebuilder
 ENV PATH /usr/local/kubebuilder/bin:$PATH
 ENV PATH /home/prow/go/bin:$PATH
 
-RUN curl -L -O "https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${KUBEBUILDER_VERSION}/kubebuilder_${KUBEBUILDER_VERSION}_linux_${ARCH}.tar.gz" && \
-    tar -zxvf kubebuilder_${KUBEBUILDER_VERSION}_linux_${ARCH}.tar.gz && \
-    rm kubebuilder_${KUBEBUILDER_VERSION}_linux_${ARCH}.tar.gz && \
-    mv kubebuilder_${KUBEBUILDER_VERSION}_linux_${ARCH} kubebuilder && \
+RUN curl -fLSs -o kubebuilder.tar.gz "https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${KUBEBUILDER_VERSION}/kubebuilder_${KUBEBUILDER_VERSION}_linux_${ARCH}.tar.gz" && \
+    tar -zxvf kubebuilder.tar.gz && \
+    rm kubebuilder.tar.gz && \
+    mv "kubebuilder_${KUBEBUILDER_VERSION}_linux_${ARCH}" kubebuilder && \
     mv kubebuilder /usr/local/ && \
-    curl -L -O "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_${ARCH}.tar.gz" && \
-    tar -zxvf kustomize_v${KUSTOMIZE_VERSION}_linux_${ARCH}.tar.gz && \
-    rm kustomize_v${KUSTOMIZE_VERSION}_linux_${ARCH}.tar.gz && \
+    curl -fLSs -o kustomize.tar.gz "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_${ARCH}.tar.gz" && \
+    tar -zxvf kustomize.tar.gz && \
+    rm kustomize.tar.gz && \
     mv kustomize /usr/local/bin/kustomize
 
 # Install golang toolbox
@@ -67,6 +69,7 @@ COPY ./license-puller.sh /license-puller.sh
 ENV LICENSE_PULLER_PATH=/license-puller.sh
 
 # Prow Tools
+# hadolint ignore=DL3022
 COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20210804-d55639f9 /prow-tools /prow-tools
 # for better access to prow-tools
 ENV PATH=$PATH:/prow-tools

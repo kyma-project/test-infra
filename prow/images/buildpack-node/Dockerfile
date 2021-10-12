@@ -8,16 +8,17 @@ ARG commit
 ENV IMAGE_COMMIT=$commit
 LABEL io.kyma-project.test-infra.commit=$commit
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libfontconfig \
-    procps \
-    nodejs \
-    yarn \
-    && apt-get clean
+    libfontconfig1=2.13.1-4.2 \
+    procps=2:3.3.17-5 \
+    nodejs=12.22.5~dfsg-2~11u1 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN npm install -g eslint-config-react-app@^3.0.4 \
     babel-eslint@^9.0.0 \
@@ -36,7 +37,7 @@ COPY ./license-puller.sh /license-puller.sh
 ENV LICENSE_PULLER_PATH=/license-puller.sh
 
 # Prow Tools
-
+# hadolint ignore=DL3022
 COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20210401-294e46e5 /prow-tools /prow-tools
 # for better access to prow-tools
 ENV PATH=$PATH:/prow-tools
