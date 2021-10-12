@@ -19,7 +19,7 @@ FROM alpine:3.13
 ARG commit
 ENV IMAGE_COMMIT=$commit
 LABEL io.kyma-project.test-infra.commit=$commit
-RUN apk add --no-cache ca-certificates=20191127-r5 bash=5.1.4-r0
+RUN apk add --no-cache ca-certificates=20191127-r5 bash=5.1.0-r0
 COPY --from=builder /go/src/github.com/kyma-project/test-infra/development/tools/bin /prow-tools
 COPY --from=builder /prow-tools/* /prow-tools/
 WORKDIR /prow-tools

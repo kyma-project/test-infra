@@ -1,12 +1,12 @@
 FROM ubuntu:16.04
 
 RUN apt-get update && \
-    apt-get install --no-install-recommends -y curl=7.47* jq=1.5* zip=3.0* && \
+    apt-get install --no-install-recommends -y curl=7.47* jq=1.5* zip=3.0* ca-certificates=20210119~16.04.1 && \
     apt-get clean autoclean && \
     rm -rf /var/lib/apt/lists/*
 
 # Install kubectl
-RUN curl -Lo /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/v1.17.3/bin/linux/amd64/kubectl
+RUN curl -fLSs -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/v1.17.3/bin/linux/amd64/kubectl
 RUN chmod +x /usr/local/bin/kubectl
 
 # Install KymaCLI

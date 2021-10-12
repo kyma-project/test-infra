@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libfontconfig1=2.13.1-4.2 \
     procps=2:3.3.17-5 \
     nodejs=12.22.5~dfsg-2~11u1 \
+    npm=7.5.2+ds-2 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
