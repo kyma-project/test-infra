@@ -231,8 +231,8 @@ function applyCompassOverrides() {
     --data "global.systemFetcher.oauth.tenantHeaderName=x-zid" \
     --data "global.migratorJob.nodeSelectorEnabled=true" \
     --data "global.kubernetes.serviceAccountTokenJWKS=https://container.googleapis.com/v1beta1/projects/$CLOUDSDK_CORE_PROJECT/locations/$CLOUDSDK_COMPUTE_ZONE/clusters/$COMMON_NAME/jwks" \
-    --data "global.oathkeeper.mutators.authenticationMappingServices.tenant-fetcher.authenticator.enabled=true" \
-    --data "global.oathkeeper.mutators.authenticationMappingServices.tenant-fetcher.authenticator.createRule=true" \
+    --data "global.oathkeeper.mutators.authenticationMappingServices.tenantFetcher.authenticator.enabled=true" \
+    --data "global.oathkeeper.mutators.authenticationMappingServices.tenantFetcher.authenticator.createRule=true" \
     --data "global.oathkeeper.mutators.authenticationMappingServices.subscriber.authenticator.enabled=true" \
     --data "global.oathkeeper.mutators.authenticationMappingServices.subscriber.authenticator.createRule=false" \
     --data "system-broker.http.client.skipSSLValidation=true" \
