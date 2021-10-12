@@ -122,15 +122,15 @@ function reconciler::reconcile_kyma() {
   # Trigger Kyma reconciliation using reconciler
   log::banner "Reconcile Kyma in the same cluster until it is ready"
   kubectl exec -it -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/reconcile-kyma.sh"
+
+  log::banner "Eventing reconciler logs"
+  kubectl logs -n "${RECONCILER_NAMESPACE}" -l component=eventing --tail -1
+
+  log::banner "Mothership reconciler logs"
+  kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler --tail -1
+
   if [[ $? -ne 0 ]]; then
-      log::error "Failed to reconcile Kyma"
-
-      log::banner "Eventing reconciler logs"
-      kubectl logs -n "${RECONCILER_NAMESPACE}" -l component=eventing --tail -1
-
-      log::banner "Mothership reconciler logs"
-      kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler --tail -1
-
+      log::banner "Failed to reconcile Kyma"
       exit 1
   fi
   set -e
