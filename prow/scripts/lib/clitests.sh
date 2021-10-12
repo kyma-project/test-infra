@@ -99,7 +99,7 @@ clitests::assertRemoteCommand() {
     date
     local output
     for loopCount in $(seq 1 $retries); do
-        output=$(gcloud compute ssh --verbosity="${gcloudSshLogLevel}" --quiet --zone="${zone}" "${host}" -- "$cmd")
+        output=$(gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --quiet --zone="${zone}" "${host}" -- "$cmd")
         cmdExitCode=$?
 
         # check return code and apply assertion (if defined)
