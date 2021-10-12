@@ -20,8 +20,13 @@ templates:
               preset-build-main: "true"
               preset-keb-dev-credentials: "true"
               preset-kyma-integration-compass-dev: "true"
-              preset-kyma-integration-subaccounnt: "true"
               preset-kyma-integration-kcp-client-credentials: "true"
+          kyma_integration_subaccount:
+            env:
+              KEB_SUBACCOUNT_ID: "prow-keb-integration"
+          kyma_nightly_subaccount:
+            env:
+              KEB_SUBACCOUNT_ID: "kyma-skr-nightly"
           keb_plan_azure:
             annotations:
               pipeline.platform: gardener_azure
@@ -87,6 +92,7 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "keb_plan_azure"
+                    - "kyma_nightly_subaccount"
               - jobConfig:
                   name: "skr-azure-integration-dev"
                   cron: "5 1 * * *" # "At 01:05"
@@ -102,6 +108,7 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "keb_plan_azure"
+                    - "kyma_integration_subaccount"
               - jobConfig:
                   name: "skr-azure-lite-integration-dev"
                   cron: "5 1 * * *" # "At 01:05"
@@ -117,6 +124,7 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "keb_plan_azure_lite"
+                    - "kyma_integration_subaccount"
               - jobConfig:
                   name: "skr-aws-integration-dev"
                   cron: "5 1 * * *" # "At 01:05"
@@ -134,6 +142,7 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "keb_plan_aws"
+                    - "kyma_integration_subaccount"
               - jobConfig:
                   name: "skr-trial-integration-dev"
                   cron: "5 1 * * *" # "At 01:05"
@@ -149,6 +158,7 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "keb_plan_trial"
+                    - "kyma_integration_subaccount"
               - jobConfig:
                   name: "skr-free-aws-integration-dev"
                   cron: "5 1 * * *" # "At 01:05"
@@ -164,3 +174,4 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "keb_plan_free_aws"
+                    - "kyma_integration_subaccount"
