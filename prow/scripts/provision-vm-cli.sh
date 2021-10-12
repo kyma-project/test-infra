@@ -113,29 +113,29 @@ log::info "Building Kyma CLI"
 date
 cd "${KYMA_PROJECT_DIR}/cli"
 make build-linux
-gcloud compute ssh --verbosity="${GCLOUD_SSH_LOG_LEVEL}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "mkdir \$HOME/bin"
+gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "mkdir \$HOME/bin"
 
 log::info "Copying Kyma CLI to the instance"
 #shellcheck disable=SC2088
 utils::send_to_vm "${ZONE}" "cli-integration-test-${RANDOM_ID}" "${KYMA_PROJECT_DIR}/cli/bin/kyma-linux" "~/bin/kyma"
-gcloud compute ssh --verbosity="${GCLOUD_SSH_LOG_LEVEL}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
+gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
 
 # Provision Kubernetes runtime
 log::info "Provisioning Kubernetes runtime '$KUBERNETES_RUNTIME'"
 date
 if [ "$KUBERNETES_RUNTIME" = 'minikube' ]; then
-    gcloud compute ssh --verbosity="${GCLOUD_SSH_LOG_LEVEL}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma provision minikube --non-interactive"
+    gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma provision minikube --non-interactive"
 else
-    gcloud compute ssh --verbosity="${GCLOUD_SSH_LOG_LEVEL}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma provision k3d --ci"
+    gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma provision k3d --ci"
 fi
 
 # Install kyma
 log::info "Installing Kyma"
 date
 if [ "$KUBERNETES_RUNTIME" = 'k3d' ]; then
-    gcloud compute ssh --verbosity="${GCLOUD_SSH_LOG_LEVEL}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma deploy --ci ${SOURCE}"
+    gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma deploy --ci ${SOURCE}"
 else
-    gcloud compute ssh --verbosity="${GCLOUD_SSH_LOG_LEVEL}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma install --non-interactive ${SOURCE}"
+    gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma install --non-interactive ${SOURCE}"
 fi
 
 # Run test suite
