@@ -113,6 +113,11 @@ log::info "Building Kyma CLI"
 date
 cd "${KYMA_PROJECT_DIR}/cli"
 make build-linux
+
+set -x
+ls -la /root/.ssh/user
+ls -la /root/.ssh
+
 gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "mkdir \$HOME/bin"
 
 log::info "Copying Kyma CLI to the instance"
@@ -137,6 +142,8 @@ if [ "$KUBERNETES_RUNTIME" = 'k3d' ]; then
 else
     gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma install --non-interactive ${SOURCE}"
 fi
+
+set +x
 
 # Run test suite
 # shellcheck disable=SC1090
