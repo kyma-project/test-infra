@@ -119,7 +119,7 @@ utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home
 
 log::info "Triggering the installation"
 log::info "Running testsuite ${testSuiteScript}"
-gcloud compute ssh --strict-host-key-checking=no --quiet --zone="${ZONE}" \
+gcloud compute ssh --verbosity="${GCLOUD_SSH_LOG_LEVEL}" --strict-host-key-checking=no --quiet --zone="${ZONE}" \
   --command="sudo PULL_NUMBER=${PULL_NUMBER}  TEST_SUITE=${TEST_SUITE} bash" \
   --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" <"${SCRIPT_DIR}/${testSuiteScript}"
 
