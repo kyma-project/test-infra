@@ -7,7 +7,7 @@ WORKDIR /app
 # Install dependencies
 RUN apk update && \
     apk upgrade && \
-    apk add --no-cache 'git>=2.18.0' 'openssh>=7.7' && \
+    apk add --no-cache git=2.18.4-r0 openssh=7.7_p1-r4 && \
     rm -rf /var/cache/apk/*
 
 # Copy all needed files

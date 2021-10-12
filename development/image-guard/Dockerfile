@@ -5,7 +5,7 @@ COPY main.go .
 COPY go.mod .
 COPY go.sum .
 
-RUN apk --no-cache add 'ca-certificates>=20191127'
+RUN apk --no-cache add ca-certificates=20191127-r2
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o image-guardd ./main.go
 
 FROM scratch
