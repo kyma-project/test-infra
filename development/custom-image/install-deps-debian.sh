@@ -96,3 +96,4 @@ sudo apt-get install -y google-fluentd-catch-all-config
 # pre-fetch-docker-images
 sudo docker pull eu.gcr.io/kyma-project/external/cypress/included:8.5.0
 sudo docker pull eu.gcr.io/kyma-project/test-infra/docker-registry-2:20200202
+
