@@ -272,8 +272,6 @@ templates:
                   cron: "5 * * * *"
                   labels:
                     preset-log-collector-slack-token: "true"
-                  env:
-                    KYMA_DELETE: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -300,8 +298,6 @@ templates:
                   cron: "5 * * * *"
                   labels:
                     preset-log-collector-slack-token: "true"
-                  env:
-                    KYMA_DELETE: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
