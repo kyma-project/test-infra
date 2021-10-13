@@ -115,6 +115,6 @@ log::info "Copying Kyma to the instance"
 utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
 
 log::info "Triggering the installation"
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --quiet --zone="${ZONE}" --command="sudo USE_ALPHA=${USE_ALPHA} bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/serverless-integration-k3s.sh"
+gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo USE_ALPHA=${USE_ALPHA} bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/serverless-integration-k3s.sh"
 
 log::success "all done"
