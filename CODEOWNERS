@@ -32,7 +32,7 @@
 /watch-pods/ @suleymanakbas91 @clebs @a-thaler @lilitgh
 
 # The changelog-generator directory
-/changelog-generator/ @akucharska @aerfio @tgorgol @magicmatatjahu
+/changelog-generator/ @akucharska @kyma-project/prow
 
 /templates/config.yaml @kyma-project/developers @kyma-project/prow
 
