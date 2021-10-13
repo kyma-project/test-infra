@@ -153,6 +153,7 @@ function installKyma() {
 	export TLS_KEY
 
 	log::info "Trigger installation"
+	set -x
 
 	kyma deploy \
 			--ci \
@@ -161,7 +162,10 @@ function installKyma() {
 			--profile production \
 			--tls-crt "./letsencrypt/live/${DOMAIN}/fullchain.pem" \
 			--tls-key "./letsencrypt/live/${DOMAIN}/privkey.pem" \
-			--value "istio-configuration.components.ingressGateways.config.service.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
+			--value "istio-configuration.components.ingressGateways.config.service.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+			--value "global.domainName=${DOMAIN}"
+
+	set +x
 
 }
 
@@ -199,35 +203,32 @@ export ASYNC_DEPROVISION=false
 log::info "Create new cluster"
 createCluster
 
-log::info "install image-guard"
-helm install image-guard "$TEST_INFRA_SOURCES_DIR/development/image-guard/image-guard"
-
 kyma::install_cli
 
 log::info "Install kyma"
 installKyma
 
-log::info "Install stackdriver-prometheus collector"
-installStackdriverPrometheusCollector
+#log::info "Install stackdriver-prometheus collector"
+#installStackdriverPrometheusCollector
 
-log::info "Update stackdriver-metadata-agent memory settings"
+#log::info "Update stackdriver-metadata-agent memory settings"
 
-cat <<EOF | kubectl replace -f -
-apiVersion: v1
-data:
-  NannyConfiguration: |-
-    apiVersion: nannyconfig/v1alpha1
-    kind: NannyConfiguration
-    baseMemory: 100Mi
-kind: ConfigMap
-metadata:
-  labels:
-    addonmanager.kubernetes.io/mode: EnsureExists
-    kubernetes.io/cluster-service: "true"
-  name: metadata-agent-config
-  namespace: kube-system
-EOF
-kubectl delete deployment -n kube-system stackdriver-metadata-agent-cluster-level
+#cat <<EOF | kubectl replace -f -
+#apiVersion: v1
+#data:
+#  NannyConfiguration: |-
+#    apiVersion: nannyconfig/v1alpha1
+#    kind: NannyConfiguration
+#    baseMemory: 100Mi
+#kind: ConfigMap
+#metadata:
+#  labels:
+#    addonmanager.kubernetes.io/mode: EnsureExists
+#    kubernetes.io/cluster-service: "true"
+#  name: metadata-agent-config
+#  namespace: kube-system
+#EOF
+#kubectl delete deployment -n kube-system stackdriver-metadata-agent-cluster-level
 
 
 log::info "Collect list of images"
