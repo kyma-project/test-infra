@@ -1,8 +1,5 @@
 pjNames:
   - pjName: "pre-cli-integration-kyma-2"
-  - pjName: "pre-main-kyma-integration-k3d"
-  - pjName: "pre-main-serverless-integration-k3s"
-  - pjName: "pre-main-reconciler-integration-k3d"
 prConfigs:
   kyma-project:
     cli:
