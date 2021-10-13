@@ -52,7 +52,7 @@ function kyma::deploy_kyma() {
     fi
 }
 
-# kyma::undeploy_kyma uninstalls Kyma using new deletion method
+# kyma::undeploy_kyma uninstalls Kyma
 function kyma::undeploy_kyma() {
   log::info "Uninstalling Kyma"
 

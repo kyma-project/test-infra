@@ -514,8 +514,6 @@ periodics: # runs on schedule
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
-              - name: KYMA_DELETE
-                value: "true"
               - name: KYMA_MAJOR_VERSION
                 value: "2"
               - name: KYMA_PROJECT_DIR
@@ -596,8 +594,6 @@ periodics: # runs on schedule
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
-              - name: KYMA_DELETE
-                value: "true"
               - name: KYMA_MAJOR_VERSION
                 value: "2"
               - name: KYMA_PROJECT_DIR
