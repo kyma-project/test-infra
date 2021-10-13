@@ -11,8 +11,8 @@ LABEL io.kyma-project.test-infra.commit=$commit
 # Install additional tools
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    rsync=3.2.3-4+deb11u1 \
-    procps=2:3.3.17-5 \
+    rsync \
+    procps \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -20,8 +20,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ## python 2 pip no longer supported
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends \
-	python-setuptools=44.1.1-1 \
-	python3-pip=20.3.4-4 \
+	python-setuptools \
+	python3-pip \
     && yes | pip install --no-cache-dir cgroup-utils==0.8 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*

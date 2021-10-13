@@ -21,21 +21,21 @@ ENV WORKSPACE=/workspace \
     TERM=xterm
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential=12.9 \
-    ca-certificates=20210119 \
-    curl=7.74.0-1.3+b1 \
-    git=1:2.30.2-1 \
-    jq=1.6-2.1 \
-    dnsutils=1:9.16.15-1 \
-    openssh-client=1:8.4p1-5 \
-    python2=2.7.18-3 \
-    wget=1.21-1+b1 \
-    apt-transport-https=2.2.4 \
-    gnupg2=2.2.27-2 \
-    shellcheck=0.7.1-1+deb11u1 \
-    software-properties-common=0.96.20.2-2.1 \
-    lsb-release=11.1.0 \
-    gettext=0.21-4 \
+    build-essential \
+    ca-certificates \
+    curl \
+    git \
+    jq \
+    dnsutils \
+    openssh-client \
+    python2 \
+    wget \
+    apt-transport-https \
+    gnupg2 \
+    shellcheck \
+    software-properties-common \
+    lsb-release \
+    gettext \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -51,7 +51,7 @@ ENV DOCKER_VERSION=5:20.10.8*
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    docker-ce=${DOCKER_VERSION} docker-ce-cli=${DOCKER_VERSION} containerd.io=1.4.11-1 && \
+    docker-ce=${DOCKER_VERSION} docker-ce-cli=${DOCKER_VERSION} containerd.io && \
     sed -i 's/cgroupfs_mount$/#cgroupfs_mount\n/' /etc/init.d/docker && \
     rm -rf /var/lib/apt/lists/*
 
@@ -96,7 +96,7 @@ RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 #################################################################
 
 RUN curl -fLSs https://deb.nodesource.com/setup_14.x | bash -
-RUN apt-get -y --no-install-recommends install nodejs=14.18.0-deb-1nodesource1
+RUN apt-get -y --no-install-recommends install nodejs
 
 #################################################################
 ###################### Cluster Integration ###################### 
@@ -116,11 +116,11 @@ RUN curl -fLSs https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | tar
 # Install packages required by az
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    apt-transport-https=2.2.4 \
-    lsb-release=11.1.0 \
-    software-properties-common=0.96.20.2-2.1 \
-    dirmngr=2.2.27-2 \
-    gnupg2=2.2.27-2 && \
+    apt-transport-https \
+    lsb-release \
+    software-properties-common \
+    dirmngr \
+    gnupg2 && \
     rm -rf /var/lib/apt/lists/*
 
 ENV AZURE_CLI_VERSION="2.18.0-2*"

@@ -21,10 +21,10 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # apt and install additional packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        rsync=3.2.3-4+deb11u1 \
-        procps=2:3.3.17-5 \
-        pkg-config=0.29.2-1 \
-        libgit2-dev=1.1.0+dfsg.1-4 \
+        rsync \
+        procps \
+        pkg-config \
+        libgit2-dev \
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/*
 

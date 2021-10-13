@@ -1,7 +1,7 @@
 FROM ubuntu:16.04
 
 RUN apt-get update && \
-    apt-get install --no-install-recommends -y curl=7.47* jq=1.5* zip=3.0* ca-certificates=20210119~16.04.1 && \
+    apt-get install --no-install-recommends -y curl jq zip ca-certificates && \
     apt-get clean autoclean && \
     rm -rf /var/lib/apt/lists/*
 

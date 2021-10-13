@@ -16,21 +16,21 @@ ENV WORKSPACE=/workspace \
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential=12.9 \
-    ca-certificates=20210119 \
-    curl=7.74.0-1.3+b1 \
-    git=1:2.30.2-1 \
-    jq=1.6-2.1 \
-    dnsutils=1:9.16.15-1 \
-    openssh-client=1:8.4p1-5 \
-    python2=2.7.18-3 \
-    wget=1.21-1+b1 \
-    apt-transport-https=2.2.4 \
-    gnupg2=2.2.27-2 \
-    software-properties-common=0.96.20.2-2.1 \
-    lsb-release=11.1.0 \
-    gettext=0.21-4 \
-    libpcsclite1=1.9.1-1 \
+    build-essential \
+    ca-certificates \
+    curl \
+    git \
+    jq \
+    dnsutils \
+    openssh-client \
+    python2 \
+    wget \
+    apt-transport-https \
+    gnupg2 \
+    software-properties-common \
+    lsb-release \
+    gettext \
+    libpcsclite1 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

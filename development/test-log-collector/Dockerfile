@@ -27,7 +27,6 @@ RUN go build -ldflags "-s -w" -a -o main cmd/main.go \
 # get latest CA certs
 # hadolint ignore=DL3007
 FROM alpine:latest as certs
-# hadolint ignore=DL3018
 RUN apk --no-cache add ca-certificates
 
 # result container

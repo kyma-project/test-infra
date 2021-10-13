@@ -19,7 +19,7 @@ ENV PATH $JAVA_HOME/bin:$PATH
 ENV LANG C.UTF-8
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates=20210119 p11-kit=0.23.22-1 maven=3.6.3-5 \
+    ca-certificates p11-kit maven \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

@@ -10,7 +10,7 @@ WORKDIR /app
 
 RUN apk update && \
   apk upgrade && \
-  apk add --no-cache git=2.24.4-r0
+  apk add --no-cache git
 
 COPY package.json /app/package.json
 
