@@ -1,14 +1,14 @@
 package main
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
+
+	"github.com/kyma-project/test-infra/development/tools/pkg/imagechecker"
 )
 
 var (
@@ -17,14 +17,6 @@ var (
 	kymaResourcesDirectory = flag.String("kymaDirectory", "/home/prow/go/src/github.com/kyma-project/kyma/resources/", "Path to Kyma resources")
 	skipComments           = flag.Bool("skipComments", true, "Skip commented out lines")
 	foundIncompatible      = false
-
-	imageRegexpString  = "image: "
-	imageRegexp        = regexp.MustCompile(imageRegexpString)
-	commentedOutRegexp = regexp.MustCompile("#(.*)" + imageRegexpString)
-
-	// Somehow this string breaks syntax colouring in Visual Studio Code, this is why I do this addition to still see what I do
-	includeRegexpString = "{{ " + "include \"(short)?imageurl\"(.*)"
-	newWayRegexp        = regexp.MustCompile(includeRegexpString)
 )
 
 func main() {
@@ -68,7 +60,7 @@ func walkFunction(path string, info fs.FileInfo, err error) error {
 	}
 
 	// TODO move this stuff to its own function, in external file so I can add tests
-	incompatible, err := fileHasIncorrectImage(path)
+	incompatible, err := imagechecker.FileHasIncorrectImage(path, *skipComments)
 	if err != nil {
 		return nil
 	}
@@ -78,44 +70,4 @@ func walkFunction(path string, info fs.FileInfo, err error) error {
 	}
 
 	return nil
-}
-
-func fileHasIncorrectImage(path string) (bool, error) {
-	incompatible := false
-	//open file and read it line by line
-	fileHandle, err := os.Open(path)
-	if err != nil {
-		return true, err
-	}
-	defer fileHandle.Close()
-
-	lineNumber := 1
-	scanner := bufio.NewScanner(fileHandle)
-	for scanner.Scan() {
-		if oldImageFormat(scanner.Text()) {
-			incompatible = true
-			fmt.Printf("%s:%d: %s\n", path, lineNumber, strings.Trim(scanner.Text(), " "))
-		}
-		lineNumber += 1
-	}
-
-	if err := scanner.Err(); err != nil {
-		return true, err
-	}
-
-	return incompatible, nil
-}
-
-func oldImageFormat(line string) bool {
-	// skip all uninteresting lines and just "name:" in its own line
-	if imageRegexp.MatchString(line) {
-		// check if we should ship commented out lines or not
-		if !*skipComments || !commentedOutRegexp.MatchString(line) {
-			// and if there is our template
-			if !newWayRegexp.MatchString(line) {
-				return true
-			}
-		}
-	}
-	return false
 }
