@@ -14,7 +14,7 @@ LABEL io.kyma-project.test-infra.commit=$commit
 ARG K8S_VERSION=1.18
 ARG commit
 ENV IMAGE_COMMIT=$commit
-LABEL IMAGE_COMMIT=$commit
+LABEL io.kyma-project.test-infra.commit=$commit
 WORKDIR /workspace
 RUN mkdir -p /workspace
 ENV WORKSPACE=/workspace \
@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     jq \
     dnsutils \
     openssh-client \
-    python \
+    python2 \
     wget \
     apt-transport-https \
     gnupg2 \
@@ -36,24 +36,27 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     software-properties-common \
     lsb-release \
     gettext \
-    && apt-get clean
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Docker-in-docker
-
-RUN curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg \
-    | apt-key add - && \
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# hadolint ignore=SC1091
+RUN . /etc/os-release && \
+    curl -fsSL "https://download.docker.com/linux/$ID/gpg" | apt-key add - && \
     add-apt-repository \
-    "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
-    $(lsb_release -cs) stable"
+    "deb [arch=amd64] https://download.docker.com/linux/$ID $VERSION_CODENAME stable"
 
 ENV DOCKER_VERSION=5:20.10.8*
 
 RUN apt-get update && \
-    echo Y | apt-get install docker-ce=${DOCKER_VERSION} docker-ce-cli=${DOCKER_VERSION} containerd.io && \
-    sed -i 's/cgroupfs_mount$/#cgroupfs_mount\n/' /etc/init.d/docker
+    apt-get install -y --no-install-recommends \
+    docker-ce=${DOCKER_VERSION} docker-ce-cli=${DOCKER_VERSION} containerd.io && \
+    sed -i 's/cgroupfs_mount$/#cgroupfs_mount\n/' /etc/init.d/docker && \
+    rm -rf /var/lib/apt/lists/*
 
 # Move Docker's storage location
-
+# hadolint ignore=SC2016
 RUN echo 'DOCKER_OPTS="${DOCKER_OPTS} --data-root=/docker-graph"' | \
     tee --append /etc/default/docker && \
     mkdir /docker-graph
@@ -76,12 +79,12 @@ ENV DEP_RELEASE_TAG v0.5.4
 ENV GOPATH /workspace/go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
-RUN wget -q https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz && \
-    tar xzf go${GO_VERSION}.linux-amd64.tar.gz && \
-    rm go${GO_VERSION}.linux-amd64.tar.gz && \
+RUN curl -fsSL -o go.tar.gz "https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz" && \
+    tar xzf go.tar.gz && \
+    rm go.tar.gz && \
     mv go /usr/local && \
-    mkdir -p ${GOPATH}/bin && \
-    mkdir -p ${GOPATH}/src
+    mkdir -p "${GOPATH}/bin" && \
+    mkdir -p "${GOPATH}/src"
 
 # Install Dep
 
@@ -92,8 +95,8 @@ RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 ###################### Node.js ##################################
 #################################################################
 
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
-RUN apt -y install nodejs
+RUN curl -fLSs https://deb.nodesource.com/setup_14.x | bash -
+RUN apt-get -y --no-install-recommends install nodejs
 
 #################################################################
 ###################### Cluster Integration ###################### 
@@ -103,8 +106,8 @@ RUN apt -y install nodejs
 
 ENV HELM_VERSION="v3.6.2"
 
-RUN wget https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm &&\
-	  chmod +x /usr/local/bin/helm &&\
+RUN curl -fLSs https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | tar -xzO linux-amd64/helm > /usr/local/bin/helm && \
+	  chmod +x /usr/local/bin/helm && \
       rm -rf helm-${HELM_VERSION}-linux-amd64.tar.gz linux-amd64
 
 # Install Azure CLI
@@ -117,21 +120,24 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     lsb-release \
     software-properties-common \
     dirmngr \
-    gnupg2
+    gnupg2 && \
+    rm -rf /var/lib/apt/lists/*
 
 ENV AZURE_CLI_VERSION="2.18.0-2*"
 
 RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | \
     tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null && \
-    echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ "$(lsb_release -cs)" main" | \
+    echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" | \
     tee /etc/apt/sources.list.d/azure-cli.list && \
     apt-get update && \
-    apt-get install -y azure-cli=${AZURE_CLI_VERSION}
+    apt-get install -y --no-install-recommends "azure-cli=${AZURE_CLI_VERSION}" && \
+    rm -rf /var/lib/apt/lists/*
 
 #################################################################
 ########################## Prow Tools ###########################
 #################################################################
 
+# hadolint ignore=DL3022
 COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20210401-294e46e5 /prow-tools /prow-tools
 # for better access to prow-tools
 ENV PATH=$PATH:/prow-tools
@@ -146,9 +152,9 @@ ENV CLOUD_SDK_VERSION=324.0.0 \
     CLOUDSDK_CORE_DISABLE_PROMPTS=1 \
     CLUSTER_VERSION=$K8S_VERSION
 
-RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz && \
-    tar xzf google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz -C / && \
-    rm google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz && \
+RUN curl -fLSs -o gc-sdk.tar.gz https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz && \
+    tar xzf gc-sdk.tar.gz -C / && \
+    rm gc-sdk.tar.gz && \
     /google-cloud-sdk/install.sh \
     --disable-installation-options \
     --bash-completion=false \
@@ -169,16 +175,16 @@ RUN go install golang.org/x/perf/cmd/...
 #################################################################
 
 ENV SMCTL_VERSION=v1.11.10
-RUN wget -q https://github.com/Peripli/service-manager-cli/releases/download/${SMCTL_VERSION}/smctl-${SMCTL_VERSION}-linux-amd64.tar.gz && \
-    tar xzf smctl-${SMCTL_VERSION}-linux-amd64.tar.gz && \
-    rm smctl-${SMCTL_VERSION}-linux-amd64.tar.gz && \
+RUN curl -fLSs -o smctl.tar.gz https://github.com/Peripli/service-manager-cli/releases/download/${SMCTL_VERSION}/smctl-${SMCTL_VERSION}-linux-amd64.tar.gz && \
+    tar xzf smctl.tar.gz && \
+    rm smctl.tar.gz && \
     mv smctl /usr/local/go/bin
 
 #################################################################
 ################ Install Cosign #################################
 #################################################################
 ENV COSIGN_VERSION=1.0.0
-RUN wget https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64 -O /usr/local/bin/cosign &&\
+RUN curl -fLSs -o /usr/local/bin/cosign https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64 &&\
     chmod +x /usr/local/bin/cosign
 
 #################################################################
@@ -188,5 +194,5 @@ RUN wget https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}
 # Note: kcp-cli doesn't provide releases
 # https://github.com/kyma-project/control-plane/blob/main/docs/cli/01-01-overview.md
 ENV KCPCLI_VERSION=master-32a8aa52
-RUN wget https://storage.googleapis.com/kyma-development-artifacts/kcp/${KCPCLI_VERSION}/kcp-linux -O /usr/local/bin/kcp &&\
+RUN curl -fLSs -o /usr/local/bin/kcp https://storage.googleapis.com/kyma-development-artifacts/kcp/${KCPCLI_VERSION}/kcp-linux &&\
     chmod +x /usr/local/bin/kcp

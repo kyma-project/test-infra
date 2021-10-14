@@ -100,7 +100,7 @@ utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home
 log::info "Triggering the installation"
 
 set +e
-gcloud compute ssh --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" -- ./kyma/installation/scripts/prow/kyma-integration-on-debian/deploy-and-test-kyma.sh
+gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" --command="./kyma/installation/scripts/prow/kyma-integration-on-debian/deploy-and-test-kyma.sh"
 RUN_RESULT="$?"
 set -e
 

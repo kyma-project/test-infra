@@ -67,6 +67,16 @@
             "mode": "NULLABLE",
             "name": "admin",
             "type": "BOOLEAN"
+          },
+          {
+            "mode": "NULLABLE",
+            "name": "maintain",
+            "type": "BOOLEAN"
+          },
+          {
+            "mode": "NULLABLE",
+            "name": "triage",
+            "type": "BOOLEAN"
           }
         ],
         "mode": "NULLABLE",
@@ -519,6 +529,21 @@
         "mode": "NULLABLE",
         "name": "private",
         "type": "BOOLEAN"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "is_template",
+        "type": "BOOLEAN"
+      },
+      {
+        "mode": "REPEATED",
+        "name": "topics",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "visibility",
+        "type": "STRING"
       }
     ],
     "mode": "NULLABLE",

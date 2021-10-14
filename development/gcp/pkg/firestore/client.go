@@ -25,15 +25,15 @@ func NewClient(ctx context.Context, projectID string) (*Client, error) {
 	return &Client{Client: firestoreClient}, nil
 }
 
-func (c *Client) GetFailingProwjobInstanceDetails(ctx context.Context, message pubsub.FailingTestMessage) (*firestore.DocumentSnapshot, error) {
+func (c *Client) GetFailingProwjobInstanceDetails(ctx context.Context, message pubsub.FailingTestMessage, firestoreCollectionName string) (*firestore.DocumentSnapshot, error) {
 	var iter *firestore.DocumentIterator
 	// For periodic prowjob get documents for open failing test instances with matching periodic prowjob name.
 	if *message.JobType == "periodic" {
 		// TODO: rename collection to prowjobFailures
-		iter = c.Collection("testFailures").Where("jobName", "==", *message.JobName).Where("jobType", "==", *message.JobType).Where("open", "==", true).Documents(ctx)
+		iter = c.Collection(firestoreCollectionName).Where("jobName", "==", *message.JobName).Where("jobType", "==", *message.JobType).Where("open", "==", true).Documents(ctx)
 		//	For postsubmit prowjob get documents for open failing test with matching baseSha. If baseSha is different it's represented by another failing prowjob instance.
 	} else if *message.JobType == "postsubmit" {
-		iter = c.Collection("testFailures").Where("jobName", "==", *message.JobName).Where("jobType", "==", *message.JobType).Where("open", "==", true).Where("baseSha", "==", message.Refs[0].BaseSHA).Documents(ctx)
+		iter = c.Collection(firestoreCollectionName).Where("jobName", "==", *message.JobName).Where("jobType", "==", *message.JobType).Where("open", "==", true).Where("baseSha", "==", message.Refs[0].BaseSHA).Documents(ctx)
 	} else {
 		return nil, fmt.Errorf("got message for presubmit prowjob, storing failing prowjob instance details are not supported for this type of prowjob")
 	}

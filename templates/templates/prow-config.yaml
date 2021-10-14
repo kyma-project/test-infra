@@ -273,7 +273,7 @@ presets:
       - name: AKS_CLUSTER_VERSION
         value: "1.19"
       - name: GKE_CLUSTER_VERSION
-        value: "1.18"
+        value: "1.19"
       - name: GARDENER_CLUSTER_VERSION
         value: "1.20"
   # test clusters log collector
@@ -376,7 +376,7 @@ presets:
         mountPath: /etc/credentials/sa-vm-kyma-integration
         readOnly: true
       - name: sa-vm-kyma-ssh-key
-        mountPath: /root/.ssh
+        mountPath: /root/.ssh/user
   - labels:
       preset-sa-gke-kyma-integration: "true"
     env:
