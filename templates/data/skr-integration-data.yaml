@@ -78,7 +78,11 @@ templates:
             jobs:
               - jobConfig:
                   name: "skr-azure-nightly"
-                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-nightly.sh"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "tests/fast-integration"
+                    - "ci-skr-nightly"
                   cron: "5 1 * * *" # "At 01:05"
                 inheritedConfigs:
                   global:
