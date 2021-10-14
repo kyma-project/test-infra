@@ -18,6 +18,7 @@ var (
 	newWayRegexp        = regexp.MustCompile(includeRegexpString)
 )
 
+// FileHasIncorrectImage checks if the file contains lines that doesn't use new template for images
 func FileHasIncorrectImage(path string, skipComments bool) (bool, error) {
 	incompatible := false
 	//open file and read it line by line
@@ -34,7 +35,7 @@ func FileHasIncorrectImage(path string, skipComments bool) (bool, error) {
 			incompatible = true
 			fmt.Printf("%s:%d: %s\n", path, lineNumber, strings.Trim(scanner.Text(), " "))
 		}
-		lineNumber += 1
+		lineNumber++
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -44,6 +45,7 @@ func FileHasIncorrectImage(path string, skipComments bool) (bool, error) {
 	return incompatible, nil
 }
 
+// oldImageFormat checks and prints lines that uses old image: format
 func oldImageFormat(line string, skipComments bool) bool {
 	// skip all uninteresting lines and just "name:" in its own line
 	if imageRegexp.MatchString(line) {
