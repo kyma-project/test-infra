@@ -288,6 +288,7 @@ func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 						}
 					}
 				}
+
 				if generatePostJob {
 					// merge local ingeritedConfigs to post job
 					if err := jobConfigPost.mergeConfigSet(deepCopyConfigSet(jobConfig)); err != nil {
