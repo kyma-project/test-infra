@@ -39,7 +39,7 @@ To create an empty table, do the following:
 
 ## Fix table schema mismatch
 
-In order to fix `no such field` error, do the following:
+In order to fix the `no such field` error, do the following:
 
 1. Download the current table schema definition. Run: `bq show \ --schema \ --format=prettyjson \ PROJECT_ID:DATASET.TABLE_NAME > table_org_schema.json`.
 2. Add missing fields to the `table_org_schema.json` file.
