@@ -31,3 +31,10 @@ This program assumes that the table already exists. In order to create new table
   * For an organization, copy the schema from `table_org_schema.json`.
   * For a singular repo, copy the schema from `table_repo_schema.json`.
 4. In the `partitioning` dropdown list, select `updated_at` field.
+
+## No such field error
+In case of `no such field` error, do the following:
+
+1. Run the `bq show \ --schema \ --format=prettyjson \ PROJECT_ID:DATASET.TABLE_NAME > table_org_schema.json` command.
+2. Edit the `table_org_schema.json` file, adding missing fields.
+3. Run the `bq update PROJECT_ID:DATASET.TABLE_NAME table_org_schema.json` command.
