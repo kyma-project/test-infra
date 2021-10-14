@@ -95,7 +95,9 @@ func TestReconcilerJobsPeriodicE2EUpgrade(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
+	assert.Len(t, jobConfig.Periodics, 3)
 	kymaPeriodics := jobConfig.AllPeriodics()
+	assert.Len(t, kymaPeriodics, 3)
 
 	expName := "periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade"
 	actualPeriodic := tester.FindPeriodicJobByName(kymaPeriodics, expName)
@@ -140,7 +142,9 @@ func TestReconcilerJobsNightlyMain(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
+	assert.Len(t, jobConfig.Periodics, 3)
 	reconcilerPeriodics := jobConfig.AllPeriodics()
+	assert.Len(t, reconcilerPeriodics, 3)
 
 	expName := "nightly-main-reconciler"
 	actualPeriodic := tester.FindPeriodicJobByName(reconcilerPeriodics, expName)
@@ -190,12 +194,12 @@ func TestReconcilerJobPostsubmit(t *testing.T) {
 }
 
 func TestReconcilerJobNightlyE2E(t *testing.T) {
-	t.Skip("Test is failing, see: https://github.com/kyma-project/test-infra/issues/4240")
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/reconciler/reconciler.yaml")
 	// THEN
 	require.NoError(t, err)
 	allPeriodics := jobConfig.AllPeriodics()
+	assert.Len(t, allPeriodics, 3)
 
 	expName := "nightly-main-reconciler-e2e"
 	actualNightlyJob := tester.FindPeriodicJobByName(allPeriodics, expName)
