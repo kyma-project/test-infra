@@ -534,6 +534,16 @@
         "mode": "NULLABLE",
         "name": "is_template",
         "type": "BOOLEAN"
+      },
+      {
+        "mode": "REPEATED",
+        "name": "topics",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "visibility",
+        "type": "STRING"
       }
     ],
     "mode": "NULLABLE",
