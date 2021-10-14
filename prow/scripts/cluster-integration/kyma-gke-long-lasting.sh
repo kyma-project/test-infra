@@ -212,7 +212,7 @@ installKyma
 #installStackdriverPrometheusCollector
 
 #log::info "Update stackdriver-metadata-agent memory settings"
-
+#
 #cat <<EOF | kubectl replace -f -
 #apiVersion: v1
 #data:
@@ -249,13 +249,5 @@ echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${COMMON_NAME}.json"
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
 utils::kubeaudit_create_report "${ARTIFACTS}/kubeaudit.log"
-
-# log::info "Install stability-checker"
-# date
-# (
-# export TEST_INFRA_SOURCES_DIR KYMA_SCRIPTS_DIR TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS \
-#         CLUSTER_NAME SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID SLACK_CLIENT_TOKEN TEST_RESULT_WINDOW_TIME
-# "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-stability-checker.sh"
-# )
 
 log::success "Success"
