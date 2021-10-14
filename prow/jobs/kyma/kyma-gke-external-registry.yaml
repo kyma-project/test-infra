@@ -36,7 +36,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210907-0699b236"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211006-2635dc4d"
             securityContext:
               privileged: true
             command:
