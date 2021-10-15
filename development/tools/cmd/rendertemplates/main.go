@@ -56,6 +56,7 @@ func main() {
 		log.Fatal("Provide path to config file with --config")
 	}
 
+	// read main template config file containing global configsets
 	configFile, err := ioutil.ReadFile(*configFilePath)
 	if err != nil {
 		log.Fatalf("Cannot read config file: %s", err)
@@ -93,8 +94,11 @@ func main() {
 
 	}
 
+	//append all generated configs from datafiles to the list of templates to generate jobs from
 	config.Templates = append(config.Templates, dataFilesTemplates...)
 	config.Merge()
+
+	// generate final .yaml files
 	for _, templateConfig := range config.Templates {
 		err = renderTemplate(path.Dir(*configFilePath), templateConfig, config)
 		if err != nil {
@@ -105,7 +109,9 @@ func main() {
 
 func renderTemplate(basePath string, templateConfig *rt.TemplateConfig, config *rt.Config) error {
 	for _, fromTo := range templateConfig.FromTo {
-		log.Printf("Rendering %s", fromTo)
+		if *showOutputDir {
+			log.Printf("Rendering %s", fromTo)
+		}
 		templateInstance, err := loadTemplate(basePath, fromTo.From)
 		if err != nil {
 			return err

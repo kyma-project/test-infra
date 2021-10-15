@@ -26,7 +26,7 @@ func (r *RenderConfig) AppendJobs(global map[string]interface{}) {
 					componentJobs := generateComponentJobs(global, repo, job)
 					jobs = append(jobs, componentJobs...)
 				} else {
-					// append the job to the list, making it possible to mix component job definitions and regular ones in one data file
+					// append the job to the list
 					if len(job.JobConfig) > 0 {
 						jobs = append(jobs, job)
 					}
