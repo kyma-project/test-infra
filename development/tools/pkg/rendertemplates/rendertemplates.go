@@ -196,8 +196,8 @@ func (ft FromTo) String() string {
 func (tplCfg *TemplateConfig) mergeConfigs(config *Config) {
 	for _, render := range tplCfg.Render {
 		render.mergeConfigs(config.GlobalSets)
-		// check if there are any component jobs in merged config and generate config for such jobs for each supported release
-		render.GenerateComponentJobs(config.Global)
+		// generate component jobs and append all jobs to the list for rendering
+		render.AppendJobs(config.Global)
 	}
 }
 
