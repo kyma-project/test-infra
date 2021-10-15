@@ -1,7 +1,7 @@
 templates:
   - from: templates/generic.tmpl
     render:
-      - to: ../prow/jobs/kyma/validation.yaml
+      - to: ../prow/jobs/kyma/kyma-validation.yaml
         localSets:
           smaller_requests:
             request_memory: "1.5Gi"
