@@ -107,6 +107,7 @@ func main() {
 	}
 }
 
+// renderTemplate loads the template and rendersfinal .yaml file
 func renderTemplate(basePath string, templateConfig *rt.TemplateConfig, config *rt.Config) error {
 	for _, fromTo := range templateConfig.FromTo {
 		if *showOutputDir {
@@ -128,6 +129,7 @@ func renderTemplate(basePath string, templateConfig *rt.TemplateConfig, config *
 	return nil
 }
 
+// renderFileFromTemplate renders template to .yaml file, based on the data passed to the template
 func renderFileFromTemplate(basePath string, templateInstance *template.Template, renderConfig rt.RenderConfig, config *rt.Config, fromTo rt.FromTo) error {
 	relativeDestPath := path.Join(basePath, fromTo.To)
 
