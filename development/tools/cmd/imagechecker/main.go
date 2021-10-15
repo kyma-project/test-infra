@@ -39,7 +39,7 @@ func main() {
 		fmt.Printf("\nFound incompatible image lines\n")
 		os.Exit(3)
 	} else {
-		fmt.Println("All images seems to bo in the new format")
+		fmt.Println("All images seems to be in the new format")
 	}
 }
 
