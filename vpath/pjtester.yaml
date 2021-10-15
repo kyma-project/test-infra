@@ -1,7 +1,0 @@
-pjNames:
-  - pjName: "pre-main-compass-gke-integration"
-    pjPath: "test-infra/prow/jobs/incubator/compass/"
-prConfigs:
-  kyma-incubator:
-    compass:
-      prNumber: 2070
