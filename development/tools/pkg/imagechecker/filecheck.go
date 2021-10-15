@@ -13,8 +13,8 @@ var (
 	imageRegexp        = regexp.MustCompile(imageRegexpString)
 	commentedOutRegexp = regexp.MustCompile("#(.*)" + imageRegexpString)
 
-	// Somehow this string breaks syntax colouring in Visual Studio Code, this is why I do this addition to still see what I do
-	includeRegexpString = "{{ " + "include \"(short)?imageurl\"(.*)"
+	// "{{" breaks syntax colouring in Visual Studio Code, The comment at the end prevents that
+	includeRegexpString = "{{\\s?include \"(short)?imageurl\"(.*)" // }}"
 	newWayRegexp        = regexp.MustCompile(includeRegexpString)
 )
 

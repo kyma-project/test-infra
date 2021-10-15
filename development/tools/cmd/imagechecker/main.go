@@ -12,22 +12,22 @@ import (
 )
 
 var (
-	skippedInfo = ""
+	skipComentsInfo   = ""
+	foundIncompatible = false
 
 	kymaResourcesDirectory = flag.String("kymaDirectory", "/home/prow/go/src/github.com/kyma-project/kyma/resources/", "Path to Kyma resources")
 	skipComments           = flag.Bool("skipComments", true, "Skip commented out lines")
-	foundIncompatible      = false
 )
 
 func main() {
 	flag.Parse()
 
 	if *skipComments {
-		skippedInfo = ", excluding commented out lines"
+		skipComentsInfo = ", excluding commented out lines"
 	}
 
 	// for all files in resources
-	fmt.Printf("Looking for incompatible images in \"%s\"%s:\n\n", *kymaResourcesDirectory, skippedInfo)
+	fmt.Printf("Looking for incompatible images in \"%s\"%s:\n\n", *kymaResourcesDirectory, skipComentsInfo)
 
 	err := filepath.Walk(*kymaResourcesDirectory, walkFunction)
 	if err != nil {
@@ -54,12 +54,12 @@ func walkFunction(path string, info fs.FileInfo, err error) error {
 		return nil
 	}
 
-	// we actually only want .yaml files
+	// we only want to check .yaml files
 	if !strings.Contains(info.Name(), ".yaml") {
 		return nil
 	}
 
-	// TODO move this stuff to its own function, in external file so I can add tests
+	// check if this file contains any image: lines that aren't using new templates
 	incompatible, err := imagechecker.FileHasIncorrectImage(path, *skipComments)
 	if err != nil {
 		return nil
