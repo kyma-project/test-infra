@@ -38,7 +38,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20210925-32993b3b20"
+          - image: "gcr.io/k8s-prow/checkconfig:v20211014-1433e96a1f"
             command:
               - "/app/prow/cmd/checkconfig/app.binary"
             args:
