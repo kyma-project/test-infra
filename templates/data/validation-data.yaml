@@ -98,3 +98,18 @@ templates:
                     - "image_buildpack-golang"
                     - "jobConfig_presubmit"
                     - "pubsub_labels"
+              - jobConfig:
+                  name: "pre-test-infra-validate-dockerfiles"
+                  run_if_changed: ".*Dockerfile$"
+                  command: "prow/scripts/validate-dockerfiles.sh"
+                  args:
+                    - "**/Dockerfile"
+                  env:
+                    IGNORED_RULES: "DL3059 DL3022 DL3008 DL3013 DL3018 DL3033"
+                inheritedConfigs:
+                  local:
+                    - "jobConfig_allBranches"
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_presubmit"
+                    - "pubsub_labels"
