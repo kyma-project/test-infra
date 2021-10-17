@@ -1,6 +1,7 @@
 #!/bin/sh
-IGNORED_RULES=($IGNORED_RULES)
+
+# shellcheck disable=SC2046
 hadolint \
-    "${IGNORED_RULES[@]/#/--ignore }" \
+    "$(echo "$IGNORED_RULES" | sed -e 's/^\| / --ignore/' )" \
     --no-color \
     "$@"
