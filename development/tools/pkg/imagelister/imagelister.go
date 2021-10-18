@@ -2,7 +2,8 @@ package imagelister
 
 import "fmt"
 
-type sortFunction func(i, j int) bool
+// SortFunction is a function type used in slice sorting
+type SortFunction func(i, j int) bool
 
 // Image contains info about a singular image
 type Image struct {
