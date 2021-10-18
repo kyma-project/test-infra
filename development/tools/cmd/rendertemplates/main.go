@@ -71,6 +71,10 @@ func main() {
 	dataFilesDir := filepath.Join(filepath.Dir(*configFilePath), "data")
 	// read all template configs from data files
 	dataFiles, err := ioutil.ReadDir(dataFilesDir)
+	if err != nil {
+		log.Fatalf("Cannot read data file directory: %s", err)
+	}
+
 	var dataFilesTemplates []*rt.TemplateConfig
 	for _, dataFile := range dataFiles {
 		if !dataFile.IsDir() {
