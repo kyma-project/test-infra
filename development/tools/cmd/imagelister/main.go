@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -16,6 +17,7 @@ import (
 
 var (
 	kymaResourcesDirectory = flag.String("kymaDirectory", "/home/prow/go/src/github.com/kyma-project/kyma/resources/", "Path to Kyma resources")
+	outputJSON             = flag.String("o", "", "Path with output JSON file")
 )
 
 type ImageComponents map[string][]string
@@ -53,6 +55,48 @@ func main() {
 		components := imageComponents[testImage.String()]
 		fmt.Printf("%s, used by %s\n", testImage, strings.Join(components, ", "))
 	}
+
+	if *outputJSON != "" {
+		err = writeImagesJSON(images, testImages, imageComponents)
+		if err != nil {
+			fmt.Printf("Cannot save JSON: %s\n", err)
+			os.Exit(2)
+		}
+	}
+}
+
+func writeImagesJSON(images, testImages []imagelister.Image, imageComponents ImageComponents) error {
+	imagesCombined := images
+	for _, testImage := range testImages {
+		if !imagelister.ImageListContains(imagesCombined, testImage) {
+			imagesCombined = append(imagesCombined, testImage)
+		}
+	}
+	sort.Slice(imagesCombined, imagelister.GetSortImagesFunc(imagesCombined))
+
+	// TODO convert images
+	imagesConverted := imagelister.ImagesJSON{}
+	for _, image := range imagesCombined {
+		imageTmp := imagelister.ImageJSON{}
+		imageTmp.Name = image.String()
+		imageTmp.CustomFields.Image = image.String()
+		components := imageComponents[image.String()]
+		imageTmp.CustomFields.Components = strings.Join(components, ",")
+		imagesConverted.Images = append(imagesConverted.Images, imageTmp)
+	}
+
+	outputFile, err := os.Create(*outputJSON)
+	if err != nil {
+		return fmt.Errorf("error creating output file: %s\n", err)
+	}
+	defer outputFile.Close()
+
+	out, err := json.MarshalIndent(imagesConverted, "", "  ")
+	if err != nil {
+		return fmt.Errorf("error while marshalling: %s\n", err)
+	}
+	outputFile.Write(out)
+	return nil
 }
 
 func getWalkFunc(images, testImages *[]imagelister.Image, imageComponents ImageComponents) filepath.WalkFunc {
