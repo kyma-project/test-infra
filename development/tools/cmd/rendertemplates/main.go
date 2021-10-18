@@ -107,7 +107,7 @@ func main() {
 	}
 }
 
-// renderTemplate loads the template and rendersfinal .yaml file
+// renderTemplate loads the template and renders final .yaml file
 func renderTemplate(basePath string, templateConfig *rt.TemplateConfig, config *rt.Config) error {
 	for _, fromTo := range templateConfig.FromTo {
 		if *showOutputDir {
