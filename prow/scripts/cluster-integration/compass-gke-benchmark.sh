@@ -216,8 +216,8 @@ function applyCompassOverrides() {
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-overrides" \
     --data "global.externalServicesMock.enabled=true" \
-    --data "global.externalServicesMock.auditlog=true" \
-    --data "gateway.gateway.auditlog.enabled=true" \
+    --data "global.externalServicesMock.auditlog=false" \
+    --data "gateway.gateway.auditlog.enabled=false" \
     --data "gateway.gateway.auditlog.authMode=oauth" \
     --data "global.systemFetcher.enabled=true" \
     --data "global.systemFetcher.systemsAPIEndpoint=http://compass-external-services-mock.compass-system.svc.cluster.local:8080/systemfetcher/systems" \
