@@ -101,8 +101,11 @@ templates:
               - jobConfig:
                   name: "pre-test-infra-validate-dockerfiles"
                   run_if_changed: ".*Dockerfile$"
-                  command: "prow/scripts/validate-dockerfiles.sh"
+                  command: "hadolint"
                   args:
+                    - "--config"
+                    - ".hadolint.yaml"
+                    - "--no-color"
                     - "**/Dockerfile"
                 inheritedConfigs:
                   local:

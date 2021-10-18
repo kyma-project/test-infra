@@ -210,8 +210,11 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211007-624c8ee2"
             command:
-              - "prow/scripts/validate-dockerfiles.sh"
+              - "hadolint"
             args:
+              - "--config"
+              - ".hadolint.yaml"
+              - "--no-color"
               - "**/Dockerfile"
             resources:
               requests:
