@@ -179,10 +179,10 @@ fi
 gcloud::set_latest_cluster_version_for_channel
 
 # serverless tests are failing when are running on a cluster with contianerD
-if [[ "${GKE_RELEASE_CHANNEL}" == "rapid" ]]; then
+#if [[ "${GKE_RELEASE_CHANNEL}" == "rapid" ]]; then
   # set image type to the image that uses docker instead of containerD
-  export IMAGE_TYPE="cos"
-fi
+export IMAGE_TYPE="cos"
+#fi
 
 gcloud::provision_gke_cluster "$CLUSTER_NAME"
 export CLEANUP_CLUSTER="true"

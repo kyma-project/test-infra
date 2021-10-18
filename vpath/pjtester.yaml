@@ -1,0 +1,6 @@
+pjNames:
+- pjName: "pre-rel124-kyma-gke-integration"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 12370
