@@ -4,6 +4,7 @@ import "fmt"
 
 type sortFunction func(i, j int) bool
 
+// Image contains info about a singular image
 type Image struct {
 	ContainerRegistryPath string `yaml:"containerRegistryPath,omitempty"`
 	Directory             string `yaml:"directory,omitempty"`
@@ -12,6 +13,7 @@ type Image struct {
 	SHA                   string `yaml:"sha,omitempty"`
 }
 
+// String returns complete image URL
 func (i Image) String() string {
 	registry := i.ContainerRegistryPath
 	if i.Directory != "" {
@@ -24,6 +26,7 @@ func (i Image) String() string {
 	return fmt.Sprintf("%s/%s%s", registry, i.Name, version)
 }
 
+// ImageListContains checks if list of images contains already the same image
 func ImageListContains(list []Image, image Image) bool {
 	for _, singleImage := range list {
 		if singleImage == image {
@@ -33,22 +36,26 @@ func ImageListContains(list []Image, image Image) bool {
 	return false
 }
 
-type containerRegistry struct {
-	Path string `yaml:"path,omitempty"`
-}
-
+// GetSortImagesFunc returns sorting function for images list
 func GetSortImagesFunc(images []Image) sortFunction {
 	return func(i, j int) bool {
 		return images[i].String() < images[j].String()
 	}
 }
 
-type globalKey struct {
-	ContainerRegistry containerRegistry `yaml:"containerRegistry,omitempty"`
+// ContainerRegistry stores path to a container registry
+type ContainerRegistry struct {
+	Path string `yaml:"path,omitempty"`
+}
+
+// GlobalKey contains all keys with image info inside global key
+type GlobalKey struct {
+	ContainerRegistry ContainerRegistry `yaml:"containerRegistry,omitempty"`
 	Images            map[string]Image  `yaml:"images,omitempty"`
 	TestImages        map[string]Image  `yaml:"testImages,omitempty"`
 }
 
+// ValueFile provides simple mapping to a values.yaml file
 type ValueFile struct {
-	Global globalKey `yaml:"global,omitempty"`
+	Global GlobalKey `yaml:"global,omitempty"`
 }
