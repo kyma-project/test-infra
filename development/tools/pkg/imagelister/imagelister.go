@@ -38,7 +38,7 @@ func ImageListContains(list []Image, image Image) bool {
 }
 
 // GetSortImagesFunc returns sorting function for images list
-func GetSortImagesFunc(images []Image) sortFunction {
+func GetSortImagesFunc(images []Image) SortFunction {
 	return func(i, j int) bool {
 		return images[i].String() < images[j].String()
 	}
