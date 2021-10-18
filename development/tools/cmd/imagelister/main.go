@@ -87,13 +87,13 @@ func writeImagesJSON(images, testImages []imagelister.Image, imageComponents Ima
 
 	outputFile, err := os.Create(*outputJSON)
 	if err != nil {
-		return fmt.Errorf("error creating output file: %s\n", err)
+		return fmt.Errorf("error creating output file: %s", err)
 	}
 	defer outputFile.Close()
 
 	out, err := json.MarshalIndent(imagesConverted, "", "  ")
 	if err != nil {
-		return fmt.Errorf("error while marshalling: %s\n", err)
+		return fmt.Errorf("error while marshalling: %s", err)
 	}
 	outputFile.Write(out)
 	return nil
