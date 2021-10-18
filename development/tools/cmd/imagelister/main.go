@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 
 	"gopkg.in/yaml.v2"
 
@@ -17,14 +18,19 @@ var (
 	kymaResourcesDirectory = flag.String("kymaDirectory", "/home/prow/go/src/github.com/kyma-project/kyma/resources/", "Path to Kyma resources")
 )
 
+type ImageComponents map[string][]string
+
 func main() {
+	// map image name to list of components that are using it
+	imageComponents := make(ImageComponents)
+
 	flag.Parse()
 	fmt.Printf("Looking for images in \"%s\"\n\n", *kymaResourcesDirectory)
 
 	var images []imagelister.Image
 	var testImages []imagelister.Image
 
-	err := filepath.Walk(*kymaResourcesDirectory, getWalkFunc(&images, &testImages))
+	err := filepath.Walk(*kymaResourcesDirectory, getWalkFunc(&images, &testImages, imageComponents))
 	if err != nil {
 		fmt.Printf("Cannot traverse directory: %s\n", err)
 		os.Exit(2)
@@ -35,7 +41,8 @@ func main() {
 	fmt.Println("images:")
 	// TODO function here
 	for _, image := range images {
-		fmt.Printf("%s\n", image)
+		components := imageComponents[image.String()]
+		fmt.Printf("%s, used by %s\n", image, strings.Join(components, ", "))
 	}
 
 	sort.Slice(testImages, imagelister.GetSortImagesFunc(testImages))
@@ -43,13 +50,14 @@ func main() {
 	fmt.Println("test images:")
 	// TODO function here
 	for _, testImage := range testImages {
-		fmt.Printf("%s\n", testImage)
+		components := imageComponents[testImage.String()]
+		fmt.Printf("%s, used by %s\n", testImage, strings.Join(components, ", "))
 	}
 }
 
-func getWalkFunc(images, testImages *[]imagelister.Image) filepath.WalkFunc {
+func getWalkFunc(images, testImages *[]imagelister.Image, imageComponents ImageComponents) filepath.WalkFunc {
 	return func(path string, info os.FileInfo, err error) error {
-		// TODO how to limit walking to one level?
+		// TODO limit walking to one level?
 
 		//pass the error further, this shouldn't ever happen
 		if err != nil {
@@ -78,6 +86,10 @@ func getWalkFunc(images, testImages *[]imagelister.Image) filepath.WalkFunc {
 			return err
 		}
 
+		// TODO get component
+		component := strings.Replace(path, *kymaResourcesDirectory, "", -1)
+		component = strings.Replace(component, "/values.yaml", "", -1)
+
 		for _, image := range parsedFile.Global.Images {
 			// add registry info directly into the image struct
 			if image.ContainerRegistryPath == "" {
@@ -87,6 +99,7 @@ func getWalkFunc(images, testImages *[]imagelister.Image) filepath.WalkFunc {
 			if !imagelister.ImageListContains(*images, image) {
 				*images = append(*images, image)
 			}
+			imageComponents[image.String()] = append(imageComponents[image.String()], component)
 		}
 
 		for _, testImage := range parsedFile.Global.TestImages {
@@ -96,6 +109,7 @@ func getWalkFunc(images, testImages *[]imagelister.Image) filepath.WalkFunc {
 			if !imagelister.ImageListContains(*testImages, testImage) {
 				*testImages = append(*testImages, testImage)
 			}
+			imageComponents[testImage.String()] = append(imageComponents[testImage.String()], component)
 		}
 
 		return nil
