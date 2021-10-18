@@ -38,23 +38,11 @@ func main() {
 		os.Exit(2)
 	}
 
-	sort.Slice(images, imagelister.GetSortImagesFunc(images))
-
 	fmt.Println("images:")
-	// TODO function here
-	for _, image := range images {
-		components := imageComponents[image.String()]
-		fmt.Printf("%s, used by %s\n", image, strings.Join(components, ", "))
-	}
-
-	sort.Slice(testImages, imagelister.GetSortImagesFunc(testImages))
+	printImages(images, imageComponents)
 
 	fmt.Println("test images:")
-	// TODO function here
-	for _, testImage := range testImages {
-		components := imageComponents[testImage.String()]
-		fmt.Printf("%s, used by %s\n", testImage, strings.Join(components, ", "))
-	}
+	printImages(testImages, imageComponents)
 
 	if *outputJSON != "" {
 		err = writeImagesJSON(images, testImages, imageComponents)
@@ -62,6 +50,14 @@ func main() {
 			fmt.Printf("Cannot save JSON: %s\n", err)
 			os.Exit(2)
 		}
+	}
+}
+
+func printImages(images []imagelister.Image, imageComponents ImageComponents) {
+	sort.Slice(images, imagelister.GetSortImagesFunc(images))
+	for _, image := range images {
+		components := imageComponents[image.String()]
+		fmt.Printf("%s, used by %s\n", image, strings.Join(components, ", "))
 	}
 }
 
