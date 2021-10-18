@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "post-rel124-kyma-release-candidate"
+    pjPath: "test-infra/prow/jobs/kyma/releases/kyma-release-124.yaml"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 12377
