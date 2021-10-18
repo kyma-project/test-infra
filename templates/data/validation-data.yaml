@@ -104,8 +104,6 @@ templates:
                   command: "prow/scripts/validate-dockerfiles.sh"
                   args:
                     - "**/Dockerfile"
-                  env:
-                    IGNORED_RULES: "DL3059 DL3022 DL3008 DL3013 DL3018 DL3033"
                 inheritedConfigs:
                   local:
                     - "jobConfig_allBranches"

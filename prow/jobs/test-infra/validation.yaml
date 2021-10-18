@@ -213,9 +213,6 @@ presubmits: # runs on PRs
               - "prow/scripts/validate-dockerfiles.sh"
             args:
               - "**/Dockerfile"
-            env:
-              - name: IGNORED_RULES
-                value: "DL3059 DL3022 DL3008 DL3013 DL3018 DL3033"
             resources:
               requests:
                 memory: 1.5Gi
