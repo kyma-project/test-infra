@@ -98,3 +98,19 @@ templates:
                     - "image_buildpack-golang"
                     - "jobConfig_presubmit"
                     - "pubsub_labels"
+              - jobConfig:
+                  name: "pre-test-infra-validate-dockerfiles"
+                  run_if_changed: ".*Dockerfile$"
+                  command: "hadolint"
+                  args:
+                    - "--config"
+                    - ".hadolint.yaml"
+                    - "--no-color"
+                    - "**/Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "jobConfig_allBranches"
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_presubmit"
+                    - "pubsub_labels"
