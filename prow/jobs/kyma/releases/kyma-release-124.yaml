@@ -88,6 +88,8 @@ presubmits: # runs on PRs
                 value: "1"
               - name: PROVISION_REGIONAL_CLUSTER
                 value: "true"
+              - name: IMAGE_TYPE
+                value: cos
             resources:
               requests:
                 memory: 200Mi
@@ -153,6 +155,8 @@ presubmits: # runs on PRs
                 value: "1"
               - name: PROVISION_REGIONAL_CLUSTER
                 value: "true"
+              - name: IMAGE_TYPE
+                value: cos
             resources:
               requests:
                 memory: 200Mi
@@ -518,6 +522,8 @@ postsubmits: # runs on release 1.24
                 value: "1"
               - name: PROVISION_REGIONAL_CLUSTER
                 value: "true"
+              - name: IMAGE_TYPE
+                value: cos
             resources:
               requests:
                 memory: 200Mi
@@ -589,6 +595,8 @@ postsubmits: # runs on release 1.24
                 value: "1"
               - name: PROVISION_REGIONAL_CLUSTER
                 value: "true"
+              - name: IMAGE_TYPE
+                value: cos
             resources:
               requests:
                 memory: 200Mi
@@ -639,6 +647,9 @@ postsubmits: # runs on release 1.24
             args:
               - "-c"
               - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-release-candidate.sh"
+            env:
+              - name: IMAGE_TYPE
+                value: cos
             resources:
               requests:
                 memory: 200Mi
@@ -696,6 +707,8 @@ postsubmits: # runs on release 1.24
                 value: "1"
               - name: PROVISION_REGIONAL_CLUSTER
                 value: "true"
+              - name: IMAGE_TYPE
+                value: cos
             resources:
               requests:
                 memory: 3Gi
