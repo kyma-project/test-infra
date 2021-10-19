@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "pre-cli-integration-kyma-2"
+prConfigs:
+  kyma-project:
+    cli:
+      prNumber: 142 
