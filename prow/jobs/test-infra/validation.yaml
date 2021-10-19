@@ -210,7 +210,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211019-9004efa4"
             command:
-              - "/bin/sh"
+              - "/bin/bash"
             args:
               - "-c"
               - "shopt -s globstar; hadolint --config .hadolint.yaml --no-color **/Dockerfile"

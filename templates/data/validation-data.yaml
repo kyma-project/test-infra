@@ -101,7 +101,7 @@ templates:
               - jobConfig:
                   name: "pre-test-infra-validate-dockerfiles"
                   run_if_changed: ".*Dockerfile$"
-                  command: "/bin/sh"
+                  command: "/bin/bash"
                   args: 
                     - "-c"
                     - "shopt -s globstar;

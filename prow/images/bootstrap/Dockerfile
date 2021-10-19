@@ -104,4 +104,3 @@ RUN curl -fLSs -o shellcheck.tar.xz https://github.com/koalaman/shellcheck/relea
 
 RUN curl -fLSs -o /usr/local/bin/hadolint https://github.com/hadolint/hadolint/releases/download/v2.7.0/hadolint-Linux-x86_64 && \
     chmod +x /usr/local/bin/hadolint
-
