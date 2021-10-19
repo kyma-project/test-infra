@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -20,11 +19,9 @@ var (
 	outputJSON             = flag.String("o", "", "Path with output JSON file")
 )
 
-type ImageComponents map[string][]string
-
 func main() {
 	// map image name to list of components that are using it
-	imageComponents := make(ImageComponents)
+	imageComponents := make(imagelister.ImageComponents)
 
 	flag.Parse()
 	fmt.Printf("Looking for images in \"%s\"\n\n", *kymaResourcesDirectory)
@@ -45,7 +42,7 @@ func main() {
 	printImages(testImages, imageComponents)
 
 	if *outputJSON != "" {
-		err = writeImagesJSON(images, testImages, imageComponents)
+		err = imagelister.WriteImagesJSON(*outputJSON, images, testImages, imageComponents)
 		if err != nil {
 			fmt.Printf("Cannot save JSON: %s\n", err)
 			os.Exit(2)
@@ -53,7 +50,7 @@ func main() {
 	}
 }
 
-func printImages(images []imagelister.Image, imageComponents ImageComponents) {
+func printImages(images []imagelister.Image, imageComponents imagelister.ImageComponents) {
 	sort.Slice(images, imagelister.GetSortImagesFunc(images))
 	for _, image := range images {
 		components := imageComponents[image.String()]
@@ -61,41 +58,7 @@ func printImages(images []imagelister.Image, imageComponents ImageComponents) {
 	}
 }
 
-func writeImagesJSON(images, testImages []imagelister.Image, imageComponents ImageComponents) error {
-	imagesCombined := images
-	for _, testImage := range testImages {
-		if !imagelister.ImageListContains(imagesCombined, testImage) {
-			imagesCombined = append(imagesCombined, testImage)
-		}
-	}
-	sort.Slice(imagesCombined, imagelister.GetSortImagesFunc(imagesCombined))
-
-	// TODO convert images
-	imagesConverted := imagelister.ImagesJSON{}
-	for _, image := range imagesCombined {
-		imageTmp := imagelister.ImageJSON{}
-		imageTmp.Name = image.String()
-		imageTmp.CustomFields.Image = image.String()
-		components := imageComponents[image.String()]
-		imageTmp.CustomFields.Components = strings.Join(components, ",")
-		imagesConverted.Images = append(imagesConverted.Images, imageTmp)
-	}
-
-	outputFile, err := os.Create(*outputJSON)
-	if err != nil {
-		return fmt.Errorf("error creating output file: %s", err)
-	}
-	defer outputFile.Close()
-
-	out, err := json.MarshalIndent(imagesConverted, "", "  ")
-	if err != nil {
-		return fmt.Errorf("error while marshalling: %s", err)
-	}
-	outputFile.Write(out)
-	return nil
-}
-
-func getWalkFunc(images, testImages *[]imagelister.Image, imageComponents ImageComponents) filepath.WalkFunc {
+func getWalkFunc(images, testImages *[]imagelister.Image, imageComponents imagelister.ImageComponents) filepath.WalkFunc {
 	return func(path string, info os.FileInfo, err error) error {
 		// TODO limit walking to one level?
 

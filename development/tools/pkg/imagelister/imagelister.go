@@ -5,6 +5,9 @@ import "fmt"
 // SortFunction is a function type used in slice sorting
 type SortFunction func(i, j int) bool
 
+// ImageComponents is a map that for each image name stores list of components that are using this image
+type ImageComponents map[string][]string
+
 // Image contains info about a singular image
 type Image struct {
 	ContainerRegistryPath string `yaml:"containerRegistryPath,omitempty"`
