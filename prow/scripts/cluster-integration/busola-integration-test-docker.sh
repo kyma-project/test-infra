@@ -3,11 +3,10 @@
 set -o errexit
 set -o pipefail
 
-LOCAL_KYMA_DIR="./local-kyma"
-#K3S_DOMAIN="local.kyma.dev"
 CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included:8.6.0"
 
 install_busola(){
+    # shellcheck disable=SC2086
     docker run --rm --net=host --pid=host --name busola eu.gcr.io/kyma-project/busola:$DOCKER_TAG
 }
 
