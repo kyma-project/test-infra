@@ -391,7 +391,6 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - extra_refs_reconciler
-                    - kyma_major_version_2
                     - disable_testgrid
                   local:
                     - reconciler_nightly_e2e_jobConfig
