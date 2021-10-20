@@ -17,7 +17,7 @@ else
   DOCKER_TAG="${PULL_BASE_SHA::8}"
 fi
 
-export DOCKER_TAG
+#export DOCKER_TAG
 echo DOCKER_TAG "${DOCKER_TAG}"
 
 # shellcheck disable=SC2086
