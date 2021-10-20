@@ -151,8 +151,6 @@ branch-protection:
               protect: true
               required_status_checks:
                 strict: true
-        website-vuepress:
-          protect: false
 
 tide:
   sync_period: 2m
