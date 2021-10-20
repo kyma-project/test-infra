@@ -212,6 +212,7 @@ tide:
     kyma-incubator/kyma-showcase: squash
     kyma-incubator/sc-removal: squash
     kyma-incubator/hydra-login-consent: squash
+    kyma-incubator/website-vuepress: squash
   target_url: https://status.build.kyma-project.io/tide
   pr_status_base_urls:
     '*': https://status.build.kyma-project.io/pr

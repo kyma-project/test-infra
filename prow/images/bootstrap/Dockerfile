@@ -24,6 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     dnsutils \
     openssh-client \
     python2 \
+    python-is-python2 \
     wget \
     apt-transport-https \
     gnupg2 \

@@ -21,11 +21,11 @@ globalSets:
       KYMA_MAJOR_VERSION: 2
   # Image sets
   image_bootstrap:
-    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211019-9004efa4"
+    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
   image_prow-tools:
     image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20211014-b2863980"
   image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211013-2c064d85"
+    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211020-638b6f95"
   image_buildpack-node:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20211013-2c064d85"
   image_buildpack-golang:
