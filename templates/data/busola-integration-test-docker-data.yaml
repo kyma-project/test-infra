@@ -1,7 +1,7 @@
 templates:
   - from: templates/generic.tmpl
     render:
-      - to: ../prow/jobs/busola/integration-k3s-test.yaml
+      - to: ../prow/jobs/busola/integration-docker-test.yaml
         localSets:
           extra_refs_kyma-local:
             extra_refs:
@@ -18,7 +18,7 @@ templates:
             request_memory: 100Mi
             request_cpu: 50m
           vm_job_template_k3s:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-busola-k3s.sh"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-busola-docker.sh"
           vm_job_labels_template:
             labels:
               preset-kyma-guard-bot-github-token: "true"
@@ -29,7 +29,7 @@ templates:
             jobs:
               # presubmits
               - jobConfig:
-                  name: "pre-busola-integration-test-k3s"
+                  name: "pre-busola-integration-test-docker"
                   optional: false
                   run_if_changed: "^resources/|^tests/"
                   labels:
@@ -49,7 +49,7 @@ templates:
                     - "extra_refs_kyma-local"
               # postsubmits
               - jobConfig:
-                  name: "post-busola-integration-test-k3s"
+                  name: "post-busola-integration-test-docker"
                   optional: false
                   run_if_changed: "/"
                   labels:
