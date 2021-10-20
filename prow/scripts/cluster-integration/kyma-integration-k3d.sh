@@ -57,6 +57,7 @@ function deploy_kyma() {
 
   if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
     kyma_deploy_cmd+=" --value global.disableLegacyConnectivity=true"
+    kyma_deploy_cmd+=" --value compass-runtime-agent.compassRuntimeAgent.config.skipAppsTLSVerification=true"
     kyma_deploy_cmd+=" --components-file kyma-integration-k3d-compass-components.yaml"
   fi
 

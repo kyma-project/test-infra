@@ -224,16 +224,16 @@ function applyCompassOverrides() {
     --data "global.systemFetcher.systemsAPIFilterCriteria=no" \
     --data "global.systemFetcher.systemsAPIFilterTenantCriteriaPattern=tenant=%s" \
     --data 'global.systemFetcher.systemToTemplateMappings=[{"Name": "temp1", "SourceKey": ["prop"], "SourceValue": ["val1"] },{"Name": "temp2", "SourceKey": ["prop"], "SourceValue": ["val2"] }]' \
-    --data "global.systemFetcher.oauth.client=admin" \
-    --data "global.systemFetcher.oauth.secret=admin" \
+    --data "global.systemFetcher.oauth.client=client_id" \
+    --data "global.systemFetcher.oauth.secret=client_secret" \
     --data "global.systemFetcher.oauth.tokenBaseUrl=compass-external-services-mock.compass-system.svc.cluster.local:8080" \
-    --data "global.systemFetcher.oauth.tokenPath=/systemfetcher/oauth/token" \
+    --data "global.systemFetcher.oauth.tokenPath=/secured/oauth/token" \
     --data "global.systemFetcher.oauth.tokenEndpointProtocol=http" \
     --data "global.systemFetcher.oauth.scopesClaim=scopes" \
     --data "global.systemFetcher.oauth.tenantHeaderName=x-zid" \
     --data "global.migratorJob.nodeSelectorEnabled=true" \
     --data "global.kubernetes.serviceAccountTokenJWKS=https://container.googleapis.com/v1beta1/projects/$CLOUDSDK_CORE_PROJECT/locations/$CLOUDSDK_COMPUTE_ZONE/clusters/$COMMON_NAME/jwks" \
-    --data "global.oathkeeper.mutators.authenticationMappingServices.tenantFetcher.authenticator.enabled=true" \
+    --data "global.oathkeeper.mutators.authenticationMappingServices.tenant-fetcher.authenticator.enabled=true" \
     --data "global.oathkeeper.mutators.authenticationMappingServices.subscriber.authenticator.enabled=true" \
     --data "system-broker.http.client.skipSSLValidation=true" \
     --data "connector.http.client.skipSSLValidation=true" \
