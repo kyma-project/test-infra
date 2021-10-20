@@ -67,6 +67,9 @@ templates:
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_busola"
                     - "extra_refs_test-infra"
+                  preConfigs:
+                    global:
+                      - "jobConfig_presubmit"
                   postConfigs:
                     global:
                       - "jobConfig_postsubmit"
