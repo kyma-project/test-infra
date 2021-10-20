@@ -429,7 +429,8 @@ gcp::provision_k8s_cluster \
     -S "$GCLOUD_SUBNET_NAME" \
     -D "$CLUSTER_USE_SSD" \
     -P "$TEST_INFRA_SOURCES_DIR" \
-    -r "$PROVISION_REGIONAL_CLUSTER"
+    -r "$PROVISION_REGIONAL_CLUSTER" \
+    -i "$IMAGE_TYPE"
 
 CLEANUP_CLUSTER="true"
 

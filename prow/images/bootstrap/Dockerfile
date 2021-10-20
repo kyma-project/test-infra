@@ -24,6 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     dnsutils \
     openssh-client \
     python2 \
+    python-is-python2 \
     wget \
     apt-transport-https \
     gnupg2 \
@@ -101,3 +102,6 @@ RUN curl -fLSs -o shellcheck.tar.xz https://github.com/koalaman/shellcheck/relea
     && tar xvf shellcheck.tar.xz \
     && mv shellcheck-v0.5.0/shellcheck /usr/bin/ \
     && rm -rf shellcheck-v0.5.0 shellcheck.tar.xz
+
+RUN curl -fLSs -o /usr/local/bin/hadolint https://github.com/hadolint/hadolint/releases/download/v2.7.0/hadolint-Linux-x86_64 && \
+    chmod +x /usr/local/bin/hadolint
