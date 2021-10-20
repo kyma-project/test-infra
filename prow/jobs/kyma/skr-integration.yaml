@@ -34,7 +34,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211013-2c064d85"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -93,7 +93,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211013-2c064d85"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -149,7 +149,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211013-2c064d85"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -205,7 +205,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211013-2c064d85"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -261,7 +261,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211013-2c064d85"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -317,7 +317,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211013-2c064d85"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
