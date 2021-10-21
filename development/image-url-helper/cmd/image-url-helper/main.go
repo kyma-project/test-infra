@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/kyma-project/test-infra/development/tools/pkg/imagechecker"
+	image_url_helper "github.com/kyma-project/test-infra/development/image-url-helper/pkg/image-url-helper"
 )
 
 var (
@@ -60,7 +60,7 @@ func getWalkFunc(foundIncompatible *bool) filepath.WalkFunc {
 		}
 
 		// check if this file contains any image: lines that aren't using new templates
-		incompatible, err := imagechecker.FileHasIncorrectImage(path, *skipComments)
+		incompatible, err := image_url_helper.FileHasIncorrectImage(path, *skipComments)
 		if err != nil {
 			return nil
 		}

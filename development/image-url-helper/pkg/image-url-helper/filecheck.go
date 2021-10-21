@@ -1,4 +1,4 @@
-package imagechecker
+package image_url_helper
 
 import (
 	"bufio"
