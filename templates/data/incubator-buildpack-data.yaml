@@ -230,7 +230,7 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"
             privileged: false
             env:
-              INPUT_CLUSTER_NAME: "rec-nightly"
+              INPUT_CLUSTER_NAME: "rec-night"
           reconciler_jobConfig_args:
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
@@ -243,7 +243,7 @@ templates:
           reconciler_nightly_cluster_jobConfig:
             privileged: false
             env:
-              INPUT_CLUSTER_NAME: "rec-nightly"
+              INPUT_CLUSTER_NAME: "rec-night"
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"
             annotations:
               pipeline.platform: "gardener_gcp"
@@ -349,7 +349,7 @@ templates:
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
-                  cron: "0 0 * * *" # "At 30 minutes past every hour"
+                  cron: "0 0 * * 1-5" # "At 00:00 on every day-of-week from Monday through Friday"
                   labels:
                     preset-log-collector-slack-token: "true"
                     preset-bot-github-token: "true"
@@ -391,6 +391,7 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - extra_refs_reconciler
+                    - kyma_major_version_2
                     - disable_testgrid
                   local:
                     - reconciler_nightly_e2e_jobConfig
