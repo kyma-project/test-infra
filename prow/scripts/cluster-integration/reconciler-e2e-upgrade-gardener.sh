@@ -122,7 +122,7 @@ gardener::install_kyma
 
 # run the fast integration test before reconciliation
 log::banner "Executing pre-upgrade test - before reconciliation"
-reconciler::pre_upgrade_test_fast_integration_kyma_1_24
+gardener::pre_upgrade_test_fast_integration_kyma
 
 # Deploy test pod which will trigger reconciliation
 reconciler::deploy_test_pod
@@ -140,6 +140,7 @@ reconciler::trigger_kyma_reconcile
 reconciler::wait_until_kyma_reconciled
 
 # run the fast integration test after reconciliation
+export KYMA_MAJOR_VERSION="2"
 log::banner "Executing post-upgrade test - after reconciliation"
 gardener::post_upgrade_test_fast_integration_kyma
 

@@ -89,7 +89,7 @@ func TestReconcilerJobsPeriodicE2EUpgrade(t *testing.T) {
 	expName := "periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade"
 	actualPeriodic := tester.FindPeriodicJobByName(kymaPeriodics, expName)
 	assert.Equal(t, expName, actualPeriodic.Name)
-	assert.Equal(t, "30 * * * *", actualPeriodic.Cron)
+	assert.Equal(t, "0 1-22/2 * * 1-5", actualPeriodic.Cron)
 	assert.Equal(t, 0, actualPeriodic.JobBase.MaxConcurrency)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPeriodic.JobBase.UtilityConfig, "main")
 	tester.AssertThatHasExtraRef(t, actualPeriodic.JobBase.UtilityConfig, []prowapi.Refs{

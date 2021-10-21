@@ -187,19 +187,6 @@ function reconciler::disable_sidecar_injection_reconciler_ns() {
     kubectl label namespace "${RECONCILER_NAMESPACE}" istio-injection=disabled --overwrite
 }
 
-function reconciler::pre_upgrade_test_fast_integration_kyma_1_24() {
-    log::info "Running pre-upgrade Kyma Fast Integration tests"
-
-    # Define KUBECONFIG env variable
-    export KUBECONFIG="${LOCAL_KUBECONFIG}"
-
-    pushd "${KYMA_PROJECT_DIR}/kyma-1.24/tests/fast-integration"
-    make ci-pre-upgrade
-    popd
-
-    log::success "Tests completed"
-}
-
 # Connect to Gardener cluster
 function reconciler::connect_to_gardener_cluster() {
     export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
