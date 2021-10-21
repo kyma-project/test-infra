@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/jamiealquiza/envy"
-	image_url_helper "github.com/kyma-project/test-infra/development/image-url-helper/pkg/image-url-helper"
+	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/check"
 	"github.com/spf13/cobra"
 )
 
@@ -22,7 +22,7 @@ func CheckCmd() *cobra.Command {
 		Use:     "check",
 		Short:   "aaaa",
 		Long:    "aaa",
-		Example: "image-url-helper check",
+		Example: "image-url-helper list",
 		Args:    cobra.ExactArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			foundIncompatible := false
@@ -35,7 +35,7 @@ func CheckCmd() *cobra.Command {
 			// for all files in resources
 			fmt.Printf("Looking for incompatible images in \"%s\"%s:\n\n", ResourcesDirectory, skipComentsInfo)
 
-			err := filepath.Walk(ResourcesDirectory, getWalkFunc(&foundIncompatible, options.skipComments))
+			err := filepath.Walk(ResourcesDirectory, getCheckWalkFunc(&foundIncompatible, options.skipComments))
 			if err != nil {
 				fmt.Printf("Cannot traverse directory: %s", err)
 				os.Exit(2)
@@ -58,7 +58,7 @@ func addCheckCmdFlags(cmd *cobra.Command, options *checkCmdOptions) {
 	envy.ParseCobra(cmd, envy.CobraConfig{Persistent: true, Prefix: "IMAGE_URL_HELPER"})
 }
 
-func getWalkFunc(foundIncompatible *bool, skipComments bool) filepath.WalkFunc {
+func getCheckWalkFunc(foundIncompatible *bool, skipComments bool) filepath.WalkFunc {
 	return func(path string, info fs.FileInfo, err error) error {
 		//pass the error further, this shouldn't ever happen
 		if err != nil {
@@ -76,7 +76,7 @@ func getWalkFunc(foundIncompatible *bool, skipComments bool) filepath.WalkFunc {
 		}
 
 		// check if this file contains any image: lines that aren't using new templates
-		incompatible, err := image_url_helper.FileHasIncorrectImage(path, skipComments)
+		incompatible, err := check.FileHasIncorrectImage(path, skipComments)
 		if err != nil {
 			return nil
 		}

@@ -13,7 +13,7 @@ var (
 
 func Execute() error {
 	rootCmd.AddCommand(CheckCmd())
-	//rootCmd.AddCommand(ListCmd())
+	rootCmd.AddCommand(ListCmd())
 
 	return rootCmd.Execute()
 }

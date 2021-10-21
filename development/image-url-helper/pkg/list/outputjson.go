@@ -1,4 +1,4 @@
-package imagelister
+package list
 
 import (
 	"encoding/json"
