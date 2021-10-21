@@ -6,7 +6,7 @@ var (
 	ResourcesDirectory string
 	rootCmd            = &cobra.Command{
 		Use:   "image-url-helper",
-		Short: "Image URLhelper CLI",
+		Short: "Image URL helper CLI",
 		Long:  "Command-line tool to perform image listing and checks.",
 	}
 )
@@ -20,5 +20,4 @@ func Execute() error {
 
 func init() {
 	rootCmd.PersistentFlags().StringVarP(&ResourcesDirectory, "resourcesDirectory", "r", "/home/prow/go/src/github.com/kyma-project/kyma/resources/", "Path to resources directory")
-	//rootCmd.MarkPersistentFlagRequired("resourcesDirectory")
 }

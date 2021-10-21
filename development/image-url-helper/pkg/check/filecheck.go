@@ -3,7 +3,9 @@ package check
 import (
 	"bufio"
 	"fmt"
+	"io/fs"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 )
@@ -17,6 +19,37 @@ var (
 	includeRegexpString = "{{\\s?include \"(short)?imageurl\"(.*)" // }}"
 	newWayRegexp        = regexp.MustCompile(includeRegexpString)
 )
+
+func GetkWalkFunc(foundIncompatible *bool, skipComments bool) filepath.WalkFunc {
+	return func(path string, info fs.FileInfo, err error) error {
+		//pass the error further, this shouldn't ever happen
+		if err != nil {
+			return err
+		}
+
+		// skip directory entries, we just want files
+		if info.IsDir() {
+			return nil
+		}
+
+		// we only want to check .yaml files
+		if !strings.Contains(info.Name(), ".yaml") {
+			return nil
+		}
+
+		// check if this file contains any image: lines that aren't using new templates
+		incompatible, err := FileHasIncorrectImage(path, skipComments)
+		if err != nil {
+			return nil
+		}
+
+		if incompatible {
+			*foundIncompatible = true
+		}
+
+		return nil
+	}
+}
 
 // FileHasIncorrectImage checks if the file contains lines that doesn't use new template for images
 func FileHasIncorrectImage(path string, skipComments bool) (bool, error) {
