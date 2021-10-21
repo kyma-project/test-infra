@@ -29,7 +29,7 @@ templates:
             jobs:
               # presubmits
               - jobConfig:
-                  name: "pre-busola-integration-test-docker"
+                  name: "pre-busola-smoke-test-docker"
                   optional: false
                   run_if_changed: "^resources/|^tests/"
                   labels:
@@ -49,7 +49,7 @@ templates:
                     - "extra_refs_kyma-local"
               # postsubmits
               - jobConfig:
-                  name: "post-busola-integration-test-docker"
+                  name: "post-busola-smoke-test-docker"
                   optional: false
                   run_if_changed: "/"
                   labels:

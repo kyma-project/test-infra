@@ -3,12 +3,12 @@
 
 presubmits: # runs on PRs
   kyma-project/busola:
-    - name: pre-busola-integration-test-docker
+    - name: pre-busola-smoke-test-docker
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-busola-integration-test-docker"
+        prow.k8s.io/pubsub.runID: "pre-busola-smoke-test-docker"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gardener-azure-kyma-integration: "true"
@@ -54,13 +54,13 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/busola:
-    - name: post-busola-integration-test-docker
+    - name: post-busola-smoke-test-docker
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-busola-integration-test-docker"
+        prow.k8s.io/pubsub.runID: "post-busola-smoke-test-docker"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "false"
         preset-gardener-azure-kyma-integration: "true"
