@@ -41,4 +41,5 @@ images:
 - source: "nats:2.1.8"
 - source: "nats:2.1.9"
 - source: "nats:2.2.4"
+- source: "nats:2.6.1-alpine"
 # - source: "natsio/prometheus-nats-exporter:0.7.0"
