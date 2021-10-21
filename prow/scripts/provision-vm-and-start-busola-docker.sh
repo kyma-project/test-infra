@@ -144,6 +144,13 @@ log::info "Copying Busola 'tests' folder to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/tests" "~/busola-tests"
 
+log::info "Preparing environment variables for the instance"
+envVars=(
+  DOCKER_TAG
+)
+utils::save_env_file "${envVars[@]}"
+#shellcheck disable=SC2088
+utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" ".env" "~/.env"
 
 log::info "Copying Kyma-Local to the instance"
 #shellcheck disable=SC2088
@@ -151,6 +158,6 @@ utils::send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/g
 
 
 log::info "Launching the busola-integration-test-k3s.sh script"
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "busola-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/busola-integration-test-docker.sh" --set-env-vars DOCKER_TAG=${DOCKER_TAG}
+gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "busola-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/busola-integration-test-docker.sh"
 
 log::success "all done"

@@ -7,6 +7,15 @@ CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included:8.6.0"
 
 mkdir -p "$PWD/busola-tests/cypress/screenshots"
 
+function load_env() {
+  ENV_FILE=".env"
+  if [ -f "${ENV_FILE}" ]; then
+    # shellcheck disable=SC2046
+    export $(xargs < "${ENV_FILE}")
+  fi
+}
+
+load_env
 echo DOCKER_TAG "${DOCKER_TAG}"
 # shellcheck disable=SC2086
 docker run -d --rm --net=host --pid=host --name busola eu.gcr.io/kyma-project/busola:${DOCKER_TAG}
