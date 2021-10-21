@@ -230,7 +230,7 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"
             privileged: false
             env:
-              INPUT_CLUSTER_NAME: "rec-nightly"
+              INPUT_CLUSTER_NAME: "rec-night"
           reconciler_jobConfig_args:
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
@@ -243,7 +243,7 @@ templates:
           reconciler_nightly_cluster_jobConfig:
             privileged: false
             env:
-              INPUT_CLUSTER_NAME: "rec-nightly"
+              INPUT_CLUSTER_NAME: "rec-night"
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"
             annotations:
               pipeline.platform: "gardener_gcp"
@@ -276,7 +276,6 @@ templates:
                   name: pre-main-kyma-incubator-reconciler-e2e
                   run_if_changed: "^resources"
                   image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18"
-                  optional: true
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -350,7 +349,7 @@ templates:
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
-                  cron: "0 0 * * *" # "At 30 minutes past every hour"
+                  cron: "0 0 * * 1-5" # "At 00:00 on every day-of-week from Monday through Friday"
                   labels:
                     preset-log-collector-slack-token: "true"
                     preset-bot-github-token: "true"
@@ -366,37 +365,37 @@ templates:
                   local:
                     - reconciler_nightly_cluster_jobConfig
                     - reconciler_jobConfig_args
-              # - jobConfig:
-              #     name: nightly-main-reconciler-e2e
-              #     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18"
-              #     annotations:
-              #       description: Executes e2e test periodically on nightly cluster for reconciler.
-              #       pipeline.installer: "reconciler"
-              #       pipeline.platform: "gcp"
-              #       pipeline.test: "fast-integration"
-              #       pipeline.trigger: "nightly"
-              #     decoration_config:
-              #       timeout: 14400000000000 # 4h
-              #       grace_period: 600000000000 # 10min
-              #     cron: "0 1-22/2 * * *" # "At minute 0 past every 2nd hour from 1 through 22."
-              #     labels:
-              #       preset-log-collector-slack-token: "true"
-              #       preset-bot-github-token: "true"
-              #       preset-gardener-gcp-kyma-integration: "true"
-              #       preset-cluster-version: "true"
-              #   inheritedConfigs:
-              #     global:
-              #       - jobConfig_default
-              #       - jobConfig_periodic
-              #       - gardener_gcp_job
-              #       - extra_refs_test-infra
-              #       - extra_refs_kyma
-              #       - extra_refs_reconciler
-              #       - kyma_major_version_1
-              #       - disable_testgrid
-              #     local:
-              #       - reconciler_nightly_e2e_jobConfig
-              #       - reconciler_jobConfig_args
+              - jobConfig:
+                  name: nightly-main-reconciler-e2e
+                  image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18"
+                  annotations:
+                    description: Executes e2e test periodically on nightly cluster for reconciler.
+                    pipeline.installer: "reconciler"
+                    pipeline.platform: "gcp"
+                    pipeline.test: "fast-integration"
+                    pipeline.trigger: "nightly"
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  cron: "0 1-22/2 * * 1-5" # "At minute 0 past every 2nd hour from 1 through 22 on every day-of-week from Monday through Friday."
+                  labels:
+                    preset-log-collector-slack-token: "true"
+                    preset-bot-github-token: "true"
+                    preset-gardener-gcp-kyma-integration: "true"
+                    preset-cluster-version: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - gardener_gcp_job
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                    - extra_refs_reconciler
+                    - kyma_major_version_2
+                    - disable_testgrid
+                  local:
+                    - reconciler_nightly_e2e_jobConfig
+                    - reconciler_jobConfig_args
       - to: ../prow/jobs/incubator/octopus/octopus.yaml
         jobConfigs:
           - repoName: kyma-incubator/octopus
