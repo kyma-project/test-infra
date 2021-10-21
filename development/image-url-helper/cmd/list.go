@@ -38,11 +38,19 @@ func ListCmd() *cobra.Command {
 				os.Exit(2)
 			}
 
-			fmt.Println("images:")
-			printImages(images, imageComponents)
+			var allImages []list.Image
+			allImages = append(allImages, images...)
+			allImages = append(allImages, testImages...)
+			sort.Slice(allImages, list.GetSortImagesFunc(allImages))
+			allImages = list.RemoveDoubles(allImages)
 
-			fmt.Println("test images:")
-			printImages(testImages, imageComponents)
+			fmt.Println("images:")
+			printImages(allImages, imageComponents)
+
+			inconsistentImages := list.GetInconsistentImages(allImages)
+
+			fmt.Println("Inconsistent images:")
+			printImages(inconsistentImages, imageComponents)
 
 			if options.outputFilename != "" {
 				err = list.WriteImagesJSON(options.outputFilename, images, testImages, imageComponents)

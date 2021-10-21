@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"gopkg.in/yaml.v2"
@@ -25,17 +26,22 @@ type Image struct {
 	SHA                   string `yaml:"sha,omitempty"`
 }
 
-// String returns complete image URL
+// String returns complete image URL with version or SHA
 func (i Image) String() string {
-	registry := i.ContainerRegistryPath
-	if i.Directory != "" {
-		registry += "/" + i.Directory
-	}
 	version := ":" + i.Version
 	if i.SHA != "" {
 		version = "@sha256:" + i.SHA
 	}
-	return fmt.Sprintf("%s/%s%s", registry, i.Name, version)
+	return fmt.Sprintf("%s%s", i.ImageURL(), version)
+}
+
+// ImageURL returns image URL without version
+func (i Image) ImageURL() string {
+	registry := i.ContainerRegistryPath
+	if i.Directory != "" {
+		registry += "/" + i.Directory
+	}
+	return fmt.Sprintf("%s/%s", registry, i.Name)
 }
 
 // ImageListContains checks if list of images contains already the same image
@@ -131,4 +137,40 @@ func GetWalkFunc(resourcesDirectory string, images, testImages *[]Image, imageCo
 
 		return nil
 	}
+}
+
+// RemoveDoubles removes all duplicates
+func RemoveDoubles(images []Image) []Image {
+	var dedupedImages []Image
+	for _, image := range images {
+		exists := false
+		for _, deduped := range dedupedImages {
+			if image == deduped {
+				exists = true
+			}
+		}
+		if !exists {
+			dedupedImages = append(dedupedImages, image)
+		}
+	}
+	return dedupedImages
+}
+
+// GetInconsistentImages returns a list of images with the same URl but different versions or hashes
+func GetInconsistentImages(images []Image) []Image {
+	var inconsistent []Image
+	hasDoubles := make(map[string][]Image)
+
+	for _, image := range images {
+		hasDoubles[image.ImageURL()] = append(hasDoubles[image.ImageURL()], image)
+	}
+
+	for _, images := range hasDoubles {
+		if len(images) > 1 {
+			inconsistent = append(inconsistent, images...)
+		}
+	}
+
+	sort.Slice(inconsistent, GetSortImagesFunc(inconsistent))
+	return inconsistent
 }
