@@ -71,7 +71,7 @@ else
 fi
 
 # nice cleanup on exit, be it successful or on fail
-trap gardener::cleanup EXIT INT
+#trap gardener::cleanup EXIT INT
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
@@ -160,6 +160,8 @@ else
     gardener::test_kyma
 fi
 
+log::banner "Waiting for 2h"
+sleep 120m;
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
