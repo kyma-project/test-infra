@@ -13,46 +13,36 @@ func (j *Job) changeExtraRefsBase(base string) {
 	}
 }
 
-// AppendJobs generates jobs for components if necessary and appends pre/post/main jobs to the list if they exist
-func (r *RenderConfig) AppendJobs(global map[string]interface{}) {
+// GenerateComponentJobs takes in a map of global values and generates jobs for all components
+func (r *RenderConfig) GenerateComponentJobs(global map[string]interface{}) {
 	if present := len(r.JobConfigs); present > 0 {
 		for repoIndex, repo := range r.JobConfigs {
 			var jobs []Job
+			hasComponentJobs := false
 
 			for _, job := range repo.Jobs {
 				// check if the jobConfig is a component job
 				if job.JobConfig["name"] == nil && job.JobConfig["path"] != nil {
+					hasComponentJobs = true
 					// generate component jobs
-					componentJobs := generateComponentJobs(global, repo, job)
+					componentJobs := generateSingleComponentJobs(global, repo, job)
 					jobs = append(jobs, componentJobs...)
 				} else {
-					// append the job to the list
-					if len(job.JobConfig) > 0 {
-						jobs = append(jobs, job)
-					}
-
-					if len(job.JobConfigPre) > 0 {
-						preSubmit := Job{}
-						preSubmit.JobConfig = deepCopyConfigSet(job.JobConfigPre)
-						jobs = append(jobs, preSubmit)
-					}
-
-					if len(job.JobConfigPost) > 0 {
-						postSubmit := Job{}
-						postSubmit.JobConfig = deepCopyConfigSet(job.JobConfigPost)
-						jobs = append(jobs, postSubmit)
-					}
+					// append the job to the list, making it possible to mix component job definitions and regular ones
+					jobs = append(jobs, job)
 				}
 			}
 
-			r.JobConfigs[repoIndex].Jobs = jobs
+			// replace jobs if there were generated ones, don't change anything otherwise
+			if hasComponentJobs {
+				r.JobConfigs[repoIndex].Jobs = jobs
+			}
 		}
-		r.Values["JobConfigs"] = r.JobConfigs
 	}
 }
 
-// generateComponentJobs generates jobs for components
-func generateComponentJobs(global map[string]interface{}, repo Repo, job Job) []Job {
+// generateComponentJobs generates jobs for a single components
+func generateSingleComponentJobs(global map[string]interface{}, repo Repo, job Job) []Job {
 	var jobs []Job
 	// generate component jobs
 
