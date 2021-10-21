@@ -3,12 +3,12 @@
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-main-kyma-gke-external-registry
+    - name: pre-main-kyma2-gke-external-registry
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-gke-external-registry"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma2-gke-external-registry"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-cluster-use-ssd: "true"
@@ -36,7 +36,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211006-2635dc4d"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
