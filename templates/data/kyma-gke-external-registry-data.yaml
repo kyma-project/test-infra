@@ -28,10 +28,10 @@ templates:
             jobs:
               # presubmits
               - jobConfig:
-                  name: "pre-main-kyma2-gke-external-registry"
+                  name: "pre-main-kyma-gke-external-registry"
                   args:
                   - "-c"
-                  - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma2-gke-external-registry.sh"
+                  - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-external-registry.sh"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources/serverless\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -44,31 +44,6 @@ templates:
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
-              {{- range .Global.releases }}
-              - jobConfig:
-                  name: pre-rel{{ . | replace "." "" }}-kyma-gke-external-registry
-                  args:
-                  - "-c"
-                  - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-external-registry.sh"
-                  always_run: false
-                  labels:
-                    preset-build-release: "true"
-                  branches:
-                    - release-{{ . }}
-                  extra_refs:
-                    test-infra:
-                      - org: "kyma-project"
-                        repo: "test-infra"
-                        path_alias: "github.com/kyma-project/test-infra"
-                        base_ref: release-{{ . }}
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"
-                  local:
-                    - "jobConfig_default"
-              {{- end }}
               # - jobConfig:
               #     name: "post-main-kyma-gke-external-registry"
               #     # following regexp won't start build if only Markdown files were changed
