@@ -131,7 +131,7 @@ func TestReconcilerJobsNightlyMain(t *testing.T) {
 	expName := "nightly-main-reconciler"
 	actualPeriodic := tester.FindPeriodicJobByName(reconcilerPeriodics, expName)
 	assert.Equal(t, expName, actualPeriodic.Name)
-	assert.Equal(t, "0 0 * * *", actualPeriodic.Cron)
+	assert.Equal(t, "0 0 * * 1-5", actualPeriodic.Cron)
 	assert.Equal(t, 0, actualPeriodic.JobBase.MaxConcurrency)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPeriodic.JobBase.UtilityConfig, "main")
 	tester.AssertThatHasExtraRef(t, actualPeriodic.JobBase.UtilityConfig, []prowapi.Refs{
