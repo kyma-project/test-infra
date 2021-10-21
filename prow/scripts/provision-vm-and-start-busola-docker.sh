@@ -31,6 +31,18 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
     -expected-contexts-regexp="(pre-busola-local)"
 fi
 
+if [ -n "${PULL_NUMBER}" ]; then
+  echo "Building from PR"
+  DOCKER_TAG="PR-${PULL_NUMBER}"
+else
+  # Build artifacts using short SHA for all branches postsubmits
+  echo "Building as usual"
+  DOCKER_TAG="${PULL_BASE_SHA::8}"
+fi
+
+export DOCKER_TAG
+echo DOCKER_TAG "${DOCKER_TAG}"
+
 cleanup() {
     
     # do not fail the job regardless of the vm deletion result
