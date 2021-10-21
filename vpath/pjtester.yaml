@@ -1,6 +1,0 @@
-pjNames:
-  - pjName: "pre-busola-smoke-test-docker"
-prConfigs:
-  kyma-project:
-    busola:
-      prNumber: 480
