@@ -22,9 +22,9 @@ func ListCmd() *cobra.Command {
 	options := listCmdOptions{}
 	cmd := &cobra.Command{
 		Use:     "list",
-		Short:   "aaaa",
-		Long:    "aaa",
-		Example: "image-url-helper check",
+		Short:   "List all images used in charts",
+		Long:    "List all images used in Helm charts by checking values.yaml files",
+		Example: "image-url-helper list",
 		Args:    cobra.ExactArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			imageComponents := make(list.ImageComponents)

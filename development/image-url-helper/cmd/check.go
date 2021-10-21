@@ -20,8 +20,8 @@ func CheckCmd() *cobra.Command {
 	options := checkCmdOptions{}
 	cmd := &cobra.Command{
 		Use:     "check",
-		Short:   "aaaa",
-		Long:    "aaa",
+		Short:   "Check if all images use new format",
+		Long:    "Find all image usages that doesn't use imageurl template",
 		Example: "image-url-helper list",
 		Args:    cobra.ExactArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
