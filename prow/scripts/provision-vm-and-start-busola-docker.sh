@@ -150,7 +150,7 @@ envVars=(
 )
 utils::save_env_file "${envVars[@]}"
 #shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" ".env" "~/.env"
+utils::send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" ".env" "~/.env"
 
 log::info "Copying Kyma-Local to the instance"
 #shellcheck disable=SC2088
