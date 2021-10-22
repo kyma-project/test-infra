@@ -117,7 +117,7 @@ jobConfigs:
               - "jobConfig_post"
 ```
 
-The Render Templates tool can generate precommit and postcommit job definitions from a single jobConfig. Job defined in **jobConfigPre** and **jobConfigPost** can generate precommit and postcommit job definitions for a single job. This type of config holds two additional lists of values named **jobConfigPre** and **jobConfigPost**, which holds values used for presubmit and postsubmit jobs, as well as two lists of configSets named **preConfigs** and **postConfigs**, which hold lists of global and local ConfigSets used for presubmit and postsubmit jobs.
+The Render Templates tool can generate precommit and postcommit job definitions from a single jobConfig. The job defined in **jobConfigPre** and **jobConfigPost** can generate precommit and postcommit job definitions for a single job. This type of config holds two additional lists of values named **jobConfigPre** and **jobConfigPost**, which hold values used for presubmit and postsubmit jobs, as well as two lists of configSets named **preConfigs** and **postConfigs**, which hold lists of global and local configSets used for presubmit and postsubmit jobs.
 
 ```yaml
 jobConfigs:
