@@ -211,24 +211,24 @@ apply_dex_github_kyma_admin_group
 log::info "Install stackdriver-prometheus collector"
 installStackdriverPrometheusCollector
 
-log::info "Update stackdriver-metadata-agent memory settings"
+# log::info "Update stackdriver-metadata-agent memory settings"
 
-cat <<EOF | kubectl replace -f -
-apiVersion: v1
-data:
-  NannyConfiguration: |-
-    apiVersion: nannyconfig/v1alpha1
-    kind: NannyConfiguration
-    baseMemory: 100Mi
-kind: ConfigMap
-metadata:
-  labels:
-    addonmanager.kubernetes.io/mode: EnsureExists
-    kubernetes.io/cluster-service: "true"
-  name: metadata-agent-config
-  namespace: kube-system
-EOF
-kubectl delete deployment -n kube-system stackdriver-metadata-agent-cluster-level
+# cat <<EOF | kubectl replace -f -
+# apiVersion: v1
+# data:
+#   NannyConfiguration: |-
+#     apiVersion: nannyconfig/v1alpha1
+#     kind: NannyConfiguration
+#     baseMemory: 100Mi
+# kind: ConfigMap
+# metadata:
+#   labels:
+#     addonmanager.kubernetes.io/mode: EnsureExists
+#     kubernetes.io/cluster-service: "true"
+#   name: metadata-agent-config
+#   namespace: kube-system
+# EOF
+# kubectl delete deployment -n kube-system stackdriver-metadata-agent-cluster-level
 
 
 log::info "Collect list of images"
