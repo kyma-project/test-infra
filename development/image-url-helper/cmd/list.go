@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
-	"strings"
 
 	"github.com/jamiealquiza/envy"
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/list"
@@ -45,12 +44,12 @@ func ListCmd() *cobra.Command {
 			allImages = list.RemoveDoubles(allImages)
 
 			fmt.Println("images:")
-			printImages(allImages, imageComponents)
+			list.PrintImages(allImages, imageComponents)
 
 			inconsistentImages := list.GetInconsistentImages(allImages)
 
 			fmt.Println("Inconsistent images:")
-			printImages(inconsistentImages, imageComponents)
+			list.PrintImages(inconsistentImages, imageComponents)
 
 			if options.outputFilename != "" {
 				err = list.WriteImagesJSON(options.outputFilename, images, testImages, imageComponents)
@@ -66,14 +65,6 @@ func ListCmd() *cobra.Command {
 }
 
 func addListCmdFlags(cmd *cobra.Command, options *listCmdOptions) {
-	cmd.Flags().StringVarP(&options.outputFilename, "outputFilename", "o", "", "Skip commented out lines")
+	cmd.Flags().StringVarP(&options.outputFilename, "outputFilename", "o", "", "Name of the output JSON file")
 	envy.ParseCobra(cmd, envy.CobraConfig{Persistent: true, Prefix: "IMAGE_URL_HELPER"})
-}
-
-func printImages(images []list.Image, imageComponents list.ImageComponents) {
-	sort.Slice(images, list.GetSortImagesFunc(images))
-	for _, image := range images {
-		components := imageComponents[image.String()]
-		fmt.Printf("%s, used by %s\n", image, strings.Join(components, ", "))
-	}
 }

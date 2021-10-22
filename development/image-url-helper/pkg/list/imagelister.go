@@ -174,3 +174,12 @@ func GetInconsistentImages(images []Image) []Image {
 	sort.Slice(inconsistent, GetSortImagesFunc(inconsistent))
 	return inconsistent
 }
+
+// PrintImages prints otu list of images and their usage in components
+func PrintImages(images []Image, imageComponents ImageComponents) {
+	sort.Slice(images, GetSortImagesFunc(images))
+	for _, image := range images {
+		components := imageComponents[image.String()]
+		fmt.Printf("%s, used by %s\n", image, strings.Join(components, ", "))
+	}
+}
