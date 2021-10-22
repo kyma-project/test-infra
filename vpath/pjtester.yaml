@@ -1,6 +1,0 @@
-pjNames:
-  - pjName: "pre-rel124-cli-integration-kyma-2"
-prConfigs:
-  kyma-project:
-    cli:
-      prNumber: 1049
