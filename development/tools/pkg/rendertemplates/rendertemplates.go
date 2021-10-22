@@ -68,8 +68,8 @@ type InheritedConfigs struct {
 type Job struct {
 	InheritedConfigs InheritedConfigs `yaml:"inheritedConfigs,omitempty"`
 	JobConfig        ConfigSet        `yaml:"jobConfig,omitempty"`
-	jobConfigPre     ConfigSet
-	jobConfigPost    ConfigSet
+	JobConfigPre     ConfigSet        `yaml:"jobConfigPre,omitempty"`
+	JobConfigPost    ConfigSet        `yaml:"jobConfigPost,omitempty"`
 }
 
 // Map performs a deep copy of the given map m.
@@ -193,11 +193,16 @@ func (ft FromTo) String() string {
 	return fmt.Sprintf("%s -> %s", ft.From, ft.To)
 }
 
+// TODO name is misleading
+// mergeConfigs merges parts, generates component jobs and appends all jobs to the list of values
 func (tplCfg *TemplateConfig) mergeConfigs(config *Config) {
 	for _, render := range tplCfg.Render {
+		// merge all parts of a config
 		render.mergeConfigs(config.GlobalSets)
-		// check if there are any component jobs in merged config and generate config for such jobs for each supported release
+		// generate component jobs
 		render.GenerateComponentJobs(config.Global)
+		// append all jobs to the list of values for the template
+		render.AppendJobs(config.Global)
 	}
 }
 
@@ -207,110 +212,157 @@ func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 		r.Values = make(map[string]interface{})
 		for repoIndex, repo := range r.JobConfigs {
 			for jobIndex, job := range repo.Jobs {
+
 				jobConfig := ConfigSet{}
 				jobConfigPre := ConfigSet{}
 				jobConfigPost := ConfigSet{}
+				generatePresubmitJob := false
+				generatePostsubmitJob := false
 
+				// merge "default" global inheritedConfig to jobConfig
 				if sliceutil.Contains(job.InheritedConfigs.Global, "default") {
-					if err := jobConfig.mergeConfigSet(deepCopyConfigSet(globalConfigSets["default"])); err != nil {
+					if err := jobConfig.mergeConfigSet(globalConfigSets["default"]); err != nil {
 						log.Fatalf("Failed merge Global default configSet: %s", err)
 					}
 
 				}
+				// merge "default" local inheritedConfig to jobConfig
 				if sliceutil.Contains(job.InheritedConfigs.Local, "default") {
-					if err := jobConfig.mergeConfigSet(deepCopyConfigSet(r.LocalSets["default"])); err != nil {
+					if err := jobConfig.mergeConfigSet(r.LocalSets["default"]); err != nil {
 						log.Fatalf("Failed merge Local default configSet: %s", err)
 					}
 				}
+				// merge global inheritedConfigs to jobConfig
 				for _, v := range job.InheritedConfigs.Global {
 					if v != "default" {
-						if err := jobConfig.mergeConfigSet(deepCopyConfigSet(globalConfigSets[v])); err != nil {
+						if err := jobConfig.mergeConfigSet(globalConfigSets[v]); err != nil {
 							log.Fatalf("Failed merge global %s named configset: %s", v, err)
 						}
 					}
 				}
 
-				if len(job.InheritedConfigs.PreConfigs.Global) > 0 || len(job.InheritedConfigs.PreConfigs.Local) > 0 {
+				// check if we should generate jobConfigPre/jobConfigPost and create then from jobConfig, so they'll already have default and global inheritedConfigs
+				if len(job.InheritedConfigs.PreConfigs.Global) > 0 || len(job.InheritedConfigs.PreConfigs.Local) > 0 || len(job.JobConfigPre) > 0 {
+					generatePresubmitJob = true
 					jobConfigPre = deepCopyConfigSet(jobConfig)
 				}
-				if len(job.InheritedConfigs.PostConfigs.Global) > 0 || len(job.InheritedConfigs.PostConfigs.Local) > 0 {
+				if len(job.InheritedConfigs.PostConfigs.Global) > 0 || len(job.InheritedConfigs.PostConfigs.Local) > 0 || len(job.JobConfigPost) > 0 {
+					generatePostsubmitJob = true
 					jobConfigPost = deepCopyConfigSet(jobConfig)
 				}
 
+				// if global precommit InheritedConfigs exist, merge them to jobConfigPre
 				if len(job.InheritedConfigs.PreConfigs.Global) > 0 {
 					for _, v := range job.InheritedConfigs.PreConfigs.Global {
-						if err := jobConfigPre.mergeConfigSet(deepCopyConfigSet(globalConfigSets[v])); err != nil {
+						if err := jobConfigPre.mergeConfigSet(globalConfigSets[v]); err != nil {
 							log.Fatalf("Failed merge global %s named configset: %s", v, err)
 						}
 					}
 				}
 
+				// if global postcommit InheritedConfigs exist, merge them to jobConfigPost
 				if len(job.InheritedConfigs.PostConfigs.Global) > 0 {
 					for _, v := range job.InheritedConfigs.PostConfigs.Global {
-						if err := jobConfigPost.mergeConfigSet(deepCopyConfigSet(globalConfigSets[v])); err != nil {
+						if err := jobConfigPost.mergeConfigSet(globalConfigSets[v]); err != nil {
 							log.Fatalf("Failed merge global %s named configset: %s", v, err)
 						}
 					}
 				}
 
+				// merge local inheritedConfigs to jobConfig
 				for _, v := range job.InheritedConfigs.Local {
 					if v != "default" {
-						if err := jobConfig.mergeConfigSet(deepCopyConfigSet(r.LocalSets[v])); err != nil {
+						if err := jobConfig.mergeConfigSet(r.LocalSets[v]); err != nil {
 							log.Fatalf("Failed merge local %s named configset: %s", v, err)
 						}
 					}
 				}
 
-				if len(jobConfigPre) > 0 {
-					if err := jobConfigPre.mergeConfigSet(deepCopyConfigSet(jobConfig)); err != nil {
-						log.Fatalf("Failed merge job configset %s", err)
+				if generatePresubmitJob {
+					// merge local inheritedConfigs to jobConfigPre
+					for _, v := range job.InheritedConfigs.Local {
+						if v != "default" {
+							if err := jobConfigPre.mergeConfigSet(r.LocalSets[v]); err != nil {
+								log.Fatalf("Failed merge local %s named configset: %s", v, err)
+							}
+						}
 					}
+					// merge local precommit inheritedConfigs to jobConfigPre
 					if len(job.InheritedConfigs.PreConfigs.Local) > 0 {
 						for _, v := range job.InheritedConfigs.PreConfigs.Local {
-							if err := jobConfigPre.mergeConfigSet(deepCopyConfigSet(r.LocalSets[v])); err != nil {
+							if err := jobConfigPre.mergeConfigSet(r.LocalSets[v]); err != nil {
 								log.Fatalf("Failed merge local %s named configset: %s", v, err)
 							}
 						}
 					}
 				}
-				if len(jobConfigPost) > 0 {
-					if err := jobConfigPost.mergeConfigSet(deepCopyConfigSet(jobConfig)); err != nil {
-						log.Fatalf("Failed merge job configset %s", err)
+
+				if generatePostsubmitJob {
+					// merge local inheritedConfigs to jobConfigPost
+					for _, v := range job.InheritedConfigs.Local {
+						if v != "default" {
+							if err := jobConfigPost.mergeConfigSet(r.LocalSets[v]); err != nil {
+								log.Fatalf("Failed merge local %s named configset: %s", v, err)
+							}
+						}
 					}
+					// merge local postcommit inheritedConfigs to jobConfigPost
 					if len(job.InheritedConfigs.PostConfigs.Local) > 0 {
 						for _, v := range job.InheritedConfigs.PostConfigs.Local {
-							if err := jobConfigPost.mergeConfigSet(deepCopyConfigSet(r.LocalSets[v])); err != nil {
+							if err := jobConfigPost.mergeConfigSet(r.LocalSets[v]); err != nil {
 								log.Fatalf("Failed merge local %s named configset: %s", v, err)
 							}
 						}
 					}
 				}
 
-				if err := jobConfig.mergeConfigSet(deepCopyConfigSet(job.JobConfig)); err != nil {
-					log.Fatalf("Failed merge job configset %s", err)
-				}
-
-				if len(jobConfigPre) > 0 {
-					if err := jobConfigPre.mergeConfigSet(deepCopyConfigSet(job.JobConfig)); err != nil {
-						log.Fatalf("Failed merge job configset: %s", err)
-					}
-				}
-				if len(jobConfigPost) > 0 {
-					if err := jobConfigPost.mergeConfigSet(deepCopyConfigSet(job.JobConfig)); err != nil {
-						log.Fatalf("Failed merge job configset: %s", err)
+				//merge jobconfig to jobConfig
+				if len(job.JobConfig) > 0 {
+					if err := jobConfig.mergeConfigSet(job.JobConfig); err != nil {
+						log.Fatalf("Failed merge job configset %s", err)
 					}
 				}
 
+				if generatePresubmitJob {
+					//merge jobconfig to jobConfigPre
+					if len(job.JobConfig) > 0 {
+						if err := jobConfigPre.mergeConfigSet(job.JobConfig); err != nil {
+							log.Fatalf("Failed merge job configset: %s", err)
+						}
+					}
+					//merge jobconfigPre to jobConfigPre
+					if len(job.JobConfigPre) > 0 {
+						if err := jobConfigPre.mergeConfigSet(job.JobConfigPre); err != nil {
+							log.Fatalf("Failed merge job configsetpre: %s", err)
+						}
+					}
+				}
+
+				if generatePostsubmitJob {
+					//merge jobconfig to jobConfigPost
+					if len(job.JobConfig) > 0 {
+						if err := jobConfigPost.mergeConfigSet(job.JobConfig); err != nil {
+							log.Fatalf("Failed merge job configset: %s", err)
+						}
+					}
+					//merge post jobconfigPost to jobConfigPost
+					if len(job.JobConfigPost) > 0 {
+						if err := jobConfigPost.mergeConfigSet(job.JobConfigPost); err != nil {
+							log.Fatalf("Failed merge job configsetpost: %s", err)
+						}
+					}
+				}
+
+				// add all generated jobs to the list of JobConfigs
 				r.JobConfigs[repoIndex].Jobs[jobIndex].JobConfig = jobConfig
-				if len(jobConfigPre) > 0 {
-					r.JobConfigs[repoIndex].Jobs[jobIndex].jobConfigPre = jobConfigPre
+				if generatePresubmitJob {
+					r.JobConfigs[repoIndex].Jobs[jobIndex].JobConfigPre = jobConfigPre
 				}
-				if len(jobConfigPost) > 0 {
-					r.JobConfigs[repoIndex].Jobs[jobIndex].jobConfigPost = jobConfigPost
+				if generatePostsubmitJob {
+					r.JobConfigs[repoIndex].Jobs[jobIndex].JobConfigPost = jobConfigPost
 				}
 			}
 		}
-		r.Values["JobConfigs"] = r.JobConfigs
 	}
 }
 
@@ -326,7 +378,7 @@ func (j *ConfigSet) mergeConfigSet(configSet ConfigSet) error {
 	if len(configSet) == 0 {
 		return errors.New("configSet not found")
 	}
-	if err := mergo.Merge(j, configSet, mergo.WithOverride); err != nil {
+	if err := mergo.Merge(j, deepCopyConfigSet(configSet), mergo.WithOverride); err != nil {
 		return err
 	}
 	return nil
@@ -353,4 +405,38 @@ func ReleaseMatches(rel interface{}, since interface{}, until interface{}) bool 
 		return false
 	}
 	return true
+}
+
+// AppendJobs appends data of presubmit/postsubmit/common jobs to the values list
+func (r *RenderConfig) AppendJobs(global map[string]interface{}) {
+	if present := len(r.JobConfigs); present > 0 {
+		for repoIndex, repo := range r.JobConfigs {
+			var jobs []Job
+
+			for _, job := range repo.Jobs {
+
+				// append the common job to the list
+				if len(job.JobConfig) > 0 {
+					jobs = append(jobs, job)
+				}
+
+				// append the presubmit job to the list
+				if len(job.JobConfigPre) > 0 {
+					preSubmit := Job{}
+					preSubmit.JobConfig = deepCopyConfigSet(job.JobConfigPre)
+					jobs = append(jobs, preSubmit)
+				}
+
+				// append the postsubmit job to the list
+				if len(job.JobConfigPost) > 0 {
+					postSubmit := Job{}
+					postSubmit.JobConfig = deepCopyConfigSet(job.JobConfigPost)
+					jobs = append(jobs, postSubmit)
+				}
+			}
+			r.JobConfigs[repoIndex].Jobs = jobs
+		}
+		// copy the jobs to the values used by the templates
+		r.Values["JobConfigs"] = r.JobConfigs
+	}
 }
