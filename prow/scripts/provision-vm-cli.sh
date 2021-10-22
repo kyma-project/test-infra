@@ -134,7 +134,11 @@ fi
 # Install kyma
 log::info "Installing Kyma"
 date
-gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma install --non-interactive ${SOURCE}"
+if [ "$INSTALLATION" = 'alpha' ]; then
+    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma deploy --ci ${SOURCE}"
+else
+    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma install --non-interactive ${SOURCE}"
+fi
 
 # Run test suite
 # shellcheck disable=SC1090
