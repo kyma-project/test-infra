@@ -30,8 +30,9 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
             command:
-              - "/prow-tools/imagechecker"
+              - "/prow-tools/image-url-helper"
             args:
+              - "check"
               - "--skipComments=true"
             resources:
               requests:
