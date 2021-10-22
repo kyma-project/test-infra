@@ -27,7 +27,7 @@ func TestKymaGardenerGCPKymaToKyma2JobPeriodics(t *testing.T) {
 	assert.Equal(t, job.DecorationConfig.Timeout.Get(), 2*time.Hour)
 	assert.Equal(t, job.DecorationConfig.GracePeriod.Get(), 10*time.Minute)
 	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAzureIntegration, preset.KymaCLIStable, preset.ClusterVersion)
-	tester.AssertThatHasExtraRepoRefCustom(t, job.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
+	//tester.AssertThatHasExtraRepoRefCustom(t, job.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, job.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener.sh"}, job.Spec.Containers[0].Command)
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_REGION", "northeurope")

@@ -147,6 +147,13 @@ globalSets:
           repo: "kyma"
           path_alias: "github.com/kyma-project/kyma"
           base_ref: "main"
+  extra_refs_sayan:
+    extra_refs:
+      kyma:
+        - org: "sayanh"
+          repo: "kyma"
+          path_alias: "github.com/kyma-project/kyma"
+          base_ref: "debug-cluster-internal-eventing"
   extra_refs_reconciler:
     extra_refs:
       reconciler:

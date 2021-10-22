@@ -975,10 +975,10 @@ periodics: # runs on schedule
       path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       extra_refs:
-        - org: kyma-project
+        - org: sayanh
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: main
+          base_ref: debug-cluster-internal-eventing
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra

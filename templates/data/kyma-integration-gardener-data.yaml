@@ -451,7 +451,7 @@ templates:
                     - jobConfig_default
                     - jobConfig_periodic
                     - extra_refs_test-infra
-                    - extra_refs_kyma
+                    - extra_refs_sayan
                     - image_kyma-integration
                     - kyma_major_version_1
                   local:
