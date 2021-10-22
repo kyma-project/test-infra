@@ -4,3 +4,5 @@ prConfigs:
   kyma-project:
     cli:
       prNumber: 1049
+    test-infra:
+      prNumber: 4346
