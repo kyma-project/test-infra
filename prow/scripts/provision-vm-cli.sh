@@ -86,14 +86,8 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 
 
 if [[ -z "$IMAGE" ]]; then
-    log::info "Provisioning vm using the latest default custom image ..."
-    date
-    IMAGE=$(gcloud compute images list --sort-by "~creationTimestamp" \
-         --filter "family:custom images AND labels.default:yes" --limit=1 | tail -n +2 | awk '{print $1}')
-
-    if [[ -z "$IMAGE" ]]; then
-       log::error "There are no default custom images, the script will exit ..." && exit 1
-    fi
+    # Newer versions use k3d v5, we want older version here
+    IMAGE="kyma-deps-image-v20210930-03ea1d"
  fi
 
 ZONE_LIMIT=${ZONE_LIMIT:-5}
