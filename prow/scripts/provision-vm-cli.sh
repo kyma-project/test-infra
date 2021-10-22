@@ -127,7 +127,6 @@ if [ "$KUBERNETES_RUNTIME" = 'minikube' ]; then
 else
     # this line is used to fix k3s provisioning, see https://github.com/kyma-project/test-infra/issues/4033
     gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo sysctl -w net/netfilter/nf_conntrack_max=131072"
-    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "curl -s -o install-k3d.sh https://raw.githubusercontent.com/rancher/k3d/main/install.sh && chmod +x ./install-k3d.sh && ./install-k3d.sh"
     gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma alpha provision k3s --ci"
 fi
 
