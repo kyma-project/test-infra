@@ -83,6 +83,7 @@ export CLUSTER_NAME="${COMMON_NAME}"
 
 # set KYMA_SOURCE used by gardener::install_kyma
 # at the time of writing this comment, kyma-integration-gardener never sets BUILD_TYPE to "release"
+echo "pull number: ${PULL_NUMBER}"
 if [[ -v ${PULL_NUMBER} ]]; then
     # In case of PR, operate on PR number
     KYMA_SOURCE="PR-${PULL_NUMBER}"
