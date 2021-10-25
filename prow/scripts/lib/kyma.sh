@@ -124,7 +124,8 @@ kyma::install_cli() {
 
         echo "--> Install kyma CLI ${os} locally to /tmp/bin"
 
-        curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}?alt=media"
+        # shellcheck disable=SC2094
+        curl -sSL "https://github.com/kyma-project/cli/releases/download/1.24.6/kyma_${os}_x86_64.tar.gz" | tar -xzO kyma > kyma
         chmod +x kyma
         kyma_version=$(kyma version --client)
         echo "--> Kyma CLI version: ${kyma_version}"
@@ -140,10 +141,10 @@ host::os() {
   local host_os
   case "$(uname -s)" in
     Darwin)
-      host_os=darwin
+      host_os=Darwin
       ;;
     Linux)
-      host_os=linux
+      host_os=Linux
       ;;
     *)
       echo "Unsupported host OS. Must be Linux or Mac OS X."
