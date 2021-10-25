@@ -125,7 +125,7 @@ templates:
                     - "jobConfig_presubmit"
               - jobConfig:
                   path: integration-kyma-2
-                  release_since: "1.7"
+                  release_since: "2.0"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
