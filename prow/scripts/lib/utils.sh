@@ -418,11 +418,11 @@ function utils::run_jobguard() {
 # COMMON_NAME
 utils::generate_commonName() {
   NAME_PREFIX=$1
-  PULL_NUMBER=$2
-  if [ ${#PULL_NUMBER} -gt 0 ]; then
-    PULL_NUMBER="-${PULL_NUMBER}-"
+  local commitID=$2
+  if [ ${#commitID} -gt 0 ]; then
+    commitID="-${commitID}-"
   fi
   RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
-  COMMON_NAME=$(echo "${NAME_PREFIX}${PULL_NUMBER}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+  COMMON_NAME=$(echo "${NAME_PREFIX}${commitID}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
   export COMMON_NAME
 }
