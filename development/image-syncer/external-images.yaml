@@ -25,7 +25,7 @@ images:
 - source: "oryd/oathkeeper:v0.38.11-alpine"
 # - source: "postgres:11.12-alpine"
 - source: "prom/pushgateway:v1.3.0"
-- source: "quay.io/coreos/etcd:v3.3.25"
+- source: "quay.io/coreos/etcd:v3.3.27"
 - source: "quay.io/coreos/kube-state-metrics:v1.9.7"
 - source: "quay.io/jetstack/cert-manager-controller:v1.1.0"
 - source: "quay.io/jetstack/cert-manager-cainjector:v1.1.0"
