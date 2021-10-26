@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reverse-proxy
+  namespace: default
+  labels:
+    app: reverse-proxy
+spec:
+  selector:
+    matchLabels:
+      app: reverse-proxy
+  template:
+    metadata:
+      labels:
+        app: reverse-proxy
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.20-alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: config
+          mountPath: /etc/nginx/conf.d/
+      volumes:
+      - name: config
+        configMap:
+          name: reverse-proxy-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: reverse-proxy-config
+  namespace: default
+data:
+  default.conf: |
+    server {
+      listen       80;
+      server_name  _;
+
+      location /robots.txt {
+        proxy_pass https://storage.googleapis.com/kyma-prow-logs/robots.txt;
+      }
+
+      location = /50x.html {
+        root   /usr/share/nginx/html;
+      }
+    }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reverse-proxy
+spec:
+  type: ClusterIP
+  selector:
+    app: nginx
+  ports:
+  - port: 80
+    targetPort: 80
