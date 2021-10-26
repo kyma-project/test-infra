@@ -145,3 +145,27 @@ templates:
                     - image_buildpack-golang-kubebuilder2
                   local:
                     - jobConfig_default
+      - to: ../prow/jobs/control-plane/control-plane-reconciler-integration.yaml
+        localSets:
+          reconciler_e2e_jobConfig:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-gardener.sh"
+          reconciler_jobConfig_args:
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
+        jobConfigs:
+          - repoName: kyma-project/control-plane
+            jobs:
+              - jobConfig:
+                  name: pre-main-control-plane-reconciler-e2e
+                  run_if_changed: "^resources"
+                  image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211022-7a608efc"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - gardener_gcp_job
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                  local:
+                    - reconciler_e2e_jobConfig
+                    - reconciler_jobConfig_args
