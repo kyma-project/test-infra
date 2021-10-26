@@ -51,10 +51,13 @@ apiVersion: v1
 kind: Service
 metadata:
   name: reverse-proxy
+  namespace: default
+  labels:
+    app: reverse-proxy
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
-    app: nginx
+    app: reverse-proxy
   ports:
-  - port: 80
-    targetPort: 80
+  - name: http
+    port: 80
