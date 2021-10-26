@@ -16,6 +16,7 @@
 #Please look in each provider script for provider specific requirements
 
 
+echo "earliest pull number: ${PULL_NUMBER}"
 
 
 # exit on error, and raise error when variable is not set when used
