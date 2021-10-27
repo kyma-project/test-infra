@@ -17,10 +17,7 @@ import (
 var (
 	targetCommit           = flag.String("targetCommit", "", "Target commitish [Required]")
 	bucketName             = flag.String("bucketName", "kyma-prow-artifacts", "Google bucket name where artifacts are stored [Optional]")
-	kymaInstaller          = flag.String("kymaInstaller", "kyma-installer.yaml", "Filename for list of CRDs and deployment artifact [Optional]")
-	kymaConfigLocal        = flag.String("kymaConfigLocal", "kyma-config-local.yaml", "Filename for local config artifact [Optional]")
-	kymaInstallerCRLocal   = flag.String("kymaInstallerCRLocal", "kyma-installer-cr-local.yaml", "Filename for list of componets kyma installer would install for local [Optional]")
-	kymaInstallerCRCluster = flag.String("kymaInstallerCRCluster", "kyma-installer-cr-cluster.yaml", "Filename for list of componets kyma installer would install for cluster [Optional]")
+	kymaComponents         = flag.String("kymaComponents", "kyma-components.yaml", "Filename for kyma-components.yaml file. [Optional]")
 	kymaChangelog          = flag.String("kymaChangelog", "release-changelog.md", "Filename for release changelog [Optional]")
 	githubRepoOwner        = flag.String("githubRepoOwner", "", "Github repository owner [Required]")
 	githubRepoName         = flag.String("githubRepoName", "", "Github repository name [Required]")
@@ -78,7 +75,7 @@ func main() {
 	}
 
 	// Github release
-	err = c.CreateNewRelease(ctx, relOpts, *kymaConfigLocal, *kymaInstallerCRLocal, *kymaInstallerCRCluster, *kymaInstaller)
+	err = c.CreateNewRelease(ctx, relOpts, *kymaComponents)
 	if err != nil {
 		log.Fatal(err)
 	}
