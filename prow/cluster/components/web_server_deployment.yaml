@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: reverse-proxy
+  name: web-server
   namespace: default
   labels:
-    app: reverse-proxy
+    app: web-server
 spec:
   selector:
     matchLabels:
-      app: reverse-proxy
+      app: web-server
   template:
     metadata:
       labels:
-        app: reverse-proxy
+        app: web-server
     spec:
       containers:
       - name: nginx
@@ -41,7 +41,7 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: reverse-proxy-config
+          name: web-server-config
       - name: static-files
         configMap:
           name: static-files
@@ -49,7 +49,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: reverse-proxy-config
+  name: web-server-config
   namespace: default
 data:
   default.conf: |
@@ -69,14 +69,14 @@ data:
 apiVersion: v1
 kind: Service
 metadata:
-  name: reverse-proxy
+  name: web-server
   namespace: default
   labels:
-    app: reverse-proxy
+    app: web-server
 spec:
   type: NodePort
   selector:
-    app: reverse-proxy
+    app: web-server
   ports:
   - name: http
     port: 80
