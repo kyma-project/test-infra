@@ -52,6 +52,7 @@ Its structure looks as follows:
   └── plugins.yaml          # The file with Prow plugins configuration
   └── create-secrets-for-workload-cluster.sh  # The script which creates a Secret in the Prow cluster, used to access the workload cluster
   └── set-up-workload-cluster.sh  # The script which prepares the workload cluster to be used by the Prow cluster
+  └── static-files          # Files that will be uploaded to the nginx web server. To configure how traffic is routed to these files, update the prow ingress paths and the web server configuration ConfigMap.
 ```
 
 ## Installation

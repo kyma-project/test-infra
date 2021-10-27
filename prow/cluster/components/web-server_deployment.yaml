@@ -30,14 +30,14 @@ spec:
             port: 80
           initialDelaySeconds: 10
           periodSeconds: 3
-          timeoutSeconds: 600
+          timeoutSeconds: 30
         readinessProbe:
           httpGet:
             path: /robots.txt
             port: 80
           initialDelaySeconds: 10
           periodSeconds: 3
-          timeoutSeconds: 600
+          timeoutSeconds: 30
       volumes:
       - name: config
         configMap:
