@@ -179,48 +179,7 @@ mkdir -p /tmp/kyma-gke-integration
 
 DOCKER_PASSWORD=$(jq -c "." $DOCKER_PASSWORD_FILE 2> /dev/null)
 
-
-cat << EOF > "$PWD/kyma_overrides.yaml"
-global:
-  domainName: ${DNS_SUBDOMAIN}.${DNS_DOMAIN%.}
-  loadBalancerIP: ${GATEWAY_IP_ADDRESS}
-  tlsCrt: ${TLS_CERT}
-  tlsKey: ${TLS_KEY}
-
-test:
-  acceptance:
-    ui:
-      logging.enabled: true
-
-application-registry:
-  deployment:
-    args:
-      detailedErrorResponse: true
-
-istio:
-  override: |
-    apiVersion: install.istio.io/v1alpha1
-    kind: IstioOperator
-    metadata:
-      namespace: istio-system
-    spec:
-      components:
-        ingressGateways:
-        - name: istio-ingressgateway
-          k8s:
-            service:
-              loadBalancerIP: ${GATEWAY_IP_ADDRESS}
-              type: LoadBalancer
-
-serverless:
-  dockerRegistry:
-    enableInternal: false
-    username: "_json_key"
-    password: |
-      ${DOCKER_PASSWORD}
-    registryAddress: $DOCKER_PUSH_REPOSITORY/functions
-    serverAddress: $(echo "$DOCKER_PUSH_REPOSITORY" | cut -d'/' -f1)
-EOF
+envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-serverless-external-registry-integration-overrides.tpl.yaml" > "$PWD/kyma_overrides.yaml"
 
 log::info "Installation triggered"
 
