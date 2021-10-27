@@ -22,6 +22,8 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /etc/nginx/conf.d/
+        - name: static-files
+          mountPath: /usr/share/nginx/html/
         livenessProbe:
           httpGet:
             path: /robots.txt
@@ -40,6 +42,9 @@ spec:
       - name: config
         configMap:
           name: reverse-proxy-config
+      - name: static-files
+        configMap:
+          name: static-files
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -52,8 +57,8 @@ data:
       listen       80;
       server_name  _;
 
-      location /robots.txt {
-        proxy_pass https://storage.googleapis.com/kyma-prow-logs/robots.txt;
+      location / {
+        root /usr/share/nginx/html/;
       }
 
       location = /50x.html {
