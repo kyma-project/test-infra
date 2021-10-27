@@ -179,6 +179,7 @@ mkdir -p /tmp/kyma-gke-integration
 
 DOCKER_PASSWORD=$(jq -c "." $DOCKER_PASSWORD_FILE 2> /dev/null)
 
+$DOCKER_PUSH_REPOSITORY=$(echo "$DOCKER_PUSH_REPOSITORY" | cut -d'/' -f1)
 envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-serverless-external-registry-integration-overrides.tpl.yaml" > "$PWD/kyma_overrides.yaml"
 
 log::info "Installation triggered"

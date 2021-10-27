@@ -36,4 +36,4 @@ serverless:
     password: |
       ${DOCKER_PASSWORD}
     registryAddress: $DOCKER_PUSH_REPOSITORY/functions
-    serverAddress: $(echo "$DOCKER_PUSH_REPOSITORY" | cut -d'/' -f1)
+    serverAddress: $DOCKER_PUSH_REPOSITORY
