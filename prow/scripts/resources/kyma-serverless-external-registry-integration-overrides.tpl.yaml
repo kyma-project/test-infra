@@ -1,5 +1,5 @@
 global:
-  domainName: ${DNS_SUBDOMAIN}.${DNS_DOMAIN%.}
+  domainName: ${DNS_SUBDOMAIN}.${DNS_DOMAIN_TRAILING}
   loadBalancerIP: ${GATEWAY_IP_ADDRESS}
   tlsCrt: ${TLS_CERT}
   tlsKey: ${TLS_KEY}
