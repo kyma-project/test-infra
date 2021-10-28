@@ -182,6 +182,12 @@ var components = []struct {
 			jobsuite.AllReleases(),
 		},
 	},
+	{path: "grafana-watcher", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.AllReleases(),
+		},
+	},
 }
 
 func TestComponentJobs(t *testing.T) {
