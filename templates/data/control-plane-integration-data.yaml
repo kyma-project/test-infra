@@ -101,23 +101,6 @@ templates:
                     - image_kyma-integration
                   local:
                     - jobConfig_default
-              - jobConfig:
-                  name: post-main-control-plane-gke-provisioner-integration
-                  labels:
-                    preset-build-main: "true"
-                    preset-log-collector-slack-token: "true"
-                  slack_channel: "kyma-prow-dev-null"
-                  annotations:
-                    testgrid-dashboards: kyma_control-plane
-                    description: Kyma control-plane GKE provisioner integration job.
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - image_kyma-integration
-                  local:
-                    - jobConfig_default
       - to: ../prow/jobs/control-plane/control-plane-integration.yaml
         localSets:
           jobConfig_default:
