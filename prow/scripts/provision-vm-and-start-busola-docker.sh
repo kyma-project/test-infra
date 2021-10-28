@@ -28,7 +28,7 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
     -org="kyma-project" \
     -repo="busola" \
     -base-ref="$PULL_PULL_SHA" \
-    -expected-contexts-regexp="(pre-busola-local)|(post-busola-local)"
+    -expected-contexts-regexp="(.*-busola-local)"
 fi
 
 if [ -n "${PULL_NUMBER}" ]; then
