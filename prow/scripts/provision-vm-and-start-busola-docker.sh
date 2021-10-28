@@ -17,19 +17,17 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 
-if [[ "${BUILD_TYPE}" == "pr" ]]; then
-    log::info "Execute Job Guard"
-    /prow-tools/jobguard \
-    -github-endpoint=http://ghproxy \
-    -github-endpoint=https://api.github.com \
-    -github-token-path="/etc/github/token" \
-    -fail-on-no-contexts="false" \
-    -timeout="10m" \
-    -org="kyma-project" \
-    -repo="busola" \
-    -base-ref="$PULL_PULL_SHA" \
-    -expected-contexts-regexp="(.*-busola-local)"
-fi
+log::info "Execute Job Guard"
+/prow-tools/jobguard \
+-github-endpoint=http://ghproxy \
+-github-endpoint=https://api.github.com \
+-github-token-path="/etc/github/token" \
+-fail-on-no-contexts="false" \
+-timeout="10m" \
+-org="kyma-project" \
+-repo="busola" \
+-base-ref="$PULL_PULL_SHA" \
+-expected-contexts-regexp="(.*-busola-local)"
 
 if [ -n "${PULL_NUMBER}" ]; then
   echo "Building from PR"
