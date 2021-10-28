@@ -1148,11 +1148,11 @@ templates:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
               - jobConfig:
-                path: components/grafana-watcher
-                args:
-                  - "/home/prow/go/src/github.com/kyma-project/kyma/components/grafana-watcher"
-                run_if_changed: "^components/grafana-watcher/|^common/makefiles/"
-                release_since: "2.0"
+                  path: components/grafana-watcher
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/grafana-watcher"
+                  run_if_changed: "^components/grafana-watcher/|^common/makefiles/"
+                  release_since: "2.0"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
