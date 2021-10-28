@@ -1,5 +1,4 @@
 pjNames:
-  - pjName: "pre-main-kyma-integration-k3d"
   - pjName: "pre-kyma-components-grafana-watcher"
 prConfigs:
   kyma-project:
