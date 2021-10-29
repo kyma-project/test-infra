@@ -256,9 +256,6 @@ echo ""
 
 echo "Exit code ${job_status}"
 
-# TODO remove after testing
-job_status
-
 if [ "${job_status}" != "" ]; then
     exit 1
 fi
