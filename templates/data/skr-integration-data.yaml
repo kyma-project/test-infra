@@ -98,6 +98,27 @@ templates:
                     - "keb_plan_azure"
                     - "kyma_nightly_subaccount"
               - jobConfig:
+                  name: "skr-azure-test-nightly"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "tests/fast-integration"
+                    - "ci-test-skr-nightly"
+                  cron: "35 * * * *" # "At 35th minute of every hour"
+                inheritedConfigs:
+                  global:
+                    - "image_kyma-integration"
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                    - "disable_testgrid"
+                    - "kyma_major_version_1"
+                  local:
+                    - "jobConfig_default"
+                    - "keb_plan_azure"
+                    - "kyma_nightly_subaccount"
+              - jobConfig:
                   name: "skr-azure-integration-dev"
                   cron: "5 1 * * *" # "At 01:05"
                 inheritedConfigs:
