@@ -256,6 +256,12 @@ echo ""
 
 echo "Exit code ${job_status}"
 
+# TODO remove after testing
+job_status
+
+if [ "${job_status}" != "" ]; then
+    exit 1
+fi
 #!!! Must be at the end of the script !!!
 # shellcheck disable=SC2034
 ERROR_LOGGING_GUARD="false"
