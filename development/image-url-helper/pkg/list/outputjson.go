@@ -3,9 +3,10 @@ package list
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 	"sort"
 	"strings"
+
+	"gopkg.in/yaml.v2"
 )
 
 // CustomFields contains list of image custom fields
@@ -25,8 +26,33 @@ type OutputImageList struct {
 	Images []OutputImage `json:"images" yaml:"images"`
 }
 
-// WriteImagesJSON exports JSON list with names and components for each image
-func WriteImagesJSON(outputFilename string, images, testImages []Image, imageComponents ImageComponents) error {
+// PrintImagesJSON prints JSON list with names and components for each image
+func PrintImagesJSON(images, testImages []Image, imageComponents ImageComponents) error {
+	imagesConverted := convertimageslist(images, testImages, imageComponents)
+
+	out, err := json.MarshalIndent(imagesConverted, "", "  ")
+	if err != nil {
+		return fmt.Errorf("error while marshalling: %s", err)
+	}
+	fmt.Println(string(out))
+	return nil
+}
+
+// PrintImagesYAML prints YAML list with names and components for each image
+func PrintImagesYAML(images, testImages []Image, imageComponents ImageComponents) error {
+	imagesConverted := convertimageslist(images, testImages, imageComponents)
+
+	out, err := yaml.Marshal(imagesConverted)
+	if err != nil {
+		return fmt.Errorf("error while marshalling: %s", err)
+	}
+	fmt.Println(string(out))
+	return nil
+}
+
+func convertimageslist(images, testImages []Image, imageComponents ImageComponents) OutputImageList {
+	imagesConverted := OutputImageList{}
+
 	imagesCombined := images
 	for _, testImage := range testImages {
 		if !ImageListContains(imagesCombined, testImage) {
@@ -35,8 +61,6 @@ func WriteImagesJSON(outputFilename string, images, testImages []Image, imageCom
 	}
 	sort.Slice(imagesCombined, GetSortImagesFunc(imagesCombined))
 
-	// TODO convert images
-	imagesConverted := OutputImageList{}
 	for _, image := range imagesCombined {
 		imageTmp := OutputImage{}
 		imageTmp.Name = image.String()
@@ -46,16 +70,5 @@ func WriteImagesJSON(outputFilename string, images, testImages []Image, imageCom
 		imagesConverted.Images = append(imagesConverted.Images, imageTmp)
 	}
 
-	outputFile, err := os.Create(outputFilename)
-	if err != nil {
-		return fmt.Errorf("error creating output file: %s", err)
-	}
-	defer outputFile.Close()
-
-	out, err := json.MarshalIndent(imagesConverted, "", "  ")
-	if err != nil {
-		return fmt.Errorf("error while marshalling: %s", err)
-	}
-	outputFile.Write(out)
-	return nil
+	return imagesConverted
 }

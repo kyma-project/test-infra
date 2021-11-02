@@ -19,5 +19,6 @@ func Execute() error {
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVarP(&ResourcesDirectory, "resourcesDirectory", "r", "/home/prow/go/src/github.com/kyma-project/kyma/resources/", "Path to resources directory")
+	rootCmd.PersistentFlags().StringVarP(&ResourcesDirectory, "resources-directory", "r", "", "Path to resources directory")
+	rootCmd.MarkPersistentFlagRequired("resources-directory")
 }

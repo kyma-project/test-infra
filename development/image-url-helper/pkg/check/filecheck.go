@@ -2,7 +2,6 @@ package check
 
 import (
 	"bufio"
-	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -20,7 +19,14 @@ var (
 	newWayRegexp        = regexp.MustCompile(includeRegexpString)
 )
 
-func GetkWalkFunc(foundIncompatible *bool, skipComments bool) filepath.WalkFunc {
+// ImageLine defines a line inside a file that doesn't use new template for image deifnition
+type ImageLine struct {
+	Filename   string
+	LineNumber int
+	Line       string
+}
+
+func GetkWalkFunc(imagesDefinedOutside *[]ImageLine, skipComments bool) filepath.WalkFunc {
 	return func(path string, info fs.FileInfo, err error) error {
 		//pass the error further, this shouldn't ever happen
 		if err != nil {
@@ -38,26 +44,23 @@ func GetkWalkFunc(foundIncompatible *bool, skipComments bool) filepath.WalkFunc 
 		}
 
 		// check if this file contains any image: lines that aren't using new templates
-		incompatible, err := FileHasIncorrectImage(path, skipComments)
+		incompatibleLines, err := FileHasIncorrectImage(path, skipComments)
 		if err != nil {
 			return nil
 		}
-
-		if incompatible {
-			*foundIncompatible = true
-		}
+		*imagesDefinedOutside = append(*imagesDefinedOutside, incompatibleLines...)
 
 		return nil
 	}
 }
 
 // FileHasIncorrectImage checks if the file contains lines that doesn't use new template for images
-func FileHasIncorrectImage(path string, skipComments bool) (bool, error) {
-	incompatible := false
+func FileHasIncorrectImage(path string, skipComments bool) ([]ImageLine, error) {
+	var incompatible []ImageLine
 	//open file and read it line by line
 	fileHandle, err := os.Open(path)
 	if err != nil {
-		return true, err
+		return nil, err
 	}
 	defer fileHandle.Close()
 
@@ -65,14 +68,13 @@ func FileHasIncorrectImage(path string, skipComments bool) (bool, error) {
 	scanner := bufio.NewScanner(fileHandle)
 	for scanner.Scan() {
 		if oldImageFormat(scanner.Text(), skipComments) {
-			incompatible = true
-			fmt.Printf("%s:%d: %s\n", path, lineNumber, strings.Trim(scanner.Text(), " "))
+			incompatible = append(incompatible, ImageLine{Filename: path, LineNumber: lineNumber, Line: strings.Trim(scanner.Text(), " ")})
 		}
 		lineNumber++
 	}
 
 	if err := scanner.Err(); err != nil {
-		return true, err
+		return nil, err
 	}
 
 	return incompatible, nil

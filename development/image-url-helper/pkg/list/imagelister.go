@@ -80,8 +80,6 @@ type ValueFile struct {
 
 func GetWalkFunc(resourcesDirectory string, images, testImages *[]Image, imageComponents ImageComponents) filepath.WalkFunc {
 	return func(path string, info os.FileInfo, err error) error {
-		// TODO limit walking to one level?
-
 		//pass the error further, this shouldn't ever happen
 		if err != nil {
 			return err
@@ -109,8 +107,7 @@ func GetWalkFunc(resourcesDirectory string, images, testImages *[]Image, imageCo
 			return err
 		}
 
-		// TODO get component
-		component := strings.Replace(path, resourcesDirectory, "", -1)
+		component := strings.Replace(path, resourcesDirectory+"/", "", -1)
 		component = strings.Replace(component, "/values.yaml", "", -1)
 
 		for _, image := range parsedFile.Global.Images {
