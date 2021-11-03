@@ -56,6 +56,23 @@ templates:
                     - "jobConfig_presubmit"
                     - "pubsub_labels"
               - jobConfig:
+                  name: "pre-main-test-infra-validate-image-url-helper"
+                  privileged: "false"
+                  run_if_changed: "^development/image-url-helper/(cmd/.*|pkg/.*|Makefile|.*.sh)"
+                  labels:
+                    preset-build-pr: "true"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "development/image-url-helper"
+                    - "validate"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_presubmit"
+                    - "pubsub_labels"
+              - jobConfig:
                   name: "pre-main-test-infra-validate-prow-jobs"
                   privileged: "false"
                   run_if_changed: "^(development/tools/jobs|prow)" # Also for any changes in prow directory
