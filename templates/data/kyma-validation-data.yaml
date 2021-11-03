@@ -17,7 +17,6 @@ templates:
                     - "--resources-directory"
                     - "/home/prow/go/src/github.com/kyma-project/kyma/resources/"
                     - "check"
-                  image: "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-4303"
                   optional: "true"
                 inheritedConfigs:
                   global:
