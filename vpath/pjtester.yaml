@@ -1,5 +1,8 @@
 pjNames:
-  - pjName: skr-azure-test-nightly
+#  - pjName: skr-azure-test-nightly
+  - pjName: skr-azure-nightly
+#  - pjName: skr-azure-integration-dev
+#  - pjName: kyma-gke-nightly-fast-integration
 prConfigs:
   kyma-project:
     kyma:
