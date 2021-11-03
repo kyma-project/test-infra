@@ -16,6 +16,7 @@ type checkCmdOptions struct {
 	skipComments bool
 }
 
+// CheckCmd checks image definitions and images with multiple tags
 func CheckCmd() *cobra.Command {
 	options := checkCmdOptions{}
 	cmd := &cobra.Command{

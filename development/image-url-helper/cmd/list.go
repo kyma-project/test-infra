@@ -16,6 +16,7 @@ type listCmdOptions struct {
 	outputFormat string
 }
 
+// ListCmd lists all images defined in values.yaml files
 func ListCmd() *cobra.Command {
 	options := listCmdOptions{}
 	cmd := &cobra.Command{
