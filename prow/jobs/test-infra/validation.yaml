@@ -113,7 +113,7 @@ presubmits: # runs on PRs
             args:
               - "-C"
               - "development/image-url-helper"
-              - "test"
+              - "validate"
             resources:
               requests:
                 memory: 3Gi

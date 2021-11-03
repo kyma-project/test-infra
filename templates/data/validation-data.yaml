@@ -65,7 +65,7 @@ templates:
                   args:
                     - "-C"
                     - "development/image-url-helper"
-                    - "test"
+                    - "validate"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

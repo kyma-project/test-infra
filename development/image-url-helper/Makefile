@@ -1,7 +1,12 @@
-.PHONY: build test
+.PHONY: validate
+validate:
+	./before-commit.sh ci
 
-build:
-	go build -o image-url-helper main.go
+.PHONY: ci-pr
+ci-pr: validate
 
-test:
-	go test ./...
+.PHONY: ci-main
+ci-main: validate
+
+.PHONY: ci-release
+ci-release: validate
