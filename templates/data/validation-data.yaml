@@ -65,7 +65,7 @@ templates:
                   args:
                     - "-C"
                     - "development/image-url-helper"
-                    - "validate"
+                    - "ci-pr"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
