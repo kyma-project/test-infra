@@ -2,3 +2,15 @@ excludes:
   - filename: "monitoring/charts/grafana/values.yaml"
     images:
       - "bats/bats"
+  - filename: "monitoring/charts/grafana/templates/image-renderer-deployment.yaml"
+    images:
+     - "{{ .Values.imageRenderer.image.repository }}:{{ .Values.imageRenderer.image.tag }}@sha256:{{ .Values.imageRenderer.image.sha }}"
+     - "{{ .Values.imageRenderer.image.repository }}:{{ .Values.imageRenderer.image.tag }}"
+  - filename: "monitoring/templates/prometheus-operator/admission-webhooks/job-patch/job-createSecret.yaml"
+    images:
+      - "{{ .Values.prometheusOperator.admissionWebhooks.patch.image.repository }}:{{ .Values.prometheusOperator.admissionWebhooks.patch.image.tag }}@sha256:{{ .Values.prometheusOperator.admissionWebhooks.patch.image.sha }}"
+      - "{{ .Values.prometheusOperator.admissionWebhooks.patch.image.repository }}:{{ .Values.prometheusOperator.admissionWebhooks.patch.image.tag }}"
+  - filename: "monitoring/templates/prometheus-operator/admission-webhooks/job-patch/job-patchWebhook.yaml"
+    images:
+      - "{{ .Values.prometheusOperator.admissionWebhooks.patch.image.repository }}:{{ .Values.prometheusOperator.admissionWebhooks.patch.image.tag }}@sha256:{{ .Values.prometheusOperator.admissionWebhooks.patch.image.sha }}"
+      - "{{ .Values.prometheusOperator.admissionWebhooks.patch.image.repository }}:{{ .Values.prometheusOperator.admissionWebhooks.patch.image.tag }}"
