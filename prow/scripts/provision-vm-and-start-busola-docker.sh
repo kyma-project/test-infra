@@ -17,6 +17,12 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 
+if [[ "${BUILD_TYPE}" == "pr" ]]; then
+    BASE_REF=${PULL_PULL_SHA}
+else
+    BASE_REF=${PULL_BASE_SHA}
+fi
+
 log::info "Execute Job Guard"
 /prow-tools/jobguard \
 -github-endpoint=http://ghproxy \
@@ -26,7 +32,7 @@ log::info "Execute Job Guard"
 -timeout="10m" \
 -org="kyma-project" \
 -repo="busola" \
--base-ref="$PULL_PULL_SHA" \
+-base-ref="$BASE_REF" \
 -expected-contexts-regexp="(.*-busola-local)"
 
 if [ -n "${PULL_NUMBER}" ]; then
