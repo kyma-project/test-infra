@@ -2,7 +2,6 @@ package check
 
 import (
 	"bufio"
-	"errors"
 	"io/fs"
 	"io/ioutil"
 	"os"
@@ -55,11 +54,6 @@ func ParseExcludes(excludesListFilename string) ([]Exclude, error) {
 		return nil, err
 	}
 
-	// TODO remove
-	if len(excludesList.Excludes) == 0 {
-		return nil, errors.New("ohno")
-	}
-
 	return excludesList.Excludes, nil
 }
 
@@ -105,7 +99,6 @@ func FileHasIncorrectImage(resourcesDirectory, path string, skipComments bool, e
 	scanner := bufio.NewScanner(fileHandle)
 	for scanner.Scan() {
 		if oldImageFormat(scanner.Text(), skipComments) {
-			// TODO excludes list
 			if !imageInExcludeList(resourcesDirectory, path, scanner.Text(), excludesList) {
 				incompatible = append(incompatible, ImageLine{Filename: path, LineNumber: lineNumber, Line: strings.Trim(scanner.Text(), " ")})
 			}
@@ -125,7 +118,6 @@ func imageInExcludeList(resourcesDirectory, filename, line string, excludesList 
 		if strings.Replace(filename, resourcesDirectory+"/", "", -1) == exclude.Filename {
 			for _, image := range exclude.Images {
 				// naive line parsing
-				// TODO check if this is enough or we need to do "helm template ."  here
 				parsedImage := strings.Replace(line, "image: ", "", -1)
 				parsedImage = strings.Replace(parsedImage, "\"", "", -1)
 				parsedImage = strings.Trim(parsedImage, " ")
