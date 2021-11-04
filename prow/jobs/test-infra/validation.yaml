@@ -273,12 +273,14 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-4303"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20211103-2714c0b2"
             securityContext:
               privileged: true
             command:
               - "/prow-tools/imagechecker"
             args:
+              - "--kyma-directory"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/resources/"
               - "--skipComments=true"
             resources:
               requests:

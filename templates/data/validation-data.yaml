@@ -135,10 +135,9 @@ templates:
                   run_if_changed: "^resources/"
                   command: "/prow-tools/imagechecker"
                   args:
-                    # - "--kymaDirectory"
-                    # - "/home/prow/go/src/github.com/kyma-project/kyma/resources/"
+                    - "--kyma-directory"
+                    - "/home/prow/go/src/github.com/kyma-project/kyma/resources/"
                     - "--skipComments=true"
-                  image: "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-4303"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
