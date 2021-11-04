@@ -54,31 +54,6 @@ func TestReconcilerIntegrationJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"}, actualPresubmit.Spec.Containers[0].Command)
 }
 
-func TestReconcilerJobsPresubmitE2E(t *testing.T) {
-	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/reconciler/reconciler.yaml")
-	// THEN
-	require.NoError(t, err)
-
-	kymaPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-incubator/reconciler"})
-	expName := "pre-main-kyma-incubator-reconciler-e2e"
-	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName)
-	assert.Equal(t, expName, actualPresubmit.Name)
-	assert.Equal(t, []string{"^master$", "^main$"}, actualPresubmit.Branches)
-	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
-	assert.False(t, actualPresubmit.SkipReport)
-	assert.False(t, actualPresubmit.Optional)
-	assert.False(t, actualPresubmit.AlwaysRun)
-	assert.Equal(t, actualPresubmit.RunIfChanged, "^resources")
-	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "main")
-
-	// @TODO: For testing using pr image name. Update to tester.xxx
-	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPresubmit.Spec.Containers[0].Image)
-	//assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-gardener.sh"}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/reconciler"}, actualPresubmit.Spec.Containers[0].Args)
-}
-
 func TestReconcilerJobsPeriodicE2EUpgrade(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/reconciler/reconciler.yaml")

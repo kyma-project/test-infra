@@ -158,7 +158,6 @@ templates:
               - jobConfig:
                   name: pre-main-control-plane-reconciler-e2e
                   run_if_changed: "^resources/kcp/values.yaml|^resources/kcp/charts/mothership-reconciler/|^resources/kcp/charts/component-reconcilers/"
-                  image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211022-7a608efc"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -167,6 +166,7 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - extra_refs_reconciler
+                    - image_kyma-integration
                   local:
                     - reconciler_e2e_jobConfig
                     - reconciler_jobConfig_args
