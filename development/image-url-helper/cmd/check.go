@@ -14,6 +14,7 @@ import (
 
 type checkCmdOptions struct {
 	skipComments bool
+	excludesList string
 }
 
 // CheckCmd checks image definitions and images with multiple tags
@@ -31,9 +32,15 @@ func CheckCmd() *cobra.Command {
 
 			var imagesDefinedOutside []check.ImageLine
 
-			err := filepath.Walk(ResourcesDirectoryClean, check.GetkWalkFunc(&imagesDefinedOutside, options.skipComments))
+			excludes, err := check.ParseExcludes(options.excludesList)
 			if err != nil {
-				fmt.Printf("Cannot traverse directory: %s", err)
+				fmt.Printf("Cannot parse excludes list: %s\n", err)
+				os.Exit(2)
+			}
+
+			err = filepath.Walk(ResourcesDirectoryClean, check.GetkWalkFunc(ResourcesDirectory, &imagesDefinedOutside, options.skipComments, excludes))
+			if err != nil {
+				fmt.Printf("Cannot traverse directory: %s\n", err)
 				os.Exit(2)
 			}
 
@@ -49,7 +56,7 @@ func CheckCmd() *cobra.Command {
 			imageComponents := make(list.ImageComponents)
 			err = filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, &images, &testImages, imageComponents))
 			if err != nil {
-				fmt.Printf("Cannot traverse directory: %s", err)
+				fmt.Printf("Cannot traverse directory: %s\n", err)
 				os.Exit(2)
 			}
 
@@ -77,5 +84,6 @@ func CheckCmd() *cobra.Command {
 
 func addCheckCmdFlags(cmd *cobra.Command, options *checkCmdOptions) {
 	cmd.Flags().BoolVarP(&options.skipComments, "skip-comments", "s", true, "Skip commented out lines")
+	cmd.Flags().StringVarP(&options.excludesList, "excludes-list", "e", "", "List of excluded images")
 	envy.ParseCobra(cmd, envy.CobraConfig{Persistent: true, Prefix: "IMAGE_URL_HELPER"})
 }
