@@ -15,7 +15,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "echo \"This tool validates if all charts use correct image definition format. \nCheck https://github.com/kyma-project/test-infra/blob/main/development/image-url-helper/readme.md for details\""
+                    - 'echo \"This tool validates if all charts use correct image definition format. \nCheck https://github.com/kyma-project/test-infra/blob/main/development/image-url-helper/readme.md for details\"'
                     - "/prow-tools/image-url-helper --resources-directory /home/prow/go/src/github.com/kyma-project/kyma/resources/ check --excludes-list development/image-url-helper/excludes.yaml"
                   optional: "true"
                 inheritedConfigs:
