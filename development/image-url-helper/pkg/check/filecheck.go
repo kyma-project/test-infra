@@ -2,11 +2,15 @@ package check
 
 import (
 	"bufio"
+	"errors"
 	"io/fs"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	"gopkg.in/yaml.v2"
 )
 
 var (
@@ -26,7 +30,40 @@ type ImageLine struct {
 	Line       string
 }
 
-func GetkWalkFunc(imagesDefinedOutside *[]ImageLine, skipComments bool) filepath.WalkFunc {
+type Exclude struct {
+	Filename string   `yaml:"filename"`
+	Images   []string `yaml:"images"`
+}
+
+type excludesList struct {
+	Excludes []Exclude `yaml:"excludes"`
+}
+
+func ParseExcludes(excludesListFilename string) ([]Exclude, error) {
+	if excludesListFilename == "" {
+		return nil, nil
+	}
+
+	excludesListFile, err := ioutil.ReadFile(excludesListFilename)
+	if err != nil {
+		return nil, err
+	}
+
+	var excludesList excludesList
+
+	if err = yaml.Unmarshal(excludesListFile, &excludesList); err != nil {
+		return nil, err
+	}
+
+	// TODO remove
+	if len(excludesList.Excludes) == 0 {
+		return nil, errors.New("ohno")
+	}
+
+	return excludesList.Excludes, nil
+}
+
+func GetkWalkFunc(resourcesDirectory string, imagesDefinedOutside *[]ImageLine, skipComments bool, excludesList []Exclude) filepath.WalkFunc {
 	return func(path string, info fs.FileInfo, err error) error {
 		//pass the error further, this shouldn't ever happen
 		if err != nil {
@@ -44,7 +81,7 @@ func GetkWalkFunc(imagesDefinedOutside *[]ImageLine, skipComments bool) filepath
 		}
 
 		// check if this file contains any image: lines that aren't using new templates
-		incompatibleLines, err := FileHasIncorrectImage(path, skipComments)
+		incompatibleLines, err := FileHasIncorrectImage(resourcesDirectory, path, skipComments, excludesList)
 		if err != nil {
 			return nil
 		}
@@ -55,7 +92,7 @@ func GetkWalkFunc(imagesDefinedOutside *[]ImageLine, skipComments bool) filepath
 }
 
 // FileHasIncorrectImage checks if the file contains lines that doesn't use new template for images
-func FileHasIncorrectImage(path string, skipComments bool) ([]ImageLine, error) {
+func FileHasIncorrectImage(resourcesDirectory, path string, skipComments bool, excludesList []Exclude) ([]ImageLine, error) {
 	var incompatible []ImageLine
 	//open file and read it line by line
 	fileHandle, err := os.Open(path)
@@ -68,7 +105,10 @@ func FileHasIncorrectImage(path string, skipComments bool) ([]ImageLine, error) 
 	scanner := bufio.NewScanner(fileHandle)
 	for scanner.Scan() {
 		if oldImageFormat(scanner.Text(), skipComments) {
-			incompatible = append(incompatible, ImageLine{Filename: path, LineNumber: lineNumber, Line: strings.Trim(scanner.Text(), " ")})
+			// TODO excludes list
+			if !imageInExcludeList(resourcesDirectory, path, scanner.Text(), excludesList) {
+				incompatible = append(incompatible, ImageLine{Filename: path, LineNumber: lineNumber, Line: strings.Trim(scanner.Text(), " ")})
+			}
 		}
 		lineNumber++
 	}
@@ -78,6 +118,24 @@ func FileHasIncorrectImage(path string, skipComments bool) ([]ImageLine, error) 
 	}
 
 	return incompatible, nil
+}
+
+func imageInExcludeList(resourcesDirectory, filename, line string, excludesList []Exclude) bool {
+	for _, exclude := range excludesList {
+		if strings.Replace(filename, resourcesDirectory+"/", "", -1) == exclude.Filename {
+			for _, image := range exclude.Images {
+				// naive line parsing
+				// TODO check if this is enough or we need to do "helm template ."  here
+				parsedImage := strings.Replace(line, "image: ", "", -1)
+				parsedImage = strings.Replace(parsedImage, "\"", "", -1)
+				parsedImage = strings.Trim(parsedImage, " ")
+				if strings.HasPrefix(parsedImage, image) {
+					return true
+				}
+			}
+		}
+	}
+	return false
 }
 
 // oldImageFormat checks and prints lines that uses old image: format

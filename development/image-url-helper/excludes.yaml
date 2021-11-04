@@ -1,0 +1,4 @@
+excludes:
+  - filename: "monitoring/charts/grafana/values.yaml"
+    images:
+      - "bats/bats"
