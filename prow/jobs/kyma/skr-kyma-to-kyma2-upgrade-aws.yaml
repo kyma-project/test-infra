@@ -56,7 +56,7 @@ periodics: # runs on schedule
               - name: KYMA_MAJOR_VERSION
                 value: "1"
               - name: KYMA_UPGRADE_VERSION
-                value: "release-2.0-rc4-a48d828"
+                value: "2.0.0-rc4"
               - name: SKIP_CLEANUP
                 value: "FALSE"
             resources:
