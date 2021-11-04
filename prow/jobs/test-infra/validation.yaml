@@ -277,11 +277,11 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
             command:
-              - "/prow-tools/imagechecker"
+              - "/prow-tools/image-url-helper"
             args:
               - "--kyma-directory"
               - "/home/prow/go/src/github.com/kyma-project/kyma/resources/"
-              - "--skipComments=true"
+              - "check"
             resources:
               requests:
                 memory: 3Gi
