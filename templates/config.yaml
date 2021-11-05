@@ -154,6 +154,13 @@ globalSets:
           repo: "reconciler"
           path_alias: "github.com/kyma-incubator/reconciler"
           base_ref: "main"
+  extra_refs_control-plane:
+    extra_refs:
+      control-plane:
+        - org: "kyma-project"
+          repo: "control-plane"
+          path_alias: "github.com/kyma-project/control-plane"
+          base_ref: "main"
   # labels sets
   build_labels:
     labels:

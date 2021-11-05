@@ -320,6 +320,7 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - extra_refs_reconciler
+                    - extra_refs_control-plane
                     - kyma_major_version_1
                     - disable_testgrid
                     - jobConfig_slack_dev_null
@@ -346,6 +347,7 @@ templates:
                     - gardener_gcp_job
                     - extra_refs_test-infra
                     - extra_refs_reconciler
+                    - extra_refs_control-plane
                     - disable_testgrid
                     - jobConfig_slack_dev_null
                   local:

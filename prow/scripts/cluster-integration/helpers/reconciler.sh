@@ -10,17 +10,8 @@ readonly LOCAL_KUBECONFIG="$HOME/.kube/config"
 function reconciler::deploy() {
   # Deploy reconciler to cluster
   log::banner "Deploying Reconciler in the cluster"
-  cd "${RECONCILER_SOURCES_DIR}"  || { echo "Failed to change dir to: ${RECONCILER_SOURCES_DIR}"; exit 1; }
-  make deploy
-}
-
-function reconciler::control_plane_deploy() {
-  # Deploy reconciler to cluster
-  log::banner "Deploying Reconciler in the cluster"
-  cd "${CONTROL_PLANE_SOURCES_DIR}"  || { echo "Failed to change dir to: ${CONTROL_PLANE_SOURCES_DIR}"; exit 1; }
-  kubectl create namespace reconciler --dry-run=client -o yaml | kubectl apply -f -
-	helm template reconciler --namespace reconciler --set global.mothership_reconciler.enabled=true --set global.mothership_reconciler.authentication=false --set global.mothership_reconciler.expose=false  --set global.component_reconcilers.enabled=true --set global.component_reconcilers.authentication=false --set compass.enabled=false --set mothership-reconciler.db.encryptionKey=5bc19d3a2032fb8795cd86e08b473a351631505d2522991266b1fb85f89bad5f --set mothership-reconciler.db.serviceHost=reconciler-postgresql --set mothership-reconciler.db.reconcilerUsername=postgres --set mothership-reconciler.db.reconcilerPassword=test --set postgresql.postgresqlPassword=test --set postgresql.persistence.enabled=false --set postgresql.initdbScriptsConfigMap=reconciler-postgresql-db-init ./resources/kcp > reconciler.yaml
-	kubectl apply -f reconciler.yaml
+  cd "${CONTROL_PLANE_RECONCILER_DIR}"  || { echo "Failed to change dir to: ${CONTROL_PLANE_RECONCILER_DIR}"; exit 1; }
+  make deploy-reconciler
 }
 
 # Checks whether reconciler is ready
