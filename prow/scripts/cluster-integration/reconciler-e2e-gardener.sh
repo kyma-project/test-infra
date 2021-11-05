@@ -27,6 +27,7 @@ ENABLE_TEST_LOG_COLLECTOR=false
 # Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export RECONCILER_SOURCES_DIR="/home/prow/go/src/github.com/kyma-incubator/reconciler"
+export CONTROL_PLANE_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/control-plane"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 # KYMA_SOURCE set to dummy value, required by gardener/gcp.sh
 export KYMA_SOURCE="main"
@@ -102,7 +103,7 @@ kyma::install_cli
 gardener::provision_cluster
 
 # Deploy reconciler
-reconciler::deploy
+reconciler::control_plane_deploy
 
 # Wait until reconciler is ready
 reconciler::wait_until_is_ready
