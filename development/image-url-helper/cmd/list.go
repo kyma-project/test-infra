@@ -13,7 +13,8 @@ import (
 )
 
 type listCmdOptions struct {
-	outputFormat string
+	outputFormat      string
+	excludeTestImages bool
 }
 
 // ListCmd lists all images defined in values.yaml files
@@ -42,20 +43,22 @@ func ListCmd() *cobra.Command {
 
 			var allImages []list.Image
 			allImages = append(allImages, images...)
-			allImages = append(allImages, testImages...)
+			if !options.excludeTestImages {
+				allImages = append(allImages, testImages...)
+			}
 			sort.Slice(allImages, list.GetSortImagesFunc(allImages))
 			allImages = list.RemoveDoubles(allImages)
 
 			if options.outputFormat == "" {
 				list.PrintImages(allImages, imageComponents)
 			} else if strings.ToLower(options.outputFormat) == "json" {
-				err = list.PrintImagesJSON(images, testImages, imageComponents)
+				err = list.PrintImagesJSON(allImages, imageComponents)
 				if err != nil {
 					fmt.Printf("Cannot save JSON: %s\n", err)
 					os.Exit(2)
 				}
 			} else if strings.ToLower(options.outputFormat) == "yaml" {
-				err = list.PrintImagesYAML(images, testImages, imageComponents)
+				err = list.PrintImagesYAML(allImages, imageComponents)
 				if err != nil {
 					fmt.Printf("Cannot save JSON: %s\n", err)
 					os.Exit(2)
@@ -72,5 +75,6 @@ func ListCmd() *cobra.Command {
 
 func addListCmdFlags(cmd *cobra.Command, options *listCmdOptions) {
 	cmd.Flags().StringVarP(&options.outputFormat, "output-format", "o", "", "Name of the output format (json/yaml)")
+	cmd.Flags().BoolVarP(&options.excludeTestImages, "exclude-test-images", "e", false, "Exclude test images from the output list")
 	envy.ParseCobra(cmd, envy.CobraConfig{Persistent: true, Prefix: "IMAGE_URL_HELPER"})
 }

@@ -3,7 +3,6 @@ package list
 import (
 	"encoding/json"
 	"fmt"
-	"sort"
 	"strings"
 
 	"gopkg.in/yaml.v2"
@@ -27,8 +26,8 @@ type OutputImageList struct {
 }
 
 // PrintImagesJSON prints JSON list with names and components for each image
-func PrintImagesJSON(images, testImages []Image, imageComponents ImageComponents) error {
-	imagesConverted := convertimageslist(images, testImages, imageComponents)
+func PrintImagesJSON(allImages []Image, imageComponents ImageComponents) error {
+	imagesConverted := convertimageslist(allImages, imageComponents)
 
 	out, err := json.MarshalIndent(imagesConverted, "", "  ")
 	if err != nil {
@@ -39,8 +38,8 @@ func PrintImagesJSON(images, testImages []Image, imageComponents ImageComponents
 }
 
 // PrintImagesYAML prints YAML list with names and components for each image
-func PrintImagesYAML(images, testImages []Image, imageComponents ImageComponents) error {
-	imagesConverted := convertimageslist(images, testImages, imageComponents)
+func PrintImagesYAML(allImages []Image, imageComponents ImageComponents) error {
+	imagesConverted := convertimageslist(allImages, imageComponents)
 
 	out, err := yaml.Marshal(imagesConverted)
 	if err != nil {
@@ -50,18 +49,10 @@ func PrintImagesYAML(images, testImages []Image, imageComponents ImageComponents
 	return nil
 }
 
-func convertimageslist(images, testImages []Image, imageComponents ImageComponents) OutputImageList {
+func convertimageslist(allImages []Image, imageComponents ImageComponents) OutputImageList {
 	imagesConverted := OutputImageList{}
 
-	imagesCombined := images
-	for _, testImage := range testImages {
-		if !ImageListContains(imagesCombined, testImage) {
-			imagesCombined = append(imagesCombined, testImage)
-		}
-	}
-	sort.Slice(imagesCombined, GetSortImagesFunc(imagesCombined))
-
-	for _, image := range imagesCombined {
+	for _, image := range allImages {
 		imageTmp := OutputImage{}
 		imageTmp.Name = image.String()
 		imageTmp.CustomFields.Image = image.String()
