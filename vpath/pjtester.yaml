@@ -5,7 +5,3 @@ pjNames:
     report: false
   - pjName: "pre-main-control-plane-reconciler-e2e"
     report: false
-prConfigs:
-  kyma-project:
-    control-plane:
-      prNumber: 1052
