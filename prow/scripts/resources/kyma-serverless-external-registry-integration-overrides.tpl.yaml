@@ -35,5 +35,5 @@ serverless:
     username: "_json_key"
     password: |
       ${DOCKER_PASSWORD}
-    registryAddress: $DOCKER_PUSH_REPOSITORY/functions
+    registryAddress: $DOCKER_PUSH_REPOSITORY/sap-kyma-prow-workloads
     serverAddress: $DOCKER_PUSH_REPOSITORY
