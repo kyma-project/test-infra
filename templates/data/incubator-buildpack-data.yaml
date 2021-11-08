@@ -302,7 +302,6 @@ templates:
                     - reconciler_jobConfig_args
               - jobConfig:
                   name: periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade
-                  image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18"
                   annotations:
                     description: Reconciler e2e upgrade test job.
                   decoration_config:
@@ -324,13 +323,13 @@ templates:
                     - kyma_major_version_1
                     - disable_testgrid
                     - jobConfig_slack_dev_null
+                    - image_kyma-integration
                   local:
                     - extra_refs_kyma-1-24
                     - reconciler_e2e_upgrade_jobConfig
                     - reconciler_jobConfig_args
               - jobConfig:
                   name: nightly-main-reconciler
-                  image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18"
                   annotations:
                     description: Creates and installs reconciler from main every night.
                   decoration_config:
@@ -350,12 +349,12 @@ templates:
                     - extra_refs_control-plane
                     - disable_testgrid
                     - jobConfig_slack_dev_null
+                    - image_kyma-integration
                   local:
                     - reconciler_nightly_cluster_jobConfig
                     - reconciler_jobConfig_args
               - jobConfig:
                   name: nightly-main-reconciler-e2e
-                  image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18"
                   annotations:
                     description: Executes e2e test periodically on nightly cluster for reconciler.
                     pipeline.installer: "reconciler"
@@ -381,6 +380,7 @@ templates:
                     - extra_refs_reconciler
                     - kyma_major_version_2
                     - disable_testgrid
+                    - image_kyma-integration
                   local:
                     - reconciler_nightly_e2e_jobConfig
                     - reconciler_jobConfig_args
