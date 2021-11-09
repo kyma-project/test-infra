@@ -29,6 +29,7 @@ templates:
               # presubmits
               - jobConfig:
                   name: "pre-main-kyma-gke-external-registry"
+                  optional: true
                   args:
                   - "-c"
                   - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-external-registry.sh"
