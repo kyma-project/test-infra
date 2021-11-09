@@ -48,6 +48,7 @@ See the list of flags available for the `check` command:
 | **--resources-directory** |   Yes    | Path to the Kyma resources directory.|
 | **--skip-comments**       |    No    | Skip commented out lines.|
 | **--excludes-list**       |    No    | Path to the list of excluded images.|
+
 ### List command Flags
 
 See the list of flags available for the `list` commands:
