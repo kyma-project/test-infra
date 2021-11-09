@@ -26,7 +26,6 @@ ENABLE_TEST_LOG_COLLECTOR=false
 
 # Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
-export RECONCILER_SOURCES_DIR="/home/prow/go/src/github.com/kyma-incubator/reconciler"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 # KYMA_SOURCE set to dummy value, required by gardener/gcp.sh
 export KYMA_SOURCE="main"
