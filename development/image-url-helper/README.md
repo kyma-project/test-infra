@@ -2,9 +2,10 @@
 
 ## Overview
 
-The `image-url-helper` tool has two subcommands.
-The `check` command is used to find all image usages in Helm charts that doesn't use imageurl template.
-The `list` command is used to list all images used in Helm charts by checking values.yaml files.
+The `image-url-helper` tool has two subcommands:
+
+* The `check` command is used to find all image usages in Helm charts that doesn't use imageurl template.
+* The `list` command is used to list all images used in Helm charts by checking values.yaml files.
 
 ## Usage
 
@@ -26,7 +27,8 @@ go run main.go \
     --output-format=json
 ```
 # Exclude images from check command
-To exclude certain image lines from being checked, provide a path to exclude file in the check command argument. The exclude file contains list of files and values of images excluded from checking:
+To exclude certain image lines from being checked, provide a path to exclude file in the check command argument. The exclude file contains list of files and values of images excluded from the check:
+
 ```yaml
 excludes:
   - filename: "monitoring/charts/grafana/values.yaml"
