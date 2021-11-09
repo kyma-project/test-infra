@@ -1,7 +1,0 @@
-pjNames:
-  - pjName: "nightly-main-reconciler"
-    report: false
-  - pjName: "periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade"
-    report: false
-  - pjName: "pre-main-control-plane-reconciler-e2e"
-    report: false
