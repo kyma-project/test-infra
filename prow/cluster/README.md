@@ -15,3 +15,6 @@ The structure of the folder looks as follows:
   ├── resources             # Helm charts used by the Prow cluster.
   └── static-files          # Files that will be uploaded to the nginx web server.
 ```
+
+##  Adding static files
+All files added to the `static-files` folder are uploaded in a ConfigMap to the cluster and mounted by the web server in the web root directory. To route traffic for a specific path to the nginx web server, update the ingress `tls-ing` configuration in `tls-ing_ingress.yaml`.
