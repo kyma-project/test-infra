@@ -1,15 +1,15 @@
-# image-url-helper
+# Image URL Helper
 
 ## Overview
 
-The `image-url-helper` tool has two subcommands:
+Image URL Helper is a tool that provides two subcommands:
 
-* The `check` command is used to find all image usages in Helm charts that doesn't use imageurl template.
-* The `list` command is used to list all images used in Helm charts by checking values.yaml files.
+* The `check` command finds all Helm chart images that don't use the `imageurl` template.
+* The `list` command lists all Helm chart images by checking the `values.yaml` files.
 
 ## Usage
 
-To run `check` command use:
+To run the `check` command, use:
 ```bash
 go run main.go \ 
     --resources-directory={PATH_TO_A_KYMA_RESOURCES_DIRECTORY} \
@@ -18,7 +18,7 @@ go run main.go \
     --excludes-list={PATH_TO_AN_EXCLUDES_LIST}
 ```
 
-To run `list` command use:
+To run the `list` command, use:
 ```bash
 go run main.go \ 
     --resources-directory={PATH_TO_A_KYMA_RESOURCES_DIRECTORY} \
@@ -26,8 +26,8 @@ go run main.go \
     --exclude-test-images=true \
     --output-format=json
 ```
-# Exclude images from check command
-To exclude certain image lines from being checked, provide a path to exclude file in the check command argument. The exclude file contains list of files and values of images excluded from the check:
+### Exclude images from the check command
+To exclude image lines from being checked, create a YAML file that contains a list of files and values of images that you want to exclude from the check. Then, provide a path to this file in the `check` command argument. See the example of such a YAML file:
 
 ```yaml
 excludes:
@@ -41,7 +41,7 @@ excludes:
 ```
 
 
-### Check command Flags
+### Check command flags
 
 See the list of flags available for the `check` command:
 
@@ -51,12 +51,12 @@ See the list of flags available for the `check` command:
 | **--skip-comments**       |    No    | Skip commented out lines.|
 | **--excludes-list**       |    No    | Path to the list of excluded images.|
 
-### List command Flags
+### List command flags
 
-See the list of flags available for the `list` commands:
+See the list of flags available for the `list` command:
 
 | Name                      | Required | Description                                                                                          |
 | :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
 | **--resources-directory** |   Yes    | Path to the Kyma resources directory.|
-| **--output-format**       |    No    | Name of the output format (json/yaml).|
+| **--output-format**       |    No    | Name of the output format (JSON/YAML).|
 | **--exclude-test-images**  |    No    | Exclude test images from the output.|
