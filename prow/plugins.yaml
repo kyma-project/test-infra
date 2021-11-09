@@ -49,7 +49,7 @@ config_updater:
       clusters:
         trusted-workload:
           - default
-    prow/static-files/*:
+    prow/cluster/static-files/*:
       name: static-files
 
 triggers:

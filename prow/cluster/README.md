@@ -11,6 +11,7 @@ This folder contains files related to the configuration of the Prow production c
 The structure of the folder looks as follows:
 
 ```
-  ├── components                        # Definitions of Prow components and cluster configuration.
-  └── resources                         # Helm charts used by the Prow cluster.
+  ├── components            # Definitions of Prow components and cluster configuration.
+  ├── resources             # Helm charts used by the Prow cluster.
+  └── static-files          # Files that will be uploaded to the nginx web server.
 ```
