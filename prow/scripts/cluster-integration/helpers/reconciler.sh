@@ -98,22 +98,22 @@ function reconciler::initialize_test_pod() {
   log::info "Kyma version to reconcile: ${KYMA_UPGRADE_SOURCE}"
 
   # move to reconciler directory
-  cd "${RECONCILER_SOURCES_DIR}"  || { echo "Failed to change dir to: ${RECONCILER_SOURCES_DIR}"; exit 1; }
+  cd "${CONTROL_PLANE_RECONCILER_DIR}"  || { echo "Failed to change dir to: ${CONTROL_PLANE_RECONCILER_DIR}"; exit 1; }
 
   # Create reconcile request payload with kubeconfig, domain, and version to the test-pod
   domain="$(kubectl get cm shoot-info -n kube-system -o jsonpath='{.data.domain}')"
-  sed -i "s/example.com/$domain/" ./scripts/e2e-test/template.json
+  sed -i "s/example.com/$domain/" ./e2e-test/template.json
 
   # shellcheck disable=SC2086
   kc="$(cat ${KUBECONFIG})"
   # shellcheck disable=SC2016
-  jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./scripts/e2e-test/template.json > body.json
+  jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template.json > body.json
 
   # Copy the reconcile request payload and kyma reconciliation scripts to the test-pod
   kubectl cp body.json -c test-pod reconciler/test-pod:/tmp
-  kubectl cp ./scripts/e2e-test/reconcile-kyma.sh -c test-pod reconciler/test-pod:/tmp
-  kubectl cp ./scripts/e2e-test/get-reconcile-status.sh -c test-pod reconciler/test-pod:/tmp
-  kubectl cp ./scripts/e2e-test/request-reconcile.sh -c test-pod reconciler/test-pod:/tmp
+  kubectl cp ./e2e-test/reconcile-kyma.sh -c test-pod reconciler/test-pod:/tmp
+  kubectl cp ./e2e-test/get-reconcile-status.sh -c test-pod reconciler/test-pod:/tmp
+  kubectl cp ./e2e-test/request-reconcile.sh -c test-pod reconciler/test-pod:/tmp
 }
 
 # Triggers reconciliation of Kyma and waits until reconciliation is in ready state
