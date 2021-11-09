@@ -38,7 +38,7 @@ func CheckCmd() *cobra.Command {
 				os.Exit(2)
 			}
 
-			err = filepath.Walk(ResourcesDirectoryClean, check.GetkWalkFunc(ResourcesDirectory, &imagesDefinedOutside, options.skipComments, excludes))
+			err = filepath.Walk(ResourcesDirectoryClean, check.GetkWalkFunc(ResourcesDirectoryClean, &imagesDefinedOutside, options.skipComments, excludes))
 			if err != nil {
 				fmt.Printf("Cannot traverse directory: %s\n", err)
 				os.Exit(2)
