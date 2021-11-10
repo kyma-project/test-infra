@@ -180,7 +180,7 @@ export DOCKER_PASSWORD_FILE="/root/.docker/config.json"
 
 #shellcheck disable=SC2034
 #DOCKER_PASSWORD=$(jq -c "." $DOCKER_PASSWORD_FILE 2> /dev/null)
-export DOCKER_PASSWORD=$(cat $DOCKER_PASSWORD_FILE)
+export DOCKER_PASSWORD=$(cat $DOCKER_PASSWORD_FILE | tr -d '\n')
 #DOCKER_PUSH_REPOSITORY=$(echo "$DOCKER_PUSH_REPOSITORY" | cut -d'/' -f1)
 
 #use docker login and use the generated config.docker.json
