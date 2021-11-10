@@ -77,7 +77,7 @@ fi
 
 # Exceptional release replacements. Add a replacement pair here as follows: "release::replacement"
 # This is required when we have special releases that do not follow the regular pattern.
-EXCEPTIONS=('1.16.0::1.16.0-rc3' '2.0.0::2.0.0-rc1')
+EXCEPTIONS=('1.16.0::1.16.0-rc3' '2.0.0::2.0.0-rc4')
 
 for index in "${EXCEPTIONS[@]}" ; do
     KEY="${index%%::*}"
