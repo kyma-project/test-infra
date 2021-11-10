@@ -174,7 +174,7 @@ export TLS_KEY="${utils_generate_self_signed_cert_return_tls_key:?}"
 
 #Generate auth data to external registry
 docker login -u _json_key -p "$(cat "${GOOGLE_APPLICATION_CREDENTIALS}")" "${DOCKER_PUSH_REPOSITORY}"
-export DOCKER_PASSWORD_FILE="/home/root/.docker/config.json"
+export DOCKER_PASSWORD_FILE="/root/.docker/config.json"
 #mkdir -p /tmp/kyma-gke-integration
 #< "$GOOGLE_APPLICATION_CREDENTIALS" tr -d '\n' > /tmp/kyma-gke-integration/dockerPassword.json
 
