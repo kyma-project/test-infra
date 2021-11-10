@@ -8,8 +8,7 @@
 # - REPO_OWNER - Set up by prow, repository owner/organization
 # - REPO_NAME - Set up by prow, repository name
 # - BUILD_TYPE - Set up by prow, pr/master/release
-# - DOCKER_PUSH_REPOSITORY - Docker repository hostname
-# - DOCKER_PUSH_DIRECTORY - Docker "top-level" directory (with leading "/")
+# - DOCKER_PUSH_REPOSITORY - Docker repository url
 # - KYMA_PROJECT_DIR - directory path with Kyma sources to use for installation
 # - CLOUDSDK_CORE_PROJECT - GCP project for all GCP resources used during execution (Service Account, IP Address, DNS Zone, image registry etc.)
 # - CLOUDSDK_COMPUTE_REGION - GCP compute region
@@ -173,14 +172,20 @@ export TLS_CERT="${utils_generate_self_signed_cert_return_tls_cert:?}"
 export TLS_KEY="${utils_generate_self_signed_cert_return_tls_key:?}"
 
 
-DOCKER_PASSWORD_FILE=/tmp/kyma-gke-integration/dockerPassword.json
-mkdir -p /tmp/kyma-gke-integration
-< "$GOOGLE_APPLICATION_CREDENTIALS" tr -d '\n' > /tmp/kyma-gke-integration/dockerPassword.json
+#Generate auth data to external registry
+docker login -u _json_key -p "$(cat "${GOOGLE_APPLICATION_CREDENTIALS}")" "${DOCKER_PUSH_REPOSITORY}"
+export DOCKER_PASSWORD_FILE="/home/root/.docker/config.json"
+#mkdir -p /tmp/kyma-gke-integration
+#< "$GOOGLE_APPLICATION_CREDENTIALS" tr -d '\n' > /tmp/kyma-gke-integration/dockerPassword.json
 
 #shellcheck disable=SC2034
-DOCKER_PASSWORD=$(jq -c "." $DOCKER_PASSWORD_FILE 2> /dev/null)
-DOCKER_PUSH_REPOSITORY=$(echo "$DOCKER_PUSH_REPOSITORY" | cut -d'/' -f1)
+#DOCKER_PASSWORD=$(jq -c "." $DOCKER_PASSWORD_FILE 2> /dev/null)
+DOCKER_PASSWORD=$(cat $DOCKER_PASSWORD_FILE)
+#DOCKER_PUSH_REPOSITORY=$(echo "$DOCKER_PUSH_REPOSITORY" | cut -d'/' -f1)
 
+#use docker login and use the generated config.docker.json
+
+export DOCKER_REPOSITORY_ADDRESS=$(echo "$DOCKER_PUSH_REPOSITORY" | cut -d'/' -f1)
 export DNS_DOMAIN_TRAILING=${DNS_DOMAIN%.}
 envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-serverless-external-registry-integration-overrides.tpl.yaml" > "$PWD/kyma_overrides.yaml"
 
