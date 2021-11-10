@@ -45,7 +45,7 @@ function install_cli() {
 }
 
 function deploy_kyma() {
-  kyma provision k3d -p 80:80@loadbalancer -p 443:443@loadbalancer
+  kyma alpha provision k3d -p 80:80@loadbalancer -p 443:443@loadbalancer
 
   local kyma_deploy_cmd
   kyma_deploy_cmd="kyma deploy -p evaluation --ci --verbose --source=local --workspace ${KYMA_SOURCES_DIR}"
