@@ -176,6 +176,9 @@ templates:
                   repo: "cli"
                   path_alias: "github.com/kyma-project/cli"
                   base_ref: "main"
+          kyma_2_template:
+            env:
+              KUBERNETES_RUNTIME: "k3d"
         jobConfigs:
           - repoName:  kyma-project/cli
             jobs:
@@ -209,3 +212,4 @@ templates:
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
+                    - "kyma_2_template"
