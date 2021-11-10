@@ -85,10 +85,10 @@ func TestReconcilerJobsPeriodicE2EUpgrade(t *testing.T) {
 	})
 	tester.AssertThatHasExtraRef(t, actualPeriodic.JobBase.UtilityConfig, []prowapi.Refs{
 		{
-			Org:       "kyma-incubator",
-			Repo:      "reconciler",
+			Org:       "kyma-project",
+			Repo:      "control-plane",
 			BaseRef:   "main",
-			PathAlias: "github.com/kyma-incubator/reconciler",
+			PathAlias: "github.com/kyma-project/control-plane",
 		},
 	})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPeriodic.Spec.Containers[0].Image)
@@ -111,10 +111,10 @@ func TestReconcilerJobsNightlyMain(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPeriodic.JobBase.UtilityConfig, "main")
 	tester.AssertThatHasExtraRef(t, actualPeriodic.JobBase.UtilityConfig, []prowapi.Refs{
 		{
-			Org:       "kyma-incubator",
-			Repo:      "reconciler",
+			Org:       "kyma-project",
+			Repo:      "control-plane",
 			BaseRef:   "main",
-			PathAlias: "github.com/kyma-incubator/reconciler",
+			PathAlias: "github.com/kyma-project/control-plane",
 		},
 	})
 
@@ -157,10 +157,10 @@ func TestReconcilerJobNightlyE2E(t *testing.T) {
 	assert.Equal(t, "0 1-22/2 * * 1-5", actualNightlyJob.Cron)
 	tester.AssertThatHasExtraRef(t, actualNightlyJob.JobBase.UtilityConfig, []prowapi.Refs{
 		{
-			Org:       "kyma-incubator",
-			Repo:      "reconciler",
+			Org:       "kyma-project",
+			Repo:      "control-plane",
 			BaseRef:   "main",
-			PathAlias: "github.com/kyma-incubator/reconciler",
+			PathAlias: "github.com/kyma-project/control-plane",
 		},
 	})
 	tester.AssertThatHasExtraRef(t, actualNightlyJob.JobBase.UtilityConfig, []prowapi.Refs{

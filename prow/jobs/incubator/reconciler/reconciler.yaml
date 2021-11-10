@@ -181,10 +181,6 @@ periodics: # runs on schedule
           repo: kyma
           path_alias: github.com/kyma-project/kyma-1.24
           base_ref: release-1.24
-        - org: kyma-incubator
-          repo: reconciler
-          path_alias: github.com/kyma-incubator/reconciler
-          base_ref: main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
@@ -251,10 +247,6 @@ periodics: # runs on schedule
           repo: control-plane
           path_alias: github.com/kyma-project/control-plane
           base_ref: main
-        - org: kyma-incubator
-          repo: reconciler
-          path_alias: github.com/kyma-incubator/reconciler
-          base_ref: main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
@@ -315,12 +307,12 @@ periodics: # runs on schedule
       cluster: untrusted-workload
       extra_refs:
         - org: kyma-project
+          repo: control-plane
+          path_alias: github.com/kyma-project/control-plane
+          base_ref: main
+        - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: main
-        - org: kyma-incubator
-          repo: reconciler
-          path_alias: github.com/kyma-incubator/reconciler
           base_ref: main
         - org: kyma-project
           repo: test-infra
