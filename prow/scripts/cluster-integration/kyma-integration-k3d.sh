@@ -45,7 +45,7 @@ function install_cli() {
 }
 
 function deploy_kyma() {
-  kyma alpha provision k3d
+  kyma alpha provision k3d -p 80:80@loadbalancer -p 443:443@loadbalancer
 
   local kyma_deploy_cmd
   kyma_deploy_cmd="kyma deploy -p evaluation --ci --verbose --source=local --workspace ${KYMA_SOURCES_DIR}"
@@ -61,7 +61,7 @@ function deploy_kyma() {
     kyma_deploy_cmd+=" --components-file kyma-integration-k3d-compass-components.yaml"
   fi
 
-  echo kyma_deploy_cmd
+  echo "$kyma_deploy_cmd"
 
   $kyma_deploy_cmd
 
