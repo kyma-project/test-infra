@@ -19,7 +19,7 @@ CRICTL_VERSION=v1.12.0
 HELM_VERSION="v3.7.1"
 DOCKER_VERSION=5:20.10.5~3-0~debian-buster
 NODEJS_VERSION="14.x"
-K3D_VERSION="5.1.0"
+K3D_VERSION="4.4.7"
 
 # install docker
 sudo apt-get update
