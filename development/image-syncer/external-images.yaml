@@ -36,7 +36,7 @@ images:
 - source: "quay.io/jetstack/cert-manager-controller:v1.1.0"
 - source: "quay.io/jetstack/cert-manager-cainjector:v1.1.0"
 - source: "quay.io/jetstack/cert-manager-webhook:v1.1.0"
-- source: "quay.io/prometheus-operator/prometheus-config-reloader:v0.43.2"
+- source: "quay.io/prometheus-operator/prometheus-config-reloader:v0.52.0"
 - source: "quay.io/prometheus-operator/prometheus-operator:v0.43.2"
 - source: "quay.io/kubernetes-service-catalog/service-catalog:v0.3.1-12-g880e400-dirty"
 - source: "quay.io/prometheus/alertmanager:v0.23.0"
