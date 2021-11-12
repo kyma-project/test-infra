@@ -1,13 +1,13 @@
 #!/usr/bin/env sh
 
-source "${APP_PATH}/variables.sh"
+. "${APP_PATH}/variables.sh"
 
 CONFIGURE_GIT="$1"
 if [ "$CONFIGURE_GIT" = "--configure-git" ]; then
-    source "${APP_PATH}/config-git.sh"
+    . "${APP_PATH}/config-git.sh"
 fi
 
-source "${APP_PATH}/config-setup.sh"
+. "${APP_PATH}/config-setup.sh"
 
 if [ ! -f "$FULL_CHANGELOG_FILE_PATH" ]; then
     FIRST_COMMIT=$(git rev-list --max-parents=0 HEAD)
@@ -29,4 +29,4 @@ echo "Generating navigation for CHANGELOG.md..."
 printf "<!-- toc -->\n%s" "$(cat "$FULL_CHANGELOG_FILE_PATH")" > "$FULL_CHANGELOG_FILE_PATH"
 markdown-toc -i --maxdepth=2 "$FULL_CHANGELOG_FILE_PATH"
 
-source "${APP_PATH}/config-cleanup.sh"
+. "${APP_PATH}/config-cleanup.sh"
