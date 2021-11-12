@@ -125,9 +125,9 @@ EOF
 function api-gateway::launch_tests() {
   log::info "Running Kyma API-Gateway tests"
 
-  pushd "${KYMA_SOURCES_DIR}/tests/integration/api-gateway/gateway-tests"
+  pushd "${KYMA_SOURCES_DIR}/tests/integration/api-gateway/gateway-tests" || exit 1
   go test -v ./main_test.go
-  popd
+  popd || exit 1
 
   log::success "Tests completed"
 }
