@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 
+# shellcheck source=changelog-generator/app/variables.sh
 . "${APP_PATH}/variables.sh"
 
 CONFIGURE_GIT="$1"
