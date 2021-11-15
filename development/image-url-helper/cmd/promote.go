@@ -16,6 +16,7 @@ type promoteCmdOptions struct {
 }
 
 // TODO I'm bad with documentation
+
 // PromoteCmd promotes containerRegistry to a new one
 func PromoteCmd() *cobra.Command {
 	options := promoteCmdOptions{}
