@@ -44,6 +44,7 @@ prow_components=(
 "tide_deployment.yaml"
 "tide_service.yaml"
 "tls-ing_ingress.yaml"
+"web_server_deployment.yaml"
 )
 
 function ensure-context() {
