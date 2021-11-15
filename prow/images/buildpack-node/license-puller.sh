@@ -18,7 +18,7 @@ function read_arguments() {
     do
         case $arg in
             --dirs-to-pulling=*)
-              local dirs_to_pulling=($( echo "${arg#*=}" | tr "," "\n" ))
+              local dirs_to_pulling=($( echo "${arg#*=}" | tr "," '\n' ))
               shift # remove --dirs-to-pulling=
             ;;
             --verbose)

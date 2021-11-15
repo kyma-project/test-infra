@@ -19,13 +19,13 @@ echo -e "${NC}"
 go mod verify
 ensureResult=$?
 if [ ${ensureResult} != 0 ]; then
-  echo -e "${RED}✗ go mod verify${NC}\n$ensureResult${NC}"
+  echo -e "${RED}✗ go mod verify${NC}\\n$ensureResult${NC}"
   exit 1
 else
   echo -e "${GREEN}√ go mod verify${NC}"
 fi
 
-goFilesToCheck=$(find . -type f -name "*.go" | grep -E -v "\/vendor\/|_*/automock/|_*/testdata/|/pkg\/|_*export_test.go")
+goFilesToCheck=$(find . -type f -name "*.go" | grep -E -v '\/vendor\/|_*/automock/|_*/testdata/|/pkg\/|_*export_test.go')
 
 ##
 # GO BUILD

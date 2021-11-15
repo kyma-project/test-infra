@@ -22,12 +22,12 @@ else
     fi
 
     awk '/<!-- tocstop -->/ {p=1;next}p' "${FULL_CHANGELOG_FILE_PATH}" > "${FULL_CHANGELOG_TEMP_FILE_PATH}"
-    printf "%s\n\n%s" "$(cat "$RELEASE_CHANGELOG_FILE_PATH")" "$(cat "$FULL_CHANGELOG_TEMP_FILE_PATH")" > "$FULL_CHANGELOG_FILE_PATH"
+    printf '%s\n\n%s' "$(cat "$RELEASE_CHANGELOG_FILE_PATH")" "$(cat "$FULL_CHANGELOG_TEMP_FILE_PATH")" > "$FULL_CHANGELOG_FILE_PATH"
     rm "${FULL_CHANGELOG_TEMP_FILE_PATH}"
 fi
 
 echo "Generating navigation for CHANGELOG.md..."
-printf "<!-- toc -->\n%s" "$(cat "$FULL_CHANGELOG_FILE_PATH")" > "$FULL_CHANGELOG_FILE_PATH"
+printf '<!-- toc -->\n%s' "$(cat "$FULL_CHANGELOG_FILE_PATH")" > "$FULL_CHANGELOG_FILE_PATH"
 markdown-toc -i --maxdepth=2 "$FULL_CHANGELOG_FILE_PATH"
 
 . "${APP_PATH}/config-cleanup.sh"
