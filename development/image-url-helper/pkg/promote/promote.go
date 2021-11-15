@@ -46,18 +46,35 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 			return nil
 		}
 
-		containerRegistryNode := getYamlNode(globalNode, "containerRegistry")
-		if containerRegistryNode == nil {
-			return nil
+		if targetContainerRegistry != "" {
+			containerRegistryNode := getYamlNode(globalNode, "containerRegistry")
+			if containerRegistryNode == nil {
+				return nil
+			}
+
+			containerRegistryPathNode := getYamlNode(containerRegistryNode, "path")
+			if containerRegistryPathNode == nil {
+				return nil
+			}
+
+			containerRegistryPathNode.Value = targetContainerRegistry
 		}
 
-		containerRegistryPathNode := getYamlNode(containerRegistryNode, "path")
-		if containerRegistryPathNode == nil {
-			return nil
+		if targetTag != "" {
+			imagesNode := getYamlNode(globalNode, "images")
+			if imagesNode == nil {
+				return nil
+			}
+
+			testImagesNode := getYamlNode(globalNode, "testImages")
+			if testImagesNode == nil {
+				return nil
+			}
+
+			// TODO get images nodes and update image versions
 		}
 
-		containerRegistryPathNode.Value = targetContainerRegistry
-
+		// save updated file
 		var updatedYaml bytes.Buffer
 		yamlEncoder := yaml.NewEncoder(&updatedYaml)
 		yamlEncoder.SetIndent(2)

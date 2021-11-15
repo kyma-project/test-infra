@@ -15,7 +15,8 @@ type promoteCmdOptions struct {
 	targetTag               string
 }
 
-// ListCmd lists all images defined in values.yaml files
+// TODO I'm bad with documentation
+// PromoteCmd promotes containerRegistry to a new one
 func PromoteCmd() *cobra.Command {
 	options := promoteCmdOptions{}
 	cmd := &cobra.Command{
