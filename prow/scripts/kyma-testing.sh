@@ -11,7 +11,7 @@ fi
 # Should be fixed name, it is displayed in TestGrid
 SUITE_NAME="testsuite-all"
 
-# shellcheck disable=SC1090
+# shellcheck disable=SC1091
 source "${CURRENT_PATH}/lib/testing-helpers.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "${CURRENT_PATH}/lib/kyma.sh"
