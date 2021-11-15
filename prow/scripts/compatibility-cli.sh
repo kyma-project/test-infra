@@ -44,10 +44,10 @@ RELEASES=${RELEASES//\-rc[0-9]}
 readarray -t RELEASES <<< "$RELEASES"
 
 # sort the releases in case there was a patch release after another higher minor release (e.g. chronologically: 1.0.1, 1.1.0, 1.0.0)
-RELEASES=($(printf '%s\n' "${RELEASES[@]}" | sort -r))
+IFS=" " read -r -a RELEASES <<< "$(printf '%s\n' "${RELEASES[@]}" | sort -r | tr '\n' ' ')"
 
 # Remove duplicates
-RELEASES=($(printf '%s\n' "${RELEASES[@]}" | uniq))
+IFS=" " read -r -a RELEASES <<< "$(printf '%s\n' "${RELEASES[@]}" | uniq | tr '\n' ' ')"
 
 if [[ $COMPAT_BACKTRACK == 1 ]]; then
     # Found the target release
