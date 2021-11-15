@@ -46,6 +46,7 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 			return nil
 		}
 
+		// promote container registry
 		if targetContainerRegistry != "" {
 			containerRegistryNode := getYamlNode(globalNode, "containerRegistry")
 			if containerRegistryNode == nil {
@@ -61,47 +62,22 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 			containerRegistryPathNode.Value = targetContainerRegistry
 		}
 
+		// retag images
 		if targetTag != "" {
 			imagesNode := getYamlNode(globalNode, "images")
 			if imagesNode != nil {
-				for _, val := range imagesNode.Content {
-					if val.Tag == "!!map" {
-						// singular image
-						for key, imageVal := range val.Content {
-							if (imageVal.Value == "version") && (key+1 < len(val.Content)) {
-								val.Content[key+1].Value = targetTag
-							}
-						}
-					}
-				}
+				updateImages(imagesNode, targetTag)
 			}
 
 			testImagesNode := getYamlNode(globalNode, "testImages")
 			if testImagesNode != nil {
-				// TODO separate function
-				for _, val := range testImagesNode.Content {
-					if val.Tag == "!!map" {
-						// singular image
-						for key, imageVal := range val.Content {
-							if (imageVal.Value == "version") && (key+1 < len(val.Content)) {
-								val.Content[key+1].Value = targetTag
-							}
-						}
-					}
-				}
+				updateImages(testImagesNode, targetTag)
 			}
 		}
 
 		// save updated file
-		var updatedYaml bytes.Buffer
-		yamlEncoder := yaml.NewEncoder(&updatedYaml)
-		yamlEncoder.SetIndent(2)
-		err = yamlEncoder.Encode(&parsedFile)
+		err = saveToFile(path, &parsedFile)
 		if err != nil {
-			return err
-		}
-
-		if err = ioutil.WriteFile(path, updatedYaml.Bytes(), 0666); err != nil {
 			return err
 		}
 
@@ -115,12 +91,42 @@ func getYamlNode(parsedYaml *yaml.Node, wantedKey string) *yaml.Node {
 	//parsedYaml.Decode(tmpNode)
 	for key, val := range parsedYaml.Content {
 		if val.Value == wantedKey {
-			// TODO check if this is correct
-			if (key+1 < len(parsedYaml.Content)) && (parsedYaml.Content[key].Tag != "!!map") {
+			// "name: value" pairs are split into two values in the Content array
+			// TODO is this check really needed? If this is false, it should've failed on the unmarshalling step anyway
+			if key+1 < len(parsedYaml.Content) {
 				return parsedYaml.Content[key+1]
 			}
-			return parsedYaml.Content[key]
 		}
+	}
+	return nil
+}
+
+// updateImages looks for "version" field for each image and replaces its content with a targetTag value
+func updateImages(images *yaml.Node, targetTag string) {
+	for _, val := range images.Content {
+		if val.Tag == "!!map" {
+			// loop over values in singular image
+			for key, imageVal := range val.Content {
+				if (imageVal.Value == "version") && (key+1 < len(val.Content)) {
+					val.Content[key+1].Value = targetTag
+				}
+			}
+		}
+	}
+}
+
+// saveToFile saves parsed YAML structure to a file
+func saveToFile(path string, parsedFile *yaml.Node) error {
+	var updatedYaml bytes.Buffer
+	yamlEncoder := yaml.NewEncoder(&updatedYaml)
+	yamlEncoder.SetIndent(2)
+
+	if err := yamlEncoder.Encode(parsedFile); err != nil {
+		return err
+	}
+
+	if err := ioutil.WriteFile(path, updatedYaml.Bytes(), 0666); err != nil {
+		return err
 	}
 	return nil
 }
