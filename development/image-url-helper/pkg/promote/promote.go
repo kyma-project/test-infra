@@ -54,6 +54,7 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 
 			containerRegistryPathNode := getYamlNode(containerRegistryNode, "path")
 			if containerRegistryPathNode == nil {
+				// TODO maybe we need some verbose info here?
 				return nil
 			}
 
@@ -62,16 +63,33 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 
 		if targetTag != "" {
 			imagesNode := getYamlNode(globalNode, "images")
-			if imagesNode == nil {
-				return nil
+			if imagesNode != nil {
+				for _, val := range imagesNode.Content {
+					if val.Tag == "!!map" {
+						// singular image
+						for key, imageVal := range val.Content {
+							if (imageVal.Value == "version") && (key+1 < len(val.Content)) {
+								val.Content[key+1].Value = targetTag
+							}
+						}
+					}
+				}
 			}
 
 			testImagesNode := getYamlNode(globalNode, "testImages")
-			if testImagesNode == nil {
-				return nil
+			if testImagesNode != nil {
+				// TODO separate function
+				for _, val := range testImagesNode.Content {
+					if val.Tag == "!!map" {
+						// singular image
+						for key, imageVal := range val.Content {
+							if (imageVal.Value == "version") && (key+1 < len(val.Content)) {
+								val.Content[key+1].Value = targetTag
+							}
+						}
+					}
+				}
 			}
-
-			// TODO get images nodes and update image versions
 		}
 
 		// save updated file
