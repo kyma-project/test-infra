@@ -180,11 +180,11 @@ export DOCKER_PASSWORD_FILE=$(cat "${GOOGLE_APPLICATION_CREDENTIALS}")
 
 #shellcheck disable=SC2034
 #DOCKER_PASSWORD=$(jq -c "." $DOCKER_PASSWORD_FILE 2> /dev/null)
-export DOCKER_PASSWORD=$(cat GOOGLE_APPLICATION_CREDENTIALS | tr -d '\n')
 #DOCKER_PUSH_REPOSITORY=$(echo "$DOCKER_PUSH_REPOSITORY" | cut -d'/' -f1)
 
 #use docker login and use the generated config.docker.json
 
+export DOCKER_PASSWORD=$(cat "${GOOGLE_APPLICATION_CREDENTIALS}" | tr -d '\n')
 export DOCKER_REPOSITORY_ADDRESS=$(echo "$DOCKER_PUSH_REPOSITORY" | cut -d'/' -f1)
 export DNS_DOMAIN_TRAILING=${DNS_DOMAIN%.}
 envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-serverless-external-registry-integration-overrides.tpl.yaml" > "$PWD/kyma_overrides.yaml"
