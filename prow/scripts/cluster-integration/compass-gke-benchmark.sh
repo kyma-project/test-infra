@@ -411,7 +411,7 @@ kubectl cordon "$NODE"
 PODS=$(kubectl get cts $SUITE_NAME -o=go-template --template='{{range .status.results}}{{range .executions}}{{printf "%s\n" .id}}{{end}}{{end}}')
 
 CHECK_FAILED=false
-FAILED_TEST=''
+FAILED_TESTS=''
 
 for POD in $PODS; do
   CONTAINER=$(kubectl -n kyma-system get pod "$POD" -o jsonpath='{.spec.containers[*].name}' | sed s/istio-proxy//g | awk '{$1=$1};1')
@@ -432,7 +432,7 @@ for POD in $PODS; do
     if [[ $DELTA == +* ]]; then # If delta is positive
       log::error "There is significant performance degradation in the new release!"
       CHECK_FAILED=true
-      FAILED_TEST="$CONTAINER\n$FAILED_TEST"
+      FAILED_TESTS="$CONTAINER\n$FAILED_TESTS"
     fi
   else
     benchstat "$CONTAINER"-new
@@ -440,7 +440,7 @@ for POD in $PODS; do
 done
 
 if [ $CHECK_FAILED = true ]; then
-  log::error "The following benchmark tests failed:\n $FAILED_TEST"
+  log::error "The following benchmark tests failed:\n $FAILED_TESTS"
   exit 1
 fi
 
