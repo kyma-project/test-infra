@@ -21,24 +21,6 @@ import (
 	_ "github.com/containerd/containerd/api/events"
 )
 
-// ContainerInfo is a subset of containerd.containers.Container fields. It's created from the containerd API call response.
-// ContainerInfo holds minimal information needed to identify container and pod which had an event.
-type ContainerInfo struct {
-	ID        string `json:"containerId"`
-	Image     string `json:"image"`
-	Namespace string `json:"namespace"`
-	Pod       string `json:"pod"`
-	Name      string `json:"name"`
-}
-
-// EventInfo holds minimal info about received event along with details about impacted container.
-// It's created from received event and ContainerInfo object for respective container
-type EventInfo struct {
-	ContainerInfo ContainerInfo
-	Message       string    `json:"message"`
-	Timestamp     time.Time `json:"timestamp"`
-}
-
 var debug = flag.BoolP("debug", "d", false, "enable debug output")
 
 // dockerOOMListener listen for events from docker daemon.
@@ -90,7 +72,6 @@ func dockerOOMListener(client *dockerclient.Client, wg *sync.WaitGroup) {
 // On oom event details, are printed to stdout.
 func containerdOOMListener(client *containerd.Client, wg *sync.WaitGroup) {
 	defer wg.Done()
-	containers := make(map[string]ContainerInfo)
 	ctx := context.Background()
 	eventsClient := client.EventService()
 	oomEventsCh, oomErrCh := eventsClient.Subscribe(ctx, "topic~=|^/tasks/oom|")
@@ -120,25 +101,12 @@ func containerdOOMListener(client *containerd.Client, wg *sync.WaitGroup) {
 						continue
 					}
 					log.Debugf("Image: %s, Name: %s, Name: %s, Namespace: %s", container.Image, container.Labels["io.kubernetes.container.name"], container.Labels["io.kubernetes.pod.name"], container.Labels["io.kubernetes.pod.namespace"])
-					containers[v.(*events2.TaskOOM).ContainerID] = ContainerInfo{
-						ID:        v.(*events2.TaskOOM).ContainerID,
-						Image:     container.Image,
-						Namespace: container.Labels["io.kubernetes.pod.namespace"],
-						Pod:       container.Labels["io.kubernetes.pod.name"],
-						Name:      container.Labels["io.kubernetes.container.name"],
-					}
-					eventInfo := EventInfo{
-						ContainerInfo: containers[v.(*events2.TaskOOM).ContainerID],
-						Message:       "OOM event received",
-						Timestamp:     e.Timestamp,
-					}
-					_, err = fmt.Fprintf(os.Stdout, "%s, time: %s, namespace: %s, pod: %s, container: %s, image: %s\n",
-						eventInfo.Message,
-						eventInfo.Timestamp,
-						eventInfo.ContainerInfo.Namespace,
-						eventInfo.ContainerInfo.Pod,
-						eventInfo.ContainerInfo.Name,
-						eventInfo.ContainerInfo.Image,
+					_, err = fmt.Fprintf(os.Stdout, "OOM event received, time: %s, namespace: %s, pod: %s, container: %s, image: %s\n",
+						e.Timestamp,
+						container.Labels["io.kubernetes.pod.namespace"],
+						container.Labels["io.kubernetes.pod.name"],
+						container.Labels["io.kubernetes.container.name"],
+						container.Image,
 					)
 					if err != nil {
 						log.WithError(err).Error("cannot print EventInfo")
