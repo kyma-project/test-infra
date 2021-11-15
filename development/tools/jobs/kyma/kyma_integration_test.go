@@ -321,7 +321,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, nightlyFastIntegrationPeriodic)
 	assert.Equal(t, expName, nightlyFastIntegrationPeriodic.Name)
 
-	assert.Equal(t, "0 0-2,5-23 * * 1-5", nightlyFastIntegrationPeriodic.Cron)
+	assert.Equal(t, "0 0-1,4-23 * * 1-5", nightlyFastIntegrationPeriodic.Cron)
 	tester.AssertThatHasPresets(t, nightlyFastIntegrationPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration, "preset-gc-compute-envs")
 	tester.AssertThatHasExtraRepoRefCustom(t, nightlyFastIntegrationPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, nightlyFastIntegrationPeriodic.Spec.Containers[0].Image)
