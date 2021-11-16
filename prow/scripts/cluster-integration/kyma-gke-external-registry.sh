@@ -212,7 +212,7 @@ job_name="k3s-serverless-test"
 
 helm install serverless-test "${SERVERLESS_CHART_DIR}/charts/k3s-tests" -n default -f "${SERVERLESS_CHART_DIR}/values.yaml" --set jobName="${job_name}"
 kubectl patch job -n default k3s-serverless-test -p '{"metadata":{"annotations":{"sidecar.istio.io/inject":"false"}}}'
-job_status=""
+job_status=1
 
 # helm does not wait for jobs to complete even with --wait
 # TODO but helm@v3.5 has a flag that enables that, get rid of this function once we use helm@v3.5
@@ -248,10 +248,8 @@ echo "###############"
 echo ""
 
 echo "Exit code ${job_status}"
+exit ${job_status}
 
-if [ "${job_status}" != 0 ]; then
-    exit 1
-fi
 #!!! Must be at the end of the script !!!
 # shellcheck disable=SC2034
 ERROR_LOGGING_GUARD="false"
