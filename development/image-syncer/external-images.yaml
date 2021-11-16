@@ -22,7 +22,7 @@ images:
   tag: "1.11.4"
 - source: "jaegertracing/all-in-one:1.18.1"
 - source: "jettech/kube-webhook-certgen:v1.5.0"
-- source: "jimmidyson/configmap-reload:v0.4.0"
+- source: "jimmidyson/configmap-reload:v0.5.0"
 - source: "kennethreitz/httpbin:latest"
 - source: "oryd/hydra-maester:v0.0.24"
 - source: "oryd/hydra:v1.10.7-sqlite"
