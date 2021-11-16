@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 function integration_tests::install_kyma() {
   log::info "Installing Kyma from local source using components file"
   kyma deploy --ci --components-file "$PWD/components.yaml" --source=local --workspace "${KYMA_SOURCES_DIR}" --verbose
@@ -125,9 +127,9 @@ EOF
 function api-gateway::launch_tests() {
   log::info "Running Kyma API-Gateway tests"
 
-  pushd "${KYMA_SOURCES_DIR}/tests/integration/api-gateway/gateway-tests" || exit 1
+  pushd "${KYMA_SOURCES_DIR}/tests/integration/api-gateway/gateway-tests"
   go test -v ./main_test.go
-  popd || exit 1
+  popd
 
   log::success "Tests completed"
 }

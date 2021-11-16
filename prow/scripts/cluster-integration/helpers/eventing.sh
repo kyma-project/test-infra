@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 readonly BACKEND_SECRET_NAME=eventing-backend
 readonly BACKEND_SECRET_NAMESPACE=default
 readonly BACKEND_SECRET_LABEL_KEY=kyma-project.io/eventing-backend
@@ -19,7 +21,7 @@ function eventing::check_required_vars() {
 function eventing::create_eventmesh_secret() {
   eventing::check_required_vars
 
-  pushd "${CREDENTIALS_DIR}" || exit 1
+  pushd "${CREDENTIALS_DIR}"
 
   SECRET_NAME=event-mesh
   SECRET_NAMESPACE=default
@@ -39,14 +41,14 @@ data:
   serviceKey: "${SERVICE_KEY_VALUE}"
 EOF
 
-  popd || exit 1
+  popd
 }
 
 # Create a Kubernetes Secret which is needed by the Eventing Backend controller
 function eventing::create_eventing_backend_secret() {
   eventing::check_required_vars
 
-  pushd "${CREDENTIALS_DIR}" || exit 1
+  pushd "${CREDENTIALS_DIR}"
 
   SECRET_NAME="${BACKEND_SECRET_NAME}"
   SECRET_NAMESPACE="${BACKEND_SECRET_NAMESPACE}"
@@ -72,14 +74,14 @@ data:
   xsappname: "${XS_APP_NAME}"
 EOF
 
-  popd || exit 1
+  popd
 }
 
 # Create a Kubernetes Secret which is needed by the Eventing Publisher and Subscription Controller
 function eventing::create_eventing_secret() {
   eventing::check_required_vars
 
-  pushd "${CREDENTIALS_DIR}" || exit 1
+  pushd "${CREDENTIALS_DIR}"
 
   SECRET_NAME=eventing
   SECRET_NAMESPACE=kyma-system
@@ -110,7 +112,7 @@ data:
   token-endpoint: "${TOKEN_ENDPOINT}"
 EOF
 
-  popd || exit 1
+  popd
 }
 
 # Switches the eventing backend based on the passed parameter (NATS or BEB).
@@ -164,9 +166,9 @@ function eventing::wait_for_backend_ready() {
 function eventing::test_fast_integration_eventing() {
     log::info "Running Eventing E2E release tests"
 
-    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration || exit 1
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
     make ci-test-eventing
-    popd || exit 1
+    popd
 
     log::success "Eventing tests completed"
 }
