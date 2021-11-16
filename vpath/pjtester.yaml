@@ -1,0 +1,6 @@
+pjNames:
+- pjName: "post-release-varkes"
+prConfigs:
+  kyma-incubator:
+    varkes:
+      prNumber: 301
