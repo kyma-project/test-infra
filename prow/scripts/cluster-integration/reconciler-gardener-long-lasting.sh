@@ -22,7 +22,7 @@ function delete_cluster_if_exists(){
     local name="${INPUT_CLUSTER_NAME}"
     set +e
     existing_shoot=$(kubectl get shoot "${name}" -ojsonpath="{ .metadata.name }")
-    if [ ! -z "${existing_shoot}" ]; then
+    if [ -n "${existing_shoot}" ]; then
       log::info "Cluster found and deleting '${name}'"
       gardener::deprovision_cluster \
             -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \

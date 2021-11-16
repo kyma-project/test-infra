@@ -174,7 +174,7 @@ function reconciler::deploy_test_pod() {
   # Deploy a test pod
   log::banner "Deploying test-pod in the cluster"
   test_pod_name=$(kubectl get po test-pod -n "${RECONCILER_NAMESPACE}" -ojsonpath="{ .metadata.name }" --ignore-not-found)
-  if [ ! -z "${test_pod_name}" ]; then
+  if [ -n "${test_pod_name}" ]; then
     log::info "Found existing pod: test-pod"
     kubectl delete po test-pod -n "${RECONCILER_NAMESPACE}"
     reconciler::wait_until_test_pod_is_deleted

@@ -152,7 +152,7 @@ function az::create_resource_group {
         sleep 15
 		counter=$(( counter + 1 ))
 		if (( counter == 5 )); then
-			log::error "\n---\nAzure resource group ${resourceGroup} still not present after one minute wait.\n---"
+			log::error "\\n---\\nAzure resource group ${resourceGroup} still not present after one minute wait.\\n---"
 			exit 1
 		fi
 	done

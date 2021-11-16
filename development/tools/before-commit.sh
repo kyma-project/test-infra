@@ -45,7 +45,7 @@ echo "? go mod verify"
 go mod verify
 ensureResult=$?
 if [ ${ensureResult} != 0 ]; then
-  echo -e "${RED}✗ go mod verify${NC}\n$ensureResult${NC}"
+  echo -e "${RED}✗ go mod verify${NC}\\n$ensureResult${NC}"
   exit 1
 else
   echo -e "${GREEN}√ go mod verify${NC}"
@@ -66,13 +66,13 @@ echo "? golint"
 go install golang.org/x/lint/golint
 buildLintResult=$?
 if [ ${buildLintResult} != 0 ]; then
-  echo -e "${RED}✗ go install golint${NC}\n$buildLintResult${NC}"
+  echo -e "${RED}✗ go install golint${NC}\\n$buildLintResult${NC}"
   exit 1
 fi
 
 golintResult=$("${GOPATH}"/bin/golint "${DIRS_TO_CHECK[@]}")
 if [ "${#golintResult}" != 0 ]; then
-  echo -e "${RED}✗ golint\n$golintResult${NC}"
+  echo -e "${RED}✗ golint\\n$golintResult${NC}"
   exit 1
 else
   echo -e "${GREEN}√ golint${NC}"
@@ -85,7 +85,7 @@ echo "? goimports"
 go install golang.org/x/tools/cmd/goimports
 buildGoImportResult=$?
 if [ ${buildGoImportResult} != 0 ]; then
-  echo -e "${RED}✗ go install goimports${NC}\n$buildGoImportResult${NC}"
+  echo -e "${RED}✗ go install goimports${NC}\\n$buildGoImportResult${NC}"
   exit 1
 fi
 
@@ -95,7 +95,7 @@ test -z "$changedFiles"
 goImportsResult=$?
 
 if [ "$goImportsResult" != 0 ]; then
-  echo -e "${RED}✗ goimports ${NC}\n$goImportsResult${NC}"
+  echo -e "${RED}✗ goimports ${NC}\\n$goImportsResult${NC}"
     echo "changed files:"
     echo "$changedFiles"
     echo "run \"goimports -w -l\" against the development/tools/ and commit your changes"
