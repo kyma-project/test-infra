@@ -34,7 +34,7 @@ templates:
               # KEB_PLAN_ID: "5cb3d976-b85c-42ea-a636-79cadda109a9" # Preview Plan
               KCP_KEB_API_URL: "https://kyma-env-broker.cp.dev.kyma.cloud.sap"
               KCP_OIDC_ISSUER_URL: "https://kymatest.accounts400.ondemand.com"
-              KYMA_UPGRADE_VERSION: "2.0.0-rc4"
+              KYMA_UPGRADE_VERSION: "2.0.0-rc5"
               SKIP_CLEANUP: "FALSE" # set to true if Cluster & Compass cleanup should be skipped
         jobConfigs:
           - repoName: "kyma-project/kyma"
