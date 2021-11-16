@@ -3,7 +3,7 @@
 echo "Copying configuration file..."
 cp "${CONFIG_FILE}" ./package.json
 
-function removeLatestTag() {
+removeLatestTag() {
     LATEST_TAG_EXISTS=false
     if [ "$(git tag -l "$LATEST_TAG")" ]; then
         LATEST_TAG_EXISTS=true
