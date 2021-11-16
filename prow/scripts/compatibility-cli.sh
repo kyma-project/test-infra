@@ -41,7 +41,7 @@ RELEASES=${RELEASES//[,\"]}
 RELEASES=${RELEASES//\-rc[0-9]}
 
 # Split into array
-IFS=" " read -r -a RELEASES <<< "$RELEASES"
+readarray -t RELEASES <<< "$RELEASES"
 
 # sort the releases in case there was a patch release after another higher minor release (e.g. chronologically: 1.0.1, 1.1.0, 1.0.0)
 RELEASES=($(printf "%s\n" "${RELEASES[@]}" | sort -r))
