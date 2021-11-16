@@ -252,7 +252,9 @@ echo "###############"
 echo ""
 
 echo "Exit code ${job_status}"
-exit ${job_status}
+if [ "${job_status}" != 0 ]; then
+    exit 1
+fi
 
 #!!! Must be at the end of the script !!!
 # shellcheck disable=SC2034
