@@ -89,7 +89,7 @@ install_istioctl() {
 # Using set -f to prevent path globing in post_hook arguments.
 # utils::post_hook call set +f at the beginning.
 # shellcheck disable=SC2153
-#trap 'EXIT_STATUS=$?; set -f; utils::post_hook -k "true" -n "$COMMON_NAME" -p "$CLOUDSDK_CORE_PROJECT" -c "$CLEANUP_CLUSTER" -g "$CLEANUP_GATEWAY_DNS_RECORD" -G "$INGRESS_GATEWAY_HOSTNAME" -a "$CLEANUP_APISERVER_DNS_RECORD" -A "$APISERVER_HOSTNAME" -I "$CLEANUP_GATEWAY_IP_ADDRESS" -l "$ERROR_LOGGING_GUARD" -z "$CLOUDSDK_COMPUTE_ZONE" -R "$CLOUDSDK_COMPUTE_REGION" -r "$PROVISION_REGIONAL_CLUSTER" -d "$DISABLE_ASYNC_DEPROVISION" -s "$COMMON_NAME" -e "$GATEWAY_IP_ADDRESS" -f "$APISERVER_IP_ADDRESS" -N "$COMMON_NAME" -Z "$CLOUDSDK_DNS_ZONE_NAME" -E "$EXIT_STATUS" -j "$JOB_NAME"' EXIT INT
+trap 'EXIT_STATUS=$?; set -f; utils::post_hook -k "true" -n "$COMMON_NAME" -p "$CLOUDSDK_CORE_PROJECT" -c "$CLEANUP_CLUSTER" -g "$CLEANUP_GATEWAY_DNS_RECORD" -G "$INGRESS_GATEWAY_HOSTNAME" -a "$CLEANUP_APISERVER_DNS_RECORD" -A "$APISERVER_HOSTNAME" -I "$CLEANUP_GATEWAY_IP_ADDRESS" -l "$ERROR_LOGGING_GUARD" -z "$CLOUDSDK_COMPUTE_ZONE" -R "$CLOUDSDK_COMPUTE_REGION" -r "$PROVISION_REGIONAL_CLUSTER" -d "$DISABLE_ASYNC_DEPROVISION" -s "$COMMON_NAME" -e "$GATEWAY_IP_ADDRESS" -f "$APISERVER_IP_ADDRESS" -N "$COMMON_NAME" -Z "$CLOUDSDK_DNS_ZONE_NAME" -E "$EXIT_STATUS" -j "$JOB_NAME"' EXIT INT
 
 utils::run_jobguard \
     -b "$BUILD_TYPE" \
@@ -172,7 +172,7 @@ export TLS_CERT="${utils_generate_self_signed_cert_return_tls_cert:?}"
 export TLS_KEY="${utils_generate_self_signed_cert_return_tls_key:?}"
 
 # Prepare Docker external registry overrides
-export DOCKER_PASSWORD=$(cat "${GOOGLE_APPLICATION_CREDENTIALS}" | tr -d '\n')
+export DOCKER_PASSWORD=$(tr -d '\n' < "${GOOGLE_APPLICATION_CREDENTIALS}")
 export DOCKER_REPOSITORY_ADDRESS=$(echo "$DOCKER_PUSH_REPOSITORY" | cut -d'/' -f1)
 export DNS_DOMAIN_TRAILING=${DNS_DOMAIN%.}
 envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-serverless-external-registry-integration-overrides.tpl.yaml" > "$PWD/kyma_overrides.yaml"
@@ -249,7 +249,7 @@ echo ""
 
 echo "Exit code ${job_status}"
 
-if [ "${job_status}" != "" ]; then
+if [ "${job_status}" != 0 ]; then
     exit 1
 fi
 #!!! Must be at the end of the script !!!
