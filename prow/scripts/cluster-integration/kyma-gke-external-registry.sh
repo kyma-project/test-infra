@@ -171,19 +171,7 @@ utils::generate_self_signed_cert \
 export TLS_CERT="${utils_generate_self_signed_cert_return_tls_cert:?}"
 export TLS_KEY="${utils_generate_self_signed_cert_return_tls_key:?}"
 
-
-#Generate auth data to external registry
-docker login -u _json_key -p "$(cat "${GOOGLE_APPLICATION_CREDENTIALS}")" "${DOCKER_PUSH_REPOSITORY}"
-export DOCKER_PASSWORD_FILE=$(cat "${GOOGLE_APPLICATION_CREDENTIALS}")
-#mkdir -p /tmp/kyma-gke-integration
-#< "$GOOGLE_APPLICATION_CREDENTIALS" tr -d '\n' > /tmp/kyma-gke-integration/dockerPassword.json
-
-#shellcheck disable=SC2034
-#DOCKER_PASSWORD=$(jq -c "." $DOCKER_PASSWORD_FILE 2> /dev/null)
-#DOCKER_PUSH_REPOSITORY=$(echo "$DOCKER_PUSH_REPOSITORY" | cut -d'/' -f1)
-
-#use docker login and use the generated config.docker.json
-
+# Prepare Docker external registry overrides
 export DOCKER_PASSWORD=$(cat "${GOOGLE_APPLICATION_CREDENTIALS}" | tr -d '\n')
 export DOCKER_REPOSITORY_ADDRESS=$(echo "$DOCKER_PUSH_REPOSITORY" | cut -d'/' -f1)
 export DNS_DOMAIN_TRAILING=${DNS_DOMAIN%.}
