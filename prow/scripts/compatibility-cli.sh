@@ -17,8 +17,6 @@ VARIABLES=(
     COMPAT_BACKTRACK
 )
 
-echo "COMPAT_BACKTRACK: ${COMPAT_BACKTRACK}" # TODO remove
-
 #Exported variables
 export KYMA_PROJECT_DIR=${KYMA_PROJECT_DIR:-"/home/prow/go/src/github.com/kyma-project"}
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
