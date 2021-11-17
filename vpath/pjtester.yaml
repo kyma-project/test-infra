@@ -1,5 +1,7 @@
 pjNames:
-  - pjName: pre-cli-integration-kyma-2
   - pjName: kyma-integration-k3d
-  - pjName: pre-main-reconciler-integration-k3d
-  - pjName: pre-main-serverless-integration-k3s
+  - pjName: kyma-integration-k3d-compass-dev
+  - pjName: pre-main-kyma-integration-k3d
+  - pjName: pre-main-kyma-integration-k3d-central-app-connectivity
+  - pjName: pre-main-kyma-integration-k3d-central-app-connectivity-compass
+  - pjName: pre-main-kyma-integration-k3d-compass-dev
