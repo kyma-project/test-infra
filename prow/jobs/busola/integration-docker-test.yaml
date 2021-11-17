@@ -16,7 +16,6 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^resources/|^tests/'
-      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -69,7 +68,6 @@ postsubmits: # runs on main
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '/'
-      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
