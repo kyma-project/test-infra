@@ -72,12 +72,12 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 			}
 			containerRegistryPathNode.Value = targetContainerRegistry
 
-			outputLine, err := getStringFromYaml(containerRegistryNode, containerRegistryNode.Content[0].Column)
+			outputLine, err := yamlNodeToString(containerRegistryNode, containerRegistryNode.Content[0].Column)
 			if err != nil {
 				return err
 			}
 
-			lines[containerRegistryNode.Line-1] = TrimTrailingNewline(outputLine)
+			lines[containerRegistryNode.Line-1] = outputLine
 		}
 
 		// retag images
@@ -103,14 +103,16 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 	}
 }
 
-func TrimTrailingNewline(s string) string {
+// trimTrailingNewline trims trailing newline character
+func trimTrailingNewline(s string) string {
 	if strings.HasSuffix(s, "\n") {
 		return s[:len(s)-1]
 	}
 	return s
 }
 
-func getStringFromYaml(yamlNode *yaml.Node, column int) (string, error) {
+// yamlNodeToString convers YAML node to string, with proper tabulation
+func yamlNodeToString(yamlNode *yaml.Node, column int) (string, error) {
 	var outputBytes []byte
 	outputBytes, err := yaml.Marshal(yamlNode)
 	if err != nil {
@@ -118,7 +120,7 @@ func getStringFromYaml(yamlNode *yaml.Node, column int) (string, error) {
 	}
 
 	// TODO is there a better way to push it into correct place?
-	outputLine := string(outputBytes)
+	outputLine := trimTrailingNewline(string(outputBytes))
 	for i := 1; i < column; i++ {
 		outputLine = " " + outputLine
 	}
@@ -127,8 +129,6 @@ func getStringFromYaml(yamlNode *yaml.Node, column int) (string, error) {
 
 // getYamlNode finda a node with the specified key. If the next node is a map it will be returned.
 func getYamlNode(parsedYaml *yaml.Node, wantedKey string) *yaml.Node {
-	//var tmpNode *yaml.Node
-	//parsedYaml.Decode(tmpNode)
 	for key, val := range parsedYaml.Content {
 		if val.Value == wantedKey {
 			// "name: value" pairs are split into two values in the Content array
@@ -148,17 +148,17 @@ func updateImages(images *yaml.Node, targetTag string, lines []string) error {
 			// loop over values in singular image
 			for key, imageVal := range val.Content {
 				if (imageVal.Value == "version") && (key+1 < len(val.Content)) {
-					// Get this particual line
+					// parse just the version line
 					var versionLineParsed yaml.Node
 					yaml.Unmarshal([]byte(lines[imageVal.Line-1]), &versionLineParsed)
 
 					versionLineParsed.Content[0].Content[1].Value = targetTag
-					outputLines, err := getStringFromYaml(&versionLineParsed, val.Content[0].Column)
+					outputLines, err := yamlNodeToString(&versionLineParsed, val.Content[0].Column)
 					if err != nil {
 						return err
 					}
 
-					lines[imageVal.Line-1] = TrimTrailingNewline(outputLines)
+					lines[imageVal.Line-1] = outputLines
 				}
 			}
 		}
@@ -166,17 +166,12 @@ func updateImages(images *yaml.Node, targetTag string, lines []string) error {
 	return nil
 }
 
-// saveToFile saves parsed YAML structure to a file
+// saveToFile saves array of lines to a file
 func saveToFile(path string, lines []string) error {
-	// if err := yamlEncoder.Encode(parsedFile); err != nil {
-	// 	return err
-	// }
-
-	var outputData string
-	for _, line := range lines {
-		outputData += line + "\n"
-	}
-	if err := ioutil.WriteFile(path, []byte(outputData), 0666); err != nil {
+	outputData := strings.Join(lines, "\n")
+	outputData += "\n"
+	err := ioutil.WriteFile(path, []byte(outputData), 0666)
+	if err != nil {
 		return err
 	}
 	return nil
