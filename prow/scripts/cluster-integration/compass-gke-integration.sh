@@ -275,7 +275,7 @@ function prometheusMTLSPatch() {
 }
 
 function patchPrometheusForMTLS() {
-  patch=`cat <<"EOF"
+  patch=$(cat <<"EOF"
 apiVersion: monitoring.coreos.com/v1
 kind: Prometheus
 metadata:
@@ -313,7 +313,7 @@ spec:
     - mountPath: /etc/prometheus/secrets/istio.default/
       name: istio-certs
 EOF
-  `
+  )
 
   echo "${patch}" > patch.yaml
   kubectl apply -f patch.yaml
@@ -321,7 +321,7 @@ EOF
 }
 
 function patchAlertManagerForMTLS() {
-  patch=`cat <<"EOF"
+  patch=$(cat <<"EOF"
 apiVersion: monitoring.coreos.com/v1
 kind: Alertmanager
 metadata:
@@ -332,7 +332,7 @@ spec:
     annotations:
       sidecar.istio.io/inject: "true"
 EOF
-  `
+  )
 
   echo "${patch}" > patch.yaml
   kubectl apply -f patch.yaml
@@ -344,7 +344,7 @@ function patchKymaServiceMonitorsForMTLS() {
 
   crd="servicemonitors.monitoring.coreos.com"
   namespace="kyma-system"
-  patchContent=`cat <<"EOF"
+  patchContent=$(cat <<"EOF"
   - scheme: https
     tlsConfig:
       caFile: /etc/prometheus/secrets/istio.default/root-cert.pem
@@ -352,26 +352,26 @@ function patchKymaServiceMonitorsForMTLS() {
       keyFile: /etc/prometheus/secrets/istio.default/key.pem
       insecureSkipVerify: true
 EOF
-  `
+  )
 
   echo "$patchContent" > tmp_patch_content.yaml
 
-  for sm in ${kymaSvcMonitors[@]}; do
-    kubectl get ${crd} -n ${namespace} ${sm} -o yaml > ${sm}.yaml
+  for sm in "${kymaSvcMonitors[@]}"; do
+    kubectl get ${crd} -n ${namespace} "${sm}" -o yaml > "${sm}.yaml"
 
     if [[ "$OSTYPE" == "darwin"* ]]; then
-      sed -i '' -e '/ endpoints:/r tmp_patch_content.yaml' ${sm}.yaml
-      sed -i '' -e 's/- port:/  port:/g' ${sm}.yaml
-      sed -i '' -e 's/- metricRelabelings:/  metricRelabelings:/g' ${sm}.yaml
+      sed -i '' -e '/ endpoints:/r tmp_patch_content.yaml' "${sm}.yaml"
+      sed -i '' -e 's/- port:/  port:/g' "${sm}.yaml"
+      sed -i '' -e 's/- metricRelabelings:/  metricRelabelings:/g' "${sm}.yaml"
     else # assume Linux otherwise
-      sed -i '/ endpoints:/r tmp_patch_content.yaml' ${sm}.yaml
-      sed -i 's/- port:/  port:/g' ${sm}.yaml
-      sed -i 's/- metricRelabelings:/  metricRelabelings:/g' ${sm}.yaml
+      sed -i '/ endpoints:/r tmp_patch_content.yaml' "${sm}.yaml"
+      sed -i 's/- port:/  port:/g' "${sm}.yaml"
+      sed -i 's/- metricRelabelings:/  metricRelabelings:/g' "${sm}.yaml"
     fi
 
-    kubectl apply -f ${sm}.yaml || true
+    kubectl apply -f "${sm}.yaml" || true
 
-    rm ${sm}.yaml
+    rm "${sm}.yaml"
   done
 
   rm tmp_patch_content.yaml
@@ -383,8 +383,8 @@ function removeKymaPeerAuthsForPrometheus() {
 
   allPAs=(kiali logging-fluent-bit-metrics logging-loki monitoring-grafana-policy ory-oathkeeper-maester-metrics ory-hydra-maester-metrics tracing-jaeger-operator-metrics tracing-jaeger-metrics)
 
-  for pa in ${allPAs[@]}; do
-    kubectl delete ${crd} -n ${namespace} ${pa} || true
+  for pa in "${allPAs[@]}"; do
+    kubectl delete ${crd} -n ${namespace} "${pa}" || true
   done
 }
 
@@ -393,13 +393,13 @@ function patchMonitoringTests() {
   namespace="kyma-system"
   name="monitoring"
 
-  patchSidecarContainerCommand=`cat <<"EOF"
+  patchSidecarContainerCommand=$(cat <<"EOF"
         - until curl -fsI http://localhost:15021/healthz/ready; do echo \"Waiting
           for Sidecar...\"; sleep 3; done; echo \"Sidecar available. Running the command...\";
           ./test-monitoring; x=$(echo $?); curl -fsI -X POST http://localhost:15020/quitquitquit
           && exit $x
 EOF
-  `
+  )
 
   echo "${patchSidecarContainerCommand}" > patchSidecarContainerCommand.yaml
   kubectl get ${crd} -n ${namespace} ${name} -o yaml > testdef.yaml
