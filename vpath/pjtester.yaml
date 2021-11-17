@@ -1,2 +1,5 @@
 pjNames:
-  - pre-cli-integration-kyma-2
+  - pjName: pre-cli-integration-kyma-2
+  - pjName: kyma-integration-k3d
+  - pjName: pre-main-reconciler-integration-k3d
+  - pjName: pre-main-serverless-integration-k3s
