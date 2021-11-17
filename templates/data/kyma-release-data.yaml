@@ -70,23 +70,6 @@ templates:
                     - "test-infra"
                     - "bot_token"
                     - "gke_config"
-              - jobConfig:
-                  name: pre-rel{{ $relShort }}-kyma-gke-upgrade
-                  run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  branches:
-                    - ^release-{{ $rel }}$
-                  env:
-                    CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
-                    PROVISION_REGIONAL_CLUSTER: "true"
-                    NODES_PER_ZONE: "1"
-                    MACHINE_TYPE: "n1-highcpu-16"
-                  labels:
-                    preset-build-pr: "true"
-                    preset-gke-upgrade-pre-release-job: "true"
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade.sh"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -134,36 +117,6 @@ templates:
                   args:
                     - "-c"
                     - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
-                  local:
-                    - "test-infra"
-                    - "bot_token"
-                    - "gke_config"
-              - jobConfig:
-                  name: post-rel{{ $relShort }}-kyma-gke-upgrade
-                  branches:
-                    - ^release-{{ $rel }}$
-                  env:
-                    CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
-                    PROVISION_REGIONAL_CLUSTER: "true"
-                    NODES_PER_ZONE: "1"
-                    MACHINE_TYPE: "n1-highcpu-16"
-                  labels:
-                    preset-gke-upgrade-post-job: "true"
-                    preset-build-release: "true"
-                    preset-log-collector-slack-token: "true"
-                  annotations:
-                    testgrid-dashboards: kyma_release-{{ $rel }}
-                    description: Kyma GKE upgrade job for release {{ $rel }}.
-                    testgrid-days-of-results: "60"
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade.sh"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

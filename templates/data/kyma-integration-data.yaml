@@ -344,17 +344,6 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
             env:
               CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
-          gke_upgrade_job_template:
-            annotations:
-              pipeline.installer: kubectl-apply
-              pipeline.test: octopus
-              pipeline.clusterprovisioning: gcloud cli
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade.sh"
-            env:
-              CLOUDSDK_COMPUTE_ZONE: "europe-west4-a"
-              PROVISION_REGIONAL_CLUSTER: "true"
-              NODES_PER_ZONE: "1"
-              MACHINE_TYPE: "n1-highcpu-16"
           gke_central_job_template:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-central.sh"
             env:
