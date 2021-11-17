@@ -121,9 +121,8 @@ func yamlNodeToString(yamlNode *yaml.Node, column int) (string, error) {
 
 	// TODO is there a better way to push it into correct place?
 	outputLine := trimTrailingNewline(string(outputBytes))
-	for i := 1; i < column; i++ {
-		outputLine = " " + outputLine
-	}
+	outputLine = strings.Repeat(" ", column-1) + outputLine
+
 	return outputLine, nil
 }
 
@@ -141,7 +140,7 @@ func getYamlNode(parsedYaml *yaml.Node, wantedKey string) *yaml.Node {
 	return nil
 }
 
-// updateImages looks for "version" field for each image and replaces its content with a targetTag value
+// updateImages looks for "version" field in each image and replaces its content with a targetTag value
 func updateImages(images *yaml.Node, targetTag string, lines []string) error {
 	for _, val := range images.Content {
 		if val.Tag == "!!map" {
