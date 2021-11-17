@@ -47,7 +47,7 @@ function install_cli() {
 function deploy_kyma() {
   # Install k3d v5.1.0
   sudo wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v5.1.0 bash
-  kyma alpha provision k3d -p 80:80@loadbalancer -p 443:443@loadbalancer
+  kyma alpha provision k3d -p 80:80@loadbalancer -p 443:443@loadbalancer --registry-port 5000
 
   local kyma_deploy_cmd
   kyma_deploy_cmd="kyma deploy -p evaluation --ci --verbose --source=local --workspace ${KYMA_SOURCES_DIR}"
