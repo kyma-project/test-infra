@@ -269,6 +269,7 @@ function applyCommonOverrides() {
 function prometheusMTLSPatch() {
   patchPrometheusForMTLS
   patchAlertManagerForMTLS
+  patchDeploymentsToInjectSidecar
   patchKymaServiceMonitorsForMTLS
   removeKymaPeerAuthsForPrometheus
   patchMonitoringTests
@@ -339,8 +340,50 @@ EOF
   rm patch.yaml
 }
 
+function patchDeploymentsToInjectSidecar() {
+  allDeploy=(
+    monitoring-kube-state-metrics
+    monitoring-operator
+    monitoring-prometheus-istio-server
+  )
+
+  resource="deployment"
+  namespace="kyma-system"
+
+  for depl in "${allDeploy[@]}"; do
+    if kubectl get ${resource} -n ${namespace} "${depl}" > /dev/null; then
+      kubectl get ${resource} -n ${namespace} "${depl}" -o yaml > "${depl}.yaml"
+
+      if [[ "$OSTYPE" == "darwin"* ]]; then
+        sed -i '' -e 's/sidecar.istio.io\/inject: "false"/sidecar.istio.io\/inject: "true"/g' "${depl}.yaml"
+      else # assume Linux otherwise
+        sed -i 's/sidecar.istio.io\/inject: "false"/sidecar.istio.io\/inject: "true"/g' "${depl}.yaml"
+      fi
+
+      kubectl apply -f "${depl}.yaml" || true
+
+      rm "${depl}.yaml"
+    fi
+  done
+}
+
 function patchKymaServiceMonitorsForMTLS() {
-  kymaSvcMonitors=(kiali logging-fluent-bit logging-loki ory-oathkeeper-maester ory-hydra-maester tracing-jaeger-operator tracing-jaeger monitoring-grafana monitoring-alertmanager)
+  kymaSvcMonitors=(
+    kiali
+    logging-fluent-bit
+    logging-loki
+    ory-oathkeeper-maester
+    ory-hydra-maester
+    tracing-jaeger-operator
+    tracing-jaeger
+    monitoring-grafana
+    monitoring-alertmanager
+    dex
+    monitoring-prometheus-pushgateway
+    monitoring-kube-state-metrics
+    monitoring-operator
+    monitoring-prometheus-istio-server-server
+  )
 
   crd="servicemonitors.monitoring.coreos.com"
   namespace="kyma-system"
@@ -357,21 +400,25 @@ EOF
   echo "$patchContent" > tmp_patch_content.yaml
 
   for sm in "${kymaSvcMonitors[@]}"; do
-    kubectl get ${crd} -n ${namespace} "${sm}" -o yaml > "${sm}.yaml"
+    if kubectl get ${crd} -n ${namespace} "${sm}" > /dev/null; then
+      kubectl get ${crd} -n ${namespace} "${sm}" -o yaml > "${sm}.yaml"
 
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-      sed -i '' -e '/ endpoints:/r tmp_patch_content.yaml' "${sm}.yaml"
-      sed -i '' -e 's/- port:/  port:/g' "${sm}.yaml"
-      sed -i '' -e 's/- metricRelabelings:/  metricRelabelings:/g' "${sm}.yaml"
-    else # assume Linux otherwise
-      sed -i '/ endpoints:/r tmp_patch_content.yaml' "${sm}.yaml"
-      sed -i 's/- port:/  port:/g' "${sm}.yaml"
-      sed -i 's/- metricRelabelings:/  metricRelabelings:/g' "${sm}.yaml"
+      if [[ "$OSTYPE" == "darwin"* ]]; then
+        sed -i '' -e '/ endpoints:/r tmp_patch_content.yaml' "${sm}.yaml"
+        sed -i '' -e 's/- port:/  port:/g' "${sm}.yaml"
+        sed -i '' -e 's/- metricRelabelings:/  metricRelabelings:/g' "${sm}.yaml"
+        sed -i '' -e 's/- honorLabels:/  honorLabels:/g' "${sm}.yaml"
+      else # assume Linux otherwise
+        sed -i '/ endpoints:/r tmp_patch_content.yaml' "${sm}.yaml"
+        sed -i 's/- port:/  port:/g' "${sm}.yaml"
+        sed -i 's/- metricRelabelings:/  metricRelabelings:/g' "${sm}.yaml"
+        sed -i 's/- honorLabels:/  honorLabels:/g' "${sm}.yaml"
+      fi
+
+      kubectl apply -f "${sm}.yaml" || true
+
+      rm "${sm}.yaml"
     fi
-
-    kubectl apply -f "${sm}.yaml" || true
-
-    rm "${sm}.yaml"
   done
 
   rm tmp_patch_content.yaml
@@ -381,7 +428,18 @@ function removeKymaPeerAuthsForPrometheus() {
   crd="peerauthentications.security.istio.io"
   namespace="kyma-system"
 
-  allPAs=(kiali logging-fluent-bit-metrics logging-loki monitoring-grafana-policy ory-oathkeeper-maester-metrics ory-hydra-maester-metrics tracing-jaeger-operator-metrics tracing-jaeger-metrics)
+  allPAs=(
+    kiali
+    logging-fluent-bit-metrics
+    logging-loki
+    monitoring-grafana-policy
+    ory-oathkeeper-maester-metrics
+    ory-hydra-maester-metrics
+    tracing-jaeger-operator-metrics
+    tracing-jaeger-metrics
+    dex-service
+    monitoring-prometheus-pushgateway
+  )
 
   for pa in "${allPAs[@]}"; do
     kubectl delete ${crd} -n ${namespace} "${pa}" || true
