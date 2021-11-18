@@ -28,6 +28,12 @@ func PromoteCmd() *cobra.Command {
 			// remove trailing slash to have consistent paths
 			ResourcesDirectoryClean := filepath.Clean(ResourcesDirectory)
 
+			if options.targetContainerRegistry == "" && options.targetTag == "" {
+				fmt.Println("At leat one flag expected, nothing to do")
+				cmd.Help()
+				os.Exit(1)
+			}
+
 			err := filepath.Walk(ResourcesDirectory, promote.GetWalkFunc(ResourcesDirectoryClean, options.targetContainerRegistry, options.targetTag))
 			if err != nil {
 				fmt.Printf("Cannot traverse directory: %s\n", err)
