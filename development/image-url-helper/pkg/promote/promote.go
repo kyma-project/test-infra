@@ -9,10 +9,11 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/list"
 	"gopkg.in/yaml.v3"
 )
 
-func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag string) filepath.WalkFunc {
+func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag string, dryRun bool, images *[]list.Image) filepath.WalkFunc {
 	return func(path string, info os.FileInfo, err error) error {
 		//pass the error further, this shouldn't ever happen
 		if err != nil {
@@ -30,6 +31,7 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 		}
 
 		var parsedFile yaml.Node
+		var parsedImagesFile list.ValueFile
 		lines := make([]string, 0)
 
 		yamlFile, err := os.Open(path)
@@ -53,6 +55,15 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 		if scanner.Err() != nil {
 			return fmt.Errorf("error while reading %s file: %s", path, scanner.Err())
 		}
+
+		// get list of images
+		yamlFile.Seek(0, 0)
+		decoder = yaml.NewDecoder(yamlFile)
+		err = decoder.Decode(&parsedImagesFile)
+		if err != nil {
+			return fmt.Errorf("error while decoding %s file: %s", path, err)
+		}
+		appendImagesToList(parsedImagesFile, images)
 
 		globalNode := getYamlNode(parsedFile.Content[0], "global")
 		if globalNode == nil {
@@ -103,9 +114,11 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 		}
 
 		// save updated file
-		err = saveToFile(path, lines)
-		if err != nil {
-			return fmt.Errorf("error while saving %s file: %s", path, err)
+		if !dryRun {
+			err = saveToFile(path, lines)
+			if err != nil {
+				return fmt.Errorf("error while saving %s file: %s", path, err)
+			}
 		}
 
 		return nil
@@ -155,6 +168,7 @@ func updateImages(images *yaml.Node, targetTag string, lines []string) error {
 			// loop over values in singular image
 			for key, imageVal := range val.Content {
 				if (imageVal.Value == "version") && (key+1 < len(val.Content)) {
+					val.Content[key+1].Value = targetTag
 					// parse just the version line
 					var versionLineParsed yaml.Node
 					yaml.Unmarshal([]byte(lines[imageVal.Line-1]), &versionLineParsed)
