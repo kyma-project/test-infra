@@ -3,6 +3,7 @@ package promote
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -33,14 +34,14 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 
 		yamlFile, err := os.Open(path)
 		if err != nil {
-			return errors.New(err.Error() + " in file " + path)
+			return fmt.Errorf("error while opening %s file: %s", path, err)
 		}
 		defer yamlFile.Close()
 
 		decoder := yaml.NewDecoder(yamlFile)
 		err = decoder.Decode(&parsedFile)
 		if err != nil {
-			return errors.New(err.Error() + " in file " + path)
+			return fmt.Errorf("error while unmarshalling %s file: %s", path, err)
 		}
 
 		// rewind and load the file into array of lines
@@ -50,11 +51,12 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 			lines = append(lines, scanner.Text())
 		}
 		if scanner.Err() != nil {
-			return scanner.Err()
+			return fmt.Errorf("error while reading %s file: %s", path, scanner.Err())
 		}
 
 		globalNode := getYamlNode(parsedFile.Content[0], "global")
 		if globalNode == nil {
+			// skip the whole file
 			return nil
 		}
 
@@ -62,19 +64,20 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 		if targetContainerRegistry != "" {
 			containerRegistryNode := getYamlNode(globalNode, "containerRegistry")
 			if containerRegistryNode == nil {
+				// skip files without images
 				return nil
 			}
 
 			containerRegistryPathNode := getYamlNode(containerRegistryNode, "path")
 			if containerRegistryPathNode == nil {
-				// TODO maybe we need some verbose info here?
-				return nil
+				// raise error if the containerRegistry is defined, but psth is not
+				return fmt.Errorf("error in %s file: could not find global.containerRegistry.path key", path)
 			}
 			containerRegistryPathNode.Value = targetContainerRegistry
 
 			outputLine, err := yamlNodeToString(containerRegistryNode, containerRegistryNode.Content[0].Column)
 			if err != nil {
-				return err
+				return fmt.Errorf("error while parsing containerRegistry in %s file: %s", path, err)
 			}
 
 			lines[containerRegistryNode.Line-1] = outputLine
@@ -84,19 +87,25 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 		if targetTag != "" {
 			imagesNode := getYamlNode(globalNode, "images")
 			if imagesNode != nil {
-				updateImages(imagesNode, targetTag, lines)
+				err = updateImages(imagesNode, targetTag, lines)
+				if err != nil {
+					return fmt.Errorf("error while parsing images in %s file: %s", path, err)
+				}
 			}
 
 			testImagesNode := getYamlNode(globalNode, "testImages")
 			if testImagesNode != nil {
-				updateImages(testImagesNode, targetTag, lines)
+				err = updateImages(testImagesNode, targetTag, lines)
+				if err != nil {
+					return fmt.Errorf("error while parsing testImages in %s file: %s", path, err)
+				}
 			}
 		}
 
 		// save updated file
 		err = saveToFile(path, lines)
 		if err != nil {
-			return err
+			return fmt.Errorf("error while saving %s file: %s", path, err)
 		}
 
 		return nil
@@ -169,7 +178,13 @@ func updateImages(images *yaml.Node, targetTag string, lines []string) error {
 func saveToFile(path string, lines []string) error {
 	outputData := strings.Join(lines, "\n")
 	outputData += "\n"
-	err := ioutil.WriteFile(path, []byte(outputData), 0666)
+
+	info, err := os.Stat(path)
+	if err != nil {
+		return err
+	}
+
+	err = ioutil.WriteFile(path, []byte(outputData), info.Mode())
 	if err != nil {
 		return err
 	}
