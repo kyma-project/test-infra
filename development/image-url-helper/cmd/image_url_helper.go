@@ -16,6 +16,7 @@ var (
 func Execute() error {
 	rootCmd.AddCommand(CheckCmd())
 	rootCmd.AddCommand(ListCmd())
+	rootCmd.AddCommand(PromoteCmd())
 
 	return rootCmd.Execute()
 }
