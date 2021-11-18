@@ -4,6 +4,8 @@ import (
 	"github.com/google/go-github/v40/github"
 )
 
+// IssueTransferredEvent represent GitHub.IssuesEvent for transferred action.
+// It adds support for NewIssue and NewRepository json keys from GitHub webhook.
 type IssueTransferredEvent struct {
 	github.IssuesEvent
 	Changes *TransferredChange `json:"changes,omitempty"`
