@@ -41,7 +41,7 @@ templates:
             jobs:
               - jobConfig:
                   name: "skr-kyma-to-kyma2-upgrade-aws-dev"
-                  cron: "* */4 * * *" # "Every four hours"
+                  cron: "0 */4 * * *" # "Every four hours"
                   # labels:
                   #   preset-skr-al-service-key: "true"
                 inheritedConfigs:
