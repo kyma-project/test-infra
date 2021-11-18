@@ -2,10 +2,11 @@
 
 ## Overview
 
-Image URL Helper is a tool that provides two subcommands:
+Image URL Helper is a tool that provides three subcommands:
 
 * The `check` command finds all Helm chart images that don't use the `imageurl` template.
 * The `list` command lists all Helm chart images by checking the `values.yaml` files.
+* The `promote` command updates container registry path and all Helm chart images versions by updating the `values.yaml` files.
 
 ## Usage
 
@@ -25,6 +26,15 @@ go run main.go \
     list \
     --exclude-test-images=true \
     --output-format=json
+```
+
+To run the `promote` command, use:
+```bash
+go run main.go \ 
+    --resources-directory={PATH_TO_A_KYMA_RESOURCES_DIRECTORY} \
+    promote \
+    --target-container-registry=eu.gcr.io/example \
+    --target-tag=release-1
 ```
 ### Exclude images from the check command
 To exclude image lines from being checked, create a YAML file that contains a list of files and values of images that you want to exclude from the check. Then, provide a path to this file in the `check` command argument. See the example of such a YAML file:
@@ -60,3 +70,14 @@ See the list of flags available for the `list` command:
 | **--resources-directory** |   Yes    | Path to the Kyma resources directory.|
 | **--output-format**       |    No    | Name of the output format (JSON/YAML).|
 | **--exclude-test-images**  |    No    | Exclude test images from the output.|
+
+
+### Promote command flags
+
+See the list of flags available for the `promote` command:
+
+| Name                      | Required | Description                                                                                          |
+| :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
+| **--resources-directory** |   Yes    | Path to the Kyma resources directory.|
+| **--target-container-registry** |    No    | Path of the target container registry.|
+| **--target-tag**  |    No    | Name of the target image tags.|
