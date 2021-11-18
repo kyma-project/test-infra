@@ -168,7 +168,6 @@ func updateImages(images *yaml.Node, targetTag string, lines []string) error {
 			// loop over values in singular image
 			for key, imageVal := range val.Content {
 				if (imageVal.Value == "version") && (key+1 < len(val.Content)) {
-					val.Content[key+1].Value = targetTag
 					// parse just the version line
 					var versionLineParsed yaml.Node
 					yaml.Unmarshal([]byte(lines[imageVal.Line-1]), &versionLineParsed)

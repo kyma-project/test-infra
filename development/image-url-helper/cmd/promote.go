@@ -16,6 +16,7 @@ type promoteCmdOptions struct {
 	targetContainerRegistry string
 	targetTag               string
 	dryRun                  bool
+	sign                    bool
 }
 
 // PromoteCmd replaces containerRegistry and image versions with the provided ones
@@ -41,8 +42,8 @@ func PromoteCmd() *cobra.Command {
 
 			sort.Slice(images, list.GetSortImagesFunc(images))
 			images = list.RemoveDoubles(images)
-			// TODO pass "sign" as cli arg
-			err = promote.PrintExternalSyncerYaml(images, options.targetContainerRegistry, options.targetTag, true)
+
+			err = promote.PrintExternalSyncerYaml(images, options.targetContainerRegistry, options.targetTag, options.sign)
 			if err != nil {
 				fmt.Printf("Cannot print list of images: %s\n", err)
 				os.Exit(2)
@@ -58,6 +59,7 @@ func addPromoteCmdFlags(cmd *cobra.Command, options *promoteCmdOptions) {
 	cmd.Flags().StringVarP(&options.targetContainerRegistry, "target-container-registry", "c", "", "Name of the target registry")
 	cmd.Flags().StringVarP(&options.targetTag, "target-tag", "t", "", "Name of the target tag")
 	cmd.Flags().BoolVarP(&options.dryRun, "dry-run", "d", true, "Dry run enabled, nothing is changed")
+	cmd.Flags().BoolVarP(&options.sign, "sign", "s", true, "Set sign flag in outputted yaml file")
 	cmd.MarkFlagRequired("target-container-registry")
 	envy.ParseCobra(cmd, envy.CobraConfig{Persistent: true, Prefix: "IMAGE_URL_HELPER"})
 }
