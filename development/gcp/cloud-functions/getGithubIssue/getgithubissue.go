@@ -27,8 +27,6 @@ var (
 	ts                      oauth2.TokenSource
 	projectID               string
 	githubAccessToken       string
-	githubOrg               string
-	githubRepo              string
 	firestoreCollection     string
 	getGithubCommiterTopic  string
 	getProwjobErrorsTopic   string
@@ -41,8 +39,6 @@ func init() {
 	// set variables from environment variables
 	projectID = os.Getenv("GCP_PROJECT_ID")
 	githubAccessToken = os.Getenv("GITHUB_ACCESS_TOKEN")
-	githubOrg = os.Getenv("GITHUB_ORG")
-	githubRepo = os.Getenv("GITHUB_REPO")
 	firestoreCollection = os.Getenv("FIRESTORE_COLLECTION")
 	getGithubCommiterTopic = os.Getenv("GET_GITHUB_COMMITER_TOPIC")
 	getProwjobErrorsTopic = os.Getenv("GET_PROWJOB_ERRORS_TOPIC")
@@ -62,12 +58,6 @@ func init() {
 	}
 	if githubAccessToken == "" {
 		panic("environment variable GITHUB_ACCESS_TOKEN is empty")
-	}
-	if githubOrg == "" {
-		panic("environment variable GITHUB_ORG is empty")
-	}
-	if githubRepo == "" {
-		panic("environment variable GITHUB_REPO is empty")
 	}
 	if firestoreCollection == "" {
 		panic("environment variable FIRESTORE_COLLECTION is empty, can't setup firebase client")
