@@ -15,17 +15,14 @@ type promoteCmdOptions struct {
 	targetTag               string
 }
 
-// TODO I'm bad with documentation
-
-// PromoteCmd promotes containerRegistry to a new one
+// PromoteCmd replaces containerRegistry and image versions with the provided ones
 func PromoteCmd() *cobra.Command {
 	options := promoteCmdOptions{}
 	cmd := &cobra.Command{
-		Use: "promote",
-		// TODO this description is horrible
+		Use:     "promote",
 		Short:   "Promote images",
-		Long:    "List all images used in Helm charts by checking values.yaml files",
-		Example: "image-url-helper promote --target-container-registry abc",
+		Long:    "Replace container registry and image version values in values.yaml files with selected ones",
+		Example: "image-url-helper promote --target-container-registry abc --target-tag release-1",
 		Args:    cobra.ExactArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			// remove trailing slash to have consistent paths
@@ -44,9 +41,7 @@ func PromoteCmd() *cobra.Command {
 }
 
 func addPromoteCmdFlags(cmd *cobra.Command, options *promoteCmdOptions) {
-	// TODO add possiblity to do not-inplace replacements???
 	cmd.Flags().StringVarP(&options.targetContainerRegistry, "target-container-registry", "c", "", "Name of the target registry")
 	cmd.Flags().StringVarP(&options.targetTag, "target-tag", "t", "", "Name of the target tag")
-	cmd.MarkFlagRequired("target-container-registry")
 	envy.ParseCobra(cmd, envy.CobraConfig{Persistent: true, Prefix: "IMAGE_URL_HELPER"})
 }

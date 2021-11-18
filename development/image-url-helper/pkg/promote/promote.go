@@ -128,7 +128,7 @@ func yamlNodeToString(yamlNode *yaml.Node, column int) (string, error) {
 		return "", err
 	}
 
-	// TODO is there a better way to push it into correct place?
+	// add necessary tabbing
 	outputLine := trimTrailingNewline(string(outputBytes))
 	outputLine = strings.Repeat(" ", column-1) + outputLine
 
@@ -139,8 +139,7 @@ func yamlNodeToString(yamlNode *yaml.Node, column int) (string, error) {
 func getYamlNode(parsedYaml *yaml.Node, wantedKey string) *yaml.Node {
 	for key, val := range parsedYaml.Content {
 		if val.Value == wantedKey {
-			// "name: value" pairs are split into two values in the Content array
-			// TODO is this check really needed? If this is false, it should've failed on the unmarshalling step anyway
+			// "name: value" pairs are split into two values in the Content array, this should always be true
 			if key+1 < len(parsedYaml.Content) {
 				return parsedYaml.Content[key+1]
 			}
