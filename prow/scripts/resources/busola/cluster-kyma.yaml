@@ -4,6 +4,19 @@ metadata:
   name: $DOMAIN_NAME
 spec:
   cloudProfileName: gcp
+  extensions:
+  - type: shoot-dns-service
+    providerConfig:
+      apiVersion: service.dns.extensions.gardener.cloud/v1alpha1
+      dnsProviderReplication:
+        enabled: true
+      kind: DNSConfig
+  - type: shoot-cert-service
+    providerConfig:
+      apiVersion: service.cert.extensions.gardener.cloud/v1alpha1
+      kind: CertConfig
+      shootIssuers:
+        enabled: true
   kubernetes:
     allowPrivilegedContainers: true
     kubeAPIServer:
