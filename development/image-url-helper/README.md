@@ -34,7 +34,8 @@ go run main.go \
     --resources-directory={PATH_TO_A_KYMA_RESOURCES_DIRECTORY} \
     promote \
     --target-container-registry=eu.gcr.io/example \
-    --target-tag=release-1
+    --target-tag=release-1 \
+    --dry-run=false
 ```
 ### Exclude images from the check command
 To exclude image lines from being checked, create a YAML file that contains a list of files and values of images that you want to exclude from the check. Then, provide a path to this file in the `check` command argument. See the example of such a YAML file:
@@ -81,3 +82,5 @@ See the list of flags available for the `promote` command:
 | **--resources-directory** |   Yes    | Path to the Kyma resources directory.|
 | **--target-container-registry** |    No    | Path of the target container registry.|
 | **--target-tag**  |    No    | Name of the target image tags.|
+| **--dry-run**  |    No    | The boolean value that controls the dry-run mode. It defaults to `true`.|
+| **--sign**  |    No    | The boolean value that sets `sign` value in the output YAML list. It defaults to `true`.|
