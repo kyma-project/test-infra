@@ -152,10 +152,17 @@ func GetFailureInstanceDetails(ctx context.Context, m kymapubsub.MessagePayload)
 	if *failingTestMessage.Status == "failure" || *failingTestMessage.Status == "error" {
 		// For periodic prowjob get documents for open failing test instances for matching periodic.
 		if *failingTestMessage.JobType == "periodic" {
-			iter = firestoreClient.Collection(firestoreCollection).Where("jobName", "==", *failingTestMessage.JobName).Where("jobType", "==", *failingTestMessage.JobType).Where("open", "==", true).Documents(ctx)
+			iter = firestoreClient.Collection(firestoreCollection).Where(
+				"jobName", "==", *failingTestMessage.JobName).Where(
+				"jobType", "==", *failingTestMessage.JobType).Where(
+				"open", "==", true).Documents(ctx)
 			//	For postsubmit prowjob get documents for open failing test for matching postsubmit with the same baseSha. If baseSha is different it's represented by another failing test instance.
 		} else if *failingTestMessage.JobType == "postsubmit" {
-			iter = firestoreClient.Collection(firestoreCollection).Where("jobName", "==", *failingTestMessage.JobName).Where("jobType", "==", *failingTestMessage.JobType).Where("open", "==", true).Where("baseSha", "==", failingTestMessage.Refs[0].BaseSHA).Documents(ctx)
+			iter = firestoreClient.Collection(firestoreCollection).Where(
+				"jobName", "==", *failingTestMessage.JobName).Where(
+				"jobType", "==", *failingTestMessage.JobType).Where(
+				"open", "==", true).Where(
+				"baseSha", "==", failingTestMessage.Refs[0].BaseSHA).Documents(ctx)
 		} else {
 			return nil
 		}

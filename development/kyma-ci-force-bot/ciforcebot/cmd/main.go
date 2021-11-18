@@ -9,13 +9,16 @@ import (
 	"cloud.google.com/go/firestore"
 	"cloud.google.com/go/logging"
 	cloudevents "github.com/cloudevents/sdk-go/v2"
-	"github.com/google/go-github/github"
+	"github.com/google/go-github/v40/github"
+	kymaghclient "github.com/kyma-project/test-infra/development/github/pkg/client"
 	log "github.com/sirupsen/logrus"
 	"github.com/vrischmann/envconfig"
 )
 
 const (
 	errorReportingType = "type.googleapis.com/google.devtools.clouderrorreporting.v1beta1.ReportedErrorEvent"
+	githubWebhookIssueClosedV1KymaEventType = "sap.kyma.custom.ciforcebot.issuesevent.closed.v1"
+	githubWebhookIssueTransferredV1KymaEventType = "sap.kyma.custom.ciforcebot.issuesevent.transferred.v1"
 )
 
 var (
@@ -41,6 +44,11 @@ type loggingPayload struct {
 	Message   string `json:"message"`
 	Operation string `json:"operation,omitempty"`
 	Type      string `json:"@type,omitempty"`
+}
+
+type GhEvent interface {
+	GetIssue() *github.Issue
+	GetRepo() *github.Repository
 }
 
 func init() {
@@ -110,8 +118,16 @@ func receive(event cloudevents.Event) {
 		},
 	})
 
-	issueEvent := new(github.IssuesEvent)
-	err := event.DataAs(issueEvent)
+	switch event.Type() {
+	case githubWebhookIssueClosedV1KymaEventType:
+		issueClosedAction(ctx, event,  logger, trace)
+	case githubWebhookIssueTransferredV1KymaEventType:
+		issueTransferredAction(ctx, event, logger, trace)
+	}
+}
+
+func decodeGithubEventFromPayload(event cloudevents.Event, issuesEvent GhEvent, logger *logging.Logger, trace string) {
+	err := event.DataAs(issuesEvent)
 
 	if err != nil {
 		logger.Log(logging.Entry{
@@ -125,17 +141,25 @@ func receive(event cloudevents.Event) {
 			},
 		})
 	}
+
 	logger.Log(logging.Entry{
 		Timestamp: time.Now(),
 		Severity:  logging.Info,
 		Trace:     trace,
 		Payload: loggingPayload{
-			Message:   fmt.Sprintf("received issue closed notification for issue number: %d", issueEvent.Issue.GetNumber()),
+			Message:   fmt.Sprintf("received %s notification for github issue number: %d", event.Type(), issuesEvent.GetIssue().GetNumber()),
 			Operation: "processing received cloudevents event",
 		},
 	})
+}
 
-	iter := firestoreClient.Collection(conf.FirestoreCollection).Where("open", "==", true).Where("githubIssueNumber", "==", issueEvent.Issue.GetNumber()).Documents(ctx)
+func getFailingTestInstanceFromFirestore(ctx context.Context, firestoreClient *firestore.Client, issuesEvent GhEvent, logger *logging.Logger, trace string) []*firestore.DocumentSnapshot {
+
+	iter := firestoreClient.Collection(conf.FirestoreCollection).Where(
+		"githubIssueNumber", "==", issuesEvent.GetIssue().GetNumber()).Where(
+			"githubIssueRepo", "==", issuesEvent.GetRepo().GetName()).Where(
+				"githubIssueOrg", "==", issuesEvent.GetRepo().GetOwner().GetName()).Where(
+					"open", "==", true).Documents(ctx)
 	failureInstances, err := iter.GetAll()
 
 	if err != nil {
@@ -150,11 +174,26 @@ func receive(event cloudevents.Event) {
 			},
 		})
 	}
+	return failureInstances
+}
+
+func issueTransferredAction(ctx context.Context, event cloudevents.Event, logger *logging.Logger, trace string) {
+
+	issuesEvent := new(kymaghclient.IssueTransferredEvent)
+	decodeGithubEventFromPayload(event, issuesEvent, logger, trace)
+
+	failureInstances := getFailingTestInstanceFromFirestore(ctx, firestoreClient, issuesEvent, logger, trace)
 
 	if len(failureInstances) == 1 {
 		failureInstance := failureInstances[0]
-		// Set failing test instance in firestore as closed.
-		_, err := failureInstance.Ref.Set(ctx, map[string]bool{"open": false}, firestore.Merge([]string{"open"}))
+		updates := []firestore.Update{
+			{Path: "githubIssueNumber", Value: issuesEvent.GetChanges().GetNewIssue().GetNumber()},
+			{Path: "githubIssueRepo", Value: issuesEvent.GetChanges().GetNewRepository().GetName()},
+			{Path: "githubIssueOrg", Value: issuesEvent.GetChanges().GetNewRepository().GetOwner().GetName()},
+			{Path: "githubIssueUrl", Value: issuesEvent.GetChanges().GetNewIssue().GetURL()},
+		}
+		// Set new github issue for failing test instance in firestore.
+		_, err := failureInstance.Ref.Update(ctx, updates, firestore.Exists)
 
 		if err != nil {
 			logger.Log(logging.Entry{
@@ -162,7 +201,7 @@ func receive(event cloudevents.Event) {
 				Severity:  logging.Error,
 				Trace:     trace,
 				Payload: loggingPayload{
-					Message:   fmt.Sprintf("failed set failure instances as closed in firestore for github issue number %d, got error: %v", issueEvent.Issue.GetNumber(), err),
+					Message:   fmt.Sprintf("failed replace old github issue %s with new github issue %s in firestore, got error: %v", issuesEvent.GetIssue().GetURL(), issuesEvent.GetChanges().GetNewIssue().GetURL(), err),
 					Operation: "processing received cloudevents event",
 					Type:      errorReportingType,
 				},
@@ -173,7 +212,7 @@ func receive(event cloudevents.Event) {
 			Severity:  logging.Info,
 			Trace:     trace,
 			Payload: loggingPayload{
-				Message:   fmt.Sprintf("closed failing test instance in firestore for github issue number %d", issueEvent.Issue.GetNumber()),
+				Message:   fmt.Sprintf("updated failing test instance with new github issue in firestore, new github issue: %s", issuesEvent.GetChanges().GetNewIssue().GetURL()),
 				Operation: "processing received cloudevents event",
 			},
 		})
@@ -183,7 +222,7 @@ func receive(event cloudevents.Event) {
 			Severity:  logging.Info,
 			Trace:     trace,
 			Payload: loggingPayload{
-				Message:   fmt.Sprintf("could not found open failing test instance for github issue number %d", issueEvent.Issue.GetNumber()),
+				Message:   fmt.Sprintf("could not found open failing test instance for transferred github issue %s", issuesEvent.GetIssue().GetURL()),
 				Operation: "processing received cloudevents event",
 			},
 		})
@@ -193,7 +232,67 @@ func receive(event cloudevents.Event) {
 			Severity:  logging.Error,
 			Trace:     trace,
 			Payload: loggingPayload{
-				Message:   fmt.Sprintf("more than one open failing test instance found in firestore for github issue number %d", issueEvent.Issue.GetNumber()),
+				Message:   fmt.Sprintf("more than one open failing test instance found in firestore for old github issue %s", issuesEvent.GetIssue().GetURL()),
+				Operation: "processing received cloudevents event",
+				Type:      errorReportingType,
+			},
+		})
+	}
+}
+
+func issueClosedAction(ctx context.Context, event cloudevents.Event, logger *logging.Logger, trace string) {
+
+	issuesEvent := new(github.IssuesEvent)
+	decodeGithubEventFromPayload(event, issuesEvent, logger, trace)
+
+	failureInstances := getFailingTestInstanceFromFirestore(ctx, firestoreClient, issuesEvent, logger, trace)
+
+	if len(failureInstances) == 1 {
+		failureInstance := failureInstances[0]
+		updates := []firestore.Update{
+			{Path: "open", Value: false},
+		}
+		// Set failing test instance in firestore as closed.
+		_, err := failureInstance.Ref.Update(ctx, updates, firestore.Exists)
+
+		if err != nil {
+			logger.Log(logging.Entry{
+				Timestamp: time.Now(),
+				Severity:  logging.Error,
+				Trace:     trace,
+				Payload: loggingPayload{
+					Message:   fmt.Sprintf("failed set failure instances as closed in firestore for github issue number %d, got error: %v", issuesEvent.GetIssue().GetNumber(), err),
+					Operation: "processing received cloudevents event",
+					Type:      errorReportingType,
+				},
+			})
+		}
+		logger.Log(logging.Entry{
+			Timestamp: time.Now(),
+			Severity:  logging.Info,
+			Trace:     trace,
+			Payload: loggingPayload{
+				Message:   fmt.Sprintf("closed failing test instance in firestore for github issue number %d", issuesEvent.GetIssue().GetNumber()),
+				Operation: "processing received cloudevents event",
+			},
+		})
+	} else if len(failureInstances) == 0 {
+		logger.Log(logging.Entry{
+			Timestamp: time.Now(),
+			Severity:  logging.Info,
+			Trace:     trace,
+			Payload: loggingPayload{
+				Message:   fmt.Sprintf("could not found open failing test instance for github issue number %d", issuesEvent.GetIssue().GetNumber()),
+				Operation: "processing received cloudevents event",
+			},
+		})
+	} else if len(failureInstances) > 1 {
+		logger.Log(logging.Entry{
+			Timestamp: time.Now(),
+			Severity:  logging.Error,
+			Trace:     trace,
+			Payload: loggingPayload{
+				Message:   fmt.Sprintf("more than one open failing test instance found in firestore for github issue number %d", issuesEvent.GetIssue().GetNumber()),
 				Operation: "processing received cloudevents event",
 				Type:      errorReportingType,
 			},

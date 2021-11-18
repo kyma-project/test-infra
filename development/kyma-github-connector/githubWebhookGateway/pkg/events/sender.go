@@ -4,8 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	cloudevents "github.com/cloudevents/sdk-go/v2"
 	"strings"
+
+	cloudevents "github.com/cloudevents/sdk-go/v2"
 
 	"github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway/pkg/apperrors"
 
