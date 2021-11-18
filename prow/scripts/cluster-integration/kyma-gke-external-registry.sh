@@ -8,8 +8,7 @@
 # - REPO_OWNER - Set up by prow, repository owner/organization
 # - REPO_NAME - Set up by prow, repository name
 # - BUILD_TYPE - Set up by prow, pr/master/release
-# - DOCKER_PUSH_REPOSITORY - Docker repository hostname
-# - DOCKER_PUSH_DIRECTORY - Docker "top-level" directory (with leading "/")
+# - DOCKER_PUSH_REPOSITORY - Docker repository url
 # - KYMA_PROJECT_DIR - directory path with Kyma sources to use for installation
 # - CLOUDSDK_CORE_PROJECT - GCP project for all GCP resources used during execution (Service Account, IP Address, DNS Zone, image registry etc.)
 # - CLOUDSDK_COMPUTE_REGION - GCP compute region
@@ -172,14 +171,12 @@ utils::generate_self_signed_cert \
 export TLS_CERT="${utils_generate_self_signed_cert_return_tls_cert:?}"
 export TLS_KEY="${utils_generate_self_signed_cert_return_tls_key:?}"
 
+# Prepare Docker external registry overrides
+export DOCKER_PASSWORD=""
+DOCKER_PASSWORD=$(tr -d '\n' < "${GOOGLE_APPLICATION_CREDENTIALS}")
 
-DOCKER_PASSWORD_FILE=/tmp/kyma-gke-integration/dockerPassword.json
-mkdir -p /tmp/kyma-gke-integration
-< "$GOOGLE_APPLICATION_CREDENTIALS" tr -d '\n' > /tmp/kyma-gke-integration/dockerPassword.json
-
-#shellcheck disable=SC2034
-DOCKER_PASSWORD=$(jq -c "." $DOCKER_PASSWORD_FILE 2> /dev/null)
-DOCKER_PUSH_REPOSITORY=$(echo "$DOCKER_PUSH_REPOSITORY" | cut -d'/' -f1)
+export DOCKER_REPOSITORY_ADDRESS=""
+DOCKER_REPOSITORY_ADDRESS=$(echo "$DOCKER_PUSH_REPOSITORY" | cut -d'/' -f1)
 
 export DNS_DOMAIN_TRAILING=${DNS_DOMAIN%.}
 envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-serverless-external-registry-integration-overrides.tpl.yaml" > "$PWD/kyma_overrides.yaml"
@@ -219,7 +216,7 @@ job_name="k3s-serverless-test"
 
 helm install serverless-test "${SERVERLESS_CHART_DIR}/charts/k3s-tests" -n default -f "${SERVERLESS_CHART_DIR}/values.yaml" --set jobName="${job_name}"
 kubectl patch job -n default k3s-serverless-test -p '{"metadata":{"annotations":{"sidecar.istio.io/inject":"false"}}}'
-job_status=""
+job_status=1
 
 # helm does not wait for jobs to complete even with --wait
 # TODO but helm@v3.5 has a flag that enables that, get rid of this function once we use helm@v3.5
@@ -255,10 +252,10 @@ echo "###############"
 echo ""
 
 echo "Exit code ${job_status}"
-
-if [ "${job_status}" != "" ]; then
+if [ "${job_status}" != 0 ]; then
     exit 1
 fi
+
 #!!! Must be at the end of the script !!!
 # shellcheck disable=SC2034
 ERROR_LOGGING_GUARD="false"
