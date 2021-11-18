@@ -21,7 +21,7 @@ periodics: # runs on schedule
         preset-kyma-integration-compass-enabled: "true"
         preset-kyma-integration-kcp-client-credentials: "true"
         preset-kyma-integration-subaccounnt: "true"
-      cron: "* */4 * * *"
+      cron: "0 */4 * * *"
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
