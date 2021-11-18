@@ -33,17 +33,21 @@ func PromoteCmd() *cobra.Command {
 			ResourcesDirectoryClean := filepath.Clean(ResourcesDirectory)
 
 			var images []list.Image
+			var testImages []list.Image
 
-			err := filepath.Walk(ResourcesDirectory, promote.GetWalkFunc(ResourcesDirectoryClean, options.targetContainerRegistry, options.targetTag, options.dryRun, &images))
+			err := filepath.Walk(ResourcesDirectory, promote.GetWalkFunc(ResourcesDirectoryClean, options.targetContainerRegistry, options.targetTag, options.dryRun, &images, &testImages))
 			if err != nil {
 				fmt.Printf("Cannot traverse directory: %s\n", err)
 				os.Exit(2)
 			}
 
-			sort.Slice(images, list.GetSortImagesFunc(images))
-			images = list.RemoveDoubles(images)
+			var allImages []list.Image
+			allImages = append(allImages, images...)
+			allImages = append(allImages, testImages...)
+			sort.Slice(allImages, list.GetSortImagesFunc(allImages))
+			allImages = list.RemoveDoubles(allImages)
 
-			err = promote.PrintExternalSyncerYaml(images, options.targetContainerRegistry, options.targetTag, options.sign)
+			err = promote.PrintExternalSyncerYaml(allImages, options.targetContainerRegistry, options.targetTag, options.sign)
 			if err != nil {
 				fmt.Printf("Cannot print list of images: %s\n", err)
 				os.Exit(2)

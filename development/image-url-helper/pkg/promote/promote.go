@@ -13,7 +13,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag string, dryRun bool, images *[]list.Image) filepath.WalkFunc {
+func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag string, dryRun bool, images, testImages *[]list.Image) filepath.WalkFunc {
 	return func(path string, info os.FileInfo, err error) error {
 		//pass the error further, this shouldn't ever happen
 		if err != nil {
@@ -63,7 +63,8 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 		if err != nil {
 			return fmt.Errorf("error while decoding %s file: %s", path, err)
 		}
-		appendImagesToList(parsedImagesFile, images)
+
+		list.AppendImagesToList(parsedImagesFile, images, testImages, "", make(list.ImageComponents))
 
 		globalNode := getYamlNode(parsedFile.Content[0], "global")
 		if globalNode == nil {
