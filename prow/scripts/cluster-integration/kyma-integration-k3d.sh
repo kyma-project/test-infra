@@ -65,8 +65,6 @@ function deploy_kyma() {
   fi
 
   $kyma_deploy_cmd
-  echo "kyma_deploy_cmd:"
-  echo $kyma_deploy_cmd
 
   kubectl get pods -A
 }
