@@ -14,7 +14,7 @@ presubmits: # runs on PRs
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
         preset-dind-enabled: "true"
-        preset-docker-push-repository-gke-integration: "true"
+        preset-docker-push-repository-gke-external-registry-integration: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
         preset-kyma-artifacts-bucket: "true"

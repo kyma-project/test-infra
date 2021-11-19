@@ -324,7 +324,7 @@ fi
 
 log::info "Collect list of images"
 if [ -z "$ARTIFACTS" ] ; then
-    ARTIFACTS:=/tmp/artifacts
+    ARTIFACTS=/tmp/artifacts
 fi
 
 IMAGES_LIST=$(kubectl get pods --all-namespaces -o go-template --template='{{range .items}}{{range .status.containerStatuses}}{{.name}},{{.image}},{{.imageID}}{{printf "\n"}}{{end}}{{range .status.initContainerStatuses}}{{.name}},{{.image}},{{.imageID}}{{printf "\n"}}{{end}}{{end}}' | uniq | sort)

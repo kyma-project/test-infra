@@ -38,8 +38,8 @@ function checkIfExists {
 }
 
 function createSecret {
-    kubectl create secret generic -n ${NAMESPACE} ${NAME} "${DATA[@]}"
-    kubectl label secret -n ${NAMESPACE} ${NAME} "${LABELS[@]}"
+    kubectl create secret generic -n "${NAMESPACE}" "${NAME}" "${DATA[@]}"
+    kubectl label secret -n "${NAMESPACE}" "${NAME}" "${LABELS[@]}"
 }
 
 while [[ $# -gt 0 ]]
