@@ -3,7 +3,7 @@ module github.com/kyma-project/test-infra/development/tools/cmd/dockeroomfinder
 go 1.14
 
 require (
-	github.com/containerd/containerd v1.5.7
+	github.com/containerd/containerd v1.5.8
 	github.com/containerd/typeurl v1.0.2
 	github.com/fsouza/go-dockerclient v1.7.2
 	github.com/gogo/googleapis v1.4.1 // indirect
