@@ -16,8 +16,8 @@ import (
 )
 
 const (
-	errorReportingType = "type.googleapis.com/google.devtools.clouderrorreporting.v1beta1.ReportedErrorEvent"
-	githubWebhookIssueClosedV1KymaEventType = "sap.kyma.custom.ciforcebot.issuesevent.closed.v1"
+	errorReportingType                           = "type.googleapis.com/google.devtools.clouderrorreporting.v1beta1.ReportedErrorEvent"
+	githubWebhookIssueClosedV1KymaEventType      = "sap.kyma.custom.ciforcebot.issuesevent.closed.v1"
 	githubWebhookIssueTransferredV1KymaEventType = "sap.kyma.custom.ciforcebot.issuesevent.transferred.v1"
 )
 
@@ -46,6 +46,8 @@ type loggingPayload struct {
 	Type      string `json:"@type,omitempty"`
 }
 
+// GhEvent is an interface that provides minimal methods to work with GitHub IssuesEvents.
+//
 type GhEvent interface {
 	GetIssue() *github.Issue
 	GetRepo() *github.Repository
@@ -120,7 +122,7 @@ func receive(event cloudevents.Event) {
 
 	switch event.Type() {
 	case githubWebhookIssueClosedV1KymaEventType:
-		issueClosedAction(ctx, event,  logger, trace)
+		issueClosedAction(ctx, event, logger, trace)
 	case githubWebhookIssueTransferredV1KymaEventType:
 		issueTransferredAction(ctx, event, logger, trace)
 	}
@@ -157,9 +159,9 @@ func getFailingTestInstanceFromFirestore(ctx context.Context, firestoreClient *f
 
 	iter := firestoreClient.Collection(conf.FirestoreCollection).Where(
 		"githubIssueNumber", "==", issuesEvent.GetIssue().GetNumber()).Where(
-			"githubIssueRepo", "==", issuesEvent.GetRepo().GetName()).Where(
-				"githubIssueOrg", "==", issuesEvent.GetRepo().GetOwner().GetName()).Where(
-					"open", "==", true).Documents(ctx)
+		"githubIssueRepo", "==", issuesEvent.GetRepo().GetName()).Where(
+		"githubIssueOrg", "==", issuesEvent.GetRepo().GetOwner().GetName()).Where(
+		"open", "==", true).Documents(ctx)
 	failureInstances, err := iter.GetAll()
 
 	if err != nil {
