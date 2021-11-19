@@ -9,6 +9,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// PrintExternalSyncerYaml generates YAML file ready to be used by the image-syncer tool to copy images to new container registry, with option to retag them
 func PrintExternalSyncerYaml(images []list.Image, targetContainerRegistry, targetTag string, sign bool) error {
 	imagesConverted := convertImageslist(images, targetContainerRegistry, targetTag, sign)
 
@@ -23,6 +24,7 @@ func PrintExternalSyncerYaml(images []list.Image, targetContainerRegistry, targe
 	return nil
 }
 
+// convertImageslist takes in a list of images, target repository & tag and creates a SyncDef structure that can be later marshalled and used by the image-syncer tool
 func convertImageslist(images []list.Image, targetContainerRegistry, targetTag string, sign bool) imagesyncer.SyncDef {
 	syncDef := imagesyncer.SyncDef{}
 	syncDef.TargetRepoPrefix = targetContainerRegistry
