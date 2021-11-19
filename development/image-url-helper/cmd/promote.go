@@ -41,6 +41,7 @@ func PromoteCmd() *cobra.Command {
 				os.Exit(2)
 			}
 
+			// join and sort both images lists
 			var allImages []list.Image
 			allImages = append(allImages, images...)
 			allImages = append(allImages, testImages...)
