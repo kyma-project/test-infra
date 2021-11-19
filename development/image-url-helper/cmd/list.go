@@ -27,7 +27,7 @@ func ListCmd() *cobra.Command {
 		Example: "image-url-helper list",
 		Args:    cobra.ExactArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			imageComponents := make(list.ImageComponents)
+			imageComponentsMap := make(list.ImageToComponents)
 
 			// remove trailing slash to have consistent paths
 			ResourcesDirectoryClean := filepath.Clean(ResourcesDirectory)
@@ -35,7 +35,7 @@ func ListCmd() *cobra.Command {
 			var images []list.Image
 			var testImages []list.Image
 
-			err := filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, &images, &testImages, imageComponents))
+			err := filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, &images, &testImages, imageComponentsMap))
 			if err != nil {
 				fmt.Printf("Cannot traverse directory: %s\n", err)
 				os.Exit(2)
@@ -50,15 +50,15 @@ func ListCmd() *cobra.Command {
 			allImages = list.RemoveDoubles(allImages)
 
 			if options.outputFormat == "" {
-				list.PrintImages(allImages, imageComponents)
+				list.PrintImages(allImages, imageComponentsMap)
 			} else if strings.ToLower(options.outputFormat) == "json" {
-				err = list.PrintImagesJSON(allImages, imageComponents)
+				err = list.PrintImagesJSON(allImages, imageComponentsMap)
 				if err != nil {
 					fmt.Printf("Cannot save JSON: %s\n", err)
 					os.Exit(2)
 				}
 			} else if strings.ToLower(options.outputFormat) == "yaml" {
-				err = list.PrintImagesYAML(allImages, imageComponents)
+				err = list.PrintImagesYAML(allImages, imageComponentsMap)
 				if err != nil {
 					fmt.Printf("Cannot save JSON: %s\n", err)
 					os.Exit(2)

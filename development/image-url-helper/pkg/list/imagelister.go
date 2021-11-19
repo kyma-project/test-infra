@@ -14,8 +14,8 @@ import (
 // SortFunction is a function type used in slice sorting
 type SortFunction func(i, j int) bool
 
-// ImageComponents is a map that for each image name stores list of components that are using this image
-type ImageComponents map[string][]string
+// ImageToComponents is a map that for each image name stores list of components that are using this image
+type ImageToComponents map[string][]string
 
 // Image contains info about a singular image
 type Image struct {
@@ -78,7 +78,7 @@ type ValueFile struct {
 	Global GlobalKey `yaml:"global,omitempty"`
 }
 
-func GetWalkFunc(resourcesDirectory string, images, testImages *[]Image, imageComponents ImageComponents) filepath.WalkFunc {
+func GetWalkFunc(resourcesDirectory string, images, testImages *[]Image, imageComponentsMap ImageToComponents) filepath.WalkFunc {
 	return func(path string, info os.FileInfo, err error) error {
 		//pass the error further, this shouldn't ever happen
 		if err != nil {
@@ -110,13 +110,13 @@ func GetWalkFunc(resourcesDirectory string, images, testImages *[]Image, imageCo
 		component := strings.Replace(path, resourcesDirectory+"/", "", -1)
 		component = strings.Replace(component, "/values.yaml", "", -1)
 
-		AppendImagesToList(parsedFile, images, testImages, component, imageComponents)
+		AppendImagesToList(parsedFile, images, testImages, component, imageComponentsMap)
 
 		return nil
 	}
 }
 
-func AppendImagesToList(parsedFile ValueFile, images, testImages *[]Image, component string, components ImageComponents) {
+func AppendImagesToList(parsedFile ValueFile, images, testImages *[]Image, component string, components ImageToComponents) {
 	for _, image := range parsedFile.Global.Images {
 		// add registry info directly into the image struct
 		if image.ContainerRegistryPath == "" {
@@ -177,10 +177,10 @@ func GetInconsistentImages(images []Image) []Image {
 }
 
 // PrintImages prints otu list of images and their usage in components
-func PrintImages(images []Image, imageComponents ImageComponents) {
+func PrintImages(images []Image, imageComponentsMap ImageToComponents) {
 	sort.Slice(images, GetSortImagesFunc(images))
 	for _, image := range images {
-		components := imageComponents[image.String()]
+		components := imageComponentsMap[image.String()]
 		fmt.Printf("%s, used by %s\n", image, strings.Join(components, ", "))
 	}
 }
