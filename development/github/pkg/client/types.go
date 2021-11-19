@@ -18,6 +18,12 @@ func (i *IssueTransferredEvent) GetChanges() *TransferredChange {
 	return i.Changes
 }
 
+// TransferredChange represents the changes when an issue, has been transferred.
+type TransferredChange struct {
+	NewIssue      *github.Issue      `json:"new_issue,omitempty"`
+	NewRepository *github.Repository `json:"new_repository,omitempty"`
+}
+
 func (t *TransferredChange) GetNewIssue() *github.Issue {
 	if t == nil {
 		return nil
@@ -30,10 +36,4 @@ func (t *TransferredChange) GetNewRepository() *github.Repository {
 		return nil
 	}
 	return t.NewRepository
-}
-
-// TransferredChange represents the changes when an issue, has been transferred.
-type TransferredChange struct {
-	NewIssue      *github.Issue      `json:"new_issue,omitempty"`
-	NewRepository *github.Repository `json:"new_repository,omitempty"`
 }
