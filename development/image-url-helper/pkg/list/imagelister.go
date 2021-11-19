@@ -181,6 +181,6 @@ func PrintImages(images []Image, imageComponentsMap ImageToComponents) {
 	sort.Slice(images, GetSortImagesFunc(images))
 	for _, image := range images {
 		components := imageComponentsMap[image.FullImageURL()]
-		fmt.Printf("%s, used by %s\n", image, strings.Join(components, ", "))
+		fmt.Printf("%s, used by %s\n", image.FullImageURL(), strings.Join(components, ", "))
 	}
 }
