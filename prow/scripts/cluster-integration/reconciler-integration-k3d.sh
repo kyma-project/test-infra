@@ -38,7 +38,6 @@ function install_cli() {
 }
 
 function provision_k3d() {
-  # Install k3d v5.1.0
   kyma provision k3d -p 80:80@loadbalancer -p 443:443@loadbalancer
 }
 
