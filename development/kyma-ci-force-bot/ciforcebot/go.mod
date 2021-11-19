@@ -10,4 +10,5 @@ require (
 	github.com/kyma-project/test-infra v0.0.0-20211119101651-91b1b0b893f6
 	github.com/sirupsen/logrus v1.8.1
 	github.com/vrischmann/envconfig v1.3.0
+	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
 )
