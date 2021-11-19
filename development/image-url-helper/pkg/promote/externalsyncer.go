@@ -9,7 +9,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// PrintExternalSyncerYaml generates YAML file ready to be used by the image-syncer tool to copy images to new container registry, with option to retag them
+// PrintExternalSyncerYaml prints out a YAML file ready to be used by the image-syncer tool to copy images to new container registry, with option to retag them
 func PrintExternalSyncerYaml(images []list.Image, targetContainerRegistry, targetTag string, sign bool) error {
 	imagesConverted := convertImageslist(images, targetContainerRegistry, targetTag, sign)
 

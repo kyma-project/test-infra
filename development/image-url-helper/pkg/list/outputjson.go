@@ -49,6 +49,7 @@ func PrintImagesYAML(allImages []Image, imageComponentsMap ImageToComponents) er
 	return nil
 }
 
+// convertImageslist takes in a list of images and image to component mapping and creates an OutputImageList structure that can be later marshalled and used by the security scan tool
 func convertimageslist(allImages []Image, imageComponentsMap ImageToComponents) OutputImageList {
 	imagesConverted := OutputImageList{}
 
