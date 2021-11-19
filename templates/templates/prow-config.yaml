@@ -149,7 +149,7 @@ branch-protection:
               protect: true
         test-infra:
           branches:
-            "dependabot*":
+            "dependabot.*":
               protect: false
 
 tide:
