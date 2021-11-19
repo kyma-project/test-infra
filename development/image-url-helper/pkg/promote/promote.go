@@ -64,7 +64,7 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 			return fmt.Errorf("error while decoding %s file: %s", path, err)
 		}
 
-		list.AppendImagesToList(parsedImagesFile, images, testImages, "", make(list.ImageComponents))
+		list.AppendImagesToList(parsedImagesFile, images, testImages, "", make(list.ImageToComponents))
 
 		globalNode := getYamlNode(parsedFile.Content[0], "global")
 		if globalNode == nil {

@@ -29,7 +29,7 @@ func convertImageslist(images []list.Image, targetContainerRegistry, targetTag s
 	syncDef.Sign = sign
 	for _, image := range images {
 		tmpImage := imagesyncer.Image{}
-		tmpImage.Source = image.String()
+		tmpImage.Source = image.FullImageURL()
 		if targetTag != "" {
 			tmpImage.Tag = targetTag
 		}

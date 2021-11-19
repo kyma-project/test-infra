@@ -26,8 +26,8 @@ type Image struct {
 	SHA                   string `yaml:"sha,omitempty"`
 }
 
-// String returns complete image URL with version or SHA
-func (i Image) String() string {
+// FullImageURL returns complete image URL with version or SHA
+func (i Image) FullImageURL() string {
 	version := ":" + i.Version
 	if i.SHA != "" {
 		version = "@sha256:" + i.SHA
@@ -57,7 +57,7 @@ func ImageListContains(list []Image, image Image) bool {
 // GetSortImagesFunc returns sorting function for images list
 func GetSortImagesFunc(images []Image) SortFunction {
 	return func(i, j int) bool {
-		return images[i].String() < images[j].String()
+		return images[i].FullImageURL() < images[j].FullImageURL()
 	}
 }
 
@@ -126,7 +126,7 @@ func AppendImagesToList(parsedFile ValueFile, images, testImages *[]Image, compo
 		if !ImageListContains(*images, image) {
 			*images = append(*images, image)
 		}
-		components[image.String()] = append(components[image.String()], component)
+		components[image.FullImageURL()] = append(components[image.FullImageURL()], component)
 	}
 
 	for _, testImage := range parsedFile.Global.TestImages {
@@ -136,7 +136,7 @@ func AppendImagesToList(parsedFile ValueFile, images, testImages *[]Image, compo
 		if !ImageListContains(*testImages, testImage) {
 			*testImages = append(*testImages, testImage)
 		}
-		components[testImage.String()] = append(components[testImage.String()], component)
+		components[testImage.FullImageURL()] = append(components[testImage.FullImageURL()], component)
 	}
 }
 
@@ -180,7 +180,7 @@ func GetInconsistentImages(images []Image) []Image {
 func PrintImages(images []Image, imageComponentsMap ImageToComponents) {
 	sort.Slice(images, GetSortImagesFunc(images))
 	for _, image := range images {
-		components := imageComponentsMap[image.String()]
+		components := imageComponentsMap[image.FullImageURL()]
 		fmt.Printf("%s, used by %s\n", image, strings.Join(components, ", "))
 	}
 }

@@ -54,9 +54,9 @@ func convertimageslist(allImages []Image, imageComponentsMap ImageToComponents) 
 
 	for _, image := range allImages {
 		imageTmp := OutputImage{}
-		imageTmp.Name = image.String()
-		imageTmp.CustomFields.Image = image.String()
-		components := imageComponentsMap[image.String()]
+		imageTmp.Name = image.FullImageURL()
+		imageTmp.CustomFields.Image = image.FullImageURL()
+		components := imageComponentsMap[image.FullImageURL()]
 		imageTmp.CustomFields.Components = strings.Join(components, ",")
 		imagesConverted.Images = append(imagesConverted.Images, imageTmp)
 	}
