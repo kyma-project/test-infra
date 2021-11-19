@@ -38,8 +38,8 @@ function checkIfExists {
 }
 
 function createConfigmap {
-    kubectl create configmap -n ${NAMESPACE} ${NAME} "${DATA[@]}"
-    kubectl label configmap -n ${NAMESPACE} ${NAME} "${LABELS[@]}"
+    kubectl create configmap -n "${NAMESPACE}" "${NAME}" "${DATA[@]}"
+    kubectl label configmap -n "${NAMESPACE}" "${NAME}" "${LABELS[@]}"
 }
 
 while [[ $# -gt 0 ]]

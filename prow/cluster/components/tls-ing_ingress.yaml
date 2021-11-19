@@ -34,3 +34,7 @@ spec:
         backend:
           serviceName: pushgateway-external
           servicePort: 80
+      - path: /robots.txt
+        backend:
+          serviceName: web-server
+          servicePort: 80

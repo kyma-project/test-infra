@@ -65,7 +65,7 @@ spec:
             memory: "16Mi"
             cpu: "100m"
           limits:
-            memory: "32Mi"
+            memory: "232Mi"
             cpu: "300m"
       volumes:
         - name: docker-socket

@@ -3,7 +3,7 @@
 set -o errexit
 set -o pipefail
 
-CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included:8.6.0"
+CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included:8.7.0"
 
 mkdir -p "$PWD/busola-tests/cypress/screenshots"
 

@@ -1236,7 +1236,7 @@ periodics: # runs on schedule
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
         preset-sa-gke-kyma-integration: "true"
-      cron: "0 0-2,4-23 * * 1-5"
+      cron: "0 0-1,4-23 * * 1-5"
       skip_report: false
       decorate: true
       cluster: untrusted-workload

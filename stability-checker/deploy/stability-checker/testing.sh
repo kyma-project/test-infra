@@ -6,7 +6,7 @@ readonly CONCURRENCY=5
 # Should be fixed name, it is displayed in TestGrid
 readonly SUITE_NAME="testsuite-all"
 
-# shellcheck disable=SC1090
+# shellcheck disable=SC1091
 source "${CURRENT_PATH}/testing-helpers.sh"
 
 kc="kubectl $(context_arg)"

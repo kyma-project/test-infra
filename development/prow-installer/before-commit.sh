@@ -28,7 +28,7 @@ echo "? go mod tidy"
 go mod tidy
 ensureResult=$?
 if [ ${ensureResult} != 0 ]; then
-	echo -e "${RED}✗ go mod tidy${NC}\n$ensureResult${NC}"
+	echo -e "${RED}✗ go mod tidy${NC}\\n$ensureResult${NC}"
 	exit 1
 else echo -e "${GREEN}√ go mod tidy${NC}"
 fi
@@ -48,7 +48,7 @@ fi
 echo "? go mod verify"
 depResult=$(go mod verify)
 if [ $? != 0 ]; then
-	echo -e "${RED}✗ go mod verify\n$depResult${NC}"
+	echo -e "${RED}✗ go mod verify\\n$depResult${NC}"
 	exit 1
 else echo -e "${GREEN}√ go mod verify${NC}"
 fi
@@ -60,7 +60,7 @@ echo "? go test"
 go test -race -coverprofile=cover.out ./...
 # Check if tests passed
 if [[ $? != 0 ]]; then
-	echo -e "${RED}✗ go test\n${NC}"
+	echo -e "${RED}✗ go test\\n${NC}"
 	rm cover.out
 	exit 1
 else
@@ -69,7 +69,7 @@ else
 	echo -e "${GREEN}√ go test${NC}"
 fi
 
-goFilesToCheck=$(find . -type f -name "*.go" | egrep -v "\/vendor\/|_*/automock/|_*/testdata/|_*export_test.go|mock_api.go")
+goFilesToCheck=$(find . -type f -name "*.go" | grep -E -v '\/vendor\/|_*/automock/|_*/testdata/|_*export_test.go|mock_api.go')
 
 #
 # GO FMT
@@ -77,7 +77,7 @@ goFilesToCheck=$(find . -type f -name "*.go" | egrep -v "\/vendor\/|_*/automock/
 goFmtResult=$(echo "${goFilesToCheck}" | xargs -L1 go fmt)
 if [ "${#vetResult}" != 0 ]
 	then
-    	echo -e "${RED}✗ go fmt${NC}\n$goFmtResult${NC}"
+    	echo -e "${RED}✗ go fmt${NC}\\n$goFmtResult${NC}"
     	exit 1;
 	else echo -e "${GREEN}√ go fmt${NC}"
 fi
@@ -102,7 +102,7 @@ packagesToVet=("./cmd/..." "./pkg/...")
 for vPackage in "${packagesToVet[@]}"; do
 	vetResult=$(go vet "${vPackage}")
 	if [ "${#vetResult}" != 0 ]; then
-		echo -e "${RED}✗ go vet ${vPackage} ${NC}\n$vetResult${NC}"
+		echo -e "${RED}✗ go vet ${vPackage} ${NC}\\n$vetResult${NC}"
 		exit 1
 	else echo -e "${GREEN}√ go vet ${vPackage} ${NC}"
 	fi

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 readonly BACKEND_SECRET_NAME=eventing-backend
 readonly BACKEND_SECRET_NAMESPACE=default
 readonly BACKEND_SECRET_LABEL_KEY=kyma-project.io/eventing-backend
