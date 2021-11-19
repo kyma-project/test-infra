@@ -46,9 +46,9 @@ function install_cli() {
 
 function deploy_kyma() {
   # Install k3d v5.1.0
-  sudo wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v5.0.0 bash
+  sudo wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v5.1.0 bash
   k3d registry create kyma-registry --port 5001
-  k3d cluster create kyma --kubeconfig-update-default --timeout 300s --agents 1 --image rancher/k3s:v1.20.12-k3s1 --kubeconfig-switch-context --k3s-arg --disable=traefik@server:0 --registry-use kyma-registry:5001 --port 80:80@loadbalancer --port 443:443@loadbalancer
+  k3d cluster create kyma --kubeconfig-update-default --timeout 300s --agents 1 --image rancher/k3s:v1.20.11-k3s1 --kubeconfig-switch-context --k3s-arg --disable=traefik@server:0 --registry-use kyma-registry:5001 --port 80:80@loadbalancer --port 443:443@loadbalancer
 # +v.1.21, 
   local kyma_deploy_cmd
   kyma_deploy_cmd="kyma deploy -p evaluation --ci --verbose --source=local --workspace ${KYMA_SOURCES_DIR}"
