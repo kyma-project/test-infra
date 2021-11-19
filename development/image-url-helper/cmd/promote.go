@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sort"
 
 	"github.com/jamiealquiza/envy"
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/list"
@@ -32,8 +31,8 @@ func PromoteCmd() *cobra.Command {
 			// remove trailing slash to have consistent paths
 			ResourcesDirectoryClean := filepath.Clean(ResourcesDirectory)
 
-			var images []list.Image
-			var testImages []list.Image
+			var images list.ImageList
+			var testImages list.ImageList
 
 			err := filepath.Walk(ResourcesDirectory, promote.GetWalkFunc(ResourcesDirectoryClean, options.targetContainerRegistry, options.targetTag, options.dryRun, &images, &testImages))
 			if err != nil {
@@ -42,10 +41,9 @@ func PromoteCmd() *cobra.Command {
 			}
 
 			// join and sort both images lists
-			var allImages []list.Image
+			var allImages list.ImageList
 			allImages = append(allImages, images...)
 			allImages = append(allImages, testImages...)
-			sort.Slice(allImages, list.GetSortImagesFunc(allImages))
 			allImages = list.RemoveDoubles(allImages)
 
 			err = promote.PrintExternalSyncerYaml(allImages, options.targetContainerRegistry, options.targetTag, options.sign)

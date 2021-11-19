@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
 
 	"github.com/jamiealquiza/envy"
@@ -32,8 +31,8 @@ func ListCmd() *cobra.Command {
 			// remove trailing slash to have consistent paths
 			ResourcesDirectoryClean := filepath.Clean(ResourcesDirectory)
 
-			var images []list.Image
-			var testImages []list.Image
+			var images list.ImageList
+			var testImages list.ImageList
 
 			err := filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, &images, &testImages, imageComponentsMap))
 			if err != nil {
@@ -41,12 +40,11 @@ func ListCmd() *cobra.Command {
 				os.Exit(2)
 			}
 
-			var allImages []list.Image
+			var allImages list.ImageList
 			allImages = append(allImages, images...)
 			if !options.excludeTestImages {
 				allImages = append(allImages, testImages...)
 			}
-			sort.Slice(allImages, list.GetSortImagesFunc(allImages))
 			allImages = list.RemoveDoubles(allImages)
 
 			if options.outputFormat == "" {

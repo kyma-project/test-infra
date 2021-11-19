@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sort"
 
 	"github.com/jamiealquiza/envy"
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/check"
@@ -51,8 +50,8 @@ func CheckCmd() *cobra.Command {
 				}
 			}
 
-			var images []list.Image
-			var testImages []list.Image
+			var images list.ImageList
+			var testImages list.ImageList
 			imageComponentsMap := make(list.ImageToComponents)
 			err = filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, &images, &testImages, imageComponentsMap))
 			if err != nil {
@@ -60,10 +59,9 @@ func CheckCmd() *cobra.Command {
 				os.Exit(2)
 			}
 
-			var allImages []list.Image
+			var allImages list.ImageList
 			allImages = append(allImages, images...)
 			allImages = append(allImages, testImages...)
-			sort.Slice(allImages, list.GetSortImagesFunc(allImages))
 			allImages = list.RemoveDoubles(allImages)
 
 			inconsistentImages := list.GetInconsistentImages(allImages)

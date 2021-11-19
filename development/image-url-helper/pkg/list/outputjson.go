@@ -3,6 +3,7 @@ package list
 import (
 	"encoding/json"
 	"fmt"
+	"sort"
 	"strings"
 
 	"gopkg.in/yaml.v2"
@@ -26,7 +27,8 @@ type OutputImageList struct {
 }
 
 // PrintImagesJSON prints JSON list with names and components for each image
-func PrintImagesJSON(allImages []Image, imageComponentsMap ImageToComponents) error {
+func PrintImagesJSON(allImages ImageList, imageComponentsMap ImageToComponents) error {
+	sort.Sort(allImages)
 	imagesConverted := convertimageslist(allImages, imageComponentsMap)
 
 	out, err := json.MarshalIndent(imagesConverted, "", "  ")
@@ -38,7 +40,8 @@ func PrintImagesJSON(allImages []Image, imageComponentsMap ImageToComponents) er
 }
 
 // PrintImagesYAML prints YAML list with names and components for each image
-func PrintImagesYAML(allImages []Image, imageComponentsMap ImageToComponents) error {
+func PrintImagesYAML(allImages ImageList, imageComponentsMap ImageToComponents) error {
+	sort.Sort(allImages)
 	imagesConverted := convertimageslist(allImages, imageComponentsMap)
 
 	out, err := yaml.Marshal(imagesConverted)
@@ -50,7 +53,7 @@ func PrintImagesYAML(allImages []Image, imageComponentsMap ImageToComponents) er
 }
 
 // convertImageslist takes in a list of images and image to component mapping and creates an OutputImageList structure that can be later marshalled and used by the security scan tool
-func convertimageslist(allImages []Image, imageComponentsMap ImageToComponents) OutputImageList {
+func convertimageslist(allImages ImageList, imageComponentsMap ImageToComponents) OutputImageList {
 	imagesConverted := OutputImageList{}
 
 	for _, image := range allImages {
