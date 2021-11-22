@@ -26,8 +26,8 @@ type OutputImageList struct {
 }
 
 // PrintImagesJSON prints JSON list with names and components for each image
-func PrintImagesJSON(allImages []Image, imageComponents ImageComponents) error {
-	imagesConverted := convertimageslist(allImages, imageComponents)
+func PrintImagesJSON(allImages []Image, imageComponentsMap ImageToComponents) error {
+	imagesConverted := convertimageslist(allImages, imageComponentsMap)
 
 	out, err := json.MarshalIndent(imagesConverted, "", "  ")
 	if err != nil {
@@ -38,8 +38,8 @@ func PrintImagesJSON(allImages []Image, imageComponents ImageComponents) error {
 }
 
 // PrintImagesYAML prints YAML list with names and components for each image
-func PrintImagesYAML(allImages []Image, imageComponents ImageComponents) error {
-	imagesConverted := convertimageslist(allImages, imageComponents)
+func PrintImagesYAML(allImages []Image, imageComponentsMap ImageToComponents) error {
+	imagesConverted := convertimageslist(allImages, imageComponentsMap)
 
 	out, err := yaml.Marshal(imagesConverted)
 	if err != nil {
@@ -49,14 +49,15 @@ func PrintImagesYAML(allImages []Image, imageComponents ImageComponents) error {
 	return nil
 }
 
-func convertimageslist(allImages []Image, imageComponents ImageComponents) OutputImageList {
+// convertImageslist takes in a list of images and image to component mapping and creates an OutputImageList structure that can be later marshalled and used by the security scan tool
+func convertimageslist(allImages []Image, imageComponentsMap ImageToComponents) OutputImageList {
 	imagesConverted := OutputImageList{}
 
 	for _, image := range allImages {
 		imageTmp := OutputImage{}
-		imageTmp.Name = image.String()
-		imageTmp.CustomFields.Image = image.String()
-		components := imageComponents[image.String()]
+		imageTmp.Name = image.FullImageURL()
+		imageTmp.CustomFields.Image = image.FullImageURL()
+		components := imageComponentsMap[image.FullImageURL()]
 		imageTmp.CustomFields.Components = strings.Join(components, ",")
 		imagesConverted.Images = append(imagesConverted.Images, imageTmp)
 	}

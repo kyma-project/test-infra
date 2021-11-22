@@ -53,8 +53,8 @@ func CheckCmd() *cobra.Command {
 
 			var images []list.Image
 			var testImages []list.Image
-			imageComponents := make(list.ImageComponents)
-			err = filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, &images, &testImages, imageComponents))
+			imageComponentsMap := make(list.ImageToComponents)
+			err = filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, &images, &testImages, imageComponentsMap))
 			if err != nil {
 				fmt.Printf("Cannot traverse directory: %s\n", err)
 				os.Exit(2)
@@ -71,7 +71,7 @@ func CheckCmd() *cobra.Command {
 			if len(inconsistentImages) > 0 {
 				fmt.Printf("\n--------------------\n")
 				fmt.Println("Images with multiple tags:")
-				list.PrintImages(inconsistentImages, imageComponents)
+				list.PrintImages(inconsistentImages, imageComponentsMap)
 			}
 			if len(imagesDefinedOutside) > 0 || len(inconsistentImages) > 0 {
 				os.Exit(3)

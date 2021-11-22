@@ -29,15 +29,18 @@ type ImageLine struct {
 	Line       string
 }
 
+// Exclude contains excluded image values for a given file
 type Exclude struct {
 	Filename string   `yaml:"filename"`
 	Images   []string `yaml:"images"`
 }
 
+// excludesList contains a list of excluded image values per each file
 type excludesList struct {
 	Excludes []Exclude `yaml:"excludes"`
 }
 
+// ParseExcludes reads the exclude list file and returns list of excludes
 func ParseExcludes(excludesListFilename string) ([]Exclude, error) {
 	if excludesListFilename == "" {
 		return nil, nil
@@ -113,6 +116,7 @@ func FileHasIncorrectImage(resourcesDirectory, path string, skipComments bool, e
 	return incompatible, nil
 }
 
+// imageInExcludeList checks if the image value in the given line is on the excludes list
 func imageInExcludeList(resourcesDirectory, filename, line string, excludesList []Exclude) bool {
 	for _, exclude := range excludesList {
 		if strings.Replace(filename, resourcesDirectory+"/", "", -1) == exclude.Filename {
@@ -130,7 +134,7 @@ func imageInExcludeList(resourcesDirectory, filename, line string, excludesList 
 	return false
 }
 
-// oldImageFormat checks and prints lines that uses old image: format
+// oldImageFormat checks and prints lines that doesn't use the "imageurl" or "shortimageurl" template
 func oldImageFormat(line string, skipComments bool) bool {
 	// skip all uninteresting lines and just "name:" in its own line
 	if imageRegexp.MatchString(line) {

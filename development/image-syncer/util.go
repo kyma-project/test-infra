@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"strings"
 
+	imagesyncer "github.com/kyma-project/test-infra/development/image-syncer/pkg"
 	"gopkg.in/yaml.v2"
 )
 
@@ -20,12 +21,12 @@ func getTarget(source, targetRepo, targetTag string) (string, error) {
 	return target, nil
 }
 
-func parseImagesFile(file string) (*SyncDef, error) {
+func parseImagesFile(file string) (*imagesyncer.SyncDef, error) {
 	f, err := ioutil.ReadFile(file)
 	if err != nil {
 		return nil, err
 	}
-	var syncDef SyncDef
+	var syncDef imagesyncer.SyncDef
 	if err := yaml.Unmarshal(f, &syncDef); err != nil {
 		return nil, err
 	}
