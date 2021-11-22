@@ -125,7 +125,7 @@ kyma::install_cli() {
         echo "--> Install kyma CLI ${os} locally to /tmp/bin"
 
         # shellcheck disable=SC2094
-        curl -sSL "https://github.com/kyma-project/cli/releases/download/1.24.8/kyma_${os}_x86_64.tar.gz" | tar -xzO kyma > kyma
+        curl -sSL "https://github.com/kyma-project/cli/releases/download/1.25.0/kyma_${os}_x86_64.tar.gz" | tar -xzO kyma > kyma
         chmod +x kyma
         kyma_version=$(kyma version --client)
         echo "--> Kyma CLI version: ${kyma_version}"
