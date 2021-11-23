@@ -179,3 +179,26 @@ templates:
                     - "jobConfig_default"
                     - "keb_plan_free_aws"
                     - "kyma_integration_subaccount"
+              - jobConfig:
+                  name: "skr-test-existing"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "tests/fast-integration"
+                    - "skr-test-existing"
+                  cron: "5 1 * * *" # "At 01:05"
+                  env:
+                    RUNTIME: "D7FB35BB-D5B2-4F6F-9ADF-A9E74DD6EA0D"
+                inheritedConfigs:
+                  global:
+                    - "image_kyma-integration"
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                    - "disable_testgrid"
+                    - "kyma_major_version_1"
+                  local:
+                    - "jobConfig_default"
+                    - "keb_plan_azure"
+                    - "kyma_integration_subaccount"
