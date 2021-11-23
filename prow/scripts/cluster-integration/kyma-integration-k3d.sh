@@ -46,7 +46,7 @@ function install_cli() {
 
 function deploy_kyma() {
   sudo wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v5.1.0 bash
-  kyma alpha provision k3d
+  K3D_FIX_DNS=1 kyma alpha provision k3d
 
   local kyma_deploy_cmd
   kyma_deploy_cmd="kyma deploy -p evaluation --ci --verbose --source=local --workspace ${KYMA_SOURCES_DIR}"

@@ -39,7 +39,7 @@ function install_cli() {
 
 function provision_k3d() {
   sudo wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v5.1.0 bash
-  kyma alpha provision k3d
+  K3D_FIX_DNS=1 kyma alpha provision k3d
 }
 
 function run_tests() {

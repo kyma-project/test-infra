@@ -146,7 +146,7 @@ install::kyma_cli
 
 echo "--> Provisioning k3d cluster for Kyma"
 sudo wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v5.1.0 bash
-kyma alpha provision k3d --ci
+K3D_FIX_DNS=1 kyma alpha provision k3d --ci
 
 echo "--> Deploying Serverless"
 # The python38 function requires 40M+ of memory to work. Mostly used by kubeless. I need to overrride the defaultPreset to M to avoid OOMkill.
