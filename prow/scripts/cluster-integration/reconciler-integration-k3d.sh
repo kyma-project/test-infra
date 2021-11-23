@@ -38,7 +38,8 @@ function install_cli() {
 }
 
 function provision_k3d() {
-  kyma provision k3d -p 80:80@loadbalancer -p 443:443@loadbalancer
+  sudo wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v5.1.0 bash
+  kyma alpha provision k3d
 }
 
 function run_tests() {

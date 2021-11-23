@@ -1,0 +1,23 @@
+pjNames:
+  # runs provision-vm-cli.sh
+  - pjName: pre-cli-integration-kyma-1
+  - pjName: pre-cli-integration-kyma-2
+  - pjName: post-cli-integration-kyma-2
+  - pjName: post-cli-integration-kyma-1
+  # runs compatibility-cli.sh which runs provision-vm-cli.sh
+  - pjName: kyma-cli-compatibility-1
+  # runs provision-vm-and-start-kyma-k3d.sh which runs kyma-integration-k3d.sh
+  - pjName: pre-main-kyma-integration-k3d
+  - pjName: pre-main-kyma-integration-k3d-compass-dev
+  - pjName: pre-main-kyma-integration-k3d-central-app-connectivity
+  - pjName: pre-main-kyma-integration-k3d-central-app-connectivity-compass
+  - pjName: post-main-kyma-integration-k3d
+  - pjName: post-main-kyma-integration-k3d-compass-dev
+  - pjName: post-main-kyma-integration-k3d-central-app-connectivity
+  - pjname: post-main-kyma-integration-k3d-central-app-connectivity-compass
+  - pjName: kyma-integration-k3d
+  - pjName: kyma-integration-k3d-compass-dev
+  # runs provision-vm-and-start-kyma-reconciler.sh which runs reconciler-integration-k3d.sh
+  - pjName: pre-main-reconciler-integration-k3d
+  # runs provision-vm-and-start-serverless-k3s.sh which runs serverless-integration-k3s.sh  
+  - pjName: pre-main-serverless-integration-k3s
