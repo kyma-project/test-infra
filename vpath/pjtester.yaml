@@ -1,5 +1,4 @@
-pjNames:
-  # runs provision-vm-cli.sh
+pjNames: # runs provision-vm-cli.sh
   - pjName: pre-cli-integration-kyma-1
   - pjName: pre-cli-integration-kyma-2
   - pjName: post-cli-integration-kyma-2
