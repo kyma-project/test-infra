@@ -17,6 +17,9 @@ func getTarget(source, targetRepo, targetTag string) (string, error) {
 		}
 		imageName := strings.Split(source, "@sha256:")[0]
 		target = targetRepo + imageName + ":" + targetTag
+	} else if targetTag != "" {
+		imageName := strings.Split(source, ":")[0]
+		target = targetRepo + imageName + ":" + targetTag
 	}
 	return target, nil
 }

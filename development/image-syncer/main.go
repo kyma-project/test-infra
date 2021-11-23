@@ -41,8 +41,7 @@ func ifRefNotFound(err error) bool {
 	var e *transport.Error
 	if errors.As(err, &e) {
 		// Container Registry returns 404 if the target repository doesn't exist
-		// Artifact Registry returns 403 if the target repository doesn't exist
-		if e.StatusCode == 404 || e.StatusCode == 403 {
+		if e.StatusCode == 404 {
 			return true
 		}
 	}
