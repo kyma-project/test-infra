@@ -229,8 +229,11 @@ templates:
           reconciler_nightly_e2e_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"
             privileged: false
-            env:
-              INPUT_CLUSTER_NAME: "rec-night"
+            annotations:
+              pipeline.platform: "gardener_gcp"
+              pipeline.installer: reconciler
+              pipeline.test: "fast-integration"
+              pipeline.clusterprovisioning: reconciler
           reconciler_jobConfig_args:
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
@@ -240,16 +243,6 @@ templates:
               pipeline.installer: kyma install, kyma deploy
               pipeline.test: "upgrade-fast-integration"
               pipeline.clusterprovisioning: kyma cli
-          reconciler_nightly_cluster_jobConfig:
-            privileged: false
-            env:
-              INPUT_CLUSTER_NAME: "rec-night"
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"
-            annotations:
-              pipeline.platform: "gardener_gcp"
-              pipeline.installer: reconciler
-              pipeline.test: "fast-integration"
-              pipeline.clusterprovisioning: reconciler
         jobConfigs:
           - repoName: kyma-incubator/reconciler
             jobs:
@@ -328,33 +321,9 @@ templates:
                     - reconciler_e2e_upgrade_jobConfig
                     - reconciler_jobConfig_args
               - jobConfig:
-                  name: nightly-main-reconciler
-                  annotations:
-                    description: Creates and installs reconciler from main every night.
-                  decoration_config:
-                    timeout: 14400000000000 # 4h
-                    grace_period: 600000000000 # 10min
-                  cron: "0 0 * * 1-5" # "At 00:00 on every day-of-week from Monday through Friday"
-                  labels:
-                    preset-log-collector-slack-token: "true"
-                    preset-bot-github-token: "true"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_periodic
-                    - gardener_gcp_job
-                    - extra_refs_test-infra
-                    - extra_refs_control-plane
-                    - disable_testgrid
-                    - jobConfig_slack_dev_null
-                    - image_kyma-integration
-                  local:
-                    - reconciler_nightly_cluster_jobConfig
-                    - reconciler_jobConfig_args
-              - jobConfig:
                   name: nightly-main-reconciler-e2e
                   annotations:
-                    description: Executes e2e test periodically on nightly cluster for reconciler.
+                    description: Executes e2e test periodically on a Gardener cluster for reconciler.
                     pipeline.installer: "reconciler"
                     pipeline.platform: "gcp"
                     pipeline.test: "fast-integration"

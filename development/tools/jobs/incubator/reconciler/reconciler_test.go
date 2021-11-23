@@ -96,34 +96,6 @@ func TestReconcilerJobsPeriodicE2EUpgrade(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/reconciler"}, actualPeriodic.Spec.Containers[0].Args)
 }
 
-func TestReconcilerJobsNightlyMain(t *testing.T) {
-	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/reconciler/reconciler.yaml")
-	// THEN
-	require.NoError(t, err)
-
-	reconcilerPeriodics := jobConfig.AllPeriodics()
-	expName := "nightly-main-reconciler"
-	actualPeriodic := tester.FindPeriodicJobByName(reconcilerPeriodics, expName)
-	assert.Equal(t, expName, actualPeriodic.Name)
-	assert.Equal(t, "0 0 * * 1-5", actualPeriodic.Cron)
-	assert.Equal(t, 0, actualPeriodic.JobBase.MaxConcurrency)
-	tester.AssertThatHasExtraRefTestInfra(t, actualPeriodic.JobBase.UtilityConfig, "main")
-	tester.AssertThatHasExtraRef(t, actualPeriodic.JobBase.UtilityConfig, []prowapi.Refs{
-		{
-			Org:       "kyma-project",
-			Repo:      "control-plane",
-			BaseRef:   "main",
-			PathAlias: "github.com/kyma-project/control-plane",
-		},
-	})
-
-	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPeriodic.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"}, actualPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/reconciler"}, actualPeriodic.Spec.Containers[0].Args)
-	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "rec-night")
-}
-
 func TestReconcilerJobPostsubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/reconciler/reconciler.yaml")
@@ -183,5 +155,4 @@ func TestReconcilerJobNightlyE2E(t *testing.T) {
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualNightlyJob.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"}, actualNightlyJob.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/reconciler"}, actualNightlyJob.Spec.Containers[0].Args)
-	tester.AssertThatContainerHasEnv(t, actualNightlyJob.Spec.Containers[0], "INPUT_CLUSTER_NAME", "rec-night")
 }

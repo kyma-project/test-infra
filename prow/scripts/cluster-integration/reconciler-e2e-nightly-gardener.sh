@@ -71,16 +71,44 @@ else
     exit 1
 fi
 
+# nice cleanup on exit, be it succesful or on fail
+trap gardener::cleanup EXIT INT
+
+# Used to detect errors for logging purposes
+ERROR_LOGGING_GUARD="true"
+export ERROR_LOGGING_GUARD
+
+readonly COMMON_NAME_PREFIX="grd"
+utils::generate_commonName -n "${COMMON_NAME_PREFIX}"
+COMMON_NAME="${utils_generate_commonName_return_commonName:?}"
+export COMMON_NAME
+export CLUSTER_NAME="${COMMON_NAME}"
+
 ## ---------------------------------------------------------------------------------------
 ## Prow job execution steps
 ## ---------------------------------------------------------------------------------------
 
+log::banner "Provisioning Gardener cluster"
 # Checks required vars and initializes gcloud/docker if necessary
 gardener::init
 
-log::banner "Connecting to nightly cluster"
-# Connect to nightly reconciler cluster based on INPUT_CLUSTER_NAME
-reconciler::connect_to_shoot_cluster
+# If MACHINE_TYPE is not set then use default one
+gardener::set_machine_type
+
+# Install Kyma CLI
+kyma::install_cli
+
+# Provision garderner cluster
+gardener::provision_cluster
+
+# Deploy reconciler in the cluster
+reconciler::deploy
+
+# Disable sidecar injection for reconciler namespace
+reconciler::disable_sidecar_injection_reconciler_ns
+
+# Wait until reconciler is ready
+reconciler::wait_until_is_ready
 
 # Deploy test pod which will trigger reconciliation
 reconciler::deploy_test_pod
@@ -99,3 +127,12 @@ gardener::test_fast_integration_kyma
 
 # Break Kyma
 reconciler::break_kyma
+
+# Trigger reconciliation of Kyma
+reconciler::reconcile_kyma
+
+# Once Kyma is installed run the fast integration test
+gardener::test_fast_integration_kyma
+
+#!!! Must be at the end of the script !!!
+ERROR_LOGGING_GUARD="false"
