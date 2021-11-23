@@ -118,8 +118,11 @@ reconciler::wait_until_test_pod_is_ready
 # Set up test pod environment
 reconciler::initialize_test_pod
 
-# Trigger reconciliation of Kyma
-reconciler::reconcile_kyma
+# Trigger the reconciliation through test pod
+reconciler::trigger_kyma_reconcile
+
+# Wait until reconciliation is complete
+reconciler::wait_until_kyma_reconciled
 
 # Once Kyma is installed run the fast integration test
 gardener::test_fast_integration_kyma
@@ -127,8 +130,11 @@ gardener::test_fast_integration_kyma
 # Break Kyma
 reconciler::break_kyma
 
-# Trigger reconciliation of Kyma
-reconciler::reconcile_kyma
+# Trigger the reconciliation through test pod
+reconciler::trigger_kyma_reconcile
+
+# Wait until reconciliation is complete
+reconciler::wait_until_kyma_reconciled
 
 # Once Kyma is installed run the fast integration test
 gardener::test_fast_integration_kyma
