@@ -26,7 +26,7 @@ images:
 - source: "oryd/hydra:v1.10.7-sqlite"
 - source: "oryd/oathkeeper-maester:v0.1.5"
 - source: "oryd/oathkeeper:v0.38.15-alpine"
-- source: "postgres@sha256:99d512b7ca9f85000dd814bf1de60f95ee3c1c14159b50e3e415374d1d545dd8"
+- source: "postgres@sha256:34b3fbcd142c1a85f702f7146940fd687be8305d3cc2c10d35c478b9096aae68"
   tag: "11.14-alpine"
 - source: "prom/pushgateway:v1.3.0"
 - source: "quay.io/coreos/etcd:v3.3.27"
