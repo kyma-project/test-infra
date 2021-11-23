@@ -111,23 +111,8 @@ function reconciler::initialize_test_pod() {
 
   # Copy the reconcile request payload and kyma reconciliation scripts to the test-pod
   kubectl cp body.json -c test-pod reconciler/test-pod:/tmp
-  kubectl cp ./e2e-test/reconcile-kyma.sh -c test-pod reconciler/test-pod:/tmp
   kubectl cp ./e2e-test/get-reconcile-status.sh -c test-pod reconciler/test-pod:/tmp
   kubectl cp ./e2e-test/request-reconcile.sh -c test-pod reconciler/test-pod:/tmp
-}
-
-# Triggers reconciliation of Kyma and waits until reconciliation is in ready state
-function reconciler::reconcile_kyma() {
-  set +e
-  # Trigger Kyma reconciliation using reconciler
-  log::banner "Reconcile Kyma in the same cluster until it is ready"
-  kubectl exec -it -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/reconcile-kyma.sh"
-  if [[ $? -ne 0 ]]; then
-      log::error "Failed to reconcile Kyma"
-      kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler --tail -1
-      exit 1
-  fi
-  set -e
 }
 
 # Only triggers reconciliation of Kyma
@@ -187,22 +172,8 @@ function reconciler::disable_sidecar_injection_reconciler_ns() {
     kubectl label namespace "${RECONCILER_NAMESPACE}" istio-injection=disabled --overwrite
 }
 
-# Connect to Gardener cluster
-function reconciler::connect_to_gardener_cluster() {
-    export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
-}
-
-# Connect to reconciler long running cluster
-function reconciler::connect_to_shoot_cluster() {
-  reconciler::connect_to_gardener_cluster
-  local shoot_kubeconfig="/tmp/shoot-kubeconfig.yaml"
-  kubectl get secret "${INPUT_CLUSTER_NAME}.kubeconfig"  -ogo-template="{{ .data.kubeconfig | base64decode }}" > "${shoot_kubeconfig}"
-  cat "${shoot_kubeconfig}" > "${LOCAL_KUBECONFIG}"
-  export KUBECONFIG="${shoot_kubeconfig}"
-}
-
 # Break Kyma to test reconciler repair mechanism
 function reconciler::break_kyma() {
-  log::banner "Delete all deployments from kyma-system ns"
+  log::banner "Break Kyma by deleting all deployments from kyma-system namespace"
   kubectl delete deploy -n kyma-system --all
 }
