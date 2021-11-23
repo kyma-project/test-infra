@@ -214,6 +214,13 @@ templates:
                   repo: "kyma"
                   path_alias: "github.com/kyma-project/kyma-1.24"
                   base_ref: "release-1.24"
+          extra_refs_kyma_cli:
+            extra_refs:
+              kyma-cli:
+                - org: "kyma-project"
+                  repo: "cli"
+                  path_alias: "github.com/kyma-project/cli"
+                  base_ref: "main"
           reconciler_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
@@ -247,6 +254,12 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"
             annotations:
               pipeline.platform: "gardener_gcp"
+              pipeline.installer: reconciler
+              pipeline.test: "fast-integration"
+              pipeline.clusterprovisioning: reconciler
+          reconciler_publish_unstable_cli_jobConfig:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-unstable-cli.sh"
+            annotations:
               pipeline.installer: reconciler
               pipeline.test: "fast-integration"
               pipeline.clusterprovisioning: reconciler
@@ -300,6 +313,31 @@ templates:
                   local:
                     - reconciler_jobConfig
                     - reconciler_jobConfig_args
+              - jobConfig:
+                  name: nightly-main-reconciler-publish-unstable-cli
+                  annotations:
+                    description: Bump reconciler version used by CLI and publish the unstable CLI binaries
+                    pipeline.trigger: "nightly"
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  cron: "0 0 * * 1-5" # "At 00:00 on every day-of-week from Monday through Friday"
+                  labels:
+                    preset-sa-vm-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                    preset-bot-github-token: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                    - disable_testgrid
+                    - image_buildpack-golang
+                    - jobConfig_buildpack_incubator
+                  local:
+                    - extra_refs_kyma_cli
+                    - reconciler_publish_unstable_cli_jobConfig
               - jobConfig:
                   name: periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade
                   annotations:
