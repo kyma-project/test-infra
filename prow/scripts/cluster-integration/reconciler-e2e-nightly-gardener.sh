@@ -124,6 +124,8 @@ reconciler::trigger_kyma_reconcile
 # Wait until reconciliation is complete
 reconciler::wait_until_kyma_reconciled
 
+sleep 15
+
 # Once Kyma is installed run the fast integration test
 gardener::test_fast_integration_kyma
 
@@ -135,6 +137,8 @@ reconciler::trigger_kyma_reconcile
 
 # Wait until reconciliation is complete
 reconciler::wait_until_kyma_reconciled
+
+sleep 15
 
 # Once Kyma is installed run the fast integration test
 gardener::test_fast_integration_kyma
