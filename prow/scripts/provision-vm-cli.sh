@@ -127,10 +127,7 @@ date
 if [ "$KUBERNETES_RUNTIME" = 'minikube' ]; then
     gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" --command="yes | sudo kyma provision minikube --non-interactive"
 else
-    gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" --command="yes | sudo wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v5.0.0 bash \ 
-        export K3D_FIX_DNS=1 \
-        sudo k3d registry create kyma-registry --port 5001 \
-        sudo k3d cluster create kyma --kubeconfig-update-default --timeout 300s --agents 1 --image rancher/k3s:v1.20.12-k3s1 --kubeconfig-switch-context --k3s-arg --disable=traefik@server:0 --registry-use kyma-registry:5001 --port 80:80@loadbalancer --port 443:443@loadbalancer"
+    gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" --command="yes | sudo wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v5.0.0 bash && export K3D_FIX_DNS=1 && sudo k3d registry create kyma-registry --port 5001 && sudo k3d cluster create kyma --kubeconfig-update-default --timeout 300s --agents 1 --image rancher/k3s:v1.20.12-k3s1 --kubeconfig-switch-context --k3s-arg --disable=traefik@server:0 --registry-use kyma-registry:5001 --port 80:80@loadbalancer --port 443:443@loadbalancer"
 fi
 
 # Install kyma
