@@ -1,9 +1,9 @@
 global:
   nextRelease: "2.0"
   releases:
+    - "1.25"
     - "1.24"
     - "1.23"
-    - "1.22"
 
 
 # global configSet variables
@@ -23,17 +23,17 @@ globalSets:
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20211014-b2863980"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20211110-ab51bd20"
   image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211020-638b6f95"
+    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211104-fac1690a"
   image_buildpack-node:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20211013-2c064d85"
   image_buildpack-golang:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211013-2c064d85"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211110-ab51bd20"
   image_buildpack-golang-kubebuilder2:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211013-2c064d85"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211110-ab51bd20"
   image_buildpack-golang-toolbox:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211013-2c064d85"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211110-ab51bd20"
   image_wssagent:
     image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211013-2c064d85"
   # JobConfig sets
@@ -153,6 +153,13 @@ globalSets:
         - org: "kyma-incubator"
           repo: "reconciler"
           path_alias: "github.com/kyma-incubator/reconciler"
+          base_ref: "main"
+  extra_refs_control-plane:
+    extra_refs:
+      control-plane:
+        - org: "kyma-project"
+          repo: "control-plane"
+          path_alias: "github.com/kyma-project/control-plane"
           base_ref: "main"
   # labels sets
   build_labels:

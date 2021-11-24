@@ -57,7 +57,7 @@ echo
 
 if [ ${#oauth_token} -lt 1 ]; then
   echo "OAuth2 token not provided";
-  exit -1;
+  exit 255;
 fi
 
 kubectl create clusterrolebinding cluster-admin-binding \

@@ -108,4 +108,4 @@ else
   echo -e "${GREEN}√ go test${NC}"
 fi
 
-goFilesToCheck=$(find . -type f -name "*.go" | egrep -v "/vendor|/bin")
+goFilesToCheck=$(find . -type f -name "*.go" | grep -E -v "/vendor|/bin")

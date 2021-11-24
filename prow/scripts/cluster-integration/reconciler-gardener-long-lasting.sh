@@ -22,7 +22,7 @@ function delete_cluster_if_exists(){
     local name="${INPUT_CLUSTER_NAME}"
     set +e
     existing_shoot=$(kubectl get shoot "${name}" -ojsonpath="{ .metadata.name }")
-    if [ ! -z "${existing_shoot}" ]; then
+    if [ -n "${existing_shoot}" ]; then
       log::info "Cluster found and deleting '${name}'"
       gardener::deprovision_cluster \
             -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
@@ -60,7 +60,7 @@ function provision_cluster() {
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
-export RECONCILER_SOURCES_DIR="/home/prow/go/src/github.com/kyma-incubator/reconciler"
+export CONTROL_PLANE_RECONCILER_DIR="/home/prow/go/src/github.com/kyma-project/control-plane/tools/reconciler"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"

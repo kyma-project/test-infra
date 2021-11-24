@@ -2,8 +2,10 @@
 
 ## Overview
 
-image-syncer is used to **safely** copy container images from one registry to another. 
+image-syncer is used to copy container images from one registry to another.
 The main use case is to preserve images from third party registries in our own registry that we can rely on.
+
+It copies images **only when they are not present** in the target repo. That guarantees that **tags are immutable**.
 
 Syncing process steps:
 1. Pull image from source.

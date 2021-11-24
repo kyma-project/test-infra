@@ -226,7 +226,9 @@ function applyCompassOverrides() {
     --data 'global.systemFetcher.systemToTemplateMappings=[{"Name": "temp1", "SourceKey": ["prop"], "SourceValue": ["val1"] },{"Name": "temp2", "SourceKey": ["prop"], "SourceValue": ["val2"] }]' \
     --data "global.systemFetcher.oauth.client=client_id" \
     --data "global.systemFetcher.oauth.secret=client_secret" \
-    --data "global.systemFetcher.oauth.tokenURLPattern=http://compass-external-services-mock.compass-system.svc.cluster.local:8080/secured/oauth/token" \
+    --data "global.systemFetcher.oauth.tokenBaseUrl=compass-external-services-mock.compass-system.svc.cluster.local:8080" \
+    --data "global.systemFetcher.oauth.tokenPath=/secured/oauth/token" \
+    --data "global.systemFetcher.oauth.tokenEndpointProtocol=http" \
     --data "global.systemFetcher.oauth.scopesClaim=scopes" \
     --data "global.systemFetcher.oauth.tenantHeaderName=x-zid" \
     --data "global.kubernetes.serviceAccountTokenJWKS=https://container.googleapis.com/v1beta1/projects/$CLOUDSDK_CORE_PROJECT/locations/$CLOUDSDK_COMPUTE_ZONE/clusters/$COMMON_NAME/jwks" \
@@ -236,6 +238,13 @@ function applyCompassOverrides() {
     --data "operations-controller.http.client.skipSSLValidation=true" \
     --data "global.systemFetcher.http.client.skipSSLValidation=true" \
     --label "component=compass"
+
+
+  OVERRIDES_FILE="${COMPASS_SOURCES_DIR}/installation/resources/installer-config-gke-integration.yaml.tpl"
+  if [[ -f "$OVERRIDES_FILE" ]]; then
+    # envsubst requires variables to be exported or to be passed to the process execution in order to work
+  CLOUDSDK_CORE_PROJECT=${CLOUDSDK_CORE_PROJECT} CLOUDSDK_COMPUTE_ZONE=${CLOUDSDK_COMPUTE_ZONE} COMMON_NAME=${COMMON_NAME} envsubst < "$OVERRIDES_FILE" | kubectl apply -f -
+  fi
 }
 
 function applyCommonOverrides() {

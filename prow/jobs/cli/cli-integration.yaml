@@ -29,7 +29,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211013-2c064d85"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211110-ab51bd20"
             securityContext:
               privileged: false
             command:
@@ -74,145 +74,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211013-2c064d85"
-            securityContext:
-              privileged: false
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-cli.sh"
-            env:
-              - name: GO111MODULE
-                value: "on"
-              - name: KUBERNETES_RUNTIME
-                value: "k3d"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pre-rel124-cli-integration-kyma-2
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel124-cli-integration-kyma-2"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-gc-project-env: "true"
-        preset-sa-vm-kyma-integration: "true"
-      always_run: true
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/cli
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - release-1.24
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.24
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211013-2c064d85"
-            securityContext:
-              privileged: false
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-cli.sh"
-            env:
-              - name: GO111MODULE
-                value: "on"
-              - name: KUBERNETES_RUNTIME
-                value: "k3d"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pre-rel123-cli-integration-kyma-2
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel123-cli-integration-kyma-2"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-gc-project-env: "true"
-        preset-sa-vm-kyma-integration: "true"
-      always_run: true
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/cli
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - release-1.23
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.23
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211013-2c064d85"
-            securityContext:
-              privileged: false
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-cli.sh"
-            env:
-              - name: GO111MODULE
-                value: "on"
-              - name: KUBERNETES_RUNTIME
-                value: "k3d"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pre-rel122-cli-integration-kyma-2
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel122-cli-integration-kyma-2"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-gc-project-env: "true"
-        preset-sa-vm-kyma-integration: "true"
-      always_run: true
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/cli
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - release-1.22
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.22
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211013-2c064d85"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211110-ab51bd20"
             securityContext:
               privileged: false
             command:
@@ -263,148 +125,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211013-2c064d85"
-            securityContext:
-              privileged: false
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-cli.sh"
-            env:
-              - name: GO111MODULE
-                value: "on"
-              - name: KUBERNETES_RUNTIME
-                value: "k3d"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: post-rel124-cli-integration-kyma-2
-      annotations:
-        pipeline.trigger: "pr-merge"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel124-cli-integration-kyma-2"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-main: "true"
-        preset-gc-project-env: "true"
-        preset-sa-vm-kyma-integration: "true"
-      always_run: true
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/cli
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - release-1.24
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.24
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211013-2c064d85"
-            securityContext:
-              privileged: false
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-cli.sh"
-            env:
-              - name: GO111MODULE
-                value: "on"
-              - name: KUBERNETES_RUNTIME
-                value: "k3d"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: post-rel123-cli-integration-kyma-2
-      annotations:
-        pipeline.trigger: "pr-merge"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel123-cli-integration-kyma-2"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-main: "true"
-        preset-gc-project-env: "true"
-        preset-sa-vm-kyma-integration: "true"
-      always_run: true
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/cli
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - release-1.23
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.23
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211013-2c064d85"
-            securityContext:
-              privileged: false
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-cli.sh"
-            env:
-              - name: GO111MODULE
-                value: "on"
-              - name: KUBERNETES_RUNTIME
-                value: "k3d"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: post-rel122-cli-integration-kyma-2
-      annotations:
-        pipeline.trigger: "pr-merge"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel122-cli-integration-kyma-2"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-main: "true"
-        preset-gc-project-env: "true"
-        preset-sa-vm-kyma-integration: "true"
-      always_run: true
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/cli
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - release-1.22
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.22
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211013-2c064d85"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211110-ab51bd20"
             securityContext:
               privileged: false
             command:
@@ -452,7 +173,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211013-2c064d85"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211110-ab51bd20"
             securityContext:
               privileged: false
             command:
@@ -464,58 +185,6 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-  
-periodics: # runs on schedule
-    - name: kyma-cli-integration-gke
-      annotations:
-        pipeline.trigger: "periodic"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "kyma-cli-integration-gke"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-cluster-use-ssd: "true"
-        preset-cluster-version: "true"
-        preset-gc-compute-envs: "true"
-        preset-gc-project-env: "true"
-        preset-sa-gke-kyma-integration: "true"
-      cron: "00 00 * * *"
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/cli
-      cluster: untrusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: cli
-          path_alias: github.com/kyma-project/cli
-          base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211020-638b6f95"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-cli.sh"
-            env:
-              - name: CLOUDSDK_COMPUTE_ZONE
-                value: "europe-west4-a"
-              - name: GO111MODULE
-                value: "on"
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 400m
         tolerations:
           - key: dedicated
             operator: Equal

@@ -56,6 +56,7 @@ func main() {
 		log.Fatal("Provide path to config file with --config")
 	}
 
+	// read template config file containing global configsets
 	configFile, err := ioutil.ReadFile(*configFilePath)
 	if err != nil {
 		log.Fatalf("Cannot read config file: %s", err)
@@ -68,8 +69,12 @@ func main() {
 	}
 
 	dataFilesDir := filepath.Join(filepath.Dir(*configFilePath), "data")
-	// read all template configs from data files
+	// read all template data from data files
 	dataFiles, err := ioutil.ReadDir(dataFilesDir)
+	if err != nil {
+		log.Fatalf("Cannot read data file directory: %s", err)
+	}
+
 	var dataFilesTemplates []*rt.TemplateConfig
 	for _, dataFile := range dataFiles {
 		if !dataFile.IsDir() {
@@ -93,8 +98,11 @@ func main() {
 
 	}
 
+	//append all generated configs from datafiles to the list of templates to generate jobs from
 	config.Templates = append(config.Templates, dataFilesTemplates...)
 	config.Merge()
+
+	// generate final .yaml files
 	for _, templateConfig := range config.Templates {
 		err = renderTemplate(path.Dir(*configFilePath), templateConfig, config)
 		if err != nil {
@@ -103,9 +111,12 @@ func main() {
 	}
 }
 
+// renderTemplate loads the template and calls the function that renders final files
 func renderTemplate(basePath string, templateConfig *rt.TemplateConfig, config *rt.Config) error {
 	for _, fromTo := range templateConfig.FromTo {
-		log.Printf("Rendering %s", fromTo)
+		if *showOutputDir {
+			log.Printf("Rendering %s", fromTo)
+		}
 		templateInstance, err := loadTemplate(basePath, fromTo.From)
 		if err != nil {
 			return err
@@ -122,6 +133,7 @@ func renderTemplate(basePath string, templateConfig *rt.TemplateConfig, config *
 	return nil
 }
 
+// renderFileFromTemplate renders template to file, based on the data passed to the template
 func renderFileFromTemplate(basePath string, templateInstance *template.Template, renderConfig rt.RenderConfig, config *rt.Config, fromTo rt.FromTo) error {
 	relativeDestPath := path.Join(basePath, fromTo.To)
 

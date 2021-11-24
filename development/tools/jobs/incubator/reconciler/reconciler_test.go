@@ -54,31 +54,6 @@ func TestReconcilerIntegrationJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"}, actualPresubmit.Spec.Containers[0].Command)
 }
 
-func TestReconcilerJobsPresubmitE2E(t *testing.T) {
-	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/reconciler/reconciler.yaml")
-	// THEN
-	require.NoError(t, err)
-
-	kymaPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-incubator/reconciler"})
-	expName := "pre-main-kyma-incubator-reconciler-e2e"
-	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName)
-	assert.Equal(t, expName, actualPresubmit.Name)
-	assert.Equal(t, []string{"^master$", "^main$"}, actualPresubmit.Branches)
-	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
-	assert.False(t, actualPresubmit.SkipReport)
-	assert.False(t, actualPresubmit.Optional)
-	assert.False(t, actualPresubmit.AlwaysRun)
-	assert.Equal(t, actualPresubmit.RunIfChanged, "^resources")
-	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "main")
-
-	// @TODO: For testing using pr image name. Update to tester.xxx
-	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18", actualPresubmit.Spec.Containers[0].Image)
-	//assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-gardener.sh"}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/reconciler"}, actualPresubmit.Spec.Containers[0].Args)
-}
-
 func TestReconcilerJobsPeriodicE2EUpgrade(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/reconciler/reconciler.yaml")
@@ -110,13 +85,13 @@ func TestReconcilerJobsPeriodicE2EUpgrade(t *testing.T) {
 	})
 	tester.AssertThatHasExtraRef(t, actualPeriodic.JobBase.UtilityConfig, []prowapi.Refs{
 		{
-			Org:       "kyma-incubator",
-			Repo:      "reconciler",
+			Org:       "kyma-project",
+			Repo:      "control-plane",
 			BaseRef:   "main",
-			PathAlias: "github.com/kyma-incubator/reconciler",
+			PathAlias: "github.com/kyma-project/control-plane",
 		},
 	})
-	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18", actualPeriodic.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-upgrade-gardener.sh"}, actualPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/reconciler"}, actualPeriodic.Spec.Containers[0].Args)
 }
@@ -136,14 +111,14 @@ func TestReconcilerJobsNightlyMain(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPeriodic.JobBase.UtilityConfig, "main")
 	tester.AssertThatHasExtraRef(t, actualPeriodic.JobBase.UtilityConfig, []prowapi.Refs{
 		{
-			Org:       "kyma-incubator",
-			Repo:      "reconciler",
+			Org:       "kyma-project",
+			Repo:      "control-plane",
 			BaseRef:   "main",
-			PathAlias: "github.com/kyma-incubator/reconciler",
+			PathAlias: "github.com/kyma-project/control-plane",
 		},
 	})
 
-	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18", actualPeriodic.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"}, actualPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/reconciler"}, actualPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "rec-night")
@@ -182,10 +157,10 @@ func TestReconcilerJobNightlyE2E(t *testing.T) {
 	assert.Equal(t, "0 1-22/2 * * 1-5", actualNightlyJob.Cron)
 	tester.AssertThatHasExtraRef(t, actualNightlyJob.JobBase.UtilityConfig, []prowapi.Refs{
 		{
-			Org:       "kyma-incubator",
-			Repo:      "reconciler",
+			Org:       "kyma-project",
+			Repo:      "control-plane",
 			BaseRef:   "main",
-			PathAlias: "github.com/kyma-incubator/reconciler",
+			PathAlias: "github.com/kyma-project/control-plane",
 		},
 	})
 	tester.AssertThatHasExtraRef(t, actualNightlyJob.JobBase.UtilityConfig, []prowapi.Refs{
@@ -205,7 +180,7 @@ func TestReconcilerJobNightlyE2E(t *testing.T) {
 		},
 	})
 	tester.AssertThatHasExtraRefTestInfra(t, actualNightlyJob.JobBase.UtilityConfig, "main")
-	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210902-035ae0cc-k8s1.18", actualNightlyJob.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualNightlyJob.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"}, actualNightlyJob.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/reconciler"}, actualNightlyJob.Spec.Containers[0].Args)
 	tester.AssertThatContainerHasEnv(t, actualNightlyJob.Spec.Containers[0], "INPUT_CLUSTER_NAME", "rec-night")

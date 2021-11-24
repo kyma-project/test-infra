@@ -1,7 +1,7 @@
 templates:
   - from: templates/generic.tmpl
     render:
-      - to: ../prow/jobs/busola/integration-test.yaml
+      - to: ../prow/jobs/busola/integration-k3s-test.yaml
         localSets:
           extra_refs_kyma-local:
             extra_refs:

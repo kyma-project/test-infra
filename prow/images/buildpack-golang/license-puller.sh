@@ -54,7 +54,7 @@ function pullLicensesByDir() {
     echo "Downloading license files to '${LICENSES_DIR}'"
     # shellcheck disable=SC2016
     jq -sr '[{ data: map(.) } | .data[] | select(has("ImportMap")) | .ImportMap | keys[]] | unique | values[]' "${TMP_DIR}/golang.json" \
-        | grep -oE "^[^\/]+\/[^\/]+\/[^\/]+" \
+        | grep -oE '^[^\/]+\/[^\/]+\/[^\/]+' \
         | sort -u \
         | while IFS=$'\t' read -r repository; do
             local outputDir="${LICENSES_DIR}/${repository}"

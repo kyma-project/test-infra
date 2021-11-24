@@ -152,7 +152,7 @@ function az::create_resource_group {
         sleep 15
 		counter=$(( counter + 1 ))
 		if (( counter == 5 )); then
-			log::error "\n---\nAzure resource group ${resourceGroup} still not present after one minute wait.\n---"
+			log::error "\\n---\\nAzure resource group ${resourceGroup} still not present after one minute wait.\\n---"
 			exit 1
 		fi
 	done
@@ -264,7 +264,7 @@ function az::delete_storage_account {
     local resourceGroup
     local accountName
 
-    while getopts ":g:n:t:" opt; do
+    while getopts ":g:n:" opt; do
         case $opt in
             g)
                 resourceGroup="$OPTARG" ;;
@@ -387,7 +387,7 @@ function az::deprovision_k8s_cluster {
 
     local deleteReturnCode
 
-    while getopts ":c:g:r:s:v:a:f:" opt; do
+    while getopts ":c:g:" opt; do
         case $opt in
             c)
                 clusterName="$OPTARG" ;;

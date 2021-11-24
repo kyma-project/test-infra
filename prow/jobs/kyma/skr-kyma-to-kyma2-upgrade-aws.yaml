@@ -21,7 +21,7 @@ periodics: # runs on schedule
         preset-kyma-integration-compass-enabled: "true"
         preset-kyma-integration-kcp-client-credentials: "true"
         preset-kyma-integration-subaccounnt: "true"
-      cron: "* */4 * * *"
+      cron: "0 */4 * * *"
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -37,7 +37,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211020-638b6f95"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211104-fac1690a"
             securityContext:
               privileged: true
             command:
@@ -56,7 +56,7 @@ periodics: # runs on schedule
               - name: KYMA_MAJOR_VERSION
                 value: "1"
               - name: KYMA_UPGRADE_VERSION
-                value: "release-2.0-2d76aa8"
+                value: "2.0.0-rc6"
               - name: SKIP_CLEANUP
                 value: "FALSE"
             resources:
