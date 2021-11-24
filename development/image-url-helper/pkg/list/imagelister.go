@@ -43,31 +43,6 @@ func (i Image) ImageURL() string {
 	return fmt.Sprintf("%s/%s", registry, i.Name)
 }
 
-// ImageListContains checks if list of images contains already the same image
-// func ImageListContains(list ImageList, image Image) bool {
-// 	for _, singleImage := range list {
-// 		if singleImage == image {
-// 			return true
-// 		}
-// 	}
-// 	return false
-// }
-
-// // Len return length of a list
-// func (images ImageList) Len() int {
-// 	return len(images)
-// }
-
-// // Less returns if the one image in the list should be before the ther one
-// func (images ImageList) Less(i, j int) bool {
-// 	return images[i].FullImageURL() < images[j].FullImageURL()
-// }
-
-// // Swap swaps two images in the list
-// func (images ImageList) Swap(i, j int) {
-// 	images[i], images[j] = images[j], images[i]
-// }
-
 // ContainerRegistry stores path to a container registry
 type ContainerRegistry struct {
 	Path string `yaml:"path,omitempty"`
@@ -142,23 +117,6 @@ func AppendImagesToList(parsedFile ValueFile, images, testImages ImageMap, compo
 		components[testImage.FullImageURL()] = append(components[testImage.FullImageURL()], component)
 	}
 }
-
-// // RemoveDoubles removes all duplicates
-// func RemoveDoubles(images ImageList) ImageMap {
-// 	var dedupedImages ImageList
-// 	for _, image := range images {
-// 		exists := false
-// 		for _, deduped := range dedupedImages {
-// 			if image == deduped {
-// 				exists = true
-// 			}
-// 		}
-// 		if !exists {
-// 			dedupedImages = append(dedupedImages, image)
-// 		}
-// 	}
-// 	return dedupedImages
-// }
 
 // GetInconsistentImages returns a list of images with the same URl but different versions or hashes
 func GetInconsistentImages(images ImageMap) ImageMap {
