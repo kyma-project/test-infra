@@ -104,6 +104,8 @@ branch-protection:
   orgs:
     kyma-project:
       protect: true # protect all repos & branches in kyma-project org
+      exclude:
+        - "^dependabot/"
       repos:
         kyma:
           branches:
@@ -122,6 +124,8 @@ branch-protection:
                   - "netlify/kyma-project-old/deploy-preview"
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
+      exclude:
+        - "^dependabot/"
       repos:
         compass:
           protect: false
@@ -149,10 +153,6 @@ branch-protection:
           branches:
             main:
               protect: true
-        test-infra:
-          branches:
-            "dependabot.*":
-              protect: false
 
 tide:
   sync_period: 2m
