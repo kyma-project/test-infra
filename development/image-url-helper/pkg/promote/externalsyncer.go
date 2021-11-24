@@ -3,6 +3,8 @@ package promote
 import (
 	"bytes"
 	"fmt"
+	"path/filepath"
+	"sort"
 
 	imagesyncer "github.com/kyma-project/test-infra/development/image-syncer/pkg"
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/list"
@@ -10,7 +12,7 @@ import (
 )
 
 // PrintExternalSyncerYaml prints out a YAML file ready to be used by the image-syncer tool to copy images to new container registry, with option to retag them
-func PrintExternalSyncerYaml(images list.ImageList, targetContainerRegistry, targetTag string, sign bool) error {
+func PrintExternalSyncerYaml(images list.ImageMap, targetContainerRegistry, targetTag string, sign bool) error {
 	imagesConverted := convertImageslist(images, targetContainerRegistry, targetTag, sign)
 
 	var out bytes.Buffer
@@ -25,13 +27,23 @@ func PrintExternalSyncerYaml(images list.ImageList, targetContainerRegistry, tar
 }
 
 // convertImageslist takes in a list of images, target repository & tag and creates a SyncDef structure that can be later marshalled and used by the image-syncer tool
-func convertImageslist(images list.ImageList, targetContainerRegistry, targetTag string, sign bool) imagesyncer.SyncDef {
-	syncDef := imagesyncer.SyncDef{}
-	syncDef.TargetRepoPrefix = targetContainerRegistry
-	syncDef.Sign = sign
+func convertImageslist(images list.ImageMap, targetContainerRegistry, targetTag string, sign bool) imagesyncer.SyncDef {
+
+	imageNames := make([]string, 0)
 	for _, image := range images {
+		imageNames = append(imageNames, image.FullImageURL())
+	}
+	sort.Strings(imageNames)
+
+	// make sure the trailing slash is always at the end
+	targetContainerRegistryClean := filepath.Clean(targetContainerRegistry) + "/"
+
+	syncDef := imagesyncer.SyncDef{}
+	syncDef.TargetRepoPrefix = targetContainerRegistryClean
+	syncDef.Sign = sign
+	for _, fullImageURL := range imageNames {
 		tmpImage := imagesyncer.Image{}
-		tmpImage.Source = image.FullImageURL()
+		tmpImage.Source = fullImageURL
 		if targetTag != "" {
 			tmpImage.Tag = targetTag
 		}

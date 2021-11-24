@@ -50,19 +50,18 @@ func CheckCmd() *cobra.Command {
 				}
 			}
 
-			var images list.ImageList
-			var testImages list.ImageList
+			images := make(list.ImageMap)
+			testImages := make(list.ImageMap)
 			imageComponentsMap := make(list.ImageToComponents)
-			err = filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, &images, &testImages, imageComponentsMap))
+			err = filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, images, testImages, imageComponentsMap))
 			if err != nil {
 				fmt.Printf("Cannot traverse directory: %s\n", err)
 				os.Exit(2)
 			}
 
-			var allImages list.ImageList
-			allImages = append(allImages, images...)
-			allImages = append(allImages, testImages...)
-			allImages = list.RemoveDoubles(allImages)
+			allImages := make(list.ImageMap)
+			list.MergeImageMap(allImages, images)
+			list.MergeImageMap(allImages, testImages)
 
 			inconsistentImages := list.GetInconsistentImages(allImages)
 

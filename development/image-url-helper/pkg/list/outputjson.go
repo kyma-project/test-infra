@@ -27,9 +27,8 @@ type OutputImageList struct {
 }
 
 // PrintImagesJSON prints JSON list with names and components for each image
-func PrintImagesJSON(allImages ImageList, imageComponentsMap ImageToComponents) error {
-	sort.Sort(allImages)
-	imagesConverted := convertimageslist(allImages, imageComponentsMap)
+func PrintImagesJSON(allImages ImageMap, imageComponentsMap ImageToComponents) error {
+	imagesConverted := convertImageslist(allImages, imageComponentsMap)
 
 	out, err := json.MarshalIndent(imagesConverted, "", "  ")
 	if err != nil {
@@ -40,9 +39,8 @@ func PrintImagesJSON(allImages ImageList, imageComponentsMap ImageToComponents) 
 }
 
 // PrintImagesYAML prints YAML list with names and components for each image
-func PrintImagesYAML(allImages ImageList, imageComponentsMap ImageToComponents) error {
-	sort.Sort(allImages)
-	imagesConverted := convertimageslist(allImages, imageComponentsMap)
+func PrintImagesYAML(allImages ImageMap, imageComponentsMap ImageToComponents) error {
+	imagesConverted := convertImageslist(allImages, imageComponentsMap)
 
 	out, err := yaml.Marshal(imagesConverted)
 	if err != nil {
@@ -53,14 +51,20 @@ func PrintImagesYAML(allImages ImageList, imageComponentsMap ImageToComponents) 
 }
 
 // convertImageslist takes in a list of images and image to component mapping and creates an OutputImageList structure that can be later marshalled and used by the security scan tool
-func convertimageslist(allImages ImageList, imageComponentsMap ImageToComponents) OutputImageList {
+func convertImageslist(allImages ImageMap, imageComponentsMap ImageToComponents) OutputImageList {
 	imagesConverted := OutputImageList{}
 
+	imageNames := make([]string, 0)
 	for _, image := range allImages {
+		imageNames = append(imageNames, image.FullImageURL())
+	}
+	sort.Strings(imageNames)
+
+	for _, fullImageURL := range imageNames {
 		imageTmp := OutputImage{}
-		imageTmp.Name = image.FullImageURL()
-		imageTmp.CustomFields.Image = image.FullImageURL()
-		components := imageComponentsMap[image.FullImageURL()]
+		imageTmp.Name = fullImageURL
+		imageTmp.CustomFields.Image = fullImageURL
+		components := imageComponentsMap[fullImageURL]
 		imageTmp.CustomFields.Components = strings.Join(components, ",")
 		imagesConverted.Images = append(imagesConverted.Images, imageTmp)
 	}

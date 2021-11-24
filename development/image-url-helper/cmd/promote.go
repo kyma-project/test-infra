@@ -31,20 +31,19 @@ func PromoteCmd() *cobra.Command {
 			// remove trailing slash to have consistent paths
 			ResourcesDirectoryClean := filepath.Clean(ResourcesDirectory)
 
-			var images list.ImageList
-			var testImages list.ImageList
+			images := make(list.ImageMap)
+			testImages := make(list.ImageMap)
 
-			err := filepath.Walk(ResourcesDirectory, promote.GetWalkFunc(ResourcesDirectoryClean, options.targetContainerRegistry, options.targetTag, options.dryRun, &images, &testImages))
+			err := filepath.Walk(ResourcesDirectory, promote.GetWalkFunc(ResourcesDirectoryClean, options.targetContainerRegistry, options.targetTag, options.dryRun, images, testImages))
 			if err != nil {
 				fmt.Printf("Cannot traverse directory: %s\n", err)
 				os.Exit(2)
 			}
 
-			// join and sort both images lists
-			var allImages list.ImageList
-			allImages = append(allImages, images...)
-			allImages = append(allImages, testImages...)
-			allImages = list.RemoveDoubles(allImages)
+			// join both images lists
+			allImages := make(list.ImageMap)
+			list.MergeImageMap(allImages, images)
+			list.MergeImageMap(allImages, testImages)
 
 			err = promote.PrintExternalSyncerYaml(allImages, options.targetContainerRegistry, options.targetTag, options.sign)
 			if err != nil {
