@@ -10,11 +10,11 @@ pjNames: # runs provision-vm-cli.sh
   # - pjName: pre-main-kyma-integration-k3d-compass-dev
   # - pjName: pre-main-kyma-integration-k3d-central-app-connectivity
   # - pjName: pre-main-kyma-integration-k3d-central-app-connectivity-compass
-  # - pjName: post-main-kyma-integration-k3d
+  - pjName: post-main-kyma-integration-k3d
   # - pjName: post-main-kyma-integration-k3d-compass-dev
   # - pjName: post-main-kyma-integration-k3d-central-app-connectivity
   # - pjName: post-main-kyma-integration-k3d-central-app-connectivity-compass
-  # - pjName: kyma-integration-k3d
+  - pjName: kyma-integration-k3d
   # - pjName: kyma-integration-k3d-compass-dev
   # runs provision-vm-and-start-kyma-reconciler.sh which runs reconciler-integration-k3d.sh
   # - pjName: pre-main-reconciler-integration-k3d
