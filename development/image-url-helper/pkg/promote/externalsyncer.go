@@ -3,7 +3,6 @@ package promote
 import (
 	"bytes"
 	"fmt"
-	"path/filepath"
 	"sort"
 
 	imagesyncer "github.com/kyma-project/test-infra/development/image-syncer/pkg"
@@ -35,11 +34,8 @@ func convertImageslist(images list.ImageMap, targetContainerRegistry, targetTag 
 	}
 	sort.Strings(imageNames)
 
-	// make sure the trailing slash is always at the end
-	targetContainerRegistryClean := filepath.Clean(targetContainerRegistry) + "/"
-
 	syncDef := imagesyncer.SyncDef{}
-	syncDef.TargetRepoPrefix = targetContainerRegistryClean
+	syncDef.TargetRepoPrefix = targetContainerRegistry + "/"
 	syncDef.Sign = sign
 	for _, fullImageURL := range imageNames {
 		tmpImage := imagesyncer.Image{}

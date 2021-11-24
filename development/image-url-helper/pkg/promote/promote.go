@@ -116,7 +116,7 @@ func promoteContainerRegistry(path string, globalNode *yaml.Node, targetContaine
 		// raise error if the containerRegistry key is defined, but path is not, as this key expected to exist
 		return true, fmt.Errorf("error in %s file: could not find global.containerRegistry.path key", path)
 	}
-	containerRegistryPathNode.Value = targetContainerRegistry
+	containerRegistryPathNode.Value = targetContainerRegistry + "/" + containerRegistryPathNode.Value
 
 	// update the container registry path
 	outputLine, err := yamlNodeToString(containerRegistryNode, containerRegistryNode.Content[0].Column)
