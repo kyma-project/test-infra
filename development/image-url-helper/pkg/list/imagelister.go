@@ -92,13 +92,13 @@ func GetWalkFunc(resourcesDirectory string, images, testImages ImageMap, imageCo
 		component := strings.Replace(path, resourcesDirectory+"/", "", -1)
 		component = strings.Replace(component, "/values.yaml", "", -1)
 
-		AppendImagesToList(parsedFile, images, testImages, component, imageComponentsMap)
+		AppendImagesToMap(parsedFile, images, testImages, component, imageComponentsMap)
 
 		return nil
 	}
 }
 
-func AppendImagesToList(parsedFile ValueFile, images, testImages ImageMap, component string, components ImageToComponents) {
+func AppendImagesToMap(parsedFile ValueFile, images, testImages ImageMap, component string, components ImageToComponents) {
 	for _, image := range parsedFile.Global.Images {
 		// add registry info directly into the image struct
 		if image.ContainerRegistryPath == "" {
@@ -151,6 +151,8 @@ func PrintImages(images ImageMap, imageComponentsMap ImageToComponents) {
 // MergeImageMap merges images map into target one
 func MergeImageMap(target ImageMap, source ImageMap) {
 	for key, val := range source {
-		target[key] = val
+		if _, ok := target[key]; !ok {
+			target[key] = val
+		}
 	}
 }

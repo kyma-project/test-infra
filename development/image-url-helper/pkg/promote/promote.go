@@ -66,7 +66,7 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 		}
 
 		// generate list of used images and apprend it to the global list containing images from all values.yaml files
-		list.AppendImagesToList(parsedImagesFile, images, testImages, "", make(list.ImageToComponents))
+		list.AppendImagesToMap(parsedImagesFile, images, testImages, "", make(list.ImageToComponents))
 
 		globalNode := getYamlNode(parsedFile.Content[0], "global")
 		if globalNode == nil {
