@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "website-governance-nightly"
+prConfigs:
+  kyma-project:
+    website:
+      prNumber: 795
