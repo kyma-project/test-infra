@@ -390,8 +390,8 @@ periodics: # runs on schedule
                 value: "prow-keb-integration"
               - name: KYMA_MAJOR_VERSION
                 value: "1"
-              - name: RUNTIME
-                value: "D7FB35BB-D5B2-4F6F-9ADF-A9E74DD6EA0D"
+              - name: SHOOT
+                value: "b84df48"
             resources:
               requests:
                 memory: 100Mi

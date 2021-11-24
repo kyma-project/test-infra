@@ -188,7 +188,7 @@ templates:
                     - "skr-test-existing"
                   cron: "5 1 * * *" # "At 01:05"
                   env:
-                    RUNTIME: "D7FB35BB-D5B2-4F6F-9ADF-A9E74DD6EA0D"
+                    SHOOT: "b84df48"
                 inheritedConfigs:
                   global:
                     - "image_kyma-integration"
