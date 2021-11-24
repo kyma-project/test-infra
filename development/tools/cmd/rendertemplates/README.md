@@ -117,6 +117,36 @@ jobConfigs:
               - "jobConfig_post"
 ```
 
+The Render Templates tool can generate precommit and postcommit job definitions from a single jobConfig. The job defined in **jobConfigPre** and **jobConfigPost** can generate precommit and postcommit job definitions for a single job. This type of config holds two additional lists of values named **jobConfigPre** and **jobConfigPost**, which hold values used for presubmit and postsubmit jobs, as well as two lists of configSets named **preConfigs** and **postConfigs**, which hold lists of global and local configSets used for presubmit and postsubmit jobs.
+
+```yaml
+jobConfigs:
+  - repoName: kyma-project/control-plane
+    jobs:
+      - jobConfig:
+          labels:
+            preset-common: "true"
+        jobConfigPre:
+          name: pre-main-kcp-cli
+          run_if_changed: "^tools/cli"
+        jobConfigPost:
+          name: post-main-kcp-cli
+          labels:
+            preset-build-artifacts-main: "true"
+        inheritedConfigs:
+          global:
+            - "jobConfig_default"
+          local:
+            - "jobConfig_default_kcp"
+          preConfigs:
+            global:
+              - "jobConfig_presubmit"
+          postConfigs:
+            global:
+              - "jobConfig_postsubmit"
+              - "disable_testgrid"
+```
+
 The Render Templates builds the **Values** variable by merging ConfigSets from **globalSets** first. If the job inherits the `default` ConfigSet from **globalSets**, it is merged first and all other ConfigSets from **globalSets** are merged afterwards. Then, the Render Templates merges ConfigSets from **localSets**. Again, if the job inherits the `default` ConfigSet from **localSets**, it's merged first and then all the other ConfigSets from **localSets** are merged. ConfigSets other than default are merged in any order during the **globalSets** and **localSets** phases. ConfigSets from **jobConfig** are merged as the last ones. Existing keys in the **Values** variable are overwritten by values from the merged ConfigSets.
 
 
@@ -134,4 +164,5 @@ This tool uses one flag:
 
 | Name | Required | Description                                                                                          |
 | ------------------------ | :------: | --------------------------------------------------------------------------------------------------- |
-| **&#x2011;&#x2011;config**  |   Yes    | Generates output files based on the definition of the configuration file. |        
+| **&#x2011;&#x2011;config**  |   Yes    | Generates output files based on the definition of the configuration file. |
+| **&#x2011;&#x2011;show-output-dir**  |   No    | Prints out the paths to data files and to the generated files. |

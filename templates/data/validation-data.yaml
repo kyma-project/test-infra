@@ -27,7 +27,7 @@ templates:
                   name: "pre-test-infra-validate-configs"
                   run_if_changed: "^prow/((plugins|config).yaml|jobs/)"
                   command: "/app/prow/cmd/checkconfig/app.binary"
-                  image: gcr.io/k8s-prow/checkconfig:v20210714-62f15287bd
+                  image: gcr.io/k8s-prow/checkconfig:v20211014-1433e96a1f
                   args:
                     - "--plugin-config=prow/plugins.yaml"
                     - "--config-path=prow/config.yaml"
@@ -49,6 +49,23 @@ templates:
                     - "-C"
                     - "development/tools"
                     - "validate"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_presubmit"
+                    - "pubsub_labels"
+              - jobConfig:
+                  name: "pre-main-test-infra-validate-image-url-helper"
+                  privileged: "false"
+                  run_if_changed: "^development/image-url-helper/(cmd/.*|pkg/.*|Makefile|.*.sh)"
+                  labels:
+                    preset-build-pr: "true"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "development/image-url-helper"
+                    - "ci-pr"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -96,5 +113,20 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
+                    - "jobConfig_presubmit"
+                    - "pubsub_labels"
+              - jobConfig:
+                  name: "pre-test-infra-validate-dockerfiles"
+                  run_if_changed: ".*Dockerfile$"
+                  command: "/bin/bash"
+                  args: 
+                    - "-c"
+                    - "shopt -s globstar;
+                      hadolint --config .hadolint.yaml --no-color **/Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "jobConfig_allBranches"
+                  global:
+                    - "image_bootstrap"
                     - "jobConfig_presubmit"
                     - "pubsub_labels"

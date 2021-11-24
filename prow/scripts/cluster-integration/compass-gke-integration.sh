@@ -56,7 +56,7 @@ if [[ "$BUILD_TYPE" == "pr" ]]; then
   COMPASS_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-compass-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
   export COMPASS_INSTALLER_IMAGE
 else
-  # Otherwise (master), operate on triggering commit id
+  # Otherwise (main), operate on triggering commit id
   readonly COMMON_NAME_PREFIX="gkecompint-commit"
   readonly COMMIT_ID=$(cd "$COMPASS_SOURCES_DIR" && git rev-parse --short HEAD)
   COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}")
@@ -138,6 +138,8 @@ function createCluster() {
   export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
   gcp::provision_k8s_cluster \
         -c "$COMMON_NAME" \
+        -m "$MACHINE_TYPE" \
+        -n "$NODES_PER_ZONE" \
         -p "$CLOUDSDK_CORE_PROJECT" \
         -v "$GKE_CLUSTER_VERSION" \
         -j "$JOB_NAME" \
@@ -222,18 +224,29 @@ function applyCompassOverrides() {
     --data "global.systemFetcher.systemsAPIFilterCriteria=no" \
     --data "global.systemFetcher.systemsAPIFilterTenantCriteriaPattern=tenant=%s" \
     --data 'global.systemFetcher.systemToTemplateMappings=[{"Name": "temp1", "SourceKey": ["prop"], "SourceValue": ["val1"] },{"Name": "temp2", "SourceKey": ["prop"], "SourceValue": ["val2"] }]' \
-    --data "global.systemFetcher.oauth.client=admin" \
-    --data "global.systemFetcher.oauth.secret=admin" \
-    --data "global.systemFetcher.oauth.tokenURLPattern=http://compass-external-services-mock.compass-system.svc.cluster.local:8080/systemfetcher/oauth/token" \
+    --data "global.systemFetcher.oauth.client=client_id" \
+    --data "global.systemFetcher.oauth.secret=client_secret" \
+    --data "global.systemFetcher.oauth.tokenBaseUrl=compass-external-services-mock.compass-system.svc.cluster.local:8080" \
+    --data "global.systemFetcher.oauth.tokenPath=/secured/oauth/token" \
+    --data "global.systemFetcher.oauth.tokenEndpointProtocol=http" \
     --data "global.systemFetcher.oauth.scopesClaim=scopes" \
     --data "global.systemFetcher.oauth.tenantHeaderName=x-zid" \
     --data "global.migratorJob.nodeSelectorEnabled=true" \
     --data "global.kubernetes.serviceAccountTokenJWKS=https://container.googleapis.com/v1beta1/projects/$CLOUDSDK_CORE_PROJECT/locations/$CLOUDSDK_COMPUTE_ZONE/clusters/$COMMON_NAME/jwks" \
-    --data "global.authenticators.tenant-fetcher.enabled=true" \
+    --data "global.oathkeeper.mutators.authenticationMappingServices.tenant-fetcher.authenticator.enabled=true" \
+    --data "global.oathkeeper.mutators.authenticationMappingServices.subscriber.authenticator.enabled=true" \
     --data "system-broker.http.client.skipSSLValidation=true" \
+    --data "connector.http.client.skipSSLValidation=true" \
     --data "operations-controller.http.client.skipSSLValidation=true" \
     --data "global.systemFetcher.http.client.skipSSLValidation=true" \
+    --data "global.ordAggregator.http.client.skipSSLValidation=true" \
     --label "component=compass"
+
+  OVERRIDES_FILE="${COMPASS_SOURCES_DIR}/installation/resources/installer-config-gke-integration.yaml.tpl"
+  if [[ -f "$OVERRIDES_FILE" ]]; then
+    # envsubst requires variables to be exported or to be passed to the process execution in order to work
+  CLOUDSDK_CORE_PROJECT=${CLOUDSDK_CORE_PROJECT} CLOUDSDK_COMPUTE_ZONE=${CLOUDSDK_COMPUTE_ZONE} COMMON_NAME=${COMMON_NAME} envsubst < "$OVERRIDES_FILE" | kubectl apply -f -
+  fi
 }
 
 function applyCommonOverrides() {
@@ -267,7 +280,7 @@ function installKyma() {
   if [[ "$BUILD_TYPE" == "pr" ]]; then
     COMPASS_VERSION="PR-${PULL_NUMBER}"
   else
-    COMPASS_VERSION="master-${COMMIT_ID}"
+    COMPASS_VERSION="main-${COMMIT_ID}"
   fi
   readonly COMPASS_ARTIFACTS="${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${COMPASS_VERSION}"
   

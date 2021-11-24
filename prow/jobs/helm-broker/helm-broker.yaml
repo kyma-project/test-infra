@@ -28,7 +28,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210831-b387d3eb"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211110-ab51bd20"
             securityContext:
               privileged: true
             command:
@@ -73,7 +73,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210831-b387d3eb"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211110-ab51bd20"
             securityContext:
               privileged: true
             command:
@@ -108,6 +108,7 @@ postsubmits: # runs on main
         preset-bot-github-token: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       skip_report: false
       decorate: true
@@ -123,7 +124,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210831-b387d3eb"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211110-ab51bd20"
             securityContext:
               privileged: true
             command:
@@ -168,7 +169,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210831-b387d3eb"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211110-ab51bd20"
             securityContext:
               privileged: true
             command:

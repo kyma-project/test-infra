@@ -150,9 +150,9 @@ func TestReadTestCfg(t *testing.T) {
 		PjPath: "test-infra/prow/jobs/",
 	}, "pjCfg for orphaned-disks-cleaner has wrong values")
 	assert.Containsf(t, testCfg.PjNames, pjCfg{
-		PjName: "post-main-kyma-gke-integration",
+		PjName: "post-main-kyma-integration-k3d",
 		PjPath: "test-infra/prow/jobs/",
-	}, "pjCfg for post-main-kyma-gke-integration has wrong values.")
+	}, "pjCfg for post-main-kyma-integration-k3d has wrong values.")
 	assert.Equalf(t, "test-infra/prow/config.yaml", testCfg.ConfigPath, "pjtester has wrong path to prow config.yaml file.")
 	assert.Equalf(t, 1212, testCfg.PrConfigs["kyma-project"]["kyma"].PrNumber, "PR number for kyma read from pjtester.yaml file is wrong.")
 }
@@ -229,10 +229,10 @@ func TestNewTestPJ(t *testing.T) {
 		if strings.Contains(pj.Spec.Job, "orphaned-disks-cleaner") {
 			assert.Containsf(t, pj.Spec.ExtraRefs, testInfraRefs, "ExtraRefs for test-infra is not present")
 			o.prFinder.Repositories.(*mocks.GithubRepoService).AssertNotCalled(t, "GetCommit", ctx, fakeRepoPrOrg, fakeRepoPrRepo, fakeRepoBaseSHA)
-		} else if strings.Contains(pj.Spec.Job, "post-main-kyma-gke-integration") {
+		} else if strings.Contains(pj.Spec.Job, "post-main-kyma-integration-k3d") {
 			assert.Equalf(t, kymaRefs, *pj.Spec.Refs, "Postsubmit Refs for kyma has wrong values")
-			assert.Lenf(t, pj.Spec.ExtraRefs, 1, "ExtraRefs slice doesn't contain one element.")
-			assert.Equalf(t, testInfraRefs, pj.Spec.ExtraRefs[0], "ExtraRefs for test-infra is not present")
+			assert.Lenf(t, pj.Spec.ExtraRefs, 2, "ExtraRefs slice doesn't contain two elements.")
+			assert.Equalf(t, testInfraRefs, pj.Spec.ExtraRefs[1], "ExtraRefs for test-infra is not present")
 			o.prFinder.Repositories.(*mocks.GithubRepoService).AssertNotCalled(t, "GetCommit", ctx, fakeRepoPrOrg, fakeRepoPrRepo, fakeRepoBaseSHA)
 		} else if strings.Contains(pj.Spec.Job, "test-infra-presubmit-test-job") {
 			assert.Equalf(t, testInfraRefs, *pj.Spec.Refs, "Presubmit Refs for test-infra has wrong values")

@@ -78,7 +78,7 @@ function cleanup() {
 		-r "$RS_GROUP" \
 		-c "$CLUSTER_NAME"
 
-	log::info "\n---\nRemove DNS Record for Ingressgateway\n---"
+	log::info '\n---\nRemove DNS Record for Ingressgateway\n---'
 	GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
 
 	GATEWAY_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${GATEWAY_DNS_FULL_NAME}" --format="value(rrdatas[0])")
@@ -94,7 +94,7 @@ function cleanup() {
 			-z "$CLOUDSDK_DNS_ZONE_NAME"
 	fi
 
-	log::info "\n---\nRemove DNS Record for Apiserver Proxy IP\n---"
+	log::info '\n---\nRemove DNS Record for Apiserver Proxy IP\n---'
 	APISERVER_DNS_FULL_NAME="apiserver.${DOMAIN}."
 	APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
 	TMP_STATUS=$?
@@ -123,7 +123,7 @@ function cleanup() {
 
 	MSG=""
 	if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-	log::info "\n---\nCleanup function is finished ${MSG}\n---"
+	log::info "\\n---\\nCleanup function is finished ${MSG}\\n---"
 
 	# Turn on exit-on-error
 	set -e
@@ -187,8 +187,7 @@ function installKyma() {
 			--domain "${DOMAIN}" \
 			--profile production \
 			--tls-cert "${TLS_CERT}" \
-			--tls-key "${TLS_KEY}" \
-			--timeout 60m
+			--tls-key "${TLS_KEY}"
 
 	if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
 		log::info "Create DNS Record for Apiserver proxy IP"

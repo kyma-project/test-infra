@@ -1,0 +1,7 @@
+# webhookSecret must be provided using --set argument to helm command.
+# webhookSecret provides secret used for validation github webhook message authenticity and integrity.
+targetAppName: "mp-slack-connector"
+# API gateway URL path for receiving github webhooks.
+githubWebhookUrlPath: "/webhook"
+# API gateway hostname prefix for receiving github webhooks.
+hostPrefix: "ghwebhook"

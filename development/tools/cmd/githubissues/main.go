@@ -221,17 +221,26 @@ func main() {
 	job, err := loader.Run(ctx)
 	if err != nil {
 		fmt.Printf("BigQuery: could not add records: %v\n", err)
+		for _, errMessge := range job.LastStatus().Errors {
+			fmt.Printf("%s\n", errMessge.Message)
+		}
 		os.Exit(1)
 	}
 
 	status, err := job.Wait(ctx)
 	if err != nil {
 		fmt.Printf("BigQuery: could not add records: %v\n", err)
+		for _, errMessge := range job.LastStatus().Errors {
+			fmt.Printf("%s\n", errMessge.Message)
+		}
 		os.Exit(1)
 	}
 
 	if err := status.Err(); err != nil {
 		fmt.Printf("BigQuery: could not add records: %v\n", err)
+		for _, errMessge := range job.LastStatus().Errors {
+			fmt.Printf("%s\n", errMessge.Message)
+		}
 		os.Exit(1)
 	}
 

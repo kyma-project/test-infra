@@ -160,7 +160,7 @@ function utils::receive_from_vm() {
 
   for i in $(seq 1 5); do
     [[ ${i} -gt 1 ]] && log::info 'Retrying in 15 seconds..' && sleep 15;
-    gcloud compute scp --strict-host-key-checking=no --quiet --recurse --zone="${ZONE}" "${REMOTE_NAME}":"${REMOTE_PATH}" "${LOCAL_PATH}" && break;
+    gcloud compute scp --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SCP_LOG_LEVEL:-error}" --strict-host-key-checking=no --quiet --recurse --zone="${ZONE}" "${REMOTE_NAME}":"${REMOTE_PATH}" "${LOCAL_PATH}" && break;
     [[ ${i} -ge 5 ]] && log::error "Failed after $i attempts." && exit 1
   done;
 }
@@ -196,7 +196,7 @@ function utils::send_to_vm() {
 
   for i in $(seq 1 5); do
     [[ ${i} -gt 1 ]] && log::info 'Retrying in 15 seconds..' && sleep 15;
-    gcloud compute scp --strict-host-key-checking=no --quiet --recurse --zone="${ZONE}" "${LOCAL_PATH}" "${REMOTE_NAME}":"${REMOTE_PATH}" && break;
+    gcloud compute scp --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SCP_LOG_LEVEL:-error}" --strict-host-key-checking=no --quiet --recurse --zone="${ZONE}" "${LOCAL_PATH}" "${REMOTE_NAME}":"${REMOTE_PATH}" && break;
     [[ ${i} -ge 5 ]] && log::error "Failed after $i attempts." && exit 1
   done;
 }
@@ -235,7 +235,7 @@ function utils::compress_send_to_vm() {
   tar -czf "${TMP_DIRECTORY}/pack.tar.gz" -C "${LOCAL_PATH}" "."
   #shellcheck disable=SC2088
   utils::send_to_vm "${ZONE}" "${REMOTE_NAME}" "${TMP_DIRECTORY}/pack.tar.gz" "~/"
-  gcloud compute ssh --strict-host-key-checking=no --quiet --zone="${ZONE}" --command="mkdir ${REMOTE_PATH} && tar -xf ~/pack.tar.gz -C ${REMOTE_PATH}" --ssh-flag="-o ServerAliveInterval=30" "${REMOTE_NAME}"
+  gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --strict-host-key-checking=no --quiet --zone="${ZONE}" --command="mkdir ${REMOTE_PATH} && tar -xf ~/pack.tar.gz -C ${REMOTE_PATH}" --ssh-flag="-o ServerAliveInterval=30" "${REMOTE_NAME}"
 
   rm -rf "${TMP_DIRECTORY}"
 }
@@ -422,13 +422,11 @@ function utils::kubeaudit_check_report() {
 # f - apiserver IP address
 # N - gateway IP address name
 # Z - GCP dns zone name
+# k - if set to true, this is a Kyma 2.0 cluster; default false
 #
 function utils::post_hook() {
     # enabling path globbing, disabled in a trap before utils::post_hook call
     set +f
-
-    kubectl get installation kyma-installation -o go-template --template='{{- range .status.errorLog }}{{printf "%s:\n %s\n" .component .log}}{{- end}}'
-    kubectl logs -n kyma-installer -l name=kyma-installer
 
     local OPTIND
     local projectName
@@ -445,8 +443,9 @@ function utils::post_hook() {
     local cleanRegionalCluster="false"
     local asyncDeprovision="true"
     local jobname
+    local kyma2="false"
 
-    while getopts ":n:c:l:p:a:G:g:z:I:r:d:R:A:e:f:s:Z:N:E:j:" opt; do
+    while getopts ":n:c:l:p:a:G:g:z:I:r:d:R:A:e:f:s:Z:N:E:j:k:" opt; do
         case $opt in
             p)
                 projectName="$OPTARG" ;;
@@ -476,6 +475,8 @@ function utils::post_hook() {
                 cleanRegionalCluster=${OPTARG:-$cleanRegionalCluster} ;;
             d)
                 asyncDeprovision=${OPTARG:-$asyncDeprovision} ;;
+            k)
+                kyma2=${OPTARG:-$kyma2} ;;
             n)
                 if [ -n "$OPTARG" ]; then
                     local clusterName="$OPTARG"
@@ -507,6 +508,11 @@ function utils::post_hook() {
         esac
     done
 
+    if [ "$kyma2" = "false" ]; then
+        kubectl get installation kyma-installation -o go-template --template='{{- range .status.errorLog }}{{printf "%s:\n %s\n" .component .log}}{{- end}}'
+        kubectl logs -n kyma-installer -l name=kyma-installer
+    fi
+    
     utils::check_empty_arg "$projectName" "Project name not provided." "graceful"
     utils::check_empty_arg "$exitStatus" "Exit status not provided." "graceful"
     utils::check_empty_arg "$jobname" "Job name not provided." "graceful"

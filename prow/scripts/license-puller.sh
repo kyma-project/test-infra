@@ -18,7 +18,8 @@ function read_arguments() {
     do
         case $arg in
             --dirs-to-pulling=*)
-              local dirs_to_pulling=($( echo "${arg#*=}" | tr "," "\n" ))
+              local dirs_to_pulling
+              IFS=',' read -r -a dirs_to_pulling <<< "${arg#*=}"
               shift # remove --dirs-to-pulling=
             ;;
             --verbose)
@@ -33,7 +34,7 @@ function read_arguments() {
 
     if [ "${#dirs_to_pulling[@]}" -ne 0 ]; then
         for d in "${dirs_to_pulling[@]}"; do
-            DIRS_TO_PULLING+=($( cd "${CWD}/${d}" && pwd ))
+            DIRS_TO_PULLING+=("$( cd "${CWD}/${d}" && pwd )")
         done
     fi
     readonly DIRS_TO_PULLING
@@ -73,7 +74,7 @@ function pullGoLicensesByDir() {
     jq -sr '[{ data: map(.) } | .data[] | select(has("ImportMap")) | .ImportMap | keys[]] | unique | values[]' "${TMP_DIR}/golang.json" \
         | sed -e 's/sigs\.k8s\.io/github\.com\/kubernetes-sigs/g' \
         | sed -e 's/k8s\.io/github\.com\/kubernetes/g' \
-        | grep -oE "^[^\/]+\/[^\/]+\/[^\/]+" \
+        | grep -oE '^[^\/]+\/[^\/]+\/[^\/]+' \
         | sort -u \
         | while IFS=$'\t' read -r repository; do
             local outputDir="${LICENSES_DIR}/${repository}"

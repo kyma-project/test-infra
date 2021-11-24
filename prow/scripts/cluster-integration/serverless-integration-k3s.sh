@@ -5,14 +5,10 @@ set -o pipefail  # Fail a pipe if any sub-command fails.
 
 date
 
-# https://github.com/kyma-project/test-infra/pull/2967 - explanation for that kaniko image
-export KANIKO_IMAGE="eu.gcr.io/kyma-project/external/aerfio/kaniko:v1.5.1"
 export DOMAIN=${KYMA_DOMAIN:-local.kyma.dev}
 if [[ -z $REGISTRY_VALUES ]]; then
-  export REGISTRY_VALUES="dockerRegistry.enableInternal=false,dockerRegistry.serverAddress=registry.localhost:5000,dockerRegistry.registryAddress=registry.localhost:5000,containers.manager.envs.functionBuildExecutorImage.value=${KANIKO_IMAGE}"
+  export REGISTRY_VALUES="dockerRegistry.enableInternal=false,dockerRegistry.serverAddress=registry.localhost:5000,dockerRegistry.registryAddress=registry.localhost:5000"
 fi
-
-export USE_ALPHA=${USE_ALPHA:-false}
 
 export KYMA_SOURCES_DIR="./kyma"
 
@@ -137,13 +133,6 @@ install::k3s() {
     date
 }
 
-install::k3d() {
-  echo "--> Installing k3d"
-  curl -sfL https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
-  k3d --version
-  date
-}
-
 function host::patch_coredns() {
   echo "Patching CoreDns with REGISTRY_IP=$REGISTRY_IP"
   sed "s/REGISTRY_IP/$REGISTRY_IP/" coredns-patch.tpl >coredns-patch.yaml
@@ -152,41 +141,15 @@ function host::patch_coredns() {
 
 date
 
-if [ "$USE_ALPHA" == "true" ]; then
-  echo "--> Installing k3d for kyma-cli"
-  install::k3d
+echo "--> Installing kyma-cli"
+install::kyma_cli
 
-  echo "--> Installing kyma-cli"
-  install::kyma_cli
+echo "--> Provisioning k3d cluster for Kyma"
+kyma provision k3d --ci
 
-  echo "--> Provisioning k3d cluster for Kyma"
-  kyma provision k3d --ci
-
-  echo "--> Deploying Serverless"
-  # The python38 function requires 40M+ of memory to work. Mostly used by kubeless. I need to overrride the defaultPreset to M to avoid OOMkill.
-  kyma deploy -p evaluation --component cluster-essentials,serverless --atomic --ci --value "$REGISTRY_VALUES" --value global.ingress.domainName="$DOMAIN" --value "serverless.webhook.values.function.resources.defaultPreset=M" -s local -w $KYMA_SOURCES_DIR
-
-else
-  host::create_coredns_template
-  host::create_docker_registry
-  # shellcheck disable=SC2155
-  export REGISTRY_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' /registry.localhost)
-
-  host::update_etc_hosts
-
-  echo "--> Creating k8s cluster via k3s"
-  install::k3s
-
-  # shellcheck disable=SC2004
-  while [[ $(kubectl get nodes -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do echo "Waiting for cluster nodes to be ready, elapsed time: $(( $SECONDS/60 )) min $(( $SECONDS % 60 )) sec"; sleep 2; done
-  host::patch_coredns
-
-  echo "--> Deploying cluster-essentials"
-  kubectl apply -f "$KYMA_SOURCES_DIR/resources/cluster-essentials/files" -n kyma-system
-
-  echo "--> Deploying Serverless"
-  helm upgrade --atomic --create-namespace -i serverless "$KYMA_SOURCES_DIR/resources/serverless" -n kyma-system --set "$REGISTRY_VALUES",global.ingress.domainName="$DOMAIN" --wait
-fi 
+echo "--> Deploying Serverless"
+# The python38 function requires 40M+ of memory to work. Mostly used by kubeless. I need to overrride the defaultPreset to M to avoid OOMkill.
+kyma deploy -p evaluation --component cluster-essentials,serverless --ci --value "$REGISTRY_VALUES" --value global.ingress.domainName="$DOMAIN" --value "serverless.webhook.values.function.resources.defaultPreset=M" -s local -w $KYMA_SOURCES_DIR
 
 echo "##############################################################################"
 # shellcheck disable=SC2004

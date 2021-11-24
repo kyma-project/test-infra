@@ -116,6 +116,7 @@ envVars=(
   COMPASS_CLIENT_ID
   COMPASS_CLIENT_SECRET
   COMPASS_INTEGRATION_ENABLED
+  CENTRAL_APPLICATION_CONNECTIVITY_ENABLED
   KYMA_MAJOR_VERSION
 )
 utils::save_env_file "${envVars[@]}"
@@ -133,6 +134,6 @@ if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
 fi
 
 log::info "Triggering the installation"
-gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d.sh"
+gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d.sh"
 
 log::success "all done"

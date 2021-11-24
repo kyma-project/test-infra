@@ -231,6 +231,8 @@ EOF
     curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer.yaml" --output /tmp/kyma-gke-upgradeability/kyma-installer.yaml
     curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cr-cluster.yaml" --output /tmp/kyma-gke-upgradeability/kyma-installer-cr-cluster.yaml
 
+    kubectl apply -f /tmp/kyma-gke-upgradeability/kyma-installer.yaml || true
+    sleep 2
     kubectl apply -f /tmp/kyma-gke-upgradeability/kyma-installer.yaml
     kubectl apply -f /tmp/kyma-gke-upgradeability/kyma-installer-cr-cluster.yaml
   fi
@@ -427,7 +429,8 @@ gcp::provision_k8s_cluster \
     -S "$GCLOUD_SUBNET_NAME" \
     -D "$CLUSTER_USE_SSD" \
     -P "$TEST_INFRA_SOURCES_DIR" \
-    -r "$PROVISION_REGIONAL_CLUSTER"
+    -r "$PROVISION_REGIONAL_CLUSTER" \
+    -i "$IMAGE_TYPE"
 
 CLEANUP_CLUSTER="true"
 

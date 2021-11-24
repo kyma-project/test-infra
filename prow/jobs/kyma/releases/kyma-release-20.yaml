@@ -27,7 +27,7 @@ presubmits: # runs on PRs
           base_ref: release-2.0
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210906-858d6909"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211104-fac1690a"
             securityContext:
               privileged: true
             command:
@@ -74,7 +74,7 @@ presubmits: # runs on PRs
           base_ref: release-2.0
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210906-858d6909"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211104-fac1690a"
             securityContext:
               privileged: true
             command:
@@ -128,7 +128,7 @@ presubmits: # runs on PRs
           base_ref: release-2.0
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210906-858d6909"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211104-fac1690a"
             securityContext:
               privileged: true
             command:
@@ -185,7 +185,7 @@ postsubmits: # runs on main
           base_ref: release-2.0
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210906-858d6909"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211104-fac1690a"
             securityContext:
               privileged: true
             command:
@@ -235,7 +235,7 @@ postsubmits: # runs on main
           base_ref: release-2.0
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210906-858d6909"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211104-fac1690a"
             securityContext:
               privileged: true
             command:
@@ -292,7 +292,7 @@ postsubmits: # runs on main
           base_ref: release-2.0
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210906-858d6909"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211104-fac1690a"
             securityContext:
               privileged: true
             command:
@@ -340,6 +340,9 @@ postsubmits: # runs on main
         preset-sa-gke-kyma-integration: "true"
       skip_report: false
       decorate: true
+      decoration_config:
+        grace_period: 600000000000
+        timeout: 3600000000000
       cluster: trusted-workload
       max_concurrency: 10
       branches:
@@ -351,7 +354,7 @@ postsubmits: # runs on main
           base_ref: release-2.0
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210906-858d6909"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211104-fac1690a"
             securityContext:
               privileged: true
             command:
@@ -359,10 +362,17 @@ postsubmits: # runs on main
             args:
               - "-c"
               - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-release-candidate.sh"
+            env:
+              - name: EVENTMESH_SECRET_FILE
+                value: "/etc/credentials/kyma-tunas-release-testing-event-mesh/serviceKey"
             resources:
               requests:
                 memory: 200Mi
                 cpu: 80m
+            volumeMounts:
+              - name: kyma-tunas-release-testing-event-mesh
+                mountPath: /etc/credentials/kyma-tunas-release-testing-event-mesh
+                readOnly: true
         tolerations:
           - key: dedicated
             operator: Equal
@@ -370,6 +380,10 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+        volumes:
+          - name: kyma-tunas-release-testing-event-mesh
+            secret:
+              secretName: kyma-tunas-release-testing-event-mesh
     - name: post-rel20-kyma-gke-release-upgrade
       annotations:
         pipeline.trigger: "pr-merge"
@@ -399,7 +413,7 @@ postsubmits: # runs on main
           base_ref: release-2.0
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20210906-858d6909"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211104-fac1690a"
             securityContext:
               privileged: true
             command:

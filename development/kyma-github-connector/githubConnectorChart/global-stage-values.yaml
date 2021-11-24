@@ -1,0 +1,16 @@
+global:
+  # Github connector application name.
+  appName: "github-connector"
+  # Kyma eventing proxy.
+  eventPublisherProxyURL: "http://eventing-event-publisher-proxy.kyma-system/publish"
+  # Kyma cluster FQDN.
+  kymaClusterHostname: "ddf1313.kyma-stage.shoot.live.k8s-hana.ondemand.com"
+  webhookGateway:
+    # Github webhook gateway container listening port for incoming webhooks.
+    containerPort: 8080
+    # Github webhook gateway image.
+    image: "eu.gcr.io/kyma-project/test-infra/pr/github-webhook-gateway:PR-4075"
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"

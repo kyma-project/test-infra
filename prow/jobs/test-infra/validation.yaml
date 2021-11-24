@@ -17,7 +17,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20210730-c3e07ed7"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             command:
               - "prow/scripts/validate-scripts.sh"
             resources:
@@ -38,7 +38,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20210714-62f15287bd"
+          - image: "gcr.io/k8s-prow/checkconfig:v20211014-1433e96a1f"
             command:
               - "/app/prow/cmd/checkconfig/app.binary"
             args:
@@ -67,7 +67,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210831-b387d3eb"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211110-ab51bd20"
             securityContext:
               privileged: false
             command:
@@ -76,6 +76,44 @@ presubmits: # runs on PRs
               - "-C"
               - "development/tools"
               - "validate"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pre-main-test-infra-validate-image-url-helper
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-test-infra-validate-image-url-helper"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+      run_if_changed: '^development/image-url-helper/(cmd/.*|pkg/.*|Makefile|.*.sh)'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211110-ab51bd20"
+            securityContext:
+              privileged: false
+            command:
+              - "make"
+            args:
+              - "-C"
+              - "development/image-url-helper"
+              - "ci-pr"
             resources:
               requests:
                 memory: 3Gi
@@ -105,7 +143,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210831-b387d3eb"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211110-ab51bd20"
             securityContext:
               privileged: false
             command:
@@ -144,7 +182,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210831-b387d3eb"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211110-ab51bd20"
             securityContext:
               privileged: true
             command:
@@ -178,7 +216,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210831-b387d3eb"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211110-ab51bd20"
             securityContext:
               privileged: false
             command:
@@ -194,4 +232,28 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+    - name: pre-test-infra-validate-dockerfiles
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-validate-dockerfiles"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '.*Dockerfile$'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
+            command:
+              - "/bin/bash"
+            args:
+              - "-c"
+              - "shopt -s globstar; hadolint --config .hadolint.yaml --no-color **/Dockerfile"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
   

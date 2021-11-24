@@ -15,15 +15,15 @@ if [ -z "$PULL_PULL_SHA" ]; then
 fi
 
 args=(
-  -github-endpoint="http://ghproxy"
-  -github-endpoint="https://api.github.com"
-  -github-token-path="/etc/github/token"
-  -fail-on-no-contexts="false"
-  -timeout="$TIMEOUT"
-  -org="$REPO_OWNER"
-  -repo="$REPO_NAME"
-  -base-ref="$PULL_PULL_SHA"
-  -expected-contexts-regexp="$JOB_NAME_PATTERN"
+  "-github-endpoint=http://ghproxy"
+  "-github-endpoint=https://api.github.com"
+  "-github-token-path=/etc/github/token"
+  "-fail-on-no-contexts=false"
+  "-timeout=$TIMEOUT"
+  "-org=$REPO_OWNER"
+  "-repo=$REPO_NAME"
+  "-base-ref=$PULL_PULL_SHA"
+  "-expected-contexts-regexp=$JOB_NAME_PATTERN"
 )
 
 if [ -x "/prow-tools/jobguard" ]; then

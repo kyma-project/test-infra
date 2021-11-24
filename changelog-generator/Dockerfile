@@ -5,8 +5,10 @@ LABEL source git@github.com:kyma-project/test-infra.git
 WORKDIR /app
 
 # Install dependencies
-RUN apk update && apk upgrade && \
-    apk add --no-cache git openssh
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache git openssh && \
+    rm -rf /var/cache/apk/*
 
 # Copy all needed files
 RUN npm install -g lerna-changelog@0.8.0 && \

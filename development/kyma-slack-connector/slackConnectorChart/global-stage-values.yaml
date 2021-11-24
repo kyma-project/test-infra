@@ -1,0 +1,23 @@
+# slackBotToken must be provided using --set argument to helm command.
+# It provides token value used to communicate with slack.
+slackApplicationEnabled: false
+slackBotTokenSecretEnabled: false
+#gitRepositoryEnabled: false
+global:
+  # Slack connector application name.
+  appName: "mp-sap-slack-connector"
+  # Slack connector application name. Must match name from Application resource.
+  slackKymaAppName: "mp-sap-slack-connector"
+  # Slack connector API ID
+  apiId: "2906b647-0dfe-4bf0-98e8-1c50d0348550"
+  # Slack application plan base name
+  cmpSlackAppPlan: "slack-connector"
+  # Slack application plan suffix. Must match suffix from CMP.
+  cmpSlackAppPlanSuffix: "4af0a"
+  # Repository name with functions code.
+  repositoryName: "test-infra"
+  # Repository URL with function code.
+  repositoryUrl: "https://github.com/dekiel/test-infra.git"
+  # Slack application helm release name.
+  #slackAppHelmReleaseName: "slack-application"
+  slackAppHelmReleaseName: "common"

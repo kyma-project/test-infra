@@ -152,47 +152,21 @@ function installKyma() {
 	TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
 	export TLS_KEY
 
-	log::info "Prepare Kyma overrides"
-
-	export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
-
-    envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-installer-overrides.tpl.yaml" > "$PWD/kyma-installer-overrides.yaml"
-    envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/overrides-dex-and-monitoring.tpl.yaml" > "$PWD/overrides-dex-and-monitoring.yaml"
-
 	log::info "Trigger installation"
+	set -x
 
-	kyma install \
+	kyma deploy \
 			--ci \
 			--source main \
-			-o "$PWD/kyma-installer-overrides.yaml" \
-			-o "$PWD/overrides-dex-and-monitoring.yaml" \
-			-o "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/prometheus-cluster-essentials-overrides.tpl.yaml" \
 			--domain "${DOMAIN}" \
 			--profile production \
-			--tls-cert "${TLS_CERT}" \
-			--tls-key "${TLS_KEY}" \
-			--timeout 60m
+			--tls-crt "./letsencrypt/live/${DOMAIN}/fullchain.pem" \
+			--tls-key "./letsencrypt/live/${DOMAIN}/privkey.pem" \
+			--value "istio-configuration.components.ingressGateways.config.service.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+			--value "global.domainName=${DOMAIN}"
 
-	if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
-		log::info "Create DNS Record for Apiserver proxy IP"
-		APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-		gcp::create_dns_record \
-			-a "$APISERVER_IP_ADDRESS" \
-			-h "apiserver" \
-			-s "$COMMON_NAME" \
-			-p "$CLOUDSDK_CORE_PROJECT" \
-			-z "$CLOUDSDK_DNS_ZONE_NAME"
-	fi
-}
+	set +x
 
-function apply_dex_github_kyma_admin_group() {
-    kubectl get ClusterRoleBinding kyma-admin-binding -oyaml > kyma-admin-binding.yaml && cat >> kyma-admin-binding.yaml <<EOF 
-- apiGroup: rbac.authorization.k8s.io
-  kind: Group
-  name: kyma-project:cluster-access
-EOF
-
-    kubectl replace -f kyma-admin-binding.yaml
 }
 
 function installStackdriverPrometheusCollector(){
@@ -229,38 +203,32 @@ export ASYNC_DEPROVISION=false
 log::info "Create new cluster"
 createCluster
 
-log::info "install image-guard"
-helm install image-guard "$TEST_INFRA_SOURCES_DIR/development/image-guard/image-guard"
-
 kyma::install_cli
 
 log::info "Install kyma"
 installKyma
 
-log::info "Override kyma-admin-binding ClusterRoleBinding"
-apply_dex_github_kyma_admin_group
+#log::info "Install stackdriver-prometheus collector"
+#installStackdriverPrometheusCollector
 
-log::info "Install stackdriver-prometheus collector"
-installStackdriverPrometheusCollector
+#log::info "Update stackdriver-metadata-agent memory settings"
 
-log::info "Update stackdriver-metadata-agent memory settings"
-
-cat <<EOF | kubectl replace -f -
-apiVersion: v1
-data:
-  NannyConfiguration: |-
-    apiVersion: nannyconfig/v1alpha1
-    kind: NannyConfiguration
-    baseMemory: 100Mi
-kind: ConfigMap
-metadata:
-  labels:
-    addonmanager.kubernetes.io/mode: EnsureExists
-    kubernetes.io/cluster-service: "true"
-  name: metadata-agent-config
-  namespace: kube-system
-EOF
-kubectl delete deployment -n kube-system stackdriver-metadata-agent-cluster-level
+#cat <<EOF | kubectl replace -f -
+#apiVersion: v1
+#data:
+#  NannyConfiguration: |-
+#    apiVersion: nannyconfig/v1alpha1
+#    kind: NannyConfiguration
+#    baseMemory: 100Mi
+#kind: ConfigMap
+#metadata:
+#  labels:
+#    addonmanager.kubernetes.io/mode: EnsureExists
+#    kubernetes.io/cluster-service: "true"
+#  name: metadata-agent-config
+#  namespace: kube-system
+#EOF
+#kubectl delete deployment -n kube-system stackdriver-metadata-agent-cluster-level
 
 
 log::info "Collect list of images"
@@ -274,7 +242,7 @@ echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${COMMON_NAME}.csv"
 # also generate image list in json
 ## this is false-positive as we need to use single-quotes for jq
 # shellcheck disable=SC2016
-IMAGES_LIST=$(kubectl get pods --all-namespaces -o json | jq '{ images: [.items[] | .metadata.ownerReferences[0].name as $owner | (.status.containerStatuses + .status.initContainerStatuses)[] | { name: .imageID, custom_fields: {owner: $owner, image: .image, name: .name }}] | unique | group_by(.name) | map({name: .[0].name, custom_fields: {owner: map(.custom_fields.owner) | unique | join(","), container_name: map(.custom_fields.name) | unique | join(","), image: .[0].custom_fields.image}})}' )
+IMAGES_LIST=$(kubectl get pods --all-namespaces -o json | jq '{ images: [.items[] | .metadata.ownerReferences[0].name as $owner | (.status.containerStatuses + .status.initContainerStatuses)[] | { name: .imageID, custom_fields: {owner: $owner, image: .image, name: .name }}] | unique | group_by(.name) | map({name: .[0].name, custom_fields: {owner: map(.custom_fields.owner) | unique | join(","), container_name: map(.custom_fields.name) | unique | join(","), image: .[0].custom_fields.image}}) | map(select (.name | startswith("sha256") | not))}' )
 echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${COMMON_NAME}.json"
 
 # generate pod-security-policy list in json

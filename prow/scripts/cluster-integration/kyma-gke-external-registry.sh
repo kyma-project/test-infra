@@ -8,8 +8,7 @@
 # - REPO_OWNER - Set up by prow, repository owner/organization
 # - REPO_NAME - Set up by prow, repository name
 # - BUILD_TYPE - Set up by prow, pr/master/release
-# - DOCKER_PUSH_REPOSITORY - Docker repository hostname
-# - DOCKER_PUSH_DIRECTORY - Docker "top-level" directory (with leading "/")
+# - DOCKER_PUSH_REPOSITORY - Docker repository url
 # - KYMA_PROJECT_DIR - directory path with Kyma sources to use for installation
 # - CLOUDSDK_CORE_PROJECT - GCP project for all GCP resources used during execution (Service Account, IP Address, DNS Zone, image registry etc.)
 # - CLOUDSDK_COMPUTE_REGION - GCP compute region
@@ -39,16 +38,10 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="$TEST_INFRA_SOURCES_DIR/prow/scri
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/log.sh"
-# shellcheck source=prow/scripts/lib/docker.sh
-source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/docker.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
-
-KYMA_SCRIPTS_DIR="$KYMA_SOURCES_DIR/installation/scripts"
-KYMA_RESOURCES_DIR="$KYMA_SOURCES_DIR/installation/resources"
-
-INSTALLER_YAML="$KYMA_RESOURCES_DIR/installer.yaml"
-INSTALLER_CR="$KYMA_RESOURCES_DIR/installer-cr-cluster.yaml.tpl"
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/kyma.sh"
 
 # Enforce lowercase
 readonly REPO_OWNER=${REPO_OWNER,,}
@@ -73,20 +66,6 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-# docker_cleanup runs at the end of a script or on any error
-function docker_cleanup() {
-    set +e
-    if [ -n "$CLEANUP_DOCKER_IMAGE" ]; then
-        log::info "Docker image cleanup"
-        if [ -n "$KYMA_INSTALLER_IMAGE" ]; then
-            log::info "Delete temporary Kyma-Installer Docker image"
-            gcp::delete_docker_image \
-                -i "$KYMA_INSTALLER_IMAGE"
-        fi
-    fi
-    set -e
-}
-
 verify_internal_registry() {
     local pods
     pods="$(kubectl get pods --all-namespaces | grep docker-registry || true)"
@@ -100,46 +79,17 @@ verify_internal_registry() {
     return 0
 }
 
-function create_image() {
-#Description: Builds Kyma-Installer image from Kyma sources and pushes it to the repository
-#
-#Expected vars:
-# - KYMA_SOURCES_DIR: directory with Kyma sources to build Kyma-Installer image
-# - KYMA_INSTALLER_IMAGE: Full image name (with tag)
-#
-#Permissions: In order to run this script you need to use a service account with "Storage Admin" role
 
-    set -o errexit
-
-    requiredVars=(
-        KYMA_SOURCES_DIR
-        KYMA_INSTALLER_IMAGE
-    )
-
-    log::info "Build Kyma-Installer Docker image"
-    CLEANUP_DOCKER_IMAGE="true"
-
-    utils::check_required_vars "${requiredVars[@]}"
-
-    echo "--------------------------------------------------------------------------------"
-    echo "Building Kyma-Installer image: $KYMA_INSTALLER_IMAGE"
-    echo "--------------------------------------------------------------------------------"
-    echo
-    docker build "$KYMA_SOURCES_DIR" -f "$KYMA_SOURCES_DIR"/tools/kyma-installer/kyma.Dockerfile -t "$KYMA_INSTALLER_IMAGE"
-
-    echo "--------------------------------------------------------------------------------"
-    echo "pushing Kyma-Installer image"
-    echo "--------------------------------------------------------------------------------"
-    echo
-    docker push "$KYMA_INSTALLER_IMAGE"
-    echo "--------------------------------------------------------------------------------"
-    echo "Kyma-Installer image pushed: $KYMA_INSTALLER_IMAGE"
-    echo "--------------------------------------------------------------------------------"
+install_istioctl() {
+    wget https://github.com/istio/istio/releases/download/1.11.3/istioctl-1.11.3-linux-amd64.tar.gz
+    tar zxvf istioctl-1.11.3-linux-amd64.tar.gz -C /usr/local/bin/
+    export ISTIOCTL_PATH=/usr/local/bin/istioctl
 }
 
 # Using set -f to prevent path globing in post_hook arguments.
 # utils::post_hook call set +f at the beginning.
-trap 'EXIT_STATUS=$?; docker_cleanup; set -f; utils::post_hook -n "$COMMON_NAME" -p "$CLOUDSDK_CORE_PROJECT" -c "$CLEANUP_CLUSTER" -g "$CLEANUP_GATEWAY_DNS_RECORD" -G "$INGRESS_GATEWAY_HOSTNAME" -a "$CLEANUP_APISERVER_DNS_RECORD" -A "$APISERVER_HOSTNAME" -I "$CLEANUP_GATEWAY_IP_ADDRESS" -l "$ERROR_LOGGING_GUARD" -z "$CLOUDSDK_COMPUTE_ZONE" -R "$CLOUDSDK_COMPUTE_REGION" -r "$PROVISION_REGIONAL_CLUSTER" -d "$DISABLE_ASYNC_DEPROVISION" -s "$COMMON_NAME" -e "$GATEWAY_IP_ADDRESS" -f "$APISERVER_IP_ADDRESS" -N "$COMMON_NAME" -Z "$CLOUDSDK_DNS_ZONE_NAME" -E "$EXIT_STATUS" -j "$JOB_NAME"' EXIT INT
+# shellcheck disable=SC2153
+trap 'EXIT_STATUS=$?; set -f; utils::post_hook -k "true" -n "$COMMON_NAME" -p "$CLOUDSDK_CORE_PROJECT" -c "$CLEANUP_CLUSTER" -g "$CLEANUP_GATEWAY_DNS_RECORD" -G "$INGRESS_GATEWAY_HOSTNAME" -a "$CLEANUP_APISERVER_DNS_RECORD" -A "$APISERVER_HOSTNAME" -I "$CLEANUP_GATEWAY_IP_ADDRESS" -l "$ERROR_LOGGING_GUARD" -z "$CLOUDSDK_COMPUTE_ZONE" -R "$CLOUDSDK_COMPUTE_REGION" -r "$PROVISION_REGIONAL_CLUSTER" -d "$DISABLE_ASYNC_DEPROVISION" -s "$COMMON_NAME" -e "$GATEWAY_IP_ADDRESS" -f "$APISERVER_IP_ADDRESS" -N "$COMMON_NAME" -Z "$CLOUDSDK_DNS_ZONE_NAME" -E "$EXIT_STATUS" -j "$JOB_NAME"' EXIT INT
 
 utils::run_jobguard \
     -b "$BUILD_TYPE" \
@@ -153,23 +103,11 @@ utils::generate_vars_for_build \
 export COMMON_NAME=${utils_generate_vars_for_build_return_commonName:?}
 export KYMA_SOURCE=${utils_generate_vars_for_build_return_kymaSource:?}
 
-if [ "$BUILD_TYPE" = "pr" ]; then
-    KYMA_INSTALLER_IMAGE="$DOCKER_PUSH_REPOSITORY$DOCKER_PUSH_DIRECTORY/gke-external/$REPO_OWNER/$REPO_NAME:PR-$PULL_NUMBER"
-elif [ "$BUILD_TYPE" != "release" ]; then
-    KYMA_INSTALLER_IMAGE="$DOCKER_PUSH_REPOSITORY$DOCKER_PUSH_DIRECTORY/gke-external/$REPO_OWNER/$REPO_NAME:PR-${PULL_BASE_SHA::8}"
-fi
-
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
 gcp::authenticate \
     -c "$GOOGLE_APPLICATION_CREDENTIALS"
-
-docker::start
-
-if [[ "$BUILD_TYPE" != "release" ]]; then
-    create_image
-fi
 
 gcp::set_vars_for_network \
     -n "$JOB_NAME"
@@ -233,74 +171,24 @@ utils::generate_self_signed_cert \
 export TLS_CERT="${utils_generate_self_signed_cert_return_tls_cert:?}"
 export TLS_KEY="${utils_generate_self_signed_cert_return_tls_key:?}"
 
-log::info "Apply Kyma config"
+# Prepare Docker external registry overrides
+export DOCKER_PASSWORD=""
+DOCKER_PASSWORD=$(tr -d '\n' < "${GOOGLE_APPLICATION_CREDENTIALS}")
 
-kubectl create namespace "kyma-installer"
+export DOCKER_REPOSITORY_ADDRESS=""
+DOCKER_REPOSITORY_ADDRESS=$(echo "$DOCKER_PUSH_REPOSITORY" | cut -d'/' -f1)
 
-# TODO: convert create-config-map.sh to function in sourced lib script?
-"$TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS/create-config-map.sh" --name "installation-config-overrides" \
-    --data "global.domainName=$DNS_SUBDOMAIN.${DNS_DOMAIN%.}" \
-    --data "global.loadBalancerIP=$GATEWAY_IP_ADDRESS"
-
-"$TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
-    --data "test.acceptance.ui.logging.enabled=true" \
-    --label "component=core"
-
-"$TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS/create-config-map.sh" --name "application-registry-overrides" \
-    --data "application-registry.deployment.args.detailedErrorResponse=true" \
-    --label "component=application-connector"
-
-"$TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS/create-config-map.sh" --name "cluster-certificate-overrides" \
-    --data "global.tlsCrt=$TLS_CERT" \
-    --data "global.tlsKey=$TLS_KEY"
-
-cat << EOF > "$PWD/kyma_istio_operator"
-apiVersion: install.istio.io/v1alpha1
-kind: IstioOperator
-metadata:
-  namespace: istio-system
-spec:
-  components:
-    ingressGateways:
-      - name: istio-ingressgateway
-        k8s:
-          service:
-            loadBalancerIP: ${GATEWAY_IP_ADDRESS}
-            type: LoadBalancer
-EOF
-
-# TODO: convert create-config-map.sh to function in sourced lib script?
-"$TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS/create-config-map-file.sh" --name "istio-overrides" \
-    --label "component=istio" \
-    --file "$PWD/kyma_istio_operator"
-
-DOCKER_PASSWORD=/tmp/kyma-gke-integration/dockerPassword.json
-mkdir -p /tmp/kyma-gke-integration
-< "$GOOGLE_APPLICATION_CREDENTIALS" tr -d '\n' > /tmp/kyma-gke-integration/dockerPassword.json
-# TODO: convert create-config-map.sh to function in sourced lib script?
-"$TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS/create-secret.sh" --name "serverless-external-registry-overrides" \
-    --data "dockerRegistry.enableInternal=false" \
-    --data "dockerRegistry.username=_json_key" \
-    --file "dockerRegistry.password=$DOCKER_PASSWORD" \
-    --data "dockerRegistry.serverAddress=$(echo "$DOCKER_PUSH_REPOSITORY" | cut -d'/' -f1)" \
-    --data "dockerRegistry.registryAddress=$DOCKER_PUSH_REPOSITORY/functions" \
-    --label "component=serverless"
-
-if [[ "$BUILD_TYPE" == "release" ]]; then
-    echo "Use released artifacts"
-    gsutil cp "$KYMA_ARTIFACTS_BUCKET/$KYMA_SOURCE/kyma-installer-cluster.yaml" /tmp/kyma-gke-integration/downloaded-installer.yaml
-    kubectl apply -f /tmp/kyma-gke-integration/downloaded-installer.yaml
-else
-    echo "Manual concatenating yamls"
-    "$KYMA_SCRIPTS_DIR"/concat-yamls.sh "$INSTALLER_YAML" "$INSTALLER_CR" \
-    | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: $KYMA_INSTALLER_IMAGE;" \
-    | sed -e "s/__VERSION__/0.0.1/g" \
-    | sed -e "s/__.*__//g" \
-    | kubectl apply -f-
-fi
+export DNS_DOMAIN_TRAILING=${DNS_DOMAIN%.}
+envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-serverless-external-registry-integration-overrides.tpl.yaml" > "$PWD/kyma_overrides.yaml"
 
 log::info "Installation triggered"
-"$KYMA_SCRIPTS_DIR"/is-installed.sh --timeout 30m
+
+install_istioctl
+
+kyma::install_cli
+
+kyma deploy --ci --source=local --workspace "$KYMA_SOURCES_DIR" --verbose \
+    --values-file "$PWD/kyma_overrides.yaml"
 
 if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
     log::info "Create DNS Record for Apiserver proxy IP"
@@ -318,9 +206,55 @@ log::info "Verify if internal docker registry is disabled"
 verify_internal_registry
 
 log::info "Test Kyma"
-KYMA_TESTS="serverless serverless-long" "$TEST_INFRA_SOURCES_DIR/prow/scripts/kyma-testing.sh"
+# Istio sidecar will keep running and will not terminate when the test pod is completed. This causes the test job to
+# be stuck forever. So, we disable the sidecar for the test job pod. Kyma runs with istio mtls STRICT peer authentication. 
+# The STRICT mode will block any traffic comming from pods without istio sidecar. SO, we need to make it PERMISSIVE.
+kubectl patch peerauthentication -n istio-system default -p '{"spec":{"mtls":{"mode":"PERMISSIVE"}}}' --type=merge
 
-log::success "Success"
+SERVERLESS_CHART_DIR="${KYMA_SOURCES_DIR}/resources/serverless"
+job_name="k3s-serverless-test"
+
+helm install serverless-test "${SERVERLESS_CHART_DIR}/charts/k3s-tests" -n default -f "${SERVERLESS_CHART_DIR}/values.yaml" --set jobName="${job_name}"
+kubectl patch job -n default k3s-serverless-test -p '{"metadata":{"annotations":{"sidecar.istio.io/inject":"false"}}}'
+job_status=1
+
+# helm does not wait for jobs to complete even with --wait
+# TODO but helm@v3.5 has a flag that enables that, get rid of this function once we use helm@v3.5
+getjobstatus(){
+while true; do
+    echo "Test job not completed yet..."
+    [[ $(kubectl get jobs $job_name -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}') == "True" ]] && job_status=1 && echo "Test job failed" && break
+    [[ $(kubectl get jobs $job_name -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}') == "True" ]] && job_status=0 && echo "Test job completed successfully" && break
+    sleep 5
+done
+}
+
+getjobstatus
+
+echo "####################"
+echo "kubectl get pods -A"
+echo "###################"
+kubectl get pods -A
+
+echo "########################"
+echo "kubectl get functions -A"
+echo "########################"
+kubectl get functions -A
+
+echo "########################################################"
+echo "kubectl logs -n kyma-system -l app=serverless --tail=-1"
+kubectl logs -n kyma-system -l app=serverless --tail=-1
+
+echo "##############################################"
+echo "kubectl logs -l job-name=${job_name} --tail=-1"
+kubectl logs -l job-name=${job_name} --tail=-1
+echo "###############"
+echo ""
+
+echo "Exit code ${job_status}"
+if [ "${job_status}" != 0 ]; then
+    exit 1
+fi
 
 #!!! Must be at the end of the script !!!
 # shellcheck disable=SC2034

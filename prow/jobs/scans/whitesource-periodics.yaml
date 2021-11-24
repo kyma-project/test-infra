@@ -29,7 +29,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211013-2c064d85"
             securityContext:
               privileged: false
             command:
@@ -77,7 +77,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211013-2c064d85"
             securityContext:
               privileged: false
             command:
@@ -92,54 +92,6 @@ periodics: # runs on schedule
                 value: control-plane
               - name: CUSTOM_PROJECTNAME
                 value: control-plane-dep
-              - name: SCAN_LANGUAGE
-                value: golang
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 400m
-    - name: kyma-whitesource-scan
-      annotations:
-        pipeline.trigger: "periodic"
-        testgrid-create-test-group: "false"
-      labels:
-        preset-gc-project-env: "true"
-        preset-kms-gc-project-env: "true"
-        preset-kyma-encryption-key: "true"
-        preset-kyma-keyring: "true"
-        preset-kyma-wssagent-config: "true"
-        preset-wssagent-keys: "true"
-        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
-      cron: "0 4 * * *"
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-        - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
-            securityContext:
-              privileged: false
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
-            env:
-              - name: DRYRUN
-                value: "false"
-              - name : PROJECTNAME
-                value: kyma
-              - name: CUSTOM_PROJECTNAME
-                value: 
               - name: SCAN_LANGUAGE
                 value: golang
             resources:
@@ -173,7 +125,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211013-2c064d85"
             securityContext:
               privileged: false
             command:
@@ -221,7 +173,7 @@ periodics: # runs on schedule
           base_ref: master
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211013-2c064d85"
             securityContext:
               privileged: false
             command:
@@ -269,7 +221,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211013-2c064d85"
             securityContext:
               privileged: false
             command:
@@ -317,7 +269,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211013-2c064d85"
             securityContext:
               privileged: false
             command:
@@ -365,7 +317,7 @@ periodics: # runs on schedule
           base_ref: master
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211013-2c064d85"
             securityContext:
               privileged: false
             command:
@@ -413,7 +365,7 @@ periodics: # runs on schedule
           base_ref: master
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211013-2c064d85"
             securityContext:
               privileged: false
             command:
@@ -461,7 +413,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211013-2c064d85"
             securityContext:
               privileged: false
             command:
@@ -509,7 +461,7 @@ periodics: # runs on schedule
           base_ref: kyma-master
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211013-2c064d85"
             securityContext:
               privileged: false
             command:
@@ -557,7 +509,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211013-2c064d85"
             securityContext:
               privileged: false
             command:
@@ -605,7 +557,7 @@ periodics: # runs on schedule
           base_ref: master
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211013-2c064d85"
             securityContext:
               privileged: false
             command:
@@ -653,7 +605,7 @@ periodics: # runs on schedule
           base_ref: master
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211013-2c064d85"
             securityContext:
               privileged: false
             command:
@@ -701,7 +653,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211013-2c064d85"
             securityContext:
               privileged: false
             command:
@@ -749,7 +701,7 @@ periodics: # runs on schedule
           base_ref: master
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211013-2c064d85"
             securityContext:
               privileged: false
             command:
@@ -765,7 +717,7 @@ periodics: # runs on schedule
               - name: CUSTOM_PROJECTNAME
                 value: podpreset
               - name: SCAN_LANGUAGE
-                value: golang
+                value: golang-mod
             resources:
               requests:
                 memory: 1Gi
@@ -797,7 +749,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211013-2c064d85"
             securityContext:
               privileged: false
             command:
@@ -820,7 +772,7 @@ periodics: # runs on schedule
                 cpu: 400m
   
 #-------------Release-----------------------------
-    - name: release-kyma-1.24-whitesource-scan
+    - name: release-kyma-1.25-whitesource-scan
       annotations:
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
@@ -847,7 +799,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211013-2c064d85"
             securityContext:
               privileged: false
             command:
@@ -868,7 +820,7 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-    - name: release-kyma-mod-1.24-whitesource-scan
+    - name: release-kyma-mod-1.25-whitesource-scan
       annotations:
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
@@ -895,7 +847,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211013-2c064d85"
             securityContext:
               privileged: false
             command:
@@ -916,7 +868,7 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-    - name: release-cli-1.24-whitesource-scan
+    - name: release-cli-1.25-whitesource-scan
       annotations:
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
@@ -943,7 +895,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20210713-bdbc20c8"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211013-2c064d85"
             securityContext:
               privileged: false
             command:

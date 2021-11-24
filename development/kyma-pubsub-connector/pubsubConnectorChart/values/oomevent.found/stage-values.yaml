@@ -1,0 +1,10 @@
+# Enable rendering pubsub-connector objects from templates.
+connectorDeploymentEnabled: true
+# Subscription ID to pull messages from.
+pubsubSubscriptionID: "oom-event-found-sub"
+# Forwarded event type
+eventType: "oomevent.found.v1"
+# GCP project with pubsub subscription
+projectID: "sap-kyma-neighbors-dev"
+# Kyma eventing target application name where publish events.
+targetAppName: "mp-sap-slack-connector"

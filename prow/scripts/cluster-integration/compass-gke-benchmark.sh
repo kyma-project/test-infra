@@ -17,6 +17,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/kyma.sh"
 
 requiredVars=(
     REPO_OWNER
@@ -56,7 +58,7 @@ if [[ "$BUILD_TYPE" == "pr" ]]; then
   COMPASS_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-compass-benchmark/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
   export COMPASS_INSTALLER_IMAGE
 else
-  # Otherwise (master), operate on triggering commit id
+  # Otherwise (main), operate on triggering commit id
   readonly COMMON_NAME_PREFIX="gkecompint-commit"
   readonly COMMIT_ID=$(cd "$COMPASS_SOURCES_DIR" && git rev-parse --short HEAD)
   COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}")
@@ -214,25 +216,35 @@ function applyCompassOverrides() {
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-overrides" \
     --data "global.externalServicesMock.enabled=true" \
-    --data "global.externalServicesMock.auditlog=true" \
-    --data "gateway.gateway.auditlog.enabled=true" \
+    --data "global.externalServicesMock.auditlog=false" \
+    --data "gateway.gateway.auditlog.enabled=false" \
     --data "gateway.gateway.auditlog.authMode=oauth" \
     --data "global.systemFetcher.enabled=true" \
     --data "global.systemFetcher.systemsAPIEndpoint=http://compass-external-services-mock.compass-system.svc.cluster.local:8080/systemfetcher/systems" \
     --data "global.systemFetcher.systemsAPIFilterCriteria=no" \
     --data "global.systemFetcher.systemsAPIFilterTenantCriteriaPattern=tenant=%s" \
     --data 'global.systemFetcher.systemToTemplateMappings=[{"Name": "temp1", "SourceKey": ["prop"], "SourceValue": ["val1"] },{"Name": "temp2", "SourceKey": ["prop"], "SourceValue": ["val2"] }]' \
-    --data "global.systemFetcher.oauth.client=admin" \
-    --data "global.systemFetcher.oauth.secret=admin" \
-    --data "global.systemFetcher.oauth.tokenURLPattern=http://compass-external-services-mock.compass-system.svc.cluster.local:8080/systemfetcher/oauth/token" \
+    --data "global.systemFetcher.oauth.client=client_id" \
+    --data "global.systemFetcher.oauth.secret=client_secret" \
+    --data "global.systemFetcher.oauth.tokenBaseUrl=compass-external-services-mock.compass-system.svc.cluster.local:8080" \
+    --data "global.systemFetcher.oauth.tokenPath=/secured/oauth/token" \
+    --data "global.systemFetcher.oauth.tokenEndpointProtocol=http" \
     --data "global.systemFetcher.oauth.scopesClaim=scopes" \
     --data "global.systemFetcher.oauth.tenantHeaderName=x-zid" \
     --data "global.kubernetes.serviceAccountTokenJWKS=https://container.googleapis.com/v1beta1/projects/$CLOUDSDK_CORE_PROJECT/locations/$CLOUDSDK_COMPUTE_ZONE/clusters/$COMMON_NAME/jwks" \
-    --data "global.authenticators.tenant-fetcher.enabled=true" \
+    --data "global.oathkeeper.mutators.authenticationMappingServices.tenant-fetcher.authenticator.enabled=true" \
+    --data "global.oathkeeper.mutators.authenticationMappingServices.subscriber.authenticator.enabled=true" \
     --data "system-broker.http.client.skipSSLValidation=true" \
     --data "operations-controller.http.client.skipSSLValidation=true" \
     --data "global.systemFetcher.http.client.skipSSLValidation=true" \
     --label "component=compass"
+
+
+  OVERRIDES_FILE="${COMPASS_SOURCES_DIR}/installation/resources/installer-config-gke-benchmark.yaml.tpl"
+  if [[ -f "$OVERRIDES_FILE" ]]; then
+    # envsubst requires variables to be exported or to be passed to the process execution in order to work
+  CLOUDSDK_CORE_PROJECT=${CLOUDSDK_CORE_PROJECT} CLOUDSDK_COMPUTE_ZONE=${CLOUDSDK_COMPUTE_ZONE} COMMON_NAME=${COMMON_NAME} envsubst < "$OVERRIDES_FILE" | kubectl apply -f -
+  fi
 }
 
 function applyCommonOverrides() {
@@ -266,7 +278,7 @@ function installKyma() {
   if [[ "$BUILD_TYPE" == "pr" ]]; then
     COMPASS_VERSION="PR-${PULL_NUMBER}"
   else
-    COMPASS_VERSION="master-${COMMIT_ID}"
+    COMPASS_VERSION="main-${COMMIT_ID}"
   fi
   COMPASS_ARTIFACTS="${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${COMPASS_VERSION}"
   
@@ -289,9 +301,9 @@ function installCompassOld() {
   applyCommonOverrides "compass-installer"
   applyCompassOverrides
 
-  TMP_DIR="/tmp/compass-master-artifacts"
+  TMP_DIR="/tmp/compass-main-artifacts"
 
-  readonly LATEST_VERSION=master-$(cd "$COMPASS_SOURCES_DIR" && git rev-parse --short master~1)
+  readonly LATEST_VERSION=main-$(cd "$COMPASS_SOURCES_DIR" && git rev-parse --short main~1)
   echo "Deploying compass version $LATEST_VERSION"
 
   COMPASS_ARTIFACTS="${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${LATEST_VERSION}"
@@ -376,12 +388,12 @@ kubectl cordon "$NODE"
 log::info "Install Kyma"
 installKyma
 
-log::info "Install Compass version from master"
+log::info "Install Compass version from main"
 installCompassOld
 
 readonly SUITE_NAME="testsuite-all"
 
-log::info "Execute benchmarks on the current master"
+log::info "Execute benchmarks on the current main"
 kubectl uncordon "$NODE"
 CONCURRENCY=1 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l "benchmark=true"
 kubectl cordon "$NODE"

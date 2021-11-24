@@ -16,7 +16,7 @@ set -o errexit
 MINIKUBE_VERSION=v1.14.2
 KUBECTL_CLI_VERSION=v1.19.7
 CRICTL_VERSION=v1.12.0
-HELM_VERSION="v3.4.2"
+HELM_VERSION="v3.7.1"
 DOCKER_VERSION=5:20.10.5~3-0~debian-buster
 NODEJS_VERSION="14.x"
 K3D_VERSION="4.4.7"
@@ -94,6 +94,5 @@ sudo apt-get install -y 'google-fluentd=1.*'
 sudo apt-get install -y google-fluentd-catch-all-config
 
 # pre-fetch-docker-images
-sudo docker pull eu.gcr.io/kyma-project/external/cypress/included:8.3.0
+sudo docker pull eu.gcr.io/kyma-project/external/cypress/included:8.7.0
 sudo docker pull eu.gcr.io/kyma-project/test-infra/docker-registry-2:20200202
-

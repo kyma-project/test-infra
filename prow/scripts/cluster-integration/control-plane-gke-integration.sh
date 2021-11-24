@@ -148,6 +148,9 @@ function createCluster() {
   export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
   gcp::provision_k8s_cluster \
         -c "$COMMON_NAME" \
+        -r "$PROVISION_REGIONAL_CLUSTER" \
+        -m "$MACHINE_TYPE" \
+        -n "$NODES_PER_ZONE" \
         -p "$CLOUDSDK_CORE_PROJECT" \
         -v "$GKE_CLUSTER_VERSION" \
         -j "$JOB_NAME" \
@@ -342,6 +345,8 @@ function installKyma() {
   gsutil cp "${KCP_ARTIFACTS}/kyma-installer.yaml" ${TMP_DIR}/kyma-installer.yaml
   gsutil cp "${KCP_ARTIFACTS}/is-kyma-installed.sh" ${TMP_DIR}/is-kyma-installed.sh
   chmod +x ${TMP_DIR}/is-kyma-installed.sh
+  kubectl apply -f ${TMP_DIR}/kyma-installer.yaml || true
+  sleep 2
   kubectl apply -f ${TMP_DIR}/kyma-installer.yaml
 
   log::info "Installation triggered"
@@ -358,6 +363,8 @@ function installCompass() {
   gsutil cp "${KCP_ARTIFACTS}/compass-installer.yaml" ${TMP_DIR}/compass-installer.yaml
   gsutil cp "${KCP_ARTIFACTS}/is-compass-installed.sh" ${TMP_DIR}/is-compass-installed.sh
   chmod +x ${TMP_DIR}/is-compass-installed.sh
+  kubectl apply -f ${TMP_DIR}/compass-installer.yaml || true
+  sleep 2
   kubectl apply -f ${TMP_DIR}/compass-installer.yaml
 
   log::info "Installation triggered"

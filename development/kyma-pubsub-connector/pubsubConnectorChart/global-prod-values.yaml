@@ -1,0 +1,20 @@
+# kymaToolingPubSubConectorSerivceAccountKey must be provided using --set argument to helm command.
+# It provides base64 encoded google service account json credentials file.
+#
+# secret name containing keys of SA with subscriber role on a pubsub subscription
+subscriberSaSecret: "common-kyma-tooling-pubsub-conector-sa-credentials"
+# Kyma cluster FQDN.
+eventPublisherProxyURL: "http://eventing-event-publisher-proxy.kyma-system/publish"
+serviceAccountSecretEnabled: false
+connectorDeploymentEnabled: false
+global:
+  # PubSub connector application name.
+  appName: "pubsub-connector"
+  # pubsubgateway container settings
+  pubsubGateway:
+    # PubSub gateway image.
+    image: "eu.gcr.io/kyma-project/test-infra/pr/pubsub-gateway:PR-4075"
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"

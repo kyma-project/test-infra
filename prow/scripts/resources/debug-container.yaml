@@ -51,7 +51,7 @@ spec:
       - name: oom-debug
         securityContext:
           privileged: true
-        image: eu.gcr.io/kyma-project/test-infra/prow-tools:v20210907-d10c077a
+        image: eu.gcr.io/kyma-project/test-infra/prow-tools:v20211110-ab51bd20
         imagePullPolicy: Always
         command:
           - "/prow-tools/oomfinder"
@@ -65,7 +65,7 @@ spec:
             memory: "16Mi"
             cpu: "100m"
           limits:
-            memory: "32Mi"
+            memory: "232Mi"
             cpu: "300m"
       volumes:
         - name: docker-socket

@@ -41,10 +41,10 @@ func TestBranchProtection(t *testing.T) {
 		{"kyma-incubator", "gcp-service-broker", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-incubator", "podpreset-crd", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-incubator", "marketplaces", "main", []string{"license/cla", "tide"}, 1},
-		{"kyma-incubator", "compass", "master", []string{"license/cla", "tide"}, 1},
+		{"kyma-incubator", "compass", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-incubator", "documentation-component", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-incubator", "github-slack-connectors", "main", []string{"license/cla", "tide"}, 1},
-		{"kyma-incubator", "Kyma-Showcase", "main", []string{"license/cla", "tide"}, 1},
+		{"kyma-incubator", "kyma-showcase", "main", []string{"license/cla", "tide"}, 1},
 	}
 
 	for _, testcase := range testcases {

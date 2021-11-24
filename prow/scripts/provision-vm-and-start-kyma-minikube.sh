@@ -31,7 +31,7 @@ fi
 
 cleanup() {
   log::info "Fetch JUnit test results and store them in job artifacts"
-  gcloud compute scp --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}:junit_kyma_octopus-test-suite.xml" "${JUNIT_REPORT_PATH}"
+  gcloud compute scp --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SCP_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}:junit_kyma_octopus-test-suite.xml" "${JUNIT_REPORT_PATH}"
   ARG=$?
   log::info "Removing instance kyma-integration-test-${RANDOM_ID}"
   gcloud compute instances delete --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" || true ### Workaround: not failing the job regardless of the vm deletion result
@@ -119,7 +119,7 @@ utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home
 
 log::info "Triggering the installation"
 log::info "Running testsuite ${testSuiteScript}"
-gcloud compute ssh --strict-host-key-checking=no --quiet --zone="${ZONE}" \
+gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --strict-host-key-checking=no --quiet --zone="${ZONE}" \
   --command="sudo PULL_NUMBER=${PULL_NUMBER}  TEST_SUITE=${TEST_SUITE} bash" \
   --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" <"${SCRIPT_DIR}/${testSuiteScript}"
 

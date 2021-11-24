@@ -3,51 +3,34 @@
 
 | name | platform | cluster-provisioning | installer | profile | trigger | tests |
 |:-----|:---------|:---------------------|:----------|:--------|:--------|:------|
-| pre-main-kyma-integration | minikube | minikube | kyma install |  | pr-submit |  octopus  |
 | pre-main-kyma-integration-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-integration-k3d-compass-dev | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
+| pre-main-kyma-integration-k3d-central-app-connectivity | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
+| pre-main-kyma-integration-k3d-central-app-connectivity-compass | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-serverless-integration-k3s | k3s | k3s | kyma deploy |  | pr-submit |  helm serverless-test  |
-| pre-main-serverless-integration-alpha-k3s | k3s | k3s | kyma deploy |  | pr-submit |  helm serverless-test  |
-| pre-main-cluster-users-integration-minikube | minikube | minikube --driver=none | kyma install |  | pr-submit |  bash resources/cluster-users/files/sar-test.sh  |
-| pre-main-kyma-gke-integration | gke | gcloud cli | kyma install |  | pr-submit |  octopus  |
-| pre-main-kyma-gke-upgrade | gke | gcloud cli | kubectl-apply |  | pr-submit |  octopus  |
-| post-main-kyma-integration | minikube | minikube | kyma install |  | pr-merge |  octopus  |
 | post-main-kyma-integration-k3d | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-kyma-integration-k3d-compass-dev | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
-| post-main-kyma-gke-integration | gke | gcloud cli | kyma install |  | pr-merge |  octopus  |
-| post-main-kyma-gke-upgrade | gke | gcloud cli | kubectl-apply |  | pr-merge |  octopus  |
-| kyma-gke-nightly | gke | gcloud cli | kyma install |  | periodic |    |
-| kyma-gke-weekly | gke | gcloud cli | kyma install |  | periodic |    |
-| kyma-aks-nightly | aks | az cli | kyma install |  | nightly |    |
+| post-main-kyma-integration-k3d-central-app-connectivity | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
+| post-main-kyma-integration-k3d-central-app-connectivity-compass | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | kyma-integration-k3d | k3d | k3d | kyma deploy |  | periodic |  fast-integration  |
 | kyma-integration-k3d-compass-dev | k3d | k3d | kyma deploy |  | periodic |  fast-integration  |
+| kyma-gke-nightly | gke | gcloud cli | kyma deploy |  | periodic |    |
 | kyma-gke-nightly-fast-integration | gke |  |  |  | nightly |  fast-integration  |
-| kyma-gke-weekly-fast-integration | gke |  |  |  | nightly |  fast-integration  |
-| kyma-aks-nightly-fast-integration | aks |  |  |  | nightly |  fast-integration  |
-| pre-main-kyma-gardener-azure-integration | gardener_azure | kyma cli | kyma install |  | pr-submit |  octopus  |
 | pre-main-kyma-gardener-azure-fast-integration | gardener_azure | kyma cli | kyma install | evaluation | pr-submit |  fast-integration  |
 | pre-main-kyma-gardener-azure-alpha-eval | gardener_azure | kyma cli | kyma deploy | evaluation | pr-submit |  fast-integration  |
 | pre-main-kyma-gardener-azure-alpha-prod | gardener_azure | kyma cli | kyma deploy | production | pr-submit |  fast-integration  |
-| pre-main-kyma-gardener-gcp-api-gateway | gardener_gcp | kyma cli | kyma install |  | pr-submit |  octopus  |
 | post-main-kyma-gardener-azure-alpha-eval | gardener_azure | kyma cli | kyma deploy | evaluation | pr-merge |  fast-integration  |
 | post-main-kyma-gardener-azure-alpha-prod | gardener_azure | kyma cli | kyma deploy | production | pr-merge |  fast-integration  |
-| post-main-kyma-gardener-gcp-api-gateway | gardener_gcp | kyma cli | kyma install |  | pr-merge |  octopus  |
-| pre-main-kyma-gardener-gcp-eventing | gardener_gcp | kyma cli | kyma install |  | pr-submit |  octopus  |
-| kyma-integration-gardener-gcp | gardener_gcp | kyma cli | kyma install |  | periodic |  octopus  |
-| kyma-integration-gardener-aws | gardener_aws | kyma cli | kyma install |  | periodic |  octopus  |
-| kyma-integration-gardener-azure | gardener_azure | kyma cli | kyma install |  | periodic |  octopus  |
-| kyma-integration-evaluation-gardener-azure | gardener_azure | kyma cli | kyma install | evaluation | periodic |  fast-integration  |
-| kyma-integration-production-gardener-azure | gardener_azure | kyma cli | kyma install | production | periodic |  fast-integration  |
+| pre-main-kyma-gardener-gcp-eventing | gardener_gcp | kyma cli | kyma deploy |  | pr-submit |  fast-integration  |
 | kyma-alpha-integration-evaluation-gardener-azure | gardener_azure | kyma cli | kyma deploy | evaluation | periodic |  fast-integration  |
 | kyma-alpha-integration-production-gardener-azure | gardener_azure | kyma cli | kyma deploy | production | periodic |  fast-integration  |
-| kyma-integration-hibernation-gardener-azure | gardener_azure | kyma cli | kyma install | evaluation | periodic |  fast-integration  |
 | kyma-weekly-gardener-gcp-busola | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
 | kyma-nightly-gardener-gcp-busola | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
 | kyma-weekly-gardener-gcp-busola-kyma | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
 | kyma-periodic-gardener-gcp-busola-init-kyma | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
 | kyma-periodic-gardener-gcp-busola-kyma | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
 | kyma-upgrade-gardener-kyma-to-kyma2 | gardener_azure | kyma cli | kyma install, kyma deploy |  | periodic |  upgrade-fast-integration  |
-| kyma-upgrade-gardener-azure | gardener_azure | kyma cli | kyma install, kyma upgrade |  | periodic |  octopus  |
+| skr-azure-nightly | gardener_azure | keb | keb |  | periodic |  fast-integration  |
 | skr-azure-integration-dev | gardener_azure | keb | keb |  | periodic |  fast-integration  |
 | skr-azure-lite-integration-dev | gardener_azure | keb | keb | evaluation | periodic |  fast-integration  |
 | skr-aws-integration-dev | gardener_aws | keb | keb |  | periodic |  fast-integration  |
