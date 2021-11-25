@@ -124,7 +124,7 @@ function reconciler::reconcile_kyma() {
   kubectl exec -it -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/reconcile-kyma.sh"
   if [[ $? -ne 0 ]]; then
       log::error "Failed to reconcile Kyma"
-      kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler --tail -1
+      kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler -c mothership-reconciler --tail -1
       exit 1
   fi
   set -e
@@ -153,13 +153,13 @@ function reconciler::wait_until_kyma_reconciled() {
 
     if [ "${status}" = "error" ]; then
       log::error "Failed to reconcile Kyma. Exiting"
-      kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler --tail -1
+      kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler -c mothership-reconciler --tail -1
       exit 1
     fi
 
     if [ "$RECONCILER_TIMEOUT" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then
       log::error "Timeout reached on Kyma reconciliation. Exiting"
-      kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler --tail -1
+      kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler -c mothership-reconciler --tail -1
       exit 1
     fi
 
