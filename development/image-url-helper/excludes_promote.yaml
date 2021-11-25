@@ -1,0 +1,4 @@
+excludes:
+  - filename: "istio-configuration/values.yaml"
+    images:
+      - "istio"
