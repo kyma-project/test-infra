@@ -287,7 +287,6 @@ func updateExcludedImages(resourcesDirectory, path string, images *yaml.Node, ta
 	return nil
 }
 
-// if !imageInExcludeList(resourcesDirectory, path, )
 // imageInExcludeList checks if the image value in the given line is on the excludes list
 func imageInExcludeList(resourcesDirectory, filename, imageName string, excludesList []check.Exclude) bool {
 	for _, exclude := range excludesList {
