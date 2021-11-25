@@ -1,5 +1,16 @@
 pjNames:
   - pjName: "skr-kyma-to-kyma2-upgrade-aws-dev"
+  - pjName: "pre-main-kyma-gardener-gcp-eventing"
+  - pjName: "pre-rel124-kyma-gardener-gcp-eventing"
+  - pjName: "pre-rel125-kyma-gardener-gcp-eventing"
+  - pjName: "pre-main-kyma-gardener-azure-fast-integration"
+  - pjName: "pre-main-kyma-gardener-azure-alpha-eval"
+  - pjName: "pre-main-kyma-gardener-azure-alpha-prod"
+  - pjName: "post-main-kyma-gardener-azure-alpha-eval"
+  - pjName: "post-main-kyma-gardener-azure-alpha-prod"
+  - pjName: "kyma-alpha-integration-evaluation-gardener-azure"
+  - pjName: "pre-main-control-plane-reconciler-e2e"
+  - pjName: "periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade"
 prConfigs:
   kyma-project:
     kyma:
