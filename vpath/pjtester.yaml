@@ -20,3 +20,7 @@ pjNames: # runs provision-vm-cli.sh
   - pjName: pre-main-reconciler-integration-k3d
   # runs provision-vm-and-start-serverless-k3s.sh which runs serverless-integration-k3s.sh  
   - pjName: pre-main-serverless-integration-k3s
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 12688
