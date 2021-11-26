@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/google/go-github/github"
+	"github.com/google/go-github/v40/github"
 	"github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway/pkg/apperrors"
 	"github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway/pkg/gateway/mocks"
 	gitmocks "github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway/pkg/github/mocks"
