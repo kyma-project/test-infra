@@ -17,6 +17,7 @@ func getTarget(source, targetRepo, targetTag string) (string, error) {
 		}
 		imageName := strings.Split(source, "@sha256:")[0]
 		target = targetRepo + imageName + ":" + targetTag
+		// Allow retagging when the source image is not using SHA256 hash
 	} else if targetTag != "" {
 		imageName := strings.Split(source, ":")[0]
 		target = targetRepo + imageName + ":" + targetTag
