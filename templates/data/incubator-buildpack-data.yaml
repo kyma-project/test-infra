@@ -326,6 +326,7 @@ templates:
                     preset-sa-vm-kyma-integration: "true"
                     preset-gc-project-env: "true"
                     preset-bot-github-token: "true"
+                    preset-kyma-cli-unstable: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default

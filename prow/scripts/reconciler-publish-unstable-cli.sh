@@ -15,7 +15,6 @@ source "$SCRIPT_DIR/lib/gcp.sh"
 cleanup() {
     ARG=$?
     log::info "Removing instance cli-integration-test-${RANDOM_ID}"
-    date
     gcloud compute instances delete --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" || true ### Workaround: not failing the job regardless of the vm deletion result
     exit $ARG
 }
@@ -31,10 +30,9 @@ function testCustomImage() {
 cd "${KYMA_PROJECT_DIR}/cli"
 
 log::info "Bump reconciler version used by the Kyma CLI"
-go get github.com/kyma-incubator/reconciler
+# go get github.com/kyma-incubator/reconciler
 
 log::info "Building Kyma CLI"
-date
 make resolve
 make test
 make build-linux
@@ -82,7 +80,6 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 
 if [[ -z "$IMAGE" ]]; then
     log::info "Provisioning vm using the latest default custom image ..."
-    date
     IMAGE=$(gcloud compute images list --sort-by "~creationTimestamp" \
          --filter "family:custom images AND labels.default:yes" --limit=1 | tail -n +2 | awk '{print $1}')
 
@@ -96,7 +93,6 @@ EU_ZONES=$(gcloud compute zones list --filter="name~europe" --limit="${ZONE_LIMI
 
 for ZONE in ${EU_ZONES}; do
     log::info "Attempting to create a new instance named cli-integration-test-${RANDOM_ID} in zone ${ZONE} using image ${IMAGE}"
-    date
     gcloud compute instances create "cli-integration-test-${RANDOM_ID}" \
         --metadata enable-oslogin=TRUE \
         --image "${IMAGE}" \
@@ -128,7 +124,6 @@ gcloud compute ssh \
   --command="sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
 
 log::info "Provisioning k3d Kubernetes runtime"
-date
 gcloud compute ssh \
   --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" \
   --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" \
@@ -138,7 +133,6 @@ gcloud compute ssh \
   --command="yes | sudo kyma provision k3d --ci"
 
 log::info "Installing Kyma"
-date
 gcloud compute ssh \
   --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" \
   --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" \
@@ -146,20 +140,6 @@ gcloud compute ssh \
   --zone="${ZONE}" \
   "cli-integration-test-${RANDOM_ID}" \
   --command="yes | sudo kyma deploy --ci ${SOURCE}"
-
-# Run test suite
-# shellcheck disable=SC1090,SC1091
-source "${SCRIPT_DIR}/lib/clitests.sh"
-if clitests::testSuiteExists "test-version"; then
-    clitests::execute "test-version" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
-else
-    log::error "Test file 'test-version.sh' not found"
-fi
-if clitests::testSuiteExists "test-function"; then
-    clitests::execute "test-function" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
-else
-    log::error "Test file 'test-function.sh' not found"
-fi
 
 log::info "Copying Kyma to the instance"
 #shellcheck disable=SC2088
@@ -176,19 +156,15 @@ gcloud compute ssh\
   --command="cd ~/kyma/tests/fast-integration && sudo make ci"
 
 log::info "Uninstalling Kyma"
-date
 gcloud compute ssh \
   --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" \
   --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" \
   --quiet \
   --zone="${ZONE}" \
   "cli-integration-test-${RANDOM_ID}" \
-  --command="sudo kyma undeploy --ci"
+  --command="sudo kyma undeploy --ci --timeout=10m0s"
 
-# TODO: Do we need to verify undeploy?
-
-# TODO: Create the Reconciler bump commit and push it to the CLI repo
-
-# TODO: Publish a new unstable CLI version
+log::info "Publishing new unstable builds to $KYMA_CLI_UNSTABLE_BUCKET"
+make ci-main
 
 log::success "all done"
