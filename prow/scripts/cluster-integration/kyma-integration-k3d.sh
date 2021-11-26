@@ -45,17 +45,10 @@ function install_cli() {
 }
 
 function deploy_kyma() {
-  export DEBUG=true
-
-  sudo wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v5.0.0 bash
-
-  k3d registry create kyma-registry --port 5001
-  k3d cluster create kyma --kubeconfig-update-default --timeout 300s --agents 1 --image rancher/k3s:v1.20.12-k3s1 --kubeconfig-switch-context --k3s-arg --disable=traefik@server:0 --registry-use kyma-registry:5001 --port 80:80@loadbalancer --port 443:443@loadbalancer
-
-  # kyma provision k3d
+  kyma alpha provision k3d --ci -p 80:80@loadbalancer -p 443:443@loadbalancer
 
   local kyma_deploy_cmd
-  kyma_deploy_cmd="kyma deploy -p evaluation --ci --verbose --source=local --workspace ${KYMA_SOURCES_DIR}"
+  kyma_deploy_cmd="kyma deploy -p evaluation --ci --source=local --workspace ${KYMA_SOURCES_DIR}"
 
   if [[ -v CENTRAL_APPLICATION_CONNECTIVITY_ENABLED ]]; then
     kyma_deploy_cmd+=" --value application-connector.central_application_gateway.enabled=true"
