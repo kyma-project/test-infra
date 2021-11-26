@@ -146,7 +146,7 @@ install::kyma_cli
 
 echo "--> Provisioning k3d cluster for Kyma"
 export K3D_FIX_DNS=1
-sudo wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v5.0.0 bash
+sudo wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v5.1.0 bash
 
 k3d registry create kyma-registry --port 5001
 k3d cluster create kyma --kubeconfig-update-default --timeout 300s --agents 1 --image rancher/k3s:v1.20.12-k3s1 --kubeconfig-switch-context --k3s-arg --disable=traefik@server:0 --registry-use kyma-registry:5001 --port 80:80@loadbalancer --port 443:443@loadbalancer
