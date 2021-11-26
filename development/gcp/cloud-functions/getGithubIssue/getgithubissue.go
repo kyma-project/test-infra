@@ -115,7 +115,7 @@ func createGithubIssue(ctx context.Context, client *github.Client, message kymap
 	// For periodic jobs Refs has only ProwJobSpec.ExtraRefs. If more than one Refs present in slice,
 	// we need to exclude test-infra Refs as it probably deliver only tools to test another repo.
 	if pjType := message.JobType; *pjType == string(prowapi.PeriodicJob) {
-		// If there is only on repo ref, take it.
+		// If there is only one repo ref, take it.
 		if len(message.Refs) == 1 {
 			ref = message.Refs[0]
 			// There were more refs.
