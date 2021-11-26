@@ -54,6 +54,8 @@ const (
 	GardenerAWSIntegration Preset = "preset-gardener-aws-kyma-integration"
 	// KymaCLIStable contains all the configuraion to be able to download the stable master kyma CLI binary
 	KymaCLIStable Preset = "preset-kyma-cli-stable"
+	// KymaCLIUnstable contains all the configuraion to be able to download the unstable master kyma CLI binary
+	KymaCLIUnstable Preset = "preset-kyma-cli-unstable"
 	// KymaSlackChannel contains the configuration for slack
 	KymaSlackChannel Preset = "preset-kyma-slack-channel"
 	// SlackBotToken contains the token to use the kyma slack bot
