@@ -13,7 +13,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag string, dryRun bool, images, testImages *[]list.Image) filepath.WalkFunc {
+func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag string, dryRun bool, images, testImages list.ImageMap) filepath.WalkFunc {
 	return func(path string, info os.FileInfo, err error) error {
 		//pass the error further, this shouldn't ever happen
 		if err != nil {
@@ -66,7 +66,7 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 		}
 
 		// generate list of used images and apprend it to the global list containing images from all values.yaml files
-		list.AppendImagesToList(parsedImagesFile, images, testImages, "", make(list.ImageToComponents))
+		list.AppendImagesToMap(parsedImagesFile, images, testImages, "", make(list.ImageToComponents))
 
 		globalNode := getYamlNode(parsedFile.Content[0], "global")
 		if globalNode == nil {
@@ -116,7 +116,7 @@ func promoteContainerRegistry(path string, globalNode *yaml.Node, targetContaine
 		// raise error if the containerRegistry key is defined, but path is not, as this key expected to exist
 		return true, fmt.Errorf("error in %s file: could not find global.containerRegistry.path key", path)
 	}
-	containerRegistryPathNode.Value = targetContainerRegistry
+	containerRegistryPathNode.Value = targetContainerRegistry + "/" + containerRegistryPathNode.Value
 
 	// update the container registry path
 	outputLine, err := yamlNodeToString(containerRegistryNode, containerRegistryNode.Content[0].Column)

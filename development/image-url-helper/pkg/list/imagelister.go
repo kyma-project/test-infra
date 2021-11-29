@@ -11,8 +11,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// SortFunction is a function type used in slice sorting
-type SortFunction func(i, j int) bool
+type ImageMap map[string]Image
 
 // ImageToComponents is a map that for each image name stores list of components that are using this image
 type ImageToComponents map[string][]string
@@ -44,23 +43,6 @@ func (i Image) ImageURL() string {
 	return fmt.Sprintf("%s/%s", registry, i.Name)
 }
 
-// ImageListContains checks if list of images contains already the same image
-func ImageListContains(list []Image, image Image) bool {
-	for _, singleImage := range list {
-		if singleImage == image {
-			return true
-		}
-	}
-	return false
-}
-
-// GetSortImagesFunc returns sorting function for images list
-func GetSortImagesFunc(images []Image) SortFunction {
-	return func(i, j int) bool {
-		return images[i].FullImageURL() < images[j].FullImageURL()
-	}
-}
-
 // ContainerRegistry stores path to a container registry
 type ContainerRegistry struct {
 	Path string `yaml:"path,omitempty"`
@@ -78,7 +60,7 @@ type ValueFile struct {
 	Global GlobalKey `yaml:"global,omitempty"`
 }
 
-func GetWalkFunc(resourcesDirectory string, images, testImages *[]Image, imageComponentsMap ImageToComponents) filepath.WalkFunc {
+func GetWalkFunc(resourcesDirectory string, images, testImages ImageMap, imageComponentsMap ImageToComponents) filepath.WalkFunc {
 	return func(path string, info os.FileInfo, err error) error {
 		//pass the error further, this shouldn't ever happen
 		if err != nil {
@@ -110,22 +92,20 @@ func GetWalkFunc(resourcesDirectory string, images, testImages *[]Image, imageCo
 		component := strings.Replace(path, resourcesDirectory+"/", "", -1)
 		component = strings.Replace(component, "/values.yaml", "", -1)
 
-		AppendImagesToList(parsedFile, images, testImages, component, imageComponentsMap)
+		AppendImagesToMap(parsedFile, images, testImages, component, imageComponentsMap)
 
 		return nil
 	}
 }
 
-func AppendImagesToList(parsedFile ValueFile, images, testImages *[]Image, component string, components ImageToComponents) {
+func AppendImagesToMap(parsedFile ValueFile, images, testImages ImageMap, component string, components ImageToComponents) {
 	for _, image := range parsedFile.Global.Images {
 		// add registry info directly into the image struct
 		if image.ContainerRegistryPath == "" {
 			image.ContainerRegistryPath = parsedFile.Global.ContainerRegistry.Path
 		}
-		// remove duplicates
-		if !ImageListContains(*images, image) {
-			*images = append(*images, image)
-		}
+		images[image.FullImageURL()] = image
+
 		components[image.FullImageURL()] = append(components[image.FullImageURL()], component)
 	}
 
@@ -133,54 +113,46 @@ func AppendImagesToList(parsedFile ValueFile, images, testImages *[]Image, compo
 		if testImage.ContainerRegistryPath == "" {
 			testImage.ContainerRegistryPath = parsedFile.Global.ContainerRegistry.Path
 		}
-		if !ImageListContains(*testImages, testImage) {
-			*testImages = append(*testImages, testImage)
-		}
+		testImages[testImage.FullImageURL()] = testImage
 		components[testImage.FullImageURL()] = append(components[testImage.FullImageURL()], component)
 	}
 }
 
-// RemoveDoubles removes all duplicates
-func RemoveDoubles(images []Image) []Image {
-	var dedupedImages []Image
-	for _, image := range images {
-		exists := false
-		for _, deduped := range dedupedImages {
-			if image == deduped {
-				exists = true
+// GetInconsistentImages returns a list of images with the same URl but different versions or hashes
+func GetInconsistentImages(images ImageMap) ImageMap {
+	inconsistent := make(ImageMap)
+
+	for imageName, image := range images {
+		for image2Name, image2 := range images {
+			if image.ImageURL() == image2.ImageURL() {
+				inconsistent[imageName] = image
+				inconsistent[image2Name] = image2
 			}
 		}
-		if !exists {
-			dedupedImages = append(dedupedImages, image)
-		}
-	}
-	return dedupedImages
-}
-
-// GetInconsistentImages returns a list of images with the same URl but different versions or hashes
-func GetInconsistentImages(images []Image) []Image {
-	var inconsistent []Image
-	hasDoubles := make(map[string][]Image)
-
-	for _, image := range images {
-		hasDoubles[image.ImageURL()] = append(hasDoubles[image.ImageURL()], image)
 	}
 
-	for _, images := range hasDoubles {
-		if len(images) > 1 {
-			inconsistent = append(inconsistent, images...)
-		}
-	}
-
-	sort.Slice(inconsistent, GetSortImagesFunc(inconsistent))
 	return inconsistent
 }
 
 // PrintImages prints otu list of images and their usage in components
-func PrintImages(images []Image, imageComponentsMap ImageToComponents) {
-	sort.Slice(images, GetSortImagesFunc(images))
+func PrintImages(images ImageMap, imageComponentsMap ImageToComponents) {
+	imageNames := make([]string, 0)
 	for _, image := range images {
-		components := imageComponentsMap[image.FullImageURL()]
-		fmt.Printf("%s, used by %s\n", image.FullImageURL(), strings.Join(components, ", "))
+		imageNames = append(imageNames, image.FullImageURL())
+	}
+	sort.Strings(imageNames)
+
+	for _, fullImageURL := range imageNames {
+		components := imageComponentsMap[fullImageURL]
+		fmt.Printf("%s, used by %s\n", fullImageURL, strings.Join(components, ", "))
+	}
+}
+
+// MergeImageMap merges images map into target one
+func MergeImageMap(target ImageMap, source ImageMap) {
+	for key, val := range source {
+		if _, ok := target[key]; !ok {
+			target[key] = val
+		}
 	}
 }

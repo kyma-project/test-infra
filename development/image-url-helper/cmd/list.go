@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
 
 	"github.com/jamiealquiza/envy"
@@ -32,22 +31,18 @@ func ListCmd() *cobra.Command {
 			// remove trailing slash to have consistent paths
 			ResourcesDirectoryClean := filepath.Clean(ResourcesDirectory)
 
-			var images []list.Image
-			var testImages []list.Image
+			images := make(list.ImageMap)
+			testImages := make(list.ImageMap)
 
-			err := filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, &images, &testImages, imageComponentsMap))
+			err := filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, images, testImages, imageComponentsMap))
 			if err != nil {
 				fmt.Printf("Cannot traverse directory: %s\n", err)
 				os.Exit(2)
 			}
 
-			var allImages []list.Image
-			allImages = append(allImages, images...)
-			if !options.excludeTestImages {
-				allImages = append(allImages, testImages...)
-			}
-			sort.Slice(allImages, list.GetSortImagesFunc(allImages))
-			allImages = list.RemoveDoubles(allImages)
+			allImages := make(list.ImageMap)
+			list.MergeImageMap(allImages, images)
+			list.MergeImageMap(allImages, testImages)
 
 			if options.outputFormat == "" {
 				list.PrintImages(allImages, imageComponentsMap)
