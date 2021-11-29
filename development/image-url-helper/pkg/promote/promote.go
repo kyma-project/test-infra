@@ -95,7 +95,7 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 
 		// retag images if the --target-tag is set
 		if targetTag != "" {
-			err = promoteTargetTags(path, globalNode, targetTag, &lines)
+			err = promoteTargetTags(path, globalNode, targetTag, lines)
 			if err != nil {
 				return err
 			}
@@ -147,10 +147,10 @@ func promoteContainerRegistry(path string, globalNode *yaml.Node, targetContaine
 	return false, nil
 }
 
-func promoteTargetTags(path string, globalNode *yaml.Node, targetTag string, lines *[]string) error {
+func promoteTargetTags(path string, globalNode *yaml.Node, targetTag string, lines []string) error {
 	imagesNode := getYamlNode(globalNode, "images")
 	if imagesNode != nil {
-		err := updateImages(path, imagesNode, targetTag, lines)
+		err := updateImages(imagesNode, targetTag, lines)
 		if err != nil {
 			return fmt.Errorf("error while parsing images in %s file: %s", path, err)
 		}
@@ -158,7 +158,7 @@ func promoteTargetTags(path string, globalNode *yaml.Node, targetTag string, lin
 
 	testImagesNode := getYamlNode(globalNode, "testImages")
 	if testImagesNode != nil {
-		err := updateImages(path, testImagesNode, targetTag, lines)
+		err := updateImages(testImagesNode, targetTag, lines)
 		if err != nil {
 			return fmt.Errorf("error while parsing testImages in %s file: %s", path, err)
 		}
@@ -203,8 +203,7 @@ func getYamlNode(parsedYaml *yaml.Node, wantedKey string) *yaml.Node {
 }
 
 // updateImages looks for "version" field in each image and updates its content with a targetTag value in the lines slice
-func updateImages(path string, images *yaml.Node, targetTag string, lines *[]string) error {
-	linesPointer := *lines
+func updateImages(images *yaml.Node, targetTag string, lines []string) error {
 	for _, val := range images.Content {
 		if val.Tag == "!!map" {
 			// loop over values in singular image
@@ -212,7 +211,7 @@ func updateImages(path string, images *yaml.Node, targetTag string, lines *[]str
 				if (imageVal.Value == "version") && (key+1 < len(val.Content)) {
 					// parse the version line separately
 					var versionLineParsed yaml.Node
-					yaml.Unmarshal([]byte(linesPointer[imageVal.Line-1]), &versionLineParsed)
+					yaml.Unmarshal([]byte(lines[imageVal.Line-1]), &versionLineParsed)
 					versionLineParsed.Content[0].Content[1].Value = targetTag
 
 					outputLines, err := yamlNodeToString(&versionLineParsed, val.Content[0].Column)
@@ -220,7 +219,7 @@ func updateImages(path string, images *yaml.Node, targetTag string, lines *[]str
 						return err
 					}
 
-					linesPointer[imageVal.Line-1] = outputLines
+					lines[imageVal.Line-1] = outputLines
 				}
 			}
 		}
