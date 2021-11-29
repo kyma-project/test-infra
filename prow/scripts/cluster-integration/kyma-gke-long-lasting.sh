@@ -136,8 +136,7 @@ function installKyma() {
 
 	kyma install \
 			--ci \
-			--source=local \
-			--src-path "${KYMA_SOURCES_DIR}" \
+			--source "1.24.8" \
 			-o "$PWD/kyma-installer-overrides.yaml" \
 			-o "$PWD/overrides-dex-and-monitoring.yaml" \
 			-o "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/prometheus-cluster-essentials-overrides.tpl.yaml" \
