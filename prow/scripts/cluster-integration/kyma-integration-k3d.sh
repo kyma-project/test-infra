@@ -45,10 +45,10 @@ function install_cli() {
 }
 
 function deploy_kyma() {
-  kyma provision k3d -p 80:80@loadbalancer -p 443:443@loadbalancer
+  kyma alpha provision k3d --ci -p 80:80@loadbalancer -p 443:443@loadbalancer
 
   local kyma_deploy_cmd
-  kyma_deploy_cmd="kyma deploy -p evaluation --ci --verbose --source=local --workspace ${KYMA_SOURCES_DIR}"
+  kyma_deploy_cmd="kyma deploy -p evaluation --ci --source=local --workspace ${KYMA_SOURCES_DIR}"
 
   if [[ -v CENTRAL_APPLICATION_CONNECTIVITY_ENABLED ]]; then
     kyma_deploy_cmd+=" --value application-connector.central_application_gateway.enabled=true"
