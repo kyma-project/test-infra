@@ -127,7 +127,7 @@ date
 if [ "$KUBERNETES_RUNTIME" = 'minikube' ]; then
     gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" --command="yes | sudo kyma provision minikube --non-interactive"
 else
-    gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" --command="yes | sudo kyma alpha provision k3d --ci"
+    gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" --command="yes | sudo kyma provision k3d --ci"
 fi
 
 # Install kyma

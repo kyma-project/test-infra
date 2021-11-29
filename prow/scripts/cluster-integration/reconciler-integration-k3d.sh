@@ -38,7 +38,7 @@ function install_cli() {
 }
 
 function provision_k3d() {
-  kyma alpha provision k3d --ci -p 80:80@loadbalancer -p 443:443@loadbalancer
+  kyma provision k3d --ci
 }
 
 function run_tests() {
