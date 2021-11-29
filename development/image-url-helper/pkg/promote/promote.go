@@ -9,16 +9,11 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/check"
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/list"
 	"gopkg.in/yaml.v3"
 )
 
-// ExcludesMap contains a map of excluded filenames
-
-type ExcludesMap map[string]bool
-
-// ExcludesMap contains a lis of excluded filenames, used for file paring
+// ExcludeList contains a list of excluded filenames
 type ExcludesList struct {
 	Excludes []string `yaml:"excludes"`
 }
@@ -84,9 +79,6 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 		// generate list of used images and apprend it to the global list containing images from all values.yaml files
 		list.AppendImagesToMap(parsedImagesFile, images, testImages, "", make(list.ImageToComponents))
 
-		excludeImages(ResourcesDirectoryClean, path, images, excludes)
-		excludeImages(ResourcesDirectoryClean, path, testImages, excludes)
-
 		globalNode := getYamlNode(parsedFile.Content[0], "global")
 		if globalNode == nil {
 			//no "global:" key, skip the whole file
@@ -104,15 +96,7 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 
 		// retag images if the --target-tag is set
 		if targetTag != "" {
-			err = promoteTargetTags(ResourcesDirectoryClean, path, globalNode, targetTag, &lines, oldContainerRegistry, excludes)
-			if err != nil {
-				return err
-			}
-		}
-
-		if len(excludes) > 0 {
-			// hardcode container registry path for each image if it's excluded, allowing the rest of images to be promoted
-			err = unpromoteExcludedImages(ResourcesDirectoryClean, path, globalNode, targetTag, &lines, oldContainerRegistry, excludes)
+			err = promoteTargetTags(path, globalNode, targetTag, &lines, oldContainerRegistry)
 			if err != nil {
 				return err
 			}
@@ -163,10 +147,10 @@ func promoteContainerRegistry(path string, globalNode *yaml.Node, targetContaine
 	return false, nil
 }
 
-func promoteTargetTags(resourcesDirectory, path string, globalNode *yaml.Node, targetTag string, lines *[]string, oldContainerRegistry string, excludes []check.Exclude) error {
+func promoteTargetTags(path string, globalNode *yaml.Node, targetTag string, lines *[]string, oldContainerRegistry string) error {
 	imagesNode := getYamlNode(globalNode, "images")
 	if imagesNode != nil {
-		err := updateImages(resourcesDirectory, path, imagesNode, targetTag, lines, oldContainerRegistry, excludes)
+		err := updateImages(path, imagesNode, targetTag, lines, oldContainerRegistry)
 		if err != nil {
 			return fmt.Errorf("error while parsing images in %s file: %s", path, err)
 		}
@@ -174,7 +158,7 @@ func promoteTargetTags(resourcesDirectory, path string, globalNode *yaml.Node, t
 
 	testImagesNode := getYamlNode(globalNode, "testImages")
 	if testImagesNode != nil {
-		err := updateImages(resourcesDirectory, path, testImagesNode, targetTag, lines, oldContainerRegistry, excludes)
+		err := updateImages(path, testImagesNode, targetTag, lines, oldContainerRegistry)
 		if err != nil {
 			return fmt.Errorf("error while parsing testImages in %s file: %s", path, err)
 		}
@@ -219,17 +203,12 @@ func getYamlNode(parsedYaml *yaml.Node, wantedKey string) *yaml.Node {
 }
 
 // updateImages looks for "version" field in each image and updates its content with a targetTag value in the lines slice
-func updateImages(resourcesDirectory, path string, images *yaml.Node, targetTag string, lines *[]string, oldContainerRegistry string, excludes []check.Exclude) error {
+func updateImages(path string, images *yaml.Node, targetTag string, lines *[]string, oldContainerRegistry string) error {
 	linesPointer := *lines
 	for _, val := range images.Content {
 		if val.Tag == "!!map" {
 			// loop over values in singular image
 			for key, imageVal := range val.Content {
-				if (imageVal.Value == "name") && (key+1 < len(val.Content)) {
-					if imageInExcludeList(resourcesDirectory, path, val.Content[key+1].Value, excludes) {
-						break
-					}
-				}
 				if (imageVal.Value == "version") && (key+1 < len(val.Content)) {
 					// parse the version line separately
 					var versionLineParsed yaml.Node
@@ -247,70 +226,6 @@ func updateImages(resourcesDirectory, path string, images *yaml.Node, targetTag 
 		}
 	}
 	return nil
-}
-
-func unpromoteExcludedImages(resourcesDirectory, path string, globalNode *yaml.Node, targetTag string, lines *[]string, oldContainerRegistry string, excludes []check.Exclude) error {
-	imagesNode := getYamlNode(globalNode, "images")
-	if imagesNode != nil {
-		err := updateExcludedImages(resourcesDirectory, path, imagesNode, targetTag, lines, oldContainerRegistry, excludes)
-		if err != nil {
-			return err
-		}
-	}
-
-	testImagesNode := getYamlNode(globalNode, "testImages")
-	if testImagesNode != nil {
-		err := updateExcludedImages(resourcesDirectory, path, testImagesNode, targetTag, lines, oldContainerRegistry, excludes)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func updateExcludedImages(resourcesDirectory, path string, images *yaml.Node, targetTag string, lines *[]string, oldContainerRegistry string, excludes []check.Exclude) error {
-	linesPointer := *lines
-	for _, val := range images.Content {
-		if val.Tag == "!!map" {
-			// loop over values in singular image
-			for key, imageVal := range val.Content {
-				if (imageVal.Value == "name") && (key+1 < len(val.Content)) {
-					if imageInExcludeList(resourcesDirectory, path, val.Content[key+1].Value, excludes) {
-						// add containerregistry
-						containerLine := "containerRegistryPath: " + oldContainerRegistry
-
-						var containerLineParsed yaml.Node
-						yaml.Unmarshal([]byte(containerLine), &containerLineParsed)
-
-						outputLines, err := yamlNodeToString(&containerLineParsed, val.Content[0].Column)
-						if err != nil {
-							return err
-						}
-
-						*lines = append(linesPointer[:val.Content[0].Line+1], linesPointer[val.Content[0].Line:]...)
-						linesPointer[imageVal.Line] = outputLines
-
-						break
-					}
-				}
-			}
-		}
-	}
-	return nil
-}
-
-// imageInExcludeList checks if the image value in the given line is on the excludes list
-func imageInExcludeList(resourcesDirectory, filename, imageName string, excludesList []check.Exclude) bool {
-	for _, exclude := range excludesList {
-		if strings.Replace(filename, resourcesDirectory+"/", "", -1) == exclude.Filename {
-			for _, excludeImage := range exclude.Images {
-				if imageName == excludeImage {
-					return true
-				}
-			}
-		}
-	}
-	return false
 }
 
 // saveToFile saves array of lines to an existing file, overwriting its content and preserving file permissions
