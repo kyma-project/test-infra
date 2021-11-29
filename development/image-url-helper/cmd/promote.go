@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 
 	"github.com/jamiealquiza/envy"
-	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/check"
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/list"
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/promote"
 	"github.com/spf13/cobra"
@@ -38,7 +37,7 @@ func PromoteCmd() *cobra.Command {
 			images := make(list.ImageMap)
 			testImages := make(list.ImageMap)
 
-			excludes, err := check.ParseExcludes(options.excludesList)
+			excludes, err := promote.ParseExcludes(options.excludesList)
 			if err != nil {
 				fmt.Printf("Cannot parse excludes list: %s\n", err)
 				os.Exit(2)
