@@ -1,6 +1,0 @@
-pjNames:
-  - pjName: nightly-main-reconciler-publish-unstable-cli
-prConfigs:
-  kyma-project:
-    cli:
-      prNumber: 1099
