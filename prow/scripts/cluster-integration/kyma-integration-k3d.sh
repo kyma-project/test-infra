@@ -45,6 +45,7 @@ function install_cli() {
 }
 
 function deploy_kyma() {
+  k3d version
   kyma provision k3d --ci
 
   local kyma_deploy_cmd
