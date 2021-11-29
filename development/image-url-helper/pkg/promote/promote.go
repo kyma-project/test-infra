@@ -75,7 +75,6 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 			return fmt.Errorf("error while decoding %s file: %s", path, err)
 		}
 
-		oldContainerRegistry := parsedImagesFile.Global.ContainerRegistry.Path
 		// generate list of used images and apprend it to the global list containing images from all values.yaml files
 		list.AppendImagesToMap(parsedImagesFile, images, testImages, "", make(list.ImageToComponents))
 
@@ -96,7 +95,7 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 
 		// retag images if the --target-tag is set
 		if targetTag != "" {
-			err = promoteTargetTags(path, globalNode, targetTag, &lines, oldContainerRegistry)
+			err = promoteTargetTags(path, globalNode, targetTag, &lines)
 			if err != nil {
 				return err
 			}
@@ -148,10 +147,10 @@ func promoteContainerRegistry(path string, globalNode *yaml.Node, targetContaine
 	return false, nil
 }
 
-func promoteTargetTags(path string, globalNode *yaml.Node, targetTag string, lines *[]string, oldContainerRegistry string) error {
+func promoteTargetTags(path string, globalNode *yaml.Node, targetTag string, lines *[]string) error {
 	imagesNode := getYamlNode(globalNode, "images")
 	if imagesNode != nil {
-		err := updateImages(path, imagesNode, targetTag, lines, oldContainerRegistry)
+		err := updateImages(path, imagesNode, targetTag, lines)
 		if err != nil {
 			return fmt.Errorf("error while parsing images in %s file: %s", path, err)
 		}
@@ -159,7 +158,7 @@ func promoteTargetTags(path string, globalNode *yaml.Node, targetTag string, lin
 
 	testImagesNode := getYamlNode(globalNode, "testImages")
 	if testImagesNode != nil {
-		err := updateImages(path, testImagesNode, targetTag, lines, oldContainerRegistry)
+		err := updateImages(path, testImagesNode, targetTag, lines)
 		if err != nil {
 			return fmt.Errorf("error while parsing testImages in %s file: %s", path, err)
 		}
@@ -204,7 +203,7 @@ func getYamlNode(parsedYaml *yaml.Node, wantedKey string) *yaml.Node {
 }
 
 // updateImages looks for "version" field in each image and updates its content with a targetTag value in the lines slice
-func updateImages(path string, images *yaml.Node, targetTag string, lines *[]string, oldContainerRegistry string) error {
+func updateImages(path string, images *yaml.Node, targetTag string, lines *[]string) error {
 	linesPointer := *lines
 	for _, val := range images.Content {
 		if val.Tag == "!!map" {
