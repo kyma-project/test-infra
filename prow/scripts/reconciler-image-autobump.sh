@@ -26,7 +26,7 @@ set -e
 ENABLE_TEST_LOG_COLLECTOR=false
 
 # Exported variables
-export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
+export TEST_INFRA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/test-infra"
 export CONTROL_PLANE_DIR="/home/prow/go/src/github.com/kyma-project/control-plane"
 export RECONCILER_DIR="/home/prow/go/src/github.com/kyma-incubator/reconciler"
 
