@@ -40,7 +40,7 @@ requiredVars=(
     RECONCILER_DIR
     CONTROL_PLANE_DIR
     GITHUB_LOGIN
-    GITHUB_TOKEN
+    GITHUB_TOKEN_FILE
     GIT_EMAIL
     GIT_NAME
 )
@@ -61,18 +61,16 @@ export KCP_VALUES_YAML_PATH="${CONTROL_PLANE_DIR}/resources/kcp/values.yaml"
 log::info "Configuring git and gh"
 git config --global user.email "${GIT_EMAIL}"
 git config --global user.name "${GIT_NAME}"
-echo "1"
 git config --global credential.https://github.com.username "${GITHUB_LOGIN}"
-#git config --global credential.helper store
-#
-#GIT_TOKEN_VALUE="$(cat ${GITHUB_TOKEN})"
-#echo "https://${GITHUB_LOGIN}:${GIT_TOKEN_VALUE}@github.com" > ~/.git-credentials
+git config --global credential.helper store
 
-echo "2"
+GIT_TOKEN_VALUE="$(cat ${GITHUB_TOKEN_FILE})"
+echo "https://${GITHUB_LOGIN}:${GITHUB_TOKEN_FILE}@github.com" > ~/.git-credentials
+
 gh config set -h github.com git_protocol https
 gh config set prompt disabled
 echo "3"
-gh auth login --hostname github.com --with-token < "${GITHUB_TOKEN}"
+gh auth login --hostname github.com --with-token < "${GITHUB_TOKEN_FILE}"
 gh auth status
 
 log::info "Fetching latest reconciler tag"

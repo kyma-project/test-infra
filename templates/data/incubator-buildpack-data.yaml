@@ -271,7 +271,7 @@ templates:
           github_token_mounts:
             env:
               GITHUB_LOGIN: "kyma-bot"
-              GITHUB_TOKEN: "/etc/github/token"
+              GITHUB_TOKEN_FILE: "/etc/github/token"
               GIT_NAME: "Kyma Bot"
               GIT_EMAIL: "kyma.bot@sap.com"
             volumes:
