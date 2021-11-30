@@ -202,13 +202,14 @@ RUN curl -fLSs -o /usr/local/bin/kcp https://storage.googleapis.com/kyma-develop
 ################ Install yq (yaml tool) #########################
 #################################################################
 ENV YQ_VERSION=v4.15.1
-RUN wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64.tar.gz -O - |\
-      tar xz && mv yq_linux_amd64 /usr/bin/yq
+RUN curl -fLSs -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 &&\
+    chmod +x /usr/local/bin/yq
 
 #################################################################
-################ Install gh (github-cli) #########################
+################ Install gh (github-cli) ########################
 #################################################################
-RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
-  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
-  apt update && \
-  apt install gh
+ENV GH_VERSION=2.2.0
+RUN curl -fsSL https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_amd64.tar.gz -o - | tar -xz &&\
+  mv gh_${GH_VERSION}_linux_amd64/bin/gh /usr/local/bin/gh &&\
+  chmod +x /usr/local/bin/gh &&\
+  rm -r gh_${GH_VERSION}_linux_amd64
