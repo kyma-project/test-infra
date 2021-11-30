@@ -62,10 +62,10 @@ log::info "Configuring git and gh"
 git config --global user.email "${GIT_EMAIL}"
 git config --global user.name "${GIT_NAME}"
 git config --global credential.https://github.com.username "${GITHUB_LOGIN}"
-git config --global credential.helper store
-
-GIT_TOKEN_VALUE="$(cat ${GITHUB_TOKEN})"
-echo "https://${GITHUB_LOGIN}:${GIT_TOKEN_VALUE}@github.com" > ~/.git-credentials
+#git config --global credential.helper store
+#
+#GIT_TOKEN_VALUE="$(cat ${GITHUB_TOKEN})"
+#echo "https://${GITHUB_LOGIN}:${GIT_TOKEN_VALUE}@github.com" > ~/.git-credentials
 
 gh config set -h github.com git_protocol https
 gh config set prompt disabled
