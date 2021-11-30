@@ -197,3 +197,18 @@ RUN curl -fLSs -o /usr/local/bin/cosign https://github.com/sigstore/cosign/relea
 ENV KCPCLI_VERSION=master-9a0a2e5a
 RUN curl -fLSs -o /usr/local/bin/kcp https://storage.googleapis.com/kyma-development-artifacts/kcp/${KCPCLI_VERSION}/kcp-linux &&\
     chmod +x /usr/local/bin/kcp
+
+#################################################################
+################ Install yq (yaml tool) #########################
+#################################################################
+ENV YQ_VERSION=v4.15.1
+RUN wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64.tar.gz -O - |\
+      tar xz && mv yq_linux_amd64 /usr/bin/yq
+
+#################################################################
+################ Install gh (github-cli) #########################
+#################################################################
+RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
+  apt update && \
+  apt install gh
