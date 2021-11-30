@@ -1,2 +1,2 @@
 pjNames:
-  - pjName: "reconciler_image_autobump_jobConfig"
+  - pjName: "post-main-kyma-incubator-reconciler-image-autobump"
