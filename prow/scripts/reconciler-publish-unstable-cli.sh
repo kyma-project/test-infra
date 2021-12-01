@@ -37,6 +37,9 @@ make resolve
 make test
 make build-linux
 
+git commit -am 'bump reconciler version'
+git status --porcelain
+
 gcp::authenticate \
     -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
