@@ -13,7 +13,11 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// ExcludeList contains a list of excluded filenames
+// ExcludesMap contains a map of excluded filenames
+
+type ExcludesMap map[string]bool
+
+// ExcludesMap contains a lis of excluded filenames, used for file paring
 type ExcludesList struct {
 	Excludes []string `yaml:"excludes"`
 }
