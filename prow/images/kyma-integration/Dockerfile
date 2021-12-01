@@ -197,3 +197,19 @@ RUN curl -fLSs -o /usr/local/bin/cosign https://github.com/sigstore/cosign/relea
 ENV KCPCLI_VERSION=master-9a0a2e5a
 RUN curl -fLSs -o /usr/local/bin/kcp https://storage.googleapis.com/kyma-development-artifacts/kcp/${KCPCLI_VERSION}/kcp-linux &&\
     chmod +x /usr/local/bin/kcp
+
+#################################################################
+################ Install yq (yaml tool) #########################
+#################################################################
+ENV YQ_VERSION=v4.15.1
+RUN curl -fLSs -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 &&\
+    chmod +x /usr/local/bin/yq
+
+#################################################################
+################ Install gh (github-cli) ########################
+#################################################################
+ENV GH_VERSION=2.2.0
+RUN curl -fsSL https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_amd64.tar.gz -o - | tar -xz &&\
+  mv gh_${GH_VERSION}_linux_amd64/bin/gh /usr/local/bin/gh &&\
+  chmod +x /usr/local/bin/gh &&\
+  rm -r gh_${GH_VERSION}_linux_amd64
