@@ -248,7 +248,7 @@ templates:
               pipeline.test: "upgrade-fast-integration"
               pipeline.clusterprovisioning: kyma cli
           reconciler_image_autobump_jobConfig:
-            image: eu.gcr.io/kyma-project/test-infra/pr/kyma-integration:PR-4513
+            image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211201-ebdeacd8"
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-image-autobump.sh"
             branches:
               - ^main$

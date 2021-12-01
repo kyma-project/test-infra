@@ -69,7 +69,6 @@ echo "https://${GITHUB_LOGIN}:${GITHUB_TOKEN_FILE}@github.com" > ~/.git-credenti
 
 gh config set -h github.com git_protocol https
 gh config set prompt disabled
-echo "3"
 gh auth login --hostname github.com --with-token < "${GITHUB_TOKEN_FILE}"
 gh auth status
 
