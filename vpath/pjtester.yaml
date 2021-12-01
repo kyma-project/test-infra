@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "pre-busola-integration-test-docker"
+  - pjName: "pre-busola-integration-test-k3s"
 prConfigs:
   kyma-project:
     busola:
