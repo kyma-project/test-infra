@@ -71,7 +71,7 @@ func addPromoteCmdFlags(cmd *cobra.Command, options *promoteCmdOptions) {
 	cmd.Flags().StringVarP(&options.targetTag, "target-tag", "t", "", "Name of the target tag")
 	cmd.Flags().BoolVarP(&options.dryRun, "dry-run", "d", true, "Dry run enabled, nothing is changed")
 	cmd.Flags().BoolVarP(&options.sign, "sign", "s", false, "Set sign flag in outputted yaml file")
-	cmd.Flags().StringVarP(&options.excludesList, "excludes-list", "e", "", "List of excluded images")
+	cmd.Flags().StringVarP(&options.excludesList, "excludes-list", "e", "", "Path to the file containing a list of excluded images")
 	cmd.MarkFlagRequired("target-container-registry")
 	envy.ParseCobra(cmd, envy.CobraConfig{Persistent: true, Prefix: "IMAGE_URL_HELPER"})
 }

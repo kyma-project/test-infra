@@ -13,12 +13,16 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// ExcludeList contains a list of excluded filenames
+// ExcludesMap contains a map of excluded filenames
+
+type ExcludesMap map[string]bool
+
+// ExcludesMap contains a lis of excluded filenames, used for file paring
 type ExcludesList struct {
 	Excludes []string `yaml:"excludes"`
 }
 
-func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag string, dryRun bool, images, testImages list.ImageMap, excludes []string) filepath.WalkFunc {
+func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag string, dryRun bool, images, testImages list.ImageMap, excludes ExcludesMap) filepath.WalkFunc {
 	return func(path string, info os.FileInfo, err error) error {
 		//pass the error further, this shouldn't ever happen
 		if err != nil {
@@ -113,11 +117,10 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 	}
 }
 
-func isFileExcluded(ResourcesDirectoryClean, path string, excludes []string) bool {
-	for _, exclude := range excludes {
-		if strings.Replace(path, ResourcesDirectoryClean+"/", "", -1) == exclude {
-			return true
-		}
+func isFileExcluded(ResourcesDirectoryClean, path string, excludes ExcludesMap) bool {
+	searchedFilename := strings.Replace(path, ResourcesDirectoryClean+"/", "", -1)
+	if _, ok := excludes[searchedFilename]; ok {
+		return true
 	}
 	return false
 }
@@ -244,7 +247,7 @@ func saveToFile(path string, lines []string) error {
 	return nil
 }
 
-func ParseExcludes(excludesListFilename string) ([]string, error) {
+func ParseExcludes(excludesListFilename string) (ExcludesMap, error) {
 	if excludesListFilename == "" {
 		return nil, nil
 	}
@@ -259,6 +262,10 @@ func ParseExcludes(excludesListFilename string) ([]string, error) {
 	if err = yaml.Unmarshal(excludesListFile, &excludesList); err != nil {
 		return nil, err
 	}
+	excludesMap := make(ExcludesMap)
+	for _, exclude := range excludesList.Excludes {
+		excludesMap[exclude] = true
+	}
 
-	return excludesList.Excludes, nil
+	return excludesMap, nil
 }
