@@ -37,8 +37,10 @@ make resolve
 make test
 make build-linux
 
-git commit -am 'bump reconciler version'
-git status --porcelain
+git_status=$(git status --porcelain)
+if [[ "${git_status}" != "" ]]; then
+  git commit -am 'bump reconciler version'
+fi
 
 gcp::authenticate \
     -c "${GOOGLE_APPLICATION_CREDENTIALS}"
