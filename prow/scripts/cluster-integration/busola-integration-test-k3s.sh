@@ -118,6 +118,7 @@ kubectl wait \
 --timeout=120s
 
 cp "$PWD/kubeconfig-kyma.yaml" "$PWD/busola-tests/fixtures/kubeconfig.yaml"
+cp "$PWD/kubeconfig-busola.yaml" "$PWD/busola-tests/fixtures/kubeconfig-2.yaml"
 mkdir -p "$PWD/busola-tests/cypress/screenshots"
 
 echo "STEP: Running Cypress tests inside Docker"
