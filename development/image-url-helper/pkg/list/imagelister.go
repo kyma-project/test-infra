@@ -118,13 +118,14 @@ func AppendImagesToMap(parsedFile ValueFile, images, testImages ImageMap, compon
 	}
 }
 
-// GetInconsistentImages returns a list of images with the same URl but different versions or hashes
+// GetInconsistentImages returns a list of images with the same URL but different versions or hashes
 func GetInconsistentImages(images ImageMap) ImageMap {
 	inconsistent := make(ImageMap)
 
 	for imageName, image := range images {
 		for image2Name, image2 := range images {
-			if image.ImageURL() == image2.ImageURL() {
+			// if the short image name is the same and full image name is different
+			if image.ImageURL() == image2.ImageURL() && imageName != image2Name {
 				inconsistent[imageName] = image
 				inconsistent[image2Name] = image2
 			}

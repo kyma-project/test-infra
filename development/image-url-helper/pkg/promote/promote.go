@@ -13,7 +13,16 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag string, dryRun bool, images, testImages list.ImageMap) filepath.WalkFunc {
+// ExcludesMap contains a map of excluded filenames
+
+type ExcludesMap map[string]bool
+
+// ExcludesMap contains a lis of excluded filenames, used for file paring
+type ExcludesList struct {
+	Excludes []string `yaml:"excludes"`
+}
+
+func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag string, dryRun bool, images, testImages list.ImageMap, excludes ExcludesMap) filepath.WalkFunc {
 	return func(path string, info os.FileInfo, err error) error {
 		//pass the error further, this shouldn't ever happen
 		if err != nil {
@@ -27,6 +36,11 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 
 		// we only want to check values.yaml files
 		if info.Name() != "values.yaml" {
+			return nil
+		}
+
+		// skip excluded values.yaml files
+		if isFileExcluded(ResourcesDirectoryClean, path, excludes) {
 			return nil
 		}
 
@@ -101,6 +115,14 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 
 		return nil
 	}
+}
+
+func isFileExcluded(ResourcesDirectoryClean, path string, excludes ExcludesMap) bool {
+	searchedFilename := strings.Replace(path, ResourcesDirectoryClean+"/", "", -1)
+	if _, ok := excludes[searchedFilename]; ok {
+		return true
+	}
+	return false
 }
 
 // promoteContainerRegistry promotes container registry and returnsinformation if the file should be skipped and error message
@@ -223,4 +245,27 @@ func saveToFile(path string, lines []string) error {
 		return err
 	}
 	return nil
+}
+
+func ParseExcludes(excludesListFilename string) (ExcludesMap, error) {
+	if excludesListFilename == "" {
+		return nil, nil
+	}
+
+	excludesListFile, err := ioutil.ReadFile(excludesListFilename)
+	if err != nil {
+		return nil, err
+	}
+
+	var excludesList ExcludesList
+
+	if err = yaml.Unmarshal(excludesListFile, &excludesList); err != nil {
+		return nil, err
+	}
+	excludesMap := make(ExcludesMap)
+	for _, exclude := range excludesList.Excludes {
+		excludesMap[exclude] = true
+	}
+
+	return excludesMap, nil
 }
