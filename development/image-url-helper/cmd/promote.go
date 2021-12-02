@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/jamiealquiza/envy"
-	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/list"
+	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/common"
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/promote"
 	"github.com/spf13/cobra"
 )
@@ -34,8 +34,8 @@ func PromoteCmd() *cobra.Command {
 
 			targetContainerRegistryClean := filepath.Clean(options.targetContainerRegistry)
 
-			images := make(list.ImageMap)
-			testImages := make(list.ImageMap)
+			images := make(common.ImageMap)
+			testImages := make(common.ImageMap)
 
 			excludes, err := promote.ParseExcludes(options.excludesList)
 
@@ -51,9 +51,9 @@ func PromoteCmd() *cobra.Command {
 			}
 
 			// join both images lists
-			allImages := make(list.ImageMap)
-			list.MergeImageMap(allImages, images)
-			list.MergeImageMap(allImages, testImages)
+			allImages := make(common.ImageMap)
+			common.MergeImageMap(allImages, images)
+			common.MergeImageMap(allImages, testImages)
 
 			err = promote.PrintExternalSyncerYaml(allImages, targetContainerRegistryClean, options.targetTag, options.sign)
 			if err != nil {

@@ -6,6 +6,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/common"
 	"gopkg.in/yaml.v2"
 )
 
@@ -27,7 +28,7 @@ type OutputImageList struct {
 }
 
 // PrintImagesJSON prints JSON list with names and components for each image
-func PrintImagesJSON(allImages ImageMap, imageComponentsMap ImageToComponents) error {
+func PrintImagesJSON(allImages common.ImageMap, imageComponentsMap common.ImageToComponents) error {
 	imagesConverted := convertImageslist(allImages, imageComponentsMap)
 
 	out, err := json.MarshalIndent(imagesConverted, "", "  ")
@@ -39,7 +40,7 @@ func PrintImagesJSON(allImages ImageMap, imageComponentsMap ImageToComponents) e
 }
 
 // PrintImagesYAML prints YAML list with names and components for each image
-func PrintImagesYAML(allImages ImageMap, imageComponentsMap ImageToComponents) error {
+func PrintImagesYAML(allImages common.ImageMap, imageComponentsMap common.ImageToComponents) error {
 	imagesConverted := convertImageslist(allImages, imageComponentsMap)
 
 	out, err := yaml.Marshal(imagesConverted)
@@ -51,7 +52,7 @@ func PrintImagesYAML(allImages ImageMap, imageComponentsMap ImageToComponents) e
 }
 
 // convertImageslist takes in a list of images and image to component mapping and creates an OutputImageList structure that can be later marshalled and used by the security scan tool
-func convertImageslist(allImages ImageMap, imageComponentsMap ImageToComponents) OutputImageList {
+func convertImageslist(allImages common.ImageMap, imageComponentsMap common.ImageToComponents) OutputImageList {
 	imagesConverted := OutputImageList{}
 
 	imageNames := make([]string, 0)

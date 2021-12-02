@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/jamiealquiza/envy"
+	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/common"
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/list"
 	"github.com/spf13/cobra"
 )
@@ -26,13 +27,13 @@ func ListCmd() *cobra.Command {
 		Example: "image-url-helper list",
 		Args:    cobra.ExactArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			imageComponentsMap := make(list.ImageToComponents)
+			imageComponentsMap := make(common.ImageToComponents)
 
 			// remove trailing slash to have consistent paths
 			ResourcesDirectoryClean := filepath.Clean(ResourcesDirectory)
 
-			images := make(list.ImageMap)
-			testImages := make(list.ImageMap)
+			images := make(common.ImageMap)
+			testImages := make(common.ImageMap)
 
 			err := filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, images, testImages, imageComponentsMap))
 			if err != nil {
@@ -40,12 +41,12 @@ func ListCmd() *cobra.Command {
 				os.Exit(2)
 			}
 
-			allImages := make(list.ImageMap)
-			list.MergeImageMap(allImages, images)
-			list.MergeImageMap(allImages, testImages)
+			allImages := make(common.ImageMap)
+			common.MergeImageMap(allImages, images)
+			common.MergeImageMap(allImages, testImages)
 
 			if options.outputFormat == "" {
-				list.PrintImages(allImages, imageComponentsMap)
+				common.PrintImages(allImages, imageComponentsMap)
 			} else if strings.ToLower(options.outputFormat) == "json" {
 				err = list.PrintImagesJSON(allImages, imageComponentsMap)
 				if err != nil {
