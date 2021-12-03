@@ -28,7 +28,7 @@ function delete_cluster_if_exists(){
       log::info "Cluster found and deleting '${name}'"
       gardener::deprovision_cluster \
             -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
-            -c "${INPUT_CLUSTER_NAME}" \
+            -c "${name}" \
             -f "${GARDENER_KYMA_PROW_KUBECONFIG}" \
             -w "true"
 
