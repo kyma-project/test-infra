@@ -19,14 +19,16 @@ set -o pipefail
 #Please look in each provider script for provider specific requirements
 
 function delete_cluster_if_exists(){
-    local name="${INPUT_CLUSTER_NAME}"
+  for i in {1..5}
+  do
+    local name="${INPUT_CLUSTER_NAME}${i}"
     set +e
     existing_shoot=$(kubectl get shoot "${name}" -ojsonpath="{ .metadata.name }")
     if [ -n "${existing_shoot}" ]; then
       log::info "Cluster found and deleting '${name}'"
       gardener::deprovision_cluster \
             -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
-            -c "${INPUT_CLUSTER_NAME}" \
+            -c "${name}" \
             -f "${GARDENER_KYMA_PROW_KUBECONFIG}" \
             -w "true"
 
@@ -36,6 +38,7 @@ function delete_cluster_if_exists(){
       log::info "Cluster '${name}' does not exist"
     fi
     set -e
+  done
 }
 
 function connect_to_shoot_cluster() {
@@ -94,6 +97,9 @@ RESOURCES_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/reconciler"
 
 # Delete cluster with reconciler if exists
 delete_cluster_if_exists
+
+numeric_day=$(date +%u)
+export INPUT_CLUSTER_NAME="${INPUT_CLUSTER_NAME}${numeric_day}"
 
 # Provisioning gardener long lasting cluster
 provision_cluster
