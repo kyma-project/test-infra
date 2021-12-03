@@ -3,13 +3,14 @@ package gateway
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/google/go-github/github"
+	"net/http"
+	"os"
+
+	"github.com/google/go-github/v40/github"
 	"github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway/pkg/apperrors"
 	git "github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway/pkg/github"
 	"github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway/pkg/httperrors"
 	log "github.com/sirupsen/logrus"
-	"net/http"
-	"os"
 )
 
 //Sender is an interface used to allow mocking sending events to Kyma's event bus
