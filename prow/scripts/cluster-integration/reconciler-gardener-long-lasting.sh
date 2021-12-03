@@ -19,7 +19,9 @@ set -o pipefail
 #Please look in each provider script for provider specific requirements
 
 function delete_cluster_if_exists(){
-    local name="${INPUT_CLUSTER_NAME}"
+  for i in {1..5}
+  do
+    local name="${INPUT_CLUSTER_NAME}${i}"
     set +e
     existing_shoot=$(kubectl get shoot "${name}" -ojsonpath="{ .metadata.name }")
     if [ -n "${existing_shoot}" ]; then
@@ -36,6 +38,7 @@ function delete_cluster_if_exists(){
       log::info "Cluster '${name}' does not exist"
     fi
     set -e
+  done
 }
 
 function connect_to_shoot_cluster() {
