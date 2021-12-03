@@ -19,8 +19,8 @@ spec:
       eventType:
         property: type
         type: exact
-        value: sap.kyma.custom.{{ .Values.global.appName | replace "-" "" }}.{{ .Values.eventType }}
+        value: sap.kyma.custom.{{ .Values.subscriptionAppName | replace "-" "" }}.{{ .Values.eventType }}
   protocol: ""
   protocolsettings: {}
-  sink: http://{{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
+  sink: http://{{ .Values.subscriptionServiceName }}.{{ .Values.subscriptionServiceNamespace }}.svc.cluster.local
 {{- end }}

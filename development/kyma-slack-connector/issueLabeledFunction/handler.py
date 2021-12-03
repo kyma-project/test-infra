@@ -13,8 +13,8 @@ def main(event, context):
 	base_url = os.environ['{}_SLACK_CONNECTOR_{}_GATEWAY_URL'.format(env_prefix, slack_api_id)]
 	# Set Slack API base URL to the URL of slack-connector application gateway.
 	app.client.base_url = "{}/".format(base_url)
+	print("Received event of type issuesevent.labeled")
 	print("Using Slack api base URL: {}".format(app.client.base_url))
-	print("Sending notifications to channel: {}".format(os.environ['NOTIFICATION_SLACK_CHANNEL']))
 	msg = event["data"]
 	label = msg["label"]["name"]
 	title = msg["issue"]["title"]
@@ -29,7 +29,7 @@ def main(event, context):
 	issue_url = msg["issue"]["html_url"]
 	# Run only for internal-incident and customer-incident labels
 	if (label == "internal-incident") or (label == "customer-incident"):
-		print("label matched, sending notification")
+		print("Label matched, Sending notifications to channel: {}".format(os.environ['NOTIFICATION_SLACK_CHANNEL']))
 		try:
 			# Deliver message to the channel.
 			result = app.client.chat_postMessage(channel=os.environ['NOTIFICATION_SLACK_CHANNEL'],
@@ -68,7 +68,9 @@ def main(event, context):
 												},
 												])
 			assert result["ok"]
-			print("sent notification for issue #{}".format(number))
+			print("Sent notification for issue #{}".format(number))
 		except SlackApiError as e:
 			print(f"Got an error: {e.response['error']}")
-			print("failed sent notification for issue #{}".format(number))
+			print("Failed sent notification for issue #{}".format(number))
+	else:
+		print(f"Label {label} is not supported, ignoring.")

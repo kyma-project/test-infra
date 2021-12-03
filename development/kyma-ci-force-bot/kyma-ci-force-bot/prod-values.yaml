@@ -16,7 +16,7 @@ eventType: "issuesevent.closed.v1"
 container:
   name: "ciforcebot"
   # change to match value from makefile
-  image: eu.gcr.io/kyma-project/test-infra/pr/ci-force-bot:PR-4216
+  image: eu.gcr.io/kyma-project/test-infra/pr/ci-force-bot:PR-4473
   containerPort: 8080
   resources:
     limits:
