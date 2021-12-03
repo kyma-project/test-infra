@@ -1,0 +1,9 @@
+pjNames:
+  - pjName: "kyma-integration-k3d"
+  - pjName: "post-main-kyma-integration-k3d-central-app-connectivity"
+  - pjName: "post-main-kyma-integration-k3d-central-app-connectivity-compass"
+  - pjName: "post-main-kyma-integration-k3d-compass-dev"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 1212
