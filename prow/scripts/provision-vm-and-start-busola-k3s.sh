@@ -124,17 +124,9 @@ KYMA_CLUSTER_NAME="nkyma"
 log::info "KYMA_CLUSTER_NAME=${KYMA_CLUSTER_NAME}"
 kubectl get secrets "${KYMA_CLUSTER_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${TMP_DIR}/kubeconfig-${KYMA_CLUSTER_NAME}.yaml"
 
-KYMA_CLUSTER_NAME_SECOND="nbusola"
-log::info "KYMA_CLUSTER_NAME_SECOND=${KYMA_CLUSTER_NAME_SECOND}"
-kubectl get secrets "${KYMA_CLUSTER_NAME_SECOND}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${TMP_DIR}/kubeconfig-${KYMA_CLUSTER_NAME_SECOND}.yaml"
-
 log::info "Copying Kyma kubeconfig to the instance"
 #shellcheck disable=SC2088
 utils::send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "${TMP_DIR}/kubeconfig-${KYMA_CLUSTER_NAME}.yaml" "~/kubeconfig-kyma.yaml"
-
-log::info "Copying Busola kubeconfig-2 to the instance"
-#shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "${TMP_DIR}/kubeconfig-${KYMA_CLUSTER_NAME_SECOND}.yaml" "~/kubeconfig-busola.yaml"
 
 log::info "Copying Busola 'tests' folder to the instance"
 #shellcheck disable=SC2088
