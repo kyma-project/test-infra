@@ -92,6 +92,9 @@ utils::check_required_vars "${requiredVars[@]}"
 export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
 RESOURCES_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/reconciler"
 
+numeric_day=$(date +%u)
+export INPUT_CLUSTER_NAME="${INPUT_CLUSTER_NAME}${numeric_day}"
+
 # Delete cluster with reconciler if exists
 delete_cluster_if_exists
 
