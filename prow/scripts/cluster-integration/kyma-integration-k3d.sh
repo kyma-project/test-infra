@@ -69,8 +69,12 @@ function deploy_kyma() {
 
 function run_tests() {
 
+  node -v
+
   # Testing node 17
   curl -fsSL https://rpm.nodesource.com/setup_17.x | sudo bash -
+
+  node -v
 
   pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
   if [[ -v COMPASS_INTEGRATION_ENABLED && -v CENTRAL_APPLICATION_CONNECTIVITY_ENABLED ]]; then
