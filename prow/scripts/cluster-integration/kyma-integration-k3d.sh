@@ -71,9 +71,10 @@ function run_tests() {
 
   node -v
 
-  # Testing node 17
-  curl -fsSL https://rpm.nodesource.com/setup_17.x | sudo bash -
-
+  # Testing node 16
+  curl -sL https://deb.nodesource.com/setup_16.x | sudo bash -
+  sudo apt-get -y install nodejs
+  
   node -v
 
   pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
