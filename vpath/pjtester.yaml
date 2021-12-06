@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "ci-skr-kyma-to-kyma2-upgrade"
+  - pjName: "skr-kyma-to-kyma2-upgrade-aws-dev"
 prConfigs:
   kyma-project:
     kyma:
