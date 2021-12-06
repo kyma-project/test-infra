@@ -275,14 +275,14 @@ periodics: # runs on schedule
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: periodic-main-kyma-incubator-reconciler-auto-imagebump
+    - name: reconciler-control-plane-image-bump
       annotations:
         description: "Reconciler image bump in control-plane"
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "periodic-main-kyma-incubator-reconciler-auto-imagebump"
+        prow.k8s.io/pubsub.runID: "reconciler-control-plane-image-bump"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-log-collector-slack-token: "true"
       cron: "0 1-22/4 * * 1-5"

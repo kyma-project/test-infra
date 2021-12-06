@@ -266,6 +266,7 @@ templates:
           reconciler_image_autobump_jobConfig:
             image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211201-ebdeacd8"
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-image-autobump.sh"
+          extra_refs_k8s-test-infra:
             extra_refs:
               k8s-test-infra:
                 - org: kubernetes
@@ -390,7 +391,7 @@ templates:
                     - reconciler_e2e_upgrade_jobConfig
                     - reconciler_jobConfig_args
               - jobConfig:
-                  name: periodic-main-kyma-incubator-reconciler-auto-imagebump
+                  name: reconciler-control-plane-image-bump
                   annotations:
                     description: Reconciler image bump in control-plane
                   decoration_config:
@@ -409,6 +410,7 @@ templates:
                     - disable_testgrid
                     - jobConfig_slack_dev_null
                   local:
+                    - extra_refs_k8s-test-infra
                     - reconciler_image_autobump_jobConfig
                     - github_token_mounts
               - jobConfig:

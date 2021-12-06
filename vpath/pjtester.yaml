@@ -1,2 +1,2 @@
 pjNames:
-  - pjName: "periodic-main-kyma-incubator-reconciler-auto-imagebump"
+  - pjName: "reconciler-control-plane-image-bump"
