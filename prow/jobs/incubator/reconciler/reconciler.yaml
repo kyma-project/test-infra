@@ -275,6 +275,79 @@ periodics: # runs on schedule
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+    - name: reconciler-control-plane-image-bump
+      annotations:
+        description: "Reconciler image bump in control-plane"
+        pipeline.trigger: "periodic"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "reconciler-control-plane-image-bump"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-log-collector-slack-token: "true"
+      cron: "0 1-22/4 * * 1-5"
+      skip_report: false
+      decorate: true
+      decoration_config:
+        grace_period: 600000000000
+        timeout: 14400000000000
+      cluster: untrusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: control-plane
+          path_alias: github.com/kyma-project/control-plane
+          base_ref: main
+        - org: kubernetes
+          repo: test-infra
+          path_alias: github.com/kubernetes/test-infra
+          base_ref: master
+          base_sha: 3fba7110c39a7a0e7fb087dbb4af0674cafd341c
+        - org: kyma-incubator
+          repo: reconciler
+          path_alias: github.com/kyma-incubator/reconciler
+          base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-prow-dev-null
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211201-ebdeacd8"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-image-autobump.sh"
+            env:
+              - name: GITHUB_LOGIN
+                value: "kyma-bot"
+              - name: GITHUB_TOKEN
+                value: "/etc/github/token"
+              - name: GIT_EMAIL
+                value: "kyma.bot@sap.com"
+              - name: GIT_NAME
+                value: "Kyma Bot"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+            volumeMounts:
+              - name: kyma-bot-github-token
+                mountPath: /etc/github
+                readOnly: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+        volumes:
+          - name: kyma-bot-github-token
+            secret:
+              secretName: kyma-bot-github-token
     - name: nightly-main-reconciler
       annotations:
         description: "Creates and installs reconciler from main every night."
