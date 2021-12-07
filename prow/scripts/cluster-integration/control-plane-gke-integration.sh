@@ -19,6 +19,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
+# shellcheck source=prow/scripts/kyma-metrics-collector-testing.sh
+source "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-metrics-collector-testing.sh
 
 requiredVars=(
     REPO_OWNER
@@ -286,6 +288,7 @@ function applyControlPlaneOverrides() {
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "provisioning-enable-overrides" \
     --data "global.provisioning.enabled=true" \
     --data "global.kyma_metrics_collector.enabled=true" \
+    --data "kyma-metrics-collector.config.logLevel=debug" \
     --data "global.database.embedded.enabled=true" \
     --data "global.kyma_environment_broker.enabled=true" \
     --data "kyma-environment-broker.e2e.enabled=false" \
@@ -446,6 +449,9 @@ fi
 
 log::info "Test Kyma and Control Plane"
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l "release != compass"
+
+### Test Kyma Metrics Collector
+kmc::test
 
 log::success "Success"
 
