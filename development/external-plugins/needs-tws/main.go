@@ -1,0 +1,87 @@
+package main
+
+import (
+	"context"
+	"flag"
+	"github.com/sirupsen/logrus"
+	"k8s.io/test-infra/prow/config/secret"
+	prowflagutil "k8s.io/test-infra/prow/flagutil"
+	"k8s.io/test-infra/prow/pluginhelp/externalplugins"
+	"net/http"
+	"os"
+	"os/signal"
+	"strconv"
+	"time"
+)
+
+const (
+	PluginName = "needs-tws"
+)
+
+type opts struct {
+	port int
+
+	github            prowflagutil.GitHubOptions
+	webhookSecretPath string
+	logLevel          string
+	dryRun            bool
+}
+
+func gatherOptions() opts {
+	o := opts{}
+	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	fs.IntVar(&o.port, "port", 8080, "Plugin port to listen on.")
+	fs.BoolVar(&o.dryRun, "dry-run", false, "Run in dry-run mode - no actual changes will be made.")
+	fs.StringVar(&o.webhookSecretPath, "hmac-secret-file", "/etc/webhook/hmac", "Path to the file containing GitHub HMAC secret")
+	o.github.AddFlags(fs)
+	fs.Parse(os.Args[1:])
+	return o
+}
+
+func main() {
+	o := gatherOptions()
+
+	log := logrus.StandardLogger().WithField("plugin", PluginName)
+
+	if err := secret.Add(o.webhookSecretPath); err != nil {
+		logrus.WithError(err).Fatal("Could not start secret agent.")
+	}
+
+	ghc, err := o.github.GitHubClient(o.dryRun)
+	if err != nil {
+		//
+		logrus.WithError(err).Fatal("Could not get github client.")
+	}
+	p := Plugin{
+		tokenGenerator: secret.GetTokenGenerator(o.webhookSecretPath),
+		ghc:            ghc,
+	}
+
+	mux := http.NewServeMux()
+	mux.Handle("/", p)
+	externalplugins.ServeExternalPluginHelp(mux, log, HelpProvider)
+
+	s := http.Server{
+		Addr:    ":" + strconv.Itoa(o.port),
+		Handler: mux,
+	}
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt)
+
+	go func() {
+		if err := s.ListenAndServe(); err != http.ErrServerClosed && err != nil {
+			logrus.WithError(err).Fatal("Server listen error.")
+		}
+	}()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	select {
+	case <-sig:
+		if err := s.Shutdown(ctx); err != nil {
+			logrus.WithError(err).Fatal("Error closing server.")
+		}
+	}
+}
