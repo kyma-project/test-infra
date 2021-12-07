@@ -41,7 +41,7 @@ templates:
           - repoName: kyma-project/kyma
             jobs:
               - jobConfig:
-                  name: "pre-rel{{ $relShort }}-kyma-integration-k3d"
+                  name: "post-rel{{ $relShort }}-kyma-integration-k3d"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   branches:
