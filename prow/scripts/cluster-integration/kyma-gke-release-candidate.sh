@@ -146,6 +146,45 @@ test_fast_integration_eventing() {
     log::success "Eventing tests completed"
 }
 
+installKyma() {
+
+	kymaUnsetVar=false
+
+  # shellcheck disable=SC2043
+	for var in GATEWAY_IP_ADDRESS ; do
+    	if [ -z "${!var}" ] ; then
+        	echo "ERROR: $var is not set"
+        	kymaUnsetVar=true
+    	fi
+	done
+	if [ "${kymaUnsetVar}" = true ] ; then
+    	exit 1
+	fi
+
+	CERTIFICATES_BUCKET="${CERTIFICATES_BUCKET}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-letsencrypt-cert.sh"
+	TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
+	export TLS_CERT
+	TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
+	export TLS_KEY
+
+	log::info "Trigger installation"
+	set -x
+
+	kyma deploy \
+			--ci \
+			--source local \
+			--workspace ${KYMA_SOURCES_DIR} \
+			--domain "${DOMAIN}" \
+			--profile production \
+			--tls-crt "./letsencrypt/live/${DOMAIN}/fullchain.pem" \
+			--tls-key "./letsencrypt/live/${DOMAIN}/privkey.pem" \
+			--value "istio-configuration.components.ingressGateways.config.service.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+			--value "global.domainName=${DOMAIN}"
+
+	set +x
+
+}
+
 # Enforce lowercase
 readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
 export REPO_OWNER
@@ -225,102 +264,10 @@ gcp::provision_k8s_cluster \
         -P "$TEST_INFRA_SOURCES_DIR"
 CLEANUP_CLUSTER="true"
 
-log::info "Create CluserRoleBinding for ${GCLOUD_SECURITY_GROUP} group from ${GCLOUD_SECURITY_GROUP_DOMAIN} domain"
-kubectl create clusterrolebinding kyma-developers-group-binding --clusterrole="cluster-admin" --group="${GCLOUD_SECURITY_GROUP}@${GCLOUD_SECURITY_GROUP_DOMAIN}"
 
-log::info "Generate certificate"
-DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 
-utils::generate_letsencrypt_cert "${DOMAIN}"
-
-log::info "Apply Kyma config"
-
-kubectl create namespace "kyma-installer"
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
-    --data "global.domainName=${DOMAIN}" \
-    --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
-    --data "test.acceptance.ui.logging.enabled=true" \
-    --label "component=core"
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
-    --data "global.tlsCrt=${TLS_CERT}" \
-    --data "global.tlsKey=${TLS_KEY}"
-
-cat << EOF > "$PWD/kyma_istio_operator"
-apiVersion: install.istio.io/v1alpha1
-kind: IstioOperator
-metadata:
-  namespace: istio-system
-spec:
-  components:
-    ingressGateways:
-      - name: istio-ingressgateway
-        k8s:
-          service:
-            loadBalancerIP: ${GATEWAY_IP_ADDRESS}
-            type: LoadBalancer
-EOF
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map-file.sh" --name "istio-overrides" \
-    --label "component=istio" \
-    --file "$PWD/kyma_istio_operator"
-
-echo "Use released artifacts"
-    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${RELEASE_VERSION}/kyma-installer.yaml" --output /tmp/kyma-installer.yaml
-    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${RELEASE_VERSION}/kyma-installer-cr-cluster.yaml" --output /tmp/kyma-installer-cr-cluster.yaml
-
-\
-# There is possibility of a race condition when applying kyma-installer-cluster.yaml
-# Retry should prevent job from failing
-n=0
-until [ $n -ge 2 ]
-do
-    kubectl apply -f /tmp/kyma-installer.yaml || true
-    sleep 2
-    kubectl apply -f /tmp/kyma-installer.yaml && break
-    echo "Failed to apply kyma-installer.yaml"
-    n=$((n+1))
-    if [ 2 -gt "$n" ]
-    then
-        echo "Retrying in 5 seconds"
-        sleep 5
-    else
-        exit 1
-    fi
-done
-
-n=0
-until [ $n -ge 2 ]
-do
-    kubectl apply -f /tmp/kyma-installer-cr-cluster.yaml && break
-    echo "Failed to apply kyma-installer-cr-cluster.yaml"
-    n=$((n+1))
-    if [ 2 -gt "$n" ]
-    then
-        echo "Retrying in 5 seconds"
-        sleep 5
-    else
-        exit 1
-    fi
-done
-
-log::info "Trigger installation"
-"${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
-
-if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
-    log::info "Create DNS Record for Apiserver proxy IP"
-    APISERVER_IP_ADDRESS=$(kubectl get  service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    gcp::create_dns_record \
-        -a "$APISERVER_IP_ADDRESS" \
-        -h "apiserver" \
-        -s "$COMMON_NAME" \
-        -p "$CLOUDSDK_CORE_PROJECT" \
-        -z "$CLOUDSDK_DNS_ZONE_NAME"
-    CLEANUP_APISERVER_DNS_RECORD="true"
-fi
+log::info "Install kyma"
+installKyma
 
 log::info "Collect list of images"
 if [ -z "$ARTIFACTS" ] ; then
