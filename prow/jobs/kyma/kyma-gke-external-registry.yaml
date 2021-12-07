@@ -64,8 +64,8 @@ postsubmits: # runs on main
     - name: post-main-kyma-gke-external-registry
       annotations:
         pipeline.trigger: "pr-merge"
-        testgrid-dashboards: "kyma-postsubmit"
-        testgrid-num-failures-to-alert: "1"
+        testgrid-dashboards: "kyma_integration"
+        testgrid-days-of-results: "60"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-kyma-gke-external-registry"
