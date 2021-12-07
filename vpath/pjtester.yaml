@@ -3,7 +3,11 @@ pjNames:
   - pjName: "post-main-kyma-integration-k3d-central-app-connectivity"
   - pjName: "post-main-kyma-integration-k3d-central-app-connectivity-compass"
   - pjName: "post-main-kyma-integration-k3d-compass-dev"
+  - pjName: "nightly-main-reconciler-publish-unstable-cli"
+  - pjName: "kyma-gke-nightly-fast-integration"
+  - pjName: "pre-main-control-plane-reconciler-e2e"
+  - pjName: "periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade"
 prConfigs:
   kyma-project:
     kyma:
-      prNumber: 1212
+      prNumber: 12768
