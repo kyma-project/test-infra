@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
-LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
 
 # shellcheck source=prow/scripts/lib/log.sh
-source "${LIBDIR}/log.sh"
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 
 ## Scan for logs in KMC
 function kmc::test {

@@ -20,7 +20,7 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 # shellcheck source=prow/scripts/kyma-metrics-collector-testing.sh
-source "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-metrics-collector-testing.sh
+source "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kmc-testing.sh
 
 requiredVars=(
     REPO_OWNER
