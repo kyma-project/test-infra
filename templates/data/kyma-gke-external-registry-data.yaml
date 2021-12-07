@@ -29,7 +29,6 @@ templates:
               # presubmits
               - jobConfig:
                   name: "pre-main-kyma-gke-external-registry"
-                  optional: true
                   args:
                   - "-c"
                   - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-external-registry.sh"
@@ -45,20 +44,22 @@ templates:
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
-              # - jobConfig:
-              #     name: "post-main-kyma-gke-external-registry"
-              #     # following regexp won't start build if only Markdown files were changed
-              #     annotations:
-              #       testgrid-dashboards: kyma-postsubmit
-              #       # testgrid-alert-email: email-here@sap.com
-              #       testgrid-num-failures-to-alert: '1'
-              #     labels:
-              #       preset-build-main: "true"
-              #   inheritedConfigs:
-              #     global:
-              #       - "jobConfig_default"
-              #       - "jobConfig_postsubmit"
-              #       - "image_kyma-integration"
-              #       - "extra_refs_test-infra"
-              #     local:
-              #       - "jobConfig_default"
+              - jobConfig:
+                 name: "post-main-kyma-gke-external-registry"
+                 args:
+                   - "-c"
+                   - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-external-registry.sh"
+                 # following regexp won't start build if only Markdown files were changed
+                 annotations:
+                   testgrid-dashboards: kyma_integration
+                   testgrid-days-of-results: "60"
+                 labels:
+                   preset-build-main: "true"
+                inheritedConfigs:
+                 global:
+                   - "jobConfig_default"
+                   - "jobConfig_postsubmit"
+                   - "image_kyma-integration"
+                   - "extra_refs_test-infra"
+                 local:
+                   - "jobConfig_default"

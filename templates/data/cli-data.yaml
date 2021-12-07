@@ -126,6 +126,9 @@ templates:
               - jobConfig:
                   path: integration-kyma-2
                   release_since: "2.0"
+                  branches:
+                    - ^main$
+                    - ^release-2.*$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
