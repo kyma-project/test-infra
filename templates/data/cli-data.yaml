@@ -16,6 +16,9 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/cli"
                     - "ci-pr"
+                  branches:
+                    - "^main$"
+                    - "^release-\\d+\\.\\d+$"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -30,7 +33,7 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/cli"
                     - "ci-main"
                   branches:
-                    - "^master$"
+                    - "^main$"
                     - "^release-\\d+\\.\\d+$"
                 inheritedConfigs:
                   global:
