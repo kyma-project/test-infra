@@ -1,6 +1,0 @@
-pjNames:
-  - pjName: skr-azure-svcat-migration-dev
-prConfigs:
-  kyma-project:
-    kyma:
-      prNumber: 11937
