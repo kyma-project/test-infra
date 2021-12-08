@@ -212,10 +212,10 @@ EOF
 }
 
 function applyCompassOverrides() {
-  OVERRIDES_FILE="${COMPASS_SOURCES_DIR}/installation/resources/installer-config-gke-integration.yaml.tpl"
+  OVERRIDES_FILE="${COMPASS_SOURCES_DIR}/installation/resources/installer-config-gke-benchmark.yaml.tpl"
   if [[ -f "$OVERRIDES_FILE" ]]; then
     # envsubst requires variables to be exported or to be passed to the process execution in order to work
-  CLOUDSDK_CORE_PROJECT=${CLOUDSDK_CORE_PROJECT} CLOUDSDK_COMPUTE_ZONE=${CLOUDSDK_COMPUTE_ZONE} COMMON_NAME=${COMMON_NAME} envsubst < "$OVERRIDES_FILE" | k apply -f -
+  CLOUDSDK_CORE_PROJECT=${CLOUDSDK_CORE_PROJECT} CLOUDSDK_COMPUTE_ZONE=${CLOUDSDK_COMPUTE_ZONE} COMMON_NAME=${COMMON_NAME} envsubst < "$OVERRIDES_FILE" | kubectl apply -f -
   fi
 }
 

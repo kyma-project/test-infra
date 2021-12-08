@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sort"
 
 	"github.com/jamiealquiza/envy"
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/list"
@@ -17,6 +16,7 @@ type promoteCmdOptions struct {
 	targetTag               string
 	dryRun                  bool
 	sign                    bool
+	excludesList            string
 }
 
 // PromoteCmd replaces containerRegistry and image versions with the provided ones
@@ -32,23 +32,29 @@ func PromoteCmd() *cobra.Command {
 			// remove trailing slash to have consistent paths
 			ResourcesDirectoryClean := filepath.Clean(ResourcesDirectory)
 
-			var images []list.Image
-			var testImages []list.Image
+			targetContainerRegistryClean := filepath.Clean(options.targetContainerRegistry)
 
-			err := filepath.Walk(ResourcesDirectory, promote.GetWalkFunc(ResourcesDirectoryClean, options.targetContainerRegistry, options.targetTag, options.dryRun, &images, &testImages))
+			images := make(list.ImageMap)
+			testImages := make(list.ImageMap)
+
+			excludes, err := promote.ParseExcludes(options.excludesList)
+			if err != nil {
+				fmt.Printf("Cannot parse excludes list: %s\n", err)
+				os.Exit(2)
+			}
+
+			err = filepath.Walk(ResourcesDirectory, promote.GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistryClean, options.targetTag, options.dryRun, images, testImages, excludes))
 			if err != nil {
 				fmt.Printf("Cannot traverse directory: %s\n", err)
 				os.Exit(2)
 			}
 
-			// join and sort both images lists
-			var allImages []list.Image
-			allImages = append(allImages, images...)
-			allImages = append(allImages, testImages...)
-			sort.Slice(allImages, list.GetSortImagesFunc(allImages))
-			allImages = list.RemoveDoubles(allImages)
+			// join both images lists
+			allImages := make(list.ImageMap)
+			list.MergeImageMap(allImages, images)
+			list.MergeImageMap(allImages, testImages)
 
-			err = promote.PrintExternalSyncerYaml(allImages, options.targetContainerRegistry, options.targetTag, options.sign)
+			err = promote.PrintExternalSyncerYaml(allImages, targetContainerRegistryClean, options.targetTag, options.sign)
 			if err != nil {
 				fmt.Printf("Cannot print list of images: %s\n", err)
 				os.Exit(2)
@@ -65,6 +71,7 @@ func addPromoteCmdFlags(cmd *cobra.Command, options *promoteCmdOptions) {
 	cmd.Flags().StringVarP(&options.targetTag, "target-tag", "t", "", "Name of the target tag")
 	cmd.Flags().BoolVarP(&options.dryRun, "dry-run", "d", true, "Dry run enabled, nothing is changed")
 	cmd.Flags().BoolVarP(&options.sign, "sign", "s", false, "Set sign flag in outputted yaml file")
+	cmd.Flags().StringVarP(&options.excludesList, "excludes-list", "e", "", "Path to the file containing a list of excluded images")
 	cmd.MarkFlagRequired("target-container-registry")
 	envy.ParseCobra(cmd, envy.CobraConfig{Persistent: true, Prefix: "IMAGE_URL_HELPER"})
 }

@@ -79,7 +79,7 @@ func SyncImage(ctx context.Context, src, dest string, dryRun bool, auth authn.Au
 		return nil, fmt.Errorf("source image pull error: %w", err)
 	}
 
-	d, err := remote.Image(dr, remote.WithContext(ctx))
+	d, err := remote.Image(dr, remote.WithContext(ctx), remote.WithAuth(auth))
 	if err != nil {
 		if ifRefNotFound(err) {
 			log.Debug("Target image does not exist. Pushing image...")

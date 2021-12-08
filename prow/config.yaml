@@ -104,6 +104,8 @@ branch-protection:
   orgs:
     kyma-project:
       protect: true # protect all repos & branches in kyma-project org
+      exclude:
+        - "^dependabot/"
       repos:
         kyma:
           branches:
@@ -122,6 +124,8 @@ branch-protection:
                   - "netlify/kyma-project-old/deploy-preview"
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
+      exclude:
+        - "^dependabot/"
       repos:
         compass:
           protect: false
@@ -149,10 +153,6 @@ branch-protection:
           branches:
             main:
               protect: true
-        test-infra:
-          branches:
-            "dependabot.*":
-              protect: false
 
 tide:
   sync_period: 2m
@@ -731,6 +731,13 @@ presets:
       - name: STABLE
         value: "true"
   - labels:
+      preset-kyma-cli-unstable: "true"
+    env:
+      - name: KYMA_CLI_UNSTABLE_BUCKET
+        value: gs://kyma-cli-unstable
+      - name: STABLE
+        value: "false"
+  - labels:
       preset-stability-checker-slack-notifications: "true"
     env:
       - name: SLACK_CLIENT_WEBHOOK_URL
@@ -1053,11 +1060,6 @@ presets:
     env:
       - name: SCENARIO_TYPE
         value: post
-  - labels:
-      preset-busola-nightly-provision-type-busola: "true"
-    env:
-      - name: BUSOLA_PROVISION_TYPE
-        value: BUSOLA
   - labels:
       preset-busola-nightly-provision-type-kyma: "true"
     env:

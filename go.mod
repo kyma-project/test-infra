@@ -24,7 +24,7 @@ require (
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/google/go-github/v31 v31.0.0
 	github.com/google/go-github/v36 v36.0.0
-	github.com/google/go-github/v40 v40.0.0 // indirect
+	github.com/google/go-github/v40 v40.0.0
 	github.com/google/go-querystring v1.1.0
 	github.com/imdario/mergo v0.3.11
 	github.com/jamiealquiza/envy v1.1.0

@@ -47,6 +47,9 @@ type FailingTestMessage struct {
 	ProwMessage
 	FirestoreDocumentID   *string  `json:"firestoreDocumentId,omitempty"`
 	GithubIssueNumber     *int64   `json:"githubIssueNumber,omitempty"`
+	GithubIssueRepo       *string  `json:"githubIssueRepo,omitempty"`
+	GithubIssueOrg        *string  `json:"githubIssueOrg,omitempty"`
+	GithubIssueUrl        *string  `json:"githubIssueUrl,omitempty"`
 	SlackThreadID         *string  `json:"slackThreadId,omitempty"`
 	GithubCommitersLogins []string `json:"githubCommitersLogins,omitempty"`
 	CommitersSlackLogins  []string `json:"slackCommitersLogins,omitempty"`

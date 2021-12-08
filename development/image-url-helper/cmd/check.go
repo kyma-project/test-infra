@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sort"
 
 	"github.com/jamiealquiza/envy"
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/check"
@@ -51,20 +50,18 @@ func CheckCmd() *cobra.Command {
 				}
 			}
 
-			var images []list.Image
-			var testImages []list.Image
+			images := make(list.ImageMap)
+			testImages := make(list.ImageMap)
 			imageComponentsMap := make(list.ImageToComponents)
-			err = filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, &images, &testImages, imageComponentsMap))
+			err = filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, images, testImages, imageComponentsMap))
 			if err != nil {
 				fmt.Printf("Cannot traverse directory: %s\n", err)
 				os.Exit(2)
 			}
 
-			var allImages []list.Image
-			allImages = append(allImages, images...)
-			allImages = append(allImages, testImages...)
-			sort.Slice(allImages, list.GetSortImagesFunc(allImages))
-			allImages = list.RemoveDoubles(allImages)
+			allImages := make(list.ImageMap)
+			list.MergeImageMap(allImages, images)
+			list.MergeImageMap(allImages, testImages)
 
 			inconsistentImages := list.GetInconsistentImages(allImages)
 
