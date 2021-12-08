@@ -116,17 +116,6 @@ cleanupOnError() {
             -R "$CLOUDSDK_COMPUTE_REGION"
     fi
 
-    if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
-        log::info "Delete Apiserver proxy DNS Record"
-        gcp::delete_dns_record \
-            -a "$APISERVER_IP_ADDRESS" \
-            -h "apiserver" \
-            -s "$COMMON_NAME" \
-            -p "$CLOUDSDK_CORE_PROJECT" \
-            -z "$CLOUDSDK_DNS_ZONE_NAME"
-    fi
-
-
     MSG=""
     if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
     log::info "Job is finished ${MSG}"
@@ -219,6 +208,9 @@ gcp::authenticate \
     -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
+export DNS_DOMAIN
+DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
+export DOMAIN
 
 log::info "Reserve IP Address for Ingressgateway"
 GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
