@@ -225,10 +225,9 @@ function applyCompassOverrides() {
     --data "global.systemFetcher.systemsAPIFilterTenantCriteriaPattern=tenant=%s" \
     --data 'global.systemFetcher.systemToTemplateMappings=[{"Name": "temp1", "SourceKey": ["prop"], "SourceValue": ["val1"] },{"Name": "temp2", "SourceKey": ["prop"], "SourceValue": ["val2"] }]' \
     --data "global.systemFetcher.oauth.client=client_id" \
-    --data "global.systemFetcher.oauth.secret=client_secret" \
-    --data "global.systemFetcher.oauth.tokenBaseUrl=compass-external-services-mock.compass-system.svc.cluster.local:8080" \
-    --data "global.systemFetcher.oauth.tokenPath=/secured/oauth/token" \
-    --data "global.systemFetcher.oauth.tokenEndpointProtocol=http" \
+    --data "global.systemFetcher.oauth.tokenBaseUrl=compass-external-services-mock-sap-mtls.kyma.local" \
+    --data "global.systemFetcher.oauth.tokenPath=/cert/token" \
+    --data "global.systemFetcher.oauth.tokenEndpointProtocol=https" \
     --data "global.systemFetcher.oauth.scopesClaim=scopes" \
     --data "global.systemFetcher.oauth.tenantHeaderName=x-zid" \
     --data "global.migratorJob.nodeSelectorEnabled=true" \
