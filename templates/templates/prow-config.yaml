@@ -1059,11 +1059,6 @@ presets:
       - name: SCENARIO_TYPE
         value: post
   - labels:
-      preset-busola-nightly-provision-type-busola: "true"
-    env:
-      - name: BUSOLA_PROVISION_TYPE
-        value: BUSOLA
-  - labels:
       preset-busola-nightly-provision-type-kyma: "true"
     env:
       - name: BUSOLA_PROVISION_TYPE
