@@ -255,7 +255,11 @@ gcp::provision_k8s_cluster \
         -N "$GCLOUD_NETWORK_NAME" \
         -S "$GCLOUD_SUBNET_NAME" \
         -g "$GCLOUD_SECURITY_GROUP_DOMAIN" \
-        -P "$TEST_INFRA_SOURCES_DIR"
+        -P "$TEST_INFRA_SOURCES_DIR" \
+        -r "$PROVISION_REGIONAL_CLUSTER" \
+        -m "$MACHINE_TYPE" \
+        -D "$CLUSTER_USE_SSD" \
+        -e "$GKE_ENABLE_POD_SECURITY_POLICY" \
 CLEANUP_CLUSTER="true"
 
 kyma::install_cli

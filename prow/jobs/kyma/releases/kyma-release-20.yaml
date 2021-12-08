@@ -113,6 +113,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-rel20-kyma-release-candidate"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-certificates-bucket: "true"
+        preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -151,6 +152,10 @@ postsubmits: # runs on main
             env:
               - name: EVENTMESH_SECRET_FILE
                 value: "/etc/credentials/kyma-tunas-release-testing-event-mesh/serviceKey"
+              - name: MACHINE_TYPE
+                value: "n1-highcpu-16"
+              - name: PROVISION_REGIONAL_CLUSTER
+                value: "true"
             resources:
               requests:
                 memory: 200Mi
