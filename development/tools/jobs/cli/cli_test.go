@@ -34,7 +34,7 @@ func TestKymaCliJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "pre-kyma-cli"
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/cli"}), expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/cli"}), expName, "main")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -55,7 +55,7 @@ func TestKymaCliJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "post-kyma-cli"
-	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/cli"}), expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/cli"}), expName, "main")
 	require.NotNil(t, actualPost)
 	actualPost = tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/cli"}), expName, "release-1.1")
 	require.NotNil(t, actualPost)
