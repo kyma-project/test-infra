@@ -41,6 +41,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 
 requiredVars=(
     REPO_OWNER
@@ -255,7 +257,7 @@ gcp::provision_k8s_cluster \
         -P "$TEST_INFRA_SOURCES_DIR"
 CLEANUP_CLUSTER="true"
 
-
+kyma::install_cli
 
 log::info "Install kyma"
 installKyma
