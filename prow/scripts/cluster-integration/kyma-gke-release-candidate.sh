@@ -14,7 +14,6 @@
 # - CLOUDSDK_DNS_ZONE_NAME - GCP zone name (not its DNS name!)
 # - GOOGLE_APPLICATION_CREDENTIALS - GCP Service Account key file path
 # - GKE_CLUSTER_VERSION - GKE cluster version
-# - KYMA_ARTIFACTS_BUCKET: GCP bucket
 # - MACHINE_TYPE - (optional) GKE machine type
 #
 #Permissions: In order to run this script you need to use a service account with permissions equivalent to the following GCP roles:
@@ -50,8 +49,8 @@ requiredVars=(
     CLOUDSDK_COMPUTE_REGION
     CLOUDSDK_DNS_ZONE_NAME
     GOOGLE_APPLICATION_CREDENTIALS
-    KYMA_ARTIFACTS_BUCKET
     GKE_CLUSTER_VERSION
+    CERTIFICATES_BUCKET
 )
 
 utils::check_required_vars "${requiredVars[@]}"
