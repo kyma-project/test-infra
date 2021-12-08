@@ -37,7 +37,7 @@ templates:
             branches:
               - 'v\d+\.\d+\.\d+(?:-.*)?$'
           common_build_job:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/rafter"
           common_integration_test_job:
