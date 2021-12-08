@@ -432,7 +432,7 @@ for POD in $PODS; do
     if [[ $DELTA == +* ]]; then # If delta is positive
       log::error "There is significant performance degradation in the new release!"
       CHECK_FAILED=true
-      FAILED_TESTS="$CONTAINER\n$FAILED_TESTS"
+      FAILED_TESTS="$CONTAINER\\n$FAILED_TESTS"
     fi
   else
     benchstat "$CONTAINER"-new
@@ -440,7 +440,7 @@ for POD in $PODS; do
 done
 
 if [ $CHECK_FAILED = true ]; then
-  log::error "The following benchmark tests failed:\n $FAILED_TESTS"
+  log::error "The following benchmark tests failed:\\n $FAILED_TESTS"
   exit 1
 fi
 
