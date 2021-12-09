@@ -139,6 +139,7 @@ function createCluster() {
   export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
   gcp::provision_k8s_cluster \
         -c "$COMMON_NAME" \
+        -r "$PROVISION_REGIONAL_CLUSTER" \
         -p "$CLOUDSDK_CORE_PROJECT" \
         -v "$GKE_CLUSTER_VERSION" \
         -j "$JOB_NAME" \
