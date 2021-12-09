@@ -108,9 +108,9 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
 trap cleanup exit INT
 
-if [[ ${INTEGRATION_SUIT} == "git-auth-integration" ]]; then
+if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
     cat <<EOF >> "/home/prow/go/src/github.com/kyma-project/kyma/resources/serverless/integration-overrides.yaml"
-testSuit: "git-auth-integration"
+testSuite: "git-auth-integration"
 githubPrivateKey: "${GH_AUTH_PRIVATE_KEY}"
 azureDevOpsUsername: "${AZURE_DEVOPS_AUTH_USERNAME}"
 azureDevOpsPassword: "${AZURE_DEVOPS_AUTH_PASSWORD}"

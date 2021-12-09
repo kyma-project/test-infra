@@ -505,7 +505,8 @@ templates:
                     description: Serverless git-function authentication nightly integration tests
                     pipeline.platform: k3s
                   labels:
-                    preset-build-pr: "true"
+                    preset-build-main: "true"
+                    preset-serverless-git-auth: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
