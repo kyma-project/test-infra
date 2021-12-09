@@ -83,11 +83,7 @@ COMMON_NAME="${utils_generate_commonName_return_commonName:?}"
 export COMMON_NAME
 export CLUSTER_NAME="${COMMON_NAME}"
 
-## Get Kyma latest release version
-kyma::get_last_release_version \
-    -t "${BOT_GITHUB_TOKEN}"
-LAST_RELEASE_VERSION="${kyma_get_last_release_version_return_version:?}"
-log::info "### Reading release version from RELEASE_VERSION file, got: ${LAST_RELEASE_VERSION}"
+log::info "### Reading latest 1.x release version, got: ${LAST_RELEASE_VERSION}"
 export KYMA_SOURCE="${LAST_RELEASE_VERSION}"
 
 ## ---------------------------------------------------------------------------------------
