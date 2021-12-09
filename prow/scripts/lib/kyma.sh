@@ -63,17 +63,21 @@ function kyma::undeploy_kyma() {
 #
 # Arguments:
 #   t - GitHub token
+#   v - searched version (optional)
 # Returns:
 #   Last Kyma release version
 function kyma::get_last_release_version {
 
     local OPTIND
     local githubToken
+    local searchedVersion=""
 
-    while getopts ":t:" opt; do
+    while getopts ":t:v:" opt; do
         case $opt in
             t)
                 githubToken="$OPTARG" ;;
+            v)
+                searchedVersion="$OPTARG" ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
@@ -83,9 +87,16 @@ function kyma::get_last_release_version {
 
     utils::check_empty_arg "$githubToken" "Github token was not provided. Exiting..."
     
-    # shellcheck disable=SC2034
-    kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
-        | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].tag_name')
+    
+    if [[ -n searchedVersion ]]; then
+        # shellcheck disable=SC2034
+        kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error  "https://api.github.com/repos/kyma-project/kyma/releases" \
+            | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | [.[]| select( .tag_name | match("^'${searchedVersion}'"))] | .[-1].tag_name')
+    else
+        # shellcheck disable=SC2034
+        kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
+            | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].tag_name')
+    fi
 }
 
 kyma::install_cli() {
