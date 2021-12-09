@@ -83,8 +83,13 @@ COMMON_NAME="${utils_generate_commonName_return_commonName:?}"
 export COMMON_NAME
 export CLUSTER_NAME="${COMMON_NAME}"
 
-log::info "### Reading latest 1.x release version, got: ${LAST_RELEASE_VERSION}"
-export KYMA_SOURCE="${LAST_RELEASE_VERSION}"
+## Get Kyma latest release version
+kyma::get_last_release_version \
+    -t "${BOT_GITHUB_TOKEN}" \
+    -v "^1."
+LAST_RELEASE_1_VERSION="${kyma_get_last_release_version_return_version:?}"
+log::info "### Reading latest 1.x release version, got: ${LAST_RELEASE_1_VERSION}"
+export KYMA_SOURCE="${LAST_RELEASE_1_VERSION}"
 
 ## ---------------------------------------------------------------------------------------
 ## Prow job execution steps
