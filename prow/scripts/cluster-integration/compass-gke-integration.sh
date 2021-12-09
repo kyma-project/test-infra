@@ -269,7 +269,7 @@ function applyCommonOverrides() {
 function prometheusMTLSPatch() {
   patchPrometheusForMTLS
   patchAlertManagerForMTLS
-  enableNodeExporterTLS
+  enableNodeExporterMTLS
   patchDeploymentsToInjectSidecar
   patchKymaServiceMonitorsForMTLS
   removeKymaPeerAuthsForPrometheus
@@ -369,7 +369,7 @@ function patchDeploymentsToInjectSidecar() {
   done
 }
 
-function enableNodeExporterTLS() {
+function enableNodeExporterMTLS() {
   monitor=$(cat <<"EOF"
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -397,6 +397,9 @@ spec:
     port: metrics
     scheme: https
     tlsConfig:
+      caFile: /etc/prometheus/secrets/istio.default/root-cert.pem
+      certFile: /etc/prometheus/secrets/istio.default/cert-chain.pem
+      keyFile: /etc/prometheus/secrets/istio.default/key.pem
       insecureSkipVerify: true
   jobLabel: jobLabel
   selector:
@@ -447,7 +450,7 @@ spec:
     spec:
       initContainers:
       - name: certs-init
-        image: frapsoft/openssl
+        image: emberstack/openssl:alpine-latest
         command: ['sh', '-c', 'openssl req -newkey rsa:2048 -nodes -days 365000 -subj "/CN=$(NODE_NAME)" -keyout /etc/certs/node.key -out /etc/certs/node.csr && openssl x509 -req -days 365000 -set_serial 01 -in /etc/certs/node.csr -out /etc/certs/node.crt -CA /etc/istio/certs/ca-cert.pem -CAkey /etc/istio/certs/ca-key.pem']
         env:
           - name: NODE_NAME
@@ -461,8 +464,8 @@ spec:
         - name: node-certs
           mountPath: /etc/certs
       - name: web-config-init
-        image: busybox
-        command: ['sh', '-c', 'printf "tls_server_config:\n  cert_file: /etc/certs/node.crt\n  key_file: /etc/certs/node.key" > /etc/certs/web.yaml'] 
+        image: busybox:1.34.1
+        command: ['sh', '-c', 'printf "tls_server_config:\\n  cert_file: /etc/certs/node.crt\\n  key_file: /etc/certs/node.key\\n  client_auth_type: \"RequireAndVerifyClientCert\"\\n  client_ca_file: /etc/istio/certs/ca-cert.pem" > /etc/certs/web.yaml']
         volumeMounts:
         - name: node-certs
           mountPath: /etc/certs
@@ -480,30 +483,14 @@ spec:
           value: 0.0.0.0
         image: eu.gcr.io/kyma-project/tpi/node-exporter:1.0.1-1de56388
         imagePullPolicy: IfNotPresent
-        livenessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /
-            port: 9100
-            scheme: HTTPS
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 1
         name: node-exporter
+        livenessProbe: null
+        readinessProbe: null
         ports:
         - containerPort: 9100
           hostPort: 9100
           name: metrics
           protocol: TCP
-        readinessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /
-            port: 9100
-            scheme: HTTPS
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 1
         resources: {}
         securityContext:
           allowPrivilegeEscalation: false
@@ -513,6 +500,8 @@ spec:
         volumeMounts:
         - mountPath: /etc/certs
           name: node-certs
+        - name: istio-certs
+          mountPath: /etc/istio/certs
         - mountPath: /host/proc
           name: proc
           readOnly: true
@@ -568,8 +557,8 @@ EOF
 
   kubectl get secret istio-ca-secret --namespace=istio-system -o yaml | grep -v '^\s*namespace:\s' | kubectl replace --force --namespace=kyma-system -f -
 
-  kubectl apply --force -f monitor.yaml
-  kubectl apply --force -f daemonset.yaml
+  kubectl apply -f monitor.yaml
+  kubectl apply -f daemonset.yaml
 
   rm monitor.yaml
   rm daemonset.yaml
@@ -591,6 +580,7 @@ function patchKymaServiceMonitorsForMTLS() {
     dex
     api-gateway
     monitoring-prometheus-pushgateway
+    cert-manager
   )
 
   crd="servicemonitors.monitoring.coreos.com"
