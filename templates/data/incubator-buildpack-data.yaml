@@ -265,12 +265,6 @@ templates:
               pipeline.clusterprovisioning: reconciler
           reconciler_image_autobump_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-incubator/reconciler/scripts/prow/reconciler-image-autobump.sh"
-            extra_refs:
-              reconciler:
-                - org: "mfaizanse"
-                  repo: "reconciler"
-                  path_alias: "github.com/kyma-incubator/reconciler"
-                  base_ref: "prow_autobump_script"
           extra_refs_k8s-test-infra:
             extra_refs:
               k8s-test-infra:
@@ -410,7 +404,7 @@ templates:
                     - jobConfig_default
                     - jobConfig_periodic
                     - image_kyma-integration
-#                    - extra_refs_reconciler
+                    - extra_refs_reconciler
                     - extra_refs_test-infra
                     - extra_refs_control-plane
                     - disable_testgrid
