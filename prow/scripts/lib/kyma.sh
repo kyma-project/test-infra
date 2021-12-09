@@ -63,7 +63,7 @@ function kyma::undeploy_kyma() {
 #
 # Arguments:
 #   t - GitHub token
-#   v - searched version as a regular expression ("^" is prepended to the regexp), e.g. "1\." (optional)
+#   v - searched version as a regular expression, e.g. "^1\." (optional)
 # Returns:
 #   Last Kyma release version
 function kyma::get_last_release_version {
@@ -89,7 +89,7 @@ function kyma::get_last_release_version {
     
     # shellcheck disable=SC2034
     kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
-        | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | [.[]| select( .tag_name | match("^'"${searchedVersion}"'"))] | .[-1].tag_name')
+        | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | [.[]| select( .tag_name | match("'"${searchedVersion}"'"))] | .[-1].tag_name')
 }
 
 kyma::install_cli() {
