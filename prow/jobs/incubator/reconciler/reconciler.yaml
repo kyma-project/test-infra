@@ -302,10 +302,10 @@ periodics: # runs on schedule
           path_alias: github.com/kubernetes/test-infra
           base_ref: master
           base_sha: 3fba7110c39a7a0e7fb087dbb4af0674cafd341c
-        - org: kyma-incubator
+        - org: mfaizanse
           repo: reconciler
           path_alias: github.com/kyma-incubator/reconciler
-          base_ref: main
+          base_ref: prow_autobump_script
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
@@ -319,7 +319,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-image-autobump.sh"
+              - "/home/prow/go/src/github.com/kyma-incubator/reconciler/scripts/prow/reconciler-image-autobump.sh"
             env:
               - name: GITHUB_LOGIN
                 value: "kyma-bot"
