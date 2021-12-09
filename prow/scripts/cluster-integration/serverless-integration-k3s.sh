@@ -172,7 +172,7 @@ VALUES="-f ${SERVERLESS_CHART_DIR}/values.yaml"
 if [[ -e "${SERVERLESS_CHART_DIR}/integration-overrides.yaml" ]]; then
   VALUES="-f ${SERVERLESS_CHART_DIR}/values.yaml -f ${SERVERLESS_CHART_DIR}/integration-overrides.yaml"
 fi
-
+#shellcheck disable=SC2086
 helm install serverless-test "${SERVERLESS_CHART_DIR}/charts/k3s-tests" -n default ${VALUES} --set jobName="${job_name}"
 
 job_status=""
