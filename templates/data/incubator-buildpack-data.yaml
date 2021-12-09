@@ -243,6 +243,8 @@ templates:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
           reconciler_e2e_upgrade_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-upgrade-gardener.sh"
+            env:
+              LAST_RELEASE_VERSION: "1.24.8"
             annotations:
               pipeline.installer: kyma install, kyma deploy
               pipeline.test: "upgrade-fast-integration"
