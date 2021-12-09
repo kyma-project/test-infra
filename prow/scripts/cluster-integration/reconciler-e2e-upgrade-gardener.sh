@@ -85,10 +85,11 @@ export CLUSTER_NAME="${COMMON_NAME}"
 
 ## Get Kyma latest release version
 kyma::get_last_release_version \
-    -t "${BOT_GITHUB_TOKEN}"
-LAST_RELEASE_VERSION="${kyma_get_last_release_version_return_version:?}"
-log::info "### Reading release version from RELEASE_VERSION file, got: ${LAST_RELEASE_VERSION}"
-export KYMA_SOURCE="${LAST_RELEASE_VERSION}"
+    -t "${BOT_GITHUB_TOKEN}" \
+    -v "^1."
+LAST_RELEASE_1_VERSION="${kyma_get_last_release_version_return_version:?}"
+log::info "### Reading latest 1.x release version, got: ${LAST_RELEASE_1_VERSION}"
+export KYMA_SOURCE="${LAST_RELEASE_1_VERSION}"
 
 ## ---------------------------------------------------------------------------------------
 ## Prow job execution steps
