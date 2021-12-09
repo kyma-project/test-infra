@@ -63,7 +63,7 @@ function kyma::undeploy_kyma() {
 #
 # Arguments:
 #   t - GitHub token
-#   v - searched version (optional)
+#   v - searched version as a regular expression ("^" is prepended to the regexp), e.g. "1\." (optional)
 # Returns:
 #   Last Kyma release version
 function kyma::get_last_release_version {
