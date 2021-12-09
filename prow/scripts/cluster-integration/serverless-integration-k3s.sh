@@ -166,8 +166,14 @@ sleep 60
 SERVERLESS_CHART_DIR="${KYMA_SOURCES_DIR}/resources/serverless"
 job_name="k3s-serverless-test"
 
+VALUES="-f ${SERVERLESS_CHART_DIR}/values.yaml"
 
-helm install serverless-test "${SERVERLESS_CHART_DIR}/charts/k3s-tests" -n default -f "${SERVERLESS_CHART_DIR}/values.yaml" --set jobName="${job_name}"
+# check for test overrides shipped with the code.
+if [[ -e "${SERVERLESS_CHART_DIR}/integration-overrides.yaml" ]]; then
+  VALUES="-f ${SERVERLESS_CHART_DIR}/values.yaml -f ${SERVERLESS_CHART_DIR}/integration-overrides.yaml"
+fi
+
+helm install serverless-test "${SERVERLESS_CHART_DIR}/charts/k3s-tests" -n default ${VALUES} --set jobName="${job_name}"
 
 job_status=""
 

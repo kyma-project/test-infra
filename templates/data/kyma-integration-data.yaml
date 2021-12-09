@@ -497,6 +497,26 @@ templates:
                     - "request_small"
                     - "vm_job_template_serverless_k3s"
                     - "vm_job_labels_template"
+
+              - jobConfig:
+                  name: "serverless-git-auth-integration-k3s-nightly"
+                  cron: "0 3 * * 1-5" # "At 03:00 UTC on every weekday Monday through Friday"
+                  annotations:
+                    description: Serverless git-function authentication nightly integration tests
+                    pipeline.platform: k3s
+                  labels:
+                    preset-build-pr: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_serverless_k3s"
+                    - "vm_job_labels_template"
               # Rapid channel is unstable and the job never succeeds. See https://github.com/kyma-project/test-infra/issues/4063
               # - jobConfig:
               #     name: "pre-main-kyma-gke-rapid-integration"

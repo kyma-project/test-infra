@@ -108,6 +108,15 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
 trap cleanup exit INT
 
+if [[ ${INTEGRATION_SUIT} == "git-auth-integration" ]]; then
+    cat <<EOF >> "/home/prow/go/src/github.com/kyma-project/kyma/resources/serverless/integration-overrides.yaml"
+testSuit: "git-auth-integration"
+githubPrivateKey: "${GH_AUTH_PRIVATE_KEY}"
+azureDevOpsUsername: "${AZURE_DEVOPS_AUTH_USERNAME}"
+azureDevOpsPassword: "${AZURE_DEVOPS_AUTH_PASSWORD}"
+EOF
+fi
+
 log::info "Copying Kyma to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
