@@ -116,6 +116,12 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
+              - name: MACHINE_TYPE
+                value: "n1-highcpu-16"
+              - name: NODES_PER_ZONE
+                value: "1"
+              - name: PROVISION_REGIONAL_CLUSTER
+                value: "true"
             resources:
               requests:
                 memory: 200Mi
@@ -174,6 +180,12 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
+              - name: MACHINE_TYPE
+                value: "n1-highcpu-16"
+              - name: NODES_PER_ZONE
+                value: "1"
+              - name: PROVISION_REGIONAL_CLUSTER
+                value: "true"
             resources:
               requests:
                 memory: 200Mi
@@ -232,6 +244,12 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
+              - name: MACHINE_TYPE
+                value: "n1-highcpu-16"
+              - name: NODES_PER_ZONE
+                value: "1"
+              - name: PROVISION_REGIONAL_CLUSTER
+                value: "true"
             resources:
               requests:
                 memory: 200Mi
