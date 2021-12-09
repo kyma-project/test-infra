@@ -2,11 +2,11 @@
 
 ## Overview
 
-Image URL Helper is a tool that provides three subcommands:
+Image URL Helper is a tool that provides the following subcommands:
 
 * The `check` command finds all Helm chart images that don't use the `imageurl` template.
 * The `list` command lists all Helm chart images by checking the `values.yaml` files.
-* The `promote` command updates container registry path and Helm chart images versions in the `values.yaml` files. The subcommand also prints out a YAML that can be used by the [Image Syncer](../image-syncer) tool to promote images.
+* The `promote` command updates the container registry path and Helm chart images versions in the `values.yaml` files. The subcommand also prints a YAML that can be used by the [Image Syncer](../image-syncer) tool to promote images.
 
 ## Usage
 
