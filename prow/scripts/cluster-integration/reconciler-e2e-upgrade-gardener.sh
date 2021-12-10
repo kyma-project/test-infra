@@ -79,9 +79,8 @@ export ERROR_LOGGING_GUARD
 
 readonly COMMON_NAME_PREFIX="grd"
 utils::generate_commonName -n "${COMMON_NAME_PREFIX}"
-COMMON_NAME="${utils_generate_commonName_return_commonName:?}"
-export COMMON_NAME
-export CLUSTER_NAME="${COMMON_NAME}"
+
+export INPUT_CLUSTER_NAME="${utils_generate_commonName_return_commonName:?}"
 
 ## Get Kyma latest release version
 kyma::get_last_release_version \
@@ -95,17 +94,12 @@ export KYMA_SOURCE="${LAST_RELEASE_1_VERSION}"
 ## Prow job execution steps
 ## ---------------------------------------------------------------------------------------
 log::banner "Provisioning Gardener cluster"
-# Checks required vars and initializes gcloud/docker if necessary
-gardener::init
-
-# If MACHINE_TYPE is not set then use default one
-gardener::set_machine_type
-
-# Install Kyma CLI
-kyma::install_cli
 
 # Provision garderner cluster
-gardener::provision_cluster
+reconciler::provision_cluster
+
+# Connect to the newly created shoot cluster
+reconciler::connect_to_shoot_cluster
 
 # Deploy reconciler in the cluster
 reconciler::deploy

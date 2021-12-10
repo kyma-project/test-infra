@@ -6,6 +6,18 @@ readonly RECONCILER_TIMEOUT=1200 # in secs
 readonly RECONCILER_DELAY=15 # in secs
 readonly LOCAL_KUBECONFIG="$HOME/.kube/config"
 
+function reconciler::provision_cluster() {
+    export DEFINITION_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/reconciler/shoot-template.yaml"
+    export DOMAIN_NAME="${INPUT_CLUSTER_NAME}"
+    log::info "Creating cluster: ${INPUT_CLUSTER_NAME}"
+    # create the cluster
+    envsubst < "${DEFINITION_PATH}" | kubectl create -f -
+
+    # wait for the cluster to be ready
+    kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${INPUT_CLUSTER_NAME}"
+    log::info "Cluster ${INPUT_CLUSTER_NAME} was created successfully"
+
+}
 
 function reconciler::deploy() {
   # Deploy reconciler to cluster
