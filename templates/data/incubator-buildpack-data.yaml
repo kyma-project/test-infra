@@ -274,11 +274,6 @@ templates:
                   base_sha: "3fba7110c39a7a0e7fb087dbb4af0674cafd341c"
                   path_alias: github.com/kubernetes/test-infra
           github_token_mounts:
-            env:
-              GITHUB_LOGIN: "kyma-bot"
-              GITHUB_TOKEN: "/etc/github/token"
-              GIT_NAME: "Kyma Bot"
-              GIT_EMAIL: "kyma.bot@sap.com"
             volumes:
               - name: kyma-bot-github-token
                 secretName: kyma-bot-github-token

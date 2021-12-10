@@ -316,15 +316,6 @@ periodics: # runs on schedule
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler/scripts/prow/reconciler-image-autobump.sh"
-            env:
-              - name: GITHUB_LOGIN
-                value: "kyma-bot"
-              - name: GITHUB_TOKEN
-                value: "/etc/github/token"
-              - name: GIT_EMAIL
-                value: "kyma.bot@sap.com"
-              - name: GIT_NAME
-                value: "Kyma Bot"
             resources:
               requests:
                 memory: 3Gi
