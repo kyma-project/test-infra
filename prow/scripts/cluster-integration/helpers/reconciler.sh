@@ -7,8 +7,8 @@ readonly RECONCILER_DELAY=15 # in secs
 readonly LOCAL_KUBECONFIG="$HOME/.kube/config"
 
 function reconciler::provision_cluster() {
-    export DEFINITION_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/reconciler/shoot-template.yaml"
     export DOMAIN_NAME="${INPUT_CLUSTER_NAME}"
+    export DEFINITION_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/reconciler/shoot-template.yaml"
     log::info "Creating cluster: ${INPUT_CLUSTER_NAME}"
     # create the cluster
     envsubst < "${DEFINITION_PATH}" | kubectl create -f -
