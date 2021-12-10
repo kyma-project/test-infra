@@ -110,6 +110,10 @@ reconciler::disable_sidecar_injection_reconciler_ns
 # Wait until reconciler is ready
 reconciler::wait_until_is_ready
 
+
+# Install Kyma CLI
+kyma::install_cli
+
 # Install Kyma using cli with version previously set in KYMA_SOURCE
 log::banner "Installing Kyma $KYMA_SOURCE"
 gardener::install_kyma
