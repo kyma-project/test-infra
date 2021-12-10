@@ -57,7 +57,7 @@ requiredVars=(
 
 function provision_cluster() {
     export DEFINITION_PATH="${RESOURCES_PATH}/shoot-template.yaml"
-
+    export DOMAIN_NAME="${CLUSTER_NAME}"
     log::info "Creating cluster: ${CLUSTER_NAME}"
     # create the cluster
     envsubst < "${DEFINITION_PATH}" | kubectl create -f -
@@ -65,6 +65,7 @@ function provision_cluster() {
     # wait for the cluster to be ready
     kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${CLUSTER_NAME}"
     log::info "Cluster ${CLUSTER_NAME} was created successfully"
+
 }
 
 function connect_to_shoot_cluster() {
