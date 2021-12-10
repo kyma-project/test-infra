@@ -306,10 +306,6 @@ periodics: # runs on schedule
           repo: reconciler
           path_alias: github.com/kyma-incubator/reconciler
           base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       reporter_config:
         slack:
           channel: kyma-prow-dev-null
