@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "serverless-git-auth-integration-k3s-nightly"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 12824
