@@ -54,6 +54,19 @@ requiredVars=(
     GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
 )
 
+
+function provision_cluster() {
+    export DEFINITION_PATH="${RESOURCES_PATH}/shoot-template.yaml"
+
+    log::info "Creating cluster: ${CLUSTER_NAME}"
+    # create the cluster
+    envsubst < "${DEFINITION_PATH}" | kubectl create -f -
+
+    # wait for the cluster to be ready
+    kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${CLUSTER_NAME}"
+    log::info "Cluster ${CLUSTER_NAME} was created successfully"
+}
+
 utils::check_required_vars "${requiredVars[@]}"
 
 if [[ $GARDENER_PROVIDER == "azure" ]]; then
@@ -83,6 +96,7 @@ utils::generate_commonName -n "${COMMON_NAME_PREFIX}"
 COMMON_NAME="${utils_generate_commonName_return_commonName:?}"
 export COMMON_NAME
 export CLUSTER_NAME="${COMMON_NAME}"
+export RESOURCES_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/reconciler"
 
 ## ---------------------------------------------------------------------------------------
 ## Prow job execution steps
@@ -99,7 +113,7 @@ gardener::set_machine_type
 kyma::install_cli
 
 # Provision garderner cluster
-gardener::provision_cluster
+provision_cluster
 
 # Deploy reconciler
 reconciler::deploy
