@@ -82,7 +82,6 @@ readonly COMMON_NAME_PREFIX="grd"
 utils::generate_commonName -n "${COMMON_NAME_PREFIX}"
 
 export INPUT_CLUSTER_NAME="${utils_generate_commonName_return_commonName:?}"
-export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
 ## ---------------------------------------------------------------------------------------
 ## Prow job execution steps
 ## ---------------------------------------------------------------------------------------

@@ -73,8 +73,6 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
-
 # Delete cluster with reconciler if exists
 delete_cluster_if_exists
 
