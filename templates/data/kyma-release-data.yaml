@@ -183,15 +183,22 @@ templates:
                     testgrid-days-of-results: "60"
                   labels:
                     preset-dind-enabled: "true"
-                    preset-kyma-artifacts-bucket: "true"
                     preset-sa-gke-kyma-integration: "true"
                     preset-gc-project-env: "true"
                     preset-gke-kyma-developers-group: "true"
                     preset-docker-push-repository-kyma: "true"
                     preset-cluster-version: "true"
                     preset-gc-compute-envs: "true"
+                    preset-certificates-bucket: "true"
+                    preset-kyma-keyring: "true"
+                    preset-kyma-encryption-key: "true"
+                    preset-gke-pod-security-policy: "true"
+                    preset-kms-gc-project-env: "true"
+                    preset-cluster-use-ssd: "true"
                   env:
                     EVENTMESH_SECRET_FILE: "/etc/credentials/kyma-tunas-release-testing-event-mesh/serviceKey"
+                    PROVISION_REGIONAL_CLUSTER: "true"
+                    MACHINE_TYPE: "n1-highcpu-16"
                   decoration_config:
                     timeout: 3600000000000 # 1h
                     grace_period: 600000000000 # 10min
