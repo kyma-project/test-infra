@@ -6,6 +6,30 @@ readonly RECONCILER_TIMEOUT=1200 # in secs
 readonly RECONCILER_DELAY=15 # in secs
 readonly LOCAL_KUBECONFIG="$HOME/.kube/config"
 
+function reconciler::delete_cluster_if_exists(){
+  export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
+  for i in {1..5}
+  do
+    local name="${INPUT_CLUSTER_NAME}${i}"
+    set +e
+    existing_shoot=$(kubectl get shoot "${name}" -ojsonpath="{ .metadata.name }")
+    if [ -n "${existing_shoot}" ]; then
+      log::info "Cluster found and deleting '${name}'"
+      gardener::deprovision_cluster \
+            -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+            -c "${name}" \
+            -f "${GARDENER_KYMA_PROW_KUBECONFIG}" \
+            -w "true"
+
+      log::info "We wait 120s for Gardener Shoot to settle after cluster deletion"
+      sleep 120
+    else
+      log::info "Cluster '${name}' does not exist"
+    fi
+    set -e
+  done
+}
+
 function reconciler::provision_cluster() {
     export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
     export DOMAIN_NAME="${INPUT_CLUSTER_NAME}"

@@ -18,29 +18,6 @@ set -o pipefail
 #
 #Please look in each provider script for provider specific requirements
 
-function delete_cluster_if_exists(){
-  for i in {1..5}
-  do
-    local name="${INPUT_CLUSTER_NAME}${i}"
-    set +e
-    existing_shoot=$(kubectl get shoot "${name}" -ojsonpath="{ .metadata.name }")
-    if [ -n "${existing_shoot}" ]; then
-      log::info "Cluster found and deleting '${name}'"
-      gardener::deprovision_cluster \
-            -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
-            -c "${name}" \
-            -f "${GARDENER_KYMA_PROW_KUBECONFIG}" \
-            -w "true"
-
-      log::info "We wait 120s for Gardener Shoot to settle after cluster deletion"
-      sleep 120
-    else
-      log::info "Cluster '${name}' does not exist"
-    fi
-    set -e
-  done
-}
-
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
@@ -73,11 +50,11 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-# Delete cluster with reconciler if exists
-delete_cluster_if_exists
-
 numeric_day=$(date +%u)
 export INPUT_CLUSTER_NAME="${INPUT_CLUSTER_NAME}${numeric_day}"
+
+# Delete cluster with reconciler if exists
+reconciler::delete_cluster_if_exists
 
 # Provisioning gardener long lasting cluster
 reconciler::provision_cluster
