@@ -309,6 +309,15 @@ templates:
           request_big:
             request_memory: 200Mi
             request_cpu: 80m
+          vm_job_template_upgrade_k3d:
+            annotations:
+              pipeline.platform: k3d
+              pipeline.installer: kyma deploy
+              pipeline.test: upgrade-fast-integration
+              pipeline.clusterprovisioning: kyma cli
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-upgrade-k3d.sh"
+            env:
+              KYMA_PROJECT_DIR: "."
           vm_job_template:
             annotations:
               pipeline.platform: minikube
@@ -619,6 +628,54 @@ templates:
 
               # periodics
 
+              - jobConfig:
+                  name: kyma-upgrade-k3d-kyma-to-kyma2
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    description: K3d Kyma 1.x to Kyma 2.0 upgrade.
+                  decoration_config:
+                    timeout: 7200000000000 # 2h
+                    grace_period: 600000000000 # 10min
+                  cron: "0 0 6-18/2 ? * 2-6"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                    - image_kyma-integration
+                    - kyma_major_version_1
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "jobConfig_periodic"
+                    - "vm_job_template_upgrade_k3d"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
+              - jobConfig:
+                  name: kyma-upgrade-k3d-kyma2-to-main
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    description: K3d Kyma 2.0 to main branch.
+                  decoration_config:
+                    timeout: 7200000000000 # 2h
+                    grace_period: 600000000000 # 10min
+                  cron: "0 0 6-18/2 ? * 2-6"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                    - image_kyma-integration
+                    - kyma_major_version_2
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "jobConfig_periodic"
+                    - "vm_job_template_upgrade_k3d"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
               # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.
               # Purpose of this job is to avoid error: "Login profile size exceeds 32 KiB" when running kyma-integration tests
               - jobConfig:

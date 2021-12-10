@@ -47,7 +47,7 @@ templates:
               pipeline.installer: kyma deploy
               pipeline.clusterprovisioning: kubectl shootspec
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-busola-long-lasting.sh"
-          command_upgrade_1_to_2:
+          command_upgrade_gardener:
             annotations:
               pipeline.installer: kyma install, kyma deploy
               pipeline.test: upgrade-fast-integration
@@ -358,4 +358,27 @@ templates:
                   local:
                     - jobConfig_default
                     - gardener_azure_job
-                    - command_upgrade_1_to_2
+                    - command_upgrade_gardener
+              - jobConfig:
+                  name: kyma-upgrade-gardener-kyma2-to-main
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    description: Azure Kyma 2.0 to main branch.
+                  decoration_config:
+                    timeout: 7200000000000 # 2h
+                    grace_period: 600000000000 # 10min
+                  cron: "0 0 6-18/2 ? * 2-6"
+                  labels:
+                    preset-bot-github-token: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                    - image_kyma-integration
+                    - kyma_major_version_2
+                  local:
+                    - jobConfig_default
+                    - gardener_azure_job
+                    - command_upgrade_gardener

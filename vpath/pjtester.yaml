@@ -1,0 +1,5 @@
+pjNames:
+  - pjName: "kyma-upgrade-k3d-kyma-to-kyma2"
+  - pjName: "kyma-upgrade-k3d-kyma2-to-main"
+  - pjName: "kyma-upgrade-gardener-kyma-to-kyma2"
+  - pjName: "kyma-upgrade-gardener-kyma2-to-main"
