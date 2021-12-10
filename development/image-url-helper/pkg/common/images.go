@@ -38,13 +38,16 @@ func (i Image) ImageURL() string {
 // GetInconsistentImages returns a list of images with the same URl but different versions or hashes
 func GetInconsistentImages(images ImageMap) ImageMap {
 	inconsistent := make(ImageMap)
+	tmpImages := make(map[string]string)
 
 	for imageName, image := range images {
-		for image2Name, image2 := range images {
-			if image.ImageURL() == image2.ImageURL() && imageName != image2Name {
+		if tmpImageName, ok := tmpImages[image.ImageURL()]; ok {
+			if imageName != tmpImageName {
 				inconsistent[imageName] = image
-				inconsistent[image2Name] = image2
+				inconsistent[tmpImageName] = images[tmpImageName]
 			}
+		} else {
+			tmpImages[image.ImageURL()] = imageName
 		}
 	}
 
