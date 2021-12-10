@@ -55,10 +55,10 @@ periodics: # runs on schedule
                 value: "361c511f-f939-4621-b228-d0fb79a1fe15"
               - name: KYMA_MAJOR_VERSION
                 value: "1"
-              - name: KYMA_VERSION
-                value: "1.24.8"
               - name: KYMA_UPGRADE_VERSION
                 value: "2.0.0"
+              - name: KYMA_VERSION
+                value: "1.24.8"
               - name: SKIP_CLEANUP
                 value: "FALSE"
             resources:
