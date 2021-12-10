@@ -57,22 +57,17 @@ requiredVars=(
 
 function provision_cluster() {
     export DEFINITION_PATH="${RESOURCES_PATH}/shoot-template.yaml"
-    export DOMAIN_NAME="${CLUSTER_NAME}"
-    log::info "Creating cluster: ${CLUSTER_NAME}"
+    export DOMAIN_NAME="${INPUT_CLUSTER_NAME}"
+    log::info "Creating cluster: ${INPUT_CLUSTER_NAME}"
     # create the cluster
     envsubst < "${DEFINITION_PATH}" | kubectl create -f -
 
     # wait for the cluster to be ready
-    kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${CLUSTER_NAME}"
-    log::info "Cluster ${CLUSTER_NAME} was created successfully"
+    kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${INPUT_CLUSTER_NAME}"
+    log::info "Cluster ${INPUT_CLUSTER_NAME} was created successfully"
 
 }
 
-function connect_to_shoot_cluster() {
-  local shoot_kubeconfig="/tmp/shoot-kubeconfig.yaml"
-  kubectl get secret "${CLUSTER_NAME}.kubeconfig"  -ogo-template="{{ .data.kubeconfig | base64decode }}" > "${shoot_kubeconfig}"
-  export KUBECONFIG="${shoot_kubeconfig}"
-}
 
 utils::check_required_vars "${requiredVars[@]}"
 
@@ -102,7 +97,7 @@ readonly COMMON_NAME_PREFIX="grd"
 utils::generate_commonName -n "${COMMON_NAME_PREFIX}"
 COMMON_NAME="${utils_generate_commonName_return_commonName:?}"
 export COMMON_NAME
-export CLUSTER_NAME="${COMMON_NAME}"
+export INPUT_CLUSTER_NAME="${COMMON_NAME}"
 export RESOURCES_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/reconciler"
 
 export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
@@ -116,7 +111,7 @@ log::banner "Provisioning Gardener cluster"
 provision_cluster
 
 # Connect to the newly created shoot cluster
-connect_to_shoot_cluster
+reconciler::connect_to_shoot_cluster
 
 # Deploy reconciler
 reconciler::deploy
