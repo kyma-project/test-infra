@@ -20,8 +20,8 @@ type ValueFile struct {
 func AppendImagesToMap(parsedFile ValueFile, images, testImages ImageMap, component string, components ImageToComponents) {
 	for _, image := range parsedFile.Global.Images {
 		// add registry info directly into the image struct
-		if image.ContainerRegistryPath == "" {
-			image.ContainerRegistryPath = parsedFile.Global.ContainerRegistry.Path
+		if image.ContainerRegistryURL == "" {
+			image.ContainerRegistryURL = parsedFile.Global.ContainerRegistry.Path
 		}
 		images[image.FullImageURL()] = image
 
@@ -29,8 +29,8 @@ func AppendImagesToMap(parsedFile ValueFile, images, testImages ImageMap, compon
 	}
 
 	for _, testImage := range parsedFile.Global.TestImages {
-		if testImage.ContainerRegistryPath == "" {
-			testImage.ContainerRegistryPath = parsedFile.Global.ContainerRegistry.Path
+		if testImage.ContainerRegistryURL == "" {
+			testImage.ContainerRegistryURL = parsedFile.Global.ContainerRegistry.Path
 		}
 		testImages[testImage.FullImageURL()] = testImage
 		components[testImage.FullImageURL()] = append(components[testImage.FullImageURL()], component)

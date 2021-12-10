@@ -8,27 +8,29 @@ type ImageMap map[string]Image
 
 // Image contains info about a singular image
 type Image struct {
-	ContainerRegistryPath string `yaml:"containerRegistryPath,omitempty"`
-	Directory             string `yaml:"directory,omitempty"`
-	Name                  string `yaml:"name,omitempty"`
-	Version               string `yaml:"version,omitempty"`
-	SHA                   string `yaml:"sha,omitempty"`
+	ContainerRegistryURL    string `yaml:"containerRegistryPath,omitempty"`
+	ContainerRepositoryPath string `yaml:"directory,omitempty"`
+	Name                    string `yaml:"name,omitempty"`
+	Version                 string `yaml:"version,omitempty"`
+	SHA                     string `yaml:"sha,omitempty"`
 }
 
 // FullImageURL returns complete image URL with version or SHA
 func (i Image) FullImageURL() string {
-	version := ":" + i.Version
+	version := ""
 	if i.SHA != "" {
 		version = "@sha256:" + i.SHA
+	} else {
+		version = ":" + i.Version
 	}
 	return fmt.Sprintf("%s%s", i.ImageURL(), version)
 }
 
 // ImageURL returns image URL without version
 func (i Image) ImageURL() string {
-	registry := i.ContainerRegistryPath
-	if i.Directory != "" {
-		registry += "/" + i.Directory
+	registry := i.ContainerRegistryURL
+	if i.ContainerRepositoryPath != "" {
+		registry += "/" + i.ContainerRepositoryPath
 	}
 	return fmt.Sprintf("%s/%s", registry, i.Name)
 }
