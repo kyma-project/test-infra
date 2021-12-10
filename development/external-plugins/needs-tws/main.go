@@ -33,6 +33,7 @@ func gatherOptions() opts {
 	fs.IntVar(&o.port, "port", 8080, "Plugin port to listen on.")
 	fs.BoolVar(&o.dryRun, "dry-run", false, "Run in dry-run mode - no actual changes will be made.")
 	fs.StringVar(&o.webhookSecretPath, "hmac-secret-file", "/etc/webhook/hmac", "Path to the file containing GitHub HMAC secret")
+	fs.StringVar(&o.logLevel, "log-level", "info", "Set log level.")
 	o.github.AddFlags(fs)
 	fs.Parse(os.Args[1:])
 	return o
@@ -41,6 +42,11 @@ func gatherOptions() opts {
 func main() {
 	o := gatherOptions()
 
+	lvl, err := logrus.ParseLevel(o.logLevel)
+	if err != nil {
+		logrus.WithError(err).Fatal("Could not parse log level.")
+	}
+	logrus.SetLevel(lvl)
 	log := logrus.StandardLogger().WithField("plugin", PluginName)
 
 	if err := secret.Add(o.webhookSecretPath); err != nil {
@@ -49,7 +55,6 @@ func main() {
 
 	ghc, err := o.github.GitHubClient(o.dryRun)
 	if err != nil {
-		//
 		logrus.WithError(err).Fatal("Could not get github client.")
 	}
 	p := Plugin{

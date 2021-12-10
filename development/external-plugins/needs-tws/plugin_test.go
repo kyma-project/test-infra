@@ -6,20 +6,39 @@ import (
 )
 
 type fakeGhClient struct {
+	githubClient
 }
 
-func GetPullRequestChanges(org, repo string, number int) ([]github.PullRequestChange, error) {
-	prc := []github.PullRequestChange{
-		{
-			Filename: "README.md",
-		},
-		{
-			Filename: "some_other_file.md",
+func (f fakeGhClient) GetIssueLabels(org, repo string, number int) ([]github.Label, error) {
+	il := []github.Label{
+		{Name: DefaultNeedsTwsLabel},
+		{Name: "foo-bar"},
+	}
+	return il, nil
+}
+
+func (f fakeGhClient) GetSingleCommit(org, repo, SHA string) (github.RepositoryCommit, error) {
+	rc := github.RepositoryCommit{
+		Files: []github.CommitFile{
+			{
+				Filename: "README.md",
+			},
 		},
 	}
-	return prc, nil
+	return rc, nil
 }
 
-func Test_Server(t *testing.T) {
-	_ = Plugin{}
+func (f fakeGhClient) AddLabel(org, repo string, number int, label string) error {
+	return nil
+}
+func (f fakeGhClient) RemoveLabel(org, repo string, number int, label string) error {
+	return nil
+}
+
+func Test_handlePullRequest(t *testing.T) {
+	_ = Plugin{
+		tokenGenerator: nil,
+		ghc:            fakeGhClient{},
+		owc:            nil,
+	}
 }
