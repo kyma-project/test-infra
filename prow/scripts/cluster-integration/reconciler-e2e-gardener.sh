@@ -67,6 +67,12 @@ function provision_cluster() {
     log::info "Cluster ${CLUSTER_NAME} was created successfully"
 }
 
+function connect_to_shoot_cluster() {
+  local shoot_kubeconfig="/tmp/shoot-kubeconfig.yaml"
+  kubectl get secret "${CLUSTER_NAME}.kubeconfig"  -ogo-template="{{ .data.kubeconfig | base64decode }}" > "${shoot_kubeconfig}"
+  export KUBECONFIG="${shoot_kubeconfig}"
+}
+
 utils::check_required_vars "${requiredVars[@]}"
 
 if [[ $GARDENER_PROVIDER == "azure" ]]; then
@@ -98,22 +104,18 @@ export COMMON_NAME
 export CLUSTER_NAME="${COMMON_NAME}"
 export RESOURCES_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/reconciler"
 
+export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
 ## ---------------------------------------------------------------------------------------
 ## Prow job execution steps
 ## ---------------------------------------------------------------------------------------
 
 log::banner "Provisioning Gardener cluster"
-# Checks required vars and initializes gcloud/docker if necessary
-gardener::init
-
-# If MACHINE_TYPE is not set then use default one
-gardener::set_machine_type
-
-# Install Kyma CLI
-kyma::install_cli
 
 # Provision garderner cluster
 provision_cluster
+
+# Connect to the newly created shoot cluster
+connect_to_shoot_cluster
 
 # Deploy reconciler
 reconciler::deploy
