@@ -14,7 +14,6 @@
 # - CLOUDSDK_DNS_ZONE_NAME - GCP zone name (not its DNS name!)
 # - GOOGLE_APPLICATION_CREDENTIALS - GCP Service Account key file path
 # - GKE_CLUSTER_VERSION - GKE cluster version
-# - KYMA_ARTIFACTS_BUCKET: GCP bucket
 # - MACHINE_TYPE - (optional) GKE machine type
 #
 #Permissions: In order to run this script you need to use a service account with permissions equivalent to the following GCP roles:
@@ -42,6 +41,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 
 requiredVars=(
     REPO_OWNER
@@ -50,8 +51,8 @@ requiredVars=(
     CLOUDSDK_COMPUTE_REGION
     CLOUDSDK_DNS_ZONE_NAME
     GOOGLE_APPLICATION_CREDENTIALS
-    KYMA_ARTIFACTS_BUCKET
     GKE_CLUSTER_VERSION
+    CERTIFICATES_BUCKET
 )
 
 utils::check_required_vars "${requiredVars[@]}"
@@ -116,17 +117,6 @@ cleanupOnError() {
             -R "$CLOUDSDK_COMPUTE_REGION"
     fi
 
-    if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
-        log::info "Delete Apiserver proxy DNS Record"
-        gcp::delete_dns_record \
-            -a "$APISERVER_IP_ADDRESS" \
-            -h "apiserver" \
-            -s "$COMMON_NAME" \
-            -p "$CLOUDSDK_CORE_PROJECT" \
-            -z "$CLOUDSDK_DNS_ZONE_NAME"
-    fi
-
-
     MSG=""
     if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
     log::info "Job is finished ${MSG}"
@@ -136,14 +126,44 @@ cleanupOnError() {
     exit "${EXIT_STATUS}"
 }
 
-test_fast_integration_eventing() {
-    log::info "Running Eventing E2E release tests"
+installKyma() {
 
-    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
-    make ci-test-eventing
-    popd
+	kymaUnsetVar=false
 
-    log::success "Eventing tests completed"
+  # shellcheck disable=SC2043
+	for var in GATEWAY_IP_ADDRESS ; do
+    	if [ -z "${!var}" ] ; then
+        	echo "ERROR: $var is not set"
+        	kymaUnsetVar=true
+    	fi
+	done
+	if [ "${kymaUnsetVar}" = true ] ; then
+    	exit 1
+	fi
+
+	CERTIFICATES_BUCKET="${CERTIFICATES_BUCKET}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-letsencrypt-cert.sh"
+	TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
+	export TLS_CERT
+	TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
+	export TLS_KEY
+
+	log::info "Trigger installation"
+	set -x
+
+	kyma deploy \
+			--ci \
+			--source local \
+			--workspace "${KYMA_SOURCES_DIR}" \
+			--domain "${DOMAIN}" \
+			--profile production \
+			--tls-crt "./letsencrypt/live/${DOMAIN}/fullchain.pem" \
+			--tls-key "./letsencrypt/live/${DOMAIN}/privkey.pem" \
+			--value "istio-configuration.components.ingressGateways.config.service.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+			--value "global.domainName=${DOMAIN}" \
+			--timeout 60m
+
+	set +x
+
 }
 
 # Enforce lowercase
@@ -158,9 +178,6 @@ readonly RELEASE_VERSION=$(cat "VERSION")
 log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
 TRIMMED_RELEASE_VERSION=${RELEASE_VERSION//./-}
 COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${TRIMMED_RELEASE_VERSION}" | tr "[:upper:]" "[:lower:]")
-
-
-
 
 gcp::set_vars_for_network \
   -n "$JOB_NAME"
@@ -180,6 +197,9 @@ gcp::authenticate \
     -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
+export DNS_DOMAIN
+DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
+export DOMAIN
 
 log::info "Reserve IP Address for Ingressgateway"
 GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
@@ -222,105 +242,17 @@ gcp::provision_k8s_cluster \
         -N "$GCLOUD_NETWORK_NAME" \
         -S "$GCLOUD_SUBNET_NAME" \
         -g "$GCLOUD_SECURITY_GROUP_DOMAIN" \
-        -P "$TEST_INFRA_SOURCES_DIR"
+        -P "$TEST_INFRA_SOURCES_DIR" \
+        -r "$PROVISION_REGIONAL_CLUSTER" \
+        -m "$MACHINE_TYPE" \
+        -D "$CLUSTER_USE_SSD" \
+        -e "$GKE_ENABLE_POD_SECURITY_POLICY"
 CLEANUP_CLUSTER="true"
 
-log::info "Create CluserRoleBinding for ${GCLOUD_SECURITY_GROUP} group from ${GCLOUD_SECURITY_GROUP_DOMAIN} domain"
-kubectl create clusterrolebinding kyma-developers-group-binding --clusterrole="cluster-admin" --group="${GCLOUD_SECURITY_GROUP}@${GCLOUD_SECURITY_GROUP_DOMAIN}"
+kyma::install_cli
 
-log::info "Generate certificate"
-DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
-
-utils::generate_letsencrypt_cert "${DOMAIN}"
-
-log::info "Apply Kyma config"
-
-kubectl create namespace "kyma-installer"
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
-    --data "global.domainName=${DOMAIN}" \
-    --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
-    --data "test.acceptance.ui.logging.enabled=true" \
-    --label "component=core"
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
-    --data "global.tlsCrt=${TLS_CERT}" \
-    --data "global.tlsKey=${TLS_KEY}"
-
-cat << EOF > "$PWD/kyma_istio_operator"
-apiVersion: install.istio.io/v1alpha1
-kind: IstioOperator
-metadata:
-  namespace: istio-system
-spec:
-  components:
-    ingressGateways:
-      - name: istio-ingressgateway
-        k8s:
-          service:
-            loadBalancerIP: ${GATEWAY_IP_ADDRESS}
-            type: LoadBalancer
-EOF
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map-file.sh" --name "istio-overrides" \
-    --label "component=istio" \
-    --file "$PWD/kyma_istio_operator"
-
-echo "Use released artifacts"
-    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${RELEASE_VERSION}/kyma-installer.yaml" --output /tmp/kyma-installer.yaml
-    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${RELEASE_VERSION}/kyma-installer-cr-cluster.yaml" --output /tmp/kyma-installer-cr-cluster.yaml
-
-\
-# There is possibility of a race condition when applying kyma-installer-cluster.yaml
-# Retry should prevent job from failing
-n=0
-until [ $n -ge 2 ]
-do
-    kubectl apply -f /tmp/kyma-installer.yaml || true
-    sleep 2
-    kubectl apply -f /tmp/kyma-installer.yaml && break
-    echo "Failed to apply kyma-installer.yaml"
-    n=$((n+1))
-    if [ 2 -gt "$n" ]
-    then
-        echo "Retrying in 5 seconds"
-        sleep 5
-    else
-        exit 1
-    fi
-done
-
-n=0
-until [ $n -ge 2 ]
-do
-    kubectl apply -f /tmp/kyma-installer-cr-cluster.yaml && break
-    echo "Failed to apply kyma-installer-cr-cluster.yaml"
-    n=$((n+1))
-    if [ 2 -gt "$n" ]
-    then
-        echo "Retrying in 5 seconds"
-        sleep 5
-    else
-        exit 1
-    fi
-done
-
-log::info "Trigger installation"
-"${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
-
-if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
-    log::info "Create DNS Record for Apiserver proxy IP"
-    APISERVER_IP_ADDRESS=$(kubectl get  service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    gcp::create_dns_record \
-        -a "$APISERVER_IP_ADDRESS" \
-        -h "apiserver" \
-        -s "$COMMON_NAME" \
-        -p "$CLOUDSDK_CORE_PROJECT" \
-        -z "$CLOUDSDK_DNS_ZONE_NAME"
-    CLEANUP_APISERVER_DNS_RECORD="true"
-fi
+log::info "Install kyma"
+installKyma
 
 log::info "Collect list of images"
 if [ -z "$ARTIFACTS" ] ; then
@@ -335,8 +267,6 @@ echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-release-${RELEASE_VERSION}.csv
 # shellcheck disable=SC2016
 IMAGES_LIST=$(kubectl get pods --all-namespaces -o json | jq '{ images: [.items[] | .metadata.ownerReferences[0].name as $owner | (.status.containerStatuses + .status.initContainerStatuses)[] | { name: .imageID, custom_fields: {owner: $owner, image: .image, name: .name }}] | unique | group_by(.name) | map({name: .[0].name, custom_fields: {owner: map(.custom_fields.owner) | unique | join(","), container_name: map(.custom_fields.name) | unique | join(","), image: .[0].custom_fields.image}}) | map(select (.name | startswith("sha256") | not))}' )
 echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-release-${RELEASE_VERSION}.json"
-
-test_fast_integration_eventing
 
 log::success "Success"
 
