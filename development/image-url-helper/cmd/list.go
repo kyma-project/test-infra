@@ -43,7 +43,9 @@ func ListCmd() *cobra.Command {
 
 			allImages := make(common.ImageMap)
 			common.MergeImageMap(allImages, images)
-			common.MergeImageMap(allImages, testImages)
+			if !options.excludeTestImages {
+				common.MergeImageMap(allImages, testImages)
+			}
 
 			if options.outputFormat == "" {
 				common.PrintImages(allImages, imageComponentsMap)
