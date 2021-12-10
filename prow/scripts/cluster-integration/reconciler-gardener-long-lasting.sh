@@ -50,11 +50,13 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-numeric_day=$(date +%u)
-export INPUT_CLUSTER_NAME="${INPUT_CLUSTER_NAME}${numeric_day}"
 
 # Delete cluster with reconciler if exists
 reconciler::delete_cluster_if_exists
+
+# Generate new cluster name
+numeric_day=$(date +%u)
+export INPUT_CLUSTER_NAME="${INPUT_CLUSTER_NAME}${numeric_day}"
 
 # Provisioning gardener long lasting cluster
 reconciler::provision_cluster
