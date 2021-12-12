@@ -9,6 +9,7 @@ date
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
+readonly KYMA_PROJECT_DIR="$(cd "${SCRIPT_DIR}/../../../" && pwd)"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${SCRIPT_DIR}/lib/log.sh"
@@ -53,7 +54,6 @@ fi
 POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
-
     key="$1"
 
     case ${key} in
@@ -107,21 +107,30 @@ ENDTIME=$(date +%s)
 echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
 trap cleanup exit INT
+INTEGRATION_TEST_SCRIPT_NAME="serverless-integration-k3s.sh"
 
+
+# TODO: Refactor this to avoid having this branching
 if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
-    cat <<EOF >> "/home/prow/go/src/github.com/kyma-project/kyma/resources/serverless/integration-overrides.yaml"
+    log::info "Creating Serverless git-auth-integration overrides"
+    mkdir -p "${KYMA_PROJECT_DIR}/overrides"
+    cat <<EOF >> "${KYMA_PROJECT_DIR}/overrides/integration-overrides.yaml"
 testSuite: "git-auth-integration"
 githubPrivateKey: "${GH_AUTH_PRIVATE_KEY}"
 azureDevOpsUsername: "${AZURE_DEVOPS_AUTH_USERNAME}"
 azureDevOpsPassword: "${AZURE_DEVOPS_AUTH_PASSWORD}"
 EOF
-fi
 
-log::info "Copying Kyma to the instance"
-#shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
+    INTEGRATION_TEST_SCRIPT_NAME="serverless-git-auth-integration-nightly-k3s.sh"
+fi
+    log::info "Copying Kyma to the instance"
+    #shellcheck disable=SC2088
+    utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${KYMA_PROJECT_DIR}" "~/"
 
 log::info "Triggering the installation"
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/serverless-integration-k3s.sh"
+gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" \
+    --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" \
+    --command="sudo bash ~/test-infra/prow/scripts/cluster-integration/${INTEGRATION_TEST_SCRIPT_NAME}" \
+    --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}"
 
 log::success "all done"
