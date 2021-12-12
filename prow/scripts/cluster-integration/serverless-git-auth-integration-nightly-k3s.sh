@@ -76,7 +76,7 @@ done
 
 getjobstatus
 
-collect_results
+collect_results "${job_name}"
 
 echo "Exit code ${job_status}"
 
