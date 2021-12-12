@@ -1,5 +1,6 @@
 pjNames:
   - pjName: "serverless-git-auth-integration-k3s-nightly"
+  - pjName: "pre-main-serverless-integration-k3s"
 prConfigs:
   kyma-project:
     kyma:
