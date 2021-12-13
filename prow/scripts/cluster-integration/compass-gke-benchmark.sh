@@ -139,7 +139,6 @@ function createCluster() {
   export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
   gcp::provision_k8s_cluster \
         -c "$COMMON_NAME" \
-        -r "$PROVISION_REGIONAL_CLUSTER" \
         -p "$CLOUDSDK_CORE_PROJECT" \
         -v "$GKE_CLUSTER_VERSION" \
         -j "$JOB_NAME" \
@@ -216,7 +215,7 @@ function applyCompassOverrides() {
   OVERRIDES_FILE="${COMPASS_SOURCES_DIR}/installation/resources/installer-config-gke-benchmark.yaml.tpl"
   if [[ -f "$OVERRIDES_FILE" ]]; then
     # envsubst requires variables to be exported or to be passed to the process execution in order to work
-  CLOUDSDK_CORE_PROJECT=${CLOUDSDK_CORE_PROJECT} CLOUDSDK_COMPUTE_ZONE=${CLOUDSDK_COMPUTE_REGION} COMMON_NAME=${COMMON_NAME} envsubst < "$OVERRIDES_FILE" | kubectl apply -f -
+  CLOUDSDK_CORE_PROJECT=${CLOUDSDK_CORE_PROJECT} CLOUDSDK_COMPUTE_ZONE=${CLOUDSDK_COMPUTE_ZONE} COMMON_NAME=${COMMON_NAME} envsubst < "$OVERRIDES_FILE" | kubectl apply -f -
   fi
 }
 
@@ -352,7 +351,7 @@ export TLS_CERT="${utils_generate_self_signed_cert_return_tls_cert:?}"
 export TLS_KEY="${utils_generate_self_signed_cert_return_tls_key:?}"
 
 log::info "Choose node for benchmarks execution"
-NODE=$(kubectl get nodes -l topology.kubernetes.io/zone!="$CLOUDSDK_COMPUTE_ZONE" | tail -n 1 | cut -d ' ' -f 1)
+NODE=$(kubectl get nodes | tail -n 1 | cut -d ' ' -f 1)
 
 log::info "Benchmarks will be executed on node: $NODE. Will make it unschedulable."
 kubectl label node "$NODE" benchmark=true
