@@ -101,7 +101,7 @@ log::success "Tests completed"
 
 if [[ $KYMA_MAJOR_VERSION == "1" ]]; then
     # Extend scenario
-    REMOVE_OLD_COMPONENTS="true"
+    export REMOVE_OLD_COMPONENTS="true"
 
     # Upgrade kyma to latest 2.x release
     export KYMA_MAJOR_VERSION="2"
