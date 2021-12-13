@@ -41,6 +41,10 @@ fi
 export DOCKER_TAG
 echo DOCKER_TAG "${DOCKER_TAG}"
 
+if [[ -n "$PULL_PULL_SHA" ]]; then
+  PULL_PULL_SHA_SHORT="${PULL_PULL_SHA::8}"
+  export PULL_PULL_SHA_SHORT
+fi
 PULL_BASE_SHA_SHORT="${PULL_BASE_SHA::8}"
 export PULL_BASE_SHA_SHORT
 DATE=$(date +v%Y%m%d)
