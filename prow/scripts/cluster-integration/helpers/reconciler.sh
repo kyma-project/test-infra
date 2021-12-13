@@ -6,6 +6,43 @@ readonly RECONCILER_TIMEOUT=1200 # in secs
 readonly RECONCILER_DELAY=15 # in secs
 readonly LOCAL_KUBECONFIG="$HOME/.kube/config"
 
+function reconciler::delete_cluster_if_exists(){
+  export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
+  for i in {1..5}
+  do
+    local name="${INPUT_CLUSTER_NAME}${i}"
+    set +e
+    existing_shoot=$(kubectl get shoot "${name}" -ojsonpath="{ .metadata.name }")
+    if [ -n "${existing_shoot}" ]; then
+      log::info "Cluster found and deleting '${name}'"
+      gardener::deprovision_cluster \
+            -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+            -c "${name}" \
+            -f "${GARDENER_KYMA_PROW_KUBECONFIG}" \
+            -w "true"
+
+      log::info "We wait 120s for Gardener Shoot to settle after cluster deletion"
+      sleep 120
+    else
+      log::info "Cluster '${name}' does not exist"
+    fi
+    set -e
+  done
+}
+
+function reconciler::provision_cluster() {
+    export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
+    export DOMAIN_NAME="${INPUT_CLUSTER_NAME}"
+    export DEFINITION_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/reconciler/shoot-template.yaml"
+    log::info "Creating cluster: ${INPUT_CLUSTER_NAME}"
+    # create the cluster
+    envsubst < "${DEFINITION_PATH}" | kubectl create -f -
+
+    # wait for the cluster to be ready
+    kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${INPUT_CLUSTER_NAME}"
+    log::info "Cluster ${INPUT_CLUSTER_NAME} was created successfully"
+
+}
 
 function reconciler::deploy() {
   # Deploy reconciler to cluster
