@@ -41,6 +41,9 @@ fi
 export DOCKER_TAG
 echo DOCKER_TAG "${DOCKER_TAG}"
 
+PULL_BASE_SHA_SHORT="${PULL_BASE_SHA::8}"
+export PULL_BASE_SHA_SHORT
+
 # Adding script argument checking allows to define custom build targets because `ci-release` is not in several Makefiles.
 if [ -n "$1" ]; then
   make -C "${SOURCES_DIR}" "$@" 2>&1 | while read -r line ; do printf '[%04d] | %s\n' $SECONDS "$line"; done;
