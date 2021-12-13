@@ -6,6 +6,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"k8s.io/test-infra/prow/config/secret"
 	prowflagutil "k8s.io/test-infra/prow/flagutil"
+	"k8s.io/test-infra/prow/git/v2"
 	"k8s.io/test-infra/prow/pluginhelp/externalplugins"
 	"net/http"
 	"os"
@@ -57,9 +58,15 @@ func main() {
 	if err != nil {
 		logrus.WithError(err).Fatal("Could not get github client.")
 	}
+	g, err := o.github.GitClient(o.dryRun)
+	if err != nil {
+		logrus.WithError(err).Fatal("Could not get git client.")
+	}
+	gc := git.ClientFactoryFrom(g)
 	p := Plugin{
 		tokenGenerator: secret.GetTokenGenerator(o.webhookSecretPath),
 		ghc:            ghc,
+		gc:             gc,
 	}
 
 	mux := http.NewServeMux()

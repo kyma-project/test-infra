@@ -39,6 +39,5 @@ func Test_handlePullRequest(t *testing.T) {
 	_ = Plugin{
 		tokenGenerator: nil,
 		ghc:            fakeGhClient{},
-		owc:            nil,
 	}
 }

@@ -3,18 +3,22 @@ package main
 import (
 	"encoding/json"
 	"github.com/sirupsen/logrus"
+	"io/ioutil"
 	"k8s.io/test-infra/prow/config"
+	"k8s.io/test-infra/prow/git/v2"
 	"k8s.io/test-infra/prow/github"
 	"k8s.io/test-infra/prow/pluginhelp"
 	"k8s.io/test-infra/prow/repoowners"
 	"net/http"
+	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 )
 
 const (
-	DefaultNeedsTwsLabel = "needs-tws-review"
-	Reviewer             = "adamwalach"
+	DefaultNeedsTwsLabel         = "needs-tws-review"
+	DefaultTechnicalWritersGroup = "technical-writers"
 )
 
 var markdownRe = regexp.MustCompile(".*.md")
@@ -49,7 +53,7 @@ type Plugin struct {
 	botUser        *github.UserData
 	tokenGenerator func() []byte
 	ghc            githubClient
-	owc            repoowners.Interface
+	gc             git.ClientFactory
 }
 
 func (p Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -169,9 +173,18 @@ func (p Plugin) handle(l *logrus.Entry, rc reviewCtx) error {
 		return nil
 	}
 
-	// TODO fetch list of reviewers from fixed file from repo or config
-	isTWS := author == Reviewer
-	if !isTWS {
+	gc, err := p.gc.ClientFor(org, repoName)
+	if err != nil {
+		l.WithError(err).Error("Could not initialize git client.")
+		return err
+	}
+
+	repoAliases, err := loadOwnersAliasesFromPath(l, gc.Directory(), "OWNERS_ALIASES")
+	if err != nil {
+		l.WithError(err).Error("Could not fetch owners aliases.")
+	}
+	twsGroup := repoAliases[DefaultTechnicalWritersGroup]
+	if !twsGroup.Has(author) {
 		return nil
 	}
 
@@ -229,4 +242,17 @@ func (p Plugin) hasMarkdownChanges(org, repo, sha string) (bool, error) {
 		}
 	}
 	return false, nil
+}
+
+func loadOwnersAliasesFromPath(l *logrus.Entry, basedir, filename string) (repoowners.RepoAliases, error) {
+	l.Debug("Load OWNERS_ALIASES")
+	path := filepath.Join(basedir, filename)
+	if _, err := os.Stat(path); err != nil {
+		return nil, err
+	}
+	b, err := ioutil.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	return repoowners.ParseAliasesConfig(b)
 }
