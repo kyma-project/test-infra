@@ -43,6 +43,8 @@ echo DOCKER_TAG "${DOCKER_TAG}"
 
 PULL_BASE_SHA_SHORT="${PULL_BASE_SHA::8}"
 export PULL_BASE_SHA_SHORT
+DATE=$(date +v%Y%m%d)
+export DATE
 
 # Adding script argument checking allows to define custom build targets because `ci-release` is not in several Makefiles.
 if [ -n "$1" ]; then
