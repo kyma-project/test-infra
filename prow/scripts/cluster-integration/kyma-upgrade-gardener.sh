@@ -29,6 +29,7 @@ ENABLE_TEST_LOG_COLLECTOR=false
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
+export REMOVE_OLD_COMPONENTS="false"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
@@ -83,6 +84,9 @@ export COMMON_NAME
 export CLUSTER_NAME="${COMMON_NAME}"
 
 if [[ $KYMA_MAJOR_VERSION == "1" ]]; then
+    # Extend scenario
+    REMOVE_OLD_COMPONENTS="true"
+
     # Install Kyma form latest 1.x release
     kyma::get_last_release_version \
         -t "${BOT_GITHUB_TOKEN}" \
@@ -163,20 +167,22 @@ sleep 60
 log::info "### Run pre-upgrade tests again to validate component removal"
 gardener::pre_upgrade_test_fast_integration_kyma
 
-log::info "### Remove old components"
-helm delete core -n kyma-system
-helm delete console -n kyma-system
-helm delete dex -n kyma-system
-helm delete apiserver-proxy -n kyma-system
-helm delete iam-kubeconfig-service -n kyma-system
-helm delete testing -n kyma-system
-helm delete xip-patch -n kyma-installer
-helm delete permission-controller -n kyma-system
+if [[ ${REMOVE_OLD_COMPONENTS}=="true" ]]; then
+    log::info "### Remove old components"
+    helm delete core -n kyma-system
+    helm delete console -n kyma-system
+    helm delete dex -n kyma-system
+    helm delete apiserver-proxy -n kyma-system
+    helm delete iam-kubeconfig-service -n kyma-system
+    helm delete testing -n kyma-system
+    helm delete xip-patch -n kyma-installer
+    helm delete permission-controller -n kyma-system
 
-kubectl delete ns kyma-installer --ignore-not-found=true
+    kubectl delete ns kyma-installer --ignore-not-found=true
 
-log::info "### Run post-upgrade tests again to validate component removal"
-gardener::post_upgrade_test_fast_integration_kyma
+    log::info "### Run post-upgrade tests again to validate component removal"
+    gardener::post_upgrade_test_fast_integration_kyma
+fi
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
