@@ -84,9 +84,6 @@ export COMMON_NAME
 export CLUSTER_NAME="${COMMON_NAME}"
 
 if [[ $KYMA_MAJOR_VERSION == "1" ]]; then
-    # Extend scenario
-    REMOVE_OLD_COMPONENTS="true"
-
     # Install Kyma form latest 1.x release
     kyma::get_last_release_version \
         -t "${BOT_GITHUB_TOKEN}" \
@@ -136,6 +133,9 @@ log::info "### Run pre-upgrade tests"
 gardener::pre_upgrade_test_fast_integration_kyma
 
 if [[ $KYMA_MAJOR_VERSION == "1" ]]; then
+    # Extend scenario
+    REMOVE_OLD_COMPONENTS="true"
+    
     # Upgrade kyma to latest 2.x release
     export KYMA_MAJOR_VERSION="2"
     log::info "### Installing Kyma 2.x"
