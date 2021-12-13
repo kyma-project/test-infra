@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 
 #Description: Kyma CLI Integration plan on Gardener. This scripts implements a pipeline that consists of many steps. The purpose is to install and test Kyma using the CLI on a real Gardener cluster.
-#There are two scenarious based on the given KYMA_MAJOR_VERSION env.
-#For the value "1": Install kyma 1.x -> upgrade to kyma 2.x
-#For the value "2": Install kyma 2.x -> upgrade to kyma from main branch
 #
 #Expected common vars:
 # - JOB_TYPE - set up by prow (presubmit, postsubmit, periodic)
@@ -29,7 +26,6 @@ ENABLE_TEST_LOG_COLLECTOR=false
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
-export REMOVE_OLD_COMPONENTS="false"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
@@ -83,22 +79,11 @@ export COMMON_NAME
 ### Cluster name must be less than 10 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
 
-if [[ $KYMA_MAJOR_VERSION == "1" ]]; then
-    # Install Kyma form latest 1.x release
-    kyma::get_last_release_version \
-        -t "${BOT_GITHUB_TOKEN}" \
-        -v "^1."
+# Install kyma from latest 2.x release
+kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
 
-    export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
-    log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
-else
-    # Install kyma from latest 2.x release
-    kyma::get_last_release_version \
-        -t "${BOT_GITHUB_TOKEN}"
-
-    export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
-    log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
-fi
+export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
+log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
 
 # checks required vars and initializes gcloud/docker if necessary
 gardener::init
@@ -116,15 +101,8 @@ gardener::provision_cluster
 
 log::info "### Installing Kyma $KYMA_SOURCE"
 
-if [[ $KYMA_MAJOR_VERSION == "1" ]]; then
-    # uses previously set KYMA_SOURCE
-    gardener::install_kyma
-else
-    # uses previously set KYMA_SOURCE
-    kyma::deploy_kyma \
-        -s "$KYMA_SOURCES_DIR" \
-        -u "true"
-fi
+# uses previously set KYMA_SOURCE
+kyma::deploy_kyma -s "$KYMA_SOURCES_DIR" -u "true"
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
@@ -132,30 +110,10 @@ utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 log::info "### Run pre-upgrade tests"
 gardener::pre_upgrade_test_fast_integration_kyma
 
-if [[ $KYMA_MAJOR_VERSION == "1" ]]; then
-    # Extend scenario
-    export REMOVE_OLD_COMPONENTS="true"
+# Upgrade kyma to main branch
+export KYMA_SOURCE="main"
 
-    # Upgrade kyma to latest 2.x release
-    export KYMA_MAJOR_VERSION="2"
-    log::info "### Installing Kyma 2.x"
-
-    kyma::get_last_release_version \
-        -t "${BOT_GITHUB_TOKEN}"
-    export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
-    log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
-
-    kyma::deploy_kyma \
-        -s "$KYMA_SOURCES_DIR" \
-        -u "true"
-else
-    # Upgrade kyma to main branch
-    export KYMA_SOURCE="main"
-    
-    kyma::deploy_kyma \
-        -s "$KYMA_SOURCES_DIR" \
-        -u "true"
-fi
+kyma::deploy_kyma -s "$KYMA_SOURCES_DIR" -u "true"
 
 
 log::info "### Run post-upgrade tests"
@@ -166,23 +124,6 @@ sleep 60
 
 log::info "### Run pre-upgrade tests again to validate component removal"
 gardener::pre_upgrade_test_fast_integration_kyma
-
-if [[ ${REMOVE_OLD_COMPONENTS}=="true" ]]; then
-    log::info "### Remove old components"
-    helm delete core -n kyma-system
-    helm delete console -n kyma-system
-    helm delete dex -n kyma-system
-    helm delete apiserver-proxy -n kyma-system
-    helm delete iam-kubeconfig-service -n kyma-system
-    helm delete testing -n kyma-system
-    helm delete xip-patch -n kyma-installer
-    helm delete permission-controller -n kyma-system
-
-    kubectl delete ns kyma-installer --ignore-not-found=true
-
-    log::info "### Run post-upgrade tests again to validate component removal"
-    gardener::post_upgrade_test_fast_integration_kyma
-fi
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"

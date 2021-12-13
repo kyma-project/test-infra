@@ -47,12 +47,18 @@ templates:
               pipeline.installer: kyma deploy
               pipeline.clusterprovisioning: kubectl shootspec
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-busola-long-lasting.sh"
-          command_upgrade_gardener:
+          command_upgrade_gardener_kyma2_to_main:
             annotations:
               pipeline.installer: kyma install, kyma deploy
               pipeline.test: upgrade-fast-integration
               pipeline.clusterprovisioning: kyma cli
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener.sh"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener-kyma2-to-main.sh"
+          command_upgrade_gardener_kyma_to_kyma2:
+            annotations:
+              pipeline.installer: kyma install, kyma deploy
+              pipeline.test: upgrade-fast-integration
+              pipeline.clusterprovisioning: kyma cli
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener-kyma-to-kyma2.sh"
           gardener_aws_job:
             labels:
               preset-gardener-aws-kyma-integration: "true"
@@ -358,7 +364,7 @@ templates:
                   local:
                     - jobConfig_default
                     - gardener_azure_job
-                    - command_upgrade_gardener
+                    - command_upgrade_gardener_kyma_to_kyma2
               - jobConfig:
                   name: kyma-upgrade-gardener-kyma2-to-main
                   annotations:
@@ -381,4 +387,4 @@ templates:
                   local:
                     - jobConfig_default
                     - gardener_azure_job
-                    - command_upgrade_gardener
+                    - command_upgrade_gardener_kyma2_to_main
