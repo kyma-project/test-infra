@@ -231,7 +231,7 @@ func (o *options) getPullRequests(t testCfg) {
 // genJobSpec will generate job specifications for prowjob to test
 // For presubmits it will find and download PR details for prowjob Refs, if the PR number for that repo was not provided in pjtester.yaml
 // All test-infra refs will be set to pull request head SHA for which pjtester is triggered for.
-func (o *options) genJobSpec(conf *config.Config, name string) (config.JobBase, prowapi.ProwJobSpec) {
+func (o *options) genJobSpec(conf *config.Config) (config.JobBase, prowapi.ProwJobSpec) {
 	for fullRepoName, ps := range conf.PresubmitsStatic {
 		org, repo, err := splitRepoName(fullRepoName)
 		if err != nil {
@@ -330,7 +330,7 @@ func presubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, e
 	if pjs.Refs.Org == opt.org && pjs.Refs.Repo == opt.repo {
 		// set refs with details of tested PR
 		setPrHeadSHA(pjs.Refs, opt)
-		//Add PR details to ExtraRefs if PR number was provided in pjtester.yaml
+		// Add PR details to ExtraRefs if PR number was provided in pjtester.yaml
 		for index, ref := range pjs.ExtraRefs {
 			matched := opt.matchRefPR(&ref)
 			if matched {
@@ -341,7 +341,7 @@ func presubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, e
 	}
 	// If prowjob specification refs point to another repo.
 	if pjs.Refs.Org != opt.org || pjs.Refs.Repo != opt.repo {
-		//Check if PR number for prowjob specification refs was provided in pjtester.yaml.
+		// Check if PR number for prowjob specification refs was provided in pjtester.yaml.
 		if !opt.matchRefPR(pjs.Refs) {
 			// If PR number not provided set BaseRef to main
 			pjs.Refs.BaseRef = defaultMainBranch
@@ -385,7 +385,7 @@ func postsubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, 
 	// If prowjob specification refs point to test infra repo, add test-infra PR refs because we are going to test code from this PR.
 	if pjs.Refs.Org == opt.org && pjs.Refs.Repo == opt.repo {
 		setPrHeadSHA(pjs.Refs, opt)
-		//Add PR details to ExtraRefs if PR number was provided in pjtester.yaml
+		// Add PR details to ExtraRefs if PR number was provided in pjtester.yaml
 		for index, ref := range pjs.ExtraRefs {
 			if opt.matchRefPR(&ref) {
 				pjs.ExtraRefs[index] = ref
@@ -395,7 +395,7 @@ func postsubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, 
 	}
 	// If prowjob specification refs point to another repo.
 	if pjs.Refs.Org != opt.org || pjs.Refs.Repo != opt.repo {
-		//Check if PR number for prowjob specification refs was provided in pjtester.yaml.
+		// Check if PR number for prowjob specification refs was provided in pjtester.yaml.
 		matched := opt.matchRefPR(pjs.Refs)
 		if !matched {
 			// If PR number not provided set BaseRef to main
@@ -465,7 +465,7 @@ func newTestPJ(pjCfg pjCfg, opt options) prowapi.ProwJob {
 	if err != nil {
 		logrus.WithError(err).Fatal("Error loading prow config")
 	}
-	job, pjs := o.genJobSpec(conf, o.jobName)
+	job, pjs := o.genJobSpec(conf)
 	if job.Name == "" {
 		logrus.Fatalf("Job %s not found.", o.jobName)
 	}
@@ -508,7 +508,6 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	}
 	o.prFinder = prtagbuilder.NewGitHubClient(nil)
 	var testPrCfg *map[string]prOrg
-	//if testPrCfg = &testCfg.PrConfigs; testPrCfg != nil && !o.prFetched {
 	if testPrCfg = &testCfg.PrConfigs; testPrCfg != nil {
 		o.getPullRequests(testCfg)
 	}
