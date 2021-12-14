@@ -12,8 +12,8 @@
 
 
 
-# exit on error, and raise error when variable is not set when used
-set -e
+set -o errexit
+set -o pipefail
 
 ENABLE_TEST_LOG_COLLECTOR=false
 

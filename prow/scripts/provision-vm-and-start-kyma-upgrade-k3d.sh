@@ -122,6 +122,7 @@ utils::send_to_vm "${ZONE}" "kyma-upgrade-test-${RANDOM_ID}" ".env" "~/.env"
 log::info "Copying Kyma to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "kyma-upgrade-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
+#shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "kyma-upgrade-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/test-infra" "~/test-infra"
 
 
