@@ -77,7 +77,7 @@ log::success "Tests completed"
 
 
 # remove me pls
-exit 1
+exit 4
 
 
 
