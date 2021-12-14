@@ -11,10 +11,8 @@
 
 
 
-# exit on error
-set -o errexit
-# set pipefail to handle right errors from tests
-set -o pipefail
+# exit on error, handle right errors from tests
+set -o errexit -o pipefail
 
 ENABLE_TEST_LOG_COLLECTOR=false
 
@@ -73,14 +71,6 @@ make ci-pre-upgrade
 popd
 
 log::success "Tests completed"
-
-
-
-# remove me pls
-exit 4
-
-
-
 
 export KYMA_SOURCE="main"
 log::info "### Upgrade Kyma to ${KYMA_SOURCE}"

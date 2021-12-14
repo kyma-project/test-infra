@@ -11,125 +11,100 @@
 
 
 
-# exit on error
+function prereq() {
+    # Unpack given envs 
+    ENV_FILE=".env"
+    if [ -f "${ENV_FILE}" ]; then
+    # shellcheck disable=SC2046
+    export $(xargs < "${ENV_FILE}")
+    fi
+
+    export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
+    export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
+    export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
+
+    # shellcheck source=prow/scripts/lib/log.sh
+    source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
+    # shellcheck source=prow/scripts/lib/utils.sh
+    source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+    # shellcheck source=prow/scripts/lib/kyma.sh
+    source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
+
+    # All provides require these values, each of them may check for additional variables
+    requiredVars=(
+        KYMA_PROJECT_DIR
+        KYMA_MAJOR_VERSION
+    )
+    utils::check_required_vars "${requiredVars[@]}"
+
+    # install kymaCLI from the last release
+    kyma::install_cli_last_release
+} 
+
+function provision_cluster() {
+    log::info "### Provision k3s cluster"
+    kyma provision k3d --ci
+}
+
+function make_fast_integration() {
+    log::info "### Run ${1} tests"
+
+    pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
+    git reset --hard ${KYMA_SOURCE}
+    make ${1}
+    popd
+
+    log::success "Tests completed"
+}
+
+function install_kyma() {
+    export KYMA_SOURCE=$(curl "https://api.github.com/repos/kyma-project/kyma/releases" | jq -r '.[].tag_name | select(startswith("${KYMA_MAJOR_VERSION}."))')
+    log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
+
+    log::info "### Installing Kyma $KYMA_SOURCE"
+    kyma install --ci --source "${KYMA_SOURCE}" --timeout 90m
+
+    # generate pod-security-policy list in json
+    utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
+}
+
+function upgrade_kyma() {
+    # Upgrade kyma to latest 2.x release
+    export KYMA_MAJOR_VERSION="2"
+
+    export KYMA_SOURCE=$(curl "https://api.github.com/repos/kyma-project/kyma/releases" | jq -r '.[].tag_name | select(startswith("${KYMA_MAJOR_VERSION}."))')
+    log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
+
+    log::info "### Upgrade Kyma to ${KYMA_SOURCE}"
+    kyma deploy --ci --source "${KYMA_SOURCE}" --timeout 90m
+}
+
+# exit on error, handle right errors from tests
 set -o errexit
-# set pipefail to handle right errors from tests
-set -o pipefail
-
-ENABLE_TEST_LOG_COLLECTOR=false
-
-# Unpack given envs 
-ENV_FILE=".env"
-if [ -f "${ENV_FILE}" ]; then
-# shellcheck disable=SC2046
-export $(xargs < "${ENV_FILE}")
-fi
-
-export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
-export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
-export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
-
-# shellcheck source=prow/scripts/lib/log.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
-# shellcheck source=prow/scripts/lib/utils.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
-# shellcheck source=prow/scripts/lib/kyma.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
-
-# All provides require these values, each of them may check for additional variables
-requiredVars=(
-    KYMA_PROJECT_DIR
-    KYMA_MAJOR_VERSION
-)
-utils::check_required_vars "${requiredVars[@]}"
-log::info "### Starting pipeline"
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 export ERROR_LOGGING_GUARD
+ENABLE_TEST_LOG_COLLECTOR=false
 
-kyma::install_cli_last_release
+log::info "### Starting pipeline"
 
-log::info "### Provision k3s cluster"
-kyma provision k3d --ci
+prereq
 
-# Install Kyma form latest 1.x release
-kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}" -v "^1."
+provision_cluster
 
-export INSTALLATION_OVERRIDE_STACKDRIVER="installer-config-logging-stackdiver.yaml"
-export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
-log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
+install_kyma
 
-log::info "### Installing Kyma $KYMA_SOURCE"
-kyma install --ci --source "${KYMA_SOURCE}" --timeout 90m
+make_fast_integration "ci-pre-upgrade"
 
-# generate pod-security-policy list in json
-utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
+upgrade_kyma
 
-log::info "### Run pre-upgrade tests"
-
-pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
-make ci-pre-upgrade
-popd
-
-log::success "Tests completed"
-
-
-
-# remove me pls
-exit 4
-
-
-
-
-# Upgrade kyma to latest 2.x release
-export KYMA_MAJOR_VERSION="2"
-
-kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
-export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
-log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}" 
-
-log::info "### Upgrade Kyma to ${KYMA_SOURCE}"
-kyma deploy --ci --source "${KYMA_SOURCE}" --timeout 90m
-
-log::info "### Run post-upgrade tests"
-
-pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
-make ci-post-upgrade
-popd
-
-log::success "Tests completed"
+make_fast_integration "ci-post-upgrade"
 
 log::info "### waiting some time to finish cleanups"
 sleep 60
 
-log::info "### Run pre-upgrade tests again to validate component removal"
-
-pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
-make ci-post-upgrade
-popd
-
-log::success "Tests completed"
-
-log::info "### Remove old components"
-helm delete core -n kyma-system
-helm delete console -n kyma-system
-helm delete dex -n kyma-system
-helm delete apiserver-proxy -n kyma-system
-helm delete iam-kubeconfig-service -n kyma-system
-helm delete testing -n kyma-system
-helm delete xip-patch -n kyma-installer
-helm delete permission-controller -n kyma-system
-
-kubectl delete ns kyma-installer --ignore-not-found=true
-
-log::info "### Run post-upgrade tests again to validate component removal"
-
-pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
-make ci-post-upgrade
-popd
-
-log::success "Tests completed"
+make_fast_integration "ci-post-upgrade"
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
