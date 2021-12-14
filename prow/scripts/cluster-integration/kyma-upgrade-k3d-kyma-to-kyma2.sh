@@ -87,10 +87,9 @@ ERROR_LOGGING_GUARD="true"
 export ERROR_LOGGING_GUARD
 ENABLE_TEST_LOG_COLLECTOR=false
 
-log::info "### Starting pipeline"
-
 prereq
 
+log::info "### Starting pipeline"
 provision_cluster
 
 install_kyma
