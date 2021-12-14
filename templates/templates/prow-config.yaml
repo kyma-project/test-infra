@@ -18,10 +18,10 @@ plank:
       timeout: 3h
       grace_period: 10m
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20211014-1433e96a1f
-        initupload: gcr.io/k8s-prow/initupload:v20211014-1433e96a1f
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20211014-1433e96a1f
-        sidecar: gcr.io/k8s-prow/sidecar:v20211014-1433e96a1f
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20211214-82e6408890
+        initupload: gcr.io/k8s-prow/initupload:v20211214-82e6408890
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20211214-82e6408890
+        sidecar: gcr.io/k8s-prow/sidecar:v20211214-82e6408890
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"

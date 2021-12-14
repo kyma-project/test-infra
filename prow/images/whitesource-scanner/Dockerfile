@@ -6,7 +6,7 @@ ENV IMAGE_COMMIT=$commit
 LABEL io.kyma-project.test-infra.commit=$commit
 
 ENV UA_VERSION v20.8.2
-ENV GO_VERSION 1.16.5
+ENV GO_VERSION 1.17.5
 ENV DEP_RELEASE_TAG v0.5.4
 
 # Install Go
