@@ -44,6 +44,7 @@ requiredVars=(
 utils::check_required_vars "${requiredVars[@]}"
 log::info "### Starting pipeline"
 
+#Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 export ERROR_LOGGING_GUARD
 
