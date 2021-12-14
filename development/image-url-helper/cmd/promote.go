@@ -34,8 +34,8 @@ func PromoteCmd() *cobra.Command {
 
 			targetContainerRegistryClean := filepath.Clean(options.targetContainerRegistry)
 
-			images := make(common.ImageMap)
-			testImages := make(common.ImageMap)
+			images := make(common.ComponentImageMap)
+			testImages := make(common.ComponentImageMap)
 
 			excludes, err := promote.ParseExcludes(options.excludesList)
 
@@ -51,7 +51,7 @@ func PromoteCmd() *cobra.Command {
 			}
 
 			// join both images lists
-			allImages := make(common.ImageMap)
+			allImages := make(common.ComponentImageMap)
 			common.MergeImageMap(allImages, images)
 			common.MergeImageMap(allImages, testImages)
 

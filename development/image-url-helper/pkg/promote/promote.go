@@ -22,7 +22,7 @@ type ExcludesList struct {
 	Excludes []string `yaml:"excludes"`
 }
 
-func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag string, dryRun bool, images, testImages common.ImageMap, excludes ExcludesMap) filepath.WalkFunc {
+func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag string, dryRun bool, images, testImages common.ComponentImageMap, excludes ExcludesMap) filepath.WalkFunc {
 	return func(path string, info os.FileInfo, err error) error {
 		//pass the error further, this shouldn't ever happen
 		if err != nil {
@@ -80,7 +80,7 @@ func GetWalkFunc(ResourcesDirectoryClean, targetContainerRegistry, targetTag str
 		}
 
 		// generate list of used images and apprend it to the global list containing images from all values.yaml files
-		common.AppendImagesToMap(parsedImagesFile, images, testImages, "", make(common.ImageToComponents))
+		common.AppendImagesToMap(parsedImagesFile, images, testImages, "")
 
 		globalNode := getYamlNode(parsedFile.Content[0], "global")
 		if globalNode == nil {

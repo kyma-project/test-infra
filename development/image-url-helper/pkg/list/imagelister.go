@@ -10,7 +10,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-func GetWalkFunc(resourcesDirectory string, images, testImages common.ImageMap, imageComponentsMap common.ImageToComponents) filepath.WalkFunc {
+func GetWalkFunc(resourcesDirectory string, images, testImages common.ComponentImageMap) filepath.WalkFunc {
 	return func(path string, info os.FileInfo, err error) error {
 		//pass the error further, this shouldn't ever happen
 		if err != nil {
@@ -42,7 +42,7 @@ func GetWalkFunc(resourcesDirectory string, images, testImages common.ImageMap, 
 		component := strings.Replace(path, resourcesDirectory+"/", "", -1)
 		component = strings.Replace(component, "/values.yaml", "", -1)
 
-		common.AppendImagesToMap(parsedFile, images, testImages, component, imageComponentsMap)
+		common.AppendImagesToMap(parsedFile, images, testImages, component)
 
 		return nil
 	}

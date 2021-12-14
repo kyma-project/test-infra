@@ -17,22 +17,44 @@ type ValueFile struct {
 	Global GlobalKey `yaml:"global,omitempty"`
 }
 
-func AppendImagesToMap(parsedFile ValueFile, images, testImages ImageMap, component string, components ImageToComponents) {
+func AppendImagesToMap(parsedFile ValueFile, images, testImages ComponentImageMap, component string) {
 	for _, image := range parsedFile.Global.Images {
 		// add registry info directly into the image struct
 		if image.ContainerRegistryURL == "" {
 			image.ContainerRegistryURL = parsedFile.Global.ContainerRegistry.Path
 		}
-		images[image.FullImageURL()] = image
 
-		components[image.FullImageURL()] = append(components[image.FullImageURL()], component)
+		if _, ok := images[image.FullImageURL()]; ok {
+			componentImage := images[image.FullImageURL()]
+			componentImage.Components[component] = true
+			images[image.FullImageURL()] = componentImage
+		} else {
+			componentImage := ComponentImage{} //Image: image, Components: make(map[string]bool)}
+			componentImage.Image = image
+			componentImage.Components = make(map[string]bool)
+			componentImage.Components[component] = true
+			images[image.FullImageURL()] = componentImage
+		}
 	}
 
 	for _, testImage := range parsedFile.Global.TestImages {
 		if testImage.ContainerRegistryURL == "" {
 			testImage.ContainerRegistryURL = parsedFile.Global.ContainerRegistry.Path
 		}
-		testImages[testImage.FullImageURL()] = testImage
-		components[testImage.FullImageURL()] = append(components[testImage.FullImageURL()], component)
+		// componentImage := ComponentImage{Image: testImage, Components: testImages[testImage.FullImageURL()].Components}
+		// componentImage.Components[component] = true
+		// images[testImage.FullImageURL()] = componentImage
+
+		if _, ok := testImages[testImage.FullImageURL()]; ok {
+			componentImage := testImages[testImage.FullImageURL()]
+			componentImage.Components[component] = true
+			testImages[testImage.FullImageURL()] = componentImage
+		} else {
+			componentImage := ComponentImage{} //Image: testImage, Components: make(map[string]bool)}
+			componentImage.Image = testImage
+			componentImage.Components = make(map[string]bool)
+			componentImage.Components[component] = true
+			testImages[testImage.FullImageURL()] = componentImage
+		}
 	}
 }

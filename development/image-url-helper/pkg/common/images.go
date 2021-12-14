@@ -4,7 +4,8 @@ import (
 	"fmt"
 )
 
-type ImageMap map[string]Image
+//type ImageMap map[string]Image
+type ComponentImageMap map[string]ComponentImage
 
 // Image contains info about a singular image
 type Image struct {
@@ -13,6 +14,11 @@ type Image struct {
 	Name                    string `yaml:"name,omitempty"`
 	Version                 string `yaml:"version,omitempty"`
 	SHA                     string `yaml:"sha,omitempty"`
+}
+
+type ComponentImage struct {
+	Components map[string]bool
+	Image      Image
 }
 
 // FullImageURL returns complete image URL with version or SHA
@@ -36,18 +42,18 @@ func (i Image) ImageURL() string {
 }
 
 // GetInconsistentImages returns a list of images with the same URl but different versions or hashes
-func GetInconsistentImages(images ImageMap) ImageMap {
-	inconsistent := make(ImageMap)
+func GetInconsistentImages(images ComponentImageMap) ComponentImageMap {
+	inconsistent := make(ComponentImageMap)
 	tmpImages := make(map[string]string)
 
 	for imageName, image := range images {
-		if tmpImageName, ok := tmpImages[image.ImageURL()]; ok {
+		if tmpImageName, ok := tmpImages[image.Image.ImageURL()]; ok {
 			if imageName != tmpImageName {
 				inconsistent[imageName] = image
 				inconsistent[tmpImageName] = images[tmpImageName]
 			}
 		} else {
-			tmpImages[image.ImageURL()] = imageName
+			tmpImages[image.Image.ImageURL()] = imageName
 		}
 	}
 
@@ -55,10 +61,23 @@ func GetInconsistentImages(images ImageMap) ImageMap {
 }
 
 // MergeImageMap merges images map into target one
-func MergeImageMap(target ImageMap, source ImageMap) {
-	for key, val := range source {
+func MergeImageMap(target ComponentImageMap, source ComponentImageMap) {
+	for key, _ := range source {
 		if _, ok := target[key]; !ok {
-			target[key] = val
+			// we have the same image in both maps
+			// TODO
+			tmpComponentImage := ComponentImage{Image: source[key].Image}
+
+			if tmpComponentImage.Components == nil {
+				tmpComponentImage.Components = make(map[string]bool)
+			}
+
+			// join both maps
+			for component, _ := range source[key].Components {
+				tmpComponentImage.Components[component] = true
+			}
+
+			target[key] = tmpComponentImage
 		}
 	}
 }

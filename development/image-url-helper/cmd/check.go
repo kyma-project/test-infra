@@ -51,16 +51,15 @@ func CheckCmd() *cobra.Command {
 				}
 			}
 
-			images := make(common.ImageMap)
-			testImages := make(common.ImageMap)
-			imageComponentsMap := make(common.ImageToComponents)
-			err = filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, images, testImages, imageComponentsMap))
+			images := make(common.ComponentImageMap)
+			testImages := make(common.ComponentImageMap)
+			err = filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, images, testImages))
 			if err != nil {
 				fmt.Printf("Cannot traverse directory: %s\n", err)
 				os.Exit(2)
 			}
 
-			allImages := make(common.ImageMap)
+			allImages := make(common.ComponentImageMap)
 			common.MergeImageMap(allImages, images)
 			common.MergeImageMap(allImages, testImages)
 
@@ -69,7 +68,7 @@ func CheckCmd() *cobra.Command {
 			if len(inconsistentImages) > 0 {
 				fmt.Printf("\n--------------------\n")
 				fmt.Println("Images with multiple tags:")
-				common.PrintImages(inconsistentImages, imageComponentsMap)
+				common.PrintImages(inconsistentImages)
 			}
 			if len(imagesDefinedOutside) > 0 || len(inconsistentImages) > 0 {
 				os.Exit(3)
