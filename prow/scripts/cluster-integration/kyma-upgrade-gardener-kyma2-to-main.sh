@@ -18,8 +18,8 @@
 
 
 
+# exit on error
 set -o errexit
-set -o pipefail
 
 ENABLE_TEST_LOG_COLLECTOR=false
 
@@ -78,6 +78,9 @@ export COMMON_NAME
 
 ### Cluster name must be less than 10 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
+
+# set pipefail to handle right errors from tests
+set -o pipefail
 
 # Install kyma from latest 2.x release
 kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"

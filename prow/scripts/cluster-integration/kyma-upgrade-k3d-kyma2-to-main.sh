@@ -11,8 +11,9 @@
 
 
 
-
+# exit on error
 set -o errexit
+# set pipefail to handle right errors from tests
 set -o pipefail
 
 ENABLE_TEST_LOG_COLLECTOR=false

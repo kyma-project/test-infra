@@ -18,8 +18,8 @@
 
 
 
+# exit on error
 set -o errexit
-set -o pipefail
 
 ENABLE_TEST_LOG_COLLECTOR=false
 
@@ -64,8 +64,6 @@ else
     exit 1
 fi
 
-echo "1"
-
 # nice cleanup on exit, be it succesful or on fail
 trap gardener::cleanup EXIT INT
 
@@ -81,7 +79,8 @@ export COMMON_NAME
 ### Cluster name must be less than 10 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
 
-echo "2"
+# set pipefail to handle right errors from tests
+set -o pipefail
 
 # Install Kyma form latest 1.x release
 kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}" -v "^1."
@@ -89,21 +88,13 @@ kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}" -v "^1."
 export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
 log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
 
-echo "3"
-
 # checks required vars and initializes gcloud/docker if necessary
 gardener::init
-
-echo "4"
 
 # if MACHINE_TYPE is not set then use default one
 gardener::set_machine_type
 
-echo "5"
-
 kyma::install_cli_last_release
-
-echo "6"
 
 # currently only Azure generates overrides, but this may change in the future
 gardener::generate_overrides
