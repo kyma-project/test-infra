@@ -36,6 +36,12 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 
+
+# remove me pls
+exit 1
+
+
+
 # All provides require these values, each of them may check for additional variables
 requiredVars=(
     KYMA_PROJECT_DIR

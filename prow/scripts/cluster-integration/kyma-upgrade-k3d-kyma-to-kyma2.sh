@@ -50,6 +50,16 @@ export ERROR_LOGGING_GUARD
 
 kyma::install_cli_last_release
 
+
+
+
+# remove me pls
+false
+
+
+
+
+
 log::info "### Provision k3s cluster"
 kyma provision k3d --ci
 
