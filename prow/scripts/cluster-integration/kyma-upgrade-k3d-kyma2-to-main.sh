@@ -36,12 +36,6 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 
-
-# remove me pls
-exit 1
-
-
-
 # All provides require these values, each of them may check for additional variables
 requiredVars=(
     KYMA_PROJECT_DIR
@@ -79,6 +73,14 @@ make ci-pre-upgrade
 popd
 
 log::success "Tests completed"
+
+
+
+# remove me pls
+exit 1
+
+
+
 
 export KYMA_SOURCE="main"
 log::info "### Upgrade Kyma to ${KYMA_SOURCE}"
