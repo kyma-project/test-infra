@@ -6,7 +6,7 @@ import (
 	context "context"
 	"net/http"
 
-	github "github.com/google/go-github/v31/github"
+	github "github.com/google/go-github/v40/github"
 	"github.com/kyma-project/test-infra/development/tools/pkg/prtagbuilder"
 	mock "github.com/stretchr/testify/mock"
 )

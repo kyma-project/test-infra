@@ -37,19 +37,18 @@ func main() {
 		logrus.SetLevel(logrus.DebugLevel)
 	}
 
-	var secretAgent = &secret.Agent{}
 	var token string
 	if o.github.TokenPath == "" {
 		logrus.Fatal("Missing github token path")
 	}
 	token = o.github.TokenPath
 
-	if err := secretAgent.Start([]string{token}); err != nil {
+	if err := secret.Add(token); err != nil {§
 		logrus.WithError(err).Fatal("Could not start SecretAgent.")
 	}
 	logrus.Debugf("%+v", o)
 
-	githubStatus, err := o.github.GitHubClientWithLogFields(secretAgent, o.dryRun, logrus.Fields{"component": "github-status"})
+	githubStatus, err := o.github.GitHubClientWithLogFields(o.dryRun, logrus.Fields{"component": "github-status"})
 	if err != nil {
 		logrus.WithError(err).Fatal("Could not start GitHub client.")
 	}

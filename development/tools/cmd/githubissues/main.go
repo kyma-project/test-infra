@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"cloud.google.com/go/bigquery"
-	"github.com/google/go-github/v31/github"
+	"github.com/google/go-github/v40/github"
 	"golang.org/x/oauth2"
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"

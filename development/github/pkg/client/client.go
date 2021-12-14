@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/google/go-github/v31/github"
+	"github.com/google/go-github/v40/github"
 	"github.com/kyma-project/test-infra/development/types"
 	"golang.org/x/oauth2"
 	"gopkg.in/yaml.v2"

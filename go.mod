@@ -3,13 +3,13 @@ module github.com/kyma-project/test-infra
 go 1.16
 
 replace (
-	k8s.io/api => k8s.io/api v0.20.2
-	k8s.io/apimachinery => k8s.io/apimachinery v0.20.2
-	k8s.io/client-go => k8s.io/client-go v0.20.2
+	k8s.io/api => k8s.io/api v0.22.2
+	k8s.io/apimachinery => k8s.io/apimachinery v0.22.2
+	k8s.io/client-go => k8s.io/client-go v0.22.2
+	k8s.io/klog/v2 => k8s.io/klog/v2 v2.9.0
 )
 
 require (
-	cloud.google.com/go v0.97.0 // indirect
 	cloud.google.com/go/bigquery v1.8.0
 	cloud.google.com/go/firestore v1.6.0
 	cloud.google.com/go/functions v1.0.0
@@ -23,9 +23,6 @@ require (
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/google/go-containerregistry v0.7.1-0.20211203164431-c75901cce627
-	github.com/google/go-github v17.0.0+incompatible
-	github.com/google/go-github/v31 v31.0.0
-	github.com/google/go-github/v36 v36.0.0
 	github.com/google/go-github/v40 v40.0.0
 	github.com/google/go-querystring v1.1.0
 	github.com/huandu/xstrings v1.3.2 // indirect
@@ -52,5 +49,5 @@ require (
 	k8s.io/api v0.22.2
 	k8s.io/apimachinery v0.22.2
 	k8s.io/client-go v11.0.1-0.20190805182717-6502b5e7b1b5+incompatible
-	k8s.io/test-infra v0.0.0-20211214102346-91011caf8dca
+	k8s.io/test-infra v0.0.0-20211214153147-7b2c2d007b33
 )
