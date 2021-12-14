@@ -61,7 +61,7 @@ func main() {
 
 	jobs := map[string]int{}
 
-	c, err := config.Load(o.prowConfig, o.jobConfigDir, nil)
+	c, err := config.Load(o.prowConfig, o.jobConfigDir, nil, "")
 	if err != nil {
 		logrus.Fatalf("Cannot load config from directory %q: %s", o.jobConfigDir, err)
 	}
