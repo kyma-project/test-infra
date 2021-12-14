@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/google/go-github/v31/github"
+	"github.com/google/go-github/v40/github"
 	"github.com/kyma-project/test-infra/development/types"
 	"golang.org/x/oauth2"
 	"gopkg.in/yaml.v2"
@@ -40,8 +40,8 @@ func newOauthHttpClient(ctx context.Context, accessToken string) *http.Client {
 	return oauth2.NewClient(ctx, ts)
 }
 
+// NewClient creates kyma implementation of github client with oauth authentication.
 // TODO: create client with support for github cache or ghproxy.
-// NeClient creates kyma implementation of github client with oauth authentication.
 func NewClient(ctx context.Context, accessToken string) (*Client, error) {
 	tc := newOauthHttpClient(ctx, accessToken)
 	c := github.NewClient(tc)
@@ -75,7 +75,7 @@ func (c *Client) IsStatusOK(resp *github.Response) (bool, error) {
 	return true, nil
 }
 
-// GetUserMap will get users-map.yaml file from github.tools.sap instance.
+// GetUsersMap will get users-map.yaml file from github.tools.sap instance.
 func (c *SapToolsClient) GetUsersMap(ctx context.Context) ([]types.User, error) {
 	var usersMap []types.User
 	// Get file from github.
@@ -99,9 +99,9 @@ func (c *SapToolsClient) GetUsersMap(ctx context.Context) ([]types.User, error) 
 	return usersMap, nil
 }
 
-// GetAuthorLoginForSHA will provide commit author github Login for given SHA.
+// GetAuthorLoginForBranch will provide commit author github Login for given SHA.
 func (c *Client) GetAuthorLoginForBranch(ctx context.Context, branchName, owner, repo string) (*string, error) {
-	branch, resp, err := c.Repositories.GetBranch(ctx, owner, repo, branchName)
+	branch, resp, err := c.Repositories.GetBranch(ctx, owner, repo, branchName, true)
 	if err != nil {
 		return nil, fmt.Errorf("got error when getting commit, error: %w", err)
 	}
@@ -118,7 +118,7 @@ func (c *Client) GetAuthorLoginForBranch(ctx context.Context, branchName, owner,
 // GetAuthorLoginForSHA will provide commit author github Login for given SHA.
 func (c *Client) GetAuthorLoginForSHA(ctx context.Context, sha, owner, repo string) (*string, error) {
 	// Get commit for SHA.
-	commit, resp, err := c.Repositories.GetCommit(ctx, owner, repo, sha)
+	commit, resp, err := c.Repositories.GetCommit(ctx, owner, repo, sha, nil)
 	if err != nil {
 		return nil, fmt.Errorf("got error when getting commit, error: %w", err)
 	}
