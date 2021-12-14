@@ -6,11 +6,11 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"k8s.io/test-infra/prow/config/secret"
 	"os"
 	"strconv"
 	"strings"
 
+	"k8s.io/test-infra/prow/config/secret"
 	"k8s.io/test-infra/prow/pod-utils/downwardapi"
 
 	"github.com/go-yaml/yaml"
