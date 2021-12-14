@@ -165,9 +165,37 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.AllPeriodics()
-	assert.Len(t, periodics, 16)
+	assert.Len(t, periodics, 18)
 
-	expName := "orphaned-disks-cleaner"
+	expName := "kyma-upgrade-k3d-kyma-to-kyma2"
+	kymaUpgradePeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, kymaUpgradePeriodic)
+	assert.Equal(t, expName, kymaUpgradePeriodic.Name)
+
+	assert.Equal(t, "0 0 6-18/2 ? * 2-6", kymaUpgradePeriodic.Cron)
+	tester.AssertThatHasPresets(t, kymaUpgradePeriodic.JobBase, preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration")
+	assert.Equal(t, tester.ImageKymaIntegrationLatest, kymaUpgradePeriodic.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-upgrade-k3d.sh"}, kymaUpgradePeriodic.Spec.Containers[0].Command)
+	assert.Equal(t, []string(nil), kymaUpgradePeriodic.Spec.Containers[0].Args)
+	tester.AssertThatContainerHasEnv(t, kymaUpgradePeriodic.Spec.Containers[0], "KYMA_PROJECT_DIR", ".")
+	tester.AssertThatContainerHasEnv(t, kymaUpgradePeriodic.Spec.Containers[0], "KYMA_MAJOR_VERSION", "1")
+	tester.AssertThatSpecifiesResourceRequests(t, kymaUpgradePeriodic.JobBase)
+
+	expName = "kyma-upgrade-k3d-kyma2-to-main"
+	kymaUpgradePeriodic = tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, kymaUpgradePeriodic)
+	assert.Equal(t, expName, kymaUpgradePeriodic.Name)
+
+	assert.Equal(t, "0 0 6-18/2 ? * 2-6", kymaUpgradePeriodic.Cron)
+	tester.AssertThatHasPresets(t, kymaUpgradePeriodic.JobBase, preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration")
+	assert.Equal(t, tester.ImageKymaIntegrationLatest, kymaUpgradePeriodic.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-upgrade-k3d.sh"}, kymaUpgradePeriodic.Spec.Containers[0].Command)
+	assert.Equal(t, []string(nil), kymaUpgradePeriodic.Spec.Containers[0].Args)
+	tester.AssertThatContainerHasEnv(t, kymaUpgradePeriodic.Spec.Containers[0], "KYMA_PROJECT_DIR", ".")
+	tester.AssertThatContainerHasEnv(t, kymaUpgradePeriodic.Spec.Containers[0], "KYMA_MAJOR_VERSION", "2")
+	tester.AssertThatSpecifiesResourceRequests(t, kymaUpgradePeriodic.JobBase)
+
+	expName = "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, disksCleanerPeriodic)
 	assert.Equal(t, expName, disksCleanerPeriodic.Name)

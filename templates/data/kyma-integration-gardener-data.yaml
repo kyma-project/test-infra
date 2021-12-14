@@ -49,7 +49,7 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-busola-long-lasting.sh"
           command_upgrade_gardener_kyma2_to_main:
             annotations:
-              pipeline.installer: kyma install, kyma deploy
+              pipeline.installer: kyma deploy
               pipeline.test: upgrade-fast-integration
               pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener-kyma2-to-main.sh"
