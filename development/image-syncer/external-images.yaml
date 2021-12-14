@@ -19,7 +19,7 @@ images:
 - source: "istio/pilot:1.12.0-distroless"
 - source: "istio/proxyv2:1.12.0-distroless"
 - source: "istio/istioctl:1.12.0"
-- source: "jaegertracing/all-in-one:1.18.1"
+- source: "jaegertracing/all-in-one:1.29.0"
 - source: "jettech/kube-webhook-certgen:v1.5.0"
 - source: "jimmidyson/configmap-reload:v0.5.0"
 - source: "kennethreitz/httpbin:latest"
