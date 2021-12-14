@@ -43,7 +43,7 @@ func main() {
 	}
 	token = o.github.TokenPath
 
-	if err := secret.Add(token); err != nil {§
+	if err := secret.Add(token); err != nil {
 		logrus.WithError(err).Fatal("Could not start SecretAgent.")
 	}
 	logrus.Debugf("%+v", o)

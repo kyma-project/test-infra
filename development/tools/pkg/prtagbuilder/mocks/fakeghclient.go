@@ -62,7 +62,7 @@ type GithubRepoService struct {
 }
 
 // GetBranch provides a mock function with given fields: ctx, owner, repo, branch
-func (_m GithubRepoService) GetBranch(ctx context.Context, owner string, repo string, branch string) (*github.Branch, *github.Response, error) {
+func (_m GithubRepoService) GetBranch(ctx context.Context, owner string, repo string, branch string, followRedirects bool) (*github.Branch, *github.Response, error) {
 	ret := _m.Called(ctx, owner, repo, branch)
 
 	var r0 *github.Branch
@@ -94,7 +94,7 @@ func (_m GithubRepoService) GetBranch(ctx context.Context, owner string, repo st
 }
 
 // GetCommit provides a mock function with given fields: ctx, owner, repo, sha
-func (_m GithubRepoService) GetCommit(ctx context.Context, owner string, repo string, sha string) (*github.RepositoryCommit, *github.Response, error) {
+func (_m GithubRepoService) GetCommit(ctx context.Context, owner string, repo string, sha string, opts *github.ListOptions) (*github.RepositoryCommit, *github.Response, error) {
 	ret := _m.Called(ctx, owner, repo, sha)
 
 	var r0 *github.RepositoryCommit

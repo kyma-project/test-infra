@@ -460,7 +460,7 @@ func formatPjName(pullAuthor, pjName string) string {
 // newTestPJ is building a prowjob definition for test
 func newTestPJ(pjCfg pjCfg, opt options) prowapi.ProwJob {
 	o := getPjCfg(pjCfg, opt)
-	conf, err := config.Load(o.configPath, o.jobConfigPath, nil,"")
+	conf, err := config.Load(o.configPath, o.jobConfigPath, nil, "")
 	if err != nil {
 		logrus.WithError(err).Fatal("Error loading prow config")
 	}
