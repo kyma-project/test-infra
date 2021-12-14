@@ -1,18 +1,19 @@
 package checkoomevent
 
 import (
-	"cloud.google.com/go/pubsub"
-	"cloud.google.com/go/storage"
 	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"google.golang.org/api/option"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"regexp"
 	"strings"
+
+	"cloud.google.com/go/pubsub"
+	"cloud.google.com/go/storage"
+	"google.golang.org/api/option"
 )
 
 // This message will be send by pubsub system.
