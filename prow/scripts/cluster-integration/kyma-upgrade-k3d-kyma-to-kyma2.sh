@@ -63,9 +63,6 @@ function install_kyma() {
 
     log::info "### Installing Kyma $KYMA_SOURCE"
     kyma install --ci --source "${KYMA_SOURCE}" --timeout 90m
-
-    # generate pod-security-policy list in json
-    utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 }
 
 function upgrade_kyma() {
@@ -80,7 +77,7 @@ function upgrade_kyma() {
 }
 
 # exit on error, handle right errors from tests
-set -o errexit
+set -e
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
