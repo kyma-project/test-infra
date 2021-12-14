@@ -74,6 +74,14 @@ popd
 
 log::success "Tests completed"
 
+
+
+# remove me pls
+exit 1
+
+
+
+
 # Upgrade kyma to latest 2.x release
 export KYMA_MAJOR_VERSION="2"
 
