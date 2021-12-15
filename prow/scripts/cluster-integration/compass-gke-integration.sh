@@ -613,9 +613,11 @@ EOF
 
       if [[ "$OSTYPE" == "darwin"* ]]; then
         sed -i '' -e '/ port:/r tmp_patch_content.yaml' "${sm}.yaml"
+        sed -i '' -e '/ targetPort:/r tmp_patch_content.yaml' "${sm}.yaml"
         sed -i '' -e '/ path:/r tmp_patch_content.yaml' "${sm}.yaml"
       else # assume Linux otherwise
         sed -i '/ port:/r tmp_patch_content.yaml' "${sm}.yaml"
+        sed -i '/ targetPort:/r tmp_patch_content.yaml' "${sm}.yaml"
         sed -i '/ path:/r tmp_patch_content.yaml' "${sm}.yaml"
       fi
 
