@@ -19,8 +19,6 @@ import (
 	"github.com/sigstore/sigstore/pkg/signature/payload"
 )
 
-//dummy
-
 // NewKMSSignerVerifier returns signature.SignerVerifier for a provider based on a keyRef.
 func NewKMSSignerVerifier(ctx context.Context, keyRef string) (signature.SignerVerifier, error) {
 	for prefix := range kms.ProvidersMux().Providers() {
