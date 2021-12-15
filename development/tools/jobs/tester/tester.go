@@ -19,20 +19,20 @@ import (
 
 const (
 	// ImageGolangBuildpack1_16 means Golang buildpack image with Go 1.16.*
-	ImageGolangBuildpack1_16 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211116-11e89837"
+	ImageGolangBuildpack1_16 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211214-2b5a3d39"
 	// ImageGolangKubebuilder2BuildpackLatest means Golang buildpack with Kubebuilder2 image
-	ImageGolangKubebuilder2BuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211116-11e89837" // see https://github.com/kyma-project/test-infra/pull/3738
+	ImageGolangKubebuilder2BuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211214-2b5a3d39" // see https://github.com/kyma-project/test-infra/pull/3738
 	// ImageNodeBuildpackLatest means Node.js buildpack image (node v12)
 	ImageNodeBuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20211116-11e89837"
 	// ImageBootstrapTestInfraLatest means it's used in test-infra prowjob defs.
 	ImageBootstrapTestInfraLatest = "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
 
 	// ImageKymaIntegrationLatest represents kyma integration image with kubectl 1.16
-	ImageKymaIntegrationLatest = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211201-ebdeacd8"
+	ImageKymaIntegrationLatest = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211214-2b5a3d39"
 	// ImageGolangToolboxLatest represents the latest version of the golang buildpack toolbox
-	ImageGolangToolboxLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211116-11e89837" // see https://github.com/kyma-project/test-infra/pull/3738
+	ImageGolangToolboxLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211214-2b5a3d39" // see https://github.com/kyma-project/test-infra/pull/3738
 	// ImageProwToolsLatest represents the latest version of the prow-tools image
-	ImageProwToolsLatest = "eu.gcr.io/kyma-project/test-infra/prow-tools:v20211202-77e7133f"
+	ImageProwToolsLatest = "eu.gcr.io/kyma-project/test-infra/prow-tools:v20211214-04adab53"
 	// KymaProjectDir means kyma project dir
 	KymaProjectDir = "/home/prow/go/src/github.com/kyma-project"
 	// KymaIncubatorDir means kyma incubator dir

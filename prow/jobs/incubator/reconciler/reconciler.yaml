@@ -30,7 +30,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211201-ebdeacd8"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211214-2b5a3d39"
             securityContext:
               privileged: true
             command:
@@ -71,7 +71,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211116-11e89837"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211214-2b5a3d39"
             securityContext:
               privileged: true
             command:
@@ -120,7 +120,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211116-11e89837"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211214-2b5a3d39"
             securityContext:
               privileged: true
             command:
@@ -183,7 +183,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211116-11e89837"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211214-2b5a3d39"
             securityContext:
               privileged: true
             command:
@@ -248,7 +248,7 @@ periodics: # runs on schedule
           channel: kyma-prow-dev-null
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211201-ebdeacd8"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211214-2b5a3d39"
             securityContext:
               privileged: true
             command:
@@ -311,7 +311,7 @@ periodics: # runs on schedule
           channel: kyma-prow-dev-null
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211201-ebdeacd8"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211214-2b5a3d39"
             securityContext:
               privileged: true
             command:
@@ -374,7 +374,7 @@ periodics: # runs on schedule
           channel: kyma-prow-dev-null
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211201-ebdeacd8"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211214-2b5a3d39"
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"
             args:
@@ -438,7 +438,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211201-ebdeacd8"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211214-2b5a3d39"
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"
             args:
