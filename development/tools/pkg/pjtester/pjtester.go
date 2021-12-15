@@ -10,7 +10,6 @@ import (
 	"strconv"
 	"strings"
 
-	"k8s.io/test-infra/prow/config/secret"
 	"k8s.io/test-infra/prow/pod-utils/downwardapi"
 
 	"github.com/go-yaml/yaml"
@@ -494,12 +493,6 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	o := gatherOptions(testCfg.ConfigPath, ghOptions)
 	prowClient := newProwK8sClientset()
 	pjsClient := prowClient.ProwV1()
-	if o.github.TokenPath == "" {
-		logrus.Fatal("GitHub Token path cannot be empty.")
-	}
-	if err := secret.Add(o.github.TokenPath); err != nil {
-		log.WithError(err).Fatal("Could not start SecretAgent.")
-	}
 	o.githubClient, err = o.github.GitHubClient(false)
 	if err != nil {
 		logrus.WithError(err).Fatal("Failed to get GitHub client")
