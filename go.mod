@@ -33,8 +33,8 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/satori/go.uuid v1.2.0
 	github.com/shurcooL/githubv4 v0.0.0-20211117020012-5800b9de5b8b
-	github.com/sigstore/cosign v1.4.1
-	github.com/sigstore/sigstore v1.0.2-0.20211203233310-c8e7f70eab4e
+	github.com/sigstore/cosign v1.3.1
+	github.com/sigstore/sigstore v1.0.1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/smartystreets/goconvey v1.7.2
 	github.com/spf13/cobra v1.2.1
