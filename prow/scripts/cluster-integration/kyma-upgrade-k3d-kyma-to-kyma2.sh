@@ -13,7 +13,6 @@
 
 # exit on error, handle right errors from tests
 set -e
-set -o pipefail
 
 function prereq() {
     # Unpack given envs 
@@ -56,7 +55,12 @@ function make_fast_integration() {
     git reset --hard "${KYMA_SOURCE}"
     make -C "${KYMA_SOURCES_DIR}/tests/fast-integration" "${1}"
 
-    log::success "Tests completed"
+    if [[ $? -eq 0 ]];then
+        log::success "Tests completed"
+    else
+        log::error "Tests failed"
+        exit 1
+    fi
 }
 
 function install_kyma() {

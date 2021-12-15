@@ -11,6 +11,9 @@
 
 
 
+# exit on error, handle right errors from tests
+set -e
+
 function prereq() {
     # Unpack given envs 
     ENV_FILE=".env"
@@ -52,7 +55,12 @@ function make_fast_integration() {
     git reset --hard "${KYMA_SOURCE}"
     make -C "${KYMA_SOURCES_DIR}/tests/fast-integration" "${1}"
 
-    log::success "Tests completed"
+    if [[ $? -eq 0 ]];then
+        log::success "Tests completed"
+    else
+        log::error "Tests failed"
+        exit 1
+    fi
 }
 
 function install_kyma() {
@@ -72,9 +80,6 @@ function upgrade_kyma() {
     log::info "### Upgrade Kyma to ${KYMA_SOURCE}"
     kyma deploy --ci --source "${KYMA_SOURCE}" --timeout 90m
 }
-
-# exit on error, handle right errors from tests
-set -e
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
