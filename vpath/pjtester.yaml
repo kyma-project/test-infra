@@ -1,13 +1,26 @@
 pjNames:
-  - pjName: "kyma-integration-k3d"
-  - pjName: "post-main-kyma-integration-k3d-central-app-connectivity"
-  - pjName: "post-main-kyma-integration-k3d-central-app-connectivity-compass"
-  - pjName: "post-main-kyma-integration-k3d-compass-dev"
-  - pjName: "nightly-main-reconciler-publish-unstable-cli"
-  - pjName: "kyma-gke-nightly-fast-integration"
+  - pjName: "pre-main-kyma-gardener-gcp-eventing"
+  - pjName: "pre-rel124-kyma-gardener-gcp-eventing"
+  - pjName: "pre-rel125-kyma-gardener-gcp-eventing"
+  - pjName: "pre-main-kyma-gardener-azure-fast-integration"
+  - pjName: "pre-main-kyma-gardener-azure-alpha-eval"
+  - pjName: "pre-main-kyma-gardener-azure-alpha-prod"
+  - pjName: "post-main-kyma-gardener-azure-alpha-eval"
+  - pjName: "post-main-kyma-gardener-azure-alpha-prod"
+  - pjName: "kyma-alpha-integration-evaluation-gardener-azure"
+  - pjName: "kyma-alpha-integration-production-gardener-azure"
+  - pjName: "post-rel124-kyma-gardener-gcp-api-gateway"
+  - pjName: "pre-rel125-kyma-gardener-azure-integration"
+  - pjName: "pre-rel125-kyma-gardener-gcp-api-gateway"
+  - pjName: "post-rel125-kyma-gardener-gcp-api-gateway"
+  - pjName: "kyma-upgrade-gardener-kyma-to-kyma2"
   - pjName: "pre-main-control-plane-reconciler-e2e"
+  - pjName: "nightly-main-reconciler-e2e"
   - pjName: "periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade"
+  - pjName: "kyma-gke-nightly-fast-integration"
+  - pjName: "kyma-aks-nightly-rel124"
+  - pjName: "kyma-aks-nightly-rel125"
 prConfigs:
   kyma-project:
     kyma:
-      prNumber: 12768
+      prNumber: 12868
