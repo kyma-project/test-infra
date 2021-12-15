@@ -58,9 +58,9 @@ function make_fast_integration() {
 }
 
 function install_kyma() {
-    export KYMA_SOURCE=$(curl --silent --fail --show-error -H "Authorization: token $BOT_GITHUB_TOKEN" \ 
+    export KYMA_SOURCE=$(curl --silent --fail --show-error -H "Authorization: token $BOT_GITHUB_TOKEN" \
         "https://api.github.com/repos/kyma-project/kyma/releases" \
-        | jq -r "[.[] | select(.tag_name | startswith(\"$KYMA_MAJOR_VERSION.\"))] | first | .tag_name")
+        | jq -r '[.[] | select(.tag_name | startswith("1."))] | first | .tag_name')
     log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
 
     log::info "### Installing Kyma $KYMA_SOURCE"
@@ -73,7 +73,7 @@ function upgrade_kyma() {
 
     export KYMA_SOURCE=$(curl --silent --fail --show-error -H "Authorization: token $BOT_GITHUB_TOKEN" \
         "https://api.github.com/repos/kyma-project/kyma/releases" \
-        | jq -r "[.[] | select(.tag_name | startswith(\"$KYMA_MAJOR_VERSION.\"))] | first | .tag_name")
+        | jq -r '[.[] | select(.tag_name | startswith("1."))] | first | .tag_name')
     log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
 
     log::info "### Upgrade Kyma to ${KYMA_SOURCE}"

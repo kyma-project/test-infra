@@ -60,7 +60,7 @@ function make_fast_integration() {
 function install_kyma() {
     export KYMA_SOURCE=$(curl --silent --fail --show-error -H "Authorization: token $BOT_GITHUB_TOKEN" \
         "https://api.github.com/repos/kyma-project/kyma/releases" \
-        | jq -r "[.[] | select(.tag_name | startswith(\"$KYMA_MAJOR_VERSION.\"))] | first | .tag_name")
+        | jq -r '[.[] | select(.tag_name | startswith("2."))] | first | .tag_name')
     log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
 
     log::info "### Installing Kyma $KYMA_SOURCE"
@@ -68,13 +68,8 @@ function install_kyma() {
 }
 
 function upgrade_kyma() {
-    # Upgrade kyma to latest 2.x release
-    export KYMA_MAJOR_VERSION="2"
-
-    export KYMA_SOURCE=$(curl --silent --fail --show-error -H "Authorization: token $BOT_GITHUB_TOKEN" \
-        "https://api.github.com/repos/kyma-project/kyma/releases" \
-        | jq -r "[.[] | select(.tag_name | startswith(\"$KYMA_MAJOR_VERSION.\"))] | first | .tag_name")
-    log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
+    # Upgrade kyma to main
+    export KYMA_SOURCE="main"
 
     log::info "### Upgrade Kyma to ${KYMA_SOURCE}"
     kyma deploy --ci --source "${KYMA_SOURCE}" --timeout 90m
