@@ -50,8 +50,8 @@ function make_fast_integration() {
     log::info "### Run ${1} tests"
 
     pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
-    git reset --hard ${KYMA_SOURCE}
-    make ${1}
+    git reset --hard "${KYMA_SOURCE}"
+    make "${1}"
     popd
 
     log::success "Tests completed"

@@ -50,8 +50,8 @@ function make_fast_integration() {
     log::info "### Run ${1} tests"
 
     pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
-    git reset --hard ${KYMA_SOURCE}
-    make ${1}
+    git reset --hard "${KYMA_SOURCE}"
+    make "${1}"
     popd
 
     log::success "Tests completed"
@@ -73,7 +73,7 @@ function upgrade_kyma() {
 
     export KYMA_SOURCE=$(curl --silent --fail --show-error -H "Authorization: token $BOT_GITHUB_TOKEN" \
         "https://api.github.com/repos/kyma-project/kyma/releases" \
-        | jq -r '[.[] | select(.tag_name | startswith("1."))] | first | .tag_name')
+        | jq -r '[.[] | select(.tag_name | startswith("2."))] | first | .tag_name')
     log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
 
     log::info "### Upgrade Kyma to ${KYMA_SOURCE}"
