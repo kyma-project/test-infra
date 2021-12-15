@@ -14,8 +14,10 @@ require (
 	cloud.google.com/go/firestore v1.6.0
 	cloud.google.com/go/functions v1.0.0
 	cloud.google.com/go/logging v1.0.0
+	cloud.google.com/go/monitoring v1.1.0 // indirect
 	cloud.google.com/go/pubsub v1.16.0
 	cloud.google.com/go/storage v1.18.2
+	cloud.google.com/go/trace v1.0.0 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
@@ -33,7 +35,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/satori/go.uuid v1.2.0
 	github.com/shurcooL/githubv4 v0.0.0-20211117020012-5800b9de5b8b
-	github.com/sigstore/cosign v1.3.1
+	github.com/sigstore/cosign v1.0.1
 	github.com/sigstore/sigstore v1.0.1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/smartystreets/goconvey v1.7.2
