@@ -10,7 +10,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-test-infra-image-syncer-validate"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(development/image-syncer)'
+      run_if_changed: '^(go.mod|go.sum|development/image-syncer)'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
