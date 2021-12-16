@@ -107,7 +107,7 @@ make_fast_integration "ci-post-upgrade"
 log::info "### waiting some time to finish cleanups"
 sleep 60
 
-make_fast_integration "ci-post-upgrade"
+make_fast_integration "ci-pre-upgrade"
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
