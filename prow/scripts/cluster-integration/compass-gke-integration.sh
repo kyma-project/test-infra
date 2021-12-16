@@ -270,11 +270,11 @@ function prometheusMTLSPatch() {
   patchPrometheusForMTLS
   patchAlertManagerForMTLS
   enableNodeExporterMTLS
-  patchCertManager
   patchDeploymentsToInjectSidecar
   patchKymaServiceMonitorsForMTLS
   removeKymaPeerAuthsForPrometheus
   patchMonitoringTests
+  patchCertManager
 }
 
 function patchPrometheusForMTLS() {
@@ -589,7 +589,6 @@ function patchKymaServiceMonitorsForMTLS() {
     dex
     api-gateway
     monitoring-prometheus-pushgateway
-    cert-manager
   )
 
   crd="servicemonitors.monitoring.coreos.com"
@@ -613,11 +612,9 @@ EOF
 
       if [[ "$OSTYPE" == "darwin"* ]]; then
         sed -i '' -e '/ port:/r tmp_patch_content.yaml' "${sm}.yaml"
-        sed -i '' -e '/ targetPort:/r tmp_patch_content.yaml' "${sm}.yaml"
         sed -i '' -e '/ path:/r tmp_patch_content.yaml' "${sm}.yaml"
       else # assume Linux otherwise
         sed -i '/ port:/r tmp_patch_content.yaml' "${sm}.yaml"
-        sed -i '/ targetPort:/r tmp_patch_content.yaml' "${sm}.yaml"
         sed -i '/ path:/r tmp_patch_content.yaml' "${sm}.yaml"
       fi
 
@@ -684,14 +681,42 @@ EOF
 }
 
 function patchCertManager() {
-  kubectl label ns cert-manager istio-injection=enabled --overwrite || true
+  namespace="cert-manager"
 
-  kubectl -n cert-manager patch deployment cert-manager-cainjector -p '{"spec":{"template":{"metadata":{"annotations":{"sidecar.istio.io/inject": "false"}}}}}' || true
-  kubectl -n cert-manager patch deployment cert-manager-webhook -p '{"spec":{"template":{"metadata":{"annotations":{"sidecar.istio.io/inject": "false"}}}}}' || true
+  kubectl label ns ${namespace} istio-injection=enabled --overwrite || true
 
-  kubectl rollout restart -n cert-manager deployment/cert-manager || true
-  kubectl rollout restart -n cert-manager deployment/cert-manager-cainjector || true
-  kubectl rollout restart -n cert-manager deployment/cert-manager-webhook || true
+  kubectl -n ${namespace} patch deployment cert-manager-cainjector -p '{"spec":{"template":{"metadata":{"annotations":{"sidecar.istio.io/inject": "false"}}}}}' || true
+  kubectl -n ${namespace} patch deployment cert-manager-webhook -p '{"spec":{"template":{"metadata":{"annotations":{"sidecar.istio.io/inject": "false"}}}}}' || true
+
+  kubectl rollout restart -n ${namespace} deployment/cert-manager || true
+  kubectl rollout restart -n ${namespace} deployment/cert-manager-cainjector || true
+  kubectl rollout restart -n ${namespace} deployment/cert-manager-webhook || true
+
+  if kubectl get servicemonitors.monitoring.coreos.com -n ${namespace} cert-manager > /dev/null; then
+    monitorPatch=$(cat <<"EOF"
+    scheme: https
+    tlsConfig:
+      caFile: /etc/prometheus/secrets/istio.default/root-cert.pem
+      certFile: /etc/prometheus/secrets/istio.default/cert-chain.pem
+      keyFile: /etc/prometheus/secrets/istio.default/key.pem
+      insecureSkipVerify: true
+
+EOF
+    )
+    echo "$monitorPatch" > tmp_patch_content.yaml
+    kubectl get servicemonitors.monitoring.coreos.com -n ${namespace} cert-manager -o yaml > cert-manager.yaml
+
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+      sed -i '' -e '/ targetPort:/r tmp_patch_content.yaml' cert-manager.yaml
+    else # assume Linux otherwise
+      sed -i '/ targetPort:/r tmp_patch_content.yaml' cert-manager.yaml
+    fi
+
+    kubectl apply -f cert-manager.yaml || true
+
+    rm cert-manager.yaml
+    rm tmp_patch_content.yaml
+  fi
 }
 
 function installKyma() {
