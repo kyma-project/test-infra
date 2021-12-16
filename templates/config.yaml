@@ -23,7 +23,7 @@ globalSets:
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20211214-04adab53"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20211215-c7f57038"
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211214-2b5a3d39"
   image_buildpack-node:
