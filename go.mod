@@ -3,6 +3,8 @@ module github.com/kyma-project/test-infra
 go 1.16
 
 replace (
+	github.com/sigstore/cosign => github.com/sigstore/cosign v1.0.1
+	github.com/sigstore/sigstore => github.com/sigstore/sigstore v1.0.1
 	k8s.io/api => k8s.io/api v0.22.2
 	k8s.io/apimachinery => k8s.io/apimachinery v0.22.2
 	k8s.io/client-go => k8s.io/client-go v0.22.2
