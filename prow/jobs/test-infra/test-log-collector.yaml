@@ -13,7 +13,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^development/test-log-collector/'
+      run_if_changed: '^(go.mod|go.sum)$|^development/test-log-collector/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
