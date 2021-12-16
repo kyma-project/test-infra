@@ -11,8 +11,9 @@
 
 
 
-# exit on error, handle right errors from tests
-set -e
+
+set -o errexit
+set -o pipefail
 
 function prereq() {
     # Unpack given envs 
@@ -70,7 +71,14 @@ function install_kyma() {
     log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
 
     log::info "### Installing Kyma $KYMA_SOURCE"
-    kyma deploy --ci --source "${KYMA_SOURCE}" --timeout 90m
+    kyma deploy --ci --source "${KYMA_SOURCE}" --timeout 60m
+
+    if [[ $? -eq 0 ]];then
+        log::success "Installation completed"
+    else
+        log::error "Installation failed"
+        exit 1
+    fi
 }
 
 function upgrade_kyma() {
@@ -78,7 +86,14 @@ function upgrade_kyma() {
     export KYMA_SOURCE="main"
 
     log::info "### Upgrade Kyma to ${KYMA_SOURCE}"
-    kyma deploy --ci --source "${KYMA_SOURCE}" --timeout 90m
+    kyma deploy --ci --source "${KYMA_SOURCE}" --timeout 20m
+
+    if [[ $? -eq 0 ]];then
+        log::success "Upgrade completed"
+    else
+        log::error "Upgrade failed"
+        exit 1
+    fi
 }
 
 #Used to detect errors for logging purposes
