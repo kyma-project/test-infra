@@ -3,6 +3,7 @@ module github.com/kyma-project/test-infra
 go 1.16
 
 replace (
+	// these two sigstore/* replaces are required for the image-syncer tool
 	github.com/sigstore/cosign => github.com/sigstore/cosign v1.2.1
 	github.com/sigstore/sigstore => github.com/sigstore/sigstore v1.0.1
 	k8s.io/api => k8s.io/api v0.22.2
