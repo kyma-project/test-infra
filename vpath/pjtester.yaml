@@ -1,6 +1,2 @@
 pjNames:
-  - pjName: skr-aws-svcat-migration-dev
-prConfigs:
-  kyma-project:
-    kyma:
-      prNumber: 12674
+  - pjName: skr-kyma-to-kyma2-upgrade-aws-dev
