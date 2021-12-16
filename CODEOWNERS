@@ -26,7 +26,7 @@
 /development/tools/jobs/testinfra/ @kyma-project/prow
 
 # Stability checker
-/stability-checker/ @PK85 @piotrmiskiewicz @jasiu001 @adamwalach
+/stability-checker/ @PK85 @piotrmiskiewicz @adamwalach
 
 # The changelog-generator directory
 /changelog-generator/ @akucharska @kyma-project/prow
