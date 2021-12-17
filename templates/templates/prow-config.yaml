@@ -1122,8 +1122,6 @@ presets:
   - labels:
       preset-serverless-git-auth: "true"
     env:
-    - name: INTEGRATION_SUITE
-      value: "git-auth-integration"
     - name: GH_AUTH_PRIVATE_KEY
       valueFrom:
         secretKeyRef:

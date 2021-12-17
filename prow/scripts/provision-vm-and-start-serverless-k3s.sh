@@ -107,10 +107,7 @@ ENDTIME=$(date +%s)
 echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
 trap cleanup exit INT
-INTEGRATION_TEST_SCRIPT_NAME="serverless-integration-k3s.sh"
 
-
-# TODO: Refactor this to avoid having this branching
 if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
     log::info "Creating Serverless git-auth-integration overrides"
     mkdir -p "${KYMA_PROJECT_DIR}/overrides"
@@ -121,7 +118,6 @@ azureDevOpsUsername: "${AZURE_DEVOPS_AUTH_USERNAME}"
 azureDevOpsPassword: "${AZURE_DEVOPS_AUTH_PASSWORD}"
 EOF
 
-    INTEGRATION_TEST_SCRIPT_NAME="serverless-git-auth-integration-nightly-k3s.sh"
 fi
     log::info "Copying Kyma to the instance"
     #shellcheck disable=SC2088
@@ -130,7 +126,7 @@ fi
 log::info "Triggering the installation"
 gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" \
     --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" \
-    --command="sudo bash ~/test-infra/prow/scripts/cluster-integration/${INTEGRATION_TEST_SCRIPT_NAME}" \
+    --command="sudo bash ~/test-infra/prow/scripts/cluster-integration/serverless-integration-k3s.sh ${INTEGRATION_SUITE}" \
     --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}"
 
 log::success "all done"

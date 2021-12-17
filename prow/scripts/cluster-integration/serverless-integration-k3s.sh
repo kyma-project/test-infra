@@ -18,6 +18,8 @@ fi
 export KYMA_SOURCES_DIR="./kyma"
 export SERVERLESS_OVERRIDES_DIR="./overrides"
 
+export INTEGRATION_SUITE=${1:-serverless-integration}
+
 echo "--> Installing kyma-cli"
 install::kyma_cli
 
@@ -26,12 +28,24 @@ kyma provision k3d --ci
 
 echo "--> Deploying Serverless"
 # The python38 function requires 40M+ of memory to work. Mostly used by kubeless. I need to overrride the defaultPreset to M to avoid OOMkill.
-kyma deploy -p evaluation --ci \
-  --component cluster-essentials,serverless \
-  --value "$REGISTRY_VALUES" \
-  --value global.ingress.domainName="$DOMAIN" \
-  --value "serverless.webhook.values.function.resources.defaultPreset=M" \
-  -s local -w $KYMA_SOURCES_DIR
+
+if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
+  echo "--> Deploying Serverless from Kyma main"
+  kyma deploy -p evaluation --ci \
+    --component cluster-essentials,serverless \
+    --value "$REGISTRY_VALUES" \
+    --value global.ingress.domainName="$DOMAIN" \
+    --value "serverless.webhook.values.function.resources.defaultPreset=M" \
+    -s main
+else
+  echo "--> Deploying Serverless from $KYMA_SOURCES_DIR"
+  kyma deploy -p evaluation --ci \
+    --component cluster-essentials,serverless \
+    --value "$REGISTRY_VALUES" \
+    --value global.ingress.domainName="$DOMAIN" \
+    --value "serverless.webhook.values.function.resources.defaultPreset=M" \
+    -s local -w $KYMA_SOURCES_DIR
+fi
 
 echo "##############################################################################"
 # shellcheck disable=SC2004
@@ -48,7 +62,21 @@ sleep 60
 SERVERLESS_CHART_DIR="${KYMA_SOURCES_DIR}/resources/serverless"
 job_name="k3s-serverless-test"
 
-helm install serverless-test "${SERVERLESS_CHART_DIR}/charts/k3s-tests" -n default -f "${SERVERLESS_CHART_DIR}/values.yaml" --set jobName="${job_name}"
+if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
+  echo "--> Fetching Serverless k3s-tests"
+  git clone https://github.com/kyma-project/kyma "${KYMA_SOURCES_DIR}"
+
+  job_name="k3s-serverless-nightly-test"
+fi
+
+VALUES="-f ${SERVERLESS_CHART_DIR}/values.yaml"
+# check for test overrides.
+if [[ -e "${SERVERLESS_OVERRIDES_DIR}/integration-overrides.yaml" ]]; then
+  VALUES+=" -f ${SERVERLESS_OVERRIDES_DIR}/integration-overrides.yaml"
+fi
+
+#shellcheck disable=SC2086
+helm install serverless-test "${SERVERLESS_CHART_DIR}/charts/k3s-tests" -n default ${VALUES} --set jobName="${job_name}"
 
 job_status=""
 # helm does not wait for jobs to complete even with --wait

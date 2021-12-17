@@ -486,6 +486,9 @@ templates:
                     pipeline.platform: k3s
                   labels:
                     preset-build-pr: "true"
+                  env:
+                    - name: INTEGRATION_SUITE
+                      value: "serverless-integration"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -507,6 +510,9 @@ templates:
                   labels:
                     preset-build-main: "true"
                     preset-serverless-git-auth: "true"
+                  env:
+                    - name: INTEGRATION_SUITE
+                      value: "git-auth-integration"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
