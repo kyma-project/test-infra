@@ -9,6 +9,6 @@ metadata:
 data:
   kymaEventingProxy: {{ .Values.global.eventPublisherProxyURL | quote }}
   appName: {{ .Values.global.appName | quote }}
-  eventingTargetAppName: {{ .Values.targetAppName | quote }}
+  eventingTargetAppName: {{ .Values.global.appName | quote }}
   githubWebhookUrlPath: {{ .Values.githubWebhookUrlPath | quote }}
   listenPort: {{ .Values.global.webhookGateway.containerPort | quote }}
