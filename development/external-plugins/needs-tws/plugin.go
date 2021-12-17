@@ -35,10 +35,30 @@ type githubClient interface {
 	AddLabel(org, repo string, number int, label string) error
 	RemoveLabel(org, repo string, number int, label string) error
 	GetIssueLabels(org, repo string, number int) ([]github.Label, error)
-	RequestReview(org, repo string, number int, logins []string) error
 	CreateComment(org, repo string, number int, comment string) error
 	IsCollaborator(org, repo, user string) (bool, error)
 	AssignIssue(org, repo string, number int, logins []string) error
+}
+
+type ownersAliases interface {
+	LoadOwnersAliases(l *logrus.Entry, basedir, filename string) (repoowners.RepoAliases, error)
+}
+
+type AliasesClient struct {
+	ownersAliases
+}
+
+func (o AliasesClient) LoadOwnersAliases(l *logrus.Entry, basedir, filename string) (repoowners.RepoAliases, error) {
+	l.Debug("Load OWNERS_ALIASES")
+	path := filepath.Join(basedir, filename)
+	if _, err := os.Stat(path); err != nil {
+		return nil, err
+	}
+	b, err := ioutil.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	return repoowners.ParseAliasesConfig(b)
 }
 
 type reviewCtx struct {
@@ -53,7 +73,8 @@ type Plugin struct {
 	botUser        *github.UserData
 	tokenGenerator func() []byte
 	ghc            githubClient
-	gc             git.ClientFactory
+	gcf            git.ClientFactory
+	oac            ownersAliases
 }
 
 func (p Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -111,7 +132,7 @@ func (p *Plugin) handlePullRequest(l *logrus.Entry, e github.PullRequestEvent) e
 
 	org := e.Repo.Owner.Login
 	repo := e.Repo.Name
-	number := e.Number
+	number := e.PullRequest.Number
 
 	labels, err := p.ghc.GetIssueLabels(org, repo, number)
 	if err != nil {
@@ -127,7 +148,7 @@ func (p *Plugin) handlePullRequest(l *logrus.Entry, e github.PullRequestEvent) e
 		return err
 	}
 	if hasChanges {
-		l.Infof("Adding label to %s/%s#%d.", org, repo, number)
+		l.Debugf("Adding label to %s/%s#%d.", org, repo, number)
 		return p.ghc.AddLabel(org, repo, number, DefaultNeedsTwsLabel)
 	}
 	return nil
@@ -173,18 +194,19 @@ func (p Plugin) handle(l *logrus.Entry, rc reviewCtx) error {
 		return nil
 	}
 
-	gc, err := p.gc.ClientFor(org, repoName)
+	gc, err := p.gcf.ClientFor(org, repoName)
 	if err != nil {
 		l.WithError(err).Error("Could not initialize git client.")
 		return err
 	}
-
-	repoAliases, err := loadOwnersAliasesFromPath(l, gc.Directory(), "OWNERS_ALIASES")
+	p.oac = AliasesClient{}
+	repoAliases, err := p.oac.LoadOwnersAliases(l, gc.Directory(), "OWNERS_ALIASES")
 	if err != nil {
 		l.WithError(err).Error("Could not fetch owners aliases.")
 	}
 	twsGroup := repoAliases[DefaultTechnicalWritersGroup]
 	if !twsGroup.Has(author) {
+		l.Infof("'%s' is not in the group of required reviewers.", author)
 		return nil
 	}
 
@@ -210,7 +232,7 @@ func (p Plugin) handle(l *logrus.Entry, rc reviewCtx) error {
 	if !isAuthor && !isAssignee {
 		l.Infof("Assign PR #%v to %s", number, author)
 		if err := p.ghc.AssignIssue(org, repoName, number, []string{author}); err != nil {
-			l.WithError(err).Error("Failed to assign %s/%s#%d to %s", org, repoName, number, author)
+			l.WithError(err).Errorf("Failed to assign %s/%s#%d to %s", org, repoName, number, author)
 		}
 	}
 
@@ -242,17 +264,4 @@ func (p Plugin) hasMarkdownChanges(org, repo, sha string) (bool, error) {
 		}
 	}
 	return false, nil
-}
-
-func loadOwnersAliasesFromPath(l *logrus.Entry, basedir, filename string) (repoowners.RepoAliases, error) {
-	l.Debug("Load OWNERS_ALIASES")
-	path := filepath.Join(basedir, filename)
-	if _, err := os.Stat(path); err != nil {
-		return nil, err
-	}
-	b, err := ioutil.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-	return repoowners.ParseAliasesConfig(b)
 }

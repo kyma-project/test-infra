@@ -62,11 +62,16 @@ func main() {
 	if err != nil {
 		logrus.WithError(err).Fatal("Could not get git client.")
 	}
+	botUser, err := ghc.BotUser()
+	if err != nil {
+		logrus.Warn("Could not fetch bot-user.")
+	}
 	gc := git.ClientFactoryFrom(g)
 	p := Plugin{
 		tokenGenerator: secret.GetTokenGenerator(o.webhookSecretPath),
 		ghc:            ghc,
-		gc:             gc,
+		gcf:            gc,
+		botUser:        botUser,
 	}
 
 	mux := http.NewServeMux()
