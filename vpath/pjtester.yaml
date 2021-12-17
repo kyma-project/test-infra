@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "pre-main-control-plane-reconciler-e2e"
+prConfigs:
+  kyma-incubator:
+    reconciler:
+      prNumber: 594
