@@ -73,6 +73,23 @@ templates:
                     - "jobConfig_presubmit"
                     - "pubsub_labels"
               - jobConfig:
+                  name: "pre-main-test-infra-validate-prowjobparser"
+                  privileged: "false"
+                  run_if_changed: "^development/prowjobparser/(*.go|Makefile|.*.sh)"
+                  labels:
+                    preset-build-pr: "true"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "development/prowjobparser"
+                    - "validate"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_presubmit"
+                    - "pubsub_labels"
+              - jobConfig:
                   name: "pre-main-test-infra-validate-prow-jobs"
                   privileged: "false"
                   run_if_changed: "^(development/tools/jobs|prow)" # Also for any changes in prow directory
