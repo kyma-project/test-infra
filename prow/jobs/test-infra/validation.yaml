@@ -133,7 +133,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-main-test-infra-validate-prowjobparser"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
-      run_if_changed: '^development/prowjobparser/(.*.go|Makefile|.*.sh)'
+      run_if_changed: '^(go.mod|go.sum)$|^development/prowjobparser/(.*.go|Makefile|.*.sh)'
       skip_report: false
       decorate: true
       cluster: untrusted-workload

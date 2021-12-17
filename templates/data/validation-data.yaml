@@ -75,7 +75,7 @@ templates:
               - jobConfig:
                   name: "pre-main-test-infra-validate-prowjobparser"
                   privileged: "false"
-                  run_if_changed: "^development/prowjobparser/(.*.go|Makefile|.*.sh)"
+                  run_if_changed: "^(go.mod|go.sum)$|^development/prowjobparser/(.*.go|Makefile|.*.sh)"
                   labels:
                     preset-build-pr: "true"
                   command: "make"
