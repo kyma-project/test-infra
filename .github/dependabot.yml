@@ -12,3 +12,10 @@ updates:
     commit-message:
       prefix: "Automated golang dependency update"
       include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/prow/images/prow-tools"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "Automated Dockerfile dependency update"
+      include: "scope"
