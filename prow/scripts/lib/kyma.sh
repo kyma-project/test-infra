@@ -123,6 +123,29 @@ kyma::install_cli() {
     fi
 }
 
+kyma::install_cli_last_release() {
+    if ! [[ -x "$(command -v kyma)" ]]; then
+        local settings
+        settings="$(set +o); set -$-"
+
+        mkdir -p "/tmp/bin"
+        export PATH="/tmp/bin:${PATH}"
+        pushd "/tmp/bin" || exit
+
+        curl -Lo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/$(curl -s https://api.github.com/repos/kyma-project/cli/releases/latest | grep tag_name | cut -d '"' -f 4)/kyma_Linux_x86_64.tar.gz" \
+        && tar -zxvf kyma.tar.gz && chmod +x kyma \
+        && rm -f kyma.tar.gz
+
+        kyma_version=$(kyma version --client)
+        echo "--> Kyma CLI version: ${kyma_version}"
+        echo "OK"
+        popd || exit
+        eval "${settings}"
+    else
+        log::info "Kyma CLI is already installed: $(kyma version -c)"
+    fi
+}
+
 host::os() {
   local host_os
   case "$(uname -s)" in
