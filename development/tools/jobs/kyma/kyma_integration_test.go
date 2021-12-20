@@ -172,7 +172,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, kymaUpgradePeriodic)
 	assert.Equal(t, expName, kymaUpgradePeriodic.Name)
 
-	assert.Equal(t, "0 0 6-18/2 ? * 2-6", kymaUpgradePeriodic.Cron)
+	assert.Equal(t, "0 0 6-18/2 ? * 1-5", kymaUpgradePeriodic.Cron)
 	tester.AssertThatHasPresets(t, kymaUpgradePeriodic.JobBase, preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration")
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, kymaUpgradePeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-upgrade-k3d.sh"}, kymaUpgradePeriodic.Spec.Containers[0].Command)
@@ -186,7 +186,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, kymaUpgradePeriodic)
 	assert.Equal(t, expName, kymaUpgradePeriodic.Name)
 
-	assert.Equal(t, "0 0 6-18/2 ? * 2-6", kymaUpgradePeriodic.Cron)
+	assert.Equal(t, "0 0 6-18/2 ? * 1-5", kymaUpgradePeriodic.Cron)
 	tester.AssertThatHasPresets(t, kymaUpgradePeriodic.JobBase, preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration")
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, kymaUpgradePeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-upgrade-k3d.sh"}, kymaUpgradePeriodic.Spec.Containers[0].Command)
