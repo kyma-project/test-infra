@@ -1027,7 +1027,7 @@ periodics: # runs on schedule
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
-      cron: "0 0 6-18/2 ? * 2-6"
+      cron: "0 0 6-18/2 ? * 1-5"
       skip_report: false
       decorate: true
       decoration_config:
@@ -1088,7 +1088,7 @@ periodics: # runs on schedule
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
-      cron: "0 0 6-18/2 ? * 2-6"
+      cron: "0 0 6-18/2 ? * 1-5"
       skip_report: false
       decorate: true
       decoration_config:

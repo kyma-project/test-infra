@@ -636,7 +636,7 @@ templates:
                   decoration_config:
                     timeout: 7200000000000 # 2h
                     grace_period: 600000000000 # 10min
-                  cron: "0 0 6-18/2 ? * 2-6"
+                  cron: "0 0 6-18/2 ? * 1-5"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -660,7 +660,7 @@ templates:
                   decoration_config:
                     timeout: 7200000000000 # 2h
                     grace_period: 600000000000 # 10min
-                  cron: "0 0 6-18/2 ? * 2-6"
+                  cron: "0 0 6-18/2 ? * 1-5"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
