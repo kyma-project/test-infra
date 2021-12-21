@@ -1,0 +1,5 @@
+reviewers:
+  - end-to-end-owners
+approvers:
+  - end-to-end-owners
+  - kyma-approvers

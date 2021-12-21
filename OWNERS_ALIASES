@@ -165,3 +165,62 @@ aliases:
     - szwedm
     - voigt
     - wozniakjan
+
+  # Kyma related groups and aliases
+  kyma-approvers: # general group of approvers responsible for Kyma repo
+    - pbochynski
+    - PK85
+    - a-thaler
+
+  application-broker-owners:
+    - PK85
+    - piotrmiskiewicz
+    - ksputo
+    - szwedm
+    - voigt
+    - wozniakjan
+
+  application-connectivity-owners:
+    - akgalwas
+    - janmedrek
+    - franpog859
+    - Maladie
+    - rafalpotempa
+    - koala7659
+    - ralikio
+
+  installation-owners:
+    - strekm
+    - werdes72
+    - Tomasz-Smelcerz-SAP
+    - mjakobczyk
+    - dariusztutaj
+
+  serverless-owners:
+    - m00g3n
+    - pPrecel
+    - dbadura
+    - rJankowski93
+    - kwiatekus
+
+  eventing-owners:
+    - k15r
+    - lilitgh
+    - marcobebway
+    - nachtmaar
+    - radufa
+    - sayanh
+    - pxsalehi
+    - mfaizanse
+    - friedrichwilken
+    - vladislavpaskar
+
+  end-to-end-owners:
+    - PK85
+    - piotrmiskiewicz
+    - ksputo
+    - szwedm
+    - voigt
+    - wozniakjan
+    - k15r
+    - suleymanakbas91
