@@ -12,7 +12,6 @@
 | post-main-kyma-integration-k3d-compass-dev | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-kyma-integration-k3d-central-app-connectivity | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-kyma-integration-k3d-central-app-connectivity-compass | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
-| kyma-upgrade-k3d-kyma-to-kyma2 | k3d | kyma cli | kyma deploy |  | periodic |  upgrade-fast-integration  |
 | kyma-upgrade-k3d-kyma2-to-main | k3d | kyma cli | kyma deploy |  | periodic |  upgrade-fast-integration  |
 | kyma-integration-k3d | k3d | k3d | kyma deploy |  | periodic |  fast-integration  |
 | kyma-integration-k3d-compass-dev | k3d | k3d | kyma deploy |  | periodic |  fast-integration  |
