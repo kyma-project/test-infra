@@ -224,3 +224,172 @@ aliases:
     - wozniakjan
     - k15r
     - suleymanakbas91
+
+  # kyma-incubator related aliases
+  reconciler-reviewers:
+    - tobiscr
+    - pbochynski
+    - varbanv
+    - rJankowski93
+    - suleymanakbas91
+    - m00g3n
+    - dbadura
+    - pPrecel
+    - kwiatekus
+    - moelsayed
+    - clebs
+  reconciler-approvers:
+    - tobiscr
+    - pbochynski
+    - varbanv
+    - rJankowski93
+    - suleymanakbas91
+    - m00g3n
+    - dbadura
+    - pPrecel
+    - kwiatekus
+    - moelsayed
+    - clebs
+
+  compass-reviewers:
+    - dzahariev
+    - pankrator
+    - dpanayotov
+    - KirilKabakchiev
+    - desislavaa
+    - danielgospodinow
+    - PK85
+    - nyordanoff
+    - NickyMateev
+    - krasish
+    - karaimin
+    - alextargov
+    - ataleksandrov
+    - gvachkov
+    - DimitarPetrov
+    - PetarTodorovv
+    - StefanCholakov
+    - StanislavStefanov
+    - kaloyanspiridonov
+    - SvetlinZarev-SAP
+    - la4ezar
+  compass-approvers:
+    - dzahariev
+    - pankrator
+    - dpanayotov
+    - KirilKabakchiev
+    - desislavaa
+    - danielgospodinow
+    - PK85
+    - nyordanoff
+    - NickyMateev
+    - krasish
+    - karaimin
+    - alextargov
+    - ataleksandrov
+    - gvachkov
+    - DimitarPetrov
+    - PetarTodorovv
+    - StefanCholakov
+    - StanislavStefanov
+    - kaloyanspiridonov
+    - SvetlinZarev-SAP
+    - la4ezar
+
+  varkes-reviewers:
+    - suleymanakbas91
+    - brendandobbs
+    - a-thaler
+    - jcawley5
+    - lilitgh
+    - alexandra-simeonova
+  varkes-approvers:
+    - suleymanakbas91
+    - brendandobbs
+    - a-thaler
+    - jcawley5
+    - lilitgh
+    - alexandra-simeonova
+
+  podpreset-crd-reviewers:
+    - piotrmiskiewicz
+    - szwedm
+  podpreset-crd-approvers:
+    - piotrmiskiewicz
+    - szwedm
+
+  kyma-dex-reviewers:
+    - strekm
+    - Tomasz-Smelcerz-SAP
+    - mjakobczyk
+    - werdes72
+  kyma-dex-approvers:
+    - strekm
+    - Tomasz-Smelcerz-SAP
+    - mjakobczyk
+    - werdes72
+
+  api-gateway-reviewers:
+    - strekm
+    - Tomasz-Smelcerz-SAP
+    - mjakobczyk
+    - werdes72
+  api-gateway-approvers:
+    - strekm
+    - Tomasz-Smelcerz-SAP
+    - mjakobczyk
+    - werdes72
+
+  documentation-component-reviewers:
+    - m00g3n
+  documentation-component-approvers:
+    - m00g3n
+
+  kyma-showcase-reviewers:
+    - Lyczeq
+    - mvshao
+    - mrCherry97
+    - hanngos
+    - Kaktusowy500
+    - Cortey
+  kyma-showcase-approvers:
+    - Lyczeq
+    - mvshao
+    - mrCherry97
+    - hanngos
+    - Kaktusowy500
+    - Cortey
+
+  octopus-reviewers:
+    - piotrmiskiewicz
+    - PK85
+  octopus-approvers:
+    - piotrmiskiewicz
+    - PK85
+
+  svcat-tester-reviewers:
+    - piotrmiskiewicz
+    - PK85
+  svcat-tester-approvers:
+    - piotrmiskiewicz
+    - PK85
+
+  hydra-login-consent-reviewers:
+    - Tomasz-Smelcerz-SAP
+    - dariusztutaj
+    - piotrkpc
+  hydra-login-consent-approvers:
+    - Tomasz-Smelcerz-SAP
+    - dariusztutaj
+    - piotrkpc
+
+  milv-reviewers:
+    - m00g3n
+    - pPrecel
+    - tgorgol
+    - dbadura
+  milv-approvers:
+    - m00g3n
+    - pPrecel
+    - tgorgol
+    - dbadura
