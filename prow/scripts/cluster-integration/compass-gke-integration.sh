@@ -665,9 +665,9 @@ EOF
     kubectl get ${crd} -n ${namespace} ${name} -o yaml > dex-pa.yaml
 
     if [[ "$OSTYPE" == "darwin"* ]]; then
-      sed -i '' -e '/spec:/r patch-dex.yaml' dex-pa.yaml
+      sed -i '' -e '/^spec:/r patch-dex.yaml' dex-pa.yaml
     else # assume Linux otherwise
-      sed -i '/spec:/r patch-dex.yaml' dex-pa.yaml
+      sed -i '/^spec:/r patch-dex.yaml' dex-pa.yaml
     fi
 
     kubectl apply -f dex-pa.yaml
