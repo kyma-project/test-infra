@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "kyma-upgrade-k3d-kyma-to-kyma2"
+# prConfigs:
+#   kyma-project:
+#     kyma:
+#       prNumber: 1212

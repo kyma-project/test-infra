@@ -91,7 +91,7 @@ function upgrade_kyma() {
     log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
 
     log::info "### Upgrade Kyma to ${KYMA_SOURCE}"
-    kyma deploy --ci --source "${KYMA_SOURCE}" --timeout 20m
+    kyma deploy --ci --source --verbose "${KYMA_SOURCE}" --timeout 20m
 
     if [[ $? -eq 0 ]];then
         log::success "Upgrade completed"
