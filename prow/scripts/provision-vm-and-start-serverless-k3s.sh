@@ -113,9 +113,12 @@ if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
     mkdir -p "${KYMA_PROJECT_DIR}/overrides"
     cat <<EOF >> "${KYMA_PROJECT_DIR}/overrides/integration-overrides.yaml"
 testSuite: "git-auth-integration"
-githubPrivateKey: "${GH_AUTH_PRIVATE_KEY}"
-azureDevOpsUsername: "${AZURE_DEVOPS_AUTH_USERNAME}"
-azureDevOpsPassword: "${AZURE_DEVOPS_AUTH_PASSWORD}"
+gitAuth:
+  github:
+    key: "${GH_AUTH_PRIVATE_KEY}"
+  azure:
+    username: "${AZURE_DEVOPS_AUTH_USERNAME}"
+    password: "${AZURE_DEVOPS_AUTH_PASSWORD}"
 EOF
 
 fi
