@@ -116,6 +116,8 @@ kyma::install_cli
 
 # Install Kyma using cli with version previously set in KYMA_SOURCE
 log::banner "Installing Kyma $KYMA_SOURCE"
+echo "EXECUTION_PROFILE=$EXECUTION_PROFILE"
+export EXECUTION_PROFILE=evaluation
 gardener::install_kyma
 
 # run the fast integration test before reconciliation
