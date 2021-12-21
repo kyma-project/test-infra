@@ -97,6 +97,8 @@ globalSets:
       testgrid-create-test-group: "false"
   jobConfig_slack_dev_null:
     slack_channel: "kyma-prow-dev-null"
+  jobConfig_slack_jellyfish:
+    slack_channel: "jellyfish-notifications"
   jobConfig_buildpack_incubator:
     labels:
       preset-docker-push-repository-incubator: "true"

@@ -361,6 +361,7 @@ templates:
                     - extra_refs_kyma
                     - image_kyma-integration
                     - kyma_major_version_1
+                    - jobConfig_slack_jellyfish
                   local:
                     - jobConfig_default
                     - gardener_azure_job
@@ -384,6 +385,7 @@ templates:
                     - extra_refs_kyma
                     - image_kyma-integration
                     - kyma_major_version_2
+                    - jobConfig_slack_jellyfish
                   local:
                     - jobConfig_default
                     - gardener_azure_job
