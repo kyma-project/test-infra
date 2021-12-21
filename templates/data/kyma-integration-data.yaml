@@ -487,8 +487,7 @@ templates:
                   labels:
                     preset-build-pr: "true"
                   env:
-                    - name: INTEGRATION_SUITE
-                      value: "serverless-integration"
+                    INTEGRATION_SUITE: "serverless-integration"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -511,8 +510,7 @@ templates:
                     preset-build-main: "true"
                     preset-serverless-git-auth: "true"
                   env:
-                    - name: INTEGRATION_SUITE
-                      value: "git-auth-integration"
+                    INTEGRATION_SUITE: "git-auth-integration"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
