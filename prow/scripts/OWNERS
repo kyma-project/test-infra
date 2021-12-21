@@ -1,0 +1,10 @@
+filters:
+  ".*":
+    labels:
+      - prow/scripts
+
+reviewers:
+  - tooling-reviewers
+
+approvers:
+  - tooling-approvers

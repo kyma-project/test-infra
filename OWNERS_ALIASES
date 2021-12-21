@@ -1,10 +1,17 @@
 aliases:
-  test-infra-tooling:
+  tooling-approvers:
     - adamwalach
     - dekiel
     - Ressetkk
     - kasiakepka
     - Halamix2
+  tooling-reviewers:
+    - adamwalach
+    - dekiel
+    - Ressetkk
+    - kasiakepka
+    - Halamix2
+    - ammarlakis
   technical-writers:
     - klaudiagrz
     - mmitoraj
