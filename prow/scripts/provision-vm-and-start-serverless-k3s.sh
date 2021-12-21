@@ -107,12 +107,12 @@ ENDTIME=$(date +%s)
 echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
 trap cleanup exit INT
-
-if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
+# apply overrides if we are not using the default test suite
+if [[ ${INTEGRATION_SUITE} != "serverless-integration" ]]; then
     log::info "Creating Serverless git-auth-integration overrides"
     mkdir -p "${KYMA_PROJECT_DIR}/overrides"
     cat <<EOF >> "${KYMA_PROJECT_DIR}/overrides/integration-overrides.yaml"
-testSuite: "git-auth-integration"
+testSuite: "${INTEGRATION_SUITE}"
 gitAuth:
   github:
     key: "${GH_AUTH_PRIVATE_KEY}"
