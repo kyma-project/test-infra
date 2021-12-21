@@ -167,8 +167,8 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	periodics := jobConfig.AllPeriodics()
 	assert.Len(t, periodics, 17)
 
-	expName = "kyma-upgrade-k3d-kyma2-to-main"
-	kymaUpgradePeriodic = tester.FindPeriodicJobByName(periodics, expName)
+	expName := "kyma-upgrade-k3d-kyma2-to-main"
+	kymaUpgradePeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, kymaUpgradePeriodic)
 	assert.Equal(t, expName, kymaUpgradePeriodic.Name)
 
