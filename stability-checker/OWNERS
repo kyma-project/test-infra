@@ -1,9 +1,4 @@
 reviewers:
-  - PK85
-  - piotrmiskiewicz
-  - adamwalach
+  - stability-checker-reviewers
 approvers:
-  - PK85
-  - piotrmiskiewicz
-  - adamwalach
-  - tooling-approvers
+  - stability-checkers-approvers

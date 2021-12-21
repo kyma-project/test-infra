@@ -12,9 +12,156 @@ aliases:
     - kasiakepka
     - Halamix2
     - ammarlakis
+  stability-checker-owners:
+    - PK85
+    - piotrmiskiewicz
+    - adamwalach
+
   technical-writers:
     - klaudiagrz
     - mmitoraj
     - majakurcius
     - alexandra-simeonova
     - NHingerl
+
+  busola-approvers:
+    - akucharska
+    - dariadomagala
+    - qbalukom
+    - valentinvieriu
+    - Wawrzyn321
+    - Sawthis
+  busola-reviewers:
+    - akucharska
+    - dariadomagala
+    - qbalukom
+    - valentinvieriu
+    - Wawrzyn321
+    - Sawthis
+
+  website-reviewers:
+    - m00g3n
+    - pPrecel
+    - valentinvieriu
+    - dbadura
+    - tgorgol
+    - rJankowski93
+  website-approvers:
+    - m00g3n
+    - pPrecel
+    - valentinvieriu
+    - dbadura
+    - tgorgol
+    - rJankowski93
+
+  cli-reviewers:
+    - suleymanakbas91
+    - clebs
+    - a-thaler
+    - lilitgh
+    - rakesh-garimella
+    - shorim
+    - tobiscr
+    - skhalash
+    - jeremyharisch
+    - chrkl
+    - lindnerby
+  cli-approvers:
+    - suleymanakbas91
+    - clebs
+    - a-thaler
+    - lilitgh
+    - rakesh-garimella
+    - shorim
+    - tobiscr
+    - skhalash
+    - jeremyharisch
+    - chrkl
+    - lindnerby
+
+  helm-broker-reviewers:
+    - piotrmiskiewicz
+    - PK85
+    - jasiu001
+    - ksputo
+    - crabtree
+    - szwedm
+  helm-broker-approvers:
+    - piotrmiskiewicz
+    - PK85
+    - jasiu001
+    - ksputo
+    - crabtree
+    - szwedm
+
+  hydroform-reviewers:
+    - a-thaler
+    - lilitgh
+    - suleymanakbas91
+    - clebs
+    - jeremyharisch
+  hydroform-approvers:
+    - a-thaler
+    - lilitgh
+    - suleymanakbas91
+    - clebs
+    - jeremyharisch
+
+  addons-reviewers:
+    - piotrmiskiewicz
+    - PK85
+    - jasiu001
+    - ksputo
+    - crabtree
+  addons-approvers:
+    - piotrmiskiewicz
+    - PK85
+    - jasiu001
+    - ksputo
+    - crabtree
+
+  rafter-reviewers:
+    - m00g3n
+    - pPrecel
+    - dbadura
+    - tgorgol
+    - rJankowski93
+  rafter-approvers:
+    - m00g3n
+    - pPrecel
+    - dbadura
+    - tgorgol
+    - rJankowski93
+
+  control-plane-reviewers:
+    - PK85
+    - tgorgol
+    - akgalwas
+    - janmedrek
+    - Szymongib
+    - franpog859
+    - ralikio
+    - Maladie
+    - koala7659
+    - rafalpotempa
+    - piotrmiskiewicz
+    - ksputo
+    - szwedm
+    - voigt
+    - wozniakjan
+  control-plane-approvers:
+    - PK85
+    - tgorgol
+    - akgalwas
+    - janmedrek
+    - Szymongib
+    - franpog859
+    - ralikio
+    - Maladie
+    - koala7659
+    - rafalpotempa
+    - piotrmiskiewicz
+    - ksputo
+    - szwedm
+    - voigt
+    - wozniakjan
