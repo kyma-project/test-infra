@@ -221,6 +221,14 @@ templates:
                   repo: "cli"
                   path_alias: "github.com/kyma-project/cli"
                   base_ref: "main"
+          extra_refs_k8s-test-infra:
+            extra_refs:
+              k8s-test-infra:
+                - org: kubernetes
+                  repo: test-infra
+                  base_ref: master
+                  base_sha: "3fba7110c39a7a0e7fb087dbb4af0674cafd341c"
+                  path_alias: github.com/kubernetes/test-infra
           reconciler_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
@@ -265,14 +273,6 @@ templates:
               pipeline.clusterprovisioning: reconciler
           reconciler_image_autobump_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-incubator/reconciler/scripts/prow/reconciler-image-autobump.sh"
-          extra_refs_k8s-test-infra:
-            extra_refs:
-              k8s-test-infra:
-                - org: kubernetes
-                  repo: test-infra
-                  base_ref: master
-                  base_sha: "3fba7110c39a7a0e7fb087dbb4af0674cafd341c"
-                  path_alias: github.com/kubernetes/test-infra
           github_token_mounts:
             volumes:
               - name: kyma-bot-github-token
@@ -354,6 +354,7 @@ templates:
                     - disable_testgrid
                     - image_buildpack-golang
                     - jobConfig_buildpack_incubator
+                    - jobConfig_slack_jellyfish
                   local:
                     - extra_refs_kyma_cli
                     - reconciler_publish_unstable_cli_jobConfig
@@ -378,8 +379,8 @@ templates:
                     - extra_refs_control-plane
                     - kyma_major_version_1
                     - disable_testgrid
-                    - jobConfig_slack_dev_null
                     - image_kyma-integration
+                    - jobConfig_slack_jellyfish
                   local:
                     - extra_refs_kyma-1-24
                     - reconciler_e2e_upgrade_jobConfig
@@ -402,7 +403,7 @@ templates:
                     - extra_refs_reconciler
                     - extra_refs_control-plane
                     - disable_testgrid
-                    - jobConfig_slack_dev_null
+                    - jobConfig_slack_jellyfish
                   local:
                     - extra_refs_k8s-test-infra
                     - reconciler_image_autobump_jobConfig
@@ -426,8 +427,8 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_control-plane
                     - disable_testgrid
-                    - jobConfig_slack_dev_null
                     - image_kyma-integration
+                    - jobConfig_slack_jellyfish
                   local:
                     - reconciler_nightly_cluster_jobConfig
                     - reconciler_jobConfig_args
@@ -459,6 +460,7 @@ templates:
                     - kyma_major_version_2
                     - disable_testgrid
                     - image_kyma-integration
+                    - jobConfig_slack_jellyfish
                   local:
                     - reconciler_nightly_e2e_jobConfig
                     - reconciler_jobConfig_args
