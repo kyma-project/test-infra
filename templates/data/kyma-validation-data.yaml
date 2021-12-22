@@ -30,6 +30,7 @@ templates:
               - jobConfig:
                   name: "pre-main-component-descriptors"
                   command: "bash"
+                  image: "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-4608"
                   args:
                     - "-c"
                     - "/prow-tools/image-url-helper --resources-directory /home/prow/go/src/github.com/kyma-project/kyma/resources/ components --component-version v20211222-deadbeef --git-commit ${PULL_PULL_SHA} --git-branch ${PULL_BASE_REF} --output-dir ${ARTIFACTS}/cd"
