@@ -1,14 +1,20 @@
 package component
 
 import (
+	"context"
 	"fmt"
+	"io/ioutil"
+	"os"
 	"strings"
 
+	componentarchiveremote "github.com/gardener/component-cli/pkg/commands/componentarchive/remote"
 	v2 "github.com/gardener/component-spec/bindings-go/apis/v2"
 	"github.com/gardener/component-spec/bindings-go/codec"
+	"github.com/go-logr/logr"
 	"github.com/google/go-containerregistry/pkg/name"
 	"github.com/google/go-containerregistry/pkg/v1/remote"
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/list"
+	"github.com/mandelsoft/vfs/pkg/osfs"
 )
 
 type ComponentOptions struct {
@@ -84,7 +90,7 @@ func addSources(component *v2.ComponentDescriptor, options ComponentOptions) err
 
 func addResources(component *v2.ComponentDescriptor, options ComponentOptions, images list.ImageMap) error {
 	for _, image := range images {
-		// TODO ugly hack, since istio is till in wrong format
+		// TODO ugly hack, since istio is still in wrong format
 		if strings.HasPrefix(image.FullImageURL(), "eu.gcr.io/kyma-project/external/istio") {
 			continue
 		}
@@ -127,5 +133,41 @@ func addResources(component *v2.ComponentDescriptor, options ComponentOptions, i
 func SanityCheck(encodedComponentDescriptor []byte) error {
 	var decoded v2.ComponentDescriptor
 	err := codec.Decode(encodedComponentDescriptor, &decoded)
+	return err
+}
+
+func PushDescriptor(encodedComponentDescriptor []byte, repoContext string) error {
+	// create temporary dir, so pushing can be separate from saving YAML file
+	dirPath, err := ioutil.TempDir(os.TempDir(), "component_descriptor")
+	if err != nil {
+		return err
+	}
+
+	err = os.MkdirAll(dirPath, 0666)
+	if err != nil {
+		return err
+	}
+	defer os.RemoveAll(dirPath)
+
+	filePath := dirPath + "/component-descriptor.yaml"
+	tempFile, err := os.Create(filePath)
+	if err != nil {
+		return err
+	}
+	_, err = tempFile.Write(encodedComponentDescriptor)
+	if err != nil {
+		return err
+	}
+	tempFile.Close()
+
+	pushOptions := componentarchiveremote.PushOptions{}
+	pushOptions.ComponentArchivePath = dirPath
+	pushOptions.BuilderOptions.BaseUrl = repoContext
+
+	err = pushOptions.Run(context.Background(), logr.Discard(), osfs.New())
+	if err != nil {
+		return err
+	}
+
 	return err
 }

@@ -2,8 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
+	"path"
 	"path/filepath"
 
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/component"
@@ -70,6 +72,23 @@ func ComponentsCmd() *cobra.Command {
 				fmt.Println(string(encodedComponentDescriptor))
 			}
 
+			if options.OutputDir != "" {
+				outputDirClean := path.Clean(options.OutputDir)
+				err = os.MkdirAll(outputDirClean, os.ModePerm)
+				if err != nil {
+					log.Fatalf("failed to create output directory: %s", err)
+				}
+
+				ioutil.WriteFile(outputDirClean+"/component-descriptor.yaml", encodedComponentDescriptor, 0666)
+			}
+
+			if options.RepoContext != "" {
+				err = component.PushDescriptor(encodedComponentDescriptor, options.RepoContext)
+				if err != nil {
+					log.Fatalf("failed to push component descriptor: %s", err)
+				}
+			}
+
 		},
 	}
 	addComponentCmdFlags(cmd, &options)
@@ -87,6 +106,9 @@ func addComponentCmdFlags(cmd *cobra.Command, options *component.ComponentOption
 
 	cmd.Flags().StringVarP(&options.GitBranch, "git-branch", "b", "", "Git branch name")
 	viper.BindEnv("git-branch", "PULL_BASE_REF")
+
+	cmd.Flags().StringVarP(&options.OutputDir, "output-dir", "o", "", "Name of the output directory")
+	cmd.Flags().StringVarP(&options.RepoContext, "repo-context", "C", "", "Name of the Docker repository to push component descriptor to")
 
 	//envy.ParseCobra(cmd, envy.CobraConfig{Persistent: true, Prefix: "IMAGE_URL_HELPER"})
 	cmd.Flags().VisitAll(func(f *pflag.Flag) {
