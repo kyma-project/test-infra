@@ -64,9 +64,8 @@ job_name="k3s-serverless-test"
 
 if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
   echo "--> Fetching Serverless k3s-tests"
-  # TODO: use main kyma repo after merging this PR:
-  # git clone https://github.com/kyma-project/kyma "${KYMA_SOURCES_DIR}"
-  git clone -b git_auth https://github.com/moelsayed/kyma "${KYMA_SOURCES_DIR}"
+ 
+  git clone https://github.com/kyma-project/kyma "${KYMA_SOURCES_DIR}"
   job_name="k3s-serverless-nightly-test"
 fi
 
