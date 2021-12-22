@@ -175,7 +175,7 @@ RUN go install golang.org/x/perf/cmd/...
 ####################### Install smctl ###########################
 #################################################################
 
-ENV SMCTL_VERSION=v1.11.10
+ENV SMCTL_VERSION=v1.11.12
 RUN curl -fLSs -o smctl.tar.gz https://github.com/Peripli/service-manager-cli/releases/download/${SMCTL_VERSION}/smctl-${SMCTL_VERSION}-linux-amd64.tar.gz && \
     tar xzf smctl.tar.gz && \
     rm smctl.tar.gz && \
