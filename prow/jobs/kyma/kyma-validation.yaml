@@ -45,4 +45,44 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+    - name: pre-main-component-descriptors
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-component-descriptors"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20211215-c7f57038"
+            securityContext:
+              privileged: true
+            command:
+              - "bash"
+            args:
+              - "c"
+              - "/prow-tools/image-url-helper --resources-directory /home/prow/go/src/github.com/kyma-project/kyma/resources/ components --component-version v20211222-deadbeef --git-commit ${PULL_PULL_SHA} --git-branch ${PULL_BASE_REF} --output-dir ${ARTIFACTS}/cd"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
