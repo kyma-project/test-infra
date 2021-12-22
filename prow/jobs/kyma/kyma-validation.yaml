@@ -52,6 +52,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-component-descriptors"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-docker-push-repository-kyma: "true"
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -73,7 +74,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "echo \" This tool generates component descriptor file\" && /prow-tools/image-url-helper --resources-directory /home/prow/go/src/github.com/kyma-project/kyma/resources/ components --component-version $(date +v%Y%m%d)-${PULL_PULL_SHA::8} --git-commit ${PULL_PULL_SHA} --git-branch ${PULL_BASE_REF} --output-dir ${ARTIFACTS}/cd && echo \"Compomnent decriptor was generated succesfully finished\""
+              - "echo \" This tool generates component descriptor file\" && /prow-tools/image-url-helper --resources-directory /home/prow/go/src/github.com/kyma-project/kyma/resources/ components --component-version $(date +v%Y%m%d)-${PULL_PULL_SHA::8} --git-commit ${PULL_PULL_SHA} --git-branch ${PULL_BASE_REF} --output-dir ${ARTIFACTS}/cd --repo-context "$(DOCKER_PUSH_REPOSITORY)&& echo \"Compomnent decriptor was generated succesfully finished\""
             resources:
               requests:
                 memory: 1.5Gi
