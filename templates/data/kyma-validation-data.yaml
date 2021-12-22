@@ -34,7 +34,7 @@ templates:
                   args:
                     - "-c"
                     - 'echo \" This tool generates component descriptor file\" &&
-                     /prow-tools/image-url-helper --resources-directory /home/prow/go/src/github.com/kyma-project/kyma/resources/ components --component-version v20211222-deadbeef --git-commit ${PULL_PULL_SHA} --git-branch ${PULL_BASE_REF} --output-dir ${ARTIFACTS}/cd &&
+                     /prow-tools/image-url-helper --resources-directory /home/prow/go/src/github.com/kyma-project/kyma/resources/ components --component-version v$(date +v%Y%m%d)-${PULL_PULL_SHA::8} --git-commit ${PULL_PULL_SHA} --git-branch ${PULL_BASE_REF} --output-dir ${ARTIFACTS}/cd &&
                       echo \"Compomnent decriptor was generated succesfully finished\"'
                 inheritedConfigs:
                   global:
