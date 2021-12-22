@@ -68,8 +68,6 @@ func ComponentsCmd() *cobra.Command {
 				fmt.Println("Validation check failed, generated YAML file:")
 				fmt.Println(string(encodedComponentDescriptor))
 				log.Fatalf("failed sanity check: %s", err)
-			} else {
-				fmt.Println(string(encodedComponentDescriptor))
 			}
 
 			if options.OutputDir != "" {
