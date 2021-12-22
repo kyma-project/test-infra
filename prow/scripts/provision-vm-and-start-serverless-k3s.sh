@@ -112,7 +112,6 @@ if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
     log::info "Creating Serverless git-auth-integration overrides"
     mkdir -p "${KYMA_PROJECT_DIR}/overrides"
     cat <<EOF >> "${KYMA_PROJECT_DIR}/overrides/integration-overrides.yaml"
-testSuite: "${INTEGRATION_SUITE}"
 gitAuth:
   github:
     key: "${GH_AUTH_PRIVATE_KEY}"
