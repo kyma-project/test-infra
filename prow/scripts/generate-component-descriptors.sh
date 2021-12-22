@@ -25,5 +25,5 @@ echo "This tool generates component descriptor file"
     --git-commit ${PULL_PULL_SHA} \
     --git-branch ${PULL_BASE_REF} \
     --output-dir ${ARTIFACTS}/cd \
-    --repo-context $(DOCKER_PUSH_REPOSITORY)
+    --repo-context ${DOCKER_PUSH_REPOSITORY}
 echo "Compomnent decriptor was generated succesfully finished"
