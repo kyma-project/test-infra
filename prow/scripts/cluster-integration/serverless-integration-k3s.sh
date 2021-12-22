@@ -76,7 +76,9 @@ if [[ -e "${SERVERLESS_OVERRIDES_DIR}/integration-overrides.yaml" ]]; then
 fi
 
 #shellcheck disable=SC2086
-helm install serverless-test "${SERVERLESS_CHART_DIR}/charts/k3s-tests" -n default ${VALUES} --set jobName="${job_name}"
+helm install serverless-test "${SERVERLESS_CHART_DIR}/charts/k3s-tests" -n default ${VALUES} \
+ --set jobName="${job_name}" \
+ --set testSuite="${INTEGRATION_SUITE}"
 
 job_status=""
 # helm does not wait for jobs to complete even with --wait
