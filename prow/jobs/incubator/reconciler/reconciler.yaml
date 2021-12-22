@@ -21,7 +21,6 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
       extra_refs:
         - org: kyma-project
@@ -35,6 +34,9 @@ presubmits: # runs on PRs
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"
+            env:
+              - name: GO11MODULE
+                value: "on"
             resources:
               requests:
                 memory: 3Gi
