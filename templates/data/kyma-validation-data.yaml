@@ -29,16 +29,11 @@ templates:
                     - "smaller_requests"
               - jobConfig:
                   name: "pre-main-component-descriptors"
-                  command: "bash"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/generate-component-descriptors.sh"
                   image: "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-4608"
                   labels:
                     preset-docker-push-repository-kyma: "true"
                     preset-sa-gcr-push: "true"
-                  args:
-                    - "-c"
-                    - 'echo \" This tool generates component descriptor file\" &&
-                     /prow-tools/image-url-helper --resources-directory /home/prow/go/src/github.com/kyma-project/kyma/resources/ components --component-version $(date +v%Y%m%d)-${PULL_PULL_SHA::8} --git-commit ${PULL_PULL_SHA} --git-branch ${PULL_BASE_REF} --output-dir ${ARTIFACTS}/cd --repo-context $(DOCKER_PUSH_REPOSITORY) &&
-                      echo \"Compomnent decriptor was generated succesfully finished\"'
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
