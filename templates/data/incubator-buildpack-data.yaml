@@ -373,6 +373,20 @@ templates:
                     - reconciler_main_jobConfig
                     - reconciler_jobConfig_args
               - jobConfig:
+                  name: post-dev-kyma-incubator-reconciler
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
+                  local:
+                    - reconciler_dev_jobConfig
+                    - reconciler_jobConfig_args
+              - jobConfig:
                   name: nightly-main-reconciler-publish-unstable-cli
                   annotations:
                     description: Bump reconciler version used by CLI and publish the unstable CLI binaries
