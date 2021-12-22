@@ -335,29 +335,29 @@ templates:
                     preset-gc-project-env: "true"
                   annotations:
                     pipeline.platform: k3d
-                  inheritedConfigs:
-                    global:
-                      - jobConfig_default
-                      - jobConfig_presubmit
-                      - image_kyma-integration
-                      - extra_refs_test-infra
-                    local:
-                      - reconciler_dev_jobConfig
-                      - reconciler_integration_jobConfig
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - image_kyma-integration
+                    - extra_refs_test-infra
+                  local:
+                    - reconciler_dev_jobConfig
+                    - reconciler_integration_jobConfig
               - jobConfig:
                   name: "pre-dev-kyma-incubator-reconciler"
                   always_run: true
-                  inheritedConfigs:
-                    global:
-                      - jobConfig_default
-                      - jobConfig_presubmit
-                      - extra_refs_test-infra
-                      - image_buildpack-golang
-                      - jobConfig_generic_component
-                      - jobConfig_buildpack_incubator
-                    local:
-                      - reconciler_dev_jobConfig
-                      - reconciler_jobConfig_args
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
+                  local:
+                    - reconciler_dev_jobConfig
+                    - reconciler_jobConfig_args
               - jobConfig:
                   name: post-main-kyma-incubator-reconciler
                 inheritedConfigs:
