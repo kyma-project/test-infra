@@ -14,7 +14,7 @@ source "$SCRIPT_DIR/lib/docker.sh"
 # gcp::authenticate \
 #   -c "$SA_KYMA_ARTIFACTS_GOOGLE_APPLICATION_CREDENTIALS"
 
-docker::authenticate "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
+docker::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 
 echo "This tool generates component descriptor file"
