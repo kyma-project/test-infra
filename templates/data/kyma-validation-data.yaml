@@ -33,6 +33,7 @@ templates:
                   image: "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-4608"
                   labels:
                     preset-docker-push-repository-kyma: "true"
+                    preset-sa-gcr-push: "true"
                   args:
                     - "-c"
                     - 'echo \" This tool generates component descriptor file\" &&
