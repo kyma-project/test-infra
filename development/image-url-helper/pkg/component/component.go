@@ -21,7 +21,6 @@ type ComponentOptions struct {
 	Provider         string
 	ComponentName    string // github.com/kyma-project/kyma
 	ComponentVersion string
-	AppName          string
 	OutputDir        string
 	RepoContext      string
 	GitCommit        string
