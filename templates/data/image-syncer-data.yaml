@@ -8,7 +8,7 @@ templates:
               - jobConfig:
                   name: "pre-main-test-infra-image-syncer-validate"
                   privileged: "false"
-                  run_if_changed: "^(development/image-syncer)"
+                  run_if_changed: "^(go.mod|go.sum|development/image-syncer)"
                   command: "make"
                   args:
                     - "-C"

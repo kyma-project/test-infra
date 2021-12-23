@@ -345,7 +345,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
+      run_if_changed: '^(go\.mod|go\.sum)$|^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -429,7 +429,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211214-2b5a3d39"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: true
             command:
@@ -466,7 +466,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211214-2b5a3d39"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: true
             command:
@@ -503,7 +503,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211214-2b5a3d39"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: true
             command:
@@ -886,7 +886,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
+      run_if_changed: '^(go\.mod|go\.sum)$|^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -974,7 +974,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211214-2b5a3d39"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: true
             command:
@@ -1013,7 +1013,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211214-2b5a3d39"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: true
             command:
@@ -1052,7 +1052,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211214-2b5a3d39"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: true
             command:
