@@ -1,4 +1,4 @@
-FROM eu.gcr.io/kyma-project/test-infra/buildpack-java-node:v20210108-723ddac2
+FROM eu.gcr.io/kyma-project/test-infra/buildpack-java-node:v20211013-2c064d85
 
 # Commit details
 ARG commit
