@@ -121,30 +121,6 @@ templates:
                         - "default"
                         - "postsubmit"
                   - jobConfig:
-                      name: "pre-test-infra-buildpack-node-chromium"
-                      run_if_changed: "^prow/images/buildpack-node-chromium/"
-                      args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node-chromium"
-                    inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
-                      local:
-                        - "default"
-                        - "presubmit"
-                  - jobConfig:
-                      name: "post-test-infra-buildpack-node-chromium"
-                      run_if_changed: "^prow/images/buildpack-node-chromium/"
-                      args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node-chromium"
-                    inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
-                      local:
-                        - "default"
-                        - "postsubmit"
-                  - jobConfig:
                       name: "pre-test-infra-cleaner"
                       run_if_changed: "^prow/images/cleaner/"
                       args:
