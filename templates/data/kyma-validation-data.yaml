@@ -30,14 +30,14 @@ templates:
               - jobConfig:
                   name: "pre-main-component-descriptors"
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/generate-component-descriptors.sh"
-                  image: "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-4608"
+                  # image: "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-4608"
                   labels:
                     preset-docker-push-repository-kyma: "true"
                     preset-sa-gcr-push: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_prow-tools"
+                    - "image_kyma-integration"
                     - "jobConfig_presubmit"
                     - "extra_refs_test-infra"
                   local:

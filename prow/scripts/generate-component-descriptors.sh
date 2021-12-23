@@ -3,6 +3,8 @@
 set -e
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
+
 KYMA_RESOURCES_DIR="/home/prow/go/src/github.com/kyma-project/kyma/installation/resources"
 
 # shellcheck source=prow/scripts/lib/docker.sh
@@ -18,7 +20,7 @@ docker::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 
 echo "This tool generates component descriptor file"
-/prow-tools/image-url-helper \
+go run ${TEST_INFRA_SOURCES_DIR}/development/image-url-helper \
     --resources-directory /home/prow/go/src/github.com/kyma-project/kyma/resources/ \
     components \
     --component-version $(date +v%Y%m%d)-${PULL_PULL_SHA::8} \
