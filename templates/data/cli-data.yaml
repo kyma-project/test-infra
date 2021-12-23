@@ -61,6 +61,7 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-golang-toolbox
+                    - jobConfig_slack_jellyfish
                   local:
                     - job_spec
               - jobConfig:
@@ -80,6 +81,7 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-golang-toolbox
+                    - jobConfig_slack_jellyfish
                   local:
                     - job_spec
       - to: ../prow/jobs/cli/cli-integration.yaml

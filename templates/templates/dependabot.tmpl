@@ -1,0 +1,17 @@
+# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+{{- range .Values.JobConfigs }}
+{{- range .Jobs }}
+  - package-ecosystem: {{ .JobConfig.packageEcosystem | quote }}
+    directory: {{ .JobConfig.directory | quote }}
+    schedule:
+      interval: {{ .JobConfig.scheduleInterval | quote }}
+    commit-message:
+      prefix: {{ .JobConfig.commitMsgPrefix | quote }}
+      {{- if .JobConfig.commitIncludeScope | quote }}
+      include: "scope"
+      {{- end }}
+{{- end }}
+{{ end }}
