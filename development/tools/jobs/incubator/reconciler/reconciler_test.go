@@ -65,7 +65,7 @@ func TestReconcilerMainIntegrationJobsPresubmit(t *testing.T) {
 	expName := "pre-main-reconciler-integration-k3d"
 	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName)
 	assert.Equal(t, expName, actualPresubmit.Name)
-	assert.Equal(t, []string{"^master$", "^main$"}, actualPresubmit.Branches)
+	assert.Equal(t, []string{"^main$"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.False(t, actualPresubmit.Optional)

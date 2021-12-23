@@ -250,8 +250,6 @@ templates:
           reconciler_nightly_e2e_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"
             privileged: false
-            env:
-              INPUT_CLUSTER_NAME: "rec-night"
           reconciler_jobConfig_args:
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
@@ -263,14 +261,18 @@ templates:
               pipeline.clusterprovisioning: kyma cli
           reconciler_nightly_cluster_jobConfig:
             privileged: false
-            env:
-              INPUT_CLUSTER_NAME: "rec-night"
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"
             annotations:
               pipeline.platform: "gardener_gcp"
               pipeline.installer: reconciler
               pipeline.test: "fast-integration"
               pipeline.clusterprovisioning: reconciler
+          reconciler_main_nightly_cluster_input_name:
+            env:
+              INPUT_CLUSTER_NAME: "rec-main-night"
+          reconciler_dev_nightly_cluster_input_name:
+            env:
+              INPUT_CLUSTER_NAME: "rec-dev-night"
           reconciler_publish_unstable_cli_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-unstable-cli.sh"
             annotations:
@@ -487,6 +489,7 @@ templates:
                   local:
                     - reconciler_nightly_cluster_jobConfig
                     - reconciler_jobConfig_args
+                    - reconciler_main_nightly_cluster_input_name
               - jobConfig:
                   name: nightly-main-reconciler-e2e
                   annotations:
@@ -519,6 +522,7 @@ templates:
                   local:
                     - reconciler_nightly_e2e_jobConfig
                     - reconciler_jobConfig_args
+                    - reconciler_main_nightly_cluster_input_name
       - to: ../prow/jobs/incubator/octopus/octopus.yaml
         jobConfigs:
           - repoName: kyma-incubator/octopus
