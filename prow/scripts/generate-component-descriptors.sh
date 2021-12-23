@@ -18,9 +18,9 @@ source "$SCRIPT_DIR/lib/docker.sh"
 
 docker::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 
-
+pushd "${TEST_INFRA_SOURCES_DIR}"
 echo "This tool generates component descriptor file"
-go run ${TEST_INFRA_SOURCES_DIR}/development/image-url-helper \
+go run ./development/image-url-helper \
     --resources-directory /home/prow/go/src/github.com/kyma-project/kyma/resources/ \
     components \
     --component-version $(date +v%Y%m%d)-${PULL_PULL_SHA::8} \
@@ -29,3 +29,4 @@ go run ${TEST_INFRA_SOURCES_DIR}/development/image-url-helper \
     --output-dir ${ARTIFACTS}/cd \
     --repo-context ${DOCKER_PUSH_REPOSITORY}
 echo "Compomnent decriptor was generated succesfully finished"
+popd
