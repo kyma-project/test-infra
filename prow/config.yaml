@@ -122,6 +122,8 @@ branch-protection:
               required_status_checks:
                 contexts:
                   - "netlify/kyma-project-old/deploy-preview"
+        private-fn-for-e2e-serverless-tests:
+          protect: false
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
       exclude:
