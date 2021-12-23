@@ -1,0 +1,118 @@
+templates:
+  - from: templates/dependabot.tmpl
+    render:
+      - to: ../.github/dependabot.yml
+        localSets:
+          dailyGoEcosystem:
+            packageEcosystem: "gomod"
+            scheduleInterval: "daily"
+            commitMsgPrefix: "Automated golang dependency update"
+            commitIncludeScope: "true"
+          dailyDockerEcosystem:
+            packageEcosystem: "docker"
+            scheduleInterval: "daily"
+            commitMsgPrefix: "Automated Dockerfile dependency update"
+            commitIncludeScope: "true"
+        jobConfigs:
+          - repoName: "github.com/kyma-project/test-infra"
+            jobs:
+              - jobConfig:
+                  directory: "/"
+                inheritedConfigs:
+                  local:
+                    - "dailyGoEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/prow-tools"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/changelog-generator"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/kyma-ci-force-bot/ciforcebot"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/kyma-github-connector/githubWebhookGateway"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/kyma-pubsub-connector/pubSubGateway"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/test-log-collector"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/bootstrap"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/buildpack-golang"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/buildpack-java"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/buildpack-java-node"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/buildpack-node"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/buildpack-node-chromium"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/cleaner"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/clonerefs"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/debug-commando"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/kyma-integration"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/probot-stale"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/whitesource-scanner"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/stability-checker/deploy/stability-checker"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
