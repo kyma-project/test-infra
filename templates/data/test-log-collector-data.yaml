@@ -13,7 +13,7 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-main-test-log-collector"
-                  run_if_changed: "^development/test-log-collector/"
+                  run_if_changed: "^(go.mod|go.sum)$|^development/test-log-collector/"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

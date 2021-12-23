@@ -41,7 +41,7 @@ templates:
               - jobConfig:
                   name: "pre-main-test-infra-validate-prow-tools"
                   privileged: "false"
-                  run_if_changed: "^development/tools/(cmd/.*|pkg/.*|Makefile|.*.sh)"
+                  run_if_changed: "^(go.mod|go.sum)$|^development/tools/(cmd/.*|pkg/.*|Makefile|.*.sh)"
                   labels:
                     preset-build-pr: "true"
                   command: "make"
@@ -58,7 +58,7 @@ templates:
               - jobConfig:
                   name: "pre-main-test-infra-validate-image-url-helper"
                   privileged: "false"
-                  run_if_changed: "^development/image-url-helper/(cmd/.*|pkg/.*|Makefile|.*.sh)"
+                  run_if_changed: "^(go.mod|go.sum)$|^development/image-url-helper/(cmd/.*|pkg/.*|Makefile|.*.sh)"
                   labels:
                     preset-build-pr: "true"
                   command: "make"
