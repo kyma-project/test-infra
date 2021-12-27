@@ -35,7 +35,7 @@ globalSets:
   image_buildpack-golang-toolbox:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
   image_wssagent:
-    image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211223-e3679657"
+    image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211227-f749201b"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
