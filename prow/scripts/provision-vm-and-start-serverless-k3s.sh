@@ -9,6 +9,7 @@ date
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
+readonly KYMA_PROJECT_DIR="$(cd "${SCRIPT_DIR}/../../../" && pwd)"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${SCRIPT_DIR}/lib/log.sh"
@@ -53,7 +54,6 @@ fi
 POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
-
     key="$1"
 
     case ${key} in
@@ -107,12 +107,28 @@ ENDTIME=$(date +%s)
 echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
 trap cleanup exit INT
+# apply overrides if we are not using the default test suite
+if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
+    log::info "Creating Serverless git-auth-integration overrides"
+    mkdir -p "${KYMA_PROJECT_DIR}/overrides"
+    cat <<EOF >> "${KYMA_PROJECT_DIR}/overrides/integration-overrides.yaml"
+gitAuth:
+  github:
+    key: "${GH_AUTH_PRIVATE_KEY}"
+  azure:
+    username: "${AZURE_DEVOPS_AUTH_USERNAME}"
+    password: "${AZURE_DEVOPS_AUTH_PASSWORD}"
+EOF
 
-log::info "Copying Kyma to the instance"
-#shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
+fi
+    log::info "Copying Kyma to the instance"
+    #shellcheck disable=SC2088
+    utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${KYMA_PROJECT_DIR}" "~/"
 
 log::info "Triggering the installation"
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/serverless-integration-k3s.sh"
+gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" \
+    --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" \
+    --command="sudo bash ~/test-infra/prow/scripts/cluster-integration/serverless-integration-k3s.sh ${INTEGRATION_SUITE}" \
+    --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}"
 
 log::success "all done"
