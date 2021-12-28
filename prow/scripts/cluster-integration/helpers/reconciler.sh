@@ -2,7 +2,7 @@
 
 readonly RECONCILER_SUFFIX="-reconciler"
 readonly RECONCILER_NAMESPACE=reconciler
-readonly RECONCILER_TIMEOUT=1200 # in secs
+readonly RECONCILER_TIMEOUT=2400 # in secs
 readonly RECONCILER_DELAY=15 # in secs
 readonly LOCAL_KUBECONFIG="$HOME/.kube/config"
 
