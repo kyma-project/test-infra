@@ -38,19 +38,10 @@ func AppendImagesToMap(parsedFile ValueFile, images, testImages ComponentImageMa
 		if testImage.ContainerRegistryURL == "" {
 			testImage.ContainerRegistryURL = parsedFile.Global.ContainerRegistry.Path
 		}
-		// componentImage := ComponentImage{Image: testImage, Components: testImages[testImage.FullImageURL()].Components}
-		// componentImage.Components[component] = true
-		// images[testImage.FullImageURL()] = componentImage
 
 		if _, ok := testImages[testImage.FullImageURL()]; ok {
-			componentImage := testImages[testImage.FullImageURL()]
-			componentImage.Components[component] = true
-			testImages[testImage.FullImageURL()] = componentImage
+			testImages[testImage.FullImageURL()].Components[component] = true
 		} else {
-			componentImage := ComponentImage{} //Image: testImage, Components: make(map[string]bool)}
-			componentImage.Image = testImage
-			componentImage.Components = make(map[string]bool)
-			componentImage.Components[component] = true
 			testImages[testImage.FullImageURL()] = ComponentImage{
 				Components: map[string]bool{component: true},
 				Image:      testImage,
