@@ -16,14 +16,14 @@ import (
 	"sigs.k8s.io/yaml"
 )
 
-// ComponentsCmd generates
+// ComponentsCmd generates component descripto file with all images used in Kyma
 func ComponentsCmd() *cobra.Command {
 	options := component.ComponentOptions{}
 	cmd := &cobra.Command{
 		Use:     "components",
-		Short:   "Check if all images use new format",
-		Long:    "Find all image usages that doesn't use imageurl template",
-		Example: "image-url-helper list",
+		Short:   "Generates component descriptor file for Kyma",
+		Long:    "Generates component descriptor file for Kyma from values.yaml files",
+		Example: "image-url-helper components --component-version 0.1.0 --git-commit 123456 --git-branch main",
 		Args:    cobra.ExactArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			imageComponentsMap := make(list.ImageToComponents)

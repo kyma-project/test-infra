@@ -86,7 +86,7 @@ func addSources(component *v2.ComponentDescriptor, options ComponentOptions) err
 
 func addResources(component *v2.ComponentDescriptor, options ComponentOptions, images list.ImageMap) error {
 	for _, image := range images {
-		// TODO ugly hack, since istio is still in wrong format
+		// TODO rmove when istio will be in correct format
 		if strings.HasPrefix(image.FullImageURL(), "eu.gcr.io/kyma-project/external/istio") {
 			continue
 		}
