@@ -17,6 +17,7 @@ periodics: # runs on schedule
         preset-btp-operator-stage-credentials: "true"
         preset-build-main: "true"
         preset-keb-dev-credentials: "true"
+        preset-kyma-integration-kcp-client-credentials: "true"
         preset-svcat-migration-subaccounnt: "true"
       cron: "0 */4 * * *"
       skip_report: false
