@@ -19,7 +19,7 @@ import (
 
 type ComponentOptions struct {
 	Provider         string
-	ComponentName    string // github.com/kyma-project/kyma
+	ComponentName    string
 	ComponentVersion string
 	OutputDir        string
 	RepoContext      string
@@ -45,13 +45,12 @@ func GenerateComponentDescriptor(options ComponentOptions, images list.ImageMap)
 		return component, err
 	}
 
-	//addComponentReferences()
+	// addComponentReferences()
 
 	return component, nil
 }
 
 func createComponent(component *v2.ComponentDescriptor, options ComponentOptions) error {
-	// set default values
 	v2.DefaultComponent(component)
 	component.Metadata.Version = "v2"
 
@@ -68,14 +67,12 @@ func createComponent(component *v2.ComponentDescriptor, options ComponentOptions
 }
 
 func addSources(component *v2.ComponentDescriptor, options ComponentOptions) error {
-
 	source := v2.Source{}
-	// TODO DO NOT hardcode this
+	// for now we're only generating CD for Kyma
 	source.Name = "kyma-project_kyma"
 	source.Version = options.ComponentVersion
 	source.Type = "git"
 	accessData := make(map[string]interface{})
-	// TODO again, do not hardcode
 	accessData["repoUrl"] = "https://github.com/kyma-project/kyma"
 	accessData["ref"] = options.GitBranch
 	accessData["commit"] = options.GitCommit

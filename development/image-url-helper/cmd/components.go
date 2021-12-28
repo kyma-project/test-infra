@@ -16,14 +16,6 @@ import (
 	"sigs.k8s.io/yaml"
 )
 
-// type componentCmdOptions struct {
-// 	componentName    string // github.com/kyma-project/kyma
-// 	componentVersion string
-// 	appName          string
-// 	outputDir        string
-// 	repoContext      string
-// }
-
 // ComponentsCmd generates
 func ComponentsCmd() *cobra.Command {
 	options := component.ComponentOptions{}
@@ -62,7 +54,6 @@ func ComponentsCmd() *cobra.Command {
 			}
 
 			// try decoding the component descriptor to see if it will at least parse
-			// TODO move this to tests?
 			err = component.SanityCheck(encodedComponentDescriptor)
 			if err != nil {
 				fmt.Println("Validation check failed, generated YAML file:")
@@ -96,19 +87,22 @@ func ComponentsCmd() *cobra.Command {
 func addComponentCmdFlags(cmd *cobra.Command, options *component.ComponentOptions) {
 	cmd.Flags().StringVarP(&options.ComponentName, "component-name", "n", "github.com/kyma-project/kyma", "name of the component")
 	cmd.Flags().StringVarP(&options.ComponentVersion, "component-version", "v", "", "component version")
+	cmd.MarkFlagRequired("component-version")
 
 	cmd.Flags().StringVarP(&options.Provider, "provider", "p", "internal", "Component provider (internal/external)")
 
 	cmd.Flags().StringVarP(&options.GitCommit, "git-commit", "c", "", "Git commit hash")
 	viper.BindEnv("git-commit", "PULL_PULL_SHA")
+	cmd.MarkFlagRequired("git-commit")
 
 	cmd.Flags().StringVarP(&options.GitBranch, "git-branch", "b", "", "Git branch name")
 	viper.BindEnv("git-branch", "PULL_BASE_REF")
+	cmd.MarkFlagRequired("git-branch")
 
 	cmd.Flags().StringVarP(&options.OutputDir, "output-dir", "o", "", "Name of the output directory")
 	cmd.Flags().StringVarP(&options.RepoContext, "repo-context", "C", "", "Name of the Docker repository to push component descriptor to")
 
-	//envy.ParseCobra(cmd, envy.CobraConfig{Persistent: true, Prefix: "IMAGE_URL_HELPER"})
+	// use values form enviroment when a flag was not provided
 	cmd.Flags().VisitAll(func(f *pflag.Flag) {
 		if !f.Changed && viper.IsSet(f.Name) {
 			val := viper.Get(f.Name)
