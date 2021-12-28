@@ -25,15 +25,12 @@ func AppendImagesToMap(parsedFile ValueFile, images, testImages ComponentImageMa
 		}
 
 		if _, ok := images[image.FullImageURL()]; ok {
-			componentImage := images[image.FullImageURL()]
-			componentImage.Components[component] = true
-			images[image.FullImageURL()] = componentImage
+			images[image.FullImageURL()].Components[component] = true
 		} else {
-			componentImage := ComponentImage{} //Image: image, Components: make(map[string]bool)}
-			componentImage.Image = image
-			componentImage.Components = make(map[string]bool)
-			componentImage.Components[component] = true
-			images[image.FullImageURL()] = componentImage
+			images[image.FullImageURL()] = ComponentImage{
+				Components: map[string]bool{component: true},
+				Image:      image,
+			}
 		}
 	}
 
@@ -54,7 +51,10 @@ func AppendImagesToMap(parsedFile ValueFile, images, testImages ComponentImageMa
 			componentImage.Image = testImage
 			componentImage.Components = make(map[string]bool)
 			componentImage.Components[component] = true
-			testImages[testImage.FullImageURL()] = componentImage
+			testImages[testImage.FullImageURL()] = ComponentImage{
+				Components: map[string]bool{component: true},
+				Image:      testImage,
+			}
 		}
 	}
 }
