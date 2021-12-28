@@ -9,19 +9,13 @@ KYMA_RESOURCES_DIR="/home/prow/go/src/github.com/kyma-project/kyma/installation/
 
 # shellcheck source=prow/scripts/lib/docker.sh
 source "$SCRIPT_DIR/lib/docker.sh"
-# shellcheck source=prow/scripts/lib/gcp.sh
-# source "$SCRIPT_DIR/lib/gcp.sh"
-
-
-# gcp::authenticate \
-#   -c "$SA_KYMA_ARTIFACTS_GOOGLE_APPLICATION_CREDENTIALS"
 
 docker::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 pushd "${TEST_INFRA_SOURCES_DIR}"
 echo "This tool generates component descriptor file"
 go run ./development/image-url-helper \
-    --resources-directory /home/prow/go/src/github.com/kyma-project/kyma/resources/ \
+    --resources-directory "$KYMA_RESOURCES_DIR" \
     components \
     --component-version "$(date +v%Y%m%d)-${PULL_PULL_SHA::8}" \
     --git-commit "${PULL_PULL_SHA}" \
