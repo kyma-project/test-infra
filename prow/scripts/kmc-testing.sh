@@ -8,6 +8,7 @@ function kmc::test {
   log::info "###Testing KMC###"
   kubectl get po -n kcp-system -l app=kyma-metrics-collector
   kubectl logs -n kcp-system -l app=kyma-metrics-collector
+  sleep 1500 #25m
 }
 ## Search for a particular pattern of metrics sent to EDP
 
