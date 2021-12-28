@@ -1,5 +1,6 @@
 pjNames:
   - pjName: skr-aws-svcat-migration-dev
+  - pjName: skr-kyma-to-kyma2-upgrade-aws-dev
 prConfigs:
   kyma-project:
     kyma:
