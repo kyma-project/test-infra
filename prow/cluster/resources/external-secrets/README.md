@@ -70,6 +70,9 @@ spec:
       version: latest # version of the GCP Secret
       property: anotherKey # name of the field in the GCP Secret JSON, unused for plain values
 ```
+>**NOTE:** The trusted and untrusted files are only applied to trusted or untrusted clusters respectively. While the workload file is applied to both trusted and untrusted clusters.
+   The presubmit and pj-tester jobs are executed on untrusted clusters, while the periodic jobs are run on trusted clusters. Adding a Secret to the proper file allows the user to specify which type of clusters should have access to the Secret.
+
 
 ## External Secrets Checker
 
