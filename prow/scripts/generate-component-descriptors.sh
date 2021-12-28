@@ -5,7 +5,7 @@ set -e
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
 
-KYMA_RESOURCES_DIR="/home/prow/go/src/github.com/kyma-project/kyma/installation/resources"
+KYMA_RESOURCES_DIR="/home/prow/go/src/github.com/kyma-project/kyma/resources"
 
 # shellcheck source=prow/scripts/lib/docker.sh
 source "$SCRIPT_DIR/lib/docker.sh"
