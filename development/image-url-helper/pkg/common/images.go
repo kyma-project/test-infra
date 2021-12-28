@@ -66,14 +66,10 @@ func MergeImageMap(target ComponentImageMap, source ComponentImageMap) {
 		if _, ok := target[key]; !ok {
 			// we have the same image in both maps
 			// TODO
-			tmpComponentImage := ComponentImage{Image: source[key].Image}
-
-			if tmpComponentImage.Components == nil {
-				tmpComponentImage.Components = make(map[string]bool)
-			}
+			tmpComponentImage := ComponentImage{Image: source[key].Image, Components: source[key].Components}
 
 			// join both maps
-			for component, _ := range source[key].Components {
+			for component := range target[key].Components {
 				tmpComponentImage.Components[component] = true
 			}
 
