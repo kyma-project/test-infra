@@ -98,6 +98,23 @@ templates:
                     - "keb_plan_azure"
                     - "kyma_nightly_subaccount"
               - jobConfig:
+                  name: "skr-eventing-e2e-upgrade-test"
+                  path_alias: github.com/kyma-project/kyma
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-eventing-e2e-upgrade-test.sh"
+                inheritedConfigs:
+                  global:
+                    - "image_kyma-integration"
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                    - "disable_testgrid"
+                    - "kyma_major_version_1"
+                  local:
+                    - "jobConfig_default"
+                    - "keb_plan_azure"
+                    - "kyma_nightly_subaccount"
+              - jobConfig:
                   name: "skr-azure-integration-dev"
                   cron: "5 1 * * *" # "At 01:05"
                 inheritedConfigs:
