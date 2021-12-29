@@ -60,6 +60,7 @@ func cancelOnInterrupt(ctx context.Context, cancel context.CancelFunc) {
 	}()
 }
 
+// test comment
 // SyncImage syncs specific image between two registries for current architecture.
 func SyncImage(ctx context.Context, src, dest string, dryRun bool, auth authn.Authenticator) (name.Reference, error) {
 	log.Debug("Source ", src)
