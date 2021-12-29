@@ -511,6 +511,7 @@ templates:
                     preset-serverless-git-auth: "true"
                   env:
                     INTEGRATION_SUITE: "git-auth-integration"
+                  cluster: "trusted-workload"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
