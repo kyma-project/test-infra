@@ -8,6 +8,7 @@ import (
 	"path"
 	"path/filepath"
 
+	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/common"
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/component"
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/list"
 	"github.com/spf13/cobra"
@@ -26,22 +27,20 @@ func ComponentsCmd() *cobra.Command {
 		Example: "image-url-helper components --component-version 0.1.0 --git-commit 123456 --git-branch main",
 		Args:    cobra.ExactArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			imageComponentsMap := make(list.ImageToComponents)
-
 			// remove trailing slash to have consistent paths
 			ResourcesDirectoryClean := filepath.Clean(ResourcesDirectory)
 
-			images := make(list.ImageMap)
-			testImages := make(list.ImageMap)
+			images := make(common.ComponentImageMap)
+			testImages := make(common.ComponentImageMap)
 
-			err := filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, images, testImages, imageComponentsMap))
+			err := filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, images, testImages))
 			if err != nil {
 				fmt.Printf("Cannot traverse directory: %s\n", err)
 				os.Exit(2)
 			}
-			allImages := make(list.ImageMap)
-			list.MergeImageMap(allImages, images)
-			list.MergeImageMap(allImages, testImages)
+			allImages := make(common.ComponentImageMap)
+			common.MergeImageMap(allImages, images)
+			common.MergeImageMap(allImages, testImages)
 
 			componentDescriptor, err := component.GenerateComponentDescriptor(options, allImages)
 			if err != nil {

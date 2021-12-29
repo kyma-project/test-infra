@@ -13,7 +13,7 @@ import (
 	"github.com/go-logr/logr"
 	"github.com/google/go-containerregistry/pkg/name"
 	"github.com/google/go-containerregistry/pkg/v1/remote"
-	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/list"
+	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/common"
 	"github.com/mandelsoft/vfs/pkg/osfs"
 )
 
@@ -27,7 +27,7 @@ type ComponentOptions struct {
 	GitBranch        string
 }
 
-func GenerateComponentDescriptor(options ComponentOptions, images list.ImageMap) (*v2.ComponentDescriptor, error) {
+func GenerateComponentDescriptor(options ComponentOptions, images common.ComponentImageMap) (*v2.ComponentDescriptor, error) {
 	component := &v2.ComponentDescriptor{}
 
 	err := createComponent(component, options)
@@ -84,10 +84,10 @@ func addSources(component *v2.ComponentDescriptor, options ComponentOptions) err
 	return nil
 }
 
-func addResources(component *v2.ComponentDescriptor, options ComponentOptions, images list.ImageMap) error {
+func addResources(component *v2.ComponentDescriptor, options ComponentOptions, images common.ComponentImageMap) error {
 	for _, image := range images {
 		// TODO rmove when istio will be in correct format
-		if strings.HasPrefix(image.FullImageURL(), "eu.gcr.io/kyma-project/external/istio") {
+		if strings.HasPrefix(image.Image.FullImageURL(), "eu.gcr.io/kyma-project/external/istio") {
 			continue
 		}
 
@@ -97,7 +97,7 @@ func addResources(component *v2.ComponentDescriptor, options ComponentOptions, i
 		resource.Type = "ociImage"
 		resource.Relation = v2.LocalRelation
 
-		imageReference, err := name.ParseReference(image.FullImageURL())
+		imageReference, err := name.ParseReference(image.Image.FullImageURL())
 		if err != nil {
 			return err
 		}
