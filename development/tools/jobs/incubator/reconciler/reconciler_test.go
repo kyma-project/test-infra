@@ -164,7 +164,7 @@ func TestReconcilerJobsNightlyMain(t *testing.T) {
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"}, actualPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/reconciler"}, actualPeriodic.Spec.Containers[0].Args)
-	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "rec-main-night")
+	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "rec-main")
 }
 
 func TestMainReconcilerJobPostsubmit(t *testing.T) {
@@ -246,5 +246,5 @@ func TestReconcilerJobNightlyE2E(t *testing.T) {
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualNightlyJob.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"}, actualNightlyJob.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/reconciler"}, actualNightlyJob.Spec.Containers[0].Args)
-	tester.AssertThatContainerHasEnv(t, actualNightlyJob.Spec.Containers[0], "INPUT_CLUSTER_NAME", "rec-main-night")
+	tester.AssertThatContainerHasEnv(t, actualNightlyJob.Spec.Containers[0], "INPUT_CLUSTER_NAME", "rec-main")
 }

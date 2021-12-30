@@ -269,10 +269,10 @@ templates:
               pipeline.clusterprovisioning: reconciler
           reconciler_main_nightly_cluster_input_name:
             env:
-              INPUT_CLUSTER_NAME: "rec-main-night"
+              INPUT_CLUSTER_NAME: "rec-main"
           reconciler_dev_nightly_cluster_input_name:
             env:
-              INPUT_CLUSTER_NAME: "rec-dev-night"
+              INPUT_CLUSTER_NAME: "rec-dev"
           reconciler_publish_unstable_cli_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-unstable-cli.sh"
             annotations:
