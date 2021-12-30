@@ -12,13 +12,21 @@ source "$SCRIPT_DIR/lib/docker.sh"
 
 docker::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 
+if [[ "$JOB_TYPE" == "presubmit" ]]; then
+    # on presubmit use latest commit from the PR itself
+    git_commit="${PULL_PULL_SHA}"
+else
+    # use base commit for postsubmit jobs
+    git_commit="${PULL_BASE_SHA}"
+fi
+
 pushd "${TEST_INFRA_SOURCES_DIR}"
 echo "This tool generates component descriptor file"
 go run ./development/image-url-helper \
     --resources-directory "$KYMA_RESOURCES_DIR" \
     components \
     --component-version "$(date +v%Y%m%d)-${PULL_PULL_SHA::8}" \
-    --git-commit "${PULL_PULL_SHA}" \
+    --git-commit "${git_commit}" \
     --git-branch "${PULL_BASE_REF}" \
     --output-dir "${ARTIFACTS}/cd" \
     --repo-context "${DOCKER_PUSH_REPOSITORY}"

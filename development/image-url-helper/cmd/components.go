@@ -98,6 +98,8 @@ func addComponentCmdFlags(cmd *cobra.Command, options *component.ComponentOption
 	viper.BindEnv("git-branch", "PULL_BASE_REF")
 	cmd.MarkFlagRequired("git-branch")
 
+	cmd.Flags().BoolVarP(&options.SkipHashConversion, "skip-hash-conversion", "s", false, "Keeps the image tags unchanged, without conversion to hashes")
+
 	cmd.Flags().StringVarP(&options.OutputDir, "output-dir", "o", "", "Name of the output directory")
 	cmd.Flags().StringVarP(&options.RepoContext, "repo-context", "C", "", "Name of the Docker repository to push component descriptor to")
 

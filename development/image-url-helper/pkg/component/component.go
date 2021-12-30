@@ -2,6 +2,7 @@ package component
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -18,13 +19,14 @@ import (
 )
 
 type ComponentOptions struct {
-	Provider         string
-	ComponentName    string
-	ComponentVersion string
-	OutputDir        string
-	RepoContext      string
-	GitCommit        string
-	GitBranch        string
+	Provider           string
+	ComponentName      string
+	ComponentVersion   string
+	OutputDir          string
+	RepoContext        string
+	GitCommit          string
+	GitBranch          string
+	SkipHashConversion bool
 }
 
 func GenerateComponentDescriptor(options ComponentOptions, images common.ComponentImageMap) (*v2.ComponentDescriptor, error) {
@@ -97,28 +99,49 @@ func addResources(component *v2.ComponentDescriptor, options ComponentOptions, i
 		resource.Type = "ociImage"
 		resource.Relation = v2.LocalRelation
 
-		imageReference, err := name.ParseReference(image.Image.FullImageURL())
-		if err != nil {
-			return err
-		}
-
-		imageInfo, err := remote.Image(imageReference)
-		if err != nil {
-			return err
-		}
-
-		imageHash, err := imageInfo.Digest()
-		if err != nil {
-			return err
-		}
-
-		resource.Name = strings.Replace(imageReference.Context().RepositoryStr(), "/", "_", -1)
+		resource.Name = strings.Replace(image.Image.ContainerRepositoryPath, "/", "_", -1)
 		resource.Name = strings.Replace(resource.Name, ".", "_", -1)
 
 		accessData := make(map[string]interface{})
-		accessData["imageReference"] = imageReference.Context().RegistryStr() + "/" + imageReference.Context().RepositoryStr() + "@" + imageHash.String()
+		if options.SkipHashConversion {
+			// TODO tag
+			accessData["imageReference"] = image.Image.FullImageURL()
+		} else {
+			// get hash of an image
+			imageReference, err := name.ParseReference(image.Image.FullImageURL())
+			if err != nil {
+				return err
+			}
+
+			imageInfo, err := remote.Image(imageReference)
+			if err != nil {
+				return err
+			}
+
+			imageHash, err := imageInfo.Digest()
+			if err != nil {
+				return err
+			}
+
+			accessData["imageReference"] = imageReference.Context().RegistryStr() + "/" + imageReference.Context().RepositoryStr() + "@" + imageHash.String()
+		}
 
 		resource.Access = v2.NewUnstructuredType("ociRegistry", accessData)
+
+		resource.Labels = append(resource.Labels, v2.Label{Name: "imageTag", Value: json.RawMessage(image.Image.Version)})
+
+		components := make([]string, 0)
+
+		for component := range image.Components {
+			components = append(components, component)
+		}
+
+		componentsJSON, err := json.Marshal(components)
+		if err != nil {
+			return err
+		}
+
+		resource.Labels = append(resource.Labels, v2.Label{Name: "usedBy", Value: json.RawMessage(componentsJSON)})
 
 		component.Resources = append(component.Resources, resource)
 	}
