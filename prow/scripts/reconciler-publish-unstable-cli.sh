@@ -102,7 +102,7 @@ for ZONE in ${EU_ZONES}; do
     log::info "Attempting to create a new instance named cli-integration-test-${RANDOM_ID} in zone ${ZONE} using image ${IMAGE}"
     gcloud compute instances create "cli-integration-test-${RANDOM_ID}" \
         --metadata enable-oslogin=TRUE \
-        --metadata-from-file startup-script=${SCRIPT_DIR}/resources/reconciler/startup.sh \
+        --metadata-from-file startup-script="${SCRIPT_DIR}/resources/reconciler/startup.sh" \
         --image "${IMAGE}" \
         --machine-type n1-standard-4 \
         --zone "${ZONE}" \
