@@ -10,7 +10,9 @@ source "${SCRIPT_DIR}/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${SCRIPT_DIR}/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
-source "$SCRIPT_DIR/lib/gcp.sh"
+source "${SCRIPT_DIR}/lib/gcp.sh"
+# shellcheck source=prow/scripts/lib/istioctl.sh
+source "${SCRIPT_DIR}/lib/istioctl.sh"
 
 cleanup() {
     ARG=$?
@@ -116,6 +118,9 @@ gcloud compute ssh \
   --quiet --zone="${ZONE}" \
   "cli-integration-test-${RANDOM_ID}" \
   --command="mkdir \$HOME/bin"
+
+log::info "Installing istioctl"
+install_istioctl
 
 log::info "Copying Kyma CLI to the instance"
 #shellcheck disable=SC2088

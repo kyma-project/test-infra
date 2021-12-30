@@ -42,6 +42,8 @@ source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/log.sh"
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/kyma.sh"
+# shellcheck source=prow/scripts/lib/istioctl.sh
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/istioctl.sh"
 
 # Enforce lowercase
 readonly REPO_OWNER=${REPO_OWNER,,}
@@ -77,13 +79,6 @@ verify_internal_registry() {
     fi
 
     return 0
-}
-
-
-install_istioctl() {
-    wget https://github.com/istio/istio/releases/download/1.11.3/istioctl-1.11.3-linux-amd64.tar.gz
-    tar zxvf istioctl-1.11.3-linux-amd64.tar.gz -C /usr/local/bin/
-    export ISTIOCTL_PATH=/usr/local/bin/istioctl
 }
 
 # Using set -f to prevent path globing in post_hook arguments.
