@@ -289,6 +289,11 @@ function applyControlPlaneOverrides() {
     --data "global.provisioning.enabled=true" \
     --data "global.kyma_metrics_collector.enabled=true" \
     --data "kyma-metrics-collector.config.logLevel=debug" \
+    --data "kyma-metrics-collector.keb.pollWaitDuration=3m" \
+    --data "kyma-metrics-collector.edp.url=https://input.yevents.io" \
+    --data "kyma-metrics-collector.edp.namespace=kyma-dev" \
+    --data "kyma-metrics-collector.edp.datastream.name=kmc-consumption-metrics" \
+    --data "kyma-metrics-collector.keb.pollWaitDuration=3m" \
     --data "global.database.embedded.enabled=true" \
     --data "global.kyma_environment_broker.enabled=true" \
     --data "kyma-environment-broker.e2e.enabled=false" \
@@ -434,21 +439,28 @@ export TLS_CERT="${utils_generate_self_signed_cert_return_tls_cert:?}"
 export TLS_KEY="${utils_generate_self_signed_cert_return_tls_key:?}"
 
 log::info "Install Kyma"
-installKyma
+# installKyma
 
+###TODO @sayanh Should be removed as this is obsolete
 #log::info "Install Compass"
 #installCompass
 
 log::info "Install Control Plane"
 installControlPlane
 
+### Provision a Kyma cluster through KEB
+provisionSKRThroughOEBorReconciler
+
 # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
   ENABLE_TEST_LOG_COLLECTOR=true
 fi
 
+###TODO @sayanh Should be removed as this is obsolete
 log::info "Test Kyma and Control Plane"
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l "release != compass"
+
+### Once SKR is ready, run the fast integration tests for SKR
 
 ### Test Kyma Metrics Collector
 kmc::test

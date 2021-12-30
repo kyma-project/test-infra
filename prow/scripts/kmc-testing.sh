@@ -10,7 +10,9 @@ function kmc::test {
   kubectl logs -n kcp-system -l app=kyma-metrics-collector
   sleep 1500 #25m
 }
-## Search for a particular pattern of metrics sent to EDP
+## Search for a particular pattern of metrics sent to EDP from the logs
+
+## Assert the fields of the metrics for correctness
 
 ## If found the job is successful
 
