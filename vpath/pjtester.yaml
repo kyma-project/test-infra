@@ -1,5 +1,6 @@
 pjNames:
   - pjName: "skr-aws-svcat-migration-dev"
+  - pjName: "kyma-preview-integration-dev"
 prConfigs:
   kyma-project:
     kyma:
