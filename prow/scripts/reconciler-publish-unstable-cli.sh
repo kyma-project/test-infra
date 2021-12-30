@@ -121,6 +121,14 @@ gcloud compute ssh \
 
 log::info "Installing istioctl"
 install_istioctl
+utils::send_to_vm "${ZONE}" "cli-integration-test-${RANDOM_ID}" "/usr/local/bin/istioctl" "~/bin/istioctl"
+gcloud compute ssh \
+  --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" \
+  --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" \
+  --quiet \
+  --zone="${ZONE}" \
+  "cli-integration-test-${RANDOM_ID}" \
+  --command="export ISTIOCTL_PATH=\$HOME/bin/istioctl"
 
 log::info "Copying Kyma CLI to the instance"
 #shellcheck disable=SC2088
