@@ -12,8 +12,6 @@ import (
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/component"
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/list"
 	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
-	"github.com/spf13/viper"
 	"sigs.k8s.io/yaml"
 )
 
@@ -91,11 +89,11 @@ func addComponentCmdFlags(cmd *cobra.Command, options *component.ComponentOption
 	cmd.Flags().StringVarP(&options.Provider, "provider", "p", "internal", "Component provider (internal/external)")
 
 	cmd.Flags().StringVarP(&options.GitCommit, "git-commit", "c", "", "Git commit hash")
-	viper.BindEnv("git-commit", "PULL_PULL_SHA")
+	// viper.BindEnv("git-commit", "PULL_PULL_SHA")
 	cmd.MarkFlagRequired("git-commit")
 
 	cmd.Flags().StringVarP(&options.GitBranch, "git-branch", "b", "", "Git branch name")
-	viper.BindEnv("git-branch", "PULL_BASE_REF")
+	// viper.BindEnv("git-branch", "PULL_BASE_REF")
 	cmd.MarkFlagRequired("git-branch")
 
 	cmd.Flags().BoolVarP(&options.SkipHashConversion, "skip-hash-conversion", "s", false, "Keeps the image tags unchanged, without conversion to hashes")
@@ -104,10 +102,10 @@ func addComponentCmdFlags(cmd *cobra.Command, options *component.ComponentOption
 	cmd.Flags().StringVarP(&options.RepoContext, "repo-context", "C", "", "Name of the Docker repository to push component descriptor to")
 
 	// use values form enviroment when a flag was not provided
-	cmd.Flags().VisitAll(func(f *pflag.Flag) {
-		if !f.Changed && viper.IsSet(f.Name) {
-			val := viper.Get(f.Name)
-			cmd.Flags().Set(f.Name, fmt.Sprintf("%v", val))
-		}
-	})
+	// cmd.Flags().VisitAll(func(f *pflag.Flag) {
+	// 	if !f.Changed && viper.IsSet(f.Name) {
+	// 		val := viper.Get(f.Name)
+	// 		cmd.Flags().Set(f.Name, fmt.Sprintf("%v", val))
+	// 	}
+	// })
 }

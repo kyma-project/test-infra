@@ -99,7 +99,12 @@ func addResources(component *v2.ComponentDescriptor, options ComponentOptions, i
 		resource.Type = "ociImage"
 		resource.Relation = v2.LocalRelation
 
-		resource.Name = strings.Replace(image.Image.ContainerRepositoryPath, "/", "_", -1)
+		imageReference, err := name.ParseReference(image.Image.FullImageURL())
+		if err != nil {
+			return err
+		}
+
+		resource.Name = strings.Replace(imageReference.Context().RepositoryStr(), "/", "_", -1)
 		resource.Name = strings.Replace(resource.Name, ".", "_", -1)
 
 		accessData := make(map[string]interface{})
@@ -108,10 +113,6 @@ func addResources(component *v2.ComponentDescriptor, options ComponentOptions, i
 			accessData["imageReference"] = image.Image.FullImageURL()
 		} else {
 			// get hash of an image
-			imageReference, err := name.ParseReference(image.Image.FullImageURL())
-			if err != nil {
-				return err
-			}
 
 			imageInfo, err := remote.Image(imageReference)
 			if err != nil {
@@ -128,7 +129,13 @@ func addResources(component *v2.ComponentDescriptor, options ComponentOptions, i
 
 		resource.Access = v2.NewUnstructuredType("ociRegistry", accessData)
 
-		resource.Labels = append(resource.Labels, v2.Label{Name: "imageTag", Value: json.RawMessage(image.Image.Version)})
+		// add labels
+		imageTag, err := json.Marshal(image.Image.Version)
+		if err != nil {
+			return err
+		}
+
+		resource.Labels = append(resource.Labels, v2.Label{Name: "imageTag", Value: imageTag})
 
 		components := make([]string, 0)
 
@@ -141,7 +148,7 @@ func addResources(component *v2.ComponentDescriptor, options ComponentOptions, i
 			return err
 		}
 
-		resource.Labels = append(resource.Labels, v2.Label{Name: "usedBy", Value: json.RawMessage(componentsJSON)})
+		resource.Labels = append(resource.Labels, v2.Label{Name: "usedBy", Value: componentsJSON})
 
 		component.Resources = append(component.Resources, resource)
 	}

@@ -15,9 +15,11 @@ docker::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 if [[ "$JOB_TYPE" == "presubmit" ]]; then
     # on presubmit use latest commit from the PR itself
     git_commit="${PULL_PULL_SHA}"
+    skip_hashing="true"
 else
     # use base commit for postsubmit jobs
     git_commit="${PULL_BASE_SHA}"
+    skip_hashing="false"
 fi
 
 pushd "${TEST_INFRA_SOURCES_DIR}"
@@ -29,6 +31,7 @@ go run ./development/image-url-helper \
     --git-commit "${git_commit}" \
     --git-branch "${PULL_BASE_REF}" \
     --output-dir "${ARTIFACTS}/cd" \
-    --repo-context "${DOCKER_PUSH_REPOSITORY}"
+    --repo-context "${DOCKER_PUSH_REPOSITORY}" \
+    "--skip-hash-conversion=$skip_hashing"
 echo "Compomnent descriptor was generated succesfully finished"
 popd
