@@ -32,6 +32,6 @@ go run ./development/image-url-helper \
     --git-branch "${PULL_BASE_REF}" \
     --output-dir "${ARTIFACTS}/cd" \
     --repo-context "${DOCKER_PUSH_REPOSITORY}" \
-    "--skip-hash-conversion=$skip_hashing"
+    "--skip-image-hashing=$skip_hashing"
 echo "Compomnent descriptor was generated succesfully finished"
 popd
