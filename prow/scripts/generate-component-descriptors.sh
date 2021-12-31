@@ -27,7 +27,7 @@ echo "This tool generates component descriptor file"
 go run ./development/image-url-helper \
     --resources-directory "$KYMA_RESOURCES_DIR" \
     components \
-    --component-version "$(date +v%Y%m%d)-${git_commit::8}" \
+    --component-version "$(date +v%Y%m%d-%s)-${git_commit::8}" \
     --git-commit "${git_commit}" \
     --git-branch "${PULL_BASE_REF}" \
     --output-dir "${ARTIFACTS}/cd" \
