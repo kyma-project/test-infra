@@ -19,14 +19,14 @@ import (
 )
 
 type ComponentOptions struct {
-	Provider           string
-	ComponentName      string
-	ComponentVersion   string
-	OutputDir          string
-	RepoContext        string
-	GitCommit          string
-	GitBranch          string
-	SkipHashConversion bool
+	Provider         string
+	ComponentName    string
+	ComponentVersion string
+	OutputDir        string
+	RepoContext      string
+	GitCommit        string
+	GitBranch        string
+	SkipImageHashing bool
 }
 
 func GenerateComponentDescriptor(options ComponentOptions, images common.ComponentImageMap) (*v2.ComponentDescriptor, error) {
@@ -88,11 +88,6 @@ func addSources(component *v2.ComponentDescriptor, options ComponentOptions) err
 
 func addResources(component *v2.ComponentDescriptor, options ComponentOptions, images common.ComponentImageMap) error {
 	for _, image := range images {
-		// TODO rmove when istio will be in correct format
-		if strings.HasPrefix(image.Image.FullImageURL(), "eu.gcr.io/kyma-project/external/istio") {
-			continue
-		}
-
 		resource := v2.Resource{}
 
 		resource.Version = options.ComponentVersion
@@ -108,8 +103,7 @@ func addResources(component *v2.ComponentDescriptor, options ComponentOptions, i
 		resource.Name = strings.Replace(resource.Name, ".", "_", -1)
 
 		accessData := make(map[string]interface{})
-		if options.SkipHashConversion {
-			// TODO tag
+		if options.SkipImageHashing {
 			accessData["imageReference"] = image.Image.FullImageURL()
 		} else {
 			// get hash of an image
