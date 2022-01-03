@@ -21,6 +21,7 @@ templates:
               preset-keb-dev-credentials: "true"
               preset-kyma-integration-compass-dev: "true"
               preset-kyma-integration-kcp-client-credentials: "true"
+              preset-kcp-client-dev-envs: "true"
           kyma_integration_subaccount:
             env:
               KEB_SUBACCOUNT_ID: "prow-keb-integration"

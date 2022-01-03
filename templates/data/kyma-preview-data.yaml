@@ -23,6 +23,7 @@ templates:
               preset-keb-dev-credentials: "true"
               preset-kyma-integration-compass-dev: "true"
               preset-kyma-integration-subaccounnt: "true"
+              preset-kcp-client-dev-envs: "true"
           keb_plan_aws:
             annotations:
               pipeline.platform: gardener_aws
