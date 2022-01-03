@@ -18,6 +18,7 @@ periodics: # runs on schedule
         preset-kcp-client-dev-envs: "true"
         preset-keb-dev-credentials: "true"
         preset-kyma-integration-compass-dev: "true"
+        preset-kyma-integration-kcp-client-credentials: "true"
         preset-kyma-integration-subaccounnt: "true"
       cron: "0 */4 * * *"
       skip_report: false
