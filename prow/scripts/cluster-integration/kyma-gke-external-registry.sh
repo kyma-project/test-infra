@@ -42,8 +42,6 @@ source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/log.sh"
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/kyma.sh"
-# shellcheck source=prow/scripts/lib/istioctl.sh
-source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/istioctl.sh"
 
 # Enforce lowercase
 readonly REPO_OWNER=${REPO_OWNER,,}
