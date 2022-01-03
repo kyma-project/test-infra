@@ -122,7 +122,7 @@ gcloud compute ssh \
 
 log::info "Installing istioctl and copy to the instance"
 install_istioctl
-utils::send_to_vm "${ZONE}" "cli-integration-test-${RANDOM_ID}" "/usr/local/bin/istioctl" "~/bin/istioctl"
+utils::send_to_vm "${ZONE}" "cli-integration-test-${RANDOM_ID}" "/usr/local/bin/istioctl" "/usr/local/bin/istioctl"
 
 
 log::info "Copying Kyma CLI to the instance"
