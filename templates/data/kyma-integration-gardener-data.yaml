@@ -30,6 +30,22 @@ templates:
             optional: true
             labels:
               preset-build-pr: "true"
+          jobConfig_keb:
+            annotations:
+              pipeline.clusterprovisioning: keb
+              pipeline.installer: keb
+              pipeline.test: fast-integration
+              path_alias: github.com/kyma-project/kyma
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
+            cluster: "trusted-workload"
+            request_memory: 100Mi
+            request_cpu: 50m
+            labels:
+              preset-bot-github-token: "true"
+              preset-build-main: "true"
+              preset-keb-dev-credentials: "true"
+              preset-kyma-integration-compass-dev: "true"
+              preset-kyma-integration-kcp-client-credentials: "true"
           command_integration:
             annotations:
               pipeline.installer: kyma install
@@ -278,20 +294,6 @@ templates:
                     - command_integration_eventing
               - jobConfig:
                   name: pre-main-kyma-gardener-skr-eventing-test
-                  annotations:
-                    pipeline.clusterprovisioning: keb
-                    pipeline.installer: keb
-                    pipeline.test: fast-integration
-                    path_alias: github.com/kyma-project/kyma
-                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
-                  cluster: "trusted-workload"
-                  request_memory: 100Mi
-                  request_cpu: 50m
-                  labels:
-                    preset-build-main: "true"
-                    preset-keb-dev-credentials: "true"
-                    preset-kyma-integration-compass-dev: "true"
-                    preset-kyma-integration-kcp-client-credentials: "true"
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -308,11 +310,13 @@ templates:
                       readOnly: true
                 inheritedConfigs:
                   global:
+                    - jobConfig_keb
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
                     - kyma_major_version_2
                   local:
+                    - jobConfig_keb
                     - jobConfig_presubmit
                     - keb_plan_gcp
                     - command_skr_upgrade_eventing
