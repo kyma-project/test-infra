@@ -31,11 +31,10 @@ params+=("--git-commit=${git_commit}")
 
 pushd "${TEST_INFRA_SOURCES_DIR}"
 echo "This tool generates component descriptor file"
-set -x
 go run ./development/image-url-helper \
     --resources-directory "$KYMA_RESOURCES_DIR" \
     components \
     "${params[@]}"
-set +x
+
 echo "Compomnent descriptor was generated succesfully finished"
 popd
