@@ -303,8 +303,8 @@ presubmits: # runs on PRs
     - name: pre-main-kyma-gardener-skr-eventing-test
       annotations:
         path_alias: "github.com/kyma-project/kyma"
-        pipeline.clusterprovisioning: "keb"
-        pipeline.installer: "keb"
+        pipeline.clusterprovisioning: "kyma cli"
+        pipeline.installer: "kyma deploy"
         pipeline.platform: "gardener_gcp"
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
@@ -312,9 +312,8 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-gardener-skr-eventing-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-main: "true"
+        preset-bot-github-token: "true"
         preset-build-pr: "true"
-        preset-debug-commando-oom: "true"
         preset-keb-dev-credentials: "true"
         preset-kyma-integration-compass-dev: "true"
         preset-kyma-integration-kcp-client-credentials: "true"
@@ -325,7 +324,6 @@ presubmits: # runs on PRs
       decoration_config:
         grace_period: 600000000000
         timeout: 14400000000000
-      path_alias: github.com/kyma-project/kyma
       cluster: trusted-workload
       max_concurrency: 10
       branches:
@@ -342,7 +340,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/skr-eventing-e2e-upgrade-test.sh"
             env:
               - name: EXECUTION_PROFILE
                 value: "evaluation"

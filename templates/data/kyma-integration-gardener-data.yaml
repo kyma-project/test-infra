@@ -42,7 +42,6 @@ templates:
             request_cpu: 50m
             labels:
               preset-bot-github-token: "true"
-              preset-build-main: "true"
               preset-keb-dev-credentials: "true"
               preset-kyma-integration-compass-dev: "true"
               preset-kyma-integration-kcp-client-credentials: "true"
@@ -310,7 +309,7 @@ templates:
                       readOnly: true
                 inheritedConfigs:
                   global:
-                    - jobConfig_keb
+                    - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
