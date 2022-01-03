@@ -68,32 +68,11 @@ updates:
       prefix: "bp-golang"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/prow/images/buildpack-java"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "bp-java"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/prow/images/buildpack-java-node"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "bp-java-node"
-      include: "scope"
-  - package-ecosystem: "docker"
     directory: "/prow/images/buildpack-node"
     schedule:
       interval: "daily"
     commit-message:
       prefix: "bp-node"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/prow/images/buildpack-node-chromium"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "bp-node-chrome"
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/prow/images/cleaner"

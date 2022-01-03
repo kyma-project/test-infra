@@ -7,6 +7,7 @@ import (
 
 	"github.com/jamiealquiza/envy"
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/check"
+	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/common"
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/list"
 	"github.com/spf13/cobra"
 )
@@ -50,25 +51,24 @@ func CheckCmd() *cobra.Command {
 				}
 			}
 
-			images := make(list.ImageMap)
-			testImages := make(list.ImageMap)
-			imageComponentsMap := make(list.ImageToComponents)
-			err = filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, images, testImages, imageComponentsMap))
+			images := make(common.ComponentImageMap)
+			testImages := make(common.ComponentImageMap)
+			err = filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, images, testImages))
 			if err != nil {
 				fmt.Printf("Cannot traverse directory: %s\n", err)
 				os.Exit(2)
 			}
 
-			allImages := make(list.ImageMap)
-			list.MergeImageMap(allImages, images)
-			list.MergeImageMap(allImages, testImages)
+			allImages := make(common.ComponentImageMap)
+			common.MergeImageMap(allImages, images)
+			common.MergeImageMap(allImages, testImages)
 
-			inconsistentImages := list.GetInconsistentImages(allImages)
+			inconsistentImages := common.GetInconsistentImages(allImages)
 
 			if len(inconsistentImages) > 0 {
 				fmt.Printf("\n--------------------\n")
 				fmt.Println("Images with multiple tags:")
-				list.PrintImages(inconsistentImages, imageComponentsMap)
+				common.PrintImages(inconsistentImages)
 			}
 			if len(imagesDefinedOutside) > 0 || len(inconsistentImages) > 0 {
 				os.Exit(3)
