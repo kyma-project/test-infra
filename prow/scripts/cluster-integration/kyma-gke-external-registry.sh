@@ -79,13 +79,6 @@ verify_internal_registry() {
     return 0
 }
 
-
-install_istioctl() {
-    wget https://github.com/istio/istio/releases/download/1.11.3/istioctl-1.11.3-linux-amd64.tar.gz
-    tar zxvf istioctl-1.11.3-linux-amd64.tar.gz -C /usr/local/bin/
-    export ISTIOCTL_PATH=/usr/local/bin/istioctl
-}
-
 # Using set -f to prevent path globing in post_hook arguments.
 # utils::post_hook call set +f at the beginning.
 # shellcheck disable=SC2153
@@ -182,8 +175,6 @@ export DNS_DOMAIN_TRAILING=${DNS_DOMAIN%.}
 envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-serverless-external-registry-integration-overrides.tpl.yaml" > "$PWD/kyma_overrides.yaml"
 
 log::info "Installation triggered"
-
-install_istioctl
 
 kyma::install_cli
 
