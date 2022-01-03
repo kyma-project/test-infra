@@ -70,7 +70,7 @@ func createComponent(component *v2.ComponentDescriptor, options ComponentOptions
 
 func addSources(component *v2.ComponentDescriptor, options ComponentOptions) error {
 	source := v2.Source{}
-	// for now we're only generating CD for Kyma
+	// TODO for now we're only generating CD for Kyma
 	source.Name = "kyma-project_kyma"
 	source.Version = options.ComponentVersion
 	source.Type = "git"
