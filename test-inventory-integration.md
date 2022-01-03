@@ -30,6 +30,7 @@
 | kyma-upgrade-gardener-kyma-to-kyma2 | gardener_azure | kyma cli | kyma install, kyma deploy |  | periodic |  upgrade-fast-integration  |
 | kyma-upgrade-gardener-kyma2-to-main | gardener_azure | kyma cli | kyma deploy |  | periodic |  upgrade-fast-integration  |
 | skr-azure-nightly | gardener_azure | keb | keb |  | periodic |  fast-integration  |
+| pre-main-kyma-gardener-gcp-eventing-upgrade-test | gardener_azure | keb | keb |  | periodic |  fast-integration  |
 | skr-azure-integration-dev | gardener_azure | keb | keb |  | periodic |  fast-integration  |
 | skr-azure-lite-integration-dev | gardener_azure | keb | keb | evaluation | periodic |  fast-integration  |
 | skr-aws-integration-dev | gardener_aws | keb | keb |  | periodic |  fast-integration  |

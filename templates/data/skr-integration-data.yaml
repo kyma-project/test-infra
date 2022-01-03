@@ -98,7 +98,7 @@ templates:
                     - "keb_plan_azure"
                     - "kyma_nightly_subaccount"
               - jobConfig:
-                  name: "skr-eventing-e2e-upgrade-test"
+                  name: "pre-main-kyma-gardener-gcp-eventing-upgrade-test"
                   path_alias: github.com/kyma-project/kyma
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-eventing-e2e-upgrade-test.sh"
                 inheritedConfigs:
