@@ -101,6 +101,7 @@ templates:
                   name: "pre-main-kyma-gardener-gcp-eventing-upgrade-test"
                   path_alias: github.com/kyma-project/kyma
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-eventing-e2e-upgrade-test.sh"
+                  cron: "5 1 * * *" # "At
                 inheritedConfigs:
                   global:
                     - "image_kyma-integration"
