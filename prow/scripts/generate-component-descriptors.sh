@@ -26,6 +26,7 @@ fi
 
 pushd "${TEST_INFRA_SOURCES_DIR}"
 echo "This tool generates component descriptor file"
+set -x
 go run ./development/image-url-helper \
     --resources-directory "$KYMA_RESOURCES_DIR" \
     components \
@@ -35,5 +36,6 @@ go run ./development/image-url-helper \
     --output-dir "${ARTIFACTS}/cd" \
     --skip-image-hashing="$skip_hashing" \
     "$repo_flag"
+set +x
 echo "Compomnent descriptor was generated succesfully finished"
 popd
