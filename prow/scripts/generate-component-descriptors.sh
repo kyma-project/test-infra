@@ -12,6 +12,7 @@ source "$SCRIPT_DIR/lib/docker.sh"
 
 docker::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 
+repo_flag=""
 if [[ "$JOB_TYPE" == "presubmit" ]]; then
     # on presubmit use latest commit from the PR itself
     git_commit="${PULL_PULL_SHA}"
