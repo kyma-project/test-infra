@@ -26,6 +26,7 @@ templates:
               preset-kyma-integration-central-app-connectivity-enabled: "true"
               preset-kyma-integration-subaccounnt: "true"
               preset-kyma-integration-kcp-client-credentials: "true"
+              preset-kcp-client-dev-envs: "true"
           keb_plan_aws:
             annotations:
               pipeline.platform: gardener_aws
