@@ -178,8 +178,6 @@ envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-serverless-ext
 
 log::info "Installation triggered"
 
-install_istioctl
-
 kyma::install_cli
 
 kyma deploy --ci --source=local --workspace "$KYMA_SOURCES_DIR" --verbose \
