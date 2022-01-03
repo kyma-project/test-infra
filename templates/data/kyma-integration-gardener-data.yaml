@@ -308,13 +308,11 @@ templates:
                       readOnly: true
                 inheritedConfigs:
                   global:
-                    - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
                     - kyma_major_version_2
                   local:
-                    - jobConfig_default
                     - jobConfig_presubmit
                     - keb_plan_gcp
                     - command_skr_upgrade_eventing
