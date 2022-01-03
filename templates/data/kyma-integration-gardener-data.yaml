@@ -42,6 +42,12 @@ templates:
               pipeline.test: "fast-integration"
               pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing.sh"
+          command_skr_upgrade_eventing:
+            annotations:
+              pipeline.installer: kyma deploy
+              pipeline.test: "fast-integration"
+              pipeline.clusterprovisioning: kyma cli
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/skr-eventing-e2e-upgrade-test.sh"
           command_busola_long_lasting:
             annotations:
               pipeline.installer: kyma deploy
@@ -93,6 +99,11 @@ templates:
               CREDENTIALS_DIR: "/etc/credentials/kyma-tunas-prow-event-mesh"
             annotations:
               pipeline.platform: gardener_gcp
+          keb_plan_gcp:
+            annotations:
+              pipeline.platform: gardener_gcp
+            env:
+              KEB_PLAN_ID: "ca6e5357-707f-4565-bbbd-b3ab732597c6"
           gardener_azure_job:
             annotations:
               pipeline.platform: gardener_azure
@@ -265,6 +276,48 @@ templates:
                     - jobConfig_presubmit
                     - gardener_gcp_job_eventing
                     - command_integration_eventing
+              - jobConfig:
+                  name: pre-main-kyma-gardener-skr-eventing-test
+                  annotations:
+                    pipeline.clusterprovisioning: keb
+                    pipeline.installer: keb
+                    pipeline.test: fast-integration
+                    path_alias: github.com/kyma-project/kyma
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
+                  cluster: "trusted-workload"
+                  request_memory: 100Mi
+                  request_cpu: 50m
+                  labels:
+                    preset-build-main: "true"
+                    preset-keb-dev-credentials: "true"
+                    preset-kyma-integration-compass-dev: "true"
+                    preset-kyma-integration-kcp-client-credentials: "true"
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                    # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((tests/fast-integration\\S+|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  env:
+                    EXECUTION_PROFILE: "evaluation"
+                  volumes:
+                    - name: kyma-tunas-prow-event-mesh
+                      secretName: kyma-tunas-prow-event-mesh
+                  volumeMounts:
+                    - name: kyma-tunas-prow-event-mesh
+                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
+                      readOnly: true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_kyma-integration
+                    - kyma_major_version_2
+                  local:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - keb_plan_gcp
+                    - command_skr_upgrade_eventing
 
               # periodics
               - jobConfig:
