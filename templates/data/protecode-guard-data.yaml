@@ -26,8 +26,6 @@ templates:
               - jobConfig:
                   name: pre-main-kyma-protecode-guard
                   run_if_changed: "^((components\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  # temporary fix
-                  optional: true
                   env:
                     JOB_NAME_PATTERN: "(pre-main-kyma-components-.*)|(pre-main-kyma-tests-.*)|(pre-kyma-components-.*)|(pre-kyma-tests-.*)"
                     JOBGUARD_TIMEOUT: "25m"
@@ -45,8 +43,6 @@ templates:
               - jobConfig:
                   name: pre-main-console-protecode-guard
                   run_if_changed: "^((components\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  # temporary fix
-                  optional: true
                   env:
                     JOB_NAME_PATTERN: "pre-console-.*"
                     JOBGUARD_TIMEOUT: "25m"
@@ -64,8 +60,6 @@ templates:
               - jobConfig:
                   name: pre-main-third-party-images-protecode-guard
                   run_if_changed: "^((.*)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  # temporary fix
-                  optional: true
                   env:
                     JOB_NAME_PATTERN: "pre-main-tpi-.*"
                     JOBGUARD_TIMEOUT: "25m"

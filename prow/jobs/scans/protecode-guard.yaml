@@ -15,7 +15,6 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-gke-kyma-integration: "true"
       run_if_changed: '^((components\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -69,7 +68,6 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-gke-kyma-integration: "true"
       run_if_changed: '^((components\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -123,7 +121,6 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-gke-kyma-integration: "true"
       run_if_changed: '^((.*)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
