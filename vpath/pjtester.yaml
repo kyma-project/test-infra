@@ -1,5 +1,5 @@
 pjNames:
-- pjName: "pre-main-kyma-gardener-gcp-eventing-upgrade-test"
+- pjName: "pre-main-kyma-gardener-skr-eventing-test"
   report: false
 prConfigs:
   kyma-project:
