@@ -172,3 +172,32 @@ function eventing::test_fast_integration_eventing() {
 
     log::success "Eventing tests completed"
 }
+
+function eventing::pre_upgrade_test_fast_integration() {
+    log::info "Running pre upgrade Eventing E2E release tests"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    make ci-test-eventing-pre-upgrade
+    popd
+
+    log::success "Pre upgrade Eventing tests completed"
+}
+function eventing::fast_integration_tests() {
+    log::info "Running only Eventing E2E release tests"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    make ci-test-eventing-tests
+    popd
+
+    log::success "Eventing tests completed"
+}
+
+function eventing::post_upgrade_test_fast_integration() {
+    log::info "Running post upgrade Eventing E2E release tests and clean up the resources"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    make ci-test-eventing-post-upgrade
+    popd
+
+    log::success "Post upgrade Eventing tests completed"
+}

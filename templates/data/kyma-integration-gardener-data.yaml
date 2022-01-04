@@ -36,7 +36,6 @@ templates:
               pipeline.installer: keb
               pipeline.test: fast-integration
               path_alias: github.com/kyma-project/kyma
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             cluster: "trusted-workload"
             request_memory: 100Mi
             request_cpu: 50m
@@ -57,6 +56,14 @@ templates:
               pipeline.test: "fast-integration"
               pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing.sh"
+          eventing_eventmesh_secret:
+            volumes:
+              - name: kyma-tunas-prow-event-mesh
+                secretName: kyma-tunas-prow-event-mesh
+              volumeMounts:
+                - name: kyma-tunas-prow-event-mesh
+                  mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
+                  readOnly: true
           command_skr_upgrade_eventing:
             annotations:
               pipeline.installer: kyma deploy
@@ -272,13 +279,6 @@ templates:
                   run_if_changed: "^((tests/fast-integration\\S+|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   env:
                     EXECUTION_PROFILE: "evaluation"
-                  volumes:
-                    - name: kyma-tunas-prow-event-mesh
-                      secretName: kyma-tunas-prow-event-mesh
-                  volumeMounts:
-                    - name: kyma-tunas-prow-event-mesh
-                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
-                      readOnly: true
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -291,22 +291,14 @@ templates:
                     - jobConfig_presubmit
                     - gardener_gcp_job_eventing
                     - command_integration_eventing
+                    - eventing_eventmesh_secret
               - jobConfig:
                   name: pre-main-kyma-gardener-skr-eventing-test
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
-                    # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((tests/fast-integration\\S+|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   env:
                     EXECUTION_PROFILE: "evaluation"
-                  volumes:
-                    - name: kyma-tunas-prow-event-mesh
-                      secretName: kyma-tunas-prow-event-mesh
-                  volumeMounts:
-                    - name: kyma-tunas-prow-event-mesh
-                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
-                      readOnly: true
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -317,6 +309,7 @@ templates:
                   local:
                     - jobConfig_keb
                     - jobConfig_presubmit
+                    - eventing_eventmesh_secret
                     - keb_plan_gcp
                     - command_skr_upgrade_eventing
 
