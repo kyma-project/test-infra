@@ -48,12 +48,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-rel125-kyma-artifacts
+    - name: pre-rel20-kyma-artifacts
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel125-kyma-artifacts"
+        prow.k8s.io/pubsub.runID: "pre-rel20-kyma-artifacts"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-dind-enabled: "true"
@@ -68,12 +68,12 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^release-1.25$
+        - ^release-2.0$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.25
+          base_ref: release-2.0
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
@@ -180,12 +180,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-rel20-kyma-artifacts
+    - name: pre-rel21-kyma-artifacts
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel20-kyma-artifacts"
+        prow.k8s.io/pubsub.runID: "pre-rel21-kyma-artifacts"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-dind-enabled: "true"
@@ -200,12 +200,12 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^release-2.0$
+        - ^release-2.1$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.0
+          base_ref: release-2.1
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
@@ -273,13 +273,13 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-rel125-kyma-artifacts
+    - name: post-rel20-kyma-artifacts
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel125-kyma-artifacts"
+        prow.k8s.io/pubsub.runID: "post-rel20-kyma-artifacts"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-dind-enabled: "true"
@@ -294,12 +294,12 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^release-1.25$
+        - ^release-2.0$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.25
+          base_ref: release-2.0
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
@@ -408,13 +408,13 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-rel20-kyma-artifacts
+    - name: post-rel21-kyma-artifacts
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel20-kyma-artifacts"
+        prow.k8s.io/pubsub.runID: "post-rel21-kyma-artifacts"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-dind-enabled: "true"
@@ -429,12 +429,12 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^release-2.0$
+        - ^release-2.1$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.0
+          base_ref: release-2.1
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
