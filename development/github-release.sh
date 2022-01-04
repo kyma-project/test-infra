@@ -11,6 +11,10 @@ if [ -z "${GOOGLE_APPLICATION_CREDENTIALS}" ]; then
 fi
 
 NEXT_RELEASE=$(cat "VERSION")
+if [[ "${NEXT_RELEASE}" == "main" ]]; then
+    echo "You can't create release with the version set to 'main'"
+    exit 1
+fi
 echo "Checking if ${NEXT_RELEASE} was already published on github..."
 RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://api.github.com/repos/kyma-project/kyma/releases/tags/"${NEXT_RELEASE}")
 if [[ $RESPONSE != 404* ]]; then
