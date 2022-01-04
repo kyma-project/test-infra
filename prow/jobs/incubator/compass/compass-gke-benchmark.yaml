@@ -69,12 +69,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-rel125-compass-gke-benchmark
+    - name: pre-rel20-compass-gke-benchmark
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel125-compass-gke-benchmark"
+        prow.k8s.io/pubsub.runID: "pre-rel20-compass-gke-benchmark"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-cluster-version: "true"
@@ -97,12 +97,12 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - release-1.25
+        - release-2.0
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.25
+          base_ref: release-2.0
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"

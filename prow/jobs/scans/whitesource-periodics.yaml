@@ -724,7 +724,7 @@ periodics: # runs on schedule
                 cpu: 400m
   
 #-------------Release-----------------------------
-    - name: release-kyma-1.25-whitesource-scan
+    - name: release-kyma-2.0-whitesource-scan
       annotations:
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
@@ -772,7 +772,7 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-    - name: release-kyma-mod-1.25-whitesource-scan
+    - name: release-kyma-mod-2.0-whitesource-scan
       annotations:
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
@@ -820,7 +820,7 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-    - name: release-cli-1.25-whitesource-scan
+    - name: release-cli-2.0-whitesource-scan
       annotations:
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"

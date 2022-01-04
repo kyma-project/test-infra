@@ -6,8 +6,8 @@ dashboards:
   - name: kyma_integration
   - name: kyma_control-plane
   - name: kyma_experimental
+  - name: kyma_release-2.1
   - name: kyma_release-2.0
-  - name: kyma_release-1.25
   - name: kyma_release-1.24
   - name: kyma_release-1.23
 
@@ -20,8 +20,8 @@ dashboard_groups:
       - kyma_integration
       - kyma_control-plane
       - kyma_experimental
+      - kyma_release-2.1
       - kyma_release-2.0
-      - kyma_release-1.25
       - kyma_release-1.24
       - kyma_release-1.23
 
