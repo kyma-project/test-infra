@@ -28,9 +28,10 @@ templates:
                   local:
                     - "smaller_requests"
               - jobConfig:
-                  name: "pre-main-component-descriptors"
+                  name: "pre-main-kyma-component-descriptors"
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/generate-component-descriptors.sh"
                   optional: true
+                  run_if_changed: "^resources/.*/values.yaml$"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -40,8 +41,9 @@ templates:
                   local:
                     - "smaller_requests"
               - jobConfig:
-                  name: "post-main-component-descriptors"
+                  name: "post-main-kyma-component-descriptors"
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/generate-component-descriptors.sh"
+                  run_if_changed: "^resources/.*/values.yaml$"
                   labels:
                     preset-docker-push-repository-kyma: "true"
                     preset-sa-gcr-push: "true"

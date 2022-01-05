@@ -31,7 +31,7 @@ params+=("--git-commit=${git_commit}")
 
 pushd "${TEST_INFRA_SOURCES_DIR}"
 echo "This tool generates component descriptor file"
-go run ./development/image-url-helper \
+image-url-helper \
     --resources-directory "$KYMA_RESOURCES_DIR" \
     components \
     "${params[@]}"
