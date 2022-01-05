@@ -41,7 +41,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_prow-tools"
+                    - "image_kyma-integration"
                     - "extra_refs_test-infra"
                   local:
                     - "smaller_requests"
