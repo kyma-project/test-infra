@@ -98,6 +98,7 @@ var components = []struct {
 	{path: "permission-controller", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Until(releases.Release124),
 		},
 	},
 	{path: "service-binding-usage-controller", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
