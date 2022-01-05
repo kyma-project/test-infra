@@ -45,13 +45,14 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-component-descriptors
+    - name: pre-main-kyma-component-descriptors
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-component-descriptors"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-component-descriptors"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '^resources/.*/values.yaml$'
       optional: true
       skip_report: false
       decorate: true
@@ -67,7 +68,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211221-28c363bc"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220105-4e0c3c9e"
             securityContext:
               privileged: true
             command:
@@ -86,15 +87,16 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/kyma:
-    - name: post-main-component-descriptors
+    - name: post-main-kyma-component-descriptors
       annotations:
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-component-descriptors"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-component-descriptors"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
+      run_if_changed: '^resources/.*/values.yaml$'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -109,7 +111,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211221-28c363bc"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220105-4e0c3c9e"
             securityContext:
               privileged: true
             command:
