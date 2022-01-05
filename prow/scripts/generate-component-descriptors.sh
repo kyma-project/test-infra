@@ -26,7 +26,7 @@ else
     params+=("--repo-context=${DOCKER_PUSH_REPOSITORY}")
 fi
 
-params+=("--component-version=$(date +v%Y%m%d-%H%M)-${git_commit::8}")
+params+=("--component-version=$(date +v%Y%m%d-%H%M%S)-${git_commit::8}")
 params+=("--git-commit=${git_commit}")
 
 pushd "${TEST_INFRA_SOURCES_DIR}"
