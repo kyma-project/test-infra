@@ -76,7 +76,7 @@ function run_serverless_integration_tests() {
     log::info "Running Serverless Integration tests"
     pushd /home/prow/go/src/github.com/kyma-project/kyma/resources/serverless/
     kubectl create ns serverless-integration
-    helm install serverless-test "${SERVERLESS_CHART_DIR}/charts/k3s-tests" -n serverless-integration \
+    helm install serverless-test "charts/k3s-tests" -n serverless-integration \
          -f values.yaml --set jobName="serverless-tests" \
         --set testSuite="serverless-integration"
     
@@ -107,6 +107,8 @@ function clean_serverless_integration_tests() {
 }
 
 connect_to_cluster
+# in case of failed runs
+clean_serverless_integration_tests
 
 run_serverless_integration_tests
 
