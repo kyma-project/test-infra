@@ -17,6 +17,7 @@ func Execute() error {
 	rootCmd.AddCommand(CheckCmd())
 	rootCmd.AddCommand(ListCmd())
 	rootCmd.AddCommand(PromoteCmd())
+	rootCmd.AddCommand(ComponentsCmd())
 
 	return rootCmd.Execute()
 }

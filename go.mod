@@ -23,7 +23,10 @@ require (
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
+	github.com/gardener/component-cli v0.32.0
+	github.com/gardener/component-spec/bindings-go v0.0.56
 	github.com/ghodss/yaml v1.0.0
+	github.com/go-logr/logr v0.4.0
 	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/google/go-containerregistry v0.7.1-0.20211203164431-c75901cce627
 	github.com/google/go-github/v40 v40.0.0
@@ -32,6 +35,7 @@ require (
 	github.com/imdario/mergo v0.3.12
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/jinzhu/copier v0.3.4
+	github.com/mandelsoft/vfs v0.0.0-20210530103237-5249dc39ce91
 	github.com/onsi/gomega v1.16.0
 	github.com/pkg/errors v0.9.1
 	github.com/satori/go.uuid v1.2.0
@@ -42,6 +46,7 @@ require (
 	github.com/smartystreets/goconvey v1.7.2
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/pflag v1.0.5
+	github.com/spf13/viper v1.8.1
 	github.com/stretchr/testify v1.7.0
 	github.com/tidwall/gjson v1.9.3
 	github.com/vrischmann/envconfig v1.3.0
@@ -53,4 +58,5 @@ require (
 	k8s.io/apimachinery v0.22.2
 	k8s.io/client-go v11.0.1-0.20190805182717-6502b5e7b1b5+incompatible
 	k8s.io/test-infra v0.0.0-20211214153147-7b2c2d007b33
+	sigs.k8s.io/yaml v1.2.0
 )
