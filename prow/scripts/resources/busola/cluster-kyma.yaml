@@ -29,7 +29,7 @@ spec:
           - RS256
         usernameClaim: sub
         usernamePrefix: '-'
-    version: 1.20.11
+    version: 1.20.12
   networking:
     nodes: 10.250.0.0/16
     pods: 100.96.0.0/11
