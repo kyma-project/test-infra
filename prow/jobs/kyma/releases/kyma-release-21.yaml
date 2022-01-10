@@ -61,6 +61,8 @@ postsubmits: # runs on main
         pipeline.platform: "k3d"
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-merge"
+        testgrid-dashboards: "kyma_release-2.1"
+        testgrid-days-of-results: "60"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-rel21-kyma-integration-k3d"
