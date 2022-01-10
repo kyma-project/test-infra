@@ -91,8 +91,7 @@ log::banner "Provisioning Gardener cluster"
 # Provision garderner cluster
 reconciler::provision_cluster
 
-# Connect to the newly created shoot cluster
-reconciler::connect_to_shoot_cluster
+reconciler::export_shoot_cluster_kubeconfig
 
 # Deploy reconciler
 reconciler::deploy

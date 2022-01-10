@@ -254,7 +254,7 @@ templates:
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
           reconciler_e2e_upgrade_jobConfig:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-upgrade-gardener.sh"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade.sh"
             annotations:
               pipeline.installer: kyma install, kyma deploy
               pipeline.test: "upgrade-fast-integration"
