@@ -300,6 +300,89 @@ presubmits: # runs on PRs
           - name: kyma-tunas-prow-event-mesh
             secret:
               secretName: kyma-tunas-prow-event-mesh
+    - name: pre-main-kyma-skr-eventing
+      annotations:
+        pipeline.clusterprovisioning: "keb"
+        pipeline.installer: "keb"
+        pipeline.platform: "gardener_aws"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-skr-eventing"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+        preset-cluster-version: "true"
+        preset-debug-commando-oom: "true"
+        preset-keb-dev-credentials: "true"
+        preset-kyma-integration-central-app-connectivity-enabled: "true"
+        preset-kyma-integration-compass-dev: "true"
+        preset-kyma-integration-compass-enabled: "true"
+        preset-kyma-integration-kcp-client-credentials: "true"
+        preset-kyma-integration-subaccounnt: "true"
+      run_if_changed: '^((tests/fast-integration\S+|resources/eventing\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      optional: true
+      skip_report: false
+      decorate: true
+      decoration_config:
+        grace_period: 600000000000
+        timeout: 14400000000000
+      path_alias: github.com/kyma-project/kyma
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211214-2b5a3d39"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-skr-eventing.sh"
+            env:
+              - name: CREDENTIALS_DIR
+                value: "/etc/credentials/kyma-tunas-prow-event-mesh"
+              - name: KCP_GARDENER_NAMESPACE
+                value: "garden-kyma-dev"
+              - name: KCP_KEB_API_URL
+                value: "https://kyma-env-broker.cp.dev.kyma.cloud.sap"
+              - name: KCP_KUBECONFIG_API_URL
+                value: "https://kubeconfig-service.cp.dev.kyma.cloud.sap"
+              - name: KCP_MOTHERSHIP_API_URL
+                value: "https://mothership-reconciler.cp.dev.kyma.cloud.sap/v1"
+              - name: KCP_OIDC_ISSUER_URL
+                value: "https://kymatest.accounts400.ondemand.com"
+              - name: KEB_PLAN_ID
+                value: "8cb22518-aa26-44c5-91a0-e669ec9bf443"
+              - name: KYMA_MAJOR_VERSION
+                value: "2"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 400m
+            volumeMounts:
+              - name: kyma-tunas-prow-event-mesh
+                mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
+                readOnly: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+        volumes:
+          - name: kyma-tunas-prow-event-mesh
+            secret:
+              secretName: kyma-tunas-prow-event-mesh
   
 postsubmits: # runs on main
   kyma-project/kyma:

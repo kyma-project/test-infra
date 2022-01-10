@@ -42,6 +42,20 @@ templates:
               pipeline.test: "fast-integration"
               pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing.sh"
+          command_integration_skr_eventing:
+            cluster: "trusted-workload"
+            annotations:
+              pipeline.installer: keb
+              pipeline.test: "fast-integration"
+              pipeline.clusterprovisioning: keb
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-skr-eventing.sh"
+            labels:
+              preset-keb-dev-credentials: "true"
+              preset-kyma-integration-compass-dev: "true"
+              preset-kyma-integration-compass-enabled: "true"
+              preset-kyma-integration-central-app-connectivity-enabled: "true"
+              preset-kyma-integration-subaccounnt: "true"
+              preset-kyma-integration-kcp-client-credentials: "true"
           command_busola_long_lasting:
             annotations:
               pipeline.installer: kyma deploy
@@ -93,6 +107,22 @@ templates:
               CREDENTIALS_DIR: "/etc/credentials/kyma-tunas-prow-event-mesh"
             annotations:
               pipeline.platform: gardener_gcp
+          skr_aws_job_eventing:
+            labels:
+              preset-cluster-version: "true"
+            env:
+              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
+              CREDENTIALS_DIR: "/etc/credentials/kyma-tunas-prow-event-mesh"
+              # KEB_PLAN_ID: "361c511f-f939-4621-b228-d0fb79a1fe15" # AWS
+              # KEB_PLAN_ID: "5cb3d976-b85c-42ea-a636-79cadda109a9" # Preview Plan
+              KEB_PLAN_ID: "8cb22518-aa26-44c5-91a0-e669ec9bf443" # Azure Lite
+              KCP_GARDENER_NAMESPACE: "garden-kyma-dev"
+              KCP_KEB_API_URL: "https://kyma-env-broker.cp.dev.kyma.cloud.sap"
+              KCP_OIDC_ISSUER_URL: "https://kymatest.accounts400.ondemand.com"
+              KCP_MOTHERSHIP_API_URL: "https://mothership-reconciler.cp.dev.kyma.cloud.sap/v1"
+              KCP_KUBECONFIG_API_URL: "https://kubeconfig-service.cp.dev.kyma.cloud.sap"
+            annotations:
+              pipeline.platform: gardener_aws
           gardener_azure_job:
             annotations:
               pipeline.platform: gardener_azure
@@ -265,6 +295,34 @@ templates:
                     - jobConfig_presubmit
                     - gardener_gcp_job_eventing
                     - command_integration_eventing
+              - jobConfig:
+                  name: pre-main-kyma-skr-eventing
+                  # temporarily make the job optional
+                  optional: true
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                    # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((tests/fast-integration\\S+|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  volumes:
+                    - name: kyma-tunas-prow-event-mesh
+                      secretName: kyma-tunas-prow-event-mesh
+                  volumeMounts:
+                    - name: kyma-tunas-prow-event-mesh
+                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
+                      readOnly: true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_kyma-integration
+                    - kyma_major_version_2
+                  local:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - skr_aws_job_eventing
+                    - command_integration_skr_eventing
 
               # periodics
               - jobConfig:
