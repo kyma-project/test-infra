@@ -75,34 +75,30 @@ function connect_to_cluster() {
 function run_serverless_integration_tests() {
     log::info "Running Serverless Integration tests"
     pushd /home/prow/go/src/github.com/kyma-project/kyma/resources/serverless/
+
+    log::info "Creating test namespace"
     kubectl create ns serverless-integration
+    kubectl label ns serverless-integration created-by=serverless-controller-manager-test
+
     helm install serverless-test "charts/k3s-tests" -n serverless-integration \
-         -f values.yaml --set jobName="serverless-tests" \
+        -f values.yaml --set jobName="serverless-tests" \
         --set testSuite="serverless-integration"
-    
-    job_status=""
-    # helm does not wait for jobs to complete even with --wait
-    # TODO but helm@v3.5 has a flag that enables that, get rid of this function once we use helm@v3.5
-    while true; do
-        echo "Test job not completed yet..."
-        [[ $(kubectl get jobs $job_name -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}') == "True" ]] && job_status=1 && echo "Test job failed" && break
-        [[ $(kubectl get jobs $job_name -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}') == "True" ]] && job_status=0 && echo "Test job completed successfully" && break
-        sleep 5
-    done
 
-    collect_results "serverless-tests"
-
+    git checkout -
     popd
 }
 
 function run_serverless_metrics_collector() {
-    kubectl -n serverless-integration apply -f serverless-metrics-collector.yaml
-    sleep 30
-    kubectl logs -n serverless-integration metrics-collector
+    log::info "Collecting serverless controller metrics"
+    kubectl -n serverless-integration apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/serverless-metrics-collector.yaml"
+    kubectl -n serverless-integration wait job/metrics-collector --for=condition=Complete=True --timeout=300s
+    echo
+    kubectl logs -n serverless-integration -l job-name=metrics-collector
+    echo
 }
 
 function clean_serverless_integration_tests() {
-    kubectl delete ns serverless-integration
+    log::info "Removing test namespace"
     kubectl delete ns -l created-by=serverless-controller-manager-test
 }
 
@@ -111,9 +107,24 @@ connect_to_cluster
 clean_serverless_integration_tests
 
 run_serverless_integration_tests
+job_name="serverless-tests"
+job_status=""
+# helm does not wait for jobs to complete even with --wait
+# TODO but helm@v3.5 has a flag that enables that, get rid of this function once we use helm@v3.5
+while true; do
+    echo "Test job not completed yet..."
+    [[ $(kubectl -n serverless-integration get jobs "$job_name" -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}') == "True" ]] && job_status=1 && echo "Test job failed" && break
+    [[ $(kubectl -n serverless-integration get jobs "$job_name" -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}') == "True" ]] && job_status=0 && echo "Test job completed successfully" && break
+    sleep 5
+done
+
+collect_results "serverless-tests" "serverless-integration"
+run_serverless_metrics_collector
+
 
 clean_serverless_integration_tests
 
-run_serverless_metrics_collector
 
-log::success "Tests completed"
+echo "Exit code ${job_status}"
+
+exit $job_status
