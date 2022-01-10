@@ -16,7 +16,7 @@ require (
 	cloud.google.com/go/bigquery v1.8.0
 	cloud.google.com/go/firestore v1.6.0
 	cloud.google.com/go/functions v1.0.0
-	cloud.google.com/go/logging v1.0.0
+	cloud.google.com/go/logging v1.4.2
 	cloud.google.com/go/pubsub v1.16.0
 	cloud.google.com/go/storage v1.18.2
 	github.com/Masterminds/goutils v1.1.1 // indirect
@@ -46,7 +46,6 @@ require (
 	github.com/smartystreets/goconvey v1.7.2
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/pflag v1.0.5
-	github.com/spf13/viper v1.8.1
 	github.com/stretchr/testify v1.7.0
 	github.com/tidwall/gjson v1.9.3
 	github.com/vrischmann/envconfig v1.3.0
