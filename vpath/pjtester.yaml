@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "skr-kyma-to-kyma2-upgrade-aws-dev"
+    report: true
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 13015
