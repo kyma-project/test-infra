@@ -39,7 +39,7 @@ function reconciler::provision_cluster() {
     envsubst < "${DEFINITION_PATH}" | kubectl create -f -
 
     # wait for the cluster to be ready
-    kubectl wait --for condition="ControlPlaneHealthy" --timeout=10m shoot "${INPUT_CLUSTER_NAME}"
+    kubectl wait --for condition="ControlPlaneHealthy" --timeout=20m shoot "${INPUT_CLUSTER_NAME}"
     log::info "Cluster ${INPUT_CLUSTER_NAME} was created successfully"
 
 }
@@ -224,14 +224,9 @@ function reconciler::disable_sidecar_injection_reconciler_ns() {
     kubectl label namespace "${RECONCILER_NAMESPACE}" istio-injection=disabled --overwrite
 }
 
-# Connect to Gardener cluster
-function reconciler::connect_to_gardener_cluster() {
-    export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
-}
-
-# Connect to reconciler long running cluster
-function reconciler::connect_to_shoot_cluster() {
-  reconciler::connect_to_gardener_cluster
+# Export shoot cluster kubeconfig to ENV
+function reconciler::export_shoot_cluster_kubeconfig() {
+  export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
   local shoot_kubeconfig="/tmp/shoot-kubeconfig.yaml"
   kubectl get secret "${INPUT_CLUSTER_NAME}.kubeconfig"  -ogo-template="{{ .data.kubeconfig | base64decode }}" > "${shoot_kubeconfig}"
   cat "${shoot_kubeconfig}" > "${LOCAL_KUBECONFIG}"
