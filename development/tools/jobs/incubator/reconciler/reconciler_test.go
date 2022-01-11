@@ -135,7 +135,7 @@ func TestReconcilerJobsPeriodicE2EUpgrade(t *testing.T) {
 		},
 	})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPeriodic.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-upgrade-gardener.sh"}, actualPeriodic.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade.sh"}, actualPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/reconciler"}, actualPeriodic.Spec.Containers[0].Args)
 }
 
