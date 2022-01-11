@@ -44,7 +44,7 @@ RANDOM_ID=$(openssl rand -hex 4)
 
 LABELS=""
 if [[ -z "${PULL_NUMBER}" ]]; then
-    LABELS=(--labels "branch=$PULL_BASE_REF,job-name=compass-integration")
+    LABELS=(--labels "branch=${PULL_BASE_REF/./-},job-name=compass-integration")
 else
     LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=compass-integration")
 fi

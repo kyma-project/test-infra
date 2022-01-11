@@ -60,7 +60,7 @@ RANDOM_ID=$(openssl rand -hex 4)
 
 LABELS=""
 if [[ -z "${PULL_NUMBER}" ]]; then
-    LABELS=(--labels "branch=$PULL_BASE_REF,job-name=busola-integration-test-k3s")
+    LABELS=(--labels "branch=${PULL_BASE_REF/./-},job-name=busola-integration-test-k3s")
 else
     LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=busola-integration-test-k3s")
 fi
