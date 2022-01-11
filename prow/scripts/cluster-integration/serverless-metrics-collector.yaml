@@ -38,7 +38,7 @@ spec:
           }
           }
           EOF
-        image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211221-28c363bc
+        image: eu.gcr.io/kyma-project/tpi/k8s-tools:20211022-85284bf9
         name: metrics-collector
         resources: {}
       dnsPolicy: ClusterFirst
