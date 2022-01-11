@@ -59,8 +59,7 @@ func EventMux(c chan interface{}, s *prow.Server) {
 				l.Info("Event triggered by not supported user, ignoring.")
 			}
 		default:
-			l.WithField("pr_action", pr.Action)
-			l.Info("Ignoring unsupported pull request action.")
+			l.WithField("pr_action", pr.Action).Info("Ignoring unsupported pull request action.")
 		}
 	default:
 		l.Info("Ignoring unsupported event type.")
