@@ -370,6 +370,7 @@ templates:
               preset-kyma-artifacts-bucket: "true"
               preset-cluster-use-ssd: "true"
               preset-cluster-version: "true"
+              preset-gke-pod-security-policy: "true"
           fast_integration_template:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"
             annotations:

@@ -76,7 +76,7 @@ RANDOM_ID=$(openssl rand -hex 4)
 
 LABELS=""
 if [[ -z "${PULL_NUMBER}" ]]; then
-    LABELS=(--labels "branch=$PULL_BASE_REF,job-name=busola-smoke-test-docker")
+    LABELS=(--labels "branch=${PULL_BASE_REF/./-},job-name=busola-smoke-test-docker")
 else
     LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=busola-smoke-test-docker")
 fi
