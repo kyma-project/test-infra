@@ -45,8 +45,8 @@ func EventMux(c chan interface{}, s *prow.Server) {
 		switch pr.Action {
 		case github.PullRequestActionOpened, github.PullRequestActionReopened, github.PullRequestActionSynchronize:
 			pr.GUID = event.EventGUID
-			l.Infof("PrUserLogin: %s", pr.Sender.Login)
-			if pr.Sender.Login == "dependabot" {
+			if pr.Sender.Login == "dependabot[bot]" {
+				l.Info("Received pull request event for supported user.")
 				ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 				defer cancel()
 				err := s.GithubClient.(GithubClient).CreateCommentWithContext(ctx, pr.Repo.Owner.Login, pr.Repo.Name, pr.Number, "/test all")
@@ -59,6 +59,7 @@ func EventMux(c chan interface{}, s *prow.Server) {
 				l.Info("Event triggered by not supported user, ignoring.")
 			}
 		default:
+			l.WithField("pr_action", pr.Action)
 			l.Info("Ignoring unsupported pull request action.")
 		}
 	default:
