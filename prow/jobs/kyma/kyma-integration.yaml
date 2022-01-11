@@ -1016,41 +1016,51 @@ periodics: # runs on schedule
     - name: serverless-function-metrics-generator
       annotations:
         description: "Serverless function metrics generator"
-        pipeline.platform: "k3s"
+        pipeline.platform: "gke"
         pipeline.test: "Serverless function metrics"
         pipeline.trigger: "nightly"
-        pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "serverless-function-metrics-generator"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-main: "true"
+        preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
-        preset-kyma-guard-bot-github-token: "true"
         preset-sa-gke-kyma-integration: "true"
-        preset-sa-vm-kyma-integration: "true"
-        preset-serverless-git-auth: "true"
       cron: "0 0,12 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       extra_refs:
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211221-28c363bc"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
             securityContext:
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-metrics-nightly.sh"
+            env:
+              - name: CLOUDSDK_COMPUTE_ZONE
+                value: "europe-west4-b"
+              - name: CLUSTER_PROVIDER
+                value: "gcp"
+              - name: INPUT_CLUSTER_NAME
+                value: "nightly"
+              - name: KYMA_MAJOR_VERSION
+                value: "2"
+              - name: PROVISION_REGIONAL_CLUSTER
+                value: "true"
             resources:
               requests:
-                memory: 100Mi
-                cpu: 50m
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal
