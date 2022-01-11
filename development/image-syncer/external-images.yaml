@@ -31,7 +31,7 @@ images:
   tag: "11.14-alpine-v1"
 - source: "prom/pushgateway:v1.4.2"
 - source: "quay.io/coreos/etcd:v3.3.27"
-- source: "quay.io/coreos/kube-state-metrics:v1.9.7"
+- source: "quay.io/coreos/kube-state-metrics:v2.3.0"
 - source: "quay.io/jetstack/cert-manager-controller:v1.1.0"
 - source: "quay.io/jetstack/cert-manager-cainjector:v1.1.0"
 - source: "quay.io/jetstack/cert-manager-webhook:v1.1.0"
