@@ -33,6 +33,12 @@ plugins:
       - invalidcommitmsg
       - help
 
+external_plugins:
+  kyma-project/test-infra:
+    - name: test-untrusted
+      events:
+        - pull_request
+
 config_updater:
   maps:
     prow/jobs/**/*.yaml:
