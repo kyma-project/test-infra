@@ -33,7 +33,6 @@ The structure of the folder looks as follows:
 ├── helpers # This directory contains helper scripts used by pipeline jobs.
 ├── kyma-gke-integration.sh # This script installs and tests Kyma on a real GKE cluster.
 ├── kyma-gke-nightly.sh # This script creates a long-lived GKE cluster from the main branch. This cluster should be recreated once a day.
-├── kyma-gke-upgrade.sh # This script installs the last Kyma release on a GKE cluster and upgrades it with current changes from the PR, main, or release branch. It also triggers the Kyma testing script.
 └── kyma-gke-end-to-end-test.sh # This script installs and executes Kyma end-to-end tests on a real GKE cluster.
 ```
 
