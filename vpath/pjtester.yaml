@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "skr-kyma-to-kyma2-upgrade-aws-dev"
+prConfigs:
+  kyma-project:
+    test-infra:
+      prNumber: 1212
