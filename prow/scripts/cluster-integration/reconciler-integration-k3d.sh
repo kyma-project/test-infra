@@ -4,7 +4,7 @@ set -o errexit
 set -o pipefail
 
 readonly RECONCILER_DIR="./reconciler"
-readonly GO_VERSION=1.16.6
+readonly GO_VERSION=1.17.5
 
 function prereq_test() {
   command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
@@ -38,7 +38,7 @@ function install_cli() {
 }
 
 function provision_k3d() {
-  kyma provision k3d -p 80:80@loadbalancer -p 443:443@loadbalancer
+  kyma provision k3d --ci
 }
 
 function run_tests() {

@@ -4,6 +4,19 @@ metadata:
   name: $DOMAIN_NAME
 spec:
   cloudProfileName: gcp
+  extensions:
+  - type: shoot-dns-service
+    providerConfig:
+      apiVersion: service.dns.extensions.gardener.cloud/v1alpha1
+      dnsProviderReplication:
+        enabled: true
+      kind: DNSConfig
+  - type: shoot-cert-service
+    providerConfig:
+      apiVersion: service.cert.extensions.gardener.cloud/v1alpha1
+      kind: CertConfig
+      shootIssuers:
+        enabled: true
   kubernetes:
     allowPrivilegedContainers: true
     kubeAPIServer:
@@ -16,7 +29,7 @@ spec:
           - RS256
         usernameClaim: sub
         usernamePrefix: '-'
-    version: 1.20.6
+    version: 1.20.12
   networking:
     nodes: 10.250.0.0/16
     pods: 100.96.0.0/11
@@ -37,7 +50,7 @@ spec:
     - machine:
         image:
           name: gardenlinux
-          version: 184.0.0
+          version: 576.1.0
         type: n2-standard-8
       maxSurge: 1
       maxUnavailable: 0

@@ -212,32 +212,11 @@ EOF
 }
 
 function applyCompassOverrides() {
-  NAMESPACE="compass-installer"
-
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-overrides" \
-    --data "global.externalServicesMock.enabled=true" \
-    --data "global.externalServicesMock.auditlog=false" \
-    --data "gateway.gateway.auditlog.enabled=false" \
-    --data "gateway.gateway.auditlog.authMode=oauth" \
-    --data "global.systemFetcher.enabled=true" \
-    --data "global.systemFetcher.systemsAPIEndpoint=http://compass-external-services-mock.compass-system.svc.cluster.local:8080/systemfetcher/systems" \
-    --data "global.systemFetcher.systemsAPIFilterCriteria=no" \
-    --data "global.systemFetcher.systemsAPIFilterTenantCriteriaPattern=tenant=%s" \
-    --data 'global.systemFetcher.systemToTemplateMappings=[{"Name": "temp1", "SourceKey": ["prop"], "SourceValue": ["val1"] },{"Name": "temp2", "SourceKey": ["prop"], "SourceValue": ["val2"] }]' \
-    --data "global.systemFetcher.oauth.client=client_id" \
-    --data "global.systemFetcher.oauth.secret=client_secret" \
-    --data "global.systemFetcher.oauth.tokenBaseUrl=compass-external-services-mock.compass-system.svc.cluster.local:8080" \
-    --data "global.systemFetcher.oauth.tokenPath=/secured/oauth/token" \
-    --data "global.systemFetcher.oauth.tokenEndpointProtocol=http" \
-    --data "global.systemFetcher.oauth.scopesClaim=scopes" \
-    --data "global.systemFetcher.oauth.tenantHeaderName=x-zid" \
-    --data "global.kubernetes.serviceAccountTokenJWKS=https://container.googleapis.com/v1beta1/projects/$CLOUDSDK_CORE_PROJECT/locations/$CLOUDSDK_COMPUTE_ZONE/clusters/$COMMON_NAME/jwks" \
-    --data "global.oathkeeper.mutators.authenticationMappingServices.tenant-fetcher.authenticator.enabled=true" \
-    --data "global.oathkeeper.mutators.authenticationMappingServices.subscriber.authenticator.enabled=true" \
-    --data "system-broker.http.client.skipSSLValidation=true" \
-    --data "operations-controller.http.client.skipSSLValidation=true" \
-    --data "global.systemFetcher.http.client.skipSSLValidation=true" \
-    --label "component=compass"
+  OVERRIDES_FILE="${COMPASS_SOURCES_DIR}/installation/resources/installer-config-gke-benchmark.yaml.tpl"
+  if [[ -f "$OVERRIDES_FILE" ]]; then
+    # envsubst requires variables to be exported or to be passed to the process execution in order to work
+  CLOUDSDK_CORE_PROJECT=${CLOUDSDK_CORE_PROJECT} CLOUDSDK_COMPUTE_ZONE=${CLOUDSDK_COMPUTE_ZONE} COMMON_NAME=${COMMON_NAME} envsubst < "$OVERRIDES_FILE" | kubectl apply -f -
+  fi
 }
 
 function applyCommonOverrides() {
@@ -412,6 +391,10 @@ CONCURRENCY=1 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l "bench
 kubectl cordon "$NODE"
 
 PODS=$(kubectl get cts $SUITE_NAME -o=go-template --template='{{range .status.results}}{{range .executions}}{{printf "%s\n" .id}}{{end}}{{end}}')
+
+CHECK_FAILED=false
+FAILED_TESTS=''
+
 for POD in $PODS; do
   CONTAINER=$(kubectl -n kyma-system get pod "$POD" -o jsonpath='{.spec.containers[*].name}' | sed s/istio-proxy//g | awk '{$1=$1};1')
   kubectl logs -n kyma-system "$POD" -c "$CONTAINER" > "$CONTAINER"-new
@@ -430,12 +413,18 @@ for POD in $PODS; do
     DELTA=$(echo -n "$STATS" | tail +2 | { grep -v '~' || true; } | awk '{print $(NF-2)}')
     if [[ $DELTA == +* ]]; then # If delta is positive
       log::error "There is significant performance degradation in the new release!"
-      exit 1
+      CHECK_FAILED=true
+      FAILED_TESTS="$CONTAINER\\n$FAILED_TESTS"
     fi
   else
     benchstat "$CONTAINER"-new
   fi
 done
+
+if [ $CHECK_FAILED = true ]; then
+  log::error "The following benchmark tests failed:\\n $FAILED_TESTS"
+  exit 1
+fi
 
 log::success "Success"
 

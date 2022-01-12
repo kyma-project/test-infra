@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"strings"
 
+	imagesyncer "github.com/kyma-project/test-infra/development/image-syncer/pkg"
 	"gopkg.in/yaml.v2"
 )
 
@@ -16,16 +17,20 @@ func getTarget(source, targetRepo, targetTag string) (string, error) {
 		}
 		imageName := strings.Split(source, "@sha256:")[0]
 		target = targetRepo + imageName + ":" + targetTag
+		// Allow retagging when the source image is not using SHA256 hash
+	} else if targetTag != "" {
+		imageName := strings.Split(source, ":")[0]
+		target = targetRepo + imageName + ":" + targetTag
 	}
 	return target, nil
 }
 
-func parseImagesFile(file string) (*SyncDef, error) {
+func parseImagesFile(file string) (*imagesyncer.SyncDef, error) {
 	f, err := ioutil.ReadFile(file)
 	if err != nil {
 		return nil, err
 	}
-	var syncDef SyncDef
+	var syncDef imagesyncer.SyncDef
 	if err := yaml.Unmarshal(f, &syncDef); err != nil {
 		return nil, err
 	}

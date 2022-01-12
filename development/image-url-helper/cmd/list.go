@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
 
 	"github.com/jamiealquiza/envy"
+	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/common"
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/list"
 	"github.com/spf13/cobra"
 )
@@ -27,38 +27,35 @@ func ListCmd() *cobra.Command {
 		Example: "image-url-helper list",
 		Args:    cobra.ExactArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			imageComponents := make(list.ImageComponents)
 
 			// remove trailing slash to have consistent paths
 			ResourcesDirectoryClean := filepath.Clean(ResourcesDirectory)
 
-			var images []list.Image
-			var testImages []list.Image
+			images := make(common.ComponentImageMap)
+			testImages := make(common.ComponentImageMap)
 
-			err := filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, &images, &testImages, imageComponents))
+			err := filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, images, testImages))
 			if err != nil {
 				fmt.Printf("Cannot traverse directory: %s\n", err)
 				os.Exit(2)
 			}
 
-			var allImages []list.Image
-			allImages = append(allImages, images...)
+			allImages := make(common.ComponentImageMap)
+			common.MergeImageMap(allImages, images)
 			if !options.excludeTestImages {
-				allImages = append(allImages, testImages...)
+				common.MergeImageMap(allImages, testImages)
 			}
-			sort.Slice(allImages, list.GetSortImagesFunc(allImages))
-			allImages = list.RemoveDoubles(allImages)
 
 			if options.outputFormat == "" {
-				list.PrintImages(allImages, imageComponents)
+				common.PrintImages(allImages)
 			} else if strings.ToLower(options.outputFormat) == "json" {
-				err = list.PrintImagesJSON(allImages, imageComponents)
+				err = list.PrintImagesJSON(allImages)
 				if err != nil {
 					fmt.Printf("Cannot save JSON: %s\n", err)
 					os.Exit(2)
 				}
 			} else if strings.ToLower(options.outputFormat) == "yaml" {
-				err = list.PrintImagesYAML(allImages, imageComponents)
+				err = list.PrintImagesYAML(allImages)
 				if err != nil {
 					fmt.Printf("Cannot save JSON: %s\n", err)
 					os.Exit(2)

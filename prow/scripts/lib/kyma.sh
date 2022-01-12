@@ -63,17 +63,21 @@ function kyma::undeploy_kyma() {
 #
 # Arguments:
 #   t - GitHub token
+#   v - searched version as a regular expression, e.g. "^1\." (optional)
 # Returns:
 #   Last Kyma release version
 function kyma::get_last_release_version {
 
     local OPTIND
     local githubToken
+    local searchedVersion=""
 
-    while getopts ":t:" opt; do
+    while getopts ":t:v:" opt; do
         case $opt in
             t)
                 githubToken="$OPTARG" ;;
+            v)
+                searchedVersion="$OPTARG" ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
@@ -83,9 +87,15 @@ function kyma::get_last_release_version {
 
     utils::check_empty_arg "$githubToken" "Github token was not provided. Exiting..."
     
+    if [[ -n "${searchedVersion}" ]]; then
+        # shellcheck disable=SC2034
+        kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
+            | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | [.[]| select( .tag_name | match("'"${searchedVersion}"'"))] | .[-1].tag_name')
+    else
     # shellcheck disable=SC2034
-    kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
-        | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].tag_name')
+        kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
+            | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].tag_name')
+    fi
 }
 
 kyma::install_cli() {
@@ -103,6 +113,29 @@ kyma::install_cli() {
 
         curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}?alt=media"
         chmod +x kyma
+        kyma_version=$(kyma version --client)
+        echo "--> Kyma CLI version: ${kyma_version}"
+        echo "OK"
+        popd || exit
+        eval "${settings}"
+    else
+        log::info "Kyma CLI is already installed: $(kyma version -c)"
+    fi
+}
+
+kyma::install_cli_last_release() {
+    if ! [[ -x "$(command -v kyma)" ]]; then
+        local settings
+        settings="$(set +o); set -$-"
+
+        mkdir -p "/tmp/bin"
+        export PATH="/tmp/bin:${PATH}"
+        pushd "/tmp/bin" || exit
+
+        curl -Lo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/$(curl -s https://api.github.com/repos/kyma-project/cli/releases/latest | grep tag_name | cut -d '"' -f 4)/kyma_Linux_x86_64.tar.gz" \
+        && tar -zxvf kyma.tar.gz && chmod +x kyma \
+        && rm -f kyma.tar.gz
+
         kyma_version=$(kyma version --client)
         echo "--> Kyma CLI version: ${kyma_version}"
         echo "OK"

@@ -78,9 +78,12 @@ fi
 # Checks required vars and initializes gcloud/docker if necessary
 gardener::init
 
+numeric_day=$(date +%u)
+export INPUT_CLUSTER_NAME="${INPUT_CLUSTER_NAME}${numeric_day}"
+
 log::banner "Connecting to nightly cluster"
-# Connect to nightly reconciler cluster based on INPUT_CLUSTER_NAME
-reconciler::connect_to_shoot_cluster
+
+reconciler::export_shoot_cluster_kubeconfig
 
 # Deploy test pod which will trigger reconciliation
 reconciler::deploy_test_pod

@@ -1,0 +1,13 @@
+filters:
+  'README.md':
+    reviewers:
+      - technical-writers
+    approvers:
+      - technical-writers
+    labels:
+      - 'area/documentation'
+
+reviewers:
+  - test-infra-tooling
+approvers:
+  - test-infra-tooling

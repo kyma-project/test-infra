@@ -3,8 +3,10 @@ package list
 import (
 	"encoding/json"
 	"fmt"
+	"sort"
 	"strings"
 
+	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/common"
 	"gopkg.in/yaml.v2"
 )
 
@@ -26,8 +28,8 @@ type OutputImageList struct {
 }
 
 // PrintImagesJSON prints JSON list with names and components for each image
-func PrintImagesJSON(allImages []Image, imageComponents ImageComponents) error {
-	imagesConverted := convertimageslist(allImages, imageComponents)
+func PrintImagesJSON(allImages common.ComponentImageMap) error {
+	imagesConverted := convertImageslist(allImages)
 
 	out, err := json.MarshalIndent(imagesConverted, "", "  ")
 	if err != nil {
@@ -38,8 +40,8 @@ func PrintImagesJSON(allImages []Image, imageComponents ImageComponents) error {
 }
 
 // PrintImagesYAML prints YAML list with names and components for each image
-func PrintImagesYAML(allImages []Image, imageComponents ImageComponents) error {
-	imagesConverted := convertimageslist(allImages, imageComponents)
+func PrintImagesYAML(allImages common.ComponentImageMap) error {
+	imagesConverted := convertImageslist(allImages)
 
 	out, err := yaml.Marshal(imagesConverted)
 	if err != nil {
@@ -49,15 +51,26 @@ func PrintImagesYAML(allImages []Image, imageComponents ImageComponents) error {
 	return nil
 }
 
-func convertimageslist(allImages []Image, imageComponents ImageComponents) OutputImageList {
+// convertImageslist takes in a list of images and image to component mapping and creates an OutputImageList structure that can be later marshalled and used by the security scan tool
+func convertImageslist(allImages common.ComponentImageMap) OutputImageList {
 	imagesConverted := OutputImageList{}
 
+	imageNames := make([]string, 0)
 	for _, image := range allImages {
+		imageNames = append(imageNames, image.Image.FullImageURL())
+	}
+	sort.Strings(imageNames)
+
+	for _, fullImageURL := range imageNames {
 		imageTmp := OutputImage{}
-		imageTmp.Name = image.String()
-		imageTmp.CustomFields.Image = image.String()
-		components := imageComponents[image.String()]
-		imageTmp.CustomFields.Components = strings.Join(components, ",")
+		imageTmp.Name = fullImageURL
+		imageTmp.CustomFields.Image = fullImageURL
+
+		componentNames := make([]string, 0)
+		for component, _ := range allImages[fullImageURL].Components {
+			componentNames = append(componentNames, component)
+		}
+		imageTmp.CustomFields.Components = strings.Join(componentNames, ",")
 		imagesConverted.Images = append(imagesConverted.Images, imageTmp)
 	}
 

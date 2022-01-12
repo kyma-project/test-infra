@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/google/go-github/github"
+	"github.com/google/go-github/v40/github"
 )
 
 // FakeKymaVersionReader is a fake kymaVersionReader for test purposes

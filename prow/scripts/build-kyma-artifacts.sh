@@ -35,6 +35,11 @@ if [ -n "${PULL_NUMBER}" ]; then
   DOCKER_TAG="PR-${PULL_NUMBER}"
 elif [[ "${PULL_BASE_REF}" =~ ^release-.* ]]; then
   DOCKER_TAG=$(cat "VERSION")
+  if [[ "${NEXT_RELEASE}" == "main" ]]; then
+      echo "You can't publish release artifacts with the version set to 'main'"
+      exit 1
+  fi
+
   if [[ "${REPO_OWNER}" == "kyma-project" && "${REPO_NAME}" == "kyma" ]]; then
     NEXT_RELEASE="$DOCKER_TAG"
     echo "Checking if ${NEXT_RELEASE} was already published on github..."

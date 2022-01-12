@@ -9,13 +9,13 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/google/go-github/v31/github"
+	"github.com/google/go-github/v40/github"
 	"k8s.io/test-infra/prow/pod-utils/downwardapi"
 )
 
 type githubRepoService interface {
-	GetBranch(ctx context.Context, owner, repo, branch string) (*github.Branch, *github.Response, error)
-	GetCommit(ctx context.Context, owner, repo, sha string) (*github.RepositoryCommit, *github.Response, error)
+	GetBranch(ctx context.Context, owner, repo, branch string, followRedirects bool) (*github.Branch, *github.Response, error)
+	GetCommit(ctx context.Context, owner, repo, sha string, opts *github.ListOptions) (*github.RepositoryCommit, *github.Response, error)
 	// other repository methods used in your app
 }
 
@@ -76,7 +76,7 @@ func BuildPrTag(jobSpec *downwardapi.JobSpec, fromFlags bool, numberOnly bool, c
 
 	if fromFlags {
 		// get commit for a branch
-		branch, _, err := client.Repositories.GetBranch(ctx, jobSpec.Refs.Org, jobSpec.Refs.Repo, jobSpec.Refs.BaseRef)
+		branch, _, err := client.Repositories.GetBranch(ctx, jobSpec.Refs.Org, jobSpec.Refs.Repo, jobSpec.Refs.BaseRef, true)
 		if err != nil {
 			return "", fmt.Errorf("failed get branch %s, got error: %w", jobSpec.Refs.BaseRef, err)
 		}
@@ -90,7 +90,7 @@ func BuildPrTag(jobSpec *downwardapi.JobSpec, fromFlags bool, numberOnly bool, c
 			return "", fmt.Errorf("failed to read JOB_SPEC env, got error: %w", err)
 		}
 		// get commit details for base sha
-		commit, _, err = client.Repositories.GetCommit(ctx, jobSpec.Refs.Org, jobSpec.Refs.Repo, jobSpec.Refs.BaseSHA)
+		commit, _, err = client.Repositories.GetCommit(ctx, jobSpec.Refs.Org, jobSpec.Refs.Repo, jobSpec.Refs.BaseSHA, nil)
 		if err != nil {
 			return "", fmt.Errorf("failed get commit %s, got error: %w", jobSpec.Refs.BaseSHA, err)
 		}

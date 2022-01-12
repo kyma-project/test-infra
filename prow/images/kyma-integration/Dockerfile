@@ -73,7 +73,7 @@ RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
 
 # Versions
 
-ENV GO_VERSION 1.16.5
+ENV GO_VERSION 1.17.5
 ENV DEP_RELEASE_TAG v0.5.4
 
 # Install Go
@@ -139,7 +139,7 @@ RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor |
 #################################################################
 
 # hadolint ignore=DL3022
-COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20211027-15bf3d30 /prow-tools /prow-tools
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20220105-4e0c3c9e /prow-tools /prow-tools
 # for better access to prow-tools
 ENV PATH=$PATH:/prow-tools
 
@@ -175,7 +175,7 @@ RUN go install golang.org/x/perf/cmd/...
 ####################### Install smctl ###########################
 #################################################################
 
-ENV SMCTL_VERSION=v1.11.10
+ENV SMCTL_VERSION=v1.11.12
 RUN curl -fLSs -o smctl.tar.gz https://github.com/Peripli/service-manager-cli/releases/download/${SMCTL_VERSION}/smctl-${SMCTL_VERSION}-linux-amd64.tar.gz && \
     tar xzf smctl.tar.gz && \
     rm smctl.tar.gz && \
@@ -197,3 +197,19 @@ RUN curl -fLSs -o /usr/local/bin/cosign https://github.com/sigstore/cosign/relea
 ENV KCPCLI_VERSION=master-9a0a2e5a
 RUN curl -fLSs -o /usr/local/bin/kcp https://storage.googleapis.com/kyma-development-artifacts/kcp/${KCPCLI_VERSION}/kcp-linux &&\
     chmod +x /usr/local/bin/kcp
+
+#################################################################
+################ Install yq (yaml tool) #########################
+#################################################################
+ENV YQ_VERSION=v4.15.1
+RUN curl -fLSs -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 &&\
+    chmod +x /usr/local/bin/yq
+
+#################################################################
+################ Install gh (github-cli) ########################
+#################################################################
+ENV GH_VERSION=2.2.0
+RUN curl -fsSL https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_amd64.tar.gz -o - | tar -xz &&\
+  mv gh_${GH_VERSION}_linux_amd64/bin/gh /usr/local/bin/gh &&\
+  chmod +x /usr/local/bin/gh &&\
+  rm -r gh_${GH_VERSION}_linux_amd64

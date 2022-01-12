@@ -1,6 +1,6 @@
 # Node buildpack with chromium and its dependencies
 
-FROM eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181130-b28250b
+FROM eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181204-1cd903a
 
 ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true

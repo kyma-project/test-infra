@@ -12,6 +12,7 @@ import (
 	"github.com/google/go-containerregistry/pkg/name"
 	"github.com/google/go-containerregistry/pkg/v1/remote"
 	"github.com/google/go-containerregistry/pkg/v1/remote/transport"
+	imagesyncer "github.com/kyma-project/test-infra/development/image-syncer/pkg"
 	"github.com/pkg/errors"
 	"github.com/sigstore/sigstore/pkg/signature"
 
@@ -23,20 +24,6 @@ import (
 var (
 	log = logrus.New()
 )
-
-// SyncDef stores synchronisation definition
-type SyncDef struct {
-	TargetRepoPrefix string `yaml:"targetRepoPrefix"`
-	Sign             bool   `yaml:"sign"`
-	Images           []Image
-}
-
-// Image stores image location
-type Image struct {
-	Source string
-	Tag    string `yaml:"tag,omitempty"`
-	Sign   *bool  `yaml:"sign,omitempty"`
-}
 
 // Config stores command line arguments
 type Config struct {
@@ -92,7 +79,7 @@ func SyncImage(ctx context.Context, src, dest string, dryRun bool, auth authn.Au
 		return nil, fmt.Errorf("source image pull error: %w", err)
 	}
 
-	d, err := remote.Image(dr, remote.WithContext(ctx))
+	d, err := remote.Image(dr, remote.WithContext(ctx), remote.WithAuth(auth))
 	if err != nil {
 		if ifRefNotFound(err) {
 			log.Debug("Target image does not exist. Pushing image...")
@@ -127,7 +114,7 @@ func SyncImage(ctx context.Context, src, dest string, dryRun bool, auth authn.Au
 }
 
 // SyncImages is a main syncing function that takes care of copying and signing/verifying images.
-func SyncImages(ctx context.Context, cfg *Config, images *SyncDef, sv signature.SignerVerifier, authCfg []byte) error {
+func SyncImages(ctx context.Context, cfg *Config, images *imagesyncer.SyncDef, sv signature.SignerVerifier, authCfg []byte) error {
 	auth := &authn.Basic{Username: "_json_key", Password: string(authCfg)}
 	for _, img := range images.Images {
 		target, err := getTarget(img.Source, images.TargetRepoPrefix, img.Tag)

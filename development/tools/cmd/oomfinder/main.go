@@ -5,118 +5,154 @@ import (
 	"fmt"
 	"os"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/containerd/containerd"
+	events2 "github.com/containerd/containerd/api/events"
+	"github.com/containerd/containerd/events"
 	"github.com/containerd/containerd/namespaces"
+	"github.com/containerd/typeurl"
 	dockerclient "github.com/fsouza/go-dockerclient"
 	log "github.com/sirupsen/logrus"
+	flag "github.com/spf13/pflag"
+
+	// Register grpc event types
+	_ "github.com/containerd/containerd/api/events"
 )
 
-// dockerOOMListener create channel to get events from docker daemon.
+var debug = flag.BoolP("debug", "d", false, "enable debug output")
+
+// dockerOOMListener listen for events from docker daemon.
 // Listening is done in a goroutine.
 // Channel will receive only oom events as defined in Filters property of EventsOptions.
-// On oom event details are printed to stdout.
+// On oom event, details are printed to stdout.
 func dockerOOMListener(client *dockerclient.Client, wg *sync.WaitGroup) {
 	eventsChannel := make(chan *dockerclient.APIEvents)
+	// Filter events to get only OOM events for containers.
 	eventOptions := dockerclient.EventsOptions{
 		Filters: map[string][]string{
 			"type":  {"container"},
 			"event": {"oom"},
 		},
 	}
-	errs := client.AddEventListenerWithOptions(eventOptions, eventsChannel)
-	if errs != nil {
-		log.WithFields(log.Fields{"msg": "got docker daemon events error"}).Errorf("%s", errs)
+	// Subscribe to listen for docker deamon events.
+	err := client.AddEventListenerWithOptions(eventOptions, eventsChannel)
+	if err != nil {
+		log.WithError(err).Error("got docker daemon events error")
 	}
+	log.Debug("Subscribed on docker socket")
 	go func() {
 		defer wg.Done()
 		for {
 			event, ok := <-eventsChannel
 			if !ok {
 				log.Error("failed read docker event")
+				return
 			}
-			fmt.Fprintf(os.Stdout, "OOM event received time: %s , namespace: %s , pod: %s ,container: %s , image: %s \n",
+			log.Debugf("Got docker oom event: %v", event)
+			_, err := fmt.Fprintf(os.Stdout, "OOM event received, time: %s, namespace: %s, pod: %s, container: %s, image: %s\n",
 				time.Unix(event.Time, 0).Format(time.RFC822Z),
 				event.Actor.Attributes["io.kubernetes.pod.namespace"],
 				event.Actor.Attributes["io.kubernetes.pod.name"],
 				event.Actor.Attributes["io.kubernetes.container.name"],
 				event.Actor.Attributes["image"],
 			)
+			if err != nil {
+				log.WithError(err).Error("cannot print event details")
+				continue
+			}
 		}
 	}()
 }
 
-// containerOOMListener create channel to get events from containerd daemon.
-// Listening is done within to goroutines. One for errors and second one for events.
+// containerOOMListener listen for events from containerd daemon.
+// Listening is done within goroutine.
 // Channels will receive only oom events as defined in filters argument of Subscribe method.
-// On oom event details are printed to stdout.
+// On oom event details, are printed to stdout.
 func containerdOOMListener(client *containerd.Client, wg *sync.WaitGroup) {
 	ctx := context.Background()
-	events, errs := client.Subscribe(ctx, "topic==/tasks/oom")
+	eventsClient := client.EventService()
+	oomEventsCh, oomErrCh := eventsClient.Subscribe(ctx, "topic~=|^/tasks/oom|")
+	log.Debug("Subscribed on containerd socket.")
 	go func() {
 		defer wg.Done()
 		for {
-			cherr, ok := <-errs
-			if !ok {
-				log.Errorf("failed read containerd events errors channel")
+			var e *events.Envelope
+			select {
+			case e = <-oomEventsCh:
+			case err := <-oomErrCh:
+				log.WithError(err).Error("got containerd event on errors channel")
 				return
 			}
-			log.WithFields(log.Fields{"msg": "got containerd events errors channel event"}).Errorf("%+v", cherr)
-		}
-	}()
-	go func() {
-		defer wg.Done()
-		for {
-			event, ok := <-events
-			if !ok {
-				log.Errorf("failed read containerd events channel")
-				return
+			if e != nil {
+				if e.Event != nil {
+					log.Debug("Got containerd oom event.")
+					v, err := typeurl.UnmarshalAny(e.Event)
+					if err != nil {
+						log.WithError(err).Warn("cannot unmarshal an event from Any")
+						continue
+					}
+					log.Debugf("got oom event for containerID: %s\n", v.(*events2.TaskOOM).ContainerID)
+					ctxWithNamespace := namespaces.WithNamespace(ctx, "k8s.io")
+					container, err := client.ContainerService().Get(ctxWithNamespace, v.(*events2.TaskOOM).ContainerID)
+					if err != nil {
+						log.WithError(err).Error("Failed read container details.")
+						continue
+					}
+					log.Debugf("Image: %s, Name: %s, Name: %s, Namespace: %s", container.Image, container.Labels["io.kubernetes.container.name"], container.Labels["io.kubernetes.pod.name"], container.Labels["io.kubernetes.pod.namespace"])
+					_, err = fmt.Fprintf(os.Stdout, "OOM event received, time: %s, namespace: %s, pod: %s, container: %s, image: %s\n",
+						e.Timestamp,
+						container.Labels["io.kubernetes.pod.namespace"],
+						container.Labels["io.kubernetes.pod.name"],
+						container.Labels["io.kubernetes.container.name"],
+						container.Image,
+					)
+					if err != nil {
+						log.WithError(err).Error("cannot print EventInfo")
+						continue
+					}
+				}
 			}
-			fmt.Printf("%+v", event)
 		}
 	}()
-	//TODO: check what data is in containerd oom event and if following code is needed.
-	oom := namespaces.WithNamespace(context.Background(), "oom")
-	allContainers, err := client.Containers(oom)
-	if err != nil {
-		log.WithFields(log.Fields{"msg": "failed get containers"}).Fatalf("error: %s", err)
-	}
-	for container := range allContainers {
-		fmt.Fprintf(os.Stdout, "%+v", container)
-	}
 }
+
 func main() {
-	// wait group to allow goroutines listen on channels
+	flag.Parse()
+	if *debug {
+		log.SetLevel(log.DebugLevel)
+	}
+	// Wait group to allow goroutines listen on channels.
 	var wg sync.WaitGroup
-	// check docker daemon socket exists
+	var socketFlag atomic.Value
+	// Check docker daemon socket exists.
 	if _, err := os.Stat("/var/run/docker.sock"); err == nil {
-		// create docker client with unix socket
+		socketFlag.Store(1)
+		// Create docker client with unix socket.
 		client, err := dockerclient.NewClient("unix:///var/run/docker.sock")
 		if err != nil {
-			log.WithFields(log.Fields{"msg": "failed create docker client"}).Fatalf("error: %s", err)
+			log.WithError(err).Fatalf("failed create docker client")
 		}
 		wg.Add(1)
-		// listen for oom events
+		// Listen for oom events.
 		dockerOOMListener(client, &wg)
-		// if docker socket doesn't exists try attach to containerd socket
-	} else if os.IsNotExist(err) {
-		// check if containerd socket exists
-		if _, err := os.Stat("/run/containerd/containerd.sock"); err == nil {
-			// create containerd client with unix socket
-			client, err := containerd.New("/run/containerd/containerd.sock")
-			if err != nil {
-				log.WithFields(log.Fields{"msg": "failed create containerd client"}).Fatalf("error: %s", err)
-			}
-			defer client.Close()
-			wg.Add(2)
-			// listen for oom events
-			containerdOOMListener(client, &wg)
-		} else {
-			log.WithFields(log.Fields{"msg": "failed found container runtime socket"}).Errorf("%+v", err)
+	}
+	// Check containerd daemon socket exists.
+	if _, err := os.Stat("/run/containerd/containerd.sock"); err == nil {
+		socketFlag.Store(1)
+		// Create containerd client with unix socket.
+		client, err := containerd.New("/run/containerd/containerd.sock")
+		if err != nil {
+			log.WithError(err).Fatalf("failed create containerd client")
 		}
-	} else {
-		log.WithFields(log.Fields{"msg": "failed found container runtime socket"}).Errorf("%+v", err)
+		wg.Add(1)
+		// Listen for oom events.
+		containerdOOMListener(client, &wg)
+	}
+	// Check if any container runtime socket was found
+	if socketFlag.Load() == nil {
+		log.Error("failed found container runtime socket")
 	}
 	wg.Wait()
 }

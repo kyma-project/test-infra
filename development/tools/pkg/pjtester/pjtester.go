@@ -12,8 +12,6 @@ import (
 
 	"k8s.io/test-infra/prow/pod-utils/downwardapi"
 
-	"k8s.io/test-infra/prow/config/secret"
-
 	"github.com/go-yaml/yaml"
 	"github.com/kyma-project/test-infra/development/tools/pkg/prtagbuilder"
 	"github.com/sirupsen/logrus"
@@ -461,7 +459,7 @@ func formatPjName(pullAuthor, pjName string) string {
 // newTestPJ is building a prowjob definition for test
 func newTestPJ(pjCfg pjCfg, opt options) prowapi.ProwJob {
 	o := getPjCfg(pjCfg, opt)
-	conf, err := config.Load(o.configPath, o.jobConfigPath, nil)
+	conf, err := config.Load(o.configPath, o.jobConfigPath, nil, "")
 	if err != nil {
 		logrus.WithError(err).Fatal("Error loading prow config")
 	}
@@ -495,14 +493,7 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	o := gatherOptions(testCfg.ConfigPath, ghOptions)
 	prowClient := newProwK8sClientset()
 	pjsClient := prowClient.ProwV1()
-	var secretAgent *secret.Agent
-	if o.github.TokenPath != "" {
-		secretAgent = &secret.Agent{}
-		if err := secretAgent.Start([]string{o.github.TokenPath}); err != nil {
-			logrus.WithError(err).Fatal("Failed to start secret agent")
-		}
-	}
-	o.githubClient, err = o.github.GitHubClient(secretAgent, false)
+	o.githubClient, err = o.github.GitHubClient(false)
 	if err != nil {
 		logrus.WithError(err).Fatal("Failed to get GitHub client")
 	}

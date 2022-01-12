@@ -79,32 +79,26 @@ export ERROR_LOGGING_GUARD
 
 readonly COMMON_NAME_PREFIX="grd"
 utils::generate_commonName -n "${COMMON_NAME_PREFIX}"
-COMMON_NAME="${utils_generate_commonName_return_commonName:?}"
-export COMMON_NAME
-export CLUSTER_NAME="${COMMON_NAME}"
+
+export INPUT_CLUSTER_NAME="${utils_generate_commonName_return_commonName:?}"
 
 ## Get Kyma latest release version
 kyma::get_last_release_version \
-    -t "${BOT_GITHUB_TOKEN}"
-LAST_RELEASE_VERSION="${kyma_get_last_release_version_return_version:?}"
-log::info "### Reading release version from RELEASE_VERSION file, got: ${LAST_RELEASE_VERSION}"
-export KYMA_SOURCE="${LAST_RELEASE_VERSION}"
+    -t "${BOT_GITHUB_TOKEN}" \
+    -v "^1."
+LAST_RELEASE_1_VERSION="${kyma_get_last_release_version_return_version:?}"
+log::info "### Reading latest 1.x release version, got: ${LAST_RELEASE_1_VERSION}"
+export KYMA_SOURCE="${LAST_RELEASE_1_VERSION}"
 
 ## ---------------------------------------------------------------------------------------
 ## Prow job execution steps
 ## ---------------------------------------------------------------------------------------
 log::banner "Provisioning Gardener cluster"
-# Checks required vars and initializes gcloud/docker if necessary
-gardener::init
-
-# If MACHINE_TYPE is not set then use default one
-gardener::set_machine_type
-
-# Install Kyma CLI
-kyma::install_cli
 
 # Provision garderner cluster
-gardener::provision_cluster
+reconciler::provision_cluster
+
+reconciler::export_shoot_cluster_kubeconfig
 
 # Deploy reconciler in the cluster
 reconciler::deploy
@@ -115,8 +109,13 @@ reconciler::disable_sidecar_injection_reconciler_ns
 # Wait until reconciler is ready
 reconciler::wait_until_is_ready
 
+
+# Install Kyma CLI
+kyma::install_cli
+
 # Install Kyma using cli with version previously set in KYMA_SOURCE
-log::banner "Installing Kyma $KYMA_SOURCE"
+export EXECUTION_PROFILE=evaluation
+log::banner "Installing Kyma $KYMA_SOURCE with profile: \"$EXECUTION_PROFILE\""
 gardener::install_kyma
 
 # run the fast integration test before reconciliation

@@ -16,8 +16,6 @@ global:
   # Repository name with functions code.
   repositoryName: "test-infra"
   # Repository URL with function code.
-  #repositoryUrl: "https://github.com/kyma-project/test-infra.git"
-  repositoryUrl: "https://github.com/dekiel/test-infra.git"
+  repositoryUrl: "https://github.com/kyma-project/test-infra.git"
   # Slack application helm release name.
-  #slackAppHelmReleaseName: "slack-application"
   slackAppHelmReleaseName: "common"

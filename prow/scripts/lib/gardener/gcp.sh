@@ -115,10 +115,24 @@ gardener::install_kyma() {
 
     (
     set -x
-    kyma install \
+    if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
+        kyma install \
+            --ci \
+            --source "${KYMA_SOURCE}" \
+            --profile evaluation \
+            --timeout 90m
+    elif [[ "$EXECUTION_PROFILE" == "production" ]]; then
+        kyma install \
+            --ci \
+            --source "${KYMA_SOURCE}" \
+            --profile production \
+            --timeout 90m
+    else
+        kyma install \
         --ci \
         --source "${KYMA_SOURCE}" \
         --timeout 90m
+    fi
     )
 }
 

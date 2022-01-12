@@ -8,10 +8,12 @@
 | pre-main-kyma-integration-k3d-central-app-connectivity | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-integration-k3d-central-app-connectivity-compass | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-serverless-integration-k3s | k3s | k3s | kyma deploy |  | pr-submit |  helm serverless-test  |
+| serverless-git-auth-integration-k3s-nightly | k3s | k3s | kyma deploy |  | periodic |  helm serverless-test  |
 | post-main-kyma-integration-k3d | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-kyma-integration-k3d-compass-dev | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-kyma-integration-k3d-central-app-connectivity | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-kyma-integration-k3d-central-app-connectivity-compass | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
+| kyma-upgrade-k3d-kyma2-to-main | k3d | kyma cli | kyma deploy |  | periodic |  upgrade-fast-integration  |
 | kyma-integration-k3d | k3d | k3d | kyma deploy |  | periodic |  fast-integration  |
 | kyma-integration-k3d-compass-dev | k3d | k3d | kyma deploy |  | periodic |  fast-integration  |
 | kyma-gke-nightly | gke | gcloud cli | kyma deploy |  | periodic |    |
@@ -24,12 +26,9 @@
 | pre-main-kyma-gardener-gcp-eventing | gardener_gcp | kyma cli | kyma deploy |  | pr-submit |  fast-integration  |
 | kyma-alpha-integration-evaluation-gardener-azure | gardener_azure | kyma cli | kyma deploy | evaluation | periodic |  fast-integration  |
 | kyma-alpha-integration-production-gardener-azure | gardener_azure | kyma cli | kyma deploy | production | periodic |  fast-integration  |
-| kyma-weekly-gardener-gcp-busola | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
-| kyma-nightly-gardener-gcp-busola | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
 | kyma-weekly-gardener-gcp-busola-kyma | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
-| kyma-periodic-gardener-gcp-busola-init-kyma | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
-| kyma-periodic-gardener-gcp-busola-kyma | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
 | kyma-upgrade-gardener-kyma-to-kyma2 | gardener_azure | kyma cli | kyma install, kyma deploy |  | periodic |  upgrade-fast-integration  |
+| kyma-upgrade-gardener-kyma2-to-main | gardener_azure | kyma cli | kyma deploy |  | periodic |  upgrade-fast-integration  |
 | skr-azure-nightly | gardener_azure | keb | keb |  | periodic |  fast-integration  |
 | skr-azure-integration-dev | gardener_azure | keb | keb |  | periodic |  fast-integration  |
 | skr-azure-lite-integration-dev | gardener_azure | keb | keb | evaluation | periodic |  fast-integration  |

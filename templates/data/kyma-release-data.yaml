@@ -27,105 +27,72 @@ templates:
                   repo: test-infra
                   path_alias: github.com/kyma-project/test-infra
                   base_ref: release-{{ $rel }}
+          kyma:
+            extra_refs:
+              kyma:
+                - org: kyma-project
+                  repo: kyma
+                  path_alias: github.com/kyma-project/kyma
+                  base_ref: release-{{ $rel }}
+          request_small:
+            request_memory: 100Mi
+            request_cpu: 50m
+          vm_job_template_k3d:
+            annotations:
+              pipeline.platform: k3d
+              pipeline.installer: kyma deploy
+              pipeline.test: fast-integration
+              pipeline.clusterprovisioning: k3d
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
         jobConfigs:
           - repoName: kyma-project/kyma
             jobs:
               - jobConfig:
-                  name: pre-rel{{ $relShort }}-kyma-integration
-                  run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-minikube.sh"
+                  name: "post-rel{{ $relShort }}-kyma-integration-k3d"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   branches:
                     - ^release-{{ $rel }}$
                   labels:
-                    preset-sa-vm-kyma-integration: "true"
-                  request_memory: 100Mi
-                  request_cpu: 50m
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"
-                  local:
-                    - "test-infra"
-                    - "bot_token"
-              - jobConfig:
-                  name: pre-rel{{ $relShort }}-kyma-gke-integration
-                  run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  branches:
-                    - ^release-{{ $rel }}$
-                  env:
-                    CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
-                  labels:
-                    preset-build-pr: "true"
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"
-                  local:
-                    - "test-infra"
-                    - "bot_token"
-                    - "gke_config"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"
-                  local:
-                    - "test-infra"
-                    - "bot_token"
-                    - "gke_config"
-              - jobConfig:
-                  name: post-rel{{ $relShort }}-kyma-integration
-                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-minikube.sh"
-                  branches:
-                    - ^release-{{ $rel }}$
-                  labels:
-                    preset-sa-vm-kyma-integration: "true"
-                    preset-build-main: "true"
-                  annotations:
-                    testgrid-dashboards: kyma_release-{{ $rel }}
-                    description: Kyma integration job for release {{ $rel }} .
-                  request_memory: 100Mi
-                  request_cpu: 50m
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
-                  local:
-                    - "test-infra"
-                    - "bot_token"
-              - jobConfig:
-                  name: post-rel{{ $relShort }}-kyma-gke-integration
-                  branches:
-                    - ^release-{{ $rel }}$
-                  env:
-                    CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
-                  labels:
-                    preset-log-collector-slack-token: "true"
                     preset-build-release: "true"
+                    preset-sa-vm-kyma-integration: "true"
                   annotations:
+                    pipeline.platform: k3d
                     testgrid-dashboards: kyma_release-{{ $rel }}
-                    description: Kyma GKE integration job for release {{ $rel }}.
                     testgrid-days-of-results: "60"
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
                     - "image_kyma-integration"
+                    - "kyma_major_version_2"
                   local:
+                    - "request_small"
+                    - "vm_job_template_k3d"
                     - "test-infra"
                     - "bot_token"
-                    - "gke_config"
+              - jobConfig:
+                  name: "pre-rel{{ $relShort }}-kyma-integration-k3d"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  branches:
+                    - ^release-{{ $rel }}$
+                  labels:
+                    preset-build-release: "true"
+                    preset-sa-vm-kyma-integration: "true"
+                  annotations:
+                    pipeline.platform: k3d
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_kyma-integration"
+                    - "kyma_major_version_2"
+                  local:
+                    - "request_small"
+                    - "vm_job_template_k3d"
+                    - "test-infra"
+                    - "bot_token"
               - jobConfig:
                   name: post-rel{{ $relShort }}-kyma-release-candidate
                   branches:
@@ -136,15 +103,22 @@ templates:
                     testgrid-days-of-results: "60"
                   labels:
                     preset-dind-enabled: "true"
-                    preset-kyma-artifacts-bucket: "true"
                     preset-sa-gke-kyma-integration: "true"
                     preset-gc-project-env: "true"
                     preset-gke-kyma-developers-group: "true"
                     preset-docker-push-repository-kyma: "true"
                     preset-cluster-version: "true"
                     preset-gc-compute-envs: "true"
+                    preset-certificates-bucket: "true"
+                    preset-kyma-keyring: "true"
+                    preset-kyma-encryption-key: "true"
+                    preset-gke-pod-security-policy: "true"
+                    preset-kms-gc-project-env: "true"
+                    preset-cluster-use-ssd: "true"
                   env:
                     EVENTMESH_SECRET_FILE: "/etc/credentials/kyma-tunas-release-testing-event-mesh/serviceKey"
+                    PROVISION_REGIONAL_CLUSTER: "true"
+                    MACHINE_TYPE: "n1-highcpu-16"
                   decoration_config:
                     timeout: 3600000000000 # 1h
                     grace_period: 600000000000 # 10min
@@ -199,3 +173,56 @@ templates:
                     - "image_kyma-integration"
                   local:
                     - "test-infra"
+              - jobConfig:
+                  name: "kyma-gke-nightly-rel{{ $relShort }}"
+                  cron: "0 3 * * 1-5" # "At 03:00 UTC on every weekday Monday through Friday"
+                  annotations:
+                    description: Kyma GKE nightly build (release-{{ $rel }})
+                    pipeline.platform: gke
+                    pipeline.installer: kyma deploy
+                    pipeline.clusterprovisioning: gcloud cli
+                    pipeline.type: integration
+                    testgrid-dashboards: kyma_release-{{ $rel }}
+                    testgrid-days-of-results: "60"
+                  path_alias: github.com/kyma-project/kyma
+                  cluster: "trusted-workload"
+                  labels:
+                    preset-kyma-keyring: "true"
+                    preset-kyma-encryption-key: "true"
+                    preset-build-main: "true"
+                    preset-stability-checker-slack-notifications: "true"
+                    preset-nightly-github-integration: "true"
+                    preset-kms-gc-project-env: "true"
+                    preset-certificates-bucket: "true"
+                    preset-gke-pod-security-policy: "true"
+                    preset-slack-alerts: "true"
+                  volumes:
+                  - name: sa-stability-fluentd-storage-writer
+                    secretName: sa-stability-fluentd-storage-writer
+                  volumeMounts:
+                  - name: sa-stability-fluentd-storage-writer
+                    mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
+                    readOnly: true
+                  command: "bash"
+                  args:
+                  - "-c"
+                  - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"
+                  env:
+                    MACHINE_TYPE: "custom-8-15360"
+                    PROVISION_REGIONAL_CLUSTER: "true"
+                    NODES_PER_ZONE: "1"
+                    STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG: "0.6.4"
+                    INPUT_CLUSTER_NAME: "nightly-{{ $relShort }}"
+                    GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS: "cluster-access"
+                    CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
+                    TEST_RESULT_WINDOW_TIME: "6h"
+                inheritedConfigs:
+                  global:
+                  - "jobConfig_default"
+                  - "jobConfig_periodic"
+                  - "image_kyma-integration"
+                  local:
+                  - "gke_config"
+                  - "test-infra"
+                  - "kyma"
+                  - "bot_token"

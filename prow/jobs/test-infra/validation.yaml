@@ -38,7 +38,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20211014-1433e96a1f"
+          - image: "gcr.io/k8s-prow/checkconfig:v20220107-463b53a7ed"
             command:
               - "/app/prow/cmd/checkconfig/app.binary"
             args:
@@ -57,7 +57,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-main-test-infra-validate-prow-tools"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
-      run_if_changed: '^development/tools/(cmd/.*|pkg/.*|Makefile|.*.sh)'
+      run_if_changed: '^(go.mod|go.sum)$|^development/tools/(cmd/.*|pkg/.*|Makefile|.*.sh)'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -67,7 +67,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211110-ab51bd20"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: false
             command:
@@ -95,7 +95,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-main-test-infra-validate-image-url-helper"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
-      run_if_changed: '^development/image-url-helper/(cmd/.*|pkg/.*|Makefile|.*.sh)'
+      run_if_changed: '^(go.mod|go.sum)$|^development/image-url-helper/(cmd/.*|pkg/.*|Makefile|.*.sh)'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -105,7 +105,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211110-ab51bd20"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: false
             command:
@@ -114,6 +114,44 @@ presubmits: # runs on PRs
               - "-C"
               - "development/image-url-helper"
               - "ci-pr"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pre-main-test-infra-validate-prowjobparser
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-test-infra-validate-prowjobparser"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+      run_if_changed: '^(go.mod|go.sum)$|^development/prowjobparser/(.*.go|Makefile|.*.sh)'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+            securityContext:
+              privileged: false
+            command:
+              - "make"
+            args:
+              - "-C"
+              - "development/prowjobparser"
+              - "validate"
             resources:
               requests:
                 memory: 3Gi
@@ -143,7 +181,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211110-ab51bd20"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: false
             command:
@@ -182,7 +220,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211110-ab51bd20"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: true
             command:
@@ -216,7 +254,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211110-ab51bd20"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: false
             command:

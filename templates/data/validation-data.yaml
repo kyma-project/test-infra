@@ -27,7 +27,7 @@ templates:
                   name: "pre-test-infra-validate-configs"
                   run_if_changed: "^prow/((plugins|config).yaml|jobs/)"
                   command: "/app/prow/cmd/checkconfig/app.binary"
-                  image: gcr.io/k8s-prow/checkconfig:v20211014-1433e96a1f
+                  image: gcr.io/k8s-prow/checkconfig:v20220107-463b53a7ed
                   args:
                     - "--plugin-config=prow/plugins.yaml"
                     - "--config-path=prow/config.yaml"
@@ -41,7 +41,7 @@ templates:
               - jobConfig:
                   name: "pre-main-test-infra-validate-prow-tools"
                   privileged: "false"
-                  run_if_changed: "^development/tools/(cmd/.*|pkg/.*|Makefile|.*.sh)"
+                  run_if_changed: "^(go.mod|go.sum)$|^development/tools/(cmd/.*|pkg/.*|Makefile|.*.sh)"
                   labels:
                     preset-build-pr: "true"
                   command: "make"
@@ -58,7 +58,7 @@ templates:
               - jobConfig:
                   name: "pre-main-test-infra-validate-image-url-helper"
                   privileged: "false"
-                  run_if_changed: "^development/image-url-helper/(cmd/.*|pkg/.*|Makefile|.*.sh)"
+                  run_if_changed: "^(go.mod|go.sum)$|^development/image-url-helper/(cmd/.*|pkg/.*|Makefile|.*.sh)"
                   labels:
                     preset-build-pr: "true"
                   command: "make"
@@ -66,6 +66,23 @@ templates:
                     - "-C"
                     - "development/image-url-helper"
                     - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_presubmit"
+                    - "pubsub_labels"
+              - jobConfig:
+                  name: "pre-main-test-infra-validate-prowjobparser"
+                  privileged: "false"
+                  run_if_changed: "^(go.mod|go.sum)$|^development/prowjobparser/(.*.go|Makefile|.*.sh)"
+                  labels:
+                    preset-build-pr: "true"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "development/prowjobparser"
+                    - "validate"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

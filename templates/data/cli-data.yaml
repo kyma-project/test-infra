@@ -16,6 +16,9 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/cli"
                     - "ci-pr"
+                  branches:
+                    - "^main$"
+                    - "^release-\\d+\\.\\d+$"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -30,7 +33,7 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/cli"
                     - "ci-main"
                   branches:
-                    - "^master$"
+                    - "^main$"
                     - "^release-\\d+\\.\\d+$"
                 inheritedConfigs:
                   global:
@@ -58,6 +61,7 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-golang-toolbox
+                    - jobConfig_slack_jellyfish
                   local:
                     - job_spec
               - jobConfig:
@@ -77,6 +81,7 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-golang-toolbox
+                    - jobConfig_slack_jellyfish
                   local:
                     - job_spec
       - to: ../prow/jobs/cli/cli-integration.yaml
@@ -126,6 +131,9 @@ templates:
               - jobConfig:
                   path: integration-kyma-2
                   release_since: "2.0"
+                  branches:
+                    - ^main$
+                    - ^release-2.*$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

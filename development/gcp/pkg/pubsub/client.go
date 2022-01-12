@@ -5,7 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/google/go-github/v36/github"
+	"github.com/google/go-github/v40/github"
 	"net/url"
 	"path"
 )

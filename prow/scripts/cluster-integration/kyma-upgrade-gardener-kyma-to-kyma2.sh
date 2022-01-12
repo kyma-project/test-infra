@@ -18,8 +18,8 @@
 
 
 
-# exit on error, and raise error when variable is not set when used
-set -e
+# exit on error
+set -o errexit
 
 ENABLE_TEST_LOG_COLLECTOR=false
 
@@ -76,15 +76,17 @@ readonly COMMON_NAME_PREFIX="grd"
 COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 export COMMON_NAME
 
-# Install Kyma form latest release
-kyma::get_last_release_version \
-    -t "${BOT_GITHUB_TOKEN}"
-LAST_RELEASE_VERSION="${kyma_get_last_release_version_return_version:?}"
-log::info "### Reading release version from RELEASE_VERSION file, got: ${LAST_RELEASE_VERSION}"
-KYMA_SOURCE="${LAST_RELEASE_VERSION}"
-
 ### Cluster name must be less than 10 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
+
+# set pipefail to handle right errors from tests
+set -o pipefail
+
+# Install Kyma form latest 1.x release
+kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}" -v "^1."
+
+export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
+log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
 
 # checks required vars and initializes gcloud/docker if necessary
 gardener::init
@@ -92,7 +94,7 @@ gardener::init
 # if MACHINE_TYPE is not set then use default one
 gardener::set_machine_type
 
-kyma::install_cli
+kyma::install_cli_last_release
 
 # currently only Azure generates overrides, but this may change in the future
 gardener::generate_overrides
@@ -101,6 +103,7 @@ log::info "### Provisioning Gardener cluster"
 gardener::provision_cluster
 
 log::info "### Installing Kyma $KYMA_SOURCE"
+
 # uses previously set KYMA_SOURCE
 gardener::install_kyma
 
@@ -110,13 +113,15 @@ utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 log::info "### Run pre-upgrade tests"
 gardener::pre_upgrade_test_fast_integration_kyma
 
+# Upgrade kyma to latest 2.x release
 export KYMA_MAJOR_VERSION="2"
-log::info "### Installing Kyma 2.0 from main"
-KYMA_SOURCE="main"
-export KYMA_SOURCE
-kyma::deploy_kyma \
-    -s "$KYMA_SOURCES_DIR" \
-    -u "true"
+log::info "### Installing Kyma 2.x"
+
+kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
+export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
+log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
+
+kyma::deploy_kyma -s "$KYMA_SOURCES_DIR" -u "true"
 
 log::info "### Run post-upgrade tests"
 gardener::post_upgrade_test_fast_integration_kyma
