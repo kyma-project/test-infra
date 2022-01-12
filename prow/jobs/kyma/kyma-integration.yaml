@@ -797,7 +797,7 @@ periodics: # runs on schedule
               - "bash"
             args:
               - "-c"
-              - "/prow-tools/vmscollector -project=${CLOUDSDK_CORE_PROJECT} -vmNameRegexp='kyma-upgrade-test-.*|.*-integration-test-.*|busola-integration-test-.*|.*-upgrade-test-.*' -jobLabelRegexp='.*-integration$|busola-integration-test-k3s|.*-upgrade-k3d-.*|kyma-upgrade' -dryRun=false"
+              - "/prow-tools/vmscollector -project=${CLOUDSDK_CORE_PROJECT} -vmNameRegexp='kyma-upgrade-test-.*|.*-integration-test-.*|busola-integration-test-.*|.*-upgrade-test-.*|busola-.*-test-.*' -jobLabelRegexp='.*-integration$|busola-integration-test-k3s|.*-upgrade-k3d-.*|kyma-upgrade|busola-.*-test' -dryRun=false"
             resources:
               requests:
                 memory: 100Mi
