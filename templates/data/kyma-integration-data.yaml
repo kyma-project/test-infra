@@ -150,7 +150,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "/prow-tools/vmscollector -project=${CLOUDSDK_CORE_PROJECT} -vmNameRegexp='.*-integration-test-.*|busola-integration-test-.*|.*-upgrade-test-.*' -jobLabelRegexp='.*-integration$|busola-integration-test-k3s|.*-upgrade-k3d-.*' -dryRun=false"
+                    - "/prow-tools/vmscollector -project=${CLOUDSDK_CORE_PROJECT} -vmNameRegexp='.*-integration-test-.*|busola-integration-test-.*|.*-upgrade-test-.*' -jobLabelRegexp='.*-integration$|busola-integration-test-k3s|.*-upgrade-k3d-.*|kyma-upgrade' -dryRun=false"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
