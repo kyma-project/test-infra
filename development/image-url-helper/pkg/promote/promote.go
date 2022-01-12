@@ -153,7 +153,7 @@ func promoteContainerRegistry(path string, globalNode *yaml.Node, targetContaine
 	// this is used by istio and other images that require special handling
 	imagesNode := getYamlNode(globalNode, "images")
 	if imagesNode != nil {
-		err := updateImagesContainerRegistry(imagesNode, sourceContainerRegistry, targetContainerRegistry, lines)
+		err := updateImagesContainerRegistry(imagesNode, targetContainerRegistry, lines)
 		if err != nil {
 			return false, fmt.Errorf("error while parsing images in %s file: %s", path, err)
 		}
@@ -161,7 +161,7 @@ func promoteContainerRegistry(path string, globalNode *yaml.Node, targetContaine
 
 	testImagesNode := getYamlNode(globalNode, "testImages")
 	if testImagesNode != nil {
-		err := updateImagesContainerRegistry(testImagesNode, sourceContainerRegistry, targetContainerRegistry, lines)
+		err := updateImagesContainerRegistry(testImagesNode, targetContainerRegistry, lines)
 		if err != nil {
 			return false, fmt.Errorf("error while parsing testImages in %s file: %s", path, err)
 		}
@@ -225,7 +225,7 @@ func getYamlNode(parsedYaml *yaml.Node, wantedKey string) *yaml.Node {
 }
 
 // updateImagesContainerRegistry looks for "containerRegistryPath" field in each image and updates its content with a targetContainerRegistryPath value in the lines
-func updateImagesContainerRegistry(images *yaml.Node, sourceContainerRegistryPath, targetContainerRegistryPath string, lines []string) error {
+func updateImagesContainerRegistry(images *yaml.Node, targetContainerRegistryPath string, lines []string) error {
 	for _, val := range images.Content {
 		if val.Tag == "!!map" {
 			// loop over values in singular image
@@ -234,6 +234,7 @@ func updateImagesContainerRegistry(images *yaml.Node, sourceContainerRegistryPat
 					// parse the containerRegistryPath line separately
 					var containerRegistryPathLineParsed yaml.Node
 					yaml.Unmarshal([]byte(lines[imageVal.Line-1]), &containerRegistryPathLineParsed)
+					sourceContainerRegistryPath := containerRegistryPathLineParsed.Content[0].Content[1].Value
 					containerRegistryPathLineParsed.Content[0].Content[1].Value = targetContainerRegistryPath + "/" + sourceContainerRegistryPath
 
 					outputLines, err := yamlNodeToString(&containerRegistryPathLineParsed, val.Content[0].Column)
