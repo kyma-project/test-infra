@@ -615,6 +615,7 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/components/xip-patch"
                   run_if_changed: "^components/xip-patch/|^common/makefiles/"
                   release_since: "1.7"
+                  release_until: "1.24"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
