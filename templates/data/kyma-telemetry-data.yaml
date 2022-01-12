@@ -11,14 +11,21 @@ templates:
           - repoName: "kyma-project/kyma"
             jobs:
               - jobConfig:
-                  name: "telemetry-operator-test"
                   run_if_changed: '^components/telemetry-operator/|^resources/telemetry/'
+                jobConfigPre:
+                  name: "pre-telemetry-operator-test"
+                jobConfigPost:
+                  name: "post-telemetry-operator-test"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "jobConfig_postsubmit"
                     - "image_buildpack-golang-toolbox"
+                  preConfigs:
+                    global:
+                      - "jobConfig_presubmit"
+                  postConfigs:
+                    global:
+                      - "jobConfig_postsubmit"
                   local:
                     - "jobConfig_default"
               - jobConfig:
