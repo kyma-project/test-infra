@@ -17,8 +17,7 @@ const (
 	PluginName = "test-untrusted"
 )
 
-func EventHandler(s *externalplugin.Plugin, e externalplugin.Event) {
-	var event externalplugin.Event
+func EventHandler(server *externalplugin.Plugin, event externalplugin.Event) {
 	l := logrus.WithFields(
 		logrus.Fields{
 			externalplugin.EventTypeField: event.EventType,
@@ -41,7 +40,7 @@ func EventHandler(s *externalplugin.Plugin, e externalplugin.Event) {
 			l.WithField("severity", "INFO").Info("Received pull request event for supported user.")
 			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 			defer cancel()
-			err := s.GitHub.CreateCommentWithContext(ctx, pr.Repo.Owner.Login, pr.Repo.Name, pr.Number, "/test all")
+			err := server.GitHub.CreateCommentWithContext(ctx, pr.Repo.Owner.Login, pr.Repo.Name, pr.Number, "/test all")
 			if err != nil {
 				l.WithError(err).Error("Failed comment on PR.")
 			} else {
