@@ -3,17 +3,18 @@ package externalplugin
 import (
 	"context"
 	"flag"
+	"net/http"
+	"os"
+	"os/signal"
+	"strconv"
+	"time"
+
 	"github.com/sirupsen/logrus"
 	"k8s.io/test-infra/prow/config/secret"
 	prowflagutil "k8s.io/test-infra/prow/flagutil"
 	"k8s.io/test-infra/prow/github"
 	"k8s.io/test-infra/prow/pluginhelp/externalplugins"
 	"k8s.io/test-infra/prow/plugins"
-	"net/http"
-	"os"
-	"os/signal"
-	"strconv"
-	"time"
 )
 
 const EventTypeField = "event-type"
@@ -116,10 +117,11 @@ func (p *Plugin) WithHandler(handler func(string, string, []byte)) *Plugin {
 
 // ServeHTTP validates an incoming webhook and puts it into the event channel.
 func (p *Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	eventType, eventGUID, payload, ok, _ := github.ValidateWebhook(w, r, p.tokenGenerator)
+	eventType, eventGUID, payload, ok, httpStatus := github.ValidateWebhook(w, r, p.tokenGenerator)
 	if !ok {
 		return
 	}
+	w.WriteHeader(httpStatus)
 	p.handler(eventType, eventGUID, payload)
 }
 
@@ -134,7 +136,7 @@ func (p *Plugin) HandleWebhook(webhookName string, handler func(*Plugin, Event))
 	if _, ok := p.webhookHandlers[webhookName]; !ok {
 		p.webhookHandlers[webhookName] = handler
 	} else {
-		logrus.WithField("webhook", webhookName).Warn("Webhook handler already defined. Adding skipped.")
+		logrus.WithField("severity", "WARNING").WithField("webhook", webhookName).Warn("Webhook handler already defined. Adding skipped.")
 	}
 }
 
@@ -156,11 +158,17 @@ func (p *Plugin) defaultHandler(eventType, eventGUID string, payload []byte) {
 	if wh, ok := p.webhookHandlers[eventType]; ok {
 		go wh(p, eventPayload)
 	} else {
-		l.Debug("skipping unknown event")
+		l.WithField("severity", "INFO").Info("skipping unsupported event")
 	}
 }
 
 func Start(p *Plugin, helpProvider externalplugins.ExternalPluginHelpProvider, o CliOptions) {
+	logrus.WithField("plugin", p.GetName())
+	lvl, err := logrus.ParseLevel(o.GetLogLevel())
+	if err != nil {
+		logrus.WithError(err).Fatal("Could not parse log level.")
+	}
+	logrus.SetLevel(lvl)
 	if p.handler == nil {
 		p.handler = p.defaultHandler
 	}
@@ -168,16 +176,9 @@ func Start(p *Plugin, helpProvider externalplugins.ExternalPluginHelpProvider, o
 		logrus.Fatal("TokenGenerator cannot be empty.")
 	}
 
-	lvl, err := logrus.ParseLevel(o.GetLogLevel())
-	if err != nil {
-		logrus.WithError(err).Fatal("Could not parse log level.")
-	}
-	logrus.SetLevel(lvl)
-	log := logrus.StandardLogger().WithField("plugin", p.GetName())
-
 	mux := http.NewServeMux()
 	mux.Handle("/", p)
-	externalplugins.ServeExternalPluginHelp(mux, log, helpProvider)
+	externalplugins.ServeExternalPluginHelp(mux, logrus.StandardLogger().WithField("plugin", p.GetName()), helpProvider)
 
 	s := http.Server{
 		Addr:    ":" + strconv.Itoa(o.GetPort()),
