@@ -589,6 +589,7 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/components/iam-kubeconfig-service"
                   run_if_changed: "^components/iam-kubeconfig-service/|^common/makefiles/"
                   release_since: "1.7"
+                  release_until: "1.24"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

@@ -83,6 +83,7 @@ var components = []struct {
 	{path: "iam-kubeconfig-service", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Until(releases.Release124),
 		},
 	},
 	{path: "istio-installer", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
