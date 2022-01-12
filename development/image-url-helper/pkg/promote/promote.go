@@ -234,7 +234,7 @@ func updateImagesContainerRegistry(images *yaml.Node, sourceContainerRegistryPat
 					// parse the containerRegistryPath line separately
 					var containerRegistryPathLineParsed yaml.Node
 					yaml.Unmarshal([]byte(lines[imageVal.Line-1]), &containerRegistryPathLineParsed)
-					containerRegistryPathLineParsed.Content[0].Content[1].Value = targetContainerRegistryPath
+					containerRegistryPathLineParsed.Content[0].Content[1].Value = targetContainerRegistryPath + "/" + sourceContainerRegistryPath
 
 					outputLines, err := yamlNodeToString(&containerRegistryPathLineParsed, val.Content[0].Column)
 					if err != nil {
