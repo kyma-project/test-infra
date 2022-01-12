@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"github.com/kyma-project/test-infra/development/prow/externalplugin"
 	"time"
 
-	"github.com/kyma-project/test-infra/development/prow"
 	"github.com/sirupsen/logrus"
 	"k8s.io/test-infra/prow/config"
 	"k8s.io/test-infra/prow/github"
@@ -21,14 +21,14 @@ type GithubClient interface {
 	CreateCommentWithContext(ctx context.Context, org, repo string, number int, comment string) error
 }
 
-func EventMux(c chan interface{}, s *prow.Server) {
-	var event prow.Event
+func EventMux(c chan interface{}, s *externalplugin.Plugin) {
+	var event externalplugin.Event
 	e := <-c
-	event = e.(prow.Event)
+	event = e.(externalplugin.Event)
 	l := logrus.WithFields(
 		logrus.Fields{
-			prow.EventTypeField: event.EventType,
-			github.EventGUID:    event.EventGUID,
+			externalplugin.EventTypeField: event.EventType,
+			github.EventGUID:              event.EventGUID,
 		},
 	)
 	switch event.EventType {
@@ -75,14 +75,14 @@ func HelpProvider(_ []config.OrgRepo) (*pluginhelp.PluginHelp, error) {
 }
 
 func main() {
-	cliOptions := prow.Opts{}
+	cliOptions := externalplugin.Opts{}
 	fs := cliOptions.GatherDefaultOptions()
 	cliOptions.Parse(fs)
 
-	server := prow.Server{}
+	server := externalplugin.Plugin{}
 	server.Name = PluginName
 	server.WithTokenGenerator(cliOptions.WebhookSecretPath).WithValidateWebhook()
 	server.WithGithubClient(cliOptions.Github, cliOptions.DryRun)
 	server.WithEventMux(EventMux).WithHandler()
-	prow.Start(&server, HelpProvider, &cliOptions)
+	externalplugin.Start(&server, HelpProvider, &cliOptions)
 }
