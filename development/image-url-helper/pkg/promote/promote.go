@@ -125,7 +125,7 @@ func isFileExcluded(ResourcesDirectoryClean, path string, excludes ExcludesMap) 
 	return false
 }
 
-// promoteContainerRegistry promotes container registry and returnsinformation if the file should be skipped and error message
+// promoteContainerRegistry promotes container registry and returns information if the file should be skipped and error message
 func promoteContainerRegistry(path string, globalNode *yaml.Node, targetContainerRegistry string, lines []string) (bool, error) {
 	containerRegistryNode := getYamlNode(globalNode, "containerRegistry")
 	if containerRegistryNode == nil {
@@ -136,24 +136,43 @@ func promoteContainerRegistry(path string, globalNode *yaml.Node, targetContaine
 	containerRegistryPathNode := getYamlNode(containerRegistryNode, "path")
 	if containerRegistryPathNode == nil {
 		// raise error if the containerRegistry key is defined, but path is not, as this key expected to exist
-		return true, fmt.Errorf("error in %s file: could not find global.containerRegistry.path key", path)
+		return false, fmt.Errorf("error in %s file: could not find global.containerRegistry.path key", path)
 	}
-	containerRegistryPathNode.Value = targetContainerRegistry + "/" + containerRegistryPathNode.Value
+	sourceContainerRegistry := containerRegistryPathNode.Value
+	containerRegistryPathNode.Value = targetContainerRegistry + "/" + sourceContainerRegistry
 
 	// update the container registry path
 	outputLine, err := yamlNodeToString(containerRegistryNode, containerRegistryNode.Content[0].Column)
 	if err != nil {
-		return true, fmt.Errorf("error while parsing containerRegistry in %s file: %s", path, err)
+		return false, fmt.Errorf("error while parsing containerRegistry in %s file: %s", path, err)
 	}
 
 	lines[containerRegistryNode.Line-1] = outputLine
+
+	// update containerRegistyPath for each image that overrides it with the same value as global containerRegistry path
+	// this is used by istio and other images that require special handling
+	imagesNode := getYamlNode(globalNode, "images")
+	if imagesNode != nil {
+		err := updateImagesContainerRegistry(imagesNode, sourceContainerRegistry, targetContainerRegistry, lines)
+		if err != nil {
+			return false, fmt.Errorf("error while parsing images in %s file: %s", path, err)
+		}
+	}
+
+	testImagesNode := getYamlNode(globalNode, "testImages")
+	if testImagesNode != nil {
+		err := updateImagesContainerRegistry(testImagesNode, sourceContainerRegistry, targetContainerRegistry, lines)
+		if err != nil {
+			return false, fmt.Errorf("error while parsing testImages in %s file: %s", path, err)
+		}
+	}
 	return false, nil
 }
 
 func promoteTargetTags(path string, globalNode *yaml.Node, targetTag string, lines []string) error {
 	imagesNode := getYamlNode(globalNode, "images")
 	if imagesNode != nil {
-		err := updateImages(imagesNode, targetTag, lines)
+		err := updateImagesVersion(imagesNode, targetTag, lines)
 		if err != nil {
 			return fmt.Errorf("error while parsing images in %s file: %s", path, err)
 		}
@@ -161,7 +180,7 @@ func promoteTargetTags(path string, globalNode *yaml.Node, targetTag string, lin
 
 	testImagesNode := getYamlNode(globalNode, "testImages")
 	if testImagesNode != nil {
-		err := updateImages(testImagesNode, targetTag, lines)
+		err := updateImagesVersion(testImagesNode, targetTag, lines)
 		if err != nil {
 			return fmt.Errorf("error while parsing testImages in %s file: %s", path, err)
 		}
@@ -205,8 +224,33 @@ func getYamlNode(parsedYaml *yaml.Node, wantedKey string) *yaml.Node {
 	return nil
 }
 
-// updateImages looks for "version" field in each image and updates its content with a targetTag value in the lines slice
-func updateImages(images *yaml.Node, targetTag string, lines []string) error {
+// updateImagesContainerRegistry looks for "containerRegistryPath" field in each image and updates its content with a targetContainerRegistryPath value in the lines
+func updateImagesContainerRegistry(images *yaml.Node, sourceContainerRegistryPath, targetContainerRegistryPath string, lines []string) error {
+	for _, val := range images.Content {
+		if val.Tag == "!!map" {
+			// loop over values in singular image
+			for key, imageVal := range val.Content {
+				if (imageVal.Value == "containerRegistryPath") && (key+1 < len(val.Content)) {
+					// parse the containerRegistryPath line separately
+					var containerRegistryPathLineParsed yaml.Node
+					yaml.Unmarshal([]byte(lines[imageVal.Line-1]), &containerRegistryPathLineParsed)
+					containerRegistryPathLineParsed.Content[0].Content[1].Value = targetContainerRegistryPath
+
+					outputLines, err := yamlNodeToString(&containerRegistryPathLineParsed, val.Content[0].Column)
+					if err != nil {
+						return err
+					}
+
+					lines[imageVal.Line-1] = outputLines
+				}
+			}
+		}
+	}
+	return nil
+}
+
+// updateImagesVersion looks for "version" field in each image and updates its content with a targetTag value in the lines slice
+func updateImagesVersion(images *yaml.Node, targetTag string, lines []string) error {
 	for _, val := range images.Content {
 		if val.Tag == "!!map" {
 			// loop over values in singular image
