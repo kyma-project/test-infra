@@ -565,6 +565,7 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/components/apiserver-proxy"
                   run_if_changed: "^components/apiserver-proxy/|^common/makefiles/"
                   release_since: "1.7"
+                  release_until: "1.24"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -710,6 +711,7 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/tests/integration/apiserver-proxy"
                   run_if_changed: "^tests/integration/apiserver-proxy/|^common/makefiles/"
                   release_since: "1.7"
+                  release_until: "1.24"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
