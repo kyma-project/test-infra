@@ -5,6 +5,7 @@ set -o pipefail
 
 readonly RECONCILER_DIR="./reconciler"
 readonly GO_VERSION=1.17.5
+export KYMA_SOURCES_DIR="./kyma"
 
 function prereq_test() {
   command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
