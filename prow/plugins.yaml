@@ -17,6 +17,9 @@ plugins:
   kyma-project/test-infra:
     plugins:
       - config-updater
+      - approve
+      - blunderbuss
+      - verify-owners
   kyma-incubator:
     plugins:
       - cat
