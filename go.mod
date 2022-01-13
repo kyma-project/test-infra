@@ -6,6 +6,7 @@ replace (
 	github.com/containerd/containerd => github.com/containerd/containerd v1.5.9
 	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt/v4 v4.2.0
 	github.com/opencontainers/distribution-spec => github.com/opencontainers/distribution-spec v1.0.1
+	github.com/opencontainers/image-spec => github.com/opencontainers/image-spec v1.0.2
 	// these two sigstore/* replaces are required for the image-syncer tool
 	github.com/sigstore/cosign => github.com/sigstore/cosign v1.2.1
 	github.com/sigstore/sigstore => github.com/sigstore/sigstore v1.0.1
