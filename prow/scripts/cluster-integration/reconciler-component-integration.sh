@@ -47,7 +47,7 @@ function deploy_kyma() {
   kyma provision k3d --ci
 
   local kyma_deploy_cmd
-  kyma_deploy_cmd="kyma deploy -p evaluation --ci --source=local --workspace ${KYMA_SOURCES_DIR}"
+  kyma_deploy_cmd="kyma deploy -p evaluation --ci"
 
   if [[ -v ORY_INTEGRATION ]]; then
     kyma_deploy_cmd+=" --components ory"
