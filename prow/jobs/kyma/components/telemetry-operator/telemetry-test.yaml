@@ -88,6 +88,11 @@ periodics: # runs on schedule
       decorate: true
       path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
