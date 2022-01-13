@@ -20,6 +20,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "image_buildpack-golang-toolbox"
+                    - "extra_refs_test-infra"
                   preConfigs:
                     global:
                       - "jobConfig_presubmit"
