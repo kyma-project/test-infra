@@ -1,0 +1,5 @@
+reviewers:
+  - eventing-owners
+approvers:
+  - eventing-owners
+  - kyma-approvers

@@ -1,0 +1,9 @@
+filters:
+  ".*":
+    labels:
+      - prow/cluster
+
+reviewers:
+  - tooling-reviewers
+approvers:
+  - tooling-approvers
