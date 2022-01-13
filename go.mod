@@ -3,6 +3,7 @@ module github.com/kyma-project/test-infra
 go 1.16
 
 replace (
+	github.com/containerd/containerd => github.com/containerd/containerd v1.5.9
 	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt/v4 v4.2.0
 	// these two sigstore/* replaces are required for the image-syncer tool
 	github.com/sigstore/cosign => github.com/sigstore/cosign v1.2.1
