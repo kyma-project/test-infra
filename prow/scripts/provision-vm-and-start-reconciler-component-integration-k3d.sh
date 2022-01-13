@@ -107,6 +107,14 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
 trap cleanup exit INT
 
+log::info "Preparing environment variables for the instance"
+envVars=(
+  ORY_INTEGRATION
+)
+utils::save_env_file "${envVars[@]}"
+#shellcheck disable=SC2088
+utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" ".env" "~/.env"
+
 log::info "Copying Reconciler to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "reconciler-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/reconciler" "~/reconciler"

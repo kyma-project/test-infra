@@ -16,6 +16,14 @@ function prereq_test() {
   command -v k3d >/dev/null 2>&1 || { echo >&2 "k3d not found"; exit 1; }
 }
 
+function load_env() {
+  ENV_FILE=".env"
+  if [ -f "${ENV_FILE}" ]; then
+    # shellcheck disable=SC2046
+    export $(xargs < "${ENV_FILE}")
+  fi
+}
+
 function install_cli() {
   local install_dir
   declare -r install_dir="/usr/local/bin"
@@ -69,6 +77,7 @@ function run_tests() {
 }
 
 prereq_test
+load_env
 install_cli
 provision_k3d
 deploy_kyma
