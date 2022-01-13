@@ -17,7 +17,7 @@ func TestKymaTelemetryOperatorPreSubmit(t *testing.T) {
 	preSubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"})
 	assert.Len(t, preSubmits, 1)
 
-	jobName := "telemetry-operator-test"
+	jobName := "pre-telemetry-operator-test"
 	job := tester.FindPresubmitJobByName(preSubmits, jobName)
 	require.NotNil(t, job)
 	assert.Equal(t, jobName, job.Name)
