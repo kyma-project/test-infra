@@ -234,6 +234,20 @@ tide:
         - do-not-merge/invalid-commit-message
       orgs:
         - kyma-project
+      excludedRepos:
+        - kyma-project/test-infra # handled in separate query specifically for approve plugin
+      reviewApprovedRequired: true
+    - labels:
+        - lgtm
+        - approved
+      missingLabels:
+        - needs-rebase
+        - do-not-merge/hold
+        - do-not-merge/work-in-progress
+        - do-not-merge/invalid-owners-file
+        - do-not-merge/invalid-commit-message
+      repos:
+        - kyma-project/test-infra
       reviewApprovedRequired: true
     - labels:
         - lgtm
