@@ -8,7 +8,7 @@ filters:
       - area/documentation
   ".*go\..*$": # all go.mod/sum files
     labels:
-      - area/modules
+      - area/dependency
 reviewers:
   - tooling-reviewers
 approvers:
