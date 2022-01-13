@@ -50,7 +50,7 @@ function deploy_kyma() {
   kyma_deploy_cmd="kyma deploy -p evaluation --ci"
 
   if [[ -v ORY_INTEGRATION ]]; then
-    kyma_deploy_cmd+=" --components ory"
+    kyma_deploy_cmd+=" --component ory@kyma-system"
   fi
 
   $kyma_deploy_cmd
