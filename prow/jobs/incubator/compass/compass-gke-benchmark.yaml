@@ -41,7 +41,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211116-11e89837"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: true
             command:
@@ -52,6 +52,12 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
+              - name: MACHINE_TYPE
+                value: "n1-highcpu-16"
+              - name: NODES_PER_ZONE
+                value: "1"
+              - name: PROVISION_REGIONAL_CLUSTER
+                value: "true"
             resources:
               requests:
                 memory: 200Mi
@@ -63,12 +69,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-rel125-compass-gke-benchmark
+    - name: pre-rel20-compass-gke-benchmark
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel125-compass-gke-benchmark"
+        prow.k8s.io/pubsub.runID: "pre-rel20-compass-gke-benchmark"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-cluster-version: "true"
@@ -91,15 +97,15 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - release-1.25
+        - release-2.0
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.25
+          base_ref: release-2.0
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211116-11e89837"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: true
             command:
@@ -110,6 +116,12 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
+              - name: MACHINE_TYPE
+                value: "n1-highcpu-16"
+              - name: NODES_PER_ZONE
+                value: "1"
+              - name: PROVISION_REGIONAL_CLUSTER
+                value: "true"
             resources:
               requests:
                 memory: 200Mi
@@ -157,7 +169,7 @@ presubmits: # runs on PRs
           base_ref: release-1.24
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211116-11e89837"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: true
             command:
@@ -168,6 +180,12 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
+              - name: MACHINE_TYPE
+                value: "n1-highcpu-16"
+              - name: NODES_PER_ZONE
+                value: "1"
+              - name: PROVISION_REGIONAL_CLUSTER
+                value: "true"
             resources:
               requests:
                 memory: 200Mi
@@ -215,7 +233,7 @@ presubmits: # runs on PRs
           base_ref: release-1.23
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211116-11e89837"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: true
             command:
@@ -226,6 +244,12 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
+              - name: MACHINE_TYPE
+                value: "n1-highcpu-16"
+              - name: NODES_PER_ZONE
+                value: "1"
+              - name: PROVISION_REGIONAL_CLUSTER
+                value: "true"
             resources:
               requests:
                 memory: 200Mi

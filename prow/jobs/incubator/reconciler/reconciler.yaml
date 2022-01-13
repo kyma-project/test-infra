@@ -21,7 +21,6 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
       extra_refs:
         - org: kyma-project
@@ -30,11 +29,14 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211201-ebdeacd8"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
             securityContext:
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"
+            env:
+              - name: GO11MODULE
+                value: "on"
             resources:
               requests:
                 memory: 3Gi
@@ -71,7 +73,100 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211116-11e89837"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
+            env:
+              - name: GO11MODULE
+                value: "on"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pre-dev-reconciler-integration-k3d
+      annotations:
+        pipeline.platform: "k3d"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-dev-reconciler-integration-k3d"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-vm-kyma-integration: "true"
+      run_if_changed: '^((cmd\S+|configs\S+|internal\S+|pkg\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^develop$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
+            env:
+              - name: GO11MODULE
+                value: "on"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pre-dev-kyma-incubator-reconciler
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-dev-kyma-incubator-reconciler"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-incubator: "true"
+        preset-kyma-kms-sign-key: "true"
+        preset-sa-gcr-push: "true"
+      always_run: true
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^develop$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: true
             command:
@@ -120,7 +215,53 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211116-11e89837"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
+            env:
+              - name: GO11MODULE
+                value: "on"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: post-dev-kyma-incubator-reconciler
+      annotations:
+        pipeline.trigger: "pr-merge"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-dev-kyma-incubator-reconciler"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-incubator: "true"
+        preset-kyma-kms-sign-key: "true"
+        preset-sa-gcr-push: "true"
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^develop$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: true
             command:
@@ -181,9 +322,12 @@ postsubmits: # runs on main
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211116-11e89837"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: true
             command:
@@ -245,14 +389,14 @@ periodics: # runs on schedule
           base_ref: main
       reporter_config:
         slack:
-          channel: kyma-prow-dev-null
+          channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211201-ebdeacd8"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-upgrade-gardener.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
             env:
@@ -275,6 +419,66 @@ periodics: # runs on schedule
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+    - name: reconciler-control-plane-image-bump
+      annotations:
+        description: "Reconciler image bump in control-plane"
+        pipeline.trigger: "periodic"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "reconciler-control-plane-image-bump"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-log-collector-slack-token: "true"
+      cron: "0 1-22/4 * * 1-5"
+      skip_report: false
+      decorate: true
+      decoration_config:
+        grace_period: 600000000000
+        timeout: 14400000000000
+      cluster: untrusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: control-plane
+          path_alias: github.com/kyma-project/control-plane
+          base_ref: main
+        - org: kubernetes
+          repo: test-infra
+          path_alias: github.com/kubernetes/test-infra
+          base_ref: master
+          base_sha: 3fba7110c39a7a0e7fb087dbb4af0674cafd341c
+        - org: kyma-incubator
+          repo: reconciler
+          path_alias: github.com/kyma-incubator/reconciler
+          base_ref: main
+      reporter_config:
+        slack:
+          channel: jellyfish-notifications
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-incubator/reconciler/scripts/prow/reconciler-image-autobump.sh"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+            volumeMounts:
+              - name: kyma-bot-github-token
+                mountPath: /etc/github
+                readOnly: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+        volumes:
+          - name: kyma-bot-github-token
+            secret:
+              secretName: kyma-bot-github-token
     - name: nightly-main-reconciler
       annotations:
         description: "Creates and installs reconciler from main every night."
@@ -311,10 +515,10 @@ periodics: # runs on schedule
           base_ref: main
       reporter_config:
         slack:
-          channel: kyma-prow-dev-null
+          channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211201-ebdeacd8"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"
             args:
@@ -325,7 +529,7 @@ periodics: # runs on schedule
               - name: GARDENER_ZONES
                 value: "europe-west4-b"
               - name: INPUT_CLUSTER_NAME
-                value: "rec-night"
+                value: "rec-main"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:
@@ -356,7 +560,7 @@ periodics: # runs on schedule
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
         preset-log-collector-slack-token: "true"
-      cron: "0 1-22/2 * * 1-5"
+      cron: "0 3-23/2 * * 1-5"
       skip_report: false
       decorate: true
       decoration_config:
@@ -376,9 +580,12 @@ periodics: # runs on schedule
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211201-ebdeacd8"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"
             args:
@@ -389,7 +596,7 @@ periodics: # runs on schedule
               - name: GARDENER_ZONES
                 value: "europe-west4-b"
               - name: INPUT_CLUSTER_NAME
-                value: "rec-night"
+                value: "rec-main"
               - name: KYMA_MAJOR_VERSION
                 value: "2"
               - name: KYMA_PROJECT_DIR

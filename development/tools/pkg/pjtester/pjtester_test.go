@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	gogithub "github.com/google/go-github/v31/github"
+	gogithub "github.com/google/go-github/v40/github"
 	"github.com/kyma-project/test-infra/development/tools/pkg/prtagbuilder/mocks"
 	"github.com/stretchr/testify/assert"
 	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"

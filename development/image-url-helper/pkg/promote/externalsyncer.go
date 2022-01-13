@@ -6,12 +6,12 @@ import (
 	"sort"
 
 	imagesyncer "github.com/kyma-project/test-infra/development/image-syncer/pkg"
-	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/list"
+	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/common"
 	"gopkg.in/yaml.v3"
 )
 
 // PrintExternalSyncerYaml prints out a YAML file ready to be used by the image-syncer tool to copy images to new container registry, with option to retag them
-func PrintExternalSyncerYaml(images list.ImageMap, targetContainerRegistry, targetTag string, sign bool) error {
+func PrintExternalSyncerYaml(images common.ComponentImageMap, targetContainerRegistry, targetTag string, sign bool) error {
 	imagesConverted := convertImageslist(images, targetContainerRegistry, targetTag, sign)
 
 	var out bytes.Buffer
@@ -26,11 +26,11 @@ func PrintExternalSyncerYaml(images list.ImageMap, targetContainerRegistry, targ
 }
 
 // convertImageslist takes in a list of images, target repository & tag and creates a SyncDef structure that can be later marshalled and used by the image-syncer tool
-func convertImageslist(images list.ImageMap, targetContainerRegistry, targetTag string, sign bool) imagesyncer.SyncDef {
+func convertImageslist(images common.ComponentImageMap, targetContainerRegistry, targetTag string, sign bool) imagesyncer.SyncDef {
 
 	imageNames := make([]string, 0)
 	for _, image := range images {
-		imageNames = append(imageNames, image.FullImageURL())
+		imageNames = append(imageNames, image.Image.FullImageURL())
 	}
 	sort.Strings(imageNames)
 

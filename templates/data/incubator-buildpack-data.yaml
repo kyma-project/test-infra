@@ -221,14 +221,28 @@ templates:
                   repo: "cli"
                   path_alias: "github.com/kyma-project/cli"
                   base_ref: "main"
-          reconciler_jobConfig:
+          extra_refs_k8s-test-infra:
+            extra_refs:
+              k8s-test-infra:
+                - org: kubernetes
+                  repo: test-infra
+                  base_ref: master
+                  base_sha: "3fba7110c39a7a0e7fb087dbb4af0674cafd341c"
+                  path_alias: github.com/kubernetes/test-infra
+          reconciler_main_jobConfig:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+            env:
+              GO11MODULE: "on"
+            branches:
+              - ^main$
+          reconciler_dev_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
             env:
               GO11MODULE: "on"
             branches:
-              - ^main$
+              - ^develop$
           reconciler_integration_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"
           reconciler_e2e_jobConfig:
@@ -236,33 +250,45 @@ templates:
           reconciler_nightly_e2e_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"
             privileged: false
-            env:
-              INPUT_CLUSTER_NAME: "rec-night"
           reconciler_jobConfig_args:
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
           reconciler_e2e_upgrade_jobConfig:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-upgrade-gardener.sh"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade.sh"
             annotations:
               pipeline.installer: kyma install, kyma deploy
               pipeline.test: "upgrade-fast-integration"
               pipeline.clusterprovisioning: kyma cli
           reconciler_nightly_cluster_jobConfig:
             privileged: false
-            env:
-              INPUT_CLUSTER_NAME: "rec-night"
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"
             annotations:
               pipeline.platform: "gardener_gcp"
               pipeline.installer: reconciler
               pipeline.test: "fast-integration"
               pipeline.clusterprovisioning: reconciler
+          reconciler_main_nightly_cluster_input_name:
+            env:
+              INPUT_CLUSTER_NAME: "rec-main"
+          reconciler_dev_nightly_cluster_input_name:
+            env:
+              INPUT_CLUSTER_NAME: "rec-dev"
           reconciler_publish_unstable_cli_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-unstable-cli.sh"
             annotations:
               pipeline.installer: reconciler
               pipeline.test: "fast-integration"
               pipeline.clusterprovisioning: reconciler
+          reconciler_image_autobump_jobConfig:
+            command: "/home/prow/go/src/github.com/kyma-incubator/reconciler/scripts/prow/reconciler-image-autobump.sh"
+          github_token_mounts:
+            volumes:
+              - name: kyma-bot-github-token
+                secretName: kyma-bot-github-token
+            volumeMounts:
+              - name: kyma-bot-github-token
+                mountPath: /etc/github
+                readOnly: true
         jobConfigs:
           - repoName: kyma-incubator/reconciler
             jobs:
@@ -279,14 +305,15 @@ templates:
                     pipeline.platform: k3d
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - image_kyma-integration
+                    - extra_refs_test-infra
                   local:
-                    - "reconciler_integration_jobConfig"
+                    - reconciler_main_jobConfig
+                    - reconciler_integration_jobConfig
               - jobConfig:
-                  name: pre-main-kyma-incubator-reconciler
+                  name: "pre-main-kyma-incubator-reconciler"
                   always_run: true
                 inheritedConfigs:
                   global:
@@ -297,7 +324,41 @@ templates:
                     - jobConfig_generic_component
                     - jobConfig_buildpack_incubator
                   local:
-                    - reconciler_jobConfig
+                    - reconciler_main_jobConfig
+                    - reconciler_jobConfig_args
+              - jobConfig:
+                  name: "pre-dev-reconciler-integration-k3d"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-kyma-guard-bot-github-token: "true"
+                    preset-sa-vm-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                  annotations:
+                    pipeline.platform: k3d
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - image_kyma-integration
+                    - extra_refs_test-infra
+                  local:
+                    - reconciler_dev_jobConfig
+                    - reconciler_integration_jobConfig
+              - jobConfig:
+                  name: "pre-dev-kyma-incubator-reconciler"
+                  always_run: true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
+                  local:
+                    - reconciler_dev_jobConfig
                     - reconciler_jobConfig_args
               - jobConfig:
                   name: post-main-kyma-incubator-reconciler
@@ -311,7 +372,21 @@ templates:
                     - jobConfig_generic_component
                     - jobConfig_buildpack_incubator
                   local:
-                    - reconciler_jobConfig
+                    - reconciler_main_jobConfig
+                    - reconciler_jobConfig_args
+              - jobConfig:
+                  name: post-dev-kyma-incubator-reconciler
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
+                  local:
+                    - reconciler_dev_jobConfig
                     - reconciler_jobConfig_args
               - jobConfig:
                   name: nightly-main-reconciler-publish-unstable-cli
@@ -336,6 +411,7 @@ templates:
                     - disable_testgrid
                     - image_buildpack-golang
                     - jobConfig_buildpack_incubator
+                    - jobConfig_slack_jellyfish
                   local:
                     - extra_refs_kyma_cli
                     - reconciler_publish_unstable_cli_jobConfig
@@ -360,12 +436,35 @@ templates:
                     - extra_refs_control-plane
                     - kyma_major_version_1
                     - disable_testgrid
-                    - jobConfig_slack_dev_null
                     - image_kyma-integration
+                    - jobConfig_slack_jellyfish
                   local:
                     - extra_refs_kyma-1-24
                     - reconciler_e2e_upgrade_jobConfig
                     - reconciler_jobConfig_args
+              - jobConfig:
+                  name: reconciler-control-plane-image-bump
+                  annotations:
+                    description: Reconciler image bump in control-plane
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  cron: "0 1-22/4 * * 1-5" # "At minute 0 past every 2nd hour from 1 through 22 on every day-of-week from Monday through Friday."
+                  labels:
+                    preset-log-collector-slack-token: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - image_kyma-integration
+                    - extra_refs_reconciler
+                    - extra_refs_control-plane
+                    - disable_testgrid
+                    - jobConfig_slack_jellyfish
+                  local:
+                    - extra_refs_k8s-test-infra
+                    - reconciler_image_autobump_jobConfig
+                    - github_token_mounts
               - jobConfig:
                   name: nightly-main-reconciler
                   annotations:
@@ -385,11 +484,12 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_control-plane
                     - disable_testgrid
-                    - jobConfig_slack_dev_null
                     - image_kyma-integration
+                    - jobConfig_slack_jellyfish
                   local:
                     - reconciler_nightly_cluster_jobConfig
                     - reconciler_jobConfig_args
+                    - reconciler_main_nightly_cluster_input_name
               - jobConfig:
                   name: nightly-main-reconciler-e2e
                   annotations:
@@ -401,7 +501,7 @@ templates:
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
-                  cron: "0 1-22/2 * * 1-5" # "At minute 0 past every 2nd hour from 1 through 22 on every day-of-week from Monday through Friday."
+                  cron: "0 3-23/2 * * 1-5" # "At minute 0 past every 2nd hour from 3 through 23 on every day-of-week from Monday through Friday."
                   labels:
                     preset-log-collector-slack-token: "true"
                     preset-bot-github-token: "true"
@@ -418,9 +518,11 @@ templates:
                     - kyma_major_version_2
                     - disable_testgrid
                     - image_kyma-integration
+                    - jobConfig_slack_jellyfish
                   local:
                     - reconciler_nightly_e2e_jobConfig
                     - reconciler_jobConfig_args
+                    - reconciler_main_nightly_cluster_input_name
       - to: ../prow/jobs/incubator/octopus/octopus.yaml
         jobConfigs:
           - repoName: kyma-incubator/octopus

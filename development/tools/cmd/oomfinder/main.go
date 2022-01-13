@@ -71,7 +71,6 @@ func dockerOOMListener(client *dockerclient.Client, wg *sync.WaitGroup) {
 // Channels will receive only oom events as defined in filters argument of Subscribe method.
 // On oom event details, are printed to stdout.
 func containerdOOMListener(client *containerd.Client, wg *sync.WaitGroup) {
-	
 	ctx := context.Background()
 	eventsClient := client.EventService()
 	oomEventsCh, oomErrCh := eventsClient.Subscribe(ctx, "topic~=|^/tasks/oom|")

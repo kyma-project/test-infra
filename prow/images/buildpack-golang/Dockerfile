@@ -1,6 +1,6 @@
 # Basic golang buildpack
 
-FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20211005-0e8c8173
+FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95
 
 # Commit details
 
@@ -11,7 +11,7 @@ LABEL io.kyma-project.test-infra.commit=$commit
 # Versions
 
 ENV ARCH amd64
-ENV GO_VERSION 1.17.3
+ENV GO_VERSION 1.17.5
 ENV DEP_RELEASE_TAG v0.5.4
 ENV KUBEBUILDER_VERSION 2.3.2
 ENV KUSTOMIZE_VERSION 3.8.4
