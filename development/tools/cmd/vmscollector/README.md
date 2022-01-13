@@ -42,7 +42,7 @@ See the list of available flags:
 | **--project**             |   Yes    | GCP project name
 | **--dryRun**              |    No    | The boolean value that controls the dry-run mode. It defaults to `true`.
 | **--ageInHours**          |    No    | The integer value for the number of hours. It only matches VM instances older than `now()-ageInHours`. It defaults to `3`.
-| **--vmNameRegexp**        |    No    | The string value with a valid Golang regexp. It is used to exclude VM instances by their name. It defaults to `^gke-nightly-.*\|gke-weekly.*\|shoot-kyma-prow.*`.
+| **--vmNameRegexp**        |    No    | The string value with a valid Golang regexp. It is used to exclude VM instances by their name. It defaults to `^gke-nightly-.*\|gke-weekly.*\|shoot--kyma-prow.*`.
 | **--jobLabelRegexp**      |    No    | The string value with a valid Golang regexp. It is used to exclude VM instances by the `job-name` label value. It defaults to `^kyma-gke-nightly\|kyma-gke-nightly-.*|kyma-gke-weekly|kyma-gke-weekly-.*$`.
 
 ### Environment variables
