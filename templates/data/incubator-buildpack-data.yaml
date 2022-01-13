@@ -245,6 +245,8 @@ templates:
               - ^develop$
           reconciler_integration_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"
+          reconciler_component_integration_jobConfig:
+            command:  "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-component-integration-k3d.sh"
           reconciler_e2e_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-gardener.sh"
           reconciler_nightly_e2e_jobConfig:
@@ -312,6 +314,28 @@ templates:
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_integration_jobConfig
+              - jobConfig:
+                  name: "pre-main-ory-reconciler-eval-integration"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((pkg/reconciler/instances/ory\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-kyma-guard-bot-github-token: "true"
+                    preset-sa-vm-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                  annotations:
+                    pipeline.platform: k3d
+                  env:
+                    ORY_INTEGRATION: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - image_kyma-integration
+                    - extra_refs_test-infra
+                  local:
+                    - reconciler_main_jobConfig
+                    - reconciler_component_integration_jobConfig
               - jobConfig:
                   name: "pre-main-kyma-incubator-reconciler"
                   always_run: true
