@@ -17,7 +17,7 @@ import (
 	compute "google.golang.org/api/compute/v1"
 )
 
-const defaultVMNameExcludeRegexp = "gke-nightly-.*|gke-weekly.*|shoot-kyma-prow.*"
+const defaultVMNameExcludeRegexp = "gke-nightly-.*|gke-weekly.*|shoot--kyma-prow.*"
 const defaultJobLabelExcludeRegexp = "kyma-gke-nightly|kyma-gke-nightly-.*|kyma-gke-weekly|kyma-gke-weekly-.*"
 
 var (
