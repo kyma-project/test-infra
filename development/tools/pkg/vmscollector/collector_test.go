@@ -14,21 +14,24 @@ import (
 	compute "google.golang.org/api/compute/v1"
 )
 
-const sampleInstanceNameRegexp = "^kyma-integration-test-.*"
-const sampleJobLabelRegexp = "^kyma-integration$"
+const sampleInstanceNameExcludeRegexp = "^nightly-.*"
+const sampleJobLabelExcludeRegexp = "^kyma-nightly$"
 
-const sampleInstanceName = "kyma-integration-test-abc"
-const sampleJobLabel = "kyma-integration"
+const sampleInstanceName = "nightly-test-abc"
+const sampleJobLabel = "kyma-nightly"
+
+const otherName = "otherName"
+const otherLabel = "otherlabel"
 const sampleStatus = "RUNNING"
 
 var (
-	instanceNameRegexp       = regexp.MustCompile(sampleInstanceNameRegexp)
-	jobLabelRegexp           = regexp.MustCompile(sampleJobLabelRegexp)
-	filterFunc               = DefaultInstanceRemovalPredicate(instanceNameRegexp, jobLabelRegexp, 1) //age is 1 hour
-	timeNow                  = time.Now()
-	timeNowFormatted         = timeNow.Format(time.RFC3339Nano)
-	timeTwoHoursAgo          = timeNow.Add(time.Duration(-1) * time.Hour)
-	timeTwoHoursAgoFormatted = timeTwoHoursAgo.Format(time.RFC3339Nano)
+	instanceNameExcludeRegexp = regexp.MustCompile(sampleInstanceNameExcludeRegexp)
+	jobLabelExcludeRegexp     = regexp.MustCompile(sampleJobLabelExcludeRegexp)
+	filterFunc                = DefaultInstanceRemovalPredicate(instanceNameExcludeRegexp, jobLabelExcludeRegexp, 1) //age is 1 hour
+	timeNow                   = time.Now()
+	timeNowFormatted          = timeNow.Format(time.RFC3339Nano)
+	timeTwoHoursAgo           = timeNow.Add(time.Duration(-1) * time.Hour)
+	timeTwoHoursAgoFormatted  = timeTwoHoursAgo.Format(time.RFC3339Nano)
 )
 
 func TestNewInstanceRemovalPredicate(t *testing.T) {
@@ -42,35 +45,41 @@ func TestNewInstanceRemovalPredicate(t *testing.T) {
 		instanceJobLabel    string
 		instanceStatus      string
 	}{
-		{name: "Should select matching instance",
-			expectedFilterValue: true,
+		{name: "Should skip matching instance",
+			expectedFilterValue: false,
 			instanceName:        sampleInstanceName,
 			instanceCreateTime:  timeTwoHoursAgoFormatted,
 			instanceJobLabel:    sampleJobLabel,
 			instanceStatus:      sampleStatus},
-		{name: "Should skip instance with non matching name",
-			expectedFilterValue: false,
-			instanceName:        "otherName",
+		{name: "Should delete instance with non-matching name and non-matching label",
+			expectedFilterValue: true,
+			instanceName:        otherName,
 			instanceCreateTime:  timeTwoHoursAgoFormatted,
-			instanceJobLabel:    sampleJobLabel,
+			instanceJobLabel:    otherLabel,
 			instanceStatus:      sampleStatus},
 		{name: "Should skip instance recently created",
 			expectedFilterValue: false,
-			instanceName:        sampleInstanceName,
+			instanceName:        otherName,
 			instanceCreateTime:  timeNowFormatted,
-			instanceJobLabel:    sampleJobLabel,
+			instanceJobLabel:    otherLabel,
 			instanceStatus:      sampleStatus},
-		{name: "Should skip instance with invalid label",
+		{name: "Should skip instance with matching name and non-matching label",
 			expectedFilterValue: false,
 			instanceName:        sampleInstanceName,
 			instanceCreateTime:  timeTwoHoursAgoFormatted,
-			instanceJobLabel:    "otherLabel",
+			instanceJobLabel:    otherLabel,
+			instanceStatus:      sampleStatus},
+		{name: "Should skip instance with non-matching name and matching label",
+			expectedFilterValue: false,
+			instanceName:        otherName,
+			instanceCreateTime:  timeTwoHoursAgoFormatted,
+			instanceJobLabel:    sampleJobLabel,
 			instanceStatus:      sampleStatus},
 		{name: "Should skip instance in STOPPING status",
 			expectedFilterValue: false,
-			instanceName:        sampleInstanceName,
+			instanceName:        otherName,
 			instanceCreateTime:  timeTwoHoursAgoFormatted,
-			instanceJobLabel:    sampleJobLabel,
+			instanceJobLabel:    otherLabel,
 			instanceStatus:      "STOPPING"},
 	}
 
@@ -99,13 +108,14 @@ func TestNewInstanceRemovalPredicate(t *testing.T) {
 
 func TestInstancesGarbageCollector(t *testing.T) {
 
-	instanceMatching1 := createInstance(sampleInstanceName+"1", timeTwoHoursAgoFormatted, sampleJobLabel, sampleStatus)      //matches removal filter
-	instanceNonMatchingName := createInstance("otherName"+"2", timeTwoHoursAgoFormatted, sampleJobLabel, sampleStatus)       //non matching name
-	instanceNonMatchingLabel := createInstance(sampleInstanceName+"3", timeTwoHoursAgoFormatted, "otherLabel", sampleStatus) //non matching label
-	instanceCreatedTooRecently := createInstance(sampleInstanceName+"4", timeNowFormatted, sampleJobLabel, sampleStatus)     //not old enough
-	instanceMatching2 := createInstance(sampleInstanceName+"5", timeTwoHoursAgoFormatted, sampleJobLabel, sampleStatus)      //matches removal filter
+	instanceExcluded := createInstance(sampleInstanceName+"1", timeTwoHoursAgoFormatted, sampleJobLabel, sampleStatus) //excluded name and label
+	instanceExcludedName := createInstance(sampleInstanceName+"2", timeTwoHoursAgoFormatted, otherLabel, sampleStatus) //excluded name
+	instanceExcludedLabel := createInstance(otherName+"1", timeTwoHoursAgoFormatted, sampleJobLabel, sampleStatus)     //excluded label
+	instanceMatching1 := createInstance(otherName+"2", timeTwoHoursAgoFormatted, otherLabel, sampleStatus)             //matches removal filter
+	instanceCreatedTooRecently := createInstance(otherName+"3", timeNowFormatted, otherLabel, sampleStatus)            //not old enough
+	instanceMatching2 := createInstance(otherName+"4", timeTwoHoursAgoFormatted, otherLabel, sampleStatus)             //matches removal filter
 
-	t.Run("list() should find two instances out of five", func(t *testing.T) {
+	t.Run("list() should find two instances out of six", func(t *testing.T) {
 
 		mockInstancesAPI := &automock.InstancesAPI{}
 		defer mockInstancesAPI.AssertExpectations(t)
@@ -113,7 +123,7 @@ func TestInstancesGarbageCollector(t *testing.T) {
 		testProject := "testProject"
 
 		//Given
-		mockInstancesAPI.On("ListInstances", testProject).Return([]*compute.Instance{instanceMatching1, instanceNonMatchingName, instanceNonMatchingLabel, instanceCreatedTooRecently, instanceMatching2}, nil)
+		mockInstancesAPI.On("ListInstances", testProject).Return([]*compute.Instance{instanceExcluded, instanceExcludedName, instanceExcludedLabel, instanceMatching1, instanceCreatedTooRecently, instanceMatching2}, nil)
 
 		//When
 		gdc := NewInstancesGarbageCollector(mockInstancesAPI, filterFunc)
@@ -148,7 +158,7 @@ func TestInstancesGarbageCollector(t *testing.T) {
 		defer mockInstancesAPI.AssertExpectations(t)
 
 		testProject := "testProject"
-		mockInstancesAPI.On("ListInstances", testProject).Return([]*compute.Instance{instanceMatching1, instanceNonMatchingName, instanceNonMatchingLabel, instanceCreatedTooRecently, instanceMatching2}, nil)
+		mockInstancesAPI.On("ListInstances", testProject).Return([]*compute.Instance{instanceExcluded, instanceExcludedName, instanceExcludedLabel, instanceMatching1, instanceCreatedTooRecently, instanceMatching2}, nil)
 
 		mockInstancesAPI.On("RemoveInstance", testProject, instanceMatching1.Name+"-zone", instanceMatching1.Name).Return(nil)
 		mockInstancesAPI.On("RemoveInstance", testProject, instanceMatching2.Name+"-zone", instanceMatching2.Name).Return(nil)
@@ -168,7 +178,7 @@ func TestInstancesGarbageCollector(t *testing.T) {
 		testProject := "testProject"
 
 		//Given
-		mockInstancesAPI.On("ListInstances", testProject).Return([]*compute.Instance{instanceMatching1, instanceNonMatchingName, instanceNonMatchingLabel, instanceCreatedTooRecently, instanceMatching2}, nil)
+		mockInstancesAPI.On("ListInstances", testProject).Return([]*compute.Instance{instanceExcluded, instanceExcludedName, instanceExcludedLabel, instanceMatching1, instanceCreatedTooRecently, instanceMatching2}, nil)
 
 		mockInstancesAPI.On("RemoveInstance", testProject, instanceMatching1.Name+"-zone", instanceMatching1.Name).Return(errors.New("testError"))
 		mockInstancesAPI.On("RemoveInstance", testProject, instanceMatching2.Name+"-zone", instanceMatching2.Name).Return(nil)
@@ -190,7 +200,7 @@ func TestInstancesGarbageCollector(t *testing.T) {
 		testProject := "testProject"
 
 		//Given
-		mockInstancesAPI.On("ListInstances", testProject).Return([]*compute.Instance{instanceMatching1, instanceNonMatchingName, instanceNonMatchingLabel, instanceCreatedTooRecently, instanceMatching2}, nil)
+		mockInstancesAPI.On("ListInstances", testProject).Return([]*compute.Instance{instanceExcluded, instanceExcludedName, instanceExcludedLabel, instanceMatching1, instanceCreatedTooRecently, instanceMatching2}, nil)
 
 		//When
 		gdc := NewInstancesGarbageCollector(mockInstancesAPI, filterFunc)
