@@ -2,6 +2,11 @@ module github.com/kyma-project/test-infra/development/test-log-collector
 
 go 1.15
 
+
+replace (
+	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt/v4 v4.2.0
+)
+
 require (
 	cloud.google.com/go v0.57.0 // indirect
 	github.com/onsi/gomega v1.10.1
