@@ -348,6 +348,17 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-b")
 	tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "KYMA_MAJOR_VERSION", "2")
 
+	expName = "serverless-function-metrics-generator"
+	functionsMetricsPeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, functionsMetricsPeriodic)
+	assert.Equal(t, expName, functionsMetricsPeriodic.Name)
+
+	assert.Equal(t, "0 0,12 * * *", functionsMetricsPeriodic.Cron)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-metrics-nightly.sh"},
+		functionsMetricsPeriodic.Spec.Containers[0].Command)
+	tester.AssertThatContainerHasEnv(t, functionsMetricsPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "nightly")
+	tester.AssertThatContainerHasEnv(t, functionsMetricsPeriodic.Spec.Containers[0], "CLUSTER_PROVIDER", "gcp")
+
 	// these jobs are disabled due to failing tests, until Kyma 2.0 long lasting clusters are introduced
 	// expName = "kyma-gke-weekly-fast-integration"
 	// weeklyFastIntegrationPeriodic := tester.FindPeriodicJobByName(periodics, expName)
