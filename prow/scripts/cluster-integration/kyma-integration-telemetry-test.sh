@@ -37,7 +37,6 @@ function install_cli() {
 }
 
 function deploy_kyma() {
-  log::info "Deploying Kyma"
   k3d version
   kyma provision k3d --ci
 
@@ -45,12 +44,10 @@ function deploy_kyma() {
 }
 
 function install_operator() {
-  log::info "Installing telemetry operator"
   helm install -n kyma-system telemetry ${KYMA_SOURCES_DIR}/resources/telemetry
 }
 
 function install_mockserver() {
-  log::info "Installing mockserver"
   local mock_namespace="mockserver"
   kubectl create namespace ${mock_namespace}
 
