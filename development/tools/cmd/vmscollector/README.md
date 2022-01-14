@@ -11,7 +11,7 @@ This causes a resource leak that generates unwanted costs.
 The garbage collector finds and removes such VM instances.
 
 There are three conditions used to find instances for removal:
-- The instance name is not caught by the exclude names regexp
+- The instance name is not caught by the exclude names regexp.
 - The value of the `job-name` label the instance is annotated with is not caught by the exclude labels regexp
 - The instance `creationTimestamp` value that is used to find instance existing at least for a preconfigured number of hours.
 
