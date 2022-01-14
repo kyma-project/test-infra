@@ -43,6 +43,8 @@ function testCustomImage() {
   fi
 }
 
+log::info "Logging in ..."
+
 gcp::authenticate \
   -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 

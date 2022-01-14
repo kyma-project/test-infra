@@ -11,6 +11,11 @@ templates:
               pipeline.test: fast-integration
               pipeline.clusterprovisioning: k3d
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d-telemetry.sh"
+          vm_job_labels_template:
+            labels:
+              preset-kyma-guard-bot-github-token: "true"
+              preset-sa-vm-kyma-integration: "true"
+              preset-gc-project-env: "true"
         jobConfigs:
           - repoName: "kyma-project/kyma"
             jobs:
@@ -33,6 +38,7 @@ templates:
                       - "jobConfig_postsubmit"
                   local:
                     - "vm_job_template_k3d_telemetry_test"
+                    - "vm_job_labels_template"
               - jobConfig:
                   name: "telemetry-operator-test"
                   cron: "00 07 * * *" # "At 07:00 each day"
@@ -44,3 +50,4 @@ templates:
                     - "extra_refs_test-infra"
                   local:
                     - "vm_job_template_k3d_telemetry_test"
+                    - "vm_job_labels_template"

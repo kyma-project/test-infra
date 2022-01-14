@@ -14,6 +14,9 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-telemetry-operator-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^components/telemetry-operator/|^resources/telemetry/'
       skip_report: false
       decorate: true
@@ -59,6 +62,9 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-telemetry-operator-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^components/telemetry-operator/|^resources/telemetry/'
       skip_report: false
       decorate: true
@@ -103,6 +109,9 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "telemetry-operator-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-vm-kyma-integration: "true"
       cron: "00 07 * * *"
       skip_report: false
       decorate: true
