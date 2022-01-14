@@ -55,7 +55,10 @@ function install_mockserver() {
 
   helm install -n ${mock_namespace} mockserver ${KYMA_SOURCES_DIR}/tests/fast-integration/telemetry-test/helm/mockserver
   
+  kubectl rollout -n ${mock_namespace} status deployments mockserver
+
   helm install -n ${mock_namespace} mockserver-config ${KYMA_SOURCES_DIR}/tests/fast-integration/telemetry-test/helm/mockserver-config
+
 }
 
 function run_test() {
