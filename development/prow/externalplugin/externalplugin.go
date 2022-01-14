@@ -10,6 +10,8 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"k8s.io/test-infra/prow/config/secret"
 	prowflagutil "k8s.io/test-infra/prow/flagutil"
 	"k8s.io/test-infra/prow/github"
@@ -46,12 +48,12 @@ type Event struct {
 
 type Plugin struct {
 	Name               string
-	GitHub             github.Client
+	GitHub             interface{}
 	PluginsConfigAgent *plugins.ConfigAgent
-
-	tokenGenerator  func() []byte
-	handler         func(string, string, []byte)
-	webhookHandlers map[string]func(*Plugin, Event)
+	tokenGenerator     func() []byte
+	handler            func(string, string, []byte)
+	webhookHandlers    map[string]func(*Plugin, Event)
+	logger             *zap.SugaredLogger
 }
 
 func (o *Opts) GatherDefaultOptions() *flag.FlagSet {
@@ -80,19 +82,51 @@ func (p *Plugin) GetName() string {
 	return p.Name
 }
 
-func (p *Plugin) WithGithubClient(githubOptions prowflagutil.GitHubOptions, dryRun bool) *Plugin {
+func NewGithubClient(githubOptions prowflagutil.GitHubOptions, dryRun bool, l *zap.SugaredLogger) github.Client {
 	ghClient, err := githubOptions.GitHubClient(dryRun)
 	if err != nil {
-		logrus.WithError(err).Fatal("Could not get github client.")
+		l.Fatal("Could not get github client.")
 	}
+	return ghClient
+}
+
+func (p *Plugin) WithGithubClient(ghClient interface{}) *Plugin {
 	p.GitHub = ghClient
+	return p
+}
+
+func NewLogger() *zap.SugaredLogger {
+	errorMessage := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl >= zapcore.ErrorLevel
+	})
+	infoMessage := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl < zapcore.ErrorLevel
+	})
+
+	consoleInfo := zapcore.Lock(os.Stdout)
+	consoleErrors := zapcore.Lock(os.Stderr)
+
+	encoderConfig := zap.NewProductionEncoderConfig()
+	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	consoleEncoder := zapcore.NewConsoleEncoder(encoderConfig)
+
+	core := zapcore.NewTee(
+		zapcore.NewCore(consoleEncoder, consoleErrors, errorMessage),
+		zapcore.NewCore(consoleEncoder, consoleInfo, infoMessage),
+	)
+
+	return zap.New(core).Sugar()
+}
+
+func (p *Plugin) WithLogger(l *zap.SugaredLogger) *Plugin {
+	p.logger = l
 	return p
 }
 
 // WithWebhookSecret initializes adds webhook secret path to the Prow secret agent.
 func (p *Plugin) WithWebhookSecret(webhookSecretPath string) *Plugin {
 	if err := secret.Add(webhookSecretPath); err != nil {
-		logrus.WithError(err).Error("Could not add path to secret agent.")
+		p.logger.Errorw("Could not add path to secret agent.", "error", err.Error())
 		return p
 	}
 	p.WithTokenGenerator(secret.GetTokenGenerator(webhookSecretPath))
@@ -136,7 +170,7 @@ func (p *Plugin) HandleWebhook(webhookName string, handler func(*Plugin, Event))
 	if _, ok := p.webhookHandlers[webhookName]; !ok {
 		p.webhookHandlers[webhookName] = handler
 	} else {
-		logrus.WithField("severity", "WARNING").WithField("webhook", webhookName).Warn("Webhook handler already defined. Adding skipped.")
+		p.logger.Warnw("Webhook handler already defined. Adding skipped.", "webhook", webhookName)
 	}
 }
 
@@ -148,32 +182,25 @@ func (p *Plugin) defaultHandler(eventType, eventGUID string, payload []byte) {
 		Payload:   payload,
 	}
 
-	l := logrus.WithFields(
-		logrus.Fields{
-			EventTypeField:   eventType,
-			github.EventGUID: eventGUID,
-		},
-	)
-
 	if wh, ok := p.webhookHandlers[eventType]; ok {
 		go wh(p, eventPayload)
 	} else {
-		l.WithField("severity", "INFO").Info("skipping unsupported event")
+		p.logger.Infow("skipping unsupported event", EventTypeField, eventType, github.EventGUID, eventGUID)
 	}
 }
 
 func Start(p *Plugin, helpProvider externalplugins.ExternalPluginHelpProvider, o CliOptions) {
-	logrus.WithField("plugin", p.GetName())
-	lvl, err := logrus.ParseLevel(o.GetLogLevel())
-	if err != nil {
-		logrus.WithError(err).Fatal("Could not parse log level.")
-	}
-	logrus.SetLevel(lvl)
+	p.logger.With("plugin", p.GetName())
+	//lvl, err := logrus.ParseLevel(o.GetLogLevel())
+	//if err != nil {
+	//	logrus.WithError(err).Fatal("Could not parse log level.")
+	//}
+	//logrus.SetLevel(lvl)
 	if p.handler == nil {
 		p.handler = p.defaultHandler
 	}
 	if p.tokenGenerator == nil {
-		logrus.Fatal("TokenGenerator cannot be empty.")
+		p.logger.Fatal("TokenGenerator cannot be empty.")
 	}
 
 	mux := http.NewServeMux()
@@ -190,7 +217,7 @@ func Start(p *Plugin, helpProvider externalplugins.ExternalPluginHelpProvider, o
 
 	go func() {
 		if err := s.ListenAndServe(); err != http.ErrServerClosed && err != nil {
-			logrus.WithError(err).Fatal("Plugin listen error.")
+			p.logger.Fatalw("Plugin listen error.", "error", err.Error())
 		}
 	}()
 
@@ -200,7 +227,7 @@ func Start(p *Plugin, helpProvider externalplugins.ExternalPluginHelpProvider, o
 	select {
 	case <-sig:
 		if err := s.Shutdown(ctx); err != nil {
-			logrus.WithError(err).Fatal("Error closing server.")
+			p.logger.Fatalw("Error closing server.", "error", err.Error())
 		}
 	}
 }
