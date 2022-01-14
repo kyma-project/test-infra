@@ -5,27 +5,38 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-telemetry-operator-test
       annotations:
+        pipeline.clusterprovisioning: "k3d"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3d"
+        pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-telemetry-operator-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^components/telemetry-operator/|^resources/telemetry/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
         - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/kyma-telemetry-test.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d-telemetry.sh"
             resources:
               requests:
                 memory: 3Gi
@@ -42,27 +53,38 @@ postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-telemetry-operator-test
       annotations:
+        pipeline.clusterprovisioning: "k3d"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3d"
+        pipeline.test: "fast-integration"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-telemetry-operator-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^components/telemetry-operator/|^resources/telemetry/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
       cluster: trusted-workload
       max_concurrency: 10
       branches:
         - ^master$
         - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/kyma-telemetry-test.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d-telemetry.sh"
             resources:
               requests:
                 memory: 3Gi
@@ -78,23 +100,34 @@ postsubmits: # runs on main
 periodics: # runs on schedule
     - name: telemetry-operator-test
       annotations:
+        pipeline.clusterprovisioning: "k3d"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3d"
+        pipeline.test: "fast-integration"
         pipeline.trigger: "periodic"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "telemetry-operator-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-vm-kyma-integration: "true"
       cron: "00 07 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/kyma-telemetry-test.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d-telemetry.sh"
             resources:
               requests:
                 memory: 3Gi
