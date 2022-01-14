@@ -22,8 +22,8 @@ func TestKymaTelemetryOperatorPreSubmit(t *testing.T) {
 	require.NotNil(t, job)
 	assert.Equal(t, jobName, job.Name)
 
-	assert.Equal(t, tester.ImageGolangBuildpack1_16, job.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/kyma-telemetry-test.sh"}, job.Spec.Containers[0].Command)
+	assert.Equal(t, tester.ImageKymaIntegrationLatest, job.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d-telemetry.sh"}, job.Spec.Containers[0].Command)
 	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
 }
 
@@ -42,7 +42,7 @@ func TestKymaTelemetryOperatorPeriodic(t *testing.T) {
 	assert.Equal(t, jobName, job.Name)
 
 	assert.Equal(t, "00 07 * * *", job.Cron)
-	assert.Equal(t, tester.ImageGolangBuildpack1_16, job.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/kyma-telemetry-test.sh"}, job.Spec.Containers[0].Command)
+	assert.Equal(t, tester.ImageKymaIntegrationLatest, job.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d-telemetry.sh"}, job.Spec.Containers[0].Command)
 	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
 }

@@ -4,9 +4,13 @@ templates:
         to: ../prow/jobs/kyma/components/telemetry-operator/telemetry-test.yaml
     render:
       - localSets:
-          jobConfig_default:
-            path_alias: github.com/kyma-project/kyma
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/kyma-telemetry-test.sh"
+          vm_job_template_k3d_telemetry_test:
+            annotations:
+              pipeline.platform: k3d
+              pipeline.installer: kyma deploy
+              pipeline.test: fast-integration
+              pipeline.clusterprovisioning: k3d
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d-telemetry.sh"
         jobConfigs:
           - repoName: "kyma-project/kyma"
             jobs:
@@ -19,7 +23,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang-toolbox"
+                    - "image_kyma-integration"
                   preConfigs:
                     global:
                       - "jobConfig_presubmit"
@@ -27,7 +31,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                   local:
-                    - "jobConfig_default"
+                    - "vm_job_template_k3d_telemetry_test"
               - jobConfig:
                   name: "telemetry-operator-test"
                   cron: "00 07 * * *" # "At 07:00 each day"
@@ -35,6 +39,6 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "image_buildpack-golang-toolbox"
+                    - "image_kyma-integration"
                   local:
-                    - "jobConfig_default"
+                    - "vm_job_template_k3d_telemetry_test"
