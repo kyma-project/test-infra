@@ -45,6 +45,8 @@ function deploy_kyma() {
 
 function install_operator() {
   helm install -n kyma-system telemetry ${KYMA_SOURCES_DIR}/resources/telemetry
+
+  kubectl get daemonset -n kyma-system
 }
 
 function install_mockserver() {
