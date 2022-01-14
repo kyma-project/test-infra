@@ -24,6 +24,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "image_kyma-integration"
+                    - "extra_refs_test-infra"
                   preConfigs:
                     global:
                       - "jobConfig_presubmit"
@@ -40,5 +41,6 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "image_kyma-integration"
+                    - "extra_refs_test-infra"
                   local:
                     - "vm_job_template_k3d_telemetry_test"
