@@ -4,15 +4,15 @@
 
 This command finds and removes orphaned virtual machines (VMs) created by Prow jobs in a Google Cloud Platform (GCP) project.
 
-Prow jobs creates a VM instance to install and test Kyma.
+Prow jobs create a VM instance to install and test Kyma.
 Usually, the job also cleans up the instance.
 It can happen, however, that the job is terminated before its clean-up finishes.
 This causes a resource leak that generates unwanted costs.
 The garbage collector finds and removes such VM instances.
 
 There are three conditions used to find instances for removal:
-- The instance name is not caught by the exclud names regexp
-- The value of a `job-name` label the instance is annotated with is not caught by the exclud labels regexp
+- The instance name is not caught by the exclude names regexp
+- The value of the `job-name` label the instance is annotated with is not caught by the exclude labels regexp
 - The instance `creationTimestamp` value that is used to find instance existing at least for a preconfigured number of hours
 
 VM instances that meet these conditions are subject to removal.
