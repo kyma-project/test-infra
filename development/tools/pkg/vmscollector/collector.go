@@ -102,17 +102,17 @@ func (gc *InstancesGarbageCollector) list(project string) ([]*compute.Instance, 
 type InstanceRemovalPredicate func(instance *compute.Instance) (bool, error)
 
 // DefaultInstanceRemovalPredicate returns an instance of InstanceRemovalPredicate that filters instances based on instanceNameRegexp, jobLabelRegexp, ageInHours and Status
-func DefaultInstanceRemovalPredicate(instanceNameRegexp *regexp.Regexp, jobLabelRegexp *regexp.Regexp, ageInHours uint) InstanceRemovalPredicate {
+func DefaultInstanceRemovalPredicate(instanceNameExcludeRegexp *regexp.Regexp, jobLabelExcludeRegexp *regexp.Regexp, ageInHours uint) InstanceRemovalPredicate {
 	return func(instance *compute.Instance) (bool, error) {
 		if instance == nil {
 			return false, errors.New("Invalid data: Nil")
 		}
 
-		nameMatches := instanceNameRegexp.MatchString(instance.Name)
+		nameExcludeMatches := instanceNameExcludeRegexp.MatchString(instance.Name)
 
-		jobLabelMatches := false
+		jobLabelExcludeMatches := false
 		if instance.Labels != nil {
-			jobLabelMatches = jobLabelRegexp.MatchString(instance.Labels[jobLabelName])
+			jobLabelExcludeMatches = jobLabelExcludeRegexp.MatchString(instance.Labels[jobLabelName])
 		}
 
 		var ageMatches bool
@@ -126,7 +126,7 @@ func DefaultInstanceRemovalPredicate(instanceNameRegexp *regexp.Regexp, jobLabel
 		instanceAgeThreshold := time.Since(instanceCreationTime).Hours() - float64(ageInHours)
 		ageMatches = instanceAgeThreshold > 0
 
-		if nameMatches && jobLabelMatches {
+		if !nameExcludeMatches && !jobLabelExcludeMatches {
 			// If instance is stopped we do not need to check its age
 			if instance.Status == "TERMINATED" {
 				log.Infof("VM Instance is stopped, removing. Name: \"%s\", zone: \"%s\", creationTimestamp: \"%s\"", instance.Name, formatZone(instance.Zone), instance.CreationTimestamp)
@@ -134,7 +134,7 @@ func DefaultInstanceRemovalPredicate(instanceNameRegexp *regexp.Regexp, jobLabel
 			}
 		}
 
-		if nameMatches && jobLabelMatches && ageMatches {
+		if (!nameExcludeMatches && !jobLabelExcludeMatches) && ageMatches {
 			//Filter out instances that are not RUNNING at this moment
 			if instance.Status != "RUNNING" {
 				log.Warnf("VM Instance is not in RUNNING status, skipping. Name: \"%s\", zone: \"%s\", creationTimestamp: \"%s\", status: \"%s\"", instance.Name, formatZone(instance.Zone), instance.CreationTimestamp, instance.Status)

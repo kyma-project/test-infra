@@ -1,0 +1,10 @@
+filters:
+  ".*":
+    labels:
+      - area/prow
+
+reviewers:
+  - tooling-reviewers
+
+approvers:
+  - tooling-approvers

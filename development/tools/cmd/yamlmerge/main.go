@@ -13,7 +13,7 @@ import (
 var (
 	path   = flag.String("path", "", "Path to yaml folder [Required]")
 	target = flag.String("target", "", "Path to target file [Required]")
-	dryRun = flag.Bool("dryRun", true, "Dry Run enabled, nothing is overriden")
+	dryRun = flag.Bool("dryRun", true, "Dry Run enabled, nothing is overridden")
 )
 
 func main() {

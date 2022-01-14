@@ -81,27 +81,8 @@ templates:
                   local:
                     - "dailyDockerEcosystem"
               - jobConfig:
-                  directory: "/prow/images/buildpack-java"
-                  commitMsgPrefix: "bp-java"
-                inheritedConfigs:
-                  local:
-                    - "dailyDockerEcosystem"
-              - jobConfig:
-                  directory: "/prow/images/buildpack-java-node"
-                  commitMsgPrefix: "bp-java-node"
-                inheritedConfigs:
-                  local:
-                    - "dailyDockerEcosystem"
-              - jobConfig:
                   directory: "/prow/images/buildpack-node"
                   commitMsgPrefix: "bp-node"
-                inheritedConfigs:
-                  local:
-                    - "dailyDockerEcosystem"
-              - jobConfig:
-                  directory: "/prow/images/buildpack-node-chromium"
-                  # commit message can be 15 characters max
-                  commitMsgPrefix: "bp-node-chrome"
                 inheritedConfigs:
                   local:
                     - "dailyDockerEcosystem"

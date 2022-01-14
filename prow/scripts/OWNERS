@@ -1,0 +1,37 @@
+filters:
+  ".*":
+    labels:
+      - prow/scripts
+
+reviewers:
+  - tooling-reviewers
+  - kyma-approvers
+  - application-broker-owners
+  - application-connectivity-owners
+  - installation-owners
+  - serverless-owners
+  - eventing-owners
+  - busola-reviewers
+  - website-reviewers
+  - cli-reviewers
+  - helm-broker-reviewers
+  - hydroform-reviewers
+  - addons-reviewers
+  - rafter-reviewers
+  - control-plane-reviewers
+approvers:
+  - tooling-approvers
+  - kyma-approvers
+  - application-broker-owners
+  - application-connectivity-owners
+  - installation-owners
+  - serverless-owners
+  - eventing-owners
+  - busola-approvers
+  - website-approvers
+  - cli-approvers
+  - helm-broker-approvers
+  - hydroform-approvers
+  - addons-approvers
+  - rafter-approvers
+  - control-plane-approvers

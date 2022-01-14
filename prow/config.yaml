@@ -20,10 +20,10 @@ plank:
       timeout: 3h
       grace_period: 10m
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20211217-ba1f318049
-        initupload: gcr.io/k8s-prow/initupload:v20211217-ba1f318049
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20211217-ba1f318049
-        sidecar: gcr.io/k8s-prow/sidecar:v20211217-ba1f318049
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20220107-463b53a7ed
+        initupload: gcr.io/k8s-prow/initupload:v20220107-463b53a7ed
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20220107-463b53a7ed
+        sidecar: gcr.io/k8s-prow/sidecar:v20220107-463b53a7ed
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -154,6 +154,8 @@ branch-protection:
           protect: false
           branches:
             main:
+              protect: true
+            develop:
               protect: true
 
 tide:
@@ -1121,3 +1123,34 @@ presets:
         secretKeyRef:
           name: kcp-client-credentials
           key: KCP_OIDC_CLIENT_SECRET
+  - labels:
+      preset-serverless-git-auth: "true"
+    env:
+    - name: GH_AUTH_PRIVATE_KEY
+      valueFrom:
+        secretKeyRef:
+          name: serverless-git-auth
+          key: GH_AUTH_PRIVATE_KEY
+    - name: AZURE_DEVOPS_AUTH_USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: serverless-git-auth
+          key: AZURE_DEVOPS_AUTH_USERNAME
+    - name: AZURE_DEVOPS_AUTH_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: serverless-git-auth
+          key: AZURE_DEVOPS_AUTH_PASSWORD
+  - labels:
+      preset-kcp-client-dev-envs: "true"
+    env:
+      - name: KCP_GARDENER_NAMESPACE
+        value: "garden-kyma-dev"
+      - name: KCP_KEB_API_URL
+        value: "https://kyma-env-broker.cp.dev.kyma.cloud.sap"
+      - name: KCP_KUBECONFIG_API_URL
+        value: "https://kubeconfig-service.cp.dev.kyma.cloud.sap"
+      - name: KCP_MOTHERSHIP_API_URL
+        value: "https://mothership-reconciler.cp.dev.kyma.cloud.sap/v1"
+      - name: KCP_OIDC_ISSUER_URL
+        value: "https://kymatest.accounts400.ondemand.com"

@@ -1,7 +1,7 @@
 global:
-  nextRelease: "2.0"
+  nextRelease: "2.1"
   releases:
-    - "1.25"
+    - "2.0"
     - "1.24"
     - "1.23"
 
@@ -23,11 +23,11 @@ globalSets:
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20211223-c04843e2"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220110-fe1cc8a9"
   image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211221-28c363bc"
+    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
   image_buildpack-node:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20211116-11e89837"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20211223-37a4a4d4"
   image_buildpack-golang:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
   image_buildpack-golang-kubebuilder2:
@@ -35,7 +35,7 @@ globalSets:
   image_buildpack-golang-toolbox:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
   image_wssagent:
-    image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211214-2b5a3d39"
+    image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211231-ac8068de"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"

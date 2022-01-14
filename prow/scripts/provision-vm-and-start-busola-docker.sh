@@ -104,6 +104,7 @@ while [[ $# -gt 0 ]]; do
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
+trap cleanup EXIT HUP INT
 
 if [[ -z "$IMAGE" ]]; then
     log::info "Provisioning vm using the latest default custom image ..."
@@ -132,8 +133,6 @@ for ZONE in ${EU_ZONES}; do
 done || exit 1
 ENDTIME=$(date +%s)
 echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
-
-trap cleanup exit INT
 
 export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
 KYMA_CLUSTER_NAME="nkyma"

@@ -165,7 +165,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.AllPeriodics()
-	assert.Len(t, periodics, 17)
+	assert.Len(t, periodics, 18)
 
 	expName := "kyma-upgrade-k3d-kyma2-to-main"
 	kymaUpgradePeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -255,7 +255,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatHasExtraRepoRefCustom(t, vmsCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
 	assert.Equal(t, tester.ImageProwToolsLatest, vmsCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, vmsCleanerPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "/prow-tools/vmscollector -project=${CLOUDSDK_CORE_PROJECT} -vmNameRegexp='.*-integration-test-.*|busola-integration-test-.*|.*-upgrade-test-.*' -jobLabelRegexp='.*-integration$|busola-integration-test-k3s|.*-upgrade-k3d-.*' -dryRun=false"}, vmsCleanerPeriodic.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"-c", "/prow-tools/vmscollector -project=${CLOUDSDK_CORE_PROJECT} -vmNameRegexp='gke-nightly-.*|gke-weekly.*|shoot--kyma-prow.*' -jobLabelRegexp='kyma-gke-nightly|kyma-gke-nightly-.*|kyma-gke-weekly|kyma-gke-weekly-.*' -dryRun=false"}, vmsCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, vmsCleanerPeriodic.JobBase)
 
 	expName = "orphaned-loadbalancer-cleaner"

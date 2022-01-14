@@ -123,3 +123,39 @@ default:
       prowPlugin: test-untrusted
       isExternalPlugin: yes
       addedBy: org-members
+    # area labels
+    - color: 0052cc
+      description: Issues or PRs related to dependency changes
+      name: area/dependency
+      target: both
+      addedBy: label
+    - color: 0052cc
+      description: Issues or PRs related to tooling
+      name: area/tooling
+      target: both
+      addedBy: label
+    - color: 0052cc
+      description: Issues or PRs related to documentation
+      name: area/documentation
+      target: both
+      addedBy: label
+    - color: 0052cc
+      description: Issues or PRs related to prow configuration
+      name: area/prow
+      target: both
+      addedBy: label
+    - color: 0052cc
+      description: Issues or PRs related to templates
+      name: area/templates
+      target: both
+      addedBy: label
+    - color: 0052cc
+      description: Issues or PRs related to security
+      name: area/security
+      target: both
+      addedBy: label
+    - color: 0052cc
+      description: Issues or PRs related to CI related topics
+      name: area/ci
+      target: both
+      addedBy: label

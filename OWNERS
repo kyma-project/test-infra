@@ -5,9 +5,11 @@ filters:
     approvers:
       - technical-writers
     labels:
-      - 'area/documentation'
-
+      - area/documentation
+  ".*go\..*$": # all go.mod/sum files
+    labels:
+      - area/dependency
 reviewers:
-  - test-infra-tooling
+  - tooling-reviewers
 approvers:
-  - test-infra-tooling
+  - tooling-approvers
