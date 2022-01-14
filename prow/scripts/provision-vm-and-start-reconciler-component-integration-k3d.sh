@@ -119,12 +119,6 @@ log::info "Copying Reconciler to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "reconciler-component-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/reconciler" "~/reconciler"
 
-if [[ -v ORY_INTEGRATION ]]; then
-  log::info "Copying Ory integration components file"
-  #shellcheck disable=SC2088
-  utils::send_to_vm "${ZONE}" "reconciler-component-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/reconciler-ory-integration-components.yaml" "~/reconciler-ory-integration-components.yaml"
-fi
-
 log::info "Triggering the installation"
 gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "reconciler-component-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/reconciler-component-integration.sh"
 

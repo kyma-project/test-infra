@@ -47,18 +47,33 @@ function install_cli() {
 }
 
 function provision_k3d() {
+  k3d version
   kyma provision k3d --ci
 }
 
-function deploy_kyma() {
-  k3d version
-  kyma provision k3d --ci
+function ory::prepare_components_file() {
+  echo "Preparing Kyma installation with Ory and prerequisites"
 
+cat << EOF > "$PWD/components.yaml"
+defaultNamespace: kyma-system
+prerequisites:
+  - name: "cluster-essentials"
+  - name: "istio-configuration"
+    namespace: "istio-system"
+  - name: "certificates"
+    namespace: "istio-system"
+components:
+  - name: "ory"
+EOF
+}
+
+function deploy_kyma() {
   local kyma_deploy_cmd
   kyma_deploy_cmd="kyma deploy -p evaluation --ci"
 
   if [[ -v ORY_INTEGRATION ]]; then
-    kyma_deploy_cmd+=" --components-file reconciler-ory-integration-components.yaml"
+    ory::prepare_components_file
+    kyma_deploy_cmd+=" --components-file $PWD/components.yaml"
   fi
 
   $kyma_deploy_cmd
