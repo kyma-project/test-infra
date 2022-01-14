@@ -10,7 +10,7 @@ templates:
               pipeline.installer: kyma deploy
               pipeline.test: fast-integration
               pipeline.clusterprovisioning: k3d
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d-telemetry.sh"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
         jobConfigs:
           - repoName: "kyma-project/kyma"
             jobs:
