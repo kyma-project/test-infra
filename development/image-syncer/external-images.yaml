@@ -13,6 +13,7 @@ images:
 - source: "gcr.io/google-containers/pause-amd64:3.2"
 - source: "golang@sha256:8474650232fca6807a8567151ee0a6bd2a54ea28cfc93f7824b42267ef4af693"
   tag: "1.17.5-alpine3.15"
+- source: "golang:1.17.6-alpine3.15"
 - source: "grafana/loki:2.2.1"
 - source: "grafana/grafana-image-renderer:3.2.1"
 - source: "hudymi/mockice:0.1.3"
