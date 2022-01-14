@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "pre-telemetry-operator-test"
+  - pjName: "post-telemetry-operator-test"
 prConfigs:
   kyma-project:
     kyma:
