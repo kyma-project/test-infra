@@ -214,6 +214,7 @@ periodics: # runs on schedule
               - "/app/prow/cmd/generic-autobumper/app.binary"
             args:
               - "--config=prow/autobump-config/test-infra-autobump-config.yaml"
+              - "--labels-override=skip-review"
             volumeMounts:
               - name: kyma-bot-github-token
                 mountPath: /etc/github
