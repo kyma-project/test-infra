@@ -246,7 +246,7 @@ tide:
       reviewApprovedRequired: true
     - author: kyma-bot
       repos:
-        kyma-project/test-infra
+        - kyma-project/test-infra
       labels:
         - skip-review
       missingLabels:
