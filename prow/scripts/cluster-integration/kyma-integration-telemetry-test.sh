@@ -58,6 +58,7 @@ function install_mockserver() {
 
 function run_test() {
   pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
+  npm install
   npm run test-telemetry
   popd
 }
