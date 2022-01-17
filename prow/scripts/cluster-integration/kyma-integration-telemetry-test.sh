@@ -65,7 +65,8 @@ function install_mockserver() {
 function run_test() {
   kubectl apply -f ${KYMA_SOURCES_DIR}/tests/fast-integration/telemetry-test/log-pipeline.yaml
   sleep 10
-  kubectl get ds -n kyma-system telemetry-fluent-bit 
+  kubectl describe ds -n kyma-system telemetry-fluent-bit 
+  kubectl describe po -n kyma-system --selector=control-plane=telemetry-operator-controller-manager
 
   POD_NAME=$(kubectl get po -n kyma-system --no-headers=true --selector=app.kubernetes.io/instance=telemetry,app.kubernetes.io/name=fluent-bit -o custom-columns=:metadata.name  | head -n 1)
   kubectl logs ${POD_NAME} -n kyma-system
