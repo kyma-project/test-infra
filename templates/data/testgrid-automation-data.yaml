@@ -13,7 +13,6 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-test-infra-validate-testgrid-config
-                  optional: true
                   args:
                     - "test"
                     - "prow/config.yaml"

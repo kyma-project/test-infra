@@ -11,7 +11,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-test-infra-validate-testgrid-config"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^(prow/jobs/.*\.yaml)|(prow/testgrid-default\.yaml)$'
-      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
