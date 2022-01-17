@@ -1,8 +1,3 @@
-filters:
-  ".*":
-    labels:
-      - prow/scripts
-
 reviewers:
   - tooling-reviewers
   - kyma-approvers
@@ -35,3 +30,6 @@ approvers:
   - addons-approvers
   - rafter-approvers
   - control-plane-approvers
+
+labels:
+  - prow/scripts

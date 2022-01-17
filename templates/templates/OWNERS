@@ -1,9 +1,7 @@
-filters:
-  ".*":
-    labels:
-      - area/templates
-
 reviewers:
   - tooling-reviewers
 approvers:
   - tooling-approvers
+
+labels:
+  - area/templates
