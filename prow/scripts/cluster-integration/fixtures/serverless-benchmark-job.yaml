@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    jobName: serverless-benchmark
+  name: serverless-benchmark
+spec:
+  template:
+    metadata:
+      labels:
+        jobName: serverless-benchmark
+      name: serverless-benchmark
+    spec:
+      shareProcessNamespace: true
+      containers:
+      - command:
+        - bash
+        - -c
+        - |
+          echo "--------------------------------------------------------------------------------"
+          echo "Collecting Serverless benchmarks..."
+          echo "--------------------------------------------------------------------------------"
+          /home/locust/run-benchmarks.sh 
+          pkill -f /usr/local/bin/pilot-agent
+
+        image: melsayed/kymabench:latest
+        name: serverless-benchmark
+        resources: {}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Never
+
