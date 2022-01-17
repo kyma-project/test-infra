@@ -1,6 +1,6 @@
 pjNames:
-  - pjName: "post-telemetry-operator-test"
+  - pjName: "pre-telemetry-operator-test"
 prConfigs:
   kyma-project:
     kyma:
-      prNumber: 13056
+      prNumber: 13094
