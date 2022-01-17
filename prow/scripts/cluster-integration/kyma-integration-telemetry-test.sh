@@ -59,13 +59,20 @@ function install_mockserver() {
 
   helm install -n ${mock_namespace} mockserver-config ${KYMA_SOURCES_DIR}/tests/fast-integration/telemetry-test/helm/mockserver-config
 
+  kubectl -n mockserver port-forward svc/mockserver 1080:1080 &
 }
 
 function run_test() {
-  pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
-  npm install
-  DEBUG=true npm run test-telemetry
-  popd
+  kubectl apply -f ${KYMA_SOURCES_DIR}/tests/fast-integration/telemetry-test/log-pipeline.yaml
+  sleep 10
+  kubectl get ds -n kyma-system telemetry-fluent-bit 
+
+  POD_NAME=$(kubectl get po -n kyma-system --no-headers=true --selector=app.kubernetes.io/instance=telemetry,app.kubernetes.io/name=fluent-bit -o custom-columns=:metadata.name  | head -n 1)
+  kubectl logs ${POD_NAME} -n kyma-system
+  # pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
+  # npm install
+  # DEBUG=true npm run test-telemetry
+  # popd
 }
 
 prereq_test
