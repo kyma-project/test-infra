@@ -18,19 +18,20 @@ const (
 
 type githubClient interface {
 	AddLabelWithContext(ctx context.Context, org string, repo string, number int, label string) error
+	CreateCommentWithContext(ctx context.Context, org, repo string, number int, comment string) error
 }
 
 func EventHandler(server *externalplugin.Plugin, event externalplugin.Event) {
 	l := externalplugin.NewLogger()
 	defer l.Sync()
-	l.With(externalplugin.EventTypeField, event.EventType,
+	l = l.With(externalplugin.EventTypeField, event.EventType,
 		github.EventGUID, event.EventGUID,
 	)
 	var pr github.PullRequestEvent
 	if err := json.Unmarshal(event.Payload, &pr); err != nil {
 		l.Errorw("Failed unmarshal json payload.", "error", err.Error())
 	}
-	l.With("pr-number", pr.Number,
+	l = l.With("pr-number", pr.Number,
 		"pr-sender", pr.Sender.Login,
 	)
 	switch pr.Action {
@@ -46,8 +47,14 @@ func EventHandler(server *externalplugin.Plugin, event externalplugin.Event) {
 			} else {
 				l.Info("Labeled pr as trusted.")
 			}
+			err = server.GitHub.(githubClient).CreateCommentWithContext(ctx, pr.Repo.Owner.Login, pr.Repo.Name, pr.Number, "/test all")
+			if err != nil {
+				l.Errorw("Failed comment on PR.", "error", err.Error())
+			} else {
+				l.Info("Triggered all tests.")
+			}
 		} else {
-			l.Info("Event triggered by not supported user, ignoring.")
+			l.Info("Ignoring event triggered by not supported user.")
 		}
 	default:
 		l.Infow("Ignoring unsupported pull request action.", "pr_action", pr.Action)
