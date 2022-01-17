@@ -2,6 +2,7 @@ package pjtester
 
 import (
 	"bytes"
+	"context"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -10,8 +11,6 @@ import (
 	"strings"
 
 	"k8s.io/test-infra/prow/pod-utils/downwardapi"
-
-	"k8s.io/test-infra/prow/config/secret"
 
 	"github.com/go-yaml/yaml"
 	"github.com/kyma-project/test-infra/development/tools/pkg/prtagbuilder"
@@ -35,9 +34,9 @@ var (
 
 // Default values for kyma-project/test-infra
 const (
-	defaultPjPath       = "test-infra/prow/jobs/"
-	defaultConfigPath   = "test-infra/prow/config.yaml"
-	defaultMasterBranch = "master"
+	defaultPjPath     = "test-infra/prow/jobs/"
+	defaultConfigPath = "test-infra/prow/config.yaml"
+	defaultMainBranch = "main"
 )
 
 // pjCfg holds prowjob to test name and path to it's definition.
@@ -198,7 +197,8 @@ func gatherOptions(configPath string, ghOptions prowflagutil.GitHubOptions) opti
 // withGithubClientOptions will add default flags and values for github client.
 func (o options) withGithubClientOptions() options {
 	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
-	o.github.AddFlagsWithoutDefaultGitHubTokenPath(fs)
+	o.github.AddFlags(fs)
+	o.github.AllowAnonymous = true
 	_ = fs.Parse(os.Args[1:])
 	if err := o.github.Validate(false); err != nil {
 		logrus.WithError(err).Fatalf("github options validation failed")
@@ -341,13 +341,18 @@ func presubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, e
 	if pjs.Refs.Org != opt.org || pjs.Refs.Repo != opt.repo {
 		//Check if PR number for prowjob specification refs was provided in pjtester.yaml.
 		if !opt.matchRefPR(pjs.Refs) {
-			// If PR number not provided set BaseRef to master
-			pjs.Refs.BaseRef = defaultMasterBranch
+			// If PR number not provided set BaseRef to main
+			pjs.Refs.BaseRef = defaultMainBranch
 			// get latest PR number for BaseRef branch and use it to set extra refs
 			jobSpec := &downwardapi.JobSpec{Refs: pjs.Refs}
 			branchPrAsString, err := prtagbuilder.BuildPrTag(jobSpec, true, true, opt.prFinder)
 			if err != nil {
-				return pjs, fmt.Errorf("could not get pr number for branch head, got error: %w", err)
+				fmt.Printf("level=info msg=failed get pr number for main branch head, using master\n")
+				jobSpec.Refs.BaseRef = "master"
+				branchPrAsString, err = prtagbuilder.BuildPrTag(jobSpec, true, true, opt.prFinder)
+				if err != nil {
+					return pjs, fmt.Errorf("could not get pr number for branch head, got error: %w", err)
+				}
 			}
 			branchPR, err := strconv.Atoi(branchPrAsString)
 			if err != nil {
@@ -391,8 +396,14 @@ func postsubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, 
 		//Check if PR number for prowjob specification refs was provided in pjtester.yaml.
 		matched := opt.matchRefPR(pjs.Refs)
 		if !matched {
-			// If PR number not provided set BaseRef to master
-			pjs.Refs.BaseRef = defaultMasterBranch
+			// If PR number not provided set BaseRef to main
+			pjs.Refs.BaseRef = defaultMainBranch
+			fakeJobSpec := &downwardapi.JobSpec{Refs: pjs.Refs}
+			_, err := prtagbuilder.BuildPrTag(fakeJobSpec, true, true, opt.prFinder)
+			if err != nil {
+				fmt.Printf("level=info msg=failed get pr number for main branch head, using master\n")
+				pjs.Refs.BaseRef = "master"
+			}
 		}
 		// Set PR refs for prowjob ExtraRefs if PR number provided in pjtester.yaml.
 		for index, ref := range pjs.ExtraRefs {
@@ -448,7 +459,7 @@ func formatPjName(pullAuthor, pjName string) string {
 // newTestPJ is building a prowjob definition for test
 func newTestPJ(pjCfg pjCfg, opt options) prowapi.ProwJob {
 	o := getPjCfg(pjCfg, opt)
-	conf, err := config.Load(o.configPath, o.jobConfigPath)
+	conf, err := config.Load(o.configPath, o.jobConfigPath, nil, "")
 	if err != nil {
 		logrus.WithError(err).Fatal("Error loading prow config")
 	}
@@ -465,7 +476,7 @@ func newTestPJ(pjCfg pjCfg, opt options) prowapi.ProwJob {
 	if pjCfg.Report {
 		pj.Spec.Report = true
 	} else {
-		pj.Spec.Report = false
+		pj.Spec.ReporterConfig = &prowapi.ReporterConfig{Slack: &prowapi.SlackReporterConfig{Channel: "kyma-prow-dev-null"}}
 	}
 	return pj
 }
@@ -482,14 +493,7 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	o := gatherOptions(testCfg.ConfigPath, ghOptions)
 	prowClient := newProwK8sClientset()
 	pjsClient := prowClient.ProwV1()
-	var secretAgent *secret.Agent
-	if o.github.TokenPath != "" {
-		secretAgent = &secret.Agent{}
-		if err := secretAgent.Start([]string{o.github.TokenPath}); err != nil {
-			logrus.WithError(err).Fatal("Failed to start secret agent")
-		}
-	}
-	o.githubClient, err = o.github.GitHubClient(secretAgent, false)
+	o.githubClient, err = o.github.GitHubClient(false)
 	if err != nil {
 		logrus.WithError(err).Fatal("Failed to get GitHub client")
 	}
@@ -501,7 +505,7 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	}
 	for _, pjCfg := range testCfg.PjNames {
 		pj := newTestPJ(pjCfg, o)
-		result, err := pjsClient.ProwJobs(metav1.NamespaceDefault).Create(&pj)
+		result, err := pjsClient.ProwJobs(metav1.NamespaceDefault).Create(context.Background(), &pj, metav1.CreateOptions{})
 		if err != nil {
 			log.WithError(err).Fatalf("Failed schedule test of prowjob")
 		}

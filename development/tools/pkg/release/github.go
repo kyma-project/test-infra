@@ -11,7 +11,7 @@ import (
 
 	"golang.org/x/oauth2"
 
-	"github.com/google/go-github/github"
+	"github.com/google/go-github/v40/github"
 	"github.com/kyma-project/test-infra/development/tools/pkg/common"
 )
 
@@ -32,7 +32,10 @@ type githubAPIWrapper struct {
 func NewGithubAPI(ctx context.Context, githubAccessToken, repoOwner, repoName string) GithubAPI {
 
 	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: githubAccessToken},
+		&oauth2.Token{
+			AccessToken: githubAccessToken,
+			TokenType:   "token",
+		},
 	)
 
 	tc := oauth2.NewClient(ctx, ts)

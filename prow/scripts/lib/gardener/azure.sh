@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# vim: noai:ts=4:sw=4
 
 #Azure:
 #Expected vars (additional to common vars):
@@ -21,6 +22,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/fluent-bit-stackdriver-logging.sh"
+# shellcheck source=prow/scripts/lib/gardener/gardener.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
 
 #!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
 gardener::cleanup() {
@@ -34,19 +37,21 @@ gardener::cleanup() {
     log::info "Cleanup"
     set +e
 
+    # describe nodes to file in artifacts directory
     utils::describe_nodes
 
-    # copy oom debug pod output to artifacts directory
-    kubectl cp default/oom-debug:/var/oom_debug "${ARTIFACTS}/oom_debug.txt"
+    if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
+        # copy output from debug container to artifacts directory
+        utils::oom_get_output
+    fi
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
-        if  [ -z "${CLEANUP_ONLY_SUCCEEDED}" ] || [[ -n "${CLEANUP_ONLY_SUCCEEDED}" && ${EXIT_STATUS} -eq 0 ]]; then
+        if [ -z "${CLEANUP_ONLY_SUCCEEDED}" ] || [[ -n "${CLEANUP_ONLY_SUCCEEDED}" && ${EXIT_STATUS} -eq 0 ]]; then
             log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
-            utils::deprovision_gardener_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
-
-            log::info "Deleting Azure EventHubs Namespace: \"${EVENTHUB_NAMESPACE_NAME}\""
-            # Delete the Azure Event Hubs namespace which was created
-            az eventhubs namespace delete -n "${EVENTHUB_NAMESPACE_NAME}" -g "${RS_GROUP}"
+            gardener::deprovision_cluster \
+                -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+                -c "${CLUSTER_NAME}" \
+                -f "${GARDENER_KYMA_PROW_KUBECONFIG}"
         fi
     fi
 
@@ -67,10 +72,7 @@ gardener::init() {
         GARDENER_KYMA_PROW_KUBECONFIG
         GARDENER_KYMA_PROW_PROJECT_NAME
         GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
-        RS_GROUP
         REGION
-        AZURE_SUBSCRIPTION_ID
-        AZURE_CREDENTIALS_FILE
         CLOUDSDK_CORE_PROJECT
         KYMA_SOURCE
     )
@@ -81,15 +83,6 @@ gardener::init() {
 
     # we need to start the docker daemon
     docker::start
-
-    EVENTHUB_NAMESPACE_NAME=""
-    # Local variables
-    if [[ -n "${PULL_NUMBER}" ]]; then  ### Creating name of the eventhub namespaces for pre-submit jobs
-        EVENTHUB_NAMESPACE_NAME="pr-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}"
-    else
-        EVENTHUB_NAMESPACE_NAME="kyma-gardener-azure-${RANDOM_NAME_SUFFIX}"
-    fi
-    export EVENTHUB_NAMESPACE_NAME
 }
 
 gardener::set_machine_type() {
@@ -103,38 +96,55 @@ gardener::set_machine_type() {
 }
 
 gardener::generate_overrides() {
-    log::info "Generate Azure Event Hubs overrides"
-
-    EVENTHUB_SECRET_OVERRIDE_FILE=$(mktemp)
-    export EVENTHUB_SECRET_OVERRIDE_FILE
-
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
+    return
 }
 
 gardener::provision_cluster() {
     log::info "Provision cluster: \"${CLUSTER_NAME}\""
+    if [ "${#CLUSTER_NAME}" -gt 9 ]; then
+        log::error "Provided cluster name is too long"
+        return 1
+    fi
 
     CLEANUP_CLUSTER="true"
-    set -x
     if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
-        kyma provision gardener az \
-            --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
-            --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
-            --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
-            --scaler-max 1 --scaler-min 1 \
-            --disk-type StandardSSD_LRS \
-            --kube-version="${GARDENER_CLUSTER_VERSION}" \
-            --verbose
+            # enable trap to catch kyma provision failures
+            trap gardener::reprovision_cluster ERR
+            # decreasing attempts to 2 because we will try to create new cluster from scratch on exit code other than 0
+            kyma provision gardener az \
+                --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" \
+                --name "${CLUSTER_NAME}" \
+                --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+                --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
+                --region "${GARDENER_REGION}" \
+                -z "${GARDENER_ZONES}" \
+                -t "${MACHINE_TYPE}" \
+                --scaler-max 1 --scaler-min 1 \
+                --disk-type StandardSSD_LRS \
+                --kube-version="${GARDENER_CLUSTER_VERSION}" \
+                --attempts 2
     else
-        kyma provision gardener az \
-            --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
-            --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
-            --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
-            --disk-type StandardSSD_LRS \
-            --kube-version="${GARDENER_CLUSTER_VERSION}" \
-            --verbose
+            # enable trap to catch kyma provision failures
+            trap gardener::reprovision_cluster ERR
+            # decreasing attempts to 2 because we will try to create new cluster from scratch on exit code other than 0
+            kyma provision gardener az \
+                --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" \
+                --name "${CLUSTER_NAME}" \
+                --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+                --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
+                --region "${GARDENER_REGION}" \
+                -z "${GARDENER_ZONES}" \
+                -t "${MACHINE_TYPE}" \
+                --disk-type StandardSSD_LRS \
+                --kube-version="${GARDENER_CLUSTER_VERSION}" \
+                --attempts 2
     fi
-    set +x
+    # trap cleanup we want other errors fail pipeline immediately
+    trap - ERR
+    if [ "$DEBUG_COMMANDO_OOM" = "true" ]; then
+    # run oom debug pod
+        utils::debug_oom
+    fi
 }
 
 gardener::install_kyma() {
@@ -145,16 +155,11 @@ gardener::install_kyma() {
         return 1
     fi
 
-    INSTALLATION_RESOURCES_DIR=${KYMA_SOURCES_DIR}/installation/resources
-
     set -x
     if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
         kyma install \
             --ci \
             --source "${KYMA_SOURCE}" \
-            -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
-            -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
-            -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
             -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
             --timeout 60m \
             --profile evaluation \
@@ -163,9 +168,6 @@ gardener::install_kyma() {
         kyma install \
             --ci \
             --source "${KYMA_SOURCE}" \
-            -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
-            -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
-            -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
             -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
             --timeout 60m \
             --profile production \
@@ -174,9 +176,6 @@ gardener::install_kyma() {
         kyma install \
             --ci \
             --source "${KYMA_SOURCE}" \
-            -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
-            -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
-            -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
             -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
             --timeout 90m \
             --verbose
@@ -192,9 +191,9 @@ gardener::hibernate_kyma() {
     HIBERNATION_POSSIBLE=$(kubectl get shoots "${CLUSTER_NAME}" -o jsonpath='{.status.constraints[?(@.type=="HibernationPossible")].status}')
 
     if [[ "$HIBERNATION_POSSIBLE" != "True" ]]; then
-      log::error "Hibernation for this cluster is not possible! Please take a look at the constraints :"
-      kubectl get shoots "${CLUSTER_NAME}}" -o jsonpath='{.status.constraints}'
-      exit 1
+        log::error "Hibernation for this cluster is not possible! Please take a look at the constraints :"
+        kubectl get shoots "${CLUSTER_NAME}" -o jsonpath='{.status.constraints}'
+        exit 1
     fi
 
     log::info "Cluster can be hibernated"
@@ -206,8 +205,8 @@ gardener::hibernate_kyma() {
 
     local STATUS
     SECONDS=0
-    local END_TIME=$((SECONDS+1000))
-    while [ ${SECONDS} -lt ${END_TIME} ];do
+    local END_TIME=$((SECONDS + 1000))
+    while [ ${SECONDS} -lt ${END_TIME} ]; do
         STATUS=$(kubectl get shoot "${CLUSTER_NAME}" -o jsonpath='{.status.hibernated}')
         if [ "$STATUS" == "true" ]; then
             log::info "Kyma is hibernated."
@@ -223,24 +222,23 @@ gardener::hibernate_kyma() {
     export KUBECONFIG=$SAVED_KUBECONFIG
 }
 
-pods_running(){
+pods_running() {
     list=$(kubectl get pods -n "$1" -o=jsonpath='{range .items[*]}{.status.phase}{"\n"}')
     if [[ -z $list ]]; then
-      log::error "Failed to get pod list"
-      return 1
+        log::error "Failed to get pod list"
+        return 1
     fi
 
-    for status in $list
-    do
+    for status in $list; do
         if [[ "$status" != "Running" && "$status" != "Succeeded" ]]; then
-          return 1
+            return 1
         fi
     done
 
     return 0
 }
 
-check_pods_in_namespaces(){
+check_pods_in_namespaces() {
     local namespaces=("$@")
     for ns in "${namespaces[@]}"; do
         log::info "checking pods in namespace : $ns"
@@ -252,12 +250,12 @@ check_pods_in_namespaces(){
     return 0
 }
 
-wait_for_pods_in_namespaces(){
+wait_for_pods_in_namespaces() {
     local namespaces=("$@")
     local done=1
     SECONDS=0
-    local END_TIME=$((SECONDS+900))
-    while [ ${SECONDS} -lt ${END_TIME} ];do
+    local END_TIME=$((SECONDS + 900))
+    while [ ${SECONDS} -lt ${END_TIME} ]; do
         if check_pods_in_namespaces "${namespaces[@]}"; then
             done=0
             break
@@ -284,8 +282,8 @@ gardener::wake_up_kyma() {
 
     local STATUS
     SECONDS=0
-    local END_TIME=$((SECONDS+1200))
-    while [ ${SECONDS} -lt ${END_TIME} ];do
+    local END_TIME=$((SECONDS + 1200))
+    while [ ${SECONDS} -lt ${END_TIME} ]; do
         STATUS=$(kubectl get shoot "${CLUSTER_NAME}" -o jsonpath='{.status.hibernated}')
         if [ "$STATUS" == "false" ]; then
             log::info "Kyma is awake."
@@ -311,7 +309,27 @@ gardener::test_fast_integration_kyma() {
     log::info "Running Kyma Fast Integration tests"
 
     pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
-    make ci-no-install
+    make ci
+    popd
+
+    log::success "Tests completed"
+}
+
+gardener::pre_upgrade_test_fast_integration_kyma() {
+    log::info "Running pre-upgrade Kyma Fast Integration tests"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    make ci-pre-upgrade
+    popd
+
+    log::success "Tests completed"
+}
+
+gardener::post_upgrade_test_fast_integration_kyma() {
+    log::info "Running post-upgrade Kyma Fast Integration tests"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    make ci-post-upgrade
     popd
 
     log::success "Tests completed"
@@ -324,23 +342,21 @@ gardener::test_kyma() {
     readonly CONCURRENCY=5
     set +e
     (
-    set -x
-    kyma test run \
-        --name "${SUITE_NAME}" \
-        --concurrency "${CONCURRENCY}" \
-        --max-retries 1 \
-        --timeout 120m \
-        --watch \
-        --non-interactive
+        set -x
+        kyma test run \
+            --name "${SUITE_NAME}" \
+            --concurrency "${CONCURRENCY}" \
+            --max-retries 1 \
+            --timeout 120m \
+            --watch \
+            --non-interactive
     )
 
     # collect logs from failed tests before deprovisioning
     kyma::run_test_log_collector "kyma-integration-gardener-azure"
-    if ! kyma::test_summary; then
-      log::error "Tests have failed"
-      set -e
-      return 1
-    fi
+
+    kyma::test_summary \
+        -s "$SUITE_NAME"
     set -e
-    log::success "Tests completed"
+    return "${kyma_test_summary_return_exit_code:?}"
 }

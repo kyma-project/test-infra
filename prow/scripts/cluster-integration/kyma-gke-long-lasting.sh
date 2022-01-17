@@ -11,6 +11,9 @@ export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
+
 requiredVars=(
 	INPUT_CLUSTER_NAME
 	DOCKER_PUSH_REPOSITORY
@@ -21,9 +24,9 @@ requiredVars=(
 	CLOUDSDK_COMPUTE_ZONE
 	CLOUDSDK_DNS_ZONE_NAME
 	GOOGLE_APPLICATION_CREDENTIALS
-	SLACK_CLIENT_TOKEN
-	SLACK_CLIENT_WEBHOOK_URL
-	STABILITY_SLACK_CLIENT_CHANNEL_ID
+	# SLACK_CLIENT_TOKEN
+	# SLACK_CLIENT_WEBHOOK_URL
+	# STABILITY_SLACK_CLIENT_CHANNEL_ID
 	STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG
 	CERTIFICATES_BUCKET
 	GKE_CLUSTER_VERSION
@@ -31,20 +34,20 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 
 export REPO_OWNER="kyma-project"
 export REPO_NAME="kyma"
 
-STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
-export STANDARIZED_NAME
-export DNS_SUBDOMAIN="${STANDARIZED_NAME}"
+COMMON_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
+export COMMON_NAME
+export DNS_SUBDOMAIN="${COMMON_NAME}"
+export CLUSTER_NAME="${COMMON_NAME}"
 
-export CLUSTER_NAME="${STANDARIZED_NAME}"
-export GCLOUD_NETWORK_NAME="gke-long-lasting-net"
-export GCLOUD_SUBNET_NAME="gke-long-lasting-subnet"
+gcp::set_vars_for_network \
+  -n "$JOB_NAME"
+export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_return_net_name:?}"
+export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_return_subnet_name:?}"
 
 # Enable Stackdriver Kubernetes Engine Monitoring support on k8s cluster. Mandatory requirement for stackdriver-prometheus collector.
 # https://cloud.google.com/monitoring/kubernetes-engine/prometheus
@@ -74,34 +77,58 @@ if [ "${PROVISION_REGIONAL_CLUSTER}" ]; then
 	fi
 fi
 
-TEST_RESULT_WINDOW_TIME=${TEST_RESULT_WINDOW_TIME:-3h}
+# TEST_RESULT_WINDOW_TIME=${TEST_RESULT_WINDOW_TIME:-3h}
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 
 function createCluster() {
 	log::info "Reserve IP Address for Ingressgateway"
-	GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
+	GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
 	export GATEWAY_IP_ADDRESS
-	GATEWAY_IP_ADDRESS=$(gcloud::reserve_ip_address "${GATEWAY_IP_ADDRESS_NAME}")
+	gcp::reserve_ip_address \
+		-n "${GATEWAY_IP_ADDRESS_NAME}" \
+		-p "$CLOUDSDK_CORE_PROJECT" \
+		-r "$CLOUDSDK_COMPUTE_REGION"
+	GATEWAY_IP_ADDRESS="${gcp_reserve_ip_address_return_ip_address:?}"
 	echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
 	log::info "Create DNS Record for Ingressgateway IP"
-	GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-	gcloud::create_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
+	gcp::create_dns_record \
+		-a "$GATEWAY_IP_ADDRESS" \
+		-h "*" \
+		-s "$COMMON_NAME" \
+		-p "$CLOUDSDK_CORE_PROJECT" \
+		-z "$CLOUDSDK_DNS_ZONE_NAME"
 
 	log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-	gcloud::create_network "${GCLOUD_NETWORK_NAME}" "${GCLOUD_SUBNET_NAME}"
+	gcp::create_network \
+    -n "${GCLOUD_NETWORK_NAME}" \
+	-s "${GCLOUD_SUBNET_NAME}" \
+	-p "$CLOUDSDK_CORE_PROJECT"
 
-	log::info "Provision cluster: \"${CLUSTER_NAME}\""
+	log::info "Provision cluster: \"${COMMON_NAME}\""
 	date
 	
-	gcloud::provision_gke_cluster "$CLUSTER_NAME"
+	gcp::provision_k8s_cluster \
+		-c "$COMMON_NAME" \
+		-p "$CLOUDSDK_CORE_PROJECT" \
+		-v "$GKE_CLUSTER_VERSION" \
+		-j "$JOB_NAME" \
+		-J "$PROW_JOB_ID" \
+		-z "$CLOUDSDK_COMPUTE_ZONE" \
+		-m "$MACHINE_TYPE" \
+		-R "$CLOUDSDK_COMPUTE_REGION" \
+		-N "$GCLOUD_NETWORK_NAME" \
+		-S "$GCLOUD_SUBNET_NAME" \
+		-r "$PROVISION_REGIONAL_CLUSTER" \
+		-s "$STACKDRIVER_KUBERNETES" \
+		-D "$CLUSTER_USE_SSD" \
+		-e "$GKE_ENABLE_POD_SECURITY_POLICY" \
+		-P "$TEST_INFRA_SOURCES_DIR"
 }
 
 function installKyma() {
@@ -125,43 +152,21 @@ function installKyma() {
 	TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
 	export TLS_KEY
 
-	log::info "Prepare Kyma overrides"
-
-	export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
-
-    envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-installer-overrides.tpl.yaml" > "$PWD/kyma-installer-overrides.yaml"
-    envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/overrides-dex-and-monitoring.tpl.yaml" > "$PWD/overrides-dex-and-monitoring.yaml"
-
 	log::info "Trigger installation"
+	set -x
 
-	kyma install \
+	kyma deploy \
 			--ci \
-			--source master \
-			-o "$PWD/kyma-installer-overrides.yaml" \
-			-o "$PWD/overrides-dex-and-monitoring.yaml" \
-			-o "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/prometheus-cluster-essentials-overrides.tpl.yaml" \
+			--source main \
 			--domain "${DOMAIN}" \
 			--profile production \
-			--tls-cert "${TLS_CERT}" \
-			--tls-key "${TLS_KEY}" \
-			--timeout 60m
+			--tls-crt "./letsencrypt/live/${DOMAIN}/fullchain.pem" \
+			--tls-key "./letsencrypt/live/${DOMAIN}/privkey.pem" \
+			--value "istio-configuration.components.ingressGateways.config.service.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+			--value "global.domainName=${DOMAIN}"
 
-	if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
-		log::info "Create DNS Record for Apiserver proxy IP"
-		APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-		APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-		gcloud::create_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
-	fi
-}
+	set +x
 
-function apply_dex_github_kyma_admin_group() {
-    kubectl get ClusterRoleBinding kyma-admin-binding -oyaml > kyma-admin-binding.yaml && cat >> kyma-admin-binding.yaml <<EOF 
-- apiGroup: rbac.authorization.k8s.io
-  kind: Group
-  name: kyma-project:cluster-access
-EOF
-
-    kubectl replace -f kyma-admin-binding.yaml
 }
 
 function installStackdriverPrometheusCollector(){
@@ -172,15 +177,16 @@ function installStackdriverPrometheusCollector(){
   kubectl -n kyma-system create secret generic prometheus-operator-additional-scrape-config --from-file="${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-additional-scrape-config.yaml
 	echo "Replace tags with current values in patch yaml file."
 	sed -i.bak -e 's/__SIDECAR_IMAGE_TAG__/'"${SIDECAR_IMAGE_TAG}"'/g' \
-		-e 's/__GCP_PROJECT__/'"${GCLOUD_PROJECT_NAME}"'/g' \
+		-e 's/__GCP_PROJECT__/'"${CLOUDSDK_CORE_PROJECT}"'/g' \
 		-e 's/__GCP_REGION__/'"${CLOUDSDK_COMPUTE_REGION}"'/g' \
-		-e 's/__CLUSTER_NAME__/'"${CLUSTER_NAME}"'/g' "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml
+		-e 's/__CLUSTER_NAME__/'"${COMMON_NAME}"'/g' "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml
 	echo "Patch monitoring prometheus CRD to deploy stackdriver-prometheus collector as sidecar"
 	kubectl -n kyma-system patch prometheus monitoring-prometheus --type merge --patch "$(cat "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml)"
 }
 
 log::info "Authenticate"
-gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+gcp::authenticate \
+    -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 
 
@@ -191,44 +197,38 @@ export DOMAIN
 
 log::info "Cleanup"
 export SKIP_IMAGE_REMOVAL=true
-export DISABLE_ASYNC_DEPROVISION=true
+export ASYNC_DEPROVISION=false
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/cleanup-cluster.sh"
 
 log::info "Create new cluster"
 createCluster
-
-log::info "install image-guard"
-helm install image-guard "$TEST_INFRA_SOURCES_DIR/development/image-guard/image-guard"
 
 kyma::install_cli
 
 log::info "Install kyma"
 installKyma
 
-log::info "Override kyma-admin-binding ClusterRoleBinding"
-apply_dex_github_kyma_admin_group
+#log::info "Install stackdriver-prometheus collector"
+#installStackdriverPrometheusCollector
 
-log::info "Install stackdriver-prometheus collector"
-installStackdriverPrometheusCollector
+#log::info "Update stackdriver-metadata-agent memory settings"
 
-log::info "Update stackdriver-metadata-agent memory settings"
-
-cat <<EOF | kubectl replace -f -
-apiVersion: v1
-data:
-  NannyConfiguration: |-
-    apiVersion: nannyconfig/v1alpha1
-    kind: NannyConfiguration
-    baseMemory: 100Mi
-kind: ConfigMap
-metadata:
-  labels:
-    addonmanager.kubernetes.io/mode: EnsureExists
-    kubernetes.io/cluster-service: "true"
-  name: metadata-agent-config
-  namespace: kube-system
-EOF
-kubectl delete deployment -n kube-system stackdriver-metadata-agent-cluster-level
+#cat <<EOF | kubectl replace -f -
+#apiVersion: v1
+#data:
+#  NannyConfiguration: |-
+#    apiVersion: nannyconfig/v1alpha1
+#    kind: NannyConfiguration
+#    baseMemory: 100Mi
+#kind: ConfigMap
+#metadata:
+#  labels:
+#    addonmanager.kubernetes.io/mode: EnsureExists
+#    kubernetes.io/cluster-service: "true"
+#  name: metadata-agent-config
+#  namespace: kube-system
+#EOF
+#kubectl delete deployment -n kube-system stackdriver-metadata-agent-cluster-level
 
 
 log::info "Collect list of images"
@@ -237,31 +237,25 @@ if [ -z "$ARTIFACTS" ] ; then
 fi
 
 IMAGES_LIST=$(kubectl get pods --all-namespaces -o go-template --template='{{range .items}}{{range .status.containerStatuses}}{{.name}},{{.image}},{{.imageID}}{{printf "\n"}}{{end}}{{range .status.initContainerStatuses}}{{.name}},{{.image}},{{.imageID}}{{printf "\n"}}{{end}}{{end}}' | uniq | sort)
-echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${CLUSTER_NAME}.csv"
+echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${COMMON_NAME}.csv"
 
 # also generate image list in json
 ## this is false-positive as we need to use single-quotes for jq
 # shellcheck disable=SC2016
-IMAGES_LIST=$(kubectl get pods --all-namespaces -o json | jq '{ images: [.items[] | .metadata.ownerReferences[0].name as $owner | (.status.containerStatuses + .status.initContainerStatuses)[] | { name: .imageID, custom_fields: {owner: $owner, image: .image, name: .name }}] | unique | group_by(.name) | map({name: .[0].name, custom_fields: {owner: map(.custom_fields.owner) | unique | join(","), container_name: map(.custom_fields.name) | unique | join(","), image: .[0].custom_fields.image}})}' )
-echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${CLUSTER_NAME}.json"
+IMAGES_LIST=$(kubectl get pods --all-namespaces -o json | jq '{ images: [.items[] | .metadata.ownerReferences[0].name as $owner | (.status.containerStatuses + .status.initContainerStatuses)[] | { name: .imageID, custom_fields: {owner: $owner, image: .image, name: .name }}] | unique | group_by(.name) | map({name: .[0].name, custom_fields: {owner: map(.custom_fields.owner) | unique | join(","), container_name: map(.custom_fields.name) | unique | join(","), image: .[0].custom_fields.image}}) | map(select (.name | startswith("sha256") | not))}' )
+echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${COMMON_NAME}.json"
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
-log::info "Gather Kubeaudit logs"
-curl -sL https://github.com/Shopify/kubeaudit/releases/download/v0.11.8/kubeaudit_0.11.8_linux_amd64.tar.gz | tar -xzO kubeaudit > ./kubeaudit
-chmod +x ./kubeaudit
-# kubeaudit returns non-zero exit code when it finds issues
-# In the context of this job we just want to grab the logs
-# It should not break the execution of this script
-./kubeaudit privileged privesc -p json  > "${ARTIFACTS}/kubeaudit.log" || true
+utils::kubeaudit_create_report "${ARTIFACTS}/kubeaudit.log"
 
-log::info "Install stability-checker"
-date
-(
-export TEST_INFRA_SOURCES_DIR KYMA_SCRIPTS_DIR TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS \
-        CLUSTER_NAME SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID SLACK_CLIENT_TOKEN TEST_RESULT_WINDOW_TIME
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-stability-checker.sh"
-)
+# log::info "Install stability-checker"
+# date
+# (
+# export TEST_INFRA_SOURCES_DIR KYMA_SCRIPTS_DIR TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS \
+#         CLUSTER_NAME SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID SLACK_CLIENT_TOKEN TEST_RESULT_WINDOW_TIME
+# "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-stability-checker.sh"
+# )
 
 log::success "Success"

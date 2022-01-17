@@ -1,0 +1,22 @@
+gitHubLogin: "kyma-bot"
+gitHubToken: "/etc/github/token"
+gitName: "Kyma Bot"
+gitEmail: "kyma.bot@sap.com"
+skipPullRequest: false
+gitHubOrg: "kyma-project"
+gitHubRepo: "test-infra"
+remoteName: "test-infra-1"
+upstreamURLBase: "https://raw.githubusercontent.com/kyma-project/test-infra/main"
+includedConfigPaths:
+  - "."
+excludedConfigPaths:
+  - "prow/staging"
+targetVersion: "latest"
+prefixes:
+  - name: "Prow"
+    prefix: "gcr.io/k8s-prow/"
+    refConfigFile: "prow/cluster/components/deck_deployment.yaml"
+    stagingRefConfigFile: "prow/staging/cluster/deck_deployment.yaml"
+    repo: "https://github.com/kubernetes/test-infra"
+    summarise: true
+    consistentImages: true

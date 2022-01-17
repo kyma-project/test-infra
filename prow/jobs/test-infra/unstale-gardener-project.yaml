@@ -6,6 +6,9 @@ periodics: # runs on schedule
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "unstale-gardener-project"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gardener-neighbors: "true"
       cron: "0 5 1 * *"
       skip_report: false
@@ -15,10 +18,10 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:current"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211221-28c363bc"
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/unstale-gardener-project.sh"
             env:

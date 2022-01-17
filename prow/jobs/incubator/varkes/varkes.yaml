@@ -4,9 +4,15 @@
 presubmits: # runs on PRs
   kyma-incubator/varkes:
     - name: pre-varkes
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-varkes"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
+        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       always_run: true
       skip_report: false
@@ -15,15 +21,15 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
-        - release
+        - ^main$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20211223-37a4a4d4"
             securityContext:
               privileged: true
             command:
@@ -33,17 +39,29 @@ presubmits: # runs on PRs
               - "ci-pr"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
-postsubmits: # runs on master
+postsubmits: # runs on main
   kyma-incubator/varkes:
-    - name: post-master-varkes
+    - name: post-main-varkes
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-varkes"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
+        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       skip_report: false
       decorate: true
@@ -51,14 +69,15 @@ postsubmits: # runs on master
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20211223-37a4a4d4"
             securityContext:
               privileged: true
             command:
@@ -68,30 +87,42 @@ postsubmits: # runs on master
               - "ci-master"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-release-varkes
       annotations:
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-release-varkes"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-npm-token: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
+        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       skip_report: false
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - release
+        - ^\d+\.\d+\.\d+$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: master
+          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20211223-37a4a4d4"
             securityContext:
               privileged: true
             command:
@@ -101,6 +132,13 @@ postsubmits: # runs on master
               - "ci-release"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   

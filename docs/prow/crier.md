@@ -160,12 +160,12 @@ If the job is still in the testing phase, you can set `optional: true`.
 
 ## Migration from Plank to GitHub reporter
 
-First, you need to disable GitHub reporting in Plank. To do that, add the `--skip-report=true` flag to the Plank [deployment](https://github.com/kyma-project/test-infra/blob/master/prow/cluster/components/11-plank_deployment.yaml).
+First, you need to disable GitHub reporting in Plank. To do that, add the `--skip-report=true` flag to the Plank deployment.
 
 Before migrating, upgrade your Plank to a version that includes the commit [`2118178`](https://github.com/kubernetes/test-infra/pull/10975/commits/211817826fc3c4f3315a02e46f3d6aa35573d22f).
 
 Flags required by Crier:
-- Point `config-path` and `--job-config-path` to your Prow config and job configs accordingly.
+- Point `--config-path` and `--job-config-path` to your Prow config and job configs accordingly.
 - Set `--github-worker` to be the number of parallel GitHub reporting threads you need.
 - Point `--github-endpoint` to ghproxy, if you have set that for Plank.
 - Bind GitHub OAuth token as a Secret and set `--github-token-path` if you have that set for Plank.

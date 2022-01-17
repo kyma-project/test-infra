@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/gob"
-	"errors"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -13,12 +12,11 @@ import (
 	"path/filepath"
 	"text/template"
 
-	"github.com/Masterminds/semver"
 	"github.com/Masterminds/sprig"
-	"github.com/forestgiant/sliceutil"
-	"github.com/imdario/mergo"
 	"gopkg.in/yaml.v2"
 	"k8s.io/apimachinery/pkg/util/sets"
+
+	rt "github.com/kyma-project/test-infra/development/tools/pkg/rendertemplates"
 )
 
 const (
@@ -27,16 +25,20 @@ const (
 )
 
 var (
-	configFilePath  = flag.String("config", "", "Path of the config file")
+	configFilePath = flag.String("config", "", "Path of the config file")
+	showOutputDir  = flag.Bool("show-output-dir", false, "Print generated output file paths to stdout")
+
 	additionalFuncs = map[string]interface{}{
-		"matchingReleases": matchingReleases,
-		"releaseMatches":   releaseMatches,
+		"matchingReleases": rt.MatchingReleases,
+		"releaseMatches":   rt.ReleaseMatches,
 		"hasPresubmit":     hasPresubmit,
 		"hasPostsubmit":    hasPostsubmit,
 		"hasPeriodic":      hasPeriodic,
+		"getRunId":         getRunID,
 	}
 	commentSignByFileExt = map[string]sets.String{
 		"//": sets.NewString(".go"),
+		"> ": sets.NewString(".md"),
 		"#":  sets.NewString(".yaml", ".yml"),
 	}
 )
@@ -47,65 +49,6 @@ func init() {
 	gob.Register([]interface{}{})
 }
 
-// Map performs a deep copy of the given map m.
-func Map(m map[string]interface{}) (map[string]interface{}, error) {
-	var buf bytes.Buffer
-	enc := gob.NewEncoder(&buf)
-	dec := gob.NewDecoder(&buf)
-	err := enc.Encode(m)
-	if err != nil {
-		return nil, err
-	}
-	var copy map[string]interface{}
-	err = dec.Decode(&copy)
-	if err != nil {
-		return nil, err
-	}
-	return copy, nil
-}
-
-// Config represents configuration of all templates to render along with global values
-type Config struct {
-	Templates  []TemplateConfig
-	Global     map[string]interface{}
-	GlobalSets map[string]ConfigSet `yaml:"globalSets,omitempty"`
-}
-
-// TemplateConfig specifies template to use and files to render
-type TemplateConfig struct {
-	From   string
-	Render []RenderConfig
-}
-
-// RenderConfig specifies where to render template and values to use
-type RenderConfig struct {
-	To         string
-	Values     map[string]interface{}
-	LocalSets  map[string]ConfigSet `yaml:"localSets,omitempty"`
-	JobConfigs []Repo               `yaml:"jobConfigs,omitempty"`
-}
-
-// ConfigSet hold set of data for generating prowjob from template
-type ConfigSet map[string]interface{}
-
-// Repo represent github repository with associated prowjobs data
-type Repo struct {
-	RepoName string `yaml:"repoName,omitempty"`
-	Jobs     []Job  `yaml:"jobs,omitempty"`
-}
-
-// InheritedConfigs specify named configs to use for generating prowjob from template
-type InheritedConfigs struct {
-	Global []string `yaml:"global,omitempty"`
-	Local  []string `yaml:"local,omitempty"`
-}
-
-// Job holds data for generating prowjob from template
-type Job struct {
-	InheritedConfigs InheritedConfigs `yaml:"inheritedConfigs,omitempty"`
-	JobConfig        ConfigSet        `yaml:"jobConfig,omitempty"`
-}
-
 func main() {
 	flag.Parse()
 
@@ -113,24 +56,29 @@ func main() {
 		log.Fatal("Provide path to config file with --config")
 	}
 
+	// read template config file containing global configsets
 	configFile, err := ioutil.ReadFile(*configFilePath)
 	if err != nil {
 		log.Fatalf("Cannot read config file: %s", err)
 	}
 
-	config := new(Config)
+	config := new(rt.Config)
 	err = yaml.Unmarshal(configFile, config)
 	if err != nil {
 		log.Fatalf("Cannot parse config yaml: %s\n", err)
 	}
 
 	dataFilesDir := filepath.Join(filepath.Dir(*configFilePath), "data")
-	// read all template configs from data files
+	// read all template data from data files
 	dataFiles, err := ioutil.ReadDir(dataFilesDir)
-	var dataFilesTemplates []TemplateConfig
+	if err != nil {
+		log.Fatalf("Cannot read data file directory: %s", err)
+	}
+
+	var dataFilesTemplates []*rt.TemplateConfig
 	for _, dataFile := range dataFiles {
 		if !dataFile.IsDir() {
-			var dataFileConfig Config
+			var dataFileConfig rt.Config
 			var cfg bytes.Buffer
 			// load datafile as template
 			t, err := loadTemplate(dataFilesDir, dataFile.Name())
@@ -150,8 +98,11 @@ func main() {
 
 	}
 
+	//append all generated configs from datafiles to the list of templates to generate jobs from
 	config.Templates = append(config.Templates, dataFilesTemplates...)
+	config.Merge()
 
+	// generate final .yaml files
 	for _, templateConfig := range config.Templates {
 		err = renderTemplate(path.Dir(*configFilePath), templateConfig, config)
 		if err != nil {
@@ -160,84 +111,31 @@ func main() {
 	}
 }
 
-func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
-	if present := len(r.JobConfigs); present > 0 {
-		r.Values = make(map[string]interface{})
-		for repoIndex, repo := range r.JobConfigs {
-			for jobIndex, job := range repo.Jobs {
-				jobConfig := ConfigSet{}
-				if sliceutil.Contains(job.InheritedConfigs.Global, "default") {
-					if err := jobConfig.mergeConfigSet(deepCopyConfigSet(globalConfigSets["default"])); err != nil {
-						log.Fatalf("Failed merge Global default configSet: %s", err)
-					}
-
-				}
-				if sliceutil.Contains(job.InheritedConfigs.Local, "default") {
-					if err := jobConfig.mergeConfigSet(deepCopyConfigSet(r.LocalSets["default"])); err != nil {
-						log.Fatalf("Failed merge Local default configSet: %s", err)
-					}
-				}
-				for _, v := range job.InheritedConfigs.Global {
-					if v != "default" {
-						if err := jobConfig.mergeConfigSet(deepCopyConfigSet(globalConfigSets[v])); err != nil {
-							log.Fatalf("Failed merge global %s named configset: %s", v, err)
-						}
-					}
-				}
-				for _, v := range job.InheritedConfigs.Local {
-					if v != "default" {
-						if err := jobConfig.mergeConfigSet(deepCopyConfigSet(r.LocalSets[v])); err != nil {
-							log.Fatalf("Failed merge local %s named configset: %s", v, err)
-						}
-					}
-				}
-				if err := jobConfig.mergeConfigSet(job.JobConfig); err != nil {
-					log.Fatalf("Failed merge job configset %s", err)
-				}
-				r.JobConfigs[repoIndex].Jobs[jobIndex].JobConfig = jobConfig
-			}
+// renderTemplate loads the template and calls the function that renders final files
+func renderTemplate(basePath string, templateConfig *rt.TemplateConfig, config *rt.Config) error {
+	for _, fromTo := range templateConfig.FromTo {
+		if *showOutputDir {
+			log.Printf("Rendering %s", fromTo)
 		}
-		r.Values["JobConfigs"] = r.JobConfigs
-	}
-}
-
-func deepCopyConfigSet(configSet ConfigSet) ConfigSet {
-	dst, err := Map(configSet)
-	if err != nil {
-		log.Fatalf("Failed ConfigSet deepCopy with error: %s", err)
-	}
-	return dst
-}
-
-func (j *ConfigSet) mergeConfigSet(configSet ConfigSet) error {
-	if len(configSet) == 0 {
-		return errors.New("configSet not found")
-	}
-	if err := mergo.Merge(j, configSet, mergo.WithOverride); err != nil {
-		return err
-	}
-	return nil
-}
-
-func renderTemplate(basePath string, templateConfig TemplateConfig, config *Config) error {
-	templateInstance, err := loadTemplate(basePath, templateConfig.From)
-	if err != nil {
-		return err
-	}
-	for _, render := range templateConfig.Render {
-		render.mergeConfigs(config.GlobalSets)
-		err = renderFileFromTemplate(basePath, templateInstance, render, config)
+		templateInstance, err := loadTemplate(basePath, fromTo.From)
 		if err != nil {
-			log.Printf("Failed render %s file", render.To)
 			return err
 		}
+		for _, render := range templateConfig.Render {
+			err = renderFileFromTemplate(basePath, templateInstance, *render, config, fromTo)
+			if err != nil {
+				log.Printf("Failed render %s file", fromTo.To)
+				return err
+			}
+		}
 	}
 
 	return nil
 }
 
-func renderFileFromTemplate(basePath string, templateInstance *template.Template, renderConfig RenderConfig, config *Config) error {
-	relativeDestPath := path.Join(basePath, renderConfig.To)
+// renderFileFromTemplate renders template to file, based on the data passed to the template
+func renderFileFromTemplate(basePath string, templateInstance *template.Template, renderConfig rt.RenderConfig, config *rt.Config, fromTo rt.FromTo) error {
+	relativeDestPath := path.Join(basePath, fromTo.To)
 
 	destDir := path.Dir(relativeDestPath)
 	err := os.MkdirAll(destDir, os.ModePerm)
@@ -268,27 +166,6 @@ func loadTemplate(basePath, templatePath string) (*template.Template, error) {
 		ParseFiles(relativeTemplatePath)
 }
 
-func matchingReleases(allReleases []interface{}, since interface{}, until interface{}) []interface{} {
-	result := make([]interface{}, 0)
-	for _, rel := range allReleases {
-		if releaseMatches(rel, since, until) {
-			result = append(result, rel)
-		}
-	}
-	return result
-}
-
-func releaseMatches(rel interface{}, since interface{}, until interface{}) bool {
-	relVer := semver.MustParse(rel.(string))
-	if since != nil && relVer.Compare(semver.MustParse(since.(string))) < 0 {
-		return false
-	}
-	if until != nil && relVer.Compare(semver.MustParse(until.(string))) > 0 {
-		return false
-	}
-	return true
-}
-
 func addAutogeneratedHeader(destFile *os.File) error {
 	outputExt := filepath.Ext(destFile.Name())
 	sign, err := commentSign(outputExt)
@@ -314,7 +191,7 @@ func commentSign(extension string) (string, error) {
 }
 
 // hasProwjobType check if prowjobtype value is present in prowjob configs.
-func hasProwjobType(r []Repo, prowjobtype string) bool {
+func hasProwjobType(r []rt.Repo, prowjobtype string) bool {
 	for _, repo := range r {
 		for _, job := range repo.Jobs {
 			if _, ok := job.JobConfig[prowjobtype]; ok {
@@ -326,16 +203,28 @@ func hasProwjobType(r []Repo, prowjobtype string) bool {
 }
 
 // hasPresubmit check if any prowjob is type_presubmit
-func hasPresubmit(r []Repo) bool {
+func hasPresubmit(r []rt.Repo) bool {
 	return hasProwjobType(r, "type_presubmit")
 }
 
 // hasPresubmit check if any prowjob is type_postsubmit
-func hasPostsubmit(r []Repo) bool {
+func hasPostsubmit(r []rt.Repo) bool {
 	return hasProwjobType(r, "type_postsubmit")
 }
 
 // hasPresubmit check if any prowjob is type_periodic
-func hasPeriodic(r []Repo) bool {
+func hasPeriodic(r []rt.Repo) bool {
 	return hasProwjobType(r, "type_periodic")
+}
+
+// getRunID trims the prowjob name to 63 characters and makes sure it doesn't end with dash to match pubsub requirements.
+func getRunID(name interface{}) string {
+	jobName := name.(string)
+	if len(jobName) > 63 {
+		jobName = jobName[0:63]
+		for jobName[len(jobName)-1:] == "-" {
+			jobName = jobName[:len(jobName)-1]
+		}
+	}
+	return "\"" + jobName + "\""
 }

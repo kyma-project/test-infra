@@ -1,0 +1,40 @@
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
+metadata:
+  name: prow-frontend-config
+spec:
+  sslPolicy: custom-ssl-policy
+#  redirectToHttps:
+#    enabled: true
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  namespace: default
+  name: tls-ing
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: prow-static-ip
+    networking.gke.io/managed-certificates: status-kyma-prow
+    kubernetes.io/ingress.class: "gce"
+    networking.gke.io/v1beta1.FrontendConfig: "prow-frontend-config"
+spec:
+  rules:
+  - host: status.build.kyma-project.io
+    http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: deck
+          servicePort: 80
+      - path: /hook
+        backend:
+          serviceName: hook
+          servicePort: 8888
+      - path: /metrics
+        backend:
+          serviceName: pushgateway-external
+          servicePort: 80
+      - path: /robots.txt
+        backend:
+          serviceName: web-server
+          servicePort: 80

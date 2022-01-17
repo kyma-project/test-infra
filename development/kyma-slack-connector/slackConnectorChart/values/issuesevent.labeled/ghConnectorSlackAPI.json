@@ -1,0 +1,35 @@
+{
+  "provider": "SAP Kyma",
+  "name": "Slack connector",
+  "description": "Connector for communication with Slack API",
+  "shortDescription": "Slack connector",
+  "labels": {
+    "app": "slack-connector"
+  },
+  "api": {
+    "targetUrl": "https://slack.com/api",
+    "requestParameters": {
+            "headers": {
+                "Authorization": ["Bearer <token>"]
+            }
+    },
+    "specificationUrl": "https://raw.githubusercontent.com/slackapi/slack-api-specs/master/web-api/slack_web_openapi_v2.json"
+  },
+  "documentation": {
+    "displayName": "Slack connector documentation",
+    "description": "Documentation for slack connector",
+    "type": "mixed",
+    "docs": [
+        {
+        "title": "Slack API documentation",
+        "source": "https://api.slack.com",
+        "type": ".html"
+        },
+        {
+        "title": "Kyma Slack Connector documentation",
+        "source": "https://github.com/kyma-project/test-infra/development/github-slack-connector/slackConnector/README.md",
+        "type": ".md"
+        }
+    ]
+  }
+}

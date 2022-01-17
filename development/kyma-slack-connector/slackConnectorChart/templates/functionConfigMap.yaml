@@ -1,0 +1,14 @@
+{{- if .Values.functionEnabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name}}-function-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.global.appName | quote }}
+    release: {{ .Release.Name | quote }}
+data:
+  notificationSlackChannel: {{ .Values.notificationSlackChannel | quote}}
+  slackConnectorApiId: {{ .Values.global.apiId | upper | quote }}
+  envPrefix: {{ .Values.eventType | upper | quote }}
+{{- end }}

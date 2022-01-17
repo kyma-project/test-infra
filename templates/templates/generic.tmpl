@@ -6,12 +6,15 @@
         {{$key}}: {{quote $value}}
         {{- end}}
       {{- end}}
-      {{- if .JobConfig.labels}}
       labels:
+        prow.k8s.io/pubsub.project: {{if .JobConfig.pubsub_project}}{{quote .JobConfig.pubsub_project}}{{else}}{{fail "mandatory .JobConfig.pubsub_project is not defined, probably globalSet jobConfig_default not inherited"}}{{end}}
+        prow.k8s.io/pubsub.runID: {{ getRunId .JobConfig.name }}
+        prow.k8s.io/pubsub.topic: {{if .JobConfig.pubsub_topic}}{{quote .JobConfig.pubsub_topic}}{{else}}{{fail "mandatory .JobConfig.pubsub_topic is not defined, probably globalSet jobConfig_default not inherited"}}{{end}}
+        {{- if .JobConfig.labels}}
         {{- range $key, $value := .JobConfig.labels}}
         {{$key}}: {{quote $value}}
         {{- end}}
-      {{- end}}
+        {{- end}}
       {{- if .JobConfig.type_periodic }}
         {{- if .JobConfig.cron}}
       cron: {{quote .JobConfig.cron}}
@@ -30,6 +33,12 @@
       {{- if .JobConfig.decorate}}
       decorate: {{.JobConfig.decorate}}
       {{- end}}
+      {{- if .JobConfig.decoration_config }}
+      decoration_config:
+        {{- range $key, $value := .JobConfig.decoration_config}}
+        {{$key}}: {{$value}}
+        {{- end}}
+      {{- end}}
       {{- if .JobConfig.path_alias }}
       path_alias: {{ .JobConfig.path_alias }}
       {{- end }}
@@ -47,12 +56,22 @@
       {{- end}}
       {{- if .JobConfig.extra_refs}}
       extra_refs:
-        {{- range .JobConfig.extra_refs}}
+        {{- range  $key, $value := .JobConfig.extra_refs}}
+          {{- range $value}}
         - org: {{ .org }}
           repo: {{ .repo }}
           path_alias: {{ .path_alias }}
           base_ref: {{ .base_ref}}
+            {{- if .base_sha}}
+          base_sha: {{ .base_sha}}
+            {{- end}}
+          {{- end}}
         {{- end}}
+      {{- end}}
+      {{- if .JobConfig.slack_channel}}
+      reporter_config:
+        slack:
+          channel: {{ .JobConfig.slack_channel }}
       {{- end}}
       spec:
         containers:
@@ -114,13 +133,24 @@
             effect: {{ .effect }}
         {{- end }}
         {{- end }}
+        {{- with .JobConfig.nodeSelector }}
+        nodeSelector:
+            {{- range $key, $value := .}}
+            {{$key}}: {{quote $value}}
+            {{- end}}
+        {{- end}}
         {{- if .JobConfig.volumes}}
         volumes:
           {{- range .JobConfig.volumes}}
           - name: {{ .name }}
+            {{- if and .secretName .configMapName }}{{fail "secretName and configMapName are mutually exclusive. Use only one of them."}}{{end}}
             {{- if .secretName }}
             secret:
               secretName: {{ .secretName }}
+            {{- end }}
+            {{- if .configMapName }}
+            configMap:
+              name: {{ .configMapName }}
             {{- end }}
           {{- end}}
         {{- end}}
@@ -137,7 +167,7 @@ presubmits: # runs on PRs
   {{end}}
 {{- end}}
 {{- if hasPostsubmit .Values.JobConfigs}}
-postsubmits: # runs on master
+postsubmits: # runs on main
   {{- range .Values.JobConfigs }}
   {{ replace "github.com/" "" .RepoName -}}:
     {{- range .Jobs -}}

@@ -8,6 +8,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"regexp"
 
 	"github.com/kyma-project/test-infra/development/tools/pkg/common"
 	"github.com/kyma-project/test-infra/development/tools/pkg/ipcleaner"
@@ -17,13 +18,14 @@ import (
 	"google.golang.org/api/container/v1"
 )
 
+// nat-auto-ip is *probably* from Gardener, let them handle removal
+const defaultIPNameIgnoreRegex = "^nightly|weekly|nat-auto-ip"
+
 var (
-	project     = flag.String("project", "", "Project ID [Required]")
-	ipName      = flag.String("ipname", "", "IP resource name [Required]")
-	region      = flag.String("region", "", "Region name [Required]")
-	maxAttempts = flag.Uint("attempts", 3, "Maximal number of attempts until scripts stops trying to delete IP (default: 3)")
-	backoff     = flag.Uint("backoff", 5, "Initial backoff in seconds for the first retry, will increase after this (default: 5)")
-	dryRun      = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
+	project           = flag.String("project", "", "Project ID [Required]")
+	dryRun            = flag.Bool("dry-run", true, "Dry Run enabled, nothing is deleted")
+	ageInHours        = flag.Int("age-in-hours", 2, "Address age in hours. Addresses older than: now()-ageInHours are considered for removal.")
+	ipNameIgnoreRegex = flag.String("ip-exclude-name-regex", defaultIPNameIgnoreRegex, "Ignored IP name regex. Matching IPs are not considered for removal.")
 )
 
 func main() {
@@ -35,19 +37,7 @@ func main() {
 		os.Exit(2)
 	}
 
-	if *ipName == "" {
-		fmt.Fprintln(os.Stderr, "missing -ipname flag")
-		flag.Usage()
-		os.Exit(2)
-	}
-
-	if *region == "" {
-		fmt.Fprintln(os.Stderr, "missing -region flag")
-		flag.Usage()
-		os.Exit(2)
-	}
-
-	common.ShoutFirst("Running with arguments: project: \"%s\", dryRun: %t, ipname: \"%s\"", *project, *dryRun, *ipName)
+	common.ShoutFirst("Running with arguments: project: \"%s\", dryRun: %t, ageInHours: %d, ipNameIgnoreRegex: \"%s\"", *project, *dryRun, *ageInHours, *ipNameIgnoreRegex)
 	ctx := context.Background()
 
 	connection, err := google.DefaultClient(ctx, container.CloudPlatformScope)
@@ -60,15 +50,21 @@ func main() {
 		log.Fatalf("Could not initialize compute API client: %v", err)
 	}
 
-	computeAPI := &ipcleaner.ComputeAPIWrapper{Service: computeSvc}
+	rx := regexp.MustCompile(*ipNameIgnoreRegex)
+	filter := ipcleaner.NewIPFilter(rx, *ageInHours)
 
-	ipr := ipcleaner.New(computeAPI, *maxAttempts, *backoff, !(*dryRun))
+	addressAPI := &ipcleaner.AddressAPIWrapper{Context: ctx, Service: computeSvc.Addresses}
+	regionAPI := &ipcleaner.RegionAPIWrapper{Context: ctx, Service: computeSvc.Regions}
 
-	removalErr := ipr.Run(*project, *region, *ipName)
+	ipr := ipcleaner.New(addressAPI, regionAPI, filter)
 
-	if removalErr != nil {
-		log.Fatalf("IP Cleaner error: %v", removalErr)
-		log.Warn("Operation failed.")
+	allSucceeded, err := ipr.Run(*project, !(*dryRun))
+	if err != nil {
+		log.Fatalf("IP clenaer error: %v", err)
+	}
+
+	if !allSucceeded {
+		log.Warn("Some operations failed.")
 	}
 
 	common.Shout("Finished")

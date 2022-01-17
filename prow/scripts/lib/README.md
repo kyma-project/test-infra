@@ -10,11 +10,10 @@ The folder structure looks as follows:
 
 ```
 ├── azure.sh # This script contains functions that interact with Azure services.
-├── cli-alpha.sh # This script contains functions used for running test suite.
 ├── clitests.sh # This script contain function for deploying Kyma.
 ├── docker.sh # This script contains functions that interact with Docker.
 ├── gardener # This directory contains helper scripts used by Gardener pipeline jobs.
-├── gcloud.sh # This script contains functions that interact with Google Cloud services.
+├── gcp.sh # This script contains functions that interact with Google Cloud services.
 ├── github.sh # This script contains function that configure git.
 ├── junit.sh # This script contains functions  used for testing with JUnit.
 ├── kyma.sh # This script contains functions used for installing and interfacing with Kyma.
@@ -39,22 +38,33 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcp.sh"
 
 # make sure all required variables are set
 requiredVars=(
     GATEWAY_IP_ADDRESS_NAME
     GOOGLE_APPLICATION_CREDENTIALS
-    GATEWAY_DNS_FULL_NAME
+    GATEWAY_DNS_COMMON_NAME
+    CLOUDSDK_CORE_PROJECT
+    CLOUDSDK_COMPUTE_REGION
 )
 
 utils::check_required_vars "${requiredVars[@]}"
 
-gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+gcp::authenticate \
+    -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
-log::info "Reserving IP address"
-GATEWAY_IP_ADDRESS=$(gcloud::reserve_ip_address "${GATEWAY_IP_ADDRESS_NAME}")
+gcp::reserve_ip_address \
+    -n "$GATEWAY_IP_ADDRESS_NAME" \
+    -p "$CLOUDSDK_CORE_PROJECT" \
+    -r "$CLOUDSDK_COMPUTE_REGION"
+export GATEWAY_IP_ADDRESS="${gcp_reserve_ip_address_return_ip_address:?}"
 
-gcloud::create_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
-
-log::success "Created DNS record for ${GATEWAY_IP_ADDRESS} IP address"
+gcp::create_dns_record \
+-a "$GATEWAY_IP_ADDRESS" \
+-h "*" \
+-s "$GATEWAY_DNS_COMMON_NAME" \
+-p "$CLOUDSDK_CORE_PROJECT" \
+-z "$CLOUDSDK_DNS_ZONE_NAME"
 ```

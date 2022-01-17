@@ -1,137 +1,62 @@
 package main
 
 import (
-	"fmt"
-	"github.com/kyma-project/test-infra/development/jobguard/pkg/jobguard"
-	"log"
-	"strings"
-	"time"
+	"flag"
+	"os"
 
-	"github.com/pkg/errors"
-	"github.com/vrischmann/envconfig"
-	prowCfg "k8s.io/test-infra/prow/config"
+	jobguard "github.com/kyma-project/test-infra/development/jobguard/pkg/jobguard/v2"
+	"github.com/sirupsen/logrus"
+	"k8s.io/test-infra/prow/config/secret"
+	"k8s.io/test-infra/prow/flagutil"
 )
 
-type config struct {
-	InitialSleepTime time.Duration `envconfig:"default=1m"`
-	RetryInterval    time.Duration `envconfig:"default=15s"`
-	Timeout          time.Duration `envconfig:"default=15m"`
+type options struct {
+	debug            bool
+	dryRun           bool
+	github           flagutil.GitHubOptions
+	jobguardOptions  jobguard.Options
+	expContextRegexp string
+}
 
-	Status             jobguard.StatusConfig
-	AuthorizationToken string `envconfig:"optional,GITHUB_TOKEN"`
-	JobNamePattern     string `envconfig:"default=components"`
+func gatherOptions(fs *flag.FlagSet, args ...string) options {
+	var o options
+	fs.BoolVar(&o.debug, "debug", false, "Enable debug logging.")
+	fs.BoolVar(&o.dryRun, "dry-run", false, "Enable dry run.")
+	fs.StringVar(&o.expContextRegexp, "expected-contexts-regexp", "", "Regular expression with expected contexts.")
 
-	Prow struct {
-		ConfigFile    string
-		JobsDirectory string
-	}
+	o.jobguardOptions.AddFlags(fs)
+	o.github.AddFlags(fs)
+
+	fs.Parse(args)
+	return o
 }
 
 func main() {
-	log.Print("Starting Job Guard...")
+	o := gatherOptions(flag.NewFlagSet(os.Args[0], flag.ExitOnError), os.Args[1:]...)
+	if o.debug {
+		logrus.SetLevel(logrus.DebugLevel)
+	}
 
-	var cfg config
-	err := envconfig.Init(&cfg)
+	var token string
+	if o.github.TokenPath == "" {
+		logrus.Fatal("Missing github token path")
+	}
+	token = o.github.TokenPath
 
-	exitOnError(err, "while loading configuration")
+	if err := secret.Add(token); err != nil {
+		logrus.WithError(err).Fatal("Could not start SecretAgent.")
+	}
+	logrus.Debugf("%+v", o)
 
-	log.Printf("Sleeping for %v...", cfg.InitialSleepTime)
-	time.Sleep(cfg.InitialSleepTime)
-
-	repoName := fmt.Sprintf("%s/%s", cfg.Status.Owner, cfg.Status.Repository)
-	expSuccessJobs, err := getExpSuccessJobs(cfg.Prow.ConfigFile, cfg.Prow.JobsDirectory, repoName, cfg.JobNamePattern)
-	exitOnError(err, "while calculating number of jobs")
-	log.Printf("Expected jobs: %v", expSuccessJobs)
-
-	client := jobguard.HTTPClient(cfg.AuthorizationToken)
-	statusFetcher := jobguard.NewStatusFetcher(cfg.Status, client)
-
-	err = waitForDependentJobs(statusFetcher, cfg, expSuccessJobs)
-	exitOnError(err, "while waiting for success statuses")
-}
-
-func getExpSuccessJobs(prowConfigFile, jobsDirectory, repoName, pattern string) ([]string, error) {
-	c, err := prowCfg.Load(prowConfigFile, jobsDirectory)
+	githubStatus, err := o.github.GitHubClientWithLogFields(o.dryRun, logrus.Fields{"component": "github-status"})
 	if err != nil {
-		return nil, err
+		logrus.WithError(err).Fatal("Could not start GitHub client.")
 	}
 
-	var jobs []jobguard.Status
-	// copied from prow/plugins/trigger/pull-request.go buildAll() method
-	for _, job := range c.JobConfig.PresubmitsStatic[repoName] {
-		if job.SkipReport { // if skipped then it will not be reported on GitHub
-			continue
-		}
-
-		if job.AlwaysRun || job.RunIfChanged != "" {
-			jobs = append(jobs, jobguard.Status{Name: job.Name})
-		}
+	o.jobguardOptions.PredicateFunc = jobguard.RegexpPredicate(o.expContextRegexp)
+	jobGuardClient := jobguard.NewClient(githubStatus, o.jobguardOptions)
+	if err := jobGuardClient.Run(); err != nil {
+		logrus.WithError(err).Fatal("JobGuard caught error.")
 	}
-
-	byNames, err := jobguard.NameRegexpPredicate(pattern)
-	if err != nil {
-		return nil, err
-	}
-	requiredJobs := jobguard.Filter(jobs, byNames)
-
-	var requiredJobsNames []string
-	for _, j := range requiredJobs {
-		requiredJobsNames = append(requiredJobsNames, j.Name)
-	}
-
-	return requiredJobsNames, nil
-}
-
-func waitForDependentJobs(statusFetcher *jobguard.GithubStatusFetcher, cfg config, expSuccessJobs []string) error {
-	return jobguard.WaitAtMost(func() (bool, error) {
-		ghJobs, err := statusFetcher.Do()
-		if err != nil {
-			return false, err
-		}
-
-		notYetReported, pending, failed := classifyJobs(ghJobs, expSuccessJobs)
-
-		switch {
-		case len(failed) > 0:
-			log.Fatalf("[ERROR] At least one job with name matching pattern '%s' failed: [%s]", cfg.JobNamePattern, printJobNames(failed))
-		case len(notYetReported) > 0:
-			log.Printf("Waiting for jobs [%s] to report their status", printJobNames(notYetReported))
-			return false, nil
-		case len(pending) > 0:
-			log.Printf("Waiting for jobs to finish: [%s]", printJobNames(pending))
-			return false, nil
-		}
-
-		log.Printf("[SUCCESS] All jobs with name matching pattern '%s' finished.", cfg.JobNamePattern)
-
-		return true, nil
-	}, cfg.RetryInterval, cfg.Timeout)
-}
-
-func classifyJobs(gotJobs jobguard.IndexedStatuses, expSuccessJobs []string) (notYetReported []string, pending []string, failed []string) {
-	for _, name := range expSuccessJobs {
-		status, found := gotJobs[name]
-		switch {
-		case !found:
-			notYetReported = append(notYetReported, name)
-		case jobguard.IsFailedStatus(status):
-			failed = append(failed, name)
-		case jobguard.IsPendingStatus(status):
-			pending = append(pending, name)
-		}
-	}
-
-	return notYetReported, pending, failed
-}
-
-func printJobNames(in []string) string {
-	return strings.Join(in, ",")
-}
-
-func exitOnError(err error, context string) {
-	if err == nil {
-		return
-	}
-	wrappedError := errors.Wrap(err, context)
-	log.Fatal(wrappedError)
+	logrus.Infoln("All required checks have successful state.")
 }

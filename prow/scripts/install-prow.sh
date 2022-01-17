@@ -12,39 +12,9 @@ readonly PROW_DIR="$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 readonly KUBECONFIG=${KUBECONFIG:-"${HOME}/.kube/config"}
 readonly CLUSTER_DIR="$( cd "${PROW_DIR}/cluster" && pwd )"
 
-# $BUCKET_NAME for encrypted secrets
-if [ -z "$BUCKET_NAME" ]; then
-      echo "\$BUCKET_NAME is empty"
-      exit 1
-fi
-
-# $KEYRING_NAME keyring name used to encrypt secrets stored in $BUCKET_NAME
-if [ -z "$KEYRING_NAME" ]; then
-      echo "\$KEYRING_NAME is empty"
-      exit 1
-fi
-
-# $ENCRYPTION_KEY_NAME key name used to encrypt secrets stored in $BUCKET_NAME
-if [ -z "$ENCRYPTION_KEY_NAME" ]; then
-      echo "\$ENCRYPTION_KEY_NAME is empty"
-      exit 1
-fi
-
-# Location of $KEYRING_NAME used to encrypt secrets stored in $BUCKET_NAME
-if [ -z "${LOCATION}" ]; then
-    LOCATION="global"
-fi
-
-
-# requried by secretspopulator to use $KEYRING_NAME and access $BUCKET_NAME
+# requried by External Secrets Syncer to access Secret Manager
 if [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
       echo "\$GOOGLE_APPLICATION_CREDENTIALS is empty"
-      exit 1
-fi
-
-# project hosting prow instance
-if [ -z "$PROJECT" ]; then
-      echo "\$PROJECT is empty"
       exit 1
 fi
 
@@ -60,7 +30,18 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/ngin
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.30.0/deploy/static/provider/cloud-generic.yaml
 
 # Create secrets
-go run "${PROW_DIR}/../development/tools/cmd/secretspopulator/main.go" --project="${PROJECT}" --location "${LOCATION}" --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}" --kubeconfig "${KUBECONFIG}" --secrets-def-file="${CLUSTER_DIR}/required-secrets.yaml"
+# namespace
+kubectl create namespace external-secrets
+# Service account
+kubectl create secret generic sa-secret-manager-prow --namespace "external-secrets" --from-file=service-account.json="$GOOGLE_APPLICATION_CREDENTIALS"
+# install helm chart
+helm repo add external-secrets https://external-secrets.github.io/kubernetes-external-secrets/
+helm install 8.2.1 external-secrets/kubernetes-external-secrets
+helm install -f "${CLUSTER_DIR}/resources/external-secrets/values_prow.yaml" -n external-secrets kubernetes-external-secrets external-secrets/kubernetes-external-secrets
+# kubectl apply
+kubectl apply -f "${CLUSTER_DIR}/resources/external-secrets/external_secrets_prow.yaml"
+# one empty secret that is not synced
+kubectl create secret generic prometheus-prow-tls-assets --namespace "prow-monitoring"
 
 # Create ConfigMap with Kyma images for deck
 kubectl create configmap branding --from-file "${PROW_DIR}/branding"

@@ -22,10 +22,7 @@
     - application-registry
     - connection-token-handler
     - connector-service
-    - core-test-external-solution
     - compass-runtime-agent-tests
-    - compass-runtime-agent-adapter-external-solution
-    - compass-runtime-agent-external-solution
     - kcp-provisioner-tests
 - channelName: "#hasselhoff-notifications"
   channelID: C01KE9R5CAK

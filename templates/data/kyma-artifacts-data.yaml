@@ -1,0 +1,138 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/kyma/kyma-artifacts.yaml
+        localSets:
+          jobConfig_default:
+            path_alias: github.com/kyma-project/kyma
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kyma-artifacts.sh"
+            request_memory: 1Gi
+            request_cpu: 0.2
+            always_run: true
+            labels:
+              preset-sa-kyma-push-artifacts: "true"
+              preset-bot-github-token: "true"
+              preset-dind-enabled: "true"
+              preset-sa-gcr-push: "true"
+              preset-docker-push-repository-kyma: "true"
+          jobConfig_release:
+            labels:
+              preset-kyma-artifacts-bucket: "true"
+          jobConfig_develop:
+            labels:
+              preset-kyma-development-artifacts-bucket: "true"
+        jobConfigs:
+          - repoName: kyma-project/kyma
+            jobs:
+              # presubmits
+              - jobConfig:
+                  name: "pre-kyma-artifacts"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_bootstrap"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_develop"
+              {{- range .Global.releases }}
+              - jobConfig:
+                  name: pre-rel{{ . | replace "." "" }}-kyma-artifacts
+                  branches:
+                    - ^release-{{ . }}$
+                  extra_refs:
+                    test-infra:
+                      - org: "kyma-project"
+                        repo: "test-infra"
+                        path_alias: "github.com/kyma-project/test-infra"
+                        base_ref: release-{{ . }}
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_bootstrap"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_develop"
+              {{- end }}
+
+              # Exception created for release 2.0
+              {{- with .Global.nextRelease }}
+              - jobConfig:
+                  name: pre-rel{{ . | replace "." "" }}-kyma-artifacts
+                  branches:
+                    - ^release-{{ . }}$
+                  extra_refs:
+                    test-infra:
+                      - org: "kyma-project"
+                        repo: "test-infra"
+                        path_alias: "github.com/kyma-project/test-infra"
+                        base_ref: release-{{ . }}
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_bootstrap"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_develop"
+              {{- end }}
+
+              # postsubmits
+              - jobConfig:
+                  name: "post-kyma-artifacts"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_bootstrap"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_develop"
+              {{- range .Global.releases }}
+              - jobConfig:
+                  name: post-rel{{ . | replace "." "" }}-kyma-artifacts
+                  branches:
+                    - ^release-{{ . }}$
+                  extra_refs:
+                    test-infra:
+                      - org: "kyma-project"
+                        repo: "test-infra"
+                        path_alias: "github.com/kyma-project/test-infra"
+                        base_ref: release-{{ . }}
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_bootstrap"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_release"
+              {{- end }}
+
+              # Exception created for release 2.0
+              {{- with .Global.nextRelease }}
+              - jobConfig:
+                  name: post-rel{{ . | replace "." "" }}-kyma-artifacts
+                  branches:
+                    - ^release-{{ . }}$
+                  extra_refs:
+                    test-infra:
+                      - org: "kyma-project"
+                        repo: "test-infra"
+                        path_alias: "github.com/kyma-project/test-infra"
+                        base_ref: release-{{ . }}
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_bootstrap"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_release"
+              {{- end }}

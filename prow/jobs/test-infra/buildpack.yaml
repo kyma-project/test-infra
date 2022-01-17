@@ -5,6 +5,9 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-test-infra-bootstrap
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-bootstrap"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -12,14 +15,14 @@ presubmits: # runs on PRs
       run_if_changed: '^prow/images/bootstrap/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -28,10 +31,20 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-test-infra-kyma-integration
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-kyma-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -39,14 +52,14 @@ presubmits: # runs on PRs
       run_if_changed: '^prow/images/kyma-integration/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -55,10 +68,20 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-test-infra-buildpack-golang
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-buildpack-golang"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -66,14 +89,14 @@ presubmits: # runs on PRs
       run_if_changed: '^prow/images/buildpack-golang/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -82,64 +105,20 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
-    - name: pre-test-infra-buildpack-golang-toolbox
-      labels:
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^prow/images/buildpack-golang-toolbox/'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/test-infra
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-toolbox"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
-    - name: pre-test-infra-buildpack-golang-kubebuilder2
-      labels:
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^prow/images/buildpack-golang-kubebuilder2/'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/test-infra
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-kubebuilder2"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-test-infra-buildpack-node
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-buildpack-node"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -147,14 +126,14 @@ presubmits: # runs on PRs
       run_if_changed: '^prow/images/buildpack-node/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -163,10 +142,20 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-test-infra-buildpack-node-chromium
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-buildpack-node-chromium"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -174,14 +163,14 @@ presubmits: # runs on PRs
       run_if_changed: '^prow/images/buildpack-node-chromium/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -190,10 +179,20 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node-chromium"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-test-infra-buildpack-java
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-buildpack-java"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -201,14 +200,14 @@ presubmits: # runs on PRs
       run_if_changed: '^prow/images/buildpack-java/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -217,10 +216,20 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-java"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-test-infra-buildpack-java-node
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-buildpack-java-node"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -228,14 +237,14 @@ presubmits: # runs on PRs
       run_if_changed: '^prow/images/buildpack-java-node/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -244,10 +253,20 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-java-node"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-test-infra-cleaner
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-cleaner"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -255,14 +274,14 @@ presubmits: # runs on PRs
       run_if_changed: '^prow/images/cleaner/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -271,10 +290,20 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/cleaner"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-test-infra-vulnerability-scanner
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-vulnerability-scanner"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -282,14 +311,14 @@ presubmits: # runs on PRs
       run_if_changed: '^prow/images/vulnerability-scanner/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -298,10 +327,20 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/vulnerability-scanner"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-test-infra-whitesource-scanner
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-whitesource-scanner"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -309,14 +348,14 @@ presubmits: # runs on PRs
       run_if_changed: '^prow/images/whitesource-scanner/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -325,37 +364,20 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/whitesource-scanner"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
-    - name: pre-test-infra-kubectl
-      labels:
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^prow/images/alpine-kubectl/'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/test-infra
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/alpine-kubectl"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-test-infra-probot-stale
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-probot-stale"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -363,14 +385,14 @@ presubmits: # runs on PRs
       run_if_changed: '^prow/images/probot-stale/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -379,25 +401,35 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/probot-stale"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-test-infra-prow-tools
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-prow-tools"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^development/tools/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
+      run_if_changed: '^(go\.mod|go\.sum)$|^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -406,10 +438,20 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-test-infra-prow-clonerefs
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-prow-clonerefs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -417,14 +459,14 @@ presubmits: # runs on PRs
       run_if_changed: '^prow/images/clonerefs/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -433,69 +475,136 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/clonerefs"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
-    - name: pre-test-infra-image-guard
-      labels:
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^development/image-guard/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/test-infra
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/image-guard"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-test-infra-github-connector-webhook-gateway
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-github-connector-webhook-gateway"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^development/github-slack-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+      run_if_changed: '^development/kyma-github-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/github-slack-connector/githubWebhookGateway"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pre-test-infra-pubsub-connector-gateway
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-pubsub-connector-gateway"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^development/kyma-pubsub-connector/pubSubGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-pubsub-connector/pubSubGateway"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pre-test-infra-ci-force-bot
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-ci-force-bot"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^development/kyma-ci-force-bot/ciforcebot/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-ci-force-bot/ciforcebot"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
-postsubmits: # runs on master
+postsubmits: # runs on main
   kyma-project/test-infra:
     - name: post-test-infra-bootstrap
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-bootstrap"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -503,14 +612,14 @@ postsubmits: # runs on master
       run_if_changed: '^prow/images/bootstrap/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -519,12 +628,22 @@ postsubmits: # runs on master
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-test-infra-kyma-integration
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-kyma-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -532,14 +651,14 @@ postsubmits: # runs on master
       run_if_changed: '^prow/images/kyma-integration/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -548,12 +667,22 @@ postsubmits: # runs on master
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-test-infra-buildpack-golang
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-buildpack-golang"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -561,14 +690,14 @@ postsubmits: # runs on master
       run_if_changed: '^prow/images/buildpack-golang/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -577,70 +706,22 @@ postsubmits: # runs on master
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
-    - name: post-test-infra-buildpack-golang-toolbox
-      annotations:
-        testgrid-create-test-group: "false"
-      labels:
-        preset-build-release: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^prow/images/buildpack-golang-toolbox/'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/test-infra
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-toolbox"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
-    - name: post-test-infra-buildpack-golang-kubebuilder2
-      annotations:
-        testgrid-create-test-group: "false"
-      labels:
-        preset-build-release: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^prow/images/buildpack-golang-kubebuilder2/'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/test-infra
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-kubebuilder2"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-test-infra-buildpack-node
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-buildpack-node"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -648,14 +729,14 @@ postsubmits: # runs on master
       run_if_changed: '^prow/images/buildpack-node/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -664,12 +745,22 @@ postsubmits: # runs on master
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-test-infra-buildpack-node-chromium
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-buildpack-node-chromium"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -677,14 +768,14 @@ postsubmits: # runs on master
       run_if_changed: '^prow/images/buildpack-node-chromium/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -693,12 +784,22 @@ postsubmits: # runs on master
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node-chromium"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-test-infra-buildpack-java
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-buildpack-java"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -706,14 +807,14 @@ postsubmits: # runs on master
       run_if_changed: '^prow/images/buildpack-java/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -722,12 +823,22 @@ postsubmits: # runs on master
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-java"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-test-infra-buildpack-java-node
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-buildpack-java-node"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -735,14 +846,14 @@ postsubmits: # runs on master
       run_if_changed: '^prow/images/buildpack-java-node/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -751,12 +862,22 @@ postsubmits: # runs on master
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-java-node"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-test-infra-cleaner
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-cleaner"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -764,14 +885,14 @@ postsubmits: # runs on master
       run_if_changed: '^prow/images/cleaner/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -780,12 +901,22 @@ postsubmits: # runs on master
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/cleaner"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-test-infra-vulnerability-scanner
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-vulnerability-scanner"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -793,14 +924,14 @@ postsubmits: # runs on master
       run_if_changed: '^prow/images/vulnerability-scanner/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -809,12 +940,22 @@ postsubmits: # runs on master
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/vulnerability-scanner"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-test-infra-whitesource-scanner
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-whitesource-scanner"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -822,14 +963,14 @@ postsubmits: # runs on master
       run_if_changed: '^prow/images/whitesource-scanner/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -838,41 +979,22 @@ postsubmits: # runs on master
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/whitesource-scanner"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
-    - name: post-test-infra-kubectl
-      annotations:
-        testgrid-create-test-group: "false"
-      labels:
-        preset-build-release: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^prow/images/alpine-kubectl/'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/test-infra
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/alpine-kubectl"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-test-infra-probot-stale
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-probot-stale"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -880,14 +1002,14 @@ postsubmits: # runs on master
       run_if_changed: '^prow/images/probot-stale/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -896,27 +1018,37 @@ postsubmits: # runs on master
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/probot-stale"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-test-infra-prow-tools
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-prow-tools"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^development/tools/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
+      run_if_changed: '^(go\.mod|go\.sum)$|^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -925,12 +1057,22 @@ postsubmits: # runs on master
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-test-infra-prow-clonerefs
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-prow-clonerefs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
@@ -938,14 +1080,14 @@ postsubmits: # runs on master
       run_if_changed: '^prow/images/clonerefs/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             securityContext:
               privileged: true
             command:
@@ -954,64 +1096,130 @@ postsubmits: # runs on master
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/clonerefs"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
-    - name: post-test-infra-image-guard
-      annotations:
-        testgrid-create-test-group: "false"
-      labels:
-        preset-build-release: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^development/image-guard/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/test-infra
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/image-guard"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-test-infra-github-connector-webhook-gateway
       annotations:
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-github-connector-webhook-gateway"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^development/github-slack-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+      run_if_changed: '^development/kyma-github-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/github-slack-connector/githubWebhookGateway"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: post-test-infra-pubsub-connector-gateway
+      annotations:
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-pubsub-connector-gateway"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-release: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^development/kyma-pubsub-connector/pubSubGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-pubsub-connector/pubSubGateway"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: post-test-infra-ci-force-bot
+      annotations:
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-ci-force-bot"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-release: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^development/kyma-ci-force-bot/ciforcebot/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-ci-force-bot/ciforcebot"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   

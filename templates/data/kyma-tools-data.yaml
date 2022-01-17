@@ -10,7 +10,7 @@ templates:
           - repoName: kyma-project/kyma
             jobs:
               - jobConfig:
-                  name: pre-master-kyma-tools-failery
+                  name: pre-main-kyma-tools-failery
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/tools/failery"
                     - "ci-pr"
@@ -23,7 +23,7 @@ templates:
                   local:
                     - job_spec
               - jobConfig:
-                  name: post-master-kyma-tools-failery
+                  name: post-main-kyma-tools-failery
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/tools/failery"
                     - "ci-master"
@@ -45,7 +45,7 @@ templates:
           - repoName: kyma-project/kyma
             jobs:
               - jobConfig:
-                  name: pre-master-kyma-common
+                  name: pre-main-kyma-common
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/common"
                     - "ci-pr"
@@ -59,10 +59,10 @@ templates:
                   local:
                     - job_spec
               - jobConfig:
-                  name: post-master-kyma-common
+                  name: post-main-kyma-common
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/common"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - jobConfig_default

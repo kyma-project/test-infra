@@ -31,6 +31,7 @@ templates:
                   name: "control-plane"
                   language: "golang-mod"
                   project: "kyma-project"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -43,6 +44,7 @@ templates:
                   name: "control-plane"
                   language: "golang"
                   project: "kyma-project"
+                  base_ref: "main"
                   custom_projectname: "control-plane-dep"
                 inheritedConfigs:
                   global:
@@ -52,23 +54,27 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
-              - jobConfig:
-                  name: "kyma"
-                  language: "golang"
-                  project: "kyma-project"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
+#              Disabled - it only runs tests over tools/failery, which will eventually be removed
+#              once console-backend-service is deleted.
+#              - jobConfig:
+#                  name: "kyma"
+#                  language: "golang"
+#                  project: "kyma-project"
+#                  base_ref: "main"
+#                inheritedConfigs:
+#                  global:
+#                    - "jobConfig_default"
+#                    - "image_wssagent"
+#                    - "extra_refs_test-infra"
+#                    - "jobConfig_periodic"
+#                  local:
+#                    - "jobConfig_default"
               - jobConfig:
                   name: "kyma"
                   language: "golang-mod"
                   project: "kyma-project"
                   custom_projectname: "kyma-mod"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -90,9 +96,23 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
+                  name: "busola"
+                  language: "javascript"
+                  project: "kyma-project"
+                  base_ref: "main"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
                   name: "cli"
                   language: "golang-mod"
                   project: "kyma-project"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -126,22 +146,10 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "knative-kafka"
-                  language: "golang"
-                  project: "kyma-incubator"
-                  base_ref: "release-0.12"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-              - jobConfig:
                   name: "api-gateway"
                   language: "golang-mod"
                   project: "kyma-incubator"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -166,7 +174,8 @@ templates:
               - jobConfig:
                   name: "hydroform"
                   language: "golang-mod"
-                  project: "kyma-incubator"
+                  project: "kyma-project"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -200,9 +209,10 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "website"
-                  language: "javascript"
-                  project: "kyma-project"
+                  name: "podpreset-crd"
+                  language: "golang-mod"
+                  project: "kyma-incubator"
+                  custom_projectname: "podpreset"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -212,10 +222,10 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "podpreset-crd"
-                  language: "golang"
+                  name: "reconciler"
+                  language: "golang-mod"
                   project: "kyma-incubator"
-                  custom_projectname: "podpreset"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -230,6 +240,7 @@ templates:
                   project: "kyma-project"
                   custom_projectname: "release-kyma"
                   whitesource_release: "true"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -244,6 +255,7 @@ templates:
                   project: "kyma-project"
                   custom_projectname: "release-kyma-mod"
                   whitesource_release: "true"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -258,6 +270,7 @@ templates:
                   project: "kyma-project"
                   custom_projectname: "release-cli"
                   whitesource_release: "true"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

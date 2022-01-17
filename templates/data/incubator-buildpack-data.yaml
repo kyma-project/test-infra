@@ -1,10 +1,3 @@
-commonJob: &commonJob
-  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-  labels:
-    preset-dind-enabled: "true"
-    preset-sa-gcr-push: "true"
-    preset-docker-push-repository-incubator: "true"
-
 templates:
   - from: templates/generic.tmpl
     render:
@@ -13,9 +6,8 @@ templates:
           - repoName: "kyma-incubator/api-gateway"
             jobs:
               - jobConfig:
-                  name: pre-master-kyma-incubator-api-gateway
+                  name: pre-main-kyma-incubator-api-gateway
                   always_run: true
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/api-gateway"
                     - "ci-pr"
@@ -25,12 +17,13 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-golang-kubebuilder2
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
-                  name: post-master-kyma-incubator-api-gateway
-                  <<: *commonJob
+                  name: post-main-kyma-incubator-api-gateway
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/api-gateway"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -38,14 +31,15 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-golang-kubebuilder2
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
       - to: ../prow/jobs/incubator/gcp-service-broker/gcp-service-broker.yaml
         jobConfigs:
           - repoName: kyma-incubator/gcp-service-broker
             jobs:
               - jobConfig:
-                  name: pre-master-gcp-service-broker
+                  name: pre-main-gcp-service-broker
                   always_run: true
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/gcp-service-broker"
                     - "ci-pr"
@@ -55,9 +49,10 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
-                  name: post-master-gcp-service-broker
-                  <<: *commonJob
+                  name: post-main-gcp-service-broker
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/gcp-service-broker"
                     - "ci-master"
@@ -68,14 +63,16 @@ templates:
                     - extra_refs_test-infra
                     - image_buildpack-golang
                     - disable_testgrid
+
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
       - to: ../prow/jobs/incubator/github-slack-connectors/github-slack-connectors.yaml
         jobConfigs:
           - repoName: kyma-incubator/github-slack-connectors
             jobs:
               - jobConfig:
-                  name: pre-master-github-connector
+                  name: pre-main-github-connector
                   run_if_changed: "^github-connector"
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/github-slack-connectors/github-connector"
                     - "ci-pr"
@@ -85,10 +82,11 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
-                  name: post-master-github-connector
+                  name: post-main-github-connector
                   run_if_changed: "^github-connector"
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/github-slack-connectors/github-connector"
                     - "ci-master"
@@ -99,9 +97,10 @@ templates:
                     - extra_refs_test-infra
                     - image_buildpack-golang
                     - disable_testgrid
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
-                  name: pre-master-slack-connector
-                  <<: *commonJob
+                  name: pre-main-slack-connector
                   run_if_changed: "^slack-connector"
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/github-slack-connectors/slack-connector"
@@ -112,9 +111,10 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
-                  name: post-master-slack-connector
-                  <<: *commonJob
+                  name: post-main-slack-connector
                   run_if_changed: "^slack-connector"
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/github-slack-connectors/slack-connector"
@@ -126,16 +126,17 @@ templates:
                     - extra_refs_test-infra
                     - image_buildpack-golang
                     - disable_testgrid
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
       - to: ../prow/jobs/incubator/hydroform/hydroform.yaml
         jobConfigs:
-          - repoName: kyma-incubator/hydroform
+          - repoName: kyma-project/hydroform
             jobs:
               - jobConfig:
-                  name: pre-master-hydroform
-                  <<: *commonJob
+                  name: pre-main-hydroform
                   always_run: true
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/hydroform"
+                    - "/home/prow/go/src/github.com/kyma-project/hydroform"
                     - "ci-pr"
                   env:
                     GO111MODULE: "on"
@@ -144,13 +145,14 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_test-infra
-                    - image_buildpack-golang
+                    - image_buildpack-golang-toolbox
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
-                  name: post-master-hydroform
-                  <<: *commonJob
+                  name: post-main-hydroform
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/hydroform"
-                    - "ci-master"
+                    - "/home/prow/go/src/github.com/kyma-project/hydroform"
+                    - "ci-main"
                   env:
                     GO111MODULE: "on"
                 inheritedConfigs:
@@ -158,12 +160,13 @@ templates:
                     - jobConfig_default
                     - jobConfig_postsubmit
                     - extra_refs_test-infra
-                    - image_buildpack-golang
+                    - image_buildpack-golang-toolbox
                     - disable_testgrid
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
       - to: ../prow/jobs/incubator/milv/milv.yaml
         localSets:
           milv_jobConfig:
-            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.15.7
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/milv"
             env:
@@ -174,35 +177,300 @@ templates:
           - repoName: kyma-incubator/milv
             jobs:
               - jobConfig:
-                  name: pre-master-kyma-incubator-milv
+                  name: pre-main-kyma-incubator-milv
                   always_run: true
-                  <<: *commonJob
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
                   local:
                     - milv_jobConfig
               - jobConfig:
-                  name: post-master-kyma-incubator-milv
-                  <<: *commonJob
+                  name: post-main-kyma-incubator-milv
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - disable_testgrid
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
+                  local:
+                    - milv_jobConfig
+      - to: ../prow/jobs/incubator/reconciler/reconciler.yaml
+        localSets:
+          command_integration:
+            annotations:
+              pipeline.clusterprovisioning: kyma cli
+          extra_refs_kyma-1-24:
+            extra_refs:
+              kyma-1-24:
+                - org: "kyma-project"
+                  repo: "kyma"
+                  path_alias: "github.com/kyma-project/kyma-1.24"
+                  base_ref: "release-1.24"
+          extra_refs_kyma_cli:
+            extra_refs:
+              kyma-cli:
+                - org: "kyma-project"
+                  repo: "cli"
+                  path_alias: "github.com/kyma-project/cli"
+                  base_ref: "main"
+          extra_refs_k8s-test-infra:
+            extra_refs:
+              k8s-test-infra:
+                - org: kubernetes
+                  repo: test-infra
+                  base_ref: master
+                  base_sha: "3fba7110c39a7a0e7fb087dbb4af0674cafd341c"
+                  path_alias: github.com/kubernetes/test-infra
+          reconciler_jobConfig:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
+            env:
+              GO11MODULE: "on"
+            branches:
+              - ^main$
+          reconciler_integration_jobConfig:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"
+          reconciler_e2e_jobConfig:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-gardener.sh"
+          reconciler_nightly_e2e_jobConfig:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"
+            privileged: false
+            env:
+              INPUT_CLUSTER_NAME: "rec-night"
+          reconciler_jobConfig_args:
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
+          reconciler_e2e_upgrade_jobConfig:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-upgrade-gardener.sh"
+            annotations:
+              pipeline.installer: kyma install, kyma deploy
+              pipeline.test: "upgrade-fast-integration"
+              pipeline.clusterprovisioning: kyma cli
+          reconciler_nightly_cluster_jobConfig:
+            privileged: false
+            env:
+              INPUT_CLUSTER_NAME: "rec-night"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"
+            annotations:
+              pipeline.platform: "gardener_gcp"
+              pipeline.installer: reconciler
+              pipeline.test: "fast-integration"
+              pipeline.clusterprovisioning: reconciler
+          reconciler_publish_unstable_cli_jobConfig:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-unstable-cli.sh"
+            annotations:
+              pipeline.installer: reconciler
+              pipeline.test: "fast-integration"
+              pipeline.clusterprovisioning: reconciler
+          reconciler_image_autobump_jobConfig:
+            command: "/home/prow/go/src/github.com/kyma-incubator/reconciler/scripts/prow/reconciler-image-autobump.sh"
+          github_token_mounts:
+            volumes:
+              - name: kyma-bot-github-token
+                secretName: kyma-bot-github-token
+            volumeMounts:
+              - name: kyma-bot-github-token
+                mountPath: /etc/github
+                readOnly: true
+        jobConfigs:
+          - repoName: kyma-incubator/reconciler
+            jobs:
+              - jobConfig:
+                  name: "pre-main-reconciler-integration-k3d"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-kyma-guard-bot-github-token: "true"
+                    preset-sa-vm-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                  annotations:
+                    pipeline.platform: k3d
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "reconciler_integration_jobConfig"
+              - jobConfig:
+                  name: pre-main-kyma-incubator-reconciler
+                  always_run: true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
+                  local:
+                    - reconciler_jobConfig
+                    - reconciler_jobConfig_args
+              - jobConfig:
+                  name: post-main-kyma-incubator-reconciler
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
                     - extra_refs_test-infra
                     - disable_testgrid
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
                   local:
-                    - milv_jobConfig
+                    - reconciler_jobConfig
+                    - reconciler_jobConfig_args
+              - jobConfig:
+                  name: nightly-main-reconciler-publish-unstable-cli
+                  annotations:
+                    description: Bump reconciler version used by CLI and publish the unstable CLI binaries
+                    pipeline.trigger: "nightly"
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  cron: "0 0 * * 1-5" # "At 00:00 on every day-of-week from Monday through Friday"
+                  labels:
+                    preset-sa-vm-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                    preset-bot-github-token: "true"
+                    preset-kyma-cli-unstable: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                    - disable_testgrid
+                    - image_buildpack-golang
+                    - jobConfig_buildpack_incubator
+                    - jobConfig_slack_jellyfish
+                  local:
+                    - extra_refs_kyma_cli
+                    - reconciler_publish_unstable_cli_jobConfig
+              - jobConfig:
+                  name: periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade
+                  annotations:
+                    description: Reconciler e2e upgrade test job.
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  cron: "0 1-22/2 * * 1-5" # "At minute 0 past every 2nd hour from 1 through 22 on every day-of-week from Monday through Friday."
+                  labels:
+                    preset-log-collector-slack-token: "true"
+                    preset-bot-github-token: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - gardener_gcp_job
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                    - extra_refs_control-plane
+                    - kyma_major_version_1
+                    - disable_testgrid
+                    - image_kyma-integration
+                    - jobConfig_slack_jellyfish
+                  local:
+                    - extra_refs_kyma-1-24
+                    - reconciler_e2e_upgrade_jobConfig
+                    - reconciler_jobConfig_args
+              - jobConfig:
+                  name: reconciler-control-plane-image-bump
+                  annotations:
+                    description: Reconciler image bump in control-plane
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  cron: "0 1-22/4 * * 1-5" # "At minute 0 past every 2nd hour from 1 through 22 on every day-of-week from Monday through Friday."
+                  labels:
+                    preset-log-collector-slack-token: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - image_kyma-integration
+                    - extra_refs_reconciler
+                    - extra_refs_control-plane
+                    - disable_testgrid
+                    - jobConfig_slack_jellyfish
+                  local:
+                    - extra_refs_k8s-test-infra
+                    - reconciler_image_autobump_jobConfig
+                    - github_token_mounts
+              - jobConfig:
+                  name: nightly-main-reconciler
+                  annotations:
+                    description: Creates and installs reconciler from main every night.
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  cron: "0 0 * * 1-5" # "At 00:00 on every day-of-week from Monday through Friday"
+                  labels:
+                    preset-log-collector-slack-token: "true"
+                    preset-bot-github-token: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - gardener_gcp_job
+                    - extra_refs_test-infra
+                    - extra_refs_control-plane
+                    - disable_testgrid
+                    - image_kyma-integration
+                    - jobConfig_slack_jellyfish
+                  local:
+                    - reconciler_nightly_cluster_jobConfig
+                    - reconciler_jobConfig_args
+              - jobConfig:
+                  name: nightly-main-reconciler-e2e
+                  annotations:
+                    description: Executes e2e test periodically on nightly cluster for reconciler.
+                    pipeline.installer: "reconciler"
+                    pipeline.platform: "gcp"
+                    pipeline.test: "fast-integration"
+                    pipeline.trigger: "nightly"
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  cron: "0 3-23/2 * * 1-5" # "At minute 0 past every 2nd hour from 3 through 23 on every day-of-week from Monday through Friday."
+                  labels:
+                    preset-log-collector-slack-token: "true"
+                    preset-bot-github-token: "true"
+                    preset-gardener-gcp-kyma-integration: "true"
+                    preset-cluster-version: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - gardener_gcp_job
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                    - extra_refs_control-plane
+                    - kyma_major_version_2
+                    - disable_testgrid
+                    - image_kyma-integration
+                    - jobConfig_slack_jellyfish
+                  local:
+                    - reconciler_nightly_e2e_jobConfig
+                    - reconciler_jobConfig_args
       - to: ../prow/jobs/incubator/octopus/octopus.yaml
         jobConfigs:
           - repoName: kyma-incubator/octopus
             jobs:
               - jobConfig:
-                  name: pre-master-kyma-incubator-octopus
+                  name: pre-main-kyma-incubator-octopus
                   always_run: true
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/octopus"
                     - "ci-pr"
@@ -214,9 +482,10 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-golang-kubebuilder2
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
-                  name: post-master-kyma-incubator-octopus
-                  <<: *commonJob
+                  name: post-main-kyma-incubator-octopus
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/octopus"
                     - "ci-master"
@@ -229,15 +498,16 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-golang-kubebuilder2
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
       - to: ../prow/jobs/incubator/podpreset-crd/podpreset-crd.yaml
         jobConfigs:
           - repoName: kyma-incubator/podpreset-crd
             jobs:
               - jobConfig:
-                  name: pre-master-podpreset-crd
+                  name: pre-main-podpreset-crd
                   path_alias: github.com/jpeeler/podpreset-crd
                   always_run: true
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/jpeeler/podpreset-crd"
                     - "ci-pr"
@@ -247,9 +517,11 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-golang-kubebuilder2
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
-                  name: post-master-podpreset-crd
-                  <<: *commonJob
+                  name: post-main-podpreset-crd
+                  path_alias: github.com/jpeeler/podpreset-crd
                   args:
                     - "/home/prow/go/src/github.com/jpeeler/podpreset-crd"
                     - "ci-master"
@@ -260,14 +532,15 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-golang-kubebuilder2
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
       - to: ../prow/jobs/incubator/service-catalog-tester/service-catalog-tester.yaml
         jobConfigs:
           - repoName: kyma-incubator/service-catalog-tester
             jobs:
               - jobConfig:
-                  name: pre-master-service-catalog-tester
+                  name: pre-main-service-catalog-tester
                   always_run: true
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/service-catalog-tester"
                     - "ci-pr"
@@ -277,9 +550,10 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
-                  name: post-master-service-catalog-tester
-                  <<: *commonJob
+                  name: post-main-service-catalog-tester
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/service-catalog-tester"
                     - "ci-master"
@@ -290,14 +564,15 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
       - to: ../prow/jobs/incubator/terraform-provider-gardener/terraform-provider-gardener.yaml
         jobConfigs:
           - repoName: kyma-incubator/terraform-provider-gardener
             jobs:
               - jobConfig:
-                  name: pre-master-terraform-provider-gardener
+                  name: pre-main-terraform-provider-gardener
                   always_run: true
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/terraform-provider-gardener"
                     - "ci-pr"
@@ -309,9 +584,10 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
-                  name: post-master-terraform-provider-gardener
-                  <<: *commonJob
+                  name: post-main-terraform-provider-gardener
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/terraform-provider-gardener"
                     - "ci-master"
@@ -324,6 +600,8 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
       - to: ../prow/jobs/incubator/varkes/varkes.yaml
         localSets:
           npm_bot_preset:
@@ -335,22 +613,22 @@ templates:
               - jobConfig:
                   name: pre-varkes
                   always_run: true
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/varkes/"
                     - "ci-pr"
                   branches:
                     - ^master$
-                    - release
+                    - ^main$
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-node
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
-                  name: post-master-varkes
-                  <<: *commonJob
+                  name: post-main-varkes
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/varkes/"
                     - "ci-master"
@@ -361,14 +639,15 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-node
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
                   name: post-release-varkes
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/varkes/"
                     - "ci-release"
                   branches:
-                    - release
+                    - ^\d+\.\d+\.\d+$
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -376,6 +655,8 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-node
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
                   local:
                     - npm_bot_preset
       - to: ../prow/jobs/incubator/vstudio-extension/vstudio-extension.yaml
@@ -383,9 +664,8 @@ templates:
           - repoName: kyma-incubator/vstudio-extension
             jobs:
               - jobConfig:
-                  name: pre-master-vstudio-extension
+                  name: pre-main-vstudio-extension
                   always_run: true
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/vstudio-extension"
                     - "ci-pr"
@@ -395,9 +675,10 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-node
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
-                  name: post-master-vstudio-extension
-                  <<: *commonJob
+                  name: post-main-vstudio-extension
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/vstudio-extension"
                     - "ci-master"
@@ -408,6 +689,8 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-node
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
       - to: ../prow/jobs/incubator/documentation-component/documentation-component.yaml
         jobConfigs:
           - repoName: kyma-incubator/documentation-component
@@ -415,7 +698,6 @@ templates:
               - jobConfig:
                   name: pre-documentation-component
                   always_run: true
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/documentation-component"
                     - "ci-pr"
@@ -425,19 +707,21 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-node
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
       - to: ../prow/jobs/incubator/knative-kafka/knative-kafka.yaml
         jobConfigs:
           - repoName: kyma-incubator/knative-kafka
             jobs:
               - jobConfig:
-                  name: pre-master-knative-kafka
+                  name: pre-main-knative-kafka
                   always_run: true
-                  <<: *commonJob
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/knative-kafka"
                     - "ci-pr"
                   branches:
                     - ^master$
+                    - ^main$
                     - ^release-.*$
                 inheritedConfigs:
                   global:
@@ -445,14 +729,16 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
               - jobConfig:
-                  name: post-master-knative-kafka
-                  <<: *commonJob
+                  name: post-main-knative-kafka
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/knative-kafka"
                     - "ci-master"
                   branches:
                     - ^master$
+                    - ^main$
                     - ^release-.*$
                 inheritedConfigs:
                   global:
@@ -461,3 +747,37 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
+      - to: ../prow/jobs/incubator/hydra-login-consent/hydra-login-consent.yaml
+        jobConfigs:
+          - repoName: kyma-incubator/hydra-login-consent
+            jobs:
+              - jobConfig:
+                  name: pre-main-hydra-login-consent
+                  always_run: true
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/hydra-login-consent"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-node
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator
+              - jobConfig:
+                  name: post-main-hydra-login-consent
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/hydra-login-consent"
+                    - "ci-main"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                    - image_buildpack-node
+                    - jobConfig_generic_component
+                    - jobConfig_buildpack_incubator

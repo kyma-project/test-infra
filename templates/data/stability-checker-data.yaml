@@ -13,7 +13,7 @@ templates:
           - repoName: "github.com/kyma-project/test-infra"
             jobs:
               - jobConfig:
-                  name: "pre-master-stability-checker"
+                  name: "pre-main-stability-checker"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -23,7 +23,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "post-master-stability-checker"
+                  name: "post-main-stability-checker"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

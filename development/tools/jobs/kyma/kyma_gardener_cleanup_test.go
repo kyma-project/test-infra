@@ -22,12 +22,13 @@ func TestKymaGardenerCleanupJobPeriodics(t *testing.T) {
 	job := tester.FindPeriodicJobByName(periodics, jobName)
 	require.NotNil(t, job)
 	assert.Equal(t, jobName, job.Name)
-	assert.True(t, job.Decorate)
+
 	assert.Equal(t, "0 * * * *", job.Cron)
 	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerGCPIntegration)
-	tester.AssertThatHasExtraRepoRef(t, job.JobBase.UtilityConfig, []string{"test-infra"})
+	tester.AssertThatHasExtraRepoRefCustom(t, job.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, job.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/cleanup-gardener.sh"}, job.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"--excluded-clusters", "(nbusola|nkyma|rec-night)"}, job.Spec.Containers[0].Args)
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
 	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
 }

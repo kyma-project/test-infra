@@ -9,12 +9,12 @@ set -o errexit
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 KYMA_PROJECT_DIR=${KYMA_PROJECT_DIR:-"/home/prow/go/src/github.com/kyma-project"}
 
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${SCRIPT_DIR}/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${SCRIPT_DIR}/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${SCRIPT_DIR}/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$SCRIPT_DIR/lib/gcp.sh"
 
 cleanup() {
     ARG=$?
@@ -32,20 +32,20 @@ function testCustomImage() {
     fi
 }
 
-gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+gcp::authenticate \
+    -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 RANDOM_ID=$(openssl rand -hex 4)
 
 LABELS=""
 if [[ -z "${PULL_NUMBER}" ]]; then
-    LABELS=(--labels "branch=$PULL_BASE_REF,job-name=cli-integration")
+    LABELS=(--labels "branch=${PULL_BASE_REF/./-},job-name=cli-integration")
 else
     LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=cli-integration")
 fi
 
 # Support configuration via ENV vars (can be be overwritten by CLI args)
 KUBERNETES_RUNTIME="${KUBERNETES_RUNTIME:=minikube}"
-TEST_SUITE="${TEST_SUITE:=default}"
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]
@@ -65,10 +65,6 @@ do
             ;;
         --kubernetes-runtime|-kr)
             KUBERNETES_RUNTIME="$2"
-            shift 2
-            ;;
-        --test-suite|-ts)
-            TEST_SUITE="$2"
             shift 2
             ;;
         --*)
@@ -106,7 +102,7 @@ for ZONE in ${EU_ZONES}; do
         --image "${IMAGE}" \
         --machine-type n1-standard-4 \
         --zone "${ZONE}" \
-        --boot-disk-size 30 "${LABELS[@]}" &&\
+        --boot-disk-size 200 "${LABELS[@]}" &&\
     log::info "Created cli-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
     log::error "Could not create machine in zone ${ZONE}"
 done || exit 1
@@ -117,27 +113,52 @@ log::info "Building Kyma CLI"
 date
 cd "${KYMA_PROJECT_DIR}/cli"
 make build-linux
-gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "mkdir \$HOME/bin"
+
+gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" --command="mkdir \$HOME/bin"
 
 log::info "Copying Kyma CLI to the instance"
 #shellcheck disable=SC2088
 utils::send_to_vm "${ZONE}" "cli-integration-test-${RANDOM_ID}" "${KYMA_PROJECT_DIR}/cli/bin/kyma-linux" "~/bin/kyma"
-gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
+gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" --command="sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
 
 # Provision Kubernetes runtime
 log::info "Provisioning Kubernetes runtime '$KUBERNETES_RUNTIME'"
 date
 if [ "$KUBERNETES_RUNTIME" = 'minikube' ]; then
-    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma provision minikube --non-interactive"
+    gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" --command="yes | sudo kyma provision minikube --non-interactive"
 else
-    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma alpha provision k3s --ci"
+    gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" --command="yes | sudo kyma provision k3d --ci"
+fi
+
+# Install kyma
+log::info "Installing Kyma"
+date
+if [ "$KUBERNETES_RUNTIME" = 'k3d' ]; then
+    gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" --command="yes | sudo kyma deploy --ci ${SOURCE}"
+else
+    gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" --command="yes | sudo kyma install --non-interactive ${SOURCE}"
 fi
 
 # Run test suite
-# shellcheck disable=SC1090
+# shellcheck disable=SC1090,SC1091
 source "${SCRIPT_DIR}/lib/clitests.sh"
-if clitests::testSuiteExists "$TEST_SUITE"; then
-    clitests::execute "$TEST_SUITE" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
+
+# ON Kyma2 installation there is no dex, therefore skipping the test
+if [ "$KUBERNETES_RUNTIME" = 'k3d' ]; then
+    if clitests::testSuiteExists "test-version"; then
+        clitests::execute "test-version" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
+    else
+        log::error "Test file 'test-version.sh' not found"
+    fi
+    if clitests::testSuiteExists "test-function"; then
+        clitests::execute "test-function" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
+    else
+        log::error "Test file 'test-function.sh' not found"
+    fi
 else
-    log::error "Test suite '${TEST_SUITE}' not found"
+    if clitests::testSuiteExists "test-all"; then
+        clitests::execute "test-all" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
+    else
+        log::error "Test file 'test-all.sh' not found"
+    fi
 fi

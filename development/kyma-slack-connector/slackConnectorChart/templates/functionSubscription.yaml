@@ -1,0 +1,26 @@
+{{- if .Values.functionEnabled }}
+apiVersion: eventing.kyma-project.io/v1alpha1
+kind: Subscription
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.global.appName | quote }}
+    release: {{ .Release.Name | quote }}
+    function: {{ .Release.Name | quote }}
+    eventType: {{ .Values.eventType | quote }}
+spec:
+  filter:
+    filters:
+    - eventSource:
+        property: source
+        type: exact
+        value: ""
+      eventType:
+        property: type
+        type: exact
+        value: sap.kyma.custom.{{ .Values.subscriptionAppName | replace "-" "" }}.{{ .Values.eventType }}
+  protocol: ""
+  protocolsettings: {}
+  sink: http://{{ .Values.subscriptionServiceName }}.{{ .Values.subscriptionServiceNamespace }}.svc.cluster.local
+{{- end }}

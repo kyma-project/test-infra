@@ -13,31 +13,37 @@
 
 set -o errexit
 
-MINIKUBE_VERSION=v1.12.2
-KUBECTL_CLI_VERSION=v1.16.3
+MINIKUBE_VERSION=v1.14.2
+KUBECTL_CLI_VERSION=v1.19.7
 CRICTL_VERSION=v1.12.0
-HELM_VERSION="v3.4.2"
-DOCKER_VERSION=18.06.1~ce~3-0~debian
+HELM_VERSION="v3.7.1"
+DOCKER_VERSION=5:20.10.5~3-0~debian-buster
 NODEJS_VERSION="14.x"
+K3D_VERSION="5.0.0"
 
 # install docker
 sudo apt-get update
+sudo apt-get upgrade -y
 sudo apt-get install -y \
      apt-transport-https \
      ca-certificates \
      curl \
      gnupg2 \
      socat \
+     lsb-release \
+     wget \
+     build-essential \
+     conntrack \
      software-properties-common
 
-curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
-sudo add-apt-repository \
-   "deb [arch=amd64] https://download.docker.com/linux/debian \
-   $(lsb_release -cs) \
-   stable"
+echo \
+  "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 sudo apt update
+sudo apt-cache policy docker-ce
 sudo apt install -y docker-ce=${DOCKER_VERSION}
 
 # install kubectl
@@ -66,3 +72,27 @@ curl -sL https://deb.nodesource.com/setup_${NODEJS_VERSION} | sudo bash -
 sudo apt-get -y install \
      jq \
      nodejs
+
+# install k3d
+wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v${K3D_VERSION} bash
+
+# install monitoring agent
+# https://cloud.google.com/monitoring/agent/installation
+curl -sSO https://dl.google.com/cloudagents/add-monitoring-agent-repo.sh && \
+sudo bash add-monitoring-agent-repo.sh && \
+sudo apt-get update
+sudo apt-cache madison stackdriver-agent
+sudo apt-get install -y 'stackdriver-agent=6.*'
+
+# install logging agent
+# https://cloud.google.com/logging/docs/agent/installation
+curl -sSO https://dl.google.com/cloudagents/add-logging-agent-repo.sh && \
+sudo bash add-logging-agent-repo.sh && \
+sudo apt-get update
+sudo apt-cache madison google-fluentd
+sudo apt-get install -y 'google-fluentd=1.*'
+sudo apt-get install -y google-fluentd-catch-all-config
+
+# pre-fetch-docker-images
+sudo docker pull eu.gcr.io/kyma-project/external/cypress/included:8.7.0
+sudo docker pull eu.gcr.io/kyma-project/test-infra/docker-registry-2:20200202

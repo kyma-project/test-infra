@@ -4,10 +4,10 @@ set -e
 set -o pipefail
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${SCRIPT_DIR}/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${SCRIPT_DIR}/lib/docker.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$SCRIPT_DIR/lib/gcp.sh"
 
 usage () {
     echo "Usage: \$ ${BASH_SOURCE[1]} /path/to/component [Makefile targets]"
@@ -22,7 +22,8 @@ if [[ ! -d "${SOURCES_DIR}" ]]; then
 fi
 
 if [[ -n "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
-    gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+    gcp::authenticate \
+      -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 fi
 if [[ "${DOCKER_IN_DOCKER_ENABLED}" == true ]]; then
     docker::start
@@ -42,7 +43,7 @@ echo DOCKER_TAG "${DOCKER_TAG}"
 
 # Adding script argument checking allows to define custom build targets because `ci-release` is not in several Makefiles.
 if [ -n "$1" ]; then
-  make -C "${SOURCES_DIR}" "$@" 2>&1 | while read -r line ; do printf "[%04d] | %s\n" $SECONDS "$line"; done;
+  make -C "${SOURCES_DIR}" "$@" 2>&1 | while read -r line ; do printf '[%04d] | %s\n' $SECONDS "$line"; done;
 else
-  make -C "${SOURCES_DIR}" release 2>&1 | while read -r line ; do printf "[%04d] | %s\n" $SECONDS "$line"; done;
+  make -C "${SOURCES_DIR}" release 2>&1 | while read -r line ; do printf '[%04d] | %s\n' $SECONDS "$line"; done;
 fi

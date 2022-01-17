@@ -4,7 +4,7 @@ Read about the obligatory security measures to take on a regular basis and when 
 
 ## Change Secrets regularly
 
-All Secret used in the Prow production cluster must be changed every six months. Follow [Prow secret management](./prow-secrets-management.md) to create a new key ring and new Secrets. Then, use [Secrets populator](./../../development/tools/cmd/secretspopulator/README.md) to change all Secrets in the Prow cluster.
+All Secrets used in the Prow production cluster must be changed every six months. Follow the [Prow secret management](./prow-secrets-management.md) guidelines to create new Secrets. Once the new Secrets are ready, the [External Secrets Syncer](../../prow/cluster/resources/external-secrets/README.md) changes all Secrets in the Prow cluster automatically.
 
 >**NOTE:** The next Secrets change is planned for October 1, 2020.
 
@@ -22,4 +22,4 @@ Remove the person from the `kyma-prow` Google project immediately. Follow [this]
 
 ### Change Secrets
 
-Change all Secrets that were valid when the person was a project member. Follow [Prow secret management](./prow-secrets-management.md) to create a new key ring and new Secrets. Then, use [Secrets populator](./../../development/tools/cmd/secretspopulator/README.md) to change all Secrets in the Prow cluster.
+Change all Secrets that were valid when the person was a project member. Follow the [Prow secret management](./prow-secrets-management.md) guidelines to create new Secrets. Once the new Secrets are ready, the [External Secrets Syncer](../../prow/cluster/resources/external-secrets/README.md) changes all Secrets in the Prow cluster automatically.

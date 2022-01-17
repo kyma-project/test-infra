@@ -1,29 +1,80 @@
----
 plugins:
   kyma-project:
-    - cat
-    - trigger
-  kyma-incubator:
-    - cat
-    - trigger
+    plugins:
+      - cat
+      - trigger
+      - assign
+      - wip
+      - lgtm
+      - hold
+      - label
+      - yuks
+      - dog
+      - size
+      - shrug
+      - invalidcommitmsg
+      - help
   kyma-project/test-infra:
-    - config-updater
+    plugins:
+      - config-updater
+  kyma-incubator:
+    plugins:
+      - cat
+      - trigger
+      - assign
+      - wip
+      - lgtm
+      - hold
+      - label
+      - yuks
+      - dog
+      - size
+      - shrug
+      - invalidcommitmsg
+      - help
 
 config_updater:
   maps:
     prow/jobs/**/*.yaml:
       name: job-config
+      gzip: true
     prow/config.yaml:
       name: config
     prow/branchprotector-config.yaml:
       name: branchprotector-config
     prow/plugins.yaml:
       name: plugins
+    prow/labels.yaml:
+      name: label-config
+      clusters:
+        trusted-workload:
+          - default
+    prow/cluster/static-files/*:
+      name: static-files
 
 triggers:
-- repos:
-  - kyma-project
-  - kyma-incubator
-  only_org_members: true
-  ignore_ok_to_test: true
-  elide_skipped_contexts: false
+  - repos:
+    - kyma-project
+    - kyma-incubator
+    only_org_members: true
+    ignore_ok_to_test: true
+    elide_skipped_contexts: false
+
+lgtm:
+  - repos:
+      - kyma-project
+      - kyma-incubator
+    review_acts_as_lgtm: true
+
+label:
+  additional_labels:
+    - tide/merge-method-merge
+    - tide/merge-method-rebase
+    - tide/merge-method-squash
+
+size:
+  s:   10
+  m:   30
+  l:   100
+  xl:  500
+  xxl: 1000

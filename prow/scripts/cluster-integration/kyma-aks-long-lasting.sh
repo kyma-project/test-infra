@@ -14,6 +14,7 @@ export KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
 requiredVars=(
+	AKS_CLUSTER_VERSION
 	RS_GROUP
 	REGION
 	AZURE_SUBSCRIPTION_ID
@@ -25,20 +26,20 @@ requiredVars=(
 	CLOUDSDK_CORE_PROJECT
 	KYMA_ALERTS_CHANNEL
 	KYMA_ALERTS_SLACK_API_URL
-	SLACK_CLIENT_WEBHOOK_URL
-	STABILITY_SLACK_CLIENT_CHANNEL_ID
-	SLACK_CLIENT_TOKEN
-	TEST_RESULT_WINDOW_TIME
+	# SLACK_CLIENT_WEBHOOK_URL
+	# STABILITY_SLACK_CLIENT_CHANNEL_ID
+	# SLACK_CLIENT_TOKEN
+	# TEST_RESULT_WINDOW_TIME
 	DOCKER_PUSH_REPOSITORY
 	DOCKER_PUSH_DIRECTORY
 )
 
 utils::check_required_vars "${requiredVars[@]}"
 
-readonly STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
-readonly DNS_SUBDOMAIN="${STANDARIZED_NAME}"
+readonly COMMON_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
+readonly DNS_SUBDOMAIN="${COMMON_NAME}"
 
-export CLUSTER_NAME="${STANDARIZED_NAME}"
+export CLUSTER_NAME="${COMMON_NAME}"
 export CLUSTER_SIZE="Standard_F8s_v2"
 
 export CLUSTER_ADDONS="monitoring,http_application_routing"
@@ -48,8 +49,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/lib/azure.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/azure.sh"
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcp.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 
@@ -73,119 +74,83 @@ function cleanup() {
 	# Exporting for use in subshells.
 	export RS_GROUP
 
+	az::get_cluster_resource_group \
+		-r "$RS_GROUP" \
+		-c "$CLUSTER_NAME"
+
+	log::info '\n---\nRemove DNS Record for Ingressgateway\n---'
+	GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
+
+	GATEWAY_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${GATEWAY_DNS_FULL_NAME}" --format="value(rrdatas[0])")
+	TMP_STATUS=$?
+	check_status ${TMP_STATUS} "Could not fetch IP for : ${GATEWAY_DNS_FULL_NAME}"
+	if [[ -n ${GATEWAY_IP_ADDRESS} ]];then
+		# only try to delete the dns record if the ip address has been found
+		gcp::delete_dns_record \
+			-a "$GATEWAY_IP_ADDRESS" \
+			-p "$CLOUDSDK_CORE_PROJECT" \
+			-h "*" \
+			-s "$DNS_SUBDOMAIN" \
+			-z "$CLOUDSDK_DNS_ZONE_NAME"
+	fi
+
+	log::info '\n---\nRemove DNS Record for Apiserver Proxy IP\n---'
+	APISERVER_DNS_FULL_NAME="apiserver.${DOMAIN}."
+	APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
+	TMP_STATUS=$?
+	check_status ${TMP_STATUS} "Could not fetch IP for : ${APISERVER_DNS_FULL_NAME}"
+	if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
+		gcp::delete_dns_record \
+			-a "$APISERVER_IP_ADDRESS" \
+			-p "$CLOUDSDK_CORE_PROJECT" \
+			-h "apiserver" \
+			-s "$DNS_SUBDOMAIN" \
+			-z "$CLOUDSDK_DNS_ZONE_NAME"
+	fi
+
+	# Exporting for use in subshells.
+	export RS_GROUP
 	if [[ $(az group exists --name "${RS_GROUP}" -o json) == true ]]; then
-		CLUSTER_RS_GROUP=$(az aks show -g "${RS_GROUP}" -n "${CLUSTER_NAME}" --query nodeResourceGroup -o tsv)
-		TMP_STATUS=$?
-		check_status "${TMP_STATUS}" "Failed to get nodes resource group."
+		az::deprovision_k8s_cluster \
+			-c "$CLUSTER_NAME"\
+			-g "$RS_GROUP"
 
-		log::info "\n---\nRemove DNS Record for Ingressgateway\n---"
-		GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
-		GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
-
-		GATEWAY_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${GATEWAY_DNS_FULL_NAME}" --format="value(rrdatas[0])")
-		TMP_STATUS=$?
-		check_status ${TMP_STATUS} "Could not fetch IP for : ${GATEWAY_DNS_FULL_NAME}"
-		if [[ -n ${GATEWAY_IP_ADDRESS} ]];then
-			log::success "Fetched Azure Gateway IP: ${GATEWAY_IP_ADDRESS}"
-			# only try to delete the dns record if the ip address has been found
-			gcloud::delete_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
-			TMP_STATUS=$?
-			if [[ ${TMP_STATUS} -ne 0 ]]; then
-			  log::error "Failed delete dns record : ${GATEWAY_DNS_FULL_NAME}"
-			  EXIT_STATUS=${TMP_STATUS}
-			else
-			  log::success "Deleted dns record : ${GATEWAY_DNS_FULL_NAME}"
-			fi
-		else
-			log::warn "Could not delete DNS record : ${GATEWAY_DNS_FULL_NAME}. Record does not exist."
-		fi
-
-		log::info "\n---\nRemove DNS Record for Apiserver Proxy IP\n---"
-		APISERVER_DNS_FULL_NAME="apiserver.${DOMAIN}."
-		APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
-		TMP_STATUS=$?
-		check_status ${TMP_STATUS} "Could not fetch IP for : ${APISERVER_DNS_FULL_NAME}"
-		if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
-			gcloud::delete_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
-			TMP_STATUS=$?
-			if [[ ${TMP_STATUS} -ne 0 ]]; then
-			  log::error "Failed delete dns record : ${APISERVER_DNS_FULL_NAME}"
-			  EXIT_STATUS=${TMP_STATUS}
-			else
-			  log::success "Deleted dns record : ${APISERVER_DNS_FULL_NAME}"
-			fi
-		else
-		  log::warn "Could not delete DNS record ${APISERVER_DNS_FULL_NAME}. Record does not exist."
-		fi
-
-		log::info "\n---\nRemove Cluster, IP Address for Ingressgateway\n---"
-		az aks delete -g "${RS_GROUP}" -n "${CLUSTER_NAME}" -y
-		TMP_STATUS=$?
-		if [[ ${TMP_STATUS} -ne 0 ]]; then
-		  log::error "Failed delete cluster : ${CLUSTER_NAME}"
-		  EXIT_STATUS=${TMP_STATUS}
-		else
-		  log::success "Cluster and IP address for Ingressgateway deleted"
-		fi
-
-		log::info "Remove group"
-		az group delete -n "${RS_GROUP}" -y
-		TMP_STATUS=$?
-		if [[ ${TMP_STATUS} -ne 0 ]]; then
-		  log::error "Failed to delete ResourceGrouop : ${RS_GROUP}"
-		  EXIT_STATUS=${TMP_STATUS}
-		else
-		  log::success "ResourceGroup deleted : ${RS_GROUP}"
-		fi
+		az::delete_resource_group \
+			-g "$RS_GROUP"
 	else
 		log::info "Azure group does not exist, skip cleanup process"
 	fi
 
 	MSG=""
 	if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-	log::info "\n---\nCleanup function is finished ${MSG}\n---"
+	log::info "\\n---\\nCleanup function is finished ${MSG}\\n---"
 
 	# Turn on exit-on-error
 	set -e
 }
 
-function installCluster() {
-	log::info "Install Kubernetes on Azure"
-
-	log::info "Find latest cluster version for kubernetes version: ${AKS_CLUSTER_VERSION}"
-	AKS_CLUSTER_VERSION_PRECISE=$(az aks get-versions -l "${REGION}" | jq '.orchestrators|.[]|select(.orchestratorVersion | contains("'"${AKS_CLUSTER_VERSION}"'"))' | jq -s '.' | jq -r 'sort_by(.orchestratorVersion | split(".") | map(tonumber)) | .[-1].orchestratorVersion')
-	log::info "Latest available version is: ${AKS_CLUSTER_VERSION_PRECISE}"
-
-	az aks create \
-	  --resource-group "${RS_GROUP}" \
-	  --name "${CLUSTER_NAME}" \
-	  --node-count 3 \
-	  --node-vm-size "${CLUSTER_SIZE}" \
-	  --kubernetes-version "${AKS_CLUSTER_VERSION_PRECISE}" \
-	  --enable-addons "${CLUSTER_ADDONS}" \
-	  --service-principal "$(jq -r '.app_id' "$AZURE_CREDENTIALS_FILE")" \
-	  --client-secret "$(jq -r '.secret' "$AZURE_CREDENTIALS_FILE")" \
-	  --generate-ssh-keys \
-	  --zones 1 2 3
-}
-
 function createPublicIPandDNS() {
-	CLUSTER_RS_GROUP=$(az aks show -g "${RS_GROUP}" -n "${CLUSTER_NAME}" --query nodeResourceGroup -o tsv)
+	az::get_cluster_resource_group \
+		-r "$RS_GROUP" \
+		-c "$CLUSTER_NAME"
+	CLUSTER_RS_GROUP="${az_get_cluster_resource_group_return_resource_group:?}"
 
 	# IP address and DNS for Ingressgateway
-	log::info "Reserve IP Address for Ingressgateway"
-
-	GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
-	az network public-ip create -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" -l "${REGION}" --allocation-method static --sku Standard
-
+	az::reserve_ip_address \
+		-g "$CLUSTER_RS_GROUP" \
+		-n "$COMMON_NAME" \
+		-r "$REGION"
+	GATEWAY_IP_ADDRESS="${az_reserve_ip_address_return_ip_address:?}"
 	export GATEWAY_IP_ADDRESS
-	GATEWAY_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" --query ipAddress -o tsv)
-	log::success "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
 	log::info "Create DNS Record for Ingressgateway IP"
 
-	GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
-	gcloud::create_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
+	gcp::create_dns_record \
+				-a "$GATEWAY_IP_ADDRESS" \
+				-p "$CLOUDSDK_CORE_PROJECT" \
+				-h "*" \
+				-s "$DNS_SUBDOMAIN" \
+				-z "$CLOUDSDK_DNS_ZONE_NAME"
 }
 
 function setupKubeconfig() {
@@ -213,57 +178,76 @@ function installKyma() {
 
 	log::info "Trigger installation"
 
-    kyma install \
+	kyma install \
 			--ci \
-			--source master \
-      -o "$PWD/kyma-installer-overrides.yaml" \
+			--source main \
+			-o "$PWD/kyma-installer-overrides.yaml" \
 			-o "$PWD/overrides-dex-and-monitoring.yaml" \
 			-o "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/prometheus-cluster-essentials-overrides.tpl.yaml" \
 			--domain "${DOMAIN}" \
 			--profile production \
 			--tls-cert "${TLS_CERT}" \
-			--tls-key "${TLS_KEY}" \
-			--timeout 60m
+			--tls-key "${TLS_KEY}"
 
 	if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
 		log::info "Create DNS Record for Apiserver proxy IP"
 		APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-		APISERVER_DNS_FULL_NAME="apiserver.${DOMAIN}."
-		gcloud::create_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
+		gcp::create_dns_record \
+				-a "$APISERVER_IP_ADDRESS" \
+				-p "$CLOUDSDK_CORE_PROJECT" \
+				-h "apiserver" \
+				-s "$DNS_SUBDOMAIN" \
+				-z "$CLOUDSDK_DNS_ZONE_NAME"
 	fi
 }
 
 function apply_dex_github_kyma_admin_group() {
-    kubectl get ClusterRoleBinding kyma-admin-binding -oyaml > kyma-admin-binding.yaml && cat >> kyma-admin-binding.yaml <<EOF 
+	kubectl get ClusterRoleBinding kyma-admin-binding -oyaml > kyma-admin-binding.yaml && cat >> kyma-admin-binding.yaml <<EOF 
 - apiGroup: rbac.authorization.k8s.io
   kind: Group
   name: kyma-project:cluster-access
 EOF
 
-    kubectl replace -f kyma-admin-binding.yaml
+	kubectl replace -f kyma-admin-binding.yaml
 }
 
 function test_console_url() {
   CONSOLE_URL="https://console.${DOMAIN}"
   console_response=$(curl -L -s -o /dev/null -w "%{http_code}" "${CONSOLE_URL}")
   if [ "${console_response}" != "200" ]; then
-    log::error "Kyma console URL did not returned 200 HTTP response code. Check ingressgateway service."
-    exit 1
+	log::error "Kyma console URL did not returned 200 HTTP response code. Check ingressgateway service."
+	exit 1
   fi
 }
 
-gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+gcp::authenticate \
+	-c "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
-az::login "$AZURE_CREDENTIALS_FILE"
-az::set_subscription "$AZURE_SUBSCRIPTION_ID"
+az::authenticate \
+	-f "$AZURE_CREDENTIALS_FILE"
+az::set_subscription \
+	-s "$AZURE_SUBSCRIPTION_ID"
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --project="${CLOUDSDK_CORE_PROJECT}" --format="value(dnsName)")"
 export DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 
 cleanup
 
-az::create_resource_group "${RS_GROUP}" "${REGION}"
-installCluster
+az::create_resource_group \
+	-g "${RS_GROUP}" \
+	-r "${REGION}"
+
+log::info "Install Kubernetes on Azure"
+
+# shellcheck disable=SC2153
+az::provision_k8s_cluster \
+	-c "$CLUSTER_NAME" \
+	-g "$RS_GROUP" \
+	-r "$REGION" \
+	-s "$CLUSTER_SIZE" \
+	-v "$AKS_CLUSTER_VERSION" \
+	-a "$CLUSTER_ADDONS" \
+	-f "$AZURE_CREDENTIALS_FILE"
 
 createPublicIPandDNS
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-letsencrypt-cert.sh"
@@ -282,11 +266,14 @@ installKyma
 log::info "Override kyma-admin-binding ClusterRoleBinding"
 apply_dex_github_kyma_admin_group
 
-log::info "Install stability-checker"
-(
-export TEST_INFRA_SOURCES_DIR KYMA_SCRIPTS_DIR TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS \
-		CLUSTER_NAME SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID SLACK_CLIENT_TOKEN TEST_RESULT_WINDOW_TIME
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-stability-checker.sh"
-)
+# temporarily disabled, let's see how well fast-integration will work
+# see also: https://github.com/kyma-project/kyma/issues/11777
+
+# log::info "Install stability-checker"
+# (
+# export TEST_INFRA_SOURCES_DIR KYMA_SCRIPTS_DIR TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS \
+# 		CLUSTER_NAME SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID SLACK_CLIENT_TOKEN TEST_RESULT_WINDOW_TIME
+# "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-stability-checker.sh"
+# )
 
 test_console_url

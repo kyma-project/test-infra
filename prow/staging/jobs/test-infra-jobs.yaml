@@ -4,20 +4,20 @@ periodics:
     decorate: true
     decoration_config:
       timeout: 5h
-    cluster: workload-cluster
+    cluster: trusted-workload
     extra_refs:
-      - org: kyma-test-infra-dev
+      - org: kyma-project
         repo: test-infra
-        base_ref: master
+        base_ref: main
     spec:
       containers:
         - name: branchprotector
           image: gcr.io/k8s-prow/branchprotector:v20210407-51f95c2d52
           command: [ "/app/prow/cmd/branchprotector/app.binary" ]
           args:
-            - --config-path=prow/staging/config.yaml
-            - --job-config-path=prow/staging/jobs
-            - --github-token-path=/etc/github/oauth
+            - --config-path=prow/branchprotector-config.yaml
+            - --job-config-path=prow/jobs
+            - --github-token-path=/etc/github/token
             - --confirm
             - --github-endpoint=https://api.github.com
 #           - --github-endpoint=http://ghproxy
@@ -28,6 +28,7 @@ periodics:
       volumes:
         - name: oauth
           secret:
+            secretName: kyma-bot-github-token
             secretName: oauth-token
   - name: ci-prow-label-sync
 #    cron: "17 * * * *"

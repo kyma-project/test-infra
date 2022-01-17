@@ -41,39 +41,43 @@ RELEASES=${RELEASES//[,\"]}
 RELEASES=${RELEASES//\-rc[0-9]}
 
 # Split into array
-RELEASES=(${RELEASES})
+readarray -t RELEASES <<< "$RELEASES"
 
 # sort the releases in case there was a patch release after another higher minor release (e.g. chronologically: 1.0.1, 1.1.0, 1.0.0)
-RELEASES=($(printf "%s\n" "${RELEASES[@]}" | sort -r))
+IFS=" " read -r -a RELEASES <<< "$(printf '%s\n' "${RELEASES[@]}" | sort -r | tr '\n' ' ')"
 
 # Remove duplicates
-RELEASES=($(printf "%s\n" "${RELEASES[@]}" | uniq))
+IFS=" " read -r -a RELEASES <<< "$(printf '%s\n' "${RELEASES[@]}" | uniq | tr '\n' ' ')"
 
-# Go through releases ignoring patch versions in descending order until we skip the desired number of minor releases
-
-# remove patch
-CURRENT=$(echo "${RELEASES[0]}" | awk -F'.' '{print $1"."$2}')
-for r in "${RELEASES[@]}"; do
-    # remove patch from candidate
-    WANT=$(echo "${r}" | awk -F'.' '{print $1"."$2}')
-
-    if [[ "$WANT" != "$CURRENT" ]]; then
-        # check if we need to backtrack more
-        if [[ $COMPAT_BACKTRACK == 1 ]]; then
-            # Found the target release
-            TARGET=$r
-            break
-        else
-            # Still need to backtrack further
-            COMPAT_BACKTRACK=$((COMPAT_BACKTRACK - 1))
-            CURRENT=$(echo "${r}" | awk -F'.' '{print $1"."$2}')
+if [[ $COMPAT_BACKTRACK == 1 ]]; then
+    # Found the target release
+    TARGET="${RELEASES[1]}"
+else
+    COMPAT_BACKTRACK=$((COMPAT_BACKTRACK - 1))
+    # Go through releases ignoring patch versions in descending order until we skip the desired number of minor releases
+    # remove patch
+    CURRENT=$(echo "${RELEASES[1]}" | awk -F'.' '{print $1"."$2}')
+    for r in "${RELEASES[@]}"; do
+        # remove patch from candidate
+        WANT=$(echo "${r}" | awk -F'.' '{print $1"."$2}')
+        if [[ "$WANT" != "$CURRENT" ]]; then
+            # check if we need to backtrack more
+            if [[ $COMPAT_BACKTRACK == 1 ]]; then
+                # Found the target release
+                TARGET=$r
+                break
+            else
+                # Still need to backtrack further
+                COMPAT_BACKTRACK=$((COMPAT_BACKTRACK - 1))
+                CURRENT=$(echo "${r}" | awk -F'.' '{print $1"."$2}')
+            fi
         fi
-    fi
-done
+    done
+fi
 
 # Exceptional release replacements. Add a replacement pair here as follows: "release::replacement"
 # This is required when we have special releases that do not follow the regular pattern.
-EXCEPTIONS=('1.16.0::1.16.0-rc3')
+EXCEPTIONS=('1.16.0::1.16.0-rc3' '2.0.0::2.0.0-rc1')
 
 for index in "${EXCEPTIONS[@]}" ; do
     KEY="${index%%::*}"

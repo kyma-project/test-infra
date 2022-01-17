@@ -2,7 +2,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 deployment:
-  image: eu.gcr.io/kyma-project/test-infra/probot-stale:v20200710-85feae97
+  image: eu.gcr.io/kyma-project/test-infra/probot-stale:v20211223-7d9f748d
   imagePullPolicy: IfNotPresent
   config:
     # https://probot.github.io/docs/configuration/
@@ -19,15 +19,15 @@ deployment:
 
 ingress:
   annotations:
-    kubernetes.io/ingress.global-static-ip-name: kyma-prow-stale
+    kubernetes.io/ingress.global-static-ip-name: stalebot-ip
     kubernetes.io/ingress.class: "gce"
-    kubernetes.io/tls-acme: "true"
-    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
-    certmanager.k8s.io/acme-http01-edit-in-place: "true"
+    networking.gke.io/managed-certificates: probot-stale
+    networking.gke.io/v1beta1.FrontendConfig: "probot-stale-frontend-config"
   path: /*
   host: stale.build.kyma-project.io
-  tls:
-    secretName: stale-tls
+  frontendConfig:
+    name: probot-stale-frontend-config
+    sslPolicy: custom-ssl-policy
 
 service:
   type: NodePort

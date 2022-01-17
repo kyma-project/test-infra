@@ -14,6 +14,8 @@ source "$KYMA_PROJECT_DIR/test-infra/prow/scripts/lib/log.sh"
 source "$KYMA_PROJECT_DIR/test-infra/prow/scripts/lib/kyma.sh"
 #shellcheck source=prow/scripts/lib/utils.sh
 source "$KYMA_PROJECT_DIR/test-infra/prow/scripts/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/gardener/gardener.sh
+source "$KYMA_PROJECT_DIR/test-infra/prow/scripts/lib/gardener/gardener.sh"
 
 log::info "Install Kyma CLI"
 kyma::install_cli
@@ -29,6 +31,9 @@ kyma provision gardener gcp \
 
 log::info "Cluster provisioned. Now deleting it..."
 
-utils::deprovision_gardener_cluster "${GARDENER_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KUBECONFIG}"
+gardener::deprovision_cluster \
+        -p "${GARDENER_PROJECT_NAME}" \
+        -c "${CLUSTER_NAME}" \
+        -f "${GARDENER_KUBECONFIG}"
 
 log::success "Done! See you next time!"

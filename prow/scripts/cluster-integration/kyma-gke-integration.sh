@@ -32,25 +32,35 @@
 
 set -o errexit
 
+#Exported variables
+export TEST_INFRA_SOURCES_DIR="$KYMA_PROJECT_DIR/test-infra"
+export KYMA_SOURCES_DIR="$KYMA_PROJECT_DIR/kyma"
+export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="$TEST_INFRA_SOURCES_DIR/prow/scripts/cluster-integration/helpers"
+
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/kyma.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/log.sh"
+# shellcheck source=prow/scripts/lib/utils.sh
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
+
 ENABLE_TEST_LOG_COLLECTOR=false
 
-#Exported variables
-export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
-export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
-export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
+# Enforce lowercase
+readonly REPO_OWNER=${REPO_OWNER,,}
+export REPO_OWNER
+# Enforce lowercase
+readonly REPO_NAME=${REPO_NAME,,}
+export REPO_NAME
+export INGRESS_GATEWAY_HOSTNAME='*'
+export APISERVER_HOSTNAME='apiserver'
 
+# Used by kyma-testing.sh as an argument.
 KYMA_LABEL_PREFIX="kyma-project.io"
 KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"
 INTEGRATION_TEST_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.integration=true"
-
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
-# shellcheck source=prow/scripts/lib/kyma.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
-# shellcheck source=prow/scripts/lib/log.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
-# shellcheck source=prow/scripts/lib/utils.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
 requiredVars=(
     REPO_OWNER
@@ -61,178 +71,158 @@ requiredVars=(
     CLOUDSDK_COMPUTE_REGION
     CLOUDSDK_DNS_ZONE_NAME
     GOOGLE_APPLICATION_CREDENTIALS
-    KYMA_ARTIFACTS_BUCKET
-    GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS
+    KYMA_ARTIFACTS_BUCKET    
     GKE_CLUSTER_VERSION
 )
-
+# allow GKE_CLUSTER_VERSION to be specified explicitly for this script
+GKE_CLUSTER_VERSION=${GKE_CLUSTER_VERSION_OVERRIDE:-$GKE_CLUSTER_VERSION}
 utils::check_required_vars "${requiredVars[@]}"
 
-# post_hook runs at the end of a script or on any error
-function post_hook() {
-  #!!! Must be at the beginning of this function !!!
-  EXIT_STATUS=$?
+# Using set -f to prevent path globing in post_hook arguments.
+# utils::post_hook call set +f at the beginning.
+trap 'EXIT_STATUS=$?; set -f; utils::post_hook -n "$COMMON_NAME" -p "$CLOUDSDK_CORE_PROJECT" -c "$CLEANUP_CLUSTER" -g "$CLEANUP_GATEWAY_DNS_RECORD" -G "$INGRESS_GATEWAY_HOSTNAME" -a "$CLEANUP_APISERVER_DNS_RECORD" -A "$APISERVER_HOSTNAME" -I "$CLEANUP_GATEWAY_IP_ADDRESS" -l "$ERROR_LOGGING_GUARD" -z "$CLOUDSDK_COMPUTE_ZONE" -R "$CLOUDSDK_COMPUTE_REGION" -r "$PROVISION_REGIONAL_CLUSTER" -d "$DISABLE_ASYNC_DEPROVISION" -s "$COMMON_NAME" -e "$GATEWAY_IP_ADDRESS" -f "$APISERVER_IP_ADDRESS" -N "$COMMON_NAME" -Z "$CLOUDSDK_DNS_ZONE_NAME" -E "$EXIT_STATUS" -j "$JOB_NAME"' EXIT INT
 
-  log::info "Cleanup"
+utils::run_jobguard \
+    -b "$BUILD_TYPE" \
+    -P "$TEST_INFRA_SOURCES_DIR"
 
-  if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
-    log::info "AN ERROR OCCURED! Take a look at preceding log entries."
-  fi
+utils::generate_vars_for_build \
+    -b "$BUILD_TYPE" \
+    -p "$PULL_NUMBER" \
+    -s "$PULL_BASE_SHA" \
+    -n "$JOB_NAME"
+export COMMON_NAME=${utils_generate_vars_for_build_return_commonName:?}
+export KYMA_SOURCE=${utils_generate_vars_for_build_return_kymaSource:?}
 
-  #Turn off exit-on-error so that next step is executed even if previous one fails.
-  set +e
-
-  # collect logs from failed tests before deprovisioning
-  kyma::run_test_log_collector "post-master-kyma-gke-integration"
-
-  gcloud::cleanup
-
-  MSG=""
-  if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-  log::info "Job is finished ${MSG}"
-  set -e
-
-  exit "${EXIT_STATUS}"
-}
-
-trap post_hook EXIT INT
-
-if [[ "${BUILD_TYPE}" == "pr" ]]; then
-    log::info "Execute Job Guard"
-    # shellcheck disable=SC2031
-    "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
-fi
-
-# Enforce lowercase
-readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
-export REPO_OWNER
-readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
-export REPO_NAME
-
-RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
-
-if [[ "$BUILD_TYPE" == "pr" ]]; then
-    # In case of PR, operate on PR number
-    readonly COMMON_NAME_PREFIX="gkeint-pr"
-    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-    KYMA_SOURCE="PR-${PULL_NUMBER}"
-elif [[ "$BUILD_TYPE" == "release" ]]; then
-    readonly COMMON_NAME_PREFIX="gkeint-rel"
-    readonly RELEASE_VERSION=$(cat "VERSION")
-    log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
-    KYMA_SOURCE="${RELEASE_VERSION}"
-    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-else
-    # Otherwise (master), operate on triggering commit id
-    readonly COMMON_NAME_PREFIX="gkeint-commit"
-    readonly COMMIT_ID="${PULL_BASE_SHA::8}"
-    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-    KYMA_SOURCE="${COMMIT_ID}"
-    export KYMA_INSTALLER_IMAGE
-fi
-
-
-### Cluster name must be less than 40 characters!
-export CLUSTER_NAME="${COMMON_NAME}"
-
-export GCLOUD_NETWORK_NAME="${COMMON_NAME_PREFIX}-net"
-export GCLOUD_SUBNET_NAME="${COMMON_NAME_PREFIX}-subnet"
-
-### For gcloud::provision_gke_cluster
-export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
-
-#Local variables
-DNS_SUBDOMAIN="${COMMON_NAME}"
+gcp::set_vars_for_network \
+    -n "$JOB_NAME"
+export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_return_net_name:?}"
+export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_return_subnet_name:?}"
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
-log::info "Authenticate"
-gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+gcp::authenticate \
+    -c "$GOOGLE_APPLICATION_CREDENTIALS"
+
+gcp::create_network \
+    -n "$GCLOUD_NETWORK_NAME" \
+    -s "$GCLOUD_SUBNET_NAME" \
+    -p "$CLOUDSDK_CORE_PROJECT"
+
 kyma::install_cli
 
-DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
-
-log::info "Reserve IP Address for Ingressgateway"
-GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
-export GATEWAY_IP_ADDRESS
-GATEWAY_IP_ADDRESS=$(gcloud::reserve_ip_address "$GATEWAY_IP_ADDRESS_NAME")
+gcp::reserve_ip_address \
+    -n "$COMMON_NAME" \
+    -p "$CLOUDSDK_CORE_PROJECT" \
+    -r "$CLOUDSDK_COMPUTE_REGION"
+export GATEWAY_IP_ADDRESS="${gcp_reserve_ip_address_return_ip_address:?}"
 export CLEANUP_GATEWAY_IP_ADDRESS="true"
-log::info "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
+
 
 
 log::info "Create DNS Record for Ingressgateway IP"
-GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-gcloud::create_dns_record "$GATEWAY_IP_ADDRESS" "$GATEWAY_DNS_FULL_NAME"
+gcp::create_dns_record \
+    -p "$CLOUDSDK_CORE_PROJECT" \
+    -z "$CLOUDSDK_DNS_ZONE_NAME" \
+    -a "$GATEWAY_IP_ADDRESS" \
+    -h "$INGRESS_GATEWAY_HOSTNAME" \
+    -s "$COMMON_NAME"
+export DNS_DOMAIN=${gcp_create_dns_record_return_dns_domain:?}
+export DNS_SUBDOMAIN=${gcp_create_dns_record_return_dns_subdomain:?}
 export CLEANUP_GATEWAY_DNS_RECORD="true"
 
-log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-gcloud::create_network "$GCLOUD_NETWORK_NAME" "$GCLOUD_SUBNET_NAME"
-
-log::banner "Provision cluster: \"${CLUSTER_NAME}\""
-if [ -z "$MACHINE_TYPE" ]; then
-      export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
-fi
-
 # if GKE_RELEASE_CHANNEL is set, get latest possible cluster version
-gcloud::set_latest_cluster_version_for_channel
-
-# serverless tests are failing when are running on a cluster with contianerD
-if [[ "${GKE_RELEASE_CHANNEL}" == "rapid" ]]; then
-  # set image type to the image that uses docker instead of containerD
-  export IMAGE_TYPE="cos"
+if [ "${GKE_RELEASE_CHANNEL}" ]; then
+    gcp::set_latest_cluster_version_for_channel \
+        -C "$GKE_RELEASE_CHANNEL"
+    GKE_CLUSTER_VERSION="${gcp_set_latest_cluster_version_for_channel_return_cluster_version:?}"
 fi
 
-gcloud::provision_gke_cluster "$CLUSTER_NAME"
+if [ "$PROVISION_REGIONAL_CLUSTER" ]; then NUM_NODES="$NODES_PER_ZONE"; fi
+
+gcp::provision_k8s_cluster \
+    -c "$COMMON_NAME" \
+    -p "$CLOUDSDK_CORE_PROJECT" \
+    -v "$GKE_CLUSTER_VERSION" \
+    -j "$JOB_NAME" \
+    -J "$PROW_JOB_ID" \
+    -l "$ADDITIONAL_LABELS" \
+    -t "$TTL_HOURS" \
+    -z "$CLOUDSDK_COMPUTE_ZONE" \
+    -m "$MACHINE_TYPE" \
+    -R "$CLOUDSDK_COMPUTE_REGION" \
+    -n "$NUM_NODES" \
+    -N "$GCLOUD_NETWORK_NAME" \
+    -S "$GCLOUD_SUBNET_NAME" \
+    -C "$GKE_RELEASE_CHANNEL" \
+    -i "$IMAGE_TYPE" \
+    -g "$GCLOUD_SECURITY_GROUP_DOMAIN" \
+    -r "$PROVISION_REGIONAL_CLUSTER" \
+    -s "$STACKDRIVER_KUBERNETES" \
+    -D "$CLUSTER_USE_SSD" \
+    -e "$GKE_ENABLE_POD_SECURITY_POLICY" \
+    -P "$TEST_INFRA_SOURCES_DIR"
 export CLEANUP_CLUSTER="true"
 
-log::info "Generate self-signed certificate"
-DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
-CERT_KEY=$(utils::generate_self_signed_cert "$DOMAIN")
-TLS_CERT=$(echo "${CERT_KEY}" | head -1)
-TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
+utils::generate_self_signed_cert \
+    -d "$DNS_DOMAIN" \
+    -s "$COMMON_NAME" \
+    -v "$SELF_SIGN_CERT_VALID_DAYS"
+export TLS_CERT="${utils_generate_self_signed_cert_return_tls_cert:?}"
+export TLS_KEY="${utils_generate_self_signed_cert_return_tls_key:?}"
 
 log::info "Create Kyma CLI overrides"
-envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-installer-overrides.tpl.yaml" > "$PWD/kyma-installer-overrides.yaml"
+envsubst < "$TEST_INFRA_SOURCES_DIR/prow/scripts/resources/kyma-installer-overrides.tpl.yaml" > "$PWD/kyma-installer-overrides.yaml"
 
-log::info "Installation triggered"
+log::info "Kyma installation triggered"
 
 yes | kyma install \
-  --ci \
-  -s "${KYMA_SOURCE}" \
-  -o "$PWD/kyma-installer-overrides.yaml" \
-  --domain "${DOMAIN}" \
-  --tls-cert="${TLS_CERT}" \
-  --tls-key="${TLS_KEY}" \
-  --timeout 60m
+    --ci \
+    -s "$KYMA_SOURCE" \
+    -o "$PWD/kyma-installer-overrides.yaml" \
+    --domain "$DNS_SUBDOMAIN.${DNS_DOMAIN%.}" \
+    --tls-cert="$TLS_CERT" \
+    --tls-key="$TLS_KEY" \
+    --timeout 60m
+
+log::info "Patch serverless to enable containerd"
+cp -va "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/containerd-gke-patch.tpl.yaml" \
+       "${KYMA_SOURCES_DIR}/resources/serverless/templates/containerd-gke-patch.yaml"
+helm template -s templates/containerd-gke-patch.yaml resources/serverless/ --dry-run > "$PWD/patch-containerd.yaml"
+kubectl apply -f "$PWD/patch-containerd.yaml"
+# This command expects serverless to be running in the namespace `kyma-system`
+# The `initialized` condition is checked because we only care about the init-container.
+kubectl -n kyma-system wait pods -l app=serverless-docker-registry-cert-update --for="condition=Initialized"
 
 if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
     log::info "Create DNS Record for Apiserver proxy IP"
     APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-
-    gcloud::create_dns_record "$APISERVER_IP_ADDRESS" "$APISERVER_DNS_FULL_NAME"
+    gcp::create_dns_record \
+        -p "$CLOUDSDK_CORE_PROJECT" \
+        -z "$CLOUDSDK_DNS_ZONE_NAME" \
+        -a "$APISERVER_IP_ADDRESS" \
+        -h "$APISERVER_HOSTNAME" \
+        -s "$COMMON_NAME"
     export CLEANUP_APISERVER_DNS_RECORD="true"
 fi
 
 log::info "Collect list of images"
-if [ -z "$ARTIFACTS" ] ; then
-    ARTIFACTS=/tmp/artifacts
-fi
-
 # generate pod-security-policy list in json
-utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
+utils::save_psp_list "$ARTIFACTS/kyma-psp.json"
+
+utils::kubeaudit_create_report "$ARTIFACTS/kubeaudit.log"
+utils::kubeaudit_check_report "$ARTIFACTS/kubeaudit.log"
 
 # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
-if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
-  export ENABLE_TEST_LOG_COLLECTOR=true
+if [[ "$BUILD_TYPE" == "master" && -n "$LOG_COLLECTOR_SLACK_TOKEN" ]]; then
+    export ENABLE_TEST_LOG_COLLECTOR=true
 fi
 
 log::info "Test Kyma"
 # shellcheck disable=SC2031
 # TODO (@Ressetkk): Kyma test functions as a separate library
-"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh "${INTEGRATION_TEST_LABEL_QUERY}"
+"$TEST_INFRA_SOURCES_DIR"/prow/scripts/kyma-testing.sh "$INTEGRATION_TEST_LABEL_QUERY"
 
 log::success "Integration Test successful"
 

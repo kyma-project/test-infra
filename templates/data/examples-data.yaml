@@ -10,7 +10,7 @@ templates:
             jobs:
               - jobConfig:
                   run_if_changed: "^event-email-service/"
-                  name: "pre-master-examples-event-email-service"
+                  name: "pre-main-examples-event-email-service"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/examples/event-email-service"
                     - "ci-pr"
@@ -20,15 +20,15 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                     - "extra_refs_test-infra"
-                    - "build_labels"
+                    - "build_labels"  
                   local:
                     - "default"
               - jobConfig:
                   run_if_changed: "^event-email-service/"
-                  name: "post-master-examples-event-email-service"
+                  name: "post-main-examples-event-email-service"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/examples/event-email-service"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_buildpack-node"
@@ -42,7 +42,7 @@ templates:
 
               - jobConfig:
                   run_if_changed: "^http-db-service/"
-                  name: "pre-master-examples-http-db-service"
+                  name: "pre-main-examples-http-db-service"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/examples/http-db-service"
                     - "ci-pr"
@@ -57,10 +57,10 @@ templates:
                     - "default"
               - jobConfig:
                   run_if_changed: "^http-db-service/"
-                  name: "post-master-examples-http-db-service"
+                  name: "post-main-examples-http-db-service"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/examples/http-db-service"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_buildpack-golang"
@@ -74,7 +74,7 @@ templates:
 
               - jobConfig:
                   run_if_changed: "^monitoring-custom-metrics/"
-                  name: "pre-master-examples-monitoring-custom-metrics"
+                  name: "pre-main-examples-monitoring-custom-metrics"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/examples/monitoring-custom-metrics"
                     - "ci-pr"
@@ -89,10 +89,10 @@ templates:
                     - "default"
               - jobConfig:
                   run_if_changed: "^monitoring-custom-metrics/"
-                  name: "post-master-examples-monitoring-custom-metrics"
+                  name: "post-main-examples-monitoring-custom-metrics"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/examples/monitoring-custom-metrics"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_buildpack-golang"
@@ -106,7 +106,7 @@ templates:
 
               - jobConfig:
                   run_if_changed: "^orders-service/"
-                  name: "pre-master-examples-orders-service"
+                  name: "pre-main-examples-orders-service"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/examples/orders-service"
                     - "ci-pr"
@@ -121,10 +121,10 @@ templates:
                     - "default"
               - jobConfig:
                   run_if_changed: "^orders-service/"
-                  name: "post-master-examples-orders-service"
+                  name: "post-main-examples-orders-service"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/examples/orders-service"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_buildpack-golang"
@@ -138,7 +138,7 @@ templates:
 
               - jobConfig:
                   run_if_changed: "^tests/http-db-service/"
-                  name: "pre-master-examples-tests-http-db-service"
+                  name: "pre-main-examples-tests-http-db-service"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/examples/tests/http-db-service"
                     - "ci-pr"
@@ -153,10 +153,10 @@ templates:
                     - "default"
               - jobConfig:
                   run_if_changed: "^tests/http-db-service/"
-                  name: "post-master-examples-tests-http-db-service"
+                  name: "post-main-examples-tests-http-db-service"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/examples/tests/http-db-service"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_buildpack-golang"
@@ -170,7 +170,7 @@ templates:
 
               - jobConfig:
                   run_if_changed: "^tracing/"
-                  name: "pre-master-examples-tracing"
+                  name: "pre-main-examples-tracing"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/examples/tracing"
                     - "ci-pr"
@@ -185,10 +185,10 @@ templates:
                     - "default"
               - jobConfig:
                   run_if_changed: "^tracing/"
-                  name: "post-master-examples-tracing"
+                  name: "post-main-examples-tracing"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/examples/tracing"
-                    - "ci-master"
+                    - "ci-main"
                 inheritedConfigs:
                   global:
                     - "image_buildpack-golang"

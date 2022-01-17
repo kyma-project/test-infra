@@ -22,24 +22,26 @@ templates:
                   global:
                     - "image_bootstrap"
                     - "jobConfig_presubmit"
+                    - "pubsub_labels"
               - jobConfig:
                   name: "pre-test-infra-validate-configs"
                   run_if_changed: "^prow/((plugins|config).yaml|jobs/)"
-                  command: "prow/scripts/validate-config.sh"
+                  command: "/app/prow/cmd/checkconfig/app.binary"
+                  image: gcr.io/k8s-prow/checkconfig:v20211217-ba1f318049
                   args:
-                    - "prow/plugins.yaml"
-                    - "prow/config.yaml"
-                    - "prow/jobs"
+                    - "--plugin-config=prow/plugins.yaml"
+                    - "--config-path=prow/config.yaml"
+                    - "--job-config-path=prow/jobs"
                 inheritedConfigs:
                   local:
                     - "jobConfig_allBranches"
                   global:
-                    - "image_prow-tools"
                     - "jobConfig_presubmit"
+                    - "pubsub_labels"
               - jobConfig:
-                  name: "pre-master-test-infra-validate-prow-tools"
+                  name: "pre-main-test-infra-validate-prow-tools"
                   privileged: "false"
-                  run_if_changed: "^development/tools/(cmd/.*|pkg/.*|Makefile|.*.sh)"
+                  run_if_changed: "^(go.mod|go.sum)$|^development/tools/(cmd/.*|pkg/.*|Makefile|.*.sh)"
                   labels:
                     preset-build-pr: "true"
                   command: "make"
@@ -52,8 +54,43 @@ templates:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
                     - "jobConfig_presubmit"
+                    - "pubsub_labels"
               - jobConfig:
-                  name: "pre-master-test-infra-validate-prow-jobs"
+                  name: "pre-main-test-infra-validate-image-url-helper"
+                  privileged: "false"
+                  run_if_changed: "^(go.mod|go.sum)$|^development/image-url-helper/(cmd/.*|pkg/.*|Makefile|.*.sh)"
+                  labels:
+                    preset-build-pr: "true"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "development/image-url-helper"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_presubmit"
+                    - "pubsub_labels"
+              - jobConfig:
+                  name: "pre-main-test-infra-validate-prowjobparser"
+                  privileged: "false"
+                  run_if_changed: "^(go.mod|go.sum)$|^development/prowjobparser/(.*.go|Makefile|.*.sh)"
+                  labels:
+                    preset-build-pr: "true"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "development/prowjobparser"
+                    - "validate"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_presubmit"
+                    - "pubsub_labels"
+              - jobConfig:
+                  name: "pre-main-test-infra-validate-prow-jobs"
                   privileged: "false"
                   run_if_changed: "^(development/tools/jobs|prow)" # Also for any changes in prow directory
                   labels:
@@ -68,9 +105,10 @@ templates:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
                     - "jobConfig_presubmit"
+                    - "pubsub_labels"
               - jobConfig:
-                  name: "pre-master-test-infra-validate-generated-files"
-                  run_if_changed: "^templates/|^prow/jobs/|^prow/config.yaml|^prow/scripts/|^development/tools/(cmd/rendertemplates/|jobs/releases/releases.go)"
+                  name: "pre-main-test-infra-validate-generated-files"
+                  run_if_changed: "^templates/|^prow/jobs/|^prow/config.yaml|^prow/scripts/|^development/tools/(cmd/rendertemplates/|pkg/rendertemplates/|jobs/releases/releases.go)|^prow/branchprotector-config.yaml"
                   labels:
                     preset-build-pr: "true"
                     preset-dind-enabled: "true"
@@ -80,8 +118,9 @@ templates:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
                     - "jobConfig_presubmit"
+                    - "pubsub_labels"
               - jobConfig:
-                  name: "pre-master-test-infra-validate-prow-installer-files"
+                  name: "pre-main-test-infra-validate-prow-installer-files"
                   run_if_changed: "^development/prow-installer/cmd/|^development/prow-installer/pkg/"
                   privileged: "false"
                   labels:
@@ -92,3 +131,19 @@ templates:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
                     - "jobConfig_presubmit"
+                    - "pubsub_labels"
+              - jobConfig:
+                  name: "pre-test-infra-validate-dockerfiles"
+                  run_if_changed: ".*Dockerfile$"
+                  command: "/bin/bash"
+                  args: 
+                    - "-c"
+                    - "shopt -s globstar;
+                      hadolint --config .hadolint.yaml --no-color **/Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "jobConfig_allBranches"
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_presubmit"
+                    - "pubsub_labels"

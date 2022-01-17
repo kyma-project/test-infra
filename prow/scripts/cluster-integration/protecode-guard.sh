@@ -35,7 +35,7 @@ PR_NAME="PR-${PULL_NUMBER}"
 echo "Protecode scan result for ${PR_NAME}:"
 
 counter=1
-limit=15
+limit=30
 while [ $counter -le $limit ]
 do
     log::banner "Attempt ${counter} of ${limit}"
@@ -50,9 +50,16 @@ do
     else
         log::warn "Some images contain security vulnerabilities"
         log::warn "For more details please check json output"
+
+        # check if all images were already scanned
+        images_in_queue=$(jq '.items | .[] | .scan | select(.status == "")' "$RESPONSE_FILE")
+        if [[ -z "$images_in_queue" ]]; then
+            # all images were scanned
+            exit 1
+        fi
     fi
 
-    sleep 10
+    sleep 15
 done
 
 log::error "Timeout reached - job failed"

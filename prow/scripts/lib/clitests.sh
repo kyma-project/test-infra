@@ -7,12 +7,12 @@ source "${LIBDIR}/log.sh"
 
 #
 # Get the path to the file containing the test steps.
-# @param Name of the test-stragey (will be mapped to test file).
+# @param Name of the test file.
 #
 clitests::getTestFile() {
-    local testSuite=$1
+    local testFile=$1
 
-    echo "${TESTDIR}/testsuite-${testSuite}.sh"
+    echo "${TESTDIR}/${testFile}.sh"
 }
 
 #
@@ -94,12 +94,12 @@ clitests::assertRemoteCommand() {
 
     # config values
     local interval=15
-    local retries=5
+    local retries=10
 
     date
     local output
     for loopCount in $(seq 1 $retries); do
-        output=$(gcloud compute ssh --quiet --zone="${zone}" "${host}" -- "$cmd")
+        output=$(gcloud compute ssh --ssh-key-file="${sshKeyFilePath:-/root/.ssh/user/google_compute_engine}" --verbosity="${gcloudSshLogLevel:-error}" --quiet --zone="${zone}" "${host}" --command="$cmd")
         cmdExitCode=$?
 
         # check return code and apply assertion (if defined)

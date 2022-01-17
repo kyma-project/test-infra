@@ -2,145 +2,47 @@ package main
 
 import (
 	"context"
-	"encoding/base64"
-	"encoding/json"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/client"
+	"github.com/google/go-containerregistry/pkg/authn"
+	"github.com/google/go-containerregistry/pkg/name"
+	"github.com/google/go-containerregistry/pkg/v1/remote"
+	"github.com/google/go-containerregistry/pkg/v1/remote/transport"
+	imagesyncer "github.com/kyma-project/test-infra/development/image-syncer/pkg"
+	"github.com/pkg/errors"
+	"github.com/sigstore/sigstore/pkg/signature"
+
 	"github.com/jamiealquiza/envy"
-	parser "github.com/novln/docker-parser"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v2"
 )
 
 var (
 	log = logrus.New()
 )
 
-// SyncDef stores synchronisation definition
-type SyncDef struct {
-	TargetRepoPrefix string `yaml:"targetRepoPrefix"`
-	Images           []Image
-}
-
-// Image stores image location
-type Image struct {
-	Source string
-}
-
 // Config stores command line arguments
 type Config struct {
 	ImagesFile    string
 	TargetKeyFile string
+	KeyRef        string
 	DryRun        bool
+	Debug         bool
 }
 
-func getAuthString(user, password string) (string, error) {
-	authConfig := types.AuthConfig{
-		Username: user,
-		Password: password,
-	}
-	encodedJSON, err := json.Marshal(authConfig)
-	if err != nil {
-		return "", err
-	}
-	return base64.URLEncoding.EncodeToString(encodedJSON), nil
-}
-
-func getImageIDAndRepoDigest(ctx context.Context, cli *client.Client, image string) (string, string, error) {
-	reader, err := cli.ImagePull(ctx, image, types.ImagePullOptions{})
-	if err != nil {
-		return "", "", fmt.Errorf("image pull failed: %w", err)
-	}
-	w := log.WriterLevel(logrus.DebugLevel)
-	defer w.Close()
-	io.Copy(w, reader)
-
-	details, _, err := cli.ImageInspectWithRaw(ctx, image)
-	if err != nil {
-		return "", "", fmt.Errorf("image inspection failed: %w", err)
-	}
-
-	ref, err := parser.Parse(image)
-	imageRepository := ref.Repository()
-
-	for _, url := range details.RepoDigests {
-		ref, err := parser.Parse(url)
-		if err != nil {
-			return "", "", fmt.Errorf("url parsing failed: %w", err)
-		}
-		if imageRepository == ref.Repository() {
-			return details.ID, ref.Tag(), nil
-		}
-	}
-
-	return "", "", fmt.Errorf("unable to find digest for '%s'", image)
-}
-
-func safeCopyImage(ctx context.Context, cli *client.Client, authString, source, target string, dryRun bool) error {
-	if source == "" {
-		return fmt.Errorf("source image can not be empty")
-	}
-	log.Infof("Source image: %s", source)
-	sourceID, sourceDigest, err := getImageIDAndRepoDigest(ctx, cli, source)
-	if err != nil {
-		return err
-	}
-	log.Infof("Source ID: %s", sourceID)
-	log.Infof("Source repo digest: %s", sourceDigest)
-
-	log.Infof("Target image: %s", target)
-	targetID, targetDigest, err := getImageIDAndRepoDigest(ctx, cli, target)
-	if isImageNotFoundError(err) {
-		log.Info("Target image does not exist")
-		if dryRun {
-			log.Info("Dry-run mode - tagging and pushing skipped")
-			return nil
-		}
-		if err = cli.ImageTag(ctx, source, target); err != nil {
-			return err
-		}
-		log.Info("Image re-tagged")
-		log.Info("Pushing to target repo")
-		reader, err := cli.ImagePush(ctx, target, types.ImagePushOptions{RegistryAuth: authString})
-		if err != nil {
-			return err
-		}
-		w := log.WriterLevel(logrus.DebugLevel)
-		defer w.Close()
-		io.Copy(w, reader)
-
-		log.Info("Image pushed successfully")
-	} else if err != nil {
-		return err
-	} else {
-		log.Infof("Target ID: %s", targetID)
-		log.Infof("Target repo digest: %s", targetDigest)
-		if sourceID != targetID {
-			return fmt.Errorf("source and target IDs are different - probably source image has been changed")
-		}
-		log.Info("Source and target IDs are the same, nothing to do")
-	}
-
-	return nil
-}
-
-//TODO: we should check for error type not match strings
-func isImageNotFoundError(err error) bool {
+func ifRefNotFound(err error) bool {
 	if err == nil {
 		return false
 	}
-	if strings.Index(err.Error(), "not found: manifest unknown") != -1 ||
-		strings.HasSuffix(err.Error(), "not found") {
-		return true
+	var e *transport.Error
+	if errors.As(err, &e) {
+		if e.StatusCode == 404 {
+			return true
+		}
 	}
 	return false
 }
@@ -158,47 +60,92 @@ func cancelOnInterrupt(ctx context.Context, cancel context.CancelFunc) {
 	}()
 }
 
-func copyImages(cfg Config) error {
+// test comment
+// SyncImage syncs specific image between two registries for current architecture.
+func SyncImage(ctx context.Context, src, dest string, dryRun bool, auth authn.Authenticator) (name.Reference, error) {
+	log.Debug("Source ", src)
+	log.Debug("Destination ", dest)
 
-	log.SetLevel(logrus.InfoLevel)
-
-	ctx, cancelFunc := context.WithCancel(context.Background())
-	defer cancelFunc()
-	cancelOnInterrupt(ctx, cancelFunc)
-
-	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	sr, err := name.ParseReference(src)
 	if err != nil {
-		return err
+		return nil, err
 	}
-
-	imagesFile, err := ioutil.ReadFile(cfg.ImagesFile)
+	dr, err := name.ParseReference(dest)
 	if err != nil {
-		return err
-	}
-	var syncDef SyncDef
-	if err := yaml.Unmarshal(imagesFile, &syncDef); err != nil {
-		return err
-	}
-	if syncDef.TargetRepoPrefix == "" {
-		return fmt.Errorf("TargetRepoPrefix can not be empty")
+		return nil, err
 	}
 
-	jsonKey, err := ioutil.ReadFile(cfg.TargetKeyFile)
+	s, err := remote.Image(sr, remote.WithContext(ctx))
 	if err != nil {
-		return err
+		return nil, fmt.Errorf("source image pull error: %w", err)
 	}
 
-	authString, err := getAuthString("_json_key", string(jsonKey))
+	d, err := remote.Image(dr, remote.WithContext(ctx), remote.WithAuth(auth))
 	if err != nil {
-		return err
+		if ifRefNotFound(err) {
+			log.Debug("Target image does not exist. Pushing image...")
+			if !dryRun {
+				err := remote.Write(dr, s, remote.WithContext(ctx), remote.WithAuth(auth))
+				if err != nil {
+					return nil, fmt.Errorf("push image error: %w", err)
+				}
+			} else {
+				log.Debug("Dry-Run enabled. Skipping push.")
+			}
+			return dr, nil
+		}
+		return nil, err
 	}
 
-	for _, image := range syncDef.Images {
-		err = safeCopyImage(ctx, cli, authString, image.Source, syncDef.TargetRepoPrefix+image.Source, cfg.DryRun)
+	ds, err := s.Digest()
+	if err != nil {
+		return nil, err
+	}
+	dd, err := d.Digest()
+	if err != nil {
+		return nil, err
+	}
+	log.Debug("Src digest: ", ds)
+	log.Debug("Dest digest: ", dd)
+	if ds != dd {
+		return nil, fmt.Errorf("digests are not equal: %v, %v - probably source image has been changed", ds, dd)
+	}
+	log.Debug("Digests are equal - nothing to sync")
+	return dr, nil
+}
+
+// SyncImages is a main syncing function that takes care of copying and signing/verifying images.
+func SyncImages(ctx context.Context, cfg *Config, images *imagesyncer.SyncDef, sv signature.SignerVerifier, authCfg []byte) error {
+	auth := &authn.Basic{Username: "_json_key", Password: string(authCfg)}
+	for _, img := range images.Images {
+		target, err := getTarget(img.Source, images.TargetRepoPrefix, img.Tag)
 		if err != nil {
 			return err
 		}
-		log.Info("------------------------")
+		log.WithField("image", img.Source).Info("Start sync")
+		targetImg, err := SyncImage(ctx, img.Source, target, cfg.DryRun, auth)
+		if err != nil {
+			return err
+		}
+		if shouldSign(images.Sign, img.Sign) {
+			log.Debug("Verifying image signature")
+			err = Verify(ctx, sv, targetImg, auth)
+			if err != nil {
+				if ifRefNotFound(err) {
+					// no signature found
+					log.Debug("Signature not found. Signing the image")
+					err := Sign(ctx, sv, targetImg, cfg.DryRun, auth)
+					if err != nil {
+						return fmt.Errorf("image sign error: %w", err)
+					}
+					log.Debug("Image signed successfully")
+				} else {
+					return fmt.Errorf("image verify error: %w", err)
+				}
+			}
+			log.Debug("Image signature verified successfully")
+		}
+		log.WithField("target", target).Info("Image synced successfully")
 	}
 	return nil
 }
@@ -212,18 +159,49 @@ func main() {
 		Short: "image-syncer copies images between docker registries",
 		Long:  `image-syncer copies docker images. It compares checksum between source and target and protects target images against overriding`,
 		Run: func(cmd *cobra.Command, args []string) {
-			if err := copyImages(cfg); err != nil {
-				log.Fatal(err)
+			logLevel := logrus.InfoLevel
+			if cfg.Debug {
+				logLevel = logrus.DebugLevel
+			}
+			log.SetLevel(logLevel)
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+			cancelOnInterrupt(ctx, cancel)
+
+			imagesFile, err := parseImagesFile(cfg.ImagesFile)
+			if err != nil {
+				log.WithError(err).Fatal("Could not parse images file")
+			}
+			authCfg, err := ioutil.ReadFile(cfg.TargetKeyFile)
+			if err != nil {
+				log.WithError(err).Fatal("Could not open target auth key JSON")
+			}
+
+			if cfg.DryRun {
+				log.Info("Dry-Run enabled. Program will not make any changes to the target repository.")
+			}
+
+			sv, err := NewKMSSignerVerifier(ctx, cfg.KeyRef)
+			if err != nil {
+				log.WithError(err).Fatal("Failed to create signer instance")
+			}
+			if err := SyncImages(ctx, &cfg, imagesFile, sv, authCfg); err != nil {
+				log.WithError(err).Fatal("Failed to sync images")
+			} else {
+				log.Info("All images synced successfully")
 			}
 		},
 	}
 
-	rootCmd.PersistentFlags().StringVarP(&cfg.ImagesFile, "images-file", "i", "", "yaml file containing list of images")
-	rootCmd.PersistentFlags().StringVarP(&cfg.TargetKeyFile, "target-key-file", "t", "", "JSON key file used for authorization to target repo")
-	rootCmd.PersistentFlags().BoolVarP(&cfg.DryRun, "dry-run", "d", true, "dry run mode")
+	rootCmd.PersistentFlags().StringVarP(&cfg.ImagesFile, "images-file", "i", "", "Specifies the path to the YAML file that contains list of images")
+	rootCmd.PersistentFlags().StringVarP(&cfg.TargetKeyFile, "target-repo-auth-key", "t", "", "Specifies the JSON key file used for authorization to the target repository")
+	rootCmd.PersistentFlags().StringVarP(&cfg.KeyRef, "kms-key", "k", "", "Specifies the path to KMS key resource (for example gcpkms://...)")
+	rootCmd.PersistentFlags().BoolVar(&cfg.DryRun, "dry-run", false, "Enables the dry-run mode")
+	rootCmd.PersistentFlags().BoolVar(&cfg.Debug, "debug", false, "Enables the debug mode")
 
 	rootCmd.MarkPersistentFlagRequired("images-file")
-	rootCmd.MarkPersistentFlagRequired("target-key-file")
+	rootCmd.MarkPersistentFlagRequired("target-repo-auth-key")
+	rootCmd.MarkPersistentFlagRequired("kms-key")
 	envy.ParseCobra(rootCmd, envy.CobraConfig{Prefix: "SYNCER", Persistent: true, Recursive: false})
 
 	if err := rootCmd.Execute(); err != nil {

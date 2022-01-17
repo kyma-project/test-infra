@@ -4,22 +4,22 @@ package releases
 
 // List of currently supported releases
 var (
-	Release121 = mustParse("1.21")
-	Release120 = mustParse("1.20")
-	Release119 = mustParse("1.19")
-	Release118 = mustParse("1.18")
+	Release20  = mustParse("2.0")
+	Release125 = mustParse("1.25")
+	Release124 = mustParse("1.24")
+	Release123 = mustParse("1.23")
 )
 
 // GetAllKymaReleases returns all supported kyma release branches
 func GetAllKymaReleases() []*SupportedRelease {
 	return []*SupportedRelease{
-		Release120,
-		Release119,
-		Release118,
+		Release125,
+		Release124,
+		Release123,
 	}
 }
 
 // GetNextKymaRelease returns the version of kyma currently under development
 func GetNextKymaRelease() *SupportedRelease {
-	return Release121
+	return Release20
 }

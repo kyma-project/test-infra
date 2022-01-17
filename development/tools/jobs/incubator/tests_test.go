@@ -4,8 +4,6 @@ import (
 	"path"
 	"testing"
 
-	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
-
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 )
@@ -17,73 +15,12 @@ var tests = []struct {
 	additionalOptions []jobsuite.Option
 }{
 	{
-		name:  "connector-tests",
+		name:  "compass-e2e-tests",
 		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
 			jobsuite.AllReleases(),
-		},
-	},
-	{
-		name:  "director",
-		image: tester.ImageBootstrapTestInfraLatest,
-		suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic-approach"),
-			jobsuite.CompassRepo(),
-		},
-	},
-	{
-		name:  "connectivity-adapter",
-		image: tester.ImageBootstrapTestInfraLatest,
-		suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("tests-generic"),
-			jobsuite.CompassRepo(),
-			jobsuite.AllReleases(),
-		},
-	},
-	{
-		name:  "ord-service",
-		image: tester.ImageBootstrapTestInfraLatest,
-		suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("tests-generic"),
-			jobsuite.CompassRepo(),
-			jobsuite.AllReleases(),
-		},
-	},
-	{
-		name:  "tenant-fetcher",
-		image: tester.ImageBootstrapTestInfraLatest,
-		suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("tests-generic"),
-			jobsuite.CompassRepo(),
-			jobsuite.AllReleases(),
-		},
-	},
-	{
-		name:  "system-broker",
-		image: tester.ImageBootstrapTestInfraLatest,
-		suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("tests-generic"),
-			jobsuite.CompassRepo(),
-			jobsuite.AllReleases(),
-		},
-	},
-	{
-		name:  "operations-controller",
-		image: tester.ImageBootstrapTestInfraLatest,
-		suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("tests-generic"),
-			jobsuite.CompassRepo(),
-			jobsuite.AllReleases(),
-			jobsuite.Since(releases.Release119),
 		},
 	},
 }

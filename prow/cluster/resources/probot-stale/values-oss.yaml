@@ -1,0 +1,30 @@
+deployment:
+  image: eu.gcr.io/kyma-project/test-infra/probot-stale:v20211223-7d9f748d
+  imagePullPolicy: IfNotPresent
+  config:
+    # https://probot.github.io/docs/configuration/
+    port: 8080
+    logLevel: info
+    webhookPath: /webhook
+    disableStats: true
+    appIDSecretName: probot-stale-oss
+    privateKeySecretName: probot-stale-oss
+    webhookSecretsSecretName: probot-stale-oss
+    githubHost: ""
+    githubProtocol: ""
+  resources: {}
+ingress:
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: stalebot-oss-ip
+    kubernetes.io/ingress.class: "gce"
+    networking.gke.io/managed-certificates: probot-stale-oss
+    networking.gke.io/v1beta1.FrontendConfig: "probot-stale-oss-frontend-config"
+  path: /*
+  host: stale-oss.build.kyma-project.io
+  frontendConfig:
+    name: probot-stale-oss-frontend-config
+    sslPolicy: custom-ssl-policy
+
+service:
+  type: NodePort
+  port: 80

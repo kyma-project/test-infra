@@ -21,8 +21,8 @@ tag-image: build-image
 # tag image with current tag
 .PHONY: tag-image
 tag-image:
-	@echo "___ Tagging as go1.15.7 ___"
-	docker tag $(IMG):$(DOCKER_TAG) $(IMG):go1.15.7
+	@echo "___ Tagging as go1.17.5 ___"
+	docker tag $(IMG):$(DOCKER_TAG) $(IMG):go1.17.5
 	@echo "___ Tagging as current ___"
 	docker tag $(IMG):$(DOCKER_TAG) $(IMG):current
 ifdef DOCKER_POST_PR_TAG
@@ -34,11 +34,11 @@ endif
 # build image and tag it with commit ID or PR number
 .PHONY: build-image
 build-image:
-	docker build -t $(IMG):$(DOCKER_TAG) --build-arg goVersion=1.15.7 --build-arg depReleaseTag=v0.5.4 --build-arg commit=$(DOCKER_TAG) .
+	docker build -t $(IMG):$(DOCKER_TAG) --build-arg commit=$(DOCKER_TAG) .
 
 
 # push image with all tags
 .PHONY: push-image
 push-image:
 	@echo "___ Pushing image with all tags ___"
-	docker push $(IMG)
+	docker push -a $(IMG)

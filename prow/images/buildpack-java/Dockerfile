@@ -1,6 +1,6 @@
 # Basic node buildpack
 
-FROM eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95
 
 # Commit details
 
@@ -20,10 +20,10 @@ ENV LANG C.UTF-8
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates p11-kit maven \
-    && apt-get clean; \
-    rm -rf /var/lib/apt/lists/*
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN wget -O openjdk.tgz "${JAVA_BASE_URL}x64_linux_hotspot_${JAVA_URL_VERSION}.tar.gz"
+RUN curl -fLSs -o openjdk.tgz "${JAVA_BASE_URL}x64_linux_hotspot_${JAVA_URL_VERSION}.tar.gz"
 
 RUN mkdir -p "$JAVA_HOME"; \
 	tar --extract \
@@ -36,8 +36,8 @@ RUN mkdir -p "$JAVA_HOME"; \
 	; \
     java -version
 
-    # Prow Tools
-
-    COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20201113-72ed0661 /prow-tools /prow-tools
-    # for better access to prow-tools
-    ENV PATH=$PATH:/prow-tools
+# Prow Tools
+# hadolint ignore=DL3022
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20210401-294e46e5 /prow-tools /prow-tools
+# for better access to prow-tools
+ENV PATH=$PATH:/prow-tools

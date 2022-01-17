@@ -18,8 +18,8 @@ push-image:
 .PHONY: ci-pr
 ci-pr: test build-image push-image
 
-.PHONY: ci-master
-ci-master: test build-image push-image
+.PHONY: ci-main
+ci-main: test build-image push-image
 
 .PHONY: ci-release
 ci-release: test build-image push-image

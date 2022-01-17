@@ -35,5 +35,5 @@ docker-push:
 
 # CI specified targets
 ci-pr: docker-build docker-push
-ci-master: docker-build docker-push
+ci-main: docker-build docker-push
 ci-release: docker-build docker-push

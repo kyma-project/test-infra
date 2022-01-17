@@ -18,10 +18,10 @@ import (
 )
 
 var (
-	project             = flag.String("project", "", "Project ID [Required]")
-	dryRun              = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
-	ageInHours          = flag.Int("ageInHours", 3, "Cluster age in hours. Clusters older than: now()-ageInHours are subject to removal.")
-	whitelistedClusters = flag.String("whitelisted-clusters", "", "Comma separated list of the whitelisted clusters that cannot be removed by cluster collector")
+	project          = flag.String("project", "", "Project ID [Required]")
+	dryRun           = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
+	ageInHours       = flag.Int("ageInHours", 3, "Cluster age in hours. Clusters older than: now()-ageInHours are subject to removal.")
+	excludedClusters = flag.String("excluded-clusters", "", "Comma separated list of the excluded clusters that cannot be removed by cluster collector")
 )
 
 func main() {
@@ -39,7 +39,7 @@ func main() {
 		os.Exit(2)
 	}
 
-	common.ShoutFirst("Running with arguments: project: \"%s\", dryRun: %t, ageInHours: %d, whitelisted clusters: %v", *project, *dryRun, *ageInHours, *whitelistedClusters)
+	common.ShoutFirst("Running with arguments: project: \"%s\", dryRun: %t, ageInHours: %d, excluded clusters: %v", *project, *dryRun, *ageInHours, *excludedClusters)
 	ctx := context.Background()
 
 	connection, err := google.DefaultClient(ctx, container.CloudPlatformScope)
@@ -58,12 +58,12 @@ func main() {
 
 	var clusterFilter clusterscollector.ClusterRemovalPredicate
 
-	whClustersMap := map[string]struct{}{}
-	for _, cl := range strings.Split(*whitelistedClusters, ",") {
-		whClustersMap[cl] = struct{}{}
+	exClustersMap := map[string]struct{}{}
+	for _, cl := range strings.Split(*excludedClusters, ",") {
+		exClustersMap[cl] = struct{}{}
 	}
 
-	clusterFilter = clusterscollector.TimeBasedClusterRemovalPredicate(whClustersMap)
+	clusterFilter = clusterscollector.TimeBasedClusterRemovalPredicate(exClustersMap)
 	log.Infof("Using time based filter strategy. Clusters will be filtered based on TTL, volatility, created-at timestamp and status\n")
 
 	gc := clusterscollector.NewClustersGarbageCollector(clusterAPI, clusterFilter)

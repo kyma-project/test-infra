@@ -1,0 +1,28 @@
+controller:
+  extraArgs:
+    default-ssl-certificate: kube-system/default-ssl-certificate
+  service:
+    annotations:
+      dns.gardener.cloud/class: garden
+      dns.gardener.cloud/dnsnames: "*.$DOMAIN_NAME.$GARDENER_KYMA_PROW_PROJECT_NAME.shoot.canary.k8s-hana.ondemand.com"
+  resources:
+    # limits:
+    #   cpu: 1000m
+    #   memory: 90Mi
+    requests:
+      cpu: 100m
+      memory: 110Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 11
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+  config:
+    worker-processes: "1"
+    http2-max-header-size: 64k
+    http2-max-field-size: 64k
+    client-header-buffer-size: 64k
+    large-client-header-buffers: 4 64k
+  proxySetHeaders:
+    Connection: "upgrade"

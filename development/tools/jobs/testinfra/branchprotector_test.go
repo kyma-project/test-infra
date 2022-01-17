@@ -24,24 +24,27 @@ func TestBranchProtection(t *testing.T) {
 		contexts     []string
 		approvals    int
 	}{
-		{"kyma-project", "kyma", "master", []string{"license/cla"}, 1},
-		{"kyma-project", "test-infra", "master", []string{"license/cla", "pre-master-test-infra-vpathguard"}, 1},
-		{"kyma-project", "website", "master", []string{"license/cla", "netlify/kyma-project/deploy-preview"}, 1},
-		{"kyma-project", "community", "master", []string{"license/cla"}, 1},
-		{"kyma-project", "console", "master", []string{"license/cla"}, 1},
-		{"kyma-project", "examples", "master", []string{"license/cla"}, 1},
-		{"kyma-project", "addons", "master", []string{"license/cla"}, 1},
-		{"kyma-project", "cli", "master", []string{"license/cla"}, 1},
-		{"kyma-project", "helm-broker", "master", []string{"license/cla"}, 1},
-		{"kyma-incubator", "varkes", "master", []string{"license/cla"}, 1},
-		{"kyma-incubator", "vstudio-extension", "master", []string{"license/cla"}, 1},
-		{"kyma-incubator", "service-catalog-tester", "master", []string{"license/cla"}, 1},
-		{"kyma-incubator", "gcp-service-broker", "master", []string{"license/cla"}, 1},
-		{"kyma-incubator", "podpreset-crd", "master", []string{"license/cla"}, 1},
-		{"kyma-incubator", "marketplaces", "master", []string{"license/cla"}, 1},
-		{"kyma-incubator", "compass", "master", []string{"license/cla"}, 1},
-		{"kyma-incubator", "documentation-component", "master", []string{"license/cla"}, 1},
-		{"kyma-incubator", "github-slack-connectors", "master", []string{"license/cla"}, 1},
+		{"kyma-project", "kyma", "main", []string{"license/cla", "tide"}, 1},
+		{"kyma-project", "test-infra", "main", []string{"license/cla", "tide"}, 1},
+		{"kyma-project", "website", "main", []string{"license/cla", "netlify/kyma-project/deploy-preview", "tide"}, 1},
+		{"kyma-project", "website", "archive-snapshots", []string{"license/cla", "netlify/kyma-project-old/deploy-preview", "tide"}, 1},
+		{"kyma-project", "community", "main", []string{"license/cla", "tide"}, 1},
+		{"kyma-project", "busola", "main", []string{"license/cla", "tide"}, 1},
+		{"kyma-project", "console", "main", []string{"license/cla", "tide"}, 1},
+		{"kyma-project", "examples", "main", []string{"license/cla", "tide"}, 1},
+		{"kyma-project", "addons", "main", []string{"license/cla", "tide"}, 1},
+		{"kyma-project", "cli", "main", []string{"license/cla", "tide"}, 1},
+		{"kyma-project", "helm-broker", "main", []string{"license/cla", "tide"}, 1},
+		{"kyma-incubator", "varkes", "main", []string{"license/cla", "tide"}, 1},
+		{"kyma-incubator", "vstudio-extension", "main", []string{"license/cla", "tide"}, 1},
+		{"kyma-incubator", "service-catalog-tester", "main", []string{"license/cla", "tide"}, 1},
+		{"kyma-incubator", "gcp-service-broker", "main", []string{"license/cla", "tide"}, 1},
+		{"kyma-incubator", "podpreset-crd", "main", []string{"license/cla", "tide"}, 1},
+		{"kyma-incubator", "marketplaces", "main", []string{"license/cla", "tide"}, 1},
+		{"kyma-incubator", "compass", "main", []string{"license/cla", "tide"}, 1},
+		{"kyma-incubator", "documentation-component", "main", []string{"license/cla", "tide"}, 1},
+		{"kyma-incubator", "github-slack-connectors", "main", []string{"license/cla", "tide"}, 1},
+		{"kyma-incubator", "kyma-showcase", "main", []string{"license/cla", "tide"}, 1},
 	}
 
 	for _, testcase := range testcases {
@@ -73,10 +76,7 @@ func TestBranchProtectionRelease(t *testing.T) {
 			assert.True(t, *p.Protect)
 			require.NotNil(t, p.RequiredStatusChecks)
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, "license/cla")
-			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-integration", relBranch))
-			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-integration", relBranch))
-			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-upgrade", relBranch))
-			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-artifacts", relBranch))
+			assert.Contains(t, p.RequiredStatusChecks.Contexts, "tide")
 		})
 	}
 
@@ -93,7 +93,7 @@ func generateStatusCheck(commonJobName, releaseBranch string) string {
 
 func readConfig(t *testing.T) config.Config {
 	// WHEN
-	f, err := os.Open("../../../../prow/branchprotector-config.yaml")
+	f, err := os.Open("../../../../prow/config.yaml")
 	// THEN
 	require.NoError(t, err)
 	defer f.Close()

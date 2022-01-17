@@ -1,0 +1,649 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 12,
+  "links": [],
+  "panels": [
+    {
+      "datasource": "bigquery-prow",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "displayMode": "auto",
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "k8s_pod_prow_k8s_io_job"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "color-text"
+              },
+              {
+                "id": "custom.align",
+                "value": null
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "stddev"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 145
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "max",
+                "value": 10
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "link"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "color-text"
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "test",
+                    "url": "${__data.fields.link.text}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "last_change"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "color-background"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "yellow",
+                      "value": null
+                    },
+                    {
+                      "color": "rgba(255, 255, 255, 0)",
+                      "value": 0
+                    },
+                    {
+                      "color": "green",
+                      "value": 0.1
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "last_change"
+            },
+            "properties": [
+              {
+                "id": "decimals",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "max_result"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Max"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "samples_cnt"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Nr of samples"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "k8s_pod_prow_k8s_io_job"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Job name"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "last_result"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Last result"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "last_timestamp"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Last timestamp"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "link"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Link"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "stddev"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "STDEV"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "min_result"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Min"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "last_change"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Last change"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "last_result"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 85
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "last_timestamp"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 190
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "samples_cnt"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 105
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "min_result"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 60
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "max_result"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 60
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "last_change"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "link"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 40,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 12,
+      "options": {
+        "frameIndex": 2,
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "Job name"
+          }
+        ]
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "convertToUTC": false,
+          "format": "table",
+          "group": [],
+          "location": "US",
+          "metricColumn": "none",
+          "orderByCol": "1",
+          "orderBySort": "1",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "rawSql": "WITH JOBS as (\nSELECT\n      MIN(CAST(REGEXP_EXTRACT(textPayload, r\"(\\d+\\.\\d+)\") AS float64)) AS val\n    , ANY_VALUE(labels.k8s_pod_prow_k8s_io_job) AS k8s_pod_prow_k8s_io_job\n    , MIN(timestamp) as timestamp\n  FROM `sap-kyma-prow.total_test_coverage.stdout`\n  GROUP BY resource.labels.pod_name\n  HAVING k8s_pod_prow_k8s_io_job NOT LIKE \"pre-%\"\n)\nSELECT a.k8s_pod_prow_k8s_io_job\n     , b.last_result\n     , b.last_timestamp\n     , a.samples_cnt\n     , a.min_result\n     , a.max_result\n     , ROUND(COALESCE((b.last_result - b.previous_result), 0),2) AS last_change\n     , format(\"https://status.build.kyma-project.io/job-history/kyma-prow-logs/logs/%s\", a.k8s_pod_prow_k8s_io_job)  as link\n     , a.stddev\n from \n( SELECT\n    k8s_pod_prow_k8s_io_job\n  , MIN(val) AS min_result\n  , MAX(val) AS max_result\n  , AVG(val) AS avg \n  , COUNT(*) AS samples_cnt\n  , MAX(timestamp) AS timestamp\n  , STDDEV_POP(val) AS stddev\nFROM JOBS\nGROUP BY k8s_pod_prow_k8s_io_job\nORDER BY k8s_pod_prow_k8s_io_job\n) a \nJOIN (SELECT \n   distinct(k8s_pod_prow_k8s_io_job) \n , FIRST_VALUE(val) OVER w1 AS last_result\n , FIRST_VALUE(timestamp) OVER w1 AS last_timestamp\n , NTH_VALUE(val,2) OVER w1 AS previous_result\nFROM JOBS\n WINDOW w1 AS (\n    PARTITION BY k8s_pod_prow_k8s_io_job ORDER BY timestamp DESC\n    ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)\n) b on a.k8s_pod_prow_k8s_io_job = b.k8s_pod_prow_k8s_io_job",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "-- value --"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "-- time --",
+          "timeColumnType": "TIMESTAMP",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "all-jobs",
+      "transformations": [],
+      "type": "table"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "bigquery-prow",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 20,
+        "w": 24,
+        "x": 0,
+        "y": 40
+      },
+      "hiddenSeries": false,
+      "id": 6,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": false
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": true,
+      "targets": [
+        {
+          "convertToUTC": false,
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "location": "US",
+          "metricColumn": "none",
+          "orderByCol": "1",
+          "orderBySort": "1",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "rawSql": "SELECT\n    MIN(CAST(REGEXP_EXTRACT(textPayload, r\"(\\d+\\.\\d+)\") as float64)) as result\n  , labels.k8s_pod_prow_k8s_io_job as metric\n  , max(timestamp) as timestamp\nFROM `sap-kyma-prow.total_test_coverage.stdout`\nWHERE $__timeFilter(timestamp)\nGROUP BY resource.labels.pod_name, labels.k8s_pod_prow_k8s_io_job\n--HAVING labels.k8s_pod_prow_k8s_io_job = \"pre-rafter\"\nHAVING labels.k8s_pod_prow_k8s_io_job not like \"pre-%\"\nORDER BY timestamp ASC",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "-- value --"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "-- time --",
+          "timeColumnType": "TIMESTAMP",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "single-job",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:174",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:175",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": "bigquery-prow",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "previous_result"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": null
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 18,
+        "w": 24,
+        "x": 0,
+        "y": 60
+      },
+      "id": 8,
+      "options": {
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "location": "US",
+          "metricColumn": "none",
+          "orderByCol": "1",
+          "orderBySort": "1",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "rawSql": "SELECT\n     distinct k8s_pod_prow_k8s_io_job\n   , FIRST_VALUE(val)\n       OVER w1 AS last_result\n   , NTH_VALUE(val,2)\n       OVER w1 AS previous_result\n   , FIRST_VALUE(timestamp)\n       OVER w1 AS last_timestamp\n   , NTH_VALUE(timestamp,2)\n       OVER w1 AS previous_timestamp\n   , format(\"https://status.build.kyma-project.io/job-history/kyma-prow-logs/logs/%s\", k8s_pod_prow_k8s_io_job)  as link\nFROM \n--`sap-kyma-prow.total_test_coverage.stdout`\n(\n  SELECT\n      MIN(CAST(REGEXP_EXTRACT(textPayload, r\"(\\d{1,2})\") as int64)) as val\n    , labels.k8s_pod_prow_k8s_io_job as k8s_pod_prow_k8s_io_job\n    , MAX(timestamp) as timestamp\n  FROM `sap-kyma-prow.total_test_coverage.stdout`\n  WHERE $__timeFilter(timestamp)\n  GROUP BY resource.labels.pod_name, labels.k8s_pod_prow_k8s_io_job\n) main\nwhere k8s_pod_prow_k8s_io_job not like 'pre%'\n--and k8s_pod_prow_k8s_io_job = \"post-master-hydroform\"\n  WINDOW w1 AS (\n    PARTITION BY k8s_pod_prow_k8s_io_job ORDER BY timestamp DESC\n    ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)\norder by 2 desc",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "-- value --"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "-- time --",
+          "timeColumnType": "TIMESTAMP",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "last-and-previous result",
+      "transformations": [
+        {
+          "id": "seriesToColumns",
+          "options": {
+            "byField": "Time"
+          }
+        }
+      ],
+      "type": "table"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 27,
+  "style": "light",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Test coverage",
+  "uid": "Sgc3OXlMz",
+  "version": 2
+}

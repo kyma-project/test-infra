@@ -30,7 +30,7 @@ Follow these basic rules when working with Prow in the `kyma-project` organizati
 - You cannot test Prow configuration locally on Minikube. Perform all tests on the cluster.
 - Avoid provisioning long-running clusters.
 - Test Prow configuration against your forked `kyma` repository.
-- Disable builds on the internal CI only after all CI functionalities are provided by Prow. This applies not only to the `master` branch but also to release branches.
+- Disable builds on the internal CI only after all CI functionalities are provided by Prow. This applies not only to the `main` branch but also to release branches.
 
 ### Project structure
 
@@ -66,7 +66,7 @@ Read [this](../docs/prow/prow-jobs.md) document to learn more about Prow job def
 
 ### Upload configuration to the production Prow cluster
 
-Prow configuration is automatically uploaded to the production cluster from the `master` branch by the **Config Updater** plugin.
+Prow configuration is automatically uploaded to the production cluster from the `main` branch by the **Config Updater** plugin.
 
 ### Configure branch protection
 

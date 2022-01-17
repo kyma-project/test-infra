@@ -1,4 +1,4 @@
-FROM golang:1.15.5-alpine3.12 AS builder
+FROM golang:1.17.5-alpine3.15 AS builder
 
 # Commit details
 
@@ -9,20 +9,18 @@ LABEL io.kyma-project.test-infra.commit=$commit
 WORKDIR /go/src/github.com/kyma-project/test-infra
 COPY . .
 
-RUN apk --update --no-cache add bash upx dep git && \
+RUN apk add --no-cache bash upx dep git && \
     development/tools/build-cleaners.sh && \
-    cd development/jobguard/ && CGO_ENABLED=0 go build -o /prow-tools/jobguard -ldflags="-s -w" cmd/jobguard/main.go && \
-    cd ../checker/ && CGO_ENABLED=0 go build -o /prow-tools/unique-jobs-name -ldflags="-s -w" unique-jobs-name/main.go
+    CGO_ENABLED=0 go build -o /prow-tools/jobguard -ldflags="-s -w" development/jobguard/cmd/jobguard/main.go && \
+    CGO_ENABLED=0 go build -o /prow-tools/unique-jobs-name -ldflags="-s -w" development/checker/unique-jobs-name/main.go &&\
+    CGO_ENABLED=0 go build -o /prow-tools/image-url-helper -ldflags="-s -w" development/image-url-helper/main.go
 
-ENV GOBIN=/prow-tools
-RUN cd development/checker && go get k8s.io/test-infra/prow/cmd/checkconfig@v0.0.0-20200320172837-fbc86f22b087
-
-FROM alpine:latest
+FROM alpine:3.15.0
 
 ARG commit
 ENV IMAGE_COMMIT=$commit
-LABEL IMAGE_COMMIT=$commit
-RUN apk --update --no-cache add ca-certificates bash
+LABEL io.kyma-project.test-infra.commit=$commit
+RUN apk add --no-cache ca-certificates bash
 COPY --from=builder /go/src/github.com/kyma-project/test-infra/development/tools/bin /prow-tools
 COPY --from=builder /prow-tools/* /prow-tools/
 WORKDIR /prow-tools

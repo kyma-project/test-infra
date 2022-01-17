@@ -67,18 +67,11 @@ Use the following tools and configuration:
     gcloud container clusters get-credentials $CLUSTER_NAME --zone=$ZONE --project=$PROJECT
   ```
 
-4. Export these environment variables:
+4. Export this environment variable:
 
   ```bash
-    export BUCKET_NAME=kyma-prow-secrets
-    export KEYRING_NAME=kyma-prow
-    export ENCRYPTION_KEY_NAME=kyma-prow-encryption
     export GOPATH=$GOPATH ### Ensure GOPATH is set
   ```
-where:
-   - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that stores Prow Secrets.
-   - **KEYRING_NAME** is the KMS key ring.
-   - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
 
 5. Run the following script to create a Kubernetes Secret resource in the main Prow cluster. This way the main Prow cluster can access the workload cluster:
 

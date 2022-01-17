@@ -7,42 +7,60 @@ This document also describes how to create and manage Grafana dashboards.
 
 Install the following tools:
 
-- Helm v2.11.0
 - kubectl
+- [jsonnet](https://jsonnet.org) and [jsonnet-bundler](https://github.com/jsonnet-bundler/jsonnet-bundler) installed
 
-## Configure Slack for failure notifications
+## Create dashboards configmaps
 
-Follow these steps:
+The steps assume you have completed the prerequisites.
 
-1. Create a Slack channel and an [Incoming Webhook](https://api.slack.com/incoming-webhooks) for this channel. Copy the resulting Webhook URL.
+1. Make sure your kubectl context is set to a correct cluster.
+2. Go to the [prow/cluster/components/monitoring](../../prow/cluster/components/monitoring) directory and run the command:
+```shell
+jb install
+```
+This will download all required dependencies for generating Grafana dashboards.
 
-2. Replace `{SLACK_URL}` with channel Weebhook URL and `{SLACK_CHANNEL}` with the channel name in [alertmanager-config.yaml](../../prow/cluster/resources/monitoring/alertmanager-config.yaml).
+2. Once the command is done, run the following commands:
+```shell
+make generate_dashboards
+make apply_configmaps
+```
+Those commands will generate json dashboards to the `dashboards_out` directory and apply them as configmaps to the kubernetes cluster.
 
-## Provision a monitoring chart
+3. Once everything is done, run `make clean` to remove the generated json files.
 
-Follow these steps:
+## Apply monitoring deployments
 
-1. Make sure that kubectl points to the correct cluster.
-   
-   ```bash
-   gcloud container clusters get-credentials {clusterName} --zone={zoneName} --project={projectName}
-   ```
+1. If needed, generate a new Grafana password with command `openssl rand -hex 12` and paste it as `password` value in the [`grafana_secret.yaml`](../../prow/cluster/components/monitoring/grafana_secret.yaml) file.
 
-2. Go to the [`prow/cluster`](../../prow/cluster) directory.
+2. Apply Prow namespace and Grafana deployment YAMLs in the following order:
+```
+prow_monitoring_namespace.yaml
+grafana_rbac.yaml
+grafana_configmaps.yaml
+grafana_secret.yaml
+grafana_deployment.yaml
+monitoring_kyma-prow_managedcertificate.yaml
+grafana_expose.yaml
+```
+This will create a Grafana instance that will be exposed under https://monitoring.build.kyma-project.io.
 
-3. Download dependencies:
-   
-   ```bash
-   helm dependency build resources/monitoring
-   ```
+3. Apply the Prometheus operator deployment YAMLs in the following order:
+```
+prometheus_operator_rbac.yaml
+prometheus_operator_deployment.yaml
+```
 
-4. Install the monitoring chart:
+4. Apply the Prow Prometheus configuration YAMLs in the following order:
+```
+prow_prometheus.yaml
+prow_servicemonitors.yaml
+prow_alertmanager.yaml
+prometheus_expose.yaml
+```
 
-   ```bash
-   helm install --name {releaseName} --namespace {namespaceName} resources/monitoring -f values.yaml,prometheus-config.yaml,alertmanager-config.yaml,grafana-config.yaml
-   ```
-
-5. Open the Grafana dashboard.
+5. After successfully applying the monitoring configuration files, open the Grafana dashboard.
    
    Grafana dashboard is available at `https://monitoring.build.kyma-project.io`. It can take some time till the dashboard is accessible.
 
@@ -50,10 +68,10 @@ Follow these steps:
 
 By default, Grafana dashboards are visible for anonymous users with the read-only access. Only authenticated users are able to create and edit dashboards. To sign in to Grafana, follow this steps:
 
-1. Get the password for the `admin` user from the cluster:
+1. The password will be set to the one from the `grafana_secret.yaml` you generated from the previous step one. Get the password for the `adm` user from the cluster:
 
    ```bash
-   kubectl -n {namespaceName} get secret {releaseName}-grafana -o jsonpath="{.data.admin-password}" | base64 -D
+   kubectl -n prow-monitoring get secret grafana -o jsonpath="{.data.password}" | base64 -D
    ```
 
 2. Go to `https://monitoring.build.kyma-project.io/login`.
@@ -61,7 +79,7 @@ By default, Grafana dashboards are visible for anonymous users with the read-onl
 3. Provide credentials:
 
    ```
-   Login: admin
+   Login: adm
    Password: {The value from step 1}
    ```
 

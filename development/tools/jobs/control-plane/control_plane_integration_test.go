@@ -20,7 +20,7 @@ func TestKCPIntegrationJobsPresubmit(t *testing.T) {
 		expNotRunIfChangedPaths []string
 	}{
 		"Should contain the control-plane-integration job": {
-			givenJobName: "pre-master-control-plane-integration",
+			givenJobName: "pre-main-control-plane-integration",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration",
@@ -55,10 +55,10 @@ func TestKCPIntegrationJobsPresubmit(t *testing.T) {
 			// the common expectation
 			assert.Equal(t, "github.com/kyma-project/control-plane", actualJob.PathAlias)
 			assert.Equal(t, tc.expRunIfChangedRegex, actualJob.RunIfChanged)
-			assert.True(t, actualJob.Decorate)
+
 			assert.False(t, actualJob.SkipReport)
 			assert.Equal(t, 10, actualJob.MaxConcurrency)
-			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "main")
 			tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 
 			// the job specific expectation
@@ -80,7 +80,7 @@ func TestKCPIntegrationJobsPostsubmit(t *testing.T) {
 		expPresets   []preset.Preset
 	}{
 		"Should contain the control-plane-integration job": {
-			givenJobName: "post-master-control-plane-integration",
+			givenJobName: "post-main-control-plane-integration",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",
@@ -100,12 +100,12 @@ func TestKCPIntegrationJobsPostsubmit(t *testing.T) {
 
 			// then
 			// the common expectation
-			assert.Equal(t, []string{"^master$"}, actualJob.Branches)
+			assert.Equal(t, []string{"^master$", "^main$"}, actualJob.Branches)
 			assert.Equal(t, 10, actualJob.MaxConcurrency)
 			assert.Equal(t, "", actualJob.RunIfChanged)
-			assert.True(t, actualJob.Decorate)
+
 			assert.Equal(t, "github.com/kyma-project/control-plane", actualJob.PathAlias)
-			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "main")
 			tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 
 			// the job specific expectation

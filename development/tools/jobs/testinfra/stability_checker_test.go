@@ -15,15 +15,15 @@ func TestStabilityCheckerJobsPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"}), "pre-master-stability-checker", "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"}), "pre-main-stability-checker", "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
-	assert.True(t, actualPresubmit.Decorate)
+
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoKyma, preset.GcrPush)
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "stability-checker/fix"))
 	assert.Equal(t, "^stability-checker/", actualPresubmit.RunIfChanged)
-	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpack1_14, "/home/prow/go/src/github.com/kyma-project/test-infra/stability-checker", "ci-release")
+	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpack1_16, "/home/prow/go/src/github.com/kyma-project/test-infra/stability-checker", "ci-release")
 }
 
 func TestStabilityCheckerJobPostsubmit(t *testing.T) {
@@ -32,16 +32,16 @@ func TestStabilityCheckerJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	expName := "post-master-stability-checker"
+	expName := "post-main-stability-checker"
 	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/test-infra"}), expName, "master")
 	require.NotNil(t, actualPost)
 
 	assert.Equal(t, expName, actualPost.Name)
-	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
+	assert.Equal(t, []string{"^master$", "^main$"}, actualPost.Branches)
 
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
-	assert.True(t, actualPost.Decorate)
+
 	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoKyma, preset.GcrPush)
 	assert.Equal(t, "^stability-checker/", actualPost.RunIfChanged)
-	tester.AssertThatExecGolangBuildpack(t, actualPost.JobBase, tester.ImageGolangBuildpack1_14, "/home/prow/go/src/github.com/kyma-project/test-infra/stability-checker", "ci-release")
+	tester.AssertThatExecGolangBuildpack(t, actualPost.JobBase, tester.ImageGolangBuildpack1_16, "/home/prow/go/src/github.com/kyma-project/test-infra/stability-checker", "ci-release")
 }

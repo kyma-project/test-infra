@@ -15,9 +15,9 @@ The structure of the folder looks as follows:
   ├── kind                                        # Resources and configuration for the kind cluster
   ├── lib                                         # Helper bash scripts for creating pipelines
   ├── resources                                   # Files used directly by pipelines
-  ├── governance.sh                               # This script runs the "milv" bot for validating internal and external links in Markdown files. It checks all internal and external links in ".md" files changed in PRs. It also checks all links on the master branch once a day.
+  ├── governance.sh                               # This script runs the "milv" bot for validating internal and external links in Markdown files. It checks all internal and external links in ".md" files changed in PRs. It also checks all links on the main branch once a day.
   ├── provision-vm-and-start-kyma-minikube.sh     # This script starts a virtual machine as part of the integration job and runs integration tests for Kyma on Minikube.
-  ├── provision-vm-and-start-kyma-k3s.sh          # This script starts a virtual machine as part of the integration job and runs fast integration tests for Kyma on k3s.
+  ├── provision-vm-and-start-kyma-k3d.sh          # This script starts a virtual machine as part of the integration job and runs fast integration tests for Kyma on k3d.
   ├── validate-config.sh                          # This script runs the "Checker" application and checks the uniqueness of jobs names.
   ├── validate-scripts.sh                         # This script performs a static analysis of bash scripts in the "test-infra" repository.
   └── publish-buildpack.sh                        # This script builds and pushes Docker images for test infrastructure by running the respective "Makefile" target.

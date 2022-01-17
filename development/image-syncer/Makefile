@@ -9,8 +9,8 @@ validate:
 .PHONY: ci-pr
 ci-pr: validate
 
-.PHONY: ci-master
-ci-master: validate
+.PHONY: ci-main
+ci-main: validate
 
 .PHONY: ci-release
 ci-release: validate
@@ -21,8 +21,8 @@ clean:
 	rm -f logs-printer
 .PHONY: dry-run
 dry-run:
-	go run main.go --dry-run=true --images-file external-images.yaml --target-key-file="${GOOGLE_APPLICATION_CREDENTIALS}"
+	go run . --dry-run --debug --images-file external-images.yaml --target-repo-auth-key="${GOOGLE_APPLICATION_CREDENTIALS}" --kms-key="${KMS_KEY_URL}"
 
 .PHONY: run
 run:
-	go run main.go --dry-run=false --images-file external-images.yaml --target-key-file="${GOOGLE_APPLICATION_CREDENTIALS}"
+	go run . --images-file external-images.yaml --target-repo-auth-key="${GOOGLE_APPLICATION_CREDENTIALS}" --kms-key="${KMS_KEY_URL}"

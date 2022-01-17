@@ -27,7 +27,7 @@ SELECT
    , NTH_VALUE(timestamp, 2)
        OVER w1 AS previous_timestamp
    , format("https://status.build.kyma-project.io/?job=%s", k8s_pod_prow_k8s_io_job)  as link
-FROM 
+FROM
 (
   SELECT
       MIN(CAST(REGEXP_EXTRACT(textPayload, r"(\d{1,2})") as int64)) as val
@@ -49,9 +49,9 @@ You can check this report [here](https://datastudio.google.com/open/1TmjzxgO8yTG
 
 ## Bugs and regression metrics
 
-[GithubStats application](https://github.com/kyma-project/test-infra/tree/master/development/tools/cmd/githubstats) 
+[GithubStats application](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/githubstats) 
 is used to gather data on bugs and regressions. It is executed as a [Prow job](https://status.build.kyma-project.io/?job=github-stats) once a day. The data are grabbed by Stackdriver export and forwarded to BigQuery.
-A JSON object is automatically flattened into multiple columns. 
+A JSON object is automatically flattened into multiple columns.
 
 The Prow job creates the following output:
 ```
@@ -83,7 +83,7 @@ The Prow job creates the following output:
 The following SQL statement pre-formats the data:
 
 ```
-select 
+select
     CAST(jsonPayload.issues.open.totalcount as int64) as open
   , CAST(jsonPayload.issues.closed.totalcount as int64) as closed
   , CAST(jsonPayload.issues.open.bugs as int64) as open_bugs
@@ -92,7 +92,7 @@ select
   , jsonPayload.timestamp
   , CONCAT(jsonPayload.owner, "/", jsonPayload.repository) as repository
 from `sap-kyma-prow.stats_github.stdout`
-order by jsonPayload.timestamp desc	
+order by jsonPayload.timestamp desc
 ```
 
 This query is used as a data source for a report created in DataStudio.

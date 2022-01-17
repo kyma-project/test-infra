@@ -4,6 +4,12 @@
 presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-test-infra-validate-scripts
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-validate-scripts"
+        prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^(development/.*.sh$|prow/.*.sh$)'
       skip_report: false
       decorate: true
@@ -11,7 +17,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
             command:
               - "prow/scripts/validate-scripts.sh"
             resources:
@@ -19,6 +25,12 @@ presubmits: # runs on PRs
                 memory: 1.5Gi
                 cpu: 0.8
     - name: pre-test-infra-validate-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-validate-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^prow/((plugins|config).yaml|jobs/)'
       skip_report: false
       decorate: true
@@ -26,30 +38,36 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:current"
+          - image: "gcr.io/k8s-prow/checkconfig:v20211217-ba1f318049"
             command:
-              - "prow/scripts/validate-config.sh"
+              - "/app/prow/cmd/checkconfig/app.binary"
             args:
-              - "prow/plugins.yaml"
-              - "prow/config.yaml"
-              - "prow/jobs"
+              - "--plugin-config=prow/plugins.yaml"
+              - "--config-path=prow/config.yaml"
+              - "--job-config-path=prow/jobs"
             resources:
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-master-test-infra-validate-prow-tools
+    - name: pre-main-test-infra-validate-prow-tools
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-test-infra-validate-prow-tools"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
-      run_if_changed: '^development/tools/(cmd/.*|pkg/.*|Makefile|.*.sh)'
+      run_if_changed: '^(go.mod|go.sum)$|^development/tools/(cmd/.*|pkg/.*|Makefile|.*.sh)'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: false
             command:
@@ -60,10 +78,98 @@ presubmits: # runs on PRs
               - "validate"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
-    - name: pre-master-test-infra-validate-prow-jobs
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pre-main-test-infra-validate-image-url-helper
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-test-infra-validate-image-url-helper"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+      run_if_changed: '^(go.mod|go.sum)$|^development/image-url-helper/(cmd/.*|pkg/.*|Makefile|.*.sh)'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+            securityContext:
+              privileged: false
+            command:
+              - "make"
+            args:
+              - "-C"
+              - "development/image-url-helper"
+              - "ci-pr"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pre-main-test-infra-validate-prowjobparser
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-test-infra-validate-prowjobparser"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+      run_if_changed: '^(go.mod|go.sum)$|^development/prowjobparser/(.*.go|Makefile|.*.sh)'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+            securityContext:
+              privileged: false
+            command:
+              - "make"
+            args:
+              - "-C"
+              - "development/prowjobparser"
+              - "validate"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pre-main-test-infra-validate-prow-jobs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-test-infra-validate-prow-jobs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
       run_if_changed: '^(development/tools/jobs|prow)'
       skip_report: false
@@ -72,9 +178,10 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: false
             command:
@@ -85,32 +192,57 @@ presubmits: # runs on PRs
               - "jobs-tests"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
-    - name: pre-master-test-infra-validate-generated-files
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pre-main-test-infra-validate-generated-files
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-test-infra-validate-generated-files"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
-      run_if_changed: '^templates/|^prow/jobs/|^prow/config.yaml|^prow/scripts/|^development/tools/(cmd/rendertemplates/|jobs/releases/releases.go)'
+      run_if_changed: '^templates/|^prow/jobs/|^prow/config.yaml|^prow/scripts/|^development/tools/(cmd/rendertemplates/|pkg/rendertemplates/|jobs/releases/releases.go)|^prow/branchprotector-config.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-generated.sh"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
-    - name: pre-master-test-infra-validate-prow-installer-files
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pre-main-test-infra-validate-prow-installer-files
+      annotations:
+        pipeline.trigger: "pr-submit"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-test-infra-validate-prow-installer-files"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
       run_if_changed: '^development/prow-installer/cmd/|^development/prow-installer/pkg/'
       skip_report: false
@@ -119,13 +251,45 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
             securityContext:
               privileged: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow-installer/before-commit.sh"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pre-test-infra-validate-dockerfiles
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-validate-dockerfiles"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '.*Dockerfile$'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
+            command:
+              - "/bin/bash"
+            args:
+              - "-c"
+              - "shopt -s globstar; hadolint --config .hadolint.yaml --no-color **/Dockerfile"
             resources:
               requests:
                 memory: 1.5Gi

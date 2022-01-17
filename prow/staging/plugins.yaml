@@ -25,12 +25,6 @@ config_updater:
       name: plugins
     prow/staging/jobs/**/*.yaml:
       name: job-config
-    prow/staging/labels.yaml:
-      name: label-config
-      clusters:
-        workload-cluster:
-          - test-pods
-
 trigger:
   - repos:
      - kyma-test-infra-dev

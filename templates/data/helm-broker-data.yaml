@@ -10,7 +10,7 @@ templates:
           - repoName: kyma-project/helm-broker
             jobs:
               - jobConfig:
-                  name: pre-master-helm-broker
+                  name: pre-main-helm-broker
                   always_run: true
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
                   args:
@@ -24,13 +24,14 @@ templates:
                     - image_buildpack-golang-kubebuilder2
                     - build_labels
               - jobConfig:
-                  name: post-master-helm-broker
+                  name: post-main-helm-broker
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/helm-broker"
                     - "ci-master"
                   labels:
                     preset-bot-github-token: "true"
+                    preset-kyma-kms-sign-key: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -40,7 +41,7 @@ templates:
                     - image_buildpack-golang-kubebuilder2
                     - build_labels
               - jobConfig:
-                  name: pre-master-helm-broker-chart-test
+                  name: pre-main-helm-broker-chart-test
                   always_run: true
                   env:
                     RUN_ON_PROW: "true"

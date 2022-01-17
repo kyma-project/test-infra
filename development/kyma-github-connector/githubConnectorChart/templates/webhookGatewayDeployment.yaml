@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-webhook-gateway
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.global.appName | quote }}
+    release: {{ .Release.Name | quote }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.global.appName }}
+      release: {{ .Release.Name | quote }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.global.appName | quote }}
+        release: {{ .Release.Name | quote }}
+    spec:
+      containers:
+      - name: webhookgateway
+        imagePullPolicy: Always
+        image: {{ .Values.global.webhookGateway.image }}
+        resources:
+          limits:
+            memory: {{ .Values.global.webhookGateway.resources.limits.memory }}
+            cpu: {{ .Values.global.webhookGateway.resources.limits.cpu }}
+        ports:
+        - containerPort: {{ .Values.global.webhookGateway.containerPort }}
+        env:
+        - name: GITHUB_WEBHOOK_GATEWAY_NAME
+          value: {{ .Release.Name }}-github-webhook-gateway
+        - name: GITHUB_WEBHOOK_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-webhook-secret
+              key: webhookSecret
+        - name: EVENTING_SERVICE
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-webhook-gateway-config
+              key: kymaEventingProxy
+        - name: LISTEN_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-webhook-gateway-config
+              key: listenPort
+        - name: TARGET_EVENTING_APP_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-webhook-gateway-config
+              key: eventingTargetAppName
+        - name: APP_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-webhook-gateway-config
+              key: appName
+        - name: GITHUB_WEBHOOK_URL_PATH
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-webhook-gateway-config
+              key: githubWebhookUrlPath

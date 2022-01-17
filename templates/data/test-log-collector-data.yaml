@@ -12,8 +12,8 @@ templates:
           - repoName: "github.com/kyma-project/test-infra"
             jobs:
               - jobConfig:
-                  name: "pre-master-test-log-collector"
-                  run_if_changed: "^development/test-log-collector/"
+                  name: "pre-main-test-log-collector"
+                  run_if_changed: "^(go.mod|go.sum)$|^development/test-log-collector/"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -23,7 +23,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "post-master-test-log-collector"
+                  name: "post-main-test-log-collector"
                   run_if_changed: "^development/test-log-collector/"
                 inheritedConfigs:
                   global:

@@ -13,6 +13,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/gardener/gardener.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
 
 #!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
 gardener::cleanup() {
@@ -26,14 +28,20 @@ gardener::cleanup() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
+    # describe nodes to file in artifacts directory
     utils::describe_nodes
 
-    # copy oom debug pod output to artifacts directory
-    kubectl cp default/oom-debug:/var/oom_debug "${ARTIFACTS}/oom_debug.txt"
+    if [ "${DEBUG_COMMANDO_OOM}" = "true" ]; then
+      # copy output from debug container to artifacts directory
+      utils::oom_get_output
+    fi
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
-        utils::deprovision_gardener_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
+        gardener::deprovision_cluster \
+            -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+            -c "${CLUSTER_NAME}" \
+            -f "${GARDENER_KYMA_PROW_KUBECONFIG}"
     fi
 
     MSG=""
@@ -71,17 +79,33 @@ gardener::generate_overrides() {
 
 gardener::provision_cluster() {
     log::info "Provision cluster: \"${CLUSTER_NAME}\""
+    if [ "${#CLUSTER_NAME}" -gt 9 ]; then
+        log::error "Provided cluster name is too long"
+        return 1
+    fi
 
     CLEANUP_CLUSTER="true"
-    (
-    set -x
-    kyma provision gardener aws \
-            --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
-            --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
-            --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
-            --scaler-max 4 --scaler-min 2 \
-            --kube-version="${GARDENER_CLUSTER_VERSION}"
-    )
+      # enable trap to catch kyma provision failures
+      trap gardener::reprovision_cluster ERR
+      # decreasing attempts to 2 because we will try to create new cluster from scratch on exit code other than 0
+      kyma provision gardener aws \
+        --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" \
+        --name "${CLUSTER_NAME}" \
+        --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+        --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
+        --region "${GARDENER_REGION}" \
+        -z "${GARDENER_ZONES}" \
+        -t "${MACHINE_TYPE}" \
+        --scaler-max 4 \
+        --scaler-min 2 \
+        --kube-version="${GARDENER_CLUSTER_VERSION}" \
+        --attempts 2
+    # trap cleanup we want other errors fail pipeline immediately
+    trap - ERR
+    if [ "$DEBUG_COMMANDO_OOM" = "true" ]; then
+    # run oom debug pod
+        utils::debug_oom
+    fi
 }
 
 gardener::install_kyma() {
@@ -107,6 +131,26 @@ gardener::test_fast_integration_kyma() {
     return
 }
 
+gardener::pre_upgrade_test_fast_integration_kyma() {
+    log::info "Running pre-upgrade Kyma Fast Integration tests"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    make ci-pre-upgrade
+    popd
+
+    log::success "Tests completed"
+}
+
+gardener::post_upgrade_test_fast_integration_kyma() {
+    log::info "Running post-upgrade Kyma Fast Integration tests"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    make ci-post-upgrade
+    popd
+
+    log::success "Tests completed"
+}
+
 gardener::test_kyma() {
     log::info "Running Kyma tests"
 
@@ -126,11 +170,9 @@ gardener::test_kyma() {
 
     # collect logs from failed tests before deprovisioning
     kyma::run_test_log_collector "kyma-integration-gardener-aws"
-    if ! kyma::test_summary; then
-      log::error "Tests have failed"
-      set -e
-      return 1
-    fi
+
+    kyma::test_summary \
+        -s "$SUITE_NAME"
     set -e
-    log::success "Tests completed"
+    return "${kyma_test_summary_return_exit_code:?}"
 }

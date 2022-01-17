@@ -1,0 +1,15 @@
+functionEnabled: true
+# Forwarded event type
+eventType: "issuesevent.labeled.v1"
+#
+subscriptionAppName: "github-connector"
+#
+subscriptionServiceName: "issuesevent-labeled-v1"
+#
+subscriptionServiceNamespace: "slack-connector"
+# Slack channel name to send messages.
+notificationSlackChannel: "kyma-team"
+# Path to directory with function code. Relative to repository root.
+functionBaseDir: "/development/kyma-slack-connector/issueLabeledFunction"
+# Branch name with function code.
+branch: "main"

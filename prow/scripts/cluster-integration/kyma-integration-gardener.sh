@@ -33,6 +33,10 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
+# shellcheck source=prow/scripts/cluster-integration/helpers/integration-tests.sh
+source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/integration-tests.sh"
+# shellcheck source=prow/scripts/lib/gardener/gardener.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
 
 # All provides require these values, each of them may check for additional variables
 requiredVars=(
@@ -70,12 +74,11 @@ trap gardener::cleanup EXIT INT
 ERROR_LOGGING_GUARD="true"
 export ERROR_LOGGING_GUARD
 
-RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
 readonly COMMON_NAME_PREFIX="grd"
-COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+utils::generate_commonName -n "${COMMON_NAME_PREFIX}"
+COMMON_NAME="${utils_generate_commonName_return_commonName:?}"
 export COMMON_NAME
 
-### Cluster name must be less than 10 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
 
 # set KYMA_SOURCE used by gardener::install_kyma
@@ -97,8 +100,8 @@ else
         KYMA_SOURCE="${COMMIT_ID}"
         export KYMA_SOURCE
     else
-        # periodic job, so default to master
-        KYMA_SOURCE="master"
+        # periodic job, so default to main
+        KYMA_SOURCE="main"
         export KYMA_SOURCE
     fi
 fi
@@ -111,20 +114,36 @@ gardener::set_machine_type
 
 kyma::install_cli
 
-# currently only Azure generates overrides, but this may chaneg in the future
+# currently only Azure generates overrides, but this may change in the future
 gardener::generate_overrides
 
 gardener::provision_cluster
 
-# run oom debug pod
-kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/debug-container.yaml"
-
 # uses previously set KYMA_SOURCE
-gardener::install_kyma
-
+if [[ "${KYMA_MAJOR_VERSION}" == "2" ]]; then
+  kyma::deploy_kyma \
+    -p "$EXECUTION_PROFILE" \
+    -s "$KYMA_SOURCES_DIR"
+  if [[ "${KYMA_DELETE}" == "true" ]]; then
+    sleep 30
+    kyma::undeploy_kyma
+    sleep 30
+    kyma::deploy_kyma \
+       -p "$EXECUTION_PROFILE" \
+       -s "$KYMA_SOURCES_DIR"
+  fi
+# this will be extended with the next components
+elif [[ "${API_GATEWAY_INTEGRATION}" == "true" ]]; then
+  api-gateway::prepare_components_file
+  integration_tests::install_kyma
+  api-gateway::deploy_login_consent_app
+else
+  gardener::install_kyma
+fi
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
+
 
 if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
     gardener::hibernate_kyma
@@ -132,8 +151,14 @@ if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
     gardener::wake_up_kyma
 fi
 
+
 if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
     gardener::test_fast_integration_kyma
+# this will be extended with the next components
+elif [[ "${API_GATEWAY_INTEGRATION}" == "true" ]]; then
+    api-gateway::configure_ory_hydra
+    api-gateway::prepare_test_environments
+    api-gateway::launch_tests
 else
     # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
     if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
@@ -141,6 +166,7 @@ else
     fi
     gardener::test_kyma
 fi
+
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"

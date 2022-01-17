@@ -13,10 +13,10 @@ readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "${SCRIPT_DIR}/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${SCRIPT_DIR}/lib/utils.sh"
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${SCRIPT_DIR}/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${SCRIPT_DIR}/lib/docker.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$SCRIPT_DIR/lib/gcp.sh"
 
 requiredVars=(
     DOCKER_PUSH_REPOSITORY
@@ -34,12 +34,12 @@ function export_variables() {
    if [[ -n "${PULL_NUMBER}" ]]; then
         DOCKER_TAG="PR-${PULL_NUMBER}-${COMMIT_ID}"
         BUCKET_DIR="PR-${PULL_NUMBER}"
-   elif [[ "${PULL_BASE_REF}" != "master" ]]; then
+   elif [[ "${PULL_BASE_REF}" == "master" || "${PULL_BASE_REF}" == "main" ]]; then
+        DOCKER_TAG="main-${COMMIT_ID}-${CURRENT_TIMESTAMP}"
+        BUCKET_DIR="main-${COMMIT_ID}"
+   else
         DOCKER_TAG="${PULL_BASE_REF}"
         SKIP_ARTIFACT_UPLOAD=true
-   else
-        DOCKER_TAG="master-${COMMIT_ID}-${CURRENT_TIMESTAMP}"
-        BUCKET_DIR="master-${COMMIT_ID}"
    fi
 
    readonly DOCKER_TAG
@@ -52,13 +52,14 @@ function export_variables() {
    export BUCKET_DIR
 }
 
-gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+gcp::authenticate \
+     -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 export_variables
 
-# installer ci-pr, ci-master, kyma-installer ci-pr, ci-master
+# installer ci-pr, ci-main, kyma-installer ci-pr, ci-main
 #   DOCKER_TAG - calculated in export_variables
-#   DOCKER_PUSH_DIRECTORY, preset-build-master, preset-build-pr
+#   DOCKER_PUSH_DIRECTORY, preset-build-main, preset-build-pr
 #   DOCKER_PUSH_REPOSITORY - preset-docker-push-repository
 export COMPASS_PATH="/home/prow/go/src/github.com/kyma-incubator/compass"
 buildTarget="release"
@@ -86,7 +87,8 @@ ls -la "${ARTIFACTS}"
 log::info "Switch to a different service account to push to GCS bucket"
 
 export GOOGLE_APPLICATION_CREDENTIALS=/etc/credentials/sa-kyma-artifacts/service-account.json
-gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+gcp::authenticate \
+     -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 log::info "Copy artifacts to ${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}"
 gsutil cp  "${ARTIFACTS}/compass-installer.yaml" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/compass-installer.yaml"
@@ -94,10 +96,10 @@ gsutil cp  "${ARTIFACTS}/kyma-installer.yaml" "${COMPASS_DEVELOPMENT_ARTIFACTS_B
 gsutil cp  "${COMPASS_PATH}/installation/scripts/is-installed.sh" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/is-installed.sh"
 gsutil cp  "${ARTIFACTS}/is-kyma-installed.sh" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/is-kyma-installed.sh"
 
-if [[ "${BUILD_TYPE}" == "master" ]]; then
-  log::info "Copy artifacts to ${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
-  gsutil cp "${ARTIFACTS}/compass-installer.yaml" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/master/compass-installer.yaml"
-  gsutil cp  "${ARTIFACTS}/is-kyma-installed.sh" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/master/is-kyma-installed.sh"
-  gsutil cp  "${COMPASS_PATH}/installation/scripts/is-installed.sh" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/master/is-installed.sh"
-  gsutil cp  "${ARTIFACTS}/kyma-installer.yaml" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-installer.yaml"
+if [[ "${BUILD_TYPE}" == "master" || "${BUILD_TYPE}" == "main" ]]; then
+  log::info "Copy artifacts to ${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/main"
+  gsutil cp "${ARTIFACTS}/compass-installer.yaml" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/main/compass-installer.yaml"
+  gsutil cp  "${ARTIFACTS}/is-kyma-installed.sh" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/main/is-kyma-installed.sh"
+  gsutil cp  "${COMPASS_PATH}/installation/scripts/is-installed.sh" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/main/is-installed.sh"
+  gsutil cp  "${ARTIFACTS}/kyma-installer.yaml" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/main/kyma-installer.yaml"
 fi

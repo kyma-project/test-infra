@@ -15,3 +15,10 @@ files:
   - path: "./test-infra/docs/prow/prow-architecture.md"
     config:
       external-links-to-ignore: ["https://status.build.kyma-project.io/hook"]
+  - path: "./test-infra/docs/prow/prow-monitoring.md"
+    config:
+      external-links-to-ignore: ["https://monitoring.build.kyma-project.io/login", "https://monitoring.build.kyma-project.io"]
+  - path: "./test-infra/prow/cluster/resources/external-secrets/README.md"
+    config:
+      external-links-to-ignore: ["https://external-secrets.github.io/kubernetes-external-secrets"]
+

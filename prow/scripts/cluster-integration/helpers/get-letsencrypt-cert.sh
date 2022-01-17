@@ -12,8 +12,8 @@ set -o errexit
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
-# shellcheck source=prow/scripts/lib/gcloud.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcp.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
@@ -22,13 +22,19 @@ function generateLetsEncryptCert() {
 
     log::info "Encrypting certs"
 
-    gcloud::encrypt \
-        "./letsencrypt/live/${DOMAIN}/privkey.pem"  \
-        "./letsencrypt/live/${DOMAIN}/${DOMAIN}.key.encrypted"
+    gcp::encrypt \
+        -t "./letsencrypt/live/${DOMAIN}/privkey.pem"  \
+        -c "./letsencrypt/live/${DOMAIN}/${DOMAIN}.key.encrypted" \
+        -e "$KYMA_ENCRYPTION_KEY" \
+        -k "$KYMA_KEYRING" \
+        -p "$CLOUDSDK_KMS_PROJECT"
 
-    gcloud::encrypt \
-        "./letsencrypt/live/${DOMAIN}/fullchain.pem"  \
-        "./letsencrypt/live/${DOMAIN}/${DOMAIN}.cert.encrypted"
+    gcp::encrypt \
+        -t "./letsencrypt/live/${DOMAIN}/fullchain.pem"  \
+        -c "./letsencrypt/live/${DOMAIN}/${DOMAIN}.cert.encrypted" \
+        -e "$KYMA_ENCRYPTION_KEY" \
+        -k "$KYMA_KEYRING" \
+        -p "$CLOUDSDK_KMS_PROJECT"
 
     gsutil cp "./letsencrypt/live/${DOMAIN}/${DOMAIN}.cert.encrypted" "gs://${CERTIFICATES_BUCKET}/certificates/"
     gsutil cp "./letsencrypt/live/${DOMAIN}/${DOMAIN}.key.encrypted" "gs://${CERTIFICATES_BUCKET}/certificates/"
@@ -54,13 +60,19 @@ if [[ $VALID_CERT_FILE -eq 0 && $VALID_KEY_FILE -eq 0 ]]; then
 
 
     log::info "Decrypting certs"
-    gcloud::decrypt \
-        "./letsencrypt/live/${DOMAIN}/privkey.pem" \
-        "./letsencrypt/live/${DOMAIN}/${DOMAIN}.key.encrypted"
+    gcp::decrypt \
+        -t "./letsencrypt/live/${DOMAIN}/privkey.pem" \
+        -c "./letsencrypt/live/${DOMAIN}/${DOMAIN}.key.encrypted" \
+        -e "$KYMA_ENCRYPTION_KEY" \
+        -k "$KYMA_KEYRING" \
+        -p "$CLOUDSDK_KMS_PROJECT"
     
-    gcloud::decrypt \
-        "./letsencrypt/live/${DOMAIN}/fullchain.pem" \
-        "./letsencrypt/live/${DOMAIN}/${DOMAIN}.cert.encrypted"
+    gcp::decrypt \
+        -t "./letsencrypt/live/${DOMAIN}/fullchain.pem" \
+        -c "./letsencrypt/live/${DOMAIN}/${DOMAIN}.cert.encrypted" \
+        -e "$KYMA_ENCRYPTION_KEY" \
+        -k "$KYMA_KEYRING" \
+        -p "$CLOUDSDK_KMS_PROJECT"
     set +e
     openssl x509 -checkend 1209600 -noout -in "$(pwd)/letsencrypt/live/${DOMAIN}/fullchain.pem"
     VALID_CERT=$?

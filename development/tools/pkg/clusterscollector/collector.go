@@ -103,13 +103,13 @@ func (gc *ClustersGarbageCollector) list(project string) ([]*container.Cluster, 
 type ClusterRemovalPredicate func(cluster *container.Cluster) (bool, error)
 
 // TimeBasedClusterRemovalPredicate returns an instance of ClusterRemovalPredicate that filters clusters based on label "volatile", "created-at", "ttl" and status
-func TimeBasedClusterRemovalPredicate(whitelistedClusters map[string]struct{}) ClusterRemovalPredicate {
+func TimeBasedClusterRemovalPredicate(excludedClusters map[string]struct{}) ClusterRemovalPredicate {
 	return func(cluster *container.Cluster) (bool, error) {
 		var timestamp int64
 		var ageInHours uint64
 		var err error
-		if _, ok := whitelistedClusters[cluster.Name]; ok {
-			log.Warnf("Cluster is whitelisted, deletion will be skipped. Name: Name: \"%s\", zone: \"%s\"", cluster.Name, cluster.Zone)
+		if _, ok := excludedClusters[cluster.Name]; ok {
+			log.Warnf("Cluster is excluded, deletion will be skipped. Name: Name: \"%s\", zone: \"%s\"", cluster.Name, cluster.Zone)
 			return false, nil
 		}
 

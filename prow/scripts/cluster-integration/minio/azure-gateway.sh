@@ -26,59 +26,15 @@ validateAzureGatewayEnvironment() {
 
 beforeTest() {
     validateAzureGatewayEnvironment
-    az::login "$AZURE_CREDENTIALS_FILE"
-    az:set_subscription "$AZURE_SUBSCRIPTION_ID"
-    createResourceGroup
-    createStorageAccount
-}
-
-createResourceGroup() {
-    log::info "Create Azure Resource Group ${AZURE_RS_GROUP}"
-
-    if [[ $(az group exists --name "${AZURE_RS_GROUP}" -o json) == true ]]; then
-        log::info "Azure Resource Group ${AZURE_RS_GROUP} exists"
-        return
-    fi
-
-    az group create \
-        --name "${AZURE_RS_GROUP}" \
-        --location "${AZURE_REGION}" \
-        --tags "created-by=prow"
-
-    # Wait until resource group will be visible in azure.
-    counter=0
-    until [[ $(az group exists --name "${AZURE_RS_GROUP}" -o json) == true ]]; do
-        sleep 15
-        counter=$(( counter + 1 ))
-        if (( counter == 5 )); then
-            echo -e "---\nAzure resource group ${AZURE_RS_GROUP} still not present after one minute wait.\n---"
-            exit 1
-        fi
-    done
-
-    log::info "Resource Group created"
-}
-
-createStorageAccount() {
-    log::info "Create ${AZURE_STORAGE_ACCOUNT_NAME} Storage Account"
-
-    az storage account create \
-        --name "${AZURE_STORAGE_ACCOUNT_NAME}" \
-        --resource-group "${AZURE_RS_GROUP}" \
-        --tags "created-at=$(date +%s)" "created-by=prow" "ttl=10800"
-
-    log::info "Storage Account created"
-}
-
-afterTest() {
-    log::info "Delete ${AZURE_STORAGE_ACCOUNT_NAME} Storage Account"
-
-    az storage account delete \
-        --name "${AZURE_STORAGE_ACCOUNT_NAME}" \
-        --resource-group "${AZURE_RS_GROUP}" \
-        --yes
-
-    log::info "Storage Account deleted"
+    az::authenticate -f "$AZURE_CREDENTIALS_FILE"
+    az::set_subscription -s "$AZURE_SUBSCRIPTION_ID"
+    az::create_resource_group -g "$AZURE_RS_GROUP" -r "$AZURE_REGION" -t "created-by=prow"
+    az::create_storage_account \
+        -n "$AZURE_STORAGE_ACCOUNT_NAME" \
+        -g "$AZURE_RS_GROUP" \
+        -t "created-at=$(date +%s)" \
+        -t "created-by=prow" \
+        -t "ttl=10800"
 }
 
 installOverrides() {

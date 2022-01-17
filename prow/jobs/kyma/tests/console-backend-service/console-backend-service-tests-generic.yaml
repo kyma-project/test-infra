@@ -17,7 +17,7 @@ job_template: &job_template
   run_if_changed: "^tests/console-backend-service/|^common/makefiles/"
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210601-24c60b5a
         securityContext:
           privileged: true
         command:
@@ -31,16 +31,25 @@ job_template: &job_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-kyma-tests-console-backend-service
+    - name: pre-rel122-kyma-tests-console-backend-service
       cluster: untrusted-workload
       optional: false
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: release-1.22
       branches:
-        - ^master$
-        - ^main$
+        - release-1.22
+    
+    - name: pre-rel121-kyma-tests-console-backend-service
+      cluster: untrusted-workload
+      optional: false
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.21
+      branches:
+        - release-1.21
     
     - name: pre-rel120-kyma-tests-console-backend-service
       cluster: untrusted-workload
@@ -52,41 +61,31 @@ presubmits: # runs on PRs
       branches:
         - release-1.20
     
-    - name: pre-rel119-kyma-tests-console-backend-service
-      cluster: untrusted-workload
-      optional: false
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.19
-      branches:
-        - release-1.19
-    
-    - name: pre-rel118-kyma-tests-console-backend-service
-      cluster: untrusted-workload
-      optional: false
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.18
-      branches:
-        - release-1.18
-    
 
 postsubmits:
   kyma-project/kyma:
-    - name: post-kyma-tests-console-backend-service
+    - name: post-rel122-kyma-tests-console-backend-service
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: master
+          base_ref: release-1.22
       branches:
-      - ^master$
-      - ^main$
-      
+        - release-1.22
+    
+    - name: post-rel121-kyma-tests-console-backend-service
+      cluster: trusted-workload
+      annotations:
+        testgrid-create-test-group: "false"
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.21
+      branches:
+        - release-1.21
+    
     - name: post-rel120-kyma-tests-console-backend-service
       cluster: trusted-workload
       annotations:
@@ -97,26 +96,4 @@ postsubmits:
           base_ref: release-1.20
       branches:
         - release-1.20
-    
-    - name: post-rel119-kyma-tests-console-backend-service
-      cluster: trusted-workload
-      annotations:
-        testgrid-create-test-group: "false"
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.19
-      branches:
-        - release-1.19
-    
-    - name: post-rel118-kyma-tests-console-backend-service
-      cluster: trusted-workload
-      annotations:
-        testgrid-create-test-group: "false"
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.18
-      branches:
-        - release-1.18
     

@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	gogithub "github.com/google/go-github/v31/github"
+	gogithub "github.com/google/go-github/v40/github"
 	"github.com/kyma-project/test-infra/development/tools/pkg/prtagbuilder/mocks"
 	"github.com/stretchr/testify/assert"
 	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
@@ -40,7 +40,7 @@ var (
 	fakeRepoPrRepo          string
 	fakeRepoBaseRef         string
 	fakeRepoBaseSHA         string
-	fakeRepoMasterName      string
+	fakeRepoMainName        string
 	fakeRepoProtectedBranch bool
 	fakeRepoMerged          bool
 	fakeRepoCommitMessage   string
@@ -57,8 +57,8 @@ func TestMain(m *testing.M) {
 	}
 	// set data for testing
 	testInfraPrAuthor = "testInfraAuthor"
-	testInfraBaseRef = "master"
-	testInfraBaseSHA = "testInfraMasterSHA"
+	testInfraBaseRef = "main"
+	testInfraBaseSHA = "testInfraMainSHA"
 	testInfraPrNumber = 12345
 	testInfraPrHeadSHA = "testInfraPrHeadSHA"
 	testInfraPrOrg = "kyma-project"
@@ -75,9 +75,9 @@ func TestMain(m *testing.M) {
 	fakeRepoPrNumber = 1515
 	fakeRepoPrOrg = "kyma-project"
 	fakeRepoPrRepo = "fake-repo"
-	fakeRepoBaseRef = "master"
+	fakeRepoBaseRef = "main"
 	fakeRepoBaseSHA = "fakeRepoSHA"
-	fakeRepoMasterName = "master"
+	fakeRepoMainName = "main"
 	fakeRepoProtectedBranch = false
 	fakeRepoMerged = true
 	fakeRepoCommitMessage = fmt.Sprintf("Fake Repo commit message (#%s)", strconv.Itoa(fakeRepoPrNumber))
@@ -129,7 +129,7 @@ func TestMain(m *testing.M) {
 	os.Setenv("REPO_NAME", testInfraPrRepo)
 	os.Setenv("JOB_SPEC", fmt.Sprintf("{\"type\":\"presubmit\",\"job\":\"job-name\",\"buildid\":\"0\",\"prowjobid\":\"uuid\",\"refs\":{\"org\":\"org-name\",\"repo\":\"repo-name\",\"base_ref\":\"base-ref\",\"base_sha\":\"base-sha\",\"pulls\":[{\"number\":1,\"author\":\"%s\",\"sha\":\"pull-sha\"}]}}", testInfraPrAuthor))
 	testCfgFile = fmt.Sprintf("%s/test-infra/development/tools/pkg/pjtester/test_artifacts/pjtester.yaml", repoDir)
-	ghOptions = prowflagutil.NewGitHubOptions()
+	ghOptions = &prowflagutil.GitHubOptions{}
 	os.Exit(m.Run())
 }
 
@@ -150,9 +150,9 @@ func TestReadTestCfg(t *testing.T) {
 		PjPath: "test-infra/prow/jobs/",
 	}, "pjCfg for orphaned-disks-cleaner has wrong values")
 	assert.Containsf(t, testCfg.PjNames, pjCfg{
-		PjName: "post-master-kyma-gke-integration",
+		PjName: "post-main-kyma-integration-k3d",
 		PjPath: "test-infra/prow/jobs/",
-	}, "pjCfg for post-master-kyma-gke-integration has wrong values.")
+	}, "pjCfg for post-main-kyma-integration-k3d has wrong values.")
 	assert.Equalf(t, "test-infra/prow/config.yaml", testCfg.ConfigPath, "pjtester has wrong path to prow config.yaml file.")
 	assert.Equalf(t, 1212, testCfg.PrConfigs["kyma-project"]["kyma"].PrNumber, "PR number for kyma read from pjtester.yaml file is wrong.")
 }
@@ -193,7 +193,7 @@ func TestNewTestPJ(t *testing.T) {
 	o.prFinder = mocks.NewFakeGitHubClient(nil)
 	ctx := context.Background()
 	o.prFinder.Repositories.(*mocks.GithubRepoService).On("GetBranch", ctx, fakeRepoPrOrg, fakeRepoPrRepo, fakeRepoBaseRef).Return(&gogithub.Branch{
-		Name: &fakeRepoMasterName,
+		Name: &fakeRepoMainName,
 		Commit: &gogithub.RepositoryCommit{
 			Commit: &gogithub.Commit{
 				SHA:     &fakeRepoBaseSHA,
@@ -229,10 +229,10 @@ func TestNewTestPJ(t *testing.T) {
 		if strings.Contains(pj.Spec.Job, "orphaned-disks-cleaner") {
 			assert.Containsf(t, pj.Spec.ExtraRefs, testInfraRefs, "ExtraRefs for test-infra is not present")
 			o.prFinder.Repositories.(*mocks.GithubRepoService).AssertNotCalled(t, "GetCommit", ctx, fakeRepoPrOrg, fakeRepoPrRepo, fakeRepoBaseSHA)
-		} else if strings.Contains(pj.Spec.Job, "post-master-kyma-gke-integration") {
+		} else if strings.Contains(pj.Spec.Job, "post-main-kyma-integration-k3d") {
 			assert.Equalf(t, kymaRefs, *pj.Spec.Refs, "Postsubmit Refs for kyma has wrong values")
-			assert.Lenf(t, pj.Spec.ExtraRefs, 1, "ExtraRefs slice doesn't contain one element.")
-			assert.Equalf(t, testInfraRefs, pj.Spec.ExtraRefs[0], "ExtraRefs for test-infra is not present")
+			assert.Lenf(t, pj.Spec.ExtraRefs, 2, "ExtraRefs slice doesn't contain two elements.")
+			assert.Equalf(t, testInfraRefs, pj.Spec.ExtraRefs[1], "ExtraRefs for test-infra is not present")
 			o.prFinder.Repositories.(*mocks.GithubRepoService).AssertNotCalled(t, "GetCommit", ctx, fakeRepoPrOrg, fakeRepoPrRepo, fakeRepoBaseSHA)
 		} else if strings.Contains(pj.Spec.Job, "test-infra-presubmit-test-job") {
 			assert.Equalf(t, testInfraRefs, *pj.Spec.Refs, "Presubmit Refs for test-infra has wrong values")

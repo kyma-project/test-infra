@@ -9,7 +9,7 @@ source "${SCRIPT_DIR}/lib/docker.sh"
 source "${SCRIPT_DIR}/lib/log.sh"
 
 readonly ARGS=("$@")
-readonly MILV_IMAGE="eu.gcr.io/kyma-project/incubator/milv:7e5c6f39"
+readonly MILV_IMAGE="eu.gcr.io/kyma-project/incubator/milv:4499ea8d"
 VOLUME_DIR=""
 OUTPUT=0
 
@@ -30,6 +30,11 @@ function read_arguments() {
             --repository-dir)
                 shift
                 readonly REPOSITORY_DIR=$1
+                shift
+                ;;
+            --main-branch)
+                shift
+                readonly MAIN_BRANCH=$1
                 shift
                 ;;
             --full-validation)
@@ -53,6 +58,15 @@ function read_arguments() {
         REPOSITORY_ORG="kyma-project"
     fi
 
+    if [[ -z "${MAIN_BRANCH}" ]]; then
+        # backward compatibility
+        if [[ -n "$PULL_BASE_REF" ]]; then
+            MAIN_BRANCH=${PULL_BASE_REF}
+        else
+            MAIN_BRANCH="main"
+        fi
+    fi
+
     if [[ -z "${REPOSITORY_DIR}" ]]; then
         REPOSITORY_DIR="${PWD}"
     fi
@@ -60,10 +74,10 @@ function read_arguments() {
     VOLUME_DIR="${REPOSITORY_DIR}"
 }
 
-function fetch_origin_master() {
+function fetch_origin_main_branch() {
     local repository="https://github.com/${REPOSITORY_ORG}/${REPOSITORY_NAME}.git"
     git remote add origin "${repository}"
-    git fetch origin master
+    git fetch origin "$MAIN_BRANCH"
 }
 
 function copy_files() {
@@ -100,13 +114,13 @@ function validate_external() {
 }
 
 function validate_external_on_pr() {
-    echo "Fetching changes between origin/master and your branch"
+    echo "Fetching changes between origin/${MAIN_BRANCH} and your branch"
     if [ -n "${PULL_NUMBER}" ]; then
-        fetch_origin_master
+        fetch_origin_main_branch
     fi
 
     local files=""
-    files=$(git --no-pager diff --name-only origin/master | grep '.md' || echo '')
+    files=$(git --no-pager diff --name-only origin/${MAIN_BRANCH} | grep '.md' || echo '')
 
     if [ -n "${files}" ]; then
         VOLUME_DIR="${REPOSITORY_DIR}/temp"

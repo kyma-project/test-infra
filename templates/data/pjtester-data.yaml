@@ -10,7 +10,7 @@ templates:
           - repoName: "github.com/kyma-project/test-infra"
             jobs:
               - jobConfig:
-                  name: pre-master-test-infra-pjtester
+                  name: pre-main-test-infra-pjtester
                   run_if_changed: "^(vpath/pjtester.yaml)"
                   type_presubmit: "true"
                   cluster: "trusted-workload"
@@ -19,6 +19,8 @@ templates:
                   command: "pjtester"
                   env:
                     KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
+                  branches:
+                    - ^.*$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -26,7 +28,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: pre-master-test-infra-vpathguard
+                  name: pre-main-test-infra-vpathguard
                   run_if_changed: "^(vpath/pjtester.yaml)"
                   type_presubmit: "true"
                   cluster: "untrusted-workload"
@@ -34,6 +36,8 @@ templates:
                   args:
                     - "-c"
                     - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/vpathguard.sh"
+                  branches:
+                    - ^.*$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

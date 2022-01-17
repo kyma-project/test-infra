@@ -6,9 +6,9 @@ templates:
           - repoName: "github.com/kyma-project/test-infra"
             jobs:
               - jobConfig:
-                  name: "pre-master-test-infra-image-syncer-validate"
+                  name: "pre-main-test-infra-image-syncer-validate"
                   privileged: "false"
-                  run_if_changed: "^(development/image-syncer)"
+                  run_if_changed: "^(go.mod|go.sum|development/image-syncer)"
                   command: "make"
                   args:
                     - "-C"
@@ -20,11 +20,12 @@ templates:
                     - "image_buildpack-golang"
                     - "jobConfig_presubmit"
               - jobConfig:
-                  name: "pre-master-test-infra-image-syncer-dry-run"
+                  name: "pre-main-test-infra-image-syncer-dry-run"
                   labels:
                     preset-docker-push-repository: "true"
                     preset-sa-gcr-push: "true"
                     preset-dind-enabled: "true"
+                    preset-kyma-kms-sign-key: "true"
                   run_if_changed: "^(development/image-syncer/external-images.yaml)"
                   command: "bash"
                   args:
@@ -36,13 +37,14 @@ templates:
                     - "image_buildpack-golang"
                     - "jobConfig_presubmit"
               - jobConfig:
-                  name: "post-master-test-infra-image-syncer-run"
+                  name: "post-main-test-infra-image-syncer-run"
                   annotations:
                     testgrid-dashboards: kyma_experimental
                   labels:
                     preset-docker-push-repository: "true"
                     preset-dind-enabled: "true"
                     preset-sa-gcr-push: "true"
+                    preset-kyma-kms-sign-key: "true"
                   run_if_changed: "^(development/image-syncer/external-images.yaml)"
                   command: "bash"
                   args:

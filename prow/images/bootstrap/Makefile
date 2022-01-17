@@ -39,4 +39,4 @@ build-image:
 .PHONY: push-image
 push-image:
 	@echo "___ Pushing image with all tags ___"
-	docker push $(IMG)
+	docker push -a $(IMG)

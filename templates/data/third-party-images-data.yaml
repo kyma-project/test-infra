@@ -1,0 +1,479 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/third-party-images/third-party-images.yaml
+        localSets:
+          default:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+            labels:
+              preset-dind-enabled: "true"
+              preset-sa-gcr-push: "true"
+              preset-docker-push-repository-tpi: "true"
+          image-signing:
+            labels:
+              preset-kyma-kms-sign-key: "true"
+        jobConfigs:
+          - repoName: "kyma-project/third-party-images"
+            jobs:
+              - jobConfig:
+                  name: "pre-main-tpi-cloudsql-proxy"
+                  run_if_changed: "^cloudsql-proxy/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/cloudsql-proxy"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+              - jobConfig:
+                  name: "post-main-tpi-cloudsql-proxy"
+                  run_if_changed: "^cloudsql-proxy/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/cloudsql-proxy"
+                    - "ci-main"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "default"
+                    - "image-signing"
+              - jobConfig:
+                  name: "pre-main-tpi-etcd"
+                  run_if_changed: "^etcd/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/etcd"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+              - jobConfig:
+                  name: "post-main-tpi-etcd"
+                  run_if_changed: "^etcd/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/etcd"
+                    - "ci-main"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "default"
+                    - "image-signing"
+              - jobConfig:
+                  name: "pre-main-tpi-docker-registry"
+                  run_if_changed: "^docker-registry/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/docker-registry"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+              - jobConfig:
+                  name: "post-main-tpi-docker-registry"
+                  run_if_changed: "^docker-registry/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/docker-registry"
+                    - "ci-main"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "default"
+                    - "image-signing"
+
+              - jobConfig:
+                  name: "pre-main-tpi-fluent-bit"
+                  run_if_changed: "^fluent-bit/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/fluent-bit"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+
+              - jobConfig:
+                  name: "post-main-tpi-fluent-bit"
+                  run_if_changed: "^fluent-bit/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/fluent-bit"
+                    - "ci-main"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "default"
+                    - "image-signing"
+
+              - jobConfig:
+                  name: "pre-main-tpi-jaeger-operator"
+                  run_if_changed: "^jaeger-operator/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/jaeger-operator"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+              - jobConfig:
+                  name: "post-main-tpi-jaeger-operator"
+                  run_if_changed: "^jaeger-operator/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/jaeger-operator"
+                    - "ci-main"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "default"
+                    - "image-signing"
+
+              - jobConfig:
+                  name: "pre-main-tpi-k8s-tools"
+                  run_if_changed: "^k8s-tools/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/k8s-tools"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+              - jobConfig:
+                  name: "post-main-tpi-k8s-tools"
+                  run_if_changed: "^k8s-tools/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/k8s-tools"
+                    - "ci-main"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "default"
+                    - "image-signing"
+
+              - jobConfig:
+                  name: "pre-main-tpi-kiali"
+                  run_if_changed: "^kiali/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiali"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+              - jobConfig:
+                  name: "post-main-tpi-kiali"
+                  run_if_changed: "^kiali/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiali"
+                    - "ci-main"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "default"
+                    - "image-signing"
+
+              - jobConfig:
+                  name: "pre-main-tpi-loki"
+                  run_if_changed: "^loki/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/loki"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+              - jobConfig:
+                  name: "post-main-tpi-loki"
+                  run_if_changed: "^loki/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/loki"
+                    - "ci-main"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "default"
+                    - "image-signing"
+              
+              - jobConfig:
+                  name: "pre-main-tpi-oauth2-proxy"
+                  run_if_changed: "^oauth2-proxy/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/oauth2-proxy"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+              - jobConfig:
+                  name: "post-main-tpi-oauth2-proxy"
+                  run_if_changed: "^oauth2-proxy/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/oauth2-proxy"
+                    - "ci-main"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "default"
+                    - "image-signing"
+
+              - jobConfig:
+                  name: "pre-main-tpi-kiwigrid-sidecar"
+                  run_if_changed: "^kiwigrid-sidecar/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiwigrid-sidecar"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+              - jobConfig:
+                  name: "post-main-tpi-kiwigrid-sidecar"
+                  run_if_changed: "^kiwigrid-sidecar/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiwigrid-sidecar"
+                    - "ci-main"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "default"
+                    - "image-signing"
+
+              - jobConfig:
+                  name: "pre-main-tpi-minio"
+                  run_if_changed: "^minio/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/minio"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+              - jobConfig:
+                  name: "post-main-tpi-minio"
+                  run_if_changed: "^minio/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/minio"
+                    - "ci-main"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "default"
+                    - "image-signing"
+
+              - jobConfig:
+                  name: "pre-main-tpi-minio-mc"
+                  run_if_changed: "^minio-mc/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/minio-mc"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+              - jobConfig:
+                  name: "post-main-tpi-minio-mc"
+                  run_if_changed: "^minio-mc/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/minio-mc"
+                    - "ci-main"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "default"
+                    - "image-signing"
+
+              - jobConfig:
+                  name: "pre-main-tpi-node-exporter"
+                  run_if_changed: "^prometheus-node-exporter/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/prometheus-node-exporter"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+              - jobConfig:
+                  name: "post-main-tpi-node-exporter"
+                  run_if_changed: "^prometheus-node-exporter/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/prometheus-node-exporter"
+                    - "ci-main"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "default"
+                    - "image-signing"
+
+              - jobConfig:
+                  name: "pre-main-tpi-grafana"
+                  run_if_changed: "^grafana/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/grafana"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+              - jobConfig:
+                  name: "post-main-tpi-grafana"
+                  run_if_changed: "^grafana/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/grafana"
+                    - "ci-main"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "default"
+                    - "image-signing"
+              - jobConfig:
+                  name: "pre-main-tpi-kaniko-executer"
+                  run_if_changed: "^kaniko-executer/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/kaniko-executer"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+              - jobConfig:
+                  name: "post-main-tpi-kaniko-executer"
+                  run_if_changed: "^kaniko-executer/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/kaniko-executer"
+                    - "ci-main"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "default"
+                    - "image-signing"

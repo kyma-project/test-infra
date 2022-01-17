@@ -1,0 +1,10 @@
+# PROW_INSTANCE_SPECIFIC
+# Domains are different among prow instances
+apiVersion: networking.gke.io/v1beta1
+kind: ManagedCertificate
+metadata:
+  name: monitoring-kyma-prow
+  namespace: prow-monitoring
+spec:
+  domains:
+  - monitoring.build.kyma-project.io

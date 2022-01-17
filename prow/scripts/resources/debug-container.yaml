@@ -1,97 +1,106 @@
----
 apiVersion: v1
-kind: ConfigMap
+kind: ServiceAccount
 metadata:
-  name: oom-debug-entrypoint
-data:
-  entrypoint.sh: |-
-    #!/bin/bash
-    set +e
-    host_cgroup_base="/host-sys/fs/cgroup/memory"
-    { while true
-      do
-        date
-        memory_capacity_in_kb=$(cat /host-proc/meminfo | grep MemTotal | awk '{print $2}')
-        memory_capacity_in_bytes=$((memory_capacity_in_kb * 1024))
-        memory_usage_in_bytes=$(cat /host-sys/fs/cgroup/memory/memory.usage_in_bytes)
-        memory_total_inactive_file=$(cat /host-sys/fs/cgroup/memory/memory.stat | grep total_inactive_file | awk '{print $2}')
-        memory_working_set=${memory_usage_in_bytes}
-        if [ "$memory_working_set" -lt "$memory_total_inactive_file" ];
-        then
-          memory_working_set=0
-        else
-          memory_working_set=$((memory_usage_in_bytes - memory_total_inactive_file))
-        fi
-        memory_available_in_bytes=$((memory_capacity_in_bytes - memory_working_set))
-        memory_available_in_kb=$((memory_available_in_bytes / 1024))
-        memory_available_in_mb=$((memory_available_in_kb / 1024))
-        echo "Host memory stats"
-        echo "memory.capacity_in_bytes: $memory_capacity_in_bytes"
-        echo "memory.usage_in_bytes: $memory_usage_in_bytes"
-        echo "memory.total_inactive_file: $memory_total_inactive_file"
-        echo "memory.working_set: $memory_working_set"
-        echo "memory.available_in_bytes: $memory_available_in_bytes"
-        echo "memory.available_in_kb: $memory_available_in_kb"
-        echo "memory.available_in_mb: $memory_available_in_mb"
-        echo "Containers"
-        docker_ids=$(docker container ls --format='{{println .ID}}' | sort | uniq)
-        for docker_id in $docker_ids
-        do
-          docker_pid=$(docker inspect --format '{{ .State.Pid }}' "$docker_id")
-          docker_cgroup=$(cat /host-proc/$docker_pid/cgroup | grep ":memory:" | awk -F":memory:" '{print $2}')
-          mem_usage=$(cat $host_cgroup_base$docker_cgroup/memory.usage_in_bytes)
-          mem_limit=$(cat $host_cgroup_base$docker_cgroup/memory.limit_in_bytes)
-          max_mem_usage=$(cat $host_cgroup_base$docker_cgroup/memory.max_usage_in_bytes)
-          mem_usage_percent=$(( $mem_usage * 100 / $mem_limit))
-          max_mem_usage_percent=$(( $max_mem_usage * 100 / $mem_limit))
-          echo "[$docker_pid] Container PID and name: $(docker inspect --format '{{ .State.Pid }}:{{ .Name }}' "$docker_id")"
-          echo "[$docker_pid] Container memory.usage_in_bytes: $mem_usage"
-          echo "[$docker_pid] Container memory.max_usage_in_bytes: $max_mem_usage"
-          echo "[$docker_pid] Container memory.limit_in_bytes: $mem_limit"
-          echo "[$docker_pid] Container memory.usage_percentage: $mem_usage_percent"
-          echo "[$docker_pid] Container memory.max_usage_percentage: $max_mem_usage_percent"
-          echo "[$docker_pid] cgroup processes: $(cat $host_cgroup_base$docker_cgroup/cgroup.procs)"
-        done
-      done } > /var/oom_debug
+  name: debug-commando
+automountServiceAccountToken: true
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: debug-commando:psp:privileged:gardener
+subjects:
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: default
+    name: debug-commando
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: gardener.cloud:psp:privileged
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: debug-commando:psp:privileged:gke
+subjects:
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: default
+    name: debug-commando
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: gce:podsecuritypolicy:privileged
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: debug-commando:psp:privileged:eks
+subjects:
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: default
+    name: debug-commando
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: eks.privileged
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: debug-commando:psp:privileged:aks
+subjects:
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: default
+    name: debug-commando
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: privileged
+---
+apiVersion: apps/v1
+kind: DaemonSet
 metadata:
   name: oom-debug
+  namespace: default
 spec:
-  hostPID: true
-  containers:
-    - name: oom-debug
-      securityContext:
-        privileged: true
-      image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9
-      command:
-        - "/bin/entrypoint.sh"
-      volumeMounts:
-        - mountPath: /host-proc
-          name: proc-vol
-        - mountPath: /host-sys
-          name: sys-vol
-        - mountPath: /var/run/docker.sock
-          name: docker-socket
-        - name: entrypoint-vol
-          mountPath: /bin/entrypoint.sh
-          readOnly: true
-          subPath: entrypoint.sh
-  volumes:
-    - name: proc-vol
-      hostPath:
-        path: /proc
-        type: Directory
-    - name: sys-vol
-      hostPath:
-        path: /sys
-        type: Directory
-    - name: docker-socket
-      hostPath:
-        path: /var/run/docker.sock
-        type: Socket
-    - name: entrypoint-vol
-      configMap:
-        defaultMode: 0700
-        name: oom-debug-entrypoint
+  selector:
+    matchLabels:
+      name: oom-debug
+  template:
+    metadata:
+      labels:
+        name: oom-debug
+    spec:
+      serviceAccountName: debug-commando
+      containers:
+      - name: oom-debug
+        securityContext:
+          privileged: true
+        image: eu.gcr.io/kyma-project/test-infra/prow-tools:v20211223-c04843e2
+        imagePullPolicy: Always
+        command:
+          - "/prow-tools/oomfinder"
+        volumeMounts:
+          - mountPath: /var/run
+            name: docker-socket
+          - mountPath: /run/containerd
+            name: containerd-socket
+        resources:
+          requests:
+            memory: "16Mi"
+            cpu: "100m"
+          limits:
+            memory: "232Mi"
+            cpu: "300m"
+      volumes:
+        - name: docker-socket
+          hostPath:
+            path: /var/run
+            type: Directory
+        - name: containerd-socket
+          hostPath:
+            path: /run/containerd
+            type: DirectoryOrCreate

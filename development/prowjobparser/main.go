@@ -113,7 +113,7 @@ func parseProwjobs() (*config.Config, error) {
 	log.Info(fmt.Sprintf("Excluded presets: %v", runCfg.excludePreset))
 	log.Info(fmt.Sprintf("Cluster: %s", runCfg.cluster))
 	var err error
-	if prowCfg, err = config.Load(runCfg.configPath, runCfg.jobPath); err != nil {
+	if prowCfg, err = config.Load(runCfg.configPath, runCfg.jobPath, nil, ""); err != nil {
 		return nil, err
 	}
 	return prowCfg, nil

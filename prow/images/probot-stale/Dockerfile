@@ -1,4 +1,4 @@
-FROM node:12-alpine
+FROM node:17-alpine
 
 # Commit details
 
@@ -10,10 +10,11 @@ WORKDIR /app
 
 RUN apk update && \
   apk upgrade && \
-  apk add git
+  apk add --no-cache git
 
 COPY package.json /app/package.json
 
+# hadolint ignore=DL3016
 RUN npm install . --no-optional
 
 EXPOSE 3000

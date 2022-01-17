@@ -1,4 +1,4 @@
-FROM golang:1.15-alpine as builder
+FROM golang:1.17.5-alpine3.15 as builder
 
 ENV BASE_APP_DIR=/go/src/github.com/kyma-project/test-infra/development/test-log-collector \
     GO111MODULE=on \
@@ -16,7 +16,7 @@ COPY ./go.sum .
 RUN go mod download
 
 #
-# copy files whitelisted in .dockerignore
+# copy files allowed in .dockerignore
 #
 COPY . ${BASE_APP_DIR}/
 
@@ -25,8 +25,9 @@ RUN go build -ldflags "-s -w" -a -o main cmd/main.go \
     && mv ./main /app/main
 
 # get latest CA certs
+# hadolint ignore=DL3007
 FROM alpine:latest as certs
-RUN apk --update add ca-certificates
+RUN apk --no-cache add ca-certificates
 
 # result container
 FROM scratch

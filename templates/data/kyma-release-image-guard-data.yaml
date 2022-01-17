@@ -1,0 +1,27 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/kyma/kyma-release-pr-image-guard.yaml
+        localSets:
+          jobConfig_default:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/pr-image-guard.sh"
+            branches:
+              - ^release-.*$
+            path_alias: github.com/kyma-project/kyma
+            labels:
+              preset-dind-enabled: "true"
+              preset-bot-github-token: "true"
+        jobConfigs:
+          - repoName:  kyma-project/kyma
+            jobs:
+              - jobConfig:
+                  name: "pre-release-pr-image-guard"
+                  always_run: true
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_bootstrap"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: slack-connector
+description: Integration with slack for Kyma workloads.
+type: application
+version: 2.0.0
+appVersion: 1.2.0

@@ -11,17 +11,10 @@ This folder contains files related to the configuration of the Prow production c
 The structure of the folder looks as follows:
 
 ```
-  ├── components                        # Definitions of Prow components and cluster configuration.
-  ├── resources                         # Helm charts used by the Prow cluster.
-  └── required-secrets.yaml             # A default list of required Secrets that must be stored in a storage bucket
+  ├── components            # Definitions of Prow components and cluster configuration.
+  ├── resources             # Helm charts used by the Prow cluster.
+  └── static-files          # Files that will be uploaded to the nginx web server.
 ```
 
-### Required secrets structure
-The `required-secrets.yaml` file is read by `secretspopulator` and consists of required Secrets stored in a Google Cloud Storage (GCS) bucket.
-You can define two kinds of Secrets:
-- Service accounts
-- Generic Secrets
-
-`Secretspopulator` looks for a `{prefix}.encrypted` object in a bucket and creates a Kubernetes Secret with a `{prefix}` name.
-For service accounts, the Secret key is `service-account.json`. For generic Secrets, you must provide a key.
-For more details about the syntax of this file, see the `RequiredSecretsData` type in `development/tools/cmd/secretspopulator/secretspopulator`.
+###  Adding static files
+All files added to the `static-files` folder are automatically uploaded by the Prow `config_updater` plugin to the cluster in a ConfigMap. Uploaded files are mounted by the web server in the web root directory. To route traffic for a specific path to the NGINX web server, in order to serve these files, update the Ingress `tls-ing` configuration in `tls-ing_ingress.yaml`.

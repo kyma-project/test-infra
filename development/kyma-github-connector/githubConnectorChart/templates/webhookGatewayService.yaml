@@ -1,0 +1,16 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}-webhook-gateway
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.global.appName | quote }}
+    release: {{ .Release.Name | quote }}
+spec:
+  selector:
+    app: {{ .Values.global.appName }}
+    release: {{ .Release.Name | quote }}
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: {{ .Values.global.webhookGateway.containerPort }}

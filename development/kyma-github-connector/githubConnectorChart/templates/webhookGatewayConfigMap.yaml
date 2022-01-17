@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-webhook-gateway-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.global.appName | quote }}
+    release: {{ .Release.Name | quote }}
+data:
+  kymaEventingProxy: {{ .Values.global.eventPublisherProxyURL | quote }}
+  appName: {{ .Values.global.appName | quote }}
+  eventingTargetAppName: {{ .Values.global.appName | quote }}
+  githubWebhookUrlPath: {{ .Values.githubWebhookUrlPath | quote }}
+  listenPort: {{ .Values.global.webhookGateway.containerPort | quote }}

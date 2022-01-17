@@ -21,32 +21,32 @@ var components = []struct {
 	suite             func(config *jobsuite.Config) jobsuite.Suite
 	additionalOptions []jobsuite.Option
 }{
-	{path: "core-ui", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
+	{path: "core-ui", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.AllReleases(),
 		},
 	},
-	{path: "core", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
+	{path: "core", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.AllReleases(),
 		},
 	},
-	{path: "service-catalog-ui", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
+	{path: "service-catalog-ui", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.AllReleases(),
 		},
 	},
-	{path: "add-ons", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
+	{path: "add-ons", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.AllReleases(),
 		},
 	},
-	{path: "logging", yamlName: &loggingYamlName, image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
+	{path: "logging", yamlName: &loggingYamlName, image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.AllReleases(),
 		},
 	},
-	{path: "tests", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
+	{path: "tests", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.AllReleases(),
 		},

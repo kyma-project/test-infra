@@ -8,7 +8,7 @@ pjNames:
   # periodic
   - pjName: "orphaned-disks-cleaner"
   # postsubmit
-  - pjName: "post-master-kyma-gke-integration"
+  - pjName: "post-main-kyma-integration-k3d"
 prConfigs:
   kyma-project:
     kyma:

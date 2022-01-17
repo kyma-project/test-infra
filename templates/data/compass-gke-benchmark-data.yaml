@@ -1,0 +1,78 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/incubator/compass/compass-gke-benchmark.yaml
+        localSets:
+          jobConfig_default:
+            path_alias: github.com/kyma-incubator/compass
+            command: "bash"
+            args:
+              - "-c"
+              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/compass-gke-benchmark.sh"
+            env:
+              CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
+              PROVISION_REGIONAL_CLUSTER: "true"
+              NODES_PER_ZONE: "1"
+              MACHINE_TYPE: "n1-highcpu-16"
+            request_memory: 200Mi
+            request_cpu: 80m
+            labels:
+              preset-kyma-keyring: "true"
+              preset-kyma-encryption-key: "true"
+              preset-kms-gc-project-env: "true"
+              preset-kyma-guard-bot-github-token: "true"
+              preset-sa-gke-kyma-integration: "true"
+              preset-gc-compute-envs: "true"
+              preset-gc-project-env: "true"
+              preset-docker-push-repository-gke-integration: "true"
+              preset-dind-enabled: "true"
+              preset-kyma-artifacts-bucket: "true"
+              preset-gardener-azure-kyma-integration: "true"
+              preset-kyma-development-artifacts-bucket: "true"
+              preset-cluster-version: "true"
+        jobConfigs:
+          - repoName: kyma-incubator/compass
+            jobs:
+              # presubmits
+              - jobConfig:
+                  name: pre-main-compass-gke-benchmark
+                  optional: true
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((chart\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  labels:
+                    preset-build-pr: "true"
+                  branches:
+                    - ^master$
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_buildpack-golang"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+              {{- range .Global.releases }}
+              - jobConfig:
+                  name: pre-rel{{ . | replace "." "" }}-compass-gke-benchmark
+                  optional: true
+                  always_run: false
+                  labels:
+                    preset-build-release: "true"
+                  branches:
+                    - release-{{ . }}
+                  extra_refs:
+                    test-infra:
+                      - org: "kyma-project"
+                        repo: "test-infra"
+                        path_alias: "github.com/kyma-project/test-infra"
+                        base_ref: release-{{ . }}
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_buildpack-golang"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                {{- end }}

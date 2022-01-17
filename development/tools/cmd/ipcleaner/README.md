@@ -2,9 +2,14 @@
 
 ## Overview
 
-This command finds and removes IPs created by the `kyma-gke-long-lasting` job in a Google Cloud Platform (GCP) project.
+This command finds and removes orphaned IP addresses created by jobs in the Google Cloud Platform (GCP) project.
 
-The `kyma-gke-long-lasting` job creates a GKE cluster to install and test Kyma.
+There are three conditions used to find addresses for removal:
+- The address name pattern is not on the ignored list.
+- The **users** field of the address shows `0`, which means that the disk is unused.
+- The `creationTimestamp` value of the address, that is used to find addresses, exists at least for a preconfigured number of hours.
+
+IP addresses that meet these conditions are subject to removal.
 
 ## Usage
 
@@ -12,18 +17,14 @@ For safety reasons, the dry-run mode is the default one.
 To run it, use:
 ```bash
 env GOOGLE_APPLICATION_CREDENTIALS={path to service account file} go run main.go \
-    --project={gcloud project name} \
-    --ipname={gcloud resource name} \
-    --region={gcloud region}
+    --project={gcloud project name}
 ```
 
 To turn the dry-run mode off, use:
 ```bash
 env GOOGLE_APPLICATION_CREDENTIALS={path to service account file} go run main.go \
     --project={gcloud project name} \
-    --ipname={gcloud resource name} \
-    --region={gcloud region} \
-    --dryRun=false
+    --dry-run=false
 ```
 
 ### Flags
@@ -33,12 +34,9 @@ See the list of available flags:
 | Name                      | Required | Description                                                                                          |
 | :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
 | **--project**             |   YES    | GCP project name.
-| **--ipname**              |   YES    | GCP IP resource name.
-| **--region**              |   YES    | GCP region name.
-| **--maxAttempts**         |    NO    | Maximum number of retries in the backoff. The default value is `3`.
-| **--backoff**             |    NO    | Initial backoff in seconds for the first retry. The backoff will increase after this time. The default value is `5`.
-| **--dryRun**              |    NO    | The boolean value that controls the dry-run mode. The default value is `true`.
-
+| **--dry-run**             |    No    | The boolean value that controls the dry-run mode. It defaults to `true`.
+| **--age-in-hours**         |    No    | The integer value for the number of hours. It only matches disks older than `now()-ageInHours`. It defaults to `2`.
+| **--ip--exclude-name-regex**       |    No    | The string value with a valid Golang regexp. It is used to exclude matched addresses by their name. It defaults to `^nightly|weekly|nat-auto-ip`.
 ### Environment variables
 
 See the list of available environment variables:
