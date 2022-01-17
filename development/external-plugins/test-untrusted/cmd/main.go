@@ -21,6 +21,8 @@ type githubClient interface {
 	CreateCommentWithContext(ctx context.Context, org, repo string, number int, comment string) error
 }
 
+var ghClient githubClient
+
 func EventHandler(server *externalplugin.Plugin, event externalplugin.Event) {
 	l := externalplugin.NewLogger()
 	defer l.Sync()
@@ -41,13 +43,13 @@ func EventHandler(server *externalplugin.Plugin, event externalplugin.Event) {
 			l.Info("Received pull request event for supported user.")
 			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 			defer cancel()
-			err := server.GitHub.(githubClient).AddLabelWithContext(ctx, pr.Repo.Owner.Login, pr.Repo.Name, pr.Number, "ok-to-test")
+			err := ghClient.AddLabelWithContext(ctx, pr.Repo.Owner.Login, pr.Repo.Name, pr.Number, "ok-to-test")
 			if err != nil {
 				l.Errorw("Failed label PR.", "error", err.Error())
 			} else {
 				l.Info("Labeled pr as trusted.")
 			}
-			err = server.GitHub.(githubClient).CreateCommentWithContext(ctx, pr.Repo.Owner.Login, pr.Repo.Name, pr.Number, "/test all")
+			err = ghClient.CreateCommentWithContext(ctx, pr.Repo.Owner.Login, pr.Repo.Name, pr.Number, "/test all")
 			if err != nil {
 				l.Errorw("Failed comment on PR.", "error", err.Error())
 			} else {
@@ -69,8 +71,7 @@ func HelpProvider(_ []config.OrgRepo) (*pluginhelp.PluginHelp, error) {
 }
 
 func main() {
-	var ghClient githubClient
-
+	var err error
 	logger := externalplugin.NewLogger()
 	defer logger.Sync()
 
@@ -81,11 +82,13 @@ func main() {
 	fs := cliOptions.GatherDefaultOptions()
 	cliOptions.Parse(fs)
 
-	ghClient = externalplugin.NewGithubClient(cliOptions.Github, cliOptions.DryRun, logger)
+	ghClient, err = externalplugin.NewGithubClient(cliOptions.Github, cliOptions.DryRun)
+	if err != nil {
+		logger.Fatal("Could not get github client.")
+	}
 
 	server.Name = PluginName
 	server.WithWebhookSecret(cliOptions.WebhookSecretPath)
-	server.WithGithubClient(ghClient)
 	server.HandleWebhook("pull_request", EventHandler)
 	externalplugin.Start(&server, HelpProvider, &cliOptions)
 }

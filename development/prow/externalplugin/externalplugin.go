@@ -48,7 +48,6 @@ type Event struct {
 
 type Plugin struct {
 	Name               string
-	GitHub             interface{}
 	PluginsConfigAgent *plugins.ConfigAgent
 	tokenGenerator     func() []byte
 	handler            func(string, string, []byte)
@@ -82,17 +81,8 @@ func (p *Plugin) GetName() string {
 	return p.Name
 }
 
-func NewGithubClient(githubOptions prowflagutil.GitHubOptions, dryRun bool, l *zap.SugaredLogger) github.Client {
-	ghClient, err := githubOptions.GitHubClient(dryRun)
-	if err != nil {
-		l.Fatal("Could not get github client.")
-	}
-	return ghClient
-}
-
-func (p *Plugin) WithGithubClient(ghClient interface{}) *Plugin {
-	p.GitHub = ghClient
-	return p
+func NewGithubClient(githubOptions prowflagutil.GitHubOptions, dryRun bool) (github.Client, error) {
+	return githubOptions.GitHubClient(dryRun)
 }
 
 func NewLogger() *zap.SugaredLogger {
@@ -191,11 +181,11 @@ func (p *Plugin) defaultHandler(eventType, eventGUID string, payload []byte) {
 
 func Start(p *Plugin, helpProvider externalplugins.ExternalPluginHelpProvider, o CliOptions) {
 	p.logger.With("plugin", p.GetName())
-	//lvl, err := logrus.ParseLevel(o.GetLogLevel())
-	//if err != nil {
+	// lvl, err := logrus.ParseLevel(o.GetLogLevel())
+	// if err != nil {
 	//	logrus.WithError(err).Fatal("Could not parse log level.")
-	//}
-	//logrus.SetLevel(lvl)
+	// }
+	// logrus.SetLevel(lvl)
 	if p.handler == nil {
 		p.handler = p.defaultHandler
 	}
