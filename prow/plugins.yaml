@@ -20,6 +20,7 @@ plugins:
       - approve
       - blunderbuss
       - verify-owners
+      - owners-label
   kyma-incubator:
     plugins:
       - cat
