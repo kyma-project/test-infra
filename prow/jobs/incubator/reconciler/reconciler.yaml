@@ -82,8 +82,8 @@ presubmits: # runs on PRs
             env:
               - name: GO11MODULE
                 value: "on"
-              - name: ORY_INTEGRATION
-                value: "true"
+              - name: TEST_NAME
+                value: "ory"
             resources:
               requests:
                 memory: 3Gi

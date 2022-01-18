@@ -326,7 +326,7 @@ templates:
                   annotations:
                     pipeline.platform: k3d
                   env:
-                    ORY_INTEGRATION: "true"
+                    TEST_NAME: ory
                 inheritedConfigs:
                   global:
                     - jobConfig_default
