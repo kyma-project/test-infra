@@ -91,6 +91,7 @@ function run_tests() {
   elif [[ -v CENTRAL_APPLICATION_CONNECTIVITY_ENABLED ]]; then
     make ci-application-connectivity-2
   elif [[ -v TELEMETRY_ENABLED ]]; then
+    npm install
     npm run test-telemetry
   else
     make ci
