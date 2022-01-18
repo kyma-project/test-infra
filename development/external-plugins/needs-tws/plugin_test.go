@@ -1,12 +1,14 @@
 package main
 
 import (
-	"github.com/sirupsen/logrus"
+	"testing"
+
+	"github.com/kyma-project/test-infra/development/prow/externalplugin"
+	"go.uber.org/zap"
 	"k8s.io/test-infra/prow/git/v2"
 	"k8s.io/test-infra/prow/github"
 	"k8s.io/test-infra/prow/github/fakegithub"
 	"k8s.io/test-infra/prow/repoowners"
-	"testing"
 )
 
 type fakeAliases struct {
@@ -22,7 +24,7 @@ type fakeRepoClient struct {
 	git.RepoClient
 }
 
-func (f fakeAliases) LoadOwnersAliases(l *logrus.Entry, basedir, filename string) (repoowners.RepoAliases, error) {
+func (f fakeAliases) LoadOwnersAliases(l *zap.SugaredLogger, basedir, filename string) (repoowners.RepoAliases, error) {
 	return f.Aliases, nil
 }
 
@@ -71,7 +73,7 @@ func Test_hasMarkdownChanges(t *testing.T) {
 		},
 	}
 
-	p := Plugin{
+	p := PluginBackend{
 		ghc: fc,
 	}
 	testcases := []struct {
@@ -205,9 +207,10 @@ func Test_HandlePullRequest(t *testing.T) {
 
 	for _, c := range testcases {
 		t.Run(c.name, func(t *testing.T) {
-			l := logrus.WithField("test", c.name)
+			l := externalplugin.NewLogger().With("test", c.name)
+			defer l.Sync()
 			fc := fakegithub.NewFakeClient()
-			p := Plugin{
+			p := PluginBackend{
 				ghc: fc,
 			}
 			fc.Commits[SHA] = c.commit
@@ -317,7 +320,8 @@ func Test_HandlePullRequestReview(t *testing.T) {
 	for _, c := range testcases {
 		t.Run(c.name, func(t *testing.T) {
 			fc := fakegithub.NewFakeClient()
-			l := logrus.WithField("test", c.name)
+			l := externalplugin.NewLogger().With("test", c.name)
+			defer l.Sync()
 			a := fakeAliases{
 				Aliases: repoowners.RepoAliases{
 					"technical-writers": {
@@ -326,7 +330,7 @@ func Test_HandlePullRequestReview(t *testing.T) {
 				}}
 			fc.Collaborators = []string{"reviewer"}
 			fc.IssueLabelsExisting = c.labels
-			p := Plugin{
+			p := PluginBackend{
 				ghc: fc,
 				oac: a,
 				gcf: fakeGitClientFactory{},

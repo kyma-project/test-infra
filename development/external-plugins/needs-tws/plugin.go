@@ -2,18 +2,19 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/sirupsen/logrus"
 	"io/ioutil"
+	"os"
+	"path/filepath"
+	"regexp"
+	"strings"
+
+	"github.com/kyma-project/test-infra/development/prow/externalplugin"
+	"go.uber.org/zap"
 	"k8s.io/test-infra/prow/config"
 	"k8s.io/test-infra/prow/git/v2"
 	"k8s.io/test-infra/prow/github"
 	"k8s.io/test-infra/prow/pluginhelp"
 	"k8s.io/test-infra/prow/repoowners"
-	"net/http"
-	"os"
-	"path/filepath"
-	"regexp"
-	"strings"
 )
 
 const (
@@ -41,14 +42,14 @@ type githubClient interface {
 }
 
 type ownersAliases interface {
-	LoadOwnersAliases(l *logrus.Entry, basedir, filename string) (repoowners.RepoAliases, error)
+	LoadOwnersAliases(l *zap.SugaredLogger, basedir, filename string) (repoowners.RepoAliases, error)
 }
 
 type AliasesClient struct {
 	ownersAliases
 }
 
-func (o AliasesClient) LoadOwnersAliases(l *logrus.Entry, basedir, filename string) (repoowners.RepoAliases, error) {
+func (o AliasesClient) LoadOwnersAliases(l *zap.SugaredLogger, basedir, filename string) (repoowners.RepoAliases, error) {
 	l.Debug("Load OWNERS_ALIASES")
 	path := filepath.Join(basedir, filename)
 	if _, err := os.Stat(path); err != nil {
@@ -69,7 +70,7 @@ type reviewCtx struct {
 	approved                           bool
 }
 
-type Plugin struct {
+type PluginBackend struct {
 	botUser        *github.UserData
 	tokenGenerator func() []byte
 	ghc            githubClient
@@ -77,51 +78,51 @@ type Plugin struct {
 	oac            ownersAliases
 }
 
-func (p Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	eventType, eventGUID, payload, ok, _ := github.ValidateWebhook(w, r, p.tokenGenerator)
-	if !ok {
-		return
+func (p *PluginBackend) HandlePR(ep *externalplugin.Plugin, e externalplugin.Event) {
+	eventGUID := e.EventGUID
+	eventType := e.EventType
+	payload := e.Payload
+
+	l := externalplugin.NewLogger().With(
+		externalplugin.EventTypeField, eventType,
+		github.EventGUID, eventGUID,
+	)
+	defer l.Sync()
+
+	l.Debug("Got pull_request event")
+	var pre github.PullRequestEvent
+	if err := json.Unmarshal(payload, &pre); err != nil {
+		l.Errorw("Failed unmarshal json payload.", "error", err.Error())
+		return //return prematurely
 	}
-	if err := p.handleEvent(eventType, eventGUID, payload); err != nil {
-		//error parsing event
+	if err := p.handlePullRequest(l, pre); err != nil {
+		l.Errorw("Failed to handle PR event", "error", err.Error())
 	}
 }
 
-func (p *Plugin) handleEvent(eventType, eventGUID string, payload []byte) error {
-	l := logrus.WithFields(logrus.Fields{
-		"event-type":     eventType,
-		github.EventGUID: eventGUID,
-	})
-	switch eventType {
-	case "pull_request":
-		l.Debug("Got pull_request event.")
-		var pre github.PullRequestEvent
-		if err := json.Unmarshal(payload, &pre); err != nil {
-			return err
-		}
-		go func() {
-			if err := p.handlePullRequest(l, pre); err != nil {
-				l.WithError(err).Error("Failed to process Pull Request.")
-			}
-		}()
-	case "pull_request_review":
-		l.Debug("Got pull_request_review event")
-		var re github.ReviewEvent
-		if err := json.Unmarshal(payload, &re); err != nil {
-			return err
-		}
-		go func() {
-			if err := p.handlePullRequestReview(l, re); err != nil {
-				l.WithError(err).Error("Failed to process Pull Request review.")
-			}
-		}()
-	default:
-		logrus.Debugf("skipping event of type: %q", eventType)
+func (p *PluginBackend) HandlePRReview(ep *externalplugin.Plugin, e externalplugin.Event) {
+	eventGUID := e.EventGUID
+	eventType := e.EventType
+	payload := e.Payload
+
+	l := externalplugin.NewLogger().With(
+		externalplugin.EventTypeField, eventType,
+		github.EventGUID, eventGUID,
+	)
+	defer l.Sync()
+
+	l.Debug("Got pull_request_review event")
+	var re github.ReviewEvent
+	if err := json.Unmarshal(payload, &re); err != nil {
+		l.Errorw("Failed unmarshal json payload.", "error", err.Error())
+		return //return prematurely
 	}
-	return nil
+	if err := p.handlePullRequestReview(l, re); err != nil {
+		l.Errorw("Failed to handle Pull Request Review event", "error", err.Error())
+	}
 }
 
-func (p *Plugin) handlePullRequest(l *logrus.Entry, e github.PullRequestEvent) error {
+func (p *PluginBackend) handlePullRequest(l *zap.SugaredLogger, e github.PullRequestEvent) error {
 	if e.Action == github.PullRequestActionClosed || e.Action == github.PullRequestActionLabeled {
 		return nil
 	}
@@ -154,7 +155,7 @@ func (p *Plugin) handlePullRequest(l *logrus.Entry, e github.PullRequestEvent) e
 	return nil
 }
 
-func (p Plugin) handlePullRequestReview(l *logrus.Entry, re github.ReviewEvent) error {
+func (p PluginBackend) handlePullRequestReview(l *zap.SugaredLogger, re github.ReviewEvent) error {
 	if re.Action != github.ReviewActionSubmitted {
 		return nil
 	}
@@ -178,7 +179,7 @@ func (p Plugin) handlePullRequestReview(l *logrus.Entry, re github.ReviewEvent) 
 	return p.handle(l, rc)
 }
 
-func (p Plugin) handle(l *logrus.Entry, rc reviewCtx) error {
+func (p PluginBackend) handle(l *zap.SugaredLogger, rc reviewCtx) error {
 	author := rc.author
 	issueAuthor := rc.issueAuthor
 	org := rc.repo.Owner.Login
@@ -196,13 +197,12 @@ func (p Plugin) handle(l *logrus.Entry, rc reviewCtx) error {
 
 	gc, err := p.gcf.ClientFor(org, repoName)
 	if err != nil {
-		l.WithError(err).Error("Could not initialize git client.")
+		l.Errorw("Could not initialize git client.", "error", err)
 		return err
 	}
-	p.oac = AliasesClient{}
 	repoAliases, err := p.oac.LoadOwnersAliases(l, gc.Directory(), "OWNERS_ALIASES")
 	if err != nil {
-		l.WithError(err).Error("Could not fetch owners aliases.")
+		l.Errorw("Could not fetch owners aliases.", "error", err)
 	}
 	twsGroup := repoAliases[DefaultTechnicalWritersGroup]
 	if !twsGroup.Has(author) {
@@ -220,7 +220,7 @@ func (p Plugin) handle(l *logrus.Entry, rc reviewCtx) error {
 
 	isCollaborator, err := p.ghc.IsCollaborator(org, repoName, author)
 	if err != nil {
-		l.WithError(err).Error("Could not determine if author is a collaborator.")
+		l.Errorw("Could not determine if author is a collaborator.", "error", err)
 		return err
 	}
 
@@ -232,7 +232,7 @@ func (p Plugin) handle(l *logrus.Entry, rc reviewCtx) error {
 	if !isAuthor && !isAssignee {
 		l.Infof("Assign PR #%v to %s", number, author)
 		if err := p.ghc.AssignIssue(org, repoName, number, []string{author}); err != nil {
-			l.WithError(err).Errorf("Failed to assign %s/%s#%d to %s", org, repoName, number, author)
+			l.With("error", err).Errorf("Failed to assign %s/%s#%d to %s", org, repoName, number, author)
 		}
 	}
 
@@ -253,7 +253,7 @@ func (p Plugin) handle(l *logrus.Entry, rc reviewCtx) error {
 	return nil
 }
 
-func (p Plugin) hasMarkdownChanges(org, repo, sha string) (bool, error) {
+func (p PluginBackend) hasMarkdownChanges(org, repo, sha string) (bool, error) {
 	commit, err := p.ghc.GetSingleCommit(org, repo, sha)
 	if err != nil {
 		return false, err
