@@ -69,6 +69,23 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				"installation/test/test/README.MD",
 			},
 		},
+		"Should contain the kyma-integration k3d with telemetry job": {
+			givenJobName: "pre-main-kyma-integration-k3d-telemetry",
+
+			expPresets: []preset.Preset{
+				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration", "preset-kyma-integration-telemetry-enabled",
+			},
+
+			expRunIfChangedRegex: "^components/telemetry-operator/|^resources/telemetry/",
+			expRunIfChangedPaths: []string{
+				"components/telemetry-operator/values.yaml",
+				"resources/telemetry/values.yaml",
+			},
+			expNotRunIfChangedPaths: []string{
+				"installation/README.md",
+				"installation/test/test/README.MD",
+			},
+		},
 	}
 
 	for tn, tc := range tests {
@@ -130,6 +147,13 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-connectivity-enabled", "preset-kyma-integration-compass-dev", "preset-kyma-integration-compass-enabled",
 			},
 		},
+		"Should contain the kyma-integration k3d with telemetry job": {
+			givenJobName: "post-main-kyma-integration-k3d-telemetry",
+
+			expPresets: []preset.Preset{
+				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration", "preset-kyma-integration-telemetry-enabled",
+			},
+		},
 	}
 
 	for tn, tc := range tests {
@@ -165,7 +189,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.AllPeriodics()
-	assert.Len(t, periodics, 18)
+	assert.Len(t, periodics, 19)
 
 	expName := "kyma-upgrade-k3d-kyma2-to-main"
 	kymaUpgradePeriodic := tester.FindPeriodicJobByName(periodics, expName)
