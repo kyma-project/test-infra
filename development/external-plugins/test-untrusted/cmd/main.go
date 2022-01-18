@@ -23,6 +23,8 @@ type githubClient interface {
 
 var ghClient githubClient
 
+// EventHandler handles PullRequest opened events.
+// It will label PR with ok-to-test to make PR trusted and comment with /test all to trigger tests for opened action.
 func EventHandler(server *externalplugin.Plugin, event externalplugin.Event) {
 	l := externalplugin.NewLogger()
 	defer l.Sync()
@@ -63,9 +65,10 @@ func EventHandler(server *externalplugin.Plugin, event externalplugin.Event) {
 	}
 }
 
+// HelpProvider provides plugin help description.
 func HelpProvider(_ []config.OrgRepo) (*pluginhelp.PluginHelp, error) {
 	ph := &pluginhelp.PluginHelp{
-		Description: "test-untrusted add ok-to-test label on a pull requests created by users from outside of an github organisation. It checks pr author against list of supported users.",
+		Description: "test-untrusted add ok-to-test label on a opened pull request to make it trusted. It will comment with /test all to run tests for opened action. It acts for PRs created by users from outside of an github organisation but for which we need automatically test PRs. It acts for pr authors present on list of allowed users.",
 	}
 	return ph, nil
 }
@@ -89,6 +92,6 @@ func main() {
 
 	server.Name = PluginName
 	server.WithWebhookSecret(cliOptions.WebhookSecretPath)
-	server.HandleWebhook("pull_request", EventHandler)
+	server.RegisterWebhookHandler("pull_request", EventHandler)
 	externalplugin.Start(&server, HelpProvider, &cliOptions)
 }

@@ -37,7 +37,8 @@ type CliOptions interface {
 	GatherDefaultOptions() *flag.FlagSet
 	Parse(fs *flag.FlagSet)
 	GetPort() int
-	GetLogLevel() string
+	// TODO: Implement support for setting log level
+	// GetLogLevel() string
 }
 
 type Event struct {
@@ -55,6 +56,7 @@ type Plugin struct {
 	logger             *zap.SugaredLogger
 }
 
+// GatherDefaultOptions set flagset for default options. These options are common for all external plugins.
 func (o *Opts) GatherDefaultOptions() *flag.FlagSet {
 	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	fs.IntVar(&o.Port, "port", 8080, "Plugin port to listen on.")
@@ -65,26 +67,33 @@ func (o *Opts) GatherDefaultOptions() *flag.FlagSet {
 	return fs
 }
 
+// Parse parses cli arguments in to provided flagset.
 func (o *Opts) Parse(fs *flag.FlagSet) {
 	fs.Parse(os.Args[1:])
 }
 
+// GetPort return port number for Plugin to listen on.
 func (o *Opts) GetPort() int {
 	return o.Port
 }
 
-func (o *Opts) GetLogLevel() string {
-	return o.LogLevel
-}
+// TODO: Implement support for setting log level.
+// func (o *Opts) GetLogLevel() string {
+//	return o.LogLevel
+// }
 
+// GetName return Plugin name.
 func (p *Plugin) GetName() string {
 	return p.Name
 }
 
+// NewGithubClient build GitHub client from provided GitHub options.
 func NewGithubClient(githubOptions prowflagutil.GitHubOptions, dryRun bool) (github.Client, error) {
 	return githubOptions.GitHubClient(dryRun)
 }
 
+// NewLogger return zap sugaredlogger with two output targets. All logs with severity Error or higher will be sent to stderr.
+// All logs with severity lower than Error will be sed to stdout. This allows gcp logging correctly recognize log message severity.
 func NewLogger() *zap.SugaredLogger {
 	errorMessage := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
 		return lvl >= zapcore.ErrorLevel
@@ -108,6 +117,7 @@ func NewLogger() *zap.SugaredLogger {
 	return zap.New(core).Sugar()
 }
 
+// WithLogger adds provided logger to the Plugin object.
 func (p *Plugin) WithLogger(l *zap.SugaredLogger) *Plugin {
 	p.logger = l
 	return p
@@ -149,9 +159,9 @@ func (p *Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	p.handler(eventType, eventGUID, payload)
 }
 
-// HandleWebhook registers function that will be executed when Plugin receives it from GitHub.
+// RegisterWebhookHandler registers function that will be executed when Plugin receives it from GitHub.
 // Only one function can be handled for each webhook.
-func (p *Plugin) HandleWebhook(webhookName string, handler func(*Plugin, Event)) {
+func (p *Plugin) RegisterWebhookHandler(webhookName string, handler func(*Plugin, Event)) {
 	// lazy init webhook map
 	if p.webhookHandlers == nil {
 		p.webhookHandlers = make(map[string]func(*Plugin, Event))
@@ -179,6 +189,8 @@ func (p *Plugin) defaultHandler(eventType, eventGUID string, payload []byte) {
 	}
 }
 
+// Start runs http server with provided plugin as a handler function provider.
+// Start will set defaultHandler as a requests handler function if it's nil in provided plugin.
 func Start(p *Plugin, helpProvider externalplugins.ExternalPluginHelpProvider, o CliOptions) {
 	p.logger.With("plugin", p.GetName())
 	// lvl, err := logrus.ParseLevel(o.GetLogLevel())
