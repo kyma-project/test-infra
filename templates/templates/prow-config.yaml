@@ -18,10 +18,10 @@ plank:
       timeout: 3h
       grace_period: 10m
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20220107-463b53a7ed
-        initupload: gcr.io/k8s-prow/initupload:v20220107-463b53a7ed
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20220107-463b53a7ed
-        sidecar: gcr.io/k8s-prow/sidecar:v20220107-463b53a7ed
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20220115-3e20513bd7
+        initupload: gcr.io/k8s-prow/initupload:v20220115-3e20513bd7
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20220115-3e20513bd7
+        sidecar: gcr.io/k8s-prow/sidecar:v20220115-3e20513bd7
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -232,6 +232,20 @@ tide:
         - do-not-merge/invalid-commit-message
       orgs:
         - kyma-project
+      excludedRepos:
+        - kyma-project/test-infra # handled in separate query specifically for approve plugin
+      reviewApprovedRequired: true
+    - labels:
+        - lgtm
+        - approved
+      missingLabels:
+        - needs-rebase
+        - do-not-merge/hold
+        - do-not-merge/work-in-progress
+        - do-not-merge/invalid-owners-file
+        - do-not-merge/invalid-commit-message
+      repos:
+        - kyma-project/test-infra
       reviewApprovedRequired: true
     - labels:
         - lgtm

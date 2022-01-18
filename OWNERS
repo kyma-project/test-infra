@@ -1,14 +1,3 @@
-filters:
-  'README.md':
-    reviewers:
-      - technical-writers
-    approvers:
-      - technical-writers
-    labels:
-      - area/documentation
-  ".*go\..*$": # all go.mod/sum files
-    labels:
-      - area/dependency
 reviewers:
   - tooling-reviewers
 approvers:
