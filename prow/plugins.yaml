@@ -49,6 +49,10 @@ external_plugins:
     - name: test-untrusted
       events:
         - pull_request
+    - name: needs-tws
+      events:
+        - pull_request
+        - pull_request_review
 
 config_updater:
   maps:

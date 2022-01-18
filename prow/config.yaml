@@ -246,6 +246,7 @@ tide:
         - do-not-merge/work-in-progress
         - do-not-merge/invalid-owners-file
         - do-not-merge/invalid-commit-message
+        - do-not-merge/missing-docs-review
       repos:
         - kyma-project/test-infra
       reviewApprovedRequired: true

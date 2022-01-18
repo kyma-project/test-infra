@@ -91,6 +91,12 @@ default:
       prowPlugin: invalidcommitmsg
       addedBy: prow
     - color: e11d21
+      description: Indicates that a PR should not merge beacuse it has missing documentation review.
+      name: do-not-merge/missing-docs-review
+      target: prs
+      prowPlugin: needs-tws
+      addedBy: prow
+    - color: e11d21
       description: Indicates that a PR should not merge because it has an invalid OWNERS file in it.
       name: do-not-merge/invalid-owners-file
       target: prs

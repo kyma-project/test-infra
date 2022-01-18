@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	DefaultNeedsTwsLabel         = "needs-tws-review"
+	DefaultNeedsTwsLabel         = "do-not-merge/missing-docs-review"
 	DefaultTechnicalWritersGroup = "technical-writers"
 )
 

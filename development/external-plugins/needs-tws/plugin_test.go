@@ -101,7 +101,7 @@ func Test_hasMarkdownChanges(t *testing.T) {
 
 func Test_HandlePullRequest(t *testing.T) {
 	SHA := "9448a2cb0a3915ac956685de8ffb3d4ef55fbc05"
-	twsLabel := "org/repo#101:needs-tws-review"
+	twsLabel := "org/repo#101:do-not-merge/missing-docs-review"
 	testcases := []struct {
 		name                string
 		event               github.PullRequestEvent
@@ -243,7 +243,7 @@ func Test_HandlePullRequestReview(t *testing.T) {
 		{
 			name:      "pr review approved and assigned, remove label",
 			assignees: []string{"org/repo#101:reviewer"},
-			labels:    []string{"org/repo#101:needs-tws-review"},
+			labels:    []string{"org/repo#101:do-not-merge/missing-docs-review"},
 			event: github.ReviewEvent{
 				Action: github.ReviewActionSubmitted,
 				Review: github.Review{
