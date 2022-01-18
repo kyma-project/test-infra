@@ -157,7 +157,8 @@ function installKyma() {
 
 	kyma deploy \
 			--ci \
-			--source main \
+			--source local \
+			--workspace "${KYMA_SOURCES_DIR}" \
 			--domain "${DOMAIN}" \
 			--profile production \
 			--tls-crt "./letsencrypt/live/${DOMAIN}/fullchain.pem" \
