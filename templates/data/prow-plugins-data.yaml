@@ -27,7 +27,7 @@ templates:
                   name: "pre-test-infra-test-untrusted-prow-plugin"
                   run_if_changed: '^(go\.mod|go\.sum)$|^development/external-plugins/test-untrusted/.*\.go$|^development/prow/externalplugin/.*\.go$|^prow/images/test-untrusted-plugin/(Dockerfile|Makefile)$'
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/test-infra/development/images/test-untrusted-plugin"
+                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/test-untrusted-plugin"
                 inheritedConfigs:
                   global:
                     - "image_buildpack-golang"
@@ -39,7 +39,7 @@ templates:
                   name: "post-test-infra-test-untrusted-prow-plugin"
                   run_if_changed: '^(go\.mod|go\.sum)$|^development/external-plugins/test-untrusted/.*\.go$|^development/prow/externalplugin/.*\.go$|^prow/images/test-untrusted-plugin/(Dockerfile|Makefile)$'
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/test-infra/development/images/test-untrusted-plugin"
+                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/test-untrusted-plugin"
                 inheritedConfigs:
                   global:
                     - "image_buildpack-golang"
