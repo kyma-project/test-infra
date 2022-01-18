@@ -78,8 +78,9 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 
 			expRunIfChangedRegex: "^components/telemetry-operator/|^resources/telemetry/",
 			expRunIfChangedPaths: []string{
-				"components/telemetry-operator/values.yaml",
-				"resources/telemetry/values.yaml",
+				"components/telemetry-operator/main.go",
+				"resources/telemetry/charts/operator/values.yaml",
+				"resources/telemetry/charts/fluent-bit/values.yaml",
 			},
 			expNotRunIfChangedPaths: []string{
 				"installation/README.md",
