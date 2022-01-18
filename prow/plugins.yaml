@@ -21,6 +21,13 @@ plugins:
       - blunderbuss
       - verify-owners
       - owners-label
+      - milestone
+      - override
+      - retitle
+      - pony
+      - lifecycle
+      - transfer-issue
+      - project
   kyma-incubator:
     plugins:
       - cat
