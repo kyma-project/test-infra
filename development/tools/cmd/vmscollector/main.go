@@ -17,15 +17,15 @@ import (
 	compute "google.golang.org/api/compute/v1"
 )
 
-const defaultVMNameRegexp = ".*-integration-test-.*"
-const defaultJobLabelRegexp = ".*-integration$"
+const defaultVMNameExcludeRegexp = "gke-nightly-.*|gke-weekly.*|shoot--kyma-prow.*"
+const defaultJobLabelExcludeRegexp = "kyma-gke-nightly|kyma-gke-nightly-.*|kyma-gke-weekly|kyma-gke-weekly-.*"
 
 var (
-	project        = flag.String("project", "", "Project ID [Required]")
-	dryRun         = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
-	ageInHours     = flag.Int("ageInHours", 3, "VM age in hours. VMs older than: now()-ageInHours are subject to removal.")
-	vmNameRegexp   = flag.String("vmNameRegexp", defaultVMNameRegexp, "VM name regexp pattern. Matching vms are subject to removal.")
-	jobLabelRegexp = flag.String("jobLabelRegexp", defaultJobLabelRegexp, "The regexp pattern for \"job-name\" label defined on the VM object. Matching vms are subject to removal.")
+	project               = flag.String("project", "", "Project ID [Required]")
+	dryRun                = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
+	ageInHours            = flag.Int("ageInHours", 3, "VM age in hours. VMs older than: now()-ageInHours are subject to removal.")
+	vmNameExcludeRegexp   = flag.String("vmNameRegexp", defaultVMNameExcludeRegexp, "VM name regexp pattern. Matching vms are excluded from removal.")
+	jobLabelExcludeRegexp = flag.String("jobLabelRegexp", defaultJobLabelExcludeRegexp, "The regexp pattern for \"job-name\" label defined on the VM object. Matching vms are excluded from removal.")
 )
 
 func main() {
@@ -43,10 +43,10 @@ func main() {
 		os.Exit(2)
 	}
 
-	common.ShoutFirst("Running with arguments: project: \"%s\", dryRun: %t, ageInHours: %d, vmNameRegexp: \"%s\", jobLabelRegexp: \"%s\"", *project, *dryRun, *ageInHours, *vmNameRegexp, *jobLabelRegexp)
+	common.ShoutFirst("Running with arguments: project: \"%s\", dryRun: %t, ageInHours: %d, vmNameExcludeRegexp: \"%s\", jobLabelExcludeRegexp: \"%s\"", *project, *dryRun, *ageInHours, *vmNameExcludeRegexp, *jobLabelExcludeRegexp)
 
-	instanceNameRx := regexp.MustCompile(*vmNameRegexp)
-	jobLabelRx := regexp.MustCompile(*jobLabelRegexp)
+	instanceNameExcludeRx := regexp.MustCompile(*vmNameExcludeRegexp)
+	jobLabelExcludeRx := regexp.MustCompile(*jobLabelExcludeRegexp)
 
 	context := context.Background()
 
@@ -62,7 +62,7 @@ func main() {
 
 	instancesService := computeSvc.Instances
 	instancesAPI := &vmscollector.InstancesAPIWrapper{Context: context, Service: instancesService}
-	instanceFilter := vmscollector.DefaultInstanceRemovalPredicate(instanceNameRx, jobLabelRx, uint(*ageInHours))
+	instanceFilter := vmscollector.DefaultInstanceRemovalPredicate(instanceNameExcludeRx, jobLabelExcludeRx, uint(*ageInHours))
 
 	gc := vmscollector.NewInstancesGarbageCollector(instancesAPI, instanceFilter)
 

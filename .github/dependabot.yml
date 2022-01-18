@@ -6,6 +6,10 @@ version: 2
 updates:
   - package-ecosystem: "gomod"
     directory: "/"
+    labels:
+      - "go"
+      - "skip-review"
+      - "area/dependency"
     schedule:
       interval: "daily"
     commit-message:
@@ -13,6 +17,10 @@ updates:
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/prow/images/prow-tools"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
     schedule:
       interval: "daily"
     commit-message:
@@ -20,6 +28,10 @@ updates:
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/changelog-generator"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
     schedule:
       interval: "daily"
     commit-message:
@@ -27,6 +39,10 @@ updates:
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/development/kyma-ci-force-bot/ciforcebot"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
     schedule:
       interval: "daily"
     commit-message:
@@ -34,6 +50,10 @@ updates:
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/development/kyma-github-connector/githubWebhookGateway"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
     schedule:
       interval: "daily"
     commit-message:
@@ -41,6 +61,10 @@ updates:
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/development/kyma-pubsub-connector/pubSubGateway"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
     schedule:
       interval: "daily"
     commit-message:
@@ -48,6 +72,10 @@ updates:
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/development/test-log-collector"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
     schedule:
       interval: "daily"
     commit-message:
@@ -55,6 +83,10 @@ updates:
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/prow/images/bootstrap"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
     schedule:
       interval: "daily"
     commit-message:
@@ -62,6 +94,10 @@ updates:
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/prow/images/buildpack-golang"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
     schedule:
       interval: "daily"
     commit-message:
@@ -69,6 +105,10 @@ updates:
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/prow/images/buildpack-node"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
     schedule:
       interval: "daily"
     commit-message:
@@ -76,6 +116,10 @@ updates:
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/prow/images/cleaner"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
     schedule:
       interval: "daily"
     commit-message:
@@ -83,6 +127,10 @@ updates:
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/prow/images/clonerefs"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
     schedule:
       interval: "daily"
     commit-message:
@@ -90,6 +138,10 @@ updates:
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/prow/images/debug-commando"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
     schedule:
       interval: "daily"
     commit-message:
@@ -97,6 +149,10 @@ updates:
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/prow/images/kyma-integration"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
     schedule:
       interval: "daily"
     commit-message:
@@ -104,6 +160,10 @@ updates:
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/prow/images/probot-stale"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
     schedule:
       interval: "daily"
     commit-message:
@@ -111,6 +171,10 @@ updates:
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/prow/images/whitesource-scanner"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
     schedule:
       interval: "daily"
     commit-message:
@@ -118,6 +182,10 @@ updates:
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/stability-checker/deploy/stability-checker"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
     schedule:
       interval: "daily"
     commit-message:

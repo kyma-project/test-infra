@@ -279,7 +279,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatHasExtraRepoRefCustom(t, vmsCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
 	assert.Equal(t, tester.ImageProwToolsLatest, vmsCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, vmsCleanerPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "/prow-tools/vmscollector -project=${CLOUDSDK_CORE_PROJECT} -vmNameRegexp='kyma-upgrade-test-.*|.*-integration-test-.*|busola-integration-test-.*|.*-upgrade-test-.*' -jobLabelRegexp='.*-integration$|busola-integration-test-k3s|.*-upgrade-k3d-.*|kyma-upgrade' -dryRun=false"}, vmsCleanerPeriodic.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"-c", "/prow-tools/vmscollector -project=${CLOUDSDK_CORE_PROJECT} -vmNameRegexp='gke-nightly-.*|gke-weekly.*|shoot--kyma-prow.*' -jobLabelRegexp='kyma-gke-nightly|kyma-gke-nightly-.*|kyma-gke-weekly|kyma-gke-weekly-.*' -dryRun=false"}, vmsCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, vmsCleanerPeriodic.JobBase)
 
 	expName = "orphaned-loadbalancer-cleaner"
@@ -371,6 +371,17 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "CLUSTER_PROVIDER", "gcp")
 	tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-b")
 	tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "KYMA_MAJOR_VERSION", "2")
+
+	expName = "serverless-function-metrics-generator"
+	functionsMetricsPeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, functionsMetricsPeriodic)
+	assert.Equal(t, expName, functionsMetricsPeriodic.Name)
+
+	assert.Equal(t, "0 0,12 * * *", functionsMetricsPeriodic.Cron)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-metrics-nightly.sh"},
+		functionsMetricsPeriodic.Spec.Containers[0].Command)
+	tester.AssertThatContainerHasEnv(t, functionsMetricsPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "nightly")
+	tester.AssertThatContainerHasEnv(t, functionsMetricsPeriodic.Spec.Containers[0], "CLUSTER_PROVIDER", "gcp")
 
 	// these jobs are disabled due to failing tests, until Kyma 2.0 long lasting clusters are introduced
 	// expName = "kyma-gke-weekly-fast-integration"

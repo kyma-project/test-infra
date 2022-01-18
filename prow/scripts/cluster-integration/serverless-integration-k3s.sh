@@ -94,7 +94,7 @@ done
 
 getjobstatus
 
-collect_results "${job_name}"
+collect_results "${job_name}" "default"
 
 echo "Exit code ${job_status}"
 

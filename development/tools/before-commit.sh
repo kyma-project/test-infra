@@ -63,10 +63,10 @@ check_result "go test" $?
 #  GO LINT
 ##
 echo "? golint"
-go install golang.org/x/lint/golint
+go install golang.org/x/lint/golint@latest
 buildLintResult=$?
 if [ ${buildLintResult} != 0 ]; then
-  echo -e "${RED}✗ go install golint${NC}\\n$buildLintResult${NC}"
+  echo -e "${RED}✗ go install golang.org/x/lint/golint@latest${NC}\\n$buildLintResult${NC}"
   exit 1
 fi
 
@@ -82,10 +82,10 @@ fi
 # GO IMPORTS & FMT
 ##
 echo "? goimports"
-go install golang.org/x/tools/cmd/goimports
+go install golang.org/x/tools/cmd/goimports@latest
 buildGoImportResult=$?
 if [ ${buildGoImportResult} != 0 ]; then
-  echo -e "${RED}✗ go install goimports${NC}\\n$buildGoImportResult${NC}"
+  echo -e "${RED}✗ go install golang.org/x/tools/cmd/goimports@latest${NC}\\n$buildGoImportResult${NC}"
   exit 1
 fi
 
