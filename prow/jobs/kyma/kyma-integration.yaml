@@ -1373,6 +1373,10 @@ periodics: # runs on schedule
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
+        - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
