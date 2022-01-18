@@ -121,6 +121,8 @@ default:
     - color: 0052cc
       description: Issues or PRs related to dependency changes
       name: area/dependency
+      previously:
+        - dependencies
       target: both
       addedBy: label
     - color: 0052cc
