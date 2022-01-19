@@ -122,6 +122,10 @@ func (p *PluginBackend) HandlePRReview(ep *externalplugin.Plugin, e externalplug
 }
 
 func (p *PluginBackend) handlePullRequest(l *zap.SugaredLogger, e github.PullRequestEvent) error {
+	// TODO (@Ressetkk): Configure this based on per-repository config
+	lb := DefaultNeedsTwsLabel
+	twsGroup := DefaultTechnicalWritersGroup
+
 	if e.Action == github.PullRequestActionClosed {
 		return nil
 	}
@@ -133,69 +137,73 @@ func (p *PluginBackend) handlePullRequest(l *zap.SugaredLogger, e github.PullReq
 	repo := e.Repo.Name
 	number := pr.Number
 
-	if e.Action == github.PullRequestActionLabeled || e.Action == github.PullRequestActionUnlabeled {
-		return p.ensureLabels(l, org, repo, number)
-	}
-
-	labels, err := p.ghc.GetIssueLabels(org, repo, number)
+	var changed bool
+	commit, err := p.ghc.GetSingleCommit(org, repo, pr.Head.SHA)
 	if err != nil {
 		return err
 	}
-	if github.HasLabel(DefaultNeedsTwsLabel, labels) {
-		l.Debug("Pull request already has a label.")
-		return nil
-	}
-
-	hasChanges, err := p.hasMarkdownChanges(org, repo, pr.Head.SHA)
-	if err != nil {
-		return err
-	}
-	if hasChanges {
-		l.Debugf("Adding label to %s/%s#%d.", org, repo, number)
-		return p.ghc.AddLabel(org, repo, number, DefaultNeedsTwsLabel)
-	}
-	return nil
-}
-
-func (p PluginBackend) ensureLabels(l *zap.SugaredLogger, org, repo string, number int) error {
-	labels, err := p.ghc.GetIssueLabels(org, repo, number)
-	if err != nil {
-		return err
-	}
-	hasTwsLabel := github.HasLabel(DefaultNeedsTwsLabel, labels)
-
-	r, err := p.ghc.ListReviews(org, repo, number)
-	if err != nil {
-		return err
-	}
-	gc, err := p.gcf.ClientFor(org, repo)
-	if err != nil {
-		l.Errorw("Could not initialize git client.", "error", err)
-		return err
-	}
-	repoAliases, err := p.oac.LoadOwnersAliases(l, gc.Directory(), "OWNERS_ALIASES")
-	if err != nil {
-		l.Errorw("Could not fetch owners aliases.", "error", err)
-	}
-	twsGroup := repoAliases[DefaultTechnicalWritersGroup]
-	var approved bool
-	for _, re := range r {
-		ra := re.User.Login
-		if twsGroup.Has(ra) {
-			if s := github.ReviewState(strings.ToUpper(string(re.State))); s == github.ReviewStateApproved {
-				approved = true
-				break // no need to check further
-			}
+	for _, f := range commit.Files {
+		if markdownRe.MatchString(f.Filename) {
+			changed = true
+			break
 		}
 	}
 
-	if !approved && !hasTwsLabel {
-		l.Debugf("Adding label to %s/%s#%d", org, repo, number)
-		return p.ghc.AddLabel(org, repo, number, DefaultNeedsTwsLabel)
+	if !changed {
+		l.Debugf("Files not changed in %s/%s@%s", org, repo, pr.Head.SHA)
+		return nil
 	}
-	if approved && hasTwsLabel {
-		l.Debugf("Removing label from %s/%s#%d", org, repo, number)
-		return p.ghc.RemoveLabel(org, repo, number, DefaultNeedsTwsLabel)
+
+	labels, err := p.ghc.GetIssueLabels(org, repo, number)
+	if err != nil {
+		return err
+	}
+	hasLabel := github.HasLabel(lb, labels)
+
+	switch e.Action {
+	case github.PullRequestActionOpened, github.PullRequestActionReopened, github.PullRequestActionSynchronize:
+		if hasLabel {
+			//we do not need to add another label
+			return nil
+		}
+		return p.ghc.AddLabel(org, repo, number, lb)
+
+	case github.PullRequestActionLabeled, github.PullRequestActionUnlabeled:
+		reviews, err := p.ghc.ListReviews(org, repo, number)
+		if err != nil {
+			l.Errorw("Could not list PR reviews", "error", err)
+			return err
+		}
+		gc, err := p.gcf.ClientFor(org, repo)
+		if err != nil {
+			l.Errorw("Could not initialize git client.", "error", err)
+			return err
+		}
+		aliases, err := p.oac.LoadOwnersAliases(l, gc.Directory(), "OWNERS_ALIASES")
+		if err != nil {
+			l.Errorw("Could not fetch owners aliases.", "error", err)
+		}
+		tws := aliases[twsGroup]
+		approved := false
+		for _, review := range reviews {
+			user := review.User.Login
+			if tws.Has(user) {
+				if review.State == github.ReviewStateApproved {
+					approved = true
+				}
+				if review.State == github.ReviewStateChangesRequested {
+					// ultimately flag the PR as not approved if anyone of the TWs group requests changes
+					approved = false
+					break
+				}
+			}
+		}
+		if hasLabel && approved {
+			return p.ghc.RemoveLabel(org, repo, number, lb)
+		}
+		if !hasLabel && !approved {
+			return p.ghc.AddLabel(org, repo, number, lb)
+		}
 	}
 	return nil
 }
@@ -296,17 +304,4 @@ func (p PluginBackend) handle(l *zap.SugaredLogger, rc reviewCtx) error {
 	}
 
 	return nil
-}
-
-func (p PluginBackend) hasMarkdownChanges(org, repo, sha string) (bool, error) {
-	commit, err := p.ghc.GetSingleCommit(org, repo, sha)
-	if err != nil {
-		return false, err
-	}
-	for _, f := range commit.Files {
-		if markdownRe.MatchString(f.Filename) {
-			return true, nil
-		}
-	}
-	return false, nil
 }

@@ -36,69 +36,6 @@ func (f fakeGitClientFactory) ClientFor(org, repo string) (git.RepoClient, error
 	return fakeRepoClient{}, nil
 }
 
-func Test_hasMarkdownChanges(t *testing.T) {
-	fc := fakegithub.NewFakeClient()
-	fc.Commits = map[string]github.RepositoryCommit{
-		"hasChangesSha": {
-			SHA: "hasChangesSha",
-			Files: []github.CommitFile{
-				{
-					Filename: "README.md",
-				},
-			},
-		},
-		"noChangesSha": {
-			SHA: "noChangesSha",
-			Files: []github.CommitFile{
-				{
-					Filename: "something/else.go",
-				},
-			},
-		},
-		"changedSubMdSha": {
-			SHA: "changedSubMdSha",
-			Files: []github.CommitFile{
-				{
-					Filename: "something/child/markdown.md",
-				},
-			},
-		},
-		"changedMdNotForTwsSha": {
-			SHA: "changedMdNotForTwsSha",
-			Files: []github.CommitFile{
-				{
-					Filename: "not_for_tws.md",
-				},
-			},
-		},
-	}
-
-	p := PluginBackend{
-		ghc: fc,
-	}
-	testcases := []struct {
-		SHA      string
-		Expected bool
-	}{
-		{"hasChangesSha", true},
-		{"noChangesSha", false},
-		{"changedSubMdSha", true},
-		//{"changedMdNotForTwsSha", false},
-	}
-	for _, c := range testcases {
-		t.Run(c.SHA, func(t *testing.T) {
-			result, err := p.hasMarkdownChanges("foo", "bar", c.SHA)
-			if err != nil {
-				t.Fatalf("hasMarkdownChanges() premature error: %v\n", err)
-			}
-			if result != c.Expected {
-				t.Logf("Bad test result for testcase %s\n. Got %v, Expected %v", c.SHA, result, c.Expected)
-				t.Fail()
-			}
-		})
-	}
-}
-
 func Test_HandlePullRequest(t *testing.T) {
 	SHA := "9448a2cb0a3915ac956685de8ffb3d4ef55fbc05"
 	twsLabel := "org/repo#101:do-not-merge/missing-docs-review"
@@ -112,8 +49,7 @@ func Test_HandlePullRequest(t *testing.T) {
 		Reviews             []github.Review
 	}{
 		{
-			name:             "pr_opened add label",
-			IssueLabelsAdded: []string{twsLabel},
+			name: "pr_opened, files changed, add label",
 			event: github.PullRequestEvent{
 				Action: github.PullRequestActionOpened,
 				PullRequest: github.PullRequest{
@@ -134,10 +70,26 @@ func Test_HandlePullRequest(t *testing.T) {
 					},
 				},
 			},
+			IssueLabelsAdded: []string{twsLabel},
 		},
 		{
-			name:                "pr_synchronize already has a label",
-			IssueLabelsExisting: []string{twsLabel},
+			name: "pr_opened, files not, changed, do not add label",
+			event: github.PullRequestEvent{
+				Action: github.PullRequestActionOpened,
+				PullRequest: github.PullRequest{
+					Number: 101,
+					Head: github.PullRequestBranch{
+						SHA: SHA,
+					},
+				},
+				Repo: github.Repo{
+					Name:  "repo",
+					Owner: github.User{Login: "org"},
+				},
+			},
+		},
+		{
+			name: "pr_synchronize, files changed, add label",
 			event: github.PullRequestEvent{
 				Action: github.PullRequestActionSynchronize,
 				PullRequest: github.PullRequest{
@@ -157,10 +109,37 @@ func Test_HandlePullRequest(t *testing.T) {
 						Filename: "README.md",
 					},
 				},
+				SHA: SHA,
 			},
+			IssueLabelsAdded: []string{twsLabel},
 		},
 		{
-			name: "pr_synchronize do not add label",
+			name: "pr_synchronize, files changed, already has a label",
+			event: github.PullRequestEvent{
+				Action: github.PullRequestActionSynchronize,
+				PullRequest: github.PullRequest{
+					Number: 101,
+					Head: github.PullRequestBranch{
+						SHA: SHA,
+					},
+				},
+				Repo: github.Repo{
+					Name:  "repo",
+					Owner: github.User{Login: "org"},
+				},
+			},
+			commit: github.RepositoryCommit{
+				Files: []github.CommitFile{
+					{
+						Filename: "README.md",
+					},
+				},
+				SHA: SHA,
+			},
+			IssueLabelsExisting: []string{twsLabel},
+		},
+		{
+			name: "pr_synchronize, files not changed, do not add label",
 			event: github.PullRequestEvent{
 				Action: github.PullRequestActionSynchronize,
 				PullRequest: github.PullRequest{
@@ -213,6 +192,13 @@ func Test_HandlePullRequest(t *testing.T) {
 					Owner: github.User{Login: "org"},
 				},
 			},
+			commit: github.RepositoryCommit{
+				Files: []github.CommitFile{
+					{
+						Filename: "README.md",
+					},
+				},
+			},
 			Reviews: []github.Review{
 				{
 					User:  github.User{Login: "reviewer"},
@@ -233,6 +219,13 @@ func Test_HandlePullRequest(t *testing.T) {
 				Repo: github.Repo{
 					Name:  "repo",
 					Owner: github.User{Login: "org"},
+				},
+			},
+			commit: github.RepositoryCommit{
+				Files: []github.CommitFile{
+					{
+						Filename: "README.md",
+					},
 				},
 			},
 			Reviews: []github.Review{
@@ -258,6 +251,13 @@ func Test_HandlePullRequest(t *testing.T) {
 					Owner: github.User{Login: "org"},
 				},
 			},
+			commit: github.RepositoryCommit{
+				Files: []github.CommitFile{
+					{
+						Filename: "README.md",
+					},
+				},
+			},
 			Reviews: []github.Review{
 				{
 					User:  github.User{Login: "reviewer"},
@@ -281,6 +281,13 @@ func Test_HandlePullRequest(t *testing.T) {
 					Owner: github.User{Login: "org"},
 				},
 			},
+			commit: github.RepositoryCommit{
+				Files: []github.CommitFile{
+					{
+						Filename: "README.md",
+					},
+				},
+			},
 			Reviews: []github.Review{
 				{
 					User:  github.User{Login: "reviewer"},
@@ -289,6 +296,40 @@ func Test_HandlePullRequest(t *testing.T) {
 			},
 			IssueLabelsExisting: []string{twsLabel},
 			IssueLabelsRemoved:  []string{twsLabel},
+		},
+		{
+			name: "pr_unlabeled, 2 reviews, one approved one changes requested, files changed, add label",
+			event: github.PullRequestEvent{
+				Action: github.PullRequestActionLabeled,
+				PullRequest: github.PullRequest{
+					Number: 101,
+					Head: github.PullRequestBranch{
+						SHA: SHA,
+					},
+				},
+				Repo: github.Repo{
+					Name:  "repo",
+					Owner: github.User{Login: "org"},
+				},
+			},
+			commit: github.RepositoryCommit{
+				Files: []github.CommitFile{
+					{
+						Filename: "README.md",
+					},
+				},
+			},
+			Reviews: []github.Review{
+				{
+					User:  github.User{Login: "reviewer"},
+					State: github.ReviewStateApproved,
+				},
+				{
+					User:  github.User{Login: "reviewer2"},
+					State: github.ReviewStateChangesRequested,
+				},
+			},
+			IssueLabelsAdded: []string{twsLabel},
 		},
 	}
 
@@ -300,7 +341,8 @@ func Test_HandlePullRequest(t *testing.T) {
 			a := fakeAliases{
 				Aliases: repoowners.RepoAliases{
 					"technical-writers": {
-						"reviewer": {},
+						"reviewer":  {},
+						"reviewer2": {},
 					}},
 			}
 			p := PluginBackend{
