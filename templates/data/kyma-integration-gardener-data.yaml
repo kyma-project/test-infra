@@ -43,7 +43,6 @@ templates:
               pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing.sh"
           command_integration_skr_eventing:
-            cluster: "trusted-workload"
             annotations:
               pipeline.installer: keb
               pipeline.test: "fast-integration"
