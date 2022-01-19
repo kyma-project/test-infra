@@ -141,7 +141,7 @@ func promoteContainerRegistry(path string, globalNode *yaml.Node, targetContaine
 	sourceContainerRegistry := containerRegistryPathNode.Value
 	containerRegistryPathNode.Value = targetContainerRegistry + "/" + sourceContainerRegistry
 
-	// update the container registry path
+	// update the global containerRegistry path
 	outputLine, err := yamlNodeToString(containerRegistryNode, containerRegistryNode.Content[0].Column)
 	if err != nil {
 		return false, fmt.Errorf("error while parsing containerRegistry in %s file: %s", path, err)
