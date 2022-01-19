@@ -17,7 +17,7 @@ ARG commit
 ENV IMAGE_COMMIT=$commit
 LABEL io.kyma-project.test-infra.commit=$commit
 COPY --from=builder /test-untrusted /external-plugin/
-RUN echo "test"
+RUN echo "test test"
 RUN apk add --no-cache ca-certificates bash && \
 	chmod a+x /external-plugin/test-untrusted
 WORKDIR /external-plugin
