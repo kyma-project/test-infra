@@ -116,7 +116,13 @@ default:
       target: issues
       prowPlugin: help
       addedBy: anyone
-
+    - color: 00ff00
+      description: Denotes a PR that is trusted and should be build.
+      name: 'ok-to-test'
+      target: prs
+      prowPlugin: test-untrusted
+      isExternalPlugin: yes
+      addedBy: org-members
     # area labels
     - color: 0052cc
       description: Issues or PRs related to dependency changes

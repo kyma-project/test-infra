@@ -8,6 +8,7 @@
 | pre-main-kyma-integration-k3d-central-app-connectivity | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-integration-k3d-central-app-connectivity-compass | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-serverless-integration-k3s | k3s | k3s | kyma deploy |  | pr-submit |  helm serverless-test  |
+| serverless-function-metrics-generator | gke |  |  |  | nightly |  Serverless function metrics  |
 | serverless-git-auth-integration-k3s-nightly | k3s | k3s | kyma deploy |  | periodic |  helm serverless-test  |
 | post-main-kyma-integration-k3d | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-kyma-integration-k3d-compass-dev | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
@@ -24,6 +25,7 @@
 | post-main-kyma-gardener-azure-alpha-eval | gardener_azure | kyma cli | kyma deploy | evaluation | pr-merge |  fast-integration  |
 | post-main-kyma-gardener-azure-alpha-prod | gardener_azure | kyma cli | kyma deploy | production | pr-merge |  fast-integration  |
 | pre-main-kyma-gardener-gcp-eventing | gardener_gcp | kyma cli | kyma deploy |  | pr-submit |  fast-integration  |
+| pre-main-kyma-skr-eventing | gardener_aws | keb | keb |  | pr-submit |  fast-integration  |
 | kyma-alpha-integration-evaluation-gardener-azure | gardener_azure | kyma cli | kyma deploy | evaluation | periodic |  fast-integration  |
 | kyma-alpha-integration-production-gardener-azure | gardener_azure | kyma cli | kyma deploy | production | periodic |  fast-integration  |
 | kyma-weekly-gardener-gcp-busola-kyma | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |

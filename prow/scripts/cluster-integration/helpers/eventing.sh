@@ -172,3 +172,32 @@ function eventing::test_fast_integration_eventing() {
 
     log::success "Eventing tests completed"
 }
+
+# Runs eventing script to provision SKR
+function eventing::test_fast_integration_provision_skr() {
+    log::info "Running Eventing script to provision SKR"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    make ci-test-eventing-provision-skr
+    popd
+
+    log::success "Provision SKR completed"
+}
+
+# Runs eventing script to de-provision SKR
+function eventing::test_fast_integration_deprovision_skr() {
+    log::info "Running Eventing script to de-provision SKR"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    make ci-test-eventing-deprovision-skr
+    popd
+
+    log::success "De-provision SKR completed"
+}
+
+# Sets KUBECONFIG to ~/.kube/config
+function eventing::set_default_kubeconfig_env() {
+    log::info "Setting default KUBECONFIG ~/.kube/config"
+
+    export KUBECONFIG="${HOME}/.kube/config"
+}
