@@ -58,6 +58,7 @@ RUN curl -LJO https://github.com/whitesource/unified-agent-distribution/releases
     mv wss-unified-agent.jar /wss/wss-unified-agent.jar
 
 # install NodeJS
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN apt-get update && apt-get install -y --no-install-recommends \
     nodejs \
     && apt-get clean \
