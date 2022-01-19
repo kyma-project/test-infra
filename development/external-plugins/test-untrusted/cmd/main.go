@@ -41,7 +41,7 @@ func EventHandler(server *externalplugin.Plugin, event externalplugin.Event) {
 	switch pr.Action {
 	case github.PullRequestActionOpened:
 		pr.GUID = event.EventGUID
-		if pr.Sender.Login == "dependabot[bot]" {
+		if pr.Sender.Login == "dependabot[bot]" || pr.Sender.Login == "neighbors-dev-bot" {
 			l.Info("Received pull request event for supported user.")
 			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 			defer cancel()
