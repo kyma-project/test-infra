@@ -53,7 +53,8 @@ export COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${RANDOM_NAME_SUFFIX}" | tr "[:u
 export INSTANCE_ID=$(cat /proc/sys/kernel/random/uuid) # SKR Runtime Id
 export RUNTIME_NAME="${COMMON_NAME}"
 export KYMA_VERSION="PR-${PULL_NUMBER}"
-export KYMA_OVERRIDES_VERSION="2.0.0"
+# shellcheck disable=SC2002
+export KYMA_OVERRIDES_VERSION=$(cat "${KYMA_SOURCES_DIR}/tests/fast-integration/eventing-test/prow/config/skr_config.json" | jq -r '.kymaOverridesVersion')
 export KYMA_TYPE=SKR
 
 # Runs cleanup for the job
@@ -68,6 +69,8 @@ function skr::cleanup() {
 
 # cleanup (De-provision SKR) hook on exit, either on successful or on fail
 trap skr::cleanup EXIT INT
+
+log::info "### Note: If the job fails to provision SKR, then verify the kymaOverridesVersion is correctly specified in kyma/tests/fast-integration/eventing-test/prow/config/skr_config.json for your PR"
 
 log::banner "Provision SKR"
 eventing::test_fast_integration_provision_skr
