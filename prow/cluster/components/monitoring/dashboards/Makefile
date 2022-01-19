@@ -7,6 +7,7 @@ apply_configmaps:
 	for name in deck ghproxy hook plank prow sinker tide; do kubectl -n prow-monitoring create configmap "grafana-dashboard-$${name}" --from-file="dashboards_out/$${name}.json"; done
 	kubectl -n prow-monitoring create configmap "grafana-dashboard-test-coverage" --from-file="quality/test_coverage.json"
 	kubectl -n prow-monitoring create configmap "grafana-dashboard-quality" --from-file="quality/quality.json"
+	kubectl -n prow-monitoring create configmap "grafana-dashboard-serverless" --from-file="serverless/serverless-controller-dashboard.json"
 
 clean:
 	rm -f ./dashboards_out/*

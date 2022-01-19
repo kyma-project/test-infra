@@ -1,10 +1,8 @@
-filters:
-  ".*":
-    labels:
-      - prow/images
-
 reviewers:
   - tooling-reviewers
 
 approvers:
   - tooling-approvers
+
+labels:
+  - prow/images

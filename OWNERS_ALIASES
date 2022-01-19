@@ -3,13 +3,11 @@ aliases:
     - adamwalach
     - dekiel
     - Ressetkk
-    - kasiakepka
     - Halamix2
   tooling-reviewers:
     - adamwalach
     - dekiel
     - Ressetkk
-    - kasiakepka
     - Halamix2
     - ammarlakis
   stability-checker-owners:
@@ -23,6 +21,7 @@ aliases:
     - majakurcius
     - alexandra-simeonova
     - NHingerl
+    - grego952
 
   busola-approvers:
     - akucharska

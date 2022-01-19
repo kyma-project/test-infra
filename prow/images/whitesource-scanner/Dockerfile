@@ -57,6 +57,12 @@ RUN curl -LJO https://github.com/whitesource/unified-agent-distribution/releases
     mkdir -p /wss && \
     mv wss-unified-agent.jar /wss/wss-unified-agent.jar
 
+# install NodeJS
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    nodejs \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 # Prow Tools
 # hadolint doesn't support --from external image
 # hadolint ignore=DL3022
