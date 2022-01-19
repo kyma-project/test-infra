@@ -45,13 +45,13 @@ func EventHandler(server *externalplugin.Plugin, event externalplugin.Event) {
 			l.Info("Received pull request event for supported user.")
 			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 			defer cancel()
-			err := ghClient.AddLabelWithContext(ctx, pr.Repo.Owner.Login, pr.Repo.Name, pr.Number, "ok-to-test")
-			if err != nil {
-				l.Errorw("Failed label PR.", "error", err.Error())
-			} else {
-				l.Info("Labeled pr as trusted.")
-			}
-			err = ghClient.CreateCommentWithContext(ctx, pr.Repo.Owner.Login, pr.Repo.Name, pr.Number, "/test all")
+			// err := ghClient.AddLabelWithContext(ctx, pr.Repo.Owner.Login, pr.Repo.Name, pr.Number, "ok-to-test")
+			// if err != nil {
+			//	l.Errorw("Failed label PR.", "error", err.Error())
+			// } else {
+			//	l.Info("Labeled pr as trusted.")
+			// }
+			err := ghClient.CreateCommentWithContext(ctx, pr.Repo.Owner.Login, pr.Repo.Name, pr.Number, "/ok-to-test")
 			if err != nil {
 				l.Errorw("Failed comment on PR.", "error", err.Error())
 			} else {
