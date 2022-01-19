@@ -108,6 +108,8 @@ func Test_HandlePullRequest(t *testing.T) {
 		commit              github.RepositoryCommit
 		IssueLabelsAdded    []string
 		IssueLabelsExisting []string
+		IssueLabelsRemoved  []string
+		Reviews             []github.Review
 	}{
 		{
 			name:             "pr_opened add label",
@@ -135,7 +137,6 @@ func Test_HandlePullRequest(t *testing.T) {
 		},
 		{
 			name:                "pr_synchronize already has a label",
-			IssueLabelsAdded:    []string{twsLabel},
 			IssueLabelsExisting: []string{twsLabel},
 			event: github.PullRequestEvent{
 				Action: github.PullRequestActionSynchronize,
@@ -198,10 +199,96 @@ func Test_HandlePullRequest(t *testing.T) {
 			},
 		},
 		{
-			name: "pr_labelled",
+			name: "pr_labeled, review approved, label already removed",
 			event: github.PullRequestEvent{
 				Action: github.PullRequestActionLabeled,
+				PullRequest: github.PullRequest{
+					Number: 101,
+					Head: github.PullRequestBranch{
+						SHA: SHA,
+					},
+				},
+				Repo: github.Repo{
+					Name:  "repo",
+					Owner: github.User{Login: "org"},
+				},
 			},
+			Reviews: []github.Review{
+				{
+					User:  github.User{Login: "reviewer"},
+					State: github.ReviewStateApproved,
+				},
+			},
+		},
+		{
+			name: "pr_unlabeled, review unapproved, label already present",
+			event: github.PullRequestEvent{
+				Action: github.PullRequestActionUnlabeled,
+				PullRequest: github.PullRequest{
+					Number: 101,
+					Head: github.PullRequestBranch{
+						SHA: SHA,
+					},
+				},
+				Repo: github.Repo{
+					Name:  "repo",
+					Owner: github.User{Login: "org"},
+				},
+			},
+			Reviews: []github.Review{
+				{
+					User:  github.User{Login: "reviewer"},
+					State: github.ReviewStateChangesRequested,
+				},
+			},
+			IssueLabelsExisting: []string{twsLabel},
+		},
+		{
+			name: "pr_unlabeled, review unapproved, add removed label",
+			event: github.PullRequestEvent{
+				Action: github.PullRequestActionUnlabeled,
+				PullRequest: github.PullRequest{
+					Number: 101,
+					Head: github.PullRequestBranch{
+						SHA: SHA,
+					},
+				},
+				Repo: github.Repo{
+					Name:  "repo",
+					Owner: github.User{Login: "org"},
+				},
+			},
+			Reviews: []github.Review{
+				{
+					User:  github.User{Login: "reviewer"},
+					State: github.ReviewStateChangesRequested,
+				},
+			},
+			IssueLabelsAdded: []string{twsLabel},
+		},
+		{
+			name: "pr_labeled, review approved, remove added label",
+			event: github.PullRequestEvent{
+				Action: github.PullRequestActionLabeled,
+				PullRequest: github.PullRequest{
+					Number: 101,
+					Head: github.PullRequestBranch{
+						SHA: SHA,
+					},
+				},
+				Repo: github.Repo{
+					Name:  "repo",
+					Owner: github.User{Login: "org"},
+				},
+			},
+			Reviews: []github.Review{
+				{
+					User:  github.User{Login: "reviewer"},
+					State: github.ReviewStateApproved,
+				},
+			},
+			IssueLabelsExisting: []string{twsLabel},
+			IssueLabelsRemoved:  []string{twsLabel},
 		},
 	}
 
@@ -210,18 +297,29 @@ func Test_HandlePullRequest(t *testing.T) {
 			l := externalplugin.NewLogger().With("test", c.name)
 			defer l.Sync()
 			fc := fakegithub.NewFakeClient()
+			a := fakeAliases{
+				Aliases: repoowners.RepoAliases{
+					"technical-writers": {
+						"reviewer": {},
+					}},
+			}
 			p := PluginBackend{
 				ghc: fc,
+				oac: a,
+				gcf: fakeGitClientFactory{},
 			}
 			fc.Commits[SHA] = c.commit
-			fc.IssueLabelsAdded = c.IssueLabelsExisting
-
+			fc.IssueLabelsExisting = c.IssueLabelsExisting
+			fc.Reviews[c.event.PullRequest.Number] = c.Reviews
 			err := p.handlePullRequest(l, c.event)
 			if err != nil {
 				t.Errorf("handlePullRequest() returned error: %v", err)
 			}
 			if got, want := len(fc.IssueLabelsAdded), len(c.IssueLabelsAdded); got != want {
 				t.Errorf("case %s, IssueLabelsAdded mismatch - got %d, want %d.", c.name, got, want)
+			}
+			if got, want := len(fc.IssueLabelsRemoved), len(c.IssueLabelsRemoved); got != want {
+				t.Errorf("case %s, IssueLabelsRemoved mismatch - got %d, want %d.", c.name, got, want)
 			}
 		})
 	}

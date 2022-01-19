@@ -39,6 +39,7 @@ type githubClient interface {
 	CreateComment(org, repo string, number int, comment string) error
 	IsCollaborator(org, repo, user string) (bool, error)
 	AssignIssue(org, repo string, number int, logins []string) error
+	ListReviews(org, repo string, number int) ([]github.Review, error)
 }
 
 type ownersAliases interface {
@@ -71,11 +72,9 @@ type reviewCtx struct {
 }
 
 type PluginBackend struct {
-	botUser        *github.UserData
-	tokenGenerator func() []byte
-	ghc            githubClient
-	gcf            git.ClientFactory
-	oac            ownersAliases
+	ghc githubClient
+	gcf git.ClientFactory
+	oac ownersAliases
 }
 
 func (p *PluginBackend) HandlePR(ep *externalplugin.Plugin, e externalplugin.Event) {
@@ -123,17 +122,20 @@ func (p *PluginBackend) HandlePRReview(ep *externalplugin.Plugin, e externalplug
 }
 
 func (p *PluginBackend) handlePullRequest(l *zap.SugaredLogger, e github.PullRequestEvent) error {
-	if e.Action == github.PullRequestActionClosed || e.Action == github.PullRequestActionLabeled {
+	if e.Action == github.PullRequestActionClosed {
 		return nil
 	}
 	pr := e.PullRequest
 	if pr.Draft || pr.Merged {
 		return nil
 	}
-
 	org := e.Repo.Owner.Login
 	repo := e.Repo.Name
-	number := e.PullRequest.Number
+	number := pr.Number
+
+	if e.Action == github.PullRequestActionLabeled || e.Action == github.PullRequestActionUnlabeled {
+		return p.ensureLabels(l, org, repo, number)
+	}
 
 	labels, err := p.ghc.GetIssueLabels(org, repo, number)
 	if err != nil {
@@ -151,6 +153,49 @@ func (p *PluginBackend) handlePullRequest(l *zap.SugaredLogger, e github.PullReq
 	if hasChanges {
 		l.Debugf("Adding label to %s/%s#%d.", org, repo, number)
 		return p.ghc.AddLabel(org, repo, number, DefaultNeedsTwsLabel)
+	}
+	return nil
+}
+
+func (p PluginBackend) ensureLabels(l *zap.SugaredLogger, org, repo string, number int) error {
+	labels, err := p.ghc.GetIssueLabels(org, repo, number)
+	if err != nil {
+		return err
+	}
+	hasTwsLabel := github.HasLabel(DefaultNeedsTwsLabel, labels)
+
+	r, err := p.ghc.ListReviews(org, repo, number)
+	if err != nil {
+		return err
+	}
+	gc, err := p.gcf.ClientFor(org, repo)
+	if err != nil {
+		l.Errorw("Could not initialize git client.", "error", err)
+		return err
+	}
+	repoAliases, err := p.oac.LoadOwnersAliases(l, gc.Directory(), "OWNERS_ALIASES")
+	if err != nil {
+		l.Errorw("Could not fetch owners aliases.", "error", err)
+	}
+	twsGroup := repoAliases[DefaultTechnicalWritersGroup]
+	var approved bool
+	for _, re := range r {
+		ra := re.User.Login
+		if twsGroup.Has(ra) {
+			if s := github.ReviewState(strings.ToUpper(string(re.State))); s == github.ReviewStateApproved {
+				approved = true
+				break // no need to check further
+			}
+		}
+	}
+
+	if !approved && !hasTwsLabel {
+		l.Debugf("Adding label to %s/%s#%d", org, repo, number)
+		return p.ghc.AddLabel(org, repo, number, DefaultNeedsTwsLabel)
+	}
+	if approved && hasTwsLabel {
+		l.Debugf("Removing label from %s/%s#%d", org, repo, number)
+		return p.ghc.RemoveLabel(org, repo, number, DefaultNeedsTwsLabel)
 	}
 	return nil
 }
