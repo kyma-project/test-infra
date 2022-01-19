@@ -12,6 +12,7 @@
 # - SCAN_LANGUAGE - Scan language is used to set the correct values in the whitesource config for golang / javascript
 
 set -o errexit
+set -o pipefail
 export TEST_INFRA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/test-infra/"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
