@@ -149,7 +149,7 @@ func promoteContainerRegistry(path string, globalNode *yaml.Node, targetContaine
 
 	lines[containerRegistryNode.Line-1] = outputLine
 
-	// update containerRegistyPath for each image that overrides it with the same value as global containerRegistry path
+	// if an image has containerRegistyPath field set, then update it with the same value as global containerRegistry path
 	// this is used by istio and other images that require special handling
 	imagesNode := getYamlNode(globalNode, "images")
 	if imagesNode != nil {
