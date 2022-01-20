@@ -41,6 +41,7 @@ func EventHandler(server *externalplugin.Plugin, event externalplugin.Event) {
 	case github.PullRequestActionOpened, github.PullRequestActionReopened, github.PullRequestActionSynchronize, github.PullRequestActionEdited:
 		pr.GUID = event.EventGUID
 		if pr.Sender.Login == "dependabot[bot]" || pr.Sender.Login == "neighbors-dev-bot" {
+			// If pr action is edited, we check if pr base ref changed. If that's true pr must be retested again.
 			if pr.Action == github.PullRequestActionEdited {
 				l.Info("Received pull request edited action.")
 				var changes struct {
@@ -56,7 +57,7 @@ func EventHandler(server *externalplugin.Plugin, event externalplugin.Event) {
 				if err := json.Unmarshal(pr.Changes, &changes); err != nil {
 					l.Info("Failed unmarshal pr event, ignoring.")
 				} else if changes.Base.Ref.From == "" || changes.Base.Sha.From != "" {
-					// the base of the PR changed and we need to re-test it
+					// the base of the PR did not changed, nothing to do.
 					l.Info("PR base not changed, ignoring.")
 					break
 				}
@@ -64,12 +65,6 @@ func EventHandler(server *externalplugin.Plugin, event externalplugin.Event) {
 			l.Info("Received pull request event for supported user.")
 			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 			defer cancel()
-			// err := ghClient.AddLabelWithContext(ctx, pr.Repo.Owner.Login, pr.Repo.Name, pr.Number, "ok-to-test")
-			// if err != nil {
-			//	l.Errorw("Failed label PR.", "error", err.Error())
-			// } else {
-			//	l.Info("Labeled pr as trusted.")
-			// }
 			err := ghClient.CreateCommentWithContext(ctx, pr.Repo.Owner.Login, pr.Repo.Name, pr.Number, "/test all")
 			if err != nil {
 				l.Errorw("Failed comment on PR.", "error", err.Error())
