@@ -125,6 +125,7 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 	tests := map[string]struct {
 		givenJobName string
 		expPresets   []preset.Preset
+		runIfChanged string
 	}{
 
 		"Should contain the kyma-integration-k3d job": {
@@ -150,6 +151,7 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 		},
 		"Should contain the kyma-integration k3d with telemetry job": {
 			givenJobName: "post-main-kyma-integration-k3d-telemetry",
+			runIfChanged: "^components/telemetry-operator/|^resources/telemetry/",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration", "preset-kyma-integration-telemetry-enabled",
@@ -171,7 +173,7 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 			// the common expectation
 			assert.Equal(t, []string{"^master$", "^main$"}, actualJob.Branches)
 			assert.Equal(t, 10, actualJob.MaxConcurrency)
-			assert.Equal(t, "", actualJob.RunIfChanged)
+			assert.Equal(t, tc.runIfChanged, actualJob.RunIfChanged)
 
 			assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
 			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "main")

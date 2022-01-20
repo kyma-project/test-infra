@@ -582,11 +582,12 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3d-telemetry"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
+        preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-kyma-integration-telemetry-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
+      run_if_changed: '^components/telemetry-operator/|^resources/telemetry/'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
