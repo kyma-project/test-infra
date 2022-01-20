@@ -23,7 +23,7 @@ spec:
       terminationGracePeriodSeconds: 180
       containers:
         - name: test-untrusted-external-pugin
-          image: eu.gcr.io/kyma-project/test-infra/pr/test-untrusted-plugin:PR-4767
+          image: eu.gcr.io/kyma-project/test-infra/test-untrusted-plugin:PR-4767
           imagePullPolicy: Always
           args:
             - --github-endpoint=http://ghproxy
