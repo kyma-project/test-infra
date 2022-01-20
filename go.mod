@@ -38,7 +38,7 @@ require (
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/imdario/mergo v0.3.12
 	github.com/jamiealquiza/envy v1.1.0
-	github.com/jinzhu/copier v0.3.4
+	github.com/jinzhu/copier v0.3.5
 	github.com/mandelsoft/vfs v0.0.0-20210530103237-5249dc39ce91
 	github.com/onsi/gomega v1.17.0
 	github.com/pkg/errors v0.9.1
