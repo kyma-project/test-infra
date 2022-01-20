@@ -87,6 +87,40 @@ func Test_HandlePullRequest(t *testing.T) {
 					Owner: github.User{Login: "org"},
 				},
 			},
+			commit: github.RepositoryCommit{
+				Files: []github.CommitFile{
+					{
+						Filename: "path/to/file.go",
+					},
+				},
+			},
+		},
+		{
+			name: "pr_opened, files not changed, do not add label",
+			event: github.PullRequestEvent{
+				Action: github.PullRequestActionOpened,
+				PullRequest: github.PullRequest{
+					Number: 101,
+					Head: github.PullRequestBranch{
+						SHA: SHA,
+					},
+				},
+				Repo: github.Repo{
+					Name:  "repo",
+					Owner: github.User{Name: "org"},
+				},
+			},
+			commit: github.RepositoryCommit{
+				Files: []github.CommitFile{
+					{
+						Filename: "path/to/other.file",
+					},
+					{
+						Filename: "path/to/cmd/main.go",
+					},
+				},
+				SHA: SHA,
+			},
 		},
 		{
 			name: "pr_synchronize, files changed, add label",

@@ -22,7 +22,7 @@ const (
 	DefaultTechnicalWritersGroup = "technical-writers"
 )
 
-var markdownRe = regexp.MustCompile(".*.md")
+var markdownRe = regexp.MustCompile("^.*\\.md$")
 
 func HelpProvider(_ []config.OrgRepo) (*pluginhelp.PluginHelp, error) {
 	ph := &pluginhelp.PluginHelp{
@@ -143,12 +143,11 @@ func (p *PluginBackend) handlePullRequest(l *zap.SugaredLogger, e github.PullReq
 		return err
 	}
 	for _, f := range commit.Files {
-		if markdownRe.MatchString(f.Filename) {
+		if markdownRe.MatchString(strings.ToLower(f.Filename)) {
 			changed = true
 			break
 		}
 	}
-
 	if !changed {
 		l.Debugf("Files not changed in %s/%s@%s", org, repo, pr.Head.SHA)
 		return nil
