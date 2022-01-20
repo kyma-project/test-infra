@@ -23,12 +23,12 @@ spec:
       terminationGracePeriodSeconds: 180
       containers:
         - name: test-untrusted-external-pugin
-          image: eu.gcr.io/sap-kyma-neighbors-dev/test-untrusted-plugin:v0.1.0
+          image: eu.gcr.io/kyma-project/test-infra/pr/test-untrusted-plugin:PR-4767
           imagePullPolicy: Always
           args:
             - --github-endpoint=http://ghproxy
             - --github-endpoint=https://api.github.com
-            - --github-token-path=/etc/github/oauth
+            - --github-token-path=/etc/github/token
           ports:
             - name: http
               containerPort: 8888
@@ -45,4 +45,4 @@ spec:
             secretName: hmac-token
         - name: oauth
           secret:
-            secretName: oauth-token
+            secretName: kyma-guard-bot-github-token

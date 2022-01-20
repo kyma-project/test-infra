@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/kyma-project/test-infra/development/prow/externalplugin"
-
 	"k8s.io/test-infra/prow/config"
 	"k8s.io/test-infra/prow/github"
 	"k8s.io/test-infra/prow/pluginhelp"
@@ -39,9 +38,29 @@ func EventHandler(server *externalplugin.Plugin, event externalplugin.Event) {
 		"pr-sender", pr.Sender.Login,
 	)
 	switch pr.Action {
-	case github.PullRequestActionOpened:
+	case github.PullRequestActionOpened, github.PullRequestActionReopened, github.PullRequestActionSynchronize, github.PullRequestActionEdited:
 		pr.GUID = event.EventGUID
 		if pr.Sender.Login == "dependabot[bot]" || pr.Sender.Login == "neighbors-dev-bot" {
+			if pr.Action == github.PullRequestActionEdited {
+				l.Info("Received pull request edited action.")
+				var changes struct {
+					Base struct {
+						Ref struct {
+							From string `json:"from"`
+						} `json:"ref"`
+						Sha struct {
+							From string `json:"from"`
+						} `json:"sha"`
+					} `json:"base"`
+				}
+				if err := json.Unmarshal(pr.Changes, &changes); err != nil {
+					l.Info("Failed unmarshal pr event, ignoring.")
+				} else if changes.Base.Ref.From == "" || changes.Base.Sha.From != "" {
+					// the base of the PR changed and we need to re-test it
+					l.Info("PR base not changed, ignoring.")
+					break
+				}
+			}
 			l.Info("Received pull request event for supported user.")
 			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 			defer cancel()
@@ -51,7 +70,7 @@ func EventHandler(server *externalplugin.Plugin, event externalplugin.Event) {
 			// } else {
 			//	l.Info("Labeled pr as trusted.")
 			// }
-			err := ghClient.CreateCommentWithContext(ctx, pr.Repo.Owner.Login, pr.Repo.Name, pr.Number, "/ok-to-test")
+			err := ghClient.CreateCommentWithContext(ctx, pr.Repo.Owner.Login, pr.Repo.Name, pr.Number, "/test all")
 			if err != nil {
 				l.Errorw("Failed comment on PR.", "error", err.Error())
 			} else {
