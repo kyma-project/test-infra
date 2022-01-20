@@ -190,6 +190,24 @@ func Test_HandlePullRequest(t *testing.T) {
 			},
 		},
 		{
+			name: "pr_synchronize, files not changed, label present, remove label",
+			event: github.PullRequestEvent{
+				Action: github.PullRequestActionSynchronize,
+				PullRequest: github.PullRequest{
+					Number: 101,
+					Head: github.PullRequestBranch{
+						SHA: SHA,
+					},
+				},
+				Repo: github.Repo{
+					Name:  "repo",
+					Owner: github.User{Login: "org"},
+				},
+			},
+			IssueLabelsExisting: []string{twsLabel},
+			IssueLabelsRemoved:  1,
+		},
+		{
 			name: "pr_opened is a draft",
 			event: github.PullRequestEvent{
 				Action: github.PullRequestActionOpened,

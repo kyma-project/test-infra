@@ -137,30 +137,33 @@ func (p *PluginBackend) handlePullRequest(l *zap.SugaredLogger, e github.PullReq
 	repo := e.Repo.Name
 	number := pr.Number
 
-	var changed bool
-	commit, err := p.ghc.GetSingleCommit(org, repo, pr.Head.SHA)
-	if err != nil {
-		return err
-	}
-	for _, f := range commit.Files {
-		if markdownRe.MatchString(strings.ToLower(f.Filename)) {
-			changed = true
-			break
-		}
-	}
-	if !changed {
-		l.Debugf("Files not changed in %s/%s@%s", org, repo, pr.Head.SHA)
-		return nil
-	}
-
-	labels, err := p.ghc.GetIssueLabels(org, repo, number)
-	if err != nil {
-		return err
-	}
-	hasLabel := github.HasLabel(lb, labels)
-
 	switch e.Action {
 	case github.PullRequestActionOpened, github.PullRequestActionReopened, github.PullRequestActionSynchronize:
+		var changed bool
+		commit, err := p.ghc.GetSingleCommit(org, repo, pr.Head.SHA)
+		if err != nil {
+			return err
+		}
+		for _, f := range commit.Files {
+			if markdownRe.MatchString(strings.ToLower(f.Filename)) {
+				changed = true
+				break
+			}
+		}
+		labels, err := p.ghc.GetIssueLabels(org, repo, number)
+		if err != nil {
+			return err
+		}
+		hasLabel := github.HasLabel(lb, labels)
+
+		if !changed {
+			l.Debugf("Files not changed in %s/%s#%d@%s", org, repo, number, pr.Head.SHA)
+			if hasLabel {
+				l.Debug("remove stale label")
+				return p.ghc.RemoveLabel(org, repo, number, lb)
+			}
+			return nil
+		}
 		if hasLabel {
 			//we do not need to add another label
 			return nil
