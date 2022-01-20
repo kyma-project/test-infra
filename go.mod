@@ -20,6 +20,7 @@ require (
 	cloud.google.com/go/bigquery v1.26.0
 	cloud.google.com/go/firestore v1.6.1
 	cloud.google.com/go/functions v1.0.0
+	cloud.google.com/go/iam v0.1.1 // indirect
 	cloud.google.com/go/logging v1.4.2
 	cloud.google.com/go/pubsub v1.17.1
 	cloud.google.com/go/storage v1.18.2
@@ -55,7 +56,7 @@ require (
 	github.com/vrischmann/envconfig v1.3.0
 	go.uber.org/zap v1.19.0
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
-	google.golang.org/api v0.63.0
+	google.golang.org/api v0.65.0
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	k8s.io/api v0.22.2
