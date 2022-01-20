@@ -33,7 +33,7 @@ func HelpProvider(_ []config.OrgRepo) (*pluginhelp.PluginHelp, error) {
 }
 
 type githubClient interface {
-	GetSingleCommit(org, repo, SHA string) (github.RepositoryCommit, error)
+	GetPullRequestChanges(org, repo string, number int) ([]github.PullRequestChange, error)
 	AddLabel(org, repo string, number int, label string) error
 	RemoveLabel(org, repo string, number int, label string) error
 	GetIssueLabels(org, repo string, number int) ([]github.Label, error)
@@ -140,12 +140,13 @@ func (p *PluginBackend) handlePullRequest(l *zap.SugaredLogger, e github.PullReq
 	switch e.Action {
 	case github.PullRequestActionOpened, github.PullRequestActionReopened, github.PullRequestActionSynchronize:
 		var changed bool
-		commit, err := p.ghc.GetSingleCommit(org, repo, pr.Head.SHA)
+
+		changes, err := p.ghc.GetPullRequestChanges(org, repo, number)
 		if err != nil {
 			return err
 		}
-		for _, f := range commit.Files {
-			if markdownRe.MatchString(strings.ToLower(f.Filename)) {
+		for _, c := range changes {
+			if markdownRe.MatchString(strings.ToLower(c.Filename)) {
 				changed = true
 				break
 			}

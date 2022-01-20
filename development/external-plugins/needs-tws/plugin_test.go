@@ -42,7 +42,7 @@ func Test_HandlePullRequest(t *testing.T) {
 	testcases := []struct {
 		name                string
 		event               github.PullRequestEvent
-		commit              github.RepositoryCommit
+		changes             []github.PullRequestChange
 		IssueLabelsAdded    int
 		IssueLabelsRemoved  int
 		IssueLabelsExisting []string
@@ -64,11 +64,9 @@ func Test_HandlePullRequest(t *testing.T) {
 					Owner: github.User{Login: "org"},
 				},
 			},
-			commit: github.RepositoryCommit{
-				Files: []github.CommitFile{
-					{
-						Filename: "README.md",
-					},
+			changes: []github.PullRequestChange{
+				{
+					Filename: "README.md",
 				},
 			},
 			IssueLabelsAdded: 1,
@@ -88,11 +86,9 @@ func Test_HandlePullRequest(t *testing.T) {
 					Owner: github.User{Login: "org"},
 				},
 			},
-			commit: github.RepositoryCommit{
-				Files: []github.CommitFile{
-					{
-						Filename: "path/to/file.go",
-					},
+			changes: []github.PullRequestChange{
+				{
+					Filename: "path/to/file.go",
 				},
 			},
 		},
@@ -111,16 +107,13 @@ func Test_HandlePullRequest(t *testing.T) {
 					Owner: github.User{Name: "org"},
 				},
 			},
-			commit: github.RepositoryCommit{
-				Files: []github.CommitFile{
-					{
-						Filename: "path/to/other.file",
-					},
-					{
-						Filename: "path/to/cmd/main.go",
-					},
+			changes: []github.PullRequestChange{
+				{
+					Filename: "path/to/other.file",
 				},
-				SHA: SHA,
+				{
+					Filename: "path/to/cmd/main.go",
+				},
 			},
 		},
 		{
@@ -138,13 +131,10 @@ func Test_HandlePullRequest(t *testing.T) {
 					Owner: github.User{Login: "org"},
 				},
 			},
-			commit: github.RepositoryCommit{
-				Files: []github.CommitFile{
-					{
-						Filename: "README.md",
-					},
+			changes: []github.PullRequestChange{
+				{
+					Filename: "README.md",
 				},
-				SHA: SHA,
 			},
 			IssueLabelsAdded: 1,
 		},
@@ -163,13 +153,10 @@ func Test_HandlePullRequest(t *testing.T) {
 					Owner: github.User{Login: "org"},
 				},
 			},
-			commit: github.RepositoryCommit{
-				Files: []github.CommitFile{
-					{
-						Filename: "README.md",
-					},
+			changes: []github.PullRequestChange{
+				{
+					Filename: "README.md",
 				},
-				SHA: SHA,
 			},
 			IssueLabelsExisting: []string{twsLabel},
 		},
@@ -252,13 +239,10 @@ func Test_HandlePullRequest(t *testing.T) {
 				},
 				Sender: github.User{Login: fakegithub.Bot},
 			},
-			commit: github.RepositoryCommit{
-				Files: []github.CommitFile{
-					{
-						Filename: "README.md",
-					},
+			changes: []github.PullRequestChange{
+				{
+					Filename: "README.md",
 				},
-				SHA: SHA,
 			},
 		},
 		{
@@ -278,13 +262,10 @@ func Test_HandlePullRequest(t *testing.T) {
 				Sender: github.User{Login: "collaborator"},
 				Label:  github.Label{Name: "not-a-docs-label"},
 			},
-			commit: github.RepositoryCommit{
-				Files: []github.CommitFile{
-					{
-						Filename: "README.md",
-					},
+			changes: []github.PullRequestChange{
+				{
+					Filename: "README.md",
 				},
-				SHA: SHA,
 			},
 		},
 		{
@@ -304,13 +285,10 @@ func Test_HandlePullRequest(t *testing.T) {
 				Sender: github.User{Login: "not-a-collaborator"},
 				Label:  github.Label{Name: DefaultNeedsTwsLabel},
 			},
-			commit: github.RepositoryCommit{
-				Files: []github.CommitFile{
-					{
-						Filename: "README.md",
-					},
+			changes: []github.PullRequestChange{
+				{
+					Filename: "README.md",
 				},
-				SHA: SHA,
 			},
 			IssueCommentsAdded: 1,
 			IssueLabelsAdded:   1,
@@ -332,13 +310,10 @@ func Test_HandlePullRequest(t *testing.T) {
 				Sender: github.User{Login: "collaborator"},
 				Label:  github.Label{Name: DefaultNeedsTwsLabel},
 			},
-			commit: github.RepositoryCommit{
-				Files: []github.CommitFile{
-					{
-						Filename: "README.md",
-					},
+			changes: []github.PullRequestChange{
+				{
+					Filename: "README.md",
 				},
-				SHA: SHA,
 			},
 			IssueCommentsAdded: 1,
 		},
@@ -362,7 +337,7 @@ func Test_HandlePullRequest(t *testing.T) {
 				oac: a,
 				gcf: fakeGitClientFactory{},
 			}
-			fc.Commits[SHA] = c.commit
+			fc.PullRequestChanges[c.event.PullRequest.Number] = c.changes
 			fc.IssueLabelsExisting = c.IssueLabelsExisting
 			fc.Reviews[c.event.PullRequest.Number] = c.Reviews
 			err := p.handlePullRequest(l, c.event)
@@ -455,26 +430,7 @@ func Test_HandlePullRequestReview(t *testing.T) {
 			},
 		},
 		{
-			name:           "pr changes requested by a reviewer, assign a reviewer",
-			assigneesAdded: []string{"org/repo#101:reviewer"},
-			event: github.ReviewEvent{
-				Action: github.ReviewActionSubmitted,
-				Review: github.Review{
-					State: github.ReviewStateChangesRequested,
-					User:  github.User{Login: "reviewer"},
-				},
-				Repo: github.Repo{
-					Name:  "repo",
-					Owner: github.User{Login: "org"}},
-				PullRequest: github.PullRequest{
-					Number:    101,
-					User:      github.User{Login: "pr-author"},
-					Assignees: []github.User{},
-				},
-			},
-		},
-		{
-			name:           "pr changes requested after previously approved, re-add label",
+			name:           "pr changes requested by a reviewer, assign a reviewer, add label",
 			assigneesAdded: []string{"org/repo#101:reviewer"},
 			labelsAdded:    1,
 			event: github.ReviewEvent{
@@ -565,7 +521,7 @@ func Test_HandlePullRequestReview(t *testing.T) {
 				t.Errorf("case %s, number of assignees is wrong. got %d, want %d", c.name, got, want)
 			}
 			if got, want := len(fc.IssueLabelsAdded), c.labelsAdded; got != want {
-				t.Errorf("case %s, didn't add a label where it should have been added. got %d want %d", c.name, got, want)
+				t.Errorf("case %s, added a label where it shouldn't have been added. got %d want %d", c.name, got, want)
 			}
 			if got, want := len(fc.IssueLabelsRemoved), c.labelsRemoved; got != want {
 				t.Errorf("case %s, didn't remove a label where it should have been removed. got %d want %d", c.name, got, want)
