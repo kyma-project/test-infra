@@ -24,7 +24,6 @@ func main() {
 		l.Fatalw("Could not get git client.", "error", err)
 	}
 	gc := git.ClientFactoryFrom(g)
-
 	pb := PluginBackend{
 		ghc: ghc,
 		gcf: gc,

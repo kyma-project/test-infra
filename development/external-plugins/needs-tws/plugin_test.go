@@ -43,9 +43,10 @@ func Test_HandlePullRequest(t *testing.T) {
 		name                string
 		event               github.PullRequestEvent
 		commit              github.RepositoryCommit
-		IssueLabelsAdded    []string
+		IssueLabelsAdded    int
+		IssueLabelsRemoved  int
 		IssueLabelsExisting []string
-		IssueLabelsRemoved  []string
+		IssueCommentsAdded  int
 		Reviews             []github.Review
 	}{
 		{
@@ -70,7 +71,7 @@ func Test_HandlePullRequest(t *testing.T) {
 					},
 				},
 			},
-			IssueLabelsAdded: []string{twsLabel},
+			IssueLabelsAdded: 1,
 		},
 		{
 			name: "pr_opened, files not, changed, do not add label",
@@ -145,7 +146,7 @@ func Test_HandlePullRequest(t *testing.T) {
 				},
 				SHA: SHA,
 			},
-			IssueLabelsAdded: []string{twsLabel},
+			IssueLabelsAdded: 1,
 		},
 		{
 			name: "pr_synchronize, files changed, already has a label",
@@ -212,36 +213,13 @@ func Test_HandlePullRequest(t *testing.T) {
 			},
 		},
 		{
-			name: "pr_labeled, review approved, label already removed",
+			name: "pr_labeled",
 			event: github.PullRequestEvent{
 				Action: github.PullRequestActionLabeled,
-				PullRequest: github.PullRequest{
-					Number: 101,
-					Head: github.PullRequestBranch{
-						SHA: SHA,
-					},
-				},
-				Repo: github.Repo{
-					Name:  "repo",
-					Owner: github.User{Login: "org"},
-				},
-			},
-			commit: github.RepositoryCommit{
-				Files: []github.CommitFile{
-					{
-						Filename: "README.md",
-					},
-				},
-			},
-			Reviews: []github.Review{
-				{
-					User:  github.User{Login: "reviewer"},
-					State: github.ReviewStateApproved,
-				},
 			},
 		},
 		{
-			name: "pr_unlabeled, review unapproved, label already present",
+			name: "pr_unlabeled by a bot",
 			event: github.PullRequestEvent{
 				Action: github.PullRequestActionUnlabeled,
 				PullRequest: github.PullRequest{
@@ -254,6 +232,7 @@ func Test_HandlePullRequest(t *testing.T) {
 					Name:  "repo",
 					Owner: github.User{Login: "org"},
 				},
+				Sender: github.User{Login: fakegithub.Bot},
 			},
 			commit: github.RepositoryCommit{
 				Files: []github.CommitFile{
@@ -261,17 +240,11 @@ func Test_HandlePullRequest(t *testing.T) {
 						Filename: "README.md",
 					},
 				},
+				SHA: SHA,
 			},
-			Reviews: []github.Review{
-				{
-					User:  github.User{Login: "reviewer"},
-					State: github.ReviewStateChangesRequested,
-				},
-			},
-			IssueLabelsExisting: []string{twsLabel},
 		},
 		{
-			name: "pr_unlabeled, review unapproved, add removed label",
+			name: "pr_unlabeled not a documentation label",
 			event: github.PullRequestEvent{
 				Action: github.PullRequestActionUnlabeled,
 				PullRequest: github.PullRequest{
@@ -284,6 +257,8 @@ func Test_HandlePullRequest(t *testing.T) {
 					Name:  "repo",
 					Owner: github.User{Login: "org"},
 				},
+				Sender: github.User{Login: "collaborator"},
+				Label:  github.Label{Name: "not-a-docs-label"},
 			},
 			commit: github.RepositoryCommit{
 				Files: []github.CommitFile{
@@ -291,19 +266,13 @@ func Test_HandlePullRequest(t *testing.T) {
 						Filename: "README.md",
 					},
 				},
+				SHA: SHA,
 			},
-			Reviews: []github.Review{
-				{
-					User:  github.User{Login: "reviewer"},
-					State: github.ReviewStateChangesRequested,
-				},
-			},
-			IssueLabelsAdded: []string{twsLabel},
 		},
 		{
-			name: "pr_labeled, review approved, remove added label",
+			name: "pr_unlabeled not by a collaborator",
 			event: github.PullRequestEvent{
-				Action: github.PullRequestActionLabeled,
+				Action: github.PullRequestActionUnlabeled,
 				PullRequest: github.PullRequest{
 					Number: 101,
 					Head: github.PullRequestBranch{
@@ -314,6 +283,8 @@ func Test_HandlePullRequest(t *testing.T) {
 					Name:  "repo",
 					Owner: github.User{Login: "org"},
 				},
+				Sender: github.User{Login: "not-a-collaborator"},
+				Label:  github.Label{Name: DefaultNeedsTwsLabel},
 			},
 			commit: github.RepositoryCommit{
 				Files: []github.CommitFile{
@@ -321,20 +292,15 @@ func Test_HandlePullRequest(t *testing.T) {
 						Filename: "README.md",
 					},
 				},
+				SHA: SHA,
 			},
-			Reviews: []github.Review{
-				{
-					User:  github.User{Login: "reviewer"},
-					State: github.ReviewStateApproved,
-				},
-			},
-			IssueLabelsExisting: []string{twsLabel},
-			IssueLabelsRemoved:  []string{twsLabel},
+			IssueCommentsAdded: 1,
+			IssueLabelsAdded:   1,
 		},
 		{
-			name: "pr_unlabeled, 2 reviews, one approved one changes requested, files changed, add label",
+			name: "pr_unlabeled by a collaborator",
 			event: github.PullRequestEvent{
-				Action: github.PullRequestActionLabeled,
+				Action: github.PullRequestActionUnlabeled,
 				PullRequest: github.PullRequest{
 					Number: 101,
 					Head: github.PullRequestBranch{
@@ -345,6 +311,8 @@ func Test_HandlePullRequest(t *testing.T) {
 					Name:  "repo",
 					Owner: github.User{Login: "org"},
 				},
+				Sender: github.User{Login: "collaborator"},
+				Label:  github.Label{Name: DefaultNeedsTwsLabel},
 			},
 			commit: github.RepositoryCommit{
 				Files: []github.CommitFile{
@@ -352,18 +320,9 @@ func Test_HandlePullRequest(t *testing.T) {
 						Filename: "README.md",
 					},
 				},
+				SHA: SHA,
 			},
-			Reviews: []github.Review{
-				{
-					User:  github.User{Login: "reviewer"},
-					State: github.ReviewStateApproved,
-				},
-				{
-					User:  github.User{Login: "reviewer2"},
-					State: github.ReviewStateChangesRequested,
-				},
-			},
-			IssueLabelsAdded: []string{twsLabel},
+			IssueCommentsAdded: 1,
 		},
 	}
 
@@ -379,6 +338,7 @@ func Test_HandlePullRequest(t *testing.T) {
 						"reviewer2": {},
 					}},
 			}
+			fc.Collaborators = []string{"collaborator"}
 			p := PluginBackend{
 				ghc: fc,
 				oac: a,
@@ -391,11 +351,14 @@ func Test_HandlePullRequest(t *testing.T) {
 			if err != nil {
 				t.Errorf("handlePullRequest() returned error: %v", err)
 			}
-			if got, want := len(fc.IssueLabelsAdded), len(c.IssueLabelsAdded); got != want {
+			if got, want := len(fc.IssueLabelsAdded), c.IssueLabelsAdded; got != want {
 				t.Errorf("case %s, IssueLabelsAdded mismatch - got %d, want %d.", c.name, got, want)
 			}
-			if got, want := len(fc.IssueLabelsRemoved), len(c.IssueLabelsRemoved); got != want {
+			if got, want := len(fc.IssueLabelsRemoved), c.IssueLabelsRemoved; got != want {
 				t.Errorf("case %s, IssueLabelsRemoved mismatch - got %d, want %d.", c.name, got, want)
+			}
+			if got, want := len(fc.IssueCommentsAdded), c.IssueCommentsAdded; got != want {
+				t.Errorf("case %s, IssueCommentsAdded mismatch - got %d, want %d.", c.name, got, want)
 			}
 		})
 	}

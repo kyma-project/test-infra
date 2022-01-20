@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -39,7 +40,7 @@ type githubClient interface {
 	CreateComment(org, repo string, number int, comment string) error
 	IsCollaborator(org, repo, user string) (bool, error)
 	AssignIssue(org, repo string, number int, logins []string) error
-	ListReviews(org, repo string, number int) ([]github.Review, error)
+	BotUserChecker() (func(string) bool, error)
 }
 
 type ownersAliases interface {
@@ -124,7 +125,6 @@ func (p *PluginBackend) HandlePRReview(ep *externalplugin.Plugin, e externalplug
 func (p *PluginBackend) handlePullRequest(l *zap.SugaredLogger, e github.PullRequestEvent) error {
 	// TODO (@Ressetkk): Configure this based on per-repository config
 	lb := DefaultNeedsTwsLabel
-	twsGroup := DefaultTechnicalWritersGroup
 
 	if e.Action == github.PullRequestActionClosed {
 		return nil
@@ -166,43 +166,36 @@ func (p *PluginBackend) handlePullRequest(l *zap.SugaredLogger, e github.PullReq
 			return nil
 		}
 		return p.ghc.AddLabel(org, repo, number, lb)
-
-	case github.PullRequestActionLabeled, github.PullRequestActionUnlabeled:
-		reviews, err := p.ghc.ListReviews(org, repo, number)
+	case github.PullRequestActionUnlabeled:
+		bc, err := p.ghc.BotUserChecker()
 		if err != nil {
-			l.Errorw("Could not list PR reviews", "error", err)
 			return err
 		}
-		gc, err := p.gcf.ClientFor(org, repo)
-		if err != nil {
-			l.Errorw("Could not initialize git client.", "error", err)
-			return err
+		isBot := bc(e.Sender.Login)
+		if isBot {
+			// label removed by a bot. Skip.
+			return nil
 		}
-		aliases, err := p.oac.LoadOwnersAliases(l, gc.Directory(), "OWNERS_ALIASES")
-		if err != nil {
-			l.Errorw("Could not fetch owners aliases.", "error", err)
+		deleted := e.Label.Name == lb
+		if !deleted {
+			// not a missing-docs label. Skip.
+			return nil
 		}
-		tws := aliases[twsGroup]
-		approved := false
-		for _, review := range reviews {
-			user := review.User.Login
-			if tws.Has(user) {
-				if review.State == github.ReviewStateApproved {
-					approved = true
-				}
-				if review.State == github.ReviewStateChangesRequested {
-					// ultimately flag the PR as not approved if anyone of the TWs group requests changes
-					approved = false
-					break
-				}
+		sender := e.Sender.Login
+		isCollaborator, err := p.ghc.IsCollaborator(org, repo, sender)
+		if err != nil {
+			return nil
+		}
+		if !isCollaborator {
+			// re-add label and notice only collaborators can bypass documentation review
+			err := p.ghc.AddLabel(org, repo, number, lb)
+			if err != nil {
+				l.Errorw("Failed to re-add label.", "error", err)
+				return err
 			}
+			return p.ghc.CreateComment(org, repo, number, fmt.Sprintf("@%s, you cannot bypass documentation review. Only team members with write access are allowed to do it.", sender))
 		}
-		if hasLabel && approved {
-			return p.ghc.RemoveLabel(org, repo, number, lb)
-		}
-		if !hasLabel && !approved {
-			return p.ghc.AddLabel(org, repo, number, lb)
-		}
+		return p.ghc.CreateComment(org, repo, number, fmt.Sprintf("Documentation review manually bypassed by @%s.", sender))
 	}
 	return nil
 }
