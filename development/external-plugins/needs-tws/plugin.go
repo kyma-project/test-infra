@@ -293,10 +293,12 @@ func (p PluginBackend) handle(l *zap.SugaredLogger, rc reviewCtx) error {
 	if hasLabel && approved {
 		// remove label when PR is approved and has labels.
 		l.Infof("Remove label from %s/%s#%d.", org, repoName, number)
-		if err := p.ghc.RemoveLabel(org, repoName, number, DefaultNeedsTwsLabel); err != nil {
-			return err
-		}
+		return p.ghc.RemoveLabel(org, repoName, number, DefaultNeedsTwsLabel)
 	}
-
+	if !hasLabel && !approved {
+		// re-add label if PR is not approved.
+		l.Infof("Add label to %s/%s#%d", org, repoName, number)
+		return p.ghc.AddLabel(org, repoName, number, DefaultNeedsTwsLabel)
+	}
 	return nil
 }

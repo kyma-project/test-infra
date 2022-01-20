@@ -384,10 +384,12 @@ func Test_HandlePullRequest(t *testing.T) {
 
 func Test_HandlePullRequestReview(t *testing.T) {
 	testcases := []struct {
-		name      string
-		event     github.ReviewEvent
-		assignees []string
-		labels    []string
+		name           string
+		event          github.ReviewEvent
+		assigneesAdded []string
+		labelsExisting []string
+		labelsAdded    int
+		labelsRemoved  int
 	}{
 		{
 			name: "not a submitted review",
@@ -396,9 +398,10 @@ func Test_HandlePullRequestReview(t *testing.T) {
 			},
 		},
 		{
-			name:      "pr review approved and assigned, remove label",
-			assignees: []string{"org/repo#101:reviewer"},
-			labels:    []string{"org/repo#101:do-not-merge/missing-docs-review"},
+			name:           "pr review approved and assigned, remove label",
+			assigneesAdded: []string{"org/repo#101:reviewer"},
+			labelsExisting: []string{"org/repo#101:do-not-merge/missing-docs-review"},
+			labelsRemoved:  1,
 			event: github.ReviewEvent{
 				Action: github.ReviewActionSubmitted,
 				Review: github.Review{
@@ -452,12 +455,76 @@ func Test_HandlePullRequestReview(t *testing.T) {
 			},
 		},
 		{
-			name:      "pr changes requested by a reviewer, assign a reviewer",
-			assignees: []string{"org/repo#101:reviewer"},
+			name:           "pr changes requested by a reviewer, assign a reviewer",
+			assigneesAdded: []string{"org/repo#101:reviewer"},
 			event: github.ReviewEvent{
 				Action: github.ReviewActionSubmitted,
 				Review: github.Review{
 					State: github.ReviewStateChangesRequested,
+					User:  github.User{Login: "reviewer"},
+				},
+				Repo: github.Repo{
+					Name:  "repo",
+					Owner: github.User{Login: "org"}},
+				PullRequest: github.PullRequest{
+					Number:    101,
+					User:      github.User{Login: "pr-author"},
+					Assignees: []github.User{},
+				},
+			},
+		},
+		{
+			name:           "pr changes requested after previously approved, re-add label",
+			assigneesAdded: []string{"org/repo#101:reviewer"},
+			labelsAdded:    1,
+			event: github.ReviewEvent{
+				Action: github.ReviewActionSubmitted,
+				Review: github.Review{
+					State: github.ReviewStateChangesRequested,
+					User:  github.User{Login: "reviewer"},
+				},
+				Repo: github.Repo{
+					Name:  "repo",
+					Owner: github.User{Login: "org"}},
+				PullRequest: github.PullRequest{
+					Number:    101,
+					User:      github.User{Login: "pr-author"},
+					Assignees: []github.User{},
+				},
+			},
+		},
+		{
+			name:           "pr changes requested, label already present",
+			assigneesAdded: []string{"org/repo#101:reviewer"},
+			labelsExisting: []string{"org/repo#101:do-not-merge/missing-docs-review"},
+			event: github.ReviewEvent{
+				Action: github.ReviewActionSubmitted,
+				Review: github.Review{
+					State: github.ReviewStateChangesRequested,
+					User:  github.User{Login: "reviewer"},
+				},
+				Repo: github.Repo{
+					Name:  "repo",
+					Owner: github.User{Login: "org"}},
+				PullRequest: github.PullRequest{
+					Number:    101,
+					User:      github.User{Login: "pr-author"},
+					Assignees: []github.User{},
+					Labels: []github.Label{
+						{
+							Name: DefaultNeedsTwsLabel,
+						},
+					},
+				},
+			},
+		},
+		{
+			name:           "pr approved, label already removed",
+			assigneesAdded: []string{"org/repo#101:reviewer"},
+			event: github.ReviewEvent{
+				Action: github.ReviewActionSubmitted,
+				Review: github.Review{
+					State: github.ReviewStateApproved,
 					User:  github.User{Login: "reviewer"},
 				},
 				Repo: github.Repo{
@@ -484,7 +551,7 @@ func Test_HandlePullRequestReview(t *testing.T) {
 					},
 				}}
 			fc.Collaborators = []string{"reviewer"}
-			fc.IssueLabelsExisting = c.labels
+			fc.IssueLabelsExisting = c.labelsExisting
 			p := PluginBackend{
 				ghc: fc,
 				oac: a,
@@ -494,10 +561,13 @@ func Test_HandlePullRequestReview(t *testing.T) {
 			if err != nil {
 				t.Errorf("handlePullRequestReview() returned an error where it shouldn't: %v", err)
 			}
-			if got, want := len(fc.AssigneesAdded), len(c.assignees); got != want {
+			if got, want := len(fc.AssigneesAdded), len(c.assigneesAdded); got != want {
 				t.Errorf("case %s, number of assignees is wrong. got %d, want %d", c.name, got, want)
 			}
-			if got, want := len(fc.IssueLabelsRemoved), len(c.labels); got != want {
+			if got, want := len(fc.IssueLabelsAdded), c.labelsAdded; got != want {
+				t.Errorf("case %s, didn't add a label where it should have been added. got %d want %d", c.name, got, want)
+			}
+			if got, want := len(fc.IssueLabelsRemoved), c.labelsRemoved; got != want {
 				t.Errorf("case %s, didn't remove a label where it should have been removed. got %d want %d", c.name, got, want)
 			}
 		})
