@@ -7,7 +7,7 @@ Image URL Helper is a tool that provides the following subcommands:
 * The `check` command finds all Helm chart images that don't use the `imageurl` template.
 * The `list` command lists all Helm chart images by checking the `values.yaml` files.
 * The `promote` command updates the container registry path and Helm chart images versions in the `values.yaml` files. The subcommand also prints a YAML that can be used by the [Image Syncer](../image-syncer) tool to promote images.
-* The `components` command generates [Component-Descriptor](https://github.com/gardener/component-spec) file for Kyma repository from `values.yaml` files.
+* The `components` command generates a [Component-Descriptor](https://github.com/gardener/component-spec) file for the `kyma` repository from `values.yaml` files.
 
 ## Usage
 
@@ -107,11 +107,11 @@ See the list of flags available for the `components` command:
 | Name                      | Required | Description                                                                                          |
 | :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
 | **--resources-directory** |   Yes    | Path to the Kyma resources directory.|
-| **--component-name** |    No    | Name of the component described in the `Component-Descriptor` file. Defaults to `github.com/kyma-project/kyma`.|
+| **--component-name** |    No    | Name of the component described in the `Component-Descriptor` file. The default value is `github.com/kyma-project/kyma`.|
 | **--component-version** |    Yes    | Version of the component.|
-| **--provider** |    No    | Component provider (internal or external). Defaults to `internal`.|
+| **--provider** |    No    | Component provider (internal or external). The default value is `internal`.|
 | **--git-commit** |    Yes    | Hash of the git commit.|
 | **--git-branch** |    Yes    | Name of the base git branch.|
-| **--skip-image-hashing** |    No    | The boolean value that controls image tag to hash conversion. Defaults to `false`.|
+| **--skip-image-hashing** |    No    | Boolean value that controls image tag to hash conversion. The default value is `false`.|
 | **--output-dir** |    No    | Path to the `Component-Descriptor` file output directory.|
 | **--repo-context** |    No    | Name of the Docker repository to push `Component-Descriptor` to. |
