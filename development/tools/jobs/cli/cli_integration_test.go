@@ -17,8 +17,30 @@ func TestKymaCliIntegrationPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	expName := "pre-cli-integration-kyma-1"
+	expName := "pre-cli-integration-kyma-2"
 	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/cli"}), expName, "main")
+	require.NotNil(t, actualPresubmit)
+	assert.Equal(t, expName, actualPresubmit.Name)
+	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
+	assert.False(t, actualPresubmit.SkipReport)
+
+	assert.True(t, actualPresubmit.AlwaysRun)
+	assert.Equal(t, "github.com/kyma-project/cli", actualPresubmit.PathAlias)
+	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "main")
+	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.BuildPr, preset.GCProjectEnv, "preset-sa-vm-kyma-integration")
+	assert.Equal(t, tester.ImageGolangKubebuilder2BuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
+	tester.AssertThatContainerHasEnv(t, actualPresubmit.Spec.Containers[0], "GO111MODULE", "on")
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-cli.sh"}, actualPresubmit.Spec.Containers[0].Command)
+}
+
+func TestKyma1CliIntegrationPresubmit(t *testing.T) {
+	// WHEN
+	jobConfig, err := tester.ReadJobConfig(cliIntegrationJobPath)
+	// THEN
+	require.NoError(t, err)
+
+	expName := "pre-cli-integration-kyma-1"
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/cli"}), expName, "release-1.24")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)

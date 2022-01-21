@@ -20,6 +20,8 @@ templates:
               # we cannot use preset-sa-kyma-artifacts because we are using preset-sa-gcr-push which also set environment variable: GOOGLE_APPLICATION_CREDENTIALS.
               - name: sa-kyma-artifacts
                 secretName: sa-kyma-artifacts
+            env:
+              KYMA_MAJOR_VERSION: "1"
         jobConfigs:
           - repoName: kyma-incubator/compass
             jobs:

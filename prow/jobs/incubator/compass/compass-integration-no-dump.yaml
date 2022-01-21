@@ -39,6 +39,8 @@ presubmits: # runs on PRs
             env:
               - name: GO111MODULE
                 value: "on"
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
             resources:
               requests:
                 memory: 100Mi
@@ -90,6 +92,8 @@ postsubmits: # runs on main
             env:
               - name: GO111MODULE
                 value: "on"
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
             resources:
               requests:
                 memory: 100Mi
