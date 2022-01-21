@@ -116,8 +116,7 @@ templates:
               - jobConfig:
                   name: pre-cli-integration-kyma-1
                   branches:
-                    - ^main$
-                    - ^release-.*$
+                    - ^release-1.*$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

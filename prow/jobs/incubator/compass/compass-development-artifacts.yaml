@@ -37,6 +37,9 @@ presubmits: # runs on PRs
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-compass-development-artifacts.sh"
+            env:
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
             resources:
               requests:
                 memory: 1Gi
@@ -95,6 +98,9 @@ postsubmits: # runs on main
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-compass-development-artifacts.sh"
+            env:
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
             resources:
               requests:
                 memory: 1Gi
