@@ -107,11 +107,11 @@ See the list of flags available for the `components` command:
 | Name                      | Required | Description                                                                                          |
 | :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
 | **--resources-directory** |   Yes    | Path to the Kyma resources directory.|
-| **--component-name** |    No    | Name of the component described in the `component-descriptors` file. Defaults to `github.com/kyma-project/kyma`.|
+| **--component-name** |    No    | Name of the component described in the `Component-Descriptor` file. Defaults to `github.com/kyma-project/kyma`.|
 | **--component-version** |    Yes    | Version of the component.|
 | **--provider** |    No    | Component provider (internal or external). Defaults to `internal`.|
 | **--git-commit** |    Yes    | Hash of the git commit.|
 | **--git-branch** |    Yes    | Name of the base git branch.|
 | **--skip-image-hashing** |    No    | The boolean value that controls image tag to hash conversion. Defaults to `false`.|
-| **--output-dir** |    No    | Path to the `component-descriptor` file output directory.|
-| **--repo-context** |    No    | Name of the Docker repository to push `component-descriptor` to. |
+| **--output-dir** |    No    | Path to the `Component-Descriptor` file output directory.|
+| **--repo-context** |    No    | Name of the Docker repository to push `Component-Descriptor` to. |
