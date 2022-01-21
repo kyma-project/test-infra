@@ -129,7 +129,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "/prow-tools/clusterscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -excluded-clusters=kyma-prow,workload-kyma-prow,nightly,weekly,nightly-124,weekly-124,nightly-20"
+                    - "/prow-tools/clusterscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -excluded-clusters=kyma-prow,workload-kyma-prow,nightly,weekly,nightly-124,weekly-124,nightly-20,gke-release-1-24-9,gke-release-2-0-3"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

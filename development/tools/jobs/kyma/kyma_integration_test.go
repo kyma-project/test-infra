@@ -269,7 +269,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatHasExtraRepoRefCustom(t, clustersCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
 	assert.Equal(t, tester.ImageProwToolsLatest, clustersCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, clustersCleanerPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "/prow-tools/clusterscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -excluded-clusters=kyma-prow,workload-kyma-prow,nightly,weekly,nightly-124,weekly-124,nightly-20"}, clustersCleanerPeriodic.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"-c", "/prow-tools/clusterscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -excluded-clusters=kyma-prow,workload-kyma-prow,nightly,weekly,nightly-124,weekly-124,nightly-20,gke-release-1-24-9,gke-release-2-0-3"}, clustersCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, clustersCleanerPeriodic.JobBase)
 
 	expName = "orphaned-vms-cleaner"
