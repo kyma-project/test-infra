@@ -5,7 +5,7 @@ set -o pipefail  # Fail a pipe if any sub-command fails.
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 
-export TEST_NAMESPACE="serverless-integration"
+export TEST_NAMESPACE="serverless-benchmarks"
 export ALL_FUNCTIONS=(nodejs14-xs nodejs14-s nodejs14-m nodejs14-l nodejs14-xl python39-s python39-m python39-l python39-xl)
 
 
@@ -94,7 +94,7 @@ function collect_benchmark_results() {
     kubectl -n "${TEST_NAMESPACE}" apply -f \
         "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/fixtures/serverless-benchmark-job.yaml"
     kubectl -n "${TEST_NAMESPACE}" wait job/serverless-benchmark \
-        --for=condition=Complete=True --timeout=600s
+        --for=condition=Complete=True --timeout=20m
     kubectl -n "${TEST_NAMESPACE}" logs -l jobName=serverless-benchmark --tail=-1
 }
 
@@ -107,20 +107,19 @@ connect_to_cluster
 # in case of failed runs
 clean_serverless_integration_tests
 
-
-
-
-
 log::info "Creating test namespace"
 kubectl create ns "${TEST_NAMESPACE}"
 kubectl label ns "${TEST_NAMESPACE}" created-by=serverless-benchmarks
-
 run_serverless_test_function
 
-log::info "Running benchmarks and collecting results"
-kubectl -n "${TEST_NAMESPACE}" apply -f ./fixtures/serverless-benchmark-job.yaml
-kubectl -n "${TEST_NAMESPACE}" wait job/serverless-benchmark --for=condition=Complete=True --timeout=600s
-kubectl -n "${TEST_NAMESPACE}" logs -l jobName=serverless-benchmark --tail=-1
+job_status=""
+[[ $(kubectl -n "${TEST_NAMESPACE}" get jobs serverless-benchmark -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}') == "True" ]] && job_status=1
+[[ $(kubectl -n "${TEST_NAMESPACE}" get jobs serverless-benchmark -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}') == "True" ]] && job_status=0
+
+collect_benchmark_results
 
 log::info "Cleaning up test resources"
-clean_serverless_integration_tests
+# clean_serverless_integration_tests
+
+echo "Exit code ${job_status}"
+exit $job_status

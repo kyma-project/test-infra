@@ -22,8 +22,19 @@ spec:
           echo "--------------------------------------------------------------------------------"
           /home/locust/run-benchmarks.sh 
           pkill -f /usr/local/bin/pilot-agent
-
-        image: eu.gcr.io/kyma-project/tpi/serverless-bench:20220121-PR-167
+        env:
+        - name: "NAMESPACE"
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: "CONCURRENCY"
+          value: "50"
+        - name: "DURATION"
+          value: "1m"
+        - name: "SPAWN_RATE"
+          value: "50"
+        image: eu.gcr.io/kyma-project/tpi/serverless-bench:PR-167
+        imagePullPolicy: Always
         name: serverless-benchmark
         resources: {}
       dnsPolicy: ClusterFirst
