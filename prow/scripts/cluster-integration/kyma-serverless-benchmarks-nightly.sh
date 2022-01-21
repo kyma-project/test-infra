@@ -82,7 +82,7 @@ function run_serverless_test_function() {
         "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/fixtures/functions/"
 
     log::info "Waiting for test functions to be Running"
-    for FUNCTION in ${ALL_FUNCTIONS[@]}; do
+    for FUNCTION in "${ALL_FUNCTIONS[@]}"; do
         kubectl -n "${TEST_NAMESPACE}" wait "function/${FUNCTION}" \
             --for=condition=Running=True --timeout 2m
     done
