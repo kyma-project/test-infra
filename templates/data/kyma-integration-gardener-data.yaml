@@ -358,6 +358,7 @@ templates:
                     - gardener_gcp_job_eventing
                     - command_upgrade_eventing
 
+
               # periodics
               - jobConfig:
                   name: kyma-alpha-integration-evaluation-gardener-azure
