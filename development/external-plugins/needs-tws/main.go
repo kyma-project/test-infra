@@ -35,8 +35,8 @@ func main() {
 	}
 	p.WithLogger(l)
 	p.WithWebhookSecret(o.WebhookSecretPath)
-	p.RegisterWebhookHandler("pull_request", pb.HandlePR)
-	p.RegisterWebhookHandler("pull_request_review", pb.HandlePRReview)
+	p.RegisterWebhookHandler("pull_request", pb.PullRequestHandler)
+	p.RegisterWebhookHandler("pull_request_review", pb.PullRequestReviewHandler)
 
 	externalplugin.Start(&p, HelpProvider, &o)
 }

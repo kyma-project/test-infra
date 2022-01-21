@@ -78,7 +78,8 @@ type PluginBackend struct {
 	oac ownersAliases
 }
 
-func (p *PluginBackend) HandlePR(ep *externalplugin.Plugin, e externalplugin.Event) {
+// PullRequestHandler handles all pull_request events from GitHub.
+func (p *PluginBackend) PullRequestHandler(_ *externalplugin.Plugin, e externalplugin.Event) {
 	eventGUID := e.EventGUID
 	eventType := e.EventType
 	payload := e.Payload
@@ -92,15 +93,16 @@ func (p *PluginBackend) HandlePR(ep *externalplugin.Plugin, e externalplugin.Eve
 	l.Debug("Got pull_request event")
 	var pre github.PullRequestEvent
 	if err := json.Unmarshal(payload, &pre); err != nil {
-		l.Errorw("Failed unmarshal json payload.", "error", err.Error())
+		l.Errorw("Failed unmarshal json payload.", "error", err)
 		return //return prematurely
 	}
 	if err := p.handlePullRequest(l, pre); err != nil {
-		l.Errorw("Failed to handle PR event", "error", err.Error())
+		l.Errorw("Failed to handleReview PR event", "error", err)
 	}
 }
 
-func (p *PluginBackend) HandlePRReview(ep *externalplugin.Plugin, e externalplugin.Event) {
+// PullRequestReviewHandler handles all pull_request_review events from GitHub
+func (p *PluginBackend) PullRequestReviewHandler(_ *externalplugin.Plugin, e externalplugin.Event) {
 	eventGUID := e.EventGUID
 	eventType := e.EventType
 	payload := e.Payload
@@ -114,28 +116,29 @@ func (p *PluginBackend) HandlePRReview(ep *externalplugin.Plugin, e externalplug
 	l.Debug("Got pull_request_review event")
 	var re github.ReviewEvent
 	if err := json.Unmarshal(payload, &re); err != nil {
-		l.Errorw("Failed unmarshal json payload.", "error", err.Error())
+		l.Errorw("Failed unmarshal json payload.", "error", err)
 		return //return prematurely
 	}
 	if err := p.handlePullRequestReview(l, re); err != nil {
-		l.Errorw("Failed to handle Pull Request Review event", "error", err.Error())
+		l.Errorw("Failed to handleReview Pull Request Review event", "error", err)
 	}
 }
 
 func (p *PluginBackend) handlePullRequest(l *zap.SugaredLogger, e github.PullRequestEvent) error {
-	// TODO (@Ressetkk): Configure this based on per-repository config
-	lb := DefaultNeedsTwsLabel
-
 	if e.Action == github.PullRequestActionClosed {
+		// Pull Request is closed. There's no need to handle it at all.
 		return nil
 	}
 	pr := e.PullRequest
 	if pr.Draft || pr.Merged {
+		// There is no need to handle Merged or Drafts, as they are not for review.
 		return nil
 	}
 	org := e.Repo.Owner.Login
 	repo := e.Repo.Name
 	number := pr.Number
+	// TODO (@Ressetkk): Configure this based on per-repository config
+	twsLabel := DefaultNeedsTwsLabel
 
 	switch e.Action {
 	case github.PullRequestActionOpened, github.PullRequestActionReopened, github.PullRequestActionSynchronize:
@@ -155,13 +158,13 @@ func (p *PluginBackend) handlePullRequest(l *zap.SugaredLogger, e github.PullReq
 		if err != nil {
 			return err
 		}
-		hasLabel := github.HasLabel(lb, labels)
+		hasLabel := github.HasLabel(twsLabel, labels)
 
 		if !changed {
 			l.Debugf("Files not changed in %s/%s#%d@%s", org, repo, number, pr.Head.SHA)
 			if hasLabel {
 				l.Debug("remove stale label")
-				return p.ghc.RemoveLabel(org, repo, number, lb)
+				return p.ghc.RemoveLabel(org, repo, number, twsLabel)
 			}
 			return nil
 		}
@@ -169,7 +172,7 @@ func (p *PluginBackend) handlePullRequest(l *zap.SugaredLogger, e github.PullReq
 			//we do not need to add another label
 			return nil
 		}
-		return p.ghc.AddLabel(org, repo, number, lb)
+		return p.ghc.AddLabel(org, repo, number, twsLabel)
 	case github.PullRequestActionUnlabeled:
 		bc, err := p.ghc.BotUserChecker()
 		if err != nil {
@@ -180,7 +183,7 @@ func (p *PluginBackend) handlePullRequest(l *zap.SugaredLogger, e github.PullReq
 			// label removed by a bot. Skip.
 			return nil
 		}
-		deleted := e.Label.Name == lb
+		deleted := e.Label.Name == twsLabel
 		if !deleted {
 			// not a missing-docs label. Skip.
 			return nil
@@ -192,7 +195,7 @@ func (p *PluginBackend) handlePullRequest(l *zap.SugaredLogger, e github.PullReq
 		}
 		if !isCollaborator {
 			// re-add label and notice only collaborators can bypass documentation review
-			err := p.ghc.AddLabel(org, repo, number, lb)
+			err := p.ghc.AddLabel(org, repo, number, twsLabel)
 			if err != nil {
 				l.Errorw("Failed to re-add label.", "error", err)
 				return err
@@ -225,10 +228,10 @@ func (p PluginBackend) handlePullRequestReview(l *zap.SugaredLogger, re github.R
 	} else {
 		return nil
 	}
-	return p.handle(l, rc)
+	return p.handleReview(l, rc)
 }
 
-func (p PluginBackend) handle(l *zap.SugaredLogger, rc reviewCtx) error {
+func (p PluginBackend) handleReview(l *zap.SugaredLogger, rc reviewCtx) error {
 	author := rc.author
 	issueAuthor := rc.issueAuthor
 	org := rc.repo.Owner.Login
@@ -239,8 +242,9 @@ func (p PluginBackend) handle(l *zap.SugaredLogger, rc reviewCtx) error {
 	approved := rc.approved
 
 	isAuthor := author == issueAuthor
-	// author cannot review their own PR
+
 	if isAuthor {
+		// Author cannot review their own PR. Let's ignore this event.
 		return nil
 	}
 
@@ -255,7 +259,8 @@ func (p PluginBackend) handle(l *zap.SugaredLogger, rc reviewCtx) error {
 	}
 	twsGroup := repoAliases[DefaultTechnicalWritersGroup]
 	if !twsGroup.Has(author) {
-		l.Infof("'%s' is not in the group of required reviewers.", author)
+		// User is not a member of TWs group defined in OWNERS_ALIASES.
+		// possibly review meant for something else. Let's ignore this event.
 		return nil
 	}
 
@@ -273,8 +278,10 @@ func (p PluginBackend) handle(l *zap.SugaredLogger, rc reviewCtx) error {
 		return err
 	}
 
-	// User must be a collaborator
 	if !isCollaborator && !isAuthor {
+		// User that left a review is not a collaborator.
+		// Maybe they were removed from the team members, or they have never been in there.
+		// Ignore this event.
 		return nil
 	}
 
