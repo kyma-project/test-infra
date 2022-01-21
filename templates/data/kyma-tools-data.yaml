@@ -1,41 +1,6 @@
 templates:
   - from: templates/generic.tmpl
     render:
-      - to: ../prow/jobs/kyma/tools/failery.yaml
-        localSets:
-          job_spec:
-            run_if_changed: "^tools/failery/"
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-        jobConfigs:
-          - repoName: kyma-project/kyma
-            jobs:
-              - jobConfig:
-                  name: pre-main-kyma-tools-failery
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/tools/failery"
-                    - "ci-pr"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_buildpack-golang
-                  local:
-                    - job_spec
-              - jobConfig:
-                  name: post-main-kyma-tools-failery
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/tools/failery"
-                    - "ci-master"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - disable_testgrid
-                    - image_buildpack-golang
-                  local:
-                    - job_spec
       - to: ../prow/jobs/kyma/common/common.yaml
         localSets:
           job_spec:

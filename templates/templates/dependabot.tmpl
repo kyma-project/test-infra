@@ -6,11 +6,17 @@ updates:
 {{- range .Jobs }}
   - package-ecosystem: {{ .JobConfig.packageEcosystem | quote }}
     directory: {{ .JobConfig.directory | quote }}
+    {{- if .JobConfig.labels }}
+    labels:
+    {{- range .JobConfig.labels }}
+      - {{ . | quote }}
+    {{- end }}
+    {{- end }}
     schedule:
       interval: {{ .JobConfig.scheduleInterval | quote }}
     commit-message:
       prefix: {{ .JobConfig.commitMsgPrefix | quote }}
-      {{- if .JobConfig.commitIncludeScope | quote }}
+      {{- if .JobConfig.commitIncludeScope }}
       include: "scope"
       {{- end }}
 {{- end }}

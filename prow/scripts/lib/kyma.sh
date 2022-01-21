@@ -122,6 +122,30 @@ kyma::install_cli() {
         log::info "Kyma CLI is already installed: $(kyma version -c)"
     fi
 }
+kyma::install_unstable_cli() {
+    if ! [[ -x "$(command -v kyma)" ]]; then
+        local settings
+        local kyma_version
+        settings="$(set +o); set -$-"
+        mkdir -p "/tmp/bin"
+        export PATH="/tmp/bin:${PATH}"
+        os=$(host::os)
+
+        pushd "/tmp/bin" || exit
+
+        echo "--> Install kyma CLI (unstable version) ${os} locally to /tmp/bin"
+
+        curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-unstable/kyma-${os}?alt=media"
+        chmod +x kyma
+        kyma_version=$(kyma version --client)
+        echo "--> Kyma CLI (unstable) version: ${kyma_version}"
+        echo "OK"
+        popd || exit
+        eval "${settings}"
+    else
+        log::info "Kyma CLI (unstable) is already installed: $(kyma version -c)"
+    fi
+}
 
 kyma::install_cli_last_release() {
     if ! [[ -x "$(command -v kyma)" ]]; then

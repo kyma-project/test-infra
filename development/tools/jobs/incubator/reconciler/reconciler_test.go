@@ -11,7 +11,7 @@ import (
 	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
 )
 
-func TestReconcilerJobsPresubmit(t *testing.T) {
+func TestReconcilerMainJobsPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/reconciler/reconciler.yaml")
 	// THEN
@@ -33,7 +33,29 @@ func TestReconcilerJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/reconciler"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestReconcilerIntegrationJobsPresubmit(t *testing.T) {
+func TestReconcilerDevJobsPresubmit(t *testing.T) {
+	// WHEN
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/reconciler/reconciler.yaml")
+	// THEN
+	require.NoError(t, err)
+
+	kymaPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-incubator/reconciler"})
+	expName := "pre-dev-kyma-incubator-reconciler"
+	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName)
+	assert.Equal(t, expName, actualPresubmit.Name)
+	assert.Equal(t, []string{"^develop$"}, actualPresubmit.Branches)
+	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
+	assert.False(t, actualPresubmit.SkipReport)
+	assert.True(t, actualPresubmit.AlwaysRun)
+	assert.Empty(t, actualPresubmit.RunIfChanged)
+	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "main")
+	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush)
+	assert.Equal(t, tester.ImageGolangBuildpack1_16, actualPresubmit.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, actualPresubmit.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/reconciler"}, actualPresubmit.Spec.Containers[0].Args)
+}
+
+func TestReconcilerMainIntegrationJobsPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/reconciler/reconciler.yaml")
 	// THEN
@@ -43,7 +65,28 @@ func TestReconcilerIntegrationJobsPresubmit(t *testing.T) {
 	expName := "pre-main-reconciler-integration-k3d"
 	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName)
 	assert.Equal(t, expName, actualPresubmit.Name)
-	assert.Equal(t, []string{"^master$", "^main$"}, actualPresubmit.Branches)
+	assert.Equal(t, []string{"^main$"}, actualPresubmit.Branches)
+	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
+	assert.False(t, actualPresubmit.SkipReport)
+	assert.False(t, actualPresubmit.Optional)
+	assert.False(t, actualPresubmit.AlwaysRun)
+	assert.Equal(t, actualPresubmit.RunIfChanged, "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))")
+	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "main")
+	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPresubmit.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"}, actualPresubmit.Spec.Containers[0].Command)
+}
+
+func TestReconcilerDevIntegrationJobsPresubmit(t *testing.T) {
+	// WHEN
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/reconciler/reconciler.yaml")
+	// THEN
+	require.NoError(t, err)
+
+	kymaPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-incubator/reconciler"})
+	expName := "pre-dev-reconciler-integration-k3d"
+	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName)
+	assert.Equal(t, expName, actualPresubmit.Name)
+	assert.Equal(t, []string{"^develop$"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.False(t, actualPresubmit.Optional)
@@ -92,7 +135,7 @@ func TestReconcilerJobsPeriodicE2EUpgrade(t *testing.T) {
 		},
 	})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPeriodic.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-upgrade-gardener.sh"}, actualPeriodic.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade.sh"}, actualPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/reconciler"}, actualPeriodic.Spec.Containers[0].Args)
 }
 
@@ -121,10 +164,10 @@ func TestReconcilerJobsNightlyMain(t *testing.T) {
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"}, actualPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/reconciler"}, actualPeriodic.Spec.Containers[0].Args)
-	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "rec-night")
+	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "rec-main")
 }
 
-func TestReconcilerJobPostsubmit(t *testing.T) {
+func TestMainReconcilerJobPostsubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/reconciler/reconciler.yaml")
 	// THEN
@@ -135,6 +178,26 @@ func TestReconcilerJobPostsubmit(t *testing.T) {
 	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"^main$"}, actualPost.Branches)
+	assert.Equal(t, 10, actualPost.MaxConcurrency)
+	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "main")
+	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush)
+	assert.Equal(t, tester.ImageGolangBuildpack1_16, actualPost.Spec.Containers[0].Image)
+	assert.Empty(t, actualPost.RunIfChanged)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, actualPost.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/reconciler"}, actualPost.Spec.Containers[0].Args)
+}
+
+func TestDevReconcilerJobPostsubmit(t *testing.T) {
+	// WHEN
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/reconciler/reconciler.yaml")
+	// THEN
+	require.NoError(t, err)
+
+	kymaPost := jobConfig.AllStaticPostsubmits([]string{"kyma-incubator/reconciler"})
+	expName := "post-dev-kyma-incubator-reconciler"
+	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName)
+	assert.Equal(t, expName, actualPost.Name)
+	assert.Equal(t, []string{"^develop$"}, actualPost.Branches)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "main")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush)
@@ -183,5 +246,5 @@ func TestReconcilerJobNightlyE2E(t *testing.T) {
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualNightlyJob.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"}, actualNightlyJob.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/reconciler"}, actualNightlyJob.Spec.Containers[0].Args)
-	tester.AssertThatContainerHasEnv(t, actualNightlyJob.Spec.Containers[0], "INPUT_CLUSTER_NAME", "rec-night")
+	tester.AssertThatContainerHasEnv(t, actualNightlyJob.Spec.Containers[0], "INPUT_CLUSTER_NAME", "rec-main")
 }

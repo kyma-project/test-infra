@@ -150,7 +150,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "/prow-tools/vmscollector -project=${CLOUDSDK_CORE_PROJECT} -vmNameRegexp='.*-integration-test-.*|busola-integration-test-.*|.*-upgrade-test-.*' -jobLabelRegexp='.*-integration$|busola-integration-test-k3s|.*-upgrade-k3d-.*' -dryRun=false"
+                    - "/prow-tools/vmscollector -project=${CLOUDSDK_CORE_PROJECT} -vmNameRegexp='gke-nightly-.*|gke-weekly.*|shoot--kyma-prow.*' -jobLabelRegexp='kyma-gke-nightly|kyma-gke-nightly-.*|kyma-gke-weekly|kyma-gke-weekly-.*' -dryRun=false"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -353,17 +353,6 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
             env:
               CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
-          gke_upgrade_job_template:
-            annotations:
-              pipeline.installer: kubectl-apply
-              pipeline.test: octopus
-              pipeline.clusterprovisioning: gcloud cli
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade.sh"
-            env:
-              CLOUDSDK_COMPUTE_ZONE: "europe-west4-a"
-              PROVISION_REGIONAL_CLUSTER: "true"
-              NODES_PER_ZONE: "1"
-              MACHINE_TYPE: "n1-highcpu-16"
           gke_central_job_template:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-central.sh"
             env:
@@ -385,6 +374,13 @@ templates:
             annotations:
               pipeline.trigger: nightly
               pipeline.test: fast-integration
+            labels:
+              preset-sa-gke-kyma-integration: "true"
+          serverless_metrics_template:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-metrics-nightly.sh"
+            annotations:
+              pipeline.trigger: nightly
+              pipeline.test: Serverless function metrics
             labels:
               preset-sa-gke-kyma-integration: "true"
         jobConfigs:
@@ -501,6 +497,30 @@ templates:
                     - "vm_job_labels_template"
 
               - jobConfig:
+                  name: "serverless-function-metrics-generator"
+                  cron: "0 0,12 * * *" # twice a day, midnight and noon, everyday
+                  annotations:
+                    description: Serverless function metrics generator
+                    pipeline.platform: gke
+                  labels:
+                    preset-gc-compute-envs: "true"
+                    preset-gc-project-env: "true"
+                  env:
+                    PROVISION_REGIONAL_CLUSTER: "true"
+                    INPUT_CLUSTER_NAME: "nightly"
+                    CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
+                    CLUSTER_PROVIDER: "gcp"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_kyma-integration"
+                    - "extra_refs_kyma"
+                    - "extra_refs_test-infra"
+                    - "kyma_major_version_2"
+                  local:
+                    - "serverless_metrics_template"
+              - jobConfig:
                   name: "serverless-git-auth-integration-k3s-nightly"
                   cron: "0 3 * * 1-5" # "At 03:00 UTC on every weekday Monday through Friday"
                   annotations:
@@ -517,10 +537,28 @@ templates:
                     - "jobConfig_periodic"
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
+                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "request_small"
                     - "vm_job_template_serverless_k3s"
+                    - "vm_job_labels_template"
+              - jobConfig:
+                  name: "pre-main-kyma-integration-k3d-telemetry"
+                  run_if_changed: '^components/telemetry-operator/|^resources/telemetry/'
+                  labels:
+                    preset-build-pr: "true"
+                    preset-kyma-integration-telemetry-enabled: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "kyma_major_version_2"
+                    - "jobConfig_presubmit"
+                  local:
+                    - "jobConfig_default"
+                    - "vm_job_template_k3d"
                     - "vm_job_labels_template"
               # Rapid channel is unstable and the job never succeeds. See https://github.com/kyma-project/test-infra/issues/4063
               # - jobConfig:
@@ -630,6 +668,23 @@ templates:
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
+              - jobConfig:
+                  name: "post-main-kyma-integration-k3d-telemetry"
+                  run_if_changed: '^components/telemetry-operator/|^resources/telemetry/'
+                  labels:
+                    preset-build-main: "true"
+                    preset-kyma-integration-telemetry-enabled: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "kyma_major_version_2"
+                    - "jobConfig_postsubmit"
+                  local:
+                    - "jobConfig_default"
+                    - "vm_job_template_k3d"
+                    - "vm_job_labels_template"
               # Rapid channel is unstable and the job never succeeds. See https://github.com/kyma-project/test-infra/issues/4063
               # - jobConfig:
               #     name: "post-main-kyma-gke-rapid-integration"
@@ -729,6 +784,25 @@ templates:
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
+              - jobConfig:
+                  name: "kyma-integration-k3d-telemetry"
+                  cron: "00 07 * * *" # "At 07:00 each day"
+                  labels:
+                    preset-build-main: "true"
+                    preset-kyma-integration-telemetry-enabled: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                    - "kyma_major_version_2"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "vm_job_template_k3d"
+                    - "vm_job_labels_template"
               - jobConfig:
                   name: "kyma-gke-nightly"
                   cron: "0 2 * * 1-5" # "At 02:00 UTC on every weekday Monday through Friday"

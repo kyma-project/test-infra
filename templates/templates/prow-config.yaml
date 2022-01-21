@@ -18,10 +18,10 @@ plank:
       timeout: 3h
       grace_period: 10m
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20211217-ba1f318049
-        initupload: gcr.io/k8s-prow/initupload:v20211217-ba1f318049
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20211217-ba1f318049
-        sidecar: gcr.io/k8s-prow/sidecar:v20211217-ba1f318049
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20220115-3e20513bd7
+        initupload: gcr.io/k8s-prow/initupload:v20220115-3e20513bd7
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20220115-3e20513bd7
+        sidecar: gcr.io/k8s-prow/sidecar:v20220115-3e20513bd7
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -153,6 +153,8 @@ branch-protection:
           branches:
             main:
               protect: true
+            develop:
+              protect: true
 
 tide:
   sync_period: 2m
@@ -230,6 +232,20 @@ tide:
         - do-not-merge/invalid-commit-message
       orgs:
         - kyma-project
+      excludedRepos:
+        - kyma-project/test-infra # handled in separate query specifically for approve plugin
+      reviewApprovedRequired: true
+    - labels:
+        - lgtm
+        - approved
+      missingLabels:
+        - needs-rebase
+        - do-not-merge/hold
+        - do-not-merge/work-in-progress
+        - do-not-merge/invalid-owners-file
+        - do-not-merge/invalid-commit-message
+      repos:
+        - kyma-project/test-infra
       reviewApprovedRequired: true
     - labels:
         - lgtm
@@ -929,6 +945,11 @@ presets:
       - name: CENTRAL_APPLICATION_CONNECTIVITY_ENABLED
         value: "true"
   - labels:
+      preset-kyma-integration-telemetry-enabled: "true"
+    env:
+      - name: TELEMETRY_ENABLED
+        value: "true"
+  - labels:
       preset-kyma-integration-subaccounnt: "true"
     env:
       - name: KEB_SUBACCOUNT_ID
@@ -1137,3 +1158,16 @@ presets:
         secretKeyRef:
           name: serverless-git-auth
           key: AZURE_DEVOPS_AUTH_PASSWORD
+  - labels:
+      preset-kcp-client-dev-envs: "true"
+    env:
+      - name: KCP_GARDENER_NAMESPACE
+        value: "garden-kyma-dev"
+      - name: KCP_KEB_API_URL
+        value: "https://kyma-env-broker.cp.dev.kyma.cloud.sap"
+      - name: KCP_KUBECONFIG_API_URL
+        value: "https://kubeconfig-service.cp.dev.kyma.cloud.sap"
+      - name: KCP_MOTHERSHIP_API_URL
+        value: "https://mothership-reconciler.cp.dev.kyma.cloud.sap/v1"
+      - name: KCP_OIDC_ISSUER_URL
+        value: "https://kymatest.accounts400.ondemand.com"

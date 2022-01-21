@@ -6,6 +6,7 @@ replace (
 	k8s.io/api => k8s.io/api v0.20.2
 	k8s.io/apimachinery => k8s.io/apimachinery v0.20.2
 	k8s.io/client-go => k8s.io/client-go v0.20.2
+	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt/v4 v4.2.0
 )
 
 require (

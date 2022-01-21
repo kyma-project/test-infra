@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:20.04
 
 RUN apt-get update && \
     apt-get install --no-install-recommends -y curl jq zip ca-certificates && \

@@ -16,7 +16,9 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-btp-operator-stage-credentials: "true"
         preset-build-main: "true"
+        preset-kcp-client-dev-envs: "true"
         preset-keb-dev-credentials: "true"
+        preset-kyma-integration-kcp-client-credentials: "true"
         preset-svcat-migration-subaccounnt: "true"
       cron: "0 */4 * * *"
       skip_report: false
@@ -34,7 +36,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20211221-28c363bc"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
             securityContext:
               privileged: true
             command:

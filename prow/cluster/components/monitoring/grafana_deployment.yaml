@@ -114,6 +114,9 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/tide
           name: grafana-dashboard-tide
           readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/serverless
+          name: grafana-dashboard-serverless
+          readOnly: false
       nodeSelector: {}
       securityContext: {}
       serviceAccountName: grafana
@@ -159,3 +162,6 @@ spec:
       - name: grafana-nginx
         configMap:
           name: grafana-nginx
+      - name: grafana-dashboard-serverless
+        configMap:
+          name: grafana-dashboard-serverless

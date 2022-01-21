@@ -252,7 +252,7 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/components/kyma-operator"
                   run_if_changed: "^components/kyma-operator/|^common/makefiles/"
                   release_since: "1.7"
-                  release_until: "1.25"
+                  release_until: "1.24"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -541,6 +541,7 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/tests/end-to-end/upgrade"
                   run_if_changed: "^tests/end-to-end/upgrade/|^common/makefiles/"
                   release_since: "1.7"
+                  release_until: "1.24"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -565,6 +566,7 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/components/apiserver-proxy"
                   run_if_changed: "^components/apiserver-proxy/|^common/makefiles/"
                   release_since: "1.7"
+                  release_until: "1.24"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -589,6 +591,7 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/components/iam-kubeconfig-service"
                   run_if_changed: "^components/iam-kubeconfig-service/|^common/makefiles/"
                   release_since: "1.7"
+                  release_until: "1.24"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -613,6 +616,7 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/components/xip-patch"
                   run_if_changed: "^components/xip-patch/|^common/makefiles/"
                   release_since: "1.7"
+                  release_until: "1.24"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -637,6 +641,7 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/components/dex-static-user-configurer"
                   run_if_changed: "^components/dex-static-user-configurer/|^common/makefiles/"
                   release_since: "1.7"
+                  release_until: "1.24"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -685,6 +690,7 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/tests/integration/dex"
                   run_if_changed: "^tests/integration/dex/|^common/makefiles/"
                   release_since: "1.7"
+                  release_until: "1.24"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -709,6 +715,7 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/tests/integration/apiserver-proxy"
                   run_if_changed: "^tests/integration/apiserver-proxy/|^common/makefiles/"
                   release_since: "1.7"
+                  release_until: "1.24"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -1029,6 +1036,7 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/components/permission-controller"
                   run_if_changed: "^components/permission-controller/|^common/makefiles/"
                   release_since: "1.10"
+                  release_until: "1.24"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

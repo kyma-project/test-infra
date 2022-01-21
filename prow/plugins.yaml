@@ -17,6 +17,17 @@ plugins:
   kyma-project/test-infra:
     plugins:
       - config-updater
+      - approve
+      - blunderbuss
+      - verify-owners
+      - owners-label
+      - milestone
+      - override
+      - retitle
+      - pony
+      - lifecycle
+      - transfer-issue
+      - project
   kyma-incubator:
     plugins:
       - cat
@@ -32,6 +43,12 @@ plugins:
       - shrug
       - invalidcommitmsg
       - help
+
+external_plugins:
+  kyma-project/test-infra:
+    - name: test-untrusted
+      events:
+        - pull_request
 
 config_updater:
   maps:
@@ -78,3 +95,13 @@ size:
   l:   100
   xl:  500
   xxl: 1000
+
+blunderbuss:
+  max_request_count: 2
+  use_status_availability: true
+
+approve:
+  - repos:
+      - kubernetes/test-infra
+    require_self_approval: false
+    ignore_review_state: false
