@@ -23,7 +23,7 @@ spec:
           /home/locust/run-benchmarks.sh 
           pkill -f /usr/local/bin/pilot-agent
 
-        image: melsayed/kymabench:latest
+        image: eu.gcr.io/kyma-project/tpi/serverless-bench:20220121-PR-167
         name: serverless-benchmark
         resources: {}
       dnsPolicy: ClusterFirst
