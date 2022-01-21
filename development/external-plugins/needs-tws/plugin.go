@@ -130,10 +130,6 @@ func (p *PluginBackend) handlePullRequest(l *zap.SugaredLogger, e github.PullReq
 		return nil
 	}
 	pr := e.PullRequest
-	if pr.Draft || pr.Merged {
-		// There is no need to handle Merged or Drafts, as they are not for review.
-		return nil
-	}
 	org := e.Repo.Owner.Login
 	repo := e.Repo.Name
 	number := pr.Number
