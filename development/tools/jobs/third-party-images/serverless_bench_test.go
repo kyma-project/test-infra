@@ -9,11 +9,11 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const kanikoExecuterJobPath = "../../../../prow/jobs/third-party-images/third-party-images.yaml"
+const serverlessBenchJobPath = "../../../../prow/jobs/third-party-images/third-party-images.yaml"
 
-func TestKanikoExecuterJobsPresubmit(t *testing.T) {
+func TestServerlessBenchJobsPresubmit(t *testing.T) {
 	// when
-	jobConfig, err := tester.ReadJobConfig(kanikoExecuterJobPath)
+	jobConfig, err := tester.ReadJobConfig(serverlessBenchJobPath)
 
 	// then
 	require.NoError(t, err)
@@ -30,9 +30,9 @@ func TestKanikoExecuterJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/third-party-images/serverless-bench", "ci-pr"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestKanikoExecuterJobPostsubmit(t *testing.T) {
+func TestServerlessBenchJobPostsubmit(t *testing.T) {
 	// when
-	jobConfig, err := tester.ReadJobConfig(kanikoExecuterJobPath)
+	jobConfig, err := tester.ReadJobConfig(serverlessBenchJobPath)
 
 	// then
 	require.NoError(t, err)
