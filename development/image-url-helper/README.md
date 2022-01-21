@@ -29,6 +29,16 @@ go run main.go \
     --output-format=json
 ```
 
+To run the `promote` command, use:
+```bash
+go run main.go \ 
+    --resources-directory={PATH_TO_A_KYMA_RESOURCES_DIRECTORY} \
+    promote \
+    --target-container-registry=eu.gcr.io/example \
+    --target-tag=release-1 \
+    --dry-run=false
+```
+
 To run the `components` command, use:
 ```bash
 go run main.go \ 
@@ -39,16 +49,6 @@ go run main.go \
     --git-branch={GIT_BASE_BRANCH} \
     --output-dir={PATH_TO_COMPONENT_DESCRIPTOR_OUTPUT_DIRECTORY} \
     --repo-context={PATH_TO_DOCKER_REPOSITORY}
-```
-
-To run the `promote` command, use:
-```bash
-go run main.go \ 
-    --resources-directory={PATH_TO_A_KYMA_RESOURCES_DIRECTORY} \
-    promote \
-    --target-container-registry=eu.gcr.io/example \
-    --target-tag=release-1 \
-    --dry-run=false
 ```
 
 ### Exclude images from the check command
