@@ -386,6 +386,17 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, functionsMetricsPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "nightly")
 	tester.AssertThatContainerHasEnv(t, functionsMetricsPeriodic.Spec.Containers[0], "CLUSTER_PROVIDER", "gcp")
 
+	expName = "serverless-function-benchmark"
+	functionsBenchmarksPeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, functionsBenchmarksPeriodic)
+	assert.Equal(t, expName, functionsBenchmarksPeriodic.Name)
+
+	assert.Equal(t, "0 1,13 * * *", functionsBenchmarksPeriodic.Cron)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-benchmarks-nightly.sh"},
+		functionsBenchmarksPeriodic.Spec.Containers[0].Command)
+	tester.AssertThatContainerHasEnv(t, functionsBenchmarksPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "nightly")
+	tester.AssertThatContainerHasEnv(t, functionsBenchmarksPeriodic.Spec.Containers[0], "CLUSTER_PROVIDER", "gcp")
+
 	// these jobs are disabled due to failing tests, until Kyma 2.0 long lasting clusters are introduced
 	// expName = "kyma-gke-weekly-fast-integration"
 	// weeklyFastIntegrationPeriodic := tester.FindPeriodicJobByName(periodics, expName)
