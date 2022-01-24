@@ -64,10 +64,11 @@ function provision_k3d() {
 
   k3d version
   kyma provision k3d --ci
+  log::success "K3d cluster provisioned"
 }
 
 function ory::prepare_components_file() {
-  echo "Preparing Kyma installation with Ory and prerequisites"
+  log::info "Preparing Kyma installation with Ory and prerequisites"
 
 cat << EOF > "$PWD/components.yaml"
 defaultNamespace: kyma-system
@@ -81,7 +82,7 @@ EOF
 }
 
 function deploy_kyma() {
-  log::info "Building reconciler"
+  log::info "Building reconciler from sources"
 
   pushd "${RECONCILER_DIR}"
   make build-linux
@@ -93,14 +94,14 @@ function deploy_kyma() {
     ory::prepare_components_file
     kyma_deploy_cmd+=" --components-file $PWD/components.yaml"
   fi
-  log::info "Deploying Kyma"
+  log::info "Deploying Kyma components from version ${KYMA_VERSION}"
 
   $kyma_deploy_cmd
 
   popd
 
+  log::success "Kyma components were deployed successfully"
   kubectl get pods -A
-
 }
 
 function run_tests() {
