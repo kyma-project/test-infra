@@ -10,6 +10,9 @@ export KYMA_VERSION="main"
 export KUBECONFIG="${HOME}/.kube/config"
 export ISTIOCTL_VERSION="1.11.4"
 
+# shellcheck source=prow/scripts/lib/log.sh
+source "./prow/scripts/lib/log.sh"
+
 function prereq_test() {
   command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
   command -v npm >/dev/null 2>&1 || { echo >&2 "npm not found"; exit 1; }
@@ -28,6 +31,8 @@ function load_env() {
 }
 
 function install_prereq() {
+  log::info "Installing Kyma CLI, Go and Istioctl"
+
   local install_dir
   declare -r install_dir="/usr/local/bin"
   mkdir -p "$install_dir"
@@ -54,6 +59,8 @@ function install_prereq() {
 }
 
 function provision_k3d() {
+  log::info "Provisioning k3d cluster"
+
   k3d version
   kyma provision k3d --ci
 }
@@ -73,6 +80,8 @@ EOF
 }
 
 function deploy_kyma() {
+  log::info "Building reconciler"
+
   pushd "${RECONCILER_DIR}"
   make build-linux
 
@@ -83,6 +92,7 @@ function deploy_kyma() {
     ory::prepare_components_file
     kyma_deploy_cmd+=" --components-file $PWD/components.yaml"
   fi
+  log::info "Deploying Kyma"
 
   $kyma_deploy_cmd
 
@@ -93,6 +103,8 @@ function deploy_kyma() {
 }
 
 function run_tests() {
+  log::info "Running tests"
+
   pushd "${RECONCILER_DIR}"
   make test-ory
   popd
