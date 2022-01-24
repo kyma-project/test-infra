@@ -4,6 +4,7 @@ set -o errexit
 set -o pipefail
 
 readonly RECONCILER_DIR="./reconciler"
+readonly TEST_INFRA_DIR="./test-infra"
 readonly GO_VERSION=1.17.5
 export KYMA_SOURCES_DIR="./kyma"
 export KYMA_VERSION="main"
@@ -11,7 +12,7 @@ export KUBECONFIG="${HOME}/.kube/config"
 export ISTIOCTL_VERSION="1.11.4"
 
 # shellcheck source=prow/scripts/lib/log.sh
-source "./prow/scripts/lib/log.sh"
+source "${TEST_INFRA_DIR}/prow/scripts/lib/log.sh"
 
 function prereq_test() {
   command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
