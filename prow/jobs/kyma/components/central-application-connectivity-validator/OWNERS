@@ -1,0 +1,5 @@
+reviewers:
+  - application-connectivity-owners
+approvers:
+  - application-connectivity-owners
+  - kyma-approvers

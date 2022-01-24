@@ -1,0 +1,5 @@
+approvers:
+  - installation-owners
+  - kyma-approvers
+reviewers:
+  - installation-owners

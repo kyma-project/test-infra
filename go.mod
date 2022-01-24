@@ -3,6 +3,10 @@ module github.com/kyma-project/test-infra
 go 1.16
 
 replace (
+	github.com/containerd/containerd => github.com/containerd/containerd v1.5.9
+	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt/v4 v4.2.0
+	github.com/opencontainers/distribution-spec => github.com/opencontainers/distribution-spec v1.0.1
+	github.com/opencontainers/image-spec => github.com/opencontainers/image-spec v1.0.2
 	// these two sigstore/* replaces are required for the image-syncer tool
 	github.com/sigstore/cosign => github.com/sigstore/cosign v1.2.1
 	github.com/sigstore/sigstore => github.com/sigstore/sigstore v1.0.1
@@ -13,17 +17,18 @@ replace (
 )
 
 require (
-	cloud.google.com/go/bigquery v1.8.0
-	cloud.google.com/go/firestore v1.6.0
+	cloud.google.com/go/bigquery v1.26.0
+	cloud.google.com/go/firestore v1.6.1
 	cloud.google.com/go/functions v1.0.0
-	cloud.google.com/go/logging v1.0.0
-	cloud.google.com/go/pubsub v1.16.0
+	cloud.google.com/go/iam v0.1.1 // indirect
+	cloud.google.com/go/logging v1.4.2
+	cloud.google.com/go/pubsub v1.17.1
 	cloud.google.com/go/storage v1.18.2
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
-	github.com/gardener/component-cli v0.32.0
+	github.com/gardener/component-cli v0.34.0
 	github.com/gardener/component-spec/bindings-go v0.0.56
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-logr/logr v0.4.0
@@ -34,9 +39,9 @@ require (
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/imdario/mergo v0.3.12
 	github.com/jamiealquiza/envy v1.1.0
-	github.com/jinzhu/copier v0.3.4
+	github.com/jinzhu/copier v0.3.5
 	github.com/mandelsoft/vfs v0.0.0-20210530103237-5249dc39ce91
-	github.com/onsi/gomega v1.16.0
+	github.com/onsi/gomega v1.17.0
 	github.com/pkg/errors v0.9.1
 	github.com/satori/go.uuid v1.2.0
 	github.com/shurcooL/githubv4 v0.0.0-20211117020012-5800b9de5b8b
@@ -44,19 +49,19 @@ require (
 	github.com/sigstore/sigstore v1.0.1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/smartystreets/goconvey v1.7.2
-	github.com/spf13/cobra v1.2.1
+	github.com/spf13/cobra v1.3.0
 	github.com/spf13/pflag v1.0.5
-	github.com/spf13/viper v1.8.1
 	github.com/stretchr/testify v1.7.0
-	github.com/tidwall/gjson v1.9.3
+	github.com/tidwall/gjson v1.13.0
 	github.com/vrischmann/envconfig v1.3.0
+	go.uber.org/zap v1.19.0
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
-	google.golang.org/api v0.61.0
+	google.golang.org/api v0.65.0
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	k8s.io/api v0.22.2
 	k8s.io/apimachinery v0.22.2
 	k8s.io/client-go v11.0.1-0.20190805182717-6502b5e7b1b5+incompatible
 	k8s.io/test-infra v0.0.0-20211214153147-7b2c2d007b33
-	sigs.k8s.io/yaml v1.2.0
+	sigs.k8s.io/yaml v1.3.0
 )

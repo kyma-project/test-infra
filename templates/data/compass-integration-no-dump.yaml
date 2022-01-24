@@ -10,6 +10,7 @@ templates:
             request_mcpu: 50m
             env:
               GO111MODULE: "on"
+              KYMA_MAJOR_VERSION: "1"
             labels:
               preset-kyma-guard-bot-github-token: "true"
               preset-sa-vm-kyma-integration: "true"

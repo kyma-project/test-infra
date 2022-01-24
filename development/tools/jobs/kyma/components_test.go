@@ -79,6 +79,7 @@ var components = []struct {
 	{path: "dex-static-user-configurer", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Until(releases.Release124),
 		},
 	},
 	{path: "iam-kubeconfig-service", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
@@ -113,6 +114,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.AllReleases(),
+			jobsuite.Until(releases.Release124),
 		},
 	},
 	{path: "function-controller", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,

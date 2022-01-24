@@ -20,7 +20,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^main$
+        - main
         - ^release-.*$
       extra_refs:
         - org: kyma-project

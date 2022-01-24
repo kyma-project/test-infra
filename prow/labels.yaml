@@ -91,6 +91,12 @@ default:
       prowPlugin: invalidcommitmsg
       addedBy: prow
     - color: e11d21
+      description: Indicates that a PR should not merge beacuse it has missing documentation review.
+      name: do-not-merge/missing-docs-review
+      target: prs
+      prowPlugin: needs-tws
+      addedBy: prow
+    - color: e11d21
       description: Indicates that a PR should not merge because it has an invalid OWNERS file in it.
       name: do-not-merge/invalid-owners-file
       target: prs
@@ -116,3 +122,46 @@ default:
       target: issues
       prowPlugin: help
       addedBy: anyone
+    - color: 00ff00
+      description: Denotes a PR that is trusted and should be build.
+      name: 'ok-to-test'
+      target: prs
+      prowPlugin: test-untrusted
+      isExternalPlugin: yes
+      addedBy: org-members
+    # area labels
+    - color: 0052cc
+      description: Issues or PRs related to dependency changes
+      name: area/dependency
+      target: both
+      addedBy: label
+    - color: 0052cc
+      description: Issues or PRs related to tooling
+      name: area/tooling
+      target: both
+      addedBy: label
+    - color: 0052cc
+      description: Issues or PRs related to documentation
+      name: area/documentation
+      target: both
+      addedBy: label
+    - color: 0052cc
+      description: Issues or PRs related to prow configuration
+      name: area/prow
+      target: both
+      addedBy: label
+    - color: 0052cc
+      description: Issues or PRs related to templates
+      name: area/templates
+      target: both
+      addedBy: label
+    - color: 0052cc
+      description: Issues or PRs related to security
+      name: area/security
+      target: both
+      addedBy: label
+    - color: 0052cc
+      description: Issues or PRs related to CI related topics
+      name: area/ci
+      target: both
+      addedBy: label

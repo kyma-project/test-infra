@@ -8,10 +8,18 @@ templates:
             scheduleInterval: "daily"
             commitMsgPrefix: "gomod"
             commitIncludeScope: "true"
+            labels:
+              - "go"
+              - "skip-review"
+              - "area/dependency"
           dailyDockerEcosystem:
             packageEcosystem: "docker"
             scheduleInterval: "daily"
             commitIncludeScope: "true"
+            labels:
+              - "docker"
+              - "skip-review"
+              - "area/dependency"
         jobConfigs:
           - repoName: "github.com/kyma-project/test-infra"
             jobs:
