@@ -1,6 +1,0 @@
-pjNames:
-  - pjName: "pre-main-tpi-serverless-bench"
-prConfigs:
-  kyma-project:
-    third-party-images:
-      prNumber: 167
