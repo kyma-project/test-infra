@@ -20,10 +20,10 @@ plank:
       timeout: 3h
       grace_period: 10m
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20220115-3e20513bd7
-        initupload: gcr.io/k8s-prow/initupload:v20220115-3e20513bd7
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20220115-3e20513bd7
-        sidecar: gcr.io/k8s-prow/sidecar:v20220115-3e20513bd7
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20220121-bb77a9cb93
+        initupload: gcr.io/k8s-prow/initupload:v20220121-bb77a9cb93
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20220121-bb77a9cb93
+        sidecar: gcr.io/k8s-prow/sidecar:v20220121-bb77a9cb93
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -246,6 +246,7 @@ tide:
         - do-not-merge/work-in-progress
         - do-not-merge/invalid-owners-file
         - do-not-merge/invalid-commit-message
+        - do-not-merge/missing-docs-review
       repos:
         - kyma-project/test-infra
       reviewApprovedRequired: true
@@ -945,6 +946,11 @@ presets:
       preset-kyma-integration-central-app-connectivity-enabled: "true"
     env:
       - name: CENTRAL_APPLICATION_CONNECTIVITY_ENABLED
+        value: "true"
+  - labels:
+      preset-kyma-integration-telemetry-enabled: "true"
+    env:
+      - name: TELEMETRY_ENABLED
         value: "true"
   - labels:
       preset-kyma-integration-subaccounnt: "true"

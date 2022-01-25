@@ -44,6 +44,16 @@ function install_cli() {
   kyma version --client
 }
 
+# Install Helm Charts required for the telemetry integration test 
+function install_telemetry_helm_charts() {  
+  helm install -n kyma-system telemetry ${KYMA_SOURCES_DIR}/resources/telemetry
+
+  local mock_namespace="mockserver"
+  kubectl create namespace ${mock_namespace}
+  helm install -n ${mock_namespace} mockserver ${KYMA_SOURCES_DIR}/tests/fast-integration/telemetry-test/helm/mockserver
+  helm install -n ${mock_namespace} mockserver-config ${KYMA_SOURCES_DIR}/tests/fast-integration/telemetry-test/helm/mockserver-config
+}
+
 function deploy_kyma() {
   k3d version
   kyma provision k3d --ci
@@ -64,8 +74,13 @@ function deploy_kyma() {
 
   $kyma_deploy_cmd
 
+  if [[ -v TELEMETRY_ENABLED ]]; then
+    install_telemetry_helm_charts
+  fi
+
   kubectl get pods -A
 }
+
 
 function run_tests() {
   pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
@@ -75,6 +90,9 @@ function run_tests() {
     make ci-compass
   elif [[ -v CENTRAL_APPLICATION_CONNECTIVITY_ENABLED ]]; then
     make ci-application-connectivity-2
+  elif [[ -v TELEMETRY_ENABLED ]]; then
+    npm install
+    npm run test-telemetry
   else
     make ci
   fi

@@ -108,7 +108,8 @@ log::info "Copying control-plane to the instance"
 utils::send_to_vm "${ZONE}" "control-plane-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/control-plane" "~/control-plane"
 
 log::info "Download stable Kyma CLI"
-curl -Lo kyma https://storage.googleapis.com/kyma-cli-stable/kyma-linux
+curl -sSLo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/1.24.8/kyma_linux_x86_64.tar.gz"
+tar xvzf kyma.tar.gz
 chmod +x kyma
 
 gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "control-plane-integration-test-${RANDOM_ID}" --command="mkdir \$HOME/bin"

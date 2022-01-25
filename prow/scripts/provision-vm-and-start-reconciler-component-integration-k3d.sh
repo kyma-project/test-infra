@@ -22,15 +22,13 @@ fi
 
 cleanup() {
   # TODO - collect junit results
-  log::info "Stopping instance kyma-integration-test-${RANDOM_ID}"
+  log::info "Stopping instance reconciler-component-integration-test-${RANDOM_ID}"
   log::info "It will be removed automatically by cleaner job"
 
   # do not fail the job regardless of the vm deletion result
   set +e
 
-  #shellcheck disable=SC2088
-  utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/fast-integration/junit_kyma-fast-integration.xml" "${ARTIFACTS}"
-  gcloud compute instances stop --async --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}"
+  gcloud compute instances stop --async --zone="${ZONE}" "reconciler-component-integration-test-${RANDOM_ID}"
 
   log::info "End of cleanup"
 }
@@ -50,9 +48,9 @@ RANDOM_ID=$(openssl rand -hex 4)
 
 LABELS=""
 if [[ -z "${PULL_NUMBER}" ]]; then
-  LABELS=(--labels "branch=$PULL_BASE_REF,job-name=kyma-integration")
+  LABELS=(--labels "branch=$PULL_BASE_REF,job-name=reconciler-integration")
 else
-  LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=kyma-integration")
+  LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=reconciler-integration")
 fi
 
 POSITIONAL=()
@@ -94,14 +92,14 @@ ZONE_LIMIT=${ZONE_LIMIT:-5}
 EU_ZONES=$(gcloud compute zones list --filter="name~europe" --limit="${ZONE_LIMIT}" | tail -n +2 | awk '{print $1}')
 STARTTIME=$(date +%s)
 for ZONE in ${EU_ZONES}; do
-  log::info "Attempting to create a new instance named kyma-integration-test-${RANDOM_ID} in zone ${ZONE} using image ${IMAGE}"
-  gcloud compute instances create "kyma-integration-test-${RANDOM_ID}" \
+  log::info "Attempting to create a new instance named reconciler-component-integration-test-${RANDOM_ID} in zone ${ZONE} using image ${IMAGE}"
+  gcloud compute instances create "reconciler-component-integration-test-${RANDOM_ID}" \
       --metadata enable-oslogin=TRUE \
       --image "${IMAGE}" \
       --machine-type n2-standard-4 \
       --zone "${ZONE}" \
       --boot-disk-size 200 "${LABELS[@]}" && \
-  log::info "Created kyma-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
+  log::info "Created reconciler-component-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
   log::error "Could not create machine in zone ${ZONE}"
 done || exit 1
 ENDTIME=$(date +%s)
@@ -111,30 +109,19 @@ trap cleanup exit INT
 
 log::info "Preparing environment variables for the instance"
 envVars=(
-  COMPASS_TENANT
-  COMPASS_HOST
-  COMPASS_CLIENT_ID
-  COMPASS_CLIENT_SECRET
-  COMPASS_INTEGRATION_ENABLED
-  CENTRAL_APPLICATION_CONNECTIVITY_ENABLED
-  TELEMETRY_ENABLED
-  KYMA_MAJOR_VERSION
+  TEST_NAME
 )
 utils::save_env_file "${envVars[@]}"
 #shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" ".env" "~/.env"
+utils::send_to_vm "${ZONE}" "reconciler-component-integration-test-${RANDOM_ID}" ".env" "~/.env"
 
-log::info "Copying Kyma to the instance"
+log::info "Copying Reconciler to the instance"
 #shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
-
-if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
-  log::info "Copying components file for compass tests"
-  #shellcheck disable=SC2088
-  utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-compass-components.yaml" "~/kyma-integration-k3d-compass-components.yaml"
-fi
+utils::compress_send_to_vm "${ZONE}" "reconciler-component-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/reconciler" "~/reconciler"
+#shellcheck disable=SC2088
+utils::compress_send_to_vm "${ZONE}" "reconciler-component-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/test-infra" "~/test-infra"
 
 log::info "Triggering the installation"
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d.sh"
+gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "reconciler-component-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/reconciler-component-integration.sh"
 
 log::success "all done"
