@@ -35,6 +35,8 @@ templates:
                   branches:
                     - "^main$"
                     - "^release-\\d+\\.\\d+$"
+                  labels:
+                    preset-kyma-cli-stable: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
