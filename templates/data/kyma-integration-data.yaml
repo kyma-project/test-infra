@@ -518,6 +518,7 @@ templates:
                     - "extra_refs_kyma"
                     - "extra_refs_test-infra"
                     - "kyma_major_version_2"
+                    - "disable_testgrid"
                   local:
                     - "serverless_metrics_template"
               - jobConfig:
@@ -681,6 +682,7 @@ templates:
                     - "extra_refs_test-infra"
                     - "kyma_major_version_2"
                     - "jobConfig_postsubmit"
+                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "vm_job_template_k3d"
@@ -798,6 +800,7 @@ templates:
                     - "extra_refs_test-infra"
                     - "extra_refs_kyma"
                     - "kyma_major_version_2"
+                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "jobConfig_periodic"

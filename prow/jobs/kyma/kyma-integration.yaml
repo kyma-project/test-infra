@@ -578,6 +578,7 @@ postsubmits: # runs on main
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-merge"
         pipeline.type: "integration"
+        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3d-telemetry"
@@ -1123,6 +1124,7 @@ periodics: # runs on schedule
         pipeline.platform: "gke"
         pipeline.test: "Serverless function metrics"
         pipeline.trigger: "nightly"
+        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "serverless-function-metrics-generator"
@@ -1413,6 +1415,7 @@ periodics: # runs on schedule
         pipeline.test: "fast-integration"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
+        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "kyma-integration-k3d-telemetry"
