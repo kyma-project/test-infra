@@ -84,6 +84,7 @@ export CLUSTER_NAME="${COMMON_NAME}"
 # checks required vars and initializes gcloud/docker if necessary
 gardener::init
 
+kyma::install_cli
 # if MACHINE_TYPE is not set then use default one
 gardener::set_machine_type
 

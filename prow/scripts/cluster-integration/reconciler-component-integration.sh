@@ -88,7 +88,7 @@ function deploy_kyma() {
   make build-linux
 
   local kyma_deploy_cmd
-  kyma_deploy_cmd="./bin/mothership-linux local --kubeconfig $KUBECONFIG --value global.ingress.domainName=kyma.local,global.domainName=kyma.local --version $KYMA_VERSION --profile evaluation"
+  kyma_deploy_cmd="./bin/mothership-linux local --kubeconfig ${KUBECONFIG} --value global.ingress.domainName=kyma.local,global.domainName=kyma.local --version ${KYMA_VERSION} --profile ${EXECUTION_PROFILE}"
 
   if [[ $TEST_NAME == ory ]]; then
     ory::prepare_components_file

@@ -329,6 +329,7 @@ templates:
                     pipeline.platform: k3d
                   env:
                     TEST_NAME: ory
+                    EXECUTION_PROFILE: evaluation
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -351,6 +352,7 @@ templates:
                     pipeline.platform: gardener_gcp
                   env:
                     TEST_NAME: ory
+                    EXECUTION_PROFILE: production
                 inheritedConfigs:
                   global:
                     - jobConfig_default

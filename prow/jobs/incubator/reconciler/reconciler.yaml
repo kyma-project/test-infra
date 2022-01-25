@@ -80,6 +80,8 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-component-integration-k3d.sh"
             env:
+              - name: EXECUTION_PROFILE
+                value: "evaluation"
               - name: GO11MODULE
                 value: "on"
               - name: TEST_NAME
@@ -128,6 +130,8 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-component-provision-gardener.sh"
             env:
+              - name: EXECUTION_PROFILE
+                value: "production"
               - name: GARDENER_REGION
                 value: "europe-west4"
               - name: GARDENER_ZONES
