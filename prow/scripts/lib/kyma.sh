@@ -98,6 +98,36 @@ function kyma::get_last_release_version {
     fi
 }
 
+# kyma::install_cli() {
+#     if ! [[ -x "$(command -v kyma)" ]]; then
+#         local settings
+#         local kyma_version
+#         settings="$(set +o); set -$-"
+#         mkdir -p "/tmp/bin"
+#         export PATH="/tmp/bin:${PATH}"
+#         os=$(host::os)
+
+#         pushd "/tmp/bin" || exit
+
+#         echo "--> Install kyma CLI ${os} locally to /tmp/bin"
+
+#         if [[ "${KYMA_MAJOR_VERSION}" == "1" ]]; then
+#           curl -sSLo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/1.24.8/kyma_${os}_x86_64.tar.gz"
+#           tar xvzf kyma.tar.gz
+#         else
+#           curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}?alt=media"
+#         fi
+#         chmod +x kyma
+#         kyma_version=$(kyma version --client)
+#         echo "--> Kyma CLI version: ${kyma_version}"
+#         echo "OK"
+#         popd || exit
+#         eval "${settings}"
+#     else
+#         log::info "Kyma CLI is already installed: $(kyma version -c)"
+#     fi
+# }
+
 kyma::install_cli() {
     if ! [[ -x "$(command -v kyma)" ]]; then
         local settings
@@ -111,12 +141,8 @@ kyma::install_cli() {
 
         echo "--> Install kyma CLI ${os} locally to /tmp/bin"
 
-        if [[ "${KYMA_MAJOR_VERSION}" == "1" ]]; then
-          curl -sSLo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/1.24.8/kyma_${os}_x86_64.tar.gz"
-          tar xvzf kyma.tar.gz
-        else
-          curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}?alt=media"
-        fi
+        # shellcheck disable=SC2094
+        curl -sSL "https://github.com/kyma-project/cli/releases/download/1.24.8/kyma_${os}_x86_64.tar.gz" | tar -xzO kyma > kyma
         chmod +x kyma
         kyma_version=$(kyma version --client)
         echo "--> Kyma CLI version: ${kyma_version}"
@@ -127,6 +153,7 @@ kyma::install_cli() {
         log::info "Kyma CLI is already installed: $(kyma version -c)"
     fi
 }
+
 kyma::install_unstable_cli() {
     if ! [[ -x "$(command -v kyma)" ]]; then
         local settings
