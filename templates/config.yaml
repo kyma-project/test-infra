@@ -19,6 +19,9 @@ globalSets:
   kyma_major_version_2:
     env:
       KYMA_MAJOR_VERSION: 2
+  kyma_latest_release_version_2:
+    env:
+      KYMA_UPGRADE_VERSION: "2.0.3"
   # Image sets
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
