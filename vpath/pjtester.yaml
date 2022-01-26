@@ -1,7 +1,0 @@
-pjNames:
-  - pjName: "pre-rel124-kyma-gke-integration"
-  # - pjName: "pre-main-kyma-gke-external-registry"
-prConfigs:
-  kyma-project:
-    kyma:
-      prNumber: 12904
