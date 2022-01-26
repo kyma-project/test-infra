@@ -5,11 +5,13 @@ import (
 	"encoding/gob"
 	"flag"
 	"fmt"
+	"io/fs"
 	"io/ioutil"
 	"log"
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 	"text/template"
 
 	"github.com/Masterminds/sprig"
@@ -70,32 +72,10 @@ func main() {
 
 	dataFilesDir := filepath.Join(filepath.Dir(*configFilePath), "data")
 	// read all template data from data files
-	dataFiles, err := ioutil.ReadDir(dataFilesDir)
+	var dataFilesTemplates []*rt.TemplateConfig
+	err = filepath.Walk(dataFilesDir, getFileWalkFunc(dataFilesDir, config, &dataFilesTemplates))
 	if err != nil {
 		log.Fatalf("Cannot read data file directory: %s", err)
-	}
-
-	var dataFilesTemplates []*rt.TemplateConfig
-	for _, dataFile := range dataFiles {
-		if !dataFile.IsDir() {
-			var dataFileConfig rt.Config
-			var cfg bytes.Buffer
-			// load datafile as template
-			t, err := loadTemplate(dataFilesDir, dataFile.Name())
-			if err != nil {
-				log.Fatalf("Could not load data file %s: %v", dataFile.Name(), err)
-			}
-			// execute rendering the datafile from template and store it in-memory
-			// at this point the config has all the global values from config.yaml file
-			if err := t.Execute(&cfg, config); err != nil {
-				log.Fatalf("Cannot render data template: %v", err)
-			}
-			if err := yaml.Unmarshal(cfg.Bytes(), &dataFileConfig); err != nil {
-				log.Fatalf("Cannot parse data file yaml: %s\n", err)
-			}
-			dataFilesTemplates = append(dataFilesTemplates, dataFileConfig.Templates...)
-		}
-
 	}
 
 	//append all generated configs from datafiles to the list of templates to generate jobs from
@@ -108,6 +88,47 @@ func main() {
 		if err != nil {
 			log.Fatalf("Cannot render template %s: %s", templateConfig.From, err)
 		}
+	}
+}
+
+// getFileWalkFunc returns walk function that will recursively load datafiles as templates and generate configs from these files
+func getFileWalkFunc(dataFilesDir string, config *rt.Config, dataFilesTemplates *[]*rt.TemplateConfig) filepath.WalkFunc {
+	return func(path string, info fs.FileInfo, err error) error {
+		//pass the error further, this shouldn't ever happen
+		if err != nil {
+			return err
+		}
+
+		// skip directory entries, we just want files
+		if info.IsDir() {
+			return nil
+		}
+
+		// we only want to check .yaml files
+		if !strings.Contains(info.Name(), ".yaml") {
+			return nil
+		}
+
+		var dataFileConfig rt.Config
+		var cfg bytes.Buffer
+		// load datafile as template
+		dataFile := strings.Replace(path, dataFilesDir, "", -1)
+
+		t, err := loadTemplate(dataFilesDir, dataFile)
+		if err != nil {
+			log.Fatalf("Could not load data file %s: %v", path, err)
+		}
+		// execute rendering the datafile from template and store it in-memory
+		// at this point the config has all the global values from config.yaml file
+		if err := t.Execute(&cfg, config); err != nil {
+			log.Fatalf("Cannot render data template: %v", err)
+		}
+		if err := yaml.Unmarshal(cfg.Bytes(), &dataFileConfig); err != nil {
+			log.Fatalf("Cannot parse data file yaml: %s\n", err)
+		}
+		*dataFilesTemplates = append(*dataFilesTemplates, dataFileConfig.Templates...)
+
+		return nil
 	}
 }
 
