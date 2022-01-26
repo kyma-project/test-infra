@@ -247,7 +247,6 @@ tide:
         - do-not-merge/missing-docs-review
       repos:
         - kyma-project/test-infra
-      reviewApprovedRequired: true
     - labels:
         - lgtm
       missingLabels:
