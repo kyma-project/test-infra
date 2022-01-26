@@ -1,0 +1,3 @@
+pjNames:
+  - pjName: "pre-rel124-kyma-gke-integration"
+  - pjName: "pre-main-kyma-gke-external-registry"
