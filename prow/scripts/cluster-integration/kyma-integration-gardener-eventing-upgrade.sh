@@ -104,6 +104,7 @@ gardener::init
 # if MACHINE_TYPE is not set then use default one
 gardener::set_machine_type
 
+#TODO add an env flag to switch from provisioning using CLI to reconciler in local mode
 kyma::install_unstable_cli
 
 # currently only Azure generates overrides, but this may change in the future
@@ -131,7 +132,6 @@ gardener::deploy_kyma
 
 # test the eventing fi tests after the upgrade
 eventing::fast_integration_tests
-
 
 log::info "### Upgrading Kyma to $KYMA_SOURCE once again"
 gardener::deploy_kyma
