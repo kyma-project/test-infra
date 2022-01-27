@@ -109,3 +109,20 @@ approve:
       - kubernetes/test-infra
     require_self_approval: false
     ignore_review_state: false
+
+# https://github.com/kubernetes/test-infra/blob/master/prow/plugins/plugin-config-documented.yaml#L506
+project_config:
+  project_org_configs:
+    kyma-project:
+      # curl -H "Authorization: Token <token>" "https://api.github.com/orgs/kyma-project/teams?page=N"
+      org_maintainers_team_id: 5611091 # project-maintainers
+
+# https://github.com/kubernetes/test-infra/blob/master/prow/plugins/plugin-config-documented.yaml#L541
+repo_milestone:
+  # Default maintainer
+  # the list of different maintainers can be defined per org/repo
+  '':
+    # curl -H "Authorization: Token <token>" "https://api.github.com/orgs/kyma-project/teams?page=N"
+    maintainers_id: 5611091
+    maintainers_team: project-maintainers
+
