@@ -48,7 +48,6 @@ templates:
                     - "extra_refs_kyma"
                     - "disable_testgrid"
                     - "kyma_major_version_1"
-                    - "kyma_latest_release_version_2"
                   local:
                     - "jobConfig_default"
                     - "keb_plan_aws"
