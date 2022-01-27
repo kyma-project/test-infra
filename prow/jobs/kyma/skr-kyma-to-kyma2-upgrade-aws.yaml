@@ -43,7 +43,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/kyma-upgrade-skr-aws-kyma-to-kyma2.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-skr-aws-kyma-to-kyma2.sh"
             env:
               - name: KEB_PLAN_ID
                 value: "361c511f-f939-4621-b228-d0fb79a1fe15"
