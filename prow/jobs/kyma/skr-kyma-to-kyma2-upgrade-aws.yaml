@@ -15,6 +15,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.runID: "skr-kyma-to-kyma2-upgrade-aws-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
+        preset-bot-github-token: "true"
         preset-kcp-client-dev-envs: "true"
         preset-keb-dev-credentials: "true"
         preset-kyma-integration-central-app-connectivity-enabled: "true"

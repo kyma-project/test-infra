@@ -7,3 +7,6 @@ log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SO
 
 log::info "### Run make ci-skr-kyma-to-kyma2-upgrade"
 make -C /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration ci-skr-kyma-to-kyma2-upgrade
+
+
+ make -C "${KYMA_SOURCES_DIR}/tests/fast-integration" "${1}"
