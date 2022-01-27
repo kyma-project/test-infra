@@ -16,6 +16,7 @@ templates:
             request_cpu: 50m
             labels:
               preset-build-main: "true"
+              preset-bot-github-token: "true"
               preset-keb-dev-credentials: "true"
               preset-kyma-integration-compass-dev: "true"
               preset-kyma-integration-compass-enabled: "true"
