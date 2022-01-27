@@ -6,9 +6,33 @@
 #
 #Please look in each provider script for provider specific requirements
 
+
+
+set -o errexit
+set -o pipefail
+
+function prereq() {
+    export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
+    # shellcheck source=prow/scripts/lib/utils.sh
+    source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+    # shellcheck source=prow/scripts/lib/kyma.sh
+    source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
+
+    # All provides require these values, each of them may check for additional variables
+    requiredVars=(
+        KYMA_VERSION
+    )
+    utils::check_required_vars "${requiredVars[@]}"
+}
+
+
+prereq
+
+log::info "### Starting pipeline"
+
 # Fetch latest Kyma2 release
 kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
-export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
+export KYMA_UPGRADE_VERSION="${kyma_get_last_release_version_return_version:?}"
 log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
 
 log::info "### Run make ci-skr-kyma-to-kyma2-upgrade"
