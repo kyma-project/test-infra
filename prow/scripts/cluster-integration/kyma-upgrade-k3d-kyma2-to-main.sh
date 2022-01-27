@@ -65,11 +65,12 @@ function make_fast_integration() {
 }
 
 function install_kyma() {
-    export KYMA_SOURCE=$(curl --silent --fail --show-error -H "Authorization: token $BOT_GITHUB_TOKEN" \
-        "https://api.github.com/repos/kyma-project/kyma/releases" \
-        | jq -r '[.[] | select(.tag_name | startswith("2."))] | first | .tag_name')
+    # Fetch newest Kyma2 release
+    kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
+    export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
     log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
 
+    # Install kyma from latest 2.x release
     log::info "### Installing Kyma $KYMA_SOURCE"
     kyma deploy --ci --source "${KYMA_SOURCE}" --timeout 60m
 

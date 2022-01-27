@@ -115,6 +115,7 @@ gardener::pre_upgrade_test_fast_integration_kyma
 
 # Upgrade kyma to main branch
 export KYMA_SOURCE="main"
+log::info "### Installing Kyma $KYMA_SOURCE"
 
 kyma::deploy_kyma -s "$KYMA_SOURCES_DIR" -u "true"
 
