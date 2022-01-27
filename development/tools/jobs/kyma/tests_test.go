@@ -60,12 +60,6 @@ var tests = []struct {
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "console-backend-service", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("tests-generic"),
-			jobsuite.RunIfChanged("components/console-backend-service/main.go", "scripts/go-dep.mk"),
-		},
-	},
 	{path: "end-to-end/upgrade", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite, additionalOptions: []jobsuite.Option{
 		jobsuite.RunIfChanged("^tests/end-to-end/upgrade/[^chart]", "tests/end-to-end/upgrade/fix"),
 		jobsuite.JobFileSuffix("tests-generic"),
