@@ -104,7 +104,7 @@ function run_tests() {
   pushd "${RECONCILER_DIR}"
   
   export ORY_RECONCILER_INTEGRATION_TESTS=1
-  go test -v -timeout 5m ./pkg/reconciler/instances/${TEST_NAME}/test
+  go test -v -timeout 5m ./pkg/reconciler/instances/"${TEST_NAME}"/test
   #currently disabling
   #make: go: Permission denied on Gardener
   #make test-ory
@@ -124,8 +124,8 @@ prereq_test \
 
 else
 
-# shellcheck source=prow/scripts/lib/log.sh
 readonly RECONCILER_DIR="${RECONCILER_SOURCES_DIR}"
+# shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 
 prereq_test \

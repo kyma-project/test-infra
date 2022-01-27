@@ -318,6 +318,7 @@ templates:
                     - reconciler_integration_jobConfig
               - jobConfig:
                   name: "pre-main-ory-reconciler-eval-integration"
+                  optional: true
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -341,6 +342,7 @@ templates:
                     - reconciler_component_k3d_integration_jobConfig
               - jobConfig:
                   name: "pre-main-ory-reconciler-prod-integration"
+                  optional: true
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:

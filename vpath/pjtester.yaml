@@ -1,7 +1,0 @@
-pjNames:
-  - pjName: "pre-main-ory-reconciler-prod-integration"
-  - pjName: "pre-main-ory-reconciler-eval-integration"
-prConfigs:
-  kyma-incubator:
-    reconciler:
-      prNumber: 632
