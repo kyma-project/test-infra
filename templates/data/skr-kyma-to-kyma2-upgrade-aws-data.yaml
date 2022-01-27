@@ -11,7 +11,7 @@ templates:
               pipeline.test: fast-integration
             path_alias: github.com/kyma-project/kyma
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-skr-aws-kyma-to-kyma2.sh"
-            cluster: "trusted-workload"
+            cluster: "untrusted-workload"
             request_memory: 100Mi
             request_cpu: 50m
             labels:
