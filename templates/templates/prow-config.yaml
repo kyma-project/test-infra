@@ -333,11 +333,6 @@ presets:
       - name: DOCKER_PUSH_DIRECTORY
         value: ""
   - labels:
-      preset-gke-rapid: "true"
-    env:
-      - name: GKE_RELEASE_CHANNEL
-        value: rapid
-  - labels:
       preset-sa-prow-job-resource-cleaner: "true"
     env:
       - name: GOOGLE_APPLICATION_CREDENTIALS
