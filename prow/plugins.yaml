@@ -75,8 +75,10 @@ config_updater:
 
 triggers:
   - repos:
-    - kyma-project
-    - kyma-incubator
+      - kyma-project
+      - kyma-incubator
+    trusted_apps:
+      - dependabot
     only_org_members: true
     ignore_ok_to_test: true
 
@@ -103,6 +105,7 @@ size:
 blunderbuss:
   max_request_count: 2
   use_status_availability: true
+  ignore_drafts: true
 
 approve:
   - repos:
