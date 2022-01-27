@@ -10,11 +10,7 @@ templates:
               pipeline.installer: keb
               pipeline.test: fast-integration
             path_alias: github.com/kyma-project/kyma
-            command: "make"
-            args:
-              - "-C"
-              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration" 
-              - "ci-skr-kyma-to-kyma2-upgrade"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-unstable-cli.sh"
             cluster: "trusted-workload"
             request_memory: 100Mi
             request_cpu: 50m
