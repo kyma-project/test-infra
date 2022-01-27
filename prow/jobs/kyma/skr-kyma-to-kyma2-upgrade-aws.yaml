@@ -27,7 +27,7 @@ periodics: # runs on schedule
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
-      cluster: untrusted-workload
+      cluster: trusted-workload
       extra_refs:
         - org: kyma-project
           repo: kyma
