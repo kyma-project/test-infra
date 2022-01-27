@@ -380,6 +380,11 @@ presets:
       - name: CLOUDSDK_KMS_PROJECT
         value: "sap-kyma-prow-workloads"
   - labels:
+      preset-kyma-project-dir: "true"
+      env:
+        - name: KYMA_PROJECT_DIR
+          value: "/home/prow/go/src/github.com/kyma-project"
+  - labels:
       preset-sa-vm-kyma-integration: "true" # Service account with "Compute Admin" and "Compute OS Admin Login" roles
     env:
       - name: GOOGLE_APPLICATION_CREDENTIALS
