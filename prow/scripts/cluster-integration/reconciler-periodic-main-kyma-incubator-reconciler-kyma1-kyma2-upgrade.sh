@@ -128,6 +128,11 @@ reconciler::deploy_test_pod
 # Wait until test-pod is ready
 reconciler::wait_until_test_pod_is_ready
 
+# Fetch latest Kyma2 release
+kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
+export KYMA_UPGRADE_VERSION="${kyma_get_last_release_version_return_version:?}"
+log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_UPGRADE_VERSION}"
+
 # Set up test pod environment
 reconciler::initialize_test_pod
 
@@ -143,4 +148,3 @@ log::banner "Executing post-upgrade test - after reconciliation"
 gardener::post_upgrade_test_fast_integration_kyma
 
 #!!! Must be at the end of the script !!!
-ERROR_LOGGING_GUARD="false"
