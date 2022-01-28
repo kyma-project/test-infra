@@ -112,11 +112,12 @@ kubectl create ns "${TEST_NAMESPACE}"
 kubectl label ns "${TEST_NAMESPACE}" created-by=serverless-benchmarks
 run_serverless_test_function
 
+collect_benchmark_results
+
 job_status=""
 [[ $(kubectl -n "${TEST_NAMESPACE}" get jobs serverless-benchmark -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}') == "True" ]] && job_status=1
 [[ $(kubectl -n "${TEST_NAMESPACE}" get jobs serverless-benchmark -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}') == "True" ]] && job_status=0
 
-collect_benchmark_results
 
 log::info "Cleaning up test resources"
 # clean_serverless_integration_tests
