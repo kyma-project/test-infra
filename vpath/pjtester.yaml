@@ -1,8 +1,0 @@
-pjNames:
-  - pjName: "periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade"
-prConfigs:
-  kyma-project:
-    test-infra:
-      prNumber: 4828
-    control-plane:
-      prNumber: 1315
