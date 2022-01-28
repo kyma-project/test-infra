@@ -34,7 +34,7 @@ templates:
               KEB_PLAN_ID: "361c511f-f939-4621-b228-d0fb79a1fe15" # AWS
               # KEB_PLAN_ID: "5cb3d976-b85c-42ea-a636-79cadda109a9" # Preview Plan
               KYMA_VERSION: "1.24.8"
-              KYMA_UPGRADE_VERSION: "2.0.3"
+              KYMA_UPGRADE_VERSION: "2.0.4"
               SKIP_CLEANUP: "FALSE" # set to true if Cluster & Compass cleanup should be skipped
         jobConfigs:
           - repoName: "kyma-project/kyma"
