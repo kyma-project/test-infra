@@ -24,31 +24,6 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "bigquery-prow",
-      "description": "",
-  "annotations": {
-    "list": [
-      {
-        "builtIn": 1,
-        "datasource": "-- Grafana --",
-        "enable": true,
-        "hide": true,
-        "iconColor": "rgba(0, 211, 255, 1)",
-        "name": "Annotations & Alerts",
-        "type": "dashboard"
-      }
-    ]
-  },
-  "editable": true,
-  "gnetId": null,
-  "graphTooltip": 0,
-  "links": [],
-  "panels": [
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "bigquery-prow",
       "fieldConfig": {
         "defaults": {
           "unit": "ms"
@@ -1113,25 +1088,8 @@
         "align": false,
         "alignLevel": null
       }
-    }
-  ],
-  "refresh": false,
-  "schemaVersion": 27,
-  "style": "dark",
-  "tags": [],
-  "templating": {
-    "list": []
-  },
-  "time": {
-    "from": "now-3h",
-    "to": "now"
-  },
-  "timepicker": {},
-  "timezone": "",
-  "title": "Serverless Controller",
-  "uid": "CdzgqX1nz",
-  "version": 1
-}
+    },
+    {
       "fieldConfig": {
         "defaults": {
           "unit": "ms"
@@ -1353,6 +1311,6 @@
   "timepicker": {},
   "timezone": "",
   "title": "Serverless Controller",
-  "uid": null,
-  "version": 0
+  "uid": "CdzgqX1nz",
+  "version": 2
 }
