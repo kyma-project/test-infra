@@ -148,3 +148,4 @@ log::banner "Executing post-upgrade test - after reconciliation"
 gardener::post_upgrade_test_fast_integration_kyma
 
 #!!! Must be at the end of the script !!!
+ERROR_LOGGING_GUARD="false"
