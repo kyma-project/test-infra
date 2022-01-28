@@ -130,8 +130,8 @@ reconciler::wait_until_test_pod_is_ready
 
 # Fetch latest Kyma2 release
 kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
-export KYMA_UPGRADE_VERSION="${kyma_get_last_release_version_return_version:?}"
-log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_UPGRADE_VERSION}"
+export KYMA_UPGRADE_SOURCE="${kyma_get_last_release_version_return_version:?}"
+log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_UPGRADE_SOURCE}"
 
 # Set up test pod environment
 reconciler::initialize_test_pod
