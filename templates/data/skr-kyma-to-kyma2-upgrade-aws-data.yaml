@@ -32,7 +32,7 @@ templates:
               # KEB_PLAN_ID: "5cb3d976-b85c-42ea-a636-79cadda109a9" # Preview Plan
               KYMA_VERSION: "1.24.9"
               SKIP_CLEANUP: "FALSE" # set to true if Cluster & Compass cleanup should be skipped
-              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"# set to true if Cluster & Compass cleanup should be skipped
+
         jobConfigs:
           - repoName: "kyma-project/kyma"
             jobs:
@@ -50,6 +50,7 @@ templates:
                     - "extra_refs_kyma"
                     - "disable_testgrid"
                     - "kyma_major_version_1"
+                    - "kyma_project_dir"
                   local:
                     - "jobConfig_default"
                     - "keb_plan_aws"

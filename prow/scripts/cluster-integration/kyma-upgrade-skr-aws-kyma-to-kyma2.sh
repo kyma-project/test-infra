@@ -25,6 +25,9 @@ function prereq() {
     utils::check_required_vars "${requiredVars[@]}"
 }
 
+#Used to detect errors for logging purposes
+ERROR_LOGGING_GUARD="true"
+export ERROR_LOGGING_GUARD
 
 prereq
 
@@ -37,3 +40,6 @@ log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_UP
 
 log::info "### Run make ci-skr-kyma-to-kyma2-upgrade"
 make -C /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration ci-skr-kyma-to-kyma2-upgrade
+
+#!!! Must be at the end of the script !!!
+ERROR_LOGGING_GUARD="false"
