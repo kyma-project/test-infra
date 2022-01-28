@@ -5,4 +5,4 @@ prConfigs:
     test-infra:
       prNumber: 4828
     control-plane:
-      prNumber: 1314
+      prNumber: 1315
