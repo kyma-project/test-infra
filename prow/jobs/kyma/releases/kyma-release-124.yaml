@@ -30,6 +30,9 @@ presubmits: # runs on PRs
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-minikube.sh"
+            env:
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
             resources:
               requests:
                 memory: 100Mi
@@ -90,6 +93,8 @@ presubmits: # runs on PRs
                 value: "true"
               - name: IMAGE_TYPE
                 value: cos
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
             resources:
               requests:
                 memory: 200Mi
@@ -209,6 +214,8 @@ presubmits: # runs on PRs
             env:
               - name: TEST_SUITE
                 value: "cluster-users"
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
             resources:
               requests:
                 memory: 100Mi
@@ -341,6 +348,8 @@ presubmits: # runs on PRs
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: TEST_ORY_IMAGE
                 value: "eu.gcr.io/kyma-project/incubator/test-hydra-login-consent:d6e6d3bc"
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
             resources:
               requests:
                 memory: 1Gi
@@ -513,6 +522,9 @@ postsubmits: # runs on release 1.24
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-minikube.sh"
+            env:
+              - name: KYMA_MAJOR_VERSION
+                value: "1"
             resources:
               requests:
                 memory: 100Mi
