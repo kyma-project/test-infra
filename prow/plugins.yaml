@@ -46,6 +46,9 @@ plugins:
 
 external_plugins:
   kyma-project/test-infra:
+    - name: cla-assistant
+      events:
+        - issue_comment
     - name: needs-tws
       events:
         - pull_request
