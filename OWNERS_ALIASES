@@ -51,7 +51,6 @@ aliases:
     - rJankowski93
 
   cli-reviewers:
-    - suleymanakbas91
     - clebs
     - a-thaler
     - lilitgh
@@ -63,7 +62,6 @@ aliases:
     - chrkl
     - lindnerby
   cli-approvers:
-    - suleymanakbas91
     - clebs
     - a-thaler
     - lilitgh
@@ -93,13 +91,11 @@ aliases:
   hydroform-reviewers:
     - a-thaler
     - lilitgh
-    - suleymanakbas91
     - clebs
     - jeremyharisch
   hydroform-approvers:
     - a-thaler
     - lilitgh
-    - suleymanakbas91
     - clebs
     - jeremyharisch
 
@@ -219,7 +215,6 @@ aliases:
     - voigt
     - wozniakjan
     - k15r
-    - suleymanakbas91
 
   # kyma-incubator related aliases
   reconciler-reviewers:
@@ -227,25 +222,25 @@ aliases:
     - pbochynski
     - varbanv
     - rJankowski93
-    - suleymanakbas91
     - m00g3n
     - dbadura
     - pPrecel
     - kwiatekus
     - moelsayed
     - clebs
+    - jeremyharisch
   reconciler-approvers:
     - tobiscr
     - pbochynski
     - varbanv
     - rJankowski93
-    - suleymanakbas91
     - m00g3n
     - dbadura
     - pPrecel
     - kwiatekus
     - moelsayed
     - clebs
+    - jeremyharisch
 
   compass-reviewers:
     - dzahariev
@@ -293,14 +288,12 @@ aliases:
     - la4ezar
 
   varkes-reviewers:
-    - suleymanakbas91
     - brendandobbs
     - a-thaler
     - jcawley5
     - lilitgh
     - alexandra-simeonova
   varkes-approvers:
-    - suleymanakbas91
     - brendandobbs
     - a-thaler
     - jcawley5
