@@ -24,7 +24,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "bigquery-prow",
-      "description": "",{
+      "description": "",
   "annotations": {
     "list": [
       {
