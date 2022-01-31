@@ -101,25 +101,37 @@ echo "NPM version: $(npm -v)"
 
 
 echo "STEP: Preparing k3s cluster"
+echo $(date +"%Y/%m/%d %T %Z")
 prepare_k3s
+echo $(date +"%Y/%m/%d %T %Z")
+
 
 echo "STEP: Generating cerfificate"
+echo $(date +"%Y/%m/%d %T %Z")
 generate_cert $K3S_DOMAIN
+echo $(date +"%Y/%m/%d %T %Z")
+
 
 echo "STEP: Installing Busola on the cluster"
+echo $(date +"%Y/%m/%d %T %Z")
 install_busola $K3S_DOMAIN
+echo $(date +"%Y/%m/%d %T %Z")
 
 
-
+echo "STEPPE BISON"
+echo $(date +"%Y/%m/%d %T %Z")
 # wait for all Busola pods to be ready
 kubectl wait \
 --for=condition=ready pod \
 --all \
 --timeout=120s
+echo $(date +"%Y/%m/%d %T %Z")
 
 cp "$PWD/kubeconfig-kyma.yaml" "$PWD/busola-tests/fixtures/kubeconfig.yaml"
 mkdir -p "$PWD/busola-tests/cypress/screenshots"
 
 echo "STEP: Running Cypress tests inside Docker"
+echo $(date +"%Y/%m/%d %T %Z")
 docker run --entrypoint /bin/bash --network=host -v "$PWD/busola-tests:/tests" -w /tests $CYPRESS_IMAGE -c "npm ci --no-optional; NO_COLOR=1 cypress run --browser chrome"
+echo $(date +"%Y/%m/%d %T %Z")
 
