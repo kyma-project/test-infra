@@ -143,7 +143,6 @@ function reconciler::initialize_test_pod() {
 
   # shellcheck disable=SC2086
   kc="$(cat ${KUBECONFIG})"
-  # Replace kyma version with latest release
   # shellcheck disable=SC2016
   jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template.json > body.json
 
