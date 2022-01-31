@@ -288,6 +288,7 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         preset-dind-enabled: "true"
       run_if_changed: 'milv.config.yaml|.md$'
+      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
