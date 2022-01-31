@@ -37,7 +37,7 @@ log::info "### Starting pipeline"
 kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
 # KYMA_UPGRADE_VERSION will be used as a source in the fast-integration test
 export KYMA_UPGRADE_VERSION="${kyma_get_last_release_version_return_version:?}"
-log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_UPGRADE_VERSION}"
+log::info "### Reading release version from GitHub release API, got: ${KYMA_UPGRADE_VERSION}"
 
 log::info "### Run make ci-skr-kyma-to-kyma2-upgrade"
 make -C /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration ci-skr-kyma-to-kyma2-upgrade
