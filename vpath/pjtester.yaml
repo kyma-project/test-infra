@@ -4,3 +4,4 @@ prConfigs:
   kyma-incubator:
     reconciler:
       prNumber: 747
+
