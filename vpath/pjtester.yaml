@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "skr-kyma-to-kyma2-upgrade-aws-dev"
+  - pjName: "kyma-preview-integration-dev"
 prConfigs:
   kyma-project:
     kyma:
