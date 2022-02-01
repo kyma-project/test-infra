@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "pre-main-kyma-serverless-bench"
+    report: false
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 13236 
