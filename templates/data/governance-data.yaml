@@ -253,7 +253,6 @@ templates:
                     - "--repository"
                     - "kyma"
                   path_alias: github.com/kyma-project/kyma
-                  optional: true
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
