@@ -8,26 +8,36 @@ source "${LIBDIR}/log.sh"
 # kyma::deploy_kyma starts Kyma deployment using new installation method
 # Arguments:
 # optional:
-# s - Kyma sources directory
+# s - Kyma source
+# d - Kyma sources directory
 # p - execution profile
 # u - upgrade (this will not reuse helm values which is already set)
 function kyma::deploy_kyma() {
 
     local OPTIND
     local executionProfile=
+    local kymaSource=""
     local kymaSourcesDir=""
     local upgrade=
 
-    while getopts ":p:s:u:" opt; do
+    while getopts ":s:p:d:u:" opt; do
         case $opt in
+            s)
+                kymaSource="$OPTARG"
+                ;;
             p)
                 if [ -n "$OPTARG" ]; then
                     executionProfile="$OPTARG"
+                    log::info "Execution Profile: ${executionProfile}"
                 fi ;;
-            s)
-                kymaSourcesDir="$OPTARG" ;;
+            d)
+                kymaSourcesDir="$OPTARG"
+                log::info "Kyma Source Directory: ${kymaSourcesDir}"
+                 ;;
             u)
-                upgrade="$OPTARG" ;;
+                upgrade="$OPTARG"
+                log::info "Kyma upgrade option: ${upgrade}"
+                ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
@@ -37,19 +47,17 @@ function kyma::deploy_kyma() {
 
     log::info "Deploying Kyma"
 
-    if [[ -n "$executionProfile" ]]; then
-        if [[ -n "$upgrade" ]]; then
-            kyma deploy --ci --profile "$executionProfile" --source=local --workspace "${kymaSourcesDir}" --verbose
+    if [[ -n "$kymaSource" ]]; then
+            kyma deploy --ci --profile "$executionProfile" --source="${kymaSource}" --workspace "${kymaSourcesDir}" --verbose
         else
-            kyma deploy --ci --profile "$executionProfile" --source=local --workspace "${kymaSourcesDir}" --verbose
-        fi
-    else
-        if [[ -n "$upgrade" ]]; then
-            kyma deploy --ci --source=local --workspace "${kymaSourcesDir}" --verbose
-        else
-            kyma deploy --ci --source=local --workspace "${kymaSourcesDir}" --verbose
-        fi
+            if [[ -n "$executionProfile" ]]; then
+                kyma deploy --ci --profile "$executionProfile" --source=local --workspace "${kymaSourcesDir}" --verbose
+            else
+                kyma deploy --ci --source=local --workspace "${kymaSourcesDir}" --verbose
+            fi
     fi
+
+
 }
 
 # kyma::undeploy_kyma uninstalls Kyma

@@ -130,7 +130,7 @@ gardener::provision_cluster
 if [[ "${KYMA_MAJOR_VERSION}" == "2" ]]; then
   kyma::deploy_kyma \
     -p "$EXECUTION_PROFILE" \
-    -s "$KYMA_SOURCES_DIR"
+    -d "$KYMA_SOURCES_DIR"
 else
   gardener::install_kyma
 fi
