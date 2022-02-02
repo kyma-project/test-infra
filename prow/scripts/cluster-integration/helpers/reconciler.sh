@@ -137,7 +137,7 @@ function reconciler::initialize_test_pod() {
   # move to reconciler directory
   cd "${CONTROL_PLANE_RECONCILER_DIR}"  || { echo "Failed to change dir to: ${CONTROL_PLANE_RECONCILER_DIR}"; exit 1; }
   echo "************* Current Reconciler Image To Be Used **************"
-  cat ./resources/kcp/values.yaml | grep -o 'mothership_reconciler:.*mothership.*'
+  cat ../../resources/kcp/values.yaml | grep -o 'mothership_reconciler:.*mothership.*'
   echo "****************************************************************"
   # Create reconcile request payload with kubeconfig, domain, and version to the test-pod
   domain="$(kubectl get cm shoot-info -n kube-system -o jsonpath='{.data.domain}')"
