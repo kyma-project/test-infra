@@ -201,6 +201,37 @@ templates:
                     - "image-signing"
 
               - jobConfig:
+                  name: "pre-main-tpi-busola-e2e-cleaner"
+                  run_if_changed: "^busola-e2e-cleaner/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/busola-e2e-cleaner"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+              - jobConfig:
+                  name: "post-main-tpi-busola-e2e-cleaner"
+                  run_if_changed: "^busola-e2e-cleaner/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/busola-e2e-cleaner"
+                    - "ci-main"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "default"
+                    - "image-signing"
+
+              - jobConfig:
                   name: "pre-main-tpi-kiali"
                   run_if_changed: "^kiali/"
                   args:
