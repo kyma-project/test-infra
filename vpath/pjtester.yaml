@@ -1,9 +1,0 @@
-pjNames:
-  - pjName: "pre-kyma-tests-serverless-bench"
-    report: false
-  - pjName: "serverless-function-benchmark"
-    report: false
-prConfigs:
-  kyma-project:
-    kyma:
-      prNumber: 13236 
