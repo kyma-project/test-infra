@@ -5,8 +5,8 @@ set -o pipefail  # Fail a pipe if any sub-command fails.
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 
-export TEST_NAMESPACE="serverless-integration"
-export TEST_JOB_NAME="serverless-tests"
+export TEST_NAMESPACE="serverless-benchmarks"
+export ALL_FUNCTIONS=(nodejs14-xs nodejs14-s nodejs14-m nodejs14-l nodejs14-xl python39-s python39-m python39-l python39-xl)
 
 
 # shellcheck source=prow/scripts/lib/utils.sh
@@ -76,58 +76,51 @@ function connect_to_cluster() {
     fi
 }
 
-function run_serverless_integration_tests() {
-    log::info "Running Serverless Integration tests"
-    pushd /home/prow/go/src/github.com/kyma-project/kyma/resources/serverless/
+function run_serverless_test_function() {
+    log::info "Deploying test functions"
+    kubectl -n "${TEST_NAMESPACE}" apply -f \
+        "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/fixtures/functions/"
 
-    log::info "Creating test namespace"
-    kubectl create ns "${TEST_NAMESPACE}"
-    kubectl label ns "${TEST_NAMESPACE}" created-by=serverless-controller-manager-test
-
-    helm install serverless-test "charts/k3s-tests" -n "${TEST_NAMESPACE}" \
-        -f values.yaml --set jobName="${TEST_JOB_NAME}" \
-        --set testSuite="serverless-integration"
-
-    git checkout -
-    popd
+    log::info "Waiting for test functions to be Running"
+    for FUNCTION in "${ALL_FUNCTIONS[@]}"; do
+        kubectl -n "${TEST_NAMESPACE}" wait "function/${FUNCTION}" \
+            --for=condition=Running=True --timeout 2m
+    done
+    log::info "Done"
 }
 
-function run_serverless_metrics_collector() {
-    log::info "Collecting serverless controller metrics"
-    kubectl -n "${TEST_NAMESPACE}" apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/serverless-metrics-collector.yaml"
-    kubectl -n "${TEST_NAMESPACE}" wait job/metrics-collector --for=condition=Complete=True --timeout=300s
-    echo
-    kubectl logs -n "${TEST_NAMESPACE}" -l job-name=metrics-collector
-    echo
+function collect_benchmark_results() {
+    log::info "Running benchmarks and collecting results"
+    kubectl -n "${TEST_NAMESPACE}" apply -f \
+        "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/fixtures/serverless-benchmark-job.yaml"
+    kubectl -n "${TEST_NAMESPACE}" wait job/serverless-benchmark \
+        --for=condition=Complete=True --timeout=20m
+    kubectl -n "${TEST_NAMESPACE}" logs -l jobName=serverless-benchmark --tail=-1
 }
 
 function clean_serverless_integration_tests() {
     log::info "Removing test namespace"
-    kubectl delete ns -l created-by=serverless-controller-manager-test
+    kubectl delete ns -l created-by=serverless-benchmarks
 }
 
 connect_to_cluster
 # in case of failed runs
 clean_serverless_integration_tests
 
-run_serverless_integration_tests
+log::info "Creating test namespace"
+kubectl create ns "${TEST_NAMESPACE}"
+kubectl label ns "${TEST_NAMESPACE}" created-by=serverless-benchmarks
+run_serverless_test_function
+
+collect_benchmark_results
+
 job_status=""
-# helm does not wait for jobs to complete even with --wait
-# TODO but helm@v3.5 has a flag that enables that, get rid of this function once we use helm@v3.5
-while true; do
-    echo "Test job not completed yet..."
-    [[ $(kubectl -n "${TEST_NAMESPACE}" get jobs "${TEST_JOB_NAME}" -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}') == "True" ]] && job_status=1 && echo "Test job failed" && break
-    [[ $(kubectl -n "${TEST_NAMESPACE}" get jobs "${TEST_JOB_NAME}" -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}') == "True" ]] && job_status=0 && echo "Test job completed successfully" && break
-    sleep 5
-done
-
-collect_results "${TEST_JOB_NAME}" "${TEST_NAMESPACE}"
-run_serverless_metrics_collector
+[[ $(kubectl -n "${TEST_NAMESPACE}" get jobs serverless-benchmark -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}') == "True" ]] && job_status=1
+[[ $(kubectl -n "${TEST_NAMESPACE}" get jobs serverless-benchmark -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}') == "True" ]] && job_status=0
 
 
-clean_serverless_integration_tests
-
+log::info "Cleaning up test resources"
+# clean_serverless_integration_tests
 
 echo "Exit code ${job_status}"
-
 exit $job_status

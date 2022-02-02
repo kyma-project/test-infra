@@ -5,7 +5,7 @@ ARG commit
 ENV IMAGE_COMMIT=$commit
 LABEL io.kyma-project.test-infra.commit=$commit
 
-ENV UA_VERSION v20.8.2
+ENV UA_VERSION v22.1.1.1
 ENV GO_VERSION 1.17.5
 ENV DEP_RELEASE_TAG v0.5.4
 ENV JAVA_VERSION 8u212-b04
