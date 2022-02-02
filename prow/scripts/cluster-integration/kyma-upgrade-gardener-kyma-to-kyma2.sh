@@ -121,7 +121,7 @@ kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
 export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
 log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
 
-kyma::deploy_kyma -s "$KYMA_SOURCES_DIR" -u "true"
+kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$KYMA_SOURCES_DIR" -u "true"
 
 log::info "### Run post-upgrade tests"
 gardener::post_upgrade_test_fast_integration_kyma

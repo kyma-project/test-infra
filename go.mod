@@ -20,10 +20,9 @@ require (
 	cloud.google.com/go/bigquery v1.26.0
 	cloud.google.com/go/firestore v1.6.1
 	cloud.google.com/go/functions v1.0.0
-	cloud.google.com/go/iam v0.1.1 // indirect
 	cloud.google.com/go/logging v1.4.2
 	cloud.google.com/go/pubsub v1.17.1
-	cloud.google.com/go/storage v1.18.2
+	cloud.google.com/go/storage v1.19.0
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
@@ -41,7 +40,7 @@ require (
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/jinzhu/copier v0.3.5
 	github.com/mandelsoft/vfs v0.0.0-20210530103237-5249dc39ce91
-	github.com/onsi/gomega v1.17.0
+	github.com/onsi/gomega v1.18.0
 	github.com/pkg/errors v0.9.1
 	github.com/satori/go.uuid v1.2.0
 	github.com/shurcooL/githubv4 v0.0.0-20211117020012-5800b9de5b8b

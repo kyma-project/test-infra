@@ -136,6 +136,18 @@ gardener::install_kyma() {
     )
 }
 
+gardener::deploy_kyma() {
+    log::info "Deploying Kyma"
+
+    (
+    set -x
+    kyma deploy \
+        --ci \
+        --source "${KYMA_SOURCE}" \
+        --timeout 90m
+    )
+}
+
 gardener::hibernate_kyma() {
     return
 }

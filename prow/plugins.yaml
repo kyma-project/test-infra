@@ -46,9 +46,6 @@ plugins:
 
 external_plugins:
   kyma-project/test-infra:
-    - name: test-untrusted
-      events:
-        - pull_request
     - name: needs-tws
       events:
         - pull_request
@@ -75,11 +72,12 @@ config_updater:
 
 triggers:
   - repos:
-    - kyma-project
-    - kyma-incubator
+      - kyma-project
+      - kyma-incubator
+    trusted_apps:
+      - dependabot
     only_org_members: true
     ignore_ok_to_test: true
-    elide_skipped_contexts: false
 
 lgtm:
   - repos:
@@ -92,6 +90,7 @@ label:
     - tide/merge-method-merge
     - tide/merge-method-rebase
     - tide/merge-method-squash
+    - Epic
 
 size:
   s:   10
@@ -103,6 +102,7 @@ size:
 blunderbuss:
   max_request_count: 2
   use_status_availability: true
+  ignore_drafts: true
 
 approve:
   - repos:
