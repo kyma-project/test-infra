@@ -49,13 +49,13 @@ function kyma::deploy_kyma() {
     log::info "Deploying Kyma"
 
     if [[ -n "$kymaSource" ]]; then
-            kyma deploy --ci --profile "$executionProfile" --source="${kymaSource}" --workspace "${kymaSourcesDir}" --verbose
+        kyma deploy --ci --profile "$executionProfile" --source="${kymaSource}" --workspace "${kymaSourcesDir}" --verbose
+    else
+        if [[ -n "$executionProfile" ]]; then
+            kyma deploy --ci --profile "$executionProfile" --source=local --workspace "${kymaSourcesDir}" --verbose
         else
-            if [[ -n "$executionProfile" ]]; then
-                kyma deploy --ci --profile "$executionProfile" --source=local --workspace "${kymaSourcesDir}" --verbose
-            else
-                kyma deploy --ci --source=local --workspace "${kymaSourcesDir}" --verbose
-            fi
+            kyma deploy --ci --source=local --workspace "${kymaSourcesDir}" --verbose
+        fi
     fi
 
 
