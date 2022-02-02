@@ -144,7 +144,7 @@ function reconciler::initialize_test_pod() {
   # shellcheck disable=SC2086
   kc="$(cat ${KUBECONFIG})"
 
-  if ["$KYMA_UPGRADE_SOURCE" == "main"]; then
+  if [ "$KYMA_UPGRADE_SOURCE" == "main" ]; then
     # shellcheck disable=SC2016
     jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template-kyma-main.json > body.json
   else
