@@ -119,9 +119,9 @@ gardener::generate_overrides
 
 gardener::provision_cluster
 
-# uses previously set KYMA_SOURCE
 if [[ "${KYMA_MAJOR_VERSION}" == "2" ]]; then
   kyma::deploy_kyma \
+    -s "$KYMA_SOURCE" \
     -p "$EXECUTION_PROFILE" \
     -d "$KYMA_SOURCES_DIR"
   if [[ "${KYMA_DELETE}" == "true" ]]; then
@@ -129,6 +129,7 @@ if [[ "${KYMA_MAJOR_VERSION}" == "2" ]]; then
     kyma::undeploy_kyma
     sleep 30
     kyma::deploy_kyma \
+       -s "$KYMA_SOURCE" \
        -p "$EXECUTION_PROFILE" \
        -d "$KYMA_SOURCES_DIR"
   fi

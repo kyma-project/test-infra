@@ -24,6 +24,7 @@ function kyma::deploy_kyma() {
         case $opt in
             s)
                 kymaSource="$OPTARG"
+                log::info "Kyma Source to install: ${kymaSource}"
                 ;;
             p)
                 if [ -n "$OPTARG" ]; then
