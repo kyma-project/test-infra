@@ -139,15 +139,16 @@ function reconciler::initialize_test_pod() {
 
   # Create reconcile request payload with kubeconfig, domain, and version to the test-pod
   domain="$(kubectl get cm shoot-info -n kube-system -o jsonpath='{.data.domain}')"
-  sed -i "s/example.com/$domain/" ./e2e-test/template.json
 
   # shellcheck disable=SC2086
   kc="$(cat ${KUBECONFIG})"
 
   if [ "$KYMA_UPGRADE_SOURCE" == "main" ]; then
+    sed -i "s/example.com/$domain/" ./e2e-test/template-kyma-main.json
     # shellcheck disable=SC2016
     jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template-kyma-main.json > body.json
   else
+    sed -i "s/example.com/$domain/" ./e2e-test/template-kyma-2-0-x.json
     # shellcheck disable=SC2016
     jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template-kyma-2-0-x.json > body.json
   fi
