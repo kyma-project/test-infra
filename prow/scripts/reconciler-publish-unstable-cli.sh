@@ -21,6 +21,7 @@ cleanup() {
 
 function testCustomImage() {
     CUSTOM_IMAGE="$1"
+    log::info "Test custom image: ${CUSTOM_IMAGE}"
     IMAGE_EXISTS=$(gcloud compute images list --filter "name:${CUSTOM_IMAGE}" | tail -n +2 | awk '{print $1}')
     if [[ -z "$IMAGE_EXISTS" ]]; then
         log::error "${CUSTOM_IMAGE} is invalid, it is not available in GCP images list, the script will terminate ..." && exit 1
@@ -32,16 +33,19 @@ cd "${KYMA_PROJECT_DIR}/cli"
 log::info "Bump reconciler version used by the Kyma CLI"
 go get github.com/kyma-incubator/reconciler
 
-log::info "Building Kyma CLI"
 make resolve
+log::info "Run unit-tests for kyma kyma"
 make test
+log::info "Building Kyma CLI"
 make build-linux
 
+log::info "Committing reconciler bump"
 git_status=$(git status --porcelain)
 if [[ "${git_status}" != "" ]]; then
   git commit -am 'bump reconciler version'
 fi
 
+log::info "GCP Authentication"
 gcp::authenticate \
     -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
@@ -53,6 +57,13 @@ if [[ -z "${PULL_NUMBER}" ]]; then
 else
     LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=cli-integration")
 fi
+
+label_log="Labels for gcloud: "
+for label in "${LABELS[@]}"
+do
+  label_log="${label_log} ${label}"
+done
+log::info "${label_log}"
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]
