@@ -19,7 +19,7 @@ replace (
 require (
 	cloud.google.com/go/bigquery v1.26.0
 	cloud.google.com/go/firestore v1.6.1
-	cloud.google.com/go/functions v1.0.0
+	cloud.google.com/go/functions v1.1.0
 	cloud.google.com/go/logging v1.4.2
 	cloud.google.com/go/pubsub v1.17.1
 	cloud.google.com/go/storage v1.19.0
@@ -51,7 +51,7 @@ require (
 	github.com/spf13/cobra v1.3.0
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.7.0
-	github.com/tidwall/gjson v1.13.0
+	github.com/tidwall/gjson v1.14.0
 	github.com/vrischmann/envconfig v1.3.0
 	go.uber.org/zap v1.19.0
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
