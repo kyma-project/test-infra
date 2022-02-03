@@ -24,7 +24,7 @@ func TestReconcilerJobsPresubmitE2E(t *testing.T) {
 	assert.Equal(t, []string{"^master$", "^main$"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
-	assert.False(t, actualPresubmit.Optional)
+	assert.True(t, actualPresubmit.Optional)
 	assert.False(t, actualPresubmit.AlwaysRun)
 	assert.Equal(t, actualPresubmit.RunIfChanged, "^resources/kcp/values.yaml|^resources/kcp/charts/mothership-reconciler/|^resources/kcp/charts/component-reconcilers/")
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "main")
