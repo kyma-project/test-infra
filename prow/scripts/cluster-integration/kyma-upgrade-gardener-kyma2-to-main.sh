@@ -104,7 +104,8 @@ gardener::provision_cluster
 
 log::info "### Installing Kyma $KYMA_SOURCE"
 
-kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$KYMA_SOURCES_DIR" -u "true"
+kyma2_install_dir="$KYMA_SOURCES_DIR/kyma2"
+kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kyma2_install_dir" -u "true"
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
@@ -116,7 +117,8 @@ gardener::pre_upgrade_test_fast_integration_kyma
 export KYMA_SOURCE="main"
 log::info "### Installing Kyma $KYMA_SOURCE"
 
-kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$KYMA_SOURCES_DIR" -u "true"
+kymaMain_install_dir="$KYMA_SOURCES_DIR/kymaMain"
+kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kymaMain_install_dir" -u "true"
 
 
 log::info "### Run post-upgrade tests"
