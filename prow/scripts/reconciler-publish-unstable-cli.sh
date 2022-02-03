@@ -21,6 +21,7 @@ cleanup() {
 
 function testCustomImage() {
     CUSTOM_IMAGE="$1"
+    log::info "Test custom image: ${CUSTOM_IMAGE}"
     IMAGE_EXISTS=$(gcloud compute images list --filter "name:${CUSTOM_IMAGE}" | tail -n +2 | awk '{print $1}')
     if [[ -z "$IMAGE_EXISTS" ]]; then
         log::error "${CUSTOM_IMAGE} is invalid, it is not available in GCP images list, the script will terminate ..." && exit 1
@@ -37,11 +38,13 @@ make resolve
 make test
 make build-linux
 
+log::info "Committing reconciler bump"
 git_status=$(git status --porcelain)
 if [[ "${git_status}" != "" ]]; then
   git commit -am 'bump reconciler version'
 fi
 
+log::info "GCP Authentication"
 gcp::authenticate \
     -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
@@ -53,6 +56,8 @@ if [[ -z "${PULL_NUMBER}" ]]; then
 else
     LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=cli-integration")
 fi
+# shellcheck disable=SC2128
+log::info "Labels for gcloud: ${LABELS}"
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]
