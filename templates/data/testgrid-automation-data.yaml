@@ -4,7 +4,7 @@ templates:
       - to: ../prow/jobs/test-infra/testgrid-automation.yaml
         localSets:
           jobConfig_default:
-            image: "gcr.io/k8s-prow/transfigure:v20220202-1256a81e66"
+            image: "gcr.io/k8s-prow/transfigure:v20220203-ad9c38e2b5"
             run_if_changed: '^(prow/jobs/.*\.yaml)|(prow/testgrid-default\.yaml)$'
             command: "/transfigure.sh"
             privileged: "false"
