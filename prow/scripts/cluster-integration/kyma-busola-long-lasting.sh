@@ -126,6 +126,11 @@ function provisionKyma2(){
     set +x
 }
 
+function provisionBusolaE2ECleaner(){
+    log::info "Installing Busola on the cluster: ${DOMAIN_NAME}"
+    kubectl apply -f "${BUSOLA_SOURCES_DIR}/tests/busola-e2e-cleaner.yaml"
+}
+
 function undeployKyma(){
     export DOMAIN_NAME=$1
 
@@ -231,6 +236,9 @@ if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
     fi
 
     provisionKyma2 "main" "${KYMA_COMMON_NAME}"
+
+    provisionBusolaE2ECleaner
+
     if [[ $EXECUTE_FAST_INTEGRATION_TESTS == "true" ]]; then
         kubectl get pods --all-namespaces
         log::info "Starting fast integration tests"
