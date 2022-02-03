@@ -33,9 +33,10 @@ cd "${KYMA_PROJECT_DIR}/cli"
 log::info "Bump reconciler version used by the Kyma CLI"
 go get github.com/kyma-incubator/reconciler
 
-log::info "Building Kyma CLI"
 make resolve
+log::info "Run unit-tests for kyma kyma"
 make test
+log::info "Building Kyma CLI"
 make build-linux
 
 log::info "Committing reconciler bump"
@@ -56,8 +57,13 @@ if [[ -z "${PULL_NUMBER}" ]]; then
 else
     LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=cli-integration")
 fi
-# shellcheck disable=SC2128
-log::info "Labels for gcloud: ${LABELS}"
+
+label_log="Labels for gcloud: "
+for label in "${LABELS[@]}"
+do
+  label_log="${label_log} ${label}"
+done
+log::info "${label_log}"
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]
