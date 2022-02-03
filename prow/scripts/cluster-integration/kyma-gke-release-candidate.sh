@@ -254,6 +254,9 @@ kyma::install_cli
 log::info "Install kyma"
 installKyma
 
+log::info "create cluster-admin binding for kyma_developers@sap.com"
+kubectl create clusterrolebinding kyma_developers --clusterrole cluster-admin --group kyma_developers@sap.com
+
 log::info "Collect list of images"
 if [ -z "$ARTIFACTS" ] ; then
     ARTIFACTS=/tmp/artifacts
