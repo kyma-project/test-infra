@@ -121,6 +121,9 @@ done || exit 1
 
 trap cleanup exit INT
 
+log::info "Wait for 5sec, to let VM start correctly"
+sleep 5s
+log:info "Creat bin directory on VM"
 gcloud compute ssh \
   --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" \
   --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" \
