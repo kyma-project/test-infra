@@ -170,7 +170,7 @@ default:
       description: Categorizes issue or PR as related to a consistently or frequently failing test.
       name: kind/failing-test
       previously:
-        - test-missing
+        - test-failing
       target: both
       prowPlugin: label
       addedBy: anyone
@@ -178,7 +178,7 @@ default:
       description: Categorizes issue or PR as related to missing automated tests for scenario.
       name: kind/missing-test
       previously:
-        - test-failing
+        - test-missing
       target: both
       prowPlugin: label
       addedBy: anyone
