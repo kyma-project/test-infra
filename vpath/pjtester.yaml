@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "kyma-upgrade-gardener-kyma-to-kyma2"
+  - pjName: "kyma-upgrade-gardener-kyma2-to-main"
+prConfigs:
+  kyma-project:
+    test-infra:
+      prNumber:
