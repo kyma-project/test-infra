@@ -101,7 +101,7 @@ else
         export KYMA_SOURCE
     else
         # periodic job, so default to main
-        KYMA_SOURCE="source"
+        KYMA_SOURCE="local"
         export KYMA_SOURCE
     fi
 fi
