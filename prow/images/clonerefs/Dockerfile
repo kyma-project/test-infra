@@ -1,4 +1,4 @@
-FROM gcr.io/k8s-prow/clonerefs:v20220201-09a8a0acae
+FROM gcr.io/k8s-prow/clonerefs:v20220202-1256a81e66
 
 # Commit details
 
