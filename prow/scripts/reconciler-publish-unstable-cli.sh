@@ -121,7 +121,6 @@ done || exit 1
 trap cleanup exit INT
 
 retries=15
-log::info "Create bin directory on VM"
 while ! gcloud compute ssh \
           --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" \
           --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" \
@@ -133,10 +132,10 @@ do
     if [[ "$retries" == 0 ]]; then
       exit 1
     fi
-    echo "Waiting until SSL server is reachable; Retires left: ${retries}"
+    echo "Waiting until SSL server is reachable; Retries left: ${retries}"
     sleep 20
 done
-
+log::info "Created bin directory on VM"
 
 log::info "Copying Kyma CLI to the instance"
 #shellcheck disable=SC2088
