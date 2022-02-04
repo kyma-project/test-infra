@@ -63,7 +63,7 @@ function provision_pg() {
   popd
   echo $(which migrate)
 
-  sudo apt-get install -y postgresql-client-9.6
+  sudo apt-get install -y postgresql-client-11
 
   pushd $RECONCILER_DIR
   ./scripts/postgres.sh start
