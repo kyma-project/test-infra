@@ -101,7 +101,7 @@ var tests = []struct {
 			jobsuite.JobFileSuffix("tests-generic"),
 		},
 	},
-	{path: "serverless-bench", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
+	{path: "serverless-bench", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 		},
