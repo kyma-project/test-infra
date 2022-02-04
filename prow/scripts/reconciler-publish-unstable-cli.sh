@@ -120,15 +120,23 @@ done || exit 1
 
 trap cleanup exit INT
 
-log::info "Wait for 30sec, to let VM start correctly"
-sleep 30s
+retries=15
 log::info "Create bin directory on VM"
-gcloud compute ssh \
-  --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" \
-  --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" \
-  --quiet --zone="${ZONE}" \
-  "cli-integration-test-${RANDOM_ID}" \
-  --command="mkdir \$HOME/bin"
+while ! gcloud compute ssh \
+          --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" \
+          --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" \
+          --quiet --zone="${ZONE}" \
+          "cli-integration-test-${RANDOM_ID}" \
+          --command="mkdir \$HOME/bin"
+do
+    retries=$((retries-1))
+    if [[ "$retries" == 0 ]]; then
+      exit 1
+    fi
+    echo "Waiting until SSL server is reachable; Retires left: ${retries}"
+    sleep 20
+done
+
 
 log::info "Copying Kyma CLI to the instance"
 #shellcheck disable=SC2088
