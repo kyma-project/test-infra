@@ -132,7 +132,7 @@ do
     if [[ "$retries" == 0 ]]; then
       exit 1
     fi
-    echo "Waiting until SSL server is reachable; Retries left: ${retries}"
+    echo "Waiting until SSH server is reachable; Retries left: ${retries}"
     sleep 20
 done
 log::info "Created bin directory on VM"
