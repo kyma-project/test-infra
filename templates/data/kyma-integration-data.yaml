@@ -383,6 +383,13 @@ templates:
               pipeline.test: Serverless function metrics
             labels:
               preset-sa-gke-kyma-integration: "true"
+          serverless_benchmarks_template:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-benchmarks-nightly.sh"
+            annotations:
+              pipeline.trigger: nightly
+              pipeline.test: Serverless function benchmarks
+            labels:
+              preset-sa-gke-kyma-integration: "true"
         jobConfigs:
           - repoName: kyma-project/kyma
             jobs:
@@ -495,7 +502,30 @@ templates:
                     - "request_small"
                     - "vm_job_template_serverless_k3s"
                     - "vm_job_labels_template"
-
+              - jobConfig:
+                  name: "serverless-function-benchmark"
+                  cron: "0 1,13 * * *" # twice a day
+                  annotations:
+                    description: Serverless function runtime benchmarks
+                    pipeline.platform: gke
+                  labels:
+                    preset-gc-compute-envs: "true"
+                    preset-gc-project-env: "true"
+                  env:
+                    PROVISION_REGIONAL_CLUSTER: "true"
+                    INPUT_CLUSTER_NAME: "nightly"
+                    CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
+                    CLUSTER_PROVIDER: "gcp"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_kyma-integration"
+                    - "extra_refs_kyma"
+                    - "extra_refs_test-infra"
+                    - "kyma_major_version_2"
+                  local:
+                    - "serverless_benchmarks_template"
               - jobConfig:
                   name: "serverless-function-metrics-generator"
                   cron: "0 0,12 * * *" # twice a day, midnight and noon, everyday
@@ -561,22 +591,6 @@ templates:
                     - "jobConfig_default"
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
-              # Rapid channel is unstable and the job never succeeds. See https://github.com/kyma-project/test-infra/issues/4063
-              # - jobConfig:
-              #     name: "pre-main-kyma-gke-rapid-integration"
-              #     labels:
-              #       preset-gke-rapid: "true"
-              #   inheritedConfigs:
-              #     global:
-              #       - "jobConfig_default"
-              #       - "jobConfig_presubmit"
-              #       - "image_kyma-integration"
-              #       - "extra_refs_test-infra"
-              #     local:
-              #       - "jobConfig_default"
-              #       - "request_big"
-              #       - "gke_job_template"
-              #       - "gke_job_labels_template"
 
               # postsubmits
               - jobConfig:
@@ -687,27 +701,6 @@ templates:
                     - "jobConfig_default"
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
-              # Rapid channel is unstable and the job never succeeds. See https://github.com/kyma-project/test-infra/issues/4063
-              # - jobConfig:
-              #     name: "post-main-kyma-gke-rapid-integration"
-              #     skip_report: true
-              #     labels:
-              #       preset-log-collector-slack-token: "true"
-              #       preset-build-main: "true"
-              #       preset-gke-rapid: "true"
-              #   inheritedConfigs:
-              #     global:
-              #       - "jobConfig_default"
-              #       - "jobConfig_postsubmit"
-              #       - "image_kyma-integration"
-              #       - "extra_refs_test-infra"
-              #       - "disable_testgrid"
-              #     local:
-              #       - "jobConfig_default"
-              #       - "request_big"
-              #       - "gke_job_template"
-              #       - "gke_job_labels_template"
-
               # periodics
 
               - jobConfig:

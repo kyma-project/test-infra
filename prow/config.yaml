@@ -20,10 +20,10 @@ plank:
       timeout: 3h
       grace_period: 10m
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20220121-bb77a9cb93
-        initupload: gcr.io/k8s-prow/initupload:v20220121-bb77a9cb93
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20220121-bb77a9cb93
-        sidecar: gcr.io/k8s-prow/sidecar:v20220121-bb77a9cb93
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20220204-015a65c3fe
+        initupload: gcr.io/k8s-prow/initupload:v20220204-015a65c3fe
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20220204-015a65c3fe
+        sidecar: gcr.io/k8s-prow/sidecar:v20220204-015a65c3fe
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -107,6 +107,11 @@ branch-protection:
       exclude:
         - "^dependabot/"
       repos:
+        test-infra:
+          required_pull_request_reviews:
+            dismiss_stale_reviews: false
+            require_code_owner_reviews: false
+            required_approving_review_count: 0
         kyma:
           branches:
             kyma-2.0-docu:
@@ -249,7 +254,6 @@ tide:
         - do-not-merge/missing-docs-review
       repos:
         - kyma-project/test-infra
-      reviewApprovedRequired: true
     - labels:
         - lgtm
       missingLabels:
@@ -293,9 +297,9 @@ presets:
       preset-cluster-version: "true"
     env:
       - name: AKS_CLUSTER_VERSION
-        value: "1.19"
+        value: "1.20"
       - name: GKE_CLUSTER_VERSION
-        value: "1.19"
+        value: "1.20"
       - name: GARDENER_CLUSTER_VERSION
         value: "1.20"
   # test clusters log collector
@@ -335,11 +339,6 @@ presets:
         value: master
       - name: DOCKER_PUSH_DIRECTORY
         value: ""
-  - labels:
-      preset-gke-rapid: "true"
-    env:
-      - name: GKE_RELEASE_CHANNEL
-        value: rapid
   - labels:
       preset-sa-prow-job-resource-cleaner: "true"
     env:
@@ -754,8 +753,8 @@ presets:
     env:
       - name: KYMA_CLI_UNSTABLE_BUCKET
         value: gs://kyma-cli-unstable
-      - name: STABLE
-        value: "false"
+      - name: UNSTABLE
+        value: "true"
   - labels:
       preset-stability-checker-slack-notifications: "true"
     env:

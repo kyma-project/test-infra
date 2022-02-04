@@ -55,6 +55,12 @@ templates:
               preset-kyma-integration-central-app-connectivity-enabled: "true"
               preset-kyma-integration-subaccounnt: "true"
               preset-kyma-integration-kcp-client-credentials: "true"
+          command_upgrade_eventing:
+            annotations:
+              pipeline.installer: kyma deploy
+              pipeline.test: "fast-integration"
+              pipeline.clusterprovisioning: kyma cli
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing-upgrade.sh"
           command_busola_long_lasting:
             annotations:
               pipeline.installer: kyma deploy
@@ -322,6 +328,36 @@ templates:
                     - jobConfig_presubmit
                     - skr_aws_job_eventing
                     - command_integration_skr_eventing
+              - jobConfig:
+                  name: pre-main-kyma-gardener-gcp-eventing-upgrade
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  run_if_changed: "^((tests/fast-integration\\S+|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  labels:
+                    preset-bot-github-token: "true"
+                  env:
+                    EXECUTION_PROFILE: "evaluation"
+                  volumes:
+                    - name: kyma-tunas-prow-event-mesh
+                      secretName: kyma-tunas-prow-event-mesh
+                  volumeMounts:
+                    - name: kyma-tunas-prow-event-mesh
+                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
+                      readOnly: true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_kyma-integration
+                    - kyma_major_version_2
+                  local:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - gardener_gcp_job_eventing
+                    - command_upgrade_eventing
+
 
               # periodics
               - jobConfig:

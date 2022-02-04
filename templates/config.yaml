@@ -19,11 +19,15 @@ globalSets:
   kyma_major_version_2:
     env:
       KYMA_MAJOR_VERSION: 2
+  # Directory sets
+  kyma_project_dir:
+    env:
+      KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220120-68ec423a"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220203-ed623e2b"
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
   image_buildpack-node:
@@ -35,7 +39,7 @@ globalSets:
   image_buildpack-golang-toolbox:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
   image_wssagent:
-    image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220119-1068cea8"
+    image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220201-cb1ea3fa"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
@@ -216,3 +220,6 @@ templates:
   - from: templates/testgrid-default.yaml
     render:
       - to: ../prow/testgrid-default.yaml
+  - from : templates/test-infra-autobump-config.yaml
+    render:
+      - to: ../prow/autobump-config/test-infra-autobump-config.yaml

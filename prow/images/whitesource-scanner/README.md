@@ -4,7 +4,7 @@
 
 This folder contains the WhiteSource Unified Agent image that is based on the Java Buildpack image. Use it to perform WhiteSource vulnerability scans.
 
-The image contains `whitesource agent v19.6.1`.
+The image contains `whitesource agent v22.1.1.1`.
 
 ## Installation
 
