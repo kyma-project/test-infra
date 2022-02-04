@@ -51,7 +51,15 @@ function run_tests() {
   popd
 }
 
+function provision_pg() {
+  echo "Provisioning Postgres"
+  pushd "${RECONCILER_DIR}"
+  ./scripts/postgres.sh start
+  popd
+}
+
 prereq_test
 install_cli
 provision_k3d
+provision_pg
 run_tests
