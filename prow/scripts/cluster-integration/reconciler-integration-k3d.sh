@@ -3,8 +3,14 @@
 set -o errexit
 set -o pipefail
 
+KYMA_PROJECT_DIR="/home/prow/go/src/github.com/kyma-project"
+
 readonly RECONCILER_DIR="./reconciler"
 readonly GO_VERSION=1.17.5
+readonly PG_MIGRATE_VERSION=v4.15.1
+readonly INSTALL_DIR="/usr/local/bin"
+#shellcheck source=prow/scripts/lib/kyma.sh
+source "$KYMA_PROJECT_DIR/test-infra/prow/scripts/lib/kyma.sh"
 
 function prereq_test() {
   command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
@@ -54,12 +60,14 @@ function run_tests() {
 function provision_pg() {
   echo "Provisioning Postgres"
   pushd "${RECONCILER_DIR}"
+  curl -L https://github.com/golang-migrate/migrate/releases/download/${PG_MIGRATE_VERSION}/migrate.linux-amd64.tar.gz | tar xv
+  chmod +x migrate
   ./scripts/postgres.sh start
   popd
 }
 
 prereq_test
-install_cli
+kyma:install_cli
 provision_k3d
 provision_pg
 run_tests
