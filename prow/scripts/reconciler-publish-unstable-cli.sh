@@ -93,7 +93,6 @@ do
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-
 if [[ -z "$IMAGE" ]]; then
     log::info "Provisioning vm using the latest default custom image ..."
     IMAGE=$(gcloud compute images list --sort-by "~creationTimestamp" \
@@ -121,12 +120,22 @@ done || exit 1
 
 trap cleanup exit INT
 
-gcloud compute ssh \
-  --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" \
-  --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" \
-  --quiet --zone="${ZONE}" \
-  "cli-integration-test-${RANDOM_ID}" \
-  --command="mkdir \$HOME/bin"
+retries=15
+while ! gcloud compute ssh \
+          --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" \
+          --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" \
+          --quiet --zone="${ZONE}" \
+          "cli-integration-test-${RANDOM_ID}" \
+          --command="mkdir \$HOME/bin"
+do
+    retries=$((retries-1))
+    if [[ "$retries" == 0 ]]; then
+      exit 1
+    fi
+    echo "Waiting until SSH server is reachable; Retries left: ${retries}"
+    sleep 20
+done
+log::info "Created bin directory on VM"
 
 log::info "Copying Kyma CLI to the instance"
 #shellcheck disable=SC2088
