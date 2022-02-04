@@ -61,7 +61,7 @@ function provision_pg() {
   curl -L https://github.com/golang-migrate/migrate/releases/download/${PG_MIGRATE_VERSION}/migrate.linux-amd64.tar.gz | tar xvz
   chmod +x migrate
   popd
-  echo $(which migrate)
+  which migrate
 
   sudo apt-get install -y postgresql-client-11
 
