@@ -4,6 +4,7 @@ set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
+export KYMA_DIR="${KYMA_PROJECT_DIR}/kyma"
 
 export TEST_NAMESPACE="serverless-benchmarks"
 export ALL_FUNCTIONS=(nodejs14-xs nodejs14-s nodejs14-m nodejs14-l nodejs14-xl python39-s python39-m python39-l python39-xl)
@@ -79,7 +80,7 @@ function connect_to_cluster() {
 function run_serverless_test_function() {
     log::info "Deploying test functions"
     kubectl -n "${TEST_NAMESPACE}" apply -f \
-        "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/fixtures/functions/"
+        "${KYMA_DIR}/tests/serverless-bench/fixtures/functions/"
 
     log::info "Waiting for test functions to be Running"
     for FUNCTION in "${ALL_FUNCTIONS[@]}"; do
@@ -92,7 +93,7 @@ function run_serverless_test_function() {
 function collect_benchmark_results() {
     log::info "Running benchmarks and collecting results"
     kubectl -n "${TEST_NAMESPACE}" apply -f \
-        "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/fixtures/serverless-benchmark-job.yaml"
+        "${KYMA_DIR}/tests/serverless-bench/fixtures/serverless-benchmark-job.yaml"
     kubectl -n "${TEST_NAMESPACE}" wait job/serverless-benchmark \
         --for=condition=Complete=True --timeout=20m
     kubectl -n "${TEST_NAMESPACE}" logs -l jobName=serverless-benchmark --tail=-1
