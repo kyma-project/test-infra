@@ -63,6 +63,8 @@ function provision_pg() {
   popd
   echo $(which migrate)
 
+  sudo apt-get install -y postgresql-client-11
+
   pushd $RECONCILER_DIR
   ./scripts/postgres.sh start
   popd
@@ -71,6 +73,6 @@ function provision_pg() {
 prereq_test
 create_local_bin
 install_cli
-provision_k3d
 provision_pg
+provision_k3d
 run_tests
