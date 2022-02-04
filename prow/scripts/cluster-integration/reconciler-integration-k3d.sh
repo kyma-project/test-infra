@@ -58,7 +58,7 @@ function run_tests() {
 function provision_pg() {
   echo "Provisioning Postgres"
   pushd $INSTALL_DIR
-  curl -L https://github.com/golang-migrate/migrate/releases/download/${PG_MIGRATE_VERSION}/migrate.linux-amd64.tar.gz | tar xv
+  curl -L https://github.com/golang-migrate/migrate/releases/download/${PG_MIGRATE_VERSION}/migrate.linux-amd64.tar.gz | tar xvz
   chmod +x migrate
   popd
   echo $(which migrate)
