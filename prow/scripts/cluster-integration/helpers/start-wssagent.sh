@@ -17,8 +17,8 @@ export TEST_INFRA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/test-in
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 
 # whitesource config
-GO_CONFIG_PATH="/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/whitesource-scanner/go-wss-unified-agent.config"
-JAVASCRIPT_CONFIG_PATH="/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/whitesource-scanner/javascript-wss-unified-agent.config"
+GO_CONFIG_PATH="$TEST_INFRA_SOURCES_DIR/prow/images/whitesource-scanner/go-wss-unified-agent.config"
+JAVASCRIPT_CONFIG_PATH="$TEST_INFRA_SOURCES_DIR/prow/images/whitesource-scanner/javascript-wss-unified-agent.config"
 
 # authenticate gcloud client
 gcp::authenticate \
@@ -79,8 +79,10 @@ golang-mod)
   go version
   CONFIG_PATH=$GO_CONFIG_PATH
   export GO111MODULE=on
-  sed -i.bak "s|go.dependencyManager=|go.dependencyManager=modules|g" $CONFIG_PATH
-  sed -i.bak "s|go.collectDependenciesAtRuntime=true|go.collectDependenciesAtRuntime=false|g" $CONFIG_PATH
+  sed -i.bak "s|go.dependencyManager=|#go.dependencyManager=|g" $CONFIG_PATH
+  sed -i.bak "s|go.collectDependenciesAtRuntime=true|#go.collectDependenciesAtRuntime=true|g" $CONFIG_PATH
+  sed -i.bak "s|go.resolveDependencies=true|go.modules.resolveDependencies=true|g" $CONFIG_PATH
+  sed -i.bak "s|go.ignoreSourceFiles=true|go.modules.ignoreSourceFiles=true|g" $CONFIG_PATH
   sed -i.bak '/^excludes=/d' $CONFIG_PATH
   echo "scanComment=$(date)" >> $CONFIG_PATH
   # exclude godep based folders
