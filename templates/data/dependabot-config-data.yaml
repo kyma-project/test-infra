@@ -13,7 +13,7 @@ templates:
               - "skip-review"
               - "area/dependency"
             ignore:
-              - dependencyName: "logr"
+              - dependencyName: "github.com/go-logr/logr"
                 versions:
                   - "1.x"
           dailyDockerEcosystem:
