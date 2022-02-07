@@ -19,5 +19,23 @@ updates:
       {{- if .JobConfig.commitIncludeScope }}
       include: "scope"
       {{- end }}
+    {{- if .JobConfig.ignore }}
+    ignore:
+    {{- range .JobConfig.ignore }}
+      - dependency-name: {{ .dependencyName | quote }}
+        {{- if .versions }}
+        versions:
+        {{- range .versions }}
+          - {{ . | quote }}
+        {{- end }}
+        {{- end }}
+        {{- if .updateTypes }}
+        update-types:
+        {{- range .updateTypes }}
+          - {{ . | quote }}
+        {{- end }}
+        {{- end }}
+    {{- end }}
+    {{- end }}
 {{- end }}
 {{ end }}
