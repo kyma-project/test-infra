@@ -5,6 +5,8 @@ set -o pipefail
 
 readonly RECONCILER_DIR="./reconciler"
 readonly GO_VERSION=1.17.5
+readonly PG_MIGRATE_VERSION=v4.15.1
+readonly INSTALL_DIR="/usr/local/bin"
 
 function prereq_test() {
   command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
@@ -15,11 +17,13 @@ function prereq_test() {
   command -v k3d >/dev/null 2>&1 || { echo >&2 "k3d not found"; exit 1; }
 }
 
-function install_cli() {
-  local install_dir
-  declare -r install_dir="/usr/local/bin"
-  mkdir -p "$install_dir"
+function create_local_bin() {
+    echo "Create local bin folder"
+    mkdir -p $INSTALL_DIR
+    export PATH=$PATH:$INSTALL_DIR
+}
 
+function install_cli() {
   local os
   os="$(uname -s | tr '[:upper:]' '[:lower:]')"
   if [[ -z "$os" || ! "$os" =~ ^(darwin|linux)$ ]]; then
@@ -29,7 +33,7 @@ function install_cli() {
     readonly os
   fi
 
-  pushd "$install_dir" || exit
+  pushd $INSTALL_DIR || exit
   curl -Lo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}"
   chmod +x kyma
   popd
@@ -51,7 +55,23 @@ function run_tests() {
   popd
 }
 
+function provision_pg() {
+  echo "Provisioning Postgres"
+  pushd $INSTALL_DIR
+  curl -L https://github.com/golang-migrate/migrate/releases/download/${PG_MIGRATE_VERSION}/migrate.linux-amd64.tar.gz | tar xvz
+  chmod +x migrate
+  popd
+
+  sudo apt-get install -y postgresql-client-11
+
+  pushd $RECONCILER_DIR
+  ./scripts/postgres.sh start
+  popd
+}
+
 prereq_test
+create_local_bin
 install_cli
+provision_pg
 provision_k3d
 run_tests
