@@ -87,7 +87,7 @@ golang-mod)
   echo "scanComment=$(date)" >> $CONFIG_PATH
   # exclude godep based folders
   filterFolders gopkg.toml "${KYMA_SRC}" >>${CONFIG_PATH}
-  prepareDependencies go.mod "${KYMA_SRC}"
+  # prepareDependencies go.mod "${KYMA_SRC}"
   ;;
 
 javascript)
