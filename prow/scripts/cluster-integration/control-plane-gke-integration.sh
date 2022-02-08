@@ -166,7 +166,6 @@ function createCluster() {
 
 function applyKymaOverrides() {
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-resource-tests-overrides" \
-    --data "application-operator.tests.enabled=false" \
     --data "tests.application_connector_tests.enabled=false" \
     --data "application-registry.tests.enabled=false" \
     --data "test.acceptance.service-catalog.enabled=false" \
