@@ -6,8 +6,6 @@ slackBotTokenSecretEnabled: false
 global:
   # Slack connector application name.
   appName: "mp-sap-slack-connector"
-  # Slack connector application name. Must match name from Application resource.
-  slackKymaAppName: "mp-sap-slack-connector"
   # Slack connector API ID
   apiId: "2906b647-0dfe-4bf0-98e8-1c50d0348550"
   # Slack application plan base name

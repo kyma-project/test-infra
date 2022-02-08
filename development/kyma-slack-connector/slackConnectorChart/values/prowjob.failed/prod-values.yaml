@@ -1,11 +1,11 @@
 functionEnabled: true
 # Forwarded event type
 eventType: "prowjob.failed.v1"
-#
+# Application name to subscribe on events.
 subscriptionAppName: "pubsub-connector"
-#
+# Service name to send events.
 subscriptionServiceName: "prowjob-failed-v1"
-#
+# Service namespace to send events.
 subscriptionNamespace: "slack-connector"
 # Slack channel name to send messages.
 notificationSlackChannel: "kyma-ci-force"

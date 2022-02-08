@@ -1,11 +1,12 @@
 functionEnabled: true
 # Forwarded event type
 eventType: "oomevent.found.v1"
-#
+# Application name to subscribe on events.
 subscriptionAppName: "pubsub-connector"
-#
+# Service name to send events.
 subscriptionServiceName: "oomevent-found-v1"
-#
+# TODO: change name in all charts to subscriptionServiceNamespace.
+# Service namespace to send events.
 subscriptionNamespace: "slack-connector"
 # Slack channel name to send messages.
 notificationSlackChannel: "kyma-ci-force"
