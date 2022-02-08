@@ -274,9 +274,9 @@ templates:
           reconciler_main_nightly_cluster_input_name:
             env:
               INPUT_CLUSTER_NAME: "rec-main"
-          reconciler_dev_nightly_cluster_input_name:
+          reconciler_develop_nightly_cluster_input_name:
             env:
-              INPUT_CLUSTER_NAME: "rec-dev"
+              INPUT_CLUSTER_NAME: "rec-develop"
           reconciler_publish_unstable_cli_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-unstable-cli.sh"
             annotations:
@@ -518,6 +518,31 @@ templates:
                     - extra_refs_k8s-test-infra
                     - reconciler_image_autobump_jobConfig
                     - github_token_mounts
+              - jobConfig:
+                  name: nightly-develop-reconciler
+                  annotations:
+                    description: Creates and installs reconciler from develop every night.
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  cron: "0 0 * * 1-5" # "At 00:00 on every day-of-week from Monday through Friday"
+                  labels:
+                    preset-log-collector-slack-token: "true"
+                    preset-bot-github-token: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - gardener_gcp_job
+                    - extra_refs_test-infra
+                    - extra_refs_control-plane
+                    - disable_testgrid
+                    - image_kyma-integration
+                    - jobConfig_slack_jellyfish
+                  local:
+                    - reconciler_nightly_cluster_jobConfig
+                    - reconciler_jobConfig_args
+                    - reconciler_develop_nightly_cluster_input_name
               - jobConfig:
                   name: nightly-main-reconciler
                   annotations:
