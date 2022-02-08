@@ -18,7 +18,7 @@ updates:
     ignore:
       - dependency-name: "github.com/go-logr/logr"
         versions:
-          - "1.x"
+          - "1.2.2"
   - package-ecosystem: "docker"
     directory: "/prow/images/prow-tools"
     labels:
