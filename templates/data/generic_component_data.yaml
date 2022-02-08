@@ -1164,7 +1164,7 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/tests/serverless-bench"
                   run_if_changed: "^tests/serverless-bench/|^common/makefiles/"
-                  release_since: "1.24"
+                  release_since: "2.1"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
