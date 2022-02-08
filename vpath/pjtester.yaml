@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "kyma-upgrade-gardener-kyma2-to-main"
+  - pjName: "kyma-upgrade-k3d-kyma2-to-main"
 prConfigs:
   kyma-project:
     kyma:
