@@ -142,9 +142,11 @@ function reconciler::initialize_test_pod() {
      reconciler_image_tag="${reconciler_develop_latest_commit::8}"
      echo "latest image tag: ${reconciler_image_tag}"
      sed -i -e "s/mothership:.\{8\}/mothership:${reconciler_image_tag}/g" ../../resources/kcp/values.yaml
+     sed -i -e "s/component:.\{8\}/component:${reconciler_image_tag}/g" ../../resources/kcp/values.yaml
   fi
   echo "************* Current Reconciler Image To Be Used With ${BRANCH_IDENTIFIER} Branch **************"
   cat < ../../resources/kcp/values.yaml | grep -o 'mothership_reconciler:.*mothership.*'
+  cat < ../../resources/kcp/values.yaml | grep -o 'component_reconciler:.*component.*'
   echo "****************************************************************"
   # Create reconcile request payload with kubeconfig, domain, and version to the test-pod
   domain="$(kubectl get cm shoot-info -n kube-system -o jsonpath='{.data.domain}')"
