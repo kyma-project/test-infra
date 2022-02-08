@@ -137,7 +137,7 @@ function reconciler::initialize_test_pod() {
   # move to reconciler directory
   cd "${CONTROL_PLANE_RECONCILER_DIR}"  || { echo "Failed to change dir to: ${CONTROL_PLANE_RECONCILER_DIR}"; exit 1; }
 
-  if [$BRANCH_IDENTIFIER == "develop"]; then
+  if ["${BRANCH_IDENTIFIER}" == "develop"]; then
      reconciler_develop_latest_commit=$(curl --silent --fail --show-error "https://api.github.com/repos/kyma-incubator/reconciler/commits/develop" \
             | jq '.sha')
      reconciler_image_tag="${reconciler_develop_latest_commit::8}"
