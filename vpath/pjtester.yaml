@@ -1,0 +1,8 @@
+pjNames:
+  - pjName: "kyma-integration-k3d-telemetry"
+  - pjName: "pre-kyma-integration-k3d-telemetry"
+  - pjName: "post-kyma-integration-k3d-telemetry"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 13312
