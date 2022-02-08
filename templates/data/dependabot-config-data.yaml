@@ -12,6 +12,10 @@ templates:
               - "go"
               - "skip-review"
               - "area/dependency"
+            ignore:
+              - dependencyName: "github.com/go-logr/logr"
+                versions:
+                  - "1.x"
           dailyDockerEcosystem:
             packageEcosystem: "docker"
             scheduleInterval: "daily"
