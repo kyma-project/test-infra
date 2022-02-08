@@ -120,7 +120,7 @@ kyma::install_cli() {
 
         echo "--> Install kyma CLI ${os} locally to /tmp/bin"
 
-        if [[ "${KYMA_MAJOR_VERSION}" == "1" ]]; then
+        if [[ -n "${KYMA_MAJOR_VERSION}" && "${KYMA_MAJOR_VERSION}" == "1" ]]; then
           curl -sSLo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/1.24.8/kyma_${os}_x86_64.tar.gz"
           tar xvzf kyma.tar.gz
         else
