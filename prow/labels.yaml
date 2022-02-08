@@ -133,6 +133,8 @@ default:
     - color: 0052cc
       description: Issues or PRs related to dependency changes
       name: area/dependency
+      previously:
+        - name: dependencies
       target: both
       addedBy: label
     - color: 0052cc
@@ -165,3 +167,59 @@ default:
       name: area/ci
       target: both
       addedBy: label
+
+    # kind labels
+    # some of them will replace the current labels across the organizations
+    - color: e11d21
+      description: Categorizes issue or PR as related to a bug.
+      name: kind/bug
+      previously:
+        - name: bug
+      target: both
+      prowPlugin: label
+      addedBy: anyone
+    - color: e11d21
+      description: Categorizes issue or PR as related to a consistently or frequently failing test.
+      name: kind/failing-test
+      previously:
+        - name: test-failing
+      target: both
+      prowPlugin: label
+      addedBy: anyone
+    - color: e11d21
+      description: Categorizes issue or PR as related to missing automated tests for scenario.
+      name: kind/missing-test
+      previously:
+        - name: test-missing
+      target: both
+      prowPlugin: label
+      addedBy: anyone
+    - color: c7def8
+      description: Categorizes issue or PR as related to cleaning up code, process, or technical debt.
+      name: kind/cleanup
+      previously:
+        - name: kind/friction
+        - name: kind/technical-debt
+      target: both
+      prowPlugin: label
+      addedBy: anyone
+    - color: c7def8
+      description: Categorizes issue or PR as related to a new feature.
+      name: kind/feature
+      previously:
+        - name: enhancement
+      target: both
+      prowPlugin: label
+      addedBy: anyone
+    - color: e11d21
+      description: Categorizes issue or PR as related to a feature/enhancement marked for deprecation.
+      name: kind/deprecation
+      target: both
+      prowPlugin: label
+      addedBy: anyone
+    - color: f7c6c7
+      description: Categorizes issue or PR as related to a flaky test.
+      name: kind/flake
+      target: both
+      prowPlugin: label
+      addedBy: anyone
