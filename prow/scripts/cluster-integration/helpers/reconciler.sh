@@ -136,7 +136,14 @@ function reconciler::initialize_test_pod() {
 
   # move to reconciler directory
   cd "${CONTROL_PLANE_RECONCILER_DIR}"  || { echo "Failed to change dir to: ${CONTROL_PLANE_RECONCILER_DIR}"; exit 1; }
-  echo "************* Current Reconciler Image To Be Used **************"
+
+  if [$BRANCH_IDENTIFIER == "develop"]; then
+     reconciler_develop_latest_commit=$(curl --silent --fail --show-error "https://api.github.com/repos/kyma-incubator/reconciler/commits/develop" \
+            | jq '.sha')
+     reconciler_image_tag="${reconciler_develop_latest_commit::8}"
+     sed -i -e "s/mothership:.{8}/mothership:${reconciler_image_tag}/g" ../../resources/kcp/values.yaml
+  fi
+  echo "************* Current Reconciler Image To Be Used With ${BRANCH_IDENTIFIER} Branch**************"
   cat < ../../resources/kcp/values.yaml | grep -o 'mothership_reconciler:.*mothership.*'
   echo "****************************************************************"
   # Create reconcile request payload with kubeconfig, domain, and version to the test-pod

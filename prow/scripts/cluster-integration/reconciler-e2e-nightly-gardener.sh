@@ -53,6 +53,7 @@ requiredVars=(
     GARDENER_KYMA_PROW_PROJECT_NAME
     GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
     INPUT_CLUSTER_NAME
+    BRANCH_IDENTIFIER
 )
 
 utils::check_required_vars "${requiredVars[@]}"

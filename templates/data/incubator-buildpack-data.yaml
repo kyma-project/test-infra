@@ -271,12 +271,14 @@ templates:
               pipeline.installer: reconciler
               pipeline.test: "fast-integration"
               pipeline.clusterprovisioning: reconciler
-          reconciler_main_nightly_cluster_input_name:
+          reconciler_main_identifier:
             env:
               INPUT_CLUSTER_NAME: "rec-main"
-          reconciler_develop_nightly_cluster_input_name:
+              BRANCH_IDENTIFIER: "main"
+          reconciler_develop_identifier:
             env:
               INPUT_CLUSTER_NAME: "rec-develop"
+              BRANCH_IDENTIFIER: "develop"
           reconciler_publish_unstable_cli_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-unstable-cli.sh"
             annotations:
@@ -542,7 +544,7 @@ templates:
                   local:
                     - reconciler_nightly_cluster_jobConfig
                     - reconciler_jobConfig_args
-                    - reconciler_develop_nightly_cluster_input_name
+                    - reconciler_develop_identifier
               - jobConfig:
                   name: nightly-main-reconciler
                   annotations:
@@ -567,7 +569,40 @@ templates:
                   local:
                     - reconciler_nightly_cluster_jobConfig
                     - reconciler_jobConfig_args
-                    - reconciler_main_nightly_cluster_input_name
+                    - reconciler_main_identifier
+              - jobConfig:
+                  name: nightly-develop-reconciler-e2e
+                  annotations:
+                    description: Executes e2e test periodically on nightly cluster for reconciler develop branch.
+                    pipeline.installer: "reconciler"
+                    pipeline.platform: "gcp"
+                    pipeline.test: "fast-integration"
+                    pipeline.trigger: "nightly"
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  cron: "0 3-23/2 * * 1-5" # "At minute 0 past every 2nd hour from 3 through 23 on every day-of-week from Monday through Friday."
+                  labels:
+                    preset-log-collector-slack-token: "true"
+                    preset-bot-github-token: "true"
+                    preset-gardener-gcp-kyma-integration: "true"
+                    preset-cluster-version: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - gardener_gcp_job
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                    - extra_refs_control-plane
+                    - kyma_major_version_2
+                    - disable_testgrid
+                    - image_kyma-integration
+                    - jobConfig_slack_jellyfish
+                  local:
+                    - reconciler_nightly_e2e_jobConfig
+                    - reconciler_jobConfig_args
+                    - reconciler_develop_identifier
               - jobConfig:
                   name: nightly-main-reconciler-e2e
                   annotations:
@@ -600,7 +635,7 @@ templates:
                   local:
                     - reconciler_nightly_e2e_jobConfig
                     - reconciler_jobConfig_args
-                    - reconciler_main_nightly_cluster_input_name
+                    - reconciler_main_identifier
       - to: ../prow/jobs/incubator/octopus/octopus.yaml
         jobConfigs:
           - repoName: kyma-incubator/octopus

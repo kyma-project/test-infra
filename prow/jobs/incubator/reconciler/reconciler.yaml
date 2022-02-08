@@ -631,6 +631,8 @@ periodics: # runs on schedule
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
             env:
+              - name: BRANCH_IDENTIFIER
+                value: "develop"
               - name: GARDENER_REGION
                 value: "europe-west4"
               - name: GARDENER_ZONES
@@ -695,12 +697,85 @@ periodics: # runs on schedule
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
             env:
+              - name: BRANCH_IDENTIFIER
+                value: "main"
               - name: GARDENER_REGION
                 value: "europe-west4"
               - name: GARDENER_ZONES
                 value: "europe-west4-b"
               - name: INPUT_CLUSTER_NAME
                 value: "rec-main"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: nightly-develop-reconciler-e2e
+      annotations:
+        description: "Executes e2e test periodically on nightly cluster for reconciler develop branch."
+        pipeline.installer: "reconciler"
+        pipeline.platform: "gcp"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "nightly"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "nightly-develop-reconciler-e2e"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-bot-github-token: "true"
+        preset-cluster-version: "true"
+        preset-gardener-gcp-kyma-integration: "true"
+        preset-kyma-cli-stable: "true"
+        preset-log-collector-slack-token: "true"
+      cron: "0 3-23/2 * * 1-5"
+      skip_report: false
+      decorate: true
+      decoration_config:
+        grace_period: 600000000000
+        timeout: 14400000000000
+      cluster: untrusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: control-plane
+          path_alias: github.com/kyma-project/control-plane
+          base_ref: main
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      reporter_config:
+        slack:
+          channel: jellyfish-notifications
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
+            env:
+              - name: BRANCH_IDENTIFIER
+                value: "develop"
+              - name: GARDENER_REGION
+                value: "europe-west4"
+              - name: GARDENER_ZONES
+                value: "europe-west4-b"
+              - name: INPUT_CLUSTER_NAME
+                value: "rec-develop"
+              - name: KYMA_MAJOR_VERSION
+                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:
@@ -762,6 +837,8 @@ periodics: # runs on schedule
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
             env:
+              - name: BRANCH_IDENTIFIER
+                value: "main"
               - name: GARDENER_REGION
                 value: "europe-west4"
               - name: GARDENER_ZONES
