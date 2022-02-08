@@ -82,12 +82,10 @@ golang-mod)
   sed -i.bak "s|go.dependencyManager=|#go.dependencyManager=|g" $CONFIG_PATH
   sed -i.bak "s|go.collectDependenciesAtRuntime=true|#go.collectDependenciesAtRuntime=true|g" $CONFIG_PATH
   sed -i.bak "s|go.resolveDependencies=true|go.modules.resolveDependencies=true|g" $CONFIG_PATH
-  sed -i.bak "s|go.ignoreSourceFiles=true|go.modules.ignoreSourceFiles=true|g" $CONFIG_PATH
   sed -i.bak '/^excludes=/d' $CONFIG_PATH
   echo "scanComment=$(date)" >> $CONFIG_PATH
   # exclude godep based folders
   filterFolders gopkg.toml "${KYMA_SRC}" >>${CONFIG_PATH}
-  # prepareDependencies go.mod "${KYMA_SRC}"
   ;;
 
 javascript)
