@@ -141,8 +141,8 @@ function reconciler::initialize_test_pod() {
      reconciler_develop_latest_commit=$(curl --silent --fail --show-error "https://api.github.com/repos/kyma-incubator/reconciler/commits/develop" | jq -r '.sha')
      reconciler_image_tag="${reconciler_develop_latest_commit::8}"
      echo "latest image tag: ${reconciler_image_tag}"
-     sed -i -e "s/mothership:.\{8\}/mothership:${reconciler_image_tag}/g" ../../resources/kcp/values.yaml
-     sed -i -e "s/component:.\{8\}/component:${reconciler_image_tag}/g" ../../resources/kcp/values.yaml
+     sed -i -e "s/mothership:.\\{8\\}/mothership:${reconciler_image_tag}/g" ../../resources/kcp/values.yaml
+     sed -i -e "s/component:.\\{8\\}/component:${reconciler_image_tag}/g" ../../resources/kcp/values.yaml
   fi
   echo "************* Current Reconciler Image To Be Used With ${BRANCH_IDENTIFIER} Branch **************"
   cat < ../../resources/kcp/values.yaml | grep -o 'mothership_reconciler:.*mothership.*'
