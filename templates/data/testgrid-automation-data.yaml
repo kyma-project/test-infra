@@ -13,6 +13,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-test-infra-validate-testgrid-config
+                  optional: true
                   args:
                     - "test"
                     - "prow/config.yaml"
@@ -27,6 +28,7 @@ templates:
                     - "jobConfig_default"
               - jobConfig:
                   name: post-test-infra-upload-testgrid-config
+                  optional: true
                   labels:
                     preset-bot-github-token: "true"
                   args:
