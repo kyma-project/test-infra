@@ -60,7 +60,6 @@ presubmits: # runs on PRs
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^components/central-application-connectivity-validator/|^common/makefiles/'
-      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -105,7 +104,6 @@ presubmits: # runs on PRs
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^components/central-application-connectivity-validator/|^common/makefiles/'
-      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -150,7 +148,6 @@ presubmits: # runs on PRs
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^components/central-application-connectivity-validator/|^common/makefiles/'
-      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -199,7 +196,6 @@ postsubmits: # runs on main
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^components/central-application-connectivity-validator/|^common/makefiles/'
-      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -249,7 +245,6 @@ postsubmits: # runs on main
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^components/central-application-connectivity-validator/|^common/makefiles/'
-      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -298,7 +293,6 @@ postsubmits: # runs on main
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^components/central-application-connectivity-validator/|^common/makefiles/'
-      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -347,7 +341,6 @@ postsubmits: # runs on main
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^components/central-application-connectivity-validator/|^common/makefiles/'
-      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
