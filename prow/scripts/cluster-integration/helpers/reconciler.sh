@@ -136,16 +136,24 @@ function reconciler::initialize_test_pod() {
 
   # move to reconciler directory
   cd "${CONTROL_PLANE_RECONCILER_DIR}"  || { echo "Failed to change dir to: ${CONTROL_PLANE_RECONCILER_DIR}"; exit 1; }
-
+  echo "************* Current Reconciler Image To Be Used **************"
+  cat < ../../resources/kcp/values.yaml | grep -o 'mothership_reconciler:.*mothership.*'
+  echo "****************************************************************"
   # Create reconcile request payload with kubeconfig, domain, and version to the test-pod
   domain="$(kubectl get cm shoot-info -n kube-system -o jsonpath='{.data.domain}')"
-  sed -i "s/example.com/$domain/" ./e2e-test/template.json
 
   # shellcheck disable=SC2086
   kc="$(cat ${KUBECONFIG})"
-  # shellcheck disable=SC2016
-  jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template.json > body.json
 
+  if [ "$KYMA_UPGRADE_SOURCE" == "main" ]; then
+    sed -i "s/example.com/$domain/" ./e2e-test/template-kyma-main.json
+    # shellcheck disable=SC2016
+    jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template-kyma-main.json > body.json
+  else
+    sed -i "s/example.com/$domain/" ./e2e-test/template-kyma-2-0-x.json
+    # shellcheck disable=SC2016
+    jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template-kyma-2-0-x.json > body.json
+  fi
   # Copy the reconcile request payload and kyma reconciliation scripts to the test-pod
   kubectl cp body.json -c test-pod reconciler/test-pod:/tmp
   kubectl cp ./e2e-test/reconcile-kyma.sh -c test-pod reconciler/test-pod:/tmp

@@ -254,6 +254,45 @@ kyma::install_cli
 log::info "Install kyma"
 installKyma
 
+#---
+log::info "create cluster-admin binding for kyma_developers@sap.com"
+kubectl create clusterrolebinding kyma_developers --clusterrole cluster-admin --group kyma_developers@sap.com
+# TODO (@Ressetkk): Move this part as re-usable function if needed
+log::info "generate service account and kubeconfig with cluster-admin rights"
+namespace="default"
+serviceAccount="admin-user"
+server="https://$(gcloud container clusters describe "$COMMON_NAME" --region "$CLOUDSDK_COMPUTE_REGION" | awk '/endpoint:/ {print $2}')"
+kubectl create serviceaccount -n "$namespace" "$serviceAccount"
+kubectl create clusterrolebinding $serviceAccount --clusterrole cluster-admin --serviceaccount="$namespace:$serviceAccount"
+
+secretName="$(kubectl -n "$namespace" get serviceAccount "$serviceAccount" -o jsonpath='{.secrets[0].name}')"
+ca="$(kubectl -n "$namespace" get "secret/$secretName" -o jsonpath='{.data.ca\.crt}')"
+token="$(kubectl -n "$namespace" get "secret/$secretName" -o jsonpath='{.data.token}' | base64 --decode)"
+
+echo "---
+apiVersion: v1
+kind: Config
+clusters:
+  - name: default
+    cluster:
+      certificate-authority-data: ${ca}
+      server: ${server}
+contexts:
+  - name: default
+    context:
+      cluster: default
+      namespace: default
+      user: ${serviceAccount}
+users:
+  - name: ${serviceAccount}
+    user:
+      token: ${token}
+current-context: default
+" > kubeconfig
+
+kubectl create secret -n $namespace generic "$serviceAccount-kubeconfig" --from-file=kubeconfig
+#---
+
 log::info "Collect list of images"
 if [ -z "$ARTIFACTS" ] ; then
     ARTIFACTS=/tmp/artifacts

@@ -5,11 +5,13 @@ import (
 	"encoding/gob"
 	"flag"
 	"fmt"
+	"io/fs"
 	"io/ioutil"
 	"log"
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 	"text/template"
 
 	"github.com/Masterminds/sprig"
@@ -70,32 +72,30 @@ func main() {
 
 	dataFilesDir := filepath.Join(filepath.Dir(*configFilePath), "data")
 	// read all template data from data files
-	dataFiles, err := ioutil.ReadDir(dataFilesDir)
+	var dataFiles []string
+	err = filepath.Walk(dataFilesDir, getFileWalkFunc(dataFilesDir, &dataFiles))
 	if err != nil {
 		log.Fatalf("Cannot read data file directory: %s", err)
 	}
 
 	var dataFilesTemplates []*rt.TemplateConfig
 	for _, dataFile := range dataFiles {
-		if !dataFile.IsDir() {
-			var dataFileConfig rt.Config
-			var cfg bytes.Buffer
-			// load datafile as template
-			t, err := loadTemplate(dataFilesDir, dataFile.Name())
-			if err != nil {
-				log.Fatalf("Could not load data file %s: %v", dataFile.Name(), err)
-			}
-			// execute rendering the datafile from template and store it in-memory
-			// at this point the config has all the global values from config.yaml file
-			if err := t.Execute(&cfg, config); err != nil {
-				log.Fatalf("Cannot render data template: %v", err)
-			}
-			if err := yaml.Unmarshal(cfg.Bytes(), &dataFileConfig); err != nil {
-				log.Fatalf("Cannot parse data file yaml: %s\n", err)
-			}
-			dataFilesTemplates = append(dataFilesTemplates, dataFileConfig.Templates...)
+		var dataFileConfig rt.Config
+		var cfg bytes.Buffer
+		// load datafile as template
+		t, err := loadTemplate(dataFilesDir, dataFile)
+		if err != nil {
+			log.Fatalf("Could not load data file %s: %v", dataFile, err)
 		}
-
+		// execute rendering the datafile from template and store it in-memory
+		// at this point the config has all the global values from config.yaml file
+		if err := t.Execute(&cfg, config); err != nil {
+			log.Fatalf("Cannot render data template: %v", err)
+		}
+		if err := yaml.Unmarshal(cfg.Bytes(), &dataFileConfig); err != nil {
+			log.Fatalf("Cannot parse data file yaml: %s\n", err)
+		}
+		dataFilesTemplates = append(dataFilesTemplates, dataFileConfig.Templates...)
 	}
 
 	//append all generated configs from datafiles to the list of templates to generate jobs from
@@ -108,6 +108,33 @@ func main() {
 		if err != nil {
 			log.Fatalf("Cannot render template %s: %s", templateConfig.From, err)
 		}
+	}
+}
+
+// getFileWalkFunc returns walk function that will recursively find YAML files and will return list of these files
+func getFileWalkFunc(dataFilesDir string, dataFiles *[]string) filepath.WalkFunc {
+	return func(path string, info fs.FileInfo, err error) error {
+		//pass the error further, this shouldn't ever happen
+		if err != nil {
+			return err
+		}
+
+		// skip directory entries, we just want files
+		if info.IsDir() {
+			return nil
+		}
+
+		// we only want to check .yaml files
+		if !strings.Contains(info.Name(), ".yaml") {
+			return nil
+		}
+
+		// get relative path
+		dataFile := strings.Replace(path, dataFilesDir, "", -1)
+		// add all YAML files to the list
+		*dataFiles = append(*dataFiles, dataFile)
+
+		return nil
 	}
 }
 

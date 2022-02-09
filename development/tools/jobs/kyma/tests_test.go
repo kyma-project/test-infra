@@ -101,6 +101,11 @@ var tests = []struct {
 			jobsuite.JobFileSuffix("tests-generic"),
 		},
 	},
+	{path: "serverless-bench", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+		},
+	},
 }
 
 func TestTestJobs(t *testing.T) {
