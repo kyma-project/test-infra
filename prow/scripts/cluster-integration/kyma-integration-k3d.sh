@@ -55,14 +55,18 @@ function install_telemetry_helm_charts() {
 }
 
 function deploy_kyma() {
+  k3d version
+
   if [[ -v K8S_VERSION ]]; then
     echo "Creating k3d with kuberenetes version: ${K8S_VERSION}"
     kyma provision k3d --ci -k "${K8S_VERSION}"
   else
     kyma provision k3d --ci
   fi
+  
+  echo "Printing client and server version info"
 
-  k3d version
+  kubectl version
 
   local kyma_deploy_cmd
   kyma_deploy_cmd="kyma deploy -p evaluation --ci --source=local --workspace ${KYMA_SOURCES_DIR}"
