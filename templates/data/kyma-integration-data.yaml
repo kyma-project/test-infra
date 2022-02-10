@@ -709,6 +709,8 @@ templates:
                     testgrid-days-of-results: "60"
                   labels:
                     preset-build-main: "true"
+                  env:
+                    K8S_VERSION: "1.21.9"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
