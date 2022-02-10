@@ -297,7 +297,7 @@ presets:
       preset-preview-k8s-version: "true"
     env:
       - name: K8S_VERSION
-        value: "1.21" 
+        value: "1.21.9"
   # cluster version
   - labels:
       preset-cluster-version: "true"

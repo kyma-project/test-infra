@@ -290,6 +290,12 @@ presets:
             key: secret
       - name: KYMA_ALERTS_CHANNEL
         value: "#kyma-ci-force"
+  # kubernetes version
+  - labels:
+      preset-preview-k8s-version: "true"
+    env:
+      - name: K8S_VERSION
+        value: "1.21.9"
   # cluster version
   - labels:
       preset-cluster-version: "true"

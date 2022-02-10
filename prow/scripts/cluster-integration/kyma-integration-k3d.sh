@@ -58,7 +58,7 @@ function deploy_kyma() {
   k3d version
 
   if [[ -v K8S_VERSION ]]; then
-    kyma provision k3d --ci -k ${K8S_VERSION}
+    kyma provision k3d --ci -k "${K8S_VERSION}"
   else
     kyma provision k3d --ci
   fi
