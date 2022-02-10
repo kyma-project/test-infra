@@ -64,7 +64,7 @@ function provision_k3d() {
 function ory::prepare_components_file() {
   log::info "Preparing Kyma installation with Ory and prerequisites"
 
-cat << EOF > "$PWD/components.yaml"
+cat << EOF > "$PWD/ory.yaml"
 defaultNamespace: kyma-system
 prerequisites:
   - name: "cluster-essentials"
@@ -72,6 +72,18 @@ prerequisites:
     namespace: "istio-system"
 components:
   - name: "ory"
+EOF
+}
+
+function istio::prepare_components_file() {
+  log::info "Preparing Kyma installation with Ory and prerequisites"
+
+cat << EOF > "$PWD/istio.yaml"
+defaultNamespace: kyma-system
+prerequisites:
+  - name: "cluster-essentials"
+  - name: "istio-configuration"
+    namespace: "istio-system"
 EOF
 }
 
@@ -86,8 +98,14 @@ function deploy_kyma() {
 
   if [[ $TEST_NAME == ory ]]; then
     ory::prepare_components_file
-    kyma_deploy_cmd+=" --components-file ${PWD}/components.yaml"
+    kyma_deploy_cmd+=" --components-file ${PWD}/ory.yaml"
   fi
+
+  if [[ $TEST_NAME == istio ]]; then
+    istio::prepare_components_file
+    kyma_deploy_cmd+=" --components-file ${PWD}/istio.yaml"
+  fi
+
   log::info "Deploying Kyma components from version ${KYMA_VERSION}"
 
   $kyma_deploy_cmd
@@ -104,7 +122,7 @@ function run_tests() {
   pushd "${RECONCILER_DIR}"
   
   export ORY_RECONCILER_INTEGRATION_TESTS=1
-  go test -v -timeout 5m ./pkg/reconciler/instances/"${TEST_NAME}"/test
+  go test -v -timeout 5m ./pkg/reconciler/instances/"${TEST_NAME}"
   #currently disabling
   #make: go: Permission denied on Gardener
   #make test-ory
