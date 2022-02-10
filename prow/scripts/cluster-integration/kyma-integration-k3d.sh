@@ -56,10 +56,14 @@ function install_telemetry_helm_charts() {
 
 function deploy_kyma() {
   k3d version
+  echo "checking k8s version"
+     echo "${K8S_VERSION}"
 
   if [[ -v K8S_VERSION ]]; then
+    echo "K8s version set"
     kyma provision k3d --ci -k "${K8S_VERSION}"
   else
+    echo "K8s version not set"
     kyma provision k3d --ci
   fi
 
