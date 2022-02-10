@@ -119,6 +119,7 @@ envVars=(
   CENTRAL_APPLICATION_CONNECTIVITY_ENABLED
   TELEMETRY_ENABLED
   KYMA_MAJOR_VERSION
+  K8S_VERSION
 )
 utils::save_env_file "${envVars[@]}"
 #shellcheck disable=SC2088
