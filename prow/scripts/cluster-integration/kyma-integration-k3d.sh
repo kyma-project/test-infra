@@ -56,7 +56,12 @@ function install_telemetry_helm_charts() {
 
 function deploy_kyma() {
   k3d version
-  kyma provision k3d --ci
+
+  if [[ -v K8S_VERSION ]]; then
+    kyma provision k3d --ci -k ${K8S_VERSION}
+  else
+    kyma provision k3d --ci
+  fi
 
   local kyma_deploy_cmd
   kyma_deploy_cmd="kyma deploy -p evaluation --ci --source=local --workspace ${KYMA_SOURCES_DIR}"
