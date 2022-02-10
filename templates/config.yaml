@@ -217,9 +217,9 @@ templates:
             - name: kyma-gke-integration
             - name: kyma-gke-upgrade
             - name: kyma-artifacts
-  - from: templates/testgrid-default.yaml
-    render:
-      - to: ../prow/testgrid-default.yaml
+#  - from: templates/testgrid-default.yaml
+#    render:
+#      - to: ../prow/testgrid-default.yaml
   - from : templates/test-infra-autobump-config.yaml
     render:
       - to: ../prow/autobump-config/test-infra-autobump-config.yaml
