@@ -13,6 +13,14 @@ TMP_DIR=$(mktemp -d)
 CLOUD_FUNCTION_URL="https://europe-west3-kyma-project.cloudfunctions.net/get-scan-result"
 RESPONSE_FILE=${TMP_DIR}/response.json
 
+function on_exit() {
+    exit_status=$?
+    if [ ${parse_status} != 0 ]; then
+        echo "Last response: $RESULT"
+    fi
+}
+trap on_exit exit
+
 getScanResult(){
     local tag=$1
     curl -s "${CLOUD_FUNCTION_URL}?tag=${tag}" -H "Content-Type:application/json" > "${RESPONSE_FILE}"
