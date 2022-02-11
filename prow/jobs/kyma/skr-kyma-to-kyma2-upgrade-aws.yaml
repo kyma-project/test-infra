@@ -14,6 +14,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "skr-kyma-to-kyma2-upgrade-aws-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-bot-github-token: "true"
         preset-build-main: "true"
         preset-kcp-client-dev-envs: "true"
         preset-keb-dev-credentials: "true"
@@ -42,20 +43,18 @@ periodics: # runs on schedule
             securityContext:
               privileged: true
             command:
-              - "make"
-            args:
-              - "-C"
-              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
-              - "ci-skr-kyma-to-kyma2-upgrade"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-skr-aws-kyma-to-kyma2.sh"
             env:
               - name: KEB_PLAN_ID
                 value: "361c511f-f939-4621-b228-d0fb79a1fe15"
               - name: KYMA_MAJOR_VERSION
                 value: "1"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
               - name: KYMA_UPGRADE_VERSION
-                value: "2.0.3"
+                value: "2.0.4"
               - name: KYMA_VERSION
-                value: "1.24.8"
+                value: "1.24.9"
               - name: SKIP_CLEANUP
                 value: "FALSE"
             resources:

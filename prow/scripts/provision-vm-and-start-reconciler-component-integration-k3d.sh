@@ -110,6 +110,7 @@ trap cleanup exit INT
 log::info "Preparing environment variables for the instance"
 envVars=(
   TEST_NAME
+  EXECUTION_PROFILE
 )
 utils::save_env_file "${envVars[@]}"
 #shellcheck disable=SC2088

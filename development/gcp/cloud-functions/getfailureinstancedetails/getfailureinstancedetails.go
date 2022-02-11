@@ -10,7 +10,7 @@ import (
 	"cloud.google.com/go/firestore"
 	"cloud.google.com/go/functions/metadata"
 	"cloud.google.com/go/pubsub"
-	"github.com/google/go-github/v40/github"
+	"github.com/google/go-github/v42/github"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
 	kymapubsub "github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
 )

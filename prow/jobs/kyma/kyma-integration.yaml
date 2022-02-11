@@ -727,7 +727,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220120-68ec423a"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220209-6832a251"
             securityContext:
               privileged: true
             command:
@@ -769,7 +769,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220120-68ec423a"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220209-6832a251"
             securityContext:
               privileged: true
             command:
@@ -811,7 +811,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220120-68ec423a"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220209-6832a251"
             securityContext:
               privileged: true
             command:
@@ -853,7 +853,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220120-68ec423a"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220209-6832a251"
             securityContext:
               privileged: true
             command:
@@ -895,7 +895,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220120-68ec423a"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220209-6832a251"
             securityContext:
               privileged: true
             command:
@@ -937,7 +937,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220120-68ec423a"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220209-6832a251"
             securityContext:
               privileged: true
             command:
@@ -980,7 +980,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220120-68ec423a"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220209-6832a251"
             securityContext:
               privileged: true
             command:
@@ -1021,7 +1021,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220120-68ec423a"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220209-6832a251"
             securityContext:
               privileged: true
             command:
@@ -1062,7 +1062,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220120-68ec423a"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220209-6832a251"
             securityContext:
               privileged: true
             command:
@@ -1102,7 +1102,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220120-68ec423a"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220209-6832a251"
             securityContext:
               privileged: true
             command:
@@ -1111,6 +1111,61 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: serverless-function-benchmark
+      annotations:
+        description: "Serverless function runtime benchmarks"
+        pipeline.platform: "gke"
+        pipeline.test: "Serverless function benchmarks"
+        pipeline.trigger: "nightly"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "serverless-function-benchmark"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-gc-compute-envs: "true"
+        preset-gc-project-env: "true"
+        preset-sa-gke-kyma-integration: "true"
+      cron: "0 1,13 * * *"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-benchmarks-nightly.sh"
+            env:
+              - name: CLOUDSDK_COMPUTE_ZONE
+                value: "europe-west4-b"
+              - name: CLUSTER_PROVIDER
+                value: "gcp"
+              - name: INPUT_CLUSTER_NAME
+                value: "nightly"
+              - name: KYMA_MAJOR_VERSION
+                value: "2"
+              - name: PROVISION_REGIONAL_CLUSTER
+                value: "true"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal
