@@ -1,2 +1,6 @@
 pjNames:
   - pjName: "pre-main-istio-reconciler-integration"
+prConfigs:
+  kyma-incubator:
+    reconciler:
+      prNumber: 806
