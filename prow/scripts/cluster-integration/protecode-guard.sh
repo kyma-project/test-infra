@@ -16,7 +16,7 @@ RESPONSE_FILE=${TMP_DIR}/response.json
 function on_exit() {
     exit_status=$?
     if [ ${exit_status} != 0 ]; then
-        log::error "Last response: $RESULT"
+        log::error "Last response: $(cat $RESPONSE_FILE)"
     fi
 }
 trap on_exit exit
