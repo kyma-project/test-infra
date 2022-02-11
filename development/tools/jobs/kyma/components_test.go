@@ -156,14 +156,12 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Since(releases.Release123),
-			jobsuite.Optional(),
 		},
 	},
 	{path: "central-application-connectivity-validator", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Since(releases.Release123),
-			jobsuite.Optional(),
 		},
 	},
 	{path: "telemetry-operator", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,

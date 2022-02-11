@@ -52,3 +52,21 @@ templates:
                   postConfigs:
                     global:
                       - "jobConfig_postsubmit"
+              - jobConfig:
+                  name: "pre-main-kyma-validate-dockerfiles"
+                  run_if_changed: ".*Dockerfile$"
+                  command: "/bin/bash"
+                  args: 
+                    - "-c"
+                    - "shopt -s globstar;
+                      hadolint --config .hadolint.yaml --no-color **/Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "smaller_requests"
+                  global:
+                    - "jobConfig_default"
+                    - "image_bootstrap"
+                    - "pubsub_labels"
+                  preConfigs:
+                    global:
+                    - "jobConfig_presubmit"
