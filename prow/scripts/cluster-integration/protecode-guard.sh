@@ -15,8 +15,8 @@ RESPONSE_FILE=${TMP_DIR}/response.json
 
 function on_exit() {
     exit_status=$?
-    if [ ${parse_status} != 0 ]; then
-        echo "Last response: $RESULT"
+    if [ ${exit_status} != 0 ]; then
+        log::error "Last response: $RESULT"
     fi
 }
 trap on_exit exit
