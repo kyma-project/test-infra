@@ -14,7 +14,7 @@ templates:
           - repoName: kyma-project/control-plane
             jobs:
               - jobConfig:
-                  name: "pre-test-infra-validate-dockerfiles"
+                  name: "pre-control-plane-validate-dockerfiles"
                   run_if_changed: ".*Dockerfile$"
                   command: "/bin/bash"
                   args: 

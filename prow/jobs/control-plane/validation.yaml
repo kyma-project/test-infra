@@ -3,12 +3,12 @@
 
 presubmits: # runs on PRs
   kyma-project/control-plane:
-    - name: pre-test-infra-validate-dockerfiles
+    - name: pre-control-plane-validate-dockerfiles
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-test-infra-validate-dockerfiles"
+        prow.k8s.io/pubsub.runID: "pre-control-plane-validate-dockerfiles"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '.*Dockerfile$'
       skip_report: false
