@@ -1,0 +1,31 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/control-plane/validation.yaml
+        localSets:
+          jobConfig_default:
+            path_alias: "github.com/kyma-project/control-plane"
+            env:
+              PROJECTNAME: control-plane
+              DRYRUN: "false"
+              SCAN_LANGUAGE: golang-mod
+            max_concurrency: 1
+        jobConfigs:
+          - repoName: kyma-project/control-plane
+            jobs:
+              - jobConfig:
+                  name: "pre-test-infra-validate-dockerfiles"
+                  run_if_changed: ".*Dockerfile$"
+                  command: "/bin/bash"
+                  args: 
+                    - "-c"
+                    - "shopt -s globstar;
+                      hadolint --config .hadolint.yaml --no-color **/Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_wssagent
+                  local:
+                    - jobConfig_default
