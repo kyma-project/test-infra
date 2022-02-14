@@ -1173,3 +1173,9 @@ presets:
         value: "https://mothership-reconciler.cp.dev.kyma.cloud.sap/v1"
       - name: KCP_OIDC_ISSUER_URL
         value: "https://kymatest.accounts400.ondemand.com"
+  - labels:
+      # Allows setting the feature flag in Eventing Charts to enable the NATS JetStream Backend.
+      preset-eventing-enable-jetstream: "true"
+    env:
+      - name: EVENTING_ENABLE_JETSTREAM
+        value: "true"
