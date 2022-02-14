@@ -592,7 +592,7 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_test-infra
-                    - image_buildpack-golang
+                    - image_bootstrap
                   local:
                     - reconciler_main_jobConfig
 
