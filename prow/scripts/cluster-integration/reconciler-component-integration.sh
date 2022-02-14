@@ -8,7 +8,6 @@ export KYMA_SOURCES_DIR="./kyma"
 export KYMA_VERSION="main"
 export KUBECONFIG="${HOME}/.kube/config"
 export ISTIOCTL_VERSION="1.11.4"
-export KUTTL_VERSION="0.11.1"
 export CLUSTER_DOMAIN=${KYMA_DOMAIN:-local.kyma.dev}
 
 function prereq_test() {
@@ -53,8 +52,6 @@ function install_prereq() {
   wget -q https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz && tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz && export PATH=$PATH:/usr/local/go/bin && go version
 
   wget -q https://github.com/istio/istio/releases/download/${ISTIOCTL_VERSION}/istioctl-${ISTIOCTL_VERSION}-linux-amd64.tar.gz   && tar -C /usr/local/bin -xzf istioctl-${ISTIOCTL_VERSION}-linux-amd64.tar.gz && export PATH=$PATH:/usr/local/bin/istioctl && istioctl version --remote=false && export ISTIOCTL_PATH=/usr/local/bin/istioctl
-
-  wget -q https://github.com/kudobuilder/kuttl/releases/download/v${KUTTL_VERSION}/kuttl_${KUTTL_VERSION}_linux_x86_64.tar.gz   && tar -C /usr/local/bin -xzf kuttl_${KUTTL_VERSION}_linux_x86_64.tar.gz && export PATH=$PATH:/usr/local/bin/kubectl-kuttl && kubectl-kuttl version
 }
 
 function provision_k3d() {
@@ -88,9 +85,6 @@ prerequisites:
   - name: "cluster-essentials"
   - name: "istio-configuration"
     namespace: "istio-system"
-components:
-  - name: "ory"
-  - name: "api-gateway"    
 EOF
 }
 
@@ -134,7 +128,9 @@ function run_tests() {
   fi
 
   if [[ $TEST_NAME == istio ]]; then
-    kubectl-kuttl test ./pkg/reconciler/instances/"${TEST_NAME}"/tests
+    export ISTIO_RECONCILER_INTEGRATION_TESTS=1
+    export INGRESS_PORT=80
+    go test -v -timeout 5m ./pkg/reconciler/instances/istio/tests
   fi
   #currently disabling
   #make: go: Permission denied on Gardener
