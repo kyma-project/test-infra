@@ -8,7 +8,7 @@ export KYMA_SOURCES_DIR="./kyma"
 export KYMA_VERSION="main"
 export KUBECONFIG="${HOME}/.kube/config"
 export ISTIOCTL_VERSION="1.11.4"
-export CLUSTER_DOMAIN=${local.kyma.dev}
+export CLUSTER_DOMAIN="kyma.dev.local"
 
 function prereq_test() {
   command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
