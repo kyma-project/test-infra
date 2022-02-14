@@ -124,13 +124,13 @@ function run_tests() {
 
   if [[ $TEST_NAME == ory ]]; then
     export ORY_RECONCILER_INTEGRATION_TESTS=1
-    go test -v -timeout 5m ./pkg/reconciler/instances/"${TEST_NAME}"
+    go test -v -timeout 5m ./pkg/reconciler/instances/"${TEST_NAME}"/test
   fi
 
   if [[ $TEST_NAME == istio ]]; then
     export ISTIO_RECONCILER_INTEGRATION_TESTS=1
     export INGRESS_PORT=80
-    go test -v -timeout 5m ./pkg/reconciler/instances/istio/tests
+    go test -v -timeout 5m ./pkg/reconciler/instances/"${TEST_NAME}"/tests
   fi
   #currently disabling
   #make: go: Permission denied on Gardener
