@@ -26,6 +26,6 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_test-infra
-                    - image_wssagent
+                    - image_bootstrap
                   local:
                     - jobConfig_default
