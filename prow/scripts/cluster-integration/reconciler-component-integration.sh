@@ -8,6 +8,7 @@ export KYMA_SOURCES_DIR="./kyma"
 export KYMA_VERSION="main"
 export KUBECONFIG="${HOME}/.kube/config"
 export ISTIOCTL_VERSION="1.11.4"
+export CLUSTER_DOMAIN="kyma.dev.local"
 
 function prereq_test() {
   command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
@@ -64,7 +65,7 @@ function provision_k3d() {
 function ory::prepare_components_file() {
   log::info "Preparing Kyma installation with Ory and prerequisites"
 
-cat << EOF > "$PWD/components.yaml"
+cat << EOF > "$PWD/ory.yaml"
 defaultNamespace: kyma-system
 prerequisites:
   - name: "cluster-essentials"
@@ -75,6 +76,18 @@ components:
 EOF
 }
 
+function istio::prepare_components_file() {
+  log::info "Preparing Kyma installation with Ory and prerequisites"
+
+cat << EOF > "$PWD/istio.yaml"
+defaultNamespace: kyma-system
+prerequisites:
+  - name: "cluster-essentials"
+  - name: "istio-configuration"
+    namespace: "istio-system"
+EOF
+}
+
 function deploy_kyma() {
   log::info "Building reconciler from sources"
 
@@ -82,12 +95,18 @@ function deploy_kyma() {
   make build-linux
 
   local kyma_deploy_cmd
-  kyma_deploy_cmd="./bin/mothership-linux local --kubeconfig ${KUBECONFIG} --value global.ingress.domainName=kyma.local,global.domainName=kyma.local --version ${KYMA_VERSION} --profile ${EXECUTION_PROFILE}"
+  kyma_deploy_cmd="./bin/mothership-linux local --kubeconfig ${KUBECONFIG} --value global.ingress.domainName=${CLUSTER_DOMAIN},global.domainName=${CLUSTER_DOMAIN} --version ${KYMA_VERSION} --profile ${EXECUTION_PROFILE}"
 
   if [[ $TEST_NAME == ory ]]; then
     ory::prepare_components_file
-    kyma_deploy_cmd+=" --components-file ${PWD}/components.yaml"
+    kyma_deploy_cmd+=" --components-file ${PWD}/ory.yaml"
   fi
+
+  if [[ $TEST_NAME == istio ]]; then
+    istio::prepare_components_file
+    kyma_deploy_cmd+=" --components-file ${PWD}/istio.yaml"
+  fi
+
   log::info "Deploying Kyma components from version ${KYMA_VERSION}"
 
   $kyma_deploy_cmd
@@ -102,9 +121,17 @@ function run_tests() {
   log::info "Running tests"
 
   pushd "${RECONCILER_DIR}"
-  
-  export ORY_RECONCILER_INTEGRATION_TESTS=1
-  go test -v -timeout 5m ./pkg/reconciler/instances/"${TEST_NAME}"/test
+
+  if [[ $TEST_NAME == ory ]]; then
+    export ORY_RECONCILER_INTEGRATION_TESTS=1
+    go test -v -timeout 5m ./pkg/reconciler/instances/"${TEST_NAME}"/test
+  fi
+
+  if [[ $TEST_NAME == istio ]]; then
+    export ISTIO_RECONCILER_INTEGRATION_TESTS=1
+    export INGRESS_PORT=80
+    go test -v -timeout 5m ./pkg/reconciler/instances/"${TEST_NAME}"/tests
+  fi
   #currently disabling
   #make: go: Permission denied on Gardener
   #make test-ory

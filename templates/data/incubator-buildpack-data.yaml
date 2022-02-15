@@ -317,6 +317,30 @@ templates:
                     - reconciler_main_jobConfig
                     - reconciler_integration_jobConfig
               - jobConfig:
+                  name: "pre-main-istio-reconciler-integration"
+                  optional: true
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((Dockerfile.cr\\S+|pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-kyma-guard-bot-github-token: "true"
+                    preset-sa-vm-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                  annotations:
+                    pipeline.platform: k3d
+                  env:
+                    TEST_NAME: istio
+                    EXECUTION_PROFILE: evaluation
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - image_kyma-integration
+                    - extra_refs_test-infra
+                  local:
+                    - reconciler_main_jobConfig
+                    - reconciler_component_k3d_integration_jobConfig                    
+              - jobConfig:
                   name: "pre-main-ory-reconciler-eval-integration"
                   optional: true
                   # following regexp won't start build if only Markdown files were changed
@@ -576,6 +600,26 @@ templates:
                     - reconciler_nightly_e2e_jobConfig
                     - reconciler_jobConfig_args
                     - reconciler_main_nightly_cluster_input_name
+              - jobConfig:
+                  name: "pre-main-reconciler-validate-dockerfiles"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: ".*Dockerfile$"
+                  command: "/bin/bash"
+                  args: 
+                    - "-c"
+                    - "shopt -s globstar;
+                      hadolint --config .hadolint.yaml --no-color **/Dockerfile"
+                  labels:
+                    preset-kyma-guard-bot-github-token: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_bootstrap
+                  local:
+                    - reconciler_main_jobConfig
+
       - to: ../prow/jobs/incubator/octopus/octopus.yaml
         jobConfigs:
           - repoName: kyma-incubator/octopus
