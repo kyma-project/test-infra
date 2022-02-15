@@ -13,7 +13,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-//Sender is a struct used to allow mocking the SendToKyma function
+// Sender is a struct used to allow mocking the SendToKyma function
 type Sender struct {
 	validator  Validator
 	client     HTTPClient
@@ -21,18 +21,18 @@ type Sender struct {
 	appName    string
 }
 
-//NewSender is a function that creates new Sender with the passed in interfaces
+// NewSender is a function that creates new Sender with the passed in interfaces
 func NewSender(c HTTPClient, v Validator, serviceURL, appName string) Sender {
 	return Sender{client: c, validator: v, serviceURL: serviceURL, appName: appName}
 }
 
-//HTTPClient is an interface use to allow mocking the http.Client methods
+// HTTPClient is an interface use to allow mocking the http.Client methods
 type HTTPClient interface {
 	Send(ctx context.Context, event cloudevents.Event) cloudevents.Result
 }
 
-//SendToKyma sends the event given by the GitHub API to kyma's event bus
-//func (k Sender) SendToKyma(eventType, eventTypeVersion, eventID, sourceID string, data json.RawMessage) apperrors.AppError {
+// SendToKyma sends the event given by the GitHub API to kyma's event bus
+// func (k Sender) SendToKyma(eventType, eventTypeVersion, eventID, sourceID string, data json.RawMessage) apperrors.AppError {
 func (k Sender) SendToKyma(eventType, sourceID string, data json.RawMessage) apperrors.AppError {
 
 	t := fmt.Sprintf("sap.kyma.custom.%s.%s.v1", k.appName, eventType)

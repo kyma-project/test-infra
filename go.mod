@@ -26,6 +26,7 @@ require (
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
+	github.com/cloudevents/sdk-go/v2 v2.8.0
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
 	github.com/gardener/component-cli v0.34.0
 	github.com/gardener/component-spec/bindings-go v0.0.56
@@ -34,6 +35,7 @@ require (
 	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/google/go-containerregistry v0.7.1-0.20211203164431-c75901cce627
 	github.com/google/go-github/v40 v40.0.0
+	github.com/google/go-github/v42 v42.0.0
 	github.com/google/go-querystring v1.1.0
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/imdario/mergo v0.3.12
@@ -54,6 +56,7 @@ require (
 	github.com/tidwall/gjson v1.14.0
 	github.com/vrischmann/envconfig v1.3.0
 	go.uber.org/zap v1.19.0
+	golang.org/x/net v0.0.0-20211118161319-6a13c67c3ce4
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
 	google.golang.org/api v0.66.0
 	gopkg.in/yaml.v2 v2.4.0

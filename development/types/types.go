@@ -8,6 +8,7 @@ type User struct {
 	ComEnterpriseSlackUsername string `yaml:"com.slack.enterprise.sap.username,omitempty"`
 }
 
+// TODO: this should be moved to development/logging module
 type Logger interface {
 	LogCritical(string)
 	LogError(string)
