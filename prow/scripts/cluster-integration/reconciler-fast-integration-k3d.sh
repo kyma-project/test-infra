@@ -24,19 +24,17 @@ function prereq_test() {
   command -v kubectl >/dev/null 2>&1 || { echo >&2 "kubectl not found"; exit 1; }
   command -v k3d >/dev/null 2>&1 || { echo >&2 "k3d not found"; exit 1; }
 
-  export TEST_INFRA_SOURCES_DIR="${HOME}/test-infra"
-  export KYMA_SOURCES_DIR="${HOME}/kyma"
-  export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${HOME}/prow/scripts/cluster-integration/helpers"
-  export CONTROL_PLANE_RECONCILER_DIR="${HOME}/control-plane/tools/reconciler"
+  export HOME_DIR="$PWD"
+  export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
+  export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
+  export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${KYMA_PROJECT_DIR}/prow/scripts/cluster-integration/helpers"
+  export CONTROL_PLANE_RECONCILER_DIR="${KYMA_PROJECT_DIR}/control-plane/tools/reconciler"
 
   echo "current:"
   ls
 
-  echo "/home:"
-  ls "/home"
-
-  echo "/root:"
-  ls "/root"
+  echo "${HOME_DIR}:"
+  ls "${HOME_DIR}"
 
   # shellcheck source=prow/scripts/lib/log.sh
   source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"

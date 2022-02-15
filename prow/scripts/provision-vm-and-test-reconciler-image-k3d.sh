@@ -125,15 +125,15 @@ envVars=(
 
 log::info "Copying Kyma to the instance"
 #shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "${INSTANCE_NAME}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
+utils::compress_send_to_vm "${ZONE}" "${INSTANCE_NAME}" "/home/prow/go/src/github.com/kyma-project/kyma" "${KYMA_PROJECT_DIR}/kyma"
 
 log::info "Copying control-plane to the instance"
 #shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "${INSTANCE_NAME}" "/home/prow/go/src/github.com/kyma-project/control-plane" "~/control-plane"
+utils::compress_send_to_vm "${ZONE}" "${INSTANCE_NAME}" "/home/prow/go/src/github.com/kyma-project/control-plane" "${KYMA_PROJECT_DIR}/control-plane"
 
 log::info "Copying Test-infra to the instance"
 #shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "${INSTANCE_NAME}" "/home/prow/go/src/github.com/kyma-project/test-infra" "~/test-infra"
+utils::compress_send_to_vm "${ZONE}" "${INSTANCE_NAME}" "/home/prow/go/src/github.com/kyma-project/test-infra" "${KYMA_PROJECT_DIR}/test-infra"
 
 log::info "Copying envVars to the instance"
 utils::save_env_file "${envVars[@]}"
