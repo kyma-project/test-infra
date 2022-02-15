@@ -141,6 +141,7 @@ function reconciler::initialize_test_pod() {
   echo "****************************************************************"
   # Create reconcile request payload with kubeconfig, domain, and version to the test-pod
   domain="$(kubectl get cm shoot-info -n kube-system -o jsonpath='{.data.domain}')"
+  log::info "Cluster domain: ${domain}"
 
   # shellcheck disable=SC2086
   kc="$(cat ${KUBECONFIG})"
@@ -159,6 +160,8 @@ function reconciler::initialize_test_pod() {
   kubectl cp ./e2e-test/reconcile-kyma.sh -c test-pod reconciler/test-pod:/tmp
   kubectl cp ./e2e-test/get-reconcile-status.sh -c test-pod reconciler/test-pod:/tmp
   kubectl cp ./e2e-test/request-reconcile.sh -c test-pod reconciler/test-pod:/tmp
+
+  echo "$kc"
 }
 
 # Triggers reconciliation of Kyma and waits until reconciliation is in ready state

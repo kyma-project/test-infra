@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "pre-main-control-plane-reconciler-e2e-latest-k3d"
+    report: false
+prConfigs:
+  kyma-project:
+    control-plane:
+      prNumber: 1349
