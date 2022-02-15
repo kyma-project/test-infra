@@ -1,0 +1,3 @@
+pjNames:
+  - pjName: "kyma-weekly-gardener-gcp-busola-kyma"
+  - pjName: "pre-main-control-plane-reconciler-e2e"
