@@ -30,12 +30,6 @@ function prereq_test() {
   export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${HOME_DIR}/prow/scripts/cluster-integration/helpers"
   export CONTROL_PLANE_RECONCILER_DIR="${HOME_DIR}/control-plane/tools/reconciler"
 
-  echo "current:"
-  ls
-
-  echo "${HOME_DIR}:"
-  ls "${HOME_DIR}"
-
   # shellcheck source=prow/scripts/lib/log.sh
   source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
   # shellcheck source=prow/scripts/lib/utils.sh
@@ -56,21 +50,22 @@ function prereq_test() {
 }
 
 function provision_k3d() {
+  log::banner "Provisioning k3d cluster"
   kyma provision k3d --ci
 }
 
 function run_fast_integration() {
-    log::info "### Run ${1} tests"
+  log::banner "Executing fast-integration ${1} tests"
 
-    git reset --hard "${KYMA_SOURCE}"
-    make -C "${KYMA_SOURCES_DIR}/tests/fast-integration" "${1}"
+  # git reset --hard "${KYMA_SOURCE}"
+  make -C "${KYMA_SOURCES_DIR}/tests/fast-integration" "${1}"
 
-    if [[ $? -eq 0 ]];then
-        log::success "Tests completed"
-    else
-        log::error "Tests failed"
-        exit 1
-    fi
+  if [[ $? -eq 0 ]];then
+      log::success "Tests completed"
+  else
+      log::error "Tests failed"
+      exit 1
+  fi
 }
 
 # load env variables
@@ -100,5 +95,4 @@ reconciler::initialize_test_pod
 # Run a test pod from where the reconciliation will be triggered
 reconciler::reconcile_kyma
 
-log::banner "Executing fast-integration tests"
 make_fast_integration "ci"

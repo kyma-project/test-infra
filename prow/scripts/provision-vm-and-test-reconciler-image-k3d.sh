@@ -110,7 +110,7 @@ done || exit 1
 ENDTIME=$(date +%s)
 echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
-trap cleanup exit INT
+#trap cleanup exit INT
 
 # Fetch latest Kyma2 release
 kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
