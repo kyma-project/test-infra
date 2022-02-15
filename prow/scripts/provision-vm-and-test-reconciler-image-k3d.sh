@@ -132,9 +132,9 @@ log::info "Copying Kyma to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "${INSTANCE_NAME}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
 
-log::info "Copying Reconciler to the instance"
+log::info "Copying control-plane to the instance"
 #shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "${INSTANCE_NAME}" "/home/prow/go/src/github.com/kyma-incubator/reconciler" "~/reconciler"
+utils::compress_send_to_vm "${ZONE}" "${INSTANCE_NAME}" "/home/prow/go/src/github.com/kyma-project/control-plane" "~/control-plane"
 
 log::info "Copying Test-infra to the instance"
 #shellcheck disable=SC2088
