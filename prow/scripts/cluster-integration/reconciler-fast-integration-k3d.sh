@@ -42,6 +42,7 @@ function prereq_test() {
   # All provides require these values, each of them may check for additional variables
   requiredVars=(
       KYMA_UPGRADE_SOURCE
+      INSTANCE_INTERNAL_IP
   )
   utils::check_required_vars "${requiredVars[@]}"
 
@@ -51,7 +52,7 @@ function prereq_test() {
 
 function provision_k3d() {
   log::banner "Provisioning k3d cluster"
-  kyma provision k3d --ci
+  kyma provision k3d --ci --k3d-arg="--api-port=${INSTANCE_INTERNAL_IP}:6555"
 }
 
 function run_fast_integration() {
