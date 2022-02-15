@@ -353,6 +353,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-kyma-guard-bot-github-token: "true"
       run_if_changed: '.*Dockerfile$'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload

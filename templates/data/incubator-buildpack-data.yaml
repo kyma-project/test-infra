@@ -605,6 +605,7 @@ templates:
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: ".*Dockerfile$"
                   command: "/bin/bash"
+                  optional: true
                   args: 
                     - "-c"
                     - "shopt -s globstar;
