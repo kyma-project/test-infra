@@ -10,9 +10,6 @@ readonly INSTALL_DIR="/usr/local/bin"
 
 function load_env() {
   ENV_FILE=".env"
-
-  cat "${ENV_FILE}"
-
   if [ -f "${ENV_FILE}" ]; then
     # shellcheck disable=SC2046
     export $(xargs < "${ENV_FILE}")
@@ -27,13 +24,10 @@ function prereq_test() {
   command -v kubectl >/dev/null 2>&1 || { echo >&2 "kubectl not found"; exit 1; }
   command -v k3d >/dev/null 2>&1 || { echo >&2 "k3d not found"; exit 1; }
 
-  echo "KYMA_UPGRADE_SOURCE: ${KYMA_UPGRADE_SOURCE}"
-  echo "KYMA_PROJECT_DIR: ${KYMA_PROJECT_DIR}"
-
-  export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
-  export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
-  export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
-  export CONTROL_PLANE_RECONCILER_DIR="${KYMA_PROJECT_DIR}/control-plane/tools/reconciler"
+  export TEST_INFRA_SOURCES_DIR="${HOME}/test-infra"
+  export KYMA_SOURCES_DIR="${HOME}/kyma"
+  export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${HOME}/prow/scripts/cluster-integration/helpers"
+  export CONTROL_PLANE_RECONCILER_DIR="${HOME}/control-plane/tools/reconciler"
 
   # shellcheck source=prow/scripts/lib/log.sh
   source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
