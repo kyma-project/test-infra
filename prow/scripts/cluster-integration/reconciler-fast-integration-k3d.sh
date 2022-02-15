@@ -42,6 +42,8 @@ function prereq_test() {
   source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
   # shellcheck source=prow/scripts/lib/kyma.sh
   source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
+  # shellcheck source=prow/scripts/cluster-integration/helpers/reconciler.sh
+  source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/reconciler.sh"
 
   # All provides require these values, each of them may check for additional variables
   requiredVars=(
