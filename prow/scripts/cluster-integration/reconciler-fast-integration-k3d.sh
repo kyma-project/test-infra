@@ -53,12 +53,13 @@ function prereq_test() {
 function provision_k3d() {
   log::banner "Provisioning k3d cluster"
   kyma provision k3d --ci --k3d-arg="--api-port=${INSTANCE_INTERNAL_IP}:6555"
+  export CLUSTER_DOMAIN="https://${INSTANCE_INTERNAL_IP}:6555"
 }
 
 function run_fast_integration() {
   log::banner "Executing fast-integration ${1} tests"
 
-  # git reset --hard "${KYMA_SOURCE}"
+  # git reset --hard "${KYMA_UPGRADE_SOURCE}"
   make -C "${KYMA_SOURCES_DIR}/tests/fast-integration" "${1}"
 
   if [[ $? -eq 0 ]];then

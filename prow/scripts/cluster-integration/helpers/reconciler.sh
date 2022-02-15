@@ -140,7 +140,10 @@ function reconciler::initialize_test_pod() {
   cat < ../../resources/kcp/values.yaml | grep -o 'mothership_reconciler:.*mothership.*'
   echo "****************************************************************"
   # Create reconcile request payload with kubeconfig, domain, and version to the test-pod
-  domain="$(kubectl get cm shoot-info -n kube-system -o jsonpath='{.data.domain}')"
+  domain="${CLUSTER_DOMAIN}"
+  if [[ ! $CLUSTER_DOMAIN ]]; then
+    domain="$(kubectl get cm shoot-info -n kube-system -o jsonpath='{.data.domain}')"
+  fi
   log::info "Cluster domain: ${domain}"
 
   # shellcheck disable=SC2086
