@@ -16,15 +16,10 @@ function prereq_test() {
   command -v kubectl >/dev/null 2>&1 || { echo >&2 "kubectl not found"; exit 1; }
   command -v k3d >/dev/null 2>&1 || { echo >&2 "k3d not found"; exit 1; }
 
-  # All provides require these values, each of them may check for additional variables
-  requiredVars=(
-      KYMA_UPGRADE_SOURCE
-      KYMA_PROJECT_DIR
-  )
-  utils::check_required_vars "${requiredVars[@]}"
-
   echo "KYMA_UPGRADE_SOURCE: ${KYMA_UPGRADE_SOURCE}"
   echo "KYMA_PROJECT_DIR: ${KYMA_PROJECT_DIR}"
+
+  cat "~/.env"
 
   export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
   export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
@@ -37,6 +32,12 @@ function prereq_test() {
   source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
   # shellcheck source=prow/scripts/lib/kyma.sh
   source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
+
+  # All provides require these values, each of them may check for additional variables
+  requiredVars=(
+      KYMA_UPGRADE_SOURCE
+  )
+  utils::check_required_vars "${requiredVars[@]}"
 
   # install kyma CLI from the last release
   kyma::install_cli_last_release
