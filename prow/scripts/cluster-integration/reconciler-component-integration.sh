@@ -7,7 +7,7 @@ readonly GO_VERSION=1.17.5
 export KYMA_SOURCES_DIR="./kyma"
 export KUBECONFIG="${HOME}/.kube/config"
 export ISTIOCTL_VERSION="1.11.4"
-export CLUSTER_DOMAIN="kyma.dev.local"
+export CLUSTER_DOMAIN=${KYMA_DOMAIN:-local.kyma.dev}
 
 function prereq_test() {
   command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
@@ -93,6 +93,8 @@ function deploy_kyma() {
   pushd "${RECONCILER_DIR}"
   make build-linux
 
+  echo "${CLUSTER_DOMAIN}"
+
   local kyma_deploy_cmd
   kyma_deploy_cmd="./bin/mothership-linux local --kubeconfig ${KUBECONFIG} --value global.ingress.domainName=${CLUSTER_DOMAIN},global.domainName=${CLUSTER_DOMAIN} --version ${KYMA_VERSION} --profile ${EXECUTION_PROFILE}"
 
@@ -114,6 +116,7 @@ function deploy_kyma() {
 
   log::success "Kyma components were deployed successfully"
   kubectl get pods -A
+  kubectl get services -n istio-system
 }
 
 function run_tests() {
