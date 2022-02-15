@@ -156,7 +156,7 @@ templates:
             env:
               GO11MODULE: "on"
               KYMA_TEST_SOURCE: "latest-release"
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-reconciler-k3d.sh"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-reconciler-image-k3d.sh"
         jobConfigs:
           - repoName: kyma-project/control-plane
             jobs:
