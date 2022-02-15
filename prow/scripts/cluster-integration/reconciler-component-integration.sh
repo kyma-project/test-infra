@@ -5,7 +5,6 @@ set -o errexit
 readonly TEST_INFRA_DIR="./test-infra"
 readonly GO_VERSION=1.17.5
 export KYMA_SOURCES_DIR="./kyma"
-export KYMA_VERSION="main"
 export KUBECONFIG="${HOME}/.kube/config"
 export ISTIOCTL_VERSION="1.11.4"
 export CLUSTER_DOMAIN="kyma.dev.local"
@@ -23,6 +22,10 @@ function load_env() {
   if [ -f "${ENV_FILE}" ]; then
     # shellcheck disable=SC2046
     export $(xargs < "${ENV_FILE}")
+  fi
+
+  if [[ -z "${KYMA_VERSION}" ]]; then
+    export KYMA_VERSION="main"
   fi
 }
 

@@ -1,0 +1,5 @@
+pjNames:
+  - pjName: "post-main-istio-reconciler-integration"
+  - pjName: "post-latest-istio-reconciler-integration"
+  - pjName: "pre-latest-istio-reconciler-integration"
+  - pjName: "pre-main-istio-reconciler-integration"      
