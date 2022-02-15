@@ -23,10 +23,6 @@ function load_env() {
     # shellcheck disable=SC2046
     export $(xargs < "${ENV_FILE}")
   fi
-
-  if [[ -z "${KYMA_VERSION}" ]]; then
-    export KYMA_VERSION="main"
-  fi
 }
 
 function install_prereq() {

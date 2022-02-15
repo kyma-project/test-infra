@@ -137,6 +137,8 @@ presubmits: # runs on PRs
                 value: "evaluation"
               - name: GO11MODULE
                 value: "on"
+              - name: KYMA_VERSION
+                value: "main"
               - name: TEST_NAME
                 value: "istio"
             resources:
@@ -187,6 +189,8 @@ presubmits: # runs on PRs
                 value: "evaluation"
               - name: GO11MODULE
                 value: "on"
+              - name: KYMA_VERSION
+                value: "main"
               - name: TEST_NAME
                 value: "ory"
             resources:
@@ -244,6 +248,8 @@ presubmits: # runs on PRs
                 value: "on"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
+              - name: KYMA_VERSION
+                value: "main"
               - name: TEST_NAME
                 value: "ory"
             resources:
@@ -480,6 +486,8 @@ postsubmits: # runs on main
                 value: "evaluation"
               - name: GO11MODULE
                 value: "on"
+              - name: KYMA_VERSION
+                value: "2.0.4"
               - name: TEST_NAME
                 value: "istio"
             resources:
@@ -530,6 +538,8 @@ postsubmits: # runs on main
                 value: "evaluation"
               - name: GO11MODULE
                 value: "on"
+              - name: KYMA_VERSION
+                value: "main"
               - name: TEST_NAME
                 value: "istio"
             resources:
