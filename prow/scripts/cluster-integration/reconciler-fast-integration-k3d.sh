@@ -29,17 +29,14 @@ function prereq_test() {
   export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${HOME}/prow/scripts/cluster-integration/helpers"
   export CONTROL_PLANE_RECONCILER_DIR="${HOME}/control-plane/tools/reconciler"
 
-  echo "home:"
-  ls "${HOME}"
+  echo "current:"
+  ls
 
-  echo "/:"
-  ls "/"
+  echo "/home:"
+  ls "/home"
 
   echo "/root:"
   ls "/root"
-
-  echo "~/:"
-  ls "~/"
 
   # shellcheck source=prow/scripts/lib/log.sh
   source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
