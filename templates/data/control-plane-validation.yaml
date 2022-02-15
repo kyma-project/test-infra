@@ -17,7 +17,6 @@ templates:
                   name: "pre-control-plane-validate-dockerfiles"
                   run_if_changed: ".*Dockerfile$"
                   command: "/bin/bash"
-                  optional: true
                   args: 
                     - "-c"
                     - "shopt -s globstar;
