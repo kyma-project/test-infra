@@ -109,6 +109,8 @@ presubmits: # runs on PRs
             env:
               - name: GO11MODULE
                 value: "on"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
               - name: KYMA_TEST_SOURCE
                 value: "latest-release"
             resources:

@@ -112,7 +112,6 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
 trap cleanup exit INT
 
-
 # Fetch latest Kyma2 release
 kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
 export KYMA_UPGRADE_SOURCE="${kyma_get_last_release_version_return_version:?}"
@@ -120,7 +119,6 @@ log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_UP
 
 log::info "Preparing environment variables for the instance"
 envVars=(
-  KYMA_MAJOR_VERSION
   KYMA_PROJECT_DIR
   KYMA_UPGRADE_SOURCE
 )
@@ -143,6 +141,6 @@ log::info "Copying Test-infra to the instance"
 utils::compress_send_to_vm "${ZONE}" "${INSTANCE_NAME}" "/home/prow/go/src/github.com/kyma-project/test-infra" "~/test-infra"
 
 log::info "Triggering the installation and tests"
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "reconciler-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/reconciler-fast-integration-k3d.sh"
+gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "${INSTANCE_NAME}" < "${SCRIPT_DIR}/cluster-integration/reconciler-fast-integration-k3d.sh"
 
 log::success "all done"
