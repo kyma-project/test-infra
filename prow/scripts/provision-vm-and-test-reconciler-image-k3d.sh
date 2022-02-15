@@ -123,11 +123,6 @@ envVars=(
   KYMA_UPGRADE_SOURCE
 )
 
-log::info "Copying envVars to the instance"
-utils::save_env_file "${envVars[@]}"
-#shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "${INSTANCE_NAME}" ".env" "~/.env"
-
 log::info "Copying Kyma to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "${INSTANCE_NAME}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
@@ -139,6 +134,11 @@ utils::compress_send_to_vm "${ZONE}" "${INSTANCE_NAME}" "/home/prow/go/src/githu
 log::info "Copying Test-infra to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "${INSTANCE_NAME}" "/home/prow/go/src/github.com/kyma-project/test-infra" "~/test-infra"
+
+log::info "Copying envVars to the instance"
+utils::save_env_file "${envVars[@]}"
+#shellcheck disable=SC2088
+utils::send_to_vm "${ZONE}" "${INSTANCE_NAME}" ".env" "~/.env"
 
 log::info "Triggering the installation and tests"
 gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "${INSTANCE_NAME}" < "${SCRIPT_DIR}/cluster-integration/reconciler-fast-integration-k3d.sh"

@@ -8,6 +8,17 @@ readonly GO_VERSION=1.17.5
 readonly PG_MIGRATE_VERSION=v4.15.1
 readonly INSTALL_DIR="/usr/local/bin"
 
+function load_env() {
+  ENV_FILE=".env"
+
+  cat "${ENV_FILE}"
+
+  if [ -f "${ENV_FILE}" ]; then
+    # shellcheck disable=SC2046
+    export $(xargs < "${ENV_FILE}")
+  fi
+}
+
 function prereq_test() {
   command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
   command -v npm >/dev/null 2>&1 || { echo >&2 "npm not found"; exit 1; }
@@ -18,8 +29,6 @@ function prereq_test() {
 
   echo "KYMA_UPGRADE_SOURCE: ${KYMA_UPGRADE_SOURCE}"
   echo "KYMA_PROJECT_DIR: ${KYMA_PROJECT_DIR}"
-
-  cat "~/.env"
 
   export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
   export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
@@ -60,6 +69,9 @@ function run_fast_integration() {
         exit 1
     fi
 }
+
+# load env variables
+load_env
 
 # Initialize pre-requisites
 prereq_test
