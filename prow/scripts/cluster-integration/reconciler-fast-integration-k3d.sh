@@ -25,10 +25,10 @@ function prereq_test() {
   command -v k3d >/dev/null 2>&1 || { echo >&2 "k3d not found"; exit 1; }
 
   export HOME_DIR="$PWD"
-  export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
-  export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
-  export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${KYMA_PROJECT_DIR}/prow/scripts/cluster-integration/helpers"
-  export CONTROL_PLANE_RECONCILER_DIR="${KYMA_PROJECT_DIR}/control-plane/tools/reconciler"
+  export TEST_INFRA_SOURCES_DIR="${HOME_DIR}/test-infra"
+  export KYMA_SOURCES_DIR="${HOME_DIR}/kyma"
+  export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${HOME_DIR}/prow/scripts/cluster-integration/helpers"
+  export CONTROL_PLANE_RECONCILER_DIR="${HOME_DIR}/control-plane/tools/reconciler"
 
   echo "current:"
   ls
