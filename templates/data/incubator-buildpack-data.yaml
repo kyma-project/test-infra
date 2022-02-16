@@ -204,23 +204,6 @@ templates:
                     - milv_jobConfig
       - to: ../prow/jobs/incubator/reconciler/reconciler.yaml
         localSets:
-          jellyfish_namespace:
-            env:
-              KCP_GARDENER_NAMESPACE: "garden-jellyfish"
-              GARDENER_KYMA_PROW_PROJECT_NAME: "jellyfish"
-              GARDENER_KYMA_PROW_KUBECONFIG: "/etc/credentials/gardener-jellyfish/kubeconfig"
-              GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME: "kyma-gcp-workloads"
-              GARDENER_PROVIDER: "gcp"
-              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
-              GARDENER_REGION: "europe-west4"
-              GARDENER_ZONES: "europe-west4-b"
-            volumes:
-              - name: gardener-jellyfish-kubeconfig
-                secret:
-                  secretName: gardener-jellyfish-kubeconfig
-            volumeMounts:
-              - name: gardener-jellyfish-kubeconfig
-                mountPath: /etc/credentials/gardener-jellyfish
           command_integration:
             annotations:
               pipeline.clusterprovisioning: kyma cli

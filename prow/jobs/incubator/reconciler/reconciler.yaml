@@ -695,6 +695,8 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-cluster-version: "true"
+        preset-gardener-gcp-kyma-integration: "true"
+        preset-kyma-cli-stable: "true"
         preset-log-collector-slack-token: "true"
       cron: "0 8 * * 1"
       skip_report: false
@@ -717,29 +719,16 @@ periodics: # runs on schedule
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-load-test.sh"
             env:
-              - name: GARDENER_KYMA_PROW_KUBECONFIG
-                value: "/etc/credentials/gardener-jellyfish/kubeconfig"
-              - name: GARDENER_KYMA_PROW_PROJECT_NAME
-                value: "jellyfish"
-              - name: GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
-                value: "kyma-gcp-workloads"
-              - name: GARDENER_PROVIDER
-                value: "gcp"
               - name: GARDENER_REGION
                 value: "europe-west4"
               - name: GARDENER_ZONES
                 value: "europe-west4-b"
-              - name: KCP_GARDENER_NAMESPACE
-                value: "garden-jellyfish"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
                 memory: 3Gi
                 cpu: 2
-            volumeMounts:
-              - name: gardener-jellyfish-kubeconfig
-                mountPath: /etc/credentials/gardener-jellyfish
         tolerations:
           - key: dedicated
             operator: Equal
@@ -747,8 +736,6 @@ periodics: # runs on schedule
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-        volumes:
-          - name: gardener-jellyfish-kubeconfig
     - name: nightly-main-reconciler
       annotations:
         description: "Creates and installs reconciler from main every night."
