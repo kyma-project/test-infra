@@ -53,7 +53,8 @@ function prereq_test() {
 function provision_k3d() {
   log::banner "Provisioning k3d cluster"
   kyma provision k3d --ci --k3d-arg="--api-port=${INSTANCE_INTERNAL_IP}:6555"
-  export CLUSTER_DOMAIN="${INSTANCE_INTERNAL_IP}"
+  # export CLUSTER_DOMAIN="${INSTANCE_INTERNAL_IP}"
+  export CLUSTER_DOMAIN="c-18cb528.kyma-dev.shoot.canary.k8s-hana.ondemand.com"
 }
 
 function run_fast_integration() {
