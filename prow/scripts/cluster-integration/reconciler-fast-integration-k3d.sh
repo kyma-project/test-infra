@@ -100,4 +100,6 @@ reconciler::initialize_test_pod
 # Run a test pod from where the reconciliation will be triggered
 reconciler::reconcile_kyma
 
+log::info "starting fi tests..."
+# Run fast-integration tests
 make_fast_integration "ci"

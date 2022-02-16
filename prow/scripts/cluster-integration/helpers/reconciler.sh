@@ -178,6 +178,7 @@ function reconciler::reconcile_kyma() {
       kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler -c mothership-reconciler --tail -1
       exit 1
   fi
+  log::info "reconcile completing..."
   set -e
 }
 
