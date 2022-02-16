@@ -61,4 +61,16 @@ reconciler::export_shoot_cluster_kubeconfig
 # Deploy reconciler
 log::banner "Deploying Reconciler for load test"
 cd "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"  || { echo "Failed to change dir to: ${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"; exit 1; }
-kubectl apply -f resources/reconciler-load-test.yaml
+
+mothership_latest_commit = $(curl  --silent "https://api.github.com/repos/kyma-incubator/reconciler/commits/main" | jq -r '.sha')
+mothership_tag = "${mothership_latest_commit::8}"
+mock_component_tag =
+sed -i -e "s/mothership:.\\{8\\}/mothership:${mothership_tag}/g" resources/reconciler-load-test.yaml
+sed -i -e "s/component:.\\{8\\}/component:${mock_component_tag}/g" resources/reconciler-load-test.yaml
+
+echo "*************Current reconciler Image to be used**************"
+cat resources/reconciler-load-test.yaml | grep -o 'mothership:.\\{8\\}'
+cat resources/reconciler-load-test.yaml | grep -o 'component:.\\{8\\}'
+echo "**************************************************************"
+
+#kubectl apply -f resources/reconciler-load-test.yaml
