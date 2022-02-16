@@ -326,7 +326,7 @@ templates:
                   name: "pre-latest-istio-reconciler-integration"
                   optional: true
                   # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((Dockerfile.cr\\S+|pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  run_if_changed: "^((.*Dockerfile.cr\\S+|pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-guard-bot-github-token: "true"
@@ -351,7 +351,7 @@ templates:
                   name: "pre-main-istio-reconciler-integration"
                   optional: true
                   # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((Dockerfile.cr\\S+|pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  run_if_changed: "^((.*Dockerfile.cr\\S+|pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-guard-bot-github-token: "true"
@@ -489,7 +489,7 @@ templates:
                   name: "post-latest-istio-reconciler-integration"
                   optional: true
                   # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((Dockerfile.cr\\S+|pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  run_if_changed: "^((.*Dockerfile.cr\\S+|pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-guard-bot-github-token: "true"
@@ -514,7 +514,7 @@ templates:
                   name: "post-main-istio-reconciler-integration"
                   optional: true
                   # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((Dockerfile.cr\\S+|pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  run_if_changed: "^((.*Dockerfile.cr\\S+|pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-guard-bot-github-token: "true"
