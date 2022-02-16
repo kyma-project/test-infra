@@ -179,7 +179,7 @@ function reconciler::reconcile_kyma() {
       exit 1
   fi
   log::info "reconcile completing..."
-  set -e
+#  set -e
 }
 
 # Only triggers reconciliation of Kyma
