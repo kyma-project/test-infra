@@ -718,7 +718,7 @@ periodics: # runs on schedule
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-load-test.sh"
             env:
               - name: GARDENER_KYMA_PROW_KUBECONFIG
-                value: "/etc/credentials/gardener-kyma-prow/kubeconfig"
+                value: "/etc/credentials/gardener-jellyfish/kubeconfig"
               - name: GARDENER_KYMA_PROW_PROJECT_NAME
                 value: "jellyfish"
               - name: GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
@@ -738,8 +738,8 @@ periodics: # runs on schedule
                 memory: 3Gi
                 cpu: 2
             volumeMounts:
-              - name: gardener-kyma-prow-kubeconfig
-                mountPath: /etc/credentials/gardener-kyma-prow
+              - name: gardener-jellyfish-kubeconfig
+                mountPath: /etc/credentials/gardener-jellyfish
         tolerations:
           - key: dedicated
             operator: Equal
@@ -748,7 +748,7 @@ periodics: # runs on schedule
         nodeSelector:
             dedicated: "high-cpu"
         volumes:
-          - name: gardener-kyma-prow-kubeconfig
+          - name: gardener-jellyfish-kubeconfig
     - name: nightly-main-reconciler
       annotations:
         description: "Creates and installs reconciler from main every night."
