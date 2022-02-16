@@ -69,7 +69,7 @@ sed -i "s/reconciler\/component:.\\{8\\}/reconciler\/component:${mock_component_
 
 echo "*************Current reconciler Image to be used**************"
 cat ./resources/reconciler-load-test.yaml | grep -o 'mothership:.\{8\}'
-cat ./resources/reconciler-load-test.yaml | grep -o 'reconciler\/component:.\{8\}' | head -1
+cat ./resources/reconciler-load-test.yaml | grep -o 'reconciler\/component:.*' | head -1
 echo "**************************************************************"
 
 #kubectl apply -f resources/reconciler-load-test.yaml
