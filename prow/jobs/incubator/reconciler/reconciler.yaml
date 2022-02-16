@@ -693,6 +693,9 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "reconciler-load-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-cluster-version: "true"
+        preset-gardener-gcp-kyma-integration: "true"
+        preset-kyma-cli-stable: "true"
       cron: "0 8 * * 1"
       skip_report: false
       decorate: true
@@ -713,6 +716,13 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-load-test.sh"
+            env:
+              - name: GARDENER_REGION
+                value: "europe-west4"
+              - name: GARDENER_ZONES
+                value: "europe-west4-b"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
                 memory: 3Gi
