@@ -113,7 +113,9 @@ utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 log::info "### Run pre-upgrade tests"
 gardener::pre_upgrade_test_fast_integration_kyma
 
-# Upgrade kyma to main branch
+# Upgrade kyma to main branch with latest stable cli
+kyma::install_cli 
+
 export KYMA_SOURCE="main"
 log::info "### Installing Kyma $KYMA_SOURCE"
 
