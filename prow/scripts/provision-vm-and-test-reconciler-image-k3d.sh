@@ -113,7 +113,7 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 export INSTANCE_INTERNAL_IP=$(gcloud compute instances list --filter="${INSTANCE_NAME}" --format "get(networkInterfaces[0].networkIP)")
 log::info "Instance internal IP: ${INSTANCE_INTERNAL_IP}"
 
-trap cleanup exit INT
+#trap cleanup exit INT
 
 # Fetch latest Kyma2 release
 kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
