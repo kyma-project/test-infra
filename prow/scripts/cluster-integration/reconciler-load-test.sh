@@ -67,7 +67,9 @@ mock_component_tag="todo"
 sed -i "s/mothership:.\\{8\\}/mothership:${mothership_tag}/g" ./resources/reconciler-load-test.yaml
 sed -i "s/component:.\\{8\\}/component:${mock_component_tag}/g" ./resources/reconciler-load-test.yaml
 
-log::banner cat ./resources/reconciler-load-test.yaml | grep -o 'mothership:.\\{8\\}'
-log::banner cat ./resources/reconciler-load-test.yaml | grep -o 'component:.\\{8\\}'
+echo "*************Current reconciler Image to be used**************"
+cat ./resources/reconciler-load-test.yaml | grep -o 'mothership:.\\{8\\}'
+cat ./resources/reconciler-load-test.yaml | grep -o 'component:.\\{8\\}'
+echo "**************************************************************"
 
 #kubectl apply -f resources/reconciler-load-test.yaml
