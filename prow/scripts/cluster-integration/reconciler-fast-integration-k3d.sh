@@ -102,4 +102,4 @@ reconciler::initialize_test_pod
 
 log::info "starting fi tests..."
 # Run fast-integration tests
-make_fast_integration "ci"
+run_fast_integration "ci"
