@@ -717,6 +717,8 @@ periodics: # runs on schedule
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-load-test.sh"
             env:
+              - name: GARDENER_KYMA_PROW_PROJECT_NAME
+                value: "jellyfish"
               - name: GARDENER_REGION
                 value: "europe-west4"
               - name: GARDENER_ZONES

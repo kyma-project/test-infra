@@ -207,6 +207,7 @@ templates:
           jellyfish_namespace:
             env:
               KCP_GARDENER_NAMESPACE: "garden-jellyfish"
+              GARDENER_KYMA_PROW_PROJECT_NAME: "jellyfish"
           command_integration:
             annotations:
               pipeline.clusterprovisioning: kyma cli
