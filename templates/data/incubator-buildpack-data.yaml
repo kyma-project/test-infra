@@ -554,13 +554,20 @@ templates:
                   name: reconciler-load-test
                   annotations:
                     description: Do reconciler load test
-                  inheritedConfigs:
-                    global:
-                      - extra_refs_test-infra
-                      - disable_testgrid
-                      - jobConfig_slack_jellyfish
-                    local:
-                      - reconciler_load_test_jobConfig
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  cron: "0 8 * * 1" # "At 08:00 on Monday."
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                    - image_kyma-integration
+                    - jobConfig_slack_jellyfish
+                  local:
+                    - reconciler_load_test_jobConfig
               - jobConfig:
                   name: nightly-main-reconciler
                   annotations:

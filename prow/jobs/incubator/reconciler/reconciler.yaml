@@ -680,6 +680,50 @@ periodics: # runs on schedule
           - name: kyma-bot-github-token
             secret:
               secretName: kyma-bot-github-token
+    - name: reconciler-load-test
+      annotations:
+        description: "Do reconciler load test"
+        pipeline.clusterprovisioning: "reconciler"
+        pipeline.installer: "reconciler"
+        pipeline.platform: "gardener_gcp"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "periodic"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "reconciler-load-test"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      cron: "0 8 * * 1"
+      skip_report: false
+      decorate: true
+      decoration_config:
+        grace_period: 600000000000
+        timeout: 14400000000000
+      cluster: untrusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      reporter_config:
+        slack:
+          channel: jellyfish-notifications
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler_load_test.sh"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: nightly-main-reconciler
       annotations:
         description: "Creates and installs reconciler from main every night."
