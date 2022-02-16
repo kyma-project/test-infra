@@ -271,6 +271,14 @@ templates:
               pipeline.installer: reconciler
               pipeline.test: "fast-integration"
               pipeline.clusterprovisioning: reconciler
+          reconciler_load_test_jobConfig:
+            privileged: false
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler_load_test.sh"
+            annotations:
+              pipeline.platform: "gardener_gcp"
+              pipeline.installer: reconciler
+              pipeline.test: "fast-integration"
+              pipeline.clusterprovisioning: reconciler
           reconciler_main_nightly_cluster_input_name:
             env:
               INPUT_CLUSTER_NAME: "rec-main"
@@ -542,6 +550,17 @@ templates:
                     - extra_refs_k8s-test-infra
                     - reconciler_image_autobump_jobConfig
                     - github_token_mounts
+              - jobConfig:
+                  name: reconciler-load-test
+                  annotations:
+                    description: Do reconciler load test
+                  inheritedConfigs:
+                    global:
+                      - extra_refs_test-infra
+                      - disable_testgrid
+                      - jobConfig_slack_jellyfish
+                    local:
+                      - reconciler_load_test_jobConfig
               - jobConfig:
                   name: nightly-main-reconciler
                   annotations:
