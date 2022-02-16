@@ -583,13 +583,13 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_periodic
+                    - gardener_gcp_job
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_kyma-integration
                     - jobConfig_slack_jellyfish
                   local:
                     - reconciler_load_test_jobConfig
-                    - jellyfish_namespace
               - jobConfig:
                   name: nightly-main-reconciler
                   annotations:
