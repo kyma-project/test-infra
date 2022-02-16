@@ -695,8 +695,6 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-cluster-version: "true"
-        preset-gardener-gcp-kyma-integration: "true"
-        preset-kyma-cli-stable: "true"
         preset-log-collector-slack-token: "true"
       cron: "0 8 * * 1"
       skip_report: false

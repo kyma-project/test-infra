@@ -211,6 +211,9 @@ templates:
               GARDENER_KYMA_PROW_KUBECONFIG: "/etc/credentials/gardener-kyma-prow/kubeconfig"
               GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME: "kyma-gcp-workloads"
               GARDENER_PROVIDER: "gcp"
+              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
+              GARDENER_REGION: "europe-west4"
+              GARDENER_ZONES: "europe-west4-b"
             volumes:
               - name: gardener-kyma-prow-kubeconfig
                 secret:
@@ -580,7 +583,6 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_periodic
-                    - gardener_gcp_job
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_kyma-integration
