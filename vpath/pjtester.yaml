@@ -4,4 +4,4 @@ pjNames:
 prConfigs:
   kyma-project:
     control-plane:
-      prNumber: 1355
+      prNumber: 1333
