@@ -65,11 +65,11 @@ mothership_latest_commit=$(curl  --silent "https://api.github.com/repos/kyma-inc
 mothership_tag="${mothership_latest_commit::8}"
 mock_component_tag="todo"
 sed -i "s/mothership:.\\{8\\}/mothership:${mothership_tag}/g" ./resources/reconciler-load-test.yaml
-sed -i "s/component:.\\{8\\}/component:${mock_component_tag}/g" ./resources/reconciler-load-test.yaml
+sed -i "s/reconciler\/component:.\\{8\\}/reconciler\/component:${mock_component_tag}/g" ./resources/reconciler-load-test.yaml
 
 echo "*************Current reconciler Image to be used**************"
-cat ./resources/reconciler-load-test.yaml | grep -o 'mothership:.\\{8\\}'
-cat ./resources/reconciler-load-test.yaml | grep -o 'component:.\\{8\\}'
+cat ./resources/reconciler-load-test.yaml | grep -o 'mothership:.\{8\}'
+cat ./resources/reconciler-load-test.yaml | grep -o 'reconciler\/component:.\{8\}' | head -1
 echo "**************************************************************"
 
 #kubectl apply -f resources/reconciler-load-test.yaml
