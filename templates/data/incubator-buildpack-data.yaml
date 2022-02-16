@@ -562,6 +562,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_periodic
+                    - gardener_gcp_job
                     - extra_refs_test-infra
                     - disable_testgrid
                     - image_kyma-integration
