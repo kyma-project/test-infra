@@ -721,6 +721,8 @@ periodics: # runs on schedule
                 value: "europe-west4"
               - name: GARDENER_ZONES
                 value: "europe-west4-b"
+              - name: KCP_GARDENER_NAMESPACE
+                value: "garden-jellyfish"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:

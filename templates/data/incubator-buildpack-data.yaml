@@ -205,7 +205,8 @@ templates:
       - to: ../prow/jobs/incubator/reconciler/reconciler.yaml
         localSets:
           jellyfish_namespace:
-            KCP_GARDENER_NAMESPACE: "garden-jellyfish"
+            env:
+              KCP_GARDENER_NAMESPACE: "garden-jellyfish"
           command_integration:
             annotations:
               pipeline.clusterprovisioning: kyma cli
