@@ -204,6 +204,8 @@ templates:
                     - milv_jobConfig
       - to: ../prow/jobs/incubator/reconciler/reconciler.yaml
         localSets:
+          jellyfish_namespace:
+            KCP_GARDENER_NAMESPACE: "garden-jellyfish"
           command_integration:
             annotations:
               pipeline.clusterprovisioning: kyma cli
@@ -569,6 +571,7 @@ templates:
                     - jobConfig_slack_jellyfish
                   local:
                     - reconciler_load_test_jobConfig
+                    - jellyfish_namespace
               - jobConfig:
                   name: nightly-main-reconciler
                   annotations:

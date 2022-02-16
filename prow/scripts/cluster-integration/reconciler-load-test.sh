@@ -50,7 +50,7 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-export INPUT_CLUSTER_NAME="rec-load-test"
+export INPUT_CLUSTER_NAME="rec-lt"
 
 # Provisioning gardener long lasting cluster
 reconciler::provision_cluster
