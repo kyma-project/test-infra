@@ -34,7 +34,7 @@ function reconciler::provision_cluster() {
     export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
     export DOMAIN_NAME="${INPUT_CLUSTER_NAME}"
     export DEFINITION_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/reconciler/shoot-template.yaml"
-
+    set +e
     existing_shoot=$(kubectl get shoot "${INPUT_CLUSTER_NAME}" -ojsonpath="{ .metadata.name }")
 
     if [ -n "${existing_shoot}" ]; then
@@ -48,6 +48,7 @@ function reconciler::provision_cluster() {
       kubectl wait --for condition="ControlPlaneHealthy" --timeout=20m shoot "${INPUT_CLUSTER_NAME}"
       log::info "Cluster ${INPUT_CLUSTER_NAME} was created successfully"
     fi
+    set -e
 }
 
 function reconciler::deploy() {
