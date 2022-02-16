@@ -273,7 +273,7 @@ templates:
               pipeline.clusterprovisioning: reconciler
           reconciler_load_test_jobConfig:
             privileged: false
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler_load_test.sh"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-load-test.sh"
             annotations:
               pipeline.platform: "gardener_gcp"
               pipeline.installer: reconciler
