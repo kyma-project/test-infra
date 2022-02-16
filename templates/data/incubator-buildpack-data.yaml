@@ -562,6 +562,11 @@ templates:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
                   cron: "0 8 * * 1" # "At 08:00 on Monday."
+                  labels:
+                    preset-log-collector-slack-token: "true"
+                    preset-bot-github-token: "true"
+                    preset-gardener-gcp-kyma-integration: "true"
+                    preset-cluster-version: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
