@@ -142,7 +142,7 @@ func main() {
 	wg.Wait()
 	// If exitcode is nil, that means no errors were reported.
 	if exitCode.Load() == nil {
-		contextLogger.LogInfo("all authors present in users map")
+		contextLogger.LogInfo("all authors present in users map or are not members of pull request github organisation")
 		err := contextLogger.Flush()
 		if err != nil {
 			fmt.Println(err.Error())
