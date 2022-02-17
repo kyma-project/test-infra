@@ -66,8 +66,8 @@ cloud.google.com/go/firestore v1.1.0/go.mod h1:ulACoGHTpvq5r8rxGJ4ddJZBZqakUQqCl
 cloud.google.com/go/firestore v1.5.0/go.mod h1:c4nNYR1qdq7eaZ+jSc5fonrQN2k3M7sWATcYTiakjEo=
 cloud.google.com/go/firestore v1.6.1 h1:8rBq3zRjnHx8UtBvaOWqBB1xq9jH6/wltfQLlTMh2Fw=
 cloud.google.com/go/firestore v1.6.1/go.mod h1:asNXNOzBdyVQmEU+ggO8UPodTkEVFW5Qx+rwHnAz+EY=
-cloud.google.com/go/functions v1.1.0 h1:IEFc2WvlU528jHjra82FZyE621q+QXjpzJXuyOrNyjg=
-cloud.google.com/go/functions v1.1.0/go.mod h1:qUQ8w/CUvnSlvhnh+NcOOj7UwVLSqKl3vQMl9yOIaEQ=
+cloud.google.com/go/functions v1.2.0 h1:OvtzOgG+DYJ8bK953nqC9fPBQvpWkKRAp9AbaQ57neY=
+cloud.google.com/go/functions v1.2.0/go.mod h1:GcJkD1Or2hZR4LYn+gm4Yz79KVUSIGJMAIzCZDOkgTc=
 cloud.google.com/go/iam v0.1.0/go.mod h1:vcUNEa0pEm0qRVpmWepWaFMIAI8/hjB9mO8rNCJtF6c=
 cloud.google.com/go/iam v0.1.1 h1:4CapQyNFjiksks1/x7jsvsygFPhihslYk5GptIrlX68=
 cloud.google.com/go/iam v0.1.1/go.mod h1:CKqrcnI/suGpybEHxZ7BMehL0oA4LpdyJdUlTl9jVMw=
