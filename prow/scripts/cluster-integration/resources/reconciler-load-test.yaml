@@ -1,4 +1,9 @@
 ---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: reconciler
+---
 # Source: kcp/charts/component-reconcilers/charts/rma/templates/rbac.yaml
 apiVersion: v1
 kind: ServiceAccount
