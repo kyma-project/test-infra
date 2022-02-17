@@ -11,6 +11,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-main-check-users-map"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-sap-token: "true"
+        preset-bot-github-token: "true"
         preset-prowjob-gcp-logging: "true"
       always_run: true
       optional: true
@@ -45,3 +46,4 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+  
