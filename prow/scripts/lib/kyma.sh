@@ -119,7 +119,10 @@ function kyma::get_last_release_version {
         esac
     done
 
-    utils::check_empty_arg "$githubToken" "Github token was not provided. Exiting..."
+    if [[ -z "$githubToken" ]]; then
+        log::error "Github token is missing, please provide token"
+        exit 1
+    fi
     
     if [[ -n "${searchedVersion}" ]]; then
         # shellcheck disable=SC2034
