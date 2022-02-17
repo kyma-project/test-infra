@@ -226,7 +226,7 @@ function installKyma() {
   mkdir -p /tmp/kyma-gke-upgradeability
   kyma::get_last_release_version \
     -t "${BOT_GITHUB_TOKEN}" \
-    -v "1\.24"
+    -v "1\."
   LAST_RELEASE_VERSION="${kyma_get_last_release_version_return_version:?}"
   if [ -z "$LAST_RELEASE_VERSION" ]; then
     log::error "Couldn't grab latest version from GitHub API, stopping."
