@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "pre-main-check-users-map "
+  - pjName: "pre-main-check-users-map"
     report: true
 prConfigs:
   kyma-project:
