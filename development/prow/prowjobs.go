@@ -45,3 +45,17 @@ func GetPrAuthorForPresubmit() ([]string, error) {
 		return nil, &NotPresubmitError{}
 	}
 }
+
+func GetOrgForPresubmit() (string, error) {
+	// Get data, about prowjob specification from prowjob environment variables set by prow.
+	jobSpec, err := downwardapi.ResolveSpecFromEnv()
+	if err != nil {
+		return "", fmt.Errorf("failed to read JOB_SPEC env, got error: %w", err)
+	}
+	// Get authors for presubmits only.
+	if jobSpec.Type == prowapi.PresubmitJob {
+		return jobSpec.Refs.Org, nil
+	} else {
+		return "", &NotPresubmitError{}
+	}
+}
