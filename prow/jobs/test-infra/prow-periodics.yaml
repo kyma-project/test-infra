@@ -129,7 +129,7 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/label_sync:v20220204-015a65c3fe"
+          - image: "gcr.io/k8s-prow/label_sync:v20220214-667197115e"
             command:
               - "/app/label_sync/app.binary"
             args:
@@ -175,7 +175,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20220204-015a65c3fe"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20220214-667197115e"
             command:
               - "/app/prow/cmd/generic-autobumper/app.binary"
             args:
@@ -209,7 +209,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20220204-015a65c3fe"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20220214-667197115e"
             command:
               - "/app/prow/cmd/generic-autobumper/app.binary"
             args:

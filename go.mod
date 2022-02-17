@@ -17,18 +17,22 @@ replace (
 )
 
 require (
-	cloud.google.com/go/bigquery v1.27.0
+	cloud.google.com/go/bigquery v1.28.0
 	cloud.google.com/go/firestore v1.6.1
 	cloud.google.com/go/functions v1.1.0
 	cloud.google.com/go/logging v1.4.2
-	cloud.google.com/go/pubsub v1.17.1
-	cloud.google.com/go/storage v1.19.0
+	cloud.google.com/go/pubsub v1.18.0
+	cloud.google.com/go/storage v1.20.0
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
+	github.com/containerd/containerd v1.5.9
+	github.com/containerd/typeurl v1.0.2
+	github.com/docker/docker v20.10.12+incompatible // indirect
 	github.com/cloudevents/sdk-go/v2 v2.8.0
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
-	github.com/gardener/component-cli v0.34.0
+	github.com/fsouza/go-dockerclient v1.7.8
+	github.com/gardener/component-cli v0.36.0
 	github.com/gardener/component-spec/bindings-go v0.0.56
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-logr/logr v0.4.0
@@ -58,7 +62,7 @@ require (
 	go.uber.org/zap v1.19.0
 	golang.org/x/net v0.0.0-20211118161319-6a13c67c3ce4
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
-	google.golang.org/api v0.66.0
+	google.golang.org/api v0.68.0
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	k8s.io/api v0.22.2
