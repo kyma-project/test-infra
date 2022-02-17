@@ -96,19 +96,40 @@ function kyma::update_hosts {
 # kyma::get_last_release_version returns latest Kyma release version
 #
 # Arguments:
-#   $1 - GitHub token
+#   t - GitHub token
+#   v - searched version as a regular expression, e.g. "^1\." (optional)
 # Returns:
 #   Last Kyma release version
 function kyma::get_last_release_version {
-    if [[ -z "$1" ]]; then
-        log::error "Github token is missing, please provide token"
-        exit 1
-    fi
-    
-    version=$(curl --silent --fail --show-error -H "Authorization: token ${1}" "https://api.github.com/repos/kyma-project/kyma/releases" \
-        | jq -r "del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(\".\") | map(tonumber)) | reverse | [ .[] | select(.tag_name|test(\"^1\\\.23\\\.\"))] | .[0].tag_name")
 
-    echo "${version}"
+    local OPTIND
+    local githubToken
+    local searchedVersion=""
+
+    while getopts ":t:v:" opt; do
+        case $opt in
+            t)
+                githubToken="$OPTARG" ;;
+            v)
+                searchedVersion="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+    done
+
+    utils::check_empty_arg "$githubToken" "Github token was not provided. Exiting..."
+    
+    if [[ -n "${searchedVersion}" ]]; then
+        # shellcheck disable=SC2034
+        kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
+            | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | [.[]| select( .tag_name | match("'"${searchedVersion}"'"))] | .[-1].tag_name')
+    else
+    # shellcheck disable=SC2034
+        kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
+            | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].tag_name')
+    fi
 }
 
 kyma::install_cli() {
