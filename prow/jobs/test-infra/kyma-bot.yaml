@@ -28,7 +28,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:PR-4048"
+          - image: "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-4989"
             imagePullPolicy: Always
             securityContext:
               privileged: true
@@ -45,4 +45,3 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-  
