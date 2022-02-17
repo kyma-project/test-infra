@@ -50,7 +50,7 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-export INPUT_CLUSTER_NAME="rec-lt"
+export INPUT_CLUSTER_NAME="rec-wkly-lt"
 
 # Provisioning gardener long lasting cluster
 reconciler::provision_cluster
