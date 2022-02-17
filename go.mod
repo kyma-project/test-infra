@@ -26,10 +26,10 @@ require (
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
+	github.com/cloudevents/sdk-go/v2 v2.8.0
 	github.com/containerd/containerd v1.5.9
 	github.com/containerd/typeurl v1.0.2
 	github.com/docker/docker v20.10.12+incompatible // indirect
-	github.com/cloudevents/sdk-go/v2 v2.8.0
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
 	github.com/fsouza/go-dockerclient v1.7.8
 	github.com/gardener/component-cli v0.36.0
