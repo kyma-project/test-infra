@@ -1,5 +1,4 @@
 {{- define "commonProwJob" }}
-    {{- if releaseMatches (default .JobConfig.NextRelease .JobConfig.Release) .JobConfig.release_since .JobConfig.release_until}}
     {{- if .JobConfig.repository}}
     - name: {{default .JobConfig.repository .JobConfig.custom_projectname}}{{if .JobConfig.whitesource_release}}-{{.JobConfig.Release}}{{end}}-whitesource-scan
     {{- else}}{{fail ".JobConfig.repository is not defined"}}
@@ -141,7 +140,6 @@
             readOnly: {{ .readOnly}}
           {{- end}}
         {{- end}}
-    {{- end}}
 {{- end -}}
 
 {{- $next_release := .Global.nextRelease }}
@@ -152,7 +150,6 @@ periodics: # runs on schedule
   {{- range .Jobs -}}
   {{- if not .JobConfig.whitesource_release}}
   {{- if .JobConfig.type_periodic }}
-  {{- set .JobConfig "NextRelease" $next_release}}
   {{- template "commonProwJob" .}}
   {{- end}}
   {{- end}}
@@ -163,11 +160,12 @@ periodics: # runs on schedule
   {{- range .Jobs -}}
   {{- if .JobConfig.type_periodic }}
   {{- if .JobConfig.whitesource_release}}
-  {{- $JobConf := set .JobConfig "NextRelease" $next_release}}
+  {{- if releaseMatches $release .JobConfig.release_since .JobConfig.release_until}}
   {{- $JobConf := set .JobConfig "Release" $release}}
   {{- $JobConf := set .JobConfig "Product" "kyma-release"}}
   {{- $JobConfigDict := dict "JobConfig" $JobConf}}
   {{- template "commonProwJob" $JobConfigDict }}
+  {{- end}}
   {{- end}}
   {{- end}}
   {{- end}}
@@ -178,11 +176,12 @@ periodics: # runs on schedule
   {{- range .Jobs -}}
   {{- if .JobConfig.type_periodic }}
   {{- if .JobConfig.whitesource_release}}
-  {{- $JobConf := set .JobConfig "NextRelease" $next_release}}
+  {{- if releaseMatches $release_previous  .JobConfig.release_since .JobConfig.release_until}}
   {{- $JobConf := set .JobConfig "Release" $release_previous}}
   {{- $JobConf := set .JobConfig "Product" "kyma-release-previous"}}
   {{- $JobConfigDict := dict "JobConfig" $JobConf}}
   {{- template "commonProwJob" $JobConfigDict }}
+  {{- end}}
   {{- end}}
   {{- end}}
   {{- end}}
