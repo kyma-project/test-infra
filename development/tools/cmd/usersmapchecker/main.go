@@ -135,6 +135,8 @@ func main() {
 				// Set exitcode to 1, to report failed prowjob execution.
 				exitCode.Store(1)
 			}(&wg, author, &exitCode)
+		} else {
+			wg.Done()
 		}
 	}
 	wg.Wait()
