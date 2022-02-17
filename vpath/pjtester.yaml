@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "pre-main-check-users-map "
+    report: true
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 13404
