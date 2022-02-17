@@ -162,6 +162,8 @@ branch-protection:
               protect: true
             develop:
               protect: true
+            load-test-mock:
+              protect: true
 
 tide:
   sync_period: 2m
