@@ -159,7 +159,7 @@ periodics: # runs on schedule
   {{- if .JobConfig.whitesource_release}}
   {{- if releaseMatches $release .JobConfig.release_since .JobConfig.release_until}}
   {{- $JobConf := set .JobConfig "product" "kyma-release"}}
-  {{- $JobConf := set .JobConfig "Release" $release}}
+  {{- $JobConf := set $JobConf "Release" $release}}
   {{- $JobConfigDict := dict "JobConfig" $JobConf}}
   {{- template "commonProwJob" $JobConfigDict }}
   {{- end}}
@@ -175,7 +175,7 @@ periodics: # runs on schedule
   {{- if .JobConfig.whitesource_release}}
   {{- if releaseMatches $release_previous  .JobConfig.release_since .JobConfig.release_until}}
   {{- $JobConf := set .JobConfig "product" "kyma-release-previous"}}
-  {{- $JobConf := set .JobConfig "Release" $release_previous}}
+  {{- $JobConf := set $JobConf "Release" $release_previous}}
   {{- $JobConfigDict := dict "JobConfig" $JobConf}}
   {{- template "commonProwJob" $JobConfigDict }}
   {{- end}}
