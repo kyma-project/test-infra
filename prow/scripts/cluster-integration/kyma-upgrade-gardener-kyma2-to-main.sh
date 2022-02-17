@@ -122,6 +122,8 @@ log::info "### Installing Kyma $KYMA_SOURCE"
 kymaMain_install_dir="$KYMA_SOURCES_DIR/kymaMain"
 kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kymaMain_install_dir" -u "true"
 
+kubectl label service monitoring-prometheus-node-exporter app-
+kubectl delete servicemonitors.monitoring.coreos.com monitoring-node-exporter
 
 log::info "### Run post-upgrade tests"
 gardener::post_upgrade_test_fast_integration_kyma
