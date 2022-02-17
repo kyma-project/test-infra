@@ -39,6 +39,7 @@ templates:
               - jobConfig:
                   repository: "control-plane"
                   language: "golang-mod"
+                  product: "kyma-control-plane"
                   project: "kyma-project"
                   subprojects: "true"
                   base_ref: "main"
@@ -205,6 +206,7 @@ templates:
               - jobConfig:
                   repository: "reconciler"
                   language: "golang-mod"
+                  product: "kyma-control-plane"
                   project: "kyma-incubator"
                   base_ref: "main"
                 inheritedConfigs:

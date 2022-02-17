@@ -9,7 +9,7 @@
         {{$key}}: {{quote $value}}
         {{- end}}
       {{- end}}
-      {{- if or .JobConfig.labels .JobConfig.project false}}
+      {{- if or .JobConfig.labels .JobConfig.project .JobConfig.product false}}
       labels:
         {{- if .JobConfig.labels}}
         {{- range $key, $value := .JobConfig.labels}}

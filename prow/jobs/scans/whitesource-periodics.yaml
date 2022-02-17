@@ -14,7 +14,7 @@ periodics: # runs on schedule
         preset-whitesource-product-control-plane: "true"
         preset-wssagent-keys: "true"
         preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
-        preset-whitesource-kyma-product: "true"
+        preset-whitesource-kyma-control-plane-product: "true"
       cron: "0 4 * * *"
       skip_report: false
       decorate: true
@@ -604,7 +604,7 @@ periodics: # runs on schedule
         preset-whitesource-product-control-plane: "true"
         preset-wssagent-keys: "true"
         preset-sa-gke-kyma-integration-kyma-incubator-whitesource: "true"
-        preset-whitesource-kyma-product: "true"
+        preset-whitesource-kyma-control-plane-product: "true"
       cron: "0 4 * * *"
       skip_report: false
       decorate: true
