@@ -79,7 +79,7 @@ export COMMON_NAME
 # Install Kyma form latest release
 kyma::get_last_release_version \
     -t "${BOT_GITHUB_TOKEN}" \
-    -v "1.24"
+    -v "1\.24"
 LAST_RELEASE_VERSION="${kyma_get_last_release_version_return_version:?}"
 log::info "### Reading release version from RELEASE_VERSION file, got: ${LAST_RELEASE_VERSION}"
 KYMA_SOURCE="main"  #"${LAST_RELEASE_VERSION}" eventing in kyma 1.23 is not compatible with the test cases, so switch back to last release when kyma 1.24 is available

@@ -148,7 +148,7 @@ function getLastReleaseCandidateVersion() {
 function installKyma() {
     kyma::get_last_release_version \
         -t "${BOT_GITHUB_TOKEN}" \
-        -v "1.24"
+        -v "1\.24"
     LAST_RELEASE_VERSION="${kyma_get_last_release_version_return_version:?}"
     mkdir -p /tmp/kyma-gardener-upgradeability
     if [ -z "$LAST_RELEASE_VERSION" ]; then
