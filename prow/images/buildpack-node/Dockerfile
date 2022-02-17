@@ -1,6 +1,6 @@
 # Basic node buildpack
 
-FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95
+FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20220216-291a93c3
 
 # Commit details
 
