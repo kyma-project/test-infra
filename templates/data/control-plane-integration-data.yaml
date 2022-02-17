@@ -152,6 +152,11 @@ templates:
           reconciler_jobConfig_args:
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
+          reconciler_e2e_latest_release_jobConfig:
+            env:
+              KYMA_TEST_SOURCE: "latest-release"
+            labels:
+              preset-kyma-guard-bot-github-token: "true"
         jobConfigs:
           - repoName: kyma-project/control-plane
             jobs:
@@ -171,3 +176,20 @@ templates:
                   local:
                     - reconciler_e2e_jobConfig
                     - reconciler_jobConfig_args
+              - jobConfig:
+                  name: pre-main-control-plane-reconciler-e2e-latest-release
+                  run_if_changed: "^resources/kcp/values.yaml|^resources/kcp/charts/mothership-reconciler/|^resources/kcp/charts/component-reconcilers/"
+                  optional: true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - gardener_gcp_job
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                    - extra_refs_reconciler
+                    - image_kyma-integration
+                  local:
+                    - reconciler_e2e_jobConfig
+                    - reconciler_jobConfig_args
+                    - reconciler_e2e_latest_release_jobConfig
