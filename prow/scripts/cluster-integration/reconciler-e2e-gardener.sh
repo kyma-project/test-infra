@@ -108,8 +108,11 @@ reconciler::wait_until_test_pod_is_ready
 # Set up test pod environment
 reconciler::initialize_test_pod
 
-# Run a test pod from where the reconciliation will be triggered
-reconciler::reconcile_kyma
+# Trigger the reconciliation through test pod
+reconciler::trigger_kyma_reconcile
+
+# Wait until reconciliation is complete
+reconciler::wait_until_kyma_reconciled
 
 ### Once Kyma is installed run the fast integration test
 log::banner "Executing test"
