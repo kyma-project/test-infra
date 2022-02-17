@@ -19,9 +19,7 @@
         {{- if .JobConfig.project}}
         preset-sa-gke-kyma-integration-{{ .JobConfig.project }}-whitesource: "true"
         {{- end}}
-        {{- if .JobConfig.Product}}
-        preset-whitesource-{{ .JobConfig.Product }}-product: "true"
-        {{ else}}
+        {{- if .JobConfig.product}}
         preset-whitesource-{{ .JobConfig.product }}-product: "true"
         {{- end}}
       {{- end}}
@@ -162,7 +160,7 @@ periodics: # runs on schedule
   {{- if .JobConfig.whitesource_release}}
   {{- if releaseMatches $release .JobConfig.release_since .JobConfig.release_until}}
   {{- $JobConf := set .JobConfig "Release" $release}}
-  {{- $JobConf := set .JobConfig "Product" "kyma-release"}}
+  {{- $JobConf := set .JobConfig "product" "kyma-release"}}
   {{- $JobConfigDict := dict "JobConfig" $JobConf}}
   {{- template "commonProwJob" $JobConfigDict }}
   {{- end}}
@@ -178,7 +176,7 @@ periodics: # runs on schedule
   {{- if .JobConfig.whitesource_release}}
   {{- if releaseMatches $release_previous  .JobConfig.release_since .JobConfig.release_until}}
   {{- $JobConf := set .JobConfig "Release" $release_previous}}
-  {{- $JobConf := set .JobConfig "Product" "kyma-release-previous"}}
+  {{- $JobConf := set .JobConfig "product" "kyma-release-previous"}}
   {{- $JobConfigDict := dict "JobConfig" $JobConf}}
   {{- template "commonProwJob" $JobConfigDict }}
   {{- end}}
