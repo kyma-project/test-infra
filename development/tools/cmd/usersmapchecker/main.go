@@ -118,7 +118,7 @@ func main() {
 	for _, author := range authors {
 		member, _, err := githubComClient.Organizations.IsMember(ctx, org, author)
 		if err != nil {
-
+			contextLogger.LogInfo(fmt.Sprintf("failed check if user %s is an github organisation member", author))
 		}
 		if member {
 			// Use goroutines.
