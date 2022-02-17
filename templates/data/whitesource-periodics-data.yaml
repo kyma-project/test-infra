@@ -4,6 +4,7 @@ templates:
       - to: ../prow/jobs/scans/whitesource-periodics.yaml
         localSets:
           jobConfig_default:
+            product: "kyma"
             privileged: "false"
             cron: "0 4 * * *" # At 04:00 am every day
             command: "bash"
