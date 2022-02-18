@@ -5,3 +5,5 @@ prConfigs:
   kyma-project:
     control-plane:
       prNumber: 1355
+    kyma:
+      prNumber: 13429
