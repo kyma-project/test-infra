@@ -82,6 +82,15 @@ readonly COMMON_NAME_PREFIX="grd"
 utils::generate_commonName -n "${COMMON_NAME_PREFIX}"
 
 export INPUT_CLUSTER_NAME="${utils_generate_commonName_return_commonName:?}"
+
+# set Kyma version to reconcile
+if [[ $KYMA_TEST_SOURCE == "latest-release" ]]; then
+  # Fetch latest Kyma2 release
+  kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
+  export KYMA_UPGRADE_SOURCE="${kyma_get_last_release_version_return_version:?}"
+  log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_UPGRADE_SOURCE}"
+fi
+
 ## ---------------------------------------------------------------------------------------
 ## Prow job execution steps
 ## ---------------------------------------------------------------------------------------
