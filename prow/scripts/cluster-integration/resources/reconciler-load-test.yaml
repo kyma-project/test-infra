@@ -923,9 +923,9 @@ spec:
   type: ClusterIP
   clusterIP: None
   ports:
-  - name: postgresql
-    port: 5432
-    targetPort: postgresql
+    - name: postgresql
+      port: 5432
+      targetPort: postgresql
   selector:
     app: postgresql
     release: "reconciler"
@@ -944,9 +944,9 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - name: postgresql
-    port: 5432
-    targetPort: postgresql
+    - name: postgresql
+      port: 5432
+      targetPort: postgresql
   selector:
     app: postgresql
     release: "reconciler"
@@ -975,40 +975,40 @@ spec:
     spec:
       serviceAccountName: component-reconcilers-rma
       containers:
-      - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-        imagePullPolicy: IfNotPresent
-        args:
-          - reconciler
-          - start
-          - rma
-          - --workspace=/tmp/reconciler
-          - --worker-count=16
-          - --worker-timeout=10m
-          - --retries-max=10
-          - --retries-delay=60s
-        name: reconciler
-        ports:
-        - name: http
-          containerPort: 8080
-          protocol: TCP
-        livenessProbe:
-          httpGet:
-            path: /health/live
-            port: http
-        readinessProbe:
-          httpGet:
-            path: /health/ready
-            port: http
-        resources:
-          {}
-        volumeMounts:
-        - mountPath: /tmp
-          name: workspace
+        - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
+          imagePullPolicy: IfNotPresent
+          args:
+            - reconciler
+            - start
+            - rma
+            - --workspace=/tmp/reconciler
+            - --worker-count=16
+            - --worker-timeout=10m
+            - --retries-max=10
+            - --retries-delay=60s
+          name: reconciler
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+          resources:
+            {}
+          volumeMounts:
+            - mountPath: /tmp
+              name: workspace
       securityContext:
         runAsUser: 2000
       volumes:
-      - emptyDir: {}
-        name: workspace
+        - emptyDir: {}
+          name: workspace
 ---
 # Source: kcp/charts/component-reconcilers/templates/deployment.yaml
 apiVersion: apps/v1
@@ -1035,37 +1035,37 @@ spec:
       nodeSelector:
         {}
       containers:
-      - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-        imagePullPolicy: IfNotPresent
-        args:
-          - reconciler
-          - start
-          - base
-          - --workspace=/tmp/reconciler
-          - --worker-count=50
-        name: reconciler
-        ports:
-        - name: http
-          containerPort: 8080
-          protocol: TCP
-        livenessProbe:
-          httpGet:
-            path: /health/live
-            port: http
-        readinessProbe:
-          httpGet:
-            path: /health/ready
-            port: http
-        resources:
-          {}
-        volumeMounts:
-        - mountPath: /tmp
-          name: workspace
+        - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
+          imagePullPolicy: IfNotPresent
+          args:
+            - reconciler
+            - start
+            - base
+            - --workspace=/tmp/reconciler
+            - --worker-count=50
+          name: reconciler
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+          resources:
+            {}
+          volumeMounts:
+            - mountPath: /tmp
+              name: workspace
       securityContext:
         runAsUser: 2000
       volumes:
-      - emptyDir: {}
-        name: workspace
+        - emptyDir: {}
+          name: workspace
 ---
 # Source: kcp/charts/component-reconcilers/templates/deployment.yaml
 apiVersion: apps/v1
@@ -1092,37 +1092,37 @@ spec:
       nodeSelector:
         {}
       containers:
-      - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-        imagePullPolicy: IfNotPresent
-        args:
-          - reconciler
-          - start
-          - busola-migrator
-          - --workspace=/tmp/reconciler
-          - --worker-count=50
-        name: reconciler
-        ports:
-        - name: http
-          containerPort: 8080
-          protocol: TCP
-        livenessProbe:
-          httpGet:
-            path: /health/live
-            port: http
-        readinessProbe:
-          httpGet:
-            path: /health/ready
-            port: http
-        resources:
-          {}
-        volumeMounts:
-        - mountPath: /tmp
-          name: workspace
+        - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
+          imagePullPolicy: IfNotPresent
+          args:
+            - reconciler
+            - start
+            - busola-migrator
+            - --workspace=/tmp/reconciler
+            - --worker-count=50
+          name: reconciler
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+          resources:
+            {}
+          volumeMounts:
+            - mountPath: /tmp
+              name: workspace
       securityContext:
         runAsUser: 2000
       volumes:
-      - emptyDir: {}
-        name: workspace
+        - emptyDir: {}
+          name: workspace
 ---
 # Source: kcp/charts/component-reconcilers/templates/deployment.yaml
 apiVersion: apps/v1
@@ -1149,37 +1149,37 @@ spec:
       nodeSelector:
         {}
       containers:
-      - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-        imagePullPolicy: IfNotPresent
-        args:
-          - reconciler
-          - start
-          - cleaner
-          - --workspace=/tmp/reconciler
-          - --worker-count=50
-        name: reconciler
-        ports:
-        - name: http
-          containerPort: 8080
-          protocol: TCP
-        livenessProbe:
-          httpGet:
-            path: /health/live
-            port: http
-        readinessProbe:
-          httpGet:
-            path: /health/ready
-            port: http
-        resources:
-          {}
-        volumeMounts:
-        - mountPath: /tmp
-          name: workspace
+        - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
+          imagePullPolicy: IfNotPresent
+          args:
+            - reconciler
+            - start
+            - cleaner
+            - --workspace=/tmp/reconciler
+            - --worker-count=50
+          name: reconciler
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+          resources:
+            {}
+          volumeMounts:
+            - mountPath: /tmp
+              name: workspace
       securityContext:
         runAsUser: 2000
       volumes:
-      - emptyDir: {}
-        name: workspace
+        - emptyDir: {}
+          name: workspace
 ---
 # Source: kcp/charts/component-reconcilers/templates/deployment.yaml
 apiVersion: apps/v1
@@ -1206,37 +1206,37 @@ spec:
       nodeSelector:
         {}
       containers:
-      - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-        imagePullPolicy: IfNotPresent
-        args:
-          - reconciler
-          - start
-          - connectivity-proxy
-          - --workspace=/tmp/reconciler
-          - --worker-count=50
-        name: reconciler
-        ports:
-        - name: http
-          containerPort: 8080
-          protocol: TCP
-        livenessProbe:
-          httpGet:
-            path: /health/live
-            port: http
-        readinessProbe:
-          httpGet:
-            path: /health/ready
-            port: http
-        resources:
-          {}
-        volumeMounts:
-        - mountPath: /tmp
-          name: workspace
+        - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
+          imagePullPolicy: IfNotPresent
+          args:
+            - reconciler
+            - start
+            - connectivity-proxy
+            - --workspace=/tmp/reconciler
+            - --worker-count=50
+          name: reconciler
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+          resources:
+            {}
+          volumeMounts:
+            - mountPath: /tmp
+              name: workspace
       securityContext:
         runAsUser: 2000
       volumes:
-      - emptyDir: {}
-        name: workspace
+        - emptyDir: {}
+          name: workspace
 ---
 # Source: kcp/charts/component-reconcilers/templates/deployment.yaml
 apiVersion: apps/v1
@@ -1263,37 +1263,37 @@ spec:
       nodeSelector:
         {}
       containers:
-      - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-        imagePullPolicy: IfNotPresent
-        args:
-          - reconciler
-          - start
-          - istio-configuration
-          - --workspace=/tmp/reconciler
-          - --worker-count=50
-        name: reconciler
-        ports:
-        - name: http
-          containerPort: 8080
-          protocol: TCP
-        livenessProbe:
-          httpGet:
-            path: /health/live
-            port: http
-        readinessProbe:
-          httpGet:
-            path: /health/ready
-            port: http
-        resources:
-          {}
-        volumeMounts:
-        - mountPath: /tmp
-          name: workspace
+        - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
+          imagePullPolicy: IfNotPresent
+          args:
+            - reconciler
+            - start
+            - istio-configuration
+            - --workspace=/tmp/reconciler
+            - --worker-count=50
+          name: reconciler
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+          resources:
+            {}
+          volumeMounts:
+            - mountPath: /tmp
+              name: workspace
       securityContext:
         runAsUser: 2000
       volumes:
-      - emptyDir: {}
-        name: workspace
+        - emptyDir: {}
+          name: workspace
 ---
 # Source: kcp/charts/component-reconcilers/templates/deployment.yaml
 apiVersion: apps/v1
@@ -1320,37 +1320,37 @@ spec:
       nodeSelector:
         {}
       containers:
-      - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-        imagePullPolicy: IfNotPresent
-        args:
-          - reconciler
-          - start
-          - ory
-          - --workspace=/tmp/reconciler
-          - --worker-count=50
-        name: reconciler
-        ports:
-        - name: http
-          containerPort: 8080
-          protocol: TCP
-        livenessProbe:
-          httpGet:
-            path: /health/live
-            port: http
-        readinessProbe:
-          httpGet:
-            path: /health/ready
-            port: http
-        resources:
-          {}
-        volumeMounts:
-        - mountPath: /tmp
-          name: workspace
+        - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
+          imagePullPolicy: IfNotPresent
+          args:
+            - reconciler
+            - start
+            - ory
+            - --workspace=/tmp/reconciler
+            - --worker-count=50
+          name: reconciler
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+          resources:
+            {}
+          volumeMounts:
+            - mountPath: /tmp
+              name: workspace
       securityContext:
         runAsUser: 2000
       volumes:
-      - emptyDir: {}
-        name: workspace
+        - emptyDir: {}
+          name: workspace
 ---
 # Source: kcp/charts/component-reconcilers/templates/deployment.yaml
 apiVersion: apps/v1
@@ -1377,37 +1377,37 @@ spec:
       nodeSelector:
         {}
       containers:
-      - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-        imagePullPolicy: IfNotPresent
-        args:
-          - reconciler
-          - start
-          - rafter
-          - --workspace=/tmp/reconciler
-          - --worker-count=50
-        name: reconciler
-        ports:
-        - name: http
-          containerPort: 8080
-          protocol: TCP
-        livenessProbe:
-          httpGet:
-            path: /health/live
-            port: http
-        readinessProbe:
-          httpGet:
-            path: /health/ready
-            port: http
-        resources:
-          {}
-        volumeMounts:
-        - mountPath: /tmp
-          name: workspace
+        - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
+          imagePullPolicy: IfNotPresent
+          args:
+            - reconciler
+            - start
+            - rafter
+            - --workspace=/tmp/reconciler
+            - --worker-count=50
+          name: reconciler
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+          resources:
+            {}
+          volumeMounts:
+            - mountPath: /tmp
+              name: workspace
       securityContext:
         runAsUser: 2000
       volumes:
-      - emptyDir: {}
-        name: workspace
+        - emptyDir: {}
+          name: workspace
 ---
 # Source: kcp/charts/component-reconcilers/templates/deployment.yaml
 apiVersion: apps/v1
@@ -1434,37 +1434,37 @@ spec:
       nodeSelector:
         {}
       containers:
-      - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-        imagePullPolicy: IfNotPresent
-        args:
-          - reconciler
-          - start
-          - eventing
-          - --workspace=/tmp/reconciler
-          - --worker-count=50
-        name: reconciler
-        ports:
-        - name: http
-          containerPort: 8080
-          protocol: TCP
-        livenessProbe:
-          httpGet:
-            path: /health/live
-            port: http
-        readinessProbe:
-          httpGet:
-            path: /health/ready
-            port: http
-        resources:
-          {}
-        volumeMounts:
-        - mountPath: /tmp
-          name: workspace
+        - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
+          imagePullPolicy: IfNotPresent
+          args:
+            - reconciler
+            - start
+            - eventing
+            - --workspace=/tmp/reconciler
+            - --worker-count=50
+          name: reconciler
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+          resources:
+            {}
+          volumeMounts:
+            - mountPath: /tmp
+              name: workspace
       securityContext:
         runAsUser: 2000
       volumes:
-      - emptyDir: {}
-        name: workspace
+        - emptyDir: {}
+          name: workspace
 ---
 # Source: kcp/charts/component-reconcilers/templates/deployment.yaml
 apiVersion: apps/v1
@@ -1491,37 +1491,37 @@ spec:
       nodeSelector:
         {}
       containers:
-      - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-        imagePullPolicy: IfNotPresent
-        args:
-          - reconciler
-          - start
-          - serverless
-          - --workspace=/tmp/reconciler
-          - --worker-count=50
-        name: reconciler
-        ports:
-        - name: http
-          containerPort: 8080
-          protocol: TCP
-        livenessProbe:
-          httpGet:
-            path: /health/live
-            port: http
-        readinessProbe:
-          httpGet:
-            path: /health/ready
-            port: http
-        resources:
-          {}
-        volumeMounts:
-        - mountPath: /tmp
-          name: workspace
+        - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
+          imagePullPolicy: IfNotPresent
+          args:
+            - reconciler
+            - start
+            - serverless
+            - --workspace=/tmp/reconciler
+            - --worker-count=50
+          name: reconciler
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+          resources:
+            {}
+          volumeMounts:
+            - mountPath: /tmp
+              name: workspace
       securityContext:
         runAsUser: 2000
       volumes:
-      - emptyDir: {}
-        name: workspace
+        - emptyDir: {}
+          name: workspace
 ---
 # Source: kcp/charts/component-reconcilers/templates/deployment.yaml
 apiVersion: apps/v1
@@ -1548,37 +1548,37 @@ spec:
       nodeSelector:
         {}
       containers:
-      - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-        imagePullPolicy: IfNotPresent
-        args:
-          - reconciler
-          - start
-          - cluster-essentials
-          - --workspace=/tmp/reconciler
-          - --worker-count=50
-        name: reconciler
-        ports:
-        - name: http
-          containerPort: 8080
-          protocol: TCP
-        livenessProbe:
-          httpGet:
-            path: /health/live
-            port: http
-        readinessProbe:
-          httpGet:
-            path: /health/ready
-            port: http
-        resources:
-          {}
-        volumeMounts:
-        - mountPath: /tmp
-          name: workspace
+        - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
+          imagePullPolicy: IfNotPresent
+          args:
+            - reconciler
+            - start
+            - cluster-essentials
+            - --workspace=/tmp/reconciler
+            - --worker-count=50
+          name: reconciler
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+          resources:
+            {}
+          volumeMounts:
+            - mountPath: /tmp
+              name: workspace
       securityContext:
         runAsUser: 2000
       volumes:
-      - emptyDir: {}
-        name: workspace
+        - emptyDir: {}
+          name: workspace
 ---
 # Source: kcp/charts/component-reconcilers/templates/deployment.yaml
 apiVersion: apps/v1
@@ -1605,37 +1605,37 @@ spec:
       nodeSelector:
         {}
       containers:
-      - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-        imagePullPolicy: IfNotPresent
-        args:
-          - reconciler
-          - start
-          - mock
-          - --workspace=/tmp/reconciler
-          - --worker-count=50
-        name: reconciler
-        ports:
-        - name: http
-          containerPort: 8080
-          protocol: TCP
-        livenessProbe:
-          httpGet:
-            path: /health/live
-            port: http
-        readinessProbe:
-          httpGet:
-            path: /health/ready
-            port: http
-        resources:
-          {}
-        volumeMounts:
-        - mountPath: /tmp
-          name: workspace
+        - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
+          imagePullPolicy: IfNotPresent
+          args:
+            - reconciler
+            - start
+            - mock
+            - --workspace=/tmp/reconciler
+            - --worker-count=50
+          name: reconciler
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+          resources:
+            {}
+          volumeMounts:
+            - mountPath: /tmp
+              name: workspace
       securityContext:
         runAsUser: 2000
       volumes:
-      - emptyDir: {}
-        name: workspace
+        - emptyDir: {}
+          name: workspace
 ---
 # Source: kcp/charts/mothership-reconciler/templates/deployment.yaml
 apiVersion: apps/v1
@@ -1671,105 +1671,104 @@ spec:
     spec:
       serviceAccountName: mothership-reconciler
       securityContext:
-              runAsUser: 2000
+        runAsUser: 2000
       nodeSelector:
         {}
       containers:
-      - image: "eu.gcr.io/kyma-project/incubator/reconciler/mothership:84e7fafe"
-        imagePullPolicy: IfNotPresent
-        args:
-          - mothership
-          - mothership
-          - start
-          - --config=mothership-configuration/reconciler.yaml
-          - --migrate-database
-          - --worker-count=50
-          - --audit-log
-          - --audit-log-file=/var/log/auditlog/mothership-audit.log
-          - --audit-log-tenant-id=$(APP_AUDITLOG_TENANT)
-          - --occupancy-tracking
-        env:
-        - name: APP_AUDITLOG_TENANT
-          valueFrom:
-            configMapKeyRef:
-              name: kcp-auditlog-config
-              key: auditlog-tenant
-        name: mothership-reconciler
-        ports:
-        - name: http
-          containerPort: 8080
-          protocol: TCP
-        livenessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /health/live
-            port: http
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 1
-        readinessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /health/ready
-            port: http
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 2
-        resources:
-          {}
-        volumeMounts:
-        - name: encryption-key
-          mountPath: "/encryption"
-        - name: mothership-reconciler-configuration
-          mountPath: "/mothership-configuration"
-        - name: audit-log
-          mountPath: /var/log/auditlog
-      - name: fluentbit-sidecar
-        image: eu.gcr.io/kyma-project/tpi/fluent-bit:1.8.9-aef5095d
-        command:
-        - sh
-        - -c
-        - |
-          # this is safe to be empty, i.e. no port specified in the URL
-          export PORT=$(echo $APP_AUDITLOG_URL | cut -d/ -f 3 | cut -d: -f2)
-          export HOST=$(echo $APP_AUDITLOG_URL | cut -d/ -f 3 | cut -d: -f1)
-          export URI=$(echo $APP_AUDITLOG_URL | cut -d/ -f4-)
-          /fluent-bit/bin/fluent-bit \
-            -e /fluent-bit/lib/flb-out_sequentialhttp.so \
-            -c /fluent-bit/etc/fluent-bit.conf
-        env:
-        - name: APP_AUDITLOG_URL
-          valueFrom:
-            configMapKeyRef:
-              name: kcp-auditlog-config
-              key: auditlog-url-basic
-        - name: APP_AUDITLOG_USER
-          valueFrom:
-            secretKeyRef:
-              name: kcp-auditlog-secret
-              key: auditlog-user
-        - name: APP_AUDITLOG_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: kcp-auditlog-secret
-              key: auditlog-password
-        volumeMounts:
-        - name: audit-log
-          mountPath: /var/log/auditlog
-        - name: fluentbit-config
-          mountPath: /fluent-bit/etc/
+        - image: "eu.gcr.io/kyma-project/incubator/reconciler/mothership:84e7fafe"
+          imagePullPolicy: IfNotPresent
+          args:
+            - mothership
+            - mothership
+            - start
+            - --config=mothership-configuration/reconciler.yaml
+            - --migrate-database
+            - --worker-count=50
+            - --audit-log
+            - --audit-log-file=/var/log/auditlog/mothership-audit.log
+            - --audit-log-tenant-id=$(APP_AUDITLOG_TENANT)
+          env:
+            - name: APP_AUDITLOG_TENANT
+              valueFrom:
+                configMapKeyRef:
+                  name: kcp-auditlog-config
+                  key: auditlog-tenant
+          name: mothership-reconciler
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health/live
+              port: http
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health/ready
+              port: http
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 2
+          resources:
+            {}
+          volumeMounts:
+            - name: encryption-key
+              mountPath: "/encryption"
+            - name: mothership-reconciler-configuration
+              mountPath: "/mothership-configuration"
+            - name: audit-log
+              mountPath: /var/log/auditlog
+        - name: fluentbit-sidecar
+          image: eu.gcr.io/kyma-project/tpi/fluent-bit:1.8.9-aef5095d
+          command:
+            - sh
+            - -c
+            - |
+              # this is safe to be empty, i.e. no port specified in the URL
+              export PORT=$(echo $APP_AUDITLOG_URL | cut -d/ -f 3 | cut -d: -f2)
+              export HOST=$(echo $APP_AUDITLOG_URL | cut -d/ -f 3 | cut -d: -f1)
+              export URI=$(echo $APP_AUDITLOG_URL | cut -d/ -f4-)
+              /fluent-bit/bin/fluent-bit \
+                -e /fluent-bit/lib/flb-out_sequentialhttp.so \
+                -c /fluent-bit/etc/fluent-bit.conf
+          env:
+            - name: APP_AUDITLOG_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: kcp-auditlog-config
+                  key: auditlog-url-basic
+            - name: APP_AUDITLOG_USER
+              valueFrom:
+                secretKeyRef:
+                  name: kcp-auditlog-secret
+                  key: auditlog-user
+            - name: APP_AUDITLOG_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kcp-auditlog-secret
+                  key: auditlog-password
+          volumeMounts:
+            - name: audit-log
+              mountPath: /var/log/auditlog
+            - name: fluentbit-config
+              mountPath: /fluent-bit/etc/
       volumes:
-      - name: encryption-key
-        secret:
-          secretName: kcp-reconciler-key
-      - name: mothership-reconciler-configuration
-        secret:
-          secretName: kcp-mothership-reconciler
-      - name: audit-log
-        emptyDir: {}
-      - name: fluentbit-config
-        configMap:
-          name: mothership-fluentbit-config
+        - name: encryption-key
+          secret:
+            secretName: kcp-reconciler-key
+        - name: mothership-reconciler-configuration
+          secret:
+            secretName: kcp-mothership-reconciler
+        - name: audit-log
+          emptyDir: {}
+        - name: fluentbit-config
+          configMap:
+            name: mothership-fluentbit-config
 ---
 # Source: kcp/charts/postgresql/templates/statefulset.yaml
 apiVersion: apps/v1
@@ -1801,92 +1800,92 @@ spec:
         release: "reconciler"
         heritage: "Helm"
         role: master
-    spec:      
+    spec:
       securityContext:
         fsGroup: 1001
       initContainers:
-      - name: init-chmod-data
-        image: docker.io/bitnami/minideb:stretch
-        imagePullPolicy: "Always"
-        resources:
-          requests:
-            cpu: 250m
-            memory: 256Mi
-        command:
-          - sh
-          - -c
-          - |
-            mkdir -p /bitnami/postgresql/data
-            chmod 700 /bitnami/postgresql/data
-            find /bitnami/postgresql -mindepth 1 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | \
-              xargs chown -R 1001:1001
-        securityContext:
-          runAsUser: 0
-        volumeMounts:
-        - name: data
-          mountPath: /bitnami/postgresql
-          subPath: 
-      containers:
-      - name: reconciler-postgresql
-        image: docker.io/bitnami/postgresql:11.4.0-debian-9-r12
-        imagePullPolicy: "IfNotPresent"
-        resources:
-          requests:
-            cpu: 250m
-            memory: 256Mi
-        securityContext:
-          runAsUser: 1001
-        env:
-        - name: BITNAMI_DEBUG
-          value: "false"
-        - name: POSTGRESQL_PORT_NUMBER
-          value: "5432"
-        - name: PGDATA
-          value: "/bitnami/postgresql/data"
-        - name: POSTGRES_USER
-          value: "postgres"
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: reconciler-postgresql
-              key: postgresql-password
-        ports:
-        - name: postgresql
-          containerPort: 5432
-        livenessProbe:
-          exec:
-            command:
-            - sh
-            - -c
-            - exec pg_isready -U "postgres" -h 127.0.0.1 -p 5432
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 5
-          successThreshold: 1
-          failureThreshold: 6
-        readinessProbe:
-          exec:
-            command:
+        - name: init-chmod-data
+          image: docker.io/bitnami/minideb:stretch
+          imagePullPolicy: "Always"
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+          command:
             - sh
             - -c
             - |
-              pg_isready -U "postgres" -h 127.0.0.1 -p 5432
-              [ -f /opt/bitnami/postgresql/tmp/.initialized ]
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 5
-          successThreshold: 1
-          failureThreshold: 6
-        volumeMounts:
-        - name: custom-init-scripts
-          mountPath: /docker-entrypoint-initdb.d/
-        - name: data
-          mountPath: /bitnami/postgresql
-          subPath: 
+              mkdir -p /bitnami/postgresql/data
+              chmod 700 /bitnami/postgresql/data
+              find /bitnami/postgresql -mindepth 1 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | \
+                xargs chown -R 1001:1001
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: data
+              mountPath: /bitnami/postgresql
+              subPath:
+      containers:
+        - name: reconciler-postgresql
+          image: docker.io/bitnami/postgresql:11.4.0-debian-9-r12
+          imagePullPolicy: "IfNotPresent"
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+          securityContext:
+            runAsUser: 1001
+          env:
+            - name: BITNAMI_DEBUG
+              value: "false"
+            - name: POSTGRESQL_PORT_NUMBER
+              value: "5432"
+            - name: PGDATA
+              value: "/bitnami/postgresql/data"
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: reconciler-postgresql
+                  key: postgresql-password
+          ports:
+            - name: postgresql
+              containerPort: 5432
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - exec pg_isready -U "postgres" -h 127.0.0.1 -p 5432
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 6
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - |
+                  pg_isready -U "postgres" -h 127.0.0.1 -p 5432
+                  [ -f /opt/bitnami/postgresql/tmp/.initialized ]
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 6
+          volumeMounts:
+            - name: custom-init-scripts
+              mountPath: /docker-entrypoint-initdb.d/
+            - name: data
+              mountPath: /bitnami/postgresql
+              subPath:
       volumes:
-      - name: custom-init-scripts
-        configMap:
-          name: reconciler-postgresql-db-init
+        - name: custom-init-scripts
+          configMap:
+            name: reconciler-postgresql-db-init
   volumeClaimTemplates:
     - metadata:
         name: data
@@ -1896,6 +1895,46 @@ spec:
         resources:
           requests:
             storage: "8Gi"
+---
+# Source: kcp/charts/mothership-reconciler/templates/policy.yaml
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: reconciler-mothership-reconciler
+  namespace: reconciler
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mothership-reconciler
+      app.kubernetes.io/instance: reconciler
+  mtls:
+    mode: PERMISSIVE
+---
+# Source: kcp/charts/mothership-reconciler/templates/service-monitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    helm.sh/chart: mothership-reconciler-0.1.0
+    app.kubernetes.io/name: mothership-reconciler
+    app.kubernetes.io/instance: reconciler
+    app.kubernetes.io/managed-by: Helm
+  name: reconciler-mothership-reconciler
+  namespace: reconciler
+spec:
+  endpoints:
+    - port: http
+      interval: 60s
+      scrapeTimeout: 30s
+  namespaceSelector:
+    matchNames:
+      - reconciler
+  selector:
+    matchLabels:
+      helm.sh/chart: mothership-reconciler-0.1.0
+      app.kubernetes.io/name: mothership-reconciler
+      app.kubernetes.io/instance: reconciler
+      app.kubernetes.io/managed-by: Helm
 ---
 # Source: kcp/charts/postgresql/templates/secrets.yaml
 apiVersion: v1
@@ -1929,3 +1968,4 @@ data:
   postgresql-password: "dGVzdA==" #TODO remove after migration to separate user will be done
   postgresql-provisionerDatabaseName: "cHJvdmlzaW9uZXI=" #TODO remove after migration to separate user will be done
   postgresql-brokerDatabaseName: "YnJva2Vy" #TODO remove after migration to separate user will be done
+
