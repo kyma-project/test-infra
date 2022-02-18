@@ -44,14 +44,8 @@ function install_cli() {
   kyma version --client
 }
 
-# Install Helm Charts required for the telemetry integration test 
-function install_telemetry_helm_charts() {  
+function install_telemetry_operator() {  
   helm install -n kyma-system telemetry ${KYMA_SOURCES_DIR}/resources/telemetry
-
-  local mock_namespace="mockserver"
-  kubectl create namespace ${mock_namespace}
-  helm install -n ${mock_namespace} mockserver ${KYMA_SOURCES_DIR}/tests/fast-integration/telemetry-test/helm/mockserver
-  helm install -n ${mock_namespace} mockserver-config ${KYMA_SOURCES_DIR}/tests/fast-integration/telemetry-test/helm/mockserver-config
 }
 
 function deploy_kyma() {
@@ -85,7 +79,7 @@ function deploy_kyma() {
   $kyma_deploy_cmd
 
   if [[ -v TELEMETRY_ENABLED ]]; then
-    install_telemetry_helm_charts
+    install_telemetry_operator
   fi
 
   kubectl get pods -A
