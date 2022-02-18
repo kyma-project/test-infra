@@ -1687,6 +1687,7 @@ spec:
           - --audit-log
           - --audit-log-file=/var/log/auditlog/mothership-audit.log
           - --audit-log-tenant-id=$(APP_AUDITLOG_TENANT)
+          - --occupancy-tracking
         env:
         - name: APP_AUDITLOG_TENANT
           valueFrom:
