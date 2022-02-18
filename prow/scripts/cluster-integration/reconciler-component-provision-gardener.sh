@@ -88,11 +88,11 @@ export CLUSTER_NAME="${COMMON_NAME}"
 gardener::init
 
 # Determine Kyma version
-if [[ ! $KYMA_VERSION]]; then
+if [[ ! $KYMA_VERSION ]]; then
     # Fetch latest Kyma2 release
     kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
     export KYMA_VERSION="${kyma_get_last_release_version_return_version:?}"
-    log::info "Reading release version from RELEASE_VERSION file, got: ${KYMA_VERSION}"
+    log::info "Reading latest 2.x release version, got: ${KYMA_VERSION}"
 fi
 
 kyma::install_cli
