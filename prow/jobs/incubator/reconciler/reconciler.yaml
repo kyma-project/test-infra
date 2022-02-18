@@ -85,8 +85,6 @@ presubmits: # runs on PRs
                 value: "evaluation"
               - name: GO11MODULE
                 value: "on"
-              - name: KYMA_VERSION
-                value: "2.0.4"
               - name: TEST_NAME
                 value: "istio"
             resources:
@@ -532,8 +530,6 @@ postsubmits: # runs on main
                 value: "evaluation"
               - name: GO11MODULE
                 value: "on"
-              - name: KYMA_VERSION
-                value: "2.0.4"
               - name: TEST_NAME
                 value: "istio"
             resources:

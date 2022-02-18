@@ -87,6 +87,14 @@ export CLUSTER_NAME="${COMMON_NAME}"
 # checks required vars and initializes gcloud/docker if necessary
 gardener::init
 
+# Determine Kyma version
+if [[ ! $KYMA_VERSION]]; then
+    # Fetch latest Kyma2 release
+    kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
+    export KYMA_VERSION="${kyma_get_last_release_version_return_version:?}"
+    log::info "Reading release version from RELEASE_VERSION file, got: ${KYMA_VERSION}"
+fi
+
 kyma::install_cli
 # if MACHINE_TYPE is not set then use default one
 gardener::set_machine_type
