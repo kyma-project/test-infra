@@ -14,7 +14,7 @@ periodics:
     spec:
       containers:
         - name: branchprotector
-          image: gcr.io/k8s-prow/branchprotector:v20220217-362d6ac4a0
+          image: gcr.io/k8s-prow/branchprotector:v20220217-9337753127
           command: [ "/app/prow/cmd/branchprotector/app.binary" ]
           args:
             - --config-path=prow/config.yaml
