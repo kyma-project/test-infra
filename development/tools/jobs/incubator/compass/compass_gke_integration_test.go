@@ -39,7 +39,6 @@ func TestCompassGKEIntegrationPresubmit(t *testing.T) {
 		preset.GardenerAzureIntegration,
 		preset.BuildPr,
 		"preset-kyma-development-artifacts-bucket",
-		preset.ClusterVersion,
 	)
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "main")
 	require.Len(t, actualJob.Spec.Containers, 1)
@@ -50,6 +49,7 @@ func TestCompassGKEIntegrationPresubmit(t *testing.T) {
 	assert.Equal(t, "-c", compassCont.Args[0])
 	assert.Equal(t, "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/compass-gke-integration.sh", compassCont.Args[1])
 	tester.AssertThatContainerHasEnv(t, compassCont, "CLOUDSDK_COMPUTE_ZONE", "europe-west4-b")
+	tester.AssertThatContainerHasEnv(t, compassCont, "GKE_CLUSTER_VERSION", "1.20")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 }
 
@@ -80,7 +80,6 @@ func TestCompassGKEIntegrationJobsReleases(t *testing.T) {
 				preset.GardenerAzureIntegration,
 				preset.BuildRelease,
 				"preset-kyma-development-artifacts-bucket",
-				preset.ClusterVersion,
 			)
 			assert.False(t, actualPresubmit.AlwaysRun)
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
@@ -121,7 +120,6 @@ func TestCompassGKEIntegrationPostsubmit(t *testing.T) {
 		preset.GardenerAzureIntegration,
 		preset.BuildMaster,
 		"preset-kyma-development-artifacts-bucket",
-		preset.ClusterVersion,
 	)
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "main")
 	require.Len(t, actualJob.Spec.Containers, 1)
@@ -132,5 +130,6 @@ func TestCompassGKEIntegrationPostsubmit(t *testing.T) {
 	assert.Equal(t, "-c", compassCont.Args[0])
 	assert.Equal(t, "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/compass-gke-integration.sh", compassCont.Args[1])
 	tester.AssertThatContainerHasEnv(t, compassCont, "CLOUDSDK_COMPUTE_ZONE", "europe-west4-b")
+	tester.AssertThatContainerHasEnv(t, compassCont, "GKE_CLUSTER_VERSION", "1.20")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 }
