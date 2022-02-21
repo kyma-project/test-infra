@@ -57,6 +57,7 @@ reconciler::provision_cluster
 
 reconciler::export_shoot_cluster_kubeconfig
 
+set +e
 log::banner "Deploying Monitoring for load test"
 git clone https://github.com/prometheus-operator/kube-prometheus.git
 cd kube-prometheus
@@ -79,4 +80,5 @@ cat ./resources/reconciler-load-test.yaml | grep -o 'reconciler\/component:.*' |
 echo "**************************************************************"
 
 kubectl apply -f resources/reconciler-load-test.yaml
+set -e
 
