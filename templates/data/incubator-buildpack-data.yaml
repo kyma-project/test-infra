@@ -337,7 +337,6 @@ templates:
                   env:
                     TEST_NAME: istio
                     EXECUTION_PROFILE: evaluation
-                    KYMA_VERSION: "2.0.4"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -500,7 +499,6 @@ templates:
                   env:
                     TEST_NAME: istio
                     EXECUTION_PROFILE: evaluation
-                    KYMA_VERSION: "2.0.4"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
