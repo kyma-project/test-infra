@@ -63,7 +63,7 @@ git clone https://github.com/prometheus-operator/kube-prometheus.git
 cd kube-prometheus
 kubectl create -f manifests/setup
 kubectl create -f manifests/
-set -e
+
 
 log::banner "Deploying Reconciler for load test"
 cd "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"  || { echo "Failed to change dir to: ${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"; exit 1; }
@@ -83,4 +83,4 @@ cat ./resources/reconciler-load-test.yaml | grep -o 'reconciler\/component:.*' |
 echo "**************************************************************"
 
 kubectl apply -f resources/reconciler-load-test.yaml
-
+set -e
