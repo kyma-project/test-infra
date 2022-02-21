@@ -63,6 +63,7 @@ git clone https://github.com/prometheus-operator/kube-prometheus.git
 cd kube-prometheus
 kubectl create -f manifests/setup
 kubectl create -f manifests/
+set -e
 
 log::banner "Deploying Reconciler for load test"
 cd "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"  || { echo "Failed to change dir to: ${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"; exit 1; }
@@ -74,11 +75,12 @@ mock_component_tag="PR-838"
 sed -i "s/reconciler\/mothership:.\\{8\\}/reconciler\/mothership:${mothership_tag}/g" ./resources/reconciler-load-test.yaml
 sed -i "s/reconciler\/component:.\\{8\\}/reconciler\/component:${mock_component_tag}/g" ./resources/reconciler-load-test.yaml
 
-echo "*************Current reconciler Image to be used**************"
+sed -i "s/namespace:  reconciler/namespace:  monitoring/g" ./resources/reconciler-load-test.yaml
+
+echo "************* Current reconciler Image to be used **************"
 cat ./resources/reconciler-load-test.yaml | grep -o 'reconciler\/mothership:.*'
 cat ./resources/reconciler-load-test.yaml | grep -o 'reconciler\/component:.*' | head -1
 echo "**************************************************************"
 
 kubectl apply -f resources/reconciler-load-test.yaml
-set -e
 
