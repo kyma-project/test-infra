@@ -57,7 +57,12 @@ reconciler::provision_cluster
 
 reconciler::export_shoot_cluster_kubeconfig
 
-# Deploy reconciler
+log::banner "Deploying Monitoring for load test"
+git clone https://github.com/prometheus-operator/kube-prometheus.git
+cd kube-prometheus
+kubectl create -f manifests/setup
+kubectl create -f manifests/
+
 log::banner "Deploying Reconciler for load test"
 cd "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"  || { echo "Failed to change dir to: ${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"; exit 1; }
 
@@ -75,8 +80,3 @@ echo "**************************************************************"
 
 kubectl apply -f resources/reconciler-load-test.yaml
 
-log::banner "Deploying Monitoring for load test"
-git clone https://github.com/prometheus-operator/kube-prometheus.git
-cd kube-prometheus
-kubectl create -f manifests/setup
-kubectl create -f manifests/
