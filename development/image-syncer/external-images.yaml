@@ -14,6 +14,7 @@ images:
 # Golang image is pinned because it is force updated in the upstream
 - source: "golang@sha256:f28579af8a31c28fc180fb2e26c415bf6211a21fb9f3ed5e81bcdbf062c52893"
   tag: "1.17.6-alpine3.15"
+- source: "golang/1.17.7-alpine3.15"
 - source: "grafana/loki:2.2.1"
 - source: "grafana/grafana-image-renderer:3.2.1"
 - source: "hudymi/mockice:0.1.3"
