@@ -1046,7 +1046,7 @@ spec:
       serviceAccountName: component-reconcilers-rma
       containers:
         - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           args:
             - reconciler
             - start
@@ -1106,7 +1106,7 @@ spec:
         {}
       containers:
         - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           args:
             - reconciler
             - start
@@ -1163,7 +1163,7 @@ spec:
         {}
       containers:
         - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           args:
             - reconciler
             - start
@@ -1220,7 +1220,7 @@ spec:
         {}
       containers:
         - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           args:
             - reconciler
             - start
@@ -1277,7 +1277,7 @@ spec:
         {}
       containers:
         - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           args:
             - reconciler
             - start
@@ -1334,7 +1334,7 @@ spec:
         {}
       containers:
         - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           args:
             - reconciler
             - start
@@ -1391,7 +1391,7 @@ spec:
         {}
       containers:
         - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           args:
             - reconciler
             - start
@@ -1448,7 +1448,7 @@ spec:
         {}
       containers:
         - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           args:
             - reconciler
             - start
@@ -1505,7 +1505,7 @@ spec:
         {}
       containers:
         - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           args:
             - reconciler
             - start
@@ -1562,7 +1562,7 @@ spec:
         {}
       containers:
         - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           args:
             - reconciler
             - start
@@ -1619,7 +1619,7 @@ spec:
         {}
       containers:
         - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           args:
             - reconciler
             - start
@@ -1676,7 +1676,7 @@ spec:
         {}
       containers:
         - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           args:
             - reconciler
             - start
@@ -1746,7 +1746,7 @@ spec:
         {}
       containers:
         - image: "eu.gcr.io/kyma-project/incubator/reconciler/mothership:84e7fafe"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           args:
             - mothership
             - mothership
