@@ -63,6 +63,7 @@ cd "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"  || { echo "Failed to change dir 
 
 mothership_latest_commit=$(curl  --silent "https://api.github.com/repos/kyma-incubator/reconciler/commits/main" | jq -r '.sha')
 mothership_tag="${mothership_latest_commit::8}"
+mothership_tag="PR-848"
 mock_component_tag="PR-838"
 sed -i "s/reconciler\/mothership:.\\{8\\}/reconciler\/mothership:${mothership_tag}/g" ./resources/reconciler-load-test.yaml
 sed -i "s/reconciler\/component:.\\{8\\}/reconciler\/component:${mock_component_tag}/g" ./resources/reconciler-load-test.yaml
