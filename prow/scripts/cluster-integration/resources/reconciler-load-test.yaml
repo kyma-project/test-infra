@@ -4,10 +4,34 @@ kind: Namespace
 metadata:
   name: reconciler
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+## Source: kcp/charts/mothership-reconciler/templates/service-monitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    helm.sh/chart: mothership-reconciler-0.1.0
+    app.kubernetes.io/name: mothership-reconciler
+    app.kubernetes.io/instance: reconciler
+    app.kubernetes.io/managed-by: Helm
+  name: reconciler-mothership-reconciler
+  namespace: monitoring
+spec:
+  endpoints:
+    - port: http
+      interval: 60s
+      scrapeTimeout: 30s
+  namespaceSelector:
+    matchNames:
+      - reconciler
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mothership-reconciler
+      app.kubernetes.io/instance: reconciler
+---
+apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: prometheus-k8s
+  name: prometheus-k8s-reconciler
   namespace: reconciler
 rules:
   - apiGroups: [""]
@@ -39,35 +63,16 @@ metadata:
     app.kubernetes.io/name: prometheus
     app.kubernetes.io/part-of: kube-prometheus
     app.kubernetes.io/version: 2.33.3
-  name: prometheus-k8s
+  name: prometheus-k8s-reconciler
   namespace: reconciler
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: prometheus-k8s
+  name: prometheus-k8s-reconciler
 subjects:
   - kind: ServiceAccount
     name: prometheus-k8s
-    namespace: reconciler
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  labels:
-    app.kubernetes.io/component: prometheus
-    app.kubernetes.io/instance: k8s
-    app.kubernetes.io/name: prometheus
-    app.kubernetes.io/part-of: kube-prometheus
-    app.kubernetes.io/version: 2.33.3
-  name: prometheus-k8s
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: prometheus-k8s
-subjects:
-  - kind: ServiceAccount
-    name: prometheus-k8s
-    namespace: reconciler
+    namespace: monitoring
 ---
 # Source: kcp/charts/component-reconcilers/charts/rma/templates/rbac.yaml
 apiVersion: v1
@@ -1961,20 +1966,6 @@ spec:
         resources:
           requests:
             storage: "8Gi"
----
-# Source: kcp/charts/mothership-reconciler/templates/policy.yaml
-apiVersion: security.istio.io/v1beta1
-kind: PeerAuthentication
-metadata:
-  name: reconciler-mothership-reconciler
-  namespace: reconciler
-spec:
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: mothership-reconciler
-      app.kubernetes.io/instance: reconciler
-  mtls:
-    mode: PERMISSIVE
 ---
 # Source: kcp/charts/mothership-reconciler/templates/service-monitor.yaml
 apiVersion: monitoring.coreos.com/v1
