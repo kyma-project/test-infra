@@ -69,7 +69,7 @@ sed -i "s/reconciler\/mothership:.\\{8\\}/reconciler\/mothership:${mothership_ta
 sed -i "s/reconciler\/component:.\\{8\\}/reconciler\/component:${mock_component_tag}/g" ./resources/reconciler-load-test.yaml
 
 echo "*************Current reconciler Image to be used**************"
-cat ./resources/reconciler-load-test.yaml | grep -o 'mothership:.\{8\}'
+cat ./resources/reconciler-load-test.yaml | grep -o 'reconciler\/mothership:.*'
 cat ./resources/reconciler-load-test.yaml | grep -o 'reconciler\/component:.*' | head -1
 echo "**************************************************************"
 
