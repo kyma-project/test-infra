@@ -4,12 +4,25 @@ kind: Namespace
 metadata:
   name: reconciler
 ---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  name: prometheus-k8s
+  namespace: reconciler
+rules:
+  - apiGroups: [""]
+    resources:
+      - services
+      - endpoints
+      - pods
+    verbs: ["get", "list", "watch"]
+---
 # Source: kcp/charts/component-reconcilers/charts/rma/templates/rbac.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: component-reconcilers-rma
-  namespace:  reconciler
+  namespace:  monitoring
   labels:
     app: component-reconcilers-rma
 ---
@@ -18,7 +31,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: component-reconcilers-base
-  namespace:  reconciler
+  namespace:  monitoring
   labels:
     app: component-reconcilers-base
 ---
@@ -27,7 +40,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: component-reconcilers-busola-migrator
-  namespace:  reconciler
+  namespace:  monitoring
   labels:
     app: component-reconcilers-busola-migrator
 ---
@@ -36,7 +49,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: component-reconcilers-cleaner
-  namespace:  reconciler
+  namespace:  monitoring
   labels:
     app: component-reconcilers-cleaner
 ---
@@ -45,7 +58,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: component-reconcilers-connectivity-proxy
-  namespace:  reconciler
+  namespace:  monitoring
   labels:
     app: component-reconcilers-connectivity-proxy
 ---
@@ -54,7 +67,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: component-reconcilers-istio-configuration
-  namespace:  reconciler
+  namespace:  monitoring
   labels:
     app: component-reconcilers-istio-configuration
 ---
@@ -63,7 +76,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: component-reconcilers-ory
-  namespace:  reconciler
+  namespace:  monitoring
   labels:
     app: component-reconcilers-ory
 ---
@@ -72,7 +85,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: component-reconcilers-rafter
-  namespace:  reconciler
+  namespace:  monitoring
   labels:
     app: component-reconcilers-rafter
 ---
@@ -81,7 +94,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: component-reconcilers-eventing
-  namespace:  reconciler
+  namespace:  monitoring
   labels:
     app: component-reconcilers-eventing
 ---
@@ -90,7 +103,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: component-reconcilers-serverless
-  namespace:  reconciler
+  namespace:  monitoring
   labels:
     app: component-reconcilers-serverless
 ---
@@ -99,7 +112,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: component-reconcilers-cluster-essentials
-  namespace:  reconciler
+  namespace:  monitoring
   labels:
     app: component-reconcilers-cluster-essentials
 ---
@@ -108,7 +121,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: component-reconcilers-mock
-  namespace:  reconciler
+  namespace:  monitoring
   labels:
     app: component-reconcilers-mock
 ---
@@ -269,7 +282,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: component-reconcilers-rma
-    namespace:  reconciler
+    namespace:  monitoring
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -280,7 +293,7 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: component-reconcilers-base
-  namespace:  reconciler
+  namespace:  monitoring
 rules:
   - apiGroups: [""]
     resources: ["secrets"]
@@ -294,7 +307,7 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: component-reconcilers-busola-migrator
-  namespace:  reconciler
+  namespace:  monitoring
 rules:
   - apiGroups: [""]
     resources: ["secrets"]
@@ -308,7 +321,7 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: component-reconcilers-cleaner
-  namespace:  reconciler
+  namespace:  monitoring
 rules:
   - apiGroups: [""]
     resources: ["secrets"]
@@ -322,7 +335,7 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: component-reconcilers-connectivity-proxy
-  namespace:  reconciler
+  namespace:  monitoring
 rules:
   - apiGroups: [""]
     resources: ["secrets"]
@@ -336,7 +349,7 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: component-reconcilers-istio-configuration
-  namespace:  reconciler
+  namespace:  monitoring
 rules:
   - apiGroups: [""]
     resources: ["secrets"]
@@ -350,7 +363,7 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: component-reconcilers-ory
-  namespace:  reconciler
+  namespace:  monitoring
 rules:
   - apiGroups: [""]
     resources: ["secrets"]
@@ -364,7 +377,7 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: component-reconcilers-rafter
-  namespace:  reconciler
+  namespace:  monitoring
 rules:
   - apiGroups: [""]
     resources: ["secrets"]
@@ -378,7 +391,7 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: component-reconcilers-eventing
-  namespace:  reconciler
+  namespace:  monitoring
 rules:
   - apiGroups: [""]
     resources: ["secrets"]
@@ -392,7 +405,7 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: component-reconcilers-serverless
-  namespace:  reconciler
+  namespace:  monitoring
 rules:
   - apiGroups: [""]
     resources: ["secrets"]
@@ -406,7 +419,7 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: component-reconcilers-cluster-essentials
-  namespace:  reconciler
+  namespace:  monitoring
 rules:
   - apiGroups: [""]
     resources: ["secrets"]
@@ -420,7 +433,7 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: component-reconcilers-mock
-  namespace:  reconciler
+  namespace:  monitoring
 rules:
   - apiGroups: [""]
     resources: ["secrets"]
@@ -434,11 +447,11 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: component-reconcilers-base
-  namespace:  reconciler
+  namespace:  monitoring
 subjects:
   - kind: ServiceAccount
     name: component-reconcilers-base
-    namespace:  reconciler
+    namespace:  monitoring
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -449,11 +462,11 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: component-reconcilers-busola-migrator
-  namespace:  reconciler
+  namespace:  monitoring
 subjects:
   - kind: ServiceAccount
     name: component-reconcilers-busola-migrator
-    namespace:  reconciler
+    namespace:  monitoring
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -464,11 +477,11 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: component-reconcilers-cleaner
-  namespace:  reconciler
+  namespace:  monitoring
 subjects:
   - kind: ServiceAccount
     name: component-reconcilers-cleaner
-    namespace:  reconciler
+    namespace:  monitoring
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -479,11 +492,11 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: component-reconcilers-connectivity-proxy
-  namespace:  reconciler
+  namespace:  monitoring
 subjects:
   - kind: ServiceAccount
     name: component-reconcilers-connectivity-proxy
-    namespace:  reconciler
+    namespace:  monitoring
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -494,11 +507,11 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: component-reconcilers-istio-configuration
-  namespace:  reconciler
+  namespace:  monitoring
 subjects:
   - kind: ServiceAccount
     name: component-reconcilers-istio-configuration
-    namespace:  reconciler
+    namespace:  monitoring
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -509,11 +522,11 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: component-reconcilers-ory
-  namespace:  reconciler
+  namespace:  monitoring
 subjects:
   - kind: ServiceAccount
     name: component-reconcilers-ory
-    namespace:  reconciler
+    namespace:  monitoring
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -524,11 +537,11 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: component-reconcilers-rafter
-  namespace:  reconciler
+  namespace:  monitoring
 subjects:
   - kind: ServiceAccount
     name: component-reconcilers-rafter
-    namespace:  reconciler
+    namespace:  monitoring
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -539,11 +552,11 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: component-reconcilers-eventing
-  namespace:  reconciler
+  namespace:  monitoring
 subjects:
   - kind: ServiceAccount
     name: component-reconcilers-eventing
-    namespace:  reconciler
+    namespace:  monitoring
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -554,11 +567,11 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: component-reconcilers-serverless
-  namespace:  reconciler
+  namespace:  monitoring
 subjects:
   - kind: ServiceAccount
     name: component-reconcilers-serverless
-    namespace:  reconciler
+    namespace:  monitoring
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -569,11 +582,11 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: component-reconcilers-cluster-essentials
-  namespace:  reconciler
+  namespace:  monitoring
 subjects:
   - kind: ServiceAccount
     name: component-reconcilers-cluster-essentials
-    namespace:  reconciler
+    namespace:  monitoring
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -584,11 +597,11 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: component-reconcilers-mock
-  namespace:  reconciler
+  namespace:  monitoring
 subjects:
   - kind: ServiceAccount
     name: component-reconcilers-mock
-    namespace:  reconciler
+    namespace:  monitoring
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role

@@ -75,8 +75,6 @@ mock_component_tag="PR-838"
 sed -i "s/reconciler\/mothership:.\\{8\\}/reconciler\/mothership:${mothership_tag}/g" ./resources/reconciler-load-test.yaml
 sed -i "s/reconciler\/component:.\\{8\\}/reconciler\/component:${mock_component_tag}/g" ./resources/reconciler-load-test.yaml
 
-sed -i "s/namespace:  reconciler/namespace:  monitoring/g" ./resources/reconciler-load-test.yaml
-
 echo "************* Current reconciler Image to be used **************"
 cat ./resources/reconciler-load-test.yaml | grep -o 'reconciler\/mothership:.*'
 cat ./resources/reconciler-load-test.yaml | grep -o 'reconciler\/component:.*' | head -1
