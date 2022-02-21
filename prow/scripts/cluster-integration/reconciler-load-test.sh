@@ -61,8 +61,8 @@ set +e
 log::banner "Deploying Monitoring for load test"
 git clone https://github.com/prometheus-operator/kube-prometheus.git
 cd kube-prometheus
-kubectl create -f manifests/setup
-kubectl create -f manifests/
+kubectl apply -f manifests/setup
+kubectl apply -f manifests/
 
 
 log::banner "Deploying Reconciler for load test"
