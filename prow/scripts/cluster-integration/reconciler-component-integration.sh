@@ -91,8 +91,9 @@ function deploy_kyma() {
   pushd "${RECONCILER_DIR}"
   make build-linux
   if [ ! -f "./bin/mothership-linux" ]; then
-  # shellcheck disable=SC2046
-     log::error "Mothership-linux binary was not found."
+     # shellcheck disable=SC2046
+     log::error "Mothership-linux binary was not built."
+     exit 1
   fi
 
   local kyma_deploy_cmd
