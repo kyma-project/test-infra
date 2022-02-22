@@ -1052,7 +1052,7 @@ spec:
             - start
             - rma
             - --workspace=/tmp/reconciler
-            - --worker-count=16
+            - --worker-count=500
             - --worker-timeout=10m
             - --retries-max=10
             - --retries-delay=60s
@@ -1112,7 +1112,7 @@ spec:
             - start
             - base
             - --workspace=/tmp/reconciler
-            - --worker-count=50
+            - --worker-count=500
           name: reconciler
           ports:
             - name: http
@@ -1169,7 +1169,7 @@ spec:
             - start
             - busola-migrator
             - --workspace=/tmp/reconciler
-            - --worker-count=50
+            - --worker-count=500
           name: reconciler
           ports:
             - name: http
@@ -1226,7 +1226,7 @@ spec:
             - start
             - cleaner
             - --workspace=/tmp/reconciler
-            - --worker-count=50
+            - --worker-count=500
           name: reconciler
           ports:
             - name: http
@@ -1283,7 +1283,7 @@ spec:
             - start
             - connectivity-proxy
             - --workspace=/tmp/reconciler
-            - --worker-count=50
+            - --worker-count=500
           name: reconciler
           ports:
             - name: http
@@ -1340,7 +1340,7 @@ spec:
             - start
             - istio-configuration
             - --workspace=/tmp/reconciler
-            - --worker-count=50
+            - --worker-count=500
           name: reconciler
           ports:
             - name: http
@@ -1397,7 +1397,7 @@ spec:
             - start
             - ory
             - --workspace=/tmp/reconciler
-            - --worker-count=50
+            - --worker-count=500
           name: reconciler
           ports:
             - name: http
@@ -1454,7 +1454,7 @@ spec:
             - start
             - rafter
             - --workspace=/tmp/reconciler
-            - --worker-count=50
+            - --worker-count=500
           name: reconciler
           ports:
             - name: http
@@ -1511,7 +1511,7 @@ spec:
             - start
             - eventing
             - --workspace=/tmp/reconciler
-            - --worker-count=50
+            - --worker-count=500
           name: reconciler
           ports:
             - name: http
@@ -1568,7 +1568,7 @@ spec:
             - start
             - serverless
             - --workspace=/tmp/reconciler
-            - --worker-count=50
+            - --worker-count=500
           name: reconciler
           ports:
             - name: http
@@ -1625,7 +1625,7 @@ spec:
             - start
             - cluster-essentials
             - --workspace=/tmp/reconciler
-            - --worker-count=50
+            - --worker-count=500
           name: reconciler
           ports:
             - name: http
@@ -1682,7 +1682,7 @@ spec:
             - start
             - mock
             - --workspace=/tmp/reconciler
-            - --worker-count=50
+            - --worker-count=500
           name: reconciler
           ports:
             - name: http
