@@ -90,8 +90,8 @@ function upgrade_kyma() {
     kyma deploy --ci --source "${KYMA_SOURCE}" --timeout 20m
 
     # fixes for upgrade
-    kubectl patch service monitoring-alertmanager --type=json -p='[{"op": "remove", "path": "/spec/selector/app"}]'
-    kubectl delete servicemonitors.monitoring.coreos.com monitoring-node-exporter
+    kubectl patch service monitoring-alertmanager --type=json -p='[{"op": "remove", "path": "/spec/selector/app"}]' -n kyma-system
+    kubectl delete servicemonitors.monitoring.coreos.com monitoring-node-exporter -n kyma-system
 
     if [[ $? -eq 0 ]];then
         log::success "Upgrade completed"

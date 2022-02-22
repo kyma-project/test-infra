@@ -123,8 +123,8 @@ kymaMain_install_dir="$KYMA_SOURCES_DIR/kymaMain"
 kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kymaMain_install_dir" -u "true"
 
 # fixes for upgrade
-kubectl patch service monitoring-alertmanager --type=json -p='[{"op": "remove", "path": "/spec/selector/app"}]'
-kubectl delete servicemonitors.monitoring.coreos.com monitoring-node-exporter
+kubectl patch service monitoring-alertmanager --type=json -p='[{"op": "remove", "path": "/spec/selector/app"}]' -n kyma-system
+kubectl delete servicemonitors.monitoring.coreos.com monitoring-node-exporter -n kyma-system
 
 log::info "### Run post-upgrade tests"
 gardener::post_upgrade_test_fast_integration_kyma
