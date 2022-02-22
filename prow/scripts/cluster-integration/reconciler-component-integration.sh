@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 set -o errexit
 
 readonly TEST_INFRA_DIR="./test-infra"
@@ -89,9 +88,12 @@ EOF
 
 function deploy_kyma() {
   log::info "Building reconciler from sources"
-
   pushd "${RECONCILER_DIR}"
   make build-linux
+  if [ ! -f "./bin/mothership-linux" ]; then
+  # shellcheck disable=SC2046
+     log::error "Mothership-linux binary was not found."
+  fi
 
   local kyma_deploy_cmd
   kyma_deploy_cmd="./bin/mothership-linux local --kubeconfig ${KUBECONFIG} --value global.ingress.domainName=${CLUSTER_DOMAIN},global.domainName=${CLUSTER_DOMAIN} --version ${KYMA_VERSION} --profile ${EXECUTION_PROFILE}"
@@ -110,10 +112,10 @@ function deploy_kyma() {
 
   $kyma_deploy_cmd
 
-  popd
-
   log::success "Kyma components were deployed successfully"
   kubectl get pods -A
+
+  popd
 }
 
 function run_tests() {
