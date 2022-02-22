@@ -18,8 +18,8 @@ metadata:
 spec:
   endpoints:
     - port: http
-      interval: 60s
-      scrapeTimeout: 30s
+      interval: 5s
+      scrapeTimeout: 10s
   namespaceSelector:
     matchNames:
       - reconciler
@@ -1981,8 +1981,8 @@ metadata:
 spec:
   endpoints:
     - port: http
-      interval: 60s
-      scrapeTimeout: 30s
+      interval: 5s
+      scrapeTimeout: 10s
   namespaceSelector:
     matchNames:
       - reconciler
