@@ -18,8 +18,8 @@ metadata:
 spec:
   endpoints:
     - port: http
-      interval: 30s
-      scrapeTimeout: 30s
+      interval: 15s
+      scrapeTimeout: 10s
   namespaceSelector:
     matchNames:
       - reconciler
@@ -1022,64 +1022,6 @@ spec:
     release: "reconciler"
     role: master
 ---
-# Source: kcp/charts/component-reconcilers/charts/rma/templates/deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    kyma-project.io/component-reconciler: ""
-    component: rma
-  name: rma-reconciler
-  namespace: reconciler
-spec:
-  selector:
-    matchLabels:
-      kyma-project.io/component-reconciler: ""
-      component: rma
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        kyma-project.io/component-reconciler: ""
-        component: rma
-    spec:
-      serviceAccountName: component-reconcilers-rma
-      containers:
-        - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:84e7fafe"
-          imagePullPolicy: Always
-          args:
-            - reconciler
-            - start
-            - rma
-            - --workspace=/tmp/reconciler
-            - --worker-count=500
-            - --worker-timeout=10m
-            - --retries-max=10
-            - --retries-delay=60s
-          name: reconciler
-          ports:
-            - name: http
-              containerPort: 8080
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /health/live
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /health/ready
-              port: http
-          resources:
-            {}
-          volumeMounts:
-            - mountPath: /tmp
-              name: workspace
-      securityContext:
-        runAsUser: 2000
-      volumes:
-        - emptyDir: {}
-          name: workspace
----
 # Source: kcp/charts/component-reconcilers/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -1981,8 +1923,8 @@ metadata:
 spec:
   endpoints:
     - port: http
-      interval: 30s
-      scrapeTimeout: 30s
+      interval: 15s
+      scrapeTimeout: 10s
   namespaceSelector:
     matchNames:
       - reconciler
