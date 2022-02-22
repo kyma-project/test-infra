@@ -11,6 +11,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"sort"
 	"strings"
 	"text/template"
 
@@ -81,6 +82,7 @@ func main() {
 		}
 
 		var dataFilesTemplates []*rt.TemplateConfig
+		sort.Strings(dataFiles)
 		for _, dataFile := range dataFiles {
 			var dataFileConfig rt.Config
 			var cfg bytes.Buffer
