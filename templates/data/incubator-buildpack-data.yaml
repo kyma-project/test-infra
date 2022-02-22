@@ -324,7 +324,6 @@ templates:
                     - reconciler_integration_jobConfig
               - jobConfig:
                   name: "pre-latest-istio-reconciler-integration"
-                  optional: true
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))|Dockerfile\\.cr$"
                   labels:
@@ -348,7 +347,6 @@ templates:
                     - reconciler_component_k3d_integration_jobConfig                       
               - jobConfig:
                   name: "pre-main-istio-reconciler-integration"
-                  optional: true
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))|Dockerfile\\.cr$"
                   labels:
@@ -373,7 +371,6 @@ templates:
                     - reconciler_component_k3d_integration_jobConfig                                        
               - jobConfig:
                   name: "pre-main-ory-reconciler-eval-integration"
-                  optional: true
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -398,7 +395,6 @@ templates:
                     - reconciler_component_k3d_integration_jobConfig
               - jobConfig:
                   name: "pre-main-ory-reconciler-prod-integration"
-                  optional: true
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -486,7 +482,6 @@ templates:
                     - reconciler_jobConfig_args
               - jobConfig:
                   name: "post-latest-istio-reconciler-integration"
-                  optional: true
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))|Dockerfile\\.cr$"
                   labels:
@@ -510,7 +505,6 @@ templates:
                     - reconciler_component_k3d_integration_jobConfig                    
               - jobConfig:
                   name: "post-main-istio-reconciler-integration"
-                  optional: true
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))|Dockerfile\\.cr$"
                   labels:

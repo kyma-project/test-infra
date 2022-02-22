@@ -61,7 +61,6 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^((pkg/reconciler/instances/istio\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))|Dockerfile\.cr$'
-      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -111,7 +110,6 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^((pkg/reconciler/instances/istio\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))|Dockerfile\.cr$'
-      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -163,7 +161,6 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^((cmd\S+|configs\S+|internal\S+|pkg\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -216,7 +213,6 @@ presubmits: # runs on PRs
         preset-kyma-cli-stable: "true"
         preset-kyma-guard-bot-github-token: "true"
       run_if_changed: '^((cmd\S+|configs\S+|internal\S+|pkg\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -506,7 +502,6 @@ postsubmits: # runs on main
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^((pkg/reconciler/instances/istio\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))|Dockerfile\.cr$'
-      optional: true
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -556,7 +551,6 @@ postsubmits: # runs on main
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^((pkg/reconciler/instances/istio\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))|Dockerfile\.cr$'
-      optional: true
       skip_report: false
       decorate: true
       cluster: trusted-workload
