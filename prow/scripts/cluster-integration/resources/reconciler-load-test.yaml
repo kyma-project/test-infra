@@ -18,7 +18,7 @@ metadata:
 spec:
   endpoints:
     - port: http
-      interval: 20s
+      interval: 30s
       scrapeTimeout: 30s
   namespaceSelector:
     matchNames:
@@ -1981,7 +1981,7 @@ metadata:
 spec:
   endpoints:
     - port: http
-      interval: 20s
+      interval: 30s
       scrapeTimeout: 30s
   namespaceSelector:
     matchNames:
