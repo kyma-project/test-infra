@@ -182,7 +182,7 @@ function scanSubprojects() {
   find . -name "$component_definition" -not -path "./tests/*" | while read component; do
     # TODO what about excludes?
     scanFolder "${folder_name}" "${component}"
-  fi
+  done
   popd
 }
 
