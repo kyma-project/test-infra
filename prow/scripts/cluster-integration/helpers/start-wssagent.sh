@@ -180,7 +180,7 @@ function scanSubprojects() {
   local project_name=$3
 
   # find all go.mod / Gopkg.toml / package.json projects and scan them individually
-  find . -name "$component_definition" -not -path "./tests/*" | while read component_definition_path; do
+  find . -name "$component_definition" -not -path "./tests/*" | while read -r component_definition_path; do
     # TODO what about excludes?
     # remove go.mod / Gopkg.toml part
     component_path="${component_definition_path%/*}"
