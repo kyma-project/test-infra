@@ -178,10 +178,10 @@ function scanSubprojects() {
   pushd "${FOLDER}" # change to passed parameter
   PROJNAME=$3
 
-  
+  echo "scanning compomnent $component"
   find . -name "$component_definition" -not -path "./tests/*" | while read component; do
     # TODO what about excludes?
-    scanFolder "${folder_name}" "${component}"
+    scanFolder "${FOLDER}" "${component}"
   done
   popd
 }
