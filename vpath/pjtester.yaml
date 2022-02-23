@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "pre-main-control-plane-gke-integration"
+    report: false
+prConfigs:
+  kyma-project:
+    control-plane:
+      prNumber: 1387
