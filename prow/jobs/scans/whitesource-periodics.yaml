@@ -43,7 +43,7 @@ periodics: # runs on schedule
               - name : PROJECTNAME
                 value: control-plane
               - name: CREATE_SUBPROJECTS
-                value: true
+                value: "true"
               - name: CUSTOM_PROJECTNAME
                 value: 
               - name: SCAN_LANGUAGE
@@ -93,7 +93,7 @@ periodics: # runs on schedule
               - name : PROJECTNAME
                 value: control-plane
               - name: CREATE_SUBPROJECTS
-                value: true
+                value: "true"
               - name: CUSTOM_PROJECTNAME
                 value: control-plane-dep
               - name: SCAN_LANGUAGE
@@ -143,7 +143,7 @@ periodics: # runs on schedule
               - name : PROJECTNAME
                 value: kyma
               - name: CREATE_SUBPROJECTS
-                value: true
+                value: "true"
               - name: CUSTOM_PROJECTNAME
                 value: kyma-mod
               - name: SCAN_LANGUAGE
@@ -193,7 +193,7 @@ periodics: # runs on schedule
               - name : PROJECTNAME
                 value: console
               - name: CREATE_SUBPROJECTS
-                value: false
+                value: "false"
               - name: CUSTOM_PROJECTNAME
                 value: 
               - name: SCAN_LANGUAGE
@@ -243,7 +243,7 @@ periodics: # runs on schedule
               - name : PROJECTNAME
                 value: busola
               - name: CREATE_SUBPROJECTS
-                value: false
+                value: "false"
               - name: CUSTOM_PROJECTNAME
                 value: 
               - name: SCAN_LANGUAGE
@@ -293,7 +293,7 @@ periodics: # runs on schedule
               - name : PROJECTNAME
                 value: cli
               - name: CREATE_SUBPROJECTS
-                value: false
+                value: "false"
               - name: CUSTOM_PROJECTNAME
                 value: 
               - name: SCAN_LANGUAGE
@@ -343,7 +343,7 @@ periodics: # runs on schedule
               - name : PROJECTNAME
                 value: helm-broker
               - name: CREATE_SUBPROJECTS
-                value: false
+                value: "false"
               - name: CUSTOM_PROJECTNAME
                 value: 
               - name: SCAN_LANGUAGE
@@ -393,7 +393,7 @@ periodics: # runs on schedule
               - name : PROJECTNAME
                 value: rafter
               - name: CREATE_SUBPROJECTS
-                value: false
+                value: "false"
               - name: CUSTOM_PROJECTNAME
                 value: 
               - name: SCAN_LANGUAGE
@@ -443,7 +443,7 @@ periodics: # runs on schedule
               - name : PROJECTNAME
                 value: api-gateway
               - name: CREATE_SUBPROJECTS
-                value: false
+                value: "false"
               - name: CUSTOM_PROJECTNAME
                 value: 
               - name: SCAN_LANGUAGE
@@ -493,7 +493,7 @@ periodics: # runs on schedule
               - name : PROJECTNAME
                 value: dex
               - name: CREATE_SUBPROJECTS
-                value: false
+                value: "false"
               - name: CUSTOM_PROJECTNAME
                 value: 
               - name: SCAN_LANGUAGE
@@ -543,7 +543,7 @@ periodics: # runs on schedule
               - name : PROJECTNAME
                 value: hydroform
               - name: CREATE_SUBPROJECTS
-                value: false
+                value: "false"
               - name: CUSTOM_PROJECTNAME
                 value: 
               - name: SCAN_LANGUAGE
@@ -593,7 +593,7 @@ periodics: # runs on schedule
               - name : PROJECTNAME
                 value: terraform-provider-gardener
               - name: CREATE_SUBPROJECTS
-                value: false
+                value: "false"
               - name: CUSTOM_PROJECTNAME
                 value: 
               - name: SCAN_LANGUAGE
@@ -643,7 +643,7 @@ periodics: # runs on schedule
               - name : PROJECTNAME
                 value: podpreset-crd
               - name: CREATE_SUBPROJECTS
-                value: false
+                value: "false"
               - name: CUSTOM_PROJECTNAME
                 value: podpreset
               - name: SCAN_LANGUAGE
@@ -693,7 +693,7 @@ periodics: # runs on schedule
               - name : PROJECTNAME
                 value: reconciler
               - name: CREATE_SUBPROJECTS
-                value: false
+                value: "false"
               - name: CUSTOM_PROJECTNAME
                 value: 
               - name: SCAN_LANGUAGE
@@ -745,7 +745,7 @@ periodics: # runs on schedule
               - name : PROJECTNAME
                 value: kyma
               - name: CREATE_SUBPROJECTS
-                value: false
+                value: "false"
               - name: CUSTOM_PROJECTNAME
                 value: release-kyma
               - name: SCAN_LANGUAGE
@@ -795,7 +795,7 @@ periodics: # runs on schedule
               - name : PROJECTNAME
                 value: kyma
               - name: CREATE_SUBPROJECTS
-                value: false
+                value: "false"
               - name: CUSTOM_PROJECTNAME
                 value: release-kyma-mod
               - name: SCAN_LANGUAGE
@@ -845,7 +845,7 @@ periodics: # runs on schedule
               - name : PROJECTNAME
                 value: cli
               - name: CREATE_SUBPROJECTS
-                value: false
+                value: "false"
               - name: CUSTOM_PROJECTNAME
                 value: release-cli
               - name: SCAN_LANGUAGE
