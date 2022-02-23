@@ -102,6 +102,8 @@
               {{- end}}
               - name : PROJECTNAME
                 value: {{ .JobConfig.name }}
+              - name: CREATE_SUBPROJECTS
+                value: {{ default "false" .JobConfig.subprojects }}
               - name: CUSTOM_PROJECTNAME
                 value: {{ default "" .JobConfig.custom_projectname }}
               - name: SCAN_LANGUAGE

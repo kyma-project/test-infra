@@ -23,7 +23,7 @@ templates:
               preset-kms-gc-project-env: "true"
               preset-gc-project-env: "true"
             env:
-              DRYRUN: "false"
+              DRYRUN: "true"
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -31,6 +31,7 @@ templates:
                   name: "control-plane"
                   language: "golang-mod"
                   project: "kyma-project"
+                  subprojects: "true"
                   base_ref: "main"
                 inheritedConfigs:
                   global:
@@ -44,6 +45,7 @@ templates:
                   name: "control-plane"
                   language: "golang"
                   project: "kyma-project"
+                  subprojects: "true"
                   base_ref: "main"
                   custom_projectname: "control-plane-dep"
                 inheritedConfigs:
@@ -58,6 +60,7 @@ templates:
                   name: "kyma"
                   language: "golang-mod"
                   project: "kyma-project"
+                  subprojects: "true"
                   custom_projectname: "kyma-mod"
                   base_ref: "release-2.0"
                 inheritedConfigs:

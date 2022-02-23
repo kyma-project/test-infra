@@ -72,6 +72,7 @@ golang)
   # exclude gomod based folders
   filterFolders go.mod "${KYMA_SRC}" >>${CONFIG_PATH}
   prepareDependencies gopkg.toml "${KYMA_SRC}"
+  COMPONENT_DEFINITION="Gopkg.toml"
   ;;
 
 golang-mod)
@@ -88,12 +89,14 @@ golang-mod)
   echo "scanComment=$(date)" >> $CONFIG_PATH
   # exclude godep based folders
   filterFolders gopkg.toml "${KYMA_SRC}" >>${CONFIG_PATH}
+  COMPONENT_DEFINITION="go.mod"
   ;;
 
 javascript)
   echo "SCAN: javascript"
   CONFIG_PATH=$JAVASCRIPT_CONFIG_PATH
   echo "scanComment=$(date)" >> $CONFIG_PATH
+  COMPONENT_DEFINITION="package.json"
   ;;
 
 *)
@@ -122,7 +125,7 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
     echo "component name cannot be empty"
     exit 1
   fi
-  cd "${FOLDER}" # change to passed parameter
+  pushd "${FOLDER}" # change to passed parameter
   PROJNAME=$2
 
   if [[ $CUSTOM_PROJECTNAME == "" ]]; then
@@ -151,9 +154,43 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
     echo "******** DRYRUN Successful for $FOLDER ***"
     echo "***********************************"
   fi
+  popd
 }
 
-scanFolder "${KYMA_SRC}" "${PROJECTNAME}"
+function scanSubprojects() {
+  if [[ $1 == "" ]]; then
+    echo "path cannot be empty"
+    exit 1
+  fi
+  FOLDER=$1
+
+  if [[ $2 == "" ]]; then
+    echo "component definition cannot be empty"
+    exit 1
+  fi
+  # TODO better name
+  local component_definition=$2
+  
+  if [[ $3 == "" ]]; then
+    echo "component name cannot be empty"
+    exit 1
+  fi
+  pushd "${FOLDER}" # change to passed parameter
+  PROJNAME=$3
+
+  
+  find . -name "$component_definition" -not -path "./tests/*" | while read component; do
+    # TODO what about excludes?
+    scanFolder "${folder_name}" "${component}"
+  fi
+  popd
+}
+
+if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
+  scanSubprojects "${KYMA_SRC}" "${COMPONENT_DEFINITION}" "${PROJECTNAME}"
+else
+  scanFolder "${KYMA_SRC}" "${PROJECTNAME}"
+fi
 
 echo "***********************************"
 echo "*********Scanning Finished*********"
