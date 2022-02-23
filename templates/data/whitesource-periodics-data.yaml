@@ -59,7 +59,7 @@ templates:
                   language: "golang-mod"
                   project: "kyma-project"
                   custom_projectname: "kyma-mod"
-                  base_ref: "main"
+                  base_ref: "release-2.0"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -97,7 +97,7 @@ templates:
                   name: "cli"
                   language: "golang-mod"
                   project: "kyma-project"
-                  base_ref: "main"
+                  base_ref: "release-2.0"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
