@@ -1,2 +1,3 @@
 pjNames:
   - pjName: "kyma-mod-whitesource-scan"
+  - pjName: "rafter-whitesource-scan"
