@@ -175,20 +175,18 @@ function scanSubprojects() {
     echo "component name cannot be empty"
     exit 1
   fi
-  pushd "${FOLDER}" # change to passed parameter
+  pushd "${FOLDER}"  > /dev/null # change to passed parameter
   PROJNAME=$3
 
   
   find . -name "$component_definition" -not -path "./tests/*" | while read component_definition_path; do
     # TODO what about excludes?
     component_path="${component_definition_path%/*}"
-    pushd "$component_path"
     component="${component_path##*/}"
     echo "scanning compomnent $component"
-    scanFolder "${FOLDER}" "${component}"
-    popd
+    scanFolder "${component_path}" "${component}"
   done
-  popd
+  popd > /dev/null
 }
 
 if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
