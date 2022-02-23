@@ -1,11 +1,7 @@
 pjNames:
-  - pjName: "kyma-upgrade-gardener-kyma2-to-main"
-    report: false
   - pjName: "kyma-upgrade-gardener-kyma-to-kyma2"
     report: false
   - pjName: "kyma-preview-integration-dev"
-    report: false
-  - pjName: "skr-kyma-to-kyma2-upgrade-aws-dev"
     report: false
 prConfigs:
   kyma-project:
