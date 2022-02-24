@@ -173,7 +173,7 @@ function scanSubprojects() {
     # keep only the last diretrory in the tree as a name
     component="${component_path##*/}"
 
-    scanFolder "${component_path}" "${project_name}_${component}"
+    scanFolder "${component_path}" "${project_name}-${component}"
   done
   popd > /dev/null
 }
