@@ -125,6 +125,7 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
   WS_PROJECTNAME=$2
   export WS_PROJECTNAME
 
+  # shellcheck disable=SC2153
   echo "Product name - $WS_PRODUCTNAME"
   echo "Project name - $WS_PROJECTNAME"
 
