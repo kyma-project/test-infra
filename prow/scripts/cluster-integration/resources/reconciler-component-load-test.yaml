@@ -1,0 +1,1875 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: reconciler
+---
+## Source: kcp/charts/mothership-reconciler/templates/service-monitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    helm.sh/chart: mothership-reconciler-0.1.0
+    app.kubernetes.io/name: mothership-reconciler
+    app.kubernetes.io/instance: reconciler
+    app.kubernetes.io/managed-by: Helm
+  name: reconciler-mothership-reconciler
+  namespace: monitoring
+spec:
+  endpoints:
+    - port: http
+      interval: 15s
+      scrapeTimeout: 10s
+  namespaceSelector:
+    matchNames:
+      - reconciler
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mothership-reconciler
+      app.kubernetes.io/instance: reconciler
+---
+apiVersion: v1
+automountServiceAccountToken: false
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/component: prometheus
+    app.kubernetes.io/instance: k8s
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/part-of: kube-prometheus
+    app.kubernetes.io/version: 2.33.3
+  name: prometheus-k8s
+  namespace: reconciler
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/component: prometheus
+    app.kubernetes.io/instance: k8s
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/part-of: kube-prometheus
+    app.kubernetes.io/version: 2.33.3
+  name: prometheus-k8s-reconciler
+  namespace: reconciler
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: prometheus-k8s-reconciler
+subjects:
+  - kind: ServiceAccount
+    name: prometheus-k8s
+    namespace: monitoring
+---
+# Source: kcp/charts/component-reconcilers/charts/rma/templates/rbac.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: component-reconcilers-rma
+  namespace:  reconciler
+  labels:
+    app: component-reconcilers-rma
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: component-reconcilers-base
+  namespace:  reconciler
+  labels:
+    app: component-reconcilers-base
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: component-reconcilers-busola-migrator
+  namespace:  reconciler
+  labels:
+    app: component-reconcilers-busola-migrator
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: component-reconcilers-cleaner
+  namespace:  reconciler
+  labels:
+    app: component-reconcilers-cleaner
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: component-reconcilers-connectivity-proxy
+  namespace:  reconciler
+  labels:
+    app: component-reconcilers-connectivity-proxy
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: component-reconcilers-istio-configuration
+  namespace:  reconciler
+  labels:
+    app: component-reconcilers-istio-configuration
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: component-reconcilers-ory
+  namespace:  reconciler
+  labels:
+    app: component-reconcilers-ory
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: component-reconcilers-rafter
+  namespace:  reconciler
+  labels:
+    app: component-reconcilers-rafter
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: component-reconcilers-eventing
+  namespace:  reconciler
+  labels:
+    app: component-reconcilers-eventing
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: component-reconcilers-serverless
+  namespace:  reconciler
+  labels:
+    app: component-reconcilers-serverless
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: component-reconcilers-cluster-essentials
+  namespace:  reconciler
+  labels:
+    app: component-reconcilers-cluster-essentials
+---
+# Source: kcp/charts/mothership-reconciler/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mothership-reconciler
+  namespace: reconciler
+---
+# Source: kcp/charts/mothership-reconciler/templates/auditlog-config.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kcp-auditlog-secret
+  namespace: reconciler
+data:
+  auditlog-user: dGVzdHVzZXI=
+  auditlog-password: dGVzdHBhc3N3b3Jk
+---
+# Source: kcp/charts/mothership-reconciler/templates/mr-encryption-key-secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kcp-reconciler-key
+  namespace: reconciler
+data:
+  reconciler.key: NWJjMTlkM2EyMDMyZmI4Nzk1Y2Q4NmUwOGI0NzNhMzUxNjMxNTA1ZDI1MjI5OTEyNjZiMWZiODVmODliYWQ1Zg==
+---
+# Source: kcp/charts/mothership-reconciler/templates/mr-secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kcp-mothership-reconciler
+  namespace: reconciler
+data:
+  reconciler.yaml: |-
+    ZGI6CiAgZHJpdmVyOiBwb3N0Z3JlcwogIGVuY3J5cHRpb246CiAgICBrZXlGaWxlOiAiL2VuY3J5cHRpb24vcmVjb25jaWxlci5rZXkiCiAgYmxvY2tRdWVyaWVzOiB0cnVlCiAgcG9zdGdyZXM6CiAgICBob3N0OiByZWNvbmNpbGVyLXBvc3RncmVzcWwKICAgIGRhdGFiYXNlOiByZWNvbmNpbGVyCiAgICBwb3J0OiA1NDMyCiAgICB1c2VyOiBwb3N0Z3JlcwogICAgcGFzc3dvcmQ6IHRlc3QKICAgIHVzZVNzbDogZmFsc2UKICAgIG1pZ3JhdGlvbnNEaXI6ICIuL2NvbmZpZ3MvZGIvcG9zdGdyZXMiCiAgc3FsaXRlOgogICAgZmlsZTogcmVjb25jaWxlci5kYgogICAgZGVwbG95U2NoZW1hOiB0cnVlCiAgICByZXNldERhdGFiYXNlOiBmYWxzZQptb3RoZXJzaGlwOgogIHNjaGVtZTogaHR0cAogIGhvc3Q6IHJlY29uY2lsZXItbW90aGVyc2hpcC1yZWNvbmNpbGVyCiAgcG9ydDogODAKICBzY2hlZHVsZXI6CiAgICBkZWxldGVTdHJhdGVneTogYWxsCiAgICByZWNvbmNpbGVyczoKICAgICAgYmFzZToKICAgICAgICB1cmw6IGh0dHA6Ly9iYXNlLXJlY29uY2lsZXI6ODA4MC92MS9ydW4KICAgICAgYnVzb2xhLW1pZ3JhdG9yOgogICAgICAgIHVybDogaHR0cDovL2J1c29sYS1taWdyYXRvci1yZWNvbmNpbGVyOjgwODAvdjEvcnVuCiAgICAgIGNsZWFuZXI6CiAgICAgICAgdXJsOiBodHRwOi8vY2xlYW5lci1yZWNvbmNpbGVyOjgwODAvdjEvcnVuCiAgICAgIGNvbm5lY3Rpdml0eS1wcm94eToKICAgICAgICB1cmw6IGh0dHA6Ly9jb25uZWN0aXZpdHktcHJveHktcmVjb25jaWxlcjo4MDgwL3YxL3J1bgogICAgICBpc3Rpby1jb25maWd1cmF0aW9uOgogICAgICAgIHVybDogaHR0cDovL2lzdGlvLWNvbmZpZ3VyYXRpb24tcmVjb25jaWxlcjo4MDgwL3YxL3J1bgogICAgICBvcnk6CiAgICAgICAgdXJsOiBodHRwOi8vb3J5LXJlY29uY2lsZXI6ODA4MC92MS9ydW4KICAgICAgcmFmdGVyOgogICAgICAgIHVybDogaHR0cDovL3JhZnRlci1yZWNvbmNpbGVyOjgwODAvdjEvcnVuCiAgICAgIGV2ZW50aW5nOgogICAgICAgIHVybDogaHR0cDovL2V2ZW50aW5nLXJlY29uY2lsZXI6ODA4MC92MS9ydW4KICAgICAgc2VydmVybGVzczoKICAgICAgICB1cmw6IGh0dHA6Ly9zZXJ2ZXJsZXNzLXJlY29uY2lsZXI6ODA4MC92MS9ydW4KICAgICAgY2x1c3Rlci1lc3NlbnRpYWxzOgogICAgICAgIHVybDogaHR0cDovL2NsdXN0ZXItZXNzZW50aWFscy1yZWNvbmNpbGVyOjgwODAvdjEvcnVuCiAgICAgIHJtYToKICAgICAgICB1cmw6IGh0dHA6Ly9ybWEtcmVjb25jaWxlcjo4MDgwL3YxL3J1bgogICAgcHJlQ29tcG9uZW50czoKICAgICAgLSAtIGNsdXN0ZXItZXNzZW50aWFscwogICAgICAgIC0gaXN0aW8tY29uZmlndXJhdGlvbgogICAgICAgIC0gY2VydGlmaWNhdGVzCg==
+---
+# Source: kcp/charts/mothership-reconciler/templates/auditlog-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    helm.sh/chart: mothership-reconciler-0.1.0
+    app.kubernetes.io/name: mothership-reconciler
+    app.kubernetes.io/instance: reconciler
+    app.kubernetes.io/managed-by: Helm
+  name: kcp-auditlog-config
+  namespace: reconciler
+data:
+  auditlog-url-basic: "http://logger:8080/audit-log/v2/"
+  auditlog-tenant: "ef943440-8814-4863-9ca1-80edb623d1ce"
+---
+# Source: kcp/charts/mothership-reconciler/templates/mr-fluentbit-cm.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    helm.sh/chart: mothership-reconciler-0.1.0
+    app.kubernetes.io/name: mothership-reconciler
+    app.kubernetes.io/instance: reconciler
+    app.kubernetes.io/managed-by: Helm
+  name: mothership-fluentbit-config
+  namespace: reconciler
+data:
+  parsers.conf: |
+    [PARSER]
+        Name         json
+        Format       json
+        Time_Key     time
+        Time_Keep    Off
+        # Command      |  Decoder | Field | Optional Action
+        # =============|==================|=================
+        Decode_Field_As   escaped_utf8    log    do_next
+        Decode_Field_As   json       log
+
+  fluent-bit.conf: |
+    [SERVICE]
+        Flush         1
+        Grace         5
+        Daemon        off
+        Log_Level     info
+        Parsers_File  parsers.conf
+        HTTP_Server  On
+        HTTP_Listen  0.0.0.0
+        HTTP_PORT    2020
+
+    [INPUT]
+        Name              tail
+        Path              /var/log/auditlog/mothership-audit.log
+        Refresh_Interval  10
+        Rotate_Wait       5
+        Read_from_Head    On
+        DB                /var/log/auditlog/fluentbit.db
+        DB.sync           normal
+        Mem_Buf_Limit     5MB
+        exit_on_eof       false
+        Key               log
+
+    [FILTER]
+        Name         parser
+        Parser       json
+        Match        *
+        Key_Name     log
+        Reserve_Data On
+        Preserve_Key Off
+
+    [OUTPUT]
+        Name             sequentialhttp
+        Match            *
+        Retry_Limit      False
+        Host             ${HOST}
+        Port             ${PORT}
+        URI              ${URI}security-events
+        Header           Content-Type application/json
+        HTTP_User        ${APP_AUDITLOG_USER}
+        HTTP_Passwd      ${APP_AUDITLOG_PASSWORD}
+        Format           json_stream
+        tls              On
+---
+# Source: kcp/charts/postgresql/templates/init-db-config-map.yaml
+# This file is not part of official PostgreSQL chart
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: reconciler-postgresql-db-init
+  namespace: reconciler
+data:
+  init-provisioner-db.sql: |
+    CREATE DATABASE provisioner;
+  init-broker-db.sql: |
+    CREATE DATABASE broker;
+  init-reconciler-db.sql: |
+    CREATE DATABASE reconciler;
+---
+# Source: kcp/charts/component-reconcilers/charts/rma/templates/rbac.yaml
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: component-reconcilers-rma
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["*"]
+  - apiGroups: ["operator.victoriametrics.com"]
+    resources: ["vmrules"]
+    verbs: ["*"]
+  - apiGroups: ["operator.victoriametrics.com"]
+    resources: ["vmusers"]
+    verbs: ["*"]
+---
+# Source: kcp/charts/component-reconcilers/charts/rma/templates/rbac.yaml
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: component-reconcilers-rma
+subjects:
+  - kind: ServiceAccount
+    name: component-reconcilers-rma
+    namespace:  reconciler
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: component-reconcilers-rma
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: component-reconcilers-base
+  namespace:  reconciler
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get","delete"]
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: component-reconcilers-busola-migrator
+  namespace:  reconciler
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get","delete"]
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: component-reconcilers-cleaner
+  namespace:  reconciler
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get","delete"]
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: component-reconcilers-connectivity-proxy
+  namespace:  reconciler
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get","delete"]
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: component-reconcilers-istio-configuration
+  namespace:  reconciler
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get","delete"]
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: component-reconcilers-ory
+  namespace:  reconciler
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get","delete"]
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: component-reconcilers-rafter
+  namespace:  reconciler
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get","delete"]
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: component-reconcilers-eventing
+  namespace:  reconciler
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get","delete"]
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: component-reconcilers-serverless
+  namespace:  reconciler
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get","delete"]
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: component-reconcilers-cluster-essentials
+  namespace:  reconciler
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get","delete"]
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: component-reconcilers-base
+  namespace:  reconciler
+subjects:
+  - kind: ServiceAccount
+    name: component-reconcilers-base
+    namespace:  reconciler
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: component-reconcilers-base
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: component-reconcilers-busola-migrator
+  namespace:  reconciler
+subjects:
+  - kind: ServiceAccount
+    name: component-reconcilers-busola-migrator
+    namespace:  reconciler
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: component-reconcilers-busola-migrator
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: component-reconcilers-cleaner
+  namespace:  reconciler
+subjects:
+  - kind: ServiceAccount
+    name: component-reconcilers-cleaner
+    namespace:  reconciler
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: component-reconcilers-cleaner
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: component-reconcilers-connectivity-proxy
+  namespace:  reconciler
+subjects:
+  - kind: ServiceAccount
+    name: component-reconcilers-connectivity-proxy
+    namespace:  reconciler
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: component-reconcilers-connectivity-proxy
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: component-reconcilers-istio-configuration
+  namespace:  reconciler
+subjects:
+  - kind: ServiceAccount
+    name: component-reconcilers-istio-configuration
+    namespace:  reconciler
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: component-reconcilers-istio-configuration
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: component-reconcilers-ory
+  namespace:  reconciler
+subjects:
+  - kind: ServiceAccount
+    name: component-reconcilers-ory
+    namespace:  reconciler
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: component-reconcilers-ory
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: component-reconcilers-rafter
+  namespace:  reconciler
+subjects:
+  - kind: ServiceAccount
+    name: component-reconcilers-rafter
+    namespace:  reconciler
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: component-reconcilers-rafter
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: component-reconcilers-eventing
+  namespace:  reconciler
+subjects:
+  - kind: ServiceAccount
+    name: component-reconcilers-eventing
+    namespace:  reconciler
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: component-reconcilers-eventing
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: component-reconcilers-serverless
+  namespace:  reconciler
+subjects:
+  - kind: ServiceAccount
+    name: component-reconcilers-serverless
+    namespace:  reconciler
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: component-reconcilers-serverless
+---
+# Source: kcp/charts/component-reconcilers/templates/rbac.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: component-reconcilers-cluster-essentials
+  namespace:  reconciler
+subjects:
+  - kind: ServiceAccount
+    name: component-reconcilers-cluster-essentials
+    namespace:  reconciler
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: component-reconcilers-cluster-essentials
+---
+# Source: kcp/charts/component-reconcilers/charts/rma/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: rma-reconciler
+  namespace: reconciler
+  labels:
+    kyma-project.io/component-reconciler: ""
+    component: rma
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 15020
+      targetPort: 15020
+      protocol: TCP
+      name: istio-http
+  selector:
+    kyma-project.io/component-reconciler: ""
+    component: rma
+---
+# Source: kcp/charts/component-reconcilers/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: base-reconciler
+  namespace: reconciler
+  labels:
+    kyma-project.io/component-reconciler: ""
+    component: base
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 15020
+      targetPort: 15020
+      protocol: TCP
+      name: istio-http
+  selector:
+    kyma-project.io/component-reconciler: ""
+    component: base
+---
+# Source: kcp/charts/component-reconcilers/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: busola-migrator-reconciler
+  namespace: reconciler
+  labels:
+    kyma-project.io/component-reconciler: ""
+    component: busola-migrator
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 15020
+      targetPort: 15020
+      protocol: TCP
+      name: istio-http
+  selector:
+    kyma-project.io/component-reconciler: ""
+    component: busola-migrator
+---
+# Source: kcp/charts/component-reconcilers/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: cleaner-reconciler
+  namespace: reconciler
+  labels:
+    kyma-project.io/component-reconciler: ""
+    component: cleaner
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 15020
+      targetPort: 15020
+      protocol: TCP
+      name: istio-http
+  selector:
+    kyma-project.io/component-reconciler: ""
+    component: cleaner
+---
+# Source: kcp/charts/component-reconcilers/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: connectivity-proxy-reconciler
+  namespace: reconciler
+  labels:
+    kyma-project.io/component-reconciler: ""
+    component: connectivity-proxy
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 15020
+      targetPort: 15020
+      protocol: TCP
+      name: istio-http
+  selector:
+    kyma-project.io/component-reconciler: ""
+    component: connectivity-proxy
+---
+# Source: kcp/charts/component-reconcilers/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: istio-configuration-reconciler
+  namespace: reconciler
+  labels:
+    kyma-project.io/component-reconciler: ""
+    component: istio-configuration
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 15020
+      targetPort: 15020
+      protocol: TCP
+      name: istio-http
+  selector:
+    kyma-project.io/component-reconciler: ""
+    component: istio-configuration
+---
+# Source: kcp/charts/component-reconcilers/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ory-reconciler
+  namespace: reconciler
+  labels:
+    kyma-project.io/component-reconciler: ""
+    component: ory
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 15020
+      targetPort: 15020
+      protocol: TCP
+      name: istio-http
+  selector:
+    kyma-project.io/component-reconciler: ""
+    component: ory
+---
+# Source: kcp/charts/component-reconcilers/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: rafter-reconciler
+  namespace: reconciler
+  labels:
+    kyma-project.io/component-reconciler: ""
+    component: rafter
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 15020
+      targetPort: 15020
+      protocol: TCP
+      name: istio-http
+  selector:
+    kyma-project.io/component-reconciler: ""
+    component: rafter
+---
+# Source: kcp/charts/component-reconcilers/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: eventing-reconciler
+  namespace: reconciler
+  labels:
+    kyma-project.io/component-reconciler: ""
+    component: eventing
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 15020
+      targetPort: 15020
+      protocol: TCP
+      name: istio-http
+  selector:
+    kyma-project.io/component-reconciler: ""
+    component: eventing
+---
+# Source: kcp/charts/component-reconcilers/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: serverless-reconciler
+  namespace: reconciler
+  labels:
+    kyma-project.io/component-reconciler: ""
+    component: serverless
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 15020
+      targetPort: 15020
+      protocol: TCP
+      name: istio-http
+  selector:
+    kyma-project.io/component-reconciler: ""
+    component: serverless
+---
+# Source: kcp/charts/component-reconcilers/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: cluster-essentials-reconciler
+  namespace: reconciler
+  labels:
+    kyma-project.io/component-reconciler: ""
+    component: cluster-essentials
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 15020
+      targetPort: 15020
+      protocol: TCP
+      name: istio-http
+  selector:
+    kyma-project.io/component-reconciler: ""
+    component: cluster-essentials
+---
+# Source: kcp/charts/mothership-reconciler/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: reconciler-mothership-reconciler
+  namespace: reconciler
+  labels:
+    helm.sh/chart: mothership-reconciler-0.1.0
+    app.kubernetes.io/name: mothership-reconciler
+    app.kubernetes.io/instance: reconciler
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 15020
+      targetPort: 15020
+      protocol: TCP
+      name: istio-http
+  selector:
+    app.kubernetes.io/name: mothership-reconciler
+    app.kubernetes.io/instance: reconciler
+---
+# Source: kcp/charts/postgresql/templates/svc-headless.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: reconciler-postgresql-headless
+  namespace: reconciler
+  labels:
+    app: postgresql
+    chart: postgresql-5.3.11
+    release: "reconciler"
+    heritage: "Helm"
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: postgresql
+    port: 5432
+    targetPort: postgresql
+  selector:
+    app: postgresql
+    release: "reconciler"
+---
+# Source: kcp/charts/postgresql/templates/svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: reconciler-postgresql
+  namespace: reconciler
+  labels:
+    app: postgresql
+    chart: postgresql-5.3.11
+    release: "reconciler"
+    heritage: "Helm"
+spec:
+  type: ClusterIP
+  ports:
+  - name: postgresql
+    port: 5432
+    targetPort: postgresql
+  selector:
+    app: postgresql
+    release: "reconciler"
+    role: master
+---
+# Source: kcp/charts/component-reconcilers/charts/rma/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    kyma-project.io/component-reconciler: ""
+    component: rma
+  name: rma-reconciler
+  namespace: reconciler
+spec:
+  selector:
+    matchLabels:
+      kyma-project.io/component-reconciler: ""
+      component: rma
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        kyma-project.io/component-reconciler: ""
+        component: rma
+    spec:
+      serviceAccountName: component-reconcilers-rma
+      containers:
+      - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:3cc61b26"
+        imagePullPolicy: IfNotPresent
+        args:
+          - reconciler
+          - start
+          - rma
+          - --workspace=/tmp/reconciler
+          - --worker-count=16
+          - --worker-timeout=10m
+          - --retries-max=10
+          - --retries-delay=60s
+        name: reconciler
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: http
+        resources:
+          {}
+        volumeMounts:
+        - mountPath: /tmp
+          name: workspace
+      securityContext:
+        runAsUser: 2000
+      volumes:
+      - emptyDir: {}
+        name: workspace
+---
+# Source: kcp/charts/component-reconcilers/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    kyma-project.io/component-reconciler: ""
+    component: base
+  name: base-reconciler
+  namespace: reconciler
+spec:
+  selector:
+    matchLabels:
+      kyma-project.io/component-reconciler: ""
+      component: base
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        kyma-project.io/component-reconciler: ""
+        component: base
+    spec:
+      serviceAccountName: component-reconcilers-base
+      nodeSelector:
+        {}
+      containers:
+      - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:3cc61b26"
+        imagePullPolicy: IfNotPresent
+        args:
+          - reconciler
+          - start
+          - base
+          - --workspace=/tmp/reconciler
+          - --worker-count=50
+        name: reconciler
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: http
+        resources:
+          {}
+        volumeMounts:
+        - mountPath: /tmp
+          name: workspace
+      securityContext:
+        runAsUser: 2000
+      volumes:
+      - emptyDir: {}
+        name: workspace
+---
+# Source: kcp/charts/component-reconcilers/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    kyma-project.io/component-reconciler: ""
+    component: busola-migrator
+  name: busola-migrator-reconciler
+  namespace: reconciler
+spec:
+  selector:
+    matchLabels:
+      kyma-project.io/component-reconciler: ""
+      component: busola-migrator
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        kyma-project.io/component-reconciler: ""
+        component: busola-migrator
+    spec:
+      serviceAccountName: component-reconcilers-busola-migrator
+      nodeSelector:
+        {}
+      containers:
+      - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:3cc61b26"
+        imagePullPolicy: IfNotPresent
+        args:
+          - reconciler
+          - start
+          - busola-migrator
+          - --workspace=/tmp/reconciler
+          - --worker-count=50
+        name: reconciler
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: http
+        resources:
+          {}
+        volumeMounts:
+        - mountPath: /tmp
+          name: workspace
+      securityContext:
+        runAsUser: 2000
+      volumes:
+      - emptyDir: {}
+        name: workspace
+---
+# Source: kcp/charts/component-reconcilers/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    kyma-project.io/component-reconciler: ""
+    component: cleaner
+  name: cleaner-reconciler
+  namespace: reconciler
+spec:
+  selector:
+    matchLabels:
+      kyma-project.io/component-reconciler: ""
+      component: cleaner
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        kyma-project.io/component-reconciler: ""
+        component: cleaner
+    spec:
+      serviceAccountName: component-reconcilers-cleaner
+      nodeSelector:
+        {}
+      containers:
+      - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:3cc61b26"
+        imagePullPolicy: IfNotPresent
+        args:
+          - reconciler
+          - start
+          - cleaner
+          - --workspace=/tmp/reconciler
+          - --worker-count=50
+        name: reconciler
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: http
+        resources:
+          {}
+        volumeMounts:
+        - mountPath: /tmp
+          name: workspace
+      securityContext:
+        runAsUser: 2000
+      volumes:
+      - emptyDir: {}
+        name: workspace
+---
+# Source: kcp/charts/component-reconcilers/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    kyma-project.io/component-reconciler: ""
+    component: connectivity-proxy
+  name: connectivity-proxy-reconciler
+  namespace: reconciler
+spec:
+  selector:
+    matchLabels:
+      kyma-project.io/component-reconciler: ""
+      component: connectivity-proxy
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        kyma-project.io/component-reconciler: ""
+        component: connectivity-proxy
+    spec:
+      serviceAccountName: component-reconcilers-connectivity-proxy
+      nodeSelector:
+        {}
+      containers:
+      - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:3cc61b26"
+        imagePullPolicy: IfNotPresent
+        args:
+          - reconciler
+          - start
+          - connectivity-proxy
+          - --workspace=/tmp/reconciler
+          - --worker-count=50
+        name: reconciler
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: http
+        resources:
+          {}
+        volumeMounts:
+        - mountPath: /tmp
+          name: workspace
+      securityContext:
+        runAsUser: 2000
+      volumes:
+      - emptyDir: {}
+        name: workspace
+---
+# Source: kcp/charts/component-reconcilers/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    kyma-project.io/component-reconciler: ""
+    component: istio-configuration
+  name: istio-configuration-reconciler
+  namespace: reconciler
+spec:
+  selector:
+    matchLabels:
+      kyma-project.io/component-reconciler: ""
+      component: istio-configuration
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        kyma-project.io/component-reconciler: ""
+        component: istio-configuration
+    spec:
+      serviceAccountName: component-reconcilers-istio-configuration
+      nodeSelector:
+        {}
+      containers:
+      - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:3cc61b26"
+        imagePullPolicy: IfNotPresent
+        args:
+          - reconciler
+          - start
+          - istio-configuration
+          - --workspace=/tmp/reconciler
+          - --worker-count=50
+        name: reconciler
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: http
+        resources:
+          {}
+        volumeMounts:
+        - mountPath: /tmp
+          name: workspace
+      securityContext:
+        runAsUser: 2000
+      volumes:
+      - emptyDir: {}
+        name: workspace
+---
+# Source: kcp/charts/component-reconcilers/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    kyma-project.io/component-reconciler: ""
+    component: ory
+  name: ory-reconciler
+  namespace: reconciler
+spec:
+  selector:
+    matchLabels:
+      kyma-project.io/component-reconciler: ""
+      component: ory
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        kyma-project.io/component-reconciler: ""
+        component: ory
+    spec:
+      serviceAccountName: component-reconcilers-ory
+      nodeSelector:
+        {}
+      containers:
+      - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:3cc61b26"
+        imagePullPolicy: IfNotPresent
+        args:
+          - reconciler
+          - start
+          - ory
+          - --workspace=/tmp/reconciler
+          - --worker-count=50
+        name: reconciler
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: http
+        resources:
+          {}
+        volumeMounts:
+        - mountPath: /tmp
+          name: workspace
+      securityContext:
+        runAsUser: 2000
+      volumes:
+      - emptyDir: {}
+        name: workspace
+---
+# Source: kcp/charts/component-reconcilers/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    kyma-project.io/component-reconciler: ""
+    component: rafter
+  name: rafter-reconciler
+  namespace: reconciler
+spec:
+  selector:
+    matchLabels:
+      kyma-project.io/component-reconciler: ""
+      component: rafter
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        kyma-project.io/component-reconciler: ""
+        component: rafter
+    spec:
+      serviceAccountName: component-reconcilers-rafter
+      nodeSelector:
+        {}
+      containers:
+      - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:3cc61b26"
+        imagePullPolicy: IfNotPresent
+        args:
+          - reconciler
+          - start
+          - rafter
+          - --workspace=/tmp/reconciler
+          - --worker-count=50
+        name: reconciler
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: http
+        resources:
+          {}
+        volumeMounts:
+        - mountPath: /tmp
+          name: workspace
+      securityContext:
+        runAsUser: 2000
+      volumes:
+      - emptyDir: {}
+        name: workspace
+---
+# Source: kcp/charts/component-reconcilers/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    kyma-project.io/component-reconciler: ""
+    component: eventing
+  name: eventing-reconciler
+  namespace: reconciler
+spec:
+  selector:
+    matchLabels:
+      kyma-project.io/component-reconciler: ""
+      component: eventing
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        kyma-project.io/component-reconciler: ""
+        component: eventing
+    spec:
+      serviceAccountName: component-reconcilers-eventing
+      nodeSelector:
+        {}
+      containers:
+      - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:3cc61b26"
+        imagePullPolicy: IfNotPresent
+        args:
+          - reconciler
+          - start
+          - eventing
+          - --workspace=/tmp/reconciler
+          - --worker-count=50
+        name: reconciler
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: http
+        resources:
+          {}
+        volumeMounts:
+        - mountPath: /tmp
+          name: workspace
+      securityContext:
+        runAsUser: 2000
+      volumes:
+      - emptyDir: {}
+        name: workspace
+---
+# Source: kcp/charts/component-reconcilers/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    kyma-project.io/component-reconciler: ""
+    component: serverless
+  name: serverless-reconciler
+  namespace: reconciler
+spec:
+  selector:
+    matchLabels:
+      kyma-project.io/component-reconciler: ""
+      component: serverless
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        kyma-project.io/component-reconciler: ""
+        component: serverless
+    spec:
+      serviceAccountName: component-reconcilers-serverless
+      nodeSelector:
+        {}
+      containers:
+      - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:3cc61b26"
+        imagePullPolicy: IfNotPresent
+        args:
+          - reconciler
+          - start
+          - serverless
+          - --workspace=/tmp/reconciler
+          - --worker-count=50
+        name: reconciler
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: http
+        resources:
+          {}
+        volumeMounts:
+        - mountPath: /tmp
+          name: workspace
+      securityContext:
+        runAsUser: 2000
+      volumes:
+      - emptyDir: {}
+        name: workspace
+---
+# Source: kcp/charts/component-reconcilers/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    kyma-project.io/component-reconciler: ""
+    component: cluster-essentials
+  name: cluster-essentials-reconciler
+  namespace: reconciler
+spec:
+  selector:
+    matchLabels:
+      kyma-project.io/component-reconciler: ""
+      component: cluster-essentials
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        kyma-project.io/component-reconciler: ""
+        component: cluster-essentials
+    spec:
+      serviceAccountName: component-reconcilers-cluster-essentials
+      nodeSelector:
+        {}
+      containers:
+      - image: "eu.gcr.io/kyma-project/incubator/reconciler/component:3cc61b26"
+        imagePullPolicy: IfNotPresent
+        args:
+          - reconciler
+          - start
+          - cluster-essentials
+          - --workspace=/tmp/reconciler
+          - --worker-count=50
+        name: reconciler
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: http
+        resources:
+          {}
+        volumeMounts:
+        - mountPath: /tmp
+          name: workspace
+      securityContext:
+        runAsUser: 2000
+      volumes:
+      - emptyDir: {}
+        name: workspace
+---
+# Source: kcp/charts/mothership-reconciler/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    helm.sh/chart: mothership-reconciler-0.1.0
+    app.kubernetes.io/name: mothership-reconciler
+    app.kubernetes.io/instance: reconciler
+    app.kubernetes.io/managed-by: Helm
+  name: mothership-reconciler
+  namespace: reconciler
+spec:
+  selector:
+    matchLabels:
+      helm.sh/chart: mothership-reconciler-0.1.0
+      app.kubernetes.io/name: mothership-reconciler
+      app.kubernetes.io/instance: reconciler
+      app.kubernetes.io/managed-by: Helm
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: mothership-reconciler-0.1.0
+        app.kubernetes.io/name: mothership-reconciler
+        app.kubernetes.io/instance: reconciler
+        app.kubernetes.io/managed-by: Helm
+    spec:
+      serviceAccountName: mothership-reconciler
+      securityContext:
+              runAsUser: 2000
+      nodeSelector:
+        {}
+      containers:
+      - image: "eu.gcr.io/kyma-project/incubator/reconciler/mothership:3cc61b26"
+        imagePullPolicy: IfNotPresent
+        args:
+          - mothership
+          - mothership
+          - start
+          - --config=mothership-configuration/reconciler.yaml
+          - --migrate-database
+          - --worker-count=50
+          - --audit-log
+          - --audit-log-file=/var/log/auditlog/mothership-audit.log
+          - --audit-log-tenant-id=$(APP_AUDITLOG_TENANT)
+          - --occupancy-tracking
+        env:
+        - name: APP_AUDITLOG_TENANT
+          valueFrom:
+            configMapKeyRef:
+              name: kcp-auditlog-config
+              key: auditlog-tenant
+        name: mothership-reconciler
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health/live
+            port: http
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        startupProbe:
+          failureThreshold: 180
+          httpGet:
+            path: /health/ready
+            port: http
+          periodSeconds: 10
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health/ready
+            port: http
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        resources:
+          {}
+        volumeMounts:
+        - name: encryption-key
+          mountPath: "/encryption"
+        - name: mothership-reconciler-configuration
+          mountPath: "/mothership-configuration"
+        - name: audit-log
+          mountPath: /var/log/auditlog
+      - name: fluentbit-sidecar
+        image: eu.gcr.io/kyma-project/tpi/fluent-bit:1.8.9-aef5095d
+        command:
+        - sh
+        - -c
+        - |
+          # this is safe to be empty, i.e. no port specified in the URL
+          export PORT=$(echo $APP_AUDITLOG_URL | cut -d/ -f 3 | cut -d: -f2)
+          export HOST=$(echo $APP_AUDITLOG_URL | cut -d/ -f 3 | cut -d: -f1)
+          export URI=$(echo $APP_AUDITLOG_URL | cut -d/ -f4-)
+          /fluent-bit/bin/fluent-bit \
+            -e /fluent-bit/lib/flb-out_sequentialhttp.so \
+            -c /fluent-bit/etc/fluent-bit.conf
+        env:
+        - name: APP_AUDITLOG_URL
+          valueFrom:
+            configMapKeyRef:
+              name: kcp-auditlog-config
+              key: auditlog-url-basic
+        - name: APP_AUDITLOG_USER
+          valueFrom:
+            secretKeyRef:
+              name: kcp-auditlog-secret
+              key: auditlog-user
+        - name: APP_AUDITLOG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: kcp-auditlog-secret
+              key: auditlog-password
+        volumeMounts:
+        - name: audit-log
+          mountPath: /var/log/auditlog
+        - name: fluentbit-config
+          mountPath: /fluent-bit/etc/
+      volumes:
+      - name: encryption-key
+        secret:
+          secretName: kcp-reconciler-key
+      - name: mothership-reconciler-configuration
+        secret:
+          secretName: kcp-mothership-reconciler
+      - name: audit-log
+        emptyDir: {}
+      - name: fluentbit-config
+        configMap:
+          name: mothership-fluentbit-config
+---
+# Source: kcp/charts/postgresql/templates/statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: reconciler-postgresql
+  namespace: reconciler
+  labels:
+    app: postgresql
+    chart: postgresql-5.3.11
+    release: "reconciler"
+    heritage: "Helm"
+spec:
+  serviceName: reconciler-postgresql-headless
+  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: postgresql
+      release: "reconciler"
+      role: master
+  template:
+    metadata:
+      name: reconciler-postgresql
+      labels:
+        app: postgresql
+        chart: postgresql-5.3.11
+        release: "reconciler"
+        heritage: "Helm"
+        role: master
+    spec:      
+      securityContext:
+        fsGroup: 1001
+      initContainers:
+      - name: init-chmod-data
+        image: docker.io/bitnami/minideb:stretch
+        imagePullPolicy: "Always"
+        resources:
+          requests:
+            cpu: 250m
+            memory: 256Mi
+        command:
+          - sh
+          - -c
+          - |
+            mkdir -p /bitnami/postgresql/data
+            chmod 700 /bitnami/postgresql/data
+            find /bitnami/postgresql -mindepth 1 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | \
+              xargs chown -R 1001:1001
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+        - name: data
+          mountPath: /bitnami/postgresql
+          subPath: 
+      containers:
+      - name: reconciler-postgresql
+        image: docker.io/bitnami/postgresql:11.4.0-debian-9-r12
+        imagePullPolicy: "IfNotPresent"
+        resources:
+          requests:
+            cpu: 250m
+            memory: 256Mi
+        securityContext:
+          runAsUser: 1001
+        env:
+        - name: BITNAMI_DEBUG
+          value: "false"
+        - name: POSTGRESQL_PORT_NUMBER
+          value: "5432"
+        - name: PGDATA
+          value: "/bitnami/postgresql/data"
+        - name: POSTGRES_USER
+          value: "postgres"
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: reconciler-postgresql
+              key: postgresql-password
+        ports:
+        - name: postgresql
+          containerPort: 5432
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - exec pg_isready -U "postgres" -h 127.0.0.1 -p 5432
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 6
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - |
+              pg_isready -U "postgres" -h 127.0.0.1 -p 5432
+              [ -f /opt/bitnami/postgresql/tmp/.initialized ]
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 6
+        volumeMounts:
+        - name: custom-init-scripts
+          mountPath: /docker-entrypoint-initdb.d/
+        - name: data
+          mountPath: /bitnami/postgresql
+          subPath: 
+      volumes:
+      - name: custom-init-scripts
+        configMap:
+          name: reconciler-postgresql-db-init
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: "8Gi"
+---
+# Source: kcp/charts/postgresql/templates/secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: reconciler-postgresql
+  namespace: reconciler
+  labels:
+    app: postgresql
+    chart: postgresql-5.3.11
+    release: "reconciler"
+    heritage: "Helm"
+  annotations:
+    "helm.sh/hook": "pre-install" # Modified
+    "helm.sh/hook-delete-policy": "before-hook-creation" # Modified
+type: Opaque
+data:
+  postgresql-provisioner-db-name: "cHJvdmlzaW9uZXI=" # Modified
+  postgresql-provisioner-username: "cG9zdGdyZXM=" # Modified
+  postgresql-provisioner-password: "dGVzdA==" # TODO: Embedded db doesn't support separate accounts
+  postgresql-broker-db-name: "YnJva2Vy" # Modified
+  postgresql-broker-username: "cG9zdGdyZXM=" # Modified
+  postgresql-broker-password: "dGVzdA==" # TODO: Embedded db doesn't support separate accounts
+  postgresql-reconciler-db-name: "cmVjb25jaWxlcg==" # Modified
+  postgresql-reconciler-username: "cG9zdGdyZXM=" # Modified
+  postgresql-reconciler-password: "dGVzdA==" # TODO: Embedded db doesn't support separate accounts
+  postgresql-serviceName: "cmVjb25jaWxlci1wb3N0Z3Jlc3Fs" # Modified
+  postgresql-servicePort: "NTQzMg==" # Modified
+  postgresql-sslMode: "ZGlzYWJsZQ==" # Modified
+  postgresql-username: "cG9zdGdyZXM=" #TODO remove after migration to separate user will be done
+  postgresql-password: "dGVzdA==" #TODO remove after migration to separate user will be done
+  postgresql-provisionerDatabaseName: "cHJvdmlzaW9uZXI=" #TODO remove after migration to separate user will be done
+  postgresql-brokerDatabaseName: "YnJva2Vy" #TODO remove after migration to separate user will be done

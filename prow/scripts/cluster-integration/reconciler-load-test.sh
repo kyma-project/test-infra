@@ -70,15 +70,16 @@ cd "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"  || { echo "Failed to change dir 
 
 mothership_latest_commit=$(curl  --silent "https://api.github.com/repos/kyma-incubator/reconciler/commits/main" | jq -r '.sha')
 mothership_tag="${mothership_latest_commit::8}"
-mothership_tag="PR-848"
-mock_component_tag="PR-838"
-sed -i "s/reconciler\/mothership:.\\{8\\}/reconciler\/mothership:${mothership_tag}/g" ./resources/reconciler-load-test.yaml
-sed -i "s/reconciler\/component:.\\{8\\}/reconciler\/component:${mock_component_tag}/g" ./resources/reconciler-load-test.yaml
+component_tag="${mothership_latest_commit::8}"
+test_script="reconciler-component-load-test.yaml"
+
+sed -i "s/reconciler\/mothership:.\\{8\\}/reconciler\/mothership:${mothership_tag}/g" "./resources/${test_script}"
+sed -i "s/reconciler\/component:.\\{8\\}/reconciler\/component:${component_tag}/g" "./resources/${test_script}"
 
 echo "************* Current reconciler Image to be used **************"
-cat ./resources/reconciler-load-test.yaml | grep -o 'reconciler\/mothership:.*'
-cat ./resources/reconciler-load-test.yaml | grep -o 'reconciler\/component:.*' | head -1
+cat "./resources/${test_script}" | grep -o 'reconciler\/mothership:.*'
+cat "./resources/${test_script}" | grep -o 'reconciler\/component:.*' | head -1
 echo "**************************************************************"
 
-kubectl apply -f resources/reconciler-load-test.yaml
+kubectl apply -f "./resources/${test_script}"
 set -e
