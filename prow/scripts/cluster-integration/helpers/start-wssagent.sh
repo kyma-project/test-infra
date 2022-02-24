@@ -5,7 +5,7 @@
 
 #Expected vars:
 # - APIKEY- Key provided by SAP Whitesource Team
-# - PRODUCTNAME - Product inside whitesource
+# - WS_PRODUCTNAME - Product inside whitesource
 # - USERKEY - Users specified key(should be a service account)
 # - PROJECTNAME - Kyma component name, scans that directory and posts the results in whitesource
 # - GITHUB_ORG_DIR - Project directory to scan
@@ -13,11 +13,14 @@
 
 set -o errexit
 export TEST_INFRA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/test-infra/"
+# shellcheck source=prow/scripts/lib/log.sh
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 
 # whitesource config
-GO_CONFIG_PATH="$TEST_INFRA_SOURCES_DIR/prow/images/whitesource-scanner/go-wss-unified-agent.config"
+GO_DEP_CONFIG_PATH="$TEST_INFRA_SOURCES_DIR/prow/images/whitesource-scanner/go-wss-unified-agent.config"
+GO_MOD_CONFIG_PATH="$TEST_INFRA_SOURCES_DIR/prow/images/whitesource-scanner/go-mod-wss-unified-agent.config"
 JAVASCRIPT_CONFIG_PATH="$TEST_INFRA_SOURCES_DIR/prow/images/whitesource-scanner/javascript-wss-unified-agent.config"
 
 # authenticate gcloud client
@@ -26,9 +29,11 @@ gcp::authenticate \
 
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
-USERKEY=$(cat "${WHITESOURCE_USERKEY}")
+# shellcheck disable=SC2153
+KYMA_SRC="${GITHUB_ORG_DIR}/${PROJECTNAME}"
 
-APIKEY=$(cat "${WHITESOURCE_APIKEY}")
+WS_USERKEY=$(cat "${WHITESOURCE_USERKEY}")
+WS_APIKEY=$(cat "${WHITESOURCE_APIKEY}")
 
 #exclude components based on dependency management
 function filterFolders() {
@@ -42,7 +47,7 @@ function filterFolders() {
   echo "$EXCLUDES"
 }
 
-function prepareDependencies() {
+function prepareDepDependencies() {
   local DEPENDENCY_FILE
   DEPENDENCY_FILE=$1
   local FOLDER_TO_SCAN
@@ -58,44 +63,36 @@ function prepareDependencies() {
   done
 }
 
-# shellcheck disable=SC2153
-KYMA_SRC="${GITHUB_ORG_DIR}/${PROJECTNAME}"
-
 case "${SCAN_LANGUAGE}" in
 golang)
   echo "SCAN: golang (dep)"
   go version
-  CONFIG_PATH=$GO_CONFIG_PATH
-  sed -i.bak "s|go.dependencyManager=|go.dependencyManager=dep|g" $CONFIG_PATH
-  sed -i.bak '/^excludes=/d' $CONFIG_PATH
-  echo "scanComment=$(date)" >> $CONFIG_PATH
+  CONFIG_PATH=$GO_DEP_CONFIG_PATH
   # exclude gomod based folders
-  filterFolders go.mod "${KYMA_SRC}" >>${CONFIG_PATH}
-  prepareDependencies gopkg.toml "${KYMA_SRC}"
   COMPONENT_DEFINITION="Gopkg.toml"
+  excluded=$(filterFolders go.mod "${KYMA_SRC}")
+  echo "excluded: $excluded"
+  echo "$excluded" >>${CONFIG_PATH}
+  prepareDepDependencies gopkg.toml "${KYMA_SRC}"
+  
   ;;
 
 golang-mod)
   echo "SCAN: golang-mod"
   go version
-  CONFIG_PATH=$GO_CONFIG_PATH
+  CONFIG_PATH=$GO_MOD_CONFIG_PATH
   export GO111MODULE=on
-  sed -i.bak "s|go.dependencyManager=|#go.dependencyManager=|g" $CONFIG_PATH
-  sed -i.bak "s|go.collectDependenciesAtRuntime=true|#go.collectDependenciesAtRuntime=true|g" $CONFIG_PATH
-  sed -i.bak "s|go.resolveDependencies=true|go.resolveDependencies=false|g" $CONFIG_PATH
-  sed -i.bak "s|go.ignoreSourceFiles=true|go.modules.ignoreSourceFiles=true|g" $CONFIG_PATH
-  sed -i.bak '/^excludes=/d' $CONFIG_PATH
-  echo "go.modules.resolveDependencies=true" >> $CONFIG_PATH
-  echo "scanComment=$(date)" >> $CONFIG_PATH
   # exclude godep based folders
-  filterFolders gopkg.toml "${KYMA_SRC}" >>${CONFIG_PATH}
+  # filterFolders gopkg.toml "${KYMA_SRC}" >>${CONFIG_PATH}
+  excluded=$(filterFolders gopkg.toml "${KYMA_SRC}")
+  echo "excluded: $excluded"
+  echo "$excluded" >>${CONFIG_PATH}
   COMPONENT_DEFINITION="go.mod"
   ;;
 
 javascript)
   echo "SCAN: javascript"
   CONFIG_PATH=$JAVASCRIPT_CONFIG_PATH
-  echo "scanComment=$(date)" >> $CONFIG_PATH
   COMPONENT_DEFINITION="package.json"
   ;;
 
@@ -105,15 +102,9 @@ javascript)
   ;;
 esac
 
-echo "***********************************"
-echo "***********Starting Scan***********"
-echo "***********************************"
+echo "scanComment=$(date)" >> $CONFIG_PATH
 
-# resolve deps for console repository
-#if [ "${PROJECTNAME}" == "console" ]; then
-#    cd "$KYMA_SRC"
-#    make resolve
-#fi
+log::banner "Starting Scan"
 
 function scanFolder() { # expects to get the fqdn of folder passed to scan
   if [[ $1 == "" ]]; then
@@ -126,33 +117,28 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
     exit 1
   fi
   pushd "${FOLDER}" # change to passed parameter
-  PROJNAME=$2
+  WS_PROJECTNAME=$2
 
-  if [[ $CUSTOM_PROJECTNAME == "" ]]; then
+  if [[ $CUSTOM_PROJECTNAME != "" ]]; then
     # use custom projectname for kyma-mod scans in order not to override kyma (dep) scan results
-    sed -i.bak "s|apiKey=|apiKey=${APIKEY}|g; s|productName=|productName=${PRODUCTNAME}|g; s|userKey=|userKey=${USERKEY}|g; s|projectName=|projectName=${PROJNAME}|g" $CONFIG_PATH
-  else
-    sed -i.bak "s|apiKey=|apiKey=${APIKEY}|g; s|productName=|productName=${PRODUCTNAME}|g; s|userKey=|userKey=${USERKEY}|g; s|projectName=|projectName=${CUSTOM_PROJECTNAME}|g" $CONFIG_PATH
+    WS_PROJECTNAME="${CUSTOM_PROJECTNAME}"
   fi
+  export WS_PROJECTNAME
 
-  echo "Product name - $PRODUCTNAME"
-  echo "Project name - $PROJNAME"
-  echo "Java Options - '$JAVA_OPTS'"
+  echo "Product name - $WS_PRODUCTNAME"
+  echo "Project name - $WS_PROJECTNAME"
 
   if [ "${DRYRUN}" = false ]; then
-    echo "***********************************"
-    echo "******** Scanning $FOLDER ***"
-    echo "***********************************"
+    log::banner "Scanning $FOLDER"
     if [ -z "$JAVA_OPTS" ]; then
       echo "no additional java_opts set"
       java -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH
     else
+      echo "Java Options - '$JAVA_OPTS'"
       java "${JAVA_OPTS}" -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH
     fi
   else
-    echo "***********************************"
-    echo "******** DRYRUN Successful for $FOLDER ***"
-    echo "***********************************"
+    log::banner "DRYRUN Successful for $FOLDER"
   fi
   popd
 }
@@ -187,7 +173,6 @@ function scanSubprojects() {
     # keep only the last diretrory in the tree as a name
     component="${component_path##*/}"
 
-
     scanFolder "${component_path}" "${project_name}_${component}"
   done
   popd > /dev/null
@@ -203,6 +188,4 @@ else
   scanFolder "${KYMA_SRC}" "${PROJECTNAME}"
 fi
 
-echo "***********************************"
-echo "*********Scanning Finished*********"
-echo "***********************************"
+log::banner "Scanning Finished"

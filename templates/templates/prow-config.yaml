@@ -827,7 +827,7 @@ presets:
   - labels:
       preset-kyma-wssagent-config: "true"
     env:
-      - name: PRODUCTNAME
+      - name: WS_PRODUCTNAME
         value: "OOSS - KYMA"
   # volume mounts for kind
   - labels:
