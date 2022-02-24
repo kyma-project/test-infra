@@ -28,7 +28,7 @@ templates:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
               - jobConfig:
-                  name: "control-plane"
+                  repository: "control-plane"
                   language: "golang-mod"
                   project: "kyma-project"
                   subprojects: "true"
@@ -42,7 +42,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "control-plane"
+                  repository: "control-plane"
                   language: "golang"
                   project: "kyma-project"
                   subprojects: "true"
@@ -57,7 +57,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "kyma"
+                  repository: "kyma"
                   language: "golang-mod"
                   project: "kyma-project"
                   subprojects: "true"
@@ -72,7 +72,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "console"
+                  repository: "console"
                   language: "javascript"
                   project: "kyma-project"
                 inheritedConfigs:
@@ -84,7 +84,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "busola"
+                  repository: "busola"
                   language: "javascript"
                   project: "kyma-project"
                   base_ref: "main"
@@ -97,7 +97,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "cli"
+                  repository: "cli"
                   language: "golang-mod"
                   project: "kyma-project"
                   base_ref: "release-2.0"
@@ -110,7 +110,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "helm-broker"
+                  repository: "helm-broker"
                   language: "golang-mod"
                   project: "kyma-project"
                 inheritedConfigs:
@@ -122,7 +122,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "rafter"
+                  repository: "rafter"
                   language: "golang-mod"
                   project: "kyma-project"
                 inheritedConfigs:
@@ -134,7 +134,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "api-gateway"
+                  repository: "api-gateway"
                   language: "golang-mod"
                   project: "kyma-incubator"
                   base_ref: "main"
@@ -147,7 +147,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "dex"
+                  repository: "dex"
                   language: "golang-mod"
                   project: "kyma-incubator"
                   base_ref: "kyma-master"
@@ -160,7 +160,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "hydroform"
+                  repository: "hydroform"
                   language: "golang-mod"
                   project: "kyma-project"
                   base_ref: "main"
@@ -173,7 +173,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "terraform-provider-gardener"
+                  repository: "terraform-provider-gardener"
                   language: "golang-mod"
                   project: "kyma-incubator"
                 inheritedConfigs:
@@ -186,7 +186,7 @@ templates:
                     - "jobConfig_default"
 # Disabled - TODO REMOVE ONCE KYMA 2 is on SKR
 #              - jobConfig:
-#                  name: "octopus"
+#                  repository: "octopus"
 #                  language: "golang-mod"
 #                  project: "kyma-incubator"
 #                inheritedConfigs:
@@ -198,7 +198,7 @@ templates:
 #                  local:
 #                    - "jobConfig_default"
               - jobConfig:
-                  name: "podpreset-crd"
+                  repository: "podpreset-crd"
                   language: "golang-mod"
                   project: "kyma-incubator"
                   custom_projectname: "podpreset"
@@ -211,7 +211,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "reconciler"
+                  repository: "reconciler"
                   language: "golang-mod"
                   project: "kyma-incubator"
                   base_ref: "main"
@@ -224,7 +224,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "kyma"
+                  repository: "kyma"
                   language: "golang"
                   project: "kyma-project"
                   custom_projectname: "release-kyma"
@@ -239,7 +239,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "kyma"
+                  repository: "kyma"
                   language: "golang-mod"
                   project: "kyma-project"
                   custom_projectname: "release-kyma-mod"
@@ -254,7 +254,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "cli"
+                  repository: "cli"
                   language: "golang-mod"
                   project: "kyma-project"
                   custom_projectname: "release-cli"

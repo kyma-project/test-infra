@@ -7,7 +7,7 @@
 # - APIKEY- Key provided by SAP Whitesource Team
 # - WS_PRODUCTNAME - Product inside whitesource
 # - USERKEY - Users specified key(should be a service account)
-# - PROJECTNAME - Kyma component name, scans that directory and posts the results in whitesource
+# - REPOSITORY - Kyma component name, scans that directory and posts the results in whitesource
 # - GITHUB_ORG_DIR - Project directory to scan
 # - SCAN_LANGUAGE - Scan language is used to set the correct values in the whitesource config for golang / javascript
 
@@ -30,7 +30,12 @@ gcp::authenticate \
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
 # shellcheck disable=SC2153
-KYMA_SRC="${GITHUB_ORG_DIR}/${PROJECTNAME}"
+KYMA_SRC="${GITHUB_ORG_DIR}/${REPOSITORY}"
+
+PROJECTNAME="${REPOSITORY}"
+if [[ $CUSTOM_PROJECTNAME != "" ]]; then
+  PROJECTNAME="${CUSTOM_PROJECTNAME}"
+fi
 
 WS_USERKEY=$(cat "${WHITESOURCE_USERKEY}")
 WS_APIKEY=$(cat "${WHITESOURCE_APIKEY}")
@@ -118,11 +123,6 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
   fi
   pushd "${FOLDER}" # change to passed parameter
   WS_PROJECTNAME=$2
-
-  if [[ $CUSTOM_PROJECTNAME != "" ]]; then
-    # use custom projectname for kyma-mod scans in order not to override kyma (dep) scan results
-    WS_PROJECTNAME="${CUSTOM_PROJECTNAME}"
-  fi
   export WS_PROJECTNAME
 
   echo "Product name - $WS_PRODUCTNAME"
@@ -179,11 +179,7 @@ function scanSubprojects() {
 }
 
 if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
-  if [[ $CUSTOM_PROJECTNAME == "" ]]; then
-    scanSubprojects "${KYMA_SRC}" "${COMPONENT_DEFINITION}" "${PROJECTNAME}"
-  else
-    scanSubprojects "${KYMA_SRC}" "${COMPONENT_DEFINITION}" "${CUSTOM_PROJECTNAME}"
-  fi
+  scanSubprojects "${KYMA_SRC}" "${COMPONENT_DEFINITION}" "${PROJECTNAME}"
 else
   scanFolder "${KYMA_SRC}" "${PROJECTNAME}"
 fi

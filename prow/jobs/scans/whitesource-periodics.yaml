@@ -40,7 +40,7 @@ periodics: # runs on schedule
             env:
               - name: DRYRUN
                 value: "true"
-              - name : PROJECTNAME
+              - name : REPOSITORY
                 value: control-plane
               - name: CREATE_SUBPROJECTS
                 value: "true"
@@ -90,7 +90,7 @@ periodics: # runs on schedule
             env:
               - name: DRYRUN
                 value: "true"
-              - name : PROJECTNAME
+              - name : REPOSITORY
                 value: control-plane
               - name: CREATE_SUBPROJECTS
                 value: "true"
@@ -140,7 +140,7 @@ periodics: # runs on schedule
             env:
               - name: DRYRUN
                 value: "true"
-              - name : PROJECTNAME
+              - name : REPOSITORY
                 value: kyma
               - name: CREATE_SUBPROJECTS
                 value: "true"
@@ -190,7 +190,7 @@ periodics: # runs on schedule
             env:
               - name: DRYRUN
                 value: "true"
-              - name : PROJECTNAME
+              - name : REPOSITORY
                 value: console
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -240,7 +240,7 @@ periodics: # runs on schedule
             env:
               - name: DRYRUN
                 value: "true"
-              - name : PROJECTNAME
+              - name : REPOSITORY
                 value: busola
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -290,7 +290,7 @@ periodics: # runs on schedule
             env:
               - name: DRYRUN
                 value: "true"
-              - name : PROJECTNAME
+              - name : REPOSITORY
                 value: cli
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -340,7 +340,7 @@ periodics: # runs on schedule
             env:
               - name: DRYRUN
                 value: "true"
-              - name : PROJECTNAME
+              - name : REPOSITORY
                 value: helm-broker
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -390,7 +390,7 @@ periodics: # runs on schedule
             env:
               - name: DRYRUN
                 value: "true"
-              - name : PROJECTNAME
+              - name : REPOSITORY
                 value: rafter
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -440,7 +440,7 @@ periodics: # runs on schedule
             env:
               - name: DRYRUN
                 value: "true"
-              - name : PROJECTNAME
+              - name : REPOSITORY
                 value: api-gateway
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -490,7 +490,7 @@ periodics: # runs on schedule
             env:
               - name: DRYRUN
                 value: "true"
-              - name : PROJECTNAME
+              - name : REPOSITORY
                 value: dex
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -540,7 +540,7 @@ periodics: # runs on schedule
             env:
               - name: DRYRUN
                 value: "true"
-              - name : PROJECTNAME
+              - name : REPOSITORY
                 value: hydroform
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -590,7 +590,7 @@ periodics: # runs on schedule
             env:
               - name: DRYRUN
                 value: "true"
-              - name : PROJECTNAME
+              - name : REPOSITORY
                 value: terraform-provider-gardener
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -640,7 +640,7 @@ periodics: # runs on schedule
             env:
               - name: DRYRUN
                 value: "true"
-              - name : PROJECTNAME
+              - name : REPOSITORY
                 value: podpreset-crd
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -690,7 +690,7 @@ periodics: # runs on schedule
             env:
               - name: DRYRUN
                 value: "true"
-              - name : PROJECTNAME
+              - name : REPOSITORY
                 value: reconciler
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -742,7 +742,7 @@ periodics: # runs on schedule
             env:
               - name: DRYRUN
                 value: "true"
-              - name : PROJECTNAME
+              - name : REPOSITORY
                 value: kyma
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -792,7 +792,7 @@ periodics: # runs on schedule
             env:
               - name: DRYRUN
                 value: "true"
-              - name : PROJECTNAME
+              - name : REPOSITORY
                 value: kyma
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -842,7 +842,7 @@ periodics: # runs on schedule
             env:
               - name: DRYRUN
                 value: "true"
-              - name : PROJECTNAME
+              - name : REPOSITORY
                 value: cli
               - name: CREATE_SUBPROJECTS
                 value: "false"
