@@ -41,7 +41,7 @@ export WS_USERKEY=$(cat "${WHITESOURCE_USERKEY}")
 export WS_APIKEY=$(cat "${WHITESOURCE_APIKEY}")
 
 # don't stop scans on first failure, but fail the whole job after all scans have finished
-export failed=false
+export scan_failed=false
 
 #exclude components based on dependency management
 function filterFolders() {
@@ -142,7 +142,7 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
     set -e
     if [[ "$scan_result" != 0 ]]; then
       log::error "Scan for ${FOLDER} has failed"
-      failed="true"
+      scan_failed="true"
     fi
   else
     log::banner "DRYRUN Successful for $FOLDER"
@@ -191,7 +191,7 @@ else
   scanFolder "${KYMA_SRC}" "${PROJECTNAME}"
 fi
 
-if [[ "$failed" == "true" ]]; then
+if [[ "$scan_failed" == "true" ]]; then
   log::error "One or more of the scans have failed"
   exit 1
 else
