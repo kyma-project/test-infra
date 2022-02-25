@@ -176,7 +176,8 @@ function scanSubprojects() {
     # keep only the last diretrory in the tree as a name
     component="${component_path##*/}"
 
-    scan_result=$(scanFolder "${component_path}" "${project_name}-${component}")
+    scanFolder "${component_path}" "${project_name}-${component}"
+    scan_result="$?"
     if [[ "$scan_result" != 0 ]]; then
       log::error "Scan for ${FOLDER} has failed with $scan_result code"
       scan_failed="true"
@@ -188,7 +189,8 @@ function scanSubprojects() {
 if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
   scanSubprojects "${KYMA_SRC}" "${COMPONENT_DEFINITION}" "${PROJECTNAME}"
 else
-  scan_result=$(scanFolder "${KYMA_SRC}" "${PROJECTNAME}")
+  scanFolder "${KYMA_SRC}" "${PROJECTNAME}"
+  scan_result="$?"
   if [[ "$scan_result" != 0 ]]; then
     log::error "Scan for ${KYMA_SRC} has failed with $scan_result code"
     scan_failed="true"
