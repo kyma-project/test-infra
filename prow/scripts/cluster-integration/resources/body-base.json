@@ -1,0 +1,71 @@
+{
+  "runtimeID": "RUNTIME_ID",
+  "runtimeInput": {
+    "name": "CLUSTER_NAME",
+    "description": ""
+  },
+  "kymaConfig": {
+    "version": "KYMA_VERSION",
+    "profile": "",
+    "components": [
+      {
+        "URL": "",
+        "component": "cluster-essentials",
+        "namespace": "kyma-system",
+        "configuration": [
+          {
+            "key": "global.domainName",
+            "value": "c-4065192.kyma-dev.shoot.canary.k8s-hana.ondemand.com",
+            "secret": false
+          },
+          {
+            "key": "limitRange.default.memory",
+            "value": "256Mi",
+            "secret": false
+          },
+          {
+            "key": "limitRange.max.memory",
+            "value": "8Gi",
+            "secret": false
+          }
+        ]
+      },
+      {
+        "URL": "",
+        "component": "istio-configuration",
+        "namespace": "istio-system",
+        "configuration": [
+          {
+            "key": "global.domainName",
+            "value": "c-4065192.kyma-dev.shoot.canary.k8s-hana.ondemand.com",
+            "secret": false
+          }
+        ]
+      },
+      {
+        "URL": "",
+        "component": "certificates",
+        "namespace": "istio-system",
+        "configuration": [
+          {
+            "key": "global.domainName",
+            "value": "c-4065192.kyma-dev.shoot.canary.k8s-hana.ondemand.com",
+            "secret": false
+          }
+        ]
+      }
+    ],
+    "administrators": [
+      "dariusz.tutaj@sap.com"
+    ]
+  },
+  "metadata": {
+    "globalAccountID": "GLOBAL_ACCOUNT_ID",
+    "subAccountID": "SUB_ACCOUNT_ID",
+    "serviceID": "SERVICE_ID",
+    "servicePlanID": "SERVICE_PLAN_ID",
+    "shootName": "SHOOT_NAME",
+    "instanceID": "INSTANCE_ID"
+  },
+  "kubeconfig": "apiVersion: v1\nkind: Config\ncurrent-context: shoot--kyma-prow--rec-wkly-lt\ncontexts:\n  - name: shoot--kyma-prow--rec-wkly-lt\n    context:\n      cluster: shoot--kyma-prow--rec-wkly-lt\n      user: shoot--kyma-prow--rec-wkly-lt-token\nclusters:\n  - name: shoot--kyma-prow--rec-wkly-lt\n    cluster:\n      server: 'https://api.rec-wkly-lt.kyma-prow.shoot.canary.k8s-hana.ondemand.com'\n      certificate-authority-data: >-\n        LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM5akNDQWQ2Z0F3SUJBZ0lRQXNNR1UxdEFXV29qa3JXUzFzMU1mekFOQmdrcWhraUc5dzBCQVFzRkFEQVYKTVJNd0VRWURWUVFERXdwcmRXSmxjbTVsZEdWek1CNFhEVEl5TURJeE9EQTVNekUxTVZvWERUTXlNREl4T0RBNQpNekUxTVZvd0ZURVRNQkVHQTFVRUF4TUthM1ZpWlhKdVpYUmxjekNDQVNJd0RRWUpLb1pJaHZjTkFRRUJCUUFECmdnRVBBRENDQVFvQ2dnRUJBT0szY0FTVnJlUndKVCtQRXVRMmpEbjhVSlVVRXJ0b2lvTXhicklnUjdwdjFoUGoKc0R1UERURHE2MXFhWWpjcUltb1JNK24wMjF4Y2Vjek9FVXBvV2oxb1YvRXlTUUFXVlA5VXNrRE5HVHN3cUZRdQpHTVdOYWllSFFOQVpsZlFNelN5aUk2UG1rOTlOQ1lENzk1VVRmNWZGUlFBaStPdmFadS9haTA2djBDQm5zV0lzCi9xUmV3ekVjWUc4SWtZaS9LbEJHVkh6dnJkbUd3dGZ4c0NObVNyL2lTSER5UDBpOVRzSlF5ZkZIajhtb2ozZmgKVTQ2YXBkVlFhM283T05uMWJ6L0V4RFk4YWhzcXUwY3dtcXV3Z1Bza0hnRXRjYll0WFZyNGE1TldGd3B4VkhaeAp6WWRSYkYzTW54TE5WMHN5eEJoMytBVmdQMzloUm51NFdnc2xHTGNDQXdFQUFhTkNNRUF3RGdZRFZSMFBBUUgvCkJBUURBZ0dtTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3SFFZRFZSME9CQllFRkF2M0RZaVc4TzU5cHVZMDVoTFQKc2lkVmJOc2JNQTBHQ1NxR1NJYjNEUUVCQ3dVQUE0SUJBUUFPNmQ0R1FLZW0yaTlMWVNYTGR2YkpuNXZnMkxDWApNdE55VWNGVXcxdXdkcERiUzNJZmRmbkw1TFhneUlMYkZaN05VTFBBNXZRYm0rRjhSMjdtRUJvZzVjU0NVU2NHCmo3NUh3TGlqZDZmWGVneXdYTS95Vkl2KzhDU1poc2pqMWo4TVpKTmZVTUw4NXlYM1J6dlhwUE91Y2lZejJpVGIKWTZyeFlaL3lEU2Y4cU5VcGQwZEE2b0tONFZGZWttVm5VcGh6ZVlSVE11alFwdklDTDRVcGE5bWkrQjJtdEZqOQpLMXEzUVRqc01DaHpYSUxoVXpUN0FnaDRkR0ZxY2lOWjRqTGkwckVuRGtmdkd5aE4ydjZNS1BOMDY3L1ZySTZ4Cnh0cDJUcUFSS3VMTnA0UTRweHhLN05HWWpnMW0vcUtmdlYxQSs4UHJJUVdqdHI0dmhiWnNnMno4Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K\nusers:\n  - name: shoot--kyma-prow--rec-wkly-lt-token\n    user:\n      token: >-\n        sCKs1pTq3fDhXDCWnbCmP1lpp7rWocwtnZbYI6lma7Q7ykknixmd6DdTHFysCrFsPyjBtfTkRPUDKTamrSpeEXZaIimXO8O4PZ9ZkcstuPRoYREHgLj4WSJjW7YOoVwT"
+}

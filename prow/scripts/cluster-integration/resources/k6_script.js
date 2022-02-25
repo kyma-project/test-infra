@@ -1,6 +1,6 @@
 import http from 'k6/http';
 import { check } from 'k6';
-var stringified = JSON.stringify(open('./body.json'));
+var stringified = JSON.stringify(open('./body-istio.json'));
 var kymaVersion = "2.0.0rc3"
 var requestCount = 1000
 
