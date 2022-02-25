@@ -150,7 +150,7 @@ if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
   pushd "${KYMA_SRC}" # change to passed parameter
 
   # find all go.mod / Gopkg.toml / package.json projects and scan them individually
-  find . -name "$COMPONENT_DEFINITION" -not -path "./tests/*" | while read -r component_definition_path; do
+  while read -r component_definition_path; do
     # TODO what about excludes?
     # remove go.mod / Gopkg.toml part
     component_path="${component_definition_path%/*}"
@@ -166,7 +166,7 @@ if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
       log::error "Scan for ${FOLDER} has failed with $scan_result code"
       scan_failed=1
     fi
-  done
+  done <<< "$(find . -name "$COMPONENT_DEFINITION" -not -path "./tests/*")"
   popd
 else
   set +e
@@ -179,6 +179,7 @@ else
   fi
 fi
 
+echo "return: $scan_failed"
 if [[ "$scan_failed" -eq 1 ]]; then
   log::error "One or more of the scans have failed"
   exit 1
