@@ -11,7 +11,7 @@
 # - GITHUB_ORG_DIR - Project directory to scan
 # - SCAN_LANGUAGE - Scan language is used to set the correct values in the whitesource config for golang / javascript
 
-set -o errexit
+set -e
 export TEST_INFRA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/test-infra"
 # shellcheck source=prow/scripts/lib/log.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/log.sh"
@@ -124,7 +124,6 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
 
   if [ "${DRYRUN}" = false ]; then
     log::banner "Scanning $FOLDER"
-    set +e
     if [ -z "$JAVA_OPTS" ]; then
       echo "no additional java_opts set"
       java -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH
@@ -134,7 +133,6 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
       java "${JAVA_OPTS}" -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH
       scan_result="$?"
     fi
-    set -e
   else
     log::banner "DRYRUN Successful for $FOLDER"
   fi
@@ -180,7 +178,7 @@ function scanSubprojects() {
     scanFolder "${component_path}" "${project_name}-${component}"
     scan_result="$?"
     set -e
-    
+
     if [[ "$scan_result" != 0 ]]; then
       log::error "Scan for ${FOLDER} has failed with $scan_result code"
       scan_failed="true"
@@ -192,8 +190,10 @@ function scanSubprojects() {
 if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
   scanSubprojects "${KYMA_SRC}" "${COMPONENT_DEFINITION}" "${PROJECTNAME}"
 else
+  set +e
   scanFolder "${KYMA_SRC}" "${PROJECTNAME}"
   scan_result="$?"
+  set -e
   if [[ "$scan_result" != 0 ]]; then
     log::error "Scan for ${KYMA_SRC} has failed with $scan_result code"
     scan_failed="true"
