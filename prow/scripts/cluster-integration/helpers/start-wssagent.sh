@@ -144,30 +144,13 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
   fi
 }
 
-# treat every found Go / JS project as a separate Whitesource project
-function scanSubprojects() {
-  if [[ $1 == "" ]]; then
-    echo "path cannot be empty"
-    exit 1
-  fi
-  FOLDER=$1
 
-  if [[ $2 == "" ]]; then
-    echo "component definition cannot be empty"
-    exit 1
-  fi
-  # TODO better name
-  local component_definition=$2
-  
-  if [[ $3 == "" ]]; then
-    echo "component name cannot be empty"
-    exit 1
-  fi
-  pushd "${FOLDER}"  > /dev/null # change to passed parameter
-  local project_name=$3
+if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
+  # treat every found Go / JS project as a separate Whitesource project
+  pushd "${KYMA_SRC}" # change to passed parameter
 
   # find all go.mod / Gopkg.toml / package.json projects and scan them individually
-  find . -name "$component_definition" -not -path "./tests/*" | while read -r component_definition_path; do
+  find . -name "$COMPONENT_DEFINITION" -not -path "./tests/*" | while read -r component_definition_path; do
     # TODO what about excludes?
     # remove go.mod / Gopkg.toml part
     component_path="${component_definition_path%/*}"
@@ -175,7 +158,7 @@ function scanSubprojects() {
     component="${component_path##*/}"
 
     set +e
-    scanFolder "${component_path}" "${project_name}-${component}"
+    scanFolder "${component_path}" "${PROJECTNAME}-${component}"
     scan_result="$?"
     set -e
 
@@ -184,11 +167,7 @@ function scanSubprojects() {
       scan_failed=1
     fi
   done
-  popd > /dev/null
-}
-
-if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
-  scanSubprojects "${KYMA_SRC}" "${COMPONENT_DEFINITION}" "${PROJECTNAME}"
+  popd
 else
   set +e
   scanFolder "${KYMA_SRC}" "${PROJECTNAME}"
