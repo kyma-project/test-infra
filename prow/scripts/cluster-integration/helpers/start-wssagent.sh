@@ -126,11 +126,11 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
     log::banner "Scanning $FOLDER"
     if [ -z "$JAVA_OPTS" ]; then
       echo "no additional java_opts set"
-      java -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH
+      java -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH -logLevel Warn
       scan_result="$?"
     else
       echo "Java Options - '$JAVA_OPTS'"
-      java "${JAVA_OPTS}" -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH
+      java "${JAVA_OPTS}" -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH -logLevel Warn
       scan_result="$?"
     fi
   else
@@ -179,7 +179,6 @@ else
   fi
 fi
 
-echo "return: $scan_failed"
 if [[ "$scan_failed" -eq 1 ]]; then
   log::error "One or more of the scans have failed"
   exit 1
