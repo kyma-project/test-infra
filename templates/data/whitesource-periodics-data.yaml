@@ -23,7 +23,7 @@ templates:
               preset-kms-gc-project-env: "true"
               preset-gc-project-env: "true"
             env:
-              DRYRUN: "true"
+              DRYRUN: "false"
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
