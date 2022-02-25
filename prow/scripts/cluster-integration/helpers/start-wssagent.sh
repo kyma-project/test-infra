@@ -135,12 +135,15 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
       scan_result="$?"
     fi
     set -e
-    echo "ret: $scan_result"
   else
     log::banner "DRYRUN Successful for $FOLDER"
   fi
   popd
-  return $scan_result
+  if [[ "$scan_result" != 0 ]]; then
+    return 1
+  else
+    return 0
+  fi
 }
 
 # treat every found Go / JS project as a separate Whitesource project
