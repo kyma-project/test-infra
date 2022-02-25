@@ -179,9 +179,9 @@ function scanSubprojects() {
     scan_result="$?"
     set -e
 
-    if [[ "$scan_result" != 0 ]]; then
+    if [[ "$scan_result" -ne 0 ]]; then
       log::error "Scan for ${FOLDER} has failed with $scan_result code"
-      scan_failed="true"
+      scan_failed=1
     fi
   done
   popd > /dev/null
@@ -194,13 +194,13 @@ else
   scanFolder "${KYMA_SRC}" "${PROJECTNAME}"
   scan_result="$?"
   set -e
-  if [[ "$scan_result" != 0 ]]; then
+  if [[ "$scan_result" -ne 0 ]]; then
     log::error "Scan for ${KYMA_SRC} has failed with $scan_result code"
-    scan_failed="true"
+    scan_failed=1
   fi
 fi
 
-if [[ "$scan_failed" == "true" ]]; then
+if [[ "$scan_failed" -eq 1 ]]; then
   log::error "One or more of the scans have failed"
   exit 1
 else
