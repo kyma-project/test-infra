@@ -41,7 +41,7 @@ export WS_USERKEY=$(cat "${WHITESOURCE_USERKEY}")
 export WS_APIKEY=$(cat "${WHITESOURCE_APIKEY}")
 
 # don't stop scans on first failure, but fail the whole job after all scans have finished
-failed=false
+export failed=false
 
 #exclude components based on dependency management
 function filterFolders() {
@@ -191,7 +191,6 @@ else
   scanFolder "${KYMA_SRC}" "${PROJECTNAME}"
 fi
 
-echo "$failed"
 if [[ "$failed" == "true" ]]; then
   log::error "One or more of the scans have failed"
   exit 1
