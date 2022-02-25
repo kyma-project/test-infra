@@ -73,13 +73,9 @@ golang)
   echo "SCAN: golang (dep)"
   go version
   CONFIG_PATH=$GO_DEP_CONFIG_PATH
-  # exclude gomod based folders
   COMPONENT_DEFINITION="Gopkg.toml"
-  excluded=$(filterFolders go.mod "${KYMA_SRC}")
-  echo "excluded: $excluded"
-  echo "$excluded" >>${CONFIG_PATH}
+  exclude_project_config="go.mod"
   prepareDepDependencies gopkg.toml "${KYMA_SRC}"
-  
   ;;
 
 golang-mod)
@@ -87,11 +83,7 @@ golang-mod)
   go version
   CONFIG_PATH=$GO_MOD_CONFIG_PATH
   export GO111MODULE=on
-  # exclude godep based folders
-  # filterFolders gopkg.toml "${KYMA_SRC}" >>${CONFIG_PATH}
-  excluded=$(filterFolders gopkg.toml "${KYMA_SRC}")
-  echo "excluded: $excluded"
-  echo "$excluded" >>${CONFIG_PATH}
+  exclude_project_config="Gopkg.toml"
   COMPONENT_DEFINITION="go.mod"
   ;;
 
@@ -124,6 +116,9 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
   pushd "${FOLDER}" # change to passed parameter
   WS_PROJECTNAME=$2
   export WS_PROJECTNAME
+
+  export WS_EXCLUDED=$(filterFolders "${exclude_project_config}" "${KYMA_SRC}")
+  echo "excluded files: $WS_EXCLUDED"
 
   # shellcheck disable=SC2153
   echo "Product name - $WS_PRODUCTNAME"
