@@ -41,7 +41,7 @@ export WS_USERKEY=$(cat "${WHITESOURCE_USERKEY}")
 export WS_APIKEY=$(cat "${WHITESOURCE_APIKEY}")
 
 # don't stop scans on first failure, but fail the whole job after all scans have finished
-export scan_failed=false
+export scan_failed
 
 #exclude components based on dependency management
 function filterFolders() {
@@ -126,28 +126,21 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
   # shellcheck disable=SC2153
   echo "Product name - $WS_PRODUCTNAME"
   echo "Project name - $WS_PROJECTNAME"
+  if [ -z "$JAVA_OPTS" ]; then
+    echo "Java Options - '$JAVA_OPTS'"
+  fi
 
   if [ "${DRYRUN}" = false ]; then
     log::banner "Scanning $FOLDER"
     set +e
-    if [ -z "$JAVA_OPTS" ]; then
-      echo "no additional java_opts set"
-      java -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH
-      scan_result="$?"
-    else
-      echo "Java Options - '$JAVA_OPTS'"
-      java "${JAVA_OPTS}" -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH
-      scan_result="$?"
-    fi
+    java "${JAVA_OPTS}" -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH
+    scan_result="$?"
     set -e
-    if [[ "$scan_result" != 0 ]]; then
-      log::error "Scan for ${FOLDER} has failed"
-      scan_failed="true"
-    fi
   else
     log::banner "DRYRUN Successful for $FOLDER"
   fi
   popd
+  return "$scan_result"
 }
 
 # treat every found Go / JS project as a separate Whitesource project
@@ -180,7 +173,11 @@ function scanSubprojects() {
     # keep only the last diretrory in the tree as a name
     component="${component_path##*/}"
 
-    scanFolder "${component_path}" "${project_name}-${component}"
+    scan_result=$(scanFolder "${component_path}" "${project_name}-${component}")
+    if [[ "$scan_result" != 0 ]]; then
+      log::error "Scan for ${FOLDER} has failed"
+      scan_failed="true"
+    fi
   done
   popd > /dev/null
 }
@@ -188,7 +185,11 @@ function scanSubprojects() {
 if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
   scanSubprojects "${KYMA_SRC}" "${COMPONENT_DEFINITION}" "${PROJECTNAME}"
 else
-  scanFolder "${KYMA_SRC}" "${PROJECTNAME}"
+  scan_result=$(scanFolder "${KYMA_SRC}" "${PROJECTNAME}")
+  if [[ "$scan_result" != 0 ]]; then
+    log::error "Scan for ${FOLDER} has failed"
+    scan_failed="true"
+  fi
 fi
 
 if [[ "$scan_failed" == "true" ]]; then
