@@ -175,7 +175,7 @@ function scanSubprojects() {
 
     scan_result=$(scanFolder "${component_path}" "${project_name}-${component}")
     if [[ "$scan_result" != 0 ]]; then
-      log::error "Scan for ${FOLDER} has failed"
+      log::error "Scan for ${FOLDER} has failed with $scan_result code"
       scan_failed="true"
     fi
   done
@@ -187,7 +187,7 @@ if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
 else
   scan_result=$(scanFolder "${KYMA_SRC}" "${PROJECTNAME}")
   if [[ "$scan_result" != 0 ]]; then
-    log::error "Scan for ${FOLDER} has failed"
+    log::error "Scan for ${KYMA_SRC} has failed with $scan_result code"
     scan_failed="true"
   fi
 fi
