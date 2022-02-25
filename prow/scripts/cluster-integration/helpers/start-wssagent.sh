@@ -15,17 +15,12 @@ set -o errexit
 export TEST_INFRA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/test-infra/"
 # shellcheck source=prow/scripts/lib/log.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/log.sh"
-# shellcheck source=prow/scripts/lib/gcp.sh
-source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 
 # whitesource config
 GO_DEP_CONFIG_PATH="$TEST_INFRA_SOURCES_DIR/prow/images/whitesource-scanner/go-wss-unified-agent.config"
 GO_MOD_CONFIG_PATH="$TEST_INFRA_SOURCES_DIR/prow/images/whitesource-scanner/go-mod-wss-unified-agent.config"
 JAVASCRIPT_CONFIG_PATH="$TEST_INFRA_SOURCES_DIR/prow/images/whitesource-scanner/javascript-wss-unified-agent.config"
 
-# authenticate gcloud client
-gcp::authenticate \
-  -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
@@ -133,14 +128,17 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
   if [ "${DRYRUN}" = false ]; then
     log::banner "Scanning $FOLDER"
     set +e
+    set -x
     java "${JAVA_OPTS}" -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH
     scan_result="$?"
+    set +x
     set -e
+    echo "ret: $scan_result"
   else
     log::banner "DRYRUN Successful for $FOLDER"
   fi
   popd
-  return "$scan_result"
+  return $scan_result
 }
 
 # treat every found Go / JS project as a separate Whitesource project
