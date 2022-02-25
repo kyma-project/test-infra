@@ -38,7 +38,9 @@ if [[ $CUSTOM_PROJECTNAME != "" ]]; then
 fi
 
 WS_USERKEY=$(cat "${WHITESOURCE_USERKEY}")
+export WS_USERKEY
 WS_APIKEY=$(cat "${WHITESOURCE_APIKEY}")
+export WS_APIKEY
 
 #exclude components based on dependency management
 function filterFolders() {
