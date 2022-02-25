@@ -163,6 +163,12 @@ templates:
             annotations:
               pipeline.test: fast-integration
               pipeline.profile: production
+          cli_dev_source:
+            env:
+              CLI_SOURCE: "develop"
+          cli_unstable_source:
+            env:
+              CLI_SOURCE: "unstable"
         jobConfigs:
           - repoName: kyma-project/kyma
             jobs:
@@ -460,7 +466,32 @@ templates:
                     - gardener_azure_job
                     - command_upgrade_gardener_kyma_to_kyma2
               - jobConfig:
-                  name: kyma-upgrade-gardener-kyma2-to-main
+                  name: kyma-upgrade-gardener-kyma2-to-main-reconciler-main
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    description: Azure Kyma 2.0 to main branch.
+                  decoration_config:
+                    timeout: 7200000000000 # 2h
+                    grace_period: 600000000000 # 10min
+                  cron: "0 0 6-18/2 ? * 1-5"
+                  labels:
+                    preset-bot-github-token: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                    - image_kyma-integration
+                    - kyma_major_version_2
+                    - jobConfig_slack_jellyfish
+                  local:
+                    - cli_unstable_source
+                    - jobConfig_default
+                    - gardener_azure_job
+                    - command_upgrade_gardener_kyma2_to_main
+              - jobConfig:
+                  name: kyma-upgrade-gardener-kyma2-to-main-reconciler-dev
                   annotations:
                     testgrid-dashboards: kyma_integration
                     description: Azure Kyma 2.0 to main branch.
@@ -483,3 +514,4 @@ templates:
                     - jobConfig_default
                     - gardener_azure_job
                     - command_upgrade_gardener_kyma2_to_main
+                    - cli_dev_source
