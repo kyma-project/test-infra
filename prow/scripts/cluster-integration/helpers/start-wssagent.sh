@@ -176,8 +176,11 @@ function scanSubprojects() {
     # keep only the last diretrory in the tree as a name
     component="${component_path##*/}"
 
+    set +e
     scanFolder "${component_path}" "${project_name}-${component}"
     scan_result="$?"
+    set -e
+    
     if [[ "$scan_result" != 0 ]]; then
       log::error "Scan for ${FOLDER} has failed with $scan_result code"
       scan_failed="true"
