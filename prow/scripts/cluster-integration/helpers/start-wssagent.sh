@@ -40,6 +40,9 @@ fi
 export WS_USERKEY=$(cat "${WHITESOURCE_USERKEY}")
 export WS_APIKEY=$(cat "${WHITESOURCE_APIKEY}")
 
+# don't stop scans on first failure, but fail the whole job after all scans have finished
+failed=false
+
 #exclude components based on dependency management
 function filterFolders() {
   local DEPENDENCY_FILE_TO_EXCLUDE
@@ -126,12 +129,19 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
 
   if [ "${DRYRUN}" = false ]; then
     log::banner "Scanning $FOLDER"
+    set -e
     if [ -z "$JAVA_OPTS" ]; then
       echo "no additional java_opts set"
       java -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH
+      scan_result="$?"
     else
       echo "Java Options - '$JAVA_OPTS'"
       java "${JAVA_OPTS}" -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH
+      scan_result="$?"
+    fi
+    set +e
+    if [[ "$scan_result" != 0 ]]; then
+      failed="true"
     fi
   else
     log::banner "DRYRUN Successful for $FOLDER"
@@ -180,4 +190,9 @@ else
   scanFolder "${KYMA_SRC}" "${PROJECTNAME}"
 fi
 
-log::banner "Scanning Finished"
+if [[ "$failed" == "true"]]; then
+  log::error "One or more of the scans have failed"
+  exit 1
+else
+  log::banner "Scanning Finished"
+fi
