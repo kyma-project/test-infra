@@ -117,7 +117,7 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
   WS_PROJECTNAME=$2
   export WS_PROJECTNAME
 
-  export WS_EXCLUDES=$(filterFolders "${exclude_project_config}" "${KYMA_SRC}")
+  export WS_EXCLUDES=$(filterFolders "${exclude_project_config}" "$(pwd)")
   echo "excluded files: $WS_EXCLUDES"
 
   # shellcheck disable=SC2153
