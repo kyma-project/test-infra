@@ -129,7 +129,7 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
 
   if [ "${DRYRUN}" = false ]; then
     log::banner "Scanning $FOLDER"
-    set -e
+    set +e
     if [ -z "$JAVA_OPTS" ]; then
       echo "no additional java_opts set"
       java -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH
@@ -139,8 +139,9 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
       java "${JAVA_OPTS}" -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH
       scan_result="$?"
     fi
-    set +e
+    set -e
     if [[ "$scan_result" != 0 ]]; then
+      log::error "Scan for ${FOLDER} has failed"
       failed="true"
     fi
   else
@@ -190,7 +191,8 @@ else
   scanFolder "${KYMA_SRC}" "${PROJECTNAME}"
 fi
 
-if [[ "$failed" == "true"]]; then
+echo "$failed"
+if [[ "$failed" == "true" ]]; then
   log::error "One or more of the scans have failed"
   exit 1
 else
