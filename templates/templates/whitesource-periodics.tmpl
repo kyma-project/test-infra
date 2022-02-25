@@ -104,8 +104,10 @@
                 value: {{ .JobConfig.repository }}
               - name: CREATE_SUBPROJECTS
                 value: "{{ default "false" .JobConfig.subprojects }}"
+              {{- if .JobConfig.custom_projectname }}
               - name: CUSTOM_PROJECTNAME
                 value: {{ default "" .JobConfig.custom_projectname }}
+              {{- end}}
               - name: SCAN_LANGUAGE
                 value: {{ .JobConfig.language }}
             {{- if or .JobConfig.request_memory .JobConfig.request_cpu false}}

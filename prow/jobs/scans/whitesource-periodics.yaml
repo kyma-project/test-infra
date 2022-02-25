@@ -44,8 +44,6 @@ periodics: # runs on schedule
                 value: control-plane
               - name: CREATE_SUBPROJECTS
                 value: "true"
-              - name: CUSTOM_PROJECTNAME
-                value: 
               - name: SCAN_LANGUAGE
                 value: golang-mod
             resources:
@@ -102,7 +100,7 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-    - name: kyma-mod-whitesource-scan
+    - name: kyma-whitesource-scan
       annotations:
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
@@ -144,8 +142,6 @@ periodics: # runs on schedule
                 value: kyma
               - name: CREATE_SUBPROJECTS
                 value: "true"
-              - name: CUSTOM_PROJECTNAME
-                value: kyma-mod
               - name: SCAN_LANGUAGE
                 value: golang-mod
             resources:
@@ -194,8 +190,6 @@ periodics: # runs on schedule
                 value: console
               - name: CREATE_SUBPROJECTS
                 value: "false"
-              - name: CUSTOM_PROJECTNAME
-                value: 
               - name: SCAN_LANGUAGE
                 value: javascript
             resources:
@@ -244,8 +238,6 @@ periodics: # runs on schedule
                 value: busola
               - name: CREATE_SUBPROJECTS
                 value: "false"
-              - name: CUSTOM_PROJECTNAME
-                value: 
               - name: SCAN_LANGUAGE
                 value: javascript
             resources:
@@ -294,8 +286,6 @@ periodics: # runs on schedule
                 value: cli
               - name: CREATE_SUBPROJECTS
                 value: "false"
-              - name: CUSTOM_PROJECTNAME
-                value: 
               - name: SCAN_LANGUAGE
                 value: golang-mod
             resources:
@@ -344,8 +334,6 @@ periodics: # runs on schedule
                 value: helm-broker
               - name: CREATE_SUBPROJECTS
                 value: "false"
-              - name: CUSTOM_PROJECTNAME
-                value: 
               - name: SCAN_LANGUAGE
                 value: golang-mod
             resources:
@@ -394,8 +382,6 @@ periodics: # runs on schedule
                 value: rafter
               - name: CREATE_SUBPROJECTS
                 value: "false"
-              - name: CUSTOM_PROJECTNAME
-                value: 
               - name: SCAN_LANGUAGE
                 value: golang-mod
             resources:
@@ -444,8 +430,6 @@ periodics: # runs on schedule
                 value: api-gateway
               - name: CREATE_SUBPROJECTS
                 value: "false"
-              - name: CUSTOM_PROJECTNAME
-                value: 
               - name: SCAN_LANGUAGE
                 value: golang-mod
             resources:
@@ -494,8 +478,6 @@ periodics: # runs on schedule
                 value: dex
               - name: CREATE_SUBPROJECTS
                 value: "false"
-              - name: CUSTOM_PROJECTNAME
-                value: 
               - name: SCAN_LANGUAGE
                 value: golang-mod
             resources:
@@ -544,8 +526,6 @@ periodics: # runs on schedule
                 value: hydroform
               - name: CREATE_SUBPROJECTS
                 value: "false"
-              - name: CUSTOM_PROJECTNAME
-                value: 
               - name: SCAN_LANGUAGE
                 value: golang-mod
             resources:
@@ -594,8 +574,6 @@ periodics: # runs on schedule
                 value: terraform-provider-gardener
               - name: CREATE_SUBPROJECTS
                 value: "false"
-              - name: CUSTOM_PROJECTNAME
-                value: 
               - name: SCAN_LANGUAGE
                 value: golang-mod
             resources:
@@ -694,8 +672,6 @@ periodics: # runs on schedule
                 value: reconciler
               - name: CREATE_SUBPROJECTS
                 value: "false"
-              - name: CUSTOM_PROJECTNAME
-                value: 
               - name: SCAN_LANGUAGE
                 value: golang-mod
             resources:

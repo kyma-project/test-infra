@@ -61,7 +61,6 @@ templates:
                   language: "golang-mod"
                   project: "kyma-project"
                   subprojects: "true"
-                  custom_projectname: "kyma-mod"
                   base_ref: "release-2.0"
                 inheritedConfigs:
                   global:
