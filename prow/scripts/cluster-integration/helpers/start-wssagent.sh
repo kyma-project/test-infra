@@ -4,12 +4,15 @@
 #The purpose is to run the wss-unified-agent
 
 #Expected vars:
-# - APIKEY- Key provided by SAP Whitesource Team
+# - WS_APIKEY- Key provided by SAP Whitesource Team
+# - WS_USERKEY - Users specified key(should be a service account)
 # - WS_PRODUCTNAME - Product inside whitesource
-# - USERKEY - Users specified key(should be a service account)
-# - REPOSITORY - Kyma component name, scans that directory and posts the results in whitesource
+# - REPOSITORY - Component name, scans that directory and posts the results in whitesource
 # - GITHUB_ORG_DIR - Project directory to scan
-# - SCAN_LANGUAGE - Scan language is used to set the correct values in the whitesource config for golang / javascript
+# - SCAN_LANGUAGE - Scan language is used to set the correct values in the whitesource config for golang / golang-mod / javascript
+# Optional vars:
+# - CUSTOM_PROJECTNAME - Use custom project name instead of REPOSITORY
+# - CREATE_SUBPROJECTS - Find all projects/modules based on the SCAN_LANGUAGE and scan each to a separate Whitesource project
 
 set -e
 export TEST_INFRA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/test-infra"
@@ -25,13 +28,14 @@ JAVASCRIPT_CONFIG_PATH="$TEST_INFRA_SOURCES_DIR/prow/images/whitesource-scanner/
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
 # shellcheck disable=SC2153
-KYMA_SRC="${GITHUB_ORG_DIR}/${REPOSITORY}"
+PROJECT_SRC="${GITHUB_ORG_DIR}/${REPOSITORY}"
 
 PROJECTNAME="${REPOSITORY}"
 if [[ $CUSTOM_PROJECTNAME != "" ]]; then
   PROJECTNAME="${CUSTOM_PROJECTNAME}"
 fi
 
+# pass values to Whitesource binary through WS_* variables
 export WS_USERKEY=$(cat "${WHITESOURCE_USERKEY}")
 export WS_APIKEY=$(cat "${WHITESOURCE_APIKEY}")
 
@@ -72,8 +76,8 @@ golang)
   go version
   CONFIG_PATH=$GO_DEP_CONFIG_PATH
   COMPONENT_DEFINITION="Gopkg.toml"
-  exclude_project_config="go.mod"
-  prepareDepDependencies gopkg.toml "${KYMA_SRC}"
+  EXCLUDE_PROJECT_CONFIG="go.mod"
+  prepareDepDependencies gopkg.toml "${PROJECT_SRC}"
   ;;
 
 golang-mod)
@@ -81,7 +85,7 @@ golang-mod)
   go version
   CONFIG_PATH=$GO_MOD_CONFIG_PATH
   export GO111MODULE=on
-  exclude_project_config="Gopkg.toml"
+  EXCLUDE_PROJECT_CONFIG="Gopkg.toml"
   COMPONENT_DEFINITION="go.mod"
   ;;
 
@@ -101,6 +105,15 @@ echo "scanComment=$(date)" >> $CONFIG_PATH
 
 log::banner "Starting Scan"
 
+# scanFolder scans single folder to a Whitesource project
+# parameters:
+# $1 - path to a folder to scan
+# $2 - name of the Whitesource project
+# variables:
+# WS_PRODUCTNAME - name of the Whitesource product
+# EXCLUDE_PROJECT_CONFIG (optional) - name of the config fileson which folders should be excluded
+# DRYRUN (optional) - don't run the Whitesource unified agent binary
+# function returns 0 on success or 1 on fail
 function scanFolder() { # expects to get the fqdn of folder passed to scan
   if [[ $1 == "" ]]; then
     echo "path cannot be empty"
@@ -115,8 +128,8 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
   WS_PROJECTNAME=$2
   export WS_PROJECTNAME
 
-  if [[ -n "$exclude_project_config" ]]; then
-    export WS_EXCLUDES=$(filterFolders "${exclude_project_config}" "$(pwd)")
+  if [[ -n "$EXCLUDE_PROJECT_CONFIG" ]]; then
+    export WS_EXCLUDES=$(filterFolders "${EXCLUDE_PROJECT_CONFIG}" "$(pwd)")
   fi
 
   # shellcheck disable=SC2153
@@ -148,7 +161,7 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
 
 if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
   # treat every found Go / JS project as a separate Whitesource project
-  pushd "${KYMA_SRC}" # change to passed parameter
+  pushd "${PROJECT_SRC}" # change to passed parameter
 
   # find all go.mod / Gopkg.toml / package.json projects and scan them individually
   while read -r component_definition_path; do
@@ -170,14 +183,14 @@ if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
   done <<< "$(find . -name "$COMPONENT_DEFINITION" -not -path "./tests/*")"
   popd
 else
-  # scan directory as a signle project
+  # scan PROJECT_SRC directory as a single project
   set +e
-  scanFolder "${KYMA_SRC}" "${PROJECTNAME}"
+  scanFolder "${PROJECT_SRC}" "${PROJECTNAME}"
   scan_result="$?"
   set -e
 
   if [[ "$scan_result" -ne 0 ]]; then
-    log::error "Scan for ${KYMA_SRC} has failed"
+    log::error "Scan for ${PROJECT_SRC} has failed"
     scan_failed=1
   fi
 fi
