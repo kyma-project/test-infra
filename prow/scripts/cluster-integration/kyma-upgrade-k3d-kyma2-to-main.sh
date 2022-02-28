@@ -89,9 +89,8 @@ function upgrade_kyma() {
     log::info "### Upgrade Kyma to ${KYMA_SOURCE}"
     kyma deploy --ci --source "${KYMA_SOURCE}" --timeout 20m
 
-    # fixes for upgrade
-    kubectl patch service monitoring-alertmanager --type=json -p='[{"op": "remove", "path": "/spec/selector/app"}]' -n kyma-system
-    kubectl delete servicemonitors.monitoring.coreos.com monitoring-node-exporter -n kyma-system
+    # run migration script
+    curl https://raw.githubusercontent.com/kyma-project/kyma/main/docs/assets/2.0.4-main-prom-upgrade-cleanup.sh | sh
 
     if [[ $? -eq 0 ]];then
         log::success "Upgrade completed"

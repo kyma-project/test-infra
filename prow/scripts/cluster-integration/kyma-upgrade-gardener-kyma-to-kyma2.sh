@@ -124,9 +124,6 @@ log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SO
 kyma2_install_dir="$KYMA_SOURCES_DIR/kyma2"
 kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kyma2_install_dir" -u "true"
 
-## run migration script
-curl https://raw.githubusercontent.com/kyma-project/kyma/2.0.4/docs/assets/1.24-2.0-remove-deprecated-resources.sh | sh
-
 log::info "### Run post-upgrade tests"
 gardener::post_upgrade_test_fast_integration_kyma
 
