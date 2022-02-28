@@ -115,8 +115,9 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
   WS_PROJECTNAME=$2
   export WS_PROJECTNAME
 
-  export WS_EXCLUDES=$(filterFolders "${exclude_project_config}" "$(pwd)")
-  echo "excluded files: $WS_EXCLUDES"
+  if [[ -n "$exclude_project_config" ]]; then
+    export WS_EXCLUDES=$(filterFolders "${exclude_project_config}" "$(pwd)")
+  fi
 
   # shellcheck disable=SC2153
   echo "Product name - $WS_PRODUCTNAME"
@@ -163,18 +164,20 @@ if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
     set -e
 
     if [[ "$scan_result" -ne 0 ]]; then
-      log::error "Scan for ${FOLDER} has failed with $scan_result code"
+      log::error "Scan for ${FOLDER} has failed"
       scan_failed=1
     fi
   done <<< "$(find . -name "$COMPONENT_DEFINITION" -not -path "./tests/*")"
   popd
 else
+  # scan directory as a signle project
   set +e
   scanFolder "${KYMA_SRC}" "${PROJECTNAME}"
   scan_result="$?"
   set -e
+
   if [[ "$scan_result" -ne 0 ]]; then
-    log::error "Scan for ${KYMA_SRC} has failed with $scan_result code"
+    log::error "Scan for ${KYMA_SRC} has failed"
     scan_failed=1
   fi
 fi

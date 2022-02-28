@@ -16,7 +16,7 @@ templates:
             annotations:
               testgrid-create-test-group: "false"
             labels:
-              preset-whitesource-product-kyma-temp: "true"
+              preset-whitesource-product-kyma: "true"
               preset-wssagent-keys: "true"
               preset-kyma-keyring: "true"
               preset-kyma-encryption-key: "true"
