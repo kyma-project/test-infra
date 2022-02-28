@@ -75,6 +75,7 @@ mothership_tag="PR-878"
 component_tag="PR-878"
 test_script="reconciler-component-load-test.yaml"
 
+
 sed -i "s/reconciler\/mothership:.\\{8\\}/reconciler\/mothership:${mothership_tag}/g" "./resources/${test_script}"
 sed -i "s/reconciler\/component:.\\{8\\}/reconciler\/component:${component_tag}/g" "./resources/${test_script}"
 
