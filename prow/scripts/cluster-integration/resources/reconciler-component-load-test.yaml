@@ -1303,7 +1303,7 @@ spec:
             - start
             - istio-configuration
             - --workspace=/tmp/reconciler
-            - --worker-count=50
+            - --worker-count=100
           name: reconciler
           ports:
             - name: http
@@ -1659,7 +1659,7 @@ spec:
             - start
             - --config=mothership-configuration/reconciler.yaml
             - --migrate-database
-            - --worker-count=50
+            - --worker-count=100
             - --audit-log
             - --audit-log-file=/var/log/auditlog/mothership-audit.log
             - --audit-log-tenant-id=$(APP_AUDITLOG_TENANT)
