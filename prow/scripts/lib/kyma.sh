@@ -162,8 +162,8 @@ kyma::install_unstable_cli() {
 }
 
 kyma::install_cli_with_dev_reconciler() {
-  git clone https://github.com/kyma-project/cli.git
-  pushd "cli" || exit
+
+  pushd "${KYMA_PROJECT_DIR}/cli" || exit
   log::info "Bump reconciler version, to develop branch, used by the Kyma CLI"
   go get github.com/kyma-incubator/reconciler@develop
 

@@ -6,6 +6,13 @@ templates:
         to: ../test-inventory-integration.md
     render:
       - localSets:
+          extra_refs_kyma-cli_main:
+            extra_refs:
+              cli-main:
+                - org: "kyma-project"
+                  repo: "cli"
+                  path_alias: "github.com/kyma-project/cli"
+                  base_ref: "main"
           extra_refs_kyma-local:
             extra_refs:
               kyma-local:
@@ -511,6 +518,7 @@ templates:
                     - kyma_major_version_2
                     - jobConfig_slack_jellyfish
                   local:
+                    - extra_refs_kyma-cli_main
                     - jobConfig_default
                     - gardener_azure_job
                     - command_upgrade_gardener_kyma2_to_main

@@ -44,6 +44,7 @@ requiredVars=(
     GARDENER_KYMA_PROW_KUBECONFIG
     GARDENER_KYMA_PROW_PROJECT_NAME
     GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
+    CLI_SOURCE
 )
 
 utils::check_required_vars "${requiredVars[@]}"
