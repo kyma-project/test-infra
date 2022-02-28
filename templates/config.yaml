@@ -19,6 +19,9 @@ globalSets:
   kyma_major_version_2:
     env:
       KYMA_MAJOR_VERSION: 2
+  kyma_major_upgrade:
+    env:
+      KYMA_MAJOR_UPGRADE: "true"
   # Directory sets
   kyma_project_dir:
     env:
