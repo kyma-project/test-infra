@@ -910,7 +910,7 @@ periodics: # runs on schedule
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: kyma-upgrade-gardener-kyma2-to-main
+    - name: kyma-upgrade-gardener-kyma2-to-main-reconciler-main
       annotations:
         description: "Azure Kyma 2.0 to main branch."
         pipeline.clusterprovisioning: "kyma cli"
@@ -921,7 +921,7 @@ periodics: # runs on schedule
         testgrid-dashboards: "kyma_integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "kyma-upgrade-gardener-kyma2-to-main"
+        prow.k8s.io/pubsub.runID: "kyma-upgrade-gardener-kyma2-to-main-reconciler-main"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
         preset-bot-github-token: "true"
@@ -988,7 +988,7 @@ periodics: # runs on schedule
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: kyma-upgrade-gardener-kyma2-to-main-dev-reconciler
+    - name: kyma-upgrade-gardener-kyma2-to-main-reconciler-dev
       annotations:
         description: "Azure Kyma 2.0 to main branch."
         pipeline.clusterprovisioning: "kyma cli"
@@ -999,7 +999,7 @@ periodics: # runs on schedule
         testgrid-dashboards: "kyma_integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "kyma-upgrade-gardener-kyma2-to-main-dev-reconciler"
+        prow.k8s.io/pubsub.runID: "kyma-upgrade-gardener-kyma2-to-main-reconciler-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
         preset-bot-github-token: "true"
