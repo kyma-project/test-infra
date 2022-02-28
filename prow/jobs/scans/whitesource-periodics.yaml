@@ -50,56 +50,6 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-    - name: control-plane-dep-whitesource-scan
-      annotations:
-        pipeline.trigger: "periodic"
-        testgrid-create-test-group: "false"
-      labels:
-        preset-gc-project-env: "true"
-        preset-kms-gc-project-env: "true"
-        preset-kyma-encryption-key: "true"
-        preset-kyma-keyring: "true"
-        preset-whitesource-product-kyma: "true"
-        preset-wssagent-keys: "true"
-        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
-      cron: "0 4 * * *"
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-        - org: kyma-project
-          repo: control-plane
-          path_alias: github.com/kyma-project/control-plane
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220217-4c8befd6"
-            securityContext:
-              privileged: false
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
-            env:
-              - name: DRYRUN
-                value: "false"
-              - name : REPOSITORY
-                value: control-plane
-              - name: CREATE_SUBPROJECTS
-                value: "true"
-              - name: CUSTOM_PROJECTNAME
-                value: control-plane-dep
-              - name: SCAN_LANGUAGE
-                value: golang
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 400m
     - name: kyma-whitesource-scan
       annotations:
         pipeline.trigger: "periodic"
