@@ -98,9 +98,6 @@ gardener::set_machine_type
 if [ "$CLI_SOURCE" == "unstable" ]; then
   log::info "### Install latest unstable Kyma CLI"
   kyma::install_unstable_cli
-elif [ "$CLI_SOURCE" == "develop" ]; then
-  log::info "### Install main Kyma CLI with develop Reconciler"
-  kyma::install_cli_with_dev_reconciler
 else
   log::info"CLI_SOURCE not supported: $CLI_SOURCE"
 fi

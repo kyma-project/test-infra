@@ -161,46 +161,6 @@ kyma::install_unstable_cli() {
     fi
 }
 
-kyma::install_cli_with_dev_reconciler() {
-
-  pushd "${KYMA_PROJECT_DIR}/cli" || exit
-  log::info "Bump reconciler version, to develop branch, used by the Kyma CLI"
-  ls
-  go get github.com/kyma-incubator/reconciler@develop
-
-  go mod tidy
-  log::info "Run unit-tests for kyma kyma"
-  
-  log::info "Building Kyma CLI"
-  make build-linux
-  popd || exit
-  pwd
-
-  mkdir -p "/tmp/bin"
-  cp "${KYMA_PROJECT_DIR}/cli/bin/kyma-linux" "./tmp/bin/kyma"
-
-  if ! [[ -x "$(command -v kyma)" ]]; then
-      local settings
-      local kyma_version
-      settings="$(set +o); set -$-"
-
-      export PATH="/tmp/bin:${PATH}"
-      os=$(host::os)
-
-      pushd "/tmp/bin" || exit
-
-      echo "--> Install kyma CLI (with develop reconciler) ${os} locally to /tmp/bin"
-      chmod +x kyma
-      kyma_version=$(kyma version --client)
-      echo "--> Kyma CLI (unstable) version: ${kyma_version}"
-      echo "OK"
-      popd || exit
-      eval "${settings}"
-  else
-      log::info "Kyma CLI is already installed: $(kyma version -c)"
-  fi
-}
-
 kyma::install_cli_last_release() {
     if ! [[ -x "$(command -v kyma)" ]]; then
         local settings
