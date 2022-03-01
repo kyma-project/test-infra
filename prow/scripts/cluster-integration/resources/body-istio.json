@@ -10,6 +10,28 @@
     "components": [
       {
         "URL": "",
+        "component": "cluster-essentials",
+        "namespace": "kyma-system",
+        "configuration": [
+          {
+            "key": "global.domainName",
+            "value": "c-4065192.kyma-dev.shoot.canary.k8s-hana.ondemand.com",
+            "secret": false
+          },
+          {
+            "key": "limitRange.default.memory",
+            "value": "256Mi",
+            "secret": false
+          },
+          {
+            "key": "limitRange.max.memory",
+            "value": "8Gi",
+            "secret": false
+          }
+        ]
+      },
+      {
+        "URL": "",
         "component": "istio-configuration",
         "namespace": "istio-system",
         "configuration": [
@@ -33,5 +55,5 @@
     "shootName": "SHOOT_NAME",
     "instanceID": "INSTANCE_ID"
   },
-  "kubeconfig": "apiVersion: v1\nkind: Config\ncurrent-context: shoot--kyma-prow--rec-wkly-lt\ncontexts:\n  - name: shoot--kyma-prow--rec-wkly-lt\n    context:\n      cluster: shoot--kyma-prow--rec-wkly-lt\n      user: shoot--kyma-prow--rec-wkly-lt-token\nclusters:\n  - name: shoot--kyma-prow--rec-wkly-lt\n    cluster:\n      server: 'https://api.rec-wkly-lt.kyma-prow.shoot.canary.k8s-hana.ondemand.com'\n      certificate-authority-data: >-\n        LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM5ekNDQWQrZ0F3SUJBZ0lSQUw3ZHZuTXg2bmJTS3hPWFB5WXl3NVV3RFFZSktvWklodmNOQVFFTEJRQXcKRlRFVE1CRUdBMVVFQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TWpBeU1qRXhOVEUzTXpWYUZ3MHpNakF5TWpFeApOVEUzTXpWYU1CVXhFekFSQmdOVkJBTVRDbXQxWW1WeWJtVjBaWE13Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBCkE0SUJEd0F3Z2dFS0FvSUJBUURPQUF4Y0VJT3JidFBoT3FZOEFPNjdRbnQ1TGQrdGJGMC80eEtaUXM4YWREOGQKU3Z5V3c0SW5YdGZRSmwwc2NjSVRYTlZ1Sm5VRGtlT2t2UGgzZ2lBVDlCWmlRY0dBL0xnRm1NajdUclc2K1RmWApZZUx2VWJQaGV6aDZaL2s4SHl0clBQMjNRWC9WVkpHTXJZL2ZoVk9GRmgzWG1UZEZLelVPb29DbzEyL2tHbDRNClgxZDk3emhNby9BVjlpSVQvYVQ2THFhV0paSEtRTUphdmlISmg2VGdJK2FqUmdNWDJramlJT3IyT2ppdFNGVlkKZ0srb0svODE4cjZPUDJJTjRhUE85ZkMwVU4vUDhoNE1TejhXWTRyMmxRbkduTTdLRmNsditDMXpqZEs3cEFwQwpTYThEZmlrY1U2ek9Hb2RFSDluUVhQQ0JtdnhiY1ZiNVdmMjRkWDB4QWdNQkFBR2pRakJBTUE0R0ExVWREd0VCCi93UUVBd0lCcGpBUEJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJSYTNRVFAxTUZ0RE9sOXFDMk4KK3Zrd2NIQkRJVEFOQmdrcWhraUc5dzBCQVFzRkFBT0NBUUVBcTIvOG80RmpEdlRFUnJlbG1PUW1mOVhuNG85TgptL2MwcFFnU1dydW5QM09TbGR2bjVLWmxzakx6cXVzb3M4REFLeCs0VUNaRHlvbXk0cEJYd2RlZFlpbzBJVEJpClFiVVRvTGp4YlNiS0tUMERCQjg4TkJnSmV2R000dSt4clFuNTJUS1VISUJhMEczeGplVlRGb0dXK1FNNjNIV0IKRGJJTHN4bGViL0ZodkZqWWhOYVJrOUVScjZsM094YzZvYkRMNTlaR2RBb1pDbWtMSjNrWWs1V0t1LzlpVGEvegpnRytFV244MGJTOWd6Yk96Vk92UExRY0NyamtrNjBubHZxTU1rcVdhUFZMV3VCZFpndlR3UUtNV25xY1ZWRzlNClhJSHlsMWljWElBZmUxNVJOSnJjeEJ4VnhCTW9ycVdja3NvSGNQZWowOHVUWHJMSHZGeTFUSFdmWWc9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==\nusers:\n  - name: shoot--kyma-prow--rec-wkly-lt-token\n    user:\n      token: >-\n        KaAwSpUoJ8A3h5ei0JZTi7B5aw27GOfgpcYrce0JD2SbXTa9wbD77XzdXy3wruAr38P3vjq0ifJGSwjTp23eXcGeEky0OGTDJOxwSBGQ8rVgVO2jeEaAPDxbi0atu28K"
+  "kubeconfig": "apiVersion: v1\nkind: Config\ncurrent-context: shoot--kyma-prow--rec-wkly-lt\ncontexts:\n  - name: shoot--kyma-prow--rec-wkly-lt\n    context:\n      cluster: shoot--kyma-prow--rec-wkly-lt\n      user: shoot--kyma-prow--rec-wkly-lt-token\nclusters:\n  - name: shoot--kyma-prow--rec-wkly-lt\n    cluster:\n      server: 'https://api.rec-wkly-lt.kyma-prow.shoot.canary.k8s-hana.ondemand.com'\n      certificate-authority-data: >-\n        LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM5akNDQWQ2Z0F3SUJBZ0lRWFR1UG4yR0FQdk5RMkQ2Nkh0c0JyakFOQmdrcWhraUc5dzBCQVFzRkFEQVYKTVJNd0VRWURWUVFERXdwcmRXSmxjbTVsZEdWek1CNFhEVEl5TURNd01URXpOVFV3T1ZvWERUTXlNRE13TVRFegpOVFV3T1Zvd0ZURVRNQkVHQTFVRUF4TUthM1ZpWlhKdVpYUmxjekNDQVNJd0RRWUpLb1pJaHZjTkFRRUJCUUFECmdnRVBBRENDQVFvQ2dnRUJBTE9NNXpNaU9DRkZ2eTVkWW15b0VXNjBtSCs2TG8vK081MXV3V0wybDMxamxwY1kKSXA0Zkdaci81cmNxU3BsMU83YkdSdjdndGtjZUV2ejJaOENwMkE3R29hNjdnOTFGUGlCWkwvOW9lMVhmNGRuLwpYdHhiVmFPM2wyaFVreHZaNjJRMER6U1FyN2ljcXpxZDRKOHovbjcwNDRQSFJxaGx2QjM2aW5RUkwvV2xKeEVSCm5hZUJsbWI4dU4xYkxTWHdVcmMwRE5iMTdnMmNmQk1IYnZQNXdjTEUzYTNGNTJrSzF0UWZ4TXZMczgwU1hhVzAKbzl5elk1RGZFUEczUS9CbTBMb1ZGVm9nd2tET2ljeFYrSVZzNVE4WGl6MFFJT29CYXF0dng0SzJ6amM5STdYeQo3RGk2NS9HYTBMUzJlc0xOdjNtMVJIazNya3JXRGhhL0FzRnRzbEVDQXdFQUFhTkNNRUF3RGdZRFZSMFBBUUgvCkJBUURBZ0dtTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3SFFZRFZSME9CQllFRktoQXNEVzNLNkRUNXRrREVFNnMKQmdUaVZVa3RNQTBHQ1NxR1NJYjNEUUVCQ3dVQUE0SUJBUUI1WDRHNGhLd3ZpYWJiS1ltaDNmcXdSTjBQUDZPVwpGTWpaRFp0dThsUWp1Q04rUVI3OFp4VVlEa2pKeE93dlUyUlB3V3Y3VUpGUWh4OVJaU1ZHby9Rc25FWmtGdC94CjRQdm9NZTBkRy9VQ3hqYVRBbkdJRENqQnpRZ2s1RTB5NWh4QjdROWU1K2hBTng1cG05L2kzcW1WYWVOZzdBM2kKaHFxaWJXNS9ZKytMajl6amxXZ0ZVK3JEV21DNi9IVHdqeDU4bmJ4a25oc1cwTEZJSXM2QmdkYzRiaW1YYUVwSQpHdEEzbVNES1BPYmE4dklIN3E2bmJmWkJEQ3RmcFBQd1NYdjhHS3duZlZFbktvRUNUcmZrcjE4Ym4zWHVXMUovCmt4NU5kYmdlQm50YlVZbW5OK2owaEIzek1LRm13bVNUVTFFRFhpMUxoRm1WSDZUZ2p3bHlobyszCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K\nusers:\n  - name: shoot--kyma-prow--rec-wkly-lt-token\n    user:\n      token: >-\n        ky9mhpM6BB1s0HrPdBh3iRdx58KJc9x0dbj740Y7zsQWzLuaUOQm7KNy2IM2piyRMPQPqnvr7VKmgb4EAPv5MmZmbFpPbTUB26moOsaL0IUvNSeNbwE35dlPek4IEvKw"
 }
