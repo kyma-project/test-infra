@@ -85,4 +85,6 @@ cat "./resources/${test_script}" | grep -o 'reconciler\/component:.*' | head -1
 echo "**************************************************************"
 
 kubectl apply -f "./resources/${test_script}"
+kubectl apply -f "./resources/reconciler-load-test-dashboard.yaml"
+
 set -e
