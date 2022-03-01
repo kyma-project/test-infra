@@ -163,16 +163,17 @@ kyma::install_unstable_cli() {
 
 kyma::install_cli_with_dev_reconciler() {
 
-  cd "${KYMA_PROJECT_DIR}/cli"
+  pushd "${KYMA_PROJECT_DIR}/cli" || exit
   log::info "Bump reconciler version, to develop branch, used by the Kyma CLI"
+  ls
   go get github.com/kyma-incubator/reconciler@develop
 
-  make resolve
+  go mod tidy
   log::info "Run unit-tests for kyma kyma"
   make test
   log::info "Building Kyma CLI"
   make build-linux
-  cd ../../../../../..
+  popd || exit
   pwd
 
   mkdir -p "/tmp/bin"
