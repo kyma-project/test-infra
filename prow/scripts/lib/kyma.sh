@@ -170,7 +170,7 @@ kyma::install_cli_with_dev_reconciler() {
 
   go mod tidy
   log::info "Run unit-tests for kyma kyma"
-  make test
+  
   log::info "Building Kyma CLI"
   make build-linux
   popd || exit
