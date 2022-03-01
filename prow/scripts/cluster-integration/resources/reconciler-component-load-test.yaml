@@ -914,10 +914,13 @@ metadata:
     app.kubernetes.io/name: mothership-reconciler
     app.kubernetes.io/instance: reconciler
     app.kubernetes.io/managed-by: Helm
+  annotations:
+    prometheus.io/port: "8080"
+    prometheus.io/scrape: "true"
 spec:
   type: ClusterIP
   ports:
-    - port: 80
+    - port: 8080
       targetPort: http
       protocol: TCP
       name: http
