@@ -11,6 +11,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-main-compass-gke-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
+        preset-cluster-version: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
         preset-gardener-azure-kyma-integration: "true"
@@ -51,8 +52,6 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
-              - name: GKE_CLUSTER_VERSION
-                value: "1.20"
               - name: KYMA_MAJOR_VERSION
                 value: "1"
               - name: MACHINE_TYPE
@@ -80,6 +79,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-rel20-compass-gke-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
+        preset-cluster-version: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
         preset-gardener-azure-kyma-integration: "true"
@@ -118,8 +118,6 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
-              - name: GKE_CLUSTER_VERSION
-                value: "1.20"
               - name: KYMA_MAJOR_VERSION
                 value: "1"
               - name: MACHINE_TYPE
@@ -147,6 +145,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-rel124-compass-gke-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
+        preset-cluster-version: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
         preset-gardener-azure-kyma-integration: "true"
@@ -185,8 +184,6 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
-              - name: GKE_CLUSTER_VERSION
-                value: "1.20"
               - name: KYMA_MAJOR_VERSION
                 value: "1"
               - name: MACHINE_TYPE
@@ -214,6 +211,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-rel123-compass-gke-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
+        preset-cluster-version: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
         preset-gardener-azure-kyma-integration: "true"
@@ -252,8 +250,6 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
-              - name: GKE_CLUSTER_VERSION
-                value: "1.20"
               - name: KYMA_MAJOR_VERSION
                 value: "1"
               - name: MACHINE_TYPE
@@ -286,6 +282,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-main-compass-gke-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
+        preset-cluster-version: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
         preset-gardener-azure-kyma-integration: "true"
@@ -327,8 +324,6 @@ postsubmits: # runs on main
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
-              - name: GKE_CLUSTER_VERSION
-                value: "1.20"
               - name: KYMA_MAJOR_VERSION
                 value: "1"
               - name: MACHINE_TYPE
