@@ -1665,6 +1665,10 @@ spec:
             - --audit-log-tenant-id=$(APP_AUDITLOG_TENANT)
             - --occupancy-tracking
           env:
+            - name: PROCESSING_DURATION_METRICS_ENABLED
+              value: "true"
+            - name: WORKERPOOL_OCCUPANCY_TRACKING_ENABLED
+              value: "true"
             - name: APP_AUDITLOG_TENANT
               valueFrom:
                 configMapKeyRef:
