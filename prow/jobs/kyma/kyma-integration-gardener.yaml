@@ -963,8 +963,6 @@ periodics: # runs on schedule
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener-kyma2-to-main.sh"
             env:
-              - name: CLI_SOURCE
-                value: "unstable"
               - name: GARDENER_REGION
                 value: "northeurope"
               - name: GARDENER_ZONES

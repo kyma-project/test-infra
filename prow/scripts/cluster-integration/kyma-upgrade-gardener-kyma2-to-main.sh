@@ -44,7 +44,6 @@ requiredVars=(
     GARDENER_KYMA_PROW_KUBECONFIG
     GARDENER_KYMA_PROW_PROJECT_NAME
     GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
-    CLI_SOURCE
 )
 
 utils::check_required_vars "${requiredVars[@]}"
@@ -95,12 +94,8 @@ gardener::init
 # if MACHINE_TYPE is not set then use default one
 gardener::set_machine_type
 
-if [ "$CLI_SOURCE" == "unstable" ]; then
-  log::info "### Install latest unstable Kyma CLI"
-  kyma::install_unstable_cli
-else
-  log::info"CLI_SOURCE not supported: $CLI_SOURCE"
-fi
+log::info "### Install latest unstable Kyma CLI"
+kyma::install_unstable_cli
 
 # currently only Azure generates overrides, but this may change in the future
 gardener::generate_overrides

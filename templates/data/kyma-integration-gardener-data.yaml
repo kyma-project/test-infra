@@ -6,13 +6,6 @@ templates:
         to: ../test-inventory-integration.md
     render:
       - localSets:
-          extra_refs_kyma-cli_main:
-            extra_refs:
-              cli-main:
-                - org: "kyma-project"
-                  repo: "cli"
-                  path_alias: "github.com/kyma-project/cli"
-                  base_ref: "main"
           extra_refs_kyma-local:
             extra_refs:
               kyma-local:
@@ -170,9 +163,6 @@ templates:
             annotations:
               pipeline.test: fast-integration
               pipeline.profile: production
-          cli_unstable_source:
-            env:
-              CLI_SOURCE: "unstable"
         jobConfigs:
           - repoName: kyma-project/kyma
             jobs:
@@ -490,7 +480,6 @@ templates:
                     - kyma_major_version_2
                     - jobConfig_slack_jellyfish
                   local:
-                    - cli_unstable_source
                     - jobConfig_default
                     - gardener_azure_job
                     - command_upgrade_gardener_kyma2_to_main
