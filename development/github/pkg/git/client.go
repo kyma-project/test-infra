@@ -1,0 +1,64 @@
+package git
+
+import (
+	"fmt"
+
+	"github.com/kyma-project/test-infra/development/github/pkg/client/v2"
+	"k8s.io/test-infra/prow/git/v2"
+)
+
+type GitClient struct {
+	git.ClientFactory
+}
+
+type GitClientConfig struct {
+	git.ClientFactoryOpts
+	githubClient *client.GithubClient
+}
+
+type GitClientOption func(*GitClientConfig) error
+
+func NewGitClient(options ...GitClientOption) (*GitClient, error) {
+	var gitClient *GitClient
+
+	conf := &GitClientConfig{}
+
+	for _, opt := range options {
+		err := opt(conf)
+		if err != nil {
+			return nil, fmt.Errorf("failed applying functional option: %w", err)
+		}
+	}
+	if conf.githubClient == nil {
+		return nil, fmt.Errorf("github client not provided")
+	}
+	gitUser := func() (name, email string, err error) {
+		user, err := conf.githubClient.BotUser()
+		if err != nil {
+			return "", "", err
+		}
+		name = user.Name
+		email = user.Email
+		return name, email, nil
+	}
+	opts := git.ClientFactoryOpts{
+		GitUser: gitUser,
+	}
+	git, err := git.NewClientFactory(opts.Apply)
+	if err != nil {
+		return nil, err
+	}
+	gitClient.ClientFactory = git
+	return gitClient, nil
+}
+
+func WithGithubClient(githubClient *client.GithubClient) GitClientOption {
+	return func(conf *GitClientConfig) error {
+		if conf.githubClient == nil {
+			conf.githubClient = githubClient
+			return nil
+		} else {
+			return fmt.Errorf("github client already defined")
+		}
+	}
+}

@@ -22,7 +22,7 @@ type Client struct {
 	Logger        logging.LoggerInterface
 }
 
-type Option func(client *Client) error
+type Option func(*Client) error
 
 func NewClient(options ...Option) (*Client, error) {
 	cc := &Client{
