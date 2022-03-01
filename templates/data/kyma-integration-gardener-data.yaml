@@ -460,7 +460,7 @@ templates:
                     - gardener_azure_job
                     - command_upgrade_gardener_kyma_to_kyma2
               - jobConfig:
-                  name: kyma-upgrade-gardener-kyma2-to-main
+                  name: kyma-upgrade-gardener-kyma2-to-main-reconciler-main
                   annotations:
                     testgrid-dashboards: kyma_integration
                     description: Azure Kyma 2.0 to main branch.
