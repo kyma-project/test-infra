@@ -69,10 +69,10 @@ log::banner "Deploying Reconciler for load test"
 cd "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"  || { echo "Failed to change dir to: ${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"; exit 1; }
 
 mothership_latest_commit=$(curl  --silent "https://api.github.com/repos/kyma-incubator/reconciler/commits/main" | jq -r '.sha')
-mothership_tag="${mothership_latest_commit::8}"
-#mothership_tag="PR-878"
-component_tag="${mothership_latest_commit::8}"
-#component_tag="PR-878"
+#mothership_tag="${mothership_latest_commit::8}"
+mothership_tag="PR-878"
+#component_tag="${mothership_latest_commit::8}"
+component_tag="PR-878"
 test_script="reconciler-component-load-test.yaml"
 
 
