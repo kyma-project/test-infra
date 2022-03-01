@@ -41,18 +41,18 @@ rules:
       - pods
     verbs: ["get", "list", "watch"]
 ---
-apiVersion: v1
-automountServiceAccountToken: false
-kind: ServiceAccount
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
 metadata:
-  labels:
-    app.kubernetes.io/component: prometheus
-    app.kubernetes.io/instance: k8s
-    app.kubernetes.io/name: prometheus
-    app.kubernetes.io/part-of: kube-prometheus
-    app.kubernetes.io/version: 2.33.3
-  name: prometheus-k8s
-  namespace: reconciler
+  name: prometheus-k8s-istio
+  namespace: istio-system
+rules:
+  - apiGroups: [""]
+    resources:
+      - services
+      - endpoints
+      - pods
+    verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -62,7 +62,6 @@ metadata:
     app.kubernetes.io/instance: k8s
     app.kubernetes.io/name: prometheus
     app.kubernetes.io/part-of: kube-prometheus
-    app.kubernetes.io/version: 2.33.3
   name: prometheus-k8s-reconciler
   namespace: reconciler
 roleRef:
