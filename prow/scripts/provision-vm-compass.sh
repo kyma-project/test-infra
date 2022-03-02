@@ -29,14 +29,6 @@ cleanup() {
     exit $ARG
 }
 
-function testCustomImage() {
-    CUSTOM_IMAGE="$1"
-    IMAGE_EXISTS=$(gcloud compute images list --filter "name:${CUSTOM_IMAGE}" | tail -n +2 | awk '{print $1}')
-    if [[ -z "$IMAGE_EXISTS" ]]; then
-        log::error "${CUSTOM_IMAGE} is invalid, it is not available in GCP images list, the script will terminate ..." && exit 1
-    fi
-}
-
 gcp::authenticate \
     -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
@@ -81,13 +73,13 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 
 if [[ -z "$IMAGE" ]]; then
     log::info "Provisioning vm using the latest default custom image ..."
-    
+
     IMAGE=$(gcloud compute images list --sort-by "~creationTimestamp" \
          --filter "family:custom images AND labels.default:yes" --limit=1 | tail -n +2 | awk '{print $1}')
-    
+
     if [[ -z "$IMAGE" ]]; then
        log::error "There are no default custom images, the script will exit ..." && exit 1
-    fi   
+    fi
  fi
 
 ZONE_LIMIT=${ZONE_LIMIT:-5}
@@ -115,7 +107,7 @@ log::info "Copying Compass to the instance"
 utils::compress_send_to_vm "${ZONE}" "compass-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/compass" "~/compass"
 
 
-KYMA_CLI_VERSION="a064ffb"
+KYMA_CLI_VERSION="2.0.4"
 log::info "Installing Kyma CLI version: $KYMA_CLI_VERSION"
 
 PREV_WD=$(pwd)

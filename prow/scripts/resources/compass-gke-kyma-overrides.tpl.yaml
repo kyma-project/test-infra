@@ -1,0 +1,60 @@
+global:
+  domainName: ${DOMAIN}
+  loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+  tlsCrt: ${TLS_CERT}
+  tlsKey: ${TLS_KEY}
+  enableAPIPackages: true
+  disableLegacyConnectivity: true
+  ingress:
+    domainName: ${DOMAIN}
+    tlsCrt: ${TLS_CERT}
+    tlsKey: ${TLS_KEY}
+  environment:
+    gardener: false
+istio:
+  override: |
+    apiVersion: install.istio.io/v1alpha1
+    kind: IstioOperator
+    metadata:
+      namespace: istio-system
+    spec:
+      values:
+        global:
+          proxy:
+            holdApplicationUntilProxyStarts: true
+      components:
+        ingressGateways:
+          - name: istio-ingressgateway
+            k8s:
+              service:
+                loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+                type: LoadBalancer
+
+monitoring:
+  pushgateway:
+    enabled: true
+  global:
+    alertTools:
+      credentials:
+        slack:
+          channel: ${KYMA_ALERTS_CHANNEL}
+          apiurl: ${KYMA_ALERTS_SLACK_API_URL}
+application_connector:
+  tests:
+    application_connector_tests:
+      enabled: false
+service-catalog:
+  test:
+    accptance:
+      enabled: false
+application-connector:
+  application-registry:
+    deployment:
+      args:
+        detailedErrorResponse: true
+ory:
+  global:
+    istio:
+      gateway:
+        name: "kyma-gateway"
+        namespace: "kyma-system"

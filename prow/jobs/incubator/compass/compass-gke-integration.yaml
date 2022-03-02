@@ -54,7 +54,7 @@ presubmits: # runs on PRs
               - name: GKE_CLUSTER_VERSION
                 value: "1.20"
               - name: KYMA_MAJOR_VERSION
-                value: "1"
+                value: "2"
               - name: MACHINE_TYPE
                 value: "n1-highcpu-16"
               - name: NODES_PER_ZONE
@@ -121,7 +121,7 @@ presubmits: # runs on PRs
               - name: GKE_CLUSTER_VERSION
                 value: "1.20"
               - name: KYMA_MAJOR_VERSION
-                value: "1"
+                value: "2"
               - name: MACHINE_TYPE
                 value: "n1-highcpu-16"
               - name: NODES_PER_ZONE
@@ -188,7 +188,7 @@ presubmits: # runs on PRs
               - name: GKE_CLUSTER_VERSION
                 value: "1.20"
               - name: KYMA_MAJOR_VERSION
-                value: "1"
+                value: "2"
               - name: MACHINE_TYPE
                 value: "n1-highcpu-16"
               - name: NODES_PER_ZONE
@@ -255,7 +255,7 @@ presubmits: # runs on PRs
               - name: GKE_CLUSTER_VERSION
                 value: "1.20"
               - name: KYMA_MAJOR_VERSION
-                value: "1"
+                value: "2"
               - name: MACHINE_TYPE
                 value: "n1-highcpu-16"
               - name: NODES_PER_ZONE
@@ -330,7 +330,7 @@ postsubmits: # runs on main
               - name: GKE_CLUSTER_VERSION
                 value: "1.20"
               - name: KYMA_MAJOR_VERSION
-                value: "1"
+                value: "2"
               - name: MACHINE_TYPE
                 value: "n1-highcpu-16"
               - name: NODES_PER_ZONE
