@@ -1,2 +1,3 @@
 pjNames:
   - pjName: "nightly-main-reconciler"
+    report: true
