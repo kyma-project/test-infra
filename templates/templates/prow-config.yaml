@@ -824,11 +824,27 @@ presets:
     env:
       - name: SLACK_CHANNEL
         value: CBMPTMCV9
+  # remove after new scans are triaged
   - labels:
-      preset-kyma-wssagent-config: "true"
+      preset-whitesource-product-kyma-old: "true"
     env:
-      - name: PRODUCTNAME
+      - name: WS_PRODUCTNAME
         value: "OOSS - KYMA"
+  - labels:
+      preset-whitesource-product-kyma: "true"
+    env:
+      - name: WS_PRODUCTNAME
+        value: "SHC - XF KYMA RUNTIME 2.0"
+  - labels:
+      preset-whitesource-product-control-plane: "true"
+    env:
+      - name: WS_PRODUCTNAME
+        value: "SHC - KYMA CONTROL PLANE 2.0"
+  - labels:
+      preset-whitesource-product-kyma-dashboard: "true"
+    env:
+      - name: WS_PRODUCTNAME
+        value: "SHC - KYMA DASHBOARD 1.0"
   # volume mounts for kind
   - labels:
       preset-kind-volume-mounts: "true"

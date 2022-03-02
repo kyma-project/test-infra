@@ -41,8 +41,8 @@ function prereq() {
     )
     utils::check_required_vars "${requiredVars[@]}"
 
-    # install kymaCLI from the last release
-    kyma::install_cli_last_release
+    log::info "### Install latest unstable Kyma CLI"
+    kyma::install_unstable_cli
 } 
 
 function provision_cluster() {
@@ -89,6 +89,9 @@ function upgrade_kyma() {
     log::info "### Upgrade Kyma to ${KYMA_SOURCE}"
     kyma deploy --ci --source "${KYMA_SOURCE}" --timeout 20m
 
+    # run migration script
+    curl https://raw.githubusercontent.com/kyma-project/kyma/main/docs/assets/2.0.4-2.1-fix-upgraded-resources.sh | sh
+
     if [[ $? -eq 0 ]];then
         log::success "Upgrade completed"
     else
@@ -110,6 +113,9 @@ provision_cluster
 install_kyma
 
 make_fast_integration "ci-pre-upgrade"
+
+# Upgrade kyma to main branch with latest stable cli
+kyma::install_cli
 
 upgrade_kyma
 

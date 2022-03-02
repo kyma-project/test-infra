@@ -31,6 +31,7 @@ templates:
               preset-kyma-artifacts-bucket: "true"
               preset-gardener-azure-kyma-integration: "true"
               preset-kyma-development-artifacts-bucket: "true"
+              preset-cluster-version: "true"
         jobConfigs:
           - repoName: kyma-incubator/compass
             jobs:
