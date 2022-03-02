@@ -60,11 +60,9 @@ reconciler::export_shoot_cluster_kubeconfig
 set +e
 log::banner "Deploying Monitoring for load test"
 
-kubectl create -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/release-0.54.1/example/prometheus-operator-crd/monitoring.coreos.com_prometheuses.yaml
-
 git clone https://github.com/prometheus-operator/kube-prometheus.git
 cd kube-prometheus
-git checkout release-0.9
+git checkout release-1.0
 kubectl apply -f manifests/setup --validate=false
 kubectl apply -f manifests/ --validate=false
 
