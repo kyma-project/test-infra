@@ -15,6 +15,7 @@ templates:
               NODES_PER_ZONE: "1"
               MACHINE_TYPE: "n1-highcpu-16"
               KYMA_MAJOR_VERSION: "1"
+              GKE_CLUSTER_VERSION: "1.20"
             request_memory: 200Mi
             request_cpu: 80m
             labels:
@@ -30,7 +31,6 @@ templates:
               preset-kyma-artifacts-bucket: "true"
               preset-gardener-azure-kyma-integration: "true"
               preset-kyma-development-artifacts-bucket: "true"
-              preset-cluster-version: "true"
         jobConfigs:
           - repoName: kyma-incubator/compass
             jobs:
