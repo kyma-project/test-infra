@@ -1,5 +1,5 @@
 templates:
-  - from: templates/whitesource-periodics.tmpl
+  - from: templates/whitesource-periodics-new.tmpl
     render:
       - to: ../prow/jobs/scans/whitesource-periodics-new.yaml
         localSets:
