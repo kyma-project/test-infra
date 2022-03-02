@@ -180,7 +180,7 @@ if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
       log::error "Scan for ${FOLDER} has failed"
       scan_failed=1
     fi
-  done <<< "$(find . -name "$COMPONENT_DEFINITION" -not -path "./tests/*")"
+  done <<< "$(find . -name "$COMPONENT_DEFINITION" -not -path "./tests/*" -not -path "./docs/*")"
   popd
 else
   # scan PROJECT_SRC directory as a single project
