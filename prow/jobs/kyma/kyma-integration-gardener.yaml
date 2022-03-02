@@ -891,6 +891,8 @@ periodics: # runs on schedule
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
+              - name: KYMA_MAJOR_UPGRADE
+                value: "true"
               - name: KYMA_MAJOR_VERSION
                 value: "1"
               - name: KYMA_PROJECT_DIR

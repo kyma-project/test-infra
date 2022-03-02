@@ -114,13 +114,17 @@ utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 log::info "### Run pre-upgrade tests"
 gardener::pre_upgrade_test_fast_integration_kyma
 
-# Upgrade kyma to main branch
+# Upgrade kyma to main branch with latest stable cli
+kyma::install_cli
+
 export KYMA_SOURCE="main"
 log::info "### Installing Kyma $KYMA_SOURCE"
 
 kymaMain_install_dir="$KYMA_SOURCES_DIR/kymaMain"
 kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kymaMain_install_dir" -u "true"
 
+# run migration script
+curl https://raw.githubusercontent.com/kyma-project/kyma/main/docs/assets/2.0.4-2.1-fix-upgraded-resources.sh | sh
 
 log::info "### Run post-upgrade tests"
 gardener::post_upgrade_test_fast_integration_kyma
