@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "kyma-whitesource-scan-new"
+  - pjName: "control-plane-whitesource-scan-new"
+  - pjName: "control-plane-dep-whitesource-scan-new"
+  - pjName: "rafter-whitesource-scan-new"
+
+
