@@ -1,7 +1,8 @@
 
+# temporary fix until old scans are removed
 {{- define "commonProwJob" }}
     {{- if .JobConfig.repository}}
-    - name: {{default .JobConfig.repository .JobConfig.custom_projectname}}{{if .JobConfig.whitesource_release}}-{{.JobConfig.Release}}{{end}}-whitesource-scan
+    - name: {{default .JobConfig.repository .JobConfig.custom_projectname}}{{if .JobConfig.whitesource_release}}-{{.JobConfig.Release}}{{end}}-whitesource-scan-new
     {{- else}}{{fail ".JobConfig.repository is not defined"}}
     {{- end}}
       {{- if .JobConfig.annotations}}
