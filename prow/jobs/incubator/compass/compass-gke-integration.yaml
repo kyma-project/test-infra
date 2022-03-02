@@ -52,6 +52,8 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
+              - name: GKE_CLUSTER_VERSION
+                value: "1.20"
               - name: KYMA_MAJOR_VERSION
                 value: "2"
               - name: MACHINE_TYPE
@@ -118,6 +120,8 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
+              - name: GKE_CLUSTER_VERSION
+                value: "1.20"
               - name: KYMA_MAJOR_VERSION
                 value: "2"
               - name: MACHINE_TYPE
@@ -184,6 +188,8 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
+              - name: GKE_CLUSTER_VERSION
+                value: "1.20"
               - name: KYMA_MAJOR_VERSION
                 value: "2"
               - name: MACHINE_TYPE
@@ -250,6 +256,8 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
+              - name: GKE_CLUSTER_VERSION
+                value: "1.20"
               - name: KYMA_MAJOR_VERSION
                 value: "2"
               - name: MACHINE_TYPE
@@ -324,6 +332,8 @@ postsubmits: # runs on main
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
+              - name: GKE_CLUSTER_VERSION
+                value: "1.20"
               - name: KYMA_MAJOR_VERSION
                 value: "2"
               - name: MACHINE_TYPE
