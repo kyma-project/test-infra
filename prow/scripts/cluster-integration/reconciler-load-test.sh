@@ -92,3 +92,7 @@ kubectl apply -f "./resources/${test_script}"
 kubectl apply -f "./resources/reconciler-load-test-dashboard.yaml"
 
 set -e
+
+log::banner "Deploying Cluster for install kyma"
+export INPUT_CLUSTER_NAME="rec-comp-lt"
+reconciler::provision_cluster
