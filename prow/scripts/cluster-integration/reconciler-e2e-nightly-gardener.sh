@@ -78,8 +78,7 @@ fi
 # Checks required vars and initializes gcloud/docker if necessary
 gardener::init
 
-numeric_day=$(date +%u)
-export INPUT_CLUSTER_NAME="${INPUT_CLUSTER_NAME}${numeric_day}"
+reconciler::export_nightly_cluster_name
 
 log::banner "Connecting to nightly cluster"
 
