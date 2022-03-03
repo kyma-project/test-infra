@@ -7,7 +7,7 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
             path_alias: "github.com/kyma-project/control-plane"
             env:
-              PROJECTNAME: control-plane
+              REPOSITORY: control-plane
               DRYRUN: "false"
               SCAN_LANGUAGE: golang-mod
             max_concurrency: 1
@@ -22,7 +22,7 @@ templates:
                     preset-dind-enabled: "true"
                     preset-docker-push-repository-kyma: "true"
                     preset-build-pr: "true"
-                    preset-kyma-wssagent-config: "true"
+                    preset-whitesource-product-kyma-old: "true"
                     preset-wssagent-keys: "true"
                     preset-kyma-keyring: "true"
                     preset-kyma-encryption-key: "true"
