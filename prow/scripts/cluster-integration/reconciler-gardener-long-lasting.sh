@@ -55,8 +55,6 @@ utils::check_required_vars "${requiredVars[@]}"
 reconciler::delete_cluster_if_exists
 
 # Generate new cluster name
-# shellcheck disable=SC2046
-# shellcheck disable=SC2005
 reconciler::export_nightly_cluster_name
 
 # Provisioning gardener long lasting cluster

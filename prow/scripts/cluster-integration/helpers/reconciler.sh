@@ -7,6 +7,8 @@ readonly RECONCILER_DELAY=15 # in secs
 readonly LOCAL_KUBECONFIG="$HOME/.kube/config"
 
 function reconciler::export_nightly_cluster_name(){
+  # shellcheck disable=SC2046
+  # shellcheck disable=SC2005
   day=$(echo $(date +%a) | tr "[:upper:]" "[:lower:]" | cut -c1-2)
   export INPUT_CLUSTER_NAME="${INPUT_CLUSTER_NAME}-${day}"
 }
