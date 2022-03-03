@@ -6,6 +6,11 @@ readonly RECONCILER_TIMEOUT=1200 # in secs
 readonly RECONCILER_DELAY=15 # in secs
 readonly LOCAL_KUBECONFIG="$HOME/.kube/config"
 
+function reconciler::export_nightly_cluster_name(){
+  day=$(echo $(date +%a) | tr "[:upper:]" "[:lower:]" | cut -c1-2)
+  export INPUT_CLUSTER_NAME="${INPUT_CLUSTER_NAME}-${day}"
+}
+
 function reconciler::delete_cluster_if_exists(){
   export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
   for i in mo tu we th fr sa su
