@@ -52,9 +52,9 @@ RUN curl -fLSs -o gc-sdk.tar.gz https://dl.google.com/dl/cloudsdk/channels/rapid
     gcloud info | tee /workspace/gcloud-info.txt
 
 # Cluster Version
-ENV CLUSTER_VERSION=1.20
+ENV CLUSTER_VERSION=1.21
 
-# Kubectl 1.20
+# Kubectl 1.21
 RUN mv /google-cloud-sdk/bin/kubectl.${CLUSTER_VERSION} /google-cloud-sdk/bin/kubectl
 
 # Docker-in-docker

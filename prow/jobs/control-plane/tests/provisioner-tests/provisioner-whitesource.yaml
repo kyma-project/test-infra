@@ -17,8 +17,8 @@ presubmits: # runs on PRs
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
         preset-kyma-keyring: "true"
-        preset-kyma-wssagent-config: "true"
         preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
+        preset-whitesource-product-kyma-old: "true"
         preset-wssagent-keys: "true"
       run_if_changed: 'go.mod|go.sum'
       optional: true
@@ -37,7 +37,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220201-cb1ea3fa"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220217-4c8befd6"
             securityContext:
               privileged: true
             command:
@@ -45,7 +45,7 @@ presubmits: # runs on PRs
             env:
               - name: DRYRUN
                 value: "false"
-              - name: PROJECTNAME
+              - name: REPOSITORY
                 value: "control-plane"
               - name: SCAN_LANGUAGE
                 value: "golang-mod"

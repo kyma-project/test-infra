@@ -44,7 +44,7 @@ func TestKymaGardenerGCPKyma2ToMainJobPeriodics(t *testing.T) {
 
 	periodics := jobConfig.AllPeriodics()
 
-	jobName := "kyma-upgrade-gardener-kyma2-to-main"
+	jobName := "kyma-upgrade-gardener-kyma2-to-main-reconciler-main"
 	job := tester.FindPeriodicJobByName(periodics, jobName)
 	require.NotNil(t, job)
 	assert.Equal(t, jobName, job.Name)

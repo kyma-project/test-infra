@@ -20,10 +20,10 @@ plank:
       timeout: 3h
       grace_period: 10m
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20220214-667197115e
-        initupload: gcr.io/k8s-prow/initupload:v20220214-667197115e
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20220214-667197115e
-        sidecar: gcr.io/k8s-prow/sidecar:v20220214-667197115e
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20220217-9337753127
+        initupload: gcr.io/k8s-prow/initupload:v20220217-9337753127
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20220217-9337753127
+        sidecar: gcr.io/k8s-prow/sidecar:v20220217-9337753127
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -162,6 +162,8 @@ branch-protection:
               protect: true
             develop:
               protect: true
+            load-test-mock:
+              protect: true
 
 tide:
   sync_period: 2m
@@ -297,11 +299,11 @@ presets:
       preset-cluster-version: "true"
     env:
       - name: AKS_CLUSTER_VERSION
-        value: "1.20"
+        value: "1.21"
       - name: GKE_CLUSTER_VERSION
-        value: "1.20"
+        value: "1.21"
       - name: GARDENER_CLUSTER_VERSION
-        value: "1.20"
+        value: "1.21"
   # test clusters log collector
   - labels:
       preset-log-collector-slack-token: "true"
@@ -824,11 +826,27 @@ presets:
     env:
       - name: SLACK_CHANNEL
         value: CBMPTMCV9
+  # remove after new scans are triaged
   - labels:
-      preset-kyma-wssagent-config: "true"
+      preset-whitesource-product-kyma-old: "true"
     env:
-      - name: PRODUCTNAME
+      - name: WS_PRODUCTNAME
         value: "OOSS - KYMA"
+  - labels:
+      preset-whitesource-product-kyma: "true"
+    env:
+      - name: WS_PRODUCTNAME
+        value: "SHC - XF KYMA RUNTIME 2.0"
+  - labels:
+      preset-whitesource-product-control-plane: "true"
+    env:
+      - name: WS_PRODUCTNAME
+        value: "SHC - KYMA CONTROL PLANE 2.0"
+  - labels:
+      preset-whitesource-product-kyma-dashboard: "true"
+    env:
+      - name: WS_PRODUCTNAME
+        value: "SHC - KYMA DASHBOARD 1.0"
   # volume mounts for kind
   - labels:
       preset-kind-volume-mounts: "true"
@@ -1173,3 +1191,9 @@ presets:
         value: "https://mothership-reconciler.cp.dev.kyma.cloud.sap/v1"
       - name: KCP_OIDC_ISSUER_URL
         value: "https://kymatest.accounts400.ondemand.com"
+  - labels:
+      # Allows setting the feature flag in Eventing Charts to enable the NATS JetStream Backend.
+      preset-eventing-enable-jetstream: "true"
+    env:
+      - name: EVENTING_ENABLE_JETSTREAM
+        value: "true"

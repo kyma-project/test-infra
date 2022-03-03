@@ -1,8 +1,8 @@
 
 {{- define "commonProwJob" }}
-    {{- if .JobConfig.name}}
-    - name: {{default .JobConfig.name .JobConfig.custom_projectname}}{{if .JobConfig.whitesource_release}}-{{.JobConfig.Release}}{{end}}-whitesource-scan
-    {{- else}}{{fail ".JobConfig.name is not defined"}}
+    {{- if .JobConfig.repository}}
+    - name: {{default .JobConfig.repository .JobConfig.custom_projectname}}{{if .JobConfig.whitesource_release}}-{{.JobConfig.Release}}{{end}}-whitesource-scan
+    {{- else}}{{fail ".JobConfig.repository is not defined"}}
     {{- end}}
       {{- if .JobConfig.annotations}}
       annotations:
@@ -65,8 +65,8 @@
           {{- end}}
         {{- end}}
         - org: {{ .JobConfig.project }}
-          repo: {{ .JobConfig.name }}
-          path_alias: github.com/{{ .JobConfig.project }}/{{ .JobConfig.name }}
+          repo: {{ .JobConfig.repository }}
+          path_alias: github.com/{{ .JobConfig.project }}/{{ .JobConfig.repository }}
           base_ref: {{ default "master" .JobConfig.base_ref }}
       {{- end}}
       spec:
@@ -100,10 +100,14 @@
                 value: "{{$value}}"
               {{- end}}
               {{- end}}
-              - name : PROJECTNAME
-                value: {{ .JobConfig.name }}
+              - name : REPOSITORY
+                value: {{ .JobConfig.repository }}
+              - name: CREATE_SUBPROJECTS
+                value: "{{ default "false" .JobConfig.subprojects }}"
+              {{- if .JobConfig.custom_projectname }}
               - name: CUSTOM_PROJECTNAME
                 value: {{ default "" .JobConfig.custom_projectname }}
+              {{- end}}
               - name: SCAN_LANGUAGE
                 value: {{ .JobConfig.language }}
             {{- if or .JobConfig.request_memory .JobConfig.request_cpu false}}

@@ -19,27 +19,30 @@ globalSets:
   kyma_major_version_2:
     env:
       KYMA_MAJOR_VERSION: 2
+  kyma_major_upgrade:
+    env:
+      KYMA_MAJOR_UPGRADE: "true"
   # Directory sets
   kyma_project_dir:
     env:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_bootstrap:
-    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
+    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220216-291a93c3"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220214-025bb976"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220221-cefcab64"
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
   image_buildpack-node:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220113-247913b9"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220221-13968b0e"
   image_buildpack-golang:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
   image_buildpack-golang-kubebuilder2:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
   image_buildpack-golang-toolbox:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
   image_wssagent:
-    image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220201-cb1ea3fa"
+    image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220217-4c8befd6"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"

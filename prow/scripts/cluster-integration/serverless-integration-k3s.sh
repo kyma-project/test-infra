@@ -32,7 +32,8 @@ echo "--> Deploying Serverless"
 if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
   echo "--> Deploying Serverless from Kyma main"
   kyma deploy -p evaluation --ci \
-    --component cluster-essentials,serverless \
+    --component cluster-essentials \
+    --component serverless \
     --value "$REGISTRY_VALUES" \
     --value global.ingress.domainName="$DOMAIN" \
     --value "serverless.webhook.values.function.resources.defaultPreset=M" \
@@ -40,7 +41,8 @@ if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
 else
   echo "--> Deploying Serverless from $KYMA_SOURCES_DIR"
   kyma deploy -p evaluation --ci \
-    --component cluster-essentials,serverless \
+    --component cluster-essentials \
+    --component serverless \
     --value "$REGISTRY_VALUES" \
     --value global.ingress.domainName="$DOMAIN" \
     --value "serverless.webhook.values.function.resources.defaultPreset=M" \

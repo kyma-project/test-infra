@@ -454,13 +454,14 @@ templates:
                     - extra_refs_kyma
                     - image_kyma-integration
                     - kyma_major_version_1
+                    - kyma_major_upgrade
                     - jobConfig_slack_jellyfish
                   local:
                     - jobConfig_default
                     - gardener_azure_job
                     - command_upgrade_gardener_kyma_to_kyma2
               - jobConfig:
-                  name: kyma-upgrade-gardener-kyma2-to-main
+                  name: kyma-upgrade-gardener-kyma2-to-main-reconciler-main
                   annotations:
                     testgrid-dashboards: kyma_integration
                     description: Azure Kyma 2.0 to main branch.

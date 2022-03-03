@@ -48,20 +48,19 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-istio-reconciler-integration
+    - name: pre-latest-istio-reconciler-integration
       annotations:
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-istio-reconciler-integration"
+        prow.k8s.io/pubsub.runID: "pre-latest-istio-reconciler-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^((Dockerfile.cr\S+|pkg/reconciler/instances/istio\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      optional: true
+      run_if_changed: '^((pkg/reconciler/instances/istio\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))|Dockerfile\.cr$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -98,20 +97,19 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-ory-reconciler-eval-integration
+    - name: pre-main-istio-reconciler-integration
       annotations:
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-ory-reconciler-eval-integration"
+        prow.k8s.io/pubsub.runID: "pre-main-istio-reconciler-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^((cmd\S+|configs\S+|internal\S+|pkg\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      optional: true
+      run_if_changed: '^((pkg/reconciler/instances/istio\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))|Dockerfile\.cr$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -135,6 +133,59 @@ presubmits: # runs on PRs
                 value: "evaluation"
               - name: GO11MODULE
                 value: "on"
+              - name: KYMA_VERSION
+                value: "main"
+              - name: TEST_NAME
+                value: "istio"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pre-main-ory-reconciler-eval-integration
+      annotations:
+        pipeline.platform: "k3d"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-ory-reconciler-eval-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-vm-kyma-integration: "true"
+      run_if_changed: '^((cmd\S+|configs\S+|internal\S+|pkg\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-component-integration-k3d.sh"
+            env:
+              - name: EXECUTION_PROFILE
+                value: "evaluation"
+              - name: GO11MODULE
+                value: "on"
+              - name: KYMA_VERSION
+                value: "main"
               - name: TEST_NAME
                 value: "ory"
             resources:
@@ -162,7 +213,6 @@ presubmits: # runs on PRs
         preset-kyma-cli-stable: "true"
         preset-kyma-guard-bot-github-token: "true"
       run_if_changed: '^((cmd\S+|configs\S+|internal\S+|pkg\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -192,6 +242,8 @@ presubmits: # runs on PRs
                 value: "on"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
+              - name: KYMA_VERSION
+                value: "main"
               - name: TEST_NAME
                 value: "ory"
             resources:
@@ -230,7 +282,53 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
+            env:
+              - name: GO11MODULE
+                value: "on"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pre-load-test-mock-kyma-incubator-reconciler
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-load-test-mock-kyma-incubator-reconciler"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-incubator: "true"
+        preset-kyma-kms-sign-key: "true"
+        preset-sa-gcr-push: "true"
+      always_run: true
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^load-test-mock$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
             securityContext:
               privileged: true
             command:
@@ -323,7 +421,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
             securityContext:
               privileged: true
             command:
@@ -366,7 +464,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220216-291a93c3"
             securityContext:
               privileged: true
             command:
@@ -391,6 +489,106 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-incubator/reconciler:
+    - name: post-latest-istio-reconciler-integration
+      annotations:
+        pipeline.platform: "k3d"
+        pipeline.trigger: "pr-merge"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-latest-istio-reconciler-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-vm-kyma-integration: "true"
+      run_if_changed: '^((pkg/reconciler/instances/istio\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))|Dockerfile\.cr$'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-component-integration-k3d.sh"
+            env:
+              - name: EXECUTION_PROFILE
+                value: "evaluation"
+              - name: GO11MODULE
+                value: "on"
+              - name: TEST_NAME
+                value: "istio"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: post-main-istio-reconciler-integration
+      annotations:
+        pipeline.platform: "k3d"
+        pipeline.trigger: "pr-merge"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-istio-reconciler-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-vm-kyma-integration: "true"
+      run_if_changed: '^((pkg/reconciler/instances/istio\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))|Dockerfile\.cr$'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-component-integration-k3d.sh"
+            env:
+              - name: EXECUTION_PROFILE
+                value: "evaluation"
+              - name: GO11MODULE
+                value: "on"
+              - name: KYMA_VERSION
+                value: "main"
+              - name: TEST_NAME
+                value: "istio"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-main-kyma-incubator-reconciler
       annotations:
         pipeline.trigger: "pr-merge"
@@ -416,7 +614,53 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
+            env:
+              - name: GO11MODULE
+                value: "on"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: post-load-test-mock-kyma-incubator-reconciler
+      annotations:
+        pipeline.trigger: "pr-merge"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-load-test-mock-kyma-incubator-reconciler"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-incubator: "true"
+        preset-kyma-kms-sign-key: "true"
+        preset-sa-gcr-push: "true"
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^load-test-mock$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
             securityContext:
               privileged: true
             command:
@@ -462,7 +706,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
             securityContext:
               privileged: true
             command:
@@ -528,7 +772,7 @@ postsubmits: # runs on main
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
             securityContext:
               privileged: true
             command:

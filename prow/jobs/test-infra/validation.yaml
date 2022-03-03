@@ -17,7 +17,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220216-291a93c3"
             command:
               - "prow/scripts/validate-scripts.sh"
             resources:
@@ -38,7 +38,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220214-667197115e"
+          - image: "gcr.io/k8s-prow/checkconfig:v20220217-9337753127"
             command:
               - "/app/prow/cmd/checkconfig/app.binary"
             args:
@@ -67,7 +67,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
             securityContext:
               privileged: false
             command:
@@ -105,7 +105,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
             securityContext:
               privileged: false
             command:
@@ -143,7 +143,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
             securityContext:
               privileged: false
             command:
@@ -181,7 +181,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
             securityContext:
               privileged: false
             command:
@@ -220,7 +220,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
             securityContext:
               privileged: true
             command:
@@ -254,7 +254,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
             securityContext:
               privileged: false
             command:
@@ -284,7 +284,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220216-291a93c3"
             command:
               - "/bin/bash"
             args:
