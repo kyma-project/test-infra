@@ -68,7 +68,7 @@ RUN . /etc/os-release && \
 ENV DOCKER_VERSION=5:20.10.8*
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends docker-ce=${DOCKER_VERSION} && \
+    apt-get install -y --no-install-recommends docker-ce=${DOCKER_VERSION} docker-ce-cli=${DOCKER_VERSION} containerd.io && \
     sed -i 's/cgroupfs_mount$/#cgroupfs_mount\n/' /etc/init.d/docker && \
     rm -rf /var/lib/apt/lists/*
 
