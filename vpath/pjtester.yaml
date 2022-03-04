@@ -8,4 +8,6 @@ prConfigs:
   kyma-project:
     kyma:
       prNumber: 13551
-  
+  kyma-incubator:
+    reconciler:
+      prNumber: 894  
