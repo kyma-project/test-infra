@@ -95,8 +95,8 @@ RUN curl -fLSs -o /usr/local/bin/cosign https://github.com/sigstore/cosign/relea
     chmod +x /usr/local/bin/cosign
 
 # The following lines needed for using dind since debian is using nftables by default
-RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
-    update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+# RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
+#     update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
 
 RUN curl -fLSs -o shellcheck.tar.xz https://github.com/koalaman/shellcheck/releases/download/v0.5.0/shellcheck-v0.5.0.linux.x86_64.tar.xz \
     && tar xvf shellcheck.tar.xz \
