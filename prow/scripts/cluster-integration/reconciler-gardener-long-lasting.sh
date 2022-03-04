@@ -55,11 +55,7 @@ utils::check_required_vars "${requiredVars[@]}"
 reconciler::delete_cluster_if_exists
 
 # Generate new cluster name
-typeset -L2 day
-# shellcheck disable=SC2046
-# shellcheck disable=SC2005
-day=$(echo $(date +%a) | tr "[:upper:]" "[:lower:]")
-export INPUT_CLUSTER_NAME="${INPUT_CLUSTER_NAME}-${day}"
+reconciler::export_nightly_cluster_name
 
 # Provisioning gardener long lasting cluster
 reconciler::provision_cluster
