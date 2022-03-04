@@ -18,10 +18,6 @@ istio:
     metadata:
       namespace: istio-system
     spec:
-      values:
-        global:
-          proxy:
-            holdApplicationUntilProxyStarts: true
       components:
         ingressGateways:
           - name: istio-ingressgateway
@@ -29,6 +25,9 @@ istio:
               service:
                 loadBalancerIP: ${GATEWAY_IP_ADDRESS}
                 type: LoadBalancer
+      meshConfig:
+        defaultConfig:
+          holdApplicationUntilProxyStarts: true
 
 monitoring:
   pushgateway:

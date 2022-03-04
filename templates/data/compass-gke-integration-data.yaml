@@ -15,7 +15,6 @@ templates:
               NODES_PER_ZONE: "1"
               MACHINE_TYPE: "n1-highcpu-16"
               KYMA_MAJOR_VERSION: "2"
-              GKE_CLUSTER_VERSION: "1.20"
             request_memory: 200Mi
             request_cpu: 80m
             labels:
