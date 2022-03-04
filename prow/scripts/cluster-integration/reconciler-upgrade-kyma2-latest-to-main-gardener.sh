@@ -89,12 +89,12 @@ readonly COMMON_NAME_PREFIX="grd"
 utils::generate_commonName -n "${COMMON_NAME_PREFIX}"
 
 # Exported variables
-export CLEANUP_CLUSTER="true"
+export CLEANUP_CLUSTER="false"
 export INPUT_CLUSTER_NAME="${utils_generate_commonName_return_commonName:?}"
 export CLUSTER_NAME="${INPUT_CLUSTER_NAME}"
 
 log::banner "Provision Gardener cluster"
-trap gardener::cleanup EXIT INT
+#trap gardener::cleanup EXIT INT
 reconciler::provision_cluster
 reconciler::export_shoot_cluster_kubeconfig
 

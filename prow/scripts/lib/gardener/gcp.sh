@@ -86,7 +86,7 @@ gardener::provision_cluster() {
         return 1
     fi
 
-    CLEANUP_CLUSTER="true"
+    CLEANUP_CLUSTER="false"
       # enable trap to catch kyma provision failures
       trap gardener::reprovision_cluster ERR
       # decreasing attempts to 2 because we will try to create new cluster from scratch on exit code other than 0
