@@ -66,9 +66,10 @@ cat << EOF > "$PWD/ory.yaml"
 defaultNamespace: kyma-system
 prerequisites:
   - name: "cluster-essentials"
-  - name: "istio-configuration"
+  - name: "istio"
     namespace: "istio-system"
 components:
+  - name: "istio-resources"
   - name: "ory"
 EOF
 }
@@ -80,8 +81,10 @@ cat << EOF > "$PWD/istio.yaml"
 defaultNamespace: kyma-system
 prerequisites:
   - name: "cluster-essentials"
-  - name: "istio-configuration"
+  - name: "istio"
     namespace: "istio-system"
+components:
+  - name: "istio-resources"
 EOF
 }
 
