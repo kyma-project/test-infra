@@ -118,7 +118,7 @@ chmod +x kyma
 
 K3D_VERSION="v5.3.0"
 log::info "Installing k3d version: $K3D_VERSION"
-wget -q -O https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG="${K3D_VERSION}" bash
+wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG="${K3D_VERSION}" bash
 
 gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" --command="mkdir \$HOME/bin"
 
