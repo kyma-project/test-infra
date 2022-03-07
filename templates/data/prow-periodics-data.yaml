@@ -37,7 +37,7 @@ templates:
                   name: ci-prow-label-sync
                   cron: "17 * * * *"
                   image: gcr.io/k8s-prow/label_sync:v20220305-a9a1fd8e47
-                  command: /app/label_sync/app.binary
+                  command: label_sync
                   args:
                     - --config=/etc/config/labels.yaml
                     - --confirm=true
@@ -58,7 +58,7 @@ templates:
                   cron: "30 * * * 1-5"
                   slack_channel: kyma-prow-alerts
                   image: gcr.io/k8s-prow/generic-autobumper:v20220305-a9a1fd8e47
-                  command: /app/prow/cmd/generic-autobumper/app.binary
+                  command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/prow-cluster-autobump-config.yaml
                 inheritedConfigs:
@@ -100,7 +100,7 @@ templates:
                   cron: "45 * * * 1-5"
                   slack_channel: kyma-prow-alerts
                   image: gcr.io/k8s-prow/generic-autobumper:v20220305-a9a1fd8e47
-                  command: /app/prow/cmd/generic-autobumper/app.binary
+                  command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/test-infra-autobump-config.yaml
                 inheritedConfigs:
