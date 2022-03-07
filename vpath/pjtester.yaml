@@ -3,6 +3,10 @@ pjNames:
     pjPath: "test-infra/prow/jobs/incubator/compass/"
   - pjName: "pre-main-compass-gke-benchmark"
     pjPath: "test-infra/prow/jobs/incubator/compass/"
+  - pjName: "pre-main-compass-integration"
+    pjPath: "test-infra/prow/jobs/incubator/compass/"
+  - pjName: "pre-main-compass-integration-no-dump"
+    pjPath: "test-infra/prow/jobs/incubator/compass/"
 prConfigs:
   kyma-incubator:
     compass:
