@@ -68,6 +68,6 @@ require (
 	k8s.io/api v0.22.2
 	k8s.io/apimachinery v0.22.2
 	k8s.io/client-go v11.0.1-0.20190805182717-6502b5e7b1b5+incompatible
-	k8s.io/test-infra v0.0.0-20211214153147-7b2c2d007b33
+	k8s.io/test-infra v0.0.0-20220304112053-1f02b6ac4656
 	sigs.k8s.io/yaml v1.3.0
 )

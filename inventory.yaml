@@ -1,0 +1,5195 @@
+total: 800
+jobs:
+  kyma-incubator/api-gateway:
+    total: 2
+    presubmits:
+    - name: pre-main-kyma-incubator-api-gateway
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    postsubmits:
+    - name: post-main-kyma-incubator-api-gateway
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+  kyma-incubator/compass:
+    total: 35
+    presubmits:
+    - name: pre-main-compass-development-artifacts
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+      - ^hotfix-.*$
+    - name: pre-main-compass-gke-benchmark
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-compass-gke-benchmark
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-compass-gke-benchmark
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-compass-gke-benchmark
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-main-compass-gke-integration
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+      - ^hotfix-.*$
+    - name: pre-rel20-compass-gke-integration
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-compass-gke-integration
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-compass-gke-integration
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-main-compass-integration-no-dump
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+      - ^hotfix-.*$
+    - name: pre-main-compass-integration
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+      - ^hotfix-.*$
+    - name: pre-compass-components-connectivity-adapter
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+    - name: pre-compass-components-connector
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+    - name: pre-compass-components-director
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+    - name: pre-compass-components-external-services-mock
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+    - name: pre-compass-components-gateway
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+    - name: pre-compass-components-operations-controller
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+    - name: pre-compass-components-pairing-adapter
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+    - name: pre-compass-components-schema-migrator
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+    - name: pre-compass-components-system-broker
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+    - name: pre-compass-tests
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+    postsubmits:
+    - name: post-main-compass-development-artifacts
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+      - ^v\d+\.\d+\.\d+$
+    - name: post-main-compass-gke-integration
+      description: Compass GKE integration job.
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-compass-integration-no-dump
+      description: Compass integration job without db dump.
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-compass-integration
+      description: Compass integration job.
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-compass-components-connectivity-adapter
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+    - name: post-compass-components-connector
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+    - name: post-compass-components-director
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+    - name: post-compass-components-external-services-mock
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+    - name: post-compass-components-gateway
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+    - name: post-compass-components-operations-controller
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+    - name: post-compass-components-pairing-adapter
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+    - name: post-compass-components-schema-migrator
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+    - name: post-compass-components-system-broker
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+    - name: post-compass-tests
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+  kyma-incubator/compass-console:
+    total: 2
+    presubmits:
+    - name: pre-compass-console-compass
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+    postsubmits:
+    - name: post-compass-console-compass
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+  kyma-incubator/dex:
+    total: 2
+    presubmits:
+    - name: pre-main-kyma-incubator-dex
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^kyma-master$
+      - ^kyma-main$
+    postsubmits:
+    - name: post-main-kyma-incubator-dex
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^kyma-master$
+      - ^kyma-main$
+  kyma-incubator/documentation-component:
+    total: 2
+    presubmits:
+    - name: pre-documentation-component-governance
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-documentation-component
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+  kyma-incubator/gcp-service-broker:
+    total: 2
+    presubmits:
+    - name: pre-main-gcp-service-broker
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    postsubmits:
+    - name: post-main-gcp-service-broker
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+  kyma-incubator/github-slack-connectors:
+    total: 4
+    presubmits:
+    - name: pre-main-github-connector
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-slack-connector
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    postsubmits:
+    - name: post-main-github-connector
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-slack-connector
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+  kyma-incubator/hydra-login-consent:
+    total: 2
+    presubmits:
+    - name: pre-main-hydra-login-consent
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    postsubmits:
+    - name: post-main-hydra-login-consent
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+  kyma-incubator/knative-kafka:
+    total: 2
+    presubmits:
+    - name: pre-main-knative-kafka
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+      - ^release-.*$
+    postsubmits:
+    - name: post-main-knative-kafka
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+      - ^release-.*$
+  kyma-incubator/kyma-showcase:
+    total: 4
+    presubmits:
+    - name: pre-kyma-showcase-frontend
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-kyma-showcase-backend
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    postsubmits:
+    - name: post-kyma-showcase-frontend
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-kyma-showcase-backend
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+  kyma-incubator/milv:
+    total: 2
+    presubmits:
+    - name: pre-main-kyma-incubator-milv
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+    postsubmits:
+    - name: post-main-kyma-incubator-milv
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+  kyma-incubator/octopus:
+    total: 2
+    presubmits:
+    - name: pre-main-kyma-incubator-octopus
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    postsubmits:
+    - name: post-main-kyma-incubator-octopus
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+  kyma-incubator/ord-service:
+    total: 2
+    presubmits:
+    - name: pre-ord-service-components-ord-service
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+    postsubmits:
+    - name: post-ord-service-components-ord-service
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^master$
+      - ^hotfix-.*$
+  kyma-incubator/podpreset-crd:
+    total: 2
+    presubmits:
+    - name: pre-main-podpreset-crd
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    postsubmits:
+    - name: post-main-podpreset-crd
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+  kyma-incubator/reconciler:
+    total: 18
+    presubmits:
+    - name: pre-main-reconciler-integration-k3d
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+    - name: pre-latest-istio-reconciler-integration
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+    - name: pre-main-istio-reconciler-integration
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+    - name: pre-main-ory-reconciler-eval-integration
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+    - name: pre-main-ory-reconciler-prod-integration
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+    - name: pre-main-kyma-incubator-reconciler
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+    - name: pre-load-test-mock-kyma-incubator-reconciler
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^load-test-mock$
+    - name: pre-dev-reconciler-integration-k3d
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^develop$
+    - name: pre-dev-kyma-incubator-reconciler
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^develop$
+    - name: pre-main-reconciler-validate-dockerfiles
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+    - name: pre-main-reconciler-protecode-guard
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-dev-reconciler-protecode-guard
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^develop$
+    postsubmits:
+    - name: post-latest-istio-reconciler-integration
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+    - name: post-main-istio-reconciler-integration
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+    - name: post-main-kyma-incubator-reconciler
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+    - name: post-load-test-mock-kyma-incubator-reconciler
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^load-test-mock$
+    - name: post-dev-kyma-incubator-reconciler
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^develop$
+    - name: nightly-main-reconciler-publish-unstable-cli
+      description: Bump reconciler version used by CLI and publish the unstable CLI
+        binaries
+      extra_refs:
+      - base_ref: main
+        repo: kyma
+      - base_ref: main
+        repo: cli
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+  kyma-incubator/service-catalog-tester:
+    total: 2
+    presubmits:
+    - name: pre-main-service-catalog-tester
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    postsubmits:
+    - name: post-main-service-catalog-tester
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+  kyma-incubator/terraform-provider-gardener:
+    total: 2
+    presubmits:
+    - name: pre-main-terraform-provider-gardener
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    postsubmits:
+    - name: post-main-terraform-provider-gardener
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+  kyma-incubator/varkes:
+    total: 3
+    presubmits:
+    - name: pre-varkes
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    postsubmits:
+    - name: post-main-varkes
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-release-varkes
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^\d+\.\d+\.\d+$
+  kyma-incubator/vstudio-extension:
+    total: 2
+    presubmits:
+    - name: pre-main-vstudio-extension
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    postsubmits:
+    - name: post-main-vstudio-extension
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+  kyma-project/addons:
+    total: 4
+    presubmits:
+    - name: pre-main-kyma-addons
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-addons-governance
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    postsubmits:
+    - name: post-main-kyma-addons
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel-kyma-addons
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - \d+\.\d+\.\d+$
+  kyma-project/busola:
+    total: 27
+    presubmits:
+    - name: pre-busola-backend-deployment-check
+      extra_refs:
+      - base_ref: main
+        repo: local-kyma
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-busola-backend
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-busola-backend
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-busola-backend
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-busola-backend
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-busola-web
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-busola-web
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-busola-web
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-busola-web-deployment-check
+      extra_refs:
+      - base_ref: main
+        repo: local-kyma
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-busola-local
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-busola-local
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-busola-local
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-busola-smoke-test-docker
+      extra_refs:
+      - base_ref: main
+        repo: local-kyma
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-busola-integration-test-k3s
+      extra_refs:
+      - base_ref: main
+        repo: local-kyma
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-busola-governance
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+    postsubmits:
+    - name: post-busola-backend
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-busola-backend
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-busola-backend
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-busola-backend
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-busola-web
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-busola-web
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-busola-web
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-busola-local
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-busola-local
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-busola-local
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-busola-smoke-test-docker
+      extra_refs:
+      - base_ref: main
+        repo: local-kyma
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-busola-integration-test-k3s
+      extra_refs:
+      - base_ref: main
+        repo: local-kyma
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+  kyma-project/cli:
+    total: 10
+    presubmits:
+    - name: pre-cli-integration-kyma-1
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - main
+      - ^release-.*$
+    - name: pre-cli-integration-kyma-2
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^release-2.*$
+    - name: pre-rel20-cli-integration-kyma-2
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-kyma-cli
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^release-\d+\.\d+$
+    postsubmits:
+    - name: post-cli-integration-kyma-2
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^release-2.*$
+    - name: post-rel20-cli-integration-kyma-2
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-cli-integration-kyma-1
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-kyma-cli
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^main$
+      - ^release-\d+\.\d+$
+    - name: rel-kyma-cli
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^\d+\.\d+\.\d+(?:-.*)?$
+    - name: stable-kyma-cli
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^stable$
+  kyma-project/community:
+    total: 1
+    presubmits:
+    - name: pre-main-community-governance
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+  kyma-project/console:
+    total: 52
+    presubmits:
+    - name: pre-console-add-ons
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-console-add-ons
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-console-add-ons
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-console-add-ons
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-main-console-react-components
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-console-core
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-console-core
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-console-core
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-console-core
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-console-core-ui
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-console-core-ui
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-console-core-ui
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-console-core-ui
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-console-logging
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-console-logging
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-console-logging
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-console-logging
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-console-service-catalog-ui
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-console-service-catalog-ui
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-console-service-catalog-ui
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-console-service-catalog-ui
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-console-tests
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-console-tests
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-console-tests
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-console-tests
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-main-console-governance
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-console-protecode-guard
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    postsubmits:
+    - name: post-console-add-ons
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-console-add-ons
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-console-add-ons
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-console-add-ons
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-main-console-react-components
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-console-core
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-console-core
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-console-core
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-console-core
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-console-core-ui
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-console-core-ui
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-console-core-ui
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-console-core-ui
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-console-logging
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-console-logging
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-console-logging
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-console-logging
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-console-service-catalog-ui
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-console-service-catalog-ui
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-console-service-catalog-ui
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-console-service-catalog-ui
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-console-tests
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-console-tests
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-console-tests
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-console-tests
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+  kyma-project/control-plane:
+    total: 79
+    presubmits:
+    - name: pre-control-plane-components-kubeconfig-service
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-control-plane-components-kubeconfig-service
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-control-plane-components-kubeconfig-service
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-control-plane-components-kubeconfig-service
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-control-plane-components-kyma-environment-broker
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-control-plane-components-kyma-environment-broker
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-control-plane-components-kyma-environment-broker
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-control-plane-components-kyma-environment-broker
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-control-plane-components-kyma-metrics-collector
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-control-plane-components-kyma-metrics-collector
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-control-plane-components-kyma-metrics-collector
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-control-plane-components-kyma-metrics-collector
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-control-plane-components-provisioner
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-control-plane-components-provisioner
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-control-plane-components-provisioner
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-control-plane-components-provisioner
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-control-plane-components-schema-migrator
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-control-plane-components-schema-migrator
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-control-plane-components-schema-migrator
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-control-plane-components-schema-migrator
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-control-plane-components-subscription-cleanup-job
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-control-plane-components-subscription-cleanup-job
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-control-plane-components-subscription-cleanup-job
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-control-plane-components-subscription-cleanup-job
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-main-control-plane-gke-integration
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-control-plane-gke-provisioner-integration
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-control-plane-integration
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-control-plane-reconciler-e2e
+      extra_refs:
+      - base_ref: main
+        repo: kyma
+      - base_ref: main
+        repo: reconciler
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-control-plane-reconciler-e2e-latest-release
+      extra_refs:
+      - base_ref: main
+        repo: kyma
+      - base_ref: main
+        repo: reconciler
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-control-plane-reconciler-upgrade-kyma2-latest-to-main-gardener
+      extra_refs:
+      - base_ref: main
+        repo: kyma
+      - base_ref: main
+        repo: reconciler
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-control-plane-validate-dockerfiles
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-kcp-cli
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-kcp-development-artifacts
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-control-plane-tests-e2e-provisioning
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-control-plane-tests-e2e-provisioning
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-control-plane-tests-e2e-provisioning
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-control-plane-tests-e2e-provisioning
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-control-plane-tests-provisioner-tests
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-control-plane-tests-provisioner-tests
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-control-plane-tests-provisioner-tests
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-control-plane-tests-provisioner-tests
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-main-provisioner-whitesource-scan
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-control-plane-protecode-guard
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    postsubmits:
+    - name: post-control-plane-components-kubeconfig-service
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-control-plane-components-kubeconfig-service
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-control-plane-components-kubeconfig-service
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-control-plane-components-kubeconfig-service
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-control-plane-components-kyma-environment-broker
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-control-plane-components-kyma-environment-broker
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-control-plane-components-kyma-environment-broker
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-control-plane-components-kyma-environment-broker
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-control-plane-components-kyma-metrics-collector
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-control-plane-components-kyma-metrics-collector
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-control-plane-components-kyma-metrics-collector
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-control-plane-components-kyma-metrics-collector
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-control-plane-components-provisioner
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-control-plane-components-provisioner
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-control-plane-components-provisioner
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-control-plane-components-provisioner
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-control-plane-components-schema-migrator
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-control-plane-components-schema-migrator
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-control-plane-components-schema-migrator
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-control-plane-components-schema-migrator
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-control-plane-components-subscription-cleanup-job
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-control-plane-components-subscription-cleanup-job
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-control-plane-components-subscription-cleanup-job
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-control-plane-components-subscription-cleanup-job
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-main-control-plane-gke-integration
+      description: Kyma control-plane GKE integration job.
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-control-plane-integration
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-kcp-cli
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-kcp-development-artifacts
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-control-plane-tests-e2e-provisioning
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-control-plane-tests-e2e-provisioning
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-control-plane-tests-e2e-provisioning
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-control-plane-tests-e2e-provisioning
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-control-plane-tests-provisioner-tests
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-control-plane-tests-provisioner-tests
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-control-plane-tests-provisioner-tests
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-control-plane-tests-provisioner-tests
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+  kyma-project/examples:
+    total: 13
+    presubmits:
+    - name: pre-main-examples-event-email-service
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-examples-http-db-service
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-examples-monitoring-custom-metrics
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-examples-orders-service
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-examples-tests-http-db-service
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-examples-tracing
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-examples-governance
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    postsubmits:
+    - name: post-main-examples-event-email-service
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-examples-http-db-service
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-examples-monitoring-custom-metrics
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-examples-orders-service
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-examples-tests-http-db-service
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-examples-tracing
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+  kyma-project/helm-broker:
+    total: 4
+    presubmits:
+    - name: pre-main-helm-broker
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-helm-broker-chart-test
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    postsubmits:
+    - name: post-main-helm-broker
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-release-helm-broker
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - v\d+\.\d+\.\d+$
+  kyma-project/hydroform:
+    total: 2
+    presubmits:
+    - name: pre-main-hydroform
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    postsubmits:
+    - name: post-main-hydroform
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+  kyma-project/kyma:
+    total: 343
+    presubmits:
+    - name: kyma-metadata-schema-governance
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-kyma-governance
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-kyma-docu-2.0-governance
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^kyma-2.0-docu$
+    - name: pre-main-kyma-common
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel124-kyma-components-apiserver-proxy
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-apiserver-proxy
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-components-application-broker
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-components-application-broker
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-components-application-broker
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-application-broker
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-components-application-connectivity-certs-setup-job
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-components-application-connectivity-certs-setup-job
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-components-application-connectivity-certs-setup-job
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-application-connectivity-certs-setup-job
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-components-application-registry
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-components-application-registry
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-components-application-registry
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-application-registry
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-components-busola-migrator
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-components-busola-migrator
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-components-busola-migrator
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-busola-migrator
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-components-central-application-connectivity-validator
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-components-central-application-connectivity-validator
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-components-central-application-connectivity-validator
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-central-application-connectivity-validator
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-components-central-application-gateway
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-components-central-application-gateway
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-components-central-application-gateway
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-central-application-gateway
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-components-compass-runtime-agent
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-components-compass-runtime-agent
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-components-compass-runtime-agent
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-compass-runtime-agent
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-components-connection-token-handler
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-components-connection-token-handler
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-components-connection-token-handler
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-connection-token-handler
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-components-connector-service
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-components-connector-service
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-components-connector-service
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-connector-service
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-rel124-kyma-components-console-backend-service
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-console-backend-service
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-rel124-kyma-components-dex-static-user-configurer
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-dex-static-user-configurer
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-components-event-publisher-proxy
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-components-event-publisher-proxy
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-components-event-publisher-proxy
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-event-publisher-proxy
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-components-eventing-controller
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-components-eventing-controller
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-components-eventing-controller
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-eventing-controller
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-components-function-controller
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-components-function-controller
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-components-function-controller
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-function-controller
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-components-function-runtimes
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-components-function-runtimes
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-components-function-runtimes
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-function-runtimes
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-rel124-kyma-components-iam-kubeconfig-service
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-iam-kubeconfig-service
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-components-istio-installer
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-components-istio-installer
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-components-istio-installer
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-istio-installer
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-rel124-kyma-components-kyma-operator
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-kyma-operator
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-rel124-kyma-components-nats-operator
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-nats-operator
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-rel124-kyma-components-permission-controller
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-permission-controller
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-components-service-binding-usage-controller
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-components-service-binding-usage-controller
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-components-service-binding-usage-controller
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-service-binding-usage-controller
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-components-telemetry-operator
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-components-telemetry-operator
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-kyma-components-uaa-activator
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-components-uaa-activator
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-components-uaa-activator
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-uaa-activator
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-rel124-kyma-components-xip-patch
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-components-xip-patch
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-artifacts
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-artifacts
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - ^release-2.0$
+    - name: pre-rel124-kyma-artifacts
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - ^release-1.24$
+    - name: pre-rel123-kyma-artifacts
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - ^release-1.23$
+    - name: pre-rel21-kyma-artifacts
+      extra_refs:
+      - base_ref: release-2.1
+        repo: test-infra
+      branches:
+      - ^release-2.1$
+    - name: pre-main-kyma-gke-external-registry
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-kyma-gardener-azure-fast-integration
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-kyma-gardener-azure-alpha-eval
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-kyma-gardener-azure-alpha-prod
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-kyma-gardener-gcp-eventing
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-kyma-skr-eventing
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-kyma-gardener-gcp-eventing-upgrade
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-kyma-integration-k3d
+      extra_refs:
+      - base_ref: main
+        repo: local-kyma
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-kyma-integration-k3d-compass-dev
+      extra_refs:
+      - base_ref: main
+        repo: local-kyma
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-kyma-integration-k3d-central-app-connectivity
+      extra_refs:
+      - base_ref: main
+        repo: local-kyma
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-kyma-integration-k3d-central-app-connectivity-compass
+      extra_refs:
+      - base_ref: main
+        repo: local-kyma
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-serverless-integration-k3s
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-kyma-integration-k3d-telemetry
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-release-pr-image-guard
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^release-.*$
+    - name: pre-main-kyma-validate-image-definitions
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-kyma-component-descriptors
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-kyma-validate-dockerfiles
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel123-kyma-integration
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - ^release-1.23$
+    - name: pre-rel123-kyma-gke-integration
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - ^release-1.23$
+    - name: pre-rel123-kyma-gke-upgrade
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - ^release-1.23$
+    - name: pre-rel124-kyma-integration
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - ^release-1.24$
+    - name: pre-rel124-kyma-gke-integration
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - ^release-1.24$
+    - name: pre-rel124-kyma-gke-upgrade
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - ^release-1.24$
+    - name: pre-rel124-cluster-users-integration-minikube
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - ^release-1.24$
+    - name: pre-rel124-kyma-gardener-azure-integration
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - ^release-1.24$
+    - name: pre-rel124-kyma-gardener-gcp-api-gateway
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - ^release-1.24$
+    - name: pre-rel124-kyma-gardener-gcp-eventing
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - ^release-1.24$
+    - name: pre-rel124-kyma-gke-external-registry
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel20-kyma-integration-k3d
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - ^release-2.0$
+    - name: pre-rel21-kyma-integration-k3d
+      extra_refs:
+      - base_ref: release-2.1
+        repo: test-infra
+      branches:
+      - ^release-2.1$
+    - name: pre-kyma-tests-application-connector-tests
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-tests-application-connector-tests
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-tests-application-connector-tests
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-tests-application-connector-tests
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-tests-application-registry-tests
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-tests-application-registry-tests
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-tests-application-registry-tests
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-tests-application-registry-tests
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-tests-compass-runtime-agent
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-tests-compass-runtime-agent
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-tests-compass-runtime-agent
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-tests-compass-runtime-agent
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-tests-connection-token-handler-tests
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-tests-connection-token-handler-tests
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-tests-connection-token-handler-tests
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-tests-connection-token-handler-tests
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-tests-connector-service-tests
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-tests-connector-service-tests
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-tests-connector-service-tests
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-tests-connector-service-tests
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-rel124-kyma-tests-end-to-end-upgrade
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-tests-end-to-end-upgrade
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-tests-function-controller
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-tests-function-controller
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-tests-function-controller
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-tests-function-controller
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-tests-integration-api-gateway
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-tests-integration-api-gateway
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-tests-integration-api-gateway
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-tests-integration-api-gateway
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-rel124-kyma-tests-integration-apiserver-proxy
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-tests-integration-apiserver-proxy
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-rel124-kyma-tests-integration-dex
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-tests-integration-dex
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-rel124-kyma-tests-integration-logging
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-tests-integration-logging
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-tests-rafter
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-tests-rafter
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-tests-rafter
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-tests-rafter
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-tests-serverless-bench
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-kyma-tests-service-catalog
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-tests-service-catalog
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-tests-service-catalog
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-tests-service-catalog
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-tools-event-subscriber
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-tools-event-subscriber
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-tools-event-subscriber
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-tools-event-subscriber
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-kyma-tools-gitserver
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rel20-kyma-tools-gitserver
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: pre-rel124-kyma-tools-gitserver
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: pre-rel123-kyma-tools-gitserver
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: pre-main-kyma-protecode-guard
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-check-users-map
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    postsubmits:
+    - name: post-main-kyma-common
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel124-kyma-components-apiserver-proxy
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-apiserver-proxy
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-components-application-broker
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-components-application-broker
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-components-application-broker
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-application-broker
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-components-application-connectivity-certs-setup-job
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-components-application-connectivity-certs-setup-job
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-components-application-connectivity-certs-setup-job
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-application-connectivity-certs-setup-job
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-components-application-registry
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-components-application-registry
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-components-application-registry
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-application-registry
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-components-busola-migrator
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-components-busola-migrator
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-components-busola-migrator
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-busola-migrator
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-components-central-application-connectivity-validator
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-components-central-application-connectivity-validator
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-components-central-application-connectivity-validator
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-central-application-connectivity-validator
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-components-central-application-gateway
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-components-central-application-gateway
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-components-central-application-gateway
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-central-application-gateway
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-components-compass-runtime-agent
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-components-compass-runtime-agent
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-components-compass-runtime-agent
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-compass-runtime-agent
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-components-connection-token-handler
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-components-connection-token-handler
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-components-connection-token-handler
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-connection-token-handler
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-components-connector-service
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-components-connector-service
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-components-connector-service
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-connector-service
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-rel124-kyma-components-console-backend-service
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-console-backend-service
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-rel124-kyma-components-dex-static-user-configurer
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-dex-static-user-configurer
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-components-event-publisher-proxy
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-components-event-publisher-proxy
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-components-event-publisher-proxy
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-event-publisher-proxy
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-components-eventing-controller
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-components-eventing-controller
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-components-eventing-controller
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-eventing-controller
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-components-function-controller
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-components-function-controller
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-components-function-controller
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-function-controller
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-components-function-runtimes
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-components-function-runtimes
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-components-function-runtimes
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-function-runtimes
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-rel124-kyma-components-iam-kubeconfig-service
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-iam-kubeconfig-service
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-components-istio-installer
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-components-istio-installer
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-components-istio-installer
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-istio-installer
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-rel124-kyma-components-kyma-operator
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-kyma-operator
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-rel124-kyma-components-nats-operator
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-nats-operator
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-rel124-kyma-components-permission-controller
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-permission-controller
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-components-service-binding-usage-controller
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-components-service-binding-usage-controller
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-components-service-binding-usage-controller
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-service-binding-usage-controller
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-components-telemetry-operator
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-components-telemetry-operator
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-kyma-components-uaa-activator
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-components-uaa-activator
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-components-uaa-activator
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-uaa-activator
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-rel124-kyma-components-xip-patch
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-components-xip-patch
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-artifacts
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-artifacts
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - ^release-2.0$
+    - name: post-rel124-kyma-artifacts
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - ^release-1.24$
+    - name: post-rel123-kyma-artifacts
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - ^release-1.23$
+    - name: post-rel21-kyma-artifacts
+      extra_refs:
+      - base_ref: release-2.1
+        repo: test-infra
+      branches:
+      - ^release-2.1$
+    - name: post-main-kyma-gke-external-registry
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-kyma-gardener-azure-alpha-eval
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-kyma-gardener-azure-alpha-prod
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-kyma-integration-k3d
+      description: Kyma integration job on k3d.
+      extra_refs:
+      - base_ref: main
+        repo: local-kyma
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-kyma-integration-k3d-compass-dev
+      description: Kyma integration job on k3d with compass dev.
+      extra_refs:
+      - base_ref: main
+        repo: local-kyma
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-kyma-integration-k3d-central-app-connectivity
+      description: Kyma integration job on k3d with central Application Gateway.
+      extra_refs:
+      - base_ref: main
+        repo: local-kyma
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-kyma-integration-k3d-central-app-connectivity-compass
+      description: Kyma integration job on k3d with central Application Gateway and
+        Compass dev.
+      extra_refs:
+      - base_ref: main
+        repo: local-kyma
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-kyma-integration-k3d-telemetry
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-k3d-k8s-preview
+      description: Kyma integration job on k3d to test kyma on latest k8s version.
+      extra_refs:
+      - base_ref: main
+        repo: local-kyma
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-kyma-component-descriptors
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel123-kyma-integration
+      description: Kyma integration job for release 1.23 .
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - ^release-1.23$
+    - name: post-rel123-kyma-gke-integration
+      description: Kyma GKE integration job for release 1.23.
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - ^release-1.23$
+    - name: post-rel123-kyma-gke-upgrade
+      description: Kyma GKE upgrade job for release 1.23.
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - ^release-1.23$
+    - name: post-rel123-kyma-release-candidate
+      description: Release candidate job for Kyma 1.23.
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - ^1.23\.\d+(?:-.*)?$
+    - name: post-rel123-kyma-gke-release-upgrade
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - ^1.23\.\d+(?:-.*)?$
+    - name: post-rel124-kyma-integration
+      description: Kyma integration job for release 1.24 .
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - ^release-1.24$
+    - name: post-rel124-kyma-gke-integration
+      description: Kyma GKE integration job for release 1.24.
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - ^release-1.24$
+    - name: post-rel124-kyma-gke-upgrade
+      description: Kyma GKE upgrade job.
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - ^release-1.24$
+    - name: post-rel124-kyma-release-candidate
+      description: Release candidate job for Kyma 1.24.
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - ^1.24\.\d+(?:-.*)?$
+    - name: post-rel124-kyma-gke-release-upgrade
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - ^1.24\.\d+(?:-.*)?$
+    - name: post-rel124-kyma-gardener-gcp-api-gateway
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - ^release-1.24$
+    - name: post-rel20-kyma-integration-k3d
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - ^release-2.0$
+    - name: post-rel20-kyma-release-candidate
+      description: Release candidate job for Kyma 2.0.
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - ^2.0\.\d+(?:-.*)?$
+    - name: post-rel20-kyma-gke-release-upgrade
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - ^2.0\.\d+(?:-.*)?$
+    - name: post-rel21-kyma-integration-k3d
+      extra_refs:
+      - base_ref: release-2.1
+        repo: test-infra
+      branches:
+      - ^release-2.1$
+    - name: post-rel21-kyma-release-candidate
+      description: Release candidate job for Kyma 2.1.
+      extra_refs:
+      - base_ref: release-2.1
+        repo: test-infra
+      branches:
+      - ^2.1\.\d+(?:-.*)?$
+    - name: post-kyma-tests-application-connector-tests
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-tests-application-connector-tests
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-tests-application-connector-tests
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-tests-application-connector-tests
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-tests-application-registry-tests
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-tests-application-registry-tests
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-tests-application-registry-tests
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-tests-application-registry-tests
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-tests-compass-runtime-agent
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-tests-compass-runtime-agent
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-tests-compass-runtime-agent
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-tests-compass-runtime-agent
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-tests-connection-token-handler-tests
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-tests-connection-token-handler-tests
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-tests-connection-token-handler-tests
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-tests-connection-token-handler-tests
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-tests-connector-service-tests
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-tests-connector-service-tests
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-tests-connector-service-tests
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-tests-connector-service-tests
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-rel124-kyma-tests-end-to-end-upgrade
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-tests-end-to-end-upgrade
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-tests-function-controller
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-tests-function-controller
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-tests-function-controller
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-tests-function-controller
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-tests-integration-api-gateway
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-tests-integration-api-gateway
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-tests-integration-api-gateway
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-tests-integration-api-gateway
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-rel124-kyma-tests-integration-apiserver-proxy
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-tests-integration-apiserver-proxy
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-rel124-kyma-tests-integration-dex
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-tests-integration-dex
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-rel124-kyma-tests-integration-logging
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-tests-integration-logging
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-tests-rafter
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-tests-rafter
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-tests-rafter
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-tests-rafter
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-tests-serverless-bench
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-kyma-tests-service-catalog
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-tests-service-catalog
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-tests-service-catalog
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-tests-service-catalog
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-tools-event-subscriber
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-tools-event-subscriber
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-tools-event-subscriber
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-tools-event-subscriber
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+    - name: post-kyma-tools-gitserver
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-rel20-kyma-tools-gitserver
+      extra_refs:
+      - base_ref: release-2.0
+        repo: test-infra
+      branches:
+      - release-2.0
+    - name: post-rel124-kyma-tools-gitserver
+      extra_refs:
+      - base_ref: release-1.24
+        repo: test-infra
+      branches:
+      - release-1.24
+    - name: post-rel123-kyma-tools-gitserver
+      extra_refs:
+      - base_ref: release-1.23
+        repo: test-infra
+      branches:
+      - release-1.23
+  kyma-project/rafter:
+    total: 6
+    presubmits:
+    - name: pre-rafter
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-rafter-integration-test
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    postsubmits:
+    - name: post-rafter
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: release-rafter
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - v\d+\.\d+\.\d+(?:-.*)?$
+    - name: post-rafter-integration-test
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: release-rafter-integration-test
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - v\d+\.\d+\.\d+(?:-.*)?$
+  kyma-project/test-infra:
+    total: 48
+    presubmits:
+    - name: pre-main-test-infra-governance
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-test-infra-bootstrap
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-test-infra-kyma-integration
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-test-infra-buildpack-golang
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-test-infra-buildpack-node
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-test-infra-cleaner
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-test-infra-vulnerability-scanner
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-test-infra-whitesource-scanner
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-test-infra-probot-stale
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-test-infra-prow-tools
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-test-infra-github-connector-webhook-gateway
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-test-infra-pubsub-connector-gateway
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-test-infra-ci-force-bot
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-test-infra-image-syncer-validate
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-test-infra-image-syncer-dry-run
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-test-infra-pjtester
+      branches:
+      - ^.*$
+    - name: pre-main-test-infra-vpathguard
+      branches:
+      - ^.*$
+    - name: pre-test-infra-build-vm-image
+      branches:
+      - ^main$
+    - name: pre-test-infra-test-untrusted-prow-plugin
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-stability-checker
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-test-log-collector
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-test-infra-validate-scripts
+    - name: pre-test-infra-validate-configs
+    - name: pre-main-test-infra-validate-prow-tools
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-test-infra-validate-image-url-helper
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-test-infra-validate-prowjobparser
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-test-infra-validate-prow-jobs
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-test-infra-validate-generated-files
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-test-infra-validate-prow-installer-files
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-test-infra-validate-dockerfiles
+    postsubmits:
+    - name: post-test-infra-bootstrap
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-test-infra-kyma-integration
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-test-infra-buildpack-golang
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-test-infra-buildpack-node
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-test-infra-cleaner
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-test-infra-vulnerability-scanner
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-test-infra-whitesource-scanner
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-test-infra-probot-stale
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-test-infra-prow-tools
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-test-infra-github-connector-webhook-gateway
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-test-infra-pubsub-connector-gateway
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-test-infra-ci-force-bot
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-test-infra-image-syncer-run
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-test-infra-deploy-prow
+      branches:
+      - ^main$
+    - name: post-test-infra-build-vm-image
+      branches:
+      - ^main$
+    - name: post-test-infra-test-untrusted-prow-plugin
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-stability-checker
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-test-log-collector
+      branches:
+      - ^master$
+      - ^main$
+  kyma-project/third-party-images:
+    total: 31
+    presubmits:
+    - name: pre-main-third-party-images-protecode-guard
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-tpi-cloudsql-proxy
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-tpi-etcd
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-tpi-docker-registry
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-tpi-fluent-bit
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-tpi-jaeger-operator
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-tpi-k8s-tools
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-tpi-kiali
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-tpi-loki
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-tpi-oauth2-proxy
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-tpi-kiwigrid-sidecar
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-tpi-minio
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-tpi-minio-mc
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-tpi-node-exporter
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-tpi-grafana
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: pre-main-tpi-kaniko-executer
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    postsubmits:
+    - name: post-main-tpi-cloudsql-proxy
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-tpi-etcd
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-tpi-docker-registry
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-tpi-fluent-bit
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-tpi-jaeger-operator
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-tpi-k8s-tools
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-tpi-kiali
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-tpi-loki
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-tpi-oauth2-proxy
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-tpi-kiwigrid-sidecar
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-tpi-minio
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-tpi-minio-mc
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-tpi-node-exporter
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-tpi-grafana
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+    - name: post-main-tpi-kaniko-executer
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+  kyma-project/website:
+    total: 1
+    presubmits:
+    - name: pre-main-website-governance
+      extra_refs:
+      - base_ref: main
+        repo: test-infra
+      branches:
+      - ^master$
+      - ^main$
+periodics:
+  total: 87
+  jobs:
+  - name: kyma-cli-compatibility-1
+    extra_refs:
+    - base_ref: main
+      repo: cli
+    - base_ref: main
+      repo: test-infra
+  - name: addons-governance-nightly
+    extra_refs:
+    - base_ref: master
+      repo: addons
+    - base_ref: main
+      repo: test-infra
+  - name: busola-governance-nightly
+    extra_refs:
+    - base_ref: main
+      repo: busola
+    - base_ref: main
+      repo: test-infra
+  - name: community-governance-nightly
+    extra_refs:
+    - base_ref: main
+      repo: community
+    - base_ref: main
+      repo: test-infra
+  - name: console-governance-nightly
+    extra_refs:
+    - base_ref: master
+      repo: console
+    - base_ref: main
+      repo: test-infra
+  - name: examples-governance-nightly
+    extra_refs:
+    - base_ref: main
+      repo: examples
+    - base_ref: main
+      repo: test-infra
+  - name: kyma-governance-nightly
+    extra_refs:
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: test-infra
+  - name: test-infra-governance-nightly
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+  - name: website-governance-nightly
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: main
+      repo: website
+  - name: documentation-component-governance-nightly
+    extra_refs:
+    - base_ref: main
+      repo: documentation-component
+    - base_ref: main
+      repo: test-infra
+  - name: periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade
+    description: Reconciler e2e upgrade test job.
+    extra_refs:
+    - base_ref: main
+      repo: control-plane
+    - base_ref: main
+      repo: kyma
+    - base_ref: release-1.24
+      repo: kyma
+    - base_ref: main
+      repo: test-infra
+  - name: reconciler-control-plane-image-bump
+    description: Reconciler image bump in control-plane
+    extra_refs:
+    - base_ref: main
+      repo: control-plane
+    - base_ref: master
+      repo: test-infra
+    - base_ref: main
+      repo: reconciler
+  - name: nightly-main-reconciler
+    description: Creates and installs reconciler from main every night.
+    extra_refs:
+    - base_ref: main
+      repo: control-plane
+    - base_ref: main
+      repo: test-infra
+  - name: nightly-main-reconciler-e2e
+    description: Executes e2e test periodically on nightly cluster for reconciler.
+    extra_refs:
+    - base_ref: main
+      repo: control-plane
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: test-infra
+  - name: kyma-gardener-cleanup
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+  - name: kyma-alpha-integration-evaluation-gardener-azure
+    description: Evaluation profile for Kyma 2 Azure Gardener integration job.
+    extra_refs:
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: local-kyma
+    - base_ref: main
+      repo: test-infra
+  - name: kyma-alpha-integration-production-gardener-azure
+    description: Production profile for Kyma 2 Azure Gardener integration job.
+    extra_refs:
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: local-kyma
+    - base_ref: main
+      repo: test-infra
+  - name: kyma-weekly-gardener-gcp-busola-kyma
+    extra_refs:
+    - base_ref: main
+      repo: busola
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: test-infra
+  - name: kyma-upgrade-gardener-kyma-to-kyma2
+    description: Azure Kyma 1.x to Kyma 2.0 upgrade.
+    extra_refs:
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: test-infra
+  - name: kyma-upgrade-gardener-kyma2-to-main-reconciler-main
+    description: Azure Kyma 2.0 to main branch.
+    extra_refs:
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: test-infra
+  - name: utilities-kyma-integration-cleaner
+  - name: orphaned-az-storage-accounts-cleaner
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+  - name: orphaned-assetstore-gcp-bucket-cleaner
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+  - name: orphaned-disks-cleaner
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+  - name: orphaned-ips-cleaner
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+  - name: orphaned-clusters-cleaner
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+  - name: orphaned-vms-cleaner
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+  - name: orphaned-loadbalancer-cleaner
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+  - name: orphaned-dns-cleaner
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+  - name: gcr-cleaner-prow-workloads
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+  - name: github-stats
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+  - name: github-issues
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+  - name: serverless-function-benchmark
+    description: Serverless function runtime benchmarks
+    extra_refs:
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: test-infra
+  - name: serverless-function-metrics-generator
+    description: Serverless function metrics generator
+    extra_refs:
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: test-infra
+  - name: serverless-git-auth-integration-k3s-nightly
+    description: Serverless git-function authentication nightly integration tests
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+  - name: kyma-upgrade-k3d-kyma2-to-main
+    description: K3d Kyma 2.0 to main branch.
+    extra_refs:
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: local-kyma
+    - base_ref: main
+      repo: test-infra
+  - name: kyma-integration-k3d
+    description: Kyma integration periodic job on k3d.
+    extra_refs:
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: local-kyma
+    - base_ref: main
+      repo: test-infra
+  - name: kyma-integration-k3d-compass-dev
+    description: Kyma integration periodic job on k3d with compass dev.
+    extra_refs:
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: local-kyma
+    - base_ref: main
+      repo: test-infra
+  - name: kyma-integration-k3d-telemetry
+    extra_refs:
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: test-infra
+  - name: kyma-gke-nightly
+    description: Kyma GKE nightly build (depraceted, needed for sec scans)
+    extra_refs:
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: test-infra
+  - name: kyma-gke-nightly-fast-integration
+    description: Kyma GKE nightly fast integration tests.
+    extra_refs:
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: test-infra
+  - name: kyma-preview-integration-dev
+    extra_refs:
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: test-infra
+  - name: kyma-gke-nightly-rel124
+    description: Kyma GKE nightly build. (release-1.24)
+    extra_refs:
+    - base_ref: release-1.24
+      repo: kyma
+    - base_ref: release-1.24
+      repo: test-infra
+  - name: kyma-gke-nightly-rel20
+    description: Kyma GKE nightly build (release-2.0)
+    extra_refs:
+    - base_ref: release-2.0
+      repo: kyma
+    - base_ref: release-2.0
+      repo: test-infra
+  - name: kyma-gke-nightly-rel21
+    description: Kyma GKE nightly build (release-2.1)
+    extra_refs:
+    - base_ref: release-2.1
+      repo: kyma
+    - base_ref: release-2.1
+      repo: test-infra
+  - name: skr-azure-nightly
+    extra_refs:
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: test-infra
+  - name: skr-azure-integration-dev
+    extra_refs:
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: test-infra
+  - name: skr-azure-lite-integration-dev
+    extra_refs:
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: test-infra
+  - name: skr-aws-integration-dev
+    extra_refs:
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: test-infra
+  - name: skr-trial-integration-dev
+    extra_refs:
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: test-infra
+  - name: skr-free-aws-integration-dev
+    extra_refs:
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: test-infra
+  - name: skr-kyma-to-kyma2-upgrade-aws-dev
+    extra_refs:
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: test-infra
+  - name: skr-aws-svcat-migration-dev
+    extra_refs:
+    - base_ref: main
+      repo: kyma
+    - base_ref: main
+      repo: test-infra
+  - name: control-plane-whitesource-scan-new
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: main
+      repo: control-plane
+  - name: kyma-whitesource-scan-new
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: release-2.0
+      repo: kyma
+  - name: console-whitesource-scan-new
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: master
+      repo: console
+  - name: busola-whitesource-scan-new
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: main
+      repo: busola
+  - name: cli-whitesource-scan-new
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: release-2.0
+      repo: cli
+  - name: helm-broker-whitesource-scan-new
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: master
+      repo: helm-broker
+  - name: rafter-whitesource-scan-new
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: master
+      repo: rafter
+  - name: api-gateway-whitesource-scan-new
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: main
+      repo: api-gateway
+  - name: dex-whitesource-scan-new
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: kyma-master
+      repo: dex
+  - name: hydroform-whitesource-scan-new
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: main
+      repo: hydroform
+  - name: terraform-provider-gardener-whitesource-scan-new
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: master
+      repo: terraform-provider-gardener
+  - name: podpreset-whitesource-scan-new
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: master
+      repo: podpreset-crd
+  - name: reconciler-whitesource-scan-new
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: main
+      repo: reconciler
+  - name: control-plane-whitesource-scan
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: main
+      repo: control-plane
+  - name: kyma-whitesource-scan
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: release-2.0
+      repo: kyma
+  - name: console-whitesource-scan
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: master
+      repo: console
+  - name: busola-whitesource-scan
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: main
+      repo: busola
+  - name: cli-whitesource-scan
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: release-2.0
+      repo: cli
+  - name: helm-broker-whitesource-scan
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: master
+      repo: helm-broker
+  - name: rafter-whitesource-scan
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: master
+      repo: rafter
+  - name: api-gateway-whitesource-scan
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: main
+      repo: api-gateway
+  - name: dex-whitesource-scan
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: kyma-master
+      repo: dex
+  - name: hydroform-whitesource-scan
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: main
+      repo: hydroform
+  - name: terraform-provider-gardener-whitesource-scan
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: master
+      repo: terraform-provider-gardener
+  - name: podpreset-whitesource-scan
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: master
+      repo: podpreset-crd
+  - name: reconciler-whitesource-scan
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: main
+      repo: reconciler
+  - name: release-kyma-2.0-whitesource-scan
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: main
+      repo: kyma
+  - name: release-kyma-mod-2.0-whitesource-scan
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: main
+      repo: kyma
+  - name: release-cli-2.0-whitesource-scan
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+    - base_ref: main
+      repo: cli
+  - name: ci-prow-branchprotector
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+  - name: ci-prow-label-sync
+  - name: ci-prow-autobump
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+  - name: ci-prow-autobump-jobs
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
+  - name: unstale-gardener-project
+    extra_refs:
+    - base_ref: main
+      repo: test-infra
