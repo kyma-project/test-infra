@@ -283,6 +283,10 @@ templates:
           reconciler_dev_nightly_cluster_input_name:
             env:
               INPUT_CLUSTER_NAME: "rec-dev"
+          reconciler_publish_pr_cli_jobConfig:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-pr-cli.sh"
+            annotations:
+              pipeline.installer: reconciler
           reconciler_publish_unstable_cli_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-unstable-cli.sh"
             annotations:
@@ -323,6 +327,24 @@ templates:
                     - reconciler_main_jobConfig
                     - reconciler_integration_jobConfig
               - jobConfig:
+                  name: "pre-main-reconciler-publish-pr-cli"
+                  optional: false
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  labels:
+                    preset-sa-vm-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                    preset-kyma-cli-pr-unstable: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - image_buildpack-golang
+                    - extra_refs_test-infra
+                  local:
+                    - extra_refs_kyma_cli
+                    - reconciler_publish_pr_cli_jobConfig
+              - jobConfig:
                   name: "pre-latest-istio-reconciler-integration"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))|Dockerfile\\.cr$"
@@ -344,7 +366,7 @@ templates:
                     - extra_refs_test-infra
                   local:
                     - reconciler_main_jobConfig
-                    - reconciler_component_k3d_integration_jobConfig                       
+                    - reconciler_component_k3d_integration_jobConfig
               - jobConfig:
                   name: "pre-main-istio-reconciler-integration"
                   # following regexp won't start build if only Markdown files were changed
