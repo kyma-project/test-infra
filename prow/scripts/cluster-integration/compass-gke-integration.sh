@@ -47,7 +47,6 @@ if [[ "$BUILD_TYPE" == "pr" ]]; then
   # In case of PR, operate on PR number
   readonly COMMON_NAME_PREFIX="gkecompint-pr"
   COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}")
-  export JOBGUARD_TIMEOUT="30m"
 else
   # Otherwise (main), operate on triggering commit id
   readonly COMMON_NAME_PREFIX="gkecompint-commit"

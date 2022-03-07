@@ -19,7 +19,6 @@ source "$SCRIPT_DIR/lib/gcp.sh"
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
     export JOB_NAME_PATTERN="(pre-compass-components-.*)|(^pre-compass-tests$)"
-    export JOBGUARD_TIMEOUT="30m"
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
