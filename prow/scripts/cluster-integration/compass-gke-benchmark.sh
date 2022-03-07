@@ -8,8 +8,6 @@ export KYMA_SOURCES_DIR="$KYMA_PROJECT_DIR/kyma"
 export COMPASS_SOURCES_DIR="/home/prow/go/src/github.com/kyma-incubator/compass"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
-readonly COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/compass"
-
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/log.sh
@@ -38,9 +36,9 @@ utils::check_required_vars "${requiredVars[@]}"
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 
 # Enforce lowercase
-readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
+readonly REPO_OWNER=${REPO_OWNER,,}
 export REPO_OWNER
-readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
+readonly REPO_NAME=${REPO_NAME,,}
 export REPO_NAME
 
 readonly RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
@@ -66,8 +64,8 @@ export GCLOUD_NETWORK_NAME="${gcp_set_vars_for_network_return_net_name:?}"
 export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_return_subnet_name:?}"
 
 #Local variables
+DNS_SUBDOMAIN="${COMMON_NAME}"
 COMPASS_SCRIPTS_DIR="${COMPASS_SOURCES_DIR}/installation/scripts"
-COMPASS_RESOURCES_DIR="${COMPASS_SOURCES_DIR}/installation/resources"
 
 function createCluster() {
   #Used to detect errors for logging purposes
@@ -79,7 +77,7 @@ function createCluster() {
   docker::start
   DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
   export DNS_DOMAIN
-  DOMAIN="${COMMON_NAME}.${DNS_DOMAIN%?}"
+  DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
   export DOMAIN
 
   log::info "Reserve IP Address for Ingressgateway"
@@ -156,7 +154,7 @@ function installCompassOld() {
   echo "Checkout $LATEST_VERSION"
   git checkout "${LATEST_VERSION}"
 
-  COMPASS_OVERRIDES="${COMPASS_SOURCES_DIR}/installation/resources/compass-overrides-gke-integration.yaml"
+  COMPASS_OVERRIDES="${COMPASS_SOURCES_DIR}/installation/resources/compass-overrides-gke-benchmark.yaml"
   bash "${COMPASS_SCRIPTS_DIR}"/install-compass.sh --overrides-file "${COMPASS_OVERRIDES}" --timeout 30m0s
   STATUS=$(helm status compass -n compass-system -o json | jq .info.status)
   echo "Compass installation status ${STATUS}"
@@ -176,7 +174,7 @@ function installCompassNew() {
     exit 1
   fi
 
-  COMPASS_OVERRIDES="${COMPASS_SOURCES_DIR}/installation/resources/compass-overrides-gke-integration.yaml"
+  COMPASS_OVERRIDES="${COMPASS_SOURCES_DIR}/installation/resources/compass-overrides-gke-benchmark.yaml"
   bash "${COMPASS_SCRIPTS_DIR}"/install-compass.sh --overrides-file "${COMPASS_OVERRIDES}" --timeout 30m0s
   STATUS=$(helm status compass -n compass-system -o json | jq .info.status)
   echo "Compass installation status ${STATUS}"
