@@ -601,6 +601,7 @@ trap 'EXIT_STATUS=$?; set -f; utils::post_hook -n "$COMMON_NAME" -p "$CLOUDSDK_C
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
     export JOB_NAME_PATTERN="(pre-compass-components-.*)|(^pre-compass-tests$)"
+    export JOBGUARD_TIMEOUT="30m"
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 

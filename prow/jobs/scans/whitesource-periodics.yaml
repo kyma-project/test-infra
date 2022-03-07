@@ -29,7 +29,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220217-4c8befd6"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220302-611e7d69"
             securityContext:
               privileged: false
             command:
@@ -77,7 +77,7 @@ periodics: # runs on schedule
           base_ref: release-2.0
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220217-4c8befd6"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220302-611e7d69"
             securityContext:
               privileged: false
             command:
@@ -125,7 +125,7 @@ periodics: # runs on schedule
           base_ref: master
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220217-4c8befd6"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220302-611e7d69"
             securityContext:
               privileged: false
             command:
@@ -173,7 +173,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220217-4c8befd6"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220302-611e7d69"
             securityContext:
               privileged: false
             command:
@@ -221,7 +221,7 @@ periodics: # runs on schedule
           base_ref: release-2.0
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220217-4c8befd6"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220302-611e7d69"
             securityContext:
               privileged: false
             command:
@@ -269,7 +269,7 @@ periodics: # runs on schedule
           base_ref: master
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220217-4c8befd6"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220302-611e7d69"
             securityContext:
               privileged: false
             command:
@@ -317,7 +317,7 @@ periodics: # runs on schedule
           base_ref: master
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220217-4c8befd6"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220302-611e7d69"
             securityContext:
               privileged: false
             command:
@@ -365,7 +365,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220217-4c8befd6"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220302-611e7d69"
             securityContext:
               privileged: false
             command:
@@ -413,7 +413,7 @@ periodics: # runs on schedule
           base_ref: kyma-master
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220217-4c8befd6"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220302-611e7d69"
             securityContext:
               privileged: false
             command:
@@ -461,7 +461,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220217-4c8befd6"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220302-611e7d69"
             securityContext:
               privileged: false
             command:
@@ -509,7 +509,7 @@ periodics: # runs on schedule
           base_ref: master
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220217-4c8befd6"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220302-611e7d69"
             securityContext:
               privileged: false
             command:
@@ -557,7 +557,7 @@ periodics: # runs on schedule
           base_ref: master
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220217-4c8befd6"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220302-611e7d69"
             securityContext:
               privileged: false
             command:
@@ -607,7 +607,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220217-4c8befd6"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220302-611e7d69"
             securityContext:
               privileged: false
             command:
@@ -657,7 +657,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220217-4c8befd6"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220302-611e7d69"
             securityContext:
               privileged: false
             command:
@@ -707,7 +707,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220217-4c8befd6"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220302-611e7d69"
             securityContext:
               privileged: false
             command:
@@ -757,7 +757,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220217-4c8befd6"
+          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220302-611e7d69"
             securityContext:
               privileged: false
             command:
