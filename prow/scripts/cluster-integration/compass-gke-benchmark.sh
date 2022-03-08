@@ -4,7 +4,7 @@ set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
-export KYMA_SOURCES_DIR="$KYMA_PROJECT_DIR/kyma"
+export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export COMPASS_SOURCES_DIR="/home/prow/go/src/github.com/kyma-incubator/compass"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
@@ -15,9 +15,9 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
-source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcp.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
-source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/kyma.sh"
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 
 requiredVars=(
     REPO_OWNER
@@ -145,7 +145,6 @@ function installKyma() {
 
   KYMA_VERSION=$(<"${COMPASS_SOURCES_DIR}/installation/resources/KYMA_VERSION")
   kyma deploy --ci --source="${KYMA_VERSION}" --workspace "$KYMA_SOURCES_DIR" --verbose --values-file "$PWD/kyma_overrides.yaml"
-
 }
 
 function installCompassOld() {
