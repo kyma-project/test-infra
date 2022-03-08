@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "kyma-upgrade-gardener-kyma-to-kyma2"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 13572
