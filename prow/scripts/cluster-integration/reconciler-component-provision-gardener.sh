@@ -87,12 +87,16 @@ export CLUSTER_NAME="${COMMON_NAME}"
 # checks required vars and initializes gcloud/docker if necessary
 gardener::init
 
-# Determine Kyma version
+# Determine Kyma and Istioctl version
 if [[ ! $KYMA_VERSION ]]; then
     # Fetch latest Kyma2 release
     kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
     export KYMA_VERSION="${kyma_get_last_release_version_return_version:?}"
+    # Temporary set istioctl version - to be changed later
+    export ISTIOCTL_VERSION="1.11.4"
     log::info "Reading latest 2.x release version, got: ${KYMA_VERSION}"
+else
+    export ISTIOCTL_VERSION="1.12.3"
 fi
 
 kyma::install_cli
