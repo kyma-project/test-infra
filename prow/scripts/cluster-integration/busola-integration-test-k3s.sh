@@ -6,6 +6,10 @@ set -o pipefail
 LOCAL_KYMA_DIR="./local-kyma"
 K3S_DOMAIN="local.kyma.dev"
 CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included:8.7.0"
+SCOPE=$1
+
+echo "1 -> $1"
+echo "2 -> $2"
 
 prepare_k3s() {
     pushd ${LOCAL_KYMA_DIR}
@@ -121,8 +125,6 @@ cp "$PWD/kubeconfig-kyma.yaml" "$PWD/busola-tests/fixtures/kubeconfig.yaml"
 mkdir -p "$PWD/busola-tests/cypress/screenshots"
 
 echo "STEP: Running Cypress tests inside Docker"
-echo "--------------------------------------------------"
-echo "This is a new prow job!"
-echo "--------------------------------------------------"
-docker run --entrypoint /bin/bash --network=host -v "$PWD/busola-tests:/tests" -w /tests $CYPRESS_IMAGE -c "npm ci --no-optional; NO_COLOR=1 npm run test:namespace"
+
+docker run --entrypoint /bin/bash --network=host -v "$PWD/busola-tests:/tests" -w /tests $CYPRESS_IMAGE -c "npm ci --no-optional; NO_COLOR=1 npm run test:$SCOPE"
 

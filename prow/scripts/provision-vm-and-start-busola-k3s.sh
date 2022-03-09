@@ -9,6 +9,7 @@ set -o pipefail
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
 readonly TMP_DIR=$(mktemp -d)
+SCOPE="namespace"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
@@ -68,11 +69,17 @@ fi
 POSITIONAL=()
 while [[ $# -gt 0 ]]; do
     key="$1"
+    echo "---------------- $1 $2 ---------------------"
     
     case ${key} in
         --image)
             IMAGE="$2"
             testCustomImage "${IMAGE}"
+            shift
+            shift
+        ;;
+        --scope)
+            SCOPE="$2"
             shift
             shift
         ;;
@@ -142,6 +149,6 @@ utils::send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/g
 
 
 log::info "Launching the busola-integration-test-k3s.sh script"
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "busola-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/busola-integration-test-k3s.sh"
+gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "busola-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/busola-integration-test-k3s.sh ${SCOPE}"
 
 log::success "all done"
