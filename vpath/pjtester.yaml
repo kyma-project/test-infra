@@ -1,7 +1,0 @@
-pjNames:
-  - pjName: "pre-main-reconciler-publish-pr-cli"
-    report: false
-prConfigs:
-  kyma-incubator:
-    reconciler:
-      prNumber: 899
