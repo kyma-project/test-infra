@@ -69,7 +69,6 @@ prerequisites:
   - name: "istio"
     namespace: "istio-system"
 components:
-  - name: "istio-resources"
   - name: "ory"
 EOF
 }
@@ -83,8 +82,6 @@ prerequisites:
   - name: "cluster-essentials"
   - name: "istio"
     namespace: "istio-system"
-components:
-  - name: "istio-resources"
 EOF
 }
 
