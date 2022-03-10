@@ -127,7 +127,6 @@ envVars=(
   EXECUTION_PROFILE
   KYMA_VERSION
   ISTIOCTL_VERSION
-  ISTIO_COMPONENT_NAME
 )
 utils::save_env_file "${envVars[@]}"
 #shellcheck disable=SC2088
