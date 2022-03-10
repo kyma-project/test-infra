@@ -6,10 +6,10 @@ set -o pipefail
 LOCAL_KYMA_DIR="./local-kyma"
 K3S_DOMAIN="local.kyma.dev"
 CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included:8.7.0"
-SCOPE=$1
+# SCOPE=$1
 
-echo "1 -> $1"
-echo "2 -> $2"
+echo "1 -> $SCOPE"
+# echo "2 -> $2"s
 
 prepare_k3s() {
     pushd ${LOCAL_KYMA_DIR}
