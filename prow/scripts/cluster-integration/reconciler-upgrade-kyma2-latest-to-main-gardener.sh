@@ -161,6 +161,9 @@ reconciler::trigger_kyma_reconcile
 # Wait until reconciliation is complete
 reconciler::wait_until_kyma_reconciled
 
+# run migration script
+curl https://raw.githubusercontent.com/kyma-project/kyma/main/docs/assets/2.0-2.1-fix-upgraded-resources.sh | sh
+
 # run the fast integration test after reconciliation
 log::banner "Executing post-upgrade test"
 gardener::post_upgrade_test_fast_integration_kyma
