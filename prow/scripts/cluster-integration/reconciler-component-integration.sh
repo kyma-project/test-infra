@@ -70,7 +70,7 @@ prerequisites:
     namespace: "istio-system"
 components:
   - name: "ory"
-  - name: "istio-resources
+  - name: "istio-resources"
 EOF
 }
 
