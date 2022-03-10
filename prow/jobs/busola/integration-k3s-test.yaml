@@ -40,9 +40,9 @@ presubmits: # runs on PRs
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-busola-k3s.sh"
-            args:
-              - "--scope"
-              - "cluster"
+            env:
+              - name: SCOPE
+                value: cluster
             resources:
               requests:
                 memory: 100Mi
@@ -91,9 +91,9 @@ presubmits: # runs on PRs
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-busola-k3s.sh"
-            args:
-              - "--scope"
-              - "namespace"
+            env:
+              - name: SCOPE
+                value: cluster
             resources:
               requests:
                 memory: 100Mi
@@ -146,9 +146,9 @@ postsubmits: # runs on main
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-busola-k3s.sh"
-            args:
-              - "--scope"
-              - "cluster"
+            env:
+              - name: SCOPE
+                value: cluster
             resources:
               requests:
                 memory: 100Mi
@@ -198,9 +198,9 @@ postsubmits: # runs on main
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-busola-k3s.sh"
-            args:
-              - "--scope"
-              - "namespace"
+            env:
+              - name: SCOPE
+                value: cluster
             resources:
               requests:
                 memory: 100Mi

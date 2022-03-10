@@ -9,7 +9,6 @@ set -o pipefail
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
 readonly TMP_DIR=$(mktemp -d)
-SCOPE="namespace"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
@@ -18,6 +17,7 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 
+echo "PROVISION SCOPE -> ${SCOPE}"
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
     /prow-tools/jobguard \
@@ -69,17 +69,11 @@ fi
 POSITIONAL=()
 while [[ $# -gt 0 ]]; do
     key="$1"
-    echo "---------------- $1 $2 ---------------------"
     
     case ${key} in
         --image)
             IMAGE="$2"
             testCustomImage "${IMAGE}"
-            shift
-            shift
-        ;;
-        --scope)
-            SCOPE="$2"
             shift
             shift
         ;;
