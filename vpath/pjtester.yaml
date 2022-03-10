@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "pre-main-reconciler-cli-integration-kyma-latest-k3d"
+  - pjName: "pre-main-reconciler-cli-integration-kyma-main-k3d"
     report: false
 prConfigs:
   kyma-incubator:
