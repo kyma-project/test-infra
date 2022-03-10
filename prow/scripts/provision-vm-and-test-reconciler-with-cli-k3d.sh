@@ -18,7 +18,10 @@ source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
-  log::info "Execute Job Guard"
+  export JOBGUARD_TIMEOUT="20m"
+  export JOB_NAME_PATTERN="pre-main-reconciler-publish-pr-cli"
+
+  log::info "Execute Job Guard to wait for job: ${JOB_NAME_PATTERN}"
   "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 

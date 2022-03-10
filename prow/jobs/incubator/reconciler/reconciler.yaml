@@ -638,7 +638,7 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-
+  
 postsubmits: # runs on main
   kyma-incubator/reconciler:
     - name: post-latest-istio-reconciler-integration
@@ -940,7 +940,7 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-
+  
 periodics: # runs on schedule
     - name: periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade
       annotations:
@@ -1209,3 +1209,4 @@ periodics: # runs on schedule
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+  
