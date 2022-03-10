@@ -26,11 +26,11 @@ require (
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
-	github.com/containerd/containerd v1.5.9
+	github.com/containerd/containerd v1.6.1
 	github.com/containerd/typeurl v1.0.2
 	github.com/docker/docker v20.10.12+incompatible // indirect
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
-	github.com/fsouza/go-dockerclient v1.7.9
+	github.com/fsouza/go-dockerclient v1.7.10
 	github.com/gardener/component-cli v0.37.0
 	github.com/gardener/component-spec/bindings-go v0.0.57
 	github.com/ghodss/yaml v1.0.0
@@ -46,6 +46,7 @@ require (
 	github.com/jinzhu/copier v0.3.5
 	github.com/mandelsoft/vfs v0.0.0-20210530103237-5249dc39ce91
 	github.com/onsi/gomega v1.18.1
+	github.com/opencontainers/runc v1.0.3 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/satori/go.uuid v1.2.0
 	github.com/shurcooL/githubv4 v0.0.0-20211117020012-5800b9de5b8b
