@@ -130,8 +130,6 @@ presubmits: # runs on PRs
                 value: "evaluation"
               - name: GO11MODULE
                 value: "on"
-              - name: ISTIO_COMPONENT_NAME
-                value: "istio-configuration"
               - name: TEST_NAME
                 value: "istio"
             resources:
@@ -181,8 +179,6 @@ presubmits: # runs on PRs
                 value: "evaluation"
               - name: GO11MODULE
                 value: "on"
-              - name: ISTIO_COMPONENT_NAME
-                value: "istio"
               - name: KYMA_VERSION
                 value: "main"
               - name: TEST_NAME
@@ -234,8 +230,6 @@ presubmits: # runs on PRs
                 value: "evaluation"
               - name: GO11MODULE
                 value: "on"
-              - name: ISTIO_COMPONENT_NAME
-                value: "istio"
               - name: KYMA_VERSION
                 value: "main"
               - name: TEST_NAME
@@ -292,8 +286,6 @@ presubmits: # runs on PRs
                 value: "europe-west4-b"
               - name: GO11MODULE
                 value: "on"
-              - name: ISTIO_COMPONENT_NAME
-                value: "istio"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: KYMA_VERSION

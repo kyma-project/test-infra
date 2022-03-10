@@ -358,7 +358,6 @@ templates:
                   env:
                     TEST_NAME: istio
                     EXECUTION_PROFILE: evaluation
-                    ISTIO_COMPONENT_NAME: istio-configuration
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -383,7 +382,6 @@ templates:
                     TEST_NAME: istio
                     EXECUTION_PROFILE: evaluation
                     KYMA_VERSION: main
-                    ISTIO_COMPONENT_NAME: istio
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -408,7 +406,6 @@ templates:
                     TEST_NAME: ory
                     EXECUTION_PROFILE: evaluation
                     KYMA_VERSION: main
-                    ISTIO_COMPONENT_NAME: istio
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -433,7 +430,6 @@ templates:
                     TEST_NAME: ory
                     EXECUTION_PROFILE: production
                     KYMA_VERSION: main
-                    ISTIO_COMPONENT_NAME: istio
                 inheritedConfigs:
                   global:
                     - jobConfig_default
