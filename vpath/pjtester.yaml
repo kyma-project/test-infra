@@ -5,9 +5,6 @@ pjNames:
   - pjName: "kyma-gke-nightly-rel20"
   - pjName: "kyma-gke-nightly-rel124"
 prConfigs:
-  kyma-project:
-    kyma:
-      prNumber: 13551
   kyma-incubator:
     reconciler:
       prNumber: 894  
