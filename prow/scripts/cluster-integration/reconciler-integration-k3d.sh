@@ -3,6 +3,10 @@
 set -o errexit
 set -o pipefail
 
+readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${SCRIPT_DIR}/lib/log.sh"
+
 readonly RECONCILER_DIR="./reconciler"
 readonly GO_VERSION=1.17.5
 readonly PG_MIGRATE_VERSION=v4.15.1
@@ -18,12 +22,13 @@ function prereq_test() {
 }
 
 function create_local_bin() {
-    echo "Create local bin folder"
+    log::info "Create local bin folder"
     mkdir -p $INSTALL_DIR
     export PATH=$PATH:$INSTALL_DIR
 }
 
 function install_cli() {
+  log::info "Install CLI"
   local os
   os="$(uname -s | tr '[:upper:]' '[:lower:]')"
   if [[ -z "$os" || ! "$os" =~ ^(darwin|linux)$ ]]; then
@@ -46,9 +51,10 @@ function provision_k3d() {
 }
 
 function run_tests() {
-  echo "Install Go"
+  log::info "Install Go"
   wget -q https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz && sudo tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz && export PATH=$PATH:/usr/local/go/bin && go version
 
+ log::info "Run all tests: make test all"
   export KUBECONFIG=~/.kube/config
   pushd "${RECONCILER_DIR}"
   make test-all
@@ -56,14 +62,7 @@ function run_tests() {
 }
 
 function provision_pg() {
-  echo "Provisioning Postgres"
-  pushd $INSTALL_DIR
-  curl -L https://github.com/golang-migrate/migrate/releases/download/${PG_MIGRATE_VERSION}/migrate.linux-amd64.tar.gz | tar xvz
-  chmod +x migrate
-  popd
-
-  sudo apt-get install -y postgresql-client-11
-
+  log::info "Starting Postgres"
   pushd $RECONCILER_DIR
   ./scripts/postgres.sh start
   popd
