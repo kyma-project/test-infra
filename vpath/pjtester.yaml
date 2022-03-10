@@ -3,8 +3,5 @@ pjNames:
   - pjName: "pre-latest-istio-reconciler-integration"
   - pjName: "pre-main-istio-reconciler-integration"
   - pjName: "kyma-gke-nightly-rel20"
+  - pjName: "kyma-gke-nightly-rel21"  
   - pjName: "kyma-gke-nightly-rel124"
-prConfigs:
-  kyma-incubator:
-    reconciler:
-      prNumber: 894  
