@@ -655,7 +655,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: 2.0
+          base_ref: release-2.0
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220311-7b85165f"
@@ -706,7 +706,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: 1.24
+          base_ref: release-1.24
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220311-7b85165f"
