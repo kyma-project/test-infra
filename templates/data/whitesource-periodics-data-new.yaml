@@ -1,7 +1,7 @@
 templates:
-  - from: templates/whitesource-periodics.tmpl
+  - from: templates/whitesource-periodics-new.tmpl
     render:
-      - to: ../prow/jobs/scans/whitesource-periodics.yaml
+      - to: ../prow/jobs/scans/whitesource-periodics-new.yaml
         localSets:
           jobConfig_default:
             privileged: "false"
@@ -55,7 +55,7 @@ templates:
                   language: "golang-mod"
                   project: "kyma-project"
                   subprojects: "true"
-                  base_ref: "main"
+                  base_ref: "release-2.0"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -65,6 +65,20 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "product_kyma"
+              - jobConfig:
+                  repository: "kyma"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                  subprojects: "true"
+                  whitesource_release: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
               - jobConfig:
                   repository: "console"
                   language: "javascript"
@@ -96,7 +110,7 @@ templates:
                   repository: "cli"
                   language: "golang-mod"
                   project: "kyma-project"
-                  base_ref: "main"
+                  base_ref: "release-2.0"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
