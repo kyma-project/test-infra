@@ -756,6 +756,13 @@ presets:
       - name: UNSTABLE
         value: "true"
   - labels:
+      preset-kyma-cli-pr-unstable: "true"
+    env:
+      - name: KYMA_CLI_PR_UNSTABLE_BUCKET
+        value: gs://kyma-cli-pr
+      - name: UNSTABLE
+        value: "true"
+  - labels:
       preset-stability-checker-slack-notifications: "true"
     env:
       - name: SLACK_CLIENT_WEBHOOK_URL
