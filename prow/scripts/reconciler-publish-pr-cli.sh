@@ -22,7 +22,7 @@ go mod edit -replace "github.com/kyma-incubator/reconciler=${RECONCILER_PROJECT_
 log::info "Contents of kyma-project/cli/go.mod"
 cat go.mod
 
-log::banner "Building Kyma CLI with recocniler bump from PR source"
+log::banner "Building Kyma CLI with reconciler bump from PR source"
 log::info "Resolve dependencies for kyma cli"
 make resolve
 
@@ -35,12 +35,6 @@ make build-linux
 log::info "Renaming Kyma CLI to include PR number"
 mv "./bin/kyma-linux" "./bin/kyma-linux-pr-${PULL_NUMBER}"
 ls "./bin/"
-
-log::info "Committing reconciler bump"
-git_status=$(git status --porcelain)
-if [[ "${git_status}" != "" ]]; then
-  git commit -am 'replace reconciler version'
-fi
 
 log::banner "Publishing builds to GCP"
 log::info "GCP Authentication"
