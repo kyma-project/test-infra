@@ -20,6 +20,7 @@ HELM_VERSION="v3.7.1"
 DOCKER_VERSION=5:20.10.5~3-0~debian-buster
 NODEJS_VERSION="14.x"
 K3D_VERSION="5.0.0"
+PG_MIGRATE_VERSION=v4.15.1
 
 # install docker
 sudo apt-get update
@@ -61,6 +62,13 @@ wget https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO
 curl -Lo /tmp/minikube https://storage.googleapis.com/minikube/releases/${MINIKUBE_VERSION}/minikube-linux-amd64 && \
  chmod +x /tmp/minikube && \
  sudo mv /tmp/minikube /usr/local/bin/minikube
+
+# install postgres and migrate tool
+curl -Lo tmp/migrate https://github.com/golang-migrate/migrate/releases/download/${PG_MIGRATE_VERSION}/migrate.linux-amd64.tar.gz | tar xvz && \
+ chmod +x tmp/migrate && \
+ sudo mv tmp/migrate /usr/local/bin/migrate && \
+ sudo apt-get install -y postgresql-client-11
+
 
 # install circtl
 wget https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-amd64.tar.gz
