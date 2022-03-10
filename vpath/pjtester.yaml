@@ -1,7 +1,5 @@
 pjNames:
   - pjName: "pre-main-ory-reconciler-eval-integration"
+  - pjName: "pre-main-ory-reconciler-prod-integration"
   - pjName: "pre-latest-istio-reconciler-integration"
   - pjName: "pre-main-istio-reconciler-integration"
-  - pjName: "kyma-gke-nightly-rel20"
-  - pjName: "kyma-gke-nightly-rel21"  
-  - pjName: "kyma-gke-nightly-rel124"
