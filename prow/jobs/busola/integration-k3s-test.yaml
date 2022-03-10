@@ -42,7 +42,7 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-busola-k3s.sh"
             env:
               - name: SCOPE
-                value: cluster
+                value: "cluster"
             resources:
               requests:
                 memory: 100Mi
@@ -93,7 +93,7 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-busola-k3s.sh"
             env:
               - name: SCOPE
-                value: cluster
+                value: "namespace"
             resources:
               requests:
                 memory: 100Mi
@@ -148,7 +148,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-busola-k3s.sh"
             env:
               - name: SCOPE
-                value: cluster
+                value: "cluster"
             resources:
               requests:
                 memory: 100Mi
@@ -200,7 +200,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-busola-k3s.sh"
             env:
               - name: SCOPE
-                value: cluster
+                value: "namespace"
             resources:
               requests:
                 memory: 100Mi

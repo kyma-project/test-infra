@@ -7,8 +7,6 @@ LOCAL_KYMA_DIR="./local-kyma"
 K3S_DOMAIN="local.kyma.dev"
 CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included:8.7.0"
 
-echo "SCOPE -> $SCOPE"
-
 prepare_k3s() {
     pushd ${LOCAL_KYMA_DIR}
     ./create-cluster-k3s.sh

@@ -32,9 +32,8 @@ templates:
                   name: "pre-busola-integration-test-k3s-cluster"
                   optional: false
                   run_if_changed: "^resources/|^tests/"
-                  args:
-                    - "--scope"
-                    - "cluster"
+                  env:
+                    SCOPE: cluster
                   labels:
                     preset-build-pr: "true"
                     preset-gardener-azure-kyma-integration: "true"
@@ -55,9 +54,8 @@ templates:
                   name: "post-busola-integration-test-k3s-cluster"
                   optional: false
                   run_if_changed: "/"
-                  args:
-                    - "--scope"
-                    - "cluster"
+                  env:
+                    SCOPE: cluster
                   labels:
                     preset-build-pr: "false"
                     preset-gardener-azure-kyma-integration: "true"

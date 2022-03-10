@@ -17,7 +17,6 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 
-echo "PROVISION SCOPE -> ${SCOPE}"
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
     /prow-tools/jobguard \
@@ -143,8 +142,6 @@ utils::send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/g
 
 
 log::info "Launching the busola-integration-test-k3s.sh script"
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" \
---quiet --zone="${ZONE}" --command="sudo SCOPE=${SCOPE} bash" --ssh-flag="-o ServerAliveInterval=30" \
-"busola-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/busola-integration-test-k3s.sh"
+gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo SCOPE=${SCOPE} bash" --ssh-flag="-o ServerAliveInterval=30" "busola-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/busola-integration-test-k3s.sh"
 
 log::success "all done"
