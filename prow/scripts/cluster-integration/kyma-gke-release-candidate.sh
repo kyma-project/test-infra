@@ -158,7 +158,7 @@ installKyma() {
 			--profile production \
 			--tls-crt "./letsencrypt/live/${DOMAIN}/fullchain.pem" \
 			--tls-key "./letsencrypt/live/${DOMAIN}/privkey.pem" \
-			--value "istio.components.ingressGateways.config.service.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+			--value "istio-configuration.components.ingressGateways.config.service.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
 			--value "global.domainName=${DOMAIN}" \
 			--timeout 60m
 
