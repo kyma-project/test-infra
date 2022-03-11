@@ -64,9 +64,9 @@ curl -Lo /tmp/minikube https://storage.googleapis.com/minikube/releases/${MINIKU
  sudo mv /tmp/minikube /usr/local/bin/minikube
 
 # install postgres and migrate tool
-curl -Lo tmp/migrate https://github.com/golang-migrate/migrate/releases/download/${PG_MIGRATE_VERSION}/migrate.linux-amd64.tar.gz | tar xvz && \
- chmod +x tmp/migrate && \
- sudo mv tmp/migrate /usr/local/bin/migrate && \
+curl -Lo /tmp/migrate https://github.com/golang-migrate/migrate/releases/download/${PG_MIGRATE_VERSION}/migrate.linux-amd64.tar.gz | tar xvz && \
+ chmod +x /tmp/migrate && \
+ sudo mv /tmp/migrate /usr/local/bin/migrate && \
  sudo apt-get install -y postgresql-client-11
 
 
