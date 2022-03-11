@@ -72,12 +72,14 @@ function upgrade_kyma() {
 }
 
 function run_pre_upgrade_tests() {
+  echo "Executing pre-upgrade fast-integration tests"
   pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
   make ci-pre-upgrade
   popd
 }
 
 function run_post_upgrade_tests() {
+  echo "Executing post-upgrade fast-integration tests"
   pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
   make ci-post-upgrade
   popd

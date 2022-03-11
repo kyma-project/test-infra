@@ -118,33 +118,27 @@ trap cleanup exit INT
 
 log::banner "Provision k3d, deploy Kyma and run fast-integration tests"
 
-# define kyma version to deploy
+### define kyma version to deploy
 export KYMA_SOURCE="main"
 if [[ "${KYMA_TEST_SOURCE}" == "latest-release" ]]; then
   # Fetch latest Kyma released version
   kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
-  export KYMA_UPGRADE_SOURCE="${kyma_get_last_release_version_return_version:?}"
-  log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_UPGRADE_SOURCE}"
+  export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
+  log::info "### Reading latest release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
 
-  export KYMA_SOURCE="${KYMA_UPGRADE_SOURCE}"
 elif [[ "${KYMA_TEST_SOURCE}" == "previous-release" ]]; then
-  # Fetch latest Kyma released version
-#  kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
-#  export KYMA_UPGRADE_SOURCE="${kyma_get_last_release_version_return_version:?}"
-#  log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_UPGRADE_SOURCE}"
-
-#  export KYMA_SOURCE="${KYMA_UPGRADE_SOURCE}"
-  export KYMA_SOURCE="2.0.3"
+  # Fetch previous Kyma released version
+  kyma::get_previous_release_version -t "${BOT_GITHUB_TOKEN}"
+  export KYMA_SOURCE="${kyma_get_previous_release_version_return_version:?}"
+  log::info "### Reading previous release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
 fi
 
-# define Kyma version to upgrade to, if it is a upgrade test
+### define Kyma version to upgrade to, if it is a upgrade test
 if [[ "${KYMA_UPGRADE_SOURCE}" == "latest-release" ]]; then
   # Fetch latest Kyma released version
   kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
-  export KYMA_UPGRADE_SOURCE="${kyma_get_last_release_version_return_version:?}"
-  log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_UPGRADE_SOURCE}"
-
-  export KYMA_UPGRADE_VERSION="${KYMA_UPGRADE_SOURCE}"
+  export KYMA_UPGRADE_VERSION="${kyma_get_last_release_version_return_version:?}"
+  log::info "### Reading latest release version from RELEASE_VERSION file, got: ${KYMA_UPGRADE_VERSION}"
 fi
 
 log::info "Preparing environment variables for the instance"
