@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "pre-main-reconciler-cli-integration-kyma-upgrade-k3d"
+    report: false
+prConfigs:
+  kyma-incubator:
+    reconciler:
+      prNumber: 899
