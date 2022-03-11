@@ -9,14 +9,18 @@ aliases:
     - Halamix2
     - ammarlakis
   stability-checker-owners:
-    - PK85
+    - wozniakjan
     - piotrmiskiewicz
+    - szwedm
+    - ralikio
+    - hanngos
+    - tillknuesting
+    - PK85
 
   technical-writers:
     - klaudiagrz
     - mmitoraj
     - majakurcius
-    - alexandra-simeonova
     - NHingerl
     - grego952
 
@@ -74,19 +78,21 @@ aliases:
     - lindnerby
 
   helm-broker-reviewers:
+    - wozniakjan
     - piotrmiskiewicz
-    - PK85
-    - jasiu001
-    - ksputo
-    - crabtree
     - szwedm
+    - ralikio
+    - hanngos
+    - tillknuesting
+
   helm-broker-approvers:
+    - wozniakjan
     - piotrmiskiewicz
-    - PK85
-    - jasiu001
-    - ksputo
-    - crabtree
     - szwedm
+    - ralikio
+    - hanngos
+    - tillknuesting
+    - PK85
 
   hydroform-reviewers:
     - a-thaler
@@ -100,17 +106,21 @@ aliases:
     - jeremyharisch
 
   addons-reviewers:
+    - wozniakjan
     - piotrmiskiewicz
-    - PK85
-    - jasiu001
-    - ksputo
-    - crabtree
+    - szwedm
+    - ralikio
+    - hanngos
+    - tillknuesting
+
   addons-approvers:
+    - wozniakjan
     - piotrmiskiewicz
+    - szwedm
+    - ralikio
+    - hanngos
+    - tillknuesting
     - PK85
-    - jasiu001
-    - ksputo
-    - crabtree
 
   rafter-reviewers:
     - m00g3n
@@ -126,37 +136,37 @@ aliases:
     - rJankowski93
 
   control-plane-reviewers:
-    - PK85
     - tgorgol
     - akgalwas
     - janmedrek
     - Szymongib
     - franpog859
-    - ralikio
     - Maladie
     - koala7659
     - rafalpotempa
-    - piotrmiskiewicz
-    - ksputo
-    - szwedm
-    - voigt
     - wozniakjan
+    - piotrmiskiewicz
+    - szwedm
+    - ralikio
+    - hanngos
+    - tillknuesting
+
   control-plane-approvers:
-    - PK85
     - tgorgol
     - akgalwas
     - janmedrek
     - Szymongib
     - franpog859
-    - ralikio
     - Maladie
     - koala7659
     - rafalpotempa
-    - piotrmiskiewicz
-    - ksputo
-    - szwedm
-    - voigt
     - wozniakjan
+    - piotrmiskiewicz
+    - szwedm
+    - ralikio
+    - hanngos
+    - tillknuesting
+    - PK85
 
   # Kyma related groups and aliases
   kyma-approvers: # general group of approvers responsible for Kyma repo
@@ -165,12 +175,13 @@ aliases:
     - a-thaler
 
   application-broker-owners:
-    - PK85
-    - piotrmiskiewicz
-    - ksputo
-    - szwedm
-    - voigt
     - wozniakjan
+    - piotrmiskiewicz
+    - szwedm
+    - ralikio
+    - hanngos
+    - tillknuesting
+    - PK85
 
   application-connectivity-owners:
     - akgalwas
@@ -208,12 +219,13 @@ aliases:
     - vladislavpaskar
 
   end-to-end-owners:
-    - PK85
-    - piotrmiskiewicz
-    - ksputo
-    - szwedm
-    - voigt
     - wozniakjan
+    - piotrmiskiewicz
+    - szwedm
+    - ralikio
+    - hanngos
+    - tillknuesting
+    - PK85
     - k15r
 
   # kyma-incubator related aliases
@@ -301,11 +313,21 @@ aliases:
     - alexandra-simeonova
 
   podpreset-crd-reviewers:
+    - wozniakjan
     - piotrmiskiewicz
     - szwedm
+    - ralikio
+    - hanngos
+    - tillknuesting
+
   podpreset-crd-approvers:
+    - wozniakjan
     - piotrmiskiewicz
     - szwedm
+    - ralikio
+    - hanngos
+    - tillknuesting
+    - PK85
 
   kyma-dex-reviewers:
     - strekm
@@ -350,17 +372,37 @@ aliases:
     - Cortey
 
   octopus-reviewers:
+    - wozniakjan
     - piotrmiskiewicz
-    - PK85
+    - szwedm
+    - ralikio
+    - hanngos
+    - tillknuesting
+
   octopus-approvers:
+    - wozniakjan
     - piotrmiskiewicz
+    - szwedm
+    - ralikio
+    - hanngos
+    - tillknuesting
     - PK85
 
   svcat-tester-reviewers:
+    - wozniakjan
     - piotrmiskiewicz
-    - PK85
+    - szwedm
+    - ralikio
+    - hanngos
+    - tillknuesting
+
   svcat-tester-approvers:
+    - wozniakjan
     - piotrmiskiewicz
+    - szwedm
+    - ralikio
+    - hanngos
+    - tillknuesting
     - PK85
 
   hydra-login-consent-reviewers:

@@ -17,7 +17,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220216-291a93c3"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220310-2b410ea6"
             command:
               - "prow/scripts/validate-scripts.sh"
             resources:
@@ -38,9 +38,9 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220217-9337753127"
+          - image: "gcr.io/k8s-prow/checkconfig:v20220305-a9a1fd8e47"
             command:
-              - "/app/prow/cmd/checkconfig/app.binary"
+              - "checkconfig"
             args:
               - "--plugin-config=prow/plugins.yaml"
               - "--config-path=prow/config.yaml"
@@ -284,7 +284,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220216-291a93c3"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220310-2b410ea6"
             command:
               - "/bin/bash"
             args:

@@ -5,7 +5,6 @@ readonly TEST_INFRA_DIR="./test-infra"
 readonly GO_VERSION=1.17.5
 export KYMA_SOURCES_DIR="./kyma"
 export KUBECONFIG="${HOME}/.kube/config"
-export ISTIOCTL_VERSION="1.11.4"
 export CLUSTER_DOMAIN="local.kyma.dev"
 
 function prereq_test() {
@@ -49,7 +48,7 @@ function install_prereq() {
 
   wget -q https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz && tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz && export PATH=$PATH:/usr/local/go/bin && go version
 
-  wget -q https://github.com/istio/istio/releases/download/${ISTIOCTL_VERSION}/istioctl-${ISTIOCTL_VERSION}-linux-amd64.tar.gz   && tar -C /usr/local/bin -xzf istioctl-${ISTIOCTL_VERSION}-linux-amd64.tar.gz && export PATH=$PATH:/usr/local/bin/istioctl && istioctl version --remote=false && export ISTIOCTL_PATH=/usr/local/bin/istioctl
+  wget -q "https://github.com/istio/istio/releases/download/${ISTIOCTL_VERSION}/istioctl-${ISTIOCTL_VERSION}-linux-amd64.tar.gz"   && tar -C /usr/local/bin -xzf "istioctl-${ISTIOCTL_VERSION}-linux-amd64.tar.gz" && export PATH=$PATH:/usr/local/bin/istioctl && istioctl version --remote=false && export ISTIOCTL_PATH=/usr/local/bin/istioctl
 }
 
 function provision_k3d() {
@@ -67,21 +66,28 @@ cat << EOF > "$PWD/ory.yaml"
 defaultNamespace: kyma-system
 prerequisites:
   - name: "cluster-essentials"
-  - name: "istio-configuration"
+  - name: "istio"
     namespace: "istio-system"
 components:
   - name: "ory"
+  - name: "istio-resources"
 EOF
 }
 
 function istio::prepare_components_file() {
   log::info "Preparing Kyma installation with Ory and prerequisites"
 
+  if [[ $KYMA_VERSION == main ]]; then
+    export ISTIO_COMPONENT_NAME="istio"
+  else
+    export ISTIO_COMPONENT_NAME="istio-configuration"
+  fi
+
 cat << EOF > "$PWD/istio.yaml"
 defaultNamespace: kyma-system
 prerequisites:
   - name: "cluster-essentials"
-  - name: "istio-configuration"
+  - name: "$ISTIO_COMPONENT_NAME"
     namespace: "istio-system"
 EOF
 }
