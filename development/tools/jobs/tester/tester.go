@@ -25,14 +25,14 @@ const (
 	// ImageNodeBuildpackLatest means Node.js buildpack image (node v12)
 	ImageNodeBuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220221-13968b0e"
 	// ImageBootstrapTestInfraLatest means it's used in test-infra prowjob defs.
-	ImageBootstrapTestInfraLatest = "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220216-291a93c3"
+	ImageBootstrapTestInfraLatest = "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220310-2b410ea6"
 
 	// ImageKymaIntegrationLatest represents kyma integration image with kubectl 1.16
 	ImageKymaIntegrationLatest = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
 	// ImageGolangToolboxLatest represents the latest version of the golang buildpack toolbox
 	ImageGolangToolboxLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a" // see https://github.com/kyma-project/test-infra/pull/3738
 	// ImageProwToolsLatest represents the latest version of the prow-tools image
-	ImageProwToolsLatest = "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220304-3f31b958"
+	ImageProwToolsLatest = "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220310-0f4c05df"
 	// KymaProjectDir means kyma project dir
 	KymaProjectDir = "/home/prow/go/src/github.com/kyma-project"
 	// KymaIncubatorDir means kyma incubator dir
