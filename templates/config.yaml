@@ -34,15 +34,15 @@ globalSets:
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
   image_buildpack-node:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220221-13968b0e"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220311-863c512f"
   image_buildpack-golang:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220311-42c0b238"
   image_buildpack-golang-kubebuilder2:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220311-42c0b238"
   image_buildpack-golang-toolbox:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220311-42c0b238"
   image_wssagent:
-    image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220302-611e7d69"
+    image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220311-7b85165f"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
