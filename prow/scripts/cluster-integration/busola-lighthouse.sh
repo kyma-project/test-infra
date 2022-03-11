@@ -117,6 +117,8 @@ kubectl wait \
 --all \
 --timeout=120s
 
+
+ls "$PWD/busola-tests"
 cp "$PWD/kubeconfig-kyma.yaml" "$PWD/busola-tests/fixtures/kubeconfig.yaml"
 
 echo "STEP: Running Lighthouse audit inside Docker"
