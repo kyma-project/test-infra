@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "pre-busola-dashboard"
+  - pjName: "pre-busola-lighthouse"
 prConfigs:
   kyma-project:
     busola:
