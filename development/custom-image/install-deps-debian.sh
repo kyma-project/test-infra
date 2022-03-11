@@ -12,6 +12,7 @@
 ###
 
 set -o errexit
+set -o pipefail
 
 MINIKUBE_VERSION=v1.14.2
 KUBECTL_CLI_VERSION=v1.21.9
@@ -35,7 +36,8 @@ sudo apt-get install -y \
      wget \
      build-essential \
      conntrack \
-     software-properties-common
+     software-properties-common \
+     postgresql-client-11
 
 curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
@@ -64,10 +66,9 @@ curl -Lo /tmp/minikube https://storage.googleapis.com/minikube/releases/${MINIKU
  sudo mv /tmp/minikube /usr/local/bin/minikube
 
 # install postgres and migrate tool
-curl -Lo /tmp/migrate https://github.com/golang-migrate/migrate/releases/download/${PG_MIGRATE_VERSION}/migrate.linux-amd64.tar.gz | tar xvz && \
+wget https://github.com/golang-migrate/migrate/releases/download/${PG_MIGRATE_VERSION}/migrate.linux-amd64.tar.gz -O - | tar -zxO migrate > /tmp/migrate && \
  chmod +x /tmp/migrate && \
- sudo mv /tmp/migrate /usr/local/bin/migrate && \
- sudo apt-get install -y postgresql-client-11
+ sudo mv /tmp/migrate /usr/local/bin/migrate
 
 
 # install circtl
