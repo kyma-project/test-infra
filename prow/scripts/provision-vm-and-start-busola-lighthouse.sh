@@ -37,9 +37,7 @@ cleanup() {
     set +e
     
     #shellcheck disable=SC2088
-    # utils::receive_from_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "~/busola-tests/cypress/screenshots" "${ARTIFACTS}"
-    #shellcheck disable=SC2088
-    # utils::receive_from_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "~/busola-tests/cypress/videos" "${ARTIFACTS}"
+    utils::receive_from_vm "${ZONE}" "busola-smoke-test-${RANDOM_ID}" "~/busola-tests/test-results/lighthouse-Busola-Lighthouse-audit-chromium" "${ARTIFACTS}"
     
     gcloud compute instances delete --zone="${ZONE}" "busola-integration-test-${RANDOM_ID}"
     log::info "End of cleanup"
