@@ -118,6 +118,8 @@ export EXECUTION_PROFILE=evaluation
 log::banner "Installing Kyma $KYMA_SOURCE with profile: \"$EXECUTION_PROFILE\""
 gardener::install_kyma
 
+echo "$KYMA_MAJOR_UPGRADE"
+
 # run the fast integration test before reconciliation
 log::banner "Executing pre-upgrade test - before reconciliation"
 gardener::pre_upgrade_test_fast_integration_kyma
