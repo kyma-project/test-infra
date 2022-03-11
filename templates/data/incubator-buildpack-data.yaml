@@ -638,6 +638,7 @@ templates:
                     - extra_refs_kyma
                     - extra_refs_control-plane
                     - kyma_major_version_1
+                    - kyma_major_upgrade
                     - disable_testgrid
                     - image_kyma-integration
                     - jobConfig_slack_jellyfish
