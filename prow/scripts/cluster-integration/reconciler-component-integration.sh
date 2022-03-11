@@ -66,21 +66,28 @@ cat << EOF > "$PWD/ory.yaml"
 defaultNamespace: kyma-system
 prerequisites:
   - name: "cluster-essentials"
-  - name: "istio-configuration"
+  - name: "istio"
     namespace: "istio-system"
 components:
   - name: "ory"
+  - name: "istio-resources"
 EOF
 }
 
 function istio::prepare_components_file() {
   log::info "Preparing Kyma installation with Ory and prerequisites"
 
+  if [[ $KYMA_VERSION == main ]]; then
+    export ISTIO_COMPONENT_NAME="istio"
+  else
+    export ISTIO_COMPONENT_NAME="istio-configuration"
+  fi
+
 cat << EOF > "$PWD/istio.yaml"
 defaultNamespace: kyma-system
 prerequisites:
   - name: "cluster-essentials"
-  - name: "istio-configuration"
+  - name: "$ISTIO_COMPONENT_NAME"
     namespace: "istio-system"
 EOF
 }
