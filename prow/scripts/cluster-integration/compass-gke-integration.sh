@@ -260,53 +260,6 @@ function prometheusMTLSPatch() {
   patchDeploymentsToInjectSidecar
   patchKymaServiceMonitorsForMTLS
   removeKymaPeerAuthsForPrometheus
-  patchMonitoringTests
-}
-
-function patchPrometheusForMTLS() {
-  patch=$(cat <<"EOF"
-apiVersion: monitoring.coreos.com/v1
-kind: Prometheus
-metadata:
-  name: monitoring-prometheus
-  namespace: kyma-system
-spec:
-  alerting:
-    alertmanagers:
-      - apiVersion: v2
-        name: monitoring-alertmanager
-        namespace: kyma-system
-        pathPrefix: /
-        port: web
-        scheme: https
-        tlsConfig:
-          caFile: /etc/prometheus/secrets/istio.default/root-cert.pem
-          certFile: /etc/prometheus/secrets/istio.default/cert-chain.pem
-          keyFile: /etc/prometheus/secrets/istio.default/key.pem
-          insecureSkipVerify: true
-  podMetadata:
-    annotations:
-      sidecar.istio.io/inject: "true"
-      traffic.sidecar.istio.io/includeInboundPorts: ""   # do not intercept any inbound ports
-      traffic.sidecar.istio.io/includeOutboundIPRanges: ""  # do not intercept any outbound traffic
-      proxy.istio.io/config: |
-        # configure an env variable OUTPUT_CERTS to write certificates to the given folder
-        proxyMetadata:
-          OUTPUT_CERTS: /etc/istio-output-certs
-      sidecar.istio.io/userVolumeMount: '[{"name": "istio-certs", "mountPath": "/etc/istio-output-certs"}]' # mount the shared volume at sidecar proxy
-  volumes:
-    - emptyDir:
-        medium: Memory
-      name: istio-certs
-  volumeMounts:
-    - mountPath: /etc/prometheus/secrets/istio.default/
-      name: istio-certs
-EOF
-  )
-
-  echo "${patch}" > patch.yaml
-  kubectl apply -f patch.yaml
-  rm patch.yaml
 }
 
 function patchAlertManagerForMTLS() {
