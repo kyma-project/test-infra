@@ -59,6 +59,8 @@ export TEST_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c4)
 # set ENVs to be used by KEB to provision SKR
 export INSTANCE_ID=$(cat /proc/sys/kernel/random/uuid) # SKR Runtime Id
 export RUNTIME_NAME="kyma-${TEST_SUFFIX}"
+# skip the cluster resources cleanup as the cluster will be de-provisioned anyway
+export SKIP_CLEANUP="true"
 
 # Runs cleanup for the job
 function skr::cleanup() {
