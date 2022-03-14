@@ -260,7 +260,6 @@ function prometheusMTLSPatch() {
   patchDeploymentsToInjectSidecar
   patchKymaServiceMonitorsForMTLS
   removeKymaPeerAuthsForPrometheus
-  patchMonitoringTests
 }
 
 function patchPrometheusForMTLS() {
@@ -631,38 +630,6 @@ function removeKymaPeerAuthsForPrometheus() {
   for pa in "${allPAs[@]}"; do
     kubectl delete ${crd} -n ${namespace} "${pa}" || true
   done
-}
-
-function patchMonitoringTests() {
-  crd="testdefinitions"
-  namespace="kyma-system"
-  name="monitoring"
-
-  patchSidecarContainerCommand=$(cat <<"EOF"
-        - until curl -fsI http://localhost:15021/healthz/ready; do echo \"Waiting
-          for Sidecar...\"; sleep 3; done; echo \"Sidecar available. Running the command...\";
-          ./test-monitoring; x=$(echo $?); curl -fsI -X POST http://localhost:15020/quitquitquit
-          && exit $x
-EOF
-  )
-
-  echo "${patchSidecarContainerCommand}" > patchSidecarContainerCommand.yaml
-  kubectl get ${crd} -n ${namespace} ${name} -o yaml > testdef.yaml
-
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-    sed -i '' -e 's/sidecar.istio.io\/inject: "false"/sidecar.istio.io\/inject: "true"/g' testdef.yaml
-    sed -i '' -e '/- .\/test-monitoring/r patchSidecarContainerCommand.yaml' testdef.yaml
-    sed -i '' -e 's/- .\/test-monitoring//g' testdef.yaml
-  else # assume Linux otherwise
-    sed -i 's/sidecar.istio.io\/inject: "false"/sidecar.istio.io\/inject: "true"/g' testdef.yaml
-    sed -i '/- .\/test-monitoring/r patchSidecarContainerCommand.yaml' testdef.yaml
-    sed -i 's/- .\/test-monitoring//g' testdef.yaml
-  fi
-
-  kubectl apply -f testdef.yaml || true
-
-  rm testdef.yaml
-  rm patchSidecarContainerCommand.yaml
 }
 
 function installKyma() {
