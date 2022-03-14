@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "kyma-integration-k3d"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 13615
