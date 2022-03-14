@@ -186,8 +186,6 @@ export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_return_subnet_name:?}"
 
 #Local variables
 DNS_SUBDOMAIN="${COMMON_NAME}"
-KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
-
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
