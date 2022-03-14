@@ -6,7 +6,7 @@ templates:
           jobConfig_default:
             privileged: "false"
             automountServiceAccountToken: true
-            optional: false
+            optional: true
             always_run: false
             command: "bash"
             args:
