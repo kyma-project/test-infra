@@ -174,6 +174,10 @@ function applyKymaOverrides() {
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "monitoring-config-overrides" \
     --data "global.alertTools.credentials.slack.channel=${KYMA_ALERTS_CHANNEL}" \
     --data "global.alertTools.credentials.slack.apiurl=${KYMA_ALERTS_SLACK_API_URL}" \
+    --data "global.monitoring_integration_tests.enabled=false" \
+    --data "grafana.kyma.authProxy.enabled=false" \
+    --data "grafana.env.GF_AUTH_ANONYMOUS_ENABLED=true" \
+    --data "grafana.env.GF_AUTH_GENERIC_OAUTH_ENABLED=false" \
     --data "pushgateway.enabled=true" \
     --label "component=monitoring"
 
@@ -200,10 +204,17 @@ EOF
     --label "component=istio" \
     --file "$PWD/kyma_istio_operator"
 
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "dex-overrides" \
-    --data "global.istio.gateway.name=kyma-gateway" \
-    --data "global.istio.gateway.namespace=kyma-system" \
-    --label "component=dex"
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "kiali-overrides" \
+      --data "authProxy.enabled=false" \
+      --label "component=kiali"
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "tracing-overrides" \
+      --data "authProxy.enabled=false" \
+      --label "component=tracing"
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "logging-overrides" \
+      --data "global.logging_integration_tests.enabled=false" \
+      --label "component=logging"
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "ory-overrides" \
     --data "global.istio.gateway.name=kyma-gateway" \
