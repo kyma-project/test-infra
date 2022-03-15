@@ -24,6 +24,7 @@ function create_local_bin() {
 }
 
 function install_cli() {
+  echo "Install CLI"
   local os
   os="$(uname -s | tr '[:upper:]' '[:lower:]')"
   if [[ -z "$os" || ! "$os" =~ ^(darwin|linux)$ ]]; then
@@ -49,6 +50,7 @@ function run_tests() {
   echo "Install Go"
   wget -q https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz && sudo tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz && export PATH=$PATH:/usr/local/go/bin && go version
 
+ echo "Run all tests: make test all"
   export KUBECONFIG=~/.kube/config
   pushd "${RECONCILER_DIR}"
   make test-all
@@ -56,14 +58,7 @@ function run_tests() {
 }
 
 function provision_pg() {
-  echo "Provisioning Postgres"
-  pushd $INSTALL_DIR
-  curl -L https://github.com/golang-migrate/migrate/releases/download/${PG_MIGRATE_VERSION}/migrate.linux-amd64.tar.gz | tar xvz
-  chmod +x migrate
-  popd
-
-  sudo apt-get install -y postgresql-client-11
-
+  echo "Starting Postgres"
   pushd $RECONCILER_DIR
   ./scripts/postgres.sh start
   popd

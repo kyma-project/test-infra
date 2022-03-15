@@ -94,7 +94,8 @@ gardener::init
 # if MACHINE_TYPE is not set then use default one
 gardener::set_machine_type
 
-kyma::install_cli_last_release
+log::info "### Install latest unstable Kyma CLI"
+kyma::install_unstable_cli
 
 # currently only Azure generates overrides, but this may change in the future
 gardener::generate_overrides

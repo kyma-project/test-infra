@@ -137,14 +137,14 @@ gardener::install_kyma() {
 }
 
 gardener::deploy_kyma() {
-    log::info "Deploying Kyma"
-
     (
     set -x
-    kyma deploy \
-        --ci \
-        --source "${KYMA_SOURCE}" \
-        --timeout 90m
+    if [[ $EVENTING_ENABLE_JETSTREAM == "true" ]]; then
+      log::info "### JetStream feature flag set to true"
+      kyma deploy --ci --timeout 90m --value global.features.enableJetStream=true "$@"
+    else
+      kyma deploy --ci --timeout 90m "$@"
+    fi
     )
 }
 

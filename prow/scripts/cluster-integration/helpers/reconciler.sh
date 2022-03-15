@@ -6,11 +6,18 @@ readonly RECONCILER_TIMEOUT=1200 # in secs
 readonly RECONCILER_DELAY=15 # in secs
 readonly LOCAL_KUBECONFIG="$HOME/.kube/config"
 
+function reconciler::export_nightly_cluster_name(){
+  # shellcheck disable=SC2046
+  # shellcheck disable=SC2005
+  day=$(echo $(date +%a) | tr "[:upper:]" "[:lower:]" | cut -c1-2)
+  export INPUT_CLUSTER_NAME="${INPUT_CLUSTER_NAME}-${day}"
+}
+
 function reconciler::delete_cluster_if_exists(){
   export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
-  for i in {1..5}
+  for i in mo tu we th fr sa su
   do
-    local name="${INPUT_CLUSTER_NAME}${i}"
+    local name="${INPUT_CLUSTER_NAME}-${i}"
     set +e
     existing_shoot=$(kubectl get shoot "${name}" -ojsonpath="{ .metadata.name }")
     if [ -n "${existing_shoot}" ]; then

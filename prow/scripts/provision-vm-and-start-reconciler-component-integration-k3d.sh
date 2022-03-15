@@ -14,6 +14,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
   log::info "Execute Job Guard"
@@ -107,11 +109,24 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
 trap cleanup exit INT
 
+# Determine Kyma and Istioctl version
+if [[ ! $KYMA_VERSION ]]; then
+    # Fetch latest Kyma2 release
+    kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
+    export KYMA_VERSION="${kyma_get_last_release_version_return_version:?}"
+    # Temporary set istioctl version - to be changed later
+    export ISTIOCTL_VERSION="1.11.4"
+    log::info "Reading latest 2.x release version, got: ${KYMA_VERSION}"
+else
+    export ISTIOCTL_VERSION="1.12.3"
+fi
+
 log::info "Preparing environment variables for the instance"
 envVars=(
   TEST_NAME
   EXECUTION_PROFILE
   KYMA_VERSION
+  ISTIOCTL_VERSION
 )
 utils::save_env_file "${envVars[@]}"
 #shellcheck disable=SC2088

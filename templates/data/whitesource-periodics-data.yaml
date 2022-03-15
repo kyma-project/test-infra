@@ -16,7 +16,7 @@ templates:
             annotations:
               testgrid-create-test-group: "false"
             labels:
-              preset-kyma-wssagent-config: "true"
+              preset-whitesource-product-kyma-old: "true"
               preset-wssagent-keys: "true"
               preset-kyma-keyring: "true"
               preset-kyma-encryption-key: "true"
@@ -28,7 +28,7 @@ templates:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
               - jobConfig:
-                  name: "control-plane"
+                  repository: "control-plane"
                   language: "golang-mod"
                   project: "kyma-project"
                   base_ref: "main"
@@ -41,40 +41,10 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "control-plane"
-                  language: "golang"
-                  project: "kyma-project"
-                  base_ref: "main"
-                  custom_projectname: "control-plane-dep"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-#              Disabled - it only runs tests over tools/failery, which will eventually be removed
-#              once console-backend-service is deleted.
-#              - jobConfig:
-#                  name: "kyma"
-#                  language: "golang"
-#                  project: "kyma-project"
-#                  base_ref: "main"
-#                inheritedConfigs:
-#                  global:
-#                    - "jobConfig_default"
-#                    - "image_wssagent"
-#                    - "extra_refs_test-infra"
-#                    - "jobConfig_periodic"
-#                  local:
-#                    - "jobConfig_default"
-              - jobConfig:
-                  name: "kyma"
+                  repository: "kyma"
                   language: "golang-mod"
                   project: "kyma-project"
-                  custom_projectname: "kyma-mod"
-                  base_ref: "main"
+                  base_ref: "release-2.0"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -84,7 +54,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "console"
+                  repository: "console"
                   language: "javascript"
                   project: "kyma-project"
                 inheritedConfigs:
@@ -96,7 +66,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "busola"
+                  repository: "busola"
                   language: "javascript"
                   project: "kyma-project"
                   base_ref: "main"
@@ -109,10 +79,10 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "cli"
+                  repository: "cli"
                   language: "golang-mod"
                   project: "kyma-project"
-                  base_ref: "main"
+                  base_ref: "release-2.0"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -122,19 +92,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "helm-broker"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-              - jobConfig:
-                  name: "rafter"
+                  repository: "helm-broker"
                   language: "golang-mod"
                   project: "kyma-project"
                 inheritedConfigs:
@@ -146,7 +104,19 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "api-gateway"
+                  repository: "rafter"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  repository: "api-gateway"
                   language: "golang-mod"
                   project: "kyma-incubator"
                   base_ref: "main"
@@ -159,7 +129,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "dex"
+                  repository: "dex"
                   language: "golang-mod"
                   project: "kyma-incubator"
                   base_ref: "kyma-master"
@@ -172,7 +142,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "hydroform"
+                  repository: "hydroform"
                   language: "golang-mod"
                   project: "kyma-project"
                   base_ref: "main"
@@ -185,7 +155,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "terraform-provider-gardener"
+                  repository: "terraform-provider-gardener"
                   language: "golang-mod"
                   project: "kyma-incubator"
                 inheritedConfigs:
@@ -196,20 +166,21 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
+# Disabled - TODO REMOVE ONCE KYMA 2 is on SKR
+#              - jobConfig:
+#                  repository: "octopus"
+#                  language: "golang-mod"
+#                  project: "kyma-incubator"
+#                inheritedConfigs:
+#                  global:
+#                    - "jobConfig_default"
+#                    - "image_wssagent"
+#                    - "extra_refs_test-infra"
+#                    - "jobConfig_periodic"
+#                  local:
+#                    - "jobConfig_default"
               - jobConfig:
-                  name: "octopus"
-                  language: "golang-mod"
-                  project: "kyma-incubator"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-              - jobConfig:
-                  name: "podpreset-crd"
+                  repository: "podpreset-crd"
                   language: "golang-mod"
                   project: "kyma-incubator"
                   custom_projectname: "podpreset"
@@ -222,7 +193,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "reconciler"
+                  repository: "reconciler"
                   language: "golang-mod"
                   project: "kyma-incubator"
                   base_ref: "main"
@@ -235,7 +206,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "kyma"
+                  repository: "kyma"
                   language: "golang"
                   project: "kyma-project"
                   custom_projectname: "release-kyma"
@@ -250,7 +221,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "kyma"
+                  repository: "kyma"
                   language: "golang-mod"
                   project: "kyma-project"
                   custom_projectname: "release-kyma-mod"
@@ -265,7 +236,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "cli"
+                  repository: "cli"
                   language: "golang-mod"
                   project: "kyma-project"
                   custom_projectname: "release-cli"

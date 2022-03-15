@@ -21,19 +21,17 @@ To update a Prow cluster follow these steps:
     * gcr.io/k8s-prow/initupload
     * gcr.io/k8s-prow/entrypoint
     * gcr.io/k8s-prow/sidecar
-7. Open [`Dockerfile`](../../prow/images/clonerefs/Dockerfile) in the current project and update base image tag with new the tag for container from upstream repo.
-    * gcr.io/k8s-prow/clonerefs
-8. When the new image is ready, copy its tag and paste it to [`config.yaml`](../../prow/config.yaml) for gcr.io/k8s-prow/clonerefs container.
-9. Use your preferred diff tool to check and copy the stability update in the Prow component and additional configurations for the existing components.
-10. Run this command to update Prow deployments:
+7. When the new image is ready, copy its tag and paste it to [`config.yaml`](../../prow/config.yaml) for gcr.io/k8s-prow/clonerefs container.
+8. Use your preferred diff tool to check and copy the stability update in the Prow component and additional configurations for the existing components.
+9. Run this command to update Prow deployments:
     ```bash
     kubectl apply -f prow/cluster/components
     ```
-11. Use the `update-config.sh {file_path}` script to apply the Prow configuration on a cluster. Run the following command:
+10. Use the `update-config.sh {file_path}` script to apply the Prow configuration on a cluster. Run the following command:
    ```
    ./update-config.sh ../prow/config.yaml
    ```
-12. Make sure that the update was successful. For example, run `kubectl get pods` to check if it doesn't show errors on the updated test cluster and the dashboard is still reachable.
+11. Make sure that the update was successful. For example, run `kubectl get pods` to check if it doesn't show errors on the updated test cluster and the dashboard is still reachable.
 13. Create a pull request.
 
 ## Troubleshooting

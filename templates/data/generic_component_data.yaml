@@ -522,6 +522,7 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/components/istio-installer"
                   run_if_changed: "^components/istio-installer/|^common/makefiles/"
                   release_since: "1.10"
+                  release_until: "1.24"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
