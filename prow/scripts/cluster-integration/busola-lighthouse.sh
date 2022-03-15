@@ -119,6 +119,7 @@ kubectl wait \
 
 
 mkdir -p "$PWD/busola-tests/fixtures"
+mkdir -p "$PWD/busola-tests/test-results"
 cp "$PWD/kubeconfig-kyma.yaml" "$PWD/busola-tests/fixtures/kubeconfig.yaml"
 
 echo "STEP: Running Lighthouse audit inside Docker"
