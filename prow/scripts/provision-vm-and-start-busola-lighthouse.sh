@@ -37,7 +37,9 @@ cleanup() {
     # do not fail the job regardless of the vm deletion result
     set +e
     
+    echo "el es busola-tests"
     gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="ls ~/busola-tests" --ssh-flag="-o ServerAliveInterval=30" "busola-lighthouse-${RANDOM_ID}"
+    echo "el es busola-tests/test-results"
     gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="ls ~/busola-tests/test-results" --ssh-flag="-o ServerAliveInterval=30" "busola-lighthouse-${RANDOM_ID}"
 
     #shellcheck disable=SC2088
