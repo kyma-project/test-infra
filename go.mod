@@ -26,9 +26,8 @@ require (
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
-	github.com/containerd/containerd v1.6.1
 	github.com/cloudevents/sdk-go/v2 v2.8.0
-	github.com/containerd/containerd v1.5.9
+	github.com/containerd/containerd v1.6.1
 	github.com/containerd/typeurl v1.0.2
 	github.com/docker/docker v20.10.12+incompatible // indirect
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
@@ -63,11 +62,9 @@ require (
 	github.com/tidwall/gjson v1.14.0
 	github.com/vrischmann/envconfig v1.3.0
 	go.uber.org/zap v1.19.0
+	golang.org/x/net v0.0.0-20220225172249-27dd8689420f
 	golang.org/x/oauth2 v0.0.0-20220223155221-ee480838109b
 	google.golang.org/api v0.71.0
-	golang.org/x/net v0.0.0-20211118161319-6a13c67c3ce4
-	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
-	google.golang.org/api v0.68.0
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	k8s.io/api v0.22.2
