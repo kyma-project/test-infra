@@ -32,7 +32,6 @@ type HTTPClient interface {
 }
 
 // SendToKyma sends the event given by the GitHub API to kyma's event bus
-// func (k Sender) SendToKyma(eventType, eventTypeVersion, eventID, sourceID string, data json.RawMessage) apperrors.AppError {
 func (k Sender) SendToKyma(eventType, sourceID string, data json.RawMessage) apperrors.AppError {
 
 	t := fmt.Sprintf("sap.kyma.custom.%s.%s.v1", k.appName, eventType)

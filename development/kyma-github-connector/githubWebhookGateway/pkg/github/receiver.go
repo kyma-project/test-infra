@@ -15,7 +15,6 @@ type eventsReceiver struct {
 type Validator interface {
 	ValidatePayload(*http.Request) ([]byte, apperrors.AppError)
 	ParseWebHook(string, []byte) (interface{}, apperrors.AppError)
-	// GetToken() string
 }
 
 // NewReceivingEventsWrapper return receivingEventsWrapper struct
@@ -40,8 +39,3 @@ func (wh eventsReceiver) ParseWebHook(s string, b []byte) (interface{}, apperror
 	}
 	return webhook, nil
 }
-
-// GetToken is a function that looks for the secret in the environment
-// func (wh eventsReceiver) GetToken() string {
-//	return wh.secret
-// }
