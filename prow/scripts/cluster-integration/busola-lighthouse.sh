@@ -117,7 +117,9 @@ kubectl wait \
 --all \
 --timeout=120s
 
-
+echo '--------------------------------------------------------------------------------------------------------------------'
+echo $PWD
+echo '--------------------------------------------------------------------------------------------------------------------'
 mkdir -p "$PWD/busola-tests/fixtures"
 mkdir -p "$PWD/busola-tests/test-results"
 cp "$PWD/kubeconfig-kyma.yaml" "$PWD/busola-tests/fixtures/kubeconfig.yaml"
