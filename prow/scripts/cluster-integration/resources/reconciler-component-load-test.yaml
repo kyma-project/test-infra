@@ -28,6 +28,24 @@ spec:
       app.kubernetes.io/name: mothership-reconciler
       app.kubernetes.io/instance: reconciler
 ---
+## Source: kcp/charts/mothership-reconciler/templates/service-monitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: reconciler-base-reconciler
+  namespace: monitoring
+spec:
+  endpoints:
+    - port: http
+      interval: 15s
+      scrapeTimeout: 10s
+  namespaceSelector:
+    matchNames:
+      - reconciler
+  selector:
+    matchLabels:
+      kyma-project.io/component-reconciler: ""
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
