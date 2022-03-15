@@ -14,7 +14,10 @@ import (
 )
 
 var (
-	supportedEvents = map[string]map[string]struct{}{
+	// TODO: allowedEvents map should be populated from configuration.
+	//  This will allow to limit allowed events by instance, event when code support it.
+	// Event types allowed processing by this instance.
+	allowedEvents = map[string]map[string]struct{}{
 		"issuesevent": {
 			"labeled": struct{}{},
 		},
@@ -69,20 +72,21 @@ func (wh *WebHookHandler) HandleWebhook(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	// Check if event is supported by a code and allowed for this instance.
 	switch event := event.(type) {
-	// TODO: supported event actions should be provided as configuration
 	// Supported github events
 	case *github.IssuesEvent:
 		eventGroup := "issuesevent"
-		eventType, supported = wh.checkIfEventSupported(eventGroup, *event.Action)
+		eventType, supported = wh.checkIfEventSupported(allowedEvents, eventGroup, *event.Action)
 	case *github.PullRequestEvent:
 		eventGroup := "pullrequest"
-		eventType, supported = wh.checkIfEventSupported(eventGroup, *event.Action)
+		eventType, supported = wh.checkIfEventSupported(allowedEvents, eventGroup, *event.Action)
 	default:
 		supported = false
 	}
 
 	if supported {
+		// CloudEvents sourceID.
 		sourceID := os.Getenv("GITHUB_WEBHOOK_GATEWAY_NAME")
 		log.Info(fmt.Sprintf("received event of type: %s", eventType))
 		apperr = wh.sender.SendToKyma(eventType, sourceID, payload)
@@ -98,10 +102,11 @@ func (wh *WebHookHandler) HandleWebhook(w http.ResponseWriter, r *http.Request) 
 	w.WriteHeader(http.StatusOK)
 }
 
-func (wh *WebHookHandler) checkIfEventSupported(eventGroup string, eventAction string) (string, bool) {
-	// TODO: supported event actions should be provided as configuration
-	// Supported github events
-	if _, ok := supportedEvents[eventGroup][eventAction]; ok {
+// checkIfEventSupported will check if eventGroup and eventAction are present in allowed map of allowed event types for this instance.
+// If group and action is allowed, function will return event type.
+func (wh *WebHookHandler) checkIfEventSupported(allowed map[string]map[string]struct{}, eventGroup, eventAction string) (string, bool) {
+	// Check if event type is allowed
+	if _, ok := allowed[eventGroup][eventAction]; ok {
 		et := fmt.Sprintf("%s.%s", eventGroup, eventAction)
 		return et, true
 	} else {
