@@ -51,7 +51,7 @@ function provision_k3d() {
   k3d version
 
   if [[ -v K8S_VERSION ]]; then
-    echo "Creating k3d with kuberenetes version: ${K8S_VERSION}"
+    echo "Creating k3d with kubernetes version: ${K8S_VERSION}"
     kyma provision k3d --ci -k "${K8S_VERSION}"
   else
     kyma provision k3d --ci
@@ -63,12 +63,12 @@ function provision_k3d() {
 
 function deploy_kyma() {
   echo "Deploying Kyma version: ${KYMA_SOURCE} using Execution profile: ${EXECUTION_PROFILE}"
-  kyma deploy --ci --timeout 90m -p "$EXECUTION_PROFILE" --source "${KYMA_SOURCE}"
+  kyma deploy --ci --timeout 20m -p "$EXECUTION_PROFILE" --source "${KYMA_SOURCE}"
 }
 
 function upgrade_kyma() {
   echo "Upgrading Kyma to version: ${KYMA_UPGRADE_VERSION} using Execution profile: ${EXECUTION_PROFILE}"
-  kyma deploy --ci --timeout 90m -p "$EXECUTION_PROFILE" --source "${KYMA_UPGRADE_VERSION}"
+  kyma deploy --ci --timeout 20m -p "$EXECUTION_PROFILE" --source "${KYMA_UPGRADE_VERSION}"
 }
 
 function run_pre_upgrade_tests() {

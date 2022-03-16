@@ -244,8 +244,6 @@ presubmits: # runs on PRs
                 value: "previous-release"
               - name: KYMA_UPGRADE_SOURCE
                 value: "latest-release"
-              - name: TEST_KYMA_UPGRADE
-                value: "true"
             resources:
               requests:
                 memory: 3Gi

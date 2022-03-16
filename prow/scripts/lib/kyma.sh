@@ -114,7 +114,6 @@ function kyma::get_last_release_version {
 # Returns:
 #   Previous Kyma release version
 function kyma::get_previous_release_version {
-
     local OPTIND
     local githubToken
 

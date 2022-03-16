@@ -407,7 +407,6 @@ templates:
                     pipeline.platform: k3d
                   env:
                     EXECUTION_PROFILE: evaluation
-                    TEST_KYMA_UPGRADE: "true"
                     KYMA_TEST_SOURCE: "previous-release"
                     KYMA_UPGRADE_SOURCE: "latest-release"
                 inheritedConfigs:
