@@ -33,7 +33,6 @@ fi
 
 cleanup() {
     
-    echo "CLEANUP"
     # do not fail the job regardless of the vm deletion result
     set +e
     
