@@ -85,7 +85,7 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
-              # TODO check if this should be moved to release-1 or removed
+              # console is only valid for Kyma 1.24
               - jobConfig:
                   repository: "console"
                   language: "javascript"
