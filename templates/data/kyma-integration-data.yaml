@@ -762,6 +762,8 @@ templates:
                   cron: "5 * * * *"
                   labels:
                     preset-build-main: "true"
+                  env:
+                    DEBUG: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
