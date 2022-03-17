@@ -75,7 +75,7 @@ func TestWebhookHandler(t *testing.T) {
 		mockPayload, err := json.Marshal(toJSON{TestJSON: "test"})
 		require.NoError(t, err)
 
-		mockValidator.On("ValidatePayload", req, []byte("test")).Return(mockPayload, nil)
+		mockValidator.On("ValidatePayload", req).Return(mockPayload, nil)
 		mockValidator.On("ParseWebHook", "", mockPayload).Return(nil, apperrors.WrongInput("fail"))
 
 		wh := NewWebHookHandler(mockValidator, mockSender)
@@ -103,7 +103,7 @@ func TestWebhookHandler(t *testing.T) {
 		rawPayload := json.RawMessage(mockPayload)
 		mockSender.On("SendToKyma", "issuesevent.labeled", "", rawPayload).Return(nil)
 
-		mockValidator.On("ValidatePayload", req, []byte("test")).Return(mockPayload, nil)
+		mockValidator.On("ValidatePayload", req).Return(mockPayload, nil)
 		var action = "labeled"
 		event := &github.IssuesEvent{Action: &action}
 		mockValidator.On("ParseWebHook", "issues", mockPayload).Return(event, nil)
@@ -130,7 +130,7 @@ func TestWebhookHandler(t *testing.T) {
 
 		mockPayload, err := json.Marshal(toJSON{TestJSON: "test"})
 		require.NoError(t, err)
-		mockValidator.On("ValidatePayload", req, []byte("test")).Return(mockPayload, nil)
+		mockValidator.On("ValidatePayload", req).Return(mockPayload, nil)
 		mockValidator.On("ParseWebHook", "", mockPayload).Return(nil, apperrors.NotFound("Unknown event"))
 		wh := NewWebHookHandler(mockValidator, mockSender)
 
