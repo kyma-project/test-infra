@@ -135,6 +135,20 @@ function kyma::get_previous_release_version {
         | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-2].tag_name')
 }
 
+kyma::provision_k3d() {
+  k3d version
+
+  if [[ -v K8S_VERSION ]]; then
+    echo "Creating k3d with kubernetes version: ${K8S_VERSION}"
+    kyma provision k3d --ci -k "${K8S_VERSION}"
+  else
+    kyma provision k3d --ci
+  fi
+
+  echo "Printing client and server version info"
+  kubectl version
+}
+
 kyma::install_cli() {
     local settings
     local kyma_version
@@ -199,6 +213,31 @@ kyma::install_cli_last_release() {
     echo "OK"
     popd || exit
     eval "${settings}"
+}
+
+kyma::install_cli_from_reconciler_pr() {
+  local install_dir
+  declare -r install_dir="/usr/local/bin"
+  mkdir -p "$install_dir"
+
+  local os
+  os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+  if [[ -z "$os" || ! "$os" =~ ^(linux)$ ]]; then
+    echo >&2 -e "Unsupported host OS. Must be Linux."
+    exit 1
+  else
+    readonly os
+  fi
+
+  kyma_cli_url="https://storage.googleapis.com/kyma-cli-pr/kyma-${os}-pr-${PULL_NUMBER}"
+
+  pushd "$install_dir" || exit
+  echo "Downloading Kyma CLI from: ${kyma_cli_url}"
+  curl -Lo kyma "${kyma_cli_url}"
+  chmod +x kyma
+  popd
+
+  kyma version --client
 }
 
 host::os() {
