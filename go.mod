@@ -63,8 +63,6 @@ require (
 	github.com/vrischmann/envconfig v1.3.0
 	go.uber.org/zap v1.19.0
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f
-	golang.org/x/oauth2 v0.0.0-20220223155221-ee480838109b
-	google.golang.org/api v0.71.0
 	golang.org/x/oauth2 v0.0.0-20220309155454-6242fa91716a
 	google.golang.org/api v0.73.0
 	gopkg.in/yaml.v2 v2.4.0
