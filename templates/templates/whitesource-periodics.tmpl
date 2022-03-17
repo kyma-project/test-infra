@@ -151,10 +151,8 @@ periodics: # runs on schedule
   {{- range .Values.JobConfigs }}
   {{- range .Jobs -}}
   {{- if not .JobConfig.whitesource_release}}
-  {{- if releaseMatches $next_release .JobConfig.release_since .JobConfig.release_until}}
   {{- if .JobConfig.type_periodic }}
   {{- template "commonProwJob" .}}
-  {{- end}}
   {{- end}}
   {{- end}}
   {{- end}}

@@ -85,7 +85,7 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
-              # TODO
+              # TODO check if this should be moved to release-1 or removed
               - jobConfig:
                   repository: "console"
                   language: "javascript"
@@ -98,7 +98,7 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
-                    - "product_kyma_dashboard"
+                    - "product_kyma_release_previous"
               - jobConfig:
                   repository: "busola"
                   language: "javascript"
