@@ -157,7 +157,7 @@ utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home
 
 log::info "Copying Test-infra to the instance"
 #shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "${INSTANCE_NAME}" "/home/prow/go/src/github.com/kyma-project/test-infra" "~/test-infra"
+utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/test-infra" "~/test-infra"
 
 # run the relevant script to deploy Kyma and run fast-integration tests
 if [[ "${KYMA_UPGRADE_VERSION}" ]]; then
