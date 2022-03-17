@@ -71,6 +71,7 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "product_kyma"
+              # scans for previous releases
               - jobConfig:
                   repository: "kyma"
                   language: "golang-mod"
