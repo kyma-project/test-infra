@@ -89,7 +89,7 @@ readonly COMMON_NAME_PREFIX="grd"
 utils::generate_commonName -n "${COMMON_NAME_PREFIX}"
 
 # Exported variables
-export CLEANUP_CLUSTER="false"
+export CLEANUP_CLUSTER="true"
 export INPUT_CLUSTER_NAME="${utils_generate_commonName_return_commonName:?}"
 export CLUSTER_NAME="${INPUT_CLUSTER_NAME}"
 
