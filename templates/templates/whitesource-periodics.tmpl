@@ -9,7 +9,7 @@
         {{$key}}: {{quote $value}}
         {{- end}}
       {{- end}}
-      {{- if or .JobConfig.labels .JobConfig.project false}}
+      {{- if or .JobConfig.labels .JobConfig.project .JobConfig.product false}}
       labels:
         {{- if .JobConfig.labels}}
         {{- range $key, $value := .JobConfig.labels}}
@@ -18,6 +18,9 @@
         {{- end}}
         {{- if .JobConfig.project}}
         preset-sa-gke-kyma-integration-{{ .JobConfig.project }}-whitesource: "true"
+        {{- end}}
+        {{- if .JobConfig.product}}
+        preset-whitesource-product-{{ .JobConfig.product }}: "true"
         {{- end}}
       {{- end}}
       {{- if .JobConfig.type_periodic }}
@@ -66,7 +69,11 @@
         - org: {{ .JobConfig.project }}
           repo: {{ .JobConfig.repository }}
           path_alias: github.com/{{ .JobConfig.project }}/{{ .JobConfig.repository }}
-          base_ref: {{ default "master" .JobConfig.base_ref }}
+          {{- if .JobConfig.whitesource_release}}
+          base_ref: release-{{ .JobConfig.Release }}
+          {{- else}}
+          base_ref: {{ default (default "master" .JobConfig.base_ref)  .JobConfig.whitesource_release}}
+          {{- end}}
       {{- end}}
       spec:
         containers:
@@ -137,13 +144,17 @@
         {{- end}}
 {{- end -}}
 
+{{- $next_release := .Global.nextRelease }}
 {{- $release := index .Global.releases 0 }}
+{{- $release_previous := index .Global.releases 1 }}
 periodics: # runs on schedule
   {{- range .Values.JobConfigs }}
   {{- range .Jobs -}}
   {{- if not .JobConfig.whitesource_release}}
+  {{- if releaseMatches $next_release .JobConfig.release_since .JobConfig.release_until}}
   {{- if .JobConfig.type_periodic }}
   {{- template "commonProwJob" .}}
+  {{- end}}
   {{- end}}
   {{- end}}
   {{- end}}
@@ -153,9 +164,28 @@ periodics: # runs on schedule
   {{- range .Jobs -}}
   {{- if .JobConfig.type_periodic }}
   {{- if .JobConfig.whitesource_release}}
+  {{- if releaseMatches $release .JobConfig.release_since .JobConfig.release_until}}
   {{- $JobConf := set .JobConfig "Release" $release}}
+  {{- $JobConf := set .JobConfig "product" "kyma-release"}}
   {{- $JobConfigDict := dict "JobConfig" $JobConf}}
   {{- template "commonProwJob" $JobConfigDict }}
+  {{- end}}
+  {{- end}}
+  {{- end}}
+  {{- end}}
+  {{end}}
+
+#-------------Previous Release--------------------
+  {{- range .Values.JobConfigs }}
+  {{- range .Jobs -}}
+  {{- if .JobConfig.type_periodic }}
+  {{- if .JobConfig.whitesource_release}}
+  {{- if releaseMatches $release_previous  .JobConfig.release_since .JobConfig.release_until}}
+  {{- $JobConf := set .JobConfig "Release" $release_previous}}
+  {{- $JobConf := set .JobConfig "product" "kyma-release-previous"}}
+  {{- $JobConfigDict := dict "JobConfig" $JobConf}}
+  {{- template "commonProwJob" $JobConfigDict }}
+  {{- end}}
   {{- end}}
   {{- end}}
   {{- end}}

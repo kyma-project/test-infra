@@ -26,6 +26,12 @@ templates:
           product_kyma:
             labels:
               preset-whitesource-product-kyma: "true"
+          product_kyma_release:
+            labels:
+              preset-whitesource-product-kyma-release: "true"
+          product_kyma_release_previous:
+            labels:
+              preset-whitesource-product-kyma-release-previous: "true"
           product_control_plane:
             labels:
               preset-whitesource-product-control-plane: "true"
@@ -65,6 +71,21 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "product_kyma"
+              - jobConfig:
+                  repository: "kyma"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                  subprojects: "true"
+                  whitesource_release: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+              # TODO
               - jobConfig:
                   repository: "console"
                   language: "javascript"
@@ -132,6 +153,7 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "product_kyma"
+              # api-gateway is only valid for Kyma 1.24
               - jobConfig:
                   repository: "api-gateway"
                   language: "golang-mod"
@@ -145,7 +167,8 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
-                    - "product_kyma"
+                    - "product_kyma_release_previous"
+              # dex is only valid for Kyma 1.24
               - jobConfig:
                   repository: "dex"
                   language: "golang-mod"
@@ -159,7 +182,7 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
-                    - "product_kyma"
+                    - "product_kyma_release_previous"
               - jobConfig:
                   repository: "hydroform"
                   language: "golang-mod"

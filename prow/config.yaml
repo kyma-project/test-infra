@@ -852,12 +852,12 @@ presets:
       preset-whitesource-product-kyma-release: "true"
     env:
       - name: PRODUCTNAME
-        value: "OOSS - KYMA RELEASE"
+        value: "SHC - KYMA RUNTIME RELEASE"
   - labels:
       preset-whitesource-product-kyma-release-previous: "true"
     env:
       - name: PRODUCTNAME
-        value: "OOSS - KYMA RELEASE-1"
+        value: "SHC - KYMA RUNTIME RELEASE-1"
   # volume mounts for kind
   - labels:
       preset-kind-volume-mounts: "true"
