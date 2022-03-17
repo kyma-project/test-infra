@@ -831,12 +831,6 @@ presets:
     env:
       - name: SLACK_CHANNEL
         value: CBMPTMCV9
-  # remove after new scans are triaged
-  - labels:
-      preset-whitesource-product-kyma-old: "true"
-    env:
-      - name: WS_PRODUCTNAME
-        value: "OOSS - KYMA"
   - labels:
       preset-whitesource-product-kyma: "true"
     env:
