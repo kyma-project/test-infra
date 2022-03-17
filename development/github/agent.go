@@ -13,7 +13,7 @@ type ClientsAgent struct {
 	logging.LoggerInterface
 	GithubClient *client.GithubClient
 	GitClient    *git.ClientFactory
-	OwnersClient *repoowners.RepoOwnersClient
+	OwnersClient *repoowners.OwnersClient
 }
 
 type AgentOption func(*ClientsAgent) error
@@ -39,6 +39,27 @@ func NewClientsAgent(options ...AgentOption) (*ClientsAgent, error) {
 func WithLogger(logger *logging.LoggerInterface) AgentOption {
 	return func(ca *ClientsAgent) error {
 		ca.LoggerInterface = *logger
+		return nil
+	}
+}
+
+func WithGithubClient(githubClient *client.GithubClient) AgentOption {
+	return func(ca *ClientsAgent) error {
+		ca.GithubClient = githubClient
+		return nil
+	}
+}
+
+func WithGitClient(gitClient *git.ClientFactory) AgentOption {
+	return func(ca *ClientsAgent) error {
+		ca.GitClient = gitClient
+		return nil
+	}
+}
+
+func WithOwnersClient(ownersClient *repoowners.OwnersClient) AgentOption {
+	return func(ca *ClientsAgent) error {
+		ca.OwnersClient = ownersClient
 		return nil
 	}
 }

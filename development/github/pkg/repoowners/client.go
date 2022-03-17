@@ -11,22 +11,22 @@ import (
 	"k8s.io/test-infra/prow/repoowners"
 )
 
-type RepoOwnersClientConfig struct {
+type OwnersClientConfig struct {
 	*plugins.Owners
 	config.OwnersDirDenylist
 	gitClient    *git.GitClient
 	githubClient *client.GithubClient
 }
 
-type RepoOwnersClient struct {
+type OwnersClient struct {
 	*repoowners.Client
 }
 
-type RepoOwnersClientOption func(*RepoOwnersClientConfig) error
+type RepoOwnersClientOption func(*OwnersClientConfig) error
 
-func NewRepoOwnersClient(options ...RepoOwnersClientOption) (*RepoOwnersClient, error) {
+func NewRepoOwnersClient(options ...RepoOwnersClientOption) (*OwnersClient, error) {
 
-	conf := &RepoOwnersClientConfig{
+	conf := &OwnersClientConfig{
 		Owners:            nil,
 		OwnersDirDenylist: config.OwnersDirDenylist{},
 		gitClient:         nil,
@@ -46,14 +46,14 @@ func NewRepoOwnersClient(options ...RepoOwnersClientOption) (*RepoOwnersClient, 
 	if conf.githubClient == nil {
 		return nil, fmt.Errorf("github client not provided")
 	}
-	repoOwnersClient := &RepoOwnersClient{}
+	repoOwnersClient := &OwnersClient{}
 
 	repoOwnersClient.Client = repoowners.NewClient(conf.gitClient, conf.githubClient, conf.mdYAMLEnabled, conf.skipCollaborators, conf.ownersDirDenylist, conf.resolver)
 	return repoOwnersClient, nil
 }
 
 func WithGitClient(gitClient *git.GitClient) RepoOwnersClientOption {
-	return func(conf *RepoOwnersClientConfig) error {
+	return func(conf *OwnersClientConfig) error {
 		if conf.gitClient == nil {
 			conf.gitClient = gitClient
 			return nil
@@ -64,7 +64,7 @@ func WithGitClient(gitClient *git.GitClient) RepoOwnersClientOption {
 }
 
 func WithGithubClient(githubClient *client.GithubClient) RepoOwnersClientOption {
-	return func(conf *RepoOwnersClientConfig) error {
+	return func(conf *OwnersClientConfig) error {
 		if conf.githubClient == nil {
 			conf.githubClient = githubClient
 			return nil
@@ -74,7 +74,7 @@ func WithGithubClient(githubClient *client.GithubClient) RepoOwnersClientOption 
 	}
 }
 
-func (c *RepoOwnersClientConfig) mdYAMLEnabled(org, repo string) bool {
+func (c *OwnersClientConfig) mdYAMLEnabled(org, repo string) bool {
 	full := fmt.Sprintf("%s/%s", org, repo)
 	for _, elem := range c.MDYAMLRepos {
 		if elem == org || elem == full {
@@ -84,7 +84,7 @@ func (c *RepoOwnersClientConfig) mdYAMLEnabled(org, repo string) bool {
 	return false
 }
 
-func (c *RepoOwnersClientConfig) skipCollaborators(org, repo string) bool {
+func (c *OwnersClientConfig) skipCollaborators(org, repo string) bool {
 	full := fmt.Sprintf("%s/%s", org, repo)
 	for _, elem := range c.SkipCollaborators {
 		if elem == org || elem == full {
@@ -94,13 +94,13 @@ func (c *RepoOwnersClientConfig) skipCollaborators(org, repo string) bool {
 	return false
 }
 
-func (c *RepoOwnersClientConfig) ownersDirDenylist() *config.OwnersDirDenylist {
+func (c *OwnersClientConfig) ownersDirDenylist() *config.OwnersDirDenylist {
 	// OwnersDirDenylist struct contains some defaults that's required by all
 	// repos, so this function cannot return nil
 	return &c.OwnersDirDenylist
 }
 
-func (c *RepoOwnersClientConfig) resolver(org, repo string) ownersconfig.Filenames {
+func (c *OwnersClientConfig) resolver(org, repo string) ownersconfig.Filenames {
 	// OwnersFilenames determines which filenames to use for OWNERS and OWNERS_ALIASES for a repo.
 	full := fmt.Sprintf("%s/%s", org, repo)
 	if filenames, configured := c.Filenames[full]; configured {
