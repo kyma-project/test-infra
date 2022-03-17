@@ -45,7 +45,7 @@ gardener::cleanup() {
         utils::oom_get_output
     fi
 
-    if [ -n "${CLEANUP_CLUSTER}" ]; then
+    if [ -n "${CLEANUP_CLUSTER}"  == "true" ]; then
         if [ -z "${CLEANUP_ONLY_SUCCEEDED}" ] || [[ -n "${CLEANUP_ONLY_SUCCEEDED}" && ${EXIT_STATUS} -eq 0 ]]; then
             log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
             gardener::deprovision_cluster \
