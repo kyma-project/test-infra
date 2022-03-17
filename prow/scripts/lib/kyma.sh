@@ -235,7 +235,7 @@ kyma::install_cli_from_reconciler_pr() {
   echo "Downloading Kyma CLI from: ${kyma_cli_url}"
   curl -Lo kyma "${kyma_cli_url}"
   chmod +x kyma
-  popd
+  popd || exit
 
   kyma version --client
 }
