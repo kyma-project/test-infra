@@ -7,17 +7,23 @@ import (
 	"k8s.io/test-infra/prow/git/v2"
 )
 
+// GitClient is a client to interact with git.
+// It's build on top of k8s git.ClientFactory.
 type GitClient struct {
 	git.ClientFactory
 }
 
+// GitClientConfig holds configuration for GitClient.
 type GitClientConfig struct {
 	git.ClientFactoryOpts
 	githubClient *client.GithubClient
 }
 
+// GitClientOption is a client constructor configuration option passing configuration to the client constructor.
 type GitClientOption func(*GitClientConfig) error
 
+// NewGitClient is a constructor function for GitClient.
+// A constructed client can be configured by providing GitClientOptions.
 func NewGitClient(options ...GitClientOption) (*GitClient, error) {
 	var gitClient *GitClient
 
@@ -52,6 +58,7 @@ func NewGitClient(options ...GitClientOption) (*GitClient, error) {
 	return gitClient, nil
 }
 
+// WithGithubClient is a client constructor configuration option passing GithubClient instance.
 func WithGithubClient(githubClient *client.GithubClient) GitClientOption {
 	return func(conf *GitClientConfig) error {
 		if conf.githubClient == nil {

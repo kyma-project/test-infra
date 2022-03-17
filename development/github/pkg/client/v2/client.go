@@ -7,17 +7,22 @@ import (
 	"k8s.io/test-infra/prow/github"
 )
 
+// GithubClientConfig holds configuration for GithubClient.
 type GithubClientConfig struct {
 	prowflagutil.GitHubOptions
 	DryRun bool
 }
 
+// GithubClient is an implementation of GitHub client wrapping k8s test-infra GitHub Client.
 type GithubClient struct {
 	github.Client
 }
 
+// GithubClientOption is a client constructor configuration option passing configuration to the client constructor.
 type GithubClientOption func(*GithubClientConfig) error
 
+// NewGithubClient is a constructor function for GithubClient.
+// A constructed client can be configured by providing GithubClientOptions.
 func NewGithubClient(options ...GithubClientOption) (*GithubClient, error) {
 	conf := &GithubClientConfig{
 		GitHubOptions: prowflagutil.GitHubOptions{},
@@ -39,6 +44,7 @@ func NewGithubClient(options ...GithubClientOption) (*GithubClient, error) {
 	}, nil
 }
 
+// WithTokenPath is a client constructor configuration option passing path to a file with GitHub token.
 func WithTokenPath(tokenpath string) GithubClientOption {
 	return func(conf *GithubClientConfig) error {
 		conf.TokenPath = tokenpath

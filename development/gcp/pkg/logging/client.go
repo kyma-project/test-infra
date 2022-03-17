@@ -34,7 +34,7 @@ func newClient(ctx context.Context, credentialsFilePath, projectID string) (*Cli
 	return client, nil
 }
 
-// NewClient create kyma implementation of gcp logging client.
+// NewGCPClient create kyma implementation of gcp logging client.
 // It requires credentials file path to authenticate in GCP.
 func NewGCPClient(ctx context.Context, options ...ClientOption) (*logging.Client, error) {
 	conf := &Config{

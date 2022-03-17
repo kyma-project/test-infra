@@ -7,8 +7,11 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-// NewLogger return zap sugaredlogger with two output targets. All logs with severity Error or higher will be sent to stderr.
-// All logs with severity lower than Error will be sed to stdout. This allows gcp logging correctly recognize log message severity.
+// NewLogger return zap sugaredlogger with two output targets.
+// All logs with severity Error or higher will be sent to stderr.
+// All logs with severity lower than Error will be sed to stdout.
+// This allows gcp logging correctly recognize log message severity.
+// It implements test-infra/development/logging/LoggerInterface
 func NewLogger() *zap.SugaredLogger {
 	errorMessage := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
 		return lvl >= zapcore.ErrorLevel

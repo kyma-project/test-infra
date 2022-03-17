@@ -4,6 +4,8 @@ import (
 	"cloud.google.com/go/logging"
 )
 
+// TODO: move interface to the development/logging/types.go
+// LoggerInterface is an Logger interface for all implementations in kyma-project/test-infra
 type LoggerInterface interface {
 	Info(args ...interface{})
 	Error(args ...interface{})
@@ -11,6 +13,8 @@ type LoggerInterface interface {
 	Errorf(template string, args ...interface{})
 }
 
+// Config holds configuration for GCP logging client.
+// It can be passed to the client constructor with client constructor configuration option.
 type Config struct {
 	AppName             string `envconfig:"APP_NAME"` // PubSub Connector application name as set in Compass.
 	LogName             string `envconfig:"LOG_NAME"` // Google cloud logging log name.
@@ -22,11 +26,13 @@ type Config struct {
 	context             string
 }
 
+// ClientOption is a client constructor configuration option.
 type ClientOption func(*Config) error
 
+// LoggerOption is a logger constructor configuration option.
 type LoggerOption func(*Config) error
 
-// Payload represent payload which will be send to gcp stackdriver.
+// Payload represent payload send to gcp stackdriver.
 type Payload struct {
 	// This is the log message.
 	Message string `json:"message"`

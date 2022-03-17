@@ -10,10 +10,14 @@ import (
 	"golang.org/x/net/context"
 )
 
+// Config holds configuration for Client.
+// It can be passed to the client constructor with FromConfig client configuration option.
 type Config struct {
 	ListenPort int `envconfig:"LISTEN_PORT"`
 }
 
+// Client is a cloudevents client implementation for sending and receiving cloudevents.
+// It wraps cloudevents v2 client.
 type Client struct {
 	cloudevents.Client
 	listenPort    int
@@ -22,9 +26,12 @@ type Client struct {
 	Logger        logging.LoggerInterface
 }
 
-type Option func(*Client) error
+// ClientOption is a client constructor configuration option passing configuration to the client constructor.
+type ClientOption func(*Client) error
 
-func NewClient(options ...Option) (*Client, error) {
+// NewClient is a constructor function for cloudevents client.
+// A constructed client can be configured by providing ClientOptions.
+func NewClient(options ...ClientOption) (*Client, error) {
 	cc := &Client{
 		Client:        nil,
 		listenPort:    8080,
@@ -48,20 +55,25 @@ func NewClient(options ...Option) (*Client, error) {
 	return cc, nil
 }
 
-func WithListenPort(listenPort int) Option {
+// WithListenPort is a client constructor configuration option specifying port number to listen on for a cloudevents.
+// If not provided default listen port is 8080.
+func WithListenPort(listenPort int) ClientOption {
 	return func(cc *Client) error {
 		cc.listenPort = listenPort
 		return nil
 	}
 }
 
-func WithDefaultMux() Option {
+// WithDefaultMux is a client constructor configuration option enabling client default mux.
+func WithDefaultMux() ClientOption {
 	return func(cc *Client) error {
 		cc.mux = cc.defaultMux
 		return nil
 	}
 }
 
+// FromConfig is a client constructor configuration option passing client Config struct.
+// Data from struct will be used to construct client.
 func FromConfig(config Config) func(*Client) error {
 	return func(cc *Client) error {
 		cc.listenPort = config.ListenPort
@@ -69,7 +81,9 @@ func FromConfig(config Config) func(*Client) error {
 	}
 }
 
-func WithEventHandler(eventType string, eventHandler func(*Client, cloudevents.Event)) Option {
+// WithEventHandler is a client constructor configuration option adding event handler for event type.
+// Client use this handler to process every received event of assigned eventType.
+func WithEventHandler(eventType string, eventHandler func(*Client, cloudevents.Event)) ClientOption {
 	return func(cc *Client) error {
 		if _, ok := cc.eventHandlers[eventType]; !ok {
 			cc.eventHandlers[eventType] = eventHandler
@@ -80,13 +94,15 @@ func WithEventHandler(eventType string, eventHandler func(*Client, cloudevents.E
 	}
 }
 
-func WithLogger(logger logging.LoggerInterface) Option {
+// WithLogger is a client constructor configuration option passing logger instance.
+func WithLogger(logger logging.LoggerInterface) ClientOption {
 	return func(cc *Client) error {
 		cc.Logger = logger
 		return nil
 	}
 }
 
+// Run start a cloudevents receiver and listen for incoming events.
 func (cc *Client) Run(ctx context.Context) error {
 	err := cc.StartReceiver(ctx, cc.mux)
 	if err != nil {
@@ -95,6 +111,8 @@ func (cc *Client) Run(ctx context.Context) error {
 	return nil
 }
 
+// defaultMux is a default muxer. It routes received cloudevents to assigned handlers.
+// Assigned handlers are taken from eventHandlers map.
 func (cc *Client) defaultMux(event cloudevents.Event) {
 	cc.Logger.Infof("received %s event", event.Type())
 	if eventHandler, ok := cc.eventHandlers[event.Type()]; ok {
@@ -104,6 +122,7 @@ func (cc *Client) defaultMux(event cloudevents.Event) {
 	}
 }
 
+// DecodeGithubEventFromCloudEventPayload retrieve and return a respective GitHub event from cloudevents event.
 func (cc *Client) DecodeGithubEventFromCloudEventPayload(event cloudevents.Event) (github.Event, error) {
 	var ghEvent github.Event
 	err := event.DataAs(ghEvent)
