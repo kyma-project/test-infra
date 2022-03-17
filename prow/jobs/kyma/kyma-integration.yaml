@@ -1449,7 +1449,7 @@ periodics: # runs on schedule
               - name: KYMA_MAJOR_VERSION
                 value: "2"
               - name: DEBUG
-                value: "test"
+                value: "true"
             resources:
               requests:
                 memory: 100Mi
