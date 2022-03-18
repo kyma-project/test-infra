@@ -35,6 +35,27 @@ type RunConfig struct {
 	includePreset []string
 	excludePreset []string
 	cluster       string
+	branchRegex   []string
+}
+
+func matchPreBranches(job config.Presubmit) {
+	if len(runCfg.branchRegex) > 0 {
+		for _, branch := range runCfg.branchRegex {
+			if job.Brancher.ShouldRun(branch) {
+				fmt.Printf("%s\n", job.Name)
+			}
+		}
+	}
+}
+
+func matchPostBranches(job config.Postsubmit) {
+	if len(runCfg.branchRegex) > 0 {
+		for _, branch := range runCfg.branchRegex {
+			if job.Brancher.ShouldRun(branch) {
+				fmt.Printf("%s\n", job.Name)
+			}
+		}
+	}
 }
 
 func matchLabels(jobBase config.JobBase) {
@@ -102,6 +123,14 @@ func findProwjobs() error {
 		findPostsubmits(prowCfg.JobConfig.AllStaticPostsubmits([]string{}), matchCluster)
 		findPeriodics(prowCfg.JobConfig.AllPeriodics(), matchCluster)
 	}
+	if len(runCfg.branchRegex) > 0 {
+		for _, job := range prowCfg.JobConfig.AllStaticPresubmits([]string{}) {
+			matchPreBranches(job)
+		}
+		for _, job := range prowCfg.JobConfig.AllStaticPostsubmits([]string{}) {
+			matchPostBranches(job)
+		}
+	}
 
 	return nil
 }
@@ -128,6 +157,7 @@ func main() {
 	rootCmd.PersistentFlags().StringArrayVarP(&runCfg.includePreset, "includepreset", "i", []string{}, "Prowjobs must contain this preset to be included in output.")
 	rootCmd.PersistentFlags().StringArrayVarP(&runCfg.excludePreset, "excludepreset", "e", []string{}, "Prowjobs with this preset added will be excluded from output.")
 	rootCmd.PersistentFlags().StringVarP(&runCfg.cluster, "cluster", "C", "", "Print prowjobs with cluster set to the flag value.")
+	rootCmd.PersistentFlags().StringArrayVarP(&runCfg.branchRegex, "includebranch", "b", []string{}, "Prowjobs must run against this branch pattern.")
 
 	rootCmd.MarkPersistentFlagRequired("configpath")
 	rootCmd.MarkPersistentFlagRequired("jobpath")
