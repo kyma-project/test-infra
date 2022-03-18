@@ -2,7 +2,7 @@
 set -o errexit
 
 readonly TEST_INFRA_DIR="./test-infra"
-readonly GO_VERSION=1.17.5
+readonly GO_VERSION=1.17.8
 export KYMA_SOURCES_DIR="./kyma"
 export KUBECONFIG="${HOME}/.kube/config"
 export CLUSTER_DOMAIN="local.kyma.dev"
