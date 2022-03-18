@@ -22,7 +22,7 @@ templates:
                     preset-dind-enabled: "true"
                     preset-docker-push-repository-kyma: "true"
                     preset-build-pr: "true"
-                    preset-whitesource-product-kyma-old: "true"
+                    preset-whitesource-product-control-plane: "true"
                     preset-wssagent-keys: "true"
                     preset-kyma-keyring: "true"
                     preset-kyma-encryption-key: "true"

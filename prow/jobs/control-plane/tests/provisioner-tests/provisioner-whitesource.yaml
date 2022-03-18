@@ -18,7 +18,7 @@ presubmits: # runs on PRs
         preset-kyma-encryption-key: "true"
         preset-kyma-keyring: "true"
         preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
-        preset-whitesource-product-kyma-old: "true"
+        preset-whitesource-product-control-plane: "true"
         preset-wssagent-keys: "true"
       run_if_changed: 'go.mod|go.sum'
       optional: true
