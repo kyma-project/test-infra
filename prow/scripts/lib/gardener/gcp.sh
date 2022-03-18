@@ -36,7 +36,7 @@ gardener::cleanup() {
       utils::oom_get_output
     fi
 
-    if  -n "${CLEANUP_CLUSTER}" == "true" ; then
+    if  [[ "${CLEANUP_CLUSTER}" == "true" ]] ; then
         log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
         gardener::deprovision_cluster \
             -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
