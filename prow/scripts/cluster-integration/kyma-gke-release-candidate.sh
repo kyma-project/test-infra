@@ -78,7 +78,7 @@ cleanupOnError() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
-    if [[ -n "${CLEANUP_CLUSTER}" == "true" ]]; then
+    if -n "${CLEANUP_CLUSTER}" == "true" ; then
         log::info "Deprovision cluster: \"${COMMON_NAME}\""
 
         #save disk names while the cluster still exists to remove them later
