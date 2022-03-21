@@ -31,9 +31,15 @@ function load_env() {
   fi
 }
 
-function run_tests() {
+function run_pre_upgrade_tests() {
   pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
-  make ci
+  make ci-pre-upgrade
+  popd
+}
+
+function run_post_upgrade_tests() {
+  pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
+  make ci-post-upgrade
   popd
 }
 
@@ -53,5 +59,11 @@ kyma::provision_k3d
 log::banner "Deploying Kyma version: ${KYMA_SOURCE} using Execution profile: ${EXECUTION_PROFILE}"
 kyma::deploy_kyma -s "${KYMA_SOURCE}" -p "${EXECUTION_PROFILE}"
 
-log::banner "Executing fast-integration tests"
-run_tests
+log::banner "Executing pre-upgrade fast-integration tests"
+run_pre_upgrade_tests
+
+log::banner "Upgrading Kyma to version: ${KYMA_UPGRADE_VERSION} using Execution profile: ${EXECUTION_PROFILE}"
+kyma::deploy_kyma -s "${KYMA_UPGRADE_VERSION}" -p "${EXECUTION_PROFILE}" -u "true"
+
+log::banner "Executing post-upgrade fast-integration tests"
+run_post_upgrade_tests
