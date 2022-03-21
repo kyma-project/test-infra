@@ -1446,8 +1446,6 @@ periodics: # runs on schedule
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             env:
-              - name: DEBUG
-                value: "true"
               - name: KYMA_MAJOR_VERSION
                 value: "2"
             resources:
