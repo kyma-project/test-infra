@@ -168,20 +168,6 @@ function reconciler::initialize_test_pod() {
   kubectl cp ./e2e-test/request-reconcile.sh -c test-pod reconciler/test-pod:/tmp
 }
 
-# Triggers reconciliation of Kyma and waits until reconciliation is in ready state
-function reconciler::reconcile_kyma() {
-  set +e
-  # Trigger Kyma reconciliation using reconciler
-  log::banner "Reconcile Kyma in the same cluster until it is ready"
-  kubectl exec -it -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/reconcile-kyma.sh"
-  if [[ $? -ne 0 ]]; then
-      log::error "Failed to reconcile Kyma"
-      kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler -c mothership-reconciler --tail -1
-      exit 1
-  fi
-  set -e
-}
-
 # Only triggers reconciliation of Kyma
 function reconciler::trigger_kyma_reconcile() {
   # Trigger Kyma reconciliation using reconciler
