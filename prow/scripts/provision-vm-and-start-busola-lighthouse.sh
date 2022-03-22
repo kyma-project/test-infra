@@ -107,7 +107,7 @@ for ZONE in ${EU_ZONES}; do
     gcloud compute instances create "busola-lighthouse-${RANDOM_ID}" \
     --metadata enable-oslogin=TRUE \
     --image "${IMAGE}" \
-    --machine-type n2-highcpu-16 \
+    --machine-type n1-standard-16 \
     --zone "${ZONE}" \
     --boot-disk-size 200 "${LABELS[@]}" && \
     log::info "Created busola-lighthouse-${RANDOM_ID} in zone ${ZONE}" && break
