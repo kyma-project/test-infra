@@ -51,9 +51,9 @@ templates:
               - jobConfig:
                   name: "post-busola-lighthouse"
                   optional: false
-                  run_if_changed: "/"
+                  run_if_changed: "^resources/|^lighthouse/"
                   labels:
-                    preset-build-pr: "false"
+                    preset-build-main: "false"
                     preset-gardener-azure-kyma-integration: "true"
                 inheritedConfigs:
                   global:

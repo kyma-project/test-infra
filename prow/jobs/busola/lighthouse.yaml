@@ -62,12 +62,12 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-busola-lighthouse"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "false"
+        preset-build-main: "false"
         preset-gardener-azure-kyma-integration: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '/'
+      run_if_changed: '^resources/|^lighthouse/'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
