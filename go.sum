@@ -718,8 +718,9 @@ github.com/fvbommel/sortorder v1.0.1/go.mod h1:uk88iVf1ovNn1iLfgUVU2F9o5eO30ui72
 github.com/gardener/component-cli v0.37.0 h1:tVdd/ir339DBHk1wKPKYtMT41Ric6sA+L787O4GoBnA=
 github.com/gardener/component-cli v0.37.0/go.mod h1:2YaaYl+53j5dancyRFoMk76LhOigbQbHV3zeydJwF3s=
 github.com/gardener/component-spec/bindings-go v0.0.52/go.mod h1:kQFMTWowNAp9tOp6aImQa/NoLzfvX29jN5Qgud9rpQU=
-github.com/gardener/component-spec/bindings-go v0.0.57 h1:3EYfNnIIlG/9mFI7gY+jKsGV7Gm44DdUXqRMwnUdP5M=
 github.com/gardener/component-spec/bindings-go v0.0.57/go.mod h1:kQFMTWowNAp9tOp6aImQa/NoLzfvX29jN5Qgud9rpQU=
+github.com/gardener/component-spec/bindings-go v0.0.58 h1:1J6T4AGYAmrs2Az2gdHTCAvJsNs7HGz9pqgBz0KKlpU=
+github.com/gardener/component-spec/bindings-go v0.0.58/go.mod h1:kQFMTWowNAp9tOp6aImQa/NoLzfvX29jN5Qgud9rpQU=
 github.com/gardener/image-vector v0.10.0/go.mod h1:32SHGcbmmueeK9VkawsFcEbsoENXQPIuuYiFBUP+vMQ=
 github.com/garyburd/redigo v0.0.0-20150301180006-535138d7bcd7/go.mod h1:NR3MbYisc3/PwhQ00EMzDiPmrwpPxAn5GI05/YaO1SY=
 github.com/getsentry/raven-go v0.2.0/go.mod h1:KungGk8q33+aIAZUIVWZDr2OfAEBsO49PX4NzFV5kcQ=
