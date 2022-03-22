@@ -14,11 +14,6 @@ plugins:
       - shrug
       - invalidcommitmsg
       - help
-  kyma-project/test-infra:
-    plugins:
-      - config-updater
-      - approve
-      - blunderbuss
       - verify-owners
       - owners-label
       - milestone
@@ -27,7 +22,11 @@ plugins:
       - pony
       - lifecycle
       - transfer-issue
-      - project
+  kyma-project/test-infra:
+    plugins:
+      - config-updater
+      - approve
+      - blunderbuss
   kyma-incubator:
     plugins:
       - cat
@@ -43,6 +42,14 @@ plugins:
       - shrug
       - invalidcommitmsg
       - help
+      - verify-owners
+      - owners-label
+      - milestone
+      - override
+      - retitle
+      - pony
+      - lifecycle
+      - transfer-issue
 
 external_plugins:
   kyma-project/test-infra:
