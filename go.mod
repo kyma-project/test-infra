@@ -10,7 +10,6 @@ replace (
 	// these two sigstore/* replaces are required for the image-syncer tool
 	github.com/sigstore/cosign => github.com/sigstore/cosign v1.2.1
 	github.com/sigstore/sigstore => github.com/sigstore/sigstore v1.0.1
-	golang.org/x/lint => golang.org/x/lint v0.0.0-20210508222113-6edffad5e616
 	k8s.io/api => k8s.io/api v0.22.2
 	k8s.io/apimachinery => k8s.io/apimachinery v0.22.2
 	k8s.io/client-go => k8s.io/client-go v0.22.2
