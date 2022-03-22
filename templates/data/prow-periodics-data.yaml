@@ -36,7 +36,7 @@ templates:
               - jobConfig:
                   name: ci-prow-label-sync
                   cron: "17 * * * *"
-                  image: gcr.io/k8s-prow/label_sync:v20220318-1a1db3d5d8
+                  image: gcr.io/k8s-prow/label_sync:v20220321-c30d92032c
                   command: label_sync
                   args:
                     - --config=/etc/config/labels.yaml
@@ -57,7 +57,7 @@ templates:
                   name: ci-prow-autobump
                   cron: "30 * * * 1-5"
                   slack_channel: kyma-prow-alerts
-                  image: gcr.io/k8s-prow/generic-autobumper:v20220318-1a1db3d5d8
+                  image: gcr.io/k8s-prow/generic-autobumper:v20220321-c30d92032c
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/prow-cluster-autobump-config.yaml
@@ -99,7 +99,7 @@ templates:
                   name: ci-prow-autobump-jobs
                   cron: "45 * * * 1-5"
                   slack_channel: kyma-prow-alerts
-                  image: gcr.io/k8s-prow/generic-autobumper:v20220318-1a1db3d5d8
+                  image: gcr.io/k8s-prow/generic-autobumper:v20220321-c30d92032c
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/test-infra-autobump-config.yaml
