@@ -29,6 +29,8 @@ if [[ -n "${CHANGES}" ]]; then
     in the development/tools directory of the repository and commit changes.
     For more info read: /docs/prow/templates.md
     "
+
+  git diff
   exit 1
 fi
 
