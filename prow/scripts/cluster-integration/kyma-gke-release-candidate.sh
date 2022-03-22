@@ -78,7 +78,7 @@ cleanupOnError() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
-    if [ -n "${CLEANUP_CLUSTER}" ]; then
+    if [[ "${CLEANUP_CLUSTER}" == "true" ]] ; then
         log::info "Deprovision cluster: \"${COMMON_NAME}\""
 
         #save disk names while the cluster still exists to remove them later
@@ -186,8 +186,6 @@ export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_return_subnet_name:?}"
 
 #Local variables
 DNS_SUBDOMAIN="${COMMON_NAME}"
-KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
-
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"

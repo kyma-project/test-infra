@@ -17,7 +17,7 @@ replace (
 )
 
 require (
-	cloud.google.com/go/bigquery v1.29.0
+	cloud.google.com/go/bigquery v1.30.0
 	cloud.google.com/go/firestore v1.6.1
 	cloud.google.com/go/functions v1.3.0
 	cloud.google.com/go/logging v1.4.2
@@ -54,14 +54,15 @@ require (
 	github.com/sigstore/sigstore v1.0.1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/smartystreets/goconvey v1.7.2
-	github.com/spf13/cobra v1.3.0
+	github.com/spf13/cobra v1.4.0
 	github.com/spf13/pflag v1.0.5
-	github.com/stretchr/testify v1.7.0
+	github.com/spf13/viper v1.10.0 // indirect
+	github.com/stretchr/testify v1.7.1
 	github.com/tidwall/gjson v1.14.0
 	github.com/vrischmann/envconfig v1.3.0
 	go.uber.org/zap v1.19.0
-	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
-	google.golang.org/api v0.70.0
+	golang.org/x/oauth2 v0.0.0-20220309155454-6242fa91716a
+	google.golang.org/api v0.73.0
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	k8s.io/api v0.22.2

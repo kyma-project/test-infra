@@ -30,7 +30,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220318-5f8b67d2"
             securityContext:
               privileged: true
             command:
@@ -74,7 +74,7 @@ presubmits: # runs on PRs
           base_ref: release-2.0
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220318-5f8b67d2"
             securityContext:
               privileged: true
             command:
@@ -118,7 +118,7 @@ presubmits: # runs on PRs
           base_ref: release-1.24
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220318-5f8b67d2"
             securityContext:
               privileged: true
             command:
@@ -162,7 +162,7 @@ presubmits: # runs on PRs
           base_ref: release-1.23
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220318-5f8b67d2"
             securityContext:
               privileged: true
             command:
@@ -214,7 +214,7 @@ postsubmits: # runs on main
           channel: kyma-prow-dev-null
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220318-5f8b67d2"
             securityContext:
               privileged: true
             command:
@@ -262,7 +262,7 @@ postsubmits: # runs on main
           channel: kyma-prow-dev-null
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220318-5f8b67d2"
             securityContext:
               privileged: true
             command:
@@ -310,7 +310,7 @@ postsubmits: # runs on main
           channel: kyma-prow-dev-null
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220318-5f8b67d2"
             securityContext:
               privileged: true
             command:
@@ -358,7 +358,7 @@ postsubmits: # runs on main
           channel: kyma-prow-dev-null
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220217-8d32835a"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220318-5f8b67d2"
             securityContext:
               privileged: true
             command:

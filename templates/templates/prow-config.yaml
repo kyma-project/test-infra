@@ -18,10 +18,10 @@ plank:
       timeout: 3h
       grace_period: 10m
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20220305-a9a1fd8e47
-        initupload: gcr.io/k8s-prow/initupload:v20220305-a9a1fd8e47
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20220305-a9a1fd8e47
-        sidecar: gcr.io/k8s-prow/sidecar:v20220305-a9a1fd8e47
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20220321-c30d92032c
+        initupload: gcr.io/k8s-prow/initupload:v20220321-c30d92032c
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20220321-c30d92032c
+        sidecar: gcr.io/k8s-prow/sidecar:v20220321-c30d92032c
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -831,12 +831,6 @@ presets:
     env:
       - name: SLACK_CHANNEL
         value: CBMPTMCV9
-  # remove after new scans are triaged
-  - labels:
-      preset-whitesource-product-kyma-old: "true"
-    env:
-      - name: WS_PRODUCTNAME
-        value: "OOSS - KYMA"
   - labels:
       preset-whitesource-product-kyma: "true"
     env:
@@ -852,6 +846,16 @@ presets:
     env:
       - name: WS_PRODUCTNAME
         value: "SHC - KYMA DASHBOARD 1.0"
+  - labels:
+      preset-whitesource-product-kyma-release: "true"
+    env:
+      - name: WS_PRODUCTNAME
+        value: "SHC - KYMA RUNTIME RELEASE"
+  - labels:
+      preset-whitesource-product-kyma-release-previous: "true"
+    env:
+      - name: WS_PRODUCTNAME
+        value: "SHC - KYMA RUNTIME RELEASE-1"
   # volume mounts for kind
   - labels:
       preset-kind-volume-mounts: "true"
