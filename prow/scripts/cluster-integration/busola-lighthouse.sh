@@ -121,8 +121,6 @@ mkdir -p "$PWD/busola-tests/fixtures"
 mkdir -p "$PWD/busola-tests/test-results"
 cp "$PWD/kubeconfig-kyma.yaml" "$PWD/busola-tests/fixtures/kubeconfig.yaml"
 
-ls "$PWD/busola-tests"
-
-echo "STEP: Running Lighthouse audit inside Docker albo i nie"
+echo "STEP: Running Lighthouse audit inside Docker"
 docker run --entrypoint /bin/bash --network=host -v "$PWD/busola-tests:/tests" -w /tests $PLAYWRIGHT_IMAGE -c "npm ci --no-optional; npx playwright install;  NO_COLOR=1 npx playwright test"
 
