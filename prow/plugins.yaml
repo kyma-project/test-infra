@@ -27,6 +27,10 @@ plugins:
       - config-updater
       - approve
       - blunderbuss
+  kyma-incubator/compass:
+    plugins:
+      - approve
+      - blunderbuss
   kyma-incubator:
     plugins:
       - cat

@@ -239,8 +239,10 @@ tide:
         - do-not-merge/invalid-commit-message
       orgs:
         - kyma-project
+        - kyma-incubator
       excludedRepos:
         - kyma-project/test-infra # handled in separate query specifically for approve plugin
+        - kyma-incubator/compass # handled in separate query specifically for approve plugin
       reviewApprovedRequired: true
     - labels:
         - lgtm
@@ -254,20 +256,9 @@ tide:
         - do-not-merge/missing-docs-review
       repos:
         - kyma-project/test-infra
-    - labels:
-        - lgtm
-      missingLabels:
-        - needs-rebase
-        - do-not-merge/hold
-        - do-not-merge/work-in-progress
-        - do-not-merge/invalid-owners-file
-        - do-not-merge/invalid-commit-message
-      orgs:
-        - kyma-incubator
-      reviewApprovedRequired: true
+        - kyma-incubator/compass
   context_options:
     from-branch-protection: true
-#    skip-unknown-contexts: true
 
 presets:
   - labels:
