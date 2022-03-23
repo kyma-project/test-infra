@@ -21,6 +21,8 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
 fi
 
 cleanup() {
+  sleep 2h
+
   # TODO - collect junit results
   log::info "Stopping instance kyma-integration-test-${RANDOM_ID}"
   log::info "It will be removed automatically by cleaner job"
@@ -128,12 +130,6 @@ utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" ".env" "~/.env"
 log::info "Copying Kyma to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
-
-if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
-  log::info "Copying components file for compass tests"
-  #shellcheck disable=SC2088
-  utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-compass-components.yaml" "~/kyma-integration-k3d-compass-components.yaml"
-fi
 
 log::info "Triggering the installation"
 gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d.sh"
