@@ -38,6 +38,8 @@ periodics: # runs on schedule
                 value: "1"
               - name: GO111MODULE
                 value: "on"
+              - name: KUBERNETES_RUNTIME
+                value: "k3d"
             resources:
               requests:
                 memory: 3Gi

@@ -5,7 +5,7 @@
 # It will calculate which Kyma version should be tested and will pass it on to the 'provision-vm-cli.sh' script
 #
 # INPUT:
-# - COMPAT_BACKTRACK: number of versions to go back in Kyma
+# - COMPAT_BACKTRACK: number of Kyma versions to go back
 #
 # REQUIREMENTS:
 # - git
@@ -58,6 +58,11 @@ else
     # remove patch
     CURRENT=$(echo "${RELEASES[1]}" | awk -F'.' '{print $1"."$2}')
     for r in "${RELEASES[@]}"; do
+        # skip current release
+        if [[ $r == ${RELEASES[0]} ]]; then
+            continue
+        fi
+
         # remove patch from candidate
         WANT=$(echo "${r}" | awk -F'.' '{print $1"."$2}')
         if [[ "$WANT" != "$CURRENT" ]]; then
@@ -77,7 +82,7 @@ fi
 
 # Exceptional release replacements. Add a replacement pair here as follows: "release::replacement"
 # This is required when we have special releases that do not follow the regular pattern.
-EXCEPTIONS=('1.16.0::1.16.0-rc3' '2.0.0::2.0.0-rc1')
+EXCEPTIONS=('1.16.0::1.16.0-rc3')
 
 for index in "${EXCEPTIONS[@]}" ; do
     KEY="${index%%::*}"
