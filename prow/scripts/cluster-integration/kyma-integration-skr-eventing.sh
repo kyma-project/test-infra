@@ -66,7 +66,9 @@ export SKIP_CLEANUP="true"
 function skr::cleanup() {
     # cleans the compass scenario
     # if the cleanup fails the de-provisioning still needs to be executed
-    eventing::fast_integration_test_cleanup || eventing::test_fast_integration_deprovision_skr
+    set +e
+    eventing::fast_integration_test_cleanup
+    set -e
 
     eventing::test_fast_integration_deprovision_skr
 }
