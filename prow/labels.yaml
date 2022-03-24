@@ -70,6 +70,8 @@ default:
     - color: 0ffa16
       description: Indicates a PR has been approved by an approver from all required OWNERS files.
       name: approved
+      previously:
+        - name: ":heavy_check_mark: Approved"
       target: prs
       prowPlugin: approve
       addedBy: approvers
@@ -81,6 +83,8 @@ default:
     - color: e11d21
       description: Indicates that a PR should not merge because someone has issued a /hold command.
       name: do-not-merge/hold
+      previously:
+        - name: ":warning: DO NOT MERGE :warning:"
       target: prs
       prowPlugin: hold
       addedBy: anyone
@@ -110,6 +114,7 @@ default:
       addedBy: prow
       previously:
         - name: WIP
+        - name: ":construction: WIP :construction:"
     - color: 7057ff
       description: Denotes an issue ready for a new contributor, according to the "help wanted" guidelines.
       name: 'good first issue'
@@ -129,6 +134,7 @@ default:
       prowPlugin: test-untrusted
       isExternalPlugin: yes
       addedBy: org-members
+
     # area labels
     - color: 0052cc
       description: Issues or PRs related to dependency changes
@@ -244,6 +250,8 @@ default:
     - color: "604460"
       description: Denotes an issue or PR that has aged beyond stale and will be auto-closed.
       name: lifecycle/rotten
+      previously:
+        - name: ":no_entry_sign: abandoned :no_entry_sign:"
       target: both
       prowPlugin: lifecycle
       addedBy: anyone or [@kyma-stale-bot[bot]](https://github.com/apps/kyma-stale-bot)
