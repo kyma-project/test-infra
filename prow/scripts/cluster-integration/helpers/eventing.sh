@@ -230,3 +230,13 @@ function eventing::post_upgrade_test_fast_integration() {
 
     log::success "Post upgrade Eventing tests completed"
 }
+
+function eventing::fast_integration_test_cleanup() {
+    log::info "Running fast integration tests cleanup to remove the testing resources such as namespaces and compass scenario"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    npm run eventing-test-cleanup
+    popd
+
+    log::success "Fast integration tests cleanup completed"
+}

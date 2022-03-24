@@ -44,22 +44,32 @@ utils::check_required_vars "${requiredVars[@]}"
 ERROR_LOGGING_GUARD="true"
 export ERROR_LOGGING_GUARD
 
-# set COMMON_NAME for cluster
-RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
-readonly COMMON_NAME_PREFIX="evnt"
-export COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-
-# set ENVs to be used by KEB to provision SKR
-export INSTANCE_ID=$(cat /proc/sys/kernel/random/uuid) # SKR Runtime Id
-export RUNTIME_NAME="${COMMON_NAME}"
 export KYMA_VERSION="PR-${PULL_NUMBER}"
+
+# shellcheck disable=SC2155
 # shellcheck disable=SC2002
 export KYMA_OVERRIDES_VERSION=$(cat "${KYMA_SOURCES_DIR}/tests/fast-integration/eventing-test/prow/config/skr_config.json" | jq -r '.kymaOverridesVersion')
 export KYMA_TYPE=SKR
 
+# shellcheck disable=SC2155
+# will be used in the test namespace and for registering the compass scenario in the eventing tests
+export TEST_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c4)
+
+# shellcheck disable=SC2155
+# set ENVs to be used by KEB to provision SKR
+export INSTANCE_ID=$(cat /proc/sys/kernel/random/uuid) # SKR Runtime Id
+export RUNTIME_NAME="kyma-${TEST_SUFFIX}"
+# skip the cluster resources cleanup as the cluster will be de-provisioned anyway
+export SKIP_CLEANUP="true"
+
 # Runs cleanup for the job
 function skr::cleanup() {
-    log::banner "De-provision SKR"
+    # cleans the compass scenario
+    # if the cleanup fails the de-provisioning still needs to be executed
+    set +e
+    eventing::fast_integration_test_cleanup
+    set -e
+
     eventing::test_fast_integration_deprovision_skr
 }
 
