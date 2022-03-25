@@ -23,6 +23,7 @@ function load_env() {
 }
 
 function install_cli() {
+  apt-cache madison docker-ce
   wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
 
   local install_dir
@@ -54,7 +55,7 @@ function deploy_kyma() {
   k3d version
 
   if [[ -v K8S_VERSION ]]; then
-    echo "Creating k3d with kuberenetes version: ${K8S_VERSION}"
+    echo "Creating k3d with kubernetes version: ${K8S_VERSION}"
     kyma provision k3d --ci -k "${K8S_VERSION}"
   else
     kyma provision k3d --ci
