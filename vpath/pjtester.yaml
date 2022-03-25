@@ -1,3 +1,5 @@
 pjNames:
   - pjName: "kyma-integration-k3d-compass-dev"
   - pjName: "kyma-integration-k3d"
+  - pjName: "pre-main-reconciler-integration-k3d"
+  - pjName: "pre-dev-reconciler-integration-k3d"

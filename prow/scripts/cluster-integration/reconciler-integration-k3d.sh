@@ -43,7 +43,10 @@ function install_cli() {
 }
 
 function provision_k3d() {
+  wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+
   kyma provision k3d --ci
+  # kyma provision k3d --ci --k3d-arg='--no-rollback'
 }
 
 function run_tests() {
