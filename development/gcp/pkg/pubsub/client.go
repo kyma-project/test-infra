@@ -1,14 +1,67 @@
 package pubsub
 
 import (
-	"cloud.google.com/go/pubsub"
 	"context"
 	"encoding/json"
+	"flag"
 	"fmt"
-	"github.com/google/go-github/v40/github"
 	"net/url"
 	"path"
+
+	"cloud.google.com/go/pubsub"
+	"github.com/google/go-github/v40/github"
+	"github.com/kyma-project/test-infra/development/logging"
+	"google.golang.org/api/option"
 )
+
+func (o *ClientConfig) AddFlags(fs *flag.FlagSet) {
+	fs.StringVar(&o.ProjectID, "pubsub-project-id", "", "Google cloud pubsub project ID.")
+	fs.StringVar(&o.CredentialsFilePath, "pubsub-credentials-files", "/etc/pubsub/credentials.json", "Path to the file with pubsub client credentials.")
+}
+
+func (o *ClientConfig) NewClient(ctx context.Context, options ...ClientOption) (*Client, error) {
+	var err error
+	client := &Client{}
+	for _, opt := range options {
+		err := opt(o)
+		if err != nil {
+			return nil, fmt.Errorf("failed applying functional option, error: %w", err)
+		}
+	}
+
+	if o.ProjectID == "" {
+		return nil, fmt.Errorf("google pubsub project id was not provided")
+	} else if o.CredentialsFilePath == "" {
+		return nil, fmt.Errorf("google pubsub client credentials file path was not provided")
+	}
+
+	if o.logger != nil {
+		client.logger = o.logger
+	} else {
+		client.logger = logging.NewLogger()
+	}
+
+	pubSubClient, err := pubsub.NewClient(ctx, o.ProjectID, o.opts...)
+	if err != nil {
+		return nil, err
+	}
+	client.Client = pubSubClient
+	return client, nil
+}
+
+func (o *ClientConfig) WithLogger(logger logging.LoggerInterface) ClientOption {
+	return func(config *ClientConfig) error {
+		config.logger = logger
+		return nil
+	}
+}
+
+func (o *ClientConfig) WithGoogleOption(opt option.ClientOption) ClientOption {
+	return func(config *ClientConfig) error {
+		config.opts = append(config.opts, opt)
+		return nil
+	}
+}
 
 // NewClient create kyma implementation of pubsub Client.
 // It wraps google pubsub client.

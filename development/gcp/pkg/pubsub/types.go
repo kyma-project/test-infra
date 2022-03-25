@@ -2,12 +2,24 @@ package pubsub
 
 import (
 	"cloud.google.com/go/pubsub"
+	"github.com/kyma-project/test-infra/development/logging"
+	"google.golang.org/api/option"
 	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
 )
+
+type ClientConfig struct {
+	ProjectID           string
+	CredentialsFilePath string
+	logger              logging.LoggerInterface
+	opts                []option.ClientOption
+}
+
+type ClientOption func(*ClientConfig) error
 
 // Client wraps google pubsub client and provide additional methods.
 type Client struct {
 	*pubsub.Client
+	logger logging.LoggerInterface
 }
 
 // This is the message which will be send by pubsub system.
