@@ -23,6 +23,8 @@ function load_env() {
 }
 
 function install_cli() {
+  sudo apt-get remove docker docker-engine docker.io containerd runc
+
   apt-cache madison docker-ce
   sudo apt-get update
   sudo apt-get upgrade -y
