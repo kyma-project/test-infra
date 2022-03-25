@@ -59,7 +59,7 @@ else
     CURRENT=$(echo "${RELEASES[1]}" | awk -F'.' '{print $1"."$2}')
     for r in "${RELEASES[@]}"; do
         # skip current release
-        if [[ $r == ${RELEASES[0]} ]]; then
+        if [[ $r == "${RELEASES[0]}" ]]; then
             continue
         fi
 
