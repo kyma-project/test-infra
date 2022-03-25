@@ -24,6 +24,30 @@ function load_env() {
 
 function install_cli() {
   apt-cache madison docker-ce
+  sudo apt-get update
+  sudo apt-get upgrade -y
+  sudo apt-get install -y \
+      apt-transport-https \
+      ca-certificates \
+      curl \
+      gnupg2 \
+      socat \
+      lsb-release \
+      wget \
+      build-essential \
+      conntrack \
+      software-properties-common \
+      postgresql-client-11
+
+  curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+  echo \
+    "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+    $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+  sudo apt update
+  sudo apt-cache policy docker-ce
+  sudo apt install -y docker-ce=5:20.10.14~3-0~debian-buster
   wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
 
   local install_dir
