@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "pre-main-compass-gke-integration"
+  - pjName: "pre-compass-components-hydrator"
     pjPath: "test-infra/prow/jobs/incubator/compass/components/hydrator"
     report: true
   prConfigs:
