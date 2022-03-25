@@ -55,9 +55,9 @@ function deploy_kyma() {
 
   if [[ -v K8S_VERSION ]]; then
     echo "Creating k3d with kubernetes version: ${K8S_VERSION}"
-    kyma provision k3d --ci -k "${K8S_VERSION}"
+    kyma provision k3d --ci -k "${K8S_VERSION}" --verbose --k3d-arg='--no-rollback' --k3d-arg='--trace'
   else
-    kyma provision k3d --ci
+    kyma provision k3d --ci --verbose --k3d-arg='--no-rollback' --k3d-arg='--trace'
   fi
   
   echo "Printing client and server version info"
