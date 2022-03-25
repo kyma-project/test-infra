@@ -4,7 +4,7 @@ set -o errexit
 set -o pipefail
 
 readonly RECONCILER_DIR="./reconciler"
-readonly GO_VERSION=1.17.8
+readonly GO_VERSION=1.18
 readonly PG_MIGRATE_VERSION=v4.15.1
 readonly INSTALL_DIR="/usr/local/bin"
 
