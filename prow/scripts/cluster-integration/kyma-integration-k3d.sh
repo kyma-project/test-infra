@@ -23,8 +23,6 @@ function load_env() {
 }
 
 function install_cli() {
-  wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
-
   local install_dir
   declare -r install_dir="/usr/local/bin"
   mkdir -p "$install_dir"
