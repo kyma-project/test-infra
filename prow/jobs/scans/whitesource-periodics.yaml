@@ -630,7 +630,7 @@ periodics: # runs on schedule
                 cpu: 400m
   
 #-------------Release-----------------------------
-    - name: kyma-2.0-whitesource-scan
+    - name: kyma-2.1-whitesource-scan
       annotations:
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
@@ -654,7 +654,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: release-2.0
+          base_ref: release-2.1
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220318-5f8b67d2"
@@ -681,7 +681,7 @@ periodics: # runs on schedule
   
 
 #-------------Previous Release--------------------
-    - name: kyma-1.24-whitesource-scan
+    - name: kyma-2.0-whitesource-scan
       annotations:
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
@@ -705,7 +705,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: release-1.24
+          base_ref: release-2.0
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220318-5f8b67d2"
