@@ -161,6 +161,10 @@ utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home
 
 # run the relevant script to deploy Kyma and run fast-integration tests
 if [[ "${KYMA_UPGRADE_VERSION}" ]]; then
+  if [[ "$KYMA_UPGRADE_VERSION" == "2.1.0" ]]
+    log::banner "Execute migration script 2.0->2.1"
+    curl https://raw.githubusercontent.com/kyma-project/kyma/main/docs/assets/2.0-2.1-fix-upgraded-resources.sh | sh
+  fi
   log::banner "Triggering the tests for Kyma upgrade scenario from version: ${KYMA_SOURCE} to version: ${KYMA_UPGRADE_VERSION}"
   gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/reconciler-integration-with-cli-upgrade-k3d.sh"
 else
