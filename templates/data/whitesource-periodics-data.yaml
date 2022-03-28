@@ -86,20 +86,6 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
-              # console is only valid for Kyma 1.24
-              - jobConfig:
-                  repository: "console"
-                  language: "javascript"
-                  project: "kyma-project"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-                    - "product_kyma_release_previous"
               - jobConfig:
                   repository: "busola"
                   language: "javascript"
@@ -154,36 +140,6 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "product_kyma"
-              # api-gateway is only valid for Kyma 1.24
-              - jobConfig:
-                  repository: "api-gateway"
-                  language: "golang-mod"
-                  project: "kyma-incubator"
-                  base_ref: "main"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-                    - "product_kyma_release_previous"
-              # dex is only valid for Kyma 1.24
-              - jobConfig:
-                  repository: "dex"
-                  language: "golang-mod"
-                  project: "kyma-incubator"
-                  base_ref: "kyma-master"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-                    - "product_kyma_release_previous"
               - jobConfig:
                   repository: "hydroform"
                   language: "golang-mod"
