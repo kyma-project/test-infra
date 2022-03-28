@@ -331,7 +331,7 @@ periodics: # runs on schedule
               - name : REPOSITORY
                 value: hydroform
               - name: CREATE_SUBPROJECTS
-                value: "false"
+                value: "true"
               - name: SCAN_LANGUAGE
                 value: golang-mod
             resources:
