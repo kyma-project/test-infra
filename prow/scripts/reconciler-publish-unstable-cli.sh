@@ -31,7 +31,7 @@ function testCustomImage() {
 cd "${KYMA_PROJECT_DIR}/cli"
 
 log::info "Bump reconciler version used by the Kyma CLI"
-go get github.com/kyma-incubator/reconciler
+go install github.com/kyma-incubator/reconciler
 
 make resolve
 log::info "Run unit-tests for kyma kyma"
