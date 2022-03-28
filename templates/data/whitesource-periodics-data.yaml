@@ -154,6 +154,7 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "product_kyma"
+              # used in Kyma 2.0
               - jobConfig:
                   repository: "terraform-provider-gardener"
                   language: "golang-mod"
@@ -166,7 +167,7 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
-                    - "product_kyma"
+                    - "product_kyma_release_previous"
               - jobConfig:
                   repository: "podpreset-crd"
                   language: "golang-mod"
