@@ -150,13 +150,13 @@ var components = []struct {
 	{path: "central-application-gateway", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
-			jobsuite.Since(releases.Release123),
+			jobsuite.AllReleases(),
 		},
 	},
 	{path: "central-application-connectivity-validator", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
-			jobsuite.Since(releases.Release123),
+			jobsuite.AllReleases(),
 		},
 	},
 	{path: "telemetry-operator", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
