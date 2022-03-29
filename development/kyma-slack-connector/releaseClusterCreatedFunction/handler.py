@@ -19,12 +19,21 @@ def main(event, context):
 	print("sending notification to channel: {}".format(os.environ['NOTIFICATION_SLACK_CHANNEL']))
 	# Get cloud events data.
 	msg = json.loads(base64.b64decode(event["data"]["Data"]))
+	uploadedKubeconfig=[]
+	result=[]
 	try:
 		# push kubeconfig
-		uploadedKubeconfig = app.client.files_upload(content=msg["kubeconfig"])
+		kubeconfigFilename= "kubeconfig_"+msg["cluster_name"]+".yaml"
+		uploadedKubeconfig = app.client.files_upload(content=msg["kubeconfig"], filename=kubeconfigFilename)
 		assert uploadedKubeconfig["ok"]
 		print("uploaded kubeconfig for message id: {}".format(event["data"]["ID"]))
-
+	except SlackApiError as e:
+		assert uploadedKubeconfig["ok"] is False
+		print(f"Got an error: {e.response['error']}")
+		print("failed upload file for message id: {}".format(event["data"]["ID"]))
+		return
+	
+	try:
 		# Deliver message to the channel.
 		result = app.client.chat_postMessage(channel=os.environ['NOTIFICATION_SLACK_CHANNEL'],
 											text="Kyma {} was released.".format(msg["kyma_version"]),	# TODO
@@ -61,6 +70,20 @@ def main(event, context):
 													"text": {
 														"type": "mrkdwn",
 														"text": "<"+uploadedKubeconfig['file']['permalink']+"| >"
+													}
+												},
+												{
+													"type": "section",
+													"text": {
+														"type": "mrkdwn",
+														"text": "debug: "+uploadedKubeconfig['file']['permalink']
+													}
+												},
+												{
+													"type": "section",
+													"text": {
+														"type": "mrkdwn",
+														"text": "<"+uploadedKubeconfig['file']['permalink']+"| debug2>"
 													}
 												}
 											],

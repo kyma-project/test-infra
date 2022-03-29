@@ -1,6 +1,13 @@
 functionEnabled: true
 # Forwarded event type
 eventType: "releasecluster.created.v1"
+#
+subscriptionAppName: "mp-sap-slack-connector" #pubsub-connector"
+#
+subscriptionServiceName: "releasecluster-created-v1"
+#
+subscriptionServiceNamespace: "slack-connector"
+subscriptionNamespace: "slack-connector"
 # Slack channel name to send messages.
 notificationSlackChannel: "neighbors-dev-test"
 # Path to directory with function code. Relative to repository root.
