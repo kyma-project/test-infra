@@ -1,0 +1,10 @@
+# Enable rendering pubsub-connector objects from templates.
+connectorDeploymentEnabled: true
+# Subscription ID to pull messages from.
+pubsubSubscriptionID: "releasecluster.created-toolingKyma"
+# Forwarded event type
+eventType: "releasecluster.created.v1"
+# GCP project with pubsub subscription
+projectID: "sap-kyma-prow"
+# Kyma eventing target application name where publish events.
+targetAppName: "mp-slack-connector"
