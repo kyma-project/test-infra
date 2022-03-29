@@ -136,12 +136,15 @@ function kyma::get_previous_release_version {
 }
 
 kyma::provision_k3d() {
+  wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
   k3d version
 
   if [[ -v K8S_VERSION ]]; then
     echo "Creating k3d with kubernetes version: ${K8S_VERSION}"
     kyma provision k3d --ci -k "${K8S_VERSION}"
+    # kyma provision k3d --ci -k "${K8S_VERSION}" --k3d-arg='--no-rollback'
   else
+    # kyma provision k3d --ci --k3d-arg='--no-rollback'
     kyma provision k3d --ci
   fi
 
