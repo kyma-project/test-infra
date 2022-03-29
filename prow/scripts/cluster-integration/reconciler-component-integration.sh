@@ -6,6 +6,7 @@ readonly GO_VERSION=1.17.8
 export KYMA_SOURCES_DIR="./kyma"
 export KUBECONFIG="${HOME}/.kube/config"
 export CLUSTER_DOMAIN="local.kyma.dev"
+export ISTIOCTL_VERSION="1.12.3"
 
 function prereq_test() {
   command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
