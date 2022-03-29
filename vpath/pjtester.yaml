@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "kyma-integration-k3d"
+  - pjName: "kyma-alpha-integration-production-gardener-azure"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 13776
