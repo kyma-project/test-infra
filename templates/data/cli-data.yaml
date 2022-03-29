@@ -81,6 +81,7 @@ templates:
                     - extra_refs_kyma
                     - disable_testgrid
                     - image_buildpack-golang
+                    - jobConfig_buildpack_incubator
                     - jobConfig_slack_jellyfish
                     - jobConfig_reconciler_publish_unstable_cli
               - jobConfig:
