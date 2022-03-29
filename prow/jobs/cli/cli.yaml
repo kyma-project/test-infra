@@ -142,6 +142,59 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+    - name: unstable-cli
+      annotations:
+        description: "Bump reconciler version used by CLI and publish the unstable CLI binaries"
+        pipeline.clusterprovisioning: "reconciler"
+        pipeline.installer: "reconciler"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "pr-merge"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "unstable-cli"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-bot-github-token: "true"
+        preset-gc-project-env: "true"
+        preset-kyma-cli-unstable: "true"
+        preset-sa-vm-kyma-integration: "true"
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      reporter_config:
+        slack:
+          channel: jellyfish-notifications
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220325-ee9a5782"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-unstable-cli.sh"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: stable-kyma-cli
       annotations:
         pipeline.trigger: "pr-merge"
