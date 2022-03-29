@@ -35,7 +35,7 @@ def main(event, context):
 													"elements": [
 														{
 															"type": "mrkdwn",
-															"text": "Kyma OS was released, rejoice. :blobwant:"
+															"text": "Kyma OS was released, rejoice."
 														}
 													]
 												},
@@ -43,7 +43,7 @@ def main(event, context):
 													"type": "header",
 													"text": {
 														"type": "plain_text",
-														"text": "Kyma OS {} was released.".format(
+														"text": "Kyma OS {} was released :tada:".format(
 																msg["kyma_version"])
 													}
 												},
@@ -51,7 +51,7 @@ def main(event, context):
 													"type": "section",
 													"text": {
 														"type": "mrkdwn",
-														"text": "Kyma OS {} was released, cubeconfig for the `{}` cluster.".format(
+														"text": "Kyma OS {} was released, cubeconfig for the `{}` cluster :blobwant:".format(
 																msg["kyma_version"],
 																msg["cluster_name"])
 													}

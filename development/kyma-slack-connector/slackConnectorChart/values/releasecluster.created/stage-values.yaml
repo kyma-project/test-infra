@@ -6,4 +6,4 @@ notificationSlackChannel: "neighbors-dev-test"
 # Path to directory with function code. Relative to repository root.
 functionBaseDir: "/development/kyma-slack-connector/releaseClusterCreatedFunction"
 # Branch name with function code.
-branch: "release_cluster"
+branch: "slack_tooling_rc"
