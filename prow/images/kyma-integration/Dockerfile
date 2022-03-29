@@ -124,7 +124,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 && \
     rm -rf /var/lib/apt/lists/*
 
-ENV AZURE_CLI_VERSION="2.18.0-2*"
+ENV AZURE_CLI_VERSION="2.34.1-1*"
 
 RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | \
     tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null && \

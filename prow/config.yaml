@@ -20,10 +20,10 @@ plank:
       timeout: 3h
       grace_period: 10m
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20220318-1a1db3d5d8
-        initupload: gcr.io/k8s-prow/initupload:v20220318-1a1db3d5d8
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20220318-1a1db3d5d8
-        sidecar: gcr.io/k8s-prow/sidecar:v20220318-1a1db3d5d8
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20220323-9b8611d021
+        initupload: gcr.io/k8s-prow/initupload:v20220323-9b8611d021
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20220323-9b8611d021
+        sidecar: gcr.io/k8s-prow/sidecar:v20220323-9b8611d021
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -241,8 +241,10 @@ tide:
         - do-not-merge/invalid-commit-message
       orgs:
         - kyma-project
+        - kyma-incubator
       excludedRepos:
         - kyma-project/test-infra # handled in separate query specifically for approve plugin
+        - kyma-incubator/compass # handled in separate query specifically for approve plugin
       reviewApprovedRequired: true
     - labels:
         - lgtm
@@ -256,20 +258,9 @@ tide:
         - do-not-merge/missing-docs-review
       repos:
         - kyma-project/test-infra
-    - labels:
-        - lgtm
-      missingLabels:
-        - needs-rebase
-        - do-not-merge/hold
-        - do-not-merge/work-in-progress
-        - do-not-merge/invalid-owners-file
-        - do-not-merge/invalid-commit-message
-      orgs:
-        - kyma-incubator
-      reviewApprovedRequired: true
+        - kyma-incubator/compass
   context_options:
     from-branch-protection: true
-#    skip-unknown-contexts: true
 
 presets:
   - labels:
@@ -851,12 +842,12 @@ presets:
   - labels:
       preset-whitesource-product-kyma-release: "true"
     env:
-      - name: PRODUCTNAME
+      - name: WS_PRODUCTNAME
         value: "SHC - KYMA RUNTIME RELEASE"
   - labels:
       preset-whitesource-product-kyma-release-previous: "true"
     env:
-      - name: PRODUCTNAME
+      - name: WS_PRODUCTNAME
         value: "SHC - KYMA RUNTIME RELEASE-1"
   # volume mounts for kind
   - labels:

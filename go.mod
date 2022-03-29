@@ -31,8 +31,8 @@ require (
 	github.com/docker/docker v20.10.12+incompatible // indirect
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
 	github.com/fsouza/go-dockerclient v1.7.10
-	github.com/gardener/component-cli v0.37.0
-	github.com/gardener/component-spec/bindings-go v0.0.57
+	github.com/gardener/component-cli v0.38.0
+	github.com/gardener/component-spec/bindings-go v0.0.59
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-logr/logr v0.4.0
 	github.com/go-yaml/yaml v2.1.0+incompatible
@@ -57,10 +57,10 @@ require (
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.10.0 // indirect
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.7.1
 	github.com/tidwall/gjson v1.14.0
 	github.com/vrischmann/envconfig v1.3.0
-	go.uber.org/zap v1.19.0
+	go.uber.org/zap v1.21.0
 	golang.org/x/oauth2 v0.0.0-20220309155454-6242fa91716a
 	google.golang.org/api v0.73.0
 	gopkg.in/yaml.v2 v2.4.0
