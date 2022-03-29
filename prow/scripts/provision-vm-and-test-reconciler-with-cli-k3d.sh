@@ -161,7 +161,7 @@ utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home
 
 # run the relevant script to deploy Kyma and run fast-integration tests
 if [[ "${KYMA_UPGRADE_VERSION}" ]]; then
-  if [[ "$KYMA_UPGRADE_VERSION" == "2.1.0" ]]
+  if [[ "$KYMA_UPGRADE_VERSION" == "2.1.0" ]]; then
     log::banner "Execute migration script 2.0->2.1"
     curl https://raw.githubusercontent.com/kyma-project/kyma/main/docs/assets/2.0-2.1-fix-upgraded-resources.sh | sh
   fi
