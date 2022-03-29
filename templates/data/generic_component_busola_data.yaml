@@ -9,7 +9,7 @@ templates:
                   path: 'web'
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/busola"
-                  run_if_changed: "^core/|^core-ui/|^service-catalog-ui/|^shared/|^package.json|^Makefile|^Dockerfile$"
+                  run_if_changed: "^core/|^core-ui/|^package.json|^Makefile|^Dockerfile$"
                   release_since: "1.24"
                 inheritedConfigs:
                   global:
@@ -58,7 +58,7 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/busola"
                     - "release-local"
-                  run_if_changed: "^backend/|^core/|^core-ui/|^service-catalog-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local"
+                  run_if_changed: "^backend/|^core/|^core-ui/|^tests/|^package.json|^Makefile|^Dockerfile.local"
                   release_since: "1.24"
                 inheritedConfigs:
                   global:

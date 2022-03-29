@@ -14,7 +14,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^core/|^core-ui/|^service-catalog-ui/|^shared/|^package.json|^Makefile|^Dockerfile$'
+      run_if_changed: '^core/|^core-ui/|^package.json|^Makefile|^Dockerfile$'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -59,7 +59,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^core/|^core-ui/|^service-catalog-ui/|^shared/|^package.json|^Makefile|^Dockerfile$'
+      run_if_changed: '^core/|^core-ui/|^package.json|^Makefile|^Dockerfile$'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -103,7 +103,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^core/|^core-ui/|^service-catalog-ui/|^shared/|^package.json|^Makefile|^Dockerfile$'
+      run_if_changed: '^core/|^core-ui/|^package.json|^Makefile|^Dockerfile$'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -147,7 +147,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^core/|^core-ui/|^service-catalog-ui/|^shared/|^package.json|^Makefile|^Dockerfile$'
+      run_if_changed: '^core/|^core-ui/|^package.json|^Makefile|^Dockerfile$'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -195,7 +195,7 @@ postsubmits: # runs on main
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^core/|^core-ui/|^service-catalog-ui/|^shared/|^package.json|^Makefile|^Dockerfile$'
+      run_if_changed: '^core/|^core-ui/|^package.json|^Makefile|^Dockerfile$'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -241,7 +241,7 @@ postsubmits: # runs on main
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^core/|^core-ui/|^service-catalog-ui/|^shared/|^package.json|^Makefile|^Dockerfile$'
+      run_if_changed: '^core/|^core-ui/|^package.json|^Makefile|^Dockerfile$'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -286,7 +286,7 @@ postsubmits: # runs on main
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^core/|^core-ui/|^service-catalog-ui/|^shared/|^package.json|^Makefile|^Dockerfile$'
+      run_if_changed: '^core/|^core-ui/|^package.json|^Makefile|^Dockerfile$'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -331,7 +331,7 @@ postsubmits: # runs on main
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^core/|^core-ui/|^service-catalog-ui/|^shared/|^package.json|^Makefile|^Dockerfile$'
+      run_if_changed: '^core/|^core-ui/|^package.json|^Makefile|^Dockerfile$'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
