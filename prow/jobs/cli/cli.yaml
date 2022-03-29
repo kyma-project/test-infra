@@ -155,6 +155,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "unstable-cli"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
+        preset-docker-push-repository-incubator: "true"
         preset-gc-project-env: "true"
         preset-kyma-cli-unstable: "true"
         preset-sa-vm-kyma-integration: "true"
@@ -169,6 +170,10 @@ postsubmits: # runs on main
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
+          base_ref: main
+        - org: kyma-incubator
+          repo: reconciler
+          path_alias: github.com/kyma-incubator/reconciler
           base_ref: main
         - org: kyma-project
           repo: test-infra
