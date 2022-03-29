@@ -84,6 +84,7 @@ templates:
                     - jobConfig_buildpack_incubator
                     - jobConfig_slack_jellyfish
                     - jobConfig_reconciler_publish_unstable_cli
+                    - extra_refs_reconciler
               - jobConfig:
                   name: stable-kyma-cli
                   branches:
