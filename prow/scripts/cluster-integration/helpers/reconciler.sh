@@ -157,6 +157,7 @@ function reconciler::initialize_test_pod() {
     # shellcheck disable=SC2016
     jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template-kyma-main.json > body.json
   elif [[ "$KYMA_UPGRADE_SOURCE" == *"2.1."*  ]] ; then
+    sed -i "s/example.com/$domain/" ./e2e-test/template-kyma-2-1-x.json
     # shellcheck disable=SC2016
     jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template-kyma-2-1-x.json > body.json
   elif [[ "$KYMA_UPGRADE_SOURCE" == *"2.0."*  ]] ; then
