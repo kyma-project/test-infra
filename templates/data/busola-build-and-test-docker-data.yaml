@@ -26,6 +26,7 @@ templates:
             labels:
               preset-kyma-guard-bot-github-token: "true"
               # preset-sa-vm-kyma-integration: "true"
+              preset-docker-push-repository: "true"
               preset-gc-project-env: "true"
               preset-dind-enabled: "true"
               preset-kyma-kms-sign-key: "true"
@@ -37,7 +38,7 @@ templates:
               - jobConfig:
                   name: "pre-busola-build-and-test-docker"
                   optional: false
-                  run_if_changed: '^resource/|^backend/|^core/|^core-ui|^tests/|^package.json|^Makefile|^Dockerfile.local'
+                  run_if_changed: "^resource/|^backend/|^core/|^core-ui|^tests/|^package.json|^Makefile|^Dockerfile.local"
                   labels:
                     preset-build-pr: "true"
                     preset-gardener-azure-kyma-integration: "true"
