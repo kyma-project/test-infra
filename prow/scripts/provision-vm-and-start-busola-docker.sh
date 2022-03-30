@@ -55,7 +55,6 @@ fi
 
 set -o errexit
 
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
 readonly TMP_DIR=$(mktemp -d)
 
