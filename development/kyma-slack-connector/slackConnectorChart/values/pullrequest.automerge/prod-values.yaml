@@ -1,0 +1,15 @@
+functionEnabled: true
+# Forwarded event type
+eventType: "pullrequest.automerge.v1"
+# Application name to subscribe on events.
+subscriptionAppName: "github-connector"
+# Service name to send events.
+subscriptionServiceName: "pullrequest-automerge-v1"
+# Service namespace to send events.
+subscriptionServiceNamespace: "slack-connector"
+# Slack channel name to send messages.
+notificationSlackChannel: "kyma-team"
+# Path to directory with function code. Relative to repository root.
+functionBaseDir: "/development/kyma-slack-connector/pullrequestAutomergeFunction"
+# Branch name with function code.
+branch: "main"

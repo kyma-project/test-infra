@@ -1,11 +1,23 @@
+// Tools GitHub token is an environment variable.
+//        - --dry-run=false
+//        - --github-endpoint=http://ghproxy
+//        - --github-endpoint=https://api.github.com
+//        - --github-token-path=/etc/github/oauth
+//        - --hmac-secret-file=/etc/webhook/hmac
+//        - --config-path=/etc/config/config.yaml
+//        - --job-config-path=/etc/job-config
+
 package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 
+	gogithub "github.com/google/go-github/v42/github"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
 	toolsclient "github.com/kyma-project/test-infra/development/github/pkg/client"
 	"github.com/kyma-project/test-infra/development/github/pkg/client/v2"
@@ -33,9 +45,40 @@ var (
 	repoOwnersClient *repoowners.OwnersClient
 	sapToolsClient   *toolsclient.SapToolsClient
 	pubsubClient     *pubsub.Client
+	pubsubTopic      string
+	clondeRepos      ClonedRepos
 )
 
+// type RequiredUsers []string
+
+// type RequiredLabels []string
+
+// ClonedRepos is a map with information about already cloned repositories.
+// A map keys represent hold org/repo and values are a path to a repository root.
+type ClonedRepos map[string]string
+
+type InstanceConfig struct {
+	ToolsGithubTokenEnv string
+	PubsubTopic         string
+}
+
 type AllOwners map[string]struct{}
+
+type AutoMergeMessagePayload struct {
+	PullRequestNumber *int     `json:"prNumber,omitempty"`
+	PullRequestOrg    *string  `json:"prOrg,omitempty"`
+	PullRequestRepo   *string  `json:"prRepo,omitempty"`
+	PullRequestTitle  *string  `json:"prTitle,omitempty"`
+	PullRequestAuthor *string  `json:"prAuthor,omitempty"`
+	PullRequestURL    *string  `json:"prURL,omitempty"`
+	OwnersSlackIDs    []string `json:"ownersSlackIDs,omitempty"`
+}
+
+// TODO: read required users and required labels for automerging from tide configuration
+func (o *InstanceConfig) AddFlags(fs *flag.FlagSet) {
+	fs.StringVar(&o.ToolsGithubTokenEnv, "tools-github-token-env", "TOOLS_GITHUB_TOKEN", "Environment variable name with github token for tools repository.")
+	fs.StringVar(&o.PubsubTopic, "pubsub-topic", "automerge", "PubSub topic to publish automerge event.")
+}
 
 func helpProvider(_ []config.OrgRepo) (*pluginhelp.PluginHelp, error) {
 	ph := &pluginhelp.PluginHelp{
@@ -77,18 +120,6 @@ func parseOwnersFiles(ownersFilePath, repoBase string, owners k8sowners.RepoOwne
 	}
 	return simpleconfig.Config, nil
 }
-
-// TODO: move it to lib
-// func mergeOwnersConfigs(ownersConfig ...k8sowners.Config) k8sowners.Config {
-//	conf := k8sowners.Config{}
-//	for _, config := range ownersConfig {
-//		conf.Reviewers = append(conf.Reviewers, config.Reviewers...)
-//		conf.Approvers = append(conf.Approvers, config.Approvers...)
-//		conf.Labels = append(conf.Labels, config.Labels...)
-//		conf.RequiredReviewers = append(conf.RequiredReviewers, config.RequiredReviewers...)
-//	}
-//	return conf
-// }
 
 // TODO: move it to lib
 func (a AllOwners) addOwners(approvers []string) {
@@ -134,25 +165,52 @@ func (a AllOwners) resolveSlackNames(aliases []toolstypes.Alias, users []toolsty
 	for _, user := range users {
 		usersMap[user.ComGithubUsername] = user
 	}
-	for owner, _ := range a {
+	for owner := range a {
 		if alias, ok := aliasesMap[owner]; ok {
-			targets.Insert(alias.ComEnterpriseSlackChannelsnames...)
+			if !alias.SkipAutomergeNotifications {
+				targets.Insert(alias.ComEnterpriseSlackChannelsnames...)
+			}
 		} else if user, ok := usersMap[owner]; ok {
-			targets.Insert(user.ComEnterpriseSlackUsername)
+			if !user.SkipAutomergeNotifications {
+				targets.Insert(user.ComEnterpriseSlackUsername)
+			}
 		} else {
-			t := repoAliases.ExpandAlias(owner)
-			if t.Len() > 0 {
-				targets = targets.Union(t)
+			userOwners := repoAliases.ExpandAlias(owner)
+			if userOwners.Len() > 0 {
+				for userOwner, _ := range userOwners {
+					if user, ok := usersMap[userOwner]; ok {
+						if !user.SkipAutomergeNotifications {
+							targets.Insert(user.ComEnterpriseSlackUsername)
+						}
+					}
+				}
 			}
 		}
 	}
 	return targets, nil
 }
 
-// TODO: write reusing cloned repo with fetch
-// func getGitRepoClient() {
-//
-// }
+// TODO: move to lib
+func getGitRepoClient(org, repo string) (git.RepoClient, string, error) {
+	if path, ok := clondeRepos[fmt.Sprintf("%s/%s", org, repo)]; ok {
+		gitRepoClient, err := gitClientFactory.ClientFromDir(org, repo, path)
+		if err != nil {
+			return nil, "", fmt.Errorf("failed create git repository client from directory, org: %s, repo: %s, directory: %s, error: %w", org, repo, path, err)
+		}
+		err = gitRepoClient.Fetch()
+		if err != nil {
+			return nil, "", fmt.Errorf("failed fetch repostiory, org: %s, repo: %s, error: %w", org, repo, err)
+		}
+		return gitRepoClient, path, nil
+	} else {
+		gitRepoClient, err := gitClientFactory.ClientFor(org, repo)
+		if err != nil {
+			return nil, "", fmt.Errorf("failed create git repository client, org: %s, repo: %s, error: %w", org, repo, err)
+		}
+		clondeRepos[fmt.Sprintf("%s/%s", org, repo)] = gitRepoClient.Directory()
+		return gitRepoClient, clondeRepos[fmt.Sprintf("%s/%s", org, repo)], nil
+	}
+}
 
 // TODO: move it to lib
 func loadOwnersAliases(basedir, filename string) (k8sowners.RepoAliases, error) {
@@ -180,67 +238,97 @@ func pullRequestEventHandler(server *externalplugin.Plugin, event externalplugin
 	switch pr.Action {
 	case github.PullRequestActionClosed:
 		if checkIfEventSupported(pr) {
+			mergeMsgPayload := AutoMergeMessagePayload{
+				PullRequestOrg:    gogithub.String(pr.Repo.Owner.Login),
+				PullRequestRepo:   gogithub.String(pr.Repo.Name),
+				PullRequestTitle:  gogithub.String(pr.PullRequest.Title),
+				PullRequestAuthor: gogithub.String(pr.Sender.Login),
+				PullRequestNumber: gogithub.Int(pr.Number),
+				PullRequestURL:    gogithub.String(pr.PullRequest.HTMLURL),
+			}
 			pr.GUID = event.EventGUID
 			owners, err := repoOwnersClient.LoadRepoOwners(pr.Repo.Owner.Login, pr.Repo.Name, "main")
 			if err != nil {
 				logger.Errorw("Failed load RepoOwners", "error", err.Error())
 			}
-			// TODO: add support for creating repo client for existing directory and fetch changes
-			gitRepoClient, err := gitClientFactory.ClientFor(pr.Repo.Owner.Login, pr.Repo.Name)
+			_, repoBase, err := getGitRepoClient(pr.Repo.Owner.Login, pr.Repo.Name)
 			if err != nil {
-				logger.Errorw("Failed create git repository client", "error", err.Error())
+				logger.Errorw("Failed get repository base directory", "error", err.Error())
 			}
-			repoBase := gitRepoClient.Directory()
 			repoAliases, err := loadOwnersAliases(repoBase, "OWNERS_ALIASES")
 			if err != nil {
-				XXX
+				logger.Errorw("failed load aliases file", "error", err.Error())
 			}
 			changes, err := githubClient.GetPullRequestChanges(pr.Repo.Owner.Login, pr.Repo.Name, pr.Number)
 			if err != nil {
-				XXX
+				logger.Errorw("failed get pull request changes", "error", err.Error())
 			}
 			allOwners, err := getOwnersForChanges(changes, repoBase, owners)
 			if err != nil {
-				XXX
+				logger.Errorw("filed get owners for changed files", "error", err.Error())
 			}
-
 			ctx := context.Background()
 			aliasesMap, err := sapToolsClient.GetAliasesMap(ctx)
 			if err != nil {
-				XXX
+				logger.Errorw("failed get aliases map file", "error", err.Error())
 			}
 			usersMap, err := sapToolsClient.GetUsersMap(ctx)
 			if err != nil {
-				XXXX
+				logger.Errorw("failed get users map file", "error", err.Error())
 			}
-
 			targets, err := allOwners.resolveSlackNames(aliasesMap, usersMap, repoAliases)
 			if err != nil {
-				XXXX
+				logger.Errorw("failed resolve owners slack names", "error", err.Error())
 			}
-
-			pubsubClient.PublishMessage()
+			mergeMsgPayload.OwnersSlackIDs = targets.List()
+			if len(mergeMsgPayload.OwnersSlackIDs) > 0 {
+				attributes := map[string]string{"automerged": "true"}
+				msgID, err := pubsubClient.PublishMessageWithAttributes(ctx, mergeMsgPayload, pubsubTopic, attributes)
+				if err != nil {
+					logger.Errorw("failed pubslihed pubsub message", "error", err.Error())
+				}
+				logger.Infof("PubSub message published, message ID: %s", *msgID)
+			} else {
+				logger.Info("No users or channels for notification found.")
+			}
 		}
 	}
 }
 
 func main() {
 	var err error
-	logger := consolelog.NewLogger()
+	logger, atom := consolelog.NewLoggerWithLevel()
 	defer logger.Sync()
+	clondeRepos = ClonedRepos{}
+	pluginInstanceOptions := InstanceConfig{}
 	pluginOptions := externalplugin.Opts{}
 	ownersOptions := repoowners.OwnersClientConfig{}
 	pubsubOptions := pubsub.ClientConfig{}
 	fs := pluginOptions.NewFlags()
 	ownersOptions.AddFlags(fs)
 	pubsubOptions.AddFlags(fs)
+	pluginInstanceOptions.AddFlags(fs)
 	pluginOptions.ParseFlags(fs)
+	atom.SetLevel(pluginOptions.LogLevel)
+	if pluginInstanceOptions.PubsubTopic == "" {
+		err = fmt.Errorf("pubsub topic is empty")
+		logger.Fatalf("%s", err.Error())
+		panic(err)
+	}
 
-	// TODO: get tokoen from k8s secret
-	token := "token"
-	// TODO: get topic from config or flags
-	topic
-	sapToolsClient, err = toolsclient.NewSapToolsClient(context.Background(), token)
+	pubsubTopic = pluginInstanceOptions.PubsubTopic
+
+	toolsToken := os.Getenv(pluginInstanceOptions.ToolsGithubTokenEnv)
+	if toolsToken == "" {
+		err = fmt.Errorf("tools GitHub token is empty")
+		logger.Fatalf("%s", err.Error())
+		panic(err)
+	}
+	sapToolsClient, err = toolsclient.NewSapToolsClient(context.Background(), toolsToken)
+	if err != nil {
+		logger.Fatalw("Failed creating tools GitHub client", "error", err.Error())
+		panic(err)
+	}
 
 	githubClient, err = pluginOptions.Github.NewGithubClient()
 	if err != nil {

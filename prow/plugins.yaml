@@ -53,6 +53,9 @@ external_plugins:
       events:
         - pull_request
         - pull_request_review
+    - name: automerge-notification
+      events:
+        - pull_request
 
 config_updater:
   maps:

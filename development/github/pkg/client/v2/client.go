@@ -23,19 +23,14 @@ type GithubClientOption func(*GithubClientConfig) error
 
 // NewGithubClient is a constructor function for GithubClient.
 // A constructed client can be configured by providing GithubClientOptions.
-func NewGithubClient(options ...GithubClientOption) (*GithubClient, error) {
-	conf := &GithubClientConfig{
-		GitHubOptions: prowflagutil.GitHubOptions{},
-		DryRun:        false,
-	}
-
+func (o *GithubClientConfig) NewGithubClient(options ...GithubClientOption) (*GithubClient, error) {
 	for _, opt := range options {
-		err := opt(conf)
+		err := opt(o)
 		if err != nil {
 			return nil, fmt.Errorf("failed applying functional option: %w", err)
 		}
 	}
-	client, err := conf.GitHubOptions.GitHubClient(conf.DryRun)
+	client, err := o.GitHubOptions.GitHubClient(o.DryRun)
 	if err != nil {
 		return nil, err
 	}
@@ -46,8 +41,8 @@ func NewGithubClient(options ...GithubClientOption) (*GithubClient, error) {
 
 // WithTokenPath is a client constructor configuration option passing path to a file with GitHub token.
 func WithTokenPath(tokenpath string) GithubClientOption {
-	return func(conf *GithubClientConfig) error {
-		conf.TokenPath = tokenpath
+	return func(o *GithubClientConfig) error {
+		o.TokenPath = tokenpath
 		return nil
 	}
 }

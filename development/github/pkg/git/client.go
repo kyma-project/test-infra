@@ -50,11 +50,11 @@ func NewGitClient(options ...GitClientOption) (*GitClient, error) {
 	opts := git.ClientFactoryOpts{
 		GitUser: gitUser,
 	}
-	git, err := git.NewClientFactory(opts.Apply)
+	factory, err := git.NewClientFactory(opts.Apply)
 	if err != nil {
 		return nil, err
 	}
-	gitClient.ClientFactory = git
+	gitClient.ClientFactory = factory
 	return gitClient, nil
 }
 

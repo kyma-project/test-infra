@@ -75,7 +75,7 @@ func (c *Client) IsStatusOK(resp *github.Response) (bool, error) {
 	return true, nil
 }
 
-// GetUsersMap will get users-map.yaml file from github.tools.sap instance.
+// GetUsersMap will get users-map.yaml file from github.tools.sap/kyma/test-infra repository.
 func (c *SapToolsClient) GetUsersMap(ctx context.Context) ([]types.User, error) {
 	var usersMap []types.User
 	// Get file from github.
@@ -97,6 +97,30 @@ func (c *SapToolsClient) GetUsersMap(ctx context.Context) ([]types.User, error) 
 		return nil, fmt.Errorf("got error when unmarshaling usres-map.yaml file content, error: %w", err)
 	}
 	return usersMap, nil
+}
+
+// GetAliasesMap will get aliasess-map.yaml file from github.tools.sap/kyma/test-infra repository.
+func (c *SapToolsClient) GetAliasesMap(ctx context.Context) ([]types.Alias, error) {
+	var aliasesMap []types.Alias
+	// Get file from github.
+	aliasesMapFile, _, resp, err := c.Repositories.GetContents(ctx, "kyma", "test-infra", "/users-map.yaml", &github.RepositoryContentGetOptions{Ref: "main"})
+	if err != nil {
+		return nil, fmt.Errorf("got error when getting users-map.yaml file from github.tools.sap, error: %w", err)
+	}
+	// Check HTTP response code
+	if ok, err := c.IsStatusOK(resp); !ok {
+		return nil, err
+	}
+	// Read file content.
+	aliasesMapString, err := aliasesMapFile.GetContent()
+	if err != nil {
+		return nil, fmt.Errorf("got error when getting content of users-map.yaml file, error: %w", err)
+	}
+	err = yaml.Unmarshal([]byte(aliasesMapString), &aliasesMap)
+	if err != nil {
+		return nil, fmt.Errorf("got error when unmarshaling usres-map.yaml file content, error: %w", err)
+	}
+	return aliasesMap, nil
 }
 
 // GetAuthorLoginForBranch will provide commit author github Login for given SHA.

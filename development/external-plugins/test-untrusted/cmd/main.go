@@ -82,8 +82,8 @@ func main() {
 	server.WithLogger(logger)
 
 	cliOptions := externalplugin.Opts{}
-	fs := cliOptions.GatherDefaultOptions()
-	cliOptions.Parse(fs)
+	fs := cliOptions.NewFlags()
+	cliOptions.ParseFlags(fs)
 
 	ghClient, err = externalplugin.NewGithubClient(cliOptions.Github, cliOptions.DryRun)
 	if err != nil {

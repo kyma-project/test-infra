@@ -101,8 +101,33 @@ func PublishPubSubMessage(ctx context.Context, client *pubsub.Client, message in
 	return github.String(publishedID), nil
 }
 
+func publishPubSubMessage(ctx context.Context, client *pubsub.Client, message interface{}, topicName string, attributes map[string]string) (*string, error) {
+	bmessage, err := json.Marshal(message)
+	if err != nil {
+		return nil, fmt.Errorf("failed marshaling message to json, error: %w", err)
+	}
+	topic := client.Topic(topicName)
+	result := topic.Publish(ctx, &pubsub.Message{
+		// Set json marshaled message as a data payload of pubsub message.
+		Data:       bmessage,
+		Attributes: attributes,
+	})
+	publishedID, err := result.Get(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed publishing to topic %s, error: %w", topicName, err)
+	}
+	return github.String(publishedID), nil
+}
+
 // PublishMessage will send message to the topicName. Message must be anything possible to marshal to json.
 // On success publishing it will reply with published message ID.
 func (c *Client) PublishMessage(ctx context.Context, message interface{}, topicName string) (*string, error) {
-	return PublishPubSubMessage(ctx, c.Client, message, topicName)
+	return publishPubSubMessage(ctx, c.Client, message, topicName, nil)
+}
+
+// PublishMessageWithAttributes will send message with attributes to the topicName.
+// Message must be anything possible to marshal to json.
+// On success publishing it will reply with published message ID.
+func (c *Client) PublishMessageWithAttributes(ctx context.Context, message interface{}, topicName string, attributes map[string]string) (*string, error) {
+	return publishPubSubMessage(ctx, c.Client, message, topicName, attributes)
 }

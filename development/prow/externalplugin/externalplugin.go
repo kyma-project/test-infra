@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/kyma-project/test-infra/development/github/pkg/client/v2"
 	"github.com/sirupsen/logrus"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -27,15 +28,15 @@ type ConfigOptionsGroup interface {
 
 type Opts struct {
 	Port              int
-	Github            prowflagutil.GitHubOptions
+	Github            client.GithubClientConfig
 	WebhookSecretPath string
-	LogLevel          string
+	LogLevel          zapcore.Level
 	DryRun            bool
 }
 
 type CliOptions interface {
-	GatherDefaultOptions() *flag.FlagSet
-	Parse(fs *flag.FlagSet)
+	NewFlags() *flag.FlagSet
+	ParseFlags(fs *flag.FlagSet)
 	GetPort() int
 	// TODO: Implement support for setting log level
 	// GetLogLevel() string
@@ -57,18 +58,18 @@ type Plugin struct {
 }
 
 // GatherDefaultOptions set flagset for default options. These options are common for all external plugins.
-func (o *Opts) GatherDefaultOptions() *flag.FlagSet {
+func (o *Opts) NewFlags() *flag.FlagSet {
 	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	fs.IntVar(&o.Port, "port", 8080, "Plugin port to listen on.")
 	fs.BoolVar(&o.DryRun, "dry-run", false, "Run in dry-run mode - no actual changes will be made.")
 	fs.StringVar(&o.WebhookSecretPath, "hmac-secret-file", "/etc/webhook/hmac", "Path to the file containing GitHub HMAC secret")
-	fs.StringVar(&o.LogLevel, "log-level", "info", "Set log level.")
+	fs.Var(&o.LogLevel, "log-level", "Set log level.")
 	o.Github.AddFlags(fs)
 	return fs
 }
 
 // Parse parses cli arguments in to provided flagset.
-func (o *Opts) Parse(fs *flag.FlagSet) {
+func (o *Opts) ParseFlags(fs *flag.FlagSet) {
 	fs.Parse(os.Args[1:])
 }
 

@@ -23,7 +23,7 @@ var (
 	conf               Config
 )
 
-//Config contain program configs provided bye environment variables.
+// Config contain program configs provided bye environment variables.
 type Config struct {
 	PubSubGatewayName string `envconfig:"PUBSUB_GATEWAY_NAME"`    // Used as eventing cloudevent source.
 	KymaEventsService string `envconfig:"EVENTING_SERVICE"`       // URL of Event Publisher Proxy.
@@ -66,7 +66,7 @@ func main() {
 	}
 	log.Infof("subscription %s exists: %t", conf.SubscriptionID, ok)
 	// Removing dashes from event type to comply with eventing requirements.
-	eventingEventType := strings.Replace(fmt.Sprintf("sap.kyma.custom.%s.%s", conf.TargetAppName, conf.EventType), "-", "", -1)
+	eventingEventType := strings.Replace(fmt.Sprintf("sap.kyma.custom.%s.%s", conf.AppName, conf.EventType), "-", "", -1)
 	log.Infof("using event type : %s", eventingEventType)
 	// Create a channel to handle messages from PubSub as they come in.
 	cm := make(chan *pubsub.Message)

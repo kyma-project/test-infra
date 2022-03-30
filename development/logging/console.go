@@ -13,11 +13,23 @@ import (
 // This allows gcp logging correctly recognize log message severity.
 // It implements test-infra/development/logging/LoggerInterface
 func NewLogger() *zap.SugaredLogger {
+	logger, _ := newLogger(zapcore.DebugLevel)
+	return logger
+}
+
+func NewLoggerWithLevel() (*zap.SugaredLogger, zap.AtomicLevel) {
+	return newLogger(zapcore.InfoLevel)
+}
+
+func newLogger(l zapcore.Level) (*zap.SugaredLogger, zap.AtomicLevel) {
+	atom := zap.NewAtomicLevel()
+	atom.SetLevel(l)
 	errorMessage := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return lvl >= zapcore.ErrorLevel
+		return lvl >= zapcore.ErrorLevel && lvl >= atom.Level()
 	})
+
 	infoMessage := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return lvl < zapcore.ErrorLevel
+		return lvl < zapcore.ErrorLevel && lvl >= atom.Level()
 	})
 
 	consoleInfo := zapcore.Lock(os.Stdout)
@@ -32,5 +44,7 @@ func NewLogger() *zap.SugaredLogger {
 		zapcore.NewCore(consoleEncoder, consoleInfo, infoMessage),
 	)
 
-	return zap.New(core).Sugar()
+	logger := zap.New(core)
+	zap.RedirectStdLog(logger)
+	return logger.Sugar(), atom
 }
