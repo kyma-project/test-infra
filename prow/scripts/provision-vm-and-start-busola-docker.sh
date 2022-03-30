@@ -3,6 +3,7 @@
 # This script is designed to provision a new vm and start kyma.It takes an optional positional parameter using --image flag
 # Use this flag to specify the custom image for provisining vms. If no flag is provided, the latest custom image is used.
 
+#  todo wywołać zamiast kopiować
 set -e
 set -o pipefail
 
