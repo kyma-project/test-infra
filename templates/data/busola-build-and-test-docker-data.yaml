@@ -29,7 +29,7 @@ templates:
               preset-gc-project-env: "true"
               preset-dind-enabled: "true"
               preset-kyma-kms-sign-key: "true"
-              preset-sa-gcr-push: "true"
+              # preset-sa-gcr-push: "true"
         jobConfigs:
           - repoName: kyma-project/busola
             jobs:

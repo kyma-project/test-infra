@@ -16,7 +16,6 @@ presubmits: # runs on PRs
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^resource/|^backend/|^core/|^core-ui|^tests/|^package.json|^Makefile|^Dockerfile.local'
       skip_report: false
@@ -74,7 +73,6 @@ postsubmits: # runs on main
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '/'
       skip_report: false
