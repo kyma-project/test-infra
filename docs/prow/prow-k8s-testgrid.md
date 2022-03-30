@@ -34,9 +34,9 @@ Follow these steps to add a new dashboard:
 2. Add the previously added dashboard to the corresponding **dashboard_name** inside the **dashboard_groups** field.
 3. Generate a new config file using the [rendertemplates](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/rendertemplates) tool and check if the config file generated correctly.
 
-## Adding ProwJob to the TestGrid
+## Adding Prow Job to the TestGrid
 
-After adding a desired dashboard in the `testgrid-default.yaml` file, add ProwJobs to the dashboard. To do so, define a new **annotations** field in a ProwJob definition. See the example below:
+After adding a desired dashboard in the `testgrid-default.yaml` file, add Prow Jobs to the dashboard. To do so, define a new **annotations** field in a Prow Job definition. See the example below:
 ```yaml
 annotations:
   testgrid-dashboards: dashboard-name      # [Required] A dashboard already defined in a config.yaml.
