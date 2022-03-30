@@ -1,7 +1,7 @@
 templates:
   - from: templates/generic.tmpl
     render:
-      - to: ../prow/jobs/busola/docker.yaml
+      - to: ../prow/jobs/busola/build-and-test-docker.yaml
         localSets:
           extra_refs_kyma-local:
             extra_refs:
@@ -29,9 +29,9 @@ templates:
             jobs:
               # presubmits
               - jobConfig:
-                  name: "pre-busola-docker"
+                  name: "pre-busola-build-and-test-docker"
                   optional: false
-                  run_if_changed: '^backend/|^core/|^core-ui|^tests/|^package.json|^Makefile|^Dockerfile.local'
+                  run_if_changed: '^resource/|^backend/|^core/|^core-ui|^tests/|^package.json|^Makefile|^Dockerfile.local'
                   labels:
                     preset-build-pr: "true"
                     preset-gardener-azure-kyma-integration: "true"
@@ -49,7 +49,7 @@ templates:
                     - "extra_refs_kyma-local"
               # postsubmits
               - jobConfig:
-                  name: "post-busola-docker"
+                  name: "post-busola-build-and-test-docker"
                   optional: false
                   run_if_changed: "/"
                   labels:
