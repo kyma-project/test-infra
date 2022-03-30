@@ -44,6 +44,8 @@ templates:
                     - "jobConfig_presubmit"
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
+                    - "jobConfig_generic_component"
+                    - "jobConfig_generic_component_busola"
                   local:
                     - "jobConfig_default"
                     - "request_small"
@@ -64,6 +66,8 @@ templates:
                     - "jobConfig_postsubmit"
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
+                    - "jobConfig_generic_component"
+                    - "jobConfig_generic_component_busola"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"

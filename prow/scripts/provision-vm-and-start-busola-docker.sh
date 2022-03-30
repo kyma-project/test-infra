@@ -16,15 +16,10 @@ usage () {
     echo "Usage: \$ ${BASH_SOURCE[1]} /path/to/component [Makefile targets]"
     exit 1
 }
-echo "1"
-echo $@
-echo "1.1"
-echo $#
-echo "1.2"
 
 # get first argument and assume it's a path to the sources.
 readonly SOURCES_DIR=$1; shift
-echo "2"
+
 if [[ ! -d "${SOURCES_DIR}" ]]; then
   echo -e "Error: Directory \"$SOURCES_DIR\" does not exist."
   usage
