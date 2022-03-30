@@ -242,6 +242,8 @@ tide:
         - kyma-incubator
       excludedRepos:
         - kyma-project/test-infra # handled in separate query specifically for approve plugin
+        - kyma-project/third-party-images
+        - kyma-project/cli
         - kyma-incubator/compass # handled in separate query specifically for approve plugin
       reviewApprovedRequired: true
     - labels:
@@ -256,6 +258,8 @@ tide:
         - do-not-merge/missing-docs-review
       repos:
         - kyma-project/test-infra
+        - kyma-project/third-party-images
+        - kyma-project/cli
         - kyma-incubator/compass
   context_options:
     from-branch-protection: true
