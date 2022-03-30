@@ -19,6 +19,9 @@ templates:
             request_cpu: 50m
           vm_job_template_k3s:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-busola-docker.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/busola"
+              - "release-local" # todo czy na pewno?
           vm_job_labels_template:
             labels:
               preset-kyma-guard-bot-github-token: "true"

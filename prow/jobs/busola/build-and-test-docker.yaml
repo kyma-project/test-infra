@@ -40,6 +40,9 @@ presubmits: # runs on PRs
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-busola-docker.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/busola"
+              - "release-local"
             resources:
               requests:
                 memory: 100Mi
@@ -92,6 +95,9 @@ postsubmits: # runs on main
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-busola-docker.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/busola"
+              - "release-local"
             resources:
               requests:
                 memory: 100Mi
