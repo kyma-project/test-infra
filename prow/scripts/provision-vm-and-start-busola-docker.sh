@@ -25,14 +25,13 @@ if [[ ! -d "${SOURCES_DIR}" ]]; then
   echo -e "Error: Directory \"$SOURCES_DIR\" does not exist."
   usage
 fi
+echo "0"
 
-if [[ -n "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
-    gcp::authenticate \
-      -c "${GOOGLE_APPLICATION_CREDENTIALS}"
-fi
 if [[ "${DOCKER_IN_DOCKER_ENABLED}" == true ]]; then
     docker::start
 fi
+
+echo "1"
 
 if [ -n "${PULL_NUMBER}" ]; then
   echo "Building from PR"
@@ -53,6 +52,8 @@ else
   make -C "${SOURCES_DIR}" release 2>&1 | while read -r line ; do printf '[%04d] | %s\n' $SECONDS "$line"; done;
 fi
 
+echo "2"
+
 set -o errexit
 
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
@@ -64,24 +65,12 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
-
+echo "3"
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     BASE_REF=${PULL_PULL_SHA}
 else
     BASE_REF=${PULL_BASE_SHA}
 fi
-
-if [ -n "${PULL_NUMBER}" ]; then
-  echo "Building from PR"
-  DOCKER_TAG="PR-${PULL_NUMBER}"
-else
-  # Build artifacts using short SHA for all branches postsubmits
-  echo "Building as usual"
-  DOCKER_TAG="${PULL_BASE_SHA::8}"
-fi
-
-export DOCKER_TAG
-echo DOCKER_TAG "${DOCKER_TAG}"
 
 cleanup() {
     
@@ -96,7 +85,7 @@ cleanup() {
     gcloud compute instances delete --zone="${ZONE}" "busola-smoke-test-${RANDOM_ID}"
     log::info "End of cleanup"
 }
-
+echo "4"
 function testCustomImage() {
     CUSTOM_IMAGE="$1"
     IMAGE_EXISTS=$(gcloud compute images list --filter "name:${CUSTOM_IMAGE}" | tail -n +2 | awk '{print $1}')
