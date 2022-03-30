@@ -156,10 +156,17 @@ function reconciler::initialize_test_pod() {
     sed -i "s/example.com/$domain/" ./e2e-test/template-kyma-main.json
     # shellcheck disable=SC2016
     jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template-kyma-main.json > body.json
-  else
+  elif [[ "$KYMA_UPGRADE_SOURCE" == *"2.1."*  ]] ; then
+    sed -i "s/example.com/$domain/" ./e2e-test/template-kyma-2-1-x.json
+    # shellcheck disable=SC2016
+    jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template-kyma-2-1-x.json > body.json
+  elif [[ "$KYMA_UPGRADE_SOURCE" == *"2.0."*  ]] ; then
     sed -i "s/example.com/$domain/" ./e2e-test/template-kyma-2-0-x.json
     # shellcheck disable=SC2016
     jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template-kyma-2-0-x.json > body.json
+  else
+    log::error "Unsupported Kyma Version: $KYMA_UPGRADE_SOURCE"
+    exit 1
   fi
   # Copy the reconcile request payload and kyma reconciliation scripts to the test-pod
   kubectl cp body.json -c test-pod reconciler/test-pod:/tmp
