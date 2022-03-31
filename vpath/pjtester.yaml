@@ -1,6 +1,8 @@
 pjNames:
   - pjName: "kyma-upgrade-gardener-kyma2-to-main-reconciler-main"
   - pjName: "kyma-upgrade-k3d-kyma2-to-main"
+  - pjName: "kyma-upgrade-k3d-kyma-to-kyma2"
+  - pjName: "pre-main-reconciler-cli-integration-kyma-main-k3d"
 prConfigs:
   kyma-project:
     kyma:
