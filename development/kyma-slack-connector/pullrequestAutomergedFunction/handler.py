@@ -21,7 +21,7 @@ def main(event, context):
     for target in msg["ownersSlackIDs"]:
         # channel_name is a channel where function will search for messages to use threads.
         try:
-            print(f"Matching message not found, sending notification as a standalone message.")
+            print(f"Sending notification to {target}.")
             result = app.client.chat_postMessage(channel=target,
                                                  text="PR: {} Repo: {}\{} Title: {} View PR: {}".format(
                                                      msg["prNumber"],

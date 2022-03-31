@@ -103,7 +103,7 @@ func (c *SapToolsClient) GetUsersMap(ctx context.Context) ([]types.User, error) 
 func (c *SapToolsClient) GetAliasesMap(ctx context.Context) ([]types.Alias, error) {
 	var aliasesMap []types.Alias
 	// Get file from github.
-	aliasesMapFile, _, resp, err := c.Repositories.GetContents(ctx, "kyma", "test-infra", "/users-map.yaml", &github.RepositoryContentGetOptions{Ref: "main"})
+	aliasesMapFile, _, resp, err := c.Repositories.GetContents(ctx, "kyma", "test-infra", "/aliases-map.yaml", &github.RepositoryContentGetOptions{Ref: "main"})
 	if err != nil {
 		return nil, fmt.Errorf("got error when getting users-map.yaml file from github.tools.sap, error: %w", err)
 	}
