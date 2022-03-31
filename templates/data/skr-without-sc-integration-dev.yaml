@@ -1,7 +1,7 @@
 templates:
   - fromTo:
       - from: templates/generic.tmpl
-        to: ../prow/jobs/kyma/skr-integration.yaml
+        to: ../prow/jobs/kyma/skr-without-sc-intgration.yaml
       - from: templates/test-inventory.tmpl
         to: ../test-inventory-integration.md
     render:
@@ -12,7 +12,7 @@ templates:
               pipeline.installer: keb
               pipeline.test: fast-integration
             path_alias: github.com/kyma-project/kyma
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-without-sc-intgration.sh"
             cluster: "trusted-workload"
             request_memory: 100Mi
             request_cpu: 50m
