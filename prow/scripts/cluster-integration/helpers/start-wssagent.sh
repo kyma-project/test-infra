@@ -144,7 +144,7 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
     log::banner "Scanning $FOLDER"
     if [ -z "$JAVA_OPTS" ]; then
       echo "no additional java_opts set"
-      # java -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH
+      java -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH
       scan_result="$?"
     else
       echo "Java Options - '$JAVA_OPTS'"
