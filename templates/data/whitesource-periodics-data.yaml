@@ -142,6 +142,7 @@ templates:
                     - "product_kyma"
               - jobConfig:
                   repository: "hydroform"
+                  exclude: "**/examples/**"
                   language: "golang-mod"
                   project: "kyma-project"
                   subprojects: "true"

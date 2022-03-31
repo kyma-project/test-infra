@@ -332,6 +332,8 @@ periodics: # runs on schedule
                 value: hydroform
               - name: CREATE_SUBPROJECTS
                 value: "true"
+              - name: CUSTOM_EXCLUDE
+                value: "**/examples/**"
               - name: SCAN_LANGUAGE
                 value: golang-mod
             resources:
