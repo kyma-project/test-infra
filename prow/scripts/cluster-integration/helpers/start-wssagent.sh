@@ -133,7 +133,7 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
   fi
 
   if [[ -n "$CUSTOM_EXCLUDE" ]]; then
-    export WS_EXCLUDES="${CUSTOM_EXCLUDE} ${WS_EXCLUDES}"
+    export WS_EXCLUDES="${WS_EXCLUDES} ${CUSTOM_EXCLUDE}"
   fi
 
   # shellcheck disable=SC2153
