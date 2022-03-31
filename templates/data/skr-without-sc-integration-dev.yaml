@@ -33,7 +33,7 @@ templates:
           - repoName: "kyma-project/kyma"
             jobs:
               - jobConfig:
-                  name: "skr-aws-integration-dev"
+                  name: "skr-aws-without-sc-integration-dev"
                   cron: "5 1 * * *" # "At 01:05"
                   labels:
                     preset-skr-al-service-key: "true"
