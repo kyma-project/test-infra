@@ -132,6 +132,10 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
     export WS_EXCLUDES=$(filterFolders "${EXCLUDE_PROJECT_CONFIG}" "$(pwd)")
   fi
 
+  if [[ -n "$CUSTOM_EXCLUDE" ]]; then
+    export WS_EXCLUDES="${CUSTOM_EXCLUDE} ${WS_EXCLUDES}"
+  fi
+   
   # shellcheck disable=SC2153
   echo "Product name - $WS_PRODUCTNAME"
   echo "Project name - $WS_PROJECTNAME"

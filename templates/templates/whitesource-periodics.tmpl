@@ -114,6 +114,10 @@
               - name: CUSTOM_PROJECTNAME
                 value: {{ default "" .JobConfig.custom_projectname }}
               {{- end}}
+              {{- if .JobConfig.exclude }}
+              - name: CUSTOM_EXCLUDE
+                value: "{{ default "" .JobConfig.exclude }}"
+              {{- end}}
               - name: SCAN_LANGUAGE
                 value: {{ .JobConfig.language }}
             {{- if or .JobConfig.request_memory .JobConfig.request_cpu false}}
