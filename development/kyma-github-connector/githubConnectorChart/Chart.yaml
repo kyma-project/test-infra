@@ -2,5 +2,5 @@ apiVersion: v2
 name: github-connector
 description: Forwards incoming github webhooks to kyma eventing mesh.
 type: application
-version: 3.0.0
+version: 2.0.0
 appVersion: 1.2.0

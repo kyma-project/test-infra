@@ -19,5 +19,5 @@ global:
   # Repository URL with function code.
   repositoryUrl: "https://github.com/Halamix2/test-infra.git"
   # Slack application helm release name.
-  slackAppHelmReleaseName: "slack-application"
-  #slackAppHelmReleaseName: "common"
+  #slackAppHelmReleaseName: "slack-application"
+  slackAppHelmReleaseName: "common"

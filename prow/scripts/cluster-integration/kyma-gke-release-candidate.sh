@@ -289,7 +289,6 @@ current-context: default
 " > kubeconfig
 
 kubectl create secret -n $namespace generic "$serviceAccount-kubeconfig" --from-file=kubeconfig
-# gcloud pubsub topics publish "${TOPIC}" --message="{\"cluster_name\": \"${COMMON_NAME}\", \"kyma_version\": \"${RELEASE_VERSION}\", \"kubeconfig\": \"$(cat kubeconfig)\"}"
 #---
 
 log::info "Collect list of images"
