@@ -2,8 +2,6 @@ templates:
   - fromTo:
       - from: templates/generic.tmpl
         to: ../prow/jobs/kyma/skr-without-sc-intgration.yaml
-      - from: templates/test-inventory.tmpl
-        to: ../test-inventory-integration.md
     render:
       - localSets:
           jobConfig_default:
@@ -20,117 +18,20 @@ templates:
               preset-build-main: "true"
               preset-keb-dev-credentials: "true"
               preset-kyma-integration-compass-dev: "true"
+              preset-btp-operator-stage-credentials: "true"
               preset-kyma-integration-kcp-client-credentials: "true"
               preset-kcp-client-dev-envs: "true"
-              preset-btp-operator-stage-credentials: "true"
           kyma_integration_subaccount:
             env:
               KEB_SUBACCOUNT_ID: "prow-keb-integration"
-          kyma_nightly_subaccount:
-            env:
-              KEB_SUBACCOUNT_ID: "kyma-skr-nightly"
-          keb_plan_azure:
-            annotations:
-              pipeline.platform: gardener_azure
-            env:
-              KEB_PLAN_ID: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
-          keb_plan_gcp:
-            annotations:
-              pipeline.platform: gardener_gcp
-            env:
-              KEB_PLAN_ID: "ca6e5357-707f-4565-bbbd-b3ab732597c6"
           keb_plan_aws:
             annotations:
               pipeline.platform: gardener_aws
             env:
               KEB_PLAN_ID: "361c511f-f939-4621-b228-d0fb79a1fe15"
-          keb_plan_azure_lite:
-            annotations:
-              pipeline.platform: gardener_azure
-              pipeline.profile: evaluation
-            env:
-              KEB_PLAN_ID: "8cb22518-aa26-44c5-91a0-e669ec9bf443"
-          keb_plan_trial:
-            annotations:
-              pipeline.platform: gardener_azure
-              pipeline.profile: evaluation
-            env:
-              KEB_PLAN_ID: "7d55d31d-35ae-4438-bf13-6ffdfa107d9f"
-          keb_plan_openstack:
-            annotations:
-              pipeline.platform: gardener_openstack
-            env:
-              KEB_PLAN_ID: "03b812ac-c991-4528-b5bd-08b303523a63"
-          keb_plan_free_aws:
-            annotations:
-              pipeline.platform: gardener_aws
-              pipeline.profile: evaluation
-            env:
-              KEB_PLAN_ID: "b1a5764e-2ea1-4f95-94c0-2b4538b37b55"
-              KEB_REGION: "cf-eu10"
-          keb_plan_free_azure:
-            annotations:
-              pipeline.platform: gardener_azure
-              pipeline.profile: evaluation
-            env:
-              KEB_PLAN_ID: "b1a5764e-2ea1-4f95-94c0-2b4538b37b55"
-              KEB_REGION: "cf-eu20"
         jobConfigs:
           - repoName: "kyma-project/kyma"
             jobs:
-              - jobConfig:
-                  name: "skr-azure-nightly"
-                  command: "make"
-                  args:
-                    - "-C"
-                    - "tests/fast-integration"
-                    - "ci-skr-nightly"
-                  cron: "5 1 * * *" # "At 01:05"
-                inheritedConfigs:
-                  global:
-                    - "image_kyma-integration"
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "extra_refs_test-infra"
-                    - "extra_refs_kyma"
-                    - "disable_testgrid"
-                    - "kyma_major_version_1"
-                  local:
-                    - "jobConfig_default"
-                    - "keb_plan_azure"
-                    - "kyma_nightly_subaccount"
-              - jobConfig:
-                  name: "skr-azure-integration-dev"
-                  cron: "5 1 * * *" # "At 01:05"
-                inheritedConfigs:
-                  global:
-                    - "image_kyma-integration"
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "extra_refs_test-infra"
-                    - "extra_refs_kyma"
-                    - "disable_testgrid"
-                    - "kyma_major_version_1"
-                  local:
-                    - "jobConfig_default"
-                    - "keb_plan_azure"
-                    - "kyma_integration_subaccount"
-              - jobConfig:
-                  name: "skr-azure-lite-integration-dev"
-                  cron: "5 1 * * *" # "At 01:05"
-                inheritedConfigs:
-                  global:
-                    - "image_kyma-integration"
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "extra_refs_test-infra"
-                    - "extra_refs_kyma"
-                    - "disable_testgrid"
-                    - "kyma_major_version_1"
-                  local:
-                    - "jobConfig_default"
-                    - "keb_plan_azure_lite"
-                    - "kyma_integration_subaccount"
               - jobConfig:
                   name: "skr-aws-integration-dev"
                   cron: "5 1 * * *" # "At 01:05"
@@ -144,41 +45,7 @@ templates:
                     - "extra_refs_test-infra"
                     - "extra_refs_kyma"
                     - "disable_testgrid"
-                    - "kyma_major_version_1"
                   local:
                     - "jobConfig_default"
                     - "keb_plan_aws"
                     - "kyma_integration_subaccount"
-              - jobConfig:
-                  name: "skr-trial-integration-dev"
-                  cron: "5 1 * * *" # "At 01:05"
-                inheritedConfigs:
-                  global:
-                    - "image_kyma-integration"
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "extra_refs_test-infra"
-                    - "extra_refs_kyma"
-                    - "disable_testgrid"
-                    - "kyma_major_version_1"
-                  local:
-                    - "jobConfig_default"
-                    - "keb_plan_trial"
-                    - "kyma_integration_subaccount"
-              - jobConfig:
-                  name: "skr-free-aws-integration-dev"
-                  cron: "5 1 * * *" # "At 01:05"
-                inheritedConfigs:
-                  global:
-                    - "image_kyma-integration"
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "extra_refs_test-infra"
-                    - "extra_refs_kyma"
-                    - "disable_testgrid"
-                    - "kyma_major_version_1"
-                  local:
-                    - "jobConfig_default"
-                    - "keb_plan_free_aws"
-                    - "kyma_integration_subaccount"
-
