@@ -163,9 +163,10 @@ utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home
 if [[ "${KYMA_UPGRADE_VERSION}" ]]; then
   KYMA_FROM=${KYMA_SOURCE%.*}
   KYMA_TO=${KYMA_UPGRADE_VERSION%.*}
+
   mirgrationScript="https://raw.githubusercontent.com/kyma-project/kyma/main/docs/assets/${KYMA_FROM}-${KYMA_TO}-fix-upgraded-resources.sh"
   migrationScriptCheck="curl --output /dev/null --silent --head --fail ${mirgrationScript}"
-  if [[ "${migrationScriptCheck}" ]]; then
+  if [[ "${migrationScriptCheck}" == 0 ]]; then
     log::banner "Execute migration script ${KYMA_FROM}->${KYMA_TO}"
       curl "${mirgrationScript}" | sh
   else
