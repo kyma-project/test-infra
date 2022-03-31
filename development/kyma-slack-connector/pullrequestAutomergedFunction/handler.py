@@ -18,7 +18,7 @@ def main(event, context):
     print("using slack api base URL: {}".format(app.client.base_url))
     # Get cloud events data.
     msg = json.loads(base64.b64decode(event["data"]["Data"]))
-    for target in msg["OwnersSlackIDs"]:
+    for target in msg["ownersSlackIDs"]:
         # channel_name is a channel where function will search for messages to use threads.
         try:
             print(f"Matching message not found, sending notification as a standalone message.")

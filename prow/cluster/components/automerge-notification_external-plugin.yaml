@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: automerge-notification
-        image: eu.gcr.io/sap-kyma-neighbors-dev/automergenotification:v0.1.21-test
+        image: eu.gcr.io/sap-kyma-neighbors-dev/automergenotification:v0.1.24-test
         args:
         - --dry-run=false
         - --github-endpoint=http://ghproxy
@@ -26,7 +26,7 @@ spec:
         - --config-path=/etc/config/config.yaml
         - --job-config-path=/etc/job-config
         - --tools-github-token-env=TOOLS_GITHUB_TOKEN
-        - --pubsub-topic=prow-automerge
+        - --pubsub-topic=pullRequests
         - --log-level=debug
         - --pubsub-project-id=sap-kyma-prow
         env:

@@ -21,6 +21,7 @@ import (
 	"github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
 	toolsclient "github.com/kyma-project/test-infra/development/github/pkg/client"
 	"github.com/kyma-project/test-infra/development/github/pkg/client/v2"
+	"github.com/kyma-project/test-infra/development/github/pkg/git"
 	"github.com/kyma-project/test-infra/development/github/pkg/repoowners"
 	consolelog "github.com/kyma-project/test-infra/development/logging"
 	"github.com/kyma-project/test-infra/development/prow/externalplugin"
@@ -29,7 +30,7 @@ import (
 	"google.golang.org/api/option"
 	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/test-infra/prow/config"
-	"k8s.io/test-infra/prow/git/v2"
+	prowgit "k8s.io/test-infra/prow/git/v2"
 	"k8s.io/test-infra/prow/github"
 	"k8s.io/test-infra/prow/pluginhelp"
 	k8sowners "k8s.io/test-infra/prow/repoowners"
@@ -41,7 +42,7 @@ const (
 
 var (
 	githubClient     *client.GithubClient
-	gitClientFactory git.ClientFactory
+	gitClientFactory *git.GitClient
 	repoOwnersClient *repoowners.OwnersClient
 	sapToolsClient   *toolsclient.SapToolsClient
 	pubsubClient     *pubsub.Client
@@ -191,7 +192,7 @@ func (a AllOwners) resolveSlackNames(aliases []toolstypes.Alias, users []toolsty
 }
 
 // TODO: move to lib
-func getGitRepoClient(org, repo string) (git.RepoClient, string, error) {
+func getGitRepoClient(org, repo string) (prowgit.RepoClient, string, error) {
 	if path, ok := clondeRepos[fmt.Sprintf("%s/%s", org, repo)]; ok {
 		gitRepoClient, err := gitClientFactory.ClientFromDir(org, repo, path)
 		if err != nil {
@@ -304,10 +305,12 @@ func main() {
 	pluginOptions := externalplugin.Opts{}
 	ownersOptions := repoowners.OwnersClientConfig{}
 	pubsubOptions := pubsub.ClientConfig{}
+	gitOptions := git.GitClientConfig{}
 	fs := pluginOptions.NewFlags()
 	ownersOptions.AddFlags(fs)
 	pubsubOptions.AddFlags(fs)
 	pluginInstanceOptions.AddFlags(fs)
+	gitOptions.AddFlags(fs)
 	pluginOptions.ParseFlags(fs)
 	atom.SetLevel(pluginOptions.LogLevel)
 	if pluginInstanceOptions.PubsubTopic == "" {
@@ -337,12 +340,17 @@ func main() {
 	}
 	logger.Debug("github client ready")
 
-	gitclient, err := pluginOptions.Github.GitClient(pluginOptions.DryRun)
+	// gitclient, err := pluginOptions.Github.GitClient(pluginOptions.DryRun)
+	// if err != nil {
+	//	logger.Fatalw("Failed creating git client", "error", err.Error())
+	//	panic(err)
+	// }
+	// gitClientFactory = git.ClientFactoryFrom(gitclient)
+	gitClientFactory, err = gitOptions.NewGitClient(git.WithTokenPath(pluginOptions.Github.TokenPath), git.WithGithubClient(githubClient))
 	if err != nil {
 		logger.Fatalw("Failed creating git client", "error", err.Error())
 		panic(err)
 	}
-	gitClientFactory = git.ClientFactoryFrom(gitclient)
 	logger.Debug("git client ready")
 
 	// gitClient, err = git.NewGitClient(git.WithGithubClient(githubClient))
