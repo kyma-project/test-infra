@@ -134,6 +134,11 @@ default:
       prowPlugin: test-untrusted
       isExternalPlugin: yes
       addedBy: org-members
+    - color: 0ffa16
+      description: Indicates a PR is trusted, used by tide for auto-merging PRs.
+      name: skip-review
+      target: prs
+      addedBy: autobump bot
 
     # area labels
     - color: 0052cc
