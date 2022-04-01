@@ -27,7 +27,7 @@ spec:
         - --job-config-path=/etc/job-config
         - --tools-github-token-env=TOOLS_GITHUB_TOKEN
         - --pubsub-topic=pullRequests
-        - --log-level=debug
+        - --log-level=info
         - --pubsub-project-id=sap-kyma-prow
         env:
         - name: TOOLS_GITHUB_TOKEN

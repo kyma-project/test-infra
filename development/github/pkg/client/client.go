@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -10,12 +11,19 @@ import (
 	"github.com/kyma-project/test-infra/development/types"
 	"golang.org/x/oauth2"
 	"gopkg.in/yaml.v2"
+	"k8s.io/test-infra/prow/config/secret"
 )
 
 const (
 	SapToolsGithubURL  = "https://github.tools.sap/"
 	ProwGithubProxyURL = "http://ghproxy"
 )
+
+type GithubClientConfig struct {
+	tokenPath tokenPathFlag
+}
+
+type tokenPathFlag string
 
 // SapToolsClient wraps kyma implementation github Client and provides additional methods.
 type SapToolsClient struct {
@@ -25,6 +33,30 @@ type SapToolsClient struct {
 // Client wraps google github Client and provides additional methods.
 type Client struct {
 	*github.Client
+}
+
+func (f *tokenPathFlag) String() string {
+	return string(*f)
+}
+
+func (f *tokenPathFlag) Set(value string) error {
+	if value == "" {
+		value = "/etc/v1github/oauth"
+	}
+	*f = tokenPathFlag(value)
+	return secret.Add(value)
+}
+
+func (o *GithubClientConfig) AddFlags(fs *flag.FlagSet) {
+	fs.Var(&o.tokenPath, "v1-github-token-path", "Environment variable name with github token.")
+}
+
+func (o *GithubClientConfig) GetToken() (string, error) {
+	token := secret.GetSecret(string(o.tokenPath))
+	if string(token) == "" {
+		return "", fmt.Errorf("tools GitHub token is empty")
+	}
+	return string(token), nil
 }
 
 // newOauthHttpClient creates HTTP client with oauth authentication.

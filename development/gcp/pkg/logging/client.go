@@ -312,6 +312,11 @@ func (l *Logger) LogError(message string) {
 	l.log(logging.Error, message, nil, nil)
 }
 
+// Warn log message of Info severity.
+func (l *Logger) Warn(args ...interface{}) {
+	l.log(logging.Warning, "", args, nil)
+}
+
 // Info log message of Info severity.
 func (l *Logger) Info(args ...interface{}) {
 	l.log(logging.Info, "", args, nil)
@@ -330,4 +335,19 @@ func (l *Logger) Infow(message string, keysAndValues ...string) {
 // LogInfo log message of Info severity.
 func (l *Logger) LogInfo(message string) {
 	l.log(logging.Info, message, nil, nil)
+}
+
+// Info log message of Info severity.
+func (l *Logger) Debug(args ...interface{}) {
+	l.log(logging.Debug, "", args, nil)
+}
+
+// Infof log message of Info severity. It formats message with sprintf.
+func (l *Logger) Debugf(template string, args ...interface{}) {
+	l.log(logging.Debug, template, args, nil)
+}
+
+// Infow log message of Info severity. keysandValues is added to the log entry as key, value labels.
+func (l *Logger) Debugw(message string, keysAndValues ...string) {
+	l.log(logging.Debug, message, nil, keysAndValues)
 }

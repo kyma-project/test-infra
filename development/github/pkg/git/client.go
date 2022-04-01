@@ -13,6 +13,9 @@ import (
 // It's build on top of k8s git.ClientFactory.
 type GitClient struct {
 	git.ClientFactory
+	// ClonedRepos is a map with information about already cloned repositories.
+	// A map keys represent hold org/repo and values are a path to a repository root.
+	clonedRepos map[string]string
 }
 
 // GitClientConfig holds configuration for GitClient.
@@ -64,10 +67,31 @@ func WithGithubClient(githubClient *client.GithubClient) GitClientOption {
 	}
 }
 
-// WithGithubClient is a client constructor configuration option passing GithubClient instance.
+// WithTokenPath is a client constructor configuration option passing git token file path.
 func WithTokenPath(tokenPath string) GitClientOption {
 	return func(conf *GitClientConfig) error {
 		conf.tokenPath = tokenPath
 		return nil
+	}
+}
+
+func (c *GitClient) GetGitRepoClient(org, repo string) (git.RepoClient, string, error) {
+	if path, ok := c.clonedRepos[fmt.Sprintf("%s/%s", org, repo)]; ok {
+		gitRepoClient, err := c.ClientFromDir(org, repo, path)
+		if err != nil {
+			return nil, "", fmt.Errorf("failed create git repository client from directory, org: %s, repo: %s, directory: %s, error: %w", org, repo, path, err)
+		}
+		err = gitRepoClient.Fetch()
+		if err != nil {
+			return nil, "", fmt.Errorf("failed fetch repostiory, org: %s, repo: %s, error: %w", org, repo, err)
+		}
+		return gitRepoClient, path, nil
+	} else {
+		gitRepoClient, err := c.ClientFor(org, repo)
+		if err != nil {
+			return nil, "", fmt.Errorf("failed create git repository client, org: %s, repo: %s, error: %w", org, repo, err)
+		}
+		c.clonedRepos[fmt.Sprintf("%s/%s", org, repo)] = gitRepoClient.Directory()
+		return gitRepoClient, c.clonedRepos[fmt.Sprintf("%s/%s", org, repo)], nil
 	}
 }

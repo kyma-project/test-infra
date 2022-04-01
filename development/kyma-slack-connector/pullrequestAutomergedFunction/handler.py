@@ -33,16 +33,6 @@ def main(event, context):
                                                  link_names=True,
                                                  blocks=[
                                                      {
-                                                         "type": "context",
-                                                         "elements":
-                                                             [
-                                                                 {
-                                                                     "type": "mrkdwn",
-                                                                     "text": "Pull request merged"
-                                                                 }
-                                                             ]
-                                                     },
-                                                     {
                                                          "type": "header",
                                                          "text": {
                                                              "type": "plain_text",
@@ -53,14 +43,22 @@ def main(event, context):
                                                          "type": "section",
                                                          "text": {
                                                              "type": "mrkdwn",
-                                                             "text": "*PR:* {}\n*Repo:* {}\{}\n*Title:* {}\n<{}|*View PR*>".format(
+                                                             "text": "*PR:* {}\n*Repo:* {}\{}\n*Title:* {}".format(
                                                                  msg["prNumber"],
                                                                  msg["prOrg"],
                                                                  msg["prRepo"],
-                                                                 msg["prTitle"],
-                                                                 msg["prURL"])
+                                                                 msg["prTitle"])
                                                          }
                                                      },
+                                                     {
+                                                         "type": "button",
+                                                         "text": {
+                                                             "type": "plain_text",
+                                                             "text": "View PR"
+                                                         },
+                                                         "url": msg["prURL"],
+                                                         "style": "primary"
+                                                     }
                                                  ])
             assert result.get("ok", False), "Assert response from slack API is OK failed. This is critical error."
             print("sent notification for incoming message id: {}".format(event["data"]["ID"]))

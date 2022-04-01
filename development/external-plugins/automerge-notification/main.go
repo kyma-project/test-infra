@@ -13,9 +13,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
-	"os"
-	"path/filepath"
 
 	gogithub "github.com/google/go-github/v42/github"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
@@ -25,15 +22,12 @@ import (
 	"github.com/kyma-project/test-infra/development/github/pkg/repoowners"
 	consolelog "github.com/kyma-project/test-infra/development/logging"
 	"github.com/kyma-project/test-infra/development/prow/externalplugin"
-	toolstypes "github.com/kyma-project/test-infra/development/types"
 	"golang.org/x/net/context"
 	"google.golang.org/api/option"
-	"k8s.io/apimachinery/pkg/util/sets"
+
 	"k8s.io/test-infra/prow/config"
-	prowgit "k8s.io/test-infra/prow/git/v2"
 	"k8s.io/test-infra/prow/github"
 	"k8s.io/test-infra/prow/pluginhelp"
-	k8sowners "k8s.io/test-infra/prow/repoowners"
 )
 
 const (
@@ -46,24 +40,13 @@ var (
 	repoOwnersClient *repoowners.OwnersClient
 	sapToolsClient   *toolsclient.SapToolsClient
 	pubsubClient     *pubsub.Client
-	pubsubTopic      string
-	clondeRepos      ClonedRepos
+	automergeOptions AutomergeConfig
+	pluginOptions    externalplugin.Opts
 )
 
-// type RequiredUsers []string
-
-// type RequiredLabels []string
-
-// ClonedRepos is a map with information about already cloned repositories.
-// A map keys represent hold org/repo and values are a path to a repository root.
-type ClonedRepos map[string]string
-
-type InstanceConfig struct {
-	ToolsGithubTokenEnv string
-	PubsubTopic         string
+type AutomergeConfig struct {
+	PubsubTopic string
 }
-
-type AllOwners map[string]struct{}
 
 type AutoMergeMessagePayload struct {
 	PullRequestNumber *int     `json:"prNumber,omitempty"`
@@ -76,8 +59,7 @@ type AutoMergeMessagePayload struct {
 }
 
 // TODO: read required users and required labels for automerging from tide configuration
-func (o *InstanceConfig) AddFlags(fs *flag.FlagSet) {
-	fs.StringVar(&o.ToolsGithubTokenEnv, "tools-github-token-env", "TOOLS_GITHUB_TOKEN", "Environment variable name with github token for tools repository.")
+func (o *AutomergeConfig) AddFlags(fs *flag.FlagSet) {
 	fs.StringVar(&o.PubsubTopic, "pubsub-topic", "automerge", "PubSub topic to publish automerge event.")
 }
 
@@ -90,7 +72,7 @@ func helpProvider(_ []config.OrgRepo) (*pluginhelp.PluginHelp, error) {
 
 func checkIfEventSupported(pr github.PullRequestEvent) bool {
 	if pr.PullRequest.Merged {
-		if pr.Sender.Login == "dependabot[bot]" || pr.Sender.Login == "kyma-bot" {
+		if pr.PullRequest.User.Login == "dependabot[bot]" || pr.PullRequest.User.Login == "kyma-bot" {
 			// if github.HasLabel("skip-review", pr.PullRequest.Labels) {
 			//	return true
 			// }
@@ -100,135 +82,10 @@ func checkIfEventSupported(pr github.PullRequestEvent) bool {
 	return false
 }
 
-// TODO: move it to lib
-func parseOwnersFiles(ownersFilePath, repoBase string, owners k8sowners.RepoOwner) (k8sowners.Config, error) {
-	var (
-		fullconfig   k8sowners.FullConfig
-		simpleconfig k8sowners.SimpleConfig
-		err          error
-	)
-	ownersFile := filepath.Join(repoBase, ownersFilePath, "OWNERS")
-	simpleconfig, err = owners.ParseSimpleConfig(ownersFile)
-	if err != nil {
-		return k8sowners.Config{}, fmt.Errorf("failed parsing %s owners file to simpleconfig, error: %w", ownersFilePath, err)
-	}
-	if simpleconfig.Empty() {
-		fullconfig, err = owners.ParseFullConfig(ownersFile)
-		if err != nil {
-			return k8sowners.Config{}, fmt.Errorf("failed parsing %s owners file to fullconfig, error: %w", ownersFilePath, err)
-		}
-		return fullconfig.Filters[".*"], nil
-	}
-	return simpleconfig.Config, nil
-}
-
-// TODO: move it to lib
-func (a AllOwners) addOwners(approvers []string) {
-	for _, approver := range approvers {
-		a[approver] = struct{}{}
-	}
-}
-
-// TODO: move it to lib
-func getOwnersForChanges(changes []github.PullRequestChange, repoBase string, owners k8sowners.RepoOwner) (AllOwners, error) {
-	var (
-		conf k8sowners.Config
-		err  error
-	)
-	allOwners := AllOwners{}
-	for _, change := range changes {
-		approversFile := owners.FindApproverOwnersForFile(change.Filename)
-		reviewersFile := owners.FindReviewersOwnersForFile(change.Filename)
-		conf, err = parseOwnersFiles(approversFile, repoBase, owners)
-		if err != nil {
-			return nil, err
-		}
-		allOwners.addOwners(conf.Approvers)
-		if approversFile != reviewersFile {
-			conf, err = parseOwnersFiles(reviewersFile, repoBase, owners)
-			if err != nil {
-				return nil, err
-			}
-		}
-		allOwners.addOwners(conf.Reviewers)
-	}
-	return allOwners, nil
-}
-
-// TODO: move it to lib
-func (a AllOwners) resolveSlackNames(aliases []toolstypes.Alias, users []toolstypes.User, repoAliases k8sowners.RepoAliases) (sets.String, error) {
-	aliasesMap := make(map[string]toolstypes.Alias)
-	usersMap := make(map[string]toolstypes.User)
-	targets := sets.NewString()
-	for _, alias := range aliases {
-		aliasesMap[alias.ComGithubAliasname] = alias
-	}
-	for _, user := range users {
-		usersMap[user.ComGithubUsername] = user
-	}
-	for owner := range a {
-		if alias, ok := aliasesMap[owner]; ok {
-			if !alias.SkipAutomergeNotifications {
-				targets.Insert(alias.ComEnterpriseSlackChannelsnames...)
-			}
-		} else if user, ok := usersMap[owner]; ok {
-			if !user.SkipAutomergeNotifications {
-				targets.Insert(user.ComEnterpriseSlackUsername)
-			}
-		} else {
-			userOwners := repoAliases.ExpandAlias(owner)
-			if userOwners.Len() > 0 {
-				for userOwner, _ := range userOwners {
-					if user, ok := usersMap[userOwner]; ok {
-						if !user.SkipAutomergeNotifications {
-							targets.Insert(user.ComEnterpriseSlackUsername)
-						}
-					}
-				}
-			}
-		}
-	}
-	return targets, nil
-}
-
-// TODO: move to lib
-func getGitRepoClient(org, repo string) (prowgit.RepoClient, string, error) {
-	if path, ok := clondeRepos[fmt.Sprintf("%s/%s", org, repo)]; ok {
-		gitRepoClient, err := gitClientFactory.ClientFromDir(org, repo, path)
-		if err != nil {
-			return nil, "", fmt.Errorf("failed create git repository client from directory, org: %s, repo: %s, directory: %s, error: %w", org, repo, path, err)
-		}
-		err = gitRepoClient.Fetch()
-		if err != nil {
-			return nil, "", fmt.Errorf("failed fetch repostiory, org: %s, repo: %s, error: %w", org, repo, err)
-		}
-		return gitRepoClient, path, nil
-	} else {
-		gitRepoClient, err := gitClientFactory.ClientFor(org, repo)
-		if err != nil {
-			return nil, "", fmt.Errorf("failed create git repository client, org: %s, repo: %s, error: %w", org, repo, err)
-		}
-		clondeRepos[fmt.Sprintf("%s/%s", org, repo)] = gitRepoClient.Directory()
-		return gitRepoClient, clondeRepos[fmt.Sprintf("%s/%s", org, repo)], nil
-	}
-}
-
-// TODO: move it to lib
-func loadOwnersAliases(basedir, filename string) (k8sowners.RepoAliases, error) {
-	path := filepath.Join(basedir, filename)
-	if _, err := os.Stat(path); err != nil {
-		return nil, err
-	}
-	b, err := ioutil.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-	return k8sowners.ParseAliasesConfig(b)
-}
-
 func pullRequestEventHandler(server *externalplugin.Plugin, event externalplugin.Event) {
-	logger := consolelog.NewLogger()
+	logger, atom := consolelog.NewLoggerWithLevel()
 	defer logger.Sync()
+	atom.SetLevel(pluginOptions.LogLevel)
 	logger = logger.With(externalplugin.EventTypeField, event.EventType, github.EventGUID, event.EventGUID)
 	var pr github.PullRequestEvent
 	if err := json.Unmarshal(event.Payload, &pr); err != nil {
@@ -252,11 +109,11 @@ func pullRequestEventHandler(server *externalplugin.Plugin, event externalplugin
 			if err != nil {
 				logger.Errorw("Failed load RepoOwners", "error", err.Error())
 			}
-			_, repoBase, err := getGitRepoClient(pr.Repo.Owner.Login, pr.Repo.Name)
+			_, repoBase, err := gitClientFactory.GetGitRepoClient(pr.Repo.Owner.Login, pr.Repo.Name)
 			if err != nil {
 				logger.Errorw("Failed get repository base directory", "error", err.Error())
 			}
-			repoAliases, err := loadOwnersAliases(repoBase, "OWNERS_ALIASES")
+			repoAliases, err := repoOwnersClient.LoadRepoAliases(repoBase, "OWNERS_ALIASES")
 			if err != nil {
 				logger.Errorw("failed load aliases file", "error", err.Error())
 			}
@@ -264,7 +121,7 @@ func pullRequestEventHandler(server *externalplugin.Plugin, event externalplugin
 			if err != nil {
 				logger.Errorw("failed get pull request changes", "error", err.Error())
 			}
-			allOwners, err := getOwnersForChanges(changes, repoBase, owners)
+			allOwners, err := repoOwnersClient.GetOwnersForChanges(changes, repoBase, owners)
 			if err != nil {
 				logger.Errorw("filed get owners for changed files", "error", err.Error())
 			}
@@ -277,14 +134,14 @@ func pullRequestEventHandler(server *externalplugin.Plugin, event externalplugin
 			if err != nil {
 				logger.Errorw("failed get users map file", "error", err.Error())
 			}
-			targets, err := allOwners.resolveSlackNames(aliasesMap, usersMap, repoAliases)
+			targets, err := repoOwnersClient.ResolveSlackNames(allOwners, aliasesMap, usersMap, repoAliases)
 			if err != nil {
 				logger.Errorw("failed resolve owners slack names", "error", err.Error())
 			}
 			mergeMsgPayload.OwnersSlackIDs = targets.List()
 			if len(mergeMsgPayload.OwnersSlackIDs) > 0 {
 				attributes := map[string]string{"automerged": "true"}
-				msgID, err := pubsubClient.PublishMessageWithAttributes(ctx, mergeMsgPayload, pubsubTopic, attributes)
+				msgID, err := pubsubClient.PublishMessageWithAttributes(ctx, mergeMsgPayload, automergeOptions.PubsubTopic, attributes)
 				if err != nil {
 					logger.Errorw("failed pubslihed pubsub message", "error", err.Error())
 				}
@@ -298,33 +155,36 @@ func pullRequestEventHandler(server *externalplugin.Plugin, event externalplugin
 
 func main() {
 	var err error
+
 	logger, atom := consolelog.NewLoggerWithLevel()
 	defer logger.Sync()
-	clondeRepos = ClonedRepos{}
-	pluginInstanceOptions := InstanceConfig{}
+
+	v1GithubOptions := toolsclient.GithubClientConfig{}
+	automergeOptions = AutomergeConfig{}
 	pluginOptions := externalplugin.Opts{}
 	ownersOptions := repoowners.OwnersClientConfig{}
 	pubsubOptions := pubsub.ClientConfig{}
 	gitOptions := git.GitClientConfig{}
+
 	fs := pluginOptions.NewFlags()
+	v1GithubOptions.AddFlags(fs)
 	ownersOptions.AddFlags(fs)
 	pubsubOptions.AddFlags(fs)
-	pluginInstanceOptions.AddFlags(fs)
+	automergeOptions.AddFlags(fs)
 	gitOptions.AddFlags(fs)
 	pluginOptions.ParseFlags(fs)
+
 	atom.SetLevel(pluginOptions.LogLevel)
-	if pluginInstanceOptions.PubsubTopic == "" {
+	// logLevel = pluginOptions.LogLevel
+	if automergeOptions.PubsubTopic == "" {
 		err = fmt.Errorf("pubsub topic is empty")
 		logger.Fatalf("%s", err.Error())
 		panic(err)
 	}
 
-	pubsubTopic = pluginInstanceOptions.PubsubTopic
-
-	toolsToken := os.Getenv(pluginInstanceOptions.ToolsGithubTokenEnv)
-	if toolsToken == "" {
-		err = fmt.Errorf("tools GitHub token is empty")
-		logger.Fatalf("%s", err.Error())
+	toolsToken, err := v1GithubOptions.GetToken()
+	if err != nil {
+		logger.Fatalw("Failed creating tools GitHub client", "error", err.Error())
 		panic(err)
 	}
 	sapToolsClient, err = toolsclient.NewSapToolsClient(context.Background(), toolsToken)
@@ -340,12 +200,6 @@ func main() {
 	}
 	logger.Debug("github client ready")
 
-	// gitclient, err := pluginOptions.Github.GitClient(pluginOptions.DryRun)
-	// if err != nil {
-	//	logger.Fatalw("Failed creating git client", "error", err.Error())
-	//	panic(err)
-	// }
-	// gitClientFactory = git.ClientFactoryFrom(gitclient)
 	gitClientFactory, err = gitOptions.NewGitClient(git.WithTokenPath(pluginOptions.Github.TokenPath), git.WithGithubClient(githubClient))
 	if err != nil {
 		logger.Fatalw("Failed creating git client", "error", err.Error())
@@ -353,13 +207,8 @@ func main() {
 	}
 	logger.Debug("git client ready")
 
-	// gitClient, err = git.NewGitClient(git.WithGithubClient(githubClient))
-	// if err != nil {
-	//	logger.Fatalw("Failed creating git client", "error", err.Error())
-	//	panic(err)
-	// }
-
 	repoOwnersClient, err = ownersOptions.NewRepoOwnersClient(
+		repoowners.WithLogger(logger),
 		repoowners.WithGithubClient(githubClient),
 		repoowners.WithGitClient(gitClientFactory))
 	if err != nil {

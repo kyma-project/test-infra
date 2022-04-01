@@ -8,6 +8,7 @@ import (
 // LoggerInterface is an Logger interface for all implementations in kyma-project/test-infra
 type LoggerInterface interface {
 	Info(args ...interface{})
+	Warn(args ...interface{})
 	Error(args ...interface{})
 	Infof(template string, args ...interface{})
 	Errorf(template string, args ...interface{})
