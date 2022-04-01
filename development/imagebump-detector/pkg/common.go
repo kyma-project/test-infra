@@ -6,6 +6,8 @@ import (
 	"io"
 	"os"
 	"regexp"
+	"strconv"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 )
@@ -37,6 +39,36 @@ func ParseNotationFile(filePath string) (string, string, error) {
 		}
 	}
 	return "", "", fmt.Errorf("No yaml file/key notation found")
+}
+
+func getYamlByReference(parsedYaml *yaml.Node, nodePath string) (*yaml.Node, error) {
+	var err error
+	keyList := strings.Split(nodePath, ".")[1:]
+	yamlNode := parsedYaml
+	arrayRxp, _ := regexp.Compile(`^(?P<KEY1>[\w\d]+)\[(?P<KEY2>\d+)\]`)
+	for _, k := range keyList {
+		match := arrayRxp.FindStringSubmatch(k)
+		if len(match) > 0 {
+			res := make(map[string]string)
+			for i, name := range arrayRxp.SubexpNames() {
+				if i != 0 && name != "" {
+					res[name] = match[i]
+				}
+			}
+			index, err := strconv.Atoi(res["KEY2"])
+			if err == nil {
+				yamlNode, err = getYamlNodeInMap(yamlNode, res["KEY1"])
+				yamlNode = yamlNode.Content[index]
+				continue
+			}
+		} else {
+			yamlNode, err = getYamlNodeInMap(yamlNode, k)
+			if err != nil {
+				return &yaml.Node{}, err
+			}
+		}
+	}
+	return yamlNode, err
 }
 
 func getYamlNodeInMap(parsedYaml *yaml.Node, wantedKey string) (*yaml.Node, error) {

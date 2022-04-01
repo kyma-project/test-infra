@@ -75,3 +75,38 @@ func TestGetYamlNodeInMap(t *testing.T) {
 		t.Errorf("Wrong value for %s: %s", testKey, returnNode.Value)
 	}
 }
+
+func TestGetYamlByReference(t *testing.T) {
+	fakeYamlString := `
+key1: value1
+key2:
+  - value2
+  - value3
+key3:
+  nestedKey1: value4
+  nestedKey2:
+    - value5
+    - value6
+  nestedKey3: value7
+`
+	testKey := ".key3.nestedKey2[1]"
+	expectedValue := "value6"
+
+	decoder := yaml.NewDecoder(strings.NewReader(string(fakeYamlString)))
+
+	var fakeNode yaml.Node
+	err := decoder.Decode(&fakeNode)
+	if err != nil {
+		panic(err)
+	}
+
+	returnNode, err := getYamlByReference(fakeNode.Content[0], testKey)
+
+	if err != nil {
+		panic(err)
+	}
+
+	if returnNode.Value != expectedValue {
+		t.Errorf("Wrong value for %s: %s", ".key1", returnNode.Value)
+	}
+}
