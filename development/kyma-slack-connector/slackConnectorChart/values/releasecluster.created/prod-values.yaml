@@ -8,7 +8,7 @@ subscriptionServiceName: "releasecluster-created-v1"
 #
 subscriptionServiceNamespace: "slack-connector"
 # Slack channel name to send messages.
-notificationSlackChannel: "kyma-ci-force"
+notificationSlackChannel: "kyma-skr-release"
 # Path to directory with function code. Relative to repository root.
 functionBaseDir: "/development/kyma-slack-connector/releaseClusterCreatedFunction"
 # Branch name with function code.
