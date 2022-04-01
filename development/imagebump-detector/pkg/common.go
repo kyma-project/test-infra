@@ -6,6 +6,8 @@ import (
 	"io"
 	"os"
 	"regexp"
+
+	"gopkg.in/yaml.v3"
 )
 
 func ParseNotationFile(filePath string) (string, string, error) {
@@ -35,4 +37,13 @@ func ParseNotationFile(filePath string) (string, string, error) {
 		}
 	}
 	return "", "", fmt.Errorf("No yaml file/key notation found")
+}
+
+func getYamlNodeInMap(parsedYaml *yaml.Node, wantedKey string) (yaml.Node, error) {
+	for key, val := range parsedYaml.Content {
+		if val.Value == wantedKey {
+			return *parsedYaml.Content[key+1], nil
+		}
+	}
+	return yaml.Node{}, fmt.Errorf("key %s not found", wantedKey)
 }
