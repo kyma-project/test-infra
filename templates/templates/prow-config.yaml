@@ -197,7 +197,6 @@ tide:
     kyma-incubator/podpreset-crd: squash
     kyma-incubator/service-catalog-tester: squash
     kyma-incubator/kymart: squash
-    kyma-incubator/terraform-provider-kind: squash
     kyma-incubator/dex: squash
     kyma-incubator/varkes: squash
 #    kyma-incubator/marketplaces: squash
@@ -207,7 +206,6 @@ tide:
     kyma-incubator/github-dashboard: squash
     kyma-incubator/vstudio-extension: squash
     kyma-incubator/wordpress-connector: squash
-    kyma-incubator/terraform-modules: squash
     kyma-incubator/connector-tools: squash
 #    kyma-incubator/github-slack-connectors: squash
     kyma-incubator/service-catalog: squash
