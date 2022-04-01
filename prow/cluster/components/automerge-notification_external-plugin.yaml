@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: automerge-notification
-        image: eu.gcr.io/sap-kyma-neighbors-dev/automergenotification:v0.1.25-test
+        image: eu.gcr.io/sap-kyma-neighbors-dev/automergenotification:v0.1.27-test
         args:
         - --dry-run=false
         - --github-endpoint=http://ghproxy
@@ -25,7 +25,7 @@ spec:
         - --hmac-secret-file=/etc/webhook/hmac
         - --config-path=/etc/config/config.yaml
         - --job-config-path=/etc/job-config
-        - --tools-github-token-env=TOOLS_GITHUB_TOKEN
+        - --v1-github-token-path=/etc/v1github/token
         - --pubsub-topic=pullRequests
         - --log-level=info
         - --pubsub-project-id=sap-kyma-prow
@@ -46,6 +46,9 @@ spec:
           - name: oauth
             mountPath: /etc/github
             readOnly: true
+          - name: v1oauth
+            mountPath: /etc/v1github
+            readOnly: true
           - name: config
             mountPath: /etc/config
             readOnly: true
@@ -65,6 +68,9 @@ spec:
         - name: oauth
           secret:
             secretName: oauth-token
+        - name: v1oauth
+          secret:
+            secretName: kyma-bot-github-sap-token
         - name: config
           configMap:
             name: config

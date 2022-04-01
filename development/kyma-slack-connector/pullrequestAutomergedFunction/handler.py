@@ -48,16 +48,17 @@ def main(event, context):
                                                                  msg["prOrg"],
                                                                  msg["prRepo"],
                                                                  msg["prTitle"])
-                                                         }
-                                                     },
-                                                     {
-                                                         "type": "button",
-                                                         "text": {
-                                                             "type": "plain_text",
-                                                             "text": "View PR"
                                                          },
-                                                         "url": msg["prURL"],
-                                                         "style": "primary"
+                                                         "accessory":
+                                                             {
+                                                                 "type": "button",
+                                                                 "text": {
+                                                                     "type": "plain_text",
+                                                                     "text": "View PR"
+                                                                 },
+                                                                 "url": msg["prURL"],
+                                                                 "style": "primary"
+                                                             }
                                                      }
                                                  ])
             assert result.get("ok", False), "Assert response from slack API is OK failed. This is critical error."

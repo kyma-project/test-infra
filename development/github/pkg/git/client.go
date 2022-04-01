@@ -51,6 +51,7 @@ func (o *GitClientConfig) NewGitClient(options ...GitClientOption) (*GitClient, 
 		return nil, err
 	}
 	gitClient := &GitClient{}
+	gitClient.clonedRepos = make(map[string]string)
 	gitClient.ClientFactory = gitFactory
 	return gitClient, err
 }
