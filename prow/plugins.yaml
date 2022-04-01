@@ -35,6 +35,10 @@ plugins:
     plugins:
       - approve
       - blunderbuss
+  kyma-project/kyma:
+    plugins:
+      - approve
+      - blunderbuss
   kyma-project/cli:
     plugins:
       - approve
