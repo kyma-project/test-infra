@@ -41,7 +41,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220318-5f8b67d2"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220321-a507afbe"
             securityContext:
               privileged: true
             command:
@@ -107,7 +107,7 @@ presubmits: # runs on PRs
           base_ref: release-2.1
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220318-5f8b67d2"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220321-a507afbe"
             securityContext:
               privileged: true
             command:
@@ -173,7 +173,7 @@ presubmits: # runs on PRs
           base_ref: release-2.0
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220318-5f8b67d2"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220321-a507afbe"
             securityContext:
               privileged: true
             command:
@@ -239,7 +239,7 @@ presubmits: # runs on PRs
           base_ref: release-1.24
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220318-5f8b67d2"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220321-a507afbe"
             securityContext:
               privileged: true
             command:
@@ -313,7 +313,7 @@ postsubmits: # runs on main
           channel: kyma-prow-dev-null
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220318-5f8b67d2"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220321-a507afbe"
             securityContext:
               privileged: true
             command:

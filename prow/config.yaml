@@ -92,6 +92,7 @@ slack_reporter_configs:
 branch-protection:
   enforce_admins: true
   allow_disabled_policies: true
+  # TODO this has to be removed once we migrate entire kyma-project to prow flow.
   required_pull_request_reviews:
     dismiss_stale_reviews: true
     require_code_owner_reviews: true
@@ -113,10 +114,20 @@ branch-protection:
             require_code_owner_reviews: false
             required_approving_review_count: 0
         kyma:
-          branches:
-            kyma-2.0-docu:
-              required_pull_request_reviews:
-                require_code_owner_reviews: false
+          required_pull_request_reviews:
+            dismiss_stale_reviews: false
+            require_code_owner_reviews: false
+            required_approving_review_count: 0
+        cli:
+          required_pull_request_reviews:
+            dismiss_stale_reviews: false
+            require_code_owner_reviews: false
+            required_approving_review_count: 0
+        third-party-images:
+          required_pull_request_reviews:
+            dismiss_stale_reviews: false
+            require_code_owner_reviews: false
+            required_approving_review_count: 0
         website:
           branches:
             main:
@@ -199,7 +210,6 @@ tide:
     kyma-incubator/podpreset-crd: squash
     kyma-incubator/service-catalog-tester: squash
     kyma-incubator/kymart: squash
-    kyma-incubator/terraform-provider-kind: squash
     kyma-incubator/dex: squash
     kyma-incubator/varkes: squash
 #    kyma-incubator/marketplaces: squash
@@ -209,7 +219,6 @@ tide:
     kyma-incubator/github-dashboard: squash
     kyma-incubator/vstudio-extension: squash
     kyma-incubator/wordpress-connector: squash
-    kyma-incubator/terraform-modules: squash
     kyma-incubator/connector-tools: squash
 #    kyma-incubator/github-slack-connectors: squash
     kyma-incubator/service-catalog: squash
@@ -244,6 +253,9 @@ tide:
         - kyma-incubator
       excludedRepos:
         - kyma-project/test-infra # handled in separate query specifically for approve plugin
+        - kyma-project/third-party-images
+        - kyma-project/cli
+        - kyma-project/kyma
         - kyma-incubator/compass # handled in separate query specifically for approve plugin
       reviewApprovedRequired: true
     - labels:
@@ -258,6 +270,9 @@ tide:
         - do-not-merge/missing-docs-review
       repos:
         - kyma-project/test-infra
+        - kyma-project/third-party-images
+        - kyma-project/cli
+        - kyma-project/kyma
         - kyma-incubator/compass
   context_options:
     from-branch-protection: true
