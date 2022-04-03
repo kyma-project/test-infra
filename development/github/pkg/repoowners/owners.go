@@ -93,26 +93,38 @@ func (c *OwnersClient) ResolveSlackNames(allOwners AllOwners, aliases []toolstyp
 		usersMap[user.ComGithubUsername] = user
 	}
 	for owner := range allOwners {
-		if alias, ok := aliasesMap[owner]; ok {
-			if alias.AutomergeNotifications {
-				targets.Insert(alias.ComEnterpriseSlackChannelsnames...)
-			}
-		} else if user, ok := usersMap[owner]; ok {
-			if user.AutomergeNotifications {
-				targets.Insert(user.ComEnterpriseSlackUsername)
-			}
-		} else {
-			userOwners := repoAliases.ExpandAlias(owner)
-			if userOwners.Len() > 0 {
-				for userOwner, _ := range userOwners {
-					if user, ok := usersMap[userOwner]; ok {
-						if user.AutomergeNotifications {
-							targets.Insert(user.ComEnterpriseSlackUsername)
-						}
+		if !c.checkIfNotifyAlias(owner, &targets, aliasesMap) {
+			if !c.checkIfNotifyUser(owner, &targets, usersMap) {
+				userOwners := repoAliases.ExpandAlias(owner)
+				if userOwners.Len() > 0 {
+					for userOwner, _ := range userOwners {
+						_ = c.checkIfNotifyUser(userOwner, &targets, usersMap)
 					}
 				}
 			}
 		}
 	}
 	return targets, nil
+}
+
+func (c *OwnersClient) checkIfNotifyAlias(owner string, targets *sets.String, aliasesMap map[string]toolstypes.Alias) bool {
+	if alias, ok := aliasesMap[owner]; ok {
+		if alias.AutomergeNotifications {
+			targets.Insert(alias.ComEnterpriseSlackChannelsnames...)
+			return true
+		}
+		return false
+	}
+	return false
+}
+
+func (c *OwnersClient) checkIfNotifyUser(owner string, targets *sets.String, usersMap map[string]toolstypes.User) bool {
+	if user, ok := usersMap[owner]; ok {
+		if user.AutomergeNotifications {
+			targets.Insert(user.ComEnterpriseSlackUsername)
+			return true
+		}
+		return false
+	}
+	return false
 }

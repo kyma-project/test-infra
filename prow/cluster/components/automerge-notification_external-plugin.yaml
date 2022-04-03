@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: automerge-notification
-        image: eu.gcr.io/sap-kyma-neighbors-dev/automergenotification:v0.1.27-test
+        image: eu.gcr.io/sap-kyma-neighbors-dev/automergenotification:v0.1.28-test
         args:
         - --dry-run=false
         - --github-endpoint=http://ghproxy
