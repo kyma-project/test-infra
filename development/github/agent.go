@@ -3,9 +3,9 @@ package github
 import (
 	"fmt"
 
-	"github.com/kyma-project/test-infra/development/gcp/pkg/logging"
 	"github.com/kyma-project/test-infra/development/github/pkg/client/v2"
 	"github.com/kyma-project/test-infra/development/github/pkg/repoowners"
+	"github.com/kyma-project/test-infra/development/logging"
 	"k8s.io/test-infra/prow/git/v2"
 )
 

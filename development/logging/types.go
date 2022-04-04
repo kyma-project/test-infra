@@ -1,5 +1,6 @@
 package logging
 
+// LoggerInterface is a Logger interface for all implementations in kyma-project/test-infra
 type LoggerInterface interface {
 	Info(args ...interface{})
 	Warn(args ...interface{})

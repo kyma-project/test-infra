@@ -4,16 +4,6 @@ import (
 	"cloud.google.com/go/logging"
 )
 
-// TODO: move interface to the development/logging/types.go
-// LoggerInterface is an Logger interface for all implementations in kyma-project/test-infra
-type LoggerInterface interface {
-	Info(args ...interface{})
-	Warn(args ...interface{})
-	Error(args ...interface{})
-	Infof(template string, args ...interface{})
-	Errorf(template string, args ...interface{})
-}
-
 // Config holds configuration for GCP logging client.
 // It can be passed to the client constructor with client constructor configuration option.
 type Config struct {

@@ -5,7 +5,7 @@ import (
 
 	cloudevents "github.com/cloudevents/sdk-go/v2"
 	"github.com/google/go-github/v42/github"
-	"github.com/kyma-project/test-infra/development/gcp/pkg/logging"
+	"github.com/kyma-project/test-infra/development/logging"
 	console "github.com/kyma-project/test-infra/development/logging"
 	"golang.org/x/net/context"
 )
