@@ -16,7 +16,7 @@ type Config struct {
 	ListenPort int `envconfig:"LISTEN_PORT"`
 }
 
-// Client is a cloudevents client implementation for sending and receiving cloudevents.
+// Client is a cloudevents client implementation wrapper for sending and receiving cloudevents.
 // It wraps cloudevents v2 client.
 type Client struct {
 	cloudevents.Client
@@ -26,11 +26,13 @@ type Client struct {
 	Logger        logging.LoggerInterface
 }
 
-// ClientOption is a client constructor configuration option passing configuration to the client constructor.
+// ClientOption is a client constructor configuration option for passing configuration to the client constructor.
 type ClientOption func(*Client) error
 
 // NewClient is a constructor function for cloudevents client.
 // A constructed client can be configured by providing ClientOptions.
+// Default constructed logger is a console logger.
+// Default listen port is 8080.
 func NewClient(options ...ClientOption) (*Client, error) {
 	cc := &Client{
 		Client:        nil,
@@ -95,6 +97,7 @@ func WithEventHandler(eventType string, eventHandler func(*Client, cloudevents.E
 }
 
 // WithLogger is a client constructor configuration option passing logger instance.
+// If not provided default constructed logger is a console logger.
 func WithLogger(logger logging.LoggerInterface) ClientOption {
 	return func(cc *Client) error {
 		cc.Logger = logger
