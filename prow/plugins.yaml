@@ -35,6 +35,10 @@ plugins:
     plugins:
       - approve
       - blunderbuss
+  kyma-project/kyma:
+    plugins:
+      - approve
+      - blunderbuss
   kyma-project/cli:
     plugins:
       - approve
@@ -73,6 +77,11 @@ external_plugins:
       events:
         - issue_comment
   kyma-project/test-infra:
+    - name: needs-tws
+      events:
+        - pull_request
+        - pull_request_review
+  kyma-project/kyma:
     - name: needs-tws
       events:
         - pull_request
