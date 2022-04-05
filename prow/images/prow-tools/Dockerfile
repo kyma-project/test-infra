@@ -15,7 +15,7 @@ RUN apk add --no-cache bash upx dep git && \
     CGO_ENABLED=0 go build -o /prow-tools/unique-jobs-name -ldflags="-s -w" development/checker/unique-jobs-name/main.go &&\
     CGO_ENABLED=0 go build -o /prow-tools/image-url-helper -ldflags="-s -w" development/image-url-helper/main.go
 
-FROM alpine:3.15.3
+FROM alpine:3.15.4
 
 ARG commit
 ENV IMAGE_COMMIT=$commit
