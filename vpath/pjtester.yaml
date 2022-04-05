@@ -3,6 +3,7 @@ pjNames:
   - pjName: "kyma-upgrade-k3d-kyma2-to-main"
   - pjName: "pre-main-reconciler-cli-integration-kyma-main-k3d"
   - pjName: "kyma-upgrade-gardener-kyma-to-kyma2"
+  - pjName: "kyma-gke-nightly-fast-integration"
 prConfigs:
   kyma-project:
     kyma:
