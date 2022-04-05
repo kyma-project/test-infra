@@ -77,7 +77,7 @@ def main(event, context):
 	 																	msg["cluster_name"])
 		)
 		assert uploadedKubeconfig["ok"]
-		print("uploaded kubeconfig for message id: {}".format(event["data"]["ID"]))
+		print("uploaded kubeconfig for cluster {} for message id: {}".format(msg["cluster_name"], event["data"]["ID"]))
 	except SlackApiError as e:
 		assert uploadedKubeconfig["ok"] is False
 		print(f"Got an error: {e.response['error']}")
