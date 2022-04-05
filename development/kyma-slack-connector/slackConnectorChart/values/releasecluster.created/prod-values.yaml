@@ -2,11 +2,11 @@ functionEnabled: true
 # Forwarded event type
 eventType: "releasecluster.created.v1"
 #
-subscriptionAppName: "slack-connector"
+subscriptionAppName: "pubsub-connector"
 #
 subscriptionServiceName: "releasecluster-created-v1"
 #
-subscriptionServiceNamespace: "slack-connector"
+subscriptionServiceNamespace: "pubsub-connector"
 # Slack channel name to send messages.
 notificationSlackChannel: "kyma-skr-release"
 # Path to directory with function code. Relative to repository root.

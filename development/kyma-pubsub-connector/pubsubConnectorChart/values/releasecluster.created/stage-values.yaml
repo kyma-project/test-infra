@@ -7,4 +7,4 @@ eventType: "releasecluster.created.v1"
 # GCP project with pubsub subscription
 projectID: "sap-kyma-neighbors-dev"
 # Kyma eventing target application name where publish events.
-targetAppName: "mp-sap-slack-connector"
+targetAppName: "pubsub-connector"
