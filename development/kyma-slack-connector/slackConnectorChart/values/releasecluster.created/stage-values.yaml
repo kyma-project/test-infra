@@ -2,7 +2,7 @@ functionEnabled: true
 # Forwarded event type
 eventType: "releasecluster.created.v1"
 #
-subscriptionAppName: "mp-sap-slack-connector" #pubsub-connector"
+subscriptionAppName: "mp-sap-slack-connector" #slack-connector"
 #
 subscriptionServiceName: "releasecluster-created-v1"
 #
