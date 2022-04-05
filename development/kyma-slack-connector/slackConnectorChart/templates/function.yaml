@@ -38,5 +38,5 @@ spec:
         configMapKeyref:
           name: {{ .Release.Name }}-function-config
           key: envPrefix
-  runtime: python38
+  runtime: python39
 {{- end }}
