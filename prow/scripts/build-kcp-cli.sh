@@ -46,7 +46,10 @@ export_variables
 
 export KCP_PATH="/home/prow/go/src/github.com/kyma-project/control-plane"
 buildTarget="release"
-
+pushd "${KCP_PATH}/tools/cli"
+go mod tidy
+git diff
+popd 
 log::info "Build KCP CLI with target ${buildTarget}"
 make -C "${KCP_PATH}/tools/cli" ${buildTarget}
 
