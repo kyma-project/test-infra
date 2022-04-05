@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "pre-main-kcp-cli"
+# prConfigs:
+#   kyma-project:
+#     kyma:
+#       prNumber: 1212
+# configPath: "test-infra/prow/custom_config.yaml"
