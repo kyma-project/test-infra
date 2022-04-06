@@ -18,6 +18,49 @@
 # exit on error
 set -o errexit
 
+ENABLE_TEST_LOG_COLLECTOR=false
+
+export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
+export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
+export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
+
+# shellcheck source=prow/scripts/lib/log.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
+
+# All provides require these values, each of them may check for additional variables
+requiredVars=(
+    GARDENER_PROVIDER
+    KYMA_PROJECT_DIR
+    GARDENER_REGION
+    GARDENER_ZONES
+    GARDENER_CLUSTER_VERSION
+    GARDENER_KYMA_PROW_KUBECONFIG
+    GARDENER_KYMA_PROW_PROJECT_NAME
+    GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
+)
+
+utils::check_required_vars "${requiredVars[@]}"
+log::info "### Starting pipeline"
+
+if [[ $GARDENER_PROVIDER == "azure" ]]; then
+    # shellcheck source=prow/scripts/lib/gardener/azure.sh
+    source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/azure.sh"
+elif [[ $GARDENER_PROVIDER == "aws" ]]; then
+    # shellcheck source=prow/scripts/lib/gardener/aws.sh
+    source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/aws.sh"
+elif [[ $GARDENER_PROVIDER == "gcp" ]]; then
+    # shellcheck source=prow/scripts/lib/gardener/gcp.sh
+    source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gcp.sh"
+else
+    ## TODO what should I put here? Is this a backend?
+    log::error "GARDENER_PROVIDER ${GARDENER_PROVIDER} is not yet supported"
+    exit 1
+fi
+
 # Install Kyma from latest release
 kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
 export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
@@ -30,49 +73,6 @@ for i in {1..10} ; do
   if [ -z "${all_minor_versions[$i]}" ] || [ -z "${all_minor_versions[$i+1]}" ]; then
     break
   else
-    ENABLE_TEST_LOG_COLLECTOR=false
-
-    export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
-    export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
-    export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
-
-    # shellcheck source=prow/scripts/lib/log.sh
-    source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
-    # shellcheck source=prow/scripts/lib/utils.sh
-    source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
-    # shellcheck source=prow/scripts/lib/kyma.sh
-    source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
-
-    # All provides require these values, each of them may check for additional variables
-    requiredVars=(
-        GARDENER_PROVIDER
-        KYMA_PROJECT_DIR
-        GARDENER_REGION
-        GARDENER_ZONES
-        GARDENER_CLUSTER_VERSION
-        GARDENER_KYMA_PROW_KUBECONFIG
-        GARDENER_KYMA_PROW_PROJECT_NAME
-        GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
-    )
-
-    utils::check_required_vars "${requiredVars[@]}"
-    log::info "### Starting pipeline"
-
-    if [[ $GARDENER_PROVIDER == "azure" ]]; then
-        # shellcheck source=prow/scripts/lib/gardener/azure.sh
-        source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/azure.sh"
-    elif [[ $GARDENER_PROVIDER == "aws" ]]; then
-        # shellcheck source=prow/scripts/lib/gardener/aws.sh
-        source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/aws.sh"
-    elif [[ $GARDENER_PROVIDER == "gcp" ]]; then
-        # shellcheck source=prow/scripts/lib/gardener/gcp.sh
-        source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gcp.sh"
-    else
-        ## TODO what should I put here? Is this a backend?
-        log::error "GARDENER_PROVIDER ${GARDENER_PROVIDER} is not yet supported"
-        exit 1
-    fi
-
     # nice cleanup on exit, be it succesful or on fail
     trap gardener::cleanup EXIT INT
 
