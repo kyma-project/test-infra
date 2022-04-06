@@ -113,6 +113,52 @@ function kyma::get_last_release_version {
     fi
 }
 
+function kyma::get_offset_minor_releases() {
+   while getopts ":v:a:" opt; do
+         case $opt in
+             v)
+                 base="$OPTARG" ;;
+             \?)
+                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+             :)
+                 echo "Option -$OPTARG argument not provided" >&2 ;;
+         esac
+   done
+
+   RE='[^0-9]*\([0-9]*\)[.]\([0-9]*\)[.]\([0-9]*\)\([0-9A-Za-z-]*\)'
+
+   MAJOR=$(echo $base | sed -e "s#$RE#\1#")
+   MINOR=$(echo $base | sed -e "s#$RE#\2#")
+   PATCH=$(echo $base | sed -e "s#$RE#\3#")
+
+   INITIAL_MINOR=$MINOR
+
+   declare -A minor_release_version_offset
+   minor_release_version_offset=([0]=$base)
+
+#   only last 2 versions
+   for i in {1..2}; do
+       if [ "$MINOR" -lt 0 ]; then
+         break
+       else
+         ((MINOR-=1))
+       fi
+       newVersion="$MAJOR.$MINOR.$PATCH"
+
+       kyma::get_last_release_version \
+           -t "${BOT_GITHUB_TOKEN}" \
+           -v "${newVersion}"
+
+       if [ -z "$kyma_get_last_release_version_return_version" ]; then
+         echo "### The last release version returned from the offset is ${newVersion} and thus invalid"
+         break
+       fi
+
+       minor_release_version_offset[$i]=$newVersion
+   done
+   echo "${minor_release_version_offset[@]}"
+}
+
 # kyma::get_previous_release_version returns previous Kyma release version (i.e. one version before the latest released version)
 #
 # Arguments:
