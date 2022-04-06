@@ -290,7 +290,7 @@ current-context: default
 
 # escape kubeconfig properly
 pubsub_message=$(jq -c --null-input "{\"cluster_name\": \"${COMMON_NAME}\", \"kyma_version\": \"${RELEASE_VERSION}\", \"kubeconfig\": \"$(cat kubeconfig)\"}")
-gcloud pubsub topics publish "${PUBSUB_TOPIC}" --message="${pubsub_message}"
+gcloud pubsub topics publish --project="${PUBSUB_PROJECT}" "${PUBSUB_TOPIC}" --message="${pubsub_message}"
 #---
 
 log::info "Collect list of images"
