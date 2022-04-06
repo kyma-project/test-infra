@@ -46,6 +46,8 @@ function install_cli() {
 
 function deploy_kyma() {
   k3d version
+  curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+  k3d version
 
   if [[ -v K8S_VERSION ]]; then
     echo "Creating k3d with kuberenetes version: ${K8S_VERSION}"
