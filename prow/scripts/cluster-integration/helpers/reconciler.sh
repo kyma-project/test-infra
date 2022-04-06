@@ -45,7 +45,7 @@ function reconciler::delete_cluster_if_exists(){
 function reconciler::reprovision_cluster() {
     log::info "cluster provisioning failed, trying provision new cluster"
     log::info "cleaning damaged cluster first"
-    # TODO: Jellyfish  - should the `delete_cluster_if_exists` be used instead ? Please review INPUT_CLUSTER_NAME vs the for loop with weekdays??
+
     gardener::deprovision_cluster \
       -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
       -c "${INPUT_CLUSTER_NAME}" \
