@@ -1,0 +1,3 @@
+pjNames:
+  - pjName: "kyma-integration-k3d"
+  - pjName: "kyma-integration-k3d-compass-dev"
