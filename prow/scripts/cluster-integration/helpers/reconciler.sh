@@ -66,7 +66,7 @@ function reconciler::provision_cluster() {
     export DOMAIN_NAME="${INPUT_CLUSTER_NAME}"
     export DEFINITION_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/reconciler/shoot-template.yaml"
     log::info "Creating cluster: ${INPUT_CLUSTER_NAME}"
-    set +e
+    # catch cluster provisioning errors and try provision new one
     trap reconciler::reprovision_cluster ERR
     # create the cluster
 
@@ -75,10 +75,11 @@ function reconciler::provision_cluster() {
 
     sleep 20
     echo hello | grep foo
-    trap - ERR
     # wait for the cluster to be ready
     # kubectl wait --for condition="ControlPlaneHealthy" --timeout=20m shoot "${INPUT_CLUSTER_NAME}"
     # log::info "Cluster ${INPUT_CLUSTER_NAME} was created successfully"
+    # disable trap for cluster provisioning errors to not call it for later errors
+    trap - ERR
 
 }
 
