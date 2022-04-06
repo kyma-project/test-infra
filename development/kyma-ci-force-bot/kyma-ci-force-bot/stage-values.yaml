@@ -12,7 +12,7 @@ component: "ci-force-bot.tooling.kyma"
 replicas: 1
 # Kyma eventing application name to subscribe events for.
 kymaEventingSubscriptionAppName: "github-connector"
-# Event type published to Kyma
+# Event type published in Kyma eventing to subscribe for
 eventType: "issuesevent.closed.v1"
 container:
   name: "ciforcebot"

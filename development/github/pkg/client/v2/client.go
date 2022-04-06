@@ -24,6 +24,7 @@ type GithubClientOption func(*GithubClientConfig) error
 // NewGithubClient is a constructor function for GithubClient.
 // A constructed client can be configured by providing GithubClientOptions.
 func (o *GithubClientConfig) NewGithubClient(options ...GithubClientOption) (*GithubClient, error) {
+	// Run provided configuration option functions.
 	for _, opt := range options {
 		err := opt(o)
 		if err != nil {

@@ -44,10 +44,13 @@ var (
 	pluginOptions    externalplugin.Opts
 )
 
+// AutomergeConfig holds configuration specific for plugin instance.
 type AutomergeConfig struct {
+	// PubSubTopic is a name of Google pubsub topic where automerge events will be published.
 	PubsubTopic string
 }
 
+// AutoMergeMessagePayload is a pubsub message data field payload which will is send for automerge events.
 type AutoMergeMessagePayload struct {
 	PullRequestNumber *int     `json:"prNumber,omitempty"`
 	PullRequestOrg    *string  `json:"prOrg,omitempty"`
@@ -58,44 +61,52 @@ type AutoMergeMessagePayload struct {
 	OwnersSlackIDs    []string `json:"ownersSlackIDs,omitempty"`
 }
 
-// TODO: read required users and required labels for automerging from tide configuration
+// AddFlags add plugin instance specific flags to provided flag set.
+// These flags are parsed along with flags defined for used clients.
 func (o *AutomergeConfig) AddFlags(fs *flag.FlagSet) {
 	fs.StringVar(&o.PubsubTopic, "pubsub-topic", "automerge", "PubSub topic to publish automerge event.")
 }
 
+// Plugin help description. This is published on Prow status plugin catalog.
 func helpProvider(_ []config.OrgRepo) (*pluginhelp.PluginHelp, error) {
 	ph := &pluginhelp.PluginHelp{
-		Description: "XXXXXXXXXXXXXX.",
+		Description: "The automerge-notification plugin send slack notification to owners about PRs merged without required review.",
 	}
 	return ph, nil
 }
 
+// checkIfEventSupported check conditions PR must meet to send notification.
+// At the time a conditions are hard coded. In future this will be taken from Tide queries.
 func checkIfEventSupported(pr github.PullRequestEvent) bool {
 	if pr.PullRequest.Merged {
 		if pr.PullRequest.User.Login == "dependabot[bot]" || pr.PullRequest.User.Login == "kyma-bot" {
-			// if github.HasLabel("skip-review", pr.PullRequest.Labels) {
-			//	return true
-			// }
+			if github.HasLabel("skip-review", pr.PullRequest.Labels) {
+				return true
+			}
 			return true
 		}
 	}
 	return false
 }
 
+// pullRequestEventHandler process pull_request event webhooks received by plugin.
 func pullRequestEventHandler(server *externalplugin.Plugin, event externalplugin.Event) {
 	logger, atom := consolelog.NewLoggerWithLevel()
 	defer logger.Sync()
 	atom.SetLevel(pluginOptions.LogLevel)
 	logger = logger.With(externalplugin.EventTypeField, event.EventType, github.EventGUID, event.EventGUID)
+
 	var pr github.PullRequestEvent
 	if err := json.Unmarshal(event.Payload, &pr); err != nil {
 		logger.Errorw("Failed unmarshal json payload.", "error", err.Error())
 	}
 	logger = logger.With("pr-number", pr.Number,
 		"pr-sender", pr.Sender.Login)
+
 	switch pr.Action {
 	case github.PullRequestActionClosed:
 		if checkIfEventSupported(pr) {
+			// Set pubsub message payload values.
 			mergeMsgPayload := AutoMergeMessagePayload{
 				PullRequestOrg:    gogithub.String(pr.Repo.Owner.Login),
 				PullRequestRepo:   gogithub.String(pr.Repo.Name),
@@ -105,42 +116,53 @@ func pullRequestEventHandler(server *externalplugin.Plugin, event externalplugin
 				PullRequestURL:    gogithub.String(pr.PullRequest.HTMLURL),
 			}
 			pr.GUID = event.EventGUID
+			// Load repository owners.
 			owners, err := repoOwnersClient.LoadRepoOwners(pr.Repo.Owner.Login, pr.Repo.Name, "main")
 			if err != nil {
 				logger.Errorw("Failed load RepoOwners", "error", err.Error())
 			}
+			// Get git client for repository.
 			_, repoBase, err := gitClientFactory.GetGitRepoClient(pr.Repo.Owner.Login, pr.Repo.Name)
 			if err != nil {
 				logger.Errorw("Failed get repository base directory", "error", err.Error())
 			}
+			// Load repository owner aliases.
 			repoAliases, err := repoOwnersClient.LoadRepoAliases(repoBase, "OWNERS_ALIASES")
 			if err != nil {
 				logger.Errorw("failed load aliases file", "error", err.Error())
 			}
+			// Get changes from pull request.
 			changes, err := githubClient.GetPullRequestChanges(pr.Repo.Owner.Login, pr.Repo.Name, pr.Number)
 			if err != nil {
 				logger.Errorw("failed get pull request changes", "error", err.Error())
 			}
+			// Get owners for changes from pull request.
 			allOwners, err := repoOwnersClient.GetOwnersForChanges(changes, repoBase, owners)
 			if err != nil {
 				logger.Errorw("filed get owners for changed files", "error", err.Error())
 			}
 			ctx := context.Background()
+			// Load aliases map file.
 			aliasesMap, err := sapToolsClient.GetAliasesMap(ctx)
 			if err != nil {
 				logger.Errorw("failed get aliases map file", "error", err.Error())
 			}
+			// Load users map file.
 			usersMap, err := sapToolsClient.GetUsersMap(ctx)
 			if err != nil {
 				logger.Errorw("failed get users map file", "error", err.Error())
 			}
+			// Get slack names to send notifications too.
 			targets, err := repoOwnersClient.ResolveSlackNames(allOwners, aliasesMap, usersMap, repoAliases)
 			if err != nil {
 				logger.Errorw("failed resolve owners slack names", "error", err.Error())
 			}
+			// Add slack names to notify to pubsub message payload.
 			mergeMsgPayload.OwnersSlackIDs = targets.List()
 			if len(mergeMsgPayload.OwnersSlackIDs) > 0 {
+				// Set pubsub message attributes. This is used to filter messages in pubsub subscriptions.
 				attributes := map[string]string{"automerged": "true"}
+				// Publish pubsub message
 				msgID, err := pubsubClient.PublishMessageWithAttributes(ctx, mergeMsgPayload, automergeOptions.PubsubTopic, attributes)
 				if err != nil {
 					logger.Errorw("failed pubslihed pubsub message", "error", err.Error())
@@ -159,6 +181,7 @@ func main() {
 	logger, atom := consolelog.NewLoggerWithLevel()
 	defer logger.Sync()
 
+	// Initialize configuration options for clients.
 	v1GithubOptions := toolsclient.GithubClientConfig{}
 	automergeOptions = AutomergeConfig{}
 	pluginOptions := externalplugin.Opts{}
@@ -166,6 +189,7 @@ func main() {
 	pubsubOptions := pubsub.ClientConfig{}
 	gitOptions := git.GitClientConfig{}
 
+	// Add client and plugin cli flags.
 	fs := pluginOptions.NewFlags()
 	v1GithubOptions.AddFlags(fs)
 	ownersOptions.AddFlags(fs)
@@ -175,24 +199,28 @@ func main() {
 	pluginOptions.ParseFlags(fs)
 
 	atom.SetLevel(pluginOptions.LogLevel)
-	// logLevel = pluginOptions.LogLevel
+
 	if automergeOptions.PubsubTopic == "" {
 		err = fmt.Errorf("pubsub topic is empty")
 		logger.Fatalf("%s", err.Error())
 		panic(err)
 	}
 
+	// Get token for tools github.
 	toolsToken, err := v1GithubOptions.GetToken()
 	if err != nil {
 		logger.Fatalw("Failed creating tools GitHub client", "error", err.Error())
 		panic(err)
 	}
+
+	// Create tools github client.
 	sapToolsClient, err = toolsclient.NewSapToolsClient(context.Background(), toolsToken)
 	if err != nil {
 		logger.Fatalw("Failed creating tools GitHub client", "error", err.Error())
 		panic(err)
 	}
 
+	// Create github.com client.
 	githubClient, err = pluginOptions.Github.NewGithubClient()
 	if err != nil {
 		logger.Fatalw("Failed creating GitHub client", "error", err.Error())
@@ -200,6 +228,7 @@ func main() {
 	}
 	logger.Debug("github client ready")
 
+	// Create git factory for github.com.
 	gitClientFactory, err = gitOptions.NewGitClient(git.WithTokenPath(pluginOptions.Github.TokenPath), git.WithGithubClient(githubClient))
 	if err != nil {
 		logger.Fatalw("Failed creating git client", "error", err.Error())
@@ -207,6 +236,7 @@ func main() {
 	}
 	logger.Debug("git client ready")
 
+	// Create repository owners client.
 	repoOwnersClient, err = ownersOptions.NewRepoOwnersClient(
 		repoowners.WithLogger(logger),
 		repoowners.WithGithubClient(githubClient),
@@ -215,12 +245,15 @@ func main() {
 		logger.Fatalw("Failed creating repoOwners client", "error", err.Error())
 		panic(err)
 	}
+
+	// Create Google pubsub client.
 	ctx := context.Background()
 	withCredentialsFile := pubsubOptions.WithGoogleOption(option.WithCredentialsFile(pubsubOptions.CredentialsFilePath))
 	pubsubClient, err = pubsubOptions.NewClient(ctx, withCredentialsFile)
 
 	logger.Debug("ownersclient ready")
 
+	// Create and start plugin instance.
 	server := externalplugin.Plugin{}
 	server.WithLogger(logger)
 	server.Name = PluginName

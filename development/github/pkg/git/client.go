@@ -32,14 +32,16 @@ type GitClientOption func(*GitClientConfig) error
 // NewGitClient is a constructor function for wrapper of GitClient.
 // A constructed client can be configured by providing GitClientOptions.
 func (o *GitClientConfig) NewGitClient(options ...GitClientOption) (*GitClient, error) {
-	// var gitClient *GitClient
 
+	// Run provided GitClientOption configuration options.
 	for _, opt := range options {
 		err := opt(o)
 		if err != nil {
 			return nil, fmt.Errorf("failed applying functional option: %w", err)
 		}
 	}
+
+	// Check mandatory option is provided.
 	if o.githubClient == nil {
 		return nil, fmt.Errorf("github client not provided")
 	}
@@ -51,6 +53,7 @@ func (o *GitClientConfig) NewGitClient(options ...GitClientOption) (*GitClient, 
 		return nil, err
 	}
 	gitClient := &GitClient{}
+	// Initialize map to enable writing to it in methods.
 	gitClient.clonedRepos = make(map[string]string)
 	gitClient.ClientFactory = gitFactory
 	return gitClient, err
@@ -76,22 +79,30 @@ func WithTokenPath(tokenPath string) GitClientOption {
 	}
 }
 
+// GetGitRepoClient provide instance of git repository client. It will clone repository on first use.
+// If repository was already cloned, a new repository client will be created from local repository.
+// During creation from local repository a fetch from upstream is executed.
 func (c *GitClient) GetGitRepoClient(org, repo string) (git.RepoClient, string, error) {
+	// Check if repository was already cloned and reuse it.
 	if path, ok := c.clonedRepos[fmt.Sprintf("%s/%s", org, repo)]; ok {
+		// Create repository client from already cloned local repository.
 		gitRepoClient, err := c.ClientFromDir(org, repo, path)
 		if err != nil {
 			return nil, "", fmt.Errorf("failed create git repository client from directory, org: %s, repo: %s, directory: %s, error: %w", org, repo, path, err)
 		}
+		// Fetch changes from upstream.
 		err = gitRepoClient.Fetch()
 		if err != nil {
 			return nil, "", fmt.Errorf("failed fetch repostiory, org: %s, repo: %s, error: %w", org, repo, err)
 		}
 		return gitRepoClient, path, nil
 	} else {
+		// Create repository client for new repository by cloning from github.
 		gitRepoClient, err := c.ClientFor(org, repo)
 		if err != nil {
 			return nil, "", fmt.Errorf("failed create git repository client, org: %s, repo: %s, error: %w", org, repo, err)
 		}
+		// Save repository local path to reuse it for creation new repository clients.
 		c.clonedRepos[fmt.Sprintf("%s/%s", org, repo)] = gitRepoClient.Directory()
 		return gitRepoClient, c.clonedRepos[fmt.Sprintf("%s/%s", org, repo)], nil
 	}

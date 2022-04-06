@@ -19,10 +19,12 @@ const (
 	ProwGithubProxyURL = "http://ghproxy"
 )
 
+// GithubClientConfig holds configuration for GitHub client.
 type GithubClientConfig struct {
 	tokenPath tokenPathFlag
 }
 
+// tokenPathFlag is used as cli flag. When set it adds path to secret agent.
 type tokenPathFlag string
 
 // SapToolsClient wraps kyma implementation github Client and provides additional methods.
@@ -35,22 +37,33 @@ type Client struct {
 	*github.Client
 }
 
+// String provide string representation for tokenPathFlag.
+// This is to implement flag.Var interface.
 func (f *tokenPathFlag) String() string {
 	return string(*f)
 }
 
+// Set implement setting value from cli for tokenPathFlag.
+// This is to implement flag.Var interface.
+// Set will add path to token to a secret agent.
+// Set provide default value for flag.
 func (f *tokenPathFlag) Set(value string) error {
 	if value == "" {
 		value = "/etc/v1github/oauth"
 	}
 	*f = tokenPathFlag(value)
+	// Add path to secret agent.
 	return secret.Add(value)
 }
 
+// AddFlags add GitHub Client cli flag to provided flag set.
+// It lets parse flags with flags provided by other components.
 func (o *GithubClientConfig) AddFlags(fs *flag.FlagSet) {
 	fs.Var(&o.tokenPath, "v1-github-token-path", "Environment variable name with github token.")
 }
 
+// GetToken retrieve GitHub token from secret agent.
+// It use a token path set on Github Client.
 func (o *GithubClientConfig) GetToken() (string, error) {
 	token := secret.GetSecret(string(o.tokenPath))
 	if string(token) == "" {

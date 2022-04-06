@@ -14,14 +14,20 @@ import (
 	"google.golang.org/api/option"
 )
 
+// AddFlags add pubsub client flags to provided flagset.
+// Flag set can be parsed along with other flags.
 func (o *ClientConfig) AddFlags(fs *flag.FlagSet) {
 	fs.StringVar(&o.ProjectID, "pubsub-project-id", "", "Google cloud pubsub project ID.")
 	fs.StringVar(&o.CredentialsFilePath, "pubsub-credentials-files", "/etc/pubsub/credentials.json", "Path to the file with pubsub client credentials.")
 }
 
+// NewClient is a pubsub client wrapper construction function. Client can be configured by providing ClientOptions to the constructor.
+// Constructor provide console logger as default logger.
 func (o *ClientConfig) NewClient(ctx context.Context, options ...ClientOption) (*Client, error) {
 	var err error
 	client := &Client{}
+
+	// Go through functional options.
 	for _, opt := range options {
 		err := opt(o)
 		if err != nil {
@@ -29,12 +35,14 @@ func (o *ClientConfig) NewClient(ctx context.Context, options ...ClientOption) (
 		}
 	}
 
+	// Check if mandatory option is provided
 	if o.ProjectID == "" {
 		return nil, fmt.Errorf("google pubsub project id was not provided")
 	} else if o.CredentialsFilePath == "" {
 		return nil, fmt.Errorf("google pubsub client credentials file path was not provided")
 	}
 
+	// Create default logger if not provided.
 	if o.logger != nil {
 		client.logger = o.logger
 	} else {
@@ -49,6 +57,7 @@ func (o *ClientConfig) NewClient(ctx context.Context, options ...ClientOption) (
 	return client, nil
 }
 
+// WithLogger is constructor function configuration option providing logger instance to use with client.
 func (o *ClientConfig) WithLogger(logger logging.LoggerInterface) ClientOption {
 	return func(config *ClientConfig) error {
 		config.logger = logger
@@ -56,6 +65,7 @@ func (o *ClientConfig) WithLogger(logger logging.LoggerInterface) ClientOption {
 	}
 }
 
+// WithGoogleOption is a constructor function configuration option providing google ClientOption to pass to google pubsub client constructor.
 func (o *ClientConfig) WithGoogleOption(opt option.ClientOption) ClientOption {
 	return func(config *ClientConfig) error {
 		config.opts = append(config.opts, opt)
@@ -83,7 +93,7 @@ func GetJobId(jobUrl *string) (*string, error) {
 	return github.String(jobID), nil
 }
 
-// TODO: remove calls to this function. Calls should be replaced with calls to client method PublishMessage.
+// PublishPubSubMessage is deprecated. Use Client.PublishMessage
 func PublishPubSubMessage(ctx context.Context, client *pubsub.Client, message interface{}, topicName string) (*string, error) {
 	bmessage, err := json.Marshal(message)
 	if err != nil {
@@ -101,12 +111,15 @@ func PublishPubSubMessage(ctx context.Context, client *pubsub.Client, message in
 	return github.String(publishedID), nil
 }
 
-func publishPubSubMessage(ctx context.Context, client *pubsub.Client, message interface{}, topicName string, attributes map[string]string) (*string, error) {
+// publishPubSubMessage construct pubsub message and publish to pubsub topic.
+// Function message argument will be used as pubsub message payload.
+// Function topicName argument will be used as a topic to publish message too.
+func (c *Client) publishPubSubMessage(ctx context.Context, message interface{}, topicName string, attributes map[string]string) (*string, error) {
 	bmessage, err := json.Marshal(message)
 	if err != nil {
 		return nil, fmt.Errorf("failed marshaling message to json, error: %w", err)
 	}
-	topic := client.Topic(topicName)
+	topic := c.Client.Topic(topicName)
 	result := topic.Publish(ctx, &pubsub.Message{
 		// Set json marshaled message as a data payload of pubsub message.
 		Data:       bmessage,
@@ -122,12 +135,12 @@ func publishPubSubMessage(ctx context.Context, client *pubsub.Client, message in
 // PublishMessage will send message to the topicName. Message must be anything possible to marshal to json.
 // On success publishing it will reply with published message ID.
 func (c *Client) PublishMessage(ctx context.Context, message interface{}, topicName string) (*string, error) {
-	return publishPubSubMessage(ctx, c.Client, message, topicName, nil)
+	return c.publishPubSubMessage(ctx, message, topicName, nil)
 }
 
 // PublishMessageWithAttributes will send message with attributes to the topicName.
 // Message must be anything possible to marshal to json.
 // On success publishing it will reply with published message ID.
 func (c *Client) PublishMessageWithAttributes(ctx context.Context, message interface{}, topicName string, attributes map[string]string) (*string, error) {
-	return publishPubSubMessage(ctx, c.Client, message, topicName, attributes)
+	return c.publishPubSubMessage(ctx, message, topicName, attributes)
 }
