@@ -48,11 +48,14 @@ function reconciler::provision_cluster() {
 
     trap reconciler::reprovision_cluster ERR
     # create the cluster
+    
     envsubst < "${DEFINITION_PATH}" | kubectl create -f -
 
+    sleep 20
+    return 1
     # wait for the cluster to be ready
-    kubectl wait --for condition="ControlPlaneHealthy" --timeout=20m shoot "${INPUT_CLUSTER_NAME}"
-    log::info "Cluster ${INPUT_CLUSTER_NAME} was created successfully"
+    # kubectl wait --for condition="ControlPlaneHealthy" --timeout=20m shoot "${INPUT_CLUSTER_NAME}"
+    # log::info "Cluster ${INPUT_CLUSTER_NAME} was created successfully"
 
 }
 
