@@ -158,6 +158,10 @@ postsubmits: # runs on main
                 value: "n1-highcpu-16"
               - name: PROVISION_REGIONAL_CLUSTER
                 value: "true"
+              - name: PUBSUB_PROJECT
+                value: "sap-kyma-prow"
+              - name: PUBSUB_TOPIC
+                value: "release-cluster-created"
             resources:
               requests:
                 memory: 200Mi
