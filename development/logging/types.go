@@ -11,3 +11,11 @@ type LoggerInterface interface {
 	Errorf(template string, args ...interface{})
 	Debugw(message string, keysAndValues ...interface{})
 }
+
+// Logger is an interface to interact with Google logging.
+// TODO: this should be replaced by extending LoggerInterface
+type Logger interface {
+	LogCritical(string)
+	LogError(string)
+	LogInfo(string)
+}

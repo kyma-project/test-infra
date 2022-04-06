@@ -18,8 +18,9 @@ def main(event, context):
     print("using slack api base URL: {}".format(app.client.base_url))
     # Get cloud events data.
     msg = json.loads(base64.b64decode(event["data"]["Data"]))
+    # Go through all target channels or users to send notification.
     for target in msg["ownersSlackIDs"]:
-        # channel_name is a channel where function will search for messages to use threads.
+        # target is a channel where function will send notification.
         try:
             print(f"Sending notification to {target}.")
             result = app.client.chat_postMessage(channel=target,
@@ -61,11 +62,13 @@ def main(event, context):
                                                              }
                                                      }
                                                  ])
+            # Check we got OK response, otherwise fail.
             assert result.get("ok", False), "Assert response from slack API is OK failed. This is critical error."
             print("sent notification for incoming message id: {}".format(event["data"]["ID"]))
         # https://slack.dev/python-slack-sdk/api-docs/slack_sdk/errors/index.html#slack_sdk.errors.SlackApiError
         except SlackApiError as e:
             # https://slack.dev/python-slack-sdk/api-docs/slack_sdk/web/slack_response.html#slack_sdk.web.slack_response.SlackResponse
+            # Check we got NOK slack api response.
             assert e.response.get("ok", False) is False, \
                 "Assert response from slack API is not OK failed. This should not be error."
             print(f"Got an error: {e.response['error']}")

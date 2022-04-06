@@ -22,10 +22,12 @@ import (
 
 const EventTypeField = "event-type"
 
+// TODO: do we really need this interface? Maybe we can add AddFlags to CliOptions interface.
 type ConfigOptionsGroup interface {
 	AddFlags(fs *flag.FlagSet)
 }
 
+// Opts holds configuration for external plugin instance.
 type Opts struct {
 	Port              int
 	Github            client.GithubClientConfig
@@ -34,6 +36,7 @@ type Opts struct {
 	DryRun            bool
 }
 
+// CliOptions is an interface to externalplugin cli flags.
 type CliOptions interface {
 	NewFlags() *flag.FlagSet
 	ParseFlags(fs *flag.FlagSet)
@@ -42,22 +45,26 @@ type CliOptions interface {
 	// GetLogLevel() string
 }
 
+// Event represent event passed to plugin handler.
+// It's constructed from GitHub webhook.
 type Event struct {
 	EventType string
 	EventGUID string
 	Payload   []byte
 }
 
+// Plugin is an externaplugin instance object.
 type Plugin struct {
 	Name               string
 	PluginsConfigAgent *plugins.ConfigAgent
 	tokenGenerator     func() []byte
 	handler            func(string, string, []byte)
 	webhookHandlers    map[string]func(*Plugin, Event)
-	logger             *zap.SugaredLogger
+	// TODO: change logger type to logging.LoggerInterface
+	logger *zap.SugaredLogger
 }
 
-// GatherDefaultOptions set flagset for default options. These options are common for all external plugins.
+// NewFlags create new flagset with default options. These options are common for all external plugins.
 func (o *Opts) NewFlags() *flag.FlagSet {
 	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	fs.IntVar(&o.Port, "port", 8080, "Plugin port to listen on.")
@@ -68,7 +75,7 @@ func (o *Opts) NewFlags() *flag.FlagSet {
 	return fs
 }
 
-// Parse parses cli arguments in to provided flagset.
+// ParseFlags parses cli arguments in to provided flagset.
 func (o *Opts) ParseFlags(fs *flag.FlagSet) {
 	fs.Parse(os.Args[1:])
 }
@@ -95,6 +102,7 @@ func NewGithubClient(githubOptions prowflagutil.GitHubOptions, dryRun bool) (git
 
 // NewLogger return zap sugaredlogger with two output targets. All logs with severity Error or higher will be sent to stderr.
 // All logs with severity lower than Error will be sed to stdout. This allows gcp logging correctly recognize log message severity.
+// TODO: Use our console logger.
 func NewLogger() *zap.SugaredLogger {
 	errorMessage := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
 		return lvl >= zapcore.ErrorLevel
@@ -124,7 +132,7 @@ func (p *Plugin) WithLogger(l *zap.SugaredLogger) *Plugin {
 	return p
 }
 
-// WithWebhookSecret initializes adds webhook secret path to the Prow secret agent.
+// WithWebhookSecret adds webhook secret path to the Prow secret agent.
 func (p *Plugin) WithWebhookSecret(webhookSecretPath string) *Plugin {
 	if err := secret.Add(webhookSecretPath); err != nil {
 		p.logger.Errorw("Could not add path to secret agent.", "error", err.Error())
