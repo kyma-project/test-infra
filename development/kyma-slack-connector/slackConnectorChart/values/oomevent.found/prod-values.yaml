@@ -5,11 +5,9 @@ eventType: "oomevent.found.v1"
 subscriptionAppName: "pubsub-connector"
 # Service name to send events.
 subscriptionServiceName: "oomevent-found-v1"
-#
+# Service namespace to send events.
 subscriptionServiceNamespace: "slack-connector"
 # TODO: change name in all charts to subscriptionServiceNamespace.
-# Service namespace to send events.
-subscriptionNamespace: "slack-connector"
 # Slack channel name to send messages.
 notificationSlackChannel: "kyma-ci-force"
 # Path to directory with function code. Relative to repository root.
