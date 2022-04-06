@@ -155,7 +155,6 @@ function applyKymaOverrides() {
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-resource-tests-overrides" \
     --data "application-operator.tests.enabled=false" \
     --data "tests.application_connector_tests.enabled=false" \
-    --data "application-registry.tests.enabled=false" \
     --data "console-backend-service.tests.enabled=false" \
     --data "test.acceptance.service-catalog.enabled=false" \
     --data "test.acceptance.external_solution.enabled=false" \
@@ -166,10 +165,6 @@ function applyKymaOverrides() {
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
     --data "test.acceptance.ui.logging.enabled=true" \
     --label "component=core"
-
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-registry-overrides" \
-    --data "application-registry.deployment.args.detailedErrorResponse=true" \
-    --label "component=application-connector"
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "monitoring-config-overrides" \
     --data "global.alertTools.credentials.slack.channel=${KYMA_ALERTS_CHANNEL}" \
