@@ -66,11 +66,12 @@ function reconciler::provision_cluster() {
     export DOMAIN_NAME="${INPUT_CLUSTER_NAME}"
     export DEFINITION_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/reconciler/shoot-template.yaml"
     log::info "Creating cluster: ${INPUT_CLUSTER_NAME}"
-
+    set +e
     trap reconciler::reprovision_cluster ERR
     # create the cluster
-    
-    envsubst < "${DEFINITION_PATH}" | kubectl create -f -
+
+    log::info "TEST - creating cluster"
+    #envsubst < "${DEFINITION_PATH}" | kubectl create -f -
 
     sleep 20
     return 1
