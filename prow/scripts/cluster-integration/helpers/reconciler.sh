@@ -6,6 +6,9 @@ readonly RECONCILER_TIMEOUT=1200 # in secs
 readonly RECONCILER_DELAY=15 # in secs
 readonly LOCAL_KUBECONFIG="$HOME/.kube/config"
 
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+
 function reconciler::export_nightly_cluster_name(){
   # shellcheck disable=SC2046
   # shellcheck disable=SC2005
@@ -42,6 +45,8 @@ function reconciler::provision_cluster() {
     export DOMAIN_NAME="${INPUT_CLUSTER_NAME}"
     export DEFINITION_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/reconciler/shoot-template.yaml"
     log::info "Creating cluster: ${INPUT_CLUSTER_NAME}"
+
+    trap reconciler::reprovision_cluster ERR
     # create the cluster
     envsubst < "${DEFINITION_PATH}" | kubectl create -f -
 
@@ -49,6 +54,27 @@ function reconciler::provision_cluster() {
     kubectl wait --for condition="ControlPlaneHealthy" --timeout=20m shoot "${INPUT_CLUSTER_NAME}"
     log::info "Cluster ${INPUT_CLUSTER_NAME} was created successfully"
 
+}
+
+# reconciler::reprovision_cluster will generate new cluster name
+# and start provisioning again
+reconciler::reprovision_cluster() {
+    log::info "cluster provisioning failed, trying provision new cluster"
+    log::info "cleaning damaged cluster first"
+    # TODO: Jellyfish  - should the `delete_cluster_if_exists` be used instead ? Please review INPUT_CLUSTER_NAME vs the for loop with weekdays??
+    gardener::deprovision_cluster \
+      -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+      -c "${INPUT_CLUSTER_NAME}" \
+      -f "${GARDENER_KYMA_PROW_KUBECONFIG}"
+    
+    log::info "building new cluster name"
+
+    utils::generate_commonName -n "${COMMON_NAME_PREFIX}"
+    COMMON_NAME=${utils_generate_commonName_return_commonName:?}
+    export COMMON_NAME
+    INPUT_CLUSTER_NAME="${COMMON_NAME}"
+    export INPUT_CLUSTER_NAME
+    reconciler::provision_cluster
 }
 
 function reconciler::deploy() {
