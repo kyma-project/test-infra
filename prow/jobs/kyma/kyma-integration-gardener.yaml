@@ -46,7 +46,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220321-a507afbe"
             securityContext:
               privileged: true
             command:
@@ -121,7 +121,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220321-a507afbe"
             securityContext:
               privileged: true
             command:
@@ -196,7 +196,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220321-a507afbe"
             securityContext:
               privileged: true
             command:
@@ -263,7 +263,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220321-a507afbe"
             securityContext:
               privileged: true
             command:
@@ -314,6 +314,7 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         preset-cluster-version: "true"
         preset-debug-commando-oom: "true"
+        preset-kcp-client-dev-envs: "true"
         preset-keb-dev-credentials: "true"
         preset-kyma-integration-central-app-connectivity-enabled: "true"
         preset-kyma-integration-compass-dev: "true"
@@ -340,7 +341,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220321-a507afbe"
             securityContext:
               privileged: true
             command:
@@ -348,18 +349,8 @@ presubmits: # runs on PRs
             env:
               - name: CREDENTIALS_DIR
                 value: "/etc/credentials/kyma-tunas-prow-event-mesh"
-              - name: KCP_GARDENER_NAMESPACE
-                value: "garden-kyma-dev"
-              - name: KCP_KEB_API_URL
-                value: "https://kyma-env-broker.cp.dev.kyma.cloud.sap"
-              - name: KCP_KUBECONFIG_API_URL
-                value: "https://kubeconfig-service.cp.dev.kyma.cloud.sap"
-              - name: KCP_MOTHERSHIP_API_URL
-                value: "https://mothership-reconciler.cp.dev.kyma.cloud.sap/v1"
-              - name: KCP_OIDC_ISSUER_URL
-                value: "https://kymatest.accounts400.ondemand.com"
               - name: KEB_PLAN_ID
-                value: "8cb22518-aa26-44c5-91a0-e669ec9bf443"
+                value: "361c511f-f939-4621-b228-d0fb79a1fe15"
               - name: KYMA_MAJOR_VERSION
                 value: "2"
               - name: KYMA_PROJECT_DIR
@@ -420,7 +411,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220321-a507afbe"
             securityContext:
               privileged: true
             command:
@@ -503,7 +494,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220321-a507afbe"
             securityContext:
               privileged: true
             command:
@@ -577,7 +568,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220321-a507afbe"
             securityContext:
               privileged: true
             command:
@@ -659,7 +650,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220321-a507afbe"
             securityContext:
               privileged: true
             command:
@@ -739,7 +730,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220321-a507afbe"
             securityContext:
               privileged: true
             command:
@@ -811,7 +802,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220321-a507afbe"
             securityContext:
               privileged: true
             command:
@@ -881,7 +872,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220321-a507afbe"
             securityContext:
               privileged: true
             command:
@@ -959,7 +950,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220321-a507afbe"
             securityContext:
               privileged: true
             command:

@@ -135,6 +135,12 @@ if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
   utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-compass-components.yaml" "~/kyma-integration-k3d-compass-components.yaml"
 fi
 
+if [[ -v TELEMETRY_ENABLED ]]; then
+  log::info "Copying components file for telemetry tests"
+  #shellcheck disable=SC2088
+  utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-telemetry-components.yaml" "~/kyma-integration-k3d-telemetry-components.yaml"
+fi
+
 log::info "Triggering the installation"
 gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d.sh"
 

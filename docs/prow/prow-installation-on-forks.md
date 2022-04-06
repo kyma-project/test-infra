@@ -147,7 +147,7 @@ Verify if the Prow installation was successful.
 
 ## Configure the webhook
 
-After Prow installs successfully, you must [configure the webhook](https://github.com/kyma-project/community/blob/main/docs/guidelines/repository-guidelines/01-new-repository-settings.md#add-webhooks) to enable the GitHub repository to send events to Prow.
+After Prow installs successfully, you must configure the webhook to enable the GitHub repository to send events to Prow.
 
 ## Configure Prow
 

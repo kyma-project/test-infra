@@ -2,10 +2,11 @@
 set -o errexit
 
 readonly TEST_INFRA_DIR="./test-infra"
-readonly GO_VERSION=1.17.5
+readonly GO_VERSION=1.17.8
 export KYMA_SOURCES_DIR="./kyma"
 export KUBECONFIG="${HOME}/.kube/config"
 export CLUSTER_DOMAIN="local.kyma.dev"
+export ISTIOCTL_VERSION="1.12.3"
 
 function prereq_test() {
   command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
@@ -75,19 +76,13 @@ EOF
 }
 
 function istio::prepare_components_file() {
-  log::info "Preparing Kyma installation with Ory and prerequisites"
-
-  if [[ $KYMA_VERSION == main ]]; then
-    export ISTIO_COMPONENT_NAME="istio"
-  else
-    export ISTIO_COMPONENT_NAME="istio-configuration"
-  fi
+  log::info "Preparing Kyma installation with Istio prerequisites"
 
 cat << EOF > "$PWD/istio.yaml"
 defaultNamespace: kyma-system
 prerequisites:
   - name: "cluster-essentials"
-  - name: "$ISTIO_COMPONENT_NAME"
+  - name: "istio"
     namespace: "istio-system"
 EOF
 }

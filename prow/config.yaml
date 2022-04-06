@@ -20,10 +20,10 @@ plank:
       timeout: 3h
       grace_period: 10m
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20220305-a9a1fd8e47
-        initupload: gcr.io/k8s-prow/initupload:v20220305-a9a1fd8e47
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20220305-a9a1fd8e47
-        sidecar: gcr.io/k8s-prow/sidecar:v20220305-a9a1fd8e47
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20220403-5ca3a768c0
+        initupload: gcr.io/k8s-prow/initupload:v20220403-5ca3a768c0
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20220403-5ca3a768c0
+        sidecar: gcr.io/k8s-prow/sidecar:v20220403-5ca3a768c0
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -92,6 +92,7 @@ slack_reporter_configs:
 branch-protection:
   enforce_admins: true
   allow_disabled_policies: true
+  # TODO this has to be removed once we migrate entire kyma-project to prow flow.
   required_pull_request_reviews:
     dismiss_stale_reviews: true
     require_code_owner_reviews: true
@@ -113,10 +114,20 @@ branch-protection:
             require_code_owner_reviews: false
             required_approving_review_count: 0
         kyma:
-          branches:
-            kyma-2.0-docu:
-              required_pull_request_reviews:
-                require_code_owner_reviews: false
+          required_pull_request_reviews:
+            dismiss_stale_reviews: false
+            require_code_owner_reviews: false
+            required_approving_review_count: 0
+        cli:
+          required_pull_request_reviews:
+            dismiss_stale_reviews: false
+            require_code_owner_reviews: false
+            required_approving_review_count: 0
+        third-party-images:
+          required_pull_request_reviews:
+            dismiss_stale_reviews: false
+            require_code_owner_reviews: false
+            required_approving_review_count: 0
         website:
           branches:
             main:
@@ -199,7 +210,6 @@ tide:
     kyma-incubator/podpreset-crd: squash
     kyma-incubator/service-catalog-tester: squash
     kyma-incubator/kymart: squash
-    kyma-incubator/terraform-provider-kind: squash
     kyma-incubator/dex: squash
     kyma-incubator/varkes: squash
 #    kyma-incubator/marketplaces: squash
@@ -209,7 +219,6 @@ tide:
     kyma-incubator/github-dashboard: squash
     kyma-incubator/vstudio-extension: squash
     kyma-incubator/wordpress-connector: squash
-    kyma-incubator/terraform-modules: squash
     kyma-incubator/connector-tools: squash
 #    kyma-incubator/github-slack-connectors: squash
     kyma-incubator/service-catalog: squash
@@ -241,8 +250,13 @@ tide:
         - do-not-merge/invalid-commit-message
       orgs:
         - kyma-project
+        - kyma-incubator
       excludedRepos:
         - kyma-project/test-infra # handled in separate query specifically for approve plugin
+        - kyma-project/third-party-images
+        - kyma-project/cli
+        - kyma-project/kyma
+        - kyma-incubator/compass # handled in separate query specifically for approve plugin
       reviewApprovedRequired: true
     - labels:
         - lgtm
@@ -256,20 +270,12 @@ tide:
         - do-not-merge/missing-docs-review
       repos:
         - kyma-project/test-infra
-    - labels:
-        - lgtm
-      missingLabels:
-        - needs-rebase
-        - do-not-merge/hold
-        - do-not-merge/work-in-progress
-        - do-not-merge/invalid-owners-file
-        - do-not-merge/invalid-commit-message
-      orgs:
-        - kyma-incubator
-      reviewApprovedRequired: true
+        - kyma-project/third-party-images
+        - kyma-project/cli
+        - kyma-project/kyma
+        - kyma-incubator/compass
   context_options:
     from-branch-protection: true
-#    skip-unknown-contexts: true
 
 presets:
   - labels:
@@ -848,6 +854,16 @@ presets:
     env:
       - name: WS_PRODUCTNAME
         value: "SHC - KYMA DASHBOARD 1.0"
+  - labels:
+      preset-whitesource-product-kyma-release: "true"
+    env:
+      - name: WS_PRODUCTNAME
+        value: "SHC - KYMA RUNTIME RELEASE"
+  - labels:
+      preset-whitesource-product-kyma-release-previous: "true"
+    env:
+      - name: WS_PRODUCTNAME
+        value: "SHC - KYMA RUNTIME RELEASE-1"
   # volume mounts for kind
   - labels:
       preset-kind-volume-mounts: "true"

@@ -156,30 +156,23 @@ function reconciler::initialize_test_pod() {
     sed -i "s/example.com/$domain/" ./e2e-test/template-kyma-main.json
     # shellcheck disable=SC2016
     jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template-kyma-main.json > body.json
-  else
+  elif [[ "$KYMA_UPGRADE_SOURCE" == *"2.1."*  ]] ; then
+    sed -i "s/example.com/$domain/" ./e2e-test/template-kyma-2-1-x.json
+    # shellcheck disable=SC2016
+    jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template-kyma-2-1-x.json > body.json
+  elif [[ "$KYMA_UPGRADE_SOURCE" == *"2.0."*  ]] ; then
     sed -i "s/example.com/$domain/" ./e2e-test/template-kyma-2-0-x.json
     # shellcheck disable=SC2016
     jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template-kyma-2-0-x.json > body.json
+  else
+    log::error "Unsupported Kyma Version: $KYMA_UPGRADE_SOURCE"
+    exit 1
   fi
   # Copy the reconcile request payload and kyma reconciliation scripts to the test-pod
   kubectl cp body.json -c test-pod reconciler/test-pod:/tmp
   kubectl cp ./e2e-test/reconcile-kyma.sh -c test-pod reconciler/test-pod:/tmp
   kubectl cp ./e2e-test/get-reconcile-status.sh -c test-pod reconciler/test-pod:/tmp
   kubectl cp ./e2e-test/request-reconcile.sh -c test-pod reconciler/test-pod:/tmp
-}
-
-# Triggers reconciliation of Kyma and waits until reconciliation is in ready state
-function reconciler::reconcile_kyma() {
-  set +e
-  # Trigger Kyma reconciliation using reconciler
-  log::banner "Reconcile Kyma in the same cluster until it is ready"
-  kubectl exec -it -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/reconcile-kyma.sh"
-  if [[ $? -ne 0 ]]; then
-      log::error "Failed to reconcile Kyma"
-      kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler -c mothership-reconciler --tail -1
-      exit 1
-  fi
-  set -e
 }
 
 # Only triggers reconciliation of Kyma

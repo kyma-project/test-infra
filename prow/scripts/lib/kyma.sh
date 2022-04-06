@@ -95,7 +95,7 @@ function kyma::get_last_release_version {
     done
 
     utils::check_empty_arg "$githubToken" "Github token was not provided. Exiting..."
-    
+
     if [[ -n "${searchedVersion}" ]]; then
         # shellcheck disable=SC2034
         kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
@@ -105,6 +105,48 @@ function kyma::get_last_release_version {
         kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
             | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].tag_name')
     fi
+}
+
+# kyma::get_previous_release_version returns previous Kyma release version (i.e. one version before the latest released version)
+#
+# Arguments:
+#   t - GitHub token
+# Returns:
+#   Previous Kyma release version
+function kyma::get_previous_release_version {
+    local OPTIND
+    local githubToken
+
+    while getopts ":t:" opt; do
+        case $opt in
+            t)
+                githubToken="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&1; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&1 ;;
+        esac
+    done
+
+    utils::check_empty_arg "$githubToken" "Github token was not provided. Exiting..."
+
+    # shellcheck disable=SC2034
+    kyma_get_previous_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
+        | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-2].tag_name')
+}
+
+kyma::provision_k3d() {
+  k3d version
+
+  if [[ -v K8S_VERSION ]]; then
+    echo "Creating k3d with kubernetes version: ${K8S_VERSION}"
+    kyma provision k3d --ci -k "${K8S_VERSION}"
+  else
+    kyma provision k3d --ci
+  fi
+
+  echo "Printing client and server version info"
+  kubectl version
 }
 
 kyma::install_cli() {
@@ -171,6 +213,31 @@ kyma::install_cli_last_release() {
     echo "OK"
     popd || exit
     eval "${settings}"
+}
+
+kyma::install_cli_from_reconciler_pr() {
+  local install_dir
+  declare -r install_dir="/usr/local/bin"
+  mkdir -p "$install_dir"
+
+  local os
+  os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+  if [[ -z "$os" || ! "$os" =~ ^(linux)$ ]]; then
+    echo >&2 -e "Unsupported host OS. Must be Linux."
+    exit 1
+  else
+    readonly os
+  fi
+
+  kyma_cli_url="https://storage.googleapis.com/kyma-cli-pr/kyma-${os}-pr-${PULL_NUMBER}"
+
+  pushd "$install_dir" || exit
+  echo "Downloading Kyma CLI from: ${kyma_cli_url}"
+  curl -Lo kyma "${kyma_cli_url}"
+  chmod +x kyma
+  popd || exit
+
+  kyma version --client
 }
 
 host::os() {

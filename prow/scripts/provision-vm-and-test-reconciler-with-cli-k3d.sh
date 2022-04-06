@@ -118,16 +118,26 @@ trap cleanup exit INT
 
 log::banner "Provision k3d, deploy Kyma and run fast-integration tests"
 
-# define kyma version to deploy
+### define kyma version to deploy
 export KYMA_SOURCE="main"
-
 if [[ "${KYMA_TEST_SOURCE}" == "latest-release" ]]; then
   # Fetch latest Kyma released version
   kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
-  export KYMA_UPGRADE_SOURCE="${kyma_get_last_release_version_return_version:?}"
-  log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_UPGRADE_SOURCE}"
+  export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
+  log::info "### Reading latest release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
+elif [[ "${KYMA_TEST_SOURCE}" == "previous-release" ]]; then
+  # Fetch previous Kyma released version
+  kyma::get_previous_release_version -t "${BOT_GITHUB_TOKEN}"
+  export KYMA_SOURCE="${kyma_get_previous_release_version_return_version:?}"
+  log::info "### Reading previous release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
+fi
 
-  export KYMA_SOURCE="${KYMA_UPGRADE_SOURCE}"
+### define Kyma version to upgrade to, if it is a upgrade test
+if [[ "${KYMA_UPGRADE_SOURCE}" == "latest-release" ]]; then
+  # Fetch latest Kyma released version
+  kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
+  export KYMA_UPGRADE_VERSION="${kyma_get_last_release_version_return_version:?}"
+  log::info "### Reading latest release version from RELEASE_VERSION file, got: ${KYMA_UPGRADE_VERSION}"
 fi
 
 log::info "Preparing environment variables for the instance"
@@ -135,6 +145,7 @@ envVars=(
   PULL_NUMBER
   EXECUTION_PROFILE
   KYMA_SOURCE
+  KYMA_UPGRADE_VERSION
 )
 utils::save_env_file "${envVars[@]}"
 #shellcheck disable=SC2088
@@ -144,7 +155,17 @@ log::info "Copying Kyma to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
 
-log::info "Triggering the installation"
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/reconciler-integration-with-cli-k3d.sh"
+log::info "Copying Test-infra to the instance"
+#shellcheck disable=SC2088
+utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/test-infra" "~/test-infra"
+
+# run the relevant script to deploy Kyma and run fast-integration tests
+if [[ "${KYMA_UPGRADE_VERSION}" ]]; then
+  log::banner "Triggering the tests for Kyma upgrade scenario from version: ${KYMA_SOURCE} to version: ${KYMA_UPGRADE_VERSION}"
+  gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/reconciler-integration-with-cli-upgrade-k3d.sh"
+else
+  log::banner "Triggering the tests for Kyma deploy scenario for version: ${KYMA_SOURCE}"
+  gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/reconciler-integration-with-cli-k3d.sh"
+fi
 
 log::success "all done"

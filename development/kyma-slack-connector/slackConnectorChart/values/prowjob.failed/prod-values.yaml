@@ -7,6 +7,8 @@ subscriptionAppName: "pubsub-connector"
 subscriptionServiceName: "prowjob-failed-v1"
 # Service namespace to send events.
 subscriptionNamespace: "slack-connector"
+#
+subscriptionServiceNamespace: "slack-connector"
 # Slack channel name to send messages.
 notificationSlackChannel: "kyma-ci-force"
 # Path to directory with function code. Relative to repository root.

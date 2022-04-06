@@ -50,7 +50,7 @@ function filterFolders() {
   FOLDER_TO_SCAN=$2
   local EXCLUDES
   EXCLUDES=$({ cd "${FOLDER_TO_SCAN}" && find . -iname "${DEPENDENCY_FILE_TO_EXCLUDE}"; } | grep -v vendor | grep -v tests | xargs -n 1 dirname | sed 's/$/\/**/' | sed 's/^.\//**\//' | paste -s -d" " -)
-  EXCLUDES="excludes=**/docs/** **/tests/** ${EXCLUDES}"
+  EXCLUDES="**/docs/** **/tests/** ${EXCLUDES}"
   echo "$EXCLUDES"
 }
 
@@ -132,6 +132,10 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
     export WS_EXCLUDES=$(filterFolders "${EXCLUDE_PROJECT_CONFIG}" "$(pwd)")
   fi
 
+  if [[ -n "$CUSTOM_EXCLUDE" ]]; then
+    export WS_EXCLUDES="${WS_EXCLUDES} ${CUSTOM_EXCLUDE}"
+  fi
+
   # shellcheck disable=SC2153
   echo "Product name - $WS_PRODUCTNAME"
   echo "Project name - $WS_PROJECTNAME"
@@ -164,6 +168,12 @@ if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
   pushd "${PROJECT_SRC}" # change to passed parameter
 
   # find all go.mod / Gopkg.toml / package.json projects and scan them individually
+  if [[ -n "$CUSTOM_EXCLUDE" ]]; then
+    found_components=$(find . -name "$COMPONENT_DEFINITION" -not -path "./tests/*" -not -path "./docs/*" -not -path "${CUSTOM_EXCLUDE}")
+  else
+    found_components=$(find . -name "$COMPONENT_DEFINITION" -not -path "./tests/*" -not -path "./docs/*" )
+  fi
+
   while read -r component_definition_path; do
     # TODO what about excludes?
     # remove go.mod / Gopkg.toml part
@@ -180,7 +190,7 @@ if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
       log::error "Scan for ${FOLDER} has failed"
       scan_failed=1
     fi
-  done <<< "$(find . -name "$COMPONENT_DEFINITION" -not -path "./tests/*" -not -path "./docs/*")"
+  done <<< "$found_components"
   popd
 else
   # scan PROJECT_SRC directory as a single project
