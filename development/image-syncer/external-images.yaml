@@ -47,5 +47,5 @@ images:
 - source: "nats@sha256:bed4f10253c279b665399962dd8a61466115c3e1e9acd74470e29f955c4dc923"
   tag: "2.7.4-alpine-2022-04-05"
 - source: "natsio/nats-server-config-reloader:0.6.3"
-- source: "natsio/prometheus-nats-exporter:0.9.0"
+- source: "natsio/prometheus-nats-exporter:0.9.1"
 - source: "mockserver/mockserver:mockserver-5.11.2"
