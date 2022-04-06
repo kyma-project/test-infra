@@ -74,7 +74,7 @@ function reconciler::provision_cluster() {
     #envsubst < "${DEFINITION_PATH}" | kubectl create -f -
 
     sleep 20
-    return 1
+    echo hello | grep foo
     # wait for the cluster to be ready
     # kubectl wait --for condition="ControlPlaneHealthy" --timeout=20m shoot "${INPUT_CLUSTER_NAME}"
     # log::info "Cluster ${INPUT_CLUSTER_NAME} was created successfully"
