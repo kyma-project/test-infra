@@ -2,3 +2,7 @@ pjNames:
   - pjName: "kyma-integration-k3d"
   - pjName: "kyma-integration-k3d-compass-dev"
   - pjName: "kyma-upgrade-k3d-kyma2-to-main"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 13875
