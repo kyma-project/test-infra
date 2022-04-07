@@ -49,5 +49,5 @@ images:
 - source: "natsio/nats-server-config-reloader:0.6.3"
 - source: "natsio/prometheus-nats-exporter:0.9.1"
 - source: "natsio/prometheus-nats-exporter@sha256:3392c3852e2c10070157eb0550e45bd102a999eabd241a720350eda0063260fc"
-  tag: "0.9.0"
+  tag: "0.9.0-2022-04-07"
 - source: "mockserver/mockserver:mockserver-5.11.2"
