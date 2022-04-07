@@ -7,6 +7,7 @@ set -o errexit
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
+readonly KYMA_PROJECT_DIR="$(cd "${SCRIPT_DIR}/../../../" && pwd)"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
@@ -111,8 +112,6 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
 trap cleanup exit INT
 
-ls ${KYMA_SOURCES_DIR}
-
 # Determine Kyma and Istio version
 if [[ ! $KYMA_VERSION ]]; then
     # Fetch latest Kyma2 release
@@ -120,6 +119,7 @@ if [[ ! $KYMA_VERSION ]]; then
     export KYMA_VERSION="${kyma_get_last_release_version_return_version:?}"
     log::info "Reading latest 2.x release version, got: ${KYMA_VERSION}"
 fi
+
 istio::get_version
 export ISTIO_VERSION="${istio_version:?}"
 log::info "Reading istio version, got: ${ISTIO_VERSION}"

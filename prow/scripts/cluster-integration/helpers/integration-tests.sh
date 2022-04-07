@@ -135,6 +135,6 @@ function api-gateway::launch_tests() {
 }
 function istio::get_version() {
   pushd "${KYMA_SOURCES_DIR}/resources/istio"
-  istio_version=$(cat Chart.yaml | grep version | sed -n "s/version: //p")
+  istio_version=$(cat < Chart.yaml | grep version | sed -n "s/version: //p")
   popd
 }

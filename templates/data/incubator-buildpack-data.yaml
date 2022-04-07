@@ -439,6 +439,7 @@ templates:
                     - jobConfig_presubmit
                     - image_kyma-integration
                     - extra_refs_test-infra
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_component_k3d_integration_jobConfig
@@ -463,6 +464,7 @@ templates:
                     - jobConfig_presubmit
                     - image_kyma-integration
                     - extra_refs_test-infra
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_component_k3d_integration_jobConfig
@@ -487,6 +489,7 @@ templates:
                     - jobConfig_presubmit
                     - image_kyma-integration
                     - extra_refs_test-infra
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_component_k3d_integration_jobConfig
@@ -512,6 +515,7 @@ templates:
                     - gardener_gcp_job
                     - image_kyma-integration
                     - extra_refs_test-infra
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_component_gardener_integration_jobConfig
@@ -597,6 +601,7 @@ templates:
                     - jobConfig_postsubmit
                     - image_kyma-integration
                     - extra_refs_test-infra
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_component_k3d_integration_jobConfig
@@ -635,6 +640,7 @@ templates:
                     - image_buildpack-golang
                     - jobConfig_generic_component
                     - jobConfig_buildpack_incubator
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_jobConfig_args
