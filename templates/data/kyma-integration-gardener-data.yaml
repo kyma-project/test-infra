@@ -300,7 +300,7 @@ templates:
               - jobConfig:
                   name: pre-main-kyma-skr-eventing
                   # temporarily make the job optional
-                  optional: true
+                  optional: false
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
