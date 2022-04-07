@@ -112,17 +112,16 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
 trap cleanup exit INT
 
-# Determine Kyma and Istio version
+# Determine Kyma version from the latest release
 if [[ ! $KYMA_VERSION ]]; then
     # Fetch latest Kyma2 release
     kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
     export KYMA_VERSION="${kyma_get_last_release_version_return_version:?}"
-    log::info "Reading latest 2.x release version, got: ${KYMA_VERSION}"
+    log::info "Reading latest Kyma release version, got: ${KYMA_VERSION}"
 fi
-
 istio::get_version
 export ISTIO_VERSION="${istio_version:?}"
-log::info "Reading istio version, got: ${ISTIO_VERSION}"
+log::info "Reading Istio version from ${KYMA_VERSION}, got: ${ISTIO_VERSION}"
 
 log::info "Preparing environment variables for the instance"
 envVars=(
