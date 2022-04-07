@@ -1,0 +1,5 @@
+pjNames:
+  - pjName: "pre-latest-istio-reconciler-integration"
+  - pjName: "pre-main-istio-reconciler-integration"
+  - pjName: "pre-main-ory-reconciler-eval-integration"
+  - pjName: "pre-main-ory-reconciler-prod-integration"

@@ -7,7 +7,7 @@ set -o errexit
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
-
+export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
@@ -16,6 +16,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
+# shellcheck source=prow/scripts/cluster-integration/helpers/integration-tests.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/integration-tests.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
   log::info "Execute Job Guard"
@@ -109,7 +111,7 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
 trap cleanup exit INT
 
-# Determine Kyma version
+# Determine Kyma and Istio version
 if [[ ! $KYMA_VERSION ]]; then
     # Fetch latest Kyma2 release
     kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
@@ -117,11 +119,15 @@ if [[ ! $KYMA_VERSION ]]; then
     log::info "Reading latest 2.x release version, got: ${KYMA_VERSION}"
 fi
 
+export ISTIO_VERSION="${istio::get_istio_version:?}"
+log::info "Reading istio version, got: ${ISTIO_VERSION}"
+
 log::info "Preparing environment variables for the instance"
 envVars=(
   TEST_NAME
   EXECUTION_PROFILE
   KYMA_VERSION
+  ISTIO_VERSION
 )
 utils::save_env_file "${envVars[@]}"
 #shellcheck disable=SC2088
