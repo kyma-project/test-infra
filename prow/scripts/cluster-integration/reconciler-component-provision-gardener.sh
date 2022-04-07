@@ -94,11 +94,11 @@ if [[ ! $KYMA_VERSION ]]; then
     export KYMA_VERSION="${kyma_get_last_release_version_return_version:?}"
     log::info "Reading latest 2.x release version, got: ${KYMA_VERSION}"
 fi
-
-export ISTIO_VERSION="${istio::get_istio_version:?}"
+istio::get_version
+export ISTIO_VERSION="${istio_version:?}"
 log::info "Reading istio version, got: ${ISTIO_VERSION}"
 
-
+ls ${KYMA_SOURCES_DIR}
 kyma::install_cli
 # if MACHINE_TYPE is not set then use default one
 gardener::set_machine_type
