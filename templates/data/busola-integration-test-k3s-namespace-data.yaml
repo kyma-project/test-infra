@@ -29,9 +29,11 @@ templates:
             jobs:
               # presubmits
               - jobConfig:
-                  name: "pre-busola-integration-test-k3s"
+                  name: "pre-busola-integration-test-k3s-namespace"
                   optional: false
                   run_if_changed: "^resources/|^tests/"
+                  env:
+                    SCOPE: namespace
                   labels:
                     preset-build-pr: "true"
                     preset-gardener-azure-kyma-integration: "true"
@@ -49,9 +51,11 @@ templates:
                     - "extra_refs_kyma-local"
               # postsubmits
               - jobConfig:
-                  name: "post-busola-integration-test-k3s"
+                  name: "post-busola-integration-test-k3s-namespace"
                   optional: false
                   run_if_changed: "/"
+                  env:
+                    SCOPE: namespace
                   labels:
                     preset-build-pr: "false"
                     preset-gardener-azure-kyma-integration: "true"

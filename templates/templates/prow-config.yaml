@@ -18,10 +18,10 @@ plank:
       timeout: 3h
       grace_period: 10m
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20220217-9337753127
-        initupload: gcr.io/k8s-prow/initupload:v20220217-9337753127
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20220217-9337753127
-        sidecar: gcr.io/k8s-prow/sidecar:v20220217-9337753127
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20220406-c970747fbb
+        initupload: gcr.io/k8s-prow/initupload:v20220406-c970747fbb
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20220406-c970747fbb
+        sidecar: gcr.io/k8s-prow/sidecar:v20220406-c970747fbb
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -90,6 +90,7 @@ slack_reporter_configs:
 branch-protection:
   enforce_admins: true
   allow_disabled_policies: true
+  # TODO this has to be removed once we migrate entire kyma-project to prow flow.
   required_pull_request_reviews:
     dismiss_stale_reviews: true
     require_code_owner_reviews: true
@@ -111,10 +112,20 @@ branch-protection:
             require_code_owner_reviews: false
             required_approving_review_count: 0
         kyma:
-          branches:
-            kyma-2.0-docu:
-              required_pull_request_reviews:
-                require_code_owner_reviews: false
+          required_pull_request_reviews:
+            dismiss_stale_reviews: false
+            require_code_owner_reviews: false
+            required_approving_review_count: 0
+        cli:
+          required_pull_request_reviews:
+            dismiss_stale_reviews: false
+            require_code_owner_reviews: false
+            required_approving_review_count: 0
+        third-party-images:
+          required_pull_request_reviews:
+            dismiss_stale_reviews: false
+            require_code_owner_reviews: false
+            required_approving_review_count: 0
         website:
           branches:
             main:
@@ -197,7 +208,6 @@ tide:
     kyma-incubator/podpreset-crd: squash
     kyma-incubator/service-catalog-tester: squash
     kyma-incubator/kymart: squash
-    kyma-incubator/terraform-provider-kind: squash
     kyma-incubator/dex: squash
     kyma-incubator/varkes: squash
 #    kyma-incubator/marketplaces: squash
@@ -207,7 +217,6 @@ tide:
     kyma-incubator/github-dashboard: squash
     kyma-incubator/vstudio-extension: squash
     kyma-incubator/wordpress-connector: squash
-    kyma-incubator/terraform-modules: squash
     kyma-incubator/connector-tools: squash
 #    kyma-incubator/github-slack-connectors: squash
     kyma-incubator/service-catalog: squash
@@ -239,8 +248,13 @@ tide:
         - do-not-merge/invalid-commit-message
       orgs:
         - kyma-project
+        - kyma-incubator
       excludedRepos:
         - kyma-project/test-infra # handled in separate query specifically for approve plugin
+        - kyma-project/third-party-images
+        - kyma-project/cli
+        - kyma-project/kyma
+        - kyma-incubator/compass # handled in separate query specifically for approve plugin
       reviewApprovedRequired: true
     - labels:
         - lgtm
@@ -254,20 +268,12 @@ tide:
         - do-not-merge/missing-docs-review
       repos:
         - kyma-project/test-infra
-    - labels:
-        - lgtm
-      missingLabels:
-        - needs-rebase
-        - do-not-merge/hold
-        - do-not-merge/work-in-progress
-        - do-not-merge/invalid-owners-file
-        - do-not-merge/invalid-commit-message
-      orgs:
-        - kyma-incubator
-      reviewApprovedRequired: true
+        - kyma-project/third-party-images
+        - kyma-project/cli
+        - kyma-project/kyma
+        - kyma-incubator/compass
   context_options:
     from-branch-protection: true
-#    skip-unknown-contexts: true
 
 presets:
   - labels:
@@ -756,6 +762,13 @@ presets:
       - name: UNSTABLE
         value: "true"
   - labels:
+      preset-kyma-cli-pr-unstable: "true"
+    env:
+      - name: KYMA_CLI_PR_UNSTABLE_BUCKET
+        value: gs://kyma-cli-pr
+      - name: UNSTABLE
+        value: "true"
+  - labels:
       preset-stability-checker-slack-notifications: "true"
     env:
       - name: SLACK_CLIENT_WEBHOOK_URL
@@ -825,10 +838,30 @@ presets:
       - name: SLACK_CHANNEL
         value: CBMPTMCV9
   - labels:
-      preset-kyma-wssagent-config: "true"
+      preset-whitesource-product-kyma: "true"
     env:
-      - name: PRODUCTNAME
-        value: "OOSS - KYMA"
+      - name: WS_PRODUCTNAME
+        value: "SHC - XF KYMA RUNTIME 2.0"
+  - labels:
+      preset-whitesource-product-control-plane: "true"
+    env:
+      - name: WS_PRODUCTNAME
+        value: "SHC - KYMA CONTROL PLANE 2.0"
+  - labels:
+      preset-whitesource-product-kyma-dashboard: "true"
+    env:
+      - name: WS_PRODUCTNAME
+        value: "SHC - KYMA DASHBOARD 1.0"
+  - labels:
+      preset-whitesource-product-kyma-release: "true"
+    env:
+      - name: WS_PRODUCTNAME
+        value: "SHC - KYMA RUNTIME RELEASE"
+  - labels:
+      preset-whitesource-product-kyma-release-previous: "true"
+    env:
+      - name: WS_PRODUCTNAME
+        value: "SHC - KYMA RUNTIME RELEASE-1"
   # volume mounts for kind
   - labels:
       preset-kind-volume-mounts: "true"

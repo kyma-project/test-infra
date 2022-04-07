@@ -78,7 +78,7 @@ cleanupOnError() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
-    if [ -n "${CLEANUP_CLUSTER}" ]; then
+    if [[ "${CLEANUP_CLUSTER}" == "true" ]] ; then
         log::info "Deprovision cluster: \"${COMMON_NAME}\""
 
         #save disk names while the cluster still exists to remove them later
@@ -158,7 +158,7 @@ installKyma() {
 			--profile production \
 			--tls-crt "./letsencrypt/live/${DOMAIN}/fullchain.pem" \
 			--tls-key "./letsencrypt/live/${DOMAIN}/privkey.pem" \
-			--value "istio-configuration.components.ingressGateways.config.service.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+			--value "istio.components.ingressGateways.config.service.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
 			--value "global.domainName=${DOMAIN}" \
 			--timeout 60m
 
@@ -186,8 +186,6 @@ export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_return_subnet_name:?}"
 
 #Local variables
 DNS_SUBDOMAIN="${COMMON_NAME}"
-KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
-
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
@@ -290,7 +288,9 @@ users:
 current-context: default
 " > kubeconfig
 
-kubectl create secret -n $namespace generic "$serviceAccount-kubeconfig" --from-file=kubeconfig
+# escape kubeconfig properly
+pubsub_message=$(jq -c --null-input "{\"cluster_name\": \"${COMMON_NAME}\", \"kyma_version\": \"${RELEASE_VERSION}\", \"kubeconfig\": \"$(cat kubeconfig)\"}")
+gcloud pubsub topics publish --project="${PUBSUB_PROJECT}" "${PUBSUB_TOPIC}" --message="${pubsub_message}"
 #---
 
 log::info "Collect list of images"

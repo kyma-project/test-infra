@@ -1,30 +1,6 @@
 templates:
   - from: templates/generic.tmpl
     render:
-      - to: ../prow/jobs/kyma/components/application-broker/application-broker-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: components/application-broker
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/application-broker"
-                  run_if_changed: "^components/application-broker/|^common/makefiles/"
-                  release_since: "1.7"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
       - to: ../prow/jobs/kyma/components/application-connectivity-certs-setup-job/application-connectivity-certs-setup-job-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
@@ -522,6 +498,7 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/components/istio-installer"
                   run_if_changed: "^components/istio-installer/|^common/makefiles/"
                   release_since: "1.10"
+                  release_until: "1.24"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -760,33 +737,6 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/components/nats-init/nats-init-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: components/nats-init
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/nats-init"
-                  run_if_changed: "^components/nats-init/|^common/makefiles/"
-                  release_since: "1.12"
-                  release_until: "1.20"
-                  optional: true
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "jobConfig_slack_dev_null"
-                      - "disable_testgrid"
       - to: ../prow/jobs/kyma/components/function-controller/function-controller-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
@@ -845,31 +795,6 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/components/function-runtimes"
                   run_if_changed: "^components/function-runtimes/|^common/makefiles/"
                   release_since: "1.13"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-      - to: ../prow/jobs/kyma/tests/contract/knative-channel-kafka/knative-channel-kafka-tests-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: tests/contract/knative-channel-kafka
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/tests/contract/knative-channel-kafka"
-                  run_if_changed: "^tests/contract/knative-channel-kafka/|^common/makefiles/"
-                  release_since: "1.10"
-                  release_until: "1.20"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

@@ -16,7 +16,6 @@ templates:
             annotations:
               testgrid-create-test-group: "false"
             labels:
-              preset-kyma-wssagent-config: "true"
               preset-wssagent-keys: "true"
               preset-kyma-keyring: "true"
               preset-kyma-encryption-key: "true"
@@ -24,13 +23,29 @@ templates:
               preset-gc-project-env: "true"
             env:
               DRYRUN: "false"
+          product_kyma:
+            labels:
+              preset-whitesource-product-kyma: "true"
+          product_kyma_release:
+            labels:
+              preset-whitesource-product-kyma-release: "true"
+          product_kyma_release_previous:
+            labels:
+              preset-whitesource-product-kyma-release-previous: "true"
+          product_control_plane:
+            labels:
+              preset-whitesource-product-control-plane: "true"
+          product_kyma_dashboard:
+            labels:
+              preset-whitesource-product-kyma-dashboard: "true"
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
               - jobConfig:
-                  name: "control-plane"
+                  repository: "control-plane"
                   language: "golang-mod"
                   project: "kyma-project"
+                  subprojects: "true"
                   base_ref: "main"
                 inheritedConfigs:
                   global:
@@ -40,26 +55,13 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
+                    - "product_control_plane"
               - jobConfig:
-                  name: "control-plane"
-                  language: "golang"
-                  project: "kyma-project"
-                  base_ref: "main"
-                  custom_projectname: "control-plane-dep"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-              - jobConfig:
-                  name: "kyma"
+                  repository: "kyma"
                   language: "golang-mod"
                   project: "kyma-project"
-                  custom_projectname: "kyma-mod"
-                  base_ref: "release-2.0"
+                  subprojects: "true"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -68,10 +70,14 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
+                    - "product_kyma"
+              # scans for previous releases
               - jobConfig:
-                  name: "console"
-                  language: "javascript"
+                  repository: "kyma"
+                  language: "golang-mod"
                   project: "kyma-project"
+                  subprojects: "true"
+                  whitesource_release: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -81,7 +87,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "busola"
+                  repository: "busola"
                   language: "javascript"
                   project: "kyma-project"
                   base_ref: "main"
@@ -93,71 +99,9 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
+                    - "product_kyma_dashboard"
               - jobConfig:
-                  name: "cli"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                  base_ref: "release-2.0"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-              - jobConfig:
-                  name: "helm-broker"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-              - jobConfig:
-                  name: "rafter"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-              - jobConfig:
-                  name: "api-gateway"
-                  language: "golang-mod"
-                  project: "kyma-incubator"
-                  base_ref: "main"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-              - jobConfig:
-                  name: "dex"
-                  language: "golang-mod"
-                  project: "kyma-incubator"
-                  base_ref: "kyma-master"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-              - jobConfig:
-                  name: "hydroform"
+                  repository: "cli"
                   language: "golang-mod"
                   project: "kyma-project"
                   base_ref: "main"
@@ -169,8 +113,65 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
+                    - "product_kyma"
               - jobConfig:
-                  name: "terraform-provider-gardener"
+                  repository: "cli"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                  whitesource_release: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  repository: "helm-broker"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+                    - "product_kyma"
+              - jobConfig:
+                  repository: "rafter"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+                    - "product_kyma"
+              - jobConfig:
+                  repository: "hydroform"
+                  exclude: "**/examples/**"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                  subprojects: "true"
+                  base_ref: "main"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+                    - "product_kyma"
+              # used in Kyma 2.0
+              - jobConfig:
+                  repository: "terraform-provider-gardener"
                   language: "golang-mod"
                   project: "kyma-incubator"
                 inheritedConfigs:
@@ -181,21 +182,9 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
-# Disabled - TODO REMOVE ONCE KYMA 2 is on SKR
-#              - jobConfig:
-#                  name: "octopus"
-#                  language: "golang-mod"
-#                  project: "kyma-incubator"
-#                inheritedConfigs:
-#                  global:
-#                    - "jobConfig_default"
-#                    - "image_wssagent"
-#                    - "extra_refs_test-infra"
-#                    - "jobConfig_periodic"
-#                  local:
-#                    - "jobConfig_default"
+                    - "product_kyma_release_previous"
               - jobConfig:
-                  name: "podpreset-crd"
+                  repository: "podpreset-crd"
                   language: "golang-mod"
                   project: "kyma-incubator"
                   custom_projectname: "podpreset"
@@ -207,8 +196,9 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
+                    - "product_kyma"
               - jobConfig:
-                  name: "reconciler"
+                  repository: "reconciler"
                   language: "golang-mod"
                   project: "kyma-incubator"
                   base_ref: "main"
@@ -220,48 +210,4 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
-              - jobConfig:
-                  name: "kyma"
-                  language: "golang"
-                  project: "kyma-project"
-                  custom_projectname: "release-kyma"
-                  whitesource_release: "true"
-                  base_ref: "main"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-              - jobConfig:
-                  name: "kyma"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                  custom_projectname: "release-kyma-mod"
-                  whitesource_release: "true"
-                  base_ref: "main"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-              - jobConfig:
-                  name: "cli"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                  custom_projectname: "release-cli"
-                  whitesource_release: "true"
-                  base_ref: "main"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
+                    - "product_control_plane"

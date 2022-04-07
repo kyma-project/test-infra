@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
-
 set -o errexit
 
 readonly TEST_INFRA_DIR="./test-infra"
-readonly GO_VERSION=1.17.5
+readonly GO_VERSION=1.18
 export KYMA_SOURCES_DIR="./kyma"
 export KUBECONFIG="${HOME}/.kube/config"
-export ISTIOCTL_VERSION="1.11.4"
 export CLUSTER_DOMAIN="local.kyma.dev"
+export ISTIOCTL_VERSION="1.12.3"
 
 function prereq_test() {
   command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
@@ -50,7 +49,7 @@ function install_prereq() {
 
   wget -q https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz && tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz && export PATH=$PATH:/usr/local/go/bin && go version
 
-  wget -q https://github.com/istio/istio/releases/download/${ISTIOCTL_VERSION}/istioctl-${ISTIOCTL_VERSION}-linux-amd64.tar.gz   && tar -C /usr/local/bin -xzf istioctl-${ISTIOCTL_VERSION}-linux-amd64.tar.gz && export PATH=$PATH:/usr/local/bin/istioctl && istioctl version --remote=false && export ISTIOCTL_PATH=/usr/local/bin/istioctl
+  wget -q "https://github.com/istio/istio/releases/download/${ISTIOCTL_VERSION}/istioctl-${ISTIOCTL_VERSION}-linux-amd64.tar.gz"   && tar -C /usr/local/bin -xzf "istioctl-${ISTIOCTL_VERSION}-linux-amd64.tar.gz" && export PATH=$PATH:/usr/local/bin/istioctl && istioctl version --remote=false && export ISTIOCTL_PATH=/usr/local/bin/istioctl
 }
 
 function provision_k3d() {
@@ -68,30 +67,35 @@ cat << EOF > "$PWD/ory.yaml"
 defaultNamespace: kyma-system
 prerequisites:
   - name: "cluster-essentials"
-  - name: "istio-configuration"
+  - name: "istio"
     namespace: "istio-system"
 components:
   - name: "ory"
+  - name: "istio-resources"
 EOF
 }
 
 function istio::prepare_components_file() {
-  log::info "Preparing Kyma installation with Ory and prerequisites"
+  log::info "Preparing Kyma installation with Istio prerequisites"
 
 cat << EOF > "$PWD/istio.yaml"
 defaultNamespace: kyma-system
 prerequisites:
   - name: "cluster-essentials"
-  - name: "istio-configuration"
+  - name: "istio"
     namespace: "istio-system"
 EOF
 }
 
 function deploy_kyma() {
   log::info "Building reconciler from sources"
-
   pushd "${RECONCILER_DIR}"
   make build-linux
+  if [ ! -f "./bin/mothership-linux" ]; then
+     # shellcheck disable=SC2046
+     log::error "Mothership-linux binary was not built."
+     exit 1
+  fi
 
   local kyma_deploy_cmd
   kyma_deploy_cmd="./bin/mothership-linux local --kubeconfig ${KUBECONFIG} --value global.ingress.domainName=${CLUSTER_DOMAIN},global.domainName=${CLUSTER_DOMAIN} --version ${KYMA_VERSION} --profile ${EXECUTION_PROFILE}"
@@ -110,10 +114,10 @@ function deploy_kyma() {
 
   $kyma_deploy_cmd
 
-  popd
-
   log::success "Kyma components were deployed successfully"
   kubectl get pods -A
+
+  popd
 }
 
 function run_tests() {

@@ -174,6 +174,10 @@ function applyKymaOverrides() {
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "monitoring-config-overrides" \
     --data "global.alertTools.credentials.slack.channel=${KYMA_ALERTS_CHANNEL}" \
     --data "global.alertTools.credentials.slack.apiurl=${KYMA_ALERTS_SLACK_API_URL}" \
+    --data "global.monitoring_integration_tests.enabled=false" \
+    --data "grafana.kyma.authProxy.enabled=false" \
+    --data "grafana.env.GF_AUTH_ANONYMOUS_ENABLED=true" \
+    --data "grafana.env.GF_AUTH_GENERIC_OAUTH_ENABLED=false" \
     --data "pushgateway.enabled=true" \
     --label "component=monitoring"
 
@@ -200,10 +204,17 @@ EOF
     --label "component=istio" \
     --file "$PWD/kyma_istio_operator"
 
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "dex-overrides" \
-    --data "global.istio.gateway.name=kyma-gateway" \
-    --data "global.istio.gateway.namespace=kyma-system" \
-    --label "component=dex"
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "kiali-overrides" \
+    --data "authProxy.enabled=false" \
+    --label "component=kiali"
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "tracing-overrides" \
+    --data "authProxy.enabled=false" \
+    --label "component=tracing"
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "logging-overrides" \
+    --data "global.logging_integration_tests.enabled=false" \
+    --label "component=logging"
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "ory-overrides" \
     --data "global.istio.gateway.name=kyma-gateway" \
@@ -249,8 +260,6 @@ function prometheusMTLSPatch() {
   patchDeploymentsToInjectSidecar
   patchKymaServiceMonitorsForMTLS
   removeKymaPeerAuthsForPrometheus
-  patchDexPeerAuthForPrometheus
-  patchMonitoringTests
 }
 
 function patchPrometheusForMTLS() {
@@ -562,7 +571,6 @@ function patchKymaServiceMonitorsForMTLS() {
     monitoring-alertmanager
     monitoring-operator 
     monitoring-kube-state-metrics 
-    dex
     api-gateway
     monitoring-prometheus-pushgateway
   )
@@ -622,67 +630,6 @@ function removeKymaPeerAuthsForPrometheus() {
   for pa in "${allPAs[@]}"; do
     kubectl delete ${crd} -n ${namespace} "${pa}" || true
   done
-}
-
-function patchDexPeerAuthForPrometheus() {
-  crd="peerauthentication"
-  namespace="kyma-system"
-  name="dex-service"
-
-  patchDex=$(cat <<"EOF"
-  portLevelMtls:
-    5558:
-      mode: STRICT
-EOF
-  )
-
-  if kubectl get ns ${namespace} > /dev/null; then
-    echo "${patchDex}" > patch-dex.yaml
-    kubectl get ${crd} -n ${namespace} ${name} -o yaml > dex-pa.yaml
-
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-      sed -i '' -e '/^spec:/r patch-dex.yaml' dex-pa.yaml
-    else # assume Linux otherwise
-      sed -i '/^spec:/r patch-dex.yaml' dex-pa.yaml
-    fi
-
-    kubectl apply -f dex-pa.yaml
-
-    rm dex-pa.yaml
-    rm patch-dex.yaml
-  fi
-}
-
-function patchMonitoringTests() {
-  crd="testdefinitions"
-  namespace="kyma-system"
-  name="monitoring"
-
-  patchSidecarContainerCommand=$(cat <<"EOF"
-        - until curl -fsI http://localhost:15021/healthz/ready; do echo \"Waiting
-          for Sidecar...\"; sleep 3; done; echo \"Sidecar available. Running the command...\";
-          ./test-monitoring; x=$(echo $?); curl -fsI -X POST http://localhost:15020/quitquitquit
-          && exit $x
-EOF
-  )
-
-  echo "${patchSidecarContainerCommand}" > patchSidecarContainerCommand.yaml
-  kubectl get ${crd} -n ${namespace} ${name} -o yaml > testdef.yaml
-
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-    sed -i '' -e 's/sidecar.istio.io\/inject: "false"/sidecar.istio.io\/inject: "true"/g' testdef.yaml
-    sed -i '' -e '/- .\/test-monitoring/r patchSidecarContainerCommand.yaml' testdef.yaml
-    sed -i '' -e 's/- .\/test-monitoring//g' testdef.yaml
-  else # assume Linux otherwise
-    sed -i 's/sidecar.istio.io\/inject: "false"/sidecar.istio.io\/inject: "true"/g' testdef.yaml
-    sed -i '/- .\/test-monitoring/r patchSidecarContainerCommand.yaml' testdef.yaml
-    sed -i 's/- .\/test-monitoring//g' testdef.yaml
-  fi
-
-  kubectl apply -f testdef.yaml || true
-
-  rm testdef.yaml
-  rm patchSidecarContainerCommand.yaml
 }
 
 function installKyma() {
@@ -772,6 +719,7 @@ trap 'EXIT_STATUS=$?; docker_cleanup; set -f; utils::post_hook -n "$COMMON_NAME"
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
     export JOB_NAME_PATTERN="(pre-compass-components-.*)|(^pre-compass-tests$)"
+    export JOBGUARD_TIMEOUT="30m"
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 

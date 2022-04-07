@@ -512,7 +512,7 @@ function utils::post_hook() {
         kubectl get installation kyma-installation -o go-template --template='{{- range .status.errorLog }}{{printf "%s:\n %s\n" .component .log}}{{- end}}'
         kubectl logs -n kyma-installer -l name=kyma-installer
     fi
-    
+
     utils::check_empty_arg "$projectName" "Project name not provided." "graceful"
     utils::check_empty_arg "$exitStatus" "Exit status not provided." "graceful"
     utils::check_empty_arg "$jobname" "Job name not provided." "graceful"
