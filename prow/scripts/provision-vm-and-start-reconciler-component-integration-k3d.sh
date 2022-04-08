@@ -119,6 +119,7 @@ if [[ ! $KYMA_VERSION ]]; then
     export KYMA_VERSION="${kyma_get_last_release_version_return_version:?}"
     log::info "Reading latest Kyma release version, got: ${KYMA_VERSION}"
 fi
+# Determine Istio version based on Kyma version
 istio::get_version
 export ISTIO_VERSION="${istio_version:?}"
 log::info "Reading Istio version from ${KYMA_VERSION}, got: ${ISTIO_VERSION}"
