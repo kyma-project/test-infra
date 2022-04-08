@@ -80,18 +80,15 @@ export CLUSTER_NAME="${COMMON_NAME}"
 
 # set pipefail to handle right errors from tests
 set -o pipefail
-set -x
-utils::mask_debug_output
-export BOT_GITHUB_TOKEN="123456789123456789"
-utils::unmask_debug_output
 
 utils::mask_debug_output
 # Install kyma from latest 2.x release
 kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
 utils::unmask_debug_output
+
 export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
 log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
-set +x
+
 # checks required vars and initializes gcloud/docker if necessary
 gardener::init
 
