@@ -109,7 +109,6 @@ func (wh *WebHookHandler) checkIfEventSupported(allowed map[string]map[string]st
 	if _, ok := allowed[eventGroup][eventAction]; ok {
 		et := fmt.Sprintf("%s.%s", eventGroup, eventAction)
 		return et, true
-	} else {
-		return "", false
 	}
+        return "", false
 }

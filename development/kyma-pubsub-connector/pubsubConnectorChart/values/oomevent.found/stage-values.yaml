@@ -9,4 +9,4 @@ projectID: "sap-kyma-neighbors-dev"
 # TODO: targetAppName is deprecated, all publishers shuld publish to it's own topic.
 #   All subscribers should subscribe to publishers topics. This decouples publishers from subscribers.
 # Kyma eventing target application name where publish events.
-targetAppName: "mp-sap-slack-connector"
+targetAppName: "pubsub-connector"

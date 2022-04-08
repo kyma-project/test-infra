@@ -75,7 +75,7 @@ func WithDefaultMux() ClientOption {
 
 // FromConfig is a client constructor configuration option passing client Config struct.
 // Data from struct will be used to construct client.
-func FromConfig(config Config) func(*Client) error {
+func FromConfig(config Config) ClientOption {
 	return func(cc *Client) error {
 		cc.listenPort = config.ListenPort
 		return nil

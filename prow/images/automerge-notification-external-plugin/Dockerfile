@@ -1,4 +1,4 @@
-FROM golang:1.17.5-alpine3.15 AS builder
+FROM golang:1.18.0-alpine3.15 AS builder
 
 # Commit details
 
@@ -11,7 +11,7 @@ COPY . .
 RUN apk add --no-cache bash dep git && \
     CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /automerge-notification -ldflags="-s -w" ./development/external-plugins/automerge-notification/main.go \
 
-FROM alpine:3.15.0
+FROM alpine:3.15.4
 
 ARG commit
 ENV IMAGE_COMMIT=$commit

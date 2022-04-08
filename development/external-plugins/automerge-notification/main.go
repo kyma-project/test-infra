@@ -70,10 +70,7 @@ func helpProvider(_ []config.OrgRepo) (*pluginhelp.PluginHelp, error) {
 // At the time a conditions are hard coded. In future this will be taken from Tide queries.
 func checkIfEventSupported(pr github.PullRequestEvent) bool {
 	if pr.PullRequest.Merged {
-		if pr.PullRequest.User.Login == "dependabot[bot]" || pr.PullRequest.User.Login == "kyma-bot" {
-			if github.HasLabel("skip-review", pr.PullRequest.Labels) {
-				return true
-			}
+		if (pr.PullRequest.User.Login == "dependabot[bot]" || pr.PullRequest.User.Login == "kyma-bot") && github.HasLabel("skip-review", pr.PullRequest.Labels) {
 			return true
 		}
 	}

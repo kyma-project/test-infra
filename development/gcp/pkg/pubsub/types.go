@@ -24,7 +24,7 @@ type Client struct {
 	logger logging.LoggerInterface
 }
 
-// Message is the message send to pubsub system.
+// Message is the message sent to pubsub system.
 type Message struct {
 	Message      MessagePayload `json:"message"`
 	Subscription string         `json:"subscription"`
