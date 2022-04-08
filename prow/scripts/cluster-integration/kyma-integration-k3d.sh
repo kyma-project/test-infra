@@ -47,7 +47,7 @@ function install_cli() {
 function deploy_kyma() {
   export DEBUG=true
   k3d version
-  curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+  curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=v5.0.1 bash
   k3d version
 
   if [[ -v K8S_VERSION ]]; then
