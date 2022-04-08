@@ -44,18 +44,14 @@ function install_cli() {
   kyma version --client
 }
 
-function install_telemetry_operator() {  
-  helm install -n kyma-system telemetry ${KYMA_SOURCES_DIR}/resources/telemetry
-}
-
 function deploy_kyma() {
   k3d version
 
   if [[ -v K8S_VERSION ]]; then
-    echo "Creating k3d with kubernetes version: ${K8S_VERSION}"
-    kyma provision k3d --ci -k "${K8S_VERSION}" --k3d-arg='--no-rollback'
+    echo "Creating k3d with kuberenetes version: ${K8S_VERSION}"
+    kyma provision k3d --ci -k "${K8S_VERSION}"
   else
-    kyma provision k3d --ci --k3d-arg='--no-rollback'
+    kyma provision k3d --ci
   fi
   
   echo "Printing client and server version info"
@@ -76,11 +72,12 @@ function deploy_kyma() {
     kyma_deploy_cmd+=" --components-file kyma-integration-k3d-compass-components.yaml"
   fi
 
-  $kyma_deploy_cmd
-
   if [[ -v TELEMETRY_ENABLED ]]; then
-    install_telemetry_operator
+    kyma_deploy_cmd+=" --value=global.telemetry.enabled=true"
+    kyma_deploy_cmd+=" --components-file kyma-integration-k3d-telemetry-components.yaml"
   fi
+
+  $kyma_deploy_cmd
 
   kubectl get pods -A
 }
