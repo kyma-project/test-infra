@@ -9,7 +9,7 @@ import (
 	"path"
 
 	"cloud.google.com/go/pubsub"
-	"github.com/google/go-github/v40/github"
+	"github.com/google/go-github/v42/github"
 	"github.com/kyma-project/test-infra/development/logging"
 	"google.golang.org/api/option"
 )

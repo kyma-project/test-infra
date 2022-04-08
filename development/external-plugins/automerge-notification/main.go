@@ -1,12 +1,3 @@
-// Tools GitHub token is an environment variable.
-//        - --dry-run=false
-//        - --github-endpoint=http://ghproxy
-//        - --github-endpoint=https://api.github.com
-//        - --github-token-path=/etc/github/oauth
-//        - --hmac-secret-file=/etc/webhook/hmac
-//        - --config-path=/etc/config/config.yaml
-//        - --job-config-path=/etc/job-config
-
 package main
 
 import (
@@ -98,7 +89,7 @@ func pullRequestEventHandler(server *externalplugin.Plugin, event externalplugin
 
 	var pr github.PullRequestEvent
 	if err := json.Unmarshal(event.Payload, &pr); err != nil {
-		logger.Errorw("Failed unmarshal json payload.", "error", err.Error())
+		logger.Errorw("Failed unmarshal json payload.", "error", err)
 	}
 	logger = logger.With("pr-number", pr.Number,
 		"pr-sender", pr.Sender.Login)
@@ -119,43 +110,43 @@ func pullRequestEventHandler(server *externalplugin.Plugin, event externalplugin
 			// Load repository owners.
 			owners, err := repoOwnersClient.LoadRepoOwners(pr.Repo.Owner.Login, pr.Repo.Name, "main")
 			if err != nil {
-				logger.Errorw("Failed load RepoOwners", "error", err.Error())
+				logger.Errorw("Failed load RepoOwners", "error", err)
 			}
 			// Get git client for repository.
 			_, repoBase, err := gitClientFactory.GetGitRepoClient(pr.Repo.Owner.Login, pr.Repo.Name)
 			if err != nil {
-				logger.Errorw("Failed get repository base directory", "error", err.Error())
+				logger.Errorw("Failed get repository base directory", "error", err)
 			}
 			// Load repository owner aliases.
 			repoAliases, err := repoOwnersClient.LoadRepoAliases(repoBase, "OWNERS_ALIASES")
 			if err != nil {
-				logger.Errorw("failed load aliases file", "error", err.Error())
+				logger.Errorw("failed load aliases file", "error", err)
 			}
 			// Get changes from pull request.
 			changes, err := githubClient.GetPullRequestChanges(pr.Repo.Owner.Login, pr.Repo.Name, pr.Number)
 			if err != nil {
-				logger.Errorw("failed get pull request changes", "error", err.Error())
+				logger.Errorw("failed get pull request changes", "error", err)
 			}
 			// Get owners for changes from pull request.
 			allOwners, err := repoOwnersClient.GetOwnersForChanges(changes, repoBase, owners)
 			if err != nil {
-				logger.Errorw("filed get owners for changed files", "error", err.Error())
+				logger.Errorw("filed get owners for changed files", "error", err)
 			}
 			ctx := context.Background()
 			// Load aliases map file.
 			aliasesMap, err := sapToolsClient.GetAliasesMap(ctx)
 			if err != nil {
-				logger.Errorw("failed get aliases map file", "error", err.Error())
+				logger.Errorw("failed get aliases map file", "error", err)
 			}
 			// Load users map file.
 			usersMap, err := sapToolsClient.GetUsersMap(ctx)
 			if err != nil {
-				logger.Errorw("failed get users map file", "error", err.Error())
+				logger.Errorw("failed get users map file", "error", err)
 			}
 			// Get slack names to send notifications too.
 			targets, err := repoOwnersClient.ResolveSlackNames(allOwners, aliasesMap, usersMap, repoAliases)
 			if err != nil {
-				logger.Errorw("failed resolve owners slack names", "error", err.Error())
+				logger.Errorw("failed resolve owners slack names", "error", err)
 			}
 			// Add slack names to notify to pubsub message payload.
 			mergeMsgPayload.OwnersSlackIDs = targets.List()
@@ -165,7 +156,7 @@ func pullRequestEventHandler(server *externalplugin.Plugin, event externalplugin
 				// Publish pubsub message
 				msgID, err := pubsubClient.PublishMessageWithAttributes(ctx, mergeMsgPayload, automergeOptions.PubsubTopic, attributes)
 				if err != nil {
-					logger.Errorw("failed pubslihed pubsub message", "error", err.Error())
+					logger.Errorw("failed pubslihed pubsub message", "error", err)
 				}
 				logger.Infof("PubSub message published, message ID: %s", *msgID)
 			} else {
@@ -209,21 +200,21 @@ func main() {
 	// Get token for tools github.
 	toolsToken, err := v1GithubOptions.GetToken()
 	if err != nil {
-		logger.Fatalw("Failed creating tools GitHub client", "error", err.Error())
+		logger.Fatalw("Failed creating tools GitHub client", "error", err)
 		panic(err)
 	}
 
 	// Create tools github client.
 	sapToolsClient, err = toolsclient.NewSapToolsClient(context.Background(), toolsToken)
 	if err != nil {
-		logger.Fatalw("Failed creating tools GitHub client", "error", err.Error())
+		logger.Fatalw("Failed creating tools GitHub client", "error", err)
 		panic(err)
 	}
 
 	// Create github.com client.
 	githubClient, err = pluginOptions.Github.NewGithubClient()
 	if err != nil {
-		logger.Fatalw("Failed creating GitHub client", "error", err.Error())
+		logger.Fatalw("Failed creating GitHub client", "error", err)
 		panic(err)
 	}
 	logger.Debug("github client ready")
@@ -231,7 +222,7 @@ func main() {
 	// Create git factory for github.com.
 	gitClientFactory, err = gitOptions.NewGitClient(git.WithTokenPath(pluginOptions.Github.TokenPath), git.WithGithubClient(githubClient))
 	if err != nil {
-		logger.Fatalw("Failed creating git client", "error", err.Error())
+		logger.Fatalw("Failed creating git client", "error", err)
 		panic(err)
 	}
 	logger.Debug("git client ready")
@@ -242,7 +233,7 @@ func main() {
 		repoowners.WithGithubClient(githubClient),
 		repoowners.WithGitClient(gitClientFactory))
 	if err != nil {
-		logger.Fatalw("Failed creating repoOwners client", "error", err.Error())
+		logger.Fatalw("Failed creating repoOwners client", "error", err)
 		panic(err)
 	}
 

@@ -237,42 +237,35 @@ func getMessage(template string, fmtArgs []interface{}) string {
 
 // getEntry create a Google logging entry. It's send to GCP logging service.
 func getEntry(severity logging.Severity, context, trace, message string, labels map[string]string) logging.Entry {
-	entry := logging.Entry{
+	var payloadType string
+	if severity == logging.Error || severity == logging.Critical || severity == logging.Emergency {
+		payloadType = ErrorReportingType
+	}
+	return logging.Entry{
 		Timestamp: time.Now(),
 		Severity:  severity,
-	}
-	payload := Payload{
-		Message: message,
-	}
-	if severity == logging.Error || severity == logging.Critical || severity == logging.Emergency {
-		payload.Type = ErrorReportingType
-	}
-	if context != "" {
-		payload.Context = context
-	}
-	entry.Payload = payload
-	if trace != "" {
-		entry.Trace = trace
-	}
-	if labels != nil {
-		entry.Labels = labels
-	}
-	return entry
+		Labels:    labels,
+		Trace:     trace,
+		Payload: Payload{
+			Type:    payloadType,
+			Message: message,
+			Context: context,
+		}}
 }
 
 // getLabels converts context an array of strings in to map.
 // It binds two subsequent strings in to key value pairs.
 // It will return error if odd number of elements is passed in context.
-func getLabels(context []string) (map[string]string, error) {
+func getLabels(contextLabels []string) (map[string]string, error) {
 	labels := make(map[string]string)
 	// Go through all
-	for i := 0; i < len(context); {
-		// Make sure this element isn't a dangling key. This will happen if odd number of strings is passed in context.
-		if i == len(context)-1 {
-			err := fmt.Errorf("an odd number of strings was passed as context, can't make key, val pairs for all elements")
+	for i := 0; i < len(contextLabels); {
+		// Make sure this element isn't a dangling key. This will happen if odd number of strings is passed in contextLabels.
+		if i == len(contextLabels)-1 {
+			err := fmt.Errorf("an odd number of strings was passed as contextLabels, can't make key, val pairs for all elements")
 			return labels, err
 		}
-		key, val := context[i], context[i+1]
+		key, val := contextLabels[i], contextLabels[i+1]
 		labels[key] = val
 	}
 	return labels, nil

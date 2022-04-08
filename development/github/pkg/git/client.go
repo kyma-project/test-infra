@@ -21,8 +21,7 @@ type GitClient struct {
 // GitClientConfig holds configuration for GitClient.
 type GitClientConfig struct {
 	flagutil.GitOptions
-	tokenPath string
-	// git.ClientFactoryOpts
+	tokenPath    string
 	githubClient *client.GithubClient
 }
 

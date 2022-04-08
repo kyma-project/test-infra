@@ -6,7 +6,6 @@ import (
 	cloudevents "github.com/cloudevents/sdk-go/v2"
 	"github.com/google/go-github/v42/github"
 	"github.com/kyma-project/test-infra/development/logging"
-	console "github.com/kyma-project/test-infra/development/logging"
 	"golang.org/x/net/context"
 )
 
@@ -39,7 +38,7 @@ func NewClient(options ...ClientOption) (*Client, error) {
 		listenPort:    8080,
 		mux:           nil,
 		eventHandlers: nil,
-		Logger:        console.NewLogger(),
+		Logger:        logging.NewLogger(),
 	}
 
 	for _, opt := range options {
@@ -125,9 +124,18 @@ func (cc *Client) defaultMux(event cloudevents.Event) {
 	}
 }
 
-// DecodeGithubEventFromCloudEventPayload retrieve and return a respective GitHub event from cloudevents event.
-func (cc *Client) DecodeGithubEventFromCloudEventPayload(event cloudevents.Event) (github.Event, error) {
+// DecodeGithubEvent retrieve and return a respective GitHub event from cloudevents event.
+func (cc *Client) DecodeGithubEvent(event cloudevents.Event) (github.Event, error) {
 	var ghEvent github.Event
 	err := event.DataAs(ghEvent)
 	return ghEvent, err
+}
+
+func (cc *Client) RegisterEvent(eventType string, handler func(*Client, cloudevents.Event)) error {
+	if _, ok := cc.eventHandlers[eventType]; !ok {
+		cc.eventHandlers[eventType] = handler
+	} else {
+		return fmt.Errorf("event handler for event type %s already registered", eventType)
+	}
+	return nil
 }
