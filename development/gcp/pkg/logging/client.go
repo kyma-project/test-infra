@@ -17,13 +17,13 @@ const (
 	// LogsProjectID is a default project to store logs.
 	LogsProjectID       = "sap-kyma-prow"
 	CredentialsFilePath = "/etc/gcpLoggingServiceAccountKey/key"
-	// ProwjobsLogName is a default google cloud logging log file name for log messages send by prowjobs.
+	// ProwjobsLogName is a default Google Cloud Logging log filename for messages sent by prowjobs.
 	ProwjobsLogName = "prowjobs"
-	// RepoOwnersServiceLogName is a default google cloud logging log file name for log messages send by repoowners service.
+	// RepoOwnersServiceLogName is a default Google Cloud Logging log filename for messages sent by repoowners service.
 	RepoOwnersServiceLogName = "repoowners"
 )
 
-// newClient create google logging client.
+// newClient creates google logging client.
 func newClient(ctx context.Context, credentialsFilePath, projectID string) (*logging.Client, error) {
 	c, err := logging.NewClient(ctx, projectID, option.WithCredentialsFile(credentialsFilePath))
 	if err != nil {
@@ -35,7 +35,7 @@ func newClient(ctx context.Context, credentialsFilePath, projectID string) (*log
 // NewClient is a constructor function creating general purpose kyma wrapper of gcp logging client.
 // It requires credentials file path to authenticate in GCP.
 // A constructor can be configured by providing ClientOptions.
-// Constructor provide default logs Google project ID and path to credentials file.
+// Constructor provides default logs Google project ID and path to credentials file.
 func NewClient(ctx context.Context, options ...ClientOption) (*Client, error) {
 	conf := &Config{
 		AppName:             "",
@@ -235,7 +235,7 @@ func getMessage(template string, fmtArgs []interface{}) string {
 	return fmt.Sprint(fmtArgs...)
 }
 
-// getEntry create a Google logging entry. It's send to GCP logging service.
+// getEntry creates a Google logging entry.
 func getEntry(severity logging.Severity, context, trace, message string, labels map[string]string) logging.Entry {
 	entry := logging.Entry{
 		Timestamp: time.Now(),
