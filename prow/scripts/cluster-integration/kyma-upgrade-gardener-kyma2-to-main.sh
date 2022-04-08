@@ -82,6 +82,8 @@ export CLUSTER_NAME="${COMMON_NAME}"
 # set pipefail to handle right errors from tests
 set -o pipefail
 
+export BOT_GITHUB_TOKEN="123456789123456789"
+
 # Install kyma from latest 2.x release
 kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
 

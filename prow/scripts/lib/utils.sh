@@ -743,3 +743,19 @@ function utils::generate_vars_for_build {
         log::error "Build type not known. Set -b parameter to value 'pr' or 'release', or set -s or -n parameter."
     fi
 }
+
+function utils::mask_debug_output {
+    if ( echo $- | grep x ); then
+        log::info "Disabling bash option x. Enter secret masking block."
+        utils_mask_debug_output_return_masked="true"
+        set +x
+    fi
+}
+
+function utils::unmask_debug_output {
+    if [[ ${utils_mask_debug_output_return_masked:-"false"} == "true" ]]; then
+        log::info "Enabling bash option x. Exit secret masking block"
+        unset utils_mask_debug_output_return_masked
+        set -x
+    fi
+}
