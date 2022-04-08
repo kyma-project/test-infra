@@ -917,7 +917,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.runID: "kyma-upgrade-gardener-kyma2-to-main-reconciler-main"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
-        #preset-bot-github-token: "true"
+        preset-bot-github-token: "true"
         preset-cluster-version: "true"
         preset-debug-commando-oom: "true"
         preset-dind-enabled: "true"
