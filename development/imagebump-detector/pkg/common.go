@@ -20,11 +20,11 @@ func ParseNotationFile(filePath string) (string, string, error) {
 	}
 	r := bufio.NewReader(f)
 	for {
-		line, err2 := r.ReadString('\n')
-		if err2 == io.EOF {
+		line, err := r.ReadString('\n')
+		if err == io.EOF {
 			break
 		} else if err != nil {
-			fmt.Print(fmt.Errorf("error: %s", err2))
+			fmt.Print(fmt.Errorf("error: %s", err))
 		}
 		rxp, _ := regexp.Compile(`^#\s+(?P<PATH>[\/\w\-\.]+):(?P<KEY>(?:\.(?:\w+)(?:\[\d+\])?)+)`)
 		match := rxp.FindStringSubmatch(line)
