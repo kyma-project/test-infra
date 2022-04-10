@@ -24,7 +24,7 @@ func ParseNotationFile(filePath string) (string, string, error) {
 		if err == io.EOF {
 			break
 		} else if err != nil {
-			fmt.Print(fmt.Errorf("error: %s", err))
+			return "", "", err
 		}
 		rxp, _ := regexp.Compile(`^#\s+(?P<PATH>[\/\w\-\.]+):(?P<KEY>(?:\.(?:\w+)(?:\[\d+\])?)+)`)
 		match := rxp.FindStringSubmatch(line)
