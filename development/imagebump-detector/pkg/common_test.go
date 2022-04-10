@@ -110,3 +110,44 @@ key3:
 		t.Errorf("Wrong value for %s: %s", ".key1", returnNode.Value)
 	}
 }
+
+func TestUpdateYamlFile(t *testing.T) {
+	fakeYamlString := `
+key1: value1
+key2:
+  - value2
+  - value3
+key3:
+  nestedKey1: value4
+  nestedKey2:
+    - value5
+    - value6
+  nestedKey3: value7
+`
+	testKey := ".key3.nestedKey2[1]"
+	expectedValue := "a new value"
+
+	tmpfile, err := os.CreateTemp("", "")
+	defer tmpfile.Close()
+	if err != nil {
+		panic(err)
+	}
+
+	t.Log(tmpfile.Name())
+
+	defer os.Remove(tmpfile.Name())
+
+	fmt.Fprintf(tmpfile, fakeYamlString)
+	UpdateYamlFile(tmpfile.Name(), testKey, expectedValue)
+
+	tmpfile.Seek(0, 0)
+	var fileToTest yaml.Node
+	decoder := yaml.NewDecoder(tmpfile)
+	decoder.Decode(&fileToTest)
+
+	nodeToTest := fileToTest.Content[0].Content[5].Content[3].Content[1]
+
+	if nodeToTest.Value != expectedValue {
+		t.Errorf("Wrong value for %s: %s", testKey, nodeToTest.Value)
+	}
+}

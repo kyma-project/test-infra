@@ -79,3 +79,45 @@ func getYamlNodeInMap(parsedYaml *yaml.Node, wantedKey string) (*yaml.Node, erro
 	}
 	return &yaml.Node{}, fmt.Errorf("key %s not found", wantedKey)
 }
+
+func parseYamlFile(filePath string) (*yaml.Node, error) {
+	var err error
+	data, _ := os.Open(filePath)
+	defer data.Close()
+	var parsedFile yaml.Node
+	decoder := yaml.NewDecoder(data)
+
+	err = decoder.Decode(&parsedFile)
+	if err != nil {
+		return &yaml.Node{}, fmt.Errorf("error while unmarshalling %s file: %s", filePath, err)
+	}
+
+	data.Seek(0, 0)
+	decoder = yaml.NewDecoder(data)
+	var parsedImagesFile interface{}
+
+	err = decoder.Decode(&parsedImagesFile)
+	if err != nil {
+		return &yaml.Node{}, fmt.Errorf("error while decoding %s file: %s", filePath, err)
+	}
+
+	return &parsedFile, nil
+}
+
+func UpdateYamlFile(filePath string, yamlKey string, value string) {
+	parsedFile, err := parseYamlFile(filePath)
+	if err != nil {
+		panic(err)
+	}
+
+	yamlNode, err := getYamlByReference(parsedFile.Content[0], yamlKey)
+	if err != nil {
+		panic(err)
+	}
+
+	yamlNode.SetString(value)
+	fileToWrite, _ := os.OpenFile(filePath, os.O_WRONLY, 0644)
+	encoder := yaml.NewEncoder(fileToWrite)
+	encoder.Encode(parsedFile.Content[0])
+	defer encoder.Close()
+}
