@@ -14,7 +14,6 @@ import (
 
 func ParseNotationFile(filePath string) (string, string, error) {
 	f, err := os.Open(filePath)
-	defer f.Close()
 	if err != nil {
 		panic(err)
 	}
@@ -38,7 +37,13 @@ func ParseNotationFile(filePath string) (string, string, error) {
 			return res["PATH"], res["KEY"], nil
 		}
 	}
-	return "", "", fmt.Errorf("No yaml file/key notation found")
+
+	err = f.Close()
+	if err != nil {
+		return "", "", err
+	}
+
+	return "", "", fmt.Errorf("no yaml file/key notation found")
 }
 
 func getYamlByReference(parsedYaml *yaml.Node, nodePath string) (*yaml.Node, error) {
@@ -58,6 +63,9 @@ func getYamlByReference(parsedYaml *yaml.Node, nodePath string) (*yaml.Node, err
 			index, err := strconv.Atoi(res["KEY2"])
 			if err == nil {
 				yamlNode, err = getYamlNodeInMap(yamlNode, res["KEY1"])
+				if err != nil {
+					return &yaml.Node{}, err
+				}
 				yamlNode = yamlNode.Content[index]
 				continue
 			}
@@ -92,7 +100,10 @@ func parseYamlFile(filePath string) (*yaml.Node, error) {
 		return &yaml.Node{}, fmt.Errorf("error while unmarshalling %s file: %s", filePath, err)
 	}
 
-	data.Seek(0, 0)
+	_, err = data.Seek(0, 0)
+	if err != nil {
+		panic(err)
+	}
 	decoder = yaml.NewDecoder(data)
 	var parsedImagesFile interface{}
 
@@ -118,6 +129,9 @@ func UpdateYamlFile(filePath string, yamlKey string, value string) {
 	yamlNode.SetString(value)
 	fileToWrite, _ := os.OpenFile(filePath, os.O_WRONLY, 0644)
 	encoder := yaml.NewEncoder(fileToWrite)
-	encoder.Encode(parsedFile.Content[0])
+	err = encoder.Encode(parsedFile.Content[0])
+	if err != nil {
+		panic(err)
+	}
 	defer encoder.Close()
 }
