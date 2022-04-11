@@ -127,11 +127,6 @@ default:
       target: issues
       prowPlugin: help
       addedBy: anyone
-    - color: 20bb20
-      description: Marks PR to automatically skip review process and do the merging.
-      name: skip-review
-      target: prs
-      addedBy: bots
     - color: 00ff00
       description: Denotes a PR that is trusted and should be build.
       name: 'ok-to-test'
