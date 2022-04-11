@@ -103,6 +103,7 @@ templates:
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/test-infra-autobump-config.yaml
+                    - --labels-override=skip-review # This label marks PR to auto merge
                 inheritedConfigs:
                   local:
                     - periodic_config
