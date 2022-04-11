@@ -15,7 +15,8 @@ func TestParseNotationFile(t *testing.T) {
 
 	tmpfile, err := os.CreateTemp("", "")
 	if err != nil {
-		panic(err)
+		t.Log(err)
+		t.FailNow()
 	}
 
 	defer os.Remove(tmpfile.Name())
@@ -31,7 +32,8 @@ whatever additional content
 	parsedPath, parsedKey, err := ParseNotationFile(tmpfile.Name())
 
 	if err != nil {
-		panic(err)
+		t.Log(err)
+		t.FailNow()
 	}
 
 	if parsedPath != fakePath {
@@ -55,20 +57,23 @@ func TestGetYamlNodeInMap(t *testing.T) {
 	var fakeNode yaml.Node
 	fakeYamlString, err := yaml.Marshal(&fakeMap)
 	if err != nil {
-		panic(err)
+		t.Log(err)
+		t.FailNow()
 	}
 
 	decoder := yaml.NewDecoder(strings.NewReader(string(fakeYamlString)))
 
 	err = decoder.Decode(&fakeNode)
 	if err != nil {
-		panic(err)
+		t.Log(err)
+		t.FailNow()
 	}
 
 	returnNode, err := getYamlNodeInMap(fakeNode.Content[0], testKey)
 
 	if err != nil {
-		panic(err)
+		t.Log(err)
+		t.FailNow()
 	}
 
 	if returnNode.Value != fakeMap[testKey] {
@@ -97,13 +102,15 @@ key3:
 	var fakeNode yaml.Node
 	err := decoder.Decode(&fakeNode)
 	if err != nil {
-		panic(err)
+		t.Log(err)
+		t.FailNow()
 	}
 
 	returnNode, err := getYamlByReference(fakeNode.Content[0], testKey)
 
 	if err != nil {
-		panic(err)
+		t.Log(err)
+		t.FailNow()
 	}
 
 	if returnNode.Value != expectedValue {
@@ -129,7 +136,8 @@ key3:
 
 	tmpfile, err := os.CreateTemp("", "")
 	if err != nil {
-		panic(err)
+		t.Log(err)
+		t.FailNow()
 	}
 
 	t.Log(tmpfile.Name())
@@ -141,13 +149,15 @@ key3:
 
 	_, err = tmpfile.Seek(0, 0)
 	if err != nil {
-		panic(err)
+		t.Log(err)
+		t.FailNow()
 	}
 	var fileToTest yaml.Node
 	decoder := yaml.NewDecoder(tmpfile)
 	err = decoder.Decode(&fileToTest)
 	if err != nil {
-		panic(err)
+		t.Log(err)
+		t.FailNow()
 	}
 
 	nodeToTest := fileToTest.Content[0].Content[5].Content[3].Content[1]

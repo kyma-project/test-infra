@@ -15,7 +15,7 @@ import (
 func ParseNotationFile(filePath string) (string, string, error) {
 	f, err := os.Open(filePath)
 	if err != nil {
-		panic(err)
+		return "", "", err
 	}
 	r := bufio.NewReader(f)
 	for {
@@ -102,7 +102,7 @@ func parseYamlFile(filePath string) (*yaml.Node, error) {
 
 	_, err = data.Seek(0, 0)
 	if err != nil {
-		panic(err)
+		return &yaml.Node{}, err
 	}
 	decoder = yaml.NewDecoder(data)
 	var parsedImagesFile interface{}
@@ -115,15 +115,15 @@ func parseYamlFile(filePath string) (*yaml.Node, error) {
 	return &parsedFile, nil
 }
 
-func UpdateYamlFile(filePath string, yamlKey string, value string) {
+func UpdateYamlFile(filePath string, yamlKey string, value string) error {
 	parsedFile, err := parseYamlFile(filePath)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	yamlNode, err := getYamlByReference(parsedFile.Content[0], yamlKey)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	yamlNode.SetString(value)
@@ -131,7 +131,8 @@ func UpdateYamlFile(filePath string, yamlKey string, value string) {
 	encoder := yaml.NewEncoder(fileToWrite)
 	err = encoder.Encode(parsedFile.Content[0])
 	if err != nil {
-		panic(err)
+		return err
 	}
 	defer encoder.Close()
+	return nil
 }
