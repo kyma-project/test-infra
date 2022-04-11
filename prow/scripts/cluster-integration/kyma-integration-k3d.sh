@@ -46,7 +46,17 @@ function install_cli() {
 
 function deploy_kyma() {
   k3d version
-  kyma provision k3d --ci
+
+  if [[ -v K8S_VERSION ]]; then
+    echo "Creating k3d with kuberenetes version: ${K8S_VERSION}"
+    kyma provision k3d --ci -k "${K8S_VERSION}"
+  else
+    kyma provision k3d --ci
+  fi
+  
+  echo "Printing client and server version info"
+
+  kubectl version
 
   local kyma_deploy_cmd
   kyma_deploy_cmd="kyma deploy -p evaluation --ci --source=local --workspace ${KYMA_SOURCES_DIR}"
@@ -62,10 +72,16 @@ function deploy_kyma() {
     kyma_deploy_cmd+=" --components-file kyma-integration-k3d-compass-components.yaml"
   fi
 
+  if [[ -v TELEMETRY_ENABLED ]]; then
+    kyma_deploy_cmd+=" --value=global.telemetry.enabled=true"
+    kyma_deploy_cmd+=" --components-file kyma-integration-k3d-telemetry-components.yaml"
+  fi
+
   $kyma_deploy_cmd
 
   kubectl get pods -A
 }
+
 
 function run_tests() {
   pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
@@ -75,6 +91,9 @@ function run_tests() {
     make ci-compass
   elif [[ -v CENTRAL_APPLICATION_CONNECTIVITY_ENABLED ]]; then
     make ci-application-connectivity-2
+  elif [[ -v TELEMETRY_ENABLED ]]; then
+    npm install
+    npm run test-telemetry
   else
     make ci
   fi

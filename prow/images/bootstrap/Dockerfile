@@ -52,9 +52,9 @@ RUN curl -fLSs -o gc-sdk.tar.gz https://dl.google.com/dl/cloudsdk/channels/rapid
     gcloud info | tee /workspace/gcloud-info.txt
 
 # Cluster Version
-ENV CLUSTER_VERSION=1.20
+ENV CLUSTER_VERSION=1.21
 
-# Kubectl 1.20
+# Kubectl 1.21
 RUN mv /google-cloud-sdk/bin/kubectl.${CLUSTER_VERSION} /google-cloud-sdk/bin/kubectl
 
 # Docker-in-docker
@@ -105,3 +105,8 @@ RUN curl -fLSs -o shellcheck.tar.xz https://github.com/koalaman/shellcheck/relea
 
 RUN curl -fLSs -o /usr/local/bin/hadolint https://github.com/hadolint/hadolint/releases/download/v2.7.0/hadolint-Linux-x86_64 && \
     chmod +x /usr/local/bin/hadolint
+
+#Install yq
+ENV YQ_VERSION=v4.2.0 \
+    YQ_BINARY=yq_linux_amd64
+RUN curl -fLS -o /usr/bin/yq https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BINARY} && chmod +x /usr/bin/yq

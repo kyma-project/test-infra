@@ -10,16 +10,13 @@ templates:
               pipeline.installer: keb
               pipeline.test: fast-integration
             path_alias: github.com/kyma-project/kyma
-            command: "make"
-            args:
-              - "-C"
-              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration" 
-              - "ci-skr-kyma-to-kyma2-upgrade"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-skr-aws-kyma-to-kyma2.sh"
             cluster: "trusted-workload"
             request_memory: 100Mi
             request_cpu: 50m
             labels:
               preset-build-main: "true"
+              preset-bot-github-token: "true"
               preset-keb-dev-credentials: "true"
               preset-kyma-integration-compass-dev: "true"
               preset-kyma-integration-compass-enabled: "true"
@@ -33,8 +30,7 @@ templates:
             env:
               KEB_PLAN_ID: "361c511f-f939-4621-b228-d0fb79a1fe15" # AWS
               # KEB_PLAN_ID: "5cb3d976-b85c-42ea-a636-79cadda109a9" # Preview Plan
-              KYMA_VERSION: "1.24.8"
-              KYMA_UPGRADE_VERSION: "2.0.2"
+              KYMA_VERSION: "1.24.9"
               SKIP_CLEANUP: "FALSE" # set to true if Cluster & Compass cleanup should be skipped
         jobConfigs:
           - repoName: "kyma-project/kyma"
@@ -53,6 +49,7 @@ templates:
                     - "extra_refs_kyma"
                     - "disable_testgrid"
                     - "kyma_major_version_1"
+                    - "kyma_project_dir"
                   local:
                     - "jobConfig_default"
                     - "keb_plan_aws"

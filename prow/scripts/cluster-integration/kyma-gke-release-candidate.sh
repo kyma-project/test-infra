@@ -78,7 +78,7 @@ cleanupOnError() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
-    if [ -n "${CLEANUP_CLUSTER}" ]; then
+    if [[ "${CLEANUP_CLUSTER}" == "true" ]] ; then
         log::info "Deprovision cluster: \"${COMMON_NAME}\""
 
         #save disk names while the cluster still exists to remove them later
@@ -158,7 +158,7 @@ installKyma() {
 			--profile production \
 			--tls-crt "./letsencrypt/live/${DOMAIN}/fullchain.pem" \
 			--tls-key "./letsencrypt/live/${DOMAIN}/privkey.pem" \
-			--value "istio-configuration.components.ingressGateways.config.service.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+			--value "istio.components.ingressGateways.config.service.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
 			--value "global.domainName=${DOMAIN}" \
 			--timeout 60m
 
@@ -186,8 +186,6 @@ export GCLOUD_SUBNET_NAME="${gcp_set_vars_for_network_return_subnet_name:?}"
 
 #Local variables
 DNS_SUBDOMAIN="${COMMON_NAME}"
-KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
-
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
@@ -253,6 +251,47 @@ kyma::install_cli
 
 log::info "Install kyma"
 installKyma
+
+#---
+log::info "create cluster-admin binding for kyma_developers@sap.com"
+kubectl create clusterrolebinding kyma_developers --clusterrole cluster-admin --group kyma_developers@sap.com
+# TODO (@Ressetkk): Move this part as re-usable function if needed
+log::info "generate service account and kubeconfig with cluster-admin rights"
+namespace="default"
+serviceAccount="admin-user"
+server="https://$(gcloud container clusters describe "$COMMON_NAME" --region "$CLOUDSDK_COMPUTE_REGION" | awk '/endpoint:/ {print $2}')"
+kubectl create serviceaccount -n "$namespace" "$serviceAccount"
+kubectl create clusterrolebinding $serviceAccount --clusterrole cluster-admin --serviceaccount="$namespace:$serviceAccount"
+
+secretName="$(kubectl -n "$namespace" get serviceAccount "$serviceAccount" -o jsonpath='{.secrets[0].name}')"
+ca="$(kubectl -n "$namespace" get "secret/$secretName" -o jsonpath='{.data.ca\.crt}')"
+token="$(kubectl -n "$namespace" get "secret/$secretName" -o jsonpath='{.data.token}' | base64 --decode)"
+
+echo "---
+apiVersion: v1
+kind: Config
+clusters:
+  - name: default
+    cluster:
+      certificate-authority-data: ${ca}
+      server: ${server}
+contexts:
+  - name: default
+    context:
+      cluster: default
+      namespace: default
+      user: ${serviceAccount}
+users:
+  - name: ${serviceAccount}
+    user:
+      token: ${token}
+current-context: default
+" > kubeconfig
+
+# escape kubeconfig properly
+pubsub_message=$(jq -c --null-input "{\"cluster_name\": \"${COMMON_NAME}\", \"kyma_version\": \"${RELEASE_VERSION}\", \"kubeconfig\": \"$(cat kubeconfig)\"}")
+gcloud pubsub topics publish --project="${PUBSUB_PROJECT}" "${PUBSUB_TOPIC}" --message="${pubsub_message}"
+#---
 
 log::info "Collect list of images"
 if [ -z "$ARTIFACTS" ] ; then

@@ -24,8 +24,8 @@ func TestBranchProtection(t *testing.T) {
 		contexts     []string
 		approvals    int
 	}{
-		{"kyma-project", "kyma", "main", []string{"license/cla", "tide"}, 1},
-		{"kyma-project", "test-infra", "main", []string{"license/cla", "tide"}, 1},
+		{"kyma-project", "kyma", "main", []string{"license/cla", "tide"}, 0},
+		{"kyma-project", "test-infra", "main", []string{"license/cla", "tide"}, 0},
 		{"kyma-project", "website", "main", []string{"license/cla", "netlify/kyma-project/deploy-preview", "tide"}, 1},
 		{"kyma-project", "website", "archive-snapshots", []string{"license/cla", "netlify/kyma-project-old/deploy-preview", "tide"}, 1},
 		{"kyma-project", "community", "main", []string{"license/cla", "tide"}, 1},
@@ -33,7 +33,7 @@ func TestBranchProtection(t *testing.T) {
 		{"kyma-project", "console", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-project", "examples", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-project", "addons", "main", []string{"license/cla", "tide"}, 1},
-		{"kyma-project", "cli", "main", []string{"license/cla", "tide"}, 1},
+		{"kyma-project", "cli", "main", []string{"license/cla", "tide"}, 0},
 		{"kyma-project", "helm-broker", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-incubator", "varkes", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-incubator", "vstudio-extension", "main", []string{"license/cla", "tide"}, 1},

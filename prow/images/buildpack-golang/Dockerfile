@@ -1,6 +1,6 @@
 # Basic golang buildpack
 
-FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95
+FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20220310-2b410ea6
 
 # Commit details
 
@@ -11,11 +11,11 @@ LABEL io.kyma-project.test-infra.commit=$commit
 # Versions
 
 ENV ARCH amd64
-ENV GO_VERSION 1.17.5
+ENV GO_VERSION 1.18
 ENV DEP_RELEASE_TAG v0.5.4
 ENV KUBEBUILDER_VERSION 2.3.2
 ENV KUSTOMIZE_VERSION 3.8.4
-ENV GOLANGCI_LINT_VERSION v1.40.1
+ENV GOLANGCI_LINT_VERSION v1.45.2
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -61,8 +61,8 @@ RUN go install golang.org/x/tools/cmd/goimports@latest && \
     go install github.com/kisielk/errcheck@latest && \
     go install github.com/deepmap/oapi-codegen/cmd/oapi-codegen@v1.8.2 && \
     go install golang.org/x/perf/cmd/benchstat@latest && \
-    GO111MODULE="on" go get github.com/vektra/mockery && \
-    GO111MODULE="off" go get -u github.com/maxbrunsfeld/counterfeiter && \
+    go install github.com/vektra/mockery/v2@latest && \
+    go install github.com/maxbrunsfeld/counterfeiter/v6@latest && \
     curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- -b ${GOPATH}/bin ${GOLANGCI_LINT_VERSION}
 
 COPY ./license-puller.sh /license-puller.sh

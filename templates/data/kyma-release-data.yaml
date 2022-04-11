@@ -119,6 +119,8 @@ templates:
                     EVENTMESH_SECRET_FILE: "/etc/credentials/kyma-tunas-release-testing-event-mesh/serviceKey"
                     PROVISION_REGIONAL_CLUSTER: "true"
                     MACHINE_TYPE: "n1-highcpu-16"
+                    PUBSUB_PROJECT: "sap-kyma-prow"
+                    PUBSUB_TOPIC: "release-cluster-created"
                   decoration_config:
                     timeout: 3600000000000 # 1h
                     grace_period: 600000000000 # 10min
@@ -135,37 +137,6 @@ templates:
                   args:
                     - "-c"
                     - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-release-candidate.sh"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
-                  local:
-                    - "test-infra"
-              - jobConfig:
-                  name: post-rel{{ $relShort }}-kyma-gke-release-upgrade
-                  branches:
-                    - '^{{ $rel }}\.\d+(?:-.*)?$' # release tags
-                  env:
-                    CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
-                    PROVISION_REGIONAL_CLUSTER: "true"
-                    NODES_PER_ZONE: "1"
-                    MACHINE_TYPE: "n1-highcpu-16"
-                  annotations:
-                    testgrid-dashboards: kyma_release-{{ $rel }}
-                    testgrid-days-of-results: "90"
-                  labels:
-                    preset-sa-gke-kyma-integration: "true"
-                    preset-bot-github-token: "true"
-                    preset-gc-compute-envs: "true"
-                    preset-gc-project-env: "true"
-                    preset-dind-enabled: "true"
-                    preset-docker-push-repository-kyma: "true"
-                    preset-cluster-version: "true"
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-rel2rel-upgrade.sh"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

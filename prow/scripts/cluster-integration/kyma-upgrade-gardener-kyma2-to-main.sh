@@ -94,7 +94,8 @@ gardener::init
 # if MACHINE_TYPE is not set then use default one
 gardener::set_machine_type
 
-kyma::install_cli_last_release
+log::info "### Install latest unstable Kyma CLI"
+kyma::install_unstable_cli
 
 # currently only Azure generates overrides, but this may change in the future
 gardener::generate_overrides
@@ -104,8 +105,8 @@ gardener::provision_cluster
 
 log::info "### Installing Kyma $KYMA_SOURCE"
 
-# uses previously set KYMA_SOURCE
-kyma::deploy_kyma -s "$KYMA_SOURCES_DIR" -u "true"
+kyma2_install_dir="$KYMA_SOURCES_DIR/kyma2"
+kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kyma2_install_dir" -u "true"
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
@@ -113,11 +114,14 @@ utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 log::info "### Run pre-upgrade tests"
 gardener::pre_upgrade_test_fast_integration_kyma
 
-# Upgrade kyma to main branch
+# Upgrade kyma to main branch with latest stable cli
+kyma::install_cli
+
 export KYMA_SOURCE="main"
+log::info "### Installing Kyma $KYMA_SOURCE"
 
-kyma::deploy_kyma -s "$KYMA_SOURCES_DIR" -u "true"
-
+kymaMain_install_dir="$KYMA_SOURCES_DIR/kymaMain"
+kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kymaMain_install_dir" -u "true"
 
 log::info "### Run post-upgrade tests"
 gardener::post_upgrade_test_fast_integration_kyma

@@ -14,9 +14,35 @@ plugins:
       - shrug
       - invalidcommitmsg
       - help
+      - verify-owners
+      - owners-label
+      - milestone
+      - override
+      - retitle
+      - pony
+      - lifecycle
+      - transfer-issue
   kyma-project/test-infra:
     plugins:
       - config-updater
+      - approve
+      - blunderbuss
+  kyma-incubator/compass:
+    plugins:
+      - approve
+      - blunderbuss
+  kyma-project/third-party-images:
+    plugins:
+      - approve
+      - blunderbuss
+  kyma-project/kyma:
+    plugins:
+      - approve
+      - blunderbuss
+  kyma-project/cli:
+    plugins:
+      - approve
+      - blunderbuss
   kyma-incubator:
     plugins:
       - cat
@@ -32,6 +58,49 @@ plugins:
       - shrug
       - invalidcommitmsg
       - help
+      - verify-owners
+      - owners-label
+      - milestone
+      - override
+      - retitle
+      - pony
+      - lifecycle
+      - transfer-issue
+
+external_plugins:
+  kyma-project:
+    - name: cla-assistant
+      events:
+        - issue_comment
+  kyma-incubator:
+    - name: cla-assistant
+      events:
+        - issue_comment
+  kyma-project/test-infra:
+    - name: needs-tws
+      events:
+        - pull_request
+        - pull_request_review
+  kyma-project/kyma:
+    - name: needs-tws
+      events:
+        - pull_request
+        - pull_request_review
+  kyma-project/third-party-images:
+    - name: needs-tws
+      events:
+        - pull_request
+        - pull_request_review
+  kyma-project/cli:
+    - name: needs-tws
+      events:
+        - pull_request
+        - pull_request_review
+  kyma-incubator/compass:
+    - name: needs-tws
+      events:
+        - pull_request
+        - pull_request_review
 
 config_updater:
   maps:
@@ -54,11 +123,12 @@ config_updater:
 
 triggers:
   - repos:
-    - kyma-project
-    - kyma-incubator
+      - kyma-project
+      - kyma-incubator
+    trusted_apps:
+      - dependabot
     only_org_members: true
     ignore_ok_to_test: true
-    elide_skipped_contexts: false
 
 lgtm:
   - repos:
@@ -71,6 +141,7 @@ label:
     - tide/merge-method-merge
     - tide/merge-method-rebase
     - tide/merge-method-squash
+    - Epic
 
 size:
   s:   10
@@ -78,3 +149,21 @@ size:
   l:   100
   xl:  500
   xxl: 1000
+
+blunderbuss:
+  max_request_count: 2
+  use_status_availability: true
+  ignore_drafts: true
+
+approve:
+  - repos:
+      - kyma-project/test-infra
+      - kyma-project/third-party-images
+    require_self_approval: false
+    ignore_review_state: false
+  - repos:
+      - kyma-project/kyma
+      - kyma-incubator/compass
+      - kyma-project/cli
+    require_self_approval: true # ignore authors of the PRs to be able to auto-approve their PR if they are owners
+    ignore_review_state: false

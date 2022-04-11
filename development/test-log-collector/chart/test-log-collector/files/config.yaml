@@ -17,8 +17,6 @@
   onlyReportFailure: true
   testCases:
     - application-connector
-    - application-operator
-    - application-operator-gateway
     - application-registry
     - connection-token-handler
     - connector-service

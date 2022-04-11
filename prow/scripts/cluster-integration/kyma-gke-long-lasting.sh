@@ -6,7 +6,6 @@ set -o pipefail  # Fail a pipe if any sub-command fails.
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
-export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
@@ -157,12 +156,13 @@ function installKyma() {
 
 	kyma deploy \
 			--ci \
-			--source main \
+			--source local \
+			--workspace "${KYMA_SOURCES_DIR}" \
 			--domain "${DOMAIN}" \
 			--profile production \
 			--tls-crt "./letsencrypt/live/${DOMAIN}/fullchain.pem" \
 			--tls-key "./letsencrypt/live/${DOMAIN}/privkey.pem" \
-			--value "istio-configuration.components.ingressGateways.config.service.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+			--value "istio.components.ingressGateways.config.service.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
 			--value "global.domainName=${DOMAIN}"
 
 	set +x
@@ -249,13 +249,5 @@ echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${COMMON_NAME}.json"
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
 utils::kubeaudit_create_report "${ARTIFACTS}/kubeaudit.log"
-
-# log::info "Install stability-checker"
-# date
-# (
-# export TEST_INFRA_SOURCES_DIR KYMA_SCRIPTS_DIR TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS \
-#         CLUSTER_NAME SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID SLACK_CLIENT_TOKEN TEST_RESULT_WINDOW_TIME
-# "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-stability-checker.sh"
-# )
 
 log::success "Success"

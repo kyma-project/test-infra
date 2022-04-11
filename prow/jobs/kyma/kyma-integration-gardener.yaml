@@ -46,7 +46,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220407-4da6c929"
             securityContext:
               privileged: true
             command:
@@ -121,7 +121,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220407-4da6c929"
             securityContext:
               privileged: true
             command:
@@ -196,7 +196,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220407-4da6c929"
             securityContext:
               privileged: true
             command:
@@ -263,11 +263,159 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220407-4da6c929"
             securityContext:
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing.sh"
+            env:
+              - name: CREDENTIALS_DIR
+                value: "/etc/credentials/kyma-tunas-prow-event-mesh"
+              - name: EXECUTION_PROFILE
+                value: "evaluation"
+              - name: GARDENER_REGION
+                value: "europe-west4"
+              - name: GARDENER_ZONES
+                value: "europe-west4-b"
+              - name: KYMA_MAJOR_VERSION
+                value: "2"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 400m
+            volumeMounts:
+              - name: kyma-tunas-prow-event-mesh
+                mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
+                readOnly: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+        volumes:
+          - name: kyma-tunas-prow-event-mesh
+            secret:
+              secretName: kyma-tunas-prow-event-mesh
+    - name: pre-main-kyma-skr-eventing
+      annotations:
+        pipeline.clusterprovisioning: "keb"
+        pipeline.installer: "keb"
+        pipeline.platform: "gardener_aws"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-skr-eventing"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+        preset-cluster-version: "true"
+        preset-debug-commando-oom: "true"
+        preset-kcp-client-dev-envs: "true"
+        preset-keb-dev-credentials: "true"
+        preset-kyma-integration-central-app-connectivity-enabled: "true"
+        preset-kyma-integration-compass-dev: "true"
+        preset-kyma-integration-compass-enabled: "true"
+        preset-kyma-integration-kcp-client-credentials: "true"
+        preset-kyma-integration-subaccounnt: "true"
+      run_if_changed: '^((tests/fast-integration\S+|resources/eventing\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      optional: true
+      skip_report: false
+      decorate: true
+      decoration_config:
+        grace_period: 600000000000
+        timeout: 14400000000000
+      path_alias: github.com/kyma-project/kyma
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220407-4da6c929"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-skr-eventing.sh"
+            env:
+              - name: CREDENTIALS_DIR
+                value: "/etc/credentials/kyma-tunas-prow-event-mesh"
+              - name: KEB_PLAN_ID
+                value: "361c511f-f939-4621-b228-d0fb79a1fe15"
+              - name: KYMA_MAJOR_VERSION
+                value: "2"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 400m
+            volumeMounts:
+              - name: kyma-tunas-prow-event-mesh
+                mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
+                readOnly: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+        volumes:
+          - name: kyma-tunas-prow-event-mesh
+            secret:
+              secretName: kyma-tunas-prow-event-mesh
+    - name: pre-main-kyma-gardener-gcp-eventing-upgrade
+      annotations:
+        pipeline.clusterprovisioning: "kyma cli"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "gardener_gcp"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-gardener-gcp-eventing-upgrade"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-bot-github-token: "true"
+        preset-build-pr: "true"
+        preset-cluster-version: "true"
+        preset-debug-commando-oom: "true"
+        preset-gardener-gcp-kyma-integration: "true"
+        preset-kyma-cli-stable: "true"
+      run_if_changed: '^((tests/fast-integration\S+|resources/eventing\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      optional: true
+      skip_report: false
+      decorate: true
+      decoration_config:
+        grace_period: 600000000000
+        timeout: 14400000000000
+      path_alias: github.com/kyma-project/kyma
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220407-4da6c929"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing-upgrade.sh"
             env:
               - name: CREDENTIALS_DIR
                 value: "/etc/credentials/kyma-tunas-prow-event-mesh"
@@ -346,7 +494,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220407-4da6c929"
             securityContext:
               privileged: true
             command:
@@ -420,7 +568,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220407-4da6c929"
             securityContext:
               privileged: true
             command:
@@ -502,7 +650,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220407-4da6c929"
             securityContext:
               privileged: true
             command:
@@ -582,7 +730,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220407-4da6c929"
             securityContext:
               privileged: true
             command:
@@ -654,7 +802,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220407-4da6c929"
             securityContext:
               privileged: true
             command:
@@ -724,7 +872,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220407-4da6c929"
             securityContext:
               privileged: true
             command:
@@ -734,6 +882,8 @@ periodics: # runs on schedule
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
+              - name: KYMA_MAJOR_UPGRADE
+                value: "true"
               - name: KYMA_MAJOR_VERSION
                 value: "1"
               - name: KYMA_PROJECT_DIR
@@ -753,7 +903,7 @@ periodics: # runs on schedule
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: kyma-upgrade-gardener-kyma2-to-main
+    - name: kyma-upgrade-gardener-kyma2-to-main-reconciler-main
       annotations:
         description: "Azure Kyma 2.0 to main branch."
         pipeline.clusterprovisioning: "kyma cli"
@@ -764,7 +914,7 @@ periodics: # runs on schedule
         testgrid-dashboards: "kyma_integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "kyma-upgrade-gardener-kyma2-to-main"
+        prow.k8s.io/pubsub.runID: "kyma-upgrade-gardener-kyma2-to-main-reconciler-main"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
         preset-bot-github-token: "true"
@@ -800,7 +950,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220407-4da6c929"
             securityContext:
               privileged: true
             command:

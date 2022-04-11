@@ -1,4 +1,4 @@
-FROM node:17.3.1-alpine
+FROM node:17.8.0-alpine
 
 LABEL source git@github.com:kyma-project/test-infra.git
 

@@ -68,16 +68,6 @@ var components = []struct {
 			jobsuite.AllReleases(),
 		},
 	},
-	{
-		name:  "subscription-cleanup-job",
-		image: tester.ImageGolangBuildpack1_16,
-		suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.ControlPlaneRepo(),
-			jobsuite.AllReleases(),
-		},
-	},
 }
 
 func TestComponentJobs(t *testing.T) {

@@ -36,7 +36,7 @@ gardener::cleanup() {
       utils::oom_get_output
     fi
 
-    if [ -n "${CLEANUP_CLUSTER}" ]; then
+    if  [[ "${CLEANUP_CLUSTER}" == "true" ]] ; then
         log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
         gardener::deprovision_cluster \
             -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
@@ -132,6 +132,18 @@ gardener::install_kyma() {
         --ci \
         --source "${KYMA_SOURCE}" \
         --timeout 90m
+    fi
+    )
+}
+
+gardener::deploy_kyma() {
+    (
+    set -x
+    if [[ $EVENTING_ENABLE_JETSTREAM == "true" ]]; then
+      log::info "### JetStream feature flag set to true"
+      kyma deploy --ci --timeout 90m --value global.features.enableJetStream=true "$@"
+    else
+      kyma deploy --ci --timeout 90m "$@"
     fi
     )
 }

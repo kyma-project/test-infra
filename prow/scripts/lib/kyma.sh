@@ -8,26 +8,37 @@ source "${LIBDIR}/log.sh"
 # kyma::deploy_kyma starts Kyma deployment using new installation method
 # Arguments:
 # optional:
-# s - Kyma sources directory
+# s - Kyma source
+# d - Kyma sources directory
 # p - execution profile
 # u - upgrade (this will not reuse helm values which is already set)
 function kyma::deploy_kyma() {
 
     local OPTIND
     local executionProfile=
+    local kymaSource=""
     local kymaSourcesDir=""
     local upgrade=
 
-    while getopts ":p:s:u:" opt; do
+    while getopts ":s:p:d:u:" opt; do
         case $opt in
+            s)
+                kymaSource="$OPTARG"
+                log::info "Kyma Source to install: ${kymaSource}"
+                ;;
             p)
                 if [ -n "$OPTARG" ]; then
                     executionProfile="$OPTARG"
+                    log::info "Execution Profile: ${executionProfile}"
                 fi ;;
-            s)
-                kymaSourcesDir="$OPTARG" ;;
+            d)
+                kymaSourcesDir="$OPTARG"
+                log::info "Kyma Source Directory: ${kymaSourcesDir}"
+                 ;;
             u)
-                upgrade="$OPTARG" ;;
+                upgrade="$OPTARG"
+                log::info "Kyma upgrade option: ${upgrade}"
+                ;;
             \?)
                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
@@ -37,19 +48,17 @@ function kyma::deploy_kyma() {
 
     log::info "Deploying Kyma"
 
-    if [[ -n "$executionProfile" ]]; then
-        if [[ -n "$upgrade" ]]; then
-            kyma deploy --ci --profile "$executionProfile" --source=local --workspace "${kymaSourcesDir}" --verbose
-        else
-            kyma deploy --ci --profile "$executionProfile" --source=local --workspace "${kymaSourcesDir}" --verbose
-        fi
+    if [[ -n "$kymaSource" ]]; then
+        kyma deploy --ci --profile "$executionProfile" --source="${kymaSource}" --workspace "${kymaSourcesDir}" --verbose
     else
-        if [[ -n "$upgrade" ]]; then
-            kyma deploy --ci --source=local --workspace "${kymaSourcesDir}" --verbose
+        if [[ -n "$executionProfile" ]]; then
+            kyma deploy --ci --profile "$executionProfile" --source=local --workspace "${kymaSourcesDir}" --verbose
         else
             kyma deploy --ci --source=local --workspace "${kymaSourcesDir}" --verbose
         fi
     fi
+
+
 }
 
 # kyma::undeploy_kyma uninstalls Kyma
@@ -86,7 +95,7 @@ function kyma::get_last_release_version {
     done
 
     utils::check_empty_arg "$githubToken" "Github token was not provided. Exiting..."
-    
+
     if [[ -n "${searchedVersion}" ]]; then
         # shellcheck disable=SC2034
         kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
@@ -98,52 +107,137 @@ function kyma::get_last_release_version {
     fi
 }
 
+# kyma::get_previous_release_version returns previous Kyma release version (i.e. one version before the latest released version)
+#
+# Arguments:
+#   t - GitHub token
+# Returns:
+#   Previous Kyma release version
+function kyma::get_previous_release_version {
+    local OPTIND
+    local githubToken
+
+    while getopts ":t:" opt; do
+        case $opt in
+            t)
+                githubToken="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&1; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&1 ;;
+        esac
+    done
+
+    utils::check_empty_arg "$githubToken" "Github token was not provided. Exiting..."
+
+    # shellcheck disable=SC2034
+    kyma_get_previous_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
+        | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-2].tag_name')
+}
+
+kyma::provision_k3d() {
+  k3d version
+
+  if [[ -v K8S_VERSION ]]; then
+    echo "Creating k3d with kubernetes version: ${K8S_VERSION}"
+    kyma provision k3d --ci -k "${K8S_VERSION}"
+  else
+    kyma provision k3d --ci
+  fi
+
+  echo "Printing client and server version info"
+  kubectl version
+}
+
 kyma::install_cli() {
-    if ! [[ -x "$(command -v kyma)" ]]; then
-        local settings
-        local kyma_version
-        settings="$(set +o); set -$-"
-        mkdir -p "/tmp/bin"
-        export PATH="/tmp/bin:${PATH}"
-        os=$(host::os)
+    local settings
+    local kyma_version
+    settings="$(set +o); set -$-"
+    mkdir -p "/tmp/bin"
+    export PATH="/tmp/bin:${PATH}"
+    os=$(host::os)
 
-        pushd "/tmp/bin" || exit
+    pushd "/tmp/bin" || exit
 
-        echo "--> Install kyma CLI ${os} locally to /tmp/bin"
+    echo "--> Install kyma CLI ${os} locally to /tmp/bin"
 
-        curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}?alt=media"
-        chmod +x kyma
-        kyma_version=$(kyma version --client)
-        echo "--> Kyma CLI version: ${kyma_version}"
-        echo "OK"
-        popd || exit
-        eval "${settings}"
+    if [[ "${KYMA_MAJOR_VERSION-}" == "1" ]]; then
+        curl -sSLo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/1.24.8/kyma_${os}_x86_64.tar.gz"
+        tar xvzf kyma.tar.gz
     else
-        log::info "Kyma CLI is already installed: $(kyma version -c)"
+        curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}?alt=media"
     fi
+    chmod +x kyma
+    kyma_version=$(kyma version --client)
+    echo "--> Kyma CLI version: ${kyma_version}"
+    echo "OK"
+    popd || exit
+    eval "${settings}"
+}
+
+kyma::install_unstable_cli() {
+    local settings
+    local kyma_version
+    settings="$(set +o); set -$-"
+    mkdir -p "/tmp/bin"
+    export PATH="/tmp/bin:${PATH}"
+    os=$(host::os)
+
+    pushd "/tmp/bin" || exit
+
+    echo "--> Install kyma CLI (unstable version) ${os} locally to /tmp/bin"
+
+    curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-unstable/kyma-${os}?alt=media"
+    chmod +x kyma
+    kyma_version=$(kyma version --client)
+    echo "--> Kyma CLI (unstable) version: ${kyma_version}"
+    echo "OK"
+    popd || exit
+    eval "${settings}"
 }
 
 kyma::install_cli_last_release() {
-    if ! [[ -x "$(command -v kyma)" ]]; then
-        local settings
-        settings="$(set +o); set -$-"
+    local settings
+    settings="$(set +o); set -$-"
 
-        mkdir -p "/tmp/bin"
-        export PATH="/tmp/bin:${PATH}"
-        pushd "/tmp/bin" || exit
+    mkdir -p "/tmp/bin"
+    export PATH="/tmp/bin:${PATH}"
+    pushd "/tmp/bin" || exit
 
-        curl -Lo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/$(curl -s https://api.github.com/repos/kyma-project/cli/releases/latest | grep tag_name | cut -d '"' -f 4)/kyma_Linux_x86_64.tar.gz" \
-        && tar -zxvf kyma.tar.gz && chmod +x kyma \
-        && rm -f kyma.tar.gz
+    curl -Lo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/$(curl -s https://api.github.com/repos/kyma-project/cli/releases/latest | grep tag_name | cut -d '"' -f 4)/kyma_Linux_x86_64.tar.gz" \
+    && tar -zxvf kyma.tar.gz && chmod +x kyma \
+    && rm -f kyma.tar.gz
 
-        kyma_version=$(kyma version --client)
-        echo "--> Kyma CLI version: ${kyma_version}"
-        echo "OK"
-        popd || exit
-        eval "${settings}"
-    else
-        log::info "Kyma CLI is already installed: $(kyma version -c)"
-    fi
+    kyma_version=$(kyma version --client)
+    echo "--> Kyma CLI version: ${kyma_version}"
+    echo "OK"
+    popd || exit
+    eval "${settings}"
+}
+
+kyma::install_cli_from_reconciler_pr() {
+  local install_dir
+  declare -r install_dir="/usr/local/bin"
+  mkdir -p "$install_dir"
+
+  local os
+  os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+  if [[ -z "$os" || ! "$os" =~ ^(linux)$ ]]; then
+    echo >&2 -e "Unsupported host OS. Must be Linux."
+    exit 1
+  else
+    readonly os
+  fi
+
+  kyma_cli_url="https://storage.googleapis.com/kyma-cli-pr/kyma-${os}-pr-${PULL_NUMBER}"
+
+  pushd "$install_dir" || exit
+  echo "Downloading Kyma CLI from: ${kyma_cli_url}"
+  curl -Lo kyma "${kyma_cli_url}"
+  chmod +x kyma
+  popd || exit
+
+  kyma version --client
 }
 
 host::os() {

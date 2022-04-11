@@ -117,7 +117,9 @@ envVars=(
   COMPASS_CLIENT_SECRET
   COMPASS_INTEGRATION_ENABLED
   CENTRAL_APPLICATION_CONNECTIVITY_ENABLED
+  TELEMETRY_ENABLED
   KYMA_MAJOR_VERSION
+  K8S_VERSION
 )
 utils::save_env_file "${envVars[@]}"
 #shellcheck disable=SC2088
@@ -131,6 +133,12 @@ if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
   log::info "Copying components file for compass tests"
   #shellcheck disable=SC2088
   utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-compass-components.yaml" "~/kyma-integration-k3d-compass-components.yaml"
+fi
+
+if [[ -v TELEMETRY_ENABLED ]]; then
+  log::info "Copying components file for telemetry tests"
+  #shellcheck disable=SC2088
+  utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-telemetry-components.yaml" "~/kyma-integration-k3d-telemetry-components.yaml"
 fi
 
 log::info "Triggering the installation"

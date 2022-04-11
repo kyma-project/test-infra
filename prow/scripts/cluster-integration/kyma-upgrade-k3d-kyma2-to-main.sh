@@ -41,8 +41,8 @@ function prereq() {
     )
     utils::check_required_vars "${requiredVars[@]}"
 
-    # install kymaCLI from the last release
-    kyma::install_cli_last_release
+    log::info "### Install latest unstable Kyma CLI"
+    kyma::install_unstable_cli
 } 
 
 function provision_cluster() {
@@ -65,11 +65,12 @@ function make_fast_integration() {
 }
 
 function install_kyma() {
-    export KYMA_SOURCE=$(curl --silent --fail --show-error -H "Authorization: token $BOT_GITHUB_TOKEN" \
-        "https://api.github.com/repos/kyma-project/kyma/releases" \
-        | jq -r '[.[] | select(.tag_name | startswith("2."))] | first | .tag_name')
+    # Fetch latest Kyma2 release
+    kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
+    export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
     log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
 
+    # Install kyma from latest 2.x release
     log::info "### Installing Kyma $KYMA_SOURCE"
     kyma deploy --ci --source "${KYMA_SOURCE}" --timeout 60m
 
@@ -109,6 +110,9 @@ provision_cluster
 install_kyma
 
 make_fast_integration "ci-pre-upgrade"
+
+# Upgrade kyma to main branch with latest stable cli
+kyma::install_cli
 
 upgrade_kyma
 

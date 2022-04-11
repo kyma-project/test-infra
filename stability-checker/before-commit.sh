@@ -49,7 +49,7 @@ done
 ##
 #  GO LINT
 ##
-go install golang.org/x/lint/golint
+go install golang.org/x/lint/golint@latest
 buildLintResult=$?
 if [ ${buildLintResult} != 0 ]; then
   echo -e "${RED}✗ go install golint${NC}\n$buildLintResult${NC}"

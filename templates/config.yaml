@@ -1,9 +1,9 @@
 global:
-  nextRelease: "2.1"
+  nextRelease: "2.2"
   releases:
+    - "2.1"
     - "2.0"
     - "1.24"
-    - "1.23"
 
 
 # global configSet variables
@@ -19,23 +19,30 @@ globalSets:
   kyma_major_version_2:
     env:
       KYMA_MAJOR_VERSION: 2
+  kyma_major_upgrade:
+    env:
+      KYMA_MAJOR_UPGRADE: "true"
+  # Directory sets
+  kyma_project_dir:
+    env:
+      KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_bootstrap:
-    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
+    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220310-2b410ea6"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220110-fe1cc8a9"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220408-b8e41120"
   image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220407-4da6c929"
   image_buildpack-node:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20211223-37a4a4d4"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220311-863c512f"
   image_buildpack-golang:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220407-4da6c929"
   image_buildpack-golang-kubebuilder2:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220407-4da6c929"
   image_buildpack-golang-toolbox:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220407-4da6c929"
   image_wssagent:
-    image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20211231-ac8068de"
+    image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220407-4da6c929"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
@@ -213,6 +220,9 @@ templates:
             - name: kyma-gke-integration
             - name: kyma-gke-upgrade
             - name: kyma-artifacts
-  - from: templates/testgrid-default.yaml
+#  - from: templates/testgrid-default.yaml
+#    render:
+#      - to: ../prow/testgrid-default.yaml
+  - from : templates/test-infra-autobump-config.yaml
     render:
-      - to: ../prow/testgrid-default.yaml
+      - to: ../prow/autobump-config/test-infra-autobump-config.yaml
