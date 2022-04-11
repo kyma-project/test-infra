@@ -265,9 +265,13 @@ tide:
         - do-not-merge/work-in-progress
         - do-not-merge/invalid-owners-file
         - do-not-merge/invalid-commit-message
-      orgs:
-        - kyma-incubator
-      reviewApprovedRequired: true
+        - do-not-merge/missing-docs-review
+      repos:
+        - kyma-project/test-infra
+        - kyma-project/third-party-images
+        - kyma-project/cli
+        - kyma-project/kyma
+        - kyma-incubator/compass
     - author: kyma-bot
       labels:
         - skip-review
