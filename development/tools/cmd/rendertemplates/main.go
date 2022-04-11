@@ -15,6 +15,7 @@ import (
 	"text/template"
 
 	"github.com/Masterminds/sprig"
+	"github.com/imdario/mergo"
 	"gopkg.in/yaml.v2"
 	"k8s.io/apimachinery/pkg/util/sets"
 
@@ -53,6 +54,8 @@ func init() {
 }
 
 func main() {
+	mergoConfig := mergo.Config{}
+	flag.BoolVar(&mergoConfig.AppendSlice, "appendSlice", false, "Rendertemplate will append slices instead overwriting.")
 	flag.Parse()
 
 	if *configFilePath == "" {
@@ -104,7 +107,7 @@ func main() {
 		config.Templates = append(config.Templates, dataFilesTemplates...)
 	}
 
-	config.Merge()
+	config.Merge(mergoConfig)
 
 	// generate final .yaml files
 	for _, templateConfig := range config.Templates {
