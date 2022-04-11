@@ -3,7 +3,7 @@
 
 ## Overview
 
-This document lists all types of Secrets used in the `kyma-prow` and `workload-kyma-prow` clusters, where all the ProwJobs are executed.
+This document lists all types of Secrets used in the `kyma-prow` and `workload-kyma-prow` clusters, where all Prow Jobs are executed.
 >**NOTE:** All Secrets are stored in the Google Cloud Storage (GCS) bucket.
 
 
@@ -27,11 +27,11 @@ This document lists all types of Secrets used in the `kyma-prow` and `workload-k
 | **kyma-bot-github-token**| Personal access token called `prow-job` used by the `kyma-bot` GitHub user.|
 | **kyma-guard-bot-github-token** | Personal access token for the `kyma-guard-bot` GitHub account.|
 | **kyma-bot@sap.com**| Stores credentials to the `kyma-bot` GitHub account. |
-| **kyma-bot-npm-token** | Token for publishing npm packages in the `npmjs.com` registry. The `kyma-bot` user credentials are used to authenticate to the registry. The Secret is used by the `post-main-varkes` ProwJob. |
+| **kyma-bot-npm-token** | Token for publishing npm packages in the `npmjs.com` registry. The `kyma-bot` user credentials are used to authenticate to the registry. The Secret is used by the `post-main-varkes` Prow Job. |
 | **gardener-kyma-prow-kubeconfig** | Kubeconfig file that allows connection to the `kyma-prow` Gardener project.|
 | **slack-nightly-token**| Token that allows the stability checker to push notifications to Slack. |
 | **sap-slack-bot-token** | Token for publishing messages to the SAP CX workspace. Find more information [here](https://api.slack.com/docs/token-types#bot).|
-| **kyma-alerts-slack-api-url** | Token for publishing messages to the SAP CX workspace.  It is used by nightly and weekly ProwJobs.|
+| **kyma-alerts-slack-api-url** | Token for publishing messages to the SAP CX workspace.  It is used by nightly and weekly Prow Jobs.|
 | **neighbors-alerts-slack-api-url** | Publishes alerts to the private `neighbors` Slack channel.|
 | **kyma-azure-credential-*** | Azure subscription and service principal credentials. |
 | **kyma-website-bot-*** | Personal access token of the `kyma-website-bot` GitHub account. It is responsible for publishing the `kyma-project.io` website. |

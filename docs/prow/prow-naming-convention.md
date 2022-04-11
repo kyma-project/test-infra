@@ -2,7 +2,7 @@
 
 This document describes the naming conventions for the Prow test instance and its resources hosted in Google Cloud Platform.
 
-More specifically, it provides the standards for naming resources used by Prow and ProwJob resources like:
+More specifically, it provides the standards for naming resources used by Prow and Prow Job resources like:
 - Service accounts
 - Cryptographic keys
 - Storage buckets

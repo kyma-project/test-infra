@@ -17,4 +17,4 @@ The structure of the folder looks as follows:
 ```
 
 ###  Adding static files
-All files added to the `static-files` folder are automatically uploaded by the Prow `config_updater` plugin to the cluster in a ConfigMap. Uploaded files are mounted by the web server in the web root directory. To route traffic for a specific path to the NGINX web server, in order to serve these files, update the Ingress `tls-ing` configuration in `tls-ing_ingress.yaml`.
+All files added to the `static-files` folder are automatically uploaded by the Prow `config_updater` plugin to the cluster in a Config Map. Uploaded files are mounted by the web server in the web root directory. To route traffic for a specific path to the NGINX web server, in order to serve these files, update the Ingress `tls-ing` configuration in `tls-ing_ingress.yaml`.
