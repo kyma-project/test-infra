@@ -44,7 +44,7 @@ func NewClient(options ...ClientOption) (*Client, error) {
 	for _, opt := range options {
 		err := opt(cc)
 		if err != nil {
-			return nil, fmt.Errorf("failed applying functional option: %w", err)
+			return nil, fmt.Errorf("failed to set option: %w", err)
 		}
 	}
 
