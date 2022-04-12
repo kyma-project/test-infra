@@ -313,7 +313,7 @@ templates:
               - jobConfig:
                   name: "pre-main-reconciler-integration-k3d"
                   # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  run_if_changed: "^(go.mod$|go.sum$)|((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-guard-bot-github-token: "true"
