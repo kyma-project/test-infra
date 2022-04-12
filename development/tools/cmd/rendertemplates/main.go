@@ -98,7 +98,7 @@ func main() {
 				log.Fatalf("Cannot render data template: %v", err)
 			}
 			if err := yaml.Unmarshal(cfg.Bytes(), &dataFileConfig); err != nil {
-				log.Fatalf("Cannot parse data file yaml: %s\n", err)
+				log.Fatalf("Cannot parse data file %s%s: %s\n", dataFilesDir, dataFile, err)
 			}
 			dataFilesTemplates = append(dataFilesTemplates, dataFileConfig.Templates...)
 		}
