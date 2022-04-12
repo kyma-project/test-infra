@@ -5,6 +5,7 @@ go 1.14
 require (
 	github.com/cloudevents/sdk-go/v2 v2.6.1
 	github.com/google/go-github/v40 v40.0.0
+	github.com/google/go-github/v42 v42.0.0
 	github.com/kyma-project/test-infra/development/github-slack-connector/githubWebhookGateway v0.0.0-20210528091155-95eb95378149
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.5.1

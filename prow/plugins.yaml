@@ -101,6 +101,10 @@ external_plugins:
       events:
         - pull_request
         - pull_request_review
+  kyma-project:
+    - name: automerge-notification
+      events:
+        - pull_request
 
 config_updater:
   maps:

@@ -10,12 +10,12 @@ type validator struct {
 	Validator
 }
 
-//Validator is an interface used to allow mocking the validatePayload function
+// Validator is an interface used to allow mocking the validatePayload function
 type Validator interface {
 	Validate(payload cloudevents.Event) apperrors.AppError
 }
 
-//NewValidator is a function that creates a validator struct with the passed in interface
+// NewValidator is a function that creates a validator struct with the passed in interface
 func NewValidator() validator {
 	return validator{}
 }
