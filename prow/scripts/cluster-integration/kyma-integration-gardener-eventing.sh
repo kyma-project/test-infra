@@ -53,6 +53,10 @@ requiredVars=(
     EVENTMESH_SECRET_FILE
 )
 
+# export environment variables needed by the Eventing fast-integration tests
+export BACKEND="${BACKEND}"
+export STORAGE="${STORAGE}"
+
 utils::check_required_vars "${requiredVars[@]}"
 
 if [[ $GARDENER_PROVIDER == "azure" ]]; then
@@ -109,10 +113,29 @@ gardener::generate_overrides
 
 gardener::provision_cluster
 
+JETSTREAM_ENABLED="false"
+if [[ ${BACKEND} == "nats_jetstream" ]]; then
+  JETSTREAM_ENABLED="true"
+fi
+
+JETSTREAM_STORAGE=""
+if [[ ${STORAGE} == "file" || ${STORAGE} == "memory" ]]; then
+  JETSTREAM_STORAGE="${STORAGE}"
+fi
+
 # uses previously set KYMA_SOURCE
 if [[ "${KYMA_MAJOR_VERSION}" == "2" ]]; then
   log::info "Deploying Kyma"
-  gardener::deploy_kyma -p "$EXECUTION_PROFILE" --source "${KYMA_SOURCE}"
+  if [[ ${JETSTREAM_ENABLED} == "true" && ${JETSTREAM_STORAGE} != "" ]]; then
+    log::info "JetStream:${JETSTREAM_ENABLED} storage:${JETSTREAM_STORAGE}"
+    gardener::deploy_kyma -p "$EXECUTION_PROFILE" --source "${KYMA_SOURCE}" \
+      --value global.jetstream.enabled=true \
+      --value global.jetstream.storage=file \
+      --value eventing.controller.jetstream.retentionPolicy=limits \
+      --value eventing.controller.jetstream.consumerDeliverPolicy=all
+  else
+    gardener::deploy_kyma -p "$EXECUTION_PROFILE" --source "${KYMA_SOURCE}"
+  fi
 else
   gardener::install_kyma
 fi
