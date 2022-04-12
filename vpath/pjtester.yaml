@@ -1,7 +1,8 @@
 pjNames:
   - pjName: "kyma-gke-nightly-fast-integration"
+  - pjName: "kyma-integration-k3d"
+  - pjName: "post-main-kyma-gardener-azure-alpha-eval"
 prConfigs:
   kyma-project:
     kyma:
       prNumber: 13967
-
