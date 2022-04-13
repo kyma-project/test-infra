@@ -121,7 +121,7 @@ Follow these steps to install Prow:
 This script performs the following steps to install Prow:
 
 - Deploy the NGINX Ingress Controller.
-- Create a ClusterRoleBinding.
+- Create a Cluster Role Binding.
 - Create a HMAC token used for GitHub webhooks.
 - Create Secrets for HMAC and OAuth2 used by Prow.
 - Deploy Prow components using the `starter.yaml` file from the `prow/cluster` directory.
@@ -147,7 +147,7 @@ Verify if the Prow installation was successful.
 
 ## Configure the webhook
 
-After Prow installs successfully, you must [configure the webhook](https://github.com/kyma-project/community/blob/main/docs/guidelines/repository-guidelines/01-new-repository-settings.md#add-webhooks) to enable the GitHub repository to send events to Prow.
+After Prow installs successfully, you must configure the webhook to enable the GitHub repository to send events to Prow.
 
 ## Configure Prow
 

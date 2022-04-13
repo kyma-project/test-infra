@@ -1,6 +1,12 @@
 functionEnabled: true
 # Forwarded event type
 eventType: "prowjob.failed.v1"
+# Application name to subscribe on events.
+subscriptionAppName: "pubsub-connector"
+# Service name to send events.
+subscriptionServiceName: "prowjob-failed-v1"
+# Service namespace to send events.
+subscriptionServiceNamespace: "slack-connector"
 # Slack channel name to send messages.
 notificationSlackChannel: "neighbors-dev-test"
 # Path to directory with function code. Relative to repository root.

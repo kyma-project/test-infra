@@ -307,7 +307,7 @@ templates:
               - jobConfig:
                   name: "pre-main-reconciler-integration-k3d"
                   # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  run_if_changed: "^(go.mod$|go.sum$)|((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-guard-bot-github-token: "true"
@@ -433,6 +433,7 @@ templates:
                     - jobConfig_presubmit
                     - image_kyma-integration
                     - extra_refs_test-infra
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_component_k3d_integration_jobConfig
@@ -457,6 +458,7 @@ templates:
                     - jobConfig_presubmit
                     - image_kyma-integration
                     - extra_refs_test-infra
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_component_k3d_integration_jobConfig
@@ -481,6 +483,7 @@ templates:
                     - jobConfig_presubmit
                     - image_kyma-integration
                     - extra_refs_test-infra
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_component_k3d_integration_jobConfig
@@ -506,6 +509,7 @@ templates:
                     - gardener_gcp_job
                     - image_kyma-integration
                     - extra_refs_test-infra
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_component_gardener_integration_jobConfig
@@ -591,6 +595,7 @@ templates:
                     - jobConfig_postsubmit
                     - image_kyma-integration
                     - extra_refs_test-infra
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_component_k3d_integration_jobConfig
@@ -629,6 +634,7 @@ templates:
                     - image_buildpack-golang
                     - jobConfig_generic_component
                     - jobConfig_buildpack_incubator
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_jobConfig_args

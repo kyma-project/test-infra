@@ -1,4 +1,4 @@
-# Prow Jobs
+# Prow jobs
 
 This document provides an overview of Prow jobs.  
 
@@ -88,7 +88,7 @@ go run development/tools/cmd/rendertemplates/main.go --config templates/config.y
 ```
 
 - For details on how to create jobs, see [Manage component jobs with templates](./manage-component-jobs-with-templates.md).
-- For further reference, read a more technical insight into the Kubernetes [Prow jobs](https://github.com/kubernetes/test-infra/blob/master/prow/jobs.md).
+- For further reference, read a more technical insight into the Kubernetes [Prow Jobs](https://github.com/kubernetes/test-infra/blob/master/prow/jobs.md).
 
 
 ## Rerun jobs from UI

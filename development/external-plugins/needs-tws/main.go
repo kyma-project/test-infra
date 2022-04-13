@@ -12,8 +12,8 @@ const (
 func main() {
 	l := externalplugin.NewLogger()
 	o := externalplugin.Opts{}
-	fs := o.GatherDefaultOptions()
-	o.Parse(fs)
+	fs := o.NewFlags()
+	o.ParseFlags(fs)
 
 	ghc, err := o.Github.GitHubClient(o.DryRun)
 	if err != nil {

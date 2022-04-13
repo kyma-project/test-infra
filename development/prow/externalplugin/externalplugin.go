@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/kyma-project/test-infra/development/github/pkg/client/v2"
 	"github.com/sirupsen/logrus"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -21,54 +22,61 @@ import (
 
 const EventTypeField = "event-type"
 
+// TODO: do we really need this interface? Maybe we can add AddFlags to CliOptions interface.
 type ConfigOptionsGroup interface {
 	AddFlags(fs *flag.FlagSet)
 }
 
+// Opts holds configuration for external plugin instance.
 type Opts struct {
 	Port              int
-	Github            prowflagutil.GitHubOptions
+	Github            client.GithubClientConfig
 	WebhookSecretPath string
-	LogLevel          string
+	LogLevel          zapcore.Level
 	DryRun            bool
 }
 
+// CliOptions is an interface to externalplugin cli flags.
 type CliOptions interface {
-	GatherDefaultOptions() *flag.FlagSet
-	Parse(fs *flag.FlagSet)
+	NewFlags() *flag.FlagSet
+	ParseFlags(fs *flag.FlagSet)
 	GetPort() int
 	// TODO: Implement support for setting log level
 	// GetLogLevel() string
 }
 
+// Event represent event passed to plugin handler.
+// It's constructed from GitHub webhook.
 type Event struct {
 	EventType string
 	EventGUID string
 	Payload   []byte
 }
 
+// Plugin is an externaplugin instance object.
 type Plugin struct {
 	Name               string
 	PluginsConfigAgent *plugins.ConfigAgent
 	tokenGenerator     func() []byte
 	handler            func(string, string, []byte)
 	webhookHandlers    map[string]func(*Plugin, Event)
-	logger             *zap.SugaredLogger
+	// TODO: change logger type to logging.LoggerInterface
+	logger *zap.SugaredLogger
 }
 
-// GatherDefaultOptions set flagset for default options. These options are common for all external plugins.
-func (o *Opts) GatherDefaultOptions() *flag.FlagSet {
+// NewFlags create new flagset with default options. These options are common for all external plugins.
+func (o *Opts) NewFlags() *flag.FlagSet {
 	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	fs.IntVar(&o.Port, "port", 8080, "Plugin port to listen on.")
 	fs.BoolVar(&o.DryRun, "dry-run", false, "Run in dry-run mode - no actual changes will be made.")
 	fs.StringVar(&o.WebhookSecretPath, "hmac-secret-file", "/etc/webhook/hmac", "Path to the file containing GitHub HMAC secret")
-	fs.StringVar(&o.LogLevel, "log-level", "info", "Set log level.")
+	fs.Var(&o.LogLevel, "log-level", "Set log level.")
 	o.Github.AddFlags(fs)
 	return fs
 }
 
-// Parse parses cli arguments in to provided flagset.
-func (o *Opts) Parse(fs *flag.FlagSet) {
+// ParseFlags parses cli arguments in to provided flagset.
+func (o *Opts) ParseFlags(fs *flag.FlagSet) {
 	fs.Parse(os.Args[1:])
 }
 
@@ -94,6 +102,7 @@ func NewGithubClient(githubOptions prowflagutil.GitHubOptions, dryRun bool) (git
 
 // NewLogger return zap sugaredlogger with two output targets. All logs with severity Error or higher will be sent to stderr.
 // All logs with severity lower than Error will be sed to stdout. This allows gcp logging correctly recognize log message severity.
+// TODO: Use our console logger.
 func NewLogger() *zap.SugaredLogger {
 	errorMessage := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
 		return lvl >= zapcore.ErrorLevel
@@ -123,7 +132,7 @@ func (p *Plugin) WithLogger(l *zap.SugaredLogger) *Plugin {
 	return p
 }
 
-// WithWebhookSecret initializes adds webhook secret path to the Prow secret agent.
+// WithWebhookSecret adds webhook secret path to the Prow secret agent.
 func (p *Plugin) WithWebhookSecret(webhookSecretPath string) *Plugin {
 	if err := secret.Add(webhookSecretPath); err != nil {
 		p.logger.Errorw("Could not add path to secret agent.", "error", err.Error())
