@@ -1,6 +1,6 @@
 # Crier
 
-Crier reports ProwJob status changes. For now, it is responsible for Slack notifications as Plank is still reporting ProwJob statuses to GitHub.
+Crier reports the Prow Job status changes. For now, it is responsible for Slack notifications as Plank is still reporting the Prow Job statuses to GitHub.
 
 ## Available reporters
 
@@ -21,7 +21,7 @@ If you have a ghproxy deployed, also remember to point `--github-endpoint` to yo
 
 ### Slack reporter
 
-> **NOTE:** When you enable Crier for the first time, it will sent to Slack all ProwJobs matching the configured filtering criteria.
+> **NOTE:** When you enable Crier for the first time, it will sent to Slack all Prow Jobs matching the configured filtering criteria.
 
 You can enable the Slack reporter in Crier by specifying the `--slack-workers` and `--slack-token-file` flags.
 
@@ -125,7 +125,7 @@ slack_reporter_configs:
     channel: istio-channel
 ```
 
-The Slack channel can be overridden at the ProwJob level via the **reporter_config.slack.channel** field:
+The Slack channel can be overridden at the Prow Job level via the **reporter_config.slack.channel** field:
 
 ```yaml
 postsubmits:

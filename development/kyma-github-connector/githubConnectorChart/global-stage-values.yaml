@@ -1,3 +1,5 @@
+# webhookSecret must be provided using --set argument to helm command.
+# It provides secret value used to authenticate incoming requests from github webhooks.
 global:
   # Github connector application name.
   appName: "github-connector"

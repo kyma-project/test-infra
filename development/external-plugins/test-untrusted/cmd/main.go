@@ -82,10 +82,10 @@ func main() {
 	server.WithLogger(logger)
 
 	cliOptions := externalplugin.Opts{}
-	fs := cliOptions.GatherDefaultOptions()
-	cliOptions.Parse(fs)
+	fs := cliOptions.NewFlags()
+	cliOptions.ParseFlags(fs)
 
-	ghClient, err = externalplugin.NewGithubClient(cliOptions.Github, cliOptions.DryRun)
+	ghClient, err = externalplugin.NewGithubClient(cliOptions.Github.GitHubOptions, cliOptions.DryRun)
 	if err != nil {
 		logger.Fatal("Could not get github client.")
 	}

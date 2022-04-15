@@ -291,12 +291,6 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-pr-cli.sh"
             annotations:
               pipeline.installer: reconciler
-          reconciler_publish_unstable_cli_jobConfig:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-unstable-cli.sh"
-            annotations:
-              pipeline.installer: reconciler
-              pipeline.test: "fast-integration"
-              pipeline.clusterprovisioning: reconciler
           reconciler_image_autobump_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-incubator/reconciler/scripts/prow/reconciler-image-autobump.sh"
           github_token_mounts:
@@ -313,7 +307,7 @@ templates:
               - jobConfig:
                   name: "pre-main-reconciler-integration-k3d"
                   # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  run_if_changed: "^(go.mod$|go.sum$)|((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-guard-bot-github-token: "true"
@@ -439,6 +433,7 @@ templates:
                     - jobConfig_presubmit
                     - image_kyma-integration
                     - extra_refs_test-infra
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_component_k3d_integration_jobConfig
@@ -463,6 +458,7 @@ templates:
                     - jobConfig_presubmit
                     - image_kyma-integration
                     - extra_refs_test-infra
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_component_k3d_integration_jobConfig
@@ -487,6 +483,7 @@ templates:
                     - jobConfig_presubmit
                     - image_kyma-integration
                     - extra_refs_test-infra
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_component_k3d_integration_jobConfig
@@ -512,6 +509,7 @@ templates:
                     - gardener_gcp_job
                     - image_kyma-integration
                     - extra_refs_test-infra
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_component_gardener_integration_jobConfig
@@ -597,6 +595,7 @@ templates:
                     - jobConfig_postsubmit
                     - image_kyma-integration
                     - extra_refs_test-infra
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_component_k3d_integration_jobConfig
@@ -635,6 +634,7 @@ templates:
                     - image_buildpack-golang
                     - jobConfig_generic_component
                     - jobConfig_buildpack_incubator
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_jobConfig_args
@@ -690,9 +690,9 @@ templates:
                     - image_buildpack-golang
                     - jobConfig_buildpack_incubator
                     - jobConfig_slack_jellyfish
+                    - jobConfig_reconciler_publish_unstable_cli
                   local:
                     - extra_refs_kyma_cli
-                    - reconciler_publish_unstable_cli_jobConfig
               - jobConfig:
                   name: periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade
                   annotations:

@@ -20,7 +20,7 @@ Secrets are stored in Google Cloud Storage (GCS) in a dedicated bucket and are e
 Prow components access the RBAC-protected API server using dedicated service accounts and are communicating without having TLS enabled.
 
 ### Crier
-Crier takes care of reporting the status of prow job to the external services like GitHub and Slack. For more information, read [crier.md](./crier.md).
+Crier takes care of reporting the status of Prow job to the external services like GitHub and Slack. For more information, read [crier.md](./crier.md).
 
 ### Deck
 Deck is exposed through an Ingress definition which has TLS enabled using a certificate issued for `status.build.kyma-project.io`. Deck serves a UI that you can access as an anonymous user to view build statuses. Deck can only view and list the jobs and the job logs.
