@@ -12,4 +12,4 @@ notificationSlackChannel: "kyma-team"
 # Path to directory with function code. Relative to repository root.
 functionBaseDir: "/development/kyma-slack-connector/pullrequestAutomergedFunction"
 # Branch name with function code.
-branch: "merge_notification_plugin"
+branch: "main"
