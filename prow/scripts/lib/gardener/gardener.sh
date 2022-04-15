@@ -64,9 +64,9 @@ function gardener::deprovision_cluster() {
 # and start provisioning again
 gardener::reprovision_cluster() {
     # Save bash options to restore them later
-    bashSettings="$-"
+    bashOptions="$-"
     # disable pipefile to let function regenerate cluster name
-    set +o pipefile
+    set +o pipefail
     log::info "cluster provisioning failed, trying provision new cluster"
     log::info "cleaning damaged cluster first"
     gardener::deprovision_cluster \
@@ -81,5 +81,5 @@ gardener::reprovision_cluster() {
     export CLUSTER_NAME
     gardener::provision_cluster
     # restore bash options
-    set -"${bashSettings}"
+    set -"${bashOptions}"
 }
