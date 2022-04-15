@@ -92,6 +92,8 @@ log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SO
 # checks required vars and initializes gcloud/docker if necessary
 gardener::init
 
+set +x
+
 # if MACHINE_TYPE is not set then use default one
 gardener::set_machine_type
 
