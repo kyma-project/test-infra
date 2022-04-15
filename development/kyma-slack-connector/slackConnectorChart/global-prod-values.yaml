@@ -12,8 +12,8 @@ global:
   # Slack application plan suffix. Must match suffix from CMP.
   cmpSlackAppPlanSuffix: "36130"
   # Repository name with functions code.
-  repositoryName: "test-infra"
+  repositoryName: "tooling-serverless-functions"
   # Repository URL with function code.
-  repositoryUrl: "https://github.com/kyma-project/test-infra.git"
+  repositoryUrl: "https://github.com/kyma-test-infra-dev/tooling-serverless-functions.git"
   # Slack application helm release name.
   slackAppHelmReleaseName: "common"
