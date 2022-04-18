@@ -63,7 +63,6 @@ else
     log::error "GARDENER_PROVIDER ${GARDENER_PROVIDER} is not yet supported"
     exit 1
 fi
-
 # nice cleanup on exit, be it succesful or on fail
 trap gardener::cleanup EXIT INT
 
@@ -82,8 +81,10 @@ export CLUSTER_NAME="${COMMON_NAME}"
 # set pipefail to handle right errors from tests
 set -o pipefail
 
+utils::mask_debug_output
 # Install kyma from latest 2.x release
 kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
+utils::unmask_debug_output
 
 export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
 log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"

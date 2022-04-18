@@ -84,7 +84,7 @@ function kyma::get_last_release_version {
     while getopts ":t:v:" opt; do
         case $opt in
             t)
-                githubToken="$OPTARG" ;;
+                utils::mask_debug_output; githubToken="$OPTARG"; utils::unmask_debug_output ;;
             v)
                 searchedVersion="$OPTARG" ;;
             \?)
@@ -94,16 +94,22 @@ function kyma::get_last_release_version {
         esac
     done
 
+    utils::mask_debug_output
     utils::check_empty_arg "$githubToken" "Github token was not provided. Exiting..."
+    utils::unmask_debug_output
 
     if [[ -n "${searchedVersion}" ]]; then
+        utils::mask_debug_output
         # shellcheck disable=SC2034
         kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
             | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | [.[]| select( .tag_name | match("'"${searchedVersion}"'"))] | .[-1].tag_name')
+        utils::unmask_debug_output
     else
-    # shellcheck disable=SC2034
+        utils::mask_debug_output
+        # shellcheck disable=SC2034
         kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
             | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].tag_name')
+        utils::unmask_debug_output
     fi
 }
 

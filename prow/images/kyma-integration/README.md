@@ -22,7 +22,7 @@ ENV CLUSTER_VERSION={VERSION}
 RUN mv /google-cloud-sdk/bin/kubectl.${CLUSTER_VERSION} /google-cloud-sdk/bin/kubectl
 ```
 
-- `CLUSTER_VERSION` variable matches the `kubectl` version used in the image with the cluster version that is built by the ProwJob pipeline.
+- `CLUSTER_VERSION` variable matches the `kubectl` version used in the image with the cluster version that is built by the Prow Job pipeline.
 
 
 

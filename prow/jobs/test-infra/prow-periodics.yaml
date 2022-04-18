@@ -21,7 +21,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220407-4da6c929"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220411-a5159710"
             securityContext:
               privileged: true
             command:
@@ -63,7 +63,7 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220407-4da6c929"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220411-a5159710"
             command:
               - "prow/cluster/deploy.sh"
             env:
@@ -95,7 +95,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220407-4da6c929"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220411-a5159710"
             securityContext:
               privileged: true
             command:
@@ -129,7 +129,7 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/label_sync:v20220406-c970747fbb"
+          - image: "gcr.io/k8s-prow/label_sync:v20220412-66078146cd"
             command:
               - "label_sync"
             args:
@@ -175,7 +175,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20220406-c970747fbb"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20220412-66078146cd"
             command:
               - "generic-autobumper"
             args:
@@ -209,11 +209,12 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20220406-c970747fbb"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20220412-66078146cd"
             command:
               - "generic-autobumper"
             args:
               - "--config=prow/autobump-config/test-infra-autobump-config.yaml"
+              - "--labels-override=skip-review"
             volumeMounts:
               - name: kyma-bot-github-token
                 mountPath: /etc/github
