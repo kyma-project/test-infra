@@ -20,6 +20,10 @@ The `test-infra` repository has the following structure:
 
 ```
 
+### Documentation
+
+Documentation of available solutions, architecture and howto's is available in [docs](./docs) directory. Apart from docs directory, some documentation for specific components and tools, is placed in directory together with component or tool source code. See documentation [index](./docs/README.md) page. This index contains links to pages in whole test-infra repository.
+
 ### Prow
 
 The `test-infra` repository contains the whole configuration of Prow. Its purpose is to replace the internal Continuous Integration (CI) tool in the `kyma-project` organization.
