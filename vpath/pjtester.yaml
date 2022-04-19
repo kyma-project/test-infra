@@ -3,6 +3,7 @@ pjNames:
   - pjName: "kyma-integration-k3d"
   - pjName: "post-main-kyma-gardener-azure-alpha-eval"
   - pjName: "kyma-upgrade-k3d-kyma2-to-main"
+  - pjName: "kyma-integration-k3d-telemetry"
 prConfigs:
   kyma-project:
     kyma:
