@@ -176,7 +176,7 @@ gcloud compute ssh\
   --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" \
   --quiet \
   --zone="${ZONE}" \
-  --ssh-flag="-o ServerAliveInterval=30" \
+  --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60" \
   "cli-integration-test-${RANDOM_ID}" \
   --command="cd ~/kyma/tests/fast-integration && sudo make ci"
 
