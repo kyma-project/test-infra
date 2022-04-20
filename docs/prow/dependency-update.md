@@ -4,7 +4,7 @@ To help keep dependency up to date you can use Dependabot together with automate
 
 Dependabot is a GitHub tool that can monitor your repository and create pull requests to update dependencies. Dependabot supports multiple languages. Check the Dependabot documentation for details.
 
-Pull requests created by dependabot will be tested by Prow. Pull requestes with required tests passed and meeting criteria can be automatically merged by Tide without human review.
+Pull requests created by Dependabot will be tested by Prow. If the pull requests passed the required tests and meet the criteria, they can be automatically merged by Tide without human review.
 
 Owners of the updated files can subscribe to receive notifications when a pull request is merged without human review.
 
