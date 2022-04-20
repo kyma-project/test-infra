@@ -13,18 +13,6 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "application-registry-overrides"
-  namespace: "kyma-installer"
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-    component: application-connector
-data:
-  application-registry.deployment.args.detailedErrorResponse: "true"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
   name: "istio-overrides"
   namespace: "kyma-installer"
   labels:
