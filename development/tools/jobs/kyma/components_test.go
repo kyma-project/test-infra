@@ -18,9 +18,10 @@ var components = []struct {
 	suite             func(config *jobsuite.Config) jobsuite.Suite
 	additionalOptions []jobsuite.Option
 }{
-	{path: "application-connectivity-certs-setup-job", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
+	{path: "apiserver-proxy", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Until(releases.Release124),
 		},
 	},
 	{path: "compass-runtime-agent", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
