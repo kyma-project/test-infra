@@ -1590,6 +1590,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-certificates-bucket: "true"
+        preset-cluster-use-metadata-server: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
         preset-dind-enabled: "true"

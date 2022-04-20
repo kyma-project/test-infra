@@ -127,7 +127,8 @@ function createCluster() {
 		-s "$STACKDRIVER_KUBERNETES" \
 		-D "$CLUSTER_USE_SSD" \
 		-e "$GKE_ENABLE_POD_SECURITY_POLICY" \
-		-P "$TEST_INFRA_SOURCES_DIR"
+		-P "$TEST_INFRA_SOURCES_DIR" \
+   		-M "$ENABLE_METADATA_SERVER"
 }
 
 function installKyma() {

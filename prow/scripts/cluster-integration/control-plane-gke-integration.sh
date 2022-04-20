@@ -160,7 +160,8 @@ function createCluster() {
         -R "$CLOUDSDK_COMPUTE_REGION" \
         -N "$GCLOUD_NETWORK_NAME" \
         -S "$GCLOUD_SUBNET_NAME" \
-        -P "$TEST_INFRA_SOURCES_DIR"
+        -P "$TEST_INFRA_SOURCES_DIR" \
+        -M "$ENABLE_METADATA_SERVER"
   CLEANUP_CLUSTER="true"
 }
 

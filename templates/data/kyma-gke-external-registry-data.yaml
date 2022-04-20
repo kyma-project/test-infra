@@ -22,6 +22,7 @@ templates:
               preset-dind-enabled: "true"
               preset-kyma-artifacts-bucket: "true"
               preset-cluster-use-ssd: "true"
+              preset-cluster-use-metadata-server: "true"
               preset-cluster-version: "true"
         jobConfigs:
           - repoName: kyma-project/kyma
