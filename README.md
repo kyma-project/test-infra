@@ -22,7 +22,7 @@ The `test-infra` repository has the following structure:
 
 ### Documentation
 
-Documentation of available solutions, architecture and howto's is available in [docs](./docs) directory. Apart from docs directory, some documentation for specific components and tools, is placed in directory together with component or tool source code. See documentation [index](./docs/README.md) page. This index contains links to pages in whole test-infra repository.
+Documentation of available solutions, architecture, and how-tos is available in [docs](./docs) directory. Furthermore, you'll find documentation for specific components and tools in the directory together with the source code of the component or tool. See the documentation [index page](./docs/README.md), which provides links to pages in the whole test-infra repository.
 
 ### Prow
 
