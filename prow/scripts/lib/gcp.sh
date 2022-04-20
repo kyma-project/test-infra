@@ -34,6 +34,7 @@ source "${LIBDIR}/utils.sh"
 # D - if true enable using ssd disks for new cluster
 # e - if true enable pod security policy for new cluster
 # P - path to test-infra sources
+# M - enable Metadata Server
 function gcp::provision_k8s_cluster {
 
     local OPTIND
@@ -54,6 +55,7 @@ function gcp::provision_k8s_cluster {
     local provisionRegionalCluster="false"
     local enableSSD="false"
     local enablePSP="false"
+    local enableMetadataServer="false"
     local enableStackdriver="false"
     local currentTimestampReadableParam
     local currentTimestampParam
@@ -62,7 +64,7 @@ function gcp::provision_k8s_cluster {
     local testInfraSourcesDir="/home/prow/go/src/github.com/kyma-project"
 
 
-    while getopts ":c:p:v:l:t:z:m:R:n:N:S:C:i:g:r:s:D:e:P:j:J:" opt; do
+    while getopts ":c:p:v:l:t:z:m:M:R:n:N:S:C:i:g:r:s:D:e:P:j:J:" opt; do
         case $opt in
             c)
                 clusterName="${OPTARG:0:40}" ;;
@@ -80,6 +82,8 @@ function gcp::provision_k8s_cluster {
                 computeZone=${OPTARG:-$computeZone} ;;
             m)
                 machineType=${OPTARG:-$machineType} ;;
+             M)
+                enableMetadataServer=${OPTARG:-$enableMetadataServer} ;;
             R)
                 computeRegion=${OPTARG:-$computeRegion} ;;
             N)
@@ -206,6 +210,9 @@ function gcp::provision_k8s_cluster {
     fi
     if [ "$enablePSP" = "true" ]; then
         params+=("--enable-pod-security-policy")
+    fi
+    if [ "$enableMetadataServer" = "true" ]; then
+        params+=("--workload-pool=$gcpProjectName.svc.id.goog")
     fi
 
     log::info "Provisioning GKE cluster"

@@ -246,7 +246,8 @@ gcp::provision_k8s_cluster \
         -r "$PROVISION_REGIONAL_CLUSTER" \
         -m "$MACHINE_TYPE" \
         -D "$CLUSTER_USE_SSD" \
-        -e "$GKE_ENABLE_POD_SECURITY_POLICY"
+        -e "$GKE_ENABLE_POD_SECURITY_POLICY" \
+        -M "$ENABLE_METADATA_SERVER"
 CLEANUP_CLUSTER="true"
 
 kyma::install_cli
