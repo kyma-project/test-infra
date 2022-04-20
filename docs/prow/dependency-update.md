@@ -12,15 +12,15 @@ Owners of updated files can subscribe to receive notifications when pull request
 
 Enable dependabot in your repository. [Here](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/about-dependabot-version-updates) is detailed dependabot documentation.
 
-To enable dependabot create dependabot.yml configuration file. To make it easier, you can use a rendertemplate tool to create dependabot.yml file. Use [kyma-project/test-infra]() configuration as an example.
+To enable dependabot create dependabot.yml configuration file. To make it easier, you can use a rendertemplate tool to create dependabot.yml file. Use [kyma-project/test-infra](../../.github/dependabot.yml) configuration as an example.
 
 Copy [dependabot.tmpl](https://github.com/kyma-project/test-infra/blob/main/templates/templates/dependabot.tmpl) file to .github directory in your repository.
 
 Create dependabot-data.yaml file in .github directory in your repository. Use [test-infra](https://github.com/kyma-project/kyma/blob/main/.github/dependabot-config.yaml) data file as an example.
 
-If you want to merge dependabot pull request without human review add `autoMerge` local set for your ecosystems.
+If you want to merge dependabot pull request without human review add `autoMerge` local set for your ecosystems in data file.
 
-```azure
+```
 localSets:
   autoMerge:
     labels:
