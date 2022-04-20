@@ -162,10 +162,10 @@ utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home
 # run the relevant script to deploy Kyma and run fast-integration tests
 if [[ "${KYMA_UPGRADE_VERSION}" ]]; then
   log::banner "Triggering the tests for Kyma upgrade scenario from version: ${KYMA_SOURCE} to version: ${KYMA_UPGRADE_VERSION}"
-  gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/reconciler-integration-with-cli-upgrade-k3d.sh"
+  gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/reconciler-integration-with-cli-upgrade-k3d.sh"
 else
   log::banner "Triggering the tests for Kyma deploy scenario for version: ${KYMA_SOURCE}"
-  gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/reconciler-integration-with-cli-k3d.sh"
+  gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/reconciler-integration-with-cli-k3d.sh"
 fi
 
 log::success "all done"
