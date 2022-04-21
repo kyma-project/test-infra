@@ -27,7 +27,7 @@ See the list of available flags:
 
 | Name                             | Required | Description                                                                                          |
 | :-----------------------------   | :------: | :--------------------------------------------------------------------------------------------------- |
-| **--targetCommit**               |   Yes    | The string which specifies the [commitish value](https://docs.github.com/en/rest/reference/releases#create-a-release) that the GitHub tag refers to.
+| **--targetCommit**               |   Yes    | The string which specifies the [commitish value](https://docs.github.com/en/rest/releases/releases#create-a-release) that the GitHub tag refers to.
 | **--bucketName**                 |    No    | The string value with the name of the Google bucket containing release artifacts. It defaults to `kyma-prow-artifacts`.
 | **--kymaInstallerCRCluster**     |    No    | The string value with the name of the file with list of components installed by the installer for cluster. It defaults to `kyma-installer-cr-cluster.yaml`.
 | **--kymaConfigLocal**            |    No    | The string value with the name of the Kyma local configuration file. It defaults to `kyma-config-local.yaml`.
