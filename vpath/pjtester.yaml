@@ -1,8 +1,6 @@
 pjNames:
   - pjName: "kyma-preview-integration-dev"
     report: false
-  - pjName: "skr-azure-nightly"
-    report: false
 prConfigs:
   kyma-project:
     kyma:
