@@ -228,7 +228,7 @@ func (p PluginBackend) handlePullRequestReview(l *zap.SugaredLogger, re github.R
 }
 
 func (p PluginBackend) handleReview(l *zap.SugaredLogger, rc reviewCtx) error {
-	// parsed list of OWNER_ALIASED is converted to lowercase, we need to convert these names too
+	// parsed list of OWNER_ALIASES is converted to lowercase, we need to convert these names too
 	author := strings.ToLower(rc.author)
 	issueAuthor := strings.ToLower(rc.issueAuthor)
 	org := rc.repo.Owner.Login
