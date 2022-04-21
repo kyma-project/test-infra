@@ -52,7 +52,7 @@ periodics: # runs on schedule
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: KYMA_VERSION
-                value: "2.0.4"
+                value: "1.24.9"
               - name: SKIP_CLEANUP
                 value: "FALSE"
             resources:
