@@ -14,5 +14,5 @@ targetVersion: ""
 prefixes:
   - name: "Reconciler"
     prefix: "eu.gcr.io/kyma-project/incubator/reconciler/"
-    repo: "https://github.com/kyma-incubator/reconciler"
+    repo: "https://github.com/ruanxin/reconciler"
     summarise: true
