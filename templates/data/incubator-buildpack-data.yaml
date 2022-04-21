@@ -227,7 +227,6 @@ templates:
                 - org: kubernetes
                   repo: test-infra
                   base_ref: master
-                  base_sha: "3fba7110c39a7a0e7fb087dbb4af0674cafd341c"
                   path_alias: github.com/kubernetes/test-infra
           reconciler_main_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"

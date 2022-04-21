@@ -1123,7 +1123,6 @@ periodics: # runs on schedule
           repo: test-infra
           path_alias: github.com/kubernetes/test-infra
           base_ref: master
-          base_sha: 3fba7110c39a7a0e7fb087dbb4af0674cafd341c
         - org: kyma-incubator
           repo: reconciler
           path_alias: github.com/kyma-incubator/reconciler
