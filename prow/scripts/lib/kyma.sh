@@ -24,7 +24,7 @@ function kyma::deploy_kyma() {
         case $opt in
             s)
                 kymaSource="$OPTARG"
-                log::info "Kyma Source to install: ${kymaSource}"
+    						log::info "Kyma Source to install: ${kymaSource}"
                 ;;
             p)
                 if [ -n "$OPTARG" ]; then
@@ -114,49 +114,50 @@ function kyma::get_last_release_version {
 }
 
 function kyma::get_offset_minor_releases() {
-   while getopts ":v:a:" opt; do
-         case $opt in
-             v)
-                 base="$OPTARG" ;;
-             \?)
-                 echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
-             :)
-                 echo "Option -$OPTARG argument not provided" >&2 ;;
-         esac
-   done
+    while getopts ":v:" opt; do
+        case $opt in
+        v)
+            base="$OPTARG" ;;
+        \?)
+            echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+        :)
+            echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+    done
 
-   RE='[^0-9]*\([0-9]*\)[.]\([0-9]*\)[.]\([0-9]*\)\([0-9A-Za-z-]*\)'
+    RE='[^0-9]*\([0-9]*\)[.]\([0-9]*\)[.]\([0-9]*\)\([0-9A-Za-z-]*\)'
 
-   MAJOR=$(echo $base | sed -e "s#$RE#\1#")
-   MINOR=$(echo $base | sed -e "s#$RE#\2#")
-   PATCH=$(echo $base | sed -e "s#$RE#\3#")
+    # shellcheck disable=SC2001
+    MAJOR=$(echo "$base" | sed -e "s#$RE#\\1#")
+    # shellcheck disable=SC2001
+    MINOR=$(echo "$base" | sed -e "s#$RE#\\2#")
+    # shellcheck disable=SC2001
+    PATCH=$(echo "$base" | sed -e "s#$RE#\\3#")
 
-   INITIAL_MINOR=$MINOR
+    local index=0
+    minor_release_versions[$index]=$base
 
-   declare -A minor_release_version_offset
-   minor_release_version_offset=([0]=$base)
+    # PREVIOUS_MINOR_VERSION_COUNT - Count of last Kyma2 minor versions to be upgraded from
+    for i in $(seq 1 "$PREVIOUS_MINOR_VERSION_COUNT"); do
+        if [ "$MINOR" -gt 0 ]; then
+            ((MINOR-=1))
+        else
+            break
+        fi
+        newVersion="$MAJOR.$MINOR.$PATCH"
 
-#   only last 2 versions
-   for i in {1..2}; do
-       if [ "$MINOR" -lt 0 ]; then
-         break
-       else
-         ((MINOR-=1))
-       fi
-       newVersion="$MAJOR.$MINOR.$PATCH"
+        kyma::get_last_release_version \
+        -t "${BOT_GITHUB_TOKEN}" \
+        -v "${newVersion}"
 
-       kyma::get_last_release_version \
-           -t "${BOT_GITHUB_TOKEN}" \
-           -v "${newVersion}"
-
-       if [ -z "$kyma_get_last_release_version_return_version" ]; then
-         echo "### The last release version returned from the offset is ${newVersion} and thus invalid"
-         break
-       fi
-
-       minor_release_version_offset[$i]=$newVersion
-   done
-   echo "${minor_release_version_offset[@]}"
+        if [[ -z "$kyma_get_last_release_version_return_version" ]] || [[ "$kyma_get_last_release_version_return_version" = "null" ]] ; then
+            log::info "### The last release version returned from the offset is ${newVersion} and thus invalid"
+            continue
+        fi
+        ((index+=1))
+        # shellcheck disable=SC2034
+        minor_release_versions[$index]=$newVersion
+    done
 }
 
 # kyma::get_previous_release_version returns previous Kyma release version (i.e. one version before the latest released version)

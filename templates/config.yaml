@@ -22,6 +22,9 @@ globalSets:
   kyma_major_upgrade:
     env:
       KYMA_MAJOR_UPGRADE: "true"
+  kyma_minor_upgrade:
+    env:
+      PREVIOUS_MINOR_VERSION_COUNT: 2
   # Directory sets
   kyma_project_dir:
     env:
