@@ -229,7 +229,7 @@ func (p PluginBackend) handlePullRequestReview(l *zap.SugaredLogger, re github.R
 
 func (p PluginBackend) handleReview(l *zap.SugaredLogger, rc reviewCtx) error {
 	author := strings.ToLower(rc.author)
-	issueAuthor := rc.issueAuthor
+	issueAuthor := strings.ToLower(rc.issueAuthor)
 	org := rc.repo.Owner.Login
 	repoName := rc.repo.Name
 	assignees := rc.assignees
