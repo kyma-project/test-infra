@@ -263,7 +263,7 @@ func (p PluginBackend) handleReview(l *zap.SugaredLogger, rc reviewCtx) error {
 
 	var isAssignee bool
 	for _, a := range assignees {
-		if a.Login == author {
+		if strings.ToLower(a.Login) == author {
 			isAssignee = true
 			break
 		}
