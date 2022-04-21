@@ -82,7 +82,6 @@ function reconciler::fetch_latest_image_tag() {
 }
 
 function autobump::set_reconciler_image_tag() {
-  RECONCILER_IMAGE_TAG="38b04f8c"
   log::info "Setting reconciler image tag: ${RECONCILER_IMAGE_TAG} in autobump-tool config file"
   yq e -i '.targetVersion = "'"${RECONCILER_IMAGE_TAG}"'"' "${BUMP_TOOL_CONFIG_FILE}"
   cat "${BUMP_TOOL_CONFIG_FILE}"
