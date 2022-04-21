@@ -221,6 +221,14 @@ templates:
                   repo: "cli"
                   path_alias: "github.com/kyma-project/cli"
                   base_ref: "main"
+          extra_refs_k8s-test-infra:
+            extra_refs:
+              k8s-test-infra:
+                - org: kubernetes
+                  repo: test-infra
+                  base_ref: master
+                  base_sha: "3fba7110c39a7a0e7fb087dbb4af0674cafd341c"
+                  path_alias: github.com/kubernetes/test-infra
           reconciler_main_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             env:
@@ -734,6 +742,7 @@ templates:
                     - disable_testgrid
                     - jobConfig_slack_jellyfish
                   local:
+                    - extra_refs_k8s-test-infra
                     - reconciler_image_autobump_jobConfig
                     - github_token_mounts
               - jobConfig:
