@@ -90,6 +90,7 @@ function autobump::set_reconciler_image_tag() {
 function autobump::run() {
   log::info "Running image auto-bump tool for reconciler"
   cd "${CONTROL_PLANE_DIR}"
+   git status --porcelain
   /tools/generic-autobumper --config="${BUMP_TOOL_CONFIG_FILE}"
 }
 
