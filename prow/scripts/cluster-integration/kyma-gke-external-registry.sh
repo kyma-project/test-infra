@@ -172,6 +172,7 @@ export DOCKER_REPOSITORY_ADDRESS=""
 DOCKER_REPOSITORY_ADDRESS=$(echo "$DOCKER_PUSH_REPOSITORY" | cut -d'/' -f1)
 
 export DNS_DOMAIN_TRAILING=${DNS_DOMAIN%.}
+envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-serverless-external-registry-integration-overrides.tpl.yaml" > "$PWD/kyma_overrides.yaml"
 
 log::info "Installation triggered"
 
