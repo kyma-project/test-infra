@@ -24,7 +24,7 @@ ENABLE_TEST_LOG_COLLECTOR=false
 export K8S_TEST_INFRA_SOURCES_DIR="/home/prow/go/src/github.com/kubernetes/test-infra"
 export RECONCILER_DIR="/home/prow/go/src/github.com/kyma-incubator/reconciler"
 export CONTROL_PLANE_DIR="/home/prow/go/src/github.com/kyma-project/control-plane"
-export BUMP_TOOL_CONFIG_FILE="${K8S_TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/control-plane-autobump-reconciler-config.yaml"
+export BUMP_TOOL_CONFIG_FILE="/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/resources/control-plane-autobump-reconciler-config.yaml"
 
 # All provides require these values, each of them may check for additional variables
 requiredVars=(
