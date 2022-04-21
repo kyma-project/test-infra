@@ -292,7 +292,7 @@ templates:
             annotations:
               pipeline.installer: reconciler
           reconciler_image_autobump_jobConfig:
-            command: "/home/prow/go/src/github.com/kyma-incubator/reconciler/scripts/prow/reconciler-image-autobump.sh"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-image-autobump.sh"
           github_token_mounts:
             volumes:
               - name: kyma-bot-github-token
