@@ -24,8 +24,7 @@ ENABLE_TEST_LOG_COLLECTOR=false
 export K8S_TEST_INFRA_SOURCES_DIR="/home/prow/go/src/github.com/kubernetes/test-infra"
 export RECONCILER_DIR="/home/prow/go/src/github.com/kyma-incubator/reconciler"
 export CONTROL_PLANE_DIR="/home/prow/go/src/github.com/kyma-project/control-plane"
-export KYMA_TEST_INFRA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/test-infra"
-export BUMP_TOOL_CONFIG_FILE="${KYMA_TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/control-plane-autobump-reconciler-config.yaml"
+export BUMP_TOOL_CONFIG_FILE="/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/resources/control-plane-autobump-reconciler-config.yaml"
 
 # All provides require these values, each of them may check for additional variables
 requiredVars=(
@@ -70,7 +69,7 @@ function utils::check_required_vars() {
 
 function autobump::build() {
   log::info "Building k8s image autobump tool"
-  cd "${KYMA_TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/generic-autobumper"
+  cd "${K8S_TEST_INFRA_SOURCES_DIR}/prow/cmd/generic-autobumper"
   go build -o /tools/generic-autobumper
 }
 
