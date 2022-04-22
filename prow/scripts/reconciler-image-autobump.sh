@@ -81,6 +81,32 @@ function reconciler::fetch_latest_image_tag() {
   log::info "Reconciler image tag: ${RECONCILER_IMAGE_TAG}"
 }
 
+#2022/04/22 12:53:55 UTC [INFO] Running image auto-bump tool for reconciler
+#time="2022-04-22T12:53:55Z" level=warning msg="Warning: targetVersion mot in allowed so it might not work properly." allowed="[latest upstream upstream-staging vYYYYMMDD-deadbeef]"
+#time="2022-04-22T12:53:55Z" level=info msg="Bumping image references..."
+#time="2022-04-22T12:53:55Z" level=info msg="Updating file" file=resources/kcp/values.yaml
+#time="2022-04-22T12:53:55Z" level=info msg="running command ..." args="[status --porcelain]" cmd=git
+#time="2022-04-22T12:53:55Z" level=info msg="running command" args="['add', '-A']" cmd=git
+#time="2022-04-22T12:53:55Z" level=info msg="running command" args="['commit', '-m', 'Bumping Reconciler\n\nNo eu.gcr.io/kyma-project/incubator/reconciler/ changes.\n\n', '--author', 'Kyma Bot <kyma.bot@sap.com>']" cmd=git
+#[main 7a1b9163] Bumping Reconciler
+# Author: Kyma Bot <kyma.bot@sap.com>
+# 1 file changed, 2 insertions(+), 2 deletions(-)
+#time="2022-04-22T12:53:55Z" level=info msg="running command" args="['remote', 'add', 'bumper-fork-remote', 'https://kyma-bot:****************************************@github.com/kyma-bot/control-plane.git']" cmd=git
+#time="2022-04-22T12:53:56Z" level=info msg="running command" args="['rev-parse', 'refs/remotes/bumper-fork-remote/autobump:']" cmd=git
+#time="2022-04-22T12:53:56Z" level=info msg="running command" args="['rev-parse', 'HEAD:']" cmd=git
+#time="2022-04-22T12:53:56Z" level=info msg="Pushing to remote..."
+#time="2022-04-22T12:53:56Z" level=info msg="running command" args="['push', '-f', 'bumper-fork-remote', 'HEAD:autobump']" cmd=git
+#To https://github.com/kyma-bot/control-plane.git
+# + 92605748...7a1b9163 HEAD -> autobump (forced update)
+
+function autobump::update_reconciler_image_tag(){
+  log::info "Update reconciler image tag in control plane"
+  cd "${CONTROL_PLANE_DIR}"
+  yq '(.global.images.mothership_reconciler_version ) |= "'${RECONCILER_IMAGE_TAG}'"' ./resources/kcp/values.yaml > ./resources/kcp/values.yaml
+  yq '(.global.images.components.[] | select(has("version")).["'${RECONCILER_IMAGE_TAG}'"] ) |= "test"' ./resources/kcp/values.yaml > ./resources/kcp/values.yaml
+  cat ./resources/kcp/values.yaml
+}
+
 function autobump::set_reconciler_image_tag() {
   log::info "Setting reconciler image tag: ${RECONCILER_IMAGE_TAG} in autobump-tool config file"
   yq e -i '.targetVersion = "'"${RECONCILER_IMAGE_TAG}"'"' "${BUMP_TOOL_CONFIG_FILE}"
@@ -105,11 +131,13 @@ autobump::build
 # fetch latest reconciler image tag from reconciler commit ID
 reconciler::fetch_latest_image_tag
 
+autobump::update_reconciler_image_tag
+
 # set latest reconciler image tag in autobump config file
-autobump::set_reconciler_image_tag
+#autobump::set_reconciler_image_tag
 
 # run autobump tool to update reconciler image tag in kyma-project/control-plane
-autobump::run
+#autobump::run
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
