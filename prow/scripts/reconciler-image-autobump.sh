@@ -116,6 +116,7 @@ function autobump::push_to_remote(){
 
 #  git remote add bumper-fork-remote https://kyma-bot:"${cat /etc/github/token}"@github.com/kyma-bot/control-plane.git
   git remote add bumper-fork-remote https://ruanxin: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@github.com/ruanxin/control-plane.git
+  git fetch bumper-fork-remote
   git rev-parse refs/remotes/bumper-fork-remote/autobump:
   git rev-parse HEAD:
   log::info "Pushing to remote..."
