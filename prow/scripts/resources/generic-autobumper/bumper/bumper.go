@@ -18,7 +18,6 @@ package bumper
 
 import (
 	"bytes"
-	"context"
 	"crypto/sha1"
 	"errors"
 	"flag"
@@ -114,7 +113,7 @@ type Gerrit struct {
 type PRHandler interface {
 	// Changes returns a slice of functions, each one does some stuff, and
 	// returns commit message for the changes
-	Changes() []func(context.Context) (string, error)
+	Changes() []func() (string, error)
 	// PRTitleBody returns the body of the PR, this function runs after all
 	// changes have been executed
 	PRTitleBody() (string, string, error)
@@ -207,7 +206,7 @@ func validateOptions(o *Options) error {
 // provided options.
 //
 // updateFunc: a function that returns commit message and error
-func Run(ctx context.Context, o *Options, prh PRHandler) error {
+func Run(o *Options, prh PRHandler) error {
 	if err := validateOptions(o); err != nil {
 		return fmt.Errorf("validating options: %w", err)
 	}
@@ -216,12 +215,12 @@ func Run(ctx context.Context, o *Options, prh PRHandler) error {
 		logrus.Debugf("--skip-pull-request is set to true, won't create a pull request.")
 	}
 	if o.Gerrit == nil {
-		return processGitHub(ctx, o, prh)
+		return processGitHub(o, prh)
 	}
-	return processGerrit(ctx, o, prh)
+	return processGerrit(o, prh)
 }
 
-func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
+func processGitHub(o *Options, prh PRHandler) error {
 	stdout := HideSecretsWriter{Delegate: os.Stdout, Censor: secret.Censor}
 	stderr := HideSecretsWriter{Delegate: os.Stderr, Censor: secret.Censor}
 	if err := secret.Add(o.GitHubToken); err != nil {
@@ -249,7 +248,7 @@ func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
 	// Make change, commit and push
 	//var anyChange bool
 	//for i, changeFunc := range prh.Changes() {
-	//	msg, err := changeFunc(ctx)
+	//	msg, err := changeFunc()
 	//	if err != nil {
 	//		return fmt.Errorf("process function %d: %w", i, err)
 	//	}
@@ -295,7 +294,7 @@ func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
 	return nil
 }
 
-func processGerrit(ctx context.Context, o *Options, prh PRHandler) error {
+func processGerrit(o *Options, prh PRHandler) error {
 	stdout := HideSecretsWriter{Delegate: os.Stdout, Censor: secret.Censor}
 	stderr := HideSecretsWriter{Delegate: os.Stderr, Censor: secret.Censor}
 
@@ -318,7 +317,7 @@ func processGerrit(ctx context.Context, o *Options, prh PRHandler) error {
 
 	// Make change, commit and push
 	for i, changeFunc := range prh.Changes() {
-		msg, err := changeFunc(ctx)
+		msg, err := changeFunc()
 		if err != nil {
 			return fmt.Errorf("process function %d: %w", i, err)
 		}
