@@ -68,12 +68,6 @@ function utils::check_required_vars() {
     fi
 }
 
-function autobump::build() {
-  log::info "Building k8s image autobump tool"
-  cd "${KYMA_TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/generic-autobumper"
-  go build -o /tools/generic-autobumper
-}
-
 function reconciler::fetch_latest_image_tag() {
   log::info "Fetching latest reconciler commit ID"
   cd "${RECONCILER_DIR}"
@@ -99,7 +93,7 @@ function autobump::commit_changes(){
 function autobump::run() {
   log::info "Running image auto-bump tool for reconciler"
   cd "${CONTROL_PLANE_DIR}"
-  /tools/generic-autobumper --config="${BUMP_TOOL_CONFIG_FILE}"
+  "${KYMA_TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/autobumper --config="${BUMP_TOOL_CONFIG_FILE}"
 }
 
 ## ---------------------------------------------------------------------------------------
@@ -107,9 +101,6 @@ function autobump::run() {
 ## ---------------------------------------------------------------------------------------
 # check if all the required ENVs are defined
 utils::check_required_vars "${requiredVars[@]}"
-
-# build generic-autobumper project in kubernetes/test-infra
-autobump::build
 
 # fetch latest reconciler image tag from reconciler commit ID
 reconciler::fetch_latest_image_tag
