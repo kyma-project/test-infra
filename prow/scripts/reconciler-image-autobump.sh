@@ -148,6 +148,7 @@ reconciler::fetch_latest_image_tag
 
 autobump::update_reconciler_image_tag
 
+autobump::push_to_remote
 # set latest reconciler image tag in autobump config file
 #autobump::set_reconciler_image_tag
 
