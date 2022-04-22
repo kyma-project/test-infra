@@ -103,7 +103,22 @@ function autobump::update_reconciler_image_tag(){
   log::info "Update reconciler image tag in control plane"
   cd "${CONTROL_PLANE_DIR}"
   yq e -i '(.global.images.mothership_reconciler_version ) |= "'${RECONCILER_IMAGE_TAG}'"' ./resources/kcp/values.yaml
-  yq e -i '(.global.images.components.[] | select(has("version")).["'${RECONCILER_IMAGE_TAG}'"] ) |= "test"' ./resources/kcp/values.yaml
+  yq e -i '(.global.images.components.[] | select(has("version")).["version"] ) |= "'${RECONCILER_IMAGE_TAG}'"' ./resources/kcp/values.yaml
+  cat ./resources/kcp/values.yaml
+}
+
+function autobump::push_to_remote(){
+  log::info "Commit changes..."
+  cd "${CONTROL_PLANE_DIR}"
+  git add resources/kcp/values.yaml
+  git commit -m 'Bumping Reconciler\n\nNo eu.gcr.io/kyma-project/incubator/reconciler/ changes.\n\n' '--author' 'Kyma Bot <kyma.bot@sap.com>'
+
+#  git remote add bumper-fork-remote https://kyma-bot:"${cat /etc/github/token}"@github.com/kyma-bot/control-plane.git
+  git remote add bumper-fork-remote https://ruanxin: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@github.com/ruanxin/control-plane.git
+  git rev-parse refs/remotes/bumper-fork-remote/autobump:
+  git rev-parse HEAD:
+  log::info "Pushing to remote..."
+  git push -f bumper-fork-remote HEAD:autobump
   cat ./resources/kcp/values.yaml
 }
 
