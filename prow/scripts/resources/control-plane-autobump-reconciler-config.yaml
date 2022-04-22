@@ -12,7 +12,7 @@ includedConfigPaths:
   - "resources/kcp/values.yaml"
 targetVersion: ""
 prefixes:
-  - name: "Reconciler"
+  - name: "Reconciler New"
     prefix: "eu.gcr.io/kyma-project/incubator/reconciler/"
     repo: "https://github.com/kyma-incubator/reconciler"
     summarise: true
