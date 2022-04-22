@@ -11,6 +11,7 @@ upstreamURLBase: "https://raw.githubusercontent.com/ruanxin/control-plane/differ
 includedConfigPaths:
   - "resources/kcp/values.yaml"
 targetVersion: ""
+headBranchName: "add-free-plan"
 prefixes:
   - name: "Reconciler New"
     prefix: "eu.gcr.io/kyma-project/incubator/reconciler/"

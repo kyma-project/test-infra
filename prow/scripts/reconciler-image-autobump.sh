@@ -24,7 +24,8 @@ ENABLE_TEST_LOG_COLLECTOR=false
 export K8S_TEST_INFRA_SOURCES_DIR="/home/prow/go/src/github.com/kubernetes/test-infra"
 export RECONCILER_DIR="/home/prow/go/src/github.com/kyma-incubator/reconciler"
 export CONTROL_PLANE_DIR="/home/prow/go/src/github.com/kyma-project/control-plane"
-export BUMP_TOOL_CONFIG_FILE="/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/resources/control-plane-autobump-reconciler-config.yaml"
+export KYMA_TEST_INFRA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/test-infra"
+export BUMP_TOOL_CONFIG_FILE="${KYMA_TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/control-plane-autobump-reconciler-config.yaml"
 
 # All provides require these values, each of them may check for additional variables
 requiredVars=(
@@ -81,25 +82,6 @@ function reconciler::fetch_latest_image_tag() {
   log::info "Reconciler image tag: ${RECONCILER_IMAGE_TAG}"
 }
 
-#2022/04/22 12:53:55 UTC [INFO] Running image auto-bump tool for reconciler
-#time="2022-04-22T12:53:55Z" level=warning msg="Warning: targetVersion mot in allowed so it might not work properly." allowed="[latest upstream upstream-staging vYYYYMMDD-deadbeef]"
-#time="2022-04-22T12:53:55Z" level=info msg="Bumping image references..."
-#time="2022-04-22T12:53:55Z" level=info msg="Updating file" file=resources/kcp/values.yaml
-#time="2022-04-22T12:53:55Z" level=info msg="running command ..." args="[status --porcelain]" cmd=git
-#time="2022-04-22T12:53:55Z" level=info msg="running command" args="['add', '-A']" cmd=git
-#time="2022-04-22T12:53:55Z" level=info msg="running command" args="['commit', '-m', 'Bumping Reconciler\n\nNo eu.gcr.io/kyma-project/incubator/reconciler/ changes.\n\n', '--author', 'Kyma Bot <kyma.bot@sap.com>']" cmd=git
-#[main 7a1b9163] Bumping Reconciler
-# Author: Kyma Bot <kyma.bot@sap.com>
-# 1 file changed, 2 insertions(+), 2 deletions(-)
-#time="2022-04-22T12:53:55Z" level=info msg="running command" args="['remote', 'add',
-# 'bumper-fork-remote', 'https://kyma-bot:****************************************@github.com/kyma-bot/control-plane.git']" cmd=git
-#time="2022-04-22T12:53:56Z" level=info msg="running command" args="['rev-parse', 'refs/remotes/bumper-fork-remote/autobump:']" cmd=git
-#time="2022-04-22T12:53:56Z" level=info msg="running command" args="['rev-parse', 'HEAD:']" cmd=git
-#time="2022-04-22T12:53:56Z" level=info msg="Pushing to remote..."
-#time="2022-04-22T12:53:56Z" level=info msg="running command" args="['push', '-f', 'bumper-fork-remote', 'HEAD:autobump']" cmd=git
-#To https://github.com/kyma-bot/control-plane.git
-# + 92605748...7a1b9163 HEAD -> autobump (forced update)
-
 function autobump::update_reconciler_image_tag(){
   log::info "Update reconciler image tag in control plane"
   cd "${CONTROL_PLANE_DIR}"
@@ -108,20 +90,20 @@ function autobump::update_reconciler_image_tag(){
   cat ./resources/kcp/values.yaml
 }
 
-function autobump::push_to_remote(){
+function autobump::commit_changes(){
   log::info "Commit changes..."
   cd "${CONTROL_PLANE_DIR}"
   git add resources/kcp/values.yaml
   git commit -m 'Bumping Reconciler:\n\nNo eu.gcr.io/kyma-project/incubator/reconciler/ changes.\n\n' '--author' 'Kyma Bot <kyma.bot@sap.com>'
 
-#  git remote add bumper-fork-remote https://kyma-bot:"${cat /etc/github/token}"@github.com/kyma-bot/control-plane.git
-  git remote add bumper-fork-remote https://ruanxin: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@github.com/ruanxin/control-plane.git
-  git fetch bumper-fork-remote
-  git rev-parse refs/remotes/bumper-fork-remote/autobump:
-  git rev-parse HEAD:
-  log::info "Pushing to remote..."
-  git push -f bumper-fork-remote HEAD:autobump
-  cat ./resources/kcp/values.yaml
+##  git remote add bumper-fork-remote https://kyma-bot:"${cat /etc/github/token}"@github.com/kyma-bot/control-plane.git
+#  git remote add bumper-fork-remote https://ruanxin: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@github.com/ruanxin/control-plane.git
+#  git fetch bumper-fork-remote
+#  git rev-parse refs/remotes/bumper-fork-remote/autobump:
+#  git rev-parse HEAD:
+#  log::info "Pushing to remote..."
+#  git push -f bumper-fork-remote HEAD:autobump
+#  cat ./resources/kcp/values.yaml
 }
 
 function autobump::set_reconciler_image_tag() {
@@ -133,7 +115,7 @@ function autobump::set_reconciler_image_tag() {
 function autobump::run() {
   log::info "Running image auto-bump tool for reconciler"
   cd "${CONTROL_PLANE_DIR}"
-  /tools/generic-autobumper --config="${BUMP_TOOL_CONFIG_FILE}"
+  "${KYMA_TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/generic-autobumper --config="${BUMP_TOOL_CONFIG_FILE}"
 }
 
 ## ---------------------------------------------------------------------------------------
@@ -150,12 +132,12 @@ reconciler::fetch_latest_image_tag
 
 autobump::update_reconciler_image_tag
 
-autobump::push_to_remote
+autobump::commit_changes
 # set latest reconciler image tag in autobump config file
 #autobump::set_reconciler_image_tag
 
 # run autobump tool to update reconciler image tag in kyma-project/control-plane
-#autobump::run
+autobump::run
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
