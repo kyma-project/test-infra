@@ -70,7 +70,7 @@ function utils::check_required_vars() {
 
 function autobump::build() {
   log::info "Building k8s image autobump tool"
-  cd "${KYMA_TEST_INFRA_SOURCES_DIR}/prow/scripts/generic-autobumper"
+  cd "${KYMA_TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/generic-autobumper"
   go build -o /tools/generic-autobumper
 }
 
