@@ -70,7 +70,7 @@ function utils::check_required_vars() {
 
 function autobump::build() {
   log::info "Building k8s image autobump tool"
-  cd "${K8S_TEST_INFRA_SOURCES_DIR}/prow/cmd/generic-autobumper"
+  cd "${KYMA_TEST_INFRA_SOURCES_DIR}/prow/scripts/generic-autobumper"
   go build -o /tools/generic-autobumper
 }
 
@@ -87,7 +87,6 @@ function autobump::update_reconciler_image_tag(){
   cd "${CONTROL_PLANE_DIR}"
   yq e -i '(.global.images.mothership_reconciler_version ) |= "'${RECONCILER_IMAGE_TAG}'"' ./resources/kcp/values.yaml
   yq e -i '(.global.images.components.[] | select(has("version")).["version"] ) |= "'${RECONCILER_IMAGE_TAG}'"' ./resources/kcp/values.yaml
-  cat ./resources/kcp/values.yaml
 }
 
 function autobump::commit_changes(){
@@ -95,27 +94,12 @@ function autobump::commit_changes(){
   cd "${CONTROL_PLANE_DIR}"
   git add resources/kcp/values.yaml
   git commit -m 'Bumping Reconciler:\n\nNo eu.gcr.io/kyma-project/incubator/reconciler/ changes.\n\n' '--author' 'Kyma Bot <kyma.bot@sap.com>'
-
-##  git remote add bumper-fork-remote https://kyma-bot:"${cat /etc/github/token}"@github.com/kyma-bot/control-plane.git
-#  git remote add bumper-fork-remote https://ruanxin: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@github.com/ruanxin/control-plane.git
-#  git fetch bumper-fork-remote
-#  git rev-parse refs/remotes/bumper-fork-remote/autobump:
-#  git rev-parse HEAD:
-#  log::info "Pushing to remote..."
-#  git push -f bumper-fork-remote HEAD:autobump
-#  cat ./resources/kcp/values.yaml
-}
-
-function autobump::set_reconciler_image_tag() {
-  log::info "Setting reconciler image tag: ${RECONCILER_IMAGE_TAG} in autobump-tool config file"
-  yq e -i '.targetVersion = "'"${RECONCILER_IMAGE_TAG}"'"' "${BUMP_TOOL_CONFIG_FILE}"
-  cat "${BUMP_TOOL_CONFIG_FILE}"
 }
 
 function autobump::run() {
   log::info "Running image auto-bump tool for reconciler"
   cd "${CONTROL_PLANE_DIR}"
-  "${KYMA_TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/generic-autobumper --config="${BUMP_TOOL_CONFIG_FILE}"
+  /tools/generic-autobumper --config="${BUMP_TOOL_CONFIG_FILE}"
 }
 
 ## ---------------------------------------------------------------------------------------
@@ -133,8 +117,6 @@ reconciler::fetch_latest_image_tag
 autobump::update_reconciler_image_tag
 
 autobump::commit_changes
-# set latest reconciler image tag in autobump config file
-#autobump::set_reconciler_image_tag
 
 # run autobump tool to update reconciler image tag in kyma-project/control-plane
 autobump::run
