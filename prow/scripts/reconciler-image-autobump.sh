@@ -115,7 +115,7 @@ function autobump::push_to_remote(){
   git commit -m 'Bumping Reconciler:\n\nNo eu.gcr.io/kyma-project/incubator/reconciler/ changes.\n\n' '--author' 'Kyma Bot <kyma.bot@sap.com>'
 
 #  git remote add bumper-fork-remote https://kyma-bot:"${cat /etc/github/token}"@github.com/kyma-bot/control-plane.git
-  git remote add bumper-fork-remote https://ruanxin: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@github.com/ruanxin/control-plane.git
+  git remote add bumper-fork-remote https://ruanxin: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@github.com/ruanxin/control-plane.git
   git fetch bumper-fork-remote
   git rev-parse refs/remotes/bumper-fork-remote/autobump:
   git rev-parse HEAD:
