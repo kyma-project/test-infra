@@ -91,7 +91,8 @@ function reconciler::fetch_latest_image_tag() {
 #[main 7a1b9163] Bumping Reconciler
 # Author: Kyma Bot <kyma.bot@sap.com>
 # 1 file changed, 2 insertions(+), 2 deletions(-)
-#time="2022-04-22T12:53:55Z" level=info msg="running command" args="['remote', 'add', 'bumper-fork-remote', 'https://kyma-bot:****************************************@github.com/kyma-bot/control-plane.git']" cmd=git
+#time="2022-04-22T12:53:55Z" level=info msg="running command" args="['remote', 'add',
+# 'bumper-fork-remote', 'https://kyma-bot:****************************************@github.com/kyma-bot/control-plane.git']" cmd=git
 #time="2022-04-22T12:53:56Z" level=info msg="running command" args="['rev-parse', 'refs/remotes/bumper-fork-remote/autobump:']" cmd=git
 #time="2022-04-22T12:53:56Z" level=info msg="running command" args="['rev-parse', 'HEAD:']" cmd=git
 #time="2022-04-22T12:53:56Z" level=info msg="Pushing to remote..."
@@ -111,7 +112,7 @@ function autobump::push_to_remote(){
   log::info "Commit changes..."
   cd "${CONTROL_PLANE_DIR}"
   git add resources/kcp/values.yaml
-  git commit -m 'Bumping Reconciler\n\nNo eu.gcr.io/kyma-project/incubator/reconciler/ changes.\n\n' '--author' 'Kyma Bot <kyma.bot@sap.com>'
+  git commit -m 'Bumping Reconciler:\n\nNo eu.gcr.io/kyma-project/incubator/reconciler/ changes.\n\n' '--author' 'Kyma Bot <kyma.bot@sap.com>'
 
 #  git remote add bumper-fork-remote https://kyma-bot:"${cat /etc/github/token}"@github.com/kyma-bot/control-plane.git
   git remote add bumper-fork-remote https://ruanxin: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@github.com/ruanxin/control-plane.git
