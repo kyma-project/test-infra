@@ -273,6 +273,7 @@ func processGitHub(o *Options, prh PRHandler) error {
 	//	return nil
 	//}
 
+	//push
 	if err := gitPush(fmt.Sprintf("https://%s:%s@github.com/%s/%s.git", o.GitHubLogin, string(secret.GetTokenGenerator(o.GitHubToken)()), o.GitHubLogin, o.RemoteName), o.HeadBranchName, stdout, stderr, o.SkipPullRequest); err != nil {
 		return fmt.Errorf("push changes to the remote branch: %w", err)
 	}
