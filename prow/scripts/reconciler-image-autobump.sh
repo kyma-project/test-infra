@@ -102,8 +102,8 @@ function reconciler::fetch_latest_image_tag() {
 function autobump::update_reconciler_image_tag(){
   log::info "Update reconciler image tag in control plane"
   cd "${CONTROL_PLANE_DIR}"
-  yq '(.global.images.mothership_reconciler_version ) |= "'${RECONCILER_IMAGE_TAG}'"' ./resources/kcp/values.yaml > ./resources/kcp/values.yaml
-  yq '(.global.images.components.[] | select(has("version")).["'${RECONCILER_IMAGE_TAG}'"] ) |= "test"' ./resources/kcp/values.yaml > ./resources/kcp/values.yaml
+  yq e -i '(.global.images.mothership_reconciler_version ) |= "'${RECONCILER_IMAGE_TAG}'"' ./resources/kcp/values.yaml
+  yq e -i '(.global.images.components.[] | select(has("version")).["'${RECONCILER_IMAGE_TAG}'"] ) |= "test"' ./resources/kcp/values.yaml
   cat ./resources/kcp/values.yaml
 }
 
