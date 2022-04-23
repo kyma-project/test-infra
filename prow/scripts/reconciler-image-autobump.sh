@@ -79,6 +79,10 @@ function reconciler::fetch_latest_image_tag() {
 function autobump::update_reconciler_image_tag(){
   log::info "Update reconciler image tag in control plane"
   cd "${CONTROL_PLANE_DIR}"
+  # support old image tag update, should be removed after PR https://github.com/kyma-project/control-plane/pull/1601 merged.
+  yq e -i '(.global.images.mothership_reconciler ) |= "eu.gcr.io/kyma-project/incubator/reconciler/mothership:'${RECONCILER_IMAGE_TAG}'"' ./resources/kcp/values.yaml
+  yq e -i '(.global.images.component_reconciler ) |= "eu.gcr.io/kyma-project/incubator/reconciler/component:'${RECONCILER_IMAGE_TAG}'"' ./resources/kcp/values.yaml
+
   yq e -i '(.global.images.mothership_reconciler_version ) |= "'${RECONCILER_IMAGE_TAG}'"' ./resources/kcp/values.yaml
   yq e -i '(.global.images.components.[] | select(has("version")).["version"] ) |= "'${RECONCILER_IMAGE_TAG}'"' ./resources/kcp/values.yaml
 }
