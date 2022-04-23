@@ -90,7 +90,6 @@ slack_reporter_configs:
 branch-protection:
   enforce_admins: true
   allow_disabled_policies: true
-  # TODO this has to be removed once we migrate entire kyma-project to prow flow.
   required_pull_request_reviews:
     dismiss_stale_reviews: true
     require_code_owner_reviews: true
@@ -107,11 +106,6 @@ branch-protection:
         - "^dependabot/"
       repos:
         test-infra:
-          required_pull_request_reviews:
-            dismiss_stale_reviews: false
-            require_code_owner_reviews: false
-            required_approving_review_count: 0
-        kyma:
           required_pull_request_reviews:
             dismiss_stale_reviews: false
             require_code_owner_reviews: false
@@ -253,7 +247,6 @@ tide:
         - kyma-project/test-infra # handled in separate query specifically for approve plugin
         - kyma-project/third-party-images
         - kyma-project/cli
-        - kyma-project/kyma
         - kyma-incubator/compass # handled in separate query specifically for approve plugin
       reviewApprovedRequired: true
     - labels:
@@ -270,7 +263,6 @@ tide:
         - kyma-project/test-infra
         - kyma-project/third-party-images
         - kyma-project/cli
-        - kyma-project/kyma
         - kyma-incubator/compass
     - author: kyma-bot
       labels:

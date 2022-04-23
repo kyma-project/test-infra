@@ -35,10 +35,6 @@ plugins:
     plugins:
       - approve
       - blunderbuss
-  kyma-project/kyma:
-    plugins:
-      - approve
-      - blunderbuss
   kyma-project/cli:
     plugins:
       - approve
@@ -81,11 +77,6 @@ external_plugins:
       events:
         - pull_request
         - pull_request_review
-  kyma-project/kyma:
-    - name: needs-tws
-      events:
-        - pull_request
-        - pull_request_review
   kyma-project/third-party-images:
     - name: needs-tws
       events:
@@ -101,10 +92,6 @@ external_plugins:
       events:
         - pull_request
         - pull_request_review
-  kyma-project:
-    - name: automerge-notification
-      events:
-        - pull_request
 
 config_updater:
   maps:
@@ -166,7 +153,6 @@ approve:
     require_self_approval: false
     ignore_review_state: false
   - repos:
-      - kyma-project/kyma
       - kyma-incubator/compass
       - kyma-project/cli
     require_self_approval: true # ignore authors of the PRs to be able to auto-approve their PR if they are owners
