@@ -14,14 +14,7 @@ plugins:
       - shrug
       - invalidcommitmsg
       - help
-      - verify-owners
-      - owners-label
-      - milestone
       - override
-      - retitle
-      - pony
-      - lifecycle
-      - transfer-issue
   kyma-project/test-infra:
     plugins:
       - config-updater
@@ -58,14 +51,7 @@ plugins:
       - shrug
       - invalidcommitmsg
       - help
-      - verify-owners
-      - owners-label
-      - milestone
       - override
-      - retitle
-      - pony
-      - lifecycle
-      - transfer-issue
 
 external_plugins:
   kyma-project:
