@@ -93,7 +93,7 @@ function autobump::commit_changes(){
 function autobump::run() {
   log::info "Running image auto-bump tool for reconciler"
   cd "${CONTROL_PLANE_DIR}"
-  "${KYMA_TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/generic-autobumper/autobumper --config="${BUMP_TOOL_CONFIG_FILE}"
+  "${KYMA_TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/autobumper --config="${BUMP_TOOL_CONFIG_FILE}"
 }
 
 ## ---------------------------------------------------------------------------------------
