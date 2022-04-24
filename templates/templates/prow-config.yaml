@@ -110,6 +110,11 @@ branch-protection:
             dismiss_stale_reviews: false
             require_code_owner_reviews: false
             required_approving_review_count: 0
+        kyma:
+          branches:
+            kyma-2.0-docu:
+              required_pull_request_reviews:
+                require_code_owner_reviews: false
         cli:
           required_pull_request_reviews:
             dismiss_stale_reviews: false
