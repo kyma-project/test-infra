@@ -254,7 +254,6 @@ tide:
       excludedRepos:
         - kyma-project/test-infra # handled in separate query specifically for approve plugin
         - kyma-project/third-party-images
-        - kyma-project/cli
         - kyma-project/kyma
         - kyma-incubator/compass # handled in separate query specifically for approve plugin
       reviewApprovedRequired: true
@@ -271,7 +270,6 @@ tide:
       repos:
         - kyma-project/test-infra
         - kyma-project/third-party-images
-        - kyma-project/cli
         - kyma-project/kyma
         - kyma-incubator/compass
     - author: kyma-bot
