@@ -118,11 +118,6 @@ branch-protection:
             dismiss_stale_reviews: false
             require_code_owner_reviews: false
             required_approving_review_count: 0
-        cli:
-          required_pull_request_reviews:
-            dismiss_stale_reviews: false
-            require_code_owner_reviews: false
-            required_approving_review_count: 0
         third-party-images:
           required_pull_request_reviews:
             dismiss_stale_reviews: false
