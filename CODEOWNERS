@@ -74,3 +74,6 @@
 
 /templates @kyma-project/prow
 /templates/templates @kyma-project/prow
+
+# All .md files
+*.md @klaudiagrz @mmitoraj @majakurcius @NHingerl @grego952
