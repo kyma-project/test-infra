@@ -113,7 +113,6 @@ trap gardener::cleanup EXIT INT
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
-export ERROR_LOGGING_GUARD
 
 RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
 readonly COMMON_NAME_PREFIX="grd"
@@ -133,6 +132,7 @@ log::info "### Reading latest release version from RELEASE_VERSION file, got: ${
 
 # Assess previous minor versions
 declare -A minor_release_versions
+log::info "### Minor versions variable declared"
 kyma::get_offset_minor_releases -v "${KYMA_SOURCE}"
 
 # checks required vars and initializes gcloud/docker if necessary
@@ -156,9 +156,9 @@ deploy_base
 # upgrade to next versions in a loop
 upgrade
 
+unset minor_release_versions
+
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
-
-unset minor_release_versions
 
 

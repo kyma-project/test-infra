@@ -128,11 +128,11 @@ function kyma::get_offset_minor_releases() {
     RE='[^0-9]*\([0-9]*\)[.]\([0-9]*\)[.]\([0-9]*\)\([0-9A-Za-z-]*\)'
 
     # shellcheck disable=SC2001
-    MAJOR=$(echo "$base" | sed -e "s#$RE#\\1#")
+    MAJOR=$(echo "$base" | sed -e "s#$RE#\1#")
     # shellcheck disable=SC2001
-    MINOR=$(echo "$base" | sed -e "s#$RE#\\2#")
+    MINOR=$(echo "$base" | sed -e "s#$RE#\2#")
     # shellcheck disable=SC2001
-    PATCH=$(echo "$base" | sed -e "s#$RE#\\3#")
+    PATCH=$(echo "$base" | sed -e "s#$RE#\3#")
 
     local index=0
     minor_release_versions[$index]=$base
