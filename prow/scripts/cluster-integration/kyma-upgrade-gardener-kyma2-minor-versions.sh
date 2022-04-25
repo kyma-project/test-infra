@@ -132,7 +132,6 @@ log::info "### Reading latest release version from RELEASE_VERSION file, got: ${
 
 # Assess previous minor versions
 declare -A minor_release_versions
-log::info "### Minor versions variable declared"
 kyma::get_offset_minor_releases -v "${KYMA_SOURCE}"
 
 # checks required vars and initializes gcloud/docker if necessary

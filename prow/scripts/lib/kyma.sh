@@ -128,11 +128,11 @@ function kyma::get_offset_minor_releases() {
     RE='[^0-9]*\([0-9]*\)[.]\([0-9]*\)[.]\([0-9]*\)\([0-9A-Za-z-]*\)'
 
     # shellcheck disable=SC2001
-    MAJOR=$(echo "$base" | sed -e "s#$RE#\1#")
+    MAJOR=$(echo "$base" | sed -e "s#$RE#\\1#")
     # shellcheck disable=SC2001
-    MINOR=$(echo "$base" | sed -e "s#$RE#\2#")
+    MINOR=$(echo "$base" | sed -e "s#$RE#\\2#")
     # shellcheck disable=SC2001
-    PATCH=$(echo "$base" | sed -e "s#$RE#\3#")
+    PATCH=$(echo "$base" | sed -e "s#$RE#\\3#")
 
     local index=0
     minor_release_versions[$index]=$base
@@ -140,12 +140,11 @@ function kyma::get_offset_minor_releases() {
     # PREVIOUS_MINOR_VERSION_COUNT - Count of last Kyma2 minor versions to be upgraded from
     for i in $(seq 1 "$PREVIOUS_MINOR_VERSION_COUNT"); do
         if [ "$MINOR" -gt 0 ]; then
-            ((MINOR-=1))
+            MINOR=$((MINOR-1))
         else
             break
         fi
         newVersion="$MAJOR.$MINOR.$PATCH"
-
         kyma::get_last_release_version \
         -t "${BOT_GITHUB_TOKEN}" \
         -v "${newVersion}"
@@ -154,10 +153,12 @@ function kyma::get_offset_minor_releases() {
             log::info "### The last release version returned from the offset is ${newVersion} and thus invalid"
             continue
         fi
-        ((index+=1))
+        index=$((index+1))
         # shellcheck disable=SC2034
         minor_release_versions[$index]=$newVersion
     done
+
+    log::info "#### Valid minor versions to be tested:" "${minor_release_versions[@]}"
 }
 
 # kyma::get_previous_release_version returns previous Kyma release version (i.e. one version before the latest released version)
