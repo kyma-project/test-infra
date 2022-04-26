@@ -113,16 +113,6 @@ branch-protection:
             dismiss_stale_reviews: false
             require_code_owner_reviews: false
             required_approving_review_count: 0
-        cli:
-          required_pull_request_reviews:
-            dismiss_stale_reviews: false
-            require_code_owner_reviews: false
-            required_approving_review_count: 0
-        third-party-images:
-          required_pull_request_reviews:
-            dismiss_stale_reviews: false
-            require_code_owner_reviews: false
-            required_approving_review_count: 0
         website:
           branches:
             main:
@@ -247,8 +237,7 @@ tide:
         - kyma-project
         - kyma-incubator
       excludedRepos:
-        - kyma-project/third-party-images
-        - kyma-project/cli
+        - kyma-project/test-infra # handled in separate query specifically for approve plugin
         - kyma-project/kyma
         - kyma-incubator/compass # handled in separate query specifically for approve plugin
       reviewApprovedRequired: true
@@ -263,8 +252,7 @@ tide:
         - do-not-merge/invalid-commit-message
         - do-not-merge/missing-docs-review
       repos:
-        - kyma-project/third-party-images
-        - kyma-project/cli
+        - kyma-project/test-infra
         - kyma-project/kyma
         - kyma-incubator/compass
   context_options:

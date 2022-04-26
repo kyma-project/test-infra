@@ -33,7 +33,7 @@ func TestBranchProtection(t *testing.T) {
 		{"kyma-project", "console", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-project", "examples", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-project", "addons", "main", []string{"license/cla", "tide"}, 1},
-		{"kyma-project", "cli", "main", []string{"license/cla", "tide"}, 0},
+		{"kyma-project", "cli", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-project", "helm-broker", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-incubator", "varkes", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-incubator", "vstudio-extension", "main", []string{"license/cla", "tide"}, 1},
