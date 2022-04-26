@@ -210,7 +210,7 @@ function utils::ssh_to_vm_with_script() {
     exit 1
   fi
   if [ -z "$3" ]; then
-    echo "Local script is empty. Continue..."
+    echo "Local script is empty, continue with command only mode..."
   fi
 
   local ZONE=$1
@@ -222,8 +222,11 @@ function utils::ssh_to_vm_with_script() {
     COMMAND="sudo bash"
   fi
 
-  gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-debug}" --quiet --zone="${ZONE}" --command="${COMMAND}" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60" "${REMOTE_NAME}" < "${LOCAL_SCRIPT_PATH}"
-
+  if [ -z "$3" ]; then
+      gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-debug}" --quiet --zone="${ZONE}" --command="${COMMAND}" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60 -v" "${REMOTE_NAME}" < "${LOCAL_SCRIPT_PATH}"
+  else
+      gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-debug}" --quiet --zone="${ZONE}" --command="${COMMAND}" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60 -v" "${REMOTE_NAME}"
+  fi
 }
 # utils::compress_send_to_vm compresses and sends file(s) to Google Compute Platform over scp
 #
