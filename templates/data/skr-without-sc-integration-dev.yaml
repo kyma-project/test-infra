@@ -34,7 +34,7 @@ templates:
             jobs:
               - jobConfig:
                   name: "skr-aws-without-sc-integration-dev"
-                  cron: "5 1 * * *" # "At 01:05"
+                  cron: "0 */2 * * *" # “At minute 0 past every 2nd hour.”
                   labels:
                     preset-skr-al-service-key: "true"
                 inheritedConfigs:
