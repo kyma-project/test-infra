@@ -29,10 +29,6 @@ plugins:
     plugins:
       - approve
       - blunderbuss
-  kyma-project/kyma:
-    plugins:
-      - approve
-      - blunderbuss
   kyma-incubator:
     plugins:
       - cat
@@ -66,11 +62,6 @@ external_plugins:
     - name: cla-assistant
       events:
         - issue_comment
-  kyma-project/kyma:
-    - name: needs-tws
-      events:
-        - pull_request
-        - pull_request_review
   kyma-incubator/compass:
     - name: needs-tws
       events:
@@ -132,7 +123,6 @@ blunderbuss:
 
 approve:
   - repos:
-      - kyma-project/kyma
       - kyma-incubator/compass
     require_self_approval: true # ignore authors of the PRs to be able to auto-approve their PR if they are owners
     ignore_review_state: false

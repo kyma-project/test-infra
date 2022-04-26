@@ -106,10 +106,10 @@ branch-protection:
         - "^dependabot/"
       repos:
         kyma:
-          required_pull_request_reviews:
-            dismiss_stale_reviews: false
-            require_code_owner_reviews: false
-            required_approving_review_count: 0
+          branches:
+            kyma-2.0-docu:
+              required_pull_request_reviews:
+                require_code_owner_reviews: false
         website:
           branches:
             main:
@@ -234,7 +234,6 @@ tide:
         - kyma-project
         - kyma-incubator
       excludedRepos:
-        - kyma-project/kyma
         - kyma-incubator/compass # handled in separate query specifically for approve plugin
       reviewApprovedRequired: true
     - labels:
@@ -248,7 +247,6 @@ tide:
         - do-not-merge/invalid-commit-message
         - do-not-merge/missing-docs-review
       repos:
-        - kyma-project/kyma
         - kyma-incubator/compass
   context_options:
     from-branch-protection: true
