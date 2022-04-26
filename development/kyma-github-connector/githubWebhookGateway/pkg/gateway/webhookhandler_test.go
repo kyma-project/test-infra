@@ -21,7 +21,7 @@ type toJSON struct {
 	Action   string `json:"Action"`
 }
 
-//createRequest creates an HTTP request for test purposes
+// createRequest creates an HTTP request for test purposes
 func createRequest(t *testing.T) *http.Request {
 
 	payload := toJSON{TestJSON: "test", Action: "labeled"}
@@ -50,8 +50,7 @@ func TestWebhookHandler(t *testing.T) {
 		mockValidator := &gitmocks.Validator{}
 		mockSender := &mocks.Sender{}
 
-		mockValidator.On("GetToken").Return("test")
-		mockValidator.On("ValidatePayload", req, []byte("test")).Return(nil, apperrors.AuthenticationFailed("fail"))
+		mockValidator.On("ValidatePayload", req).Return(nil, apperrors.AuthenticationFailed("fail"))
 
 		// when
 		wh := NewWebHookHandler(mockValidator, mockSender)
@@ -76,8 +75,7 @@ func TestWebhookHandler(t *testing.T) {
 		mockPayload, err := json.Marshal(toJSON{TestJSON: "test"})
 		require.NoError(t, err)
 
-		mockValidator.On("GetToken").Return("test")
-		mockValidator.On("ValidatePayload", req, []byte("test")).Return(mockPayload, nil)
+		mockValidator.On("ValidatePayload", req).Return(mockPayload, nil)
 		mockValidator.On("ParseWebHook", "", mockPayload).Return(nil, apperrors.WrongInput("fail"))
 
 		wh := NewWebHookHandler(mockValidator, mockSender)
@@ -105,8 +103,7 @@ func TestWebhookHandler(t *testing.T) {
 		rawPayload := json.RawMessage(mockPayload)
 		mockSender.On("SendToKyma", "issuesevent.labeled", "", rawPayload).Return(nil)
 
-		mockValidator.On("GetToken").Return("test")
-		mockValidator.On("ValidatePayload", req, []byte("test")).Return(mockPayload, nil)
+		mockValidator.On("ValidatePayload", req).Return(mockPayload, nil)
 		var action = "labeled"
 		event := &github.IssuesEvent{Action: &action}
 		mockValidator.On("ParseWebHook", "issues", mockPayload).Return(event, nil)
@@ -133,8 +130,7 @@ func TestWebhookHandler(t *testing.T) {
 
 		mockPayload, err := json.Marshal(toJSON{TestJSON: "test"})
 		require.NoError(t, err)
-		mockValidator.On("GetToken").Return("test")
-		mockValidator.On("ValidatePayload", req, []byte("test")).Return(mockPayload, nil)
+		mockValidator.On("ValidatePayload", req).Return(mockPayload, nil)
 		mockValidator.On("ParseWebHook", "", mockPayload).Return(nil, apperrors.NotFound("Unknown event"))
 		wh := NewWebHookHandler(mockValidator, mockSender)
 

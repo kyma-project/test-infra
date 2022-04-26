@@ -103,9 +103,9 @@ Follow these steps to save the dashboard:
 
 ## Add recording and alerting rules
 
-1. Add new recording or alerting rules to the [PrometheusRule specification](../../prow/cluster/resources/monitoring/templates/prow_prometheusrules.yaml).
+1. Add new recording or alerting rules to the [Prometheus Rule specification](../../prow/cluster/resources/monitoring/templates/prow_prometheusrules.yaml).
 
-2. Replace the existing PrometheusRule object with the current file version.
+2. Replace the existing Prometheus Rule object with the current file version.
    ```bash
    kubctl replace -f prow/cluster/resources/monitoring/templates/prow_prometheusrules.yaml
    ```

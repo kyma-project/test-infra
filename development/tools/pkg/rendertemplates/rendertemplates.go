@@ -90,11 +90,11 @@ func Map(m map[string]interface{}) (map[string]interface{}, error) {
 }
 
 // Merge merges all jobconfigs using local / globalsets defined in the configuration
-func (cfg *Config) Merge() {
+func (cfg *Config) Merge(mergoConfig mergo.Config) {
 	cfg.Templates = generateFromTo(cfg.Templates)
 
 	for _, templateConfig := range cfg.Templates {
-		templateConfig.mergeConfigs(cfg)
+		templateConfig.mergeConfigs(cfg, mergoConfig)
 	}
 
 	cfg.Templates = mergeRenderDestinations(cfg.Templates)
@@ -195,10 +195,10 @@ func (ft FromTo) String() string {
 
 // TODO name is misleading
 // mergeConfigs merges parts, generates component jobs and appends all jobs to the list of values
-func (tplCfg *TemplateConfig) mergeConfigs(config *Config) {
+func (tplCfg *TemplateConfig) mergeConfigs(config *Config, mergoConfig mergo.Config) {
 	for _, render := range tplCfg.Render {
 		// merge all parts of a config
-		render.mergeConfigs(config.GlobalSets)
+		render.mergeConfigs(config.GlobalSets, mergoConfig)
 		// generate component jobs
 		render.GenerateComponentJobs(config.Global)
 		// append all jobs to the list of values for the template
@@ -207,7 +207,7 @@ func (tplCfg *TemplateConfig) mergeConfigs(config *Config) {
 }
 
 // mergeConfigs merges values from GlobalSets, LocalSets and local values for each job
-func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
+func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet, mergoConfig mergo.Config) {
 	if present := len(r.JobConfigs); present > 0 {
 		r.Values = make(map[string]interface{})
 		for repoIndex, repo := range r.JobConfigs {
@@ -221,21 +221,21 @@ func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 
 				// merge "default" global inheritedConfig to jobConfig
 				if sliceutil.Contains(job.InheritedConfigs.Global, "default") {
-					if err := jobConfig.mergeConfigSet(globalConfigSets["default"]); err != nil {
+					if err := jobConfig.mergeConfigSet(globalConfigSets["default"], mergoConfig); err != nil {
 						log.Fatalf("Failed merge Global default configSet: %s", err)
 					}
 
 				}
 				// merge "default" local inheritedConfig to jobConfig
 				if sliceutil.Contains(job.InheritedConfigs.Local, "default") {
-					if err := jobConfig.mergeConfigSet(r.LocalSets["default"]); err != nil {
+					if err := jobConfig.mergeConfigSet(r.LocalSets["default"], mergoConfig); err != nil {
 						log.Fatalf("Failed merge Local default configSet: %s", err)
 					}
 				}
 				// merge global inheritedConfigs to jobConfig
 				for _, v := range job.InheritedConfigs.Global {
 					if v != "default" {
-						if err := jobConfig.mergeConfigSet(globalConfigSets[v]); err != nil {
+						if err := jobConfig.mergeConfigSet(globalConfigSets[v], mergoConfig); err != nil {
 							log.Fatalf("Failed merge global %s named configset: %s", v, err)
 						}
 					}
@@ -254,7 +254,7 @@ func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 				// if global precommit InheritedConfigs exist, merge them to jobConfigPre
 				if len(job.InheritedConfigs.PreConfigs.Global) > 0 {
 					for _, v := range job.InheritedConfigs.PreConfigs.Global {
-						if err := jobConfigPre.mergeConfigSet(globalConfigSets[v]); err != nil {
+						if err := jobConfigPre.mergeConfigSet(globalConfigSets[v], mergoConfig); err != nil {
 							log.Fatalf("Failed merge global %s named configset: %s", v, err)
 						}
 					}
@@ -263,7 +263,7 @@ func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 				// if global postcommit InheritedConfigs exist, merge them to jobConfigPost
 				if len(job.InheritedConfigs.PostConfigs.Global) > 0 {
 					for _, v := range job.InheritedConfigs.PostConfigs.Global {
-						if err := jobConfigPost.mergeConfigSet(globalConfigSets[v]); err != nil {
+						if err := jobConfigPost.mergeConfigSet(globalConfigSets[v], mergoConfig); err != nil {
 							log.Fatalf("Failed merge global %s named configset: %s", v, err)
 						}
 					}
@@ -272,7 +272,7 @@ func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 				// merge local inheritedConfigs to jobConfig
 				for _, v := range job.InheritedConfigs.Local {
 					if v != "default" {
-						if err := jobConfig.mergeConfigSet(r.LocalSets[v]); err != nil {
+						if err := jobConfig.mergeConfigSet(r.LocalSets[v], mergoConfig); err != nil {
 							log.Fatalf("Failed merge local %s named configset: %s", v, err)
 						}
 					}
@@ -282,7 +282,7 @@ func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 					// merge local inheritedConfigs to jobConfigPre
 					for _, v := range job.InheritedConfigs.Local {
 						if v != "default" {
-							if err := jobConfigPre.mergeConfigSet(r.LocalSets[v]); err != nil {
+							if err := jobConfigPre.mergeConfigSet(r.LocalSets[v], mergoConfig); err != nil {
 								log.Fatalf("Failed merge local %s named configset: %s", v, err)
 							}
 						}
@@ -290,7 +290,7 @@ func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 					// merge local precommit inheritedConfigs to jobConfigPre
 					if len(job.InheritedConfigs.PreConfigs.Local) > 0 {
 						for _, v := range job.InheritedConfigs.PreConfigs.Local {
-							if err := jobConfigPre.mergeConfigSet(r.LocalSets[v]); err != nil {
+							if err := jobConfigPre.mergeConfigSet(r.LocalSets[v], mergoConfig); err != nil {
 								log.Fatalf("Failed merge local %s named configset: %s", v, err)
 							}
 						}
@@ -301,7 +301,7 @@ func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 					// merge local inheritedConfigs to jobConfigPost
 					for _, v := range job.InheritedConfigs.Local {
 						if v != "default" {
-							if err := jobConfigPost.mergeConfigSet(r.LocalSets[v]); err != nil {
+							if err := jobConfigPost.mergeConfigSet(r.LocalSets[v], mergoConfig); err != nil {
 								log.Fatalf("Failed merge local %s named configset: %s", v, err)
 							}
 						}
@@ -309,45 +309,45 @@ func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 					// merge local postcommit inheritedConfigs to jobConfigPost
 					if len(job.InheritedConfigs.PostConfigs.Local) > 0 {
 						for _, v := range job.InheritedConfigs.PostConfigs.Local {
-							if err := jobConfigPost.mergeConfigSet(r.LocalSets[v]); err != nil {
+							if err := jobConfigPost.mergeConfigSet(r.LocalSets[v], mergoConfig); err != nil {
 								log.Fatalf("Failed merge local %s named configset: %s", v, err)
 							}
 						}
 					}
 				}
 
-				//merge jobconfig to jobConfig
+				// merge jobconfig to jobConfig
 				if len(job.JobConfig) > 0 {
-					if err := jobConfig.mergeConfigSet(job.JobConfig); err != nil {
+					if err := jobConfig.mergeConfigSet(job.JobConfig, mergoConfig); err != nil {
 						log.Fatalf("Failed merge job configset %s", err)
 					}
 				}
 
 				if generatePresubmitJob {
-					//merge jobconfig to jobConfigPre
+					// merge jobconfig to jobConfigPre
 					if len(job.JobConfig) > 0 {
-						if err := jobConfigPre.mergeConfigSet(job.JobConfig); err != nil {
+						if err := jobConfigPre.mergeConfigSet(job.JobConfig, mergoConfig); err != nil {
 							log.Fatalf("Failed merge job configset: %s", err)
 						}
 					}
-					//merge jobconfigPre to jobConfigPre
+					// merge jobconfigPre to jobConfigPre
 					if len(job.JobConfigPre) > 0 {
-						if err := jobConfigPre.mergeConfigSet(job.JobConfigPre); err != nil {
+						if err := jobConfigPre.mergeConfigSet(job.JobConfigPre, mergoConfig); err != nil {
 							log.Fatalf("Failed merge job configsetpre: %s", err)
 						}
 					}
 				}
 
 				if generatePostsubmitJob {
-					//merge jobconfig to jobConfigPost
+					// merge jobconfig to jobConfigPost
 					if len(job.JobConfig) > 0 {
-						if err := jobConfigPost.mergeConfigSet(job.JobConfig); err != nil {
+						if err := jobConfigPost.mergeConfigSet(job.JobConfig, mergoConfig); err != nil {
 							log.Fatalf("Failed merge job configset: %s", err)
 						}
 					}
-					//merge post jobconfigPost to jobConfigPost
+					// merge post jobconfigPost to jobConfigPost
 					if len(job.JobConfigPost) > 0 {
-						if err := jobConfigPost.mergeConfigSet(job.JobConfigPost); err != nil {
+						if err := jobConfigPost.mergeConfigSet(job.JobConfigPost, mergoConfig); err != nil {
 							log.Fatalf("Failed merge job configsetpost: %s", err)
 						}
 					}
@@ -374,12 +374,18 @@ func deepCopyConfigSet(configSet ConfigSet) ConfigSet {
 	return dst
 }
 
-func (j *ConfigSet) mergeConfigSet(configSet ConfigSet) error {
+func (j *ConfigSet) mergeConfigSet(configSet ConfigSet, mergoConfig mergo.Config) error {
 	if len(configSet) == 0 {
 		return errors.New("configSet not found")
 	}
-	if err := mergo.Merge(j, deepCopyConfigSet(configSet), mergo.WithOverride); err != nil {
-		return err
+	if mergoConfig.AppendSlice {
+		if err := mergo.Merge(j, deepCopyConfigSet(configSet), mergo.WithOverride, mergo.WithAppendSlice); err != nil {
+			return err
+		}
+	} else {
+		if err := mergo.Merge(j, deepCopyConfigSet(configSet), mergo.WithOverride); err != nil {
+			return err
+		}
 	}
 	return nil
 }

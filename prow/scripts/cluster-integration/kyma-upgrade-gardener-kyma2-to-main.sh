@@ -63,7 +63,6 @@ else
     log::error "GARDENER_PROVIDER ${GARDENER_PROVIDER} is not yet supported"
     exit 1
 fi
-
 # nice cleanup on exit, be it succesful or on fail
 trap gardener::cleanup EXIT INT
 
@@ -75,15 +74,17 @@ RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
 readonly COMMON_NAME_PREFIX="grd"
 COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 export COMMON_NAME
-
+set -x
 ### Cluster name must be less than 10 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
 
 # set pipefail to handle right errors from tests
 set -o pipefail
 
+utils::mask_debug_output
 # Install kyma from latest 2.x release
 kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
+utils::unmask_debug_output
 
 export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
 log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
@@ -102,6 +103,8 @@ gardener::generate_overrides
 
 log::info "### Provisioning Gardener cluster"
 gardener::provision_cluster
+
+set +x
 
 log::info "### Installing Kyma $KYMA_SOURCE"
 

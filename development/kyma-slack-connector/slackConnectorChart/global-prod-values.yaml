@@ -5,8 +5,6 @@ slackBotTokenSecretEnabled: false
 global:
   # Slack connector application name.
   appName: "mp-slack-connector"
-  # Slack connector application name. Must match name from Application resource.
-  slackKymaAppName: "mp-slack-connector"
   # Slack connector API ID
   apiId: "85ded56e-303b-43b3-a950-8b1c3d519561"
   # Slack application plan base name
@@ -14,8 +12,8 @@ global:
   # Slack application plan suffix. Must match suffix from CMP.
   cmpSlackAppPlanSuffix: "36130"
   # Repository name with functions code.
-  repositoryName: "test-infra"
+  repositoryName: "tooling-serverless-functions"
   # Repository URL with function code.
-  repositoryUrl: "https://github.com/kyma-project/test-infra.git"
+  repositoryUrl: "https://github.com/kyma-test-infra-dev/tooling-serverless-functions.git"
   # Slack application helm release name.
   slackAppHelmReleaseName: "common"

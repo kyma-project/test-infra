@@ -235,7 +235,7 @@ function utils::compress_send_to_vm() {
   tar -czf "${TMP_DIRECTORY}/pack.tar.gz" -C "${LOCAL_PATH}" "."
   #shellcheck disable=SC2088
   utils::send_to_vm "${ZONE}" "${REMOTE_NAME}" "${TMP_DIRECTORY}/pack.tar.gz" "~/"
-  gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --strict-host-key-checking=no --quiet --zone="${ZONE}" --command="mkdir -p ${REMOTE_PATH} && tar -xf ~/pack.tar.gz -C ${REMOTE_PATH}" --ssh-flag="-o ServerAliveInterval=30" "${REMOTE_NAME}"
+  gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --strict-host-key-checking=no --quiet --zone="${ZONE}" --command="mkdir -p ${REMOTE_PATH} && tar -xf ~/pack.tar.gz -C ${REMOTE_PATH}" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60" "${REMOTE_NAME}"
 
   rm -rf "${TMP_DIRECTORY}"
 }
@@ -741,5 +741,26 @@ function utils::generate_vars_for_build {
         utils_generate_vars_for_build_return_kymaSource="main"
     else
         log::error "Build type not known. Set -b parameter to value 'pr' or 'release', or set -s or -n parameter."
+    fi
+}
+
+# utils::mask_debug_output disables bash option x. This way it prevents from printing variables and command argument values.
+# Function should be called just before statement which need masking in case set -x is used to troubleshoot bash script.
+# A block with masked debug output must be closed by calling function utils::unmask_debug_output
+function utils::mask_debug_output {
+    if ( echo $- | grep x ); then
+        log::info "Disabling bash option x. Enter secret masking block."
+        utils_mask_debug_output_return_masked="true"
+        set +x
+    fi
+}
+
+# utils::unmask_debug_output enables bash option x if it was disabled by utils::mask_debug_output.
+# Function should be called just after statement which need masking in case set -x is used to troubleshoot bash script.
+function utils::unmask_debug_output {
+    if [[ ${utils_mask_debug_output_return_masked:-"false"} == "true" ]]; then
+        log::info "Enabling bash option x. Exit secret masking block"
+        unset utils_mask_debug_output_return_masked
+        set -x
     fi
 }

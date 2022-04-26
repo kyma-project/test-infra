@@ -18,10 +18,10 @@ plank:
       timeout: 3h
       grace_period: 10m
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20220323-9b8611d021
-        initupload: gcr.io/k8s-prow/initupload:v20220323-9b8611d021
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20220323-9b8611d021
-        sidecar: gcr.io/k8s-prow/sidecar:v20220323-9b8611d021
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20220412-66078146cd
+        initupload: gcr.io/k8s-prow/initupload:v20220412-66078146cd
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20220412-66078146cd
+        sidecar: gcr.io/k8s-prow/sidecar:v20220412-66078146cd
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -105,11 +105,6 @@ branch-protection:
       exclude:
         - "^dependabot/"
       repos:
-        test-infra:
-          required_pull_request_reviews:
-            dismiss_stale_reviews: false
-            require_code_owner_reviews: false
-            required_approving_review_count: 0
         kyma:
           branches:
             kyma-2.0-docu:
@@ -197,7 +192,6 @@ tide:
     kyma-incubator/podpreset-crd: squash
     kyma-incubator/service-catalog-tester: squash
     kyma-incubator/kymart: squash
-    kyma-incubator/terraform-provider-kind: squash
     kyma-incubator/dex: squash
     kyma-incubator/varkes: squash
 #    kyma-incubator/marketplaces: squash
@@ -207,7 +201,6 @@ tide:
     kyma-incubator/github-dashboard: squash
     kyma-incubator/vstudio-extension: squash
     kyma-incubator/wordpress-connector: squash
-    kyma-incubator/terraform-modules: squash
     kyma-incubator/connector-tools: squash
 #    kyma-incubator/github-slack-connectors: squash
     kyma-incubator/service-catalog: squash
@@ -241,9 +234,6 @@ tide:
         - kyma-project
         - kyma-incubator
       excludedRepos:
-        - kyma-project/test-infra # handled in separate query specifically for approve plugin
-        - kyma-project/third-party-images
-        - kyma-project/cli
         - kyma-incubator/compass # handled in separate query specifically for approve plugin
       reviewApprovedRequired: true
     - labels:
@@ -257,9 +247,6 @@ tide:
         - do-not-merge/invalid-commit-message
         - do-not-merge/missing-docs-review
       repos:
-        - kyma-project/test-infra
-        - kyma-project/third-party-images
-        - kyma-project/cli
         - kyma-incubator/compass
   context_options:
     from-branch-protection: true
@@ -1195,9 +1182,3 @@ presets:
         value: "https://mothership-reconciler.cp.dev.kyma.cloud.sap/v1"
       - name: KCP_OIDC_ISSUER_URL
         value: "https://kymatest.accounts400.ondemand.com"
-  - labels:
-      # Allows setting the feature flag in Eventing Charts to enable the NATS JetStream Backend.
-      preset-eventing-enable-jetstream: "true"
-    env:
-      - name: EVENTING_ENABLE_JETSTREAM
-        value: "true"

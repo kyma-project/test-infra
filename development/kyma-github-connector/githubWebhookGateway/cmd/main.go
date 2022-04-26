@@ -25,7 +25,7 @@ func main() {
 	}
 
 	// create sender which is responsible for sending cloudevents messages to kyma
-	kyma := events.NewSender(client, events.NewValidator(), conf.KymaEventsService, conf.TargetEventingAppName)
+	kyma := events.NewSender(client, events.NewValidator(), conf.KymaEventsService, conf.AppName)
 	webhook := gateway.NewWebHookHandler(
 		github.NewReceivingEventsWrapper(conf.GitHubWebhookSecret),
 		kyma,

@@ -24,7 +24,7 @@ function kyma::deploy_kyma() {
         case $opt in
             s)
                 kymaSource="$OPTARG"
-                log::info "Kyma Source to install: ${kymaSource}"
+    						log::info "Kyma Source to install: ${kymaSource}"
                 ;;
             p)
                 if [ -n "$OPTARG" ]; then
@@ -84,7 +84,7 @@ function kyma::get_last_release_version {
     while getopts ":t:v:" opt; do
         case $opt in
             t)
-                githubToken="$OPTARG" ;;
+                utils::mask_debug_output; githubToken="$OPTARG"; utils::unmask_debug_output ;;
             v)
                 searchedVersion="$OPTARG" ;;
             \?)
@@ -94,17 +94,71 @@ function kyma::get_last_release_version {
         esac
     done
 
+    utils::mask_debug_output
     utils::check_empty_arg "$githubToken" "Github token was not provided. Exiting..."
+    utils::unmask_debug_output
 
     if [[ -n "${searchedVersion}" ]]; then
+        utils::mask_debug_output
         # shellcheck disable=SC2034
         kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
             | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | [.[]| select( .tag_name | match("'"${searchedVersion}"'"))] | .[-1].tag_name')
+        utils::unmask_debug_output
     else
-    # shellcheck disable=SC2034
+        utils::mask_debug_output
+        # shellcheck disable=SC2034
         kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
             | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].tag_name')
+        utils::unmask_debug_output
     fi
+}
+
+function kyma::get_offset_minor_releases() {
+    while getopts ":v:" opt; do
+        case $opt in
+        v)
+            base="$OPTARG" ;;
+        \?)
+            echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+        :)
+            echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+    done
+
+    RE='[^0-9]*\([0-9]*\)[.]\([0-9]*\)[.]\([0-9]*\)\([0-9A-Za-z-]*\)'
+
+    # shellcheck disable=SC2001
+    MAJOR=$(echo "$base" | sed -e "s#$RE#\\1#")
+    # shellcheck disable=SC2001
+    MINOR=$(echo "$base" | sed -e "s#$RE#\\2#")
+    # shellcheck disable=SC2001
+    PATCH=$(echo "$base" | sed -e "s#$RE#\\3#")
+
+    local index=0
+    minor_release_versions[$index]=$base
+
+    # PREVIOUS_MINOR_VERSION_COUNT - Count of last Kyma2 minor versions to be upgraded from
+    for i in $(seq 1 "$PREVIOUS_MINOR_VERSION_COUNT"); do
+        if [ "$MINOR" -gt 0 ]; then
+            MINOR=$((MINOR-1))
+        else
+            break
+        fi
+        newVersion="$MAJOR.$MINOR.$PATCH"
+        kyma::get_last_release_version \
+        -t "${BOT_GITHUB_TOKEN}" \
+        -v "${newVersion}"
+
+        if [[ -z "$kyma_get_last_release_version_return_version" ]] || [[ "$kyma_get_last_release_version_return_version" = "null" ]] ; then
+            log::info "### The last release version returned from the offset is ${newVersion} and thus invalid"
+            continue
+        fi
+        index=$((index+1))
+        # shellcheck disable=SC2034
+        minor_release_versions[$index]=$newVersion
+    done
+
+    log::info "#### Valid minor versions to be tested:" "${minor_release_versions[@]}"
 }
 
 # kyma::get_previous_release_version returns previous Kyma release version (i.e. one version before the latest released version)
