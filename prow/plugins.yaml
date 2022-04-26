@@ -78,20 +78,11 @@ external_plugins:
       events:
         - pull_request
         - pull_request_review
-  kyma-project/third-party-images:
-    - name: needs-tws
-      events:
-        - pull_request
-        - pull_request_review
   kyma-incubator/compass:
     - name: needs-tws
       events:
         - pull_request
         - pull_request_review
-  kyma-project:
-    - name: automerge-notification
-      events:
-        - pull_request
 
 config_updater:
   maps:
