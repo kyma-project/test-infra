@@ -218,6 +218,7 @@ function utils::ssh_to_vm_with_script() {
   local REMOTE_NAME=$2
   local LOCAL_SCRIPT_PATH=$3
   local COMMAND=$4
+
   if [ -z "${COMMAND}"]; then
     COMMAND="sudo bash"
   fi
