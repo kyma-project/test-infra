@@ -200,7 +200,27 @@ function utils::send_to_vm() {
     [[ ${i} -ge 5 ]] && log::error "Failed after $i attempts." && exit 1
   done;
 }
+function utils::ssh_to_vm_with_script() {
+  if [ -z "$1" ]; then
+    echo "Zone is empty. Exiting..."
+    exit 1
+  fi
+  if [ -z "$2" ]; then
+    echo "Remote name is empty. Exiting..."
+    exit 1
+  fi
+  if [ -z "$3" ]; then
+    echo "Local script is empty. Exiting..."
+    exit 1
+  fi
 
+  local ZONE=$1
+  local REMOTE_NAME=$2
+  local LOCAL_SCRIPT_PATH=$3
+
+  gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-debug}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60" "${REMOTE_NAME}" < "${LOCAL_SCRIPT_PATH}"
+
+}
 # utils::compress_send_to_vm compresses and sends file(s) to Google Compute Platform over scp
 #
 # Arguments
