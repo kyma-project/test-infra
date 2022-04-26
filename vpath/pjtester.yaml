@@ -1,8 +1,0 @@
-pjNames:
-  - pjName: "pre-compass-components-hydrator"
-    pjPath: "test-infra/prow/jobs/incubator/compass/components/hydrator"
-    report: true
-prConfigs:
-  kyma-incubator:
-    compass:
-      prNumber: 2268
