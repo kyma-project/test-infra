@@ -126,9 +126,6 @@ fi
     utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${KYMA_PROJECT_DIR}" "~/"
 
 log::info "Triggering the installation"
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" \
-    --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" \
-    --command="sudo bash ~/test-infra/prow/scripts/cluster-integration/serverless-integration-k3s.sh ${INTEGRATION_SUITE}" \
-    --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60" "kyma-integration-test-${RANDOM_ID}"
+utils::ssh_to_vm_with_script "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/serverless-integration-k3s.sh" "sudo INTEGRATION_SUITE=${INTEGRATION_SUITE} bash"
 
 log::success "all done"
