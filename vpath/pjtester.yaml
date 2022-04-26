@@ -1,8 +1,6 @@
 pjNames:
   - pjName: "skr-aws-integration-dev"
-  - pjName: "pre-main-kyma-gardener-gcp-eventing"
-  - pjName: "kyma-upgrade-k3d-kyma2-to-main"
 prConfigs:
   kyma-project:
     kyma:
-      prNumber: 14093
+      prNumber: 14103
