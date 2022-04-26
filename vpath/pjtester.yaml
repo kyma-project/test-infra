@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "reconciler-control-plane-image-bump"
+    report: true
+prConfigs:
+  kyma-project:
+    control-plane:
+      prNumber: 1601

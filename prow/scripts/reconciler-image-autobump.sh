@@ -87,17 +87,17 @@ function autobump::update_reconciler_image_tag(){
   yq e -i '(.global.images.components.[] | select(has("version")).["version"] ) |= "'${RECONCILER_IMAGE_TAG}'"' ./resources/kcp/values.yaml
 }
 
-function autobump::commit_changes(){
+function autobump::commit_changes_and_create_pr(){
   log::info "Commit changes..."
   cd "${CONTROL_PLANE_DIR}"
-  git add resources/kcp/values.yaml
-  git commit -m 'Bumping Reconciler:\n\nNo eu.gcr.io/kyma-project/incubator/reconciler/ changes.\n\n' '--author' 'Kyma Bot <kyma.bot@sap.com>'
-}
-
-function autobump::run() {
-  log::info "Running image auto-bump tool for reconciler"
-  cd "${CONTROL_PLANE_DIR}"
-  "${KYMA_TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/autobumper --config="${BUMP_TOOL_CONFIG_FILE}"
+  if [[ $(git status --porcelain) ]]; then
+    git add resources/kcp/values.yaml
+    git commit -m 'Bumping Reconciler:\n\nNo eu.gcr.io/kyma-project/incubator/reconciler/ changes.\n\n' '--author' 'Kyma Bot <kyma.bot@sap.com>'
+    log::info "Create PR to control plane"
+    "${KYMA_TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/autobumper --config="${BUMP_TOOL_CONFIG_FILE}"
+  else
+    log::info "Nothing changed, stopped."
+  fi
 }
 
 ## ---------------------------------------------------------------------------------------
@@ -111,10 +111,7 @@ reconciler::fetch_latest_image_tag
 
 autobump::update_reconciler_image_tag
 
-autobump::commit_changes
-
-# run autobump tool to update reconciler image tag in kyma-project/control-plane
-autobump::run
+autobump::commit_changes_and_create_pr
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
