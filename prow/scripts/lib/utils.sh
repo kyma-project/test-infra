@@ -210,8 +210,7 @@ function utils::ssh_to_vm_with_script() {
     exit 1
   fi
   if [ -z "$3" ]; then
-    echo "Local script is empty. Exiting..."
-    exit 1
+    echo "Local script is empty. Continue..."
   fi
 
   local ZONE=$1
