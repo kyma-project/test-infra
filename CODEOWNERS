@@ -8,7 +8,7 @@
 
 * @kyma-project/prow
 /development @kyma-project/prow
-/docs @kyma-project/prow @majakurcius @mmitoraj @grego952 @klaudiagrz @nhingerl
+/docs @kyma-project/prow @majakurcius @mmitoraj @grego952 @klaudiagrz @NHingerl
 /prow @kyma-project/prow
 /prow/cluster @kyma-project/prow
 /prow/images @kyma-project/prow
