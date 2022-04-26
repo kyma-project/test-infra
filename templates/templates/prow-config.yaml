@@ -105,22 +105,7 @@ branch-protection:
       exclude:
         - "^dependabot/"
       repos:
-        test-infra:
-          required_pull_request_reviews:
-            dismiss_stale_reviews: false
-            require_code_owner_reviews: false
-            required_approving_review_count: 0
         kyma:
-          branches:
-            kyma-2.0-docu:
-              required_pull_request_reviews:
-                require_code_owner_reviews: false
-        cli:
-          required_pull_request_reviews:
-            dismiss_stale_reviews: false
-            require_code_owner_reviews: false
-            required_approving_review_count: 0
-        third-party-images:
           required_pull_request_reviews:
             dismiss_stale_reviews: false
             require_code_owner_reviews: false
@@ -249,9 +234,7 @@ tide:
         - kyma-project
         - kyma-incubator
       excludedRepos:
-        - kyma-project/test-infra # handled in separate query specifically for approve plugin
-        - kyma-project/third-party-images
-        - kyma-project/cli
+        - kyma-project/kyma
         - kyma-incubator/compass # handled in separate query specifically for approve plugin
       reviewApprovedRequired: true
     - labels:
@@ -265,40 +248,6 @@ tide:
         - do-not-merge/invalid-commit-message
         - do-not-merge/missing-docs-review
       repos:
-        - kyma-project/test-infra
-        - kyma-project/third-party-images
-        - kyma-project/cli
-        - kyma-incubator/compass
-    - author: kyma-bot
-      labels:
-        - skip-review
-      missingLabels:
-        - needs-rebase
-        - do-not-merge/hold
-        - do-not-merge/work-in-progress
-        - do-not-merge/invalid-owners-file
-        - do-not-merge/invalid-commit-message
-        - do-not-merge/missing-docs-review
-      repos:
-        - kyma-project/test-infra
-        - kyma-project/third-party-images
-        - kyma-project/cli
-        - kyma-project/kyma
-        - kyma-incubator/compass
-    - author: dependabot[bot]
-      labels:
-        - skip-review
-      missingLabels:
-        - needs-rebase
-        - do-not-merge/hold
-        - do-not-merge/work-in-progress
-        - do-not-merge/invalid-owners-file
-        - do-not-merge/invalid-commit-message
-        - do-not-merge/missing-docs-review
-      repos:
-        - kyma-project/test-infra
-        - kyma-project/third-party-images
-        - kyma-project/cli
         - kyma-project/kyma
         - kyma-incubator/compass
   context_options:
