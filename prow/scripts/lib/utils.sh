@@ -222,10 +222,10 @@ function utils::ssh_to_vm_with_script() {
     COMMAND="sudo bash"
   fi
 
-  if [ -z "$3" ]; then
-      gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-debug}" --quiet --zone="${ZONE}" --command="${COMMAND}" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60 -v" "${REMOTE_NAME}" < "${LOCAL_SCRIPT_PATH}"
-  else
+  if [ -z "${LOCAL_SCRIPT_PATH}" ]; then
       gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-debug}" --quiet --zone="${ZONE}" --command="${COMMAND}" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60 -v" "${REMOTE_NAME}"
+  else
+      gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-debug}" --quiet --zone="${ZONE}" --command="${COMMAND}" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60 -v" "${REMOTE_NAME}" < "${LOCAL_SCRIPT_PATH}"
   fi
 }
 # utils::compress_send_to_vm compresses and sends file(s) to Google Compute Platform over scp
