@@ -1,6 +1,0 @@
-pjNames:
-  - pjName: "skr-aws-without-sc-integration-dev"
-prConfigs:
-  kyma-project:
-    kyma:
-      prNumber: 14071
