@@ -121,12 +121,9 @@ done || exit 1
 trap cleanup exit INT
 
 retries=15
-while ! gcloud compute ssh \
-          --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" \
-          --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" \
-          --quiet --zone="${ZONE}" \
-          "cli-integration-test-${RANDOM_ID}" \
-          --command="mkdir \$HOME/bin"
+#shellcheck disable=SC2088
+while ! utils::ssh_to_vm_with_script "${ZONE}" "cli-integration-test-${RANDOM_ID}" "mkdir \$HOME/bin"
+
 do
     retries=$((retries-1))
     if [[ "$retries" == 0 ]]; then
@@ -140,31 +137,16 @@ log::info "Created bin directory on VM"
 log::info "Copying Kyma CLI to the instance"
 #shellcheck disable=SC2088
 utils::send_to_vm "${ZONE}" "cli-integration-test-${RANDOM_ID}" "${KYMA_PROJECT_DIR}/cli/bin/kyma-linux" "~/bin/kyma"
-gcloud compute ssh \
-  --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" \
-  --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" \
-  --quiet \
-  --zone="${ZONE}" \
-  "cli-integration-test-${RANDOM_ID}" \
-  --command="sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
+#shellcheck disable=SC2088
+utils::ssh_to_vm_with_script "${ZONE}" "cli-integration-test-${RANDOM_ID}" "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
 
 log::info "Provisioning k3d Kubernetes runtime"
-gcloud compute ssh \
-  --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" \
-  --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" \
-  --quiet \
-  --zone="${ZONE}" \
-  "cli-integration-test-${RANDOM_ID}" \
-  --command="yes | sudo kyma provision k3d --ci"
+#shellcheck disable=SC2088
+utils::ssh_to_vm_with_script "${ZONE}" "cli-integration-test-${RANDOM_ID}" "yes | sudo kyma provision k3d --ci"
 
 log::info "Installing Kyma"
-gcloud compute ssh \
-  --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" \
-  --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" \
-  --quiet \
-  --zone="${ZONE}" \
-  "cli-integration-test-${RANDOM_ID}" \
-  --command="yes | sudo kyma deploy --ci ${SOURCE}"
+#shellcheck disable=SC2088
+utils::ssh_to_vm_with_script "${ZONE}" "cli-integration-test-${RANDOM_ID}" "yes | sudo kyma deploy --ci ${SOURCE}"
 
 log::info "Copying Kyma to the instance"
 #shellcheck disable=SC2088

@@ -112,16 +112,17 @@ curl -sSLo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/1.
 tar xvzf kyma.tar.gz
 chmod +x kyma
 
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "control-plane-integration-test-${RANDOM_ID}" --command="mkdir \$HOME/bin"
+#shellcheck disable=SC2088
+utils::ssh_to_vm_with_script "${ZONE}" "control-plane-integration-test-${RANDOM_ID}" "mkdir \$HOME/bin"
 
 #shellcheck disable=SC2088
 utils::send_to_vm "${ZONE}" "control-plane-integration-test-${RANDOM_ID}" "kyma" "~/bin/kyma"
 
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "control-plane-integration-test-${RANDOM_ID}" --command="sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
-
+#shellcheck disable=SC2088
+utils::ssh_to_vm_with_script "${ZONE}" "control-plane-integration-test-${RANDOM_ID}" "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
 log::info "Triggering the installation"
 
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "control-plane-integration-test-${RANDOM_ID}" --command="yes | ./control-plane/installation/scripts/prow/deploy-and-test.sh"
-
+#shellcheck disable=SC2088
+utils::ssh_to_vm_with_script "${ZONE}" "control-plane-integration-test-${RANDOM_ID}" "yes | ./control-plane/installation/scripts/prow/deploy-and-test.sh"
 log::info "Copying test artifacts from VM"
 utils::receive_from_vm "${ZONE}" "control-plane-integration-test-${RANDOM_ID}" "/var/log/prow_artifacts" "${ARTIFACTS}"
