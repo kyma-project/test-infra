@@ -161,6 +161,6 @@ utils::send_to_vm "${ZONE}" "busola-smoke-test-${RANDOM_ID}" "/home/prow/go/src/
 
 
 log::info "Launching the busola-smoke-test-k3s.sh script"
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60" "busola-smoke-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/busola-smoke-test-docker.sh"
-
+#shellcheck disable=SC2088
+utils::ssh_to_vm_with_script "${ZONE}" "busola-smoke-test-${RANDOM_ID}" "sudo bash" "${SCRIPT_DIR}/cluster-integration/busola-smoke-test-docker.sh"
 log::success "all done"

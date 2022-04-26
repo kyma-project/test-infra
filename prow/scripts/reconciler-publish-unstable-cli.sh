@@ -171,23 +171,12 @@ log::info "Copying Kyma to the instance"
 utils::compress_send_to_vm "${ZONE}" "cli-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
 
 log::info "Running fast-integration tests"
-gcloud compute ssh\
-  --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" \
-  --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" \
-  --quiet \
-  --zone="${ZONE}" \
-  --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60" \
-  "cli-integration-test-${RANDOM_ID}" \
-  --command="cd ~/kyma/tests/fast-integration && sudo make ci"
+#shellcheck disable=SC2088
+utils::ssh_to_vm_with_script "${ZONE}" "cli-integration-test-${RANDOM_ID}" "cd ~/kyma/tests/fast-integration && sudo make ci"
 
 log::info "Uninstalling Kyma"
-gcloud compute ssh \
-  --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" \
-  --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" \
-  --quiet \
-  --zone="${ZONE}" \
-  "cli-integration-test-${RANDOM_ID}" \
-  --command="sudo kyma undeploy --ci --timeout=10m0s"
+#shellcheck disable=SC2088
+utils::ssh_to_vm_with_script "${ZONE}" "cli-integration-test-${RANDOM_ID}" "sudo kyma undeploy --ci --timeout=10m0s"
 
 log::info "Publishing new unstable builds to $KYMA_CLI_UNSTABLE_BUCKET"
 make ci-main

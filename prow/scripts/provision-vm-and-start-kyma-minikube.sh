@@ -119,8 +119,7 @@ utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home
 
 log::info "Triggering the installation"
 log::info "Running testsuite ${testSuiteScript}"
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --strict-host-key-checking=no --quiet --zone="${ZONE}" \
-  --command="sudo PULL_NUMBER=${PULL_NUMBER}  TEST_SUITE=${TEST_SUITE} bash" \
-  --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60" "kyma-integration-test-${RANDOM_ID}" <"${SCRIPT_DIR}/${testSuiteScript}"
+#shellcheck disable=SC2088
+utils::ssh_to_vm_with_script "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "sudo PULL_NUMBER=${PULL_NUMBER}  TEST_SUITE=${TEST_SUITE} bash" "${SCRIPT_DIR}/${testSuiteScript}"
 
 log::success "all done"

@@ -210,17 +210,17 @@ function utils::ssh_to_vm_with_script() {
     exit 1
   fi
   if [ -z "$3" ]; then
+    echo "Command is empty. Exiting..."
+    exit 1
+  fi
+  if [ -z "$4" ]; then
     echo "Local script is empty, continue with command only mode..."
   fi
 
   local ZONE=$1
   local REMOTE_NAME=$2
-  local LOCAL_SCRIPT_PATH=$3
-  local COMMAND=$4
-
-  if [ -z "${COMMAND}"]; then
-    COMMAND="sudo bash"
-  fi
+  local COMMAND=$3
+  local LOCAL_SCRIPT_PATH=$4
 
   if [ -z "${LOCAL_SCRIPT_PATH}" ]; then
       gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-debug}" --quiet --zone="${ZONE}" --command="${COMMAND}" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60 -v" "${REMOTE_NAME}"
