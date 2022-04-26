@@ -25,8 +25,6 @@ plugins:
   kyma-project/test-infra:
     plugins:
       - config-updater
-      - approve
-      - blunderbuss
   kyma-incubator/compass:
     plugins:
       - approve
@@ -68,11 +66,6 @@ external_plugins:
     - name: cla-assistant
       events:
         - issue_comment
-  kyma-project/test-infra:
-    - name: needs-tws
-      events:
-        - pull_request
-        - pull_request_review
   kyma-project/kyma:
     - name: needs-tws
       events:
@@ -138,10 +131,6 @@ blunderbuss:
   ignore_drafts: true
 
 approve:
-  - repos:
-      - kyma-project/test-infra
-    require_self_approval: false
-    ignore_review_state: false
   - repos:
       - kyma-project/kyma
       - kyma-incubator/compass
