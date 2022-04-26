@@ -132,10 +132,6 @@ blunderbuss:
 
 approve:
   - repos:
-      - kyma-project/test-infra
-    require_self_approval: false
-    ignore_review_state: false
-  - repos:
       - kyma-project/kyma
       - kyma-incubator/compass
     require_self_approval: true # ignore authors of the PRs to be able to auto-approve their PR if they are owners

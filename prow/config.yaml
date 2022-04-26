@@ -237,7 +237,6 @@ tide:
         - kyma-project
         - kyma-incubator
       excludedRepos:
-        - kyma-project/test-infra # handled in separate query specifically for approve plugin
         - kyma-project/kyma
         - kyma-incubator/compass # handled in separate query specifically for approve plugin
       reviewApprovedRequired: true
@@ -252,7 +251,6 @@ tide:
         - do-not-merge/invalid-commit-message
         - do-not-merge/missing-docs-review
       repos:
-        - kyma-project/test-infra
         - kyma-project/kyma
         - kyma-incubator/compass
   context_options:
