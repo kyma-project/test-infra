@@ -106,6 +106,7 @@ gardener::set_machine_type
 # currently only Azure generates overrides, but this may change in the future
 gardener::generate_overrides
 
+export CLEANUP_CLUSTER="true"
 gardener::provision_cluster
 
 # shellcheck source=prow/scripts/lib/kyma.sh
