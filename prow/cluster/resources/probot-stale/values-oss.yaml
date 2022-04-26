@@ -1,5 +1,5 @@
 deployment:
-  image: eu.gcr.io/kyma-project/test-infra/probot-stale:v20211223-7d9f748d
+  image: eu.gcr.io/kyma-project/test-infra/probot-stale:v20220421-8858cbe6
   imagePullPolicy: IfNotPresent
   config:
     # https://probot.github.io/docs/configuration/

@@ -11,12 +11,10 @@
 # - GARDENER_KYMA_PROW_KUBECONFIG - Kubeconfig of the Gardener service account
 # - GARDENER_KYMA_PROW_PROJECT_NAME - Name of the gardener project where the cluster will be integrated.
 # - GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME - Name of the secret configured in the gardener project to access the cloud provider
+# - PREVIOUS_MINOR_VERSION_COUNT - Count of last Kyma2 minor versions to be upgraded from
 # - MACHINE_TYPE - (optional) machine type
 #
 #Please look in each provider script for provider specific requirements
-
-
-
 
 # exit on error
 set -o errexit
@@ -44,7 +42,53 @@ requiredVars=(
     GARDENER_KYMA_PROW_KUBECONFIG
     GARDENER_KYMA_PROW_PROJECT_NAME
     GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
+    PREVIOUS_MINOR_VERSION_COUNT
 )
+
+function deploy_base() {
+  #reverse array from oldest minor version -> latest minor version
+  valid_minor_release_count="${#minor_release_versions[@]}"
+
+  # base version
+  export KYMA_SOURCE="${minor_release_versions[$((valid_minor_release_count -1))]}"
+  log::info "### Installing Kyma $KYMA_SOURCE"
+
+  # uses previously set KYMA_SOURCE
+  kyma2_install_dir="$KYMA_SOURCES_DIR/kyma2.$((valid_minor_release_count))"
+  kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kyma2_install_dir" -u "true"
+
+  log::info "### Run pre-upgrade tests"
+  gardener::pre_upgrade_test_fast_integration_kyma
+}
+
+function upgrade() {
+  for (( i=$((valid_minor_release_count -1)); i>0; i-- )) ; do
+    #    e.g. for last 3 minor versions input (before reversal):
+    #    0 - x.2.x
+    #    1 - x.1.x
+    #    2 - x.0.x
+    log::info "### Testing upgrade from Kyma ${minor_release_versions[${i}]} to ${minor_release_versions[$((i - 1))]}"
+
+    # upgrade version
+    export KYMA_SOURCE="${minor_release_versions[$((i - 1))]}"
+    log::info "### Installing Kyma $KYMA_SOURCE"
+
+    kyma2_install_dir="$KYMA_SOURCES_DIR/kyma2.$i"
+    kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kyma2_install_dir" -u "true"
+
+    # generate pod-security-policy list in json
+    utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
+
+    log::info "### Run post-upgrade tests"
+    gardener::post_upgrade_test_fast_integration_kyma
+
+    log::info "### waiting some time to finish cleanups"
+    sleep 60
+
+    log::info "### Run pre-upgrade tests again to validate component removal"
+    gardener::pre_upgrade_test_fast_integration_kyma
+  done
+}
 
 utils::check_required_vars "${requiredVars[@]}"
 log::info "### Starting pipeline"
@@ -64,7 +108,7 @@ else
     exit 1
 fi
 
-# nice cleanup on exit, be it succesful or on fail
+# nice cleanup on exit, be it successful or on fail
 trap gardener::cleanup EXIT INT
 
 #Used to detect errors for logging purposes
@@ -82,11 +126,14 @@ export CLUSTER_NAME="${COMMON_NAME}"
 # set pipefail to handle right errors from tests
 set -o pipefail
 
-# Install Kyma form latest 1.x release
-kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}" -v "^1."
-
+# Read latest release version
+kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
 export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
-log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
+log::info "### Reading latest release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
+
+# Assess previous minor versions
+declare -A minor_release_versions
+kyma::get_offset_minor_releases -v "${KYMA_SOURCE}"
 
 # checks required vars and initializes gcloud/docker if necessary
 gardener::init
@@ -103,51 +150,15 @@ gardener::generate_overrides
 log::info "### Provisioning Gardener cluster"
 gardener::provision_cluster
 
-log::info "### Installing Kyma $KYMA_SOURCE"
+# deploy base minor version
+deploy_base
 
-# uses previously set KYMA_SOURCE
-gardener::install_kyma
-
-# generate pod-security-policy list in json
-utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
-
-log::info "### Run pre-upgrade tests"
-gardener::pre_upgrade_test_fast_integration_kyma
-
-# Upgrade kyma to latest 2.x release
-export KYMA_MAJOR_VERSION="2"
-log::info "### Installing Kyma 2.x"
-
-kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
-export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
-log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
-
-kyma2_install_dir="$KYMA_SOURCES_DIR/kyma2"
-kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kyma2_install_dir" -u "true"
-
-log::info "### Run post-upgrade tests"
-gardener::post_upgrade_test_fast_integration_kyma
-
-log::info "### waiting some time to finish cleanups"
-sleep 60
-
-log::info "### Run pre-upgrade tests again to validate component removal"
-gardener::pre_upgrade_test_fast_integration_kyma
-
-log::info "### Remove old components"
-helm delete core -n kyma-system
-helm delete console -n kyma-system
-helm delete dex -n kyma-system
-helm delete apiserver-proxy -n kyma-system
-helm delete iam-kubeconfig-service -n kyma-system
-helm delete testing -n kyma-system
-helm delete xip-patch -n kyma-installer
-helm delete permission-controller -n kyma-system
-
-kubectl delete ns kyma-installer --ignore-not-found=true
-
-log::info "### Run post-upgrade tests again to validate component removal"
-gardener::post_upgrade_test_fast_integration_kyma
+# upgrade to next versions in a loop
+upgrade
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
+
+unset minor_release_versions
+
+

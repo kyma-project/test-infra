@@ -24,7 +24,7 @@ function kyma::deploy_kyma() {
         case $opt in
             s)
                 kymaSource="$OPTARG"
-                log::info "Kyma Source to install: ${kymaSource}"
+    						log::info "Kyma Source to install: ${kymaSource}"
                 ;;
             p)
                 if [ -n "$OPTARG" ]; then
@@ -111,6 +111,53 @@ function kyma::get_last_release_version {
             | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].tag_name')
         utils::unmask_debug_output
     fi
+}
+
+function kyma::get_offset_minor_releases() {
+    while getopts ":v:" opt; do
+        case $opt in
+        v)
+            base="$OPTARG" ;;
+        \?)
+            echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+        :)
+            echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+    done
+
+    RE='[^0-9]*\([0-9]*\)[.]\([0-9]*\)[.]\([0-9]*\)\([0-9A-Za-z-]*\)'
+
+    # shellcheck disable=SC2001
+    MAJOR=$(echo "$base" | sed -e "s#$RE#\\1#")
+    # shellcheck disable=SC2001
+    MINOR=$(echo "$base" | sed -e "s#$RE#\\2#")
+    # shellcheck disable=SC2001
+    PATCH=$(echo "$base" | sed -e "s#$RE#\\3#")
+
+    local index=0
+    minor_release_versions[$index]=$base
+
+    # PREVIOUS_MINOR_VERSION_COUNT - Count of last Kyma2 minor versions to be upgraded from
+    for i in $(seq 1 "$PREVIOUS_MINOR_VERSION_COUNT"); do
+        if [ "$MINOR" -gt 0 ]; then
+            ((MINOR-=1))
+        else
+            break
+        fi
+        newVersion="$MAJOR.$MINOR.$PATCH"
+
+        kyma::get_last_release_version \
+        -t "${BOT_GITHUB_TOKEN}" \
+        -v "${newVersion}"
+
+        if [[ -z "$kyma_get_last_release_version_return_version" ]] || [[ "$kyma_get_last_release_version_return_version" = "null" ]] ; then
+            log::info "### The last release version returned from the offset is ${newVersion} and thus invalid"
+            continue
+        fi
+        ((index+=1))
+        # shellcheck disable=SC2034
+        minor_release_versions[$index]=$newVersion
+    done
 }
 
 # kyma::get_previous_release_version returns previous Kyma release version (i.e. one version before the latest released version)

@@ -463,6 +463,7 @@ templates:
                   name: "pre-main-kyma-integration-k3d-central-app-connectivity-compass"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  optional: "true"
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-compass-dev: "true"

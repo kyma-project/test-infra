@@ -9,9 +9,6 @@
 #
 #Please look in each provider script for provider specific requirements
 
-
-
-
 set -o errexit
 set -o pipefail
 
