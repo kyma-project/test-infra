@@ -1,5 +1,6 @@
 pjNames:
   - pjName: "kyma-integration-k3d-telemetry"
+  - pjName: "skr-aws-integration-dev"
 prConfigs:
   kyma-project:
     kyma:
