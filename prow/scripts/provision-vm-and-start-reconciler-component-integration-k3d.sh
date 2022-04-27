@@ -110,6 +110,7 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 trap cleanup exit INT
 
 # Determine Kyma version
+echo "KYMA version: $KYMA_VERSION"
 if [[ ! $KYMA_VERSION ]]; then
     # Fetch latest Kyma2 release
     kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
