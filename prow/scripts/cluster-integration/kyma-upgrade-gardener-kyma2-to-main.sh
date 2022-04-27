@@ -74,7 +74,7 @@ RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
 readonly COMMON_NAME_PREFIX="grd"
 COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 export COMMON_NAME
-set -x
+
 ### Cluster name must be less than 10 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
 
@@ -103,8 +103,6 @@ gardener::generate_overrides
 
 log::info "### Provisioning Gardener cluster"
 gardener::provision_cluster
-
-set +x
 
 log::info "### Installing Kyma $KYMA_SOURCE"
 
