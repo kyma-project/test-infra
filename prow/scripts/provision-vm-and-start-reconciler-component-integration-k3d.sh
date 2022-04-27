@@ -55,6 +55,8 @@ else
   LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=reconciler-integration")
 fi
 
+echo "xcf3846 LABELS: $LABELS"
+
 POSITIONAL=()
 while [[ $# -gt 0 ]]; do
   key="$1"
@@ -105,10 +107,9 @@ for ZONE in ${EU_ZONES}; do
   log::error "Could not create machine in zone ${ZONE}"
 done || exit 1
 ENDTIME=$(date +%s)
-echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
-echo "before trap"
+
 trap cleanup exit INT
-echo "after trap"
+
 # Determine Kyma version
 echo "KYMA version: $KYMA_VERSION"
 if [[ ! $KYMA_VERSION ]]; then
