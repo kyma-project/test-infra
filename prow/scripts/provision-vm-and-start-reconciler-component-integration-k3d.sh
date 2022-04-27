@@ -106,9 +106,9 @@ for ZONE in ${EU_ZONES}; do
 done || exit 1
 ENDTIME=$(date +%s)
 echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
-
+echo "before trap"
 trap cleanup exit INT
-
+echo "after trap"
 # Determine Kyma version
 echo "KYMA version: $KYMA_VERSION"
 if [[ ! $KYMA_VERSION ]]; then
