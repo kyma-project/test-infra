@@ -24,8 +24,8 @@ func TestBranchProtection(t *testing.T) {
 		contexts     []string
 		approvals    int
 	}{
+		{"kyma-project", "test-infra", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-project", "kyma", "main", []string{"license/cla", "tide"}, 1},
-		{"kyma-project", "test-infra", "main", []string{"license/cla", "tide"}, 0},
 		{"kyma-project", "website", "main", []string{"license/cla", "netlify/kyma-project/deploy-preview", "tide"}, 1},
 		{"kyma-project", "website", "archive-snapshots", []string{"license/cla", "netlify/kyma-project-old/deploy-preview", "tide"}, 1},
 		{"kyma-project", "community", "main", []string{"license/cla", "tide"}, 1},

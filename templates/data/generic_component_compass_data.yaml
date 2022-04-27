@@ -88,6 +88,35 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
+      - to: ../prow/jobs/incubator/compass/components/hydrator/hydrator-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-incubator/compass"
+            jobs:
+              - jobConfig:
+                  path: components/hydrator
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/compass/components/hydrator"
+                  run_if_changed: "^components/hydrator/|^scripts/"
+                  release_since: "1.7"
+                  skipReleaseJobs: "true"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_generic_component"
+                    - "jobConfig_generic_component_compass"
+                    - "extra_refs_test-infra"
+                  preConfigs:
+                    global:
+                      - "jobConfig_presubmit"
+                  postConfigs:
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
       - to: ../prow/jobs/incubator/ord-service/components/ord-service/ord-service-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/ord-service"

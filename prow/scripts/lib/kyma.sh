@@ -24,7 +24,7 @@ function kyma::deploy_kyma() {
         case $opt in
             s)
                 kymaSource="$OPTARG"
-                log::info "Kyma Source to install: ${kymaSource}"
+    						log::info "Kyma Source to install: ${kymaSource}"
                 ;;
             p)
                 if [ -n "$OPTARG" ]; then
@@ -84,7 +84,7 @@ function kyma::get_last_release_version {
     while getopts ":t:v:" opt; do
         case $opt in
             t)
-                githubToken="$OPTARG" ;;
+                utils::mask_debug_output; githubToken="$OPTARG"; utils::unmask_debug_output ;;
             v)
                 searchedVersion="$OPTARG" ;;
             \?)
@@ -94,17 +94,129 @@ function kyma::get_last_release_version {
         esac
     done
 
+    utils::mask_debug_output
     utils::check_empty_arg "$githubToken" "Github token was not provided. Exiting..."
-    
+    utils::unmask_debug_output
+
     if [[ -n "${searchedVersion}" ]]; then
+        utils::mask_debug_output
         # shellcheck disable=SC2034
         kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
             | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | [.[]| select( .tag_name | match("'"${searchedVersion}"'"))] | .[-1].tag_name')
+        utils::unmask_debug_output
     else
-    # shellcheck disable=SC2034
+        utils::mask_debug_output
+        # shellcheck disable=SC2034
         kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
             | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].tag_name')
+        utils::unmask_debug_output
     fi
+}
+
+function kyma::get_offset_minor_releases() {
+    while getopts ":v:" opt; do
+        case $opt in
+        v)
+            base="$OPTARG" ;;
+        \?)
+            echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+        :)
+            echo "Option -$OPTARG argument not provided" >&2 ;;
+        esac
+    done
+
+    RE='[^0-9]*\([0-9]*\)[.]\([0-9]*\)[.]\([0-9]*\)\([0-9A-Za-z-]*\)'
+
+    # shellcheck disable=SC2001
+    MAJOR=$(echo "$base" | sed -e "s#$RE#\\1#")
+    # shellcheck disable=SC2001
+    MINOR=$(echo "$base" | sed -e "s#$RE#\\2#")
+    # shellcheck disable=SC2001
+    PATCH=$(echo "$base" | sed -e "s#$RE#\\3#")
+
+    local index=0
+    minor_release_versions[$index]=$base
+
+    # PREVIOUS_MINOR_VERSION_COUNT - Count of last Kyma2 minor versions to be upgraded from
+    while [ $index -lt "$PREVIOUS_MINOR_VERSION_COUNT" ]; do
+        # do not decrease the PATCH initially, first decrease MINOR then PATCH
+        if [ "$PATCH" -gt 0 ] && [ "$index" -gt 0 ]; then
+          PATCH=$((PATCH-1))
+          newVersion="$MAJOR.$MINOR.$PATCH"
+
+        elif [ "$MINOR" -gt 0 ]; then
+          MINOR=$((MINOR-1))
+          newVersion="^$MAJOR.$MINOR."
+          PATCH=-1
+        else
+            break
+        fi
+
+        kyma::get_last_release_version \
+        -t "${BOT_GITHUB_TOKEN}" \
+        -v "${newVersion}"
+
+        if [[ -z "$kyma_get_last_release_version_return_version" ]] || [[ "$kyma_get_last_release_version_return_version" = "null" ]] ; then
+            log::info "### The last release version returned from the offset is ${kyma_get_last_release_version_return_version} and thus invalid"
+            continue
+        fi
+
+        if [ "$PATCH" -lt 0 ]; then
+          # shellcheck disable=SC2001
+          PATCH=$(echo "$kyma_get_last_release_version_return_version" | sed -e "s#$RE#\\3#")
+        fi
+
+        newVersion="$MAJOR.$MINOR.$PATCH"
+
+        index=$((index+1))
+
+        # shellcheck disable=SC2034
+        minor_release_versions[$index]=$newVersion
+    done
+
+    log::info "#### Valid minor versions to be tested:" "${minor_release_versions[@]}"
+}
+
+# kyma::get_previous_release_version returns previous Kyma release version (i.e. one version before the latest released version)
+#
+# Arguments:
+#   t - GitHub token
+# Returns:
+#   Previous Kyma release version
+function kyma::get_previous_release_version {
+    local OPTIND
+    local githubToken
+
+    while getopts ":t:" opt; do
+        case $opt in
+            t)
+                githubToken="$OPTARG" ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&1; exit 1 ;;
+            :)
+                echo "Option -$OPTARG argument not provided" >&1 ;;
+        esac
+    done
+
+    utils::check_empty_arg "$githubToken" "Github token was not provided. Exiting..."
+
+    # shellcheck disable=SC2034
+    kyma_get_previous_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token $githubToken" "https://api.github.com/repos/kyma-project/kyma/releases" \
+        | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-2].tag_name')
+}
+
+kyma::provision_k3d() {
+  k3d version
+
+  if [[ -v K8S_VERSION ]]; then
+    echo "Creating k3d with kubernetes version: ${K8S_VERSION}"
+    kyma provision k3d --ci -k "${K8S_VERSION}"
+  else
+    kyma provision k3d --ci
+  fi
+
+  echo "Printing client and server version info"
+  kubectl version
 }
 
 kyma::install_cli() {
@@ -171,6 +283,31 @@ kyma::install_cli_last_release() {
     echo "OK"
     popd || exit
     eval "${settings}"
+}
+
+kyma::install_cli_from_reconciler_pr() {
+  local install_dir
+  declare -r install_dir="/usr/local/bin"
+  mkdir -p "$install_dir"
+
+  local os
+  os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+  if [[ -z "$os" || ! "$os" =~ ^(linux)$ ]]; then
+    echo >&2 -e "Unsupported host OS. Must be Linux."
+    exit 1
+  else
+    readonly os
+  fi
+
+  kyma_cli_url="https://storage.googleapis.com/kyma-cli-pr/kyma-${os}-pr-${PULL_NUMBER}"
+
+  pushd "$install_dir" || exit
+  echo "Downloading Kyma CLI from: ${kyma_cli_url}"
+  curl -Lo kyma "${kyma_cli_url}"
+  chmod +x kyma
+  popd || exit
+
+  kyma version --client
 }
 
 host::os() {

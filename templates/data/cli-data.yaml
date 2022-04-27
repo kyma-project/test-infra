@@ -65,6 +65,27 @@ templates:
                   local:
                     - job_spec
               - jobConfig:
+                  name: unstable-cli
+                  annotations:
+                    description: Bump reconciler version used by CLI and publish the unstable CLI binaries
+                  labels:
+                    preset-sa-vm-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                    preset-bot-github-token: "true"
+                    preset-kyma-cli-unstable: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                    - disable_testgrid
+                    - image_buildpack-golang
+                    - jobConfig_buildpack_incubator
+                    - jobConfig_slack_jellyfish
+                    - jobConfig_reconciler_publish_unstable_cli
+                    - extra_refs_reconciler
+              - jobConfig:
                   name: stable-kyma-cli
                   branches:
                     - "^stable$"
@@ -113,21 +134,6 @@ templates:
         jobConfigs:
           - repoName: "github.com/kyma-project/cli"
             jobs:
-              - jobConfig:
-                  name: pre-cli-integration-kyma-1
-                  branches:
-                    - main
-                    - ^release-.*$
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                    - "image_buildpack-golang-kubebuilder2"
-                  local:
-                    - "jobConfig_default"
-                    - "jobConfig_submit"
-                    - "jobConfig_presubmit"
               - jobConfig:
                   path: integration-kyma-2
                   release_since: "2.0"
@@ -184,6 +190,9 @@ templates:
                   repo: "cli"
                   path_alias: "github.com/kyma-project/cli"
                   base_ref: "main"
+          kyma_2_template:
+            env:
+              KUBERNETES_RUNTIME: "k3d"
         jobConfigs:
           - repoName:  kyma-project/cli
             jobs:
@@ -202,3 +211,4 @@ templates:
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
+                    - "kyma_2_template"

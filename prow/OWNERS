@@ -1,8 +1,0 @@
-reviewers:
-  - tooling-reviewers
-
-approvers:
-  - tooling-approvers
-
-labels:
-  - area/prow

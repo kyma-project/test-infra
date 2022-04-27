@@ -72,12 +72,12 @@ templates:
               pipeline.test: upgrade-fast-integration
               pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener-kyma2-to-main.sh"
-          command_upgrade_gardener_kyma_to_kyma2:
+          command_upgrade_gardener_kyma2_minor_versions:
             annotations:
-              pipeline.installer: kyma install, kyma deploy
+              pipeline.installer: kyma deploy
               pipeline.test: upgrade-fast-integration
               pipeline.clusterprovisioning: kyma cli
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener-kyma-to-kyma2.sh"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener-kyma2-minor-versions.sh"
           gardener_aws_job:
             labels:
               preset-gardener-aws-kyma-integration: "true"
@@ -115,17 +115,14 @@ templates:
           skr_aws_job_eventing:
             labels:
               preset-cluster-version: "true"
+              preset-kyma-integration-kcp-client-credentials: "true"
+              preset-kcp-client-dev-envs: "true"
             env:
               KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
               CREDENTIALS_DIR: "/etc/credentials/kyma-tunas-prow-event-mesh"
-              # KEB_PLAN_ID: "361c511f-f939-4621-b228-d0fb79a1fe15" # AWS
+              KEB_PLAN_ID: "361c511f-f939-4621-b228-d0fb79a1fe15" # AWS
               # KEB_PLAN_ID: "5cb3d976-b85c-42ea-a636-79cadda109a9" # Preview Plan
-              KEB_PLAN_ID: "8cb22518-aa26-44c5-91a0-e669ec9bf443" # Azure Lite
-              KCP_GARDENER_NAMESPACE: "garden-kyma-dev"
-              KCP_KEB_API_URL: "https://kyma-env-broker.cp.dev.kyma.cloud.sap"
-              KCP_OIDC_ISSUER_URL: "https://kymatest.accounts400.ondemand.com"
-              KCP_MOTHERSHIP_API_URL: "https://mothership-reconciler.cp.dev.kyma.cloud.sap/v1"
-              KCP_KUBECONFIG_API_URL: "https://kubeconfig-service.cp.dev.kyma.cloud.sap"
+              # KEB_PLAN_ID: "8cb22518-aa26-44c5-91a0-e669ec9bf443" # Azure Lite
             annotations:
               pipeline.platform: gardener_aws
           gardener_azure_job:
@@ -301,6 +298,36 @@ templates:
                     - gardener_gcp_job_eventing
                     - command_integration_eventing
               - jobConfig:
+                  name: pre-main-kyma-gardener-gcp-eventing-js
+                  optional: true
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  run_if_changed: "^((tests/fast-integration\\S+|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  env:
+                    EXECUTION_PROFILE: "evaluation"
+                    BACKEND: "nats_jetstream"
+                    STORAGE: "file"
+                  volumes:
+                    - name: kyma-tunas-prow-event-mesh
+                      secretName: kyma-tunas-prow-event-mesh
+                  volumeMounts:
+                    - name: kyma-tunas-prow-event-mesh
+                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
+                      readOnly: true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_kyma-integration
+                    - kyma_major_version_2
+                  local:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - gardener_gcp_job_eventing
+                    - command_integration_eventing
+              - jobConfig:
                   name: pre-main-kyma-skr-eventing
                   # temporarily make the job optional
                   optional: true
@@ -436,31 +463,6 @@ templates:
                     - gardener_gcp_job
                     - extra_refs_busola
               - jobConfig:
-                  name: kyma-upgrade-gardener-kyma-to-kyma2
-                  annotations:
-                    testgrid-dashboards: kyma_integration
-                    description: Azure Kyma 1.x to Kyma 2.0 upgrade.
-                  decoration_config:
-                    timeout: 7200000000000 # 2h
-                    grace_period: 600000000000 # 10min
-                  cron: "0 0 6-18/2 ? * 1-5"
-                  labels:
-                    preset-bot-github-token: "true"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_periodic
-                    - extra_refs_test-infra
-                    - extra_refs_kyma
-                    - image_kyma-integration
-                    - kyma_major_version_1
-                    - kyma_major_upgrade
-                    - jobConfig_slack_jellyfish
-                  local:
-                    - jobConfig_default
-                    - gardener_azure_job
-                    - command_upgrade_gardener_kyma_to_kyma2
-              - jobConfig:
                   name: kyma-upgrade-gardener-kyma2-to-main-reconciler-main
                   annotations:
                     testgrid-dashboards: kyma_integration
@@ -484,3 +486,28 @@ templates:
                     - jobConfig_default
                     - gardener_azure_job
                     - command_upgrade_gardener_kyma2_to_main
+              - jobConfig:
+                  name: kyma-upgrade-gardener-kyma2-minor-versions
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    description: Azure Kyma 2 previous minor versions.
+                  decoration_config:
+                    timeout: 7200000000000 # 2h
+                    grace_period: 600000000000 # 10min
+                  cron: "0 0 6-18/2 ? * 1-5"
+                  labels:
+                    preset-bot-github-token: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                    - image_kyma-integration
+                    - kyma_major_version_2
+                    - jobConfig_slack_jellyfish
+                    - kyma_minor_upgrade
+                  local:
+                    - jobConfig_default
+                    - gardener_azure_job
+                    - command_upgrade_gardener_kyma2_minor_versions

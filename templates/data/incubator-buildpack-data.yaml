@@ -251,6 +251,10 @@ templates:
               - ^develop$
           reconciler_integration_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"
+          reconciler_cli_integration_jobConfig:
+            env:
+              EXECUTION_PROFILE: evaluation
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-reconciler-with-cli-k3d.sh"
           reconciler_component_k3d_integration_jobConfig:
             command:  "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-component-integration-k3d.sh"
           reconciler_component_gardener_integration_jobConfig:
@@ -283,12 +287,10 @@ templates:
           reconciler_dev_nightly_cluster_input_name:
             env:
               INPUT_CLUSTER_NAME: "rec-dev"
-          reconciler_publish_unstable_cli_jobConfig:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-unstable-cli.sh"
+          reconciler_publish_pr_cli_jobConfig:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-pr-cli.sh"
             annotations:
               pipeline.installer: reconciler
-              pipeline.test: "fast-integration"
-              pipeline.clusterprovisioning: reconciler
           reconciler_image_autobump_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-incubator/reconciler/scripts/prow/reconciler-image-autobump.sh"
           github_token_mounts:
@@ -305,7 +307,7 @@ templates:
               - jobConfig:
                   name: "pre-main-reconciler-integration-k3d"
                   # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  run_if_changed: "^(go.mod$|go.sum$)|((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-guard-bot-github-token: "true"
@@ -322,6 +324,95 @@ templates:
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_integration_jobConfig
+              - jobConfig:
+                  name: "pre-main-reconciler-publish-pr-cli"
+                  optional: false
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  labels:
+                    preset-sa-vm-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                    preset-kyma-cli-pr-unstable: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - image_buildpack-golang
+                    - extra_refs_test-infra
+                  local:
+                    - extra_refs_kyma_cli
+                    - reconciler_publish_pr_cli_jobConfig
+              - jobConfig:
+                  name: "pre-main-reconciler-cli-integration-kyma-latest-k3d"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-kyma-guard-bot-github-token: "true"
+                    preset-sa-vm-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                  annotations:
+                    pipeline.platform: k3d
+                  env:
+                    KYMA_TEST_SOURCE: "latest-release"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - image_kyma-integration
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                  local:
+                    - reconciler_main_jobConfig
+                    - reconciler_cli_integration_jobConfig
+              - jobConfig:
+                  name: "pre-main-reconciler-cli-integration-kyma-main-k3d"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-kyma-guard-bot-github-token: "true"
+                    preset-sa-vm-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                  annotations:
+                    pipeline.platform: k3d
+                  env:
+                    KYMA_TEST_SOURCE: "main"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - image_kyma-integration
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                  local:
+                    - reconciler_main_jobConfig
+                    - reconciler_cli_integration_jobConfig
+              - jobConfig:
+                  name: "pre-main-reconciler-cli-kyma-prev-to-last-release-upgrade-k3d"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-kyma-guard-bot-github-token: "true"
+                    preset-sa-vm-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                  annotations:
+                    pipeline.platform: k3d
+                  env:
+                    EXECUTION_PROFILE: evaluation
+                    KYMA_TEST_SOURCE: "previous-release"
+                    KYMA_UPGRADE_SOURCE: "latest-release"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - image_kyma-integration
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                  local:
+                    - reconciler_main_jobConfig
+                    - reconciler_cli_integration_jobConfig
               - jobConfig:
                   name: "pre-latest-istio-reconciler-integration"
                   # following regexp won't start build if only Markdown files were changed
@@ -342,9 +433,10 @@ templates:
                     - jobConfig_presubmit
                     - image_kyma-integration
                     - extra_refs_test-infra
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
-                    - reconciler_component_k3d_integration_jobConfig                       
+                    - reconciler_component_k3d_integration_jobConfig
               - jobConfig:
                   name: "pre-main-istio-reconciler-integration"
                   # following regexp won't start build if only Markdown files were changed
@@ -366,9 +458,10 @@ templates:
                     - jobConfig_presubmit
                     - image_kyma-integration
                     - extra_refs_test-infra
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
-                    - reconciler_component_k3d_integration_jobConfig                                        
+                    - reconciler_component_k3d_integration_jobConfig
               - jobConfig:
                   name: "pre-main-ory-reconciler-eval-integration"
                   # following regexp won't start build if only Markdown files were changed
@@ -390,6 +483,7 @@ templates:
                     - jobConfig_presubmit
                     - image_kyma-integration
                     - extra_refs_test-infra
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_component_k3d_integration_jobConfig
@@ -415,9 +509,10 @@ templates:
                     - gardener_gcp_job
                     - image_kyma-integration
                     - extra_refs_test-infra
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
-                    - reconciler_component_gardener_integration_jobConfig                    
+                    - reconciler_component_gardener_integration_jobConfig
               - jobConfig:
                   name: "pre-main-kyma-incubator-reconciler"
                   always_run: true
@@ -500,9 +595,10 @@ templates:
                     - jobConfig_postsubmit
                     - image_kyma-integration
                     - extra_refs_test-infra
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
-                    - reconciler_component_k3d_integration_jobConfig                    
+                    - reconciler_component_k3d_integration_jobConfig
               - jobConfig:
                   name: "post-main-istio-reconciler-integration"
                   # following regexp won't start build if only Markdown files were changed
@@ -538,6 +634,7 @@ templates:
                     - image_buildpack-golang
                     - jobConfig_generic_component
                     - jobConfig_buildpack_incubator
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_jobConfig_args
@@ -593,9 +690,9 @@ templates:
                     - image_buildpack-golang
                     - jobConfig_buildpack_incubator
                     - jobConfig_slack_jellyfish
+                    - jobConfig_reconciler_publish_unstable_cli
                   local:
                     - extra_refs_kyma_cli
-                    - reconciler_publish_unstable_cli_jobConfig
               - jobConfig:
                   name: periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade
                   annotations:
@@ -616,6 +713,7 @@ templates:
                     - extra_refs_kyma
                     - extra_refs_control-plane
                     - kyma_major_version_1
+                    - kyma_major_upgrade
                     - disable_testgrid
                     - image_kyma-integration
                     - jobConfig_slack_jellyfish
@@ -709,7 +807,7 @@ templates:
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: ".*Dockerfile$"
                   command: "/bin/bash"
-                  args: 
+                  args:
                     - "-c"
                     - "shopt -s globstar;
                       hadolint --config .hadolint.yaml --no-color **/Dockerfile"

@@ -86,7 +86,7 @@ fi
 #  GO LINT
 ##
 echo "? golint"
-go get -u golang.org/x/lint/golint
+go install golang.org/x/lint/golint@latest
 golintResult=$(echo "${goFilesToCheck}" | xargs -L1 golint)
 if [ "${#golintResult}" != 0 ]; then
     echo -e "${RED}✗ golint${NC}\\n${golintResult}"

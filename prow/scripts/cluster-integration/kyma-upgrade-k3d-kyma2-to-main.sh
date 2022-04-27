@@ -89,9 +89,6 @@ function upgrade_kyma() {
     log::info "### Upgrade Kyma to ${KYMA_SOURCE}"
     kyma deploy --ci --source "${KYMA_SOURCE}" --timeout 20m
 
-    # run migration script
-    curl https://raw.githubusercontent.com/kyma-project/kyma/main/docs/assets/2.0.4-2.1-fix-upgraded-resources.sh | sh
-
     if [[ $? -eq 0 ]];then
         log::success "Upgrade completed"
     else

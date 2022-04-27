@@ -31,7 +31,7 @@ function testCustomImage() {
 cd "${KYMA_PROJECT_DIR}/cli"
 
 log::info "Bump reconciler version used by the Kyma CLI"
-go get github.com/kyma-incubator/reconciler
+go get -d github.com/kyma-incubator/reconciler@latest
 
 make resolve
 log::info "Run unit-tests for kyma kyma"
@@ -176,7 +176,7 @@ gcloud compute ssh\
   --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" \
   --quiet \
   --zone="${ZONE}" \
-  --ssh-flag="-o ServerAliveInterval=30" \
+  --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60" \
   "cli-integration-test-${RANDOM_ID}" \
   --command="cd ~/kyma/tests/fast-integration && sudo make ci"
 

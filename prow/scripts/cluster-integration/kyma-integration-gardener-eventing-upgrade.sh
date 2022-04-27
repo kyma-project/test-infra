@@ -111,6 +111,7 @@ kyma::install_unstable_cli
 gardener::generate_overrides
 
 log::info "### Provisioning Gardener cluster"
+export CLEANUP_CLUSTER="true"
 gardener::provision_cluster
 
 log::info "### Deploying Kyma $KYMA_SOURCE"

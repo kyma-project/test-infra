@@ -70,7 +70,7 @@ func TestReconcilerMainIntegrationJobsPresubmit(t *testing.T) {
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.False(t, actualPresubmit.Optional)
 	assert.False(t, actualPresubmit.AlwaysRun)
-	assert.Equal(t, actualPresubmit.RunIfChanged, "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))")
+	assert.Equal(t, actualPresubmit.RunIfChanged, "^(go.mod$|go.sum$)|((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))")
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "main")
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"}, actualPresubmit.Spec.Containers[0].Command)
