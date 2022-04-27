@@ -21,15 +21,15 @@
 /prow/jobs/console @akucharska @dariadomagala @qbalukom @sawthis @valentinvieriu @wawrzyn321
 /prow/jobs/control-plane @tillknuesting @piotrmiskiewicz @wozniakjan @akgalwas @franpog859 @hanngos @koala7659 @pk85 @janmedrek @maladie @ralikio @szwedm
 /prow/jobs/helm-broker @piotrmiskiewicz @pk85 @ralikio @szwedm @tillknuesting @wozniakjan @hanngos
-/prow/jobs/incubator/compass @kyma-incubator/CMP_team
-/prow/jobs/incubator/compass-console @kyma-incubator/CMP_team
+/prow/jobs/incubator/compass @kaloyanspiridonov @pk85 @alextargov @danielgospodinow @dimitarpetrov @dzahariev @gvachkov @la4ezar @nickymateev @pankrator @ataleksandrov @desislavaa @dpanayotov @stefancholakov @kirilkabakchiev @nyordanoff @stanislavstefanov @svetlinzarev-sap @karaimin @krasish @petartodorovv
+/prow/jobs/incubator/compass-console @kaloyanspiridonov @pk85 @alextargov @danielgospodinow @dimitarpetrov @dzahariev @gvachkov @la4ezar @nickymateev @pankrator @ataleksandrov @desislavaa @dpanayotov @stefancholakov @kirilkabakchiev @nyordanoff @stanislavstefanov @svetlinzarev-sap @karaimin @krasish @petartodorovv
 /prow/jobs/incubator/dex @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72
 /prow/jobs/incubator/documentation-component @m00g3n
 /prow/jobs/incubator/hydra-login-consent @tomasz-smelcerz-sap @dariusztutaj @piotrkpc
-/prow/jobs/incubator/kyma-showcase @cortey @hanngos @kaktusowy500 @lyczeq @mrcherry97 @mvshao
+/prow/jobs/incubator/kyma-showcase @cortey @hanngos @lyczeq @mrcherry97 @mvshao
 /prow/jobs/incubator/milv @m00g3n @pprecel @dbadura
 /prow/jobs/incubator/octopus @szwedm @tillknuesting @wozniakjan @hanngos @piotrmiskiewicz @pk85 @ralikio
-/prow/jobs/incubator/ord-service @kyma-incubator/CMP_team
+/prow/jobs/incubator/ord-service @kaloyanspiridonov @pk85 @alextargov @danielgospodinow @dimitarpetrov @dzahariev @gvachkov @la4ezar @nickymateev @pankrator @ataleksandrov @desislavaa @dpanayotov @stefancholakov @kirilkabakchiev @nyordanoff @stanislavstefanov @svetlinzarev-sap @karaimin @krasish @petartodorovv
 /prow/jobs/incubator/podpreset-crd @szwedm @tillknuesting @wozniakjan @hanngos @piotrmiskiewicz @pk85 @ralikio
 /prow/jobs/incubator/reconciler @pbochynski @varbanv @clebs @dbadura @kwiatekus @m00g3n @moelsayed @jeremyharisch @pprecel @tobiscr
 /prow/jobs/incubator/service-catalog-tester @hanngos @piotrmiskiewicz @pk85 @ralikio @szwedm @tillknuesting @wozniakjan
