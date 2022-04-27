@@ -12,14 +12,14 @@
 /prow @kyma-project/prow
 /prow/cluster @kyma-project/prow
 /prow/images @kyma-project/prow
-/prow/images/buildpack-node @kyma-project/prow @akucharska @wawrzyn321 @a-thaler @jcawley5 @lilitgh @sawthis @valentinvieriu @alexandra-simeonova @brendandobbs @dariadomagala @qbalukom
+/prow/images/buildpack-node @kyma-project/prow @akucharska @wawrzyn321 @a-thaler @jcawley5 @lilitgh @sawthis @valentinvieriu @brendandobbs @dariadomagala @qbalukom
 
 /prow/jobs @kyma-project/prow
 /prow/jobs/addons @ralikio @szwedm @tillknuesting @wozniakjan @hanngos @piotrmiskiewicz @pk85
 /prow/jobs/busola @dariadomagala @qbalukom @sawthis @valentinvieriu @wawrzyn321 @akucharska
 /prow/jobs/cli @chrkl @jeremyharisch @lindnerby @shorim @tobiscr @a-thaler @clebs @lilitgh @rakesh-garimella @skhalash
 /prow/jobs/console @akucharska @dariadomagala @qbalukom @sawthis @valentinvieriu @wawrzyn321
-/prow/jobs/control-plane @tillknuesting @piotrmiskiewicz @wozniakjan @akgalwas @franpog859 @hanngos @koala7659 @pk85 @janmedrek @maladie @ralikio @szwedm @szymongib
+/prow/jobs/control-plane @tillknuesting @piotrmiskiewicz @wozniakjan @akgalwas @franpog859 @hanngos @koala7659 @pk85 @janmedrek @maladie @ralikio @szwedm
 /prow/jobs/helm-broker @piotrmiskiewicz @pk85 @ralikio @szwedm @tillknuesting @wozniakjan @hanngos
 /prow/jobs/incubator/compass @kaloyanspiridonov @pk85 @alextargov @danielgospodinow @dimitarpetrov @dzahariev @gvachkov @la4ezar @nickymateev @pankrator @ataleksandrov @desislavaa @dpanayotov @stefancholakov @kirilkabakchiev @nyordanoff @stanislavstefanov @svetlinzarev-sap @karaimin @krasish @petartodorovv
 /prow/jobs/incubator/compass-console @gvachkov @la4ezar @petartodorovv @danielgospodinow @desislavaa @dimitarpetrov @dpanayotov @kaloyanspiridonov @krasish @pk85 @alextargov @nyordanoff @stanislavstefanov @nickymateev @dzahariev @karaimin @kirilkabakchiev @pankrator @stefancholakov @svetlinzarev-sap @ataleksandrov
@@ -33,7 +33,7 @@
 /prow/jobs/incubator/podpreset-crd @szwedm @tillknuesting @wozniakjan @hanngos @piotrmiskiewicz @pk85 @ralikio
 /prow/jobs/incubator/reconciler @pbochynski @varbanv @clebs @dbadura @kwiatekus @m00g3n @moelsayed @jeremyharisch @pprecel @tobiscr
 /prow/jobs/incubator/service-catalog-tester @hanngos @piotrmiskiewicz @pk85 @ralikio @szwedm @tillknuesting @wozniakjan
-/prow/jobs/incubator/varkes @alexandra-simeonova @brendandobbs @jcawley5 @lilitgh @a-thaler
+/prow/jobs/incubator/varkes @brendandobbs @jcawley5 @lilitgh @a-thaler
 /prow/jobs/kyma/components/apiserver-proxy @pk85 @dariusztutaj @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski
 /prow/jobs/kyma/components/application-connectivity-certs-setup-job @pbochynski @franpog859 @janmedrek @koala7659 @maladie @ralikio @a-thaler @pk85 @akgalwas
 /prow/jobs/kyma/components/application-registry @pk85 @maladie @pbochynski @koala7659 @ralikio @a-thaler @akgalwas @franpog859 @janmedrek
