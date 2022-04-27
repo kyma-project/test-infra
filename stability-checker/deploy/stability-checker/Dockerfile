@@ -1,8 +1,8 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
-RUN apt-get update && \
-    apt-get install --no-install-recommends -y curl jq zip ca-certificates && \
-    apt-get clean autoclean && \
+RUN apt update && \
+    apt install --no-install-recommends -y curl jq zip ca-certificates && \
+    apt clean autoclean && \
     rm -rf /var/lib/apt/lists/*
 
 # Install kubectl
