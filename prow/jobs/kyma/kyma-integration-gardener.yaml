@@ -1040,7 +1040,7 @@ periodics: # runs on schedule
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: PREVIOUS_MINOR_VERSION_COUNT
-                value: "2"
+                value: "1"
               - name: REGION
                 value: "northeurope"
               - name: RS_GROUP

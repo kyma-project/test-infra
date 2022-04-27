@@ -138,22 +138,38 @@ function kyma::get_offset_minor_releases() {
     minor_release_versions[$index]=$base
 
     # PREVIOUS_MINOR_VERSION_COUNT - Count of last Kyma2 minor versions to be upgraded from
-    for i in $(seq 1 "$PREVIOUS_MINOR_VERSION_COUNT"); do
-        if [ "$MINOR" -gt 0 ]; then
-            MINOR=$((MINOR-1))
+    while [ $index -lt "$PREVIOUS_MINOR_VERSION_COUNT" ]; do
+        # do not decrease the PATCH initially, first decrease MINOR then PATCH
+        if [ "$PATCH" -gt 0 ] && [ "$index" -gt 0 ]; then
+          PATCH=$((PATCH-1))
+          newVersion="$MAJOR.$MINOR.$PATCH"
+
+        elif [ "$MINOR" -gt 0 ]; then
+          MINOR=$((MINOR-1))
+          newVersion="^$MAJOR.$MINOR."
+          PATCH=-1
         else
             break
         fi
-        newVersion="$MAJOR.$MINOR.$PATCH"
+
         kyma::get_last_release_version \
         -t "${BOT_GITHUB_TOKEN}" \
         -v "${newVersion}"
 
         if [[ -z "$kyma_get_last_release_version_return_version" ]] || [[ "$kyma_get_last_release_version_return_version" = "null" ]] ; then
-            log::info "### The last release version returned from the offset is ${newVersion} and thus invalid"
+            log::info "### The last release version returned from the offset is ${kyma_get_last_release_version_return_version} and thus invalid"
             continue
         fi
+
+        if [ "$PATCH" -lt 0 ]; then
+          # shellcheck disable=SC2001
+          PATCH=$(echo "$kyma_get_last_release_version_return_version" | sed -e "s#$RE#\\3#")
+        fi
+
+        newVersion="$MAJOR.$MINOR.$PATCH"
+
         index=$((index+1))
+
         # shellcheck disable=SC2034
         minor_release_versions[$index]=$newVersion
     done
