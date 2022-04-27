@@ -7,7 +7,7 @@ source "${LIBDIR}/../log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${LIBDIR}/../utils.sh"
 # shellcheck source=prow/scripts/cluster-integration/helpers/reconciler.sh
-source "${LIBDIR}/../../cluster-integration/helpers/reconciler.sh"
+source "${LIBDIR}/../cluster-integration/helpers/reconciler.sh"
 
 # gardener::deprovision_cluster removes a Gardener cluster
 #
