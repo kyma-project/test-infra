@@ -1,5 +1,6 @@
 pjNames:
   - pjName: "skr-aws-integration-dev"
+  - pjName: "kyma-gke-nightly-fast-integration"
 prConfigs:
   kyma-project:
     kyma:
