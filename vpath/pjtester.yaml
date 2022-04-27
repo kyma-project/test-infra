@@ -1,0 +1,6 @@
+pjNames:
+   - pjName: "pre-main-compass-ord"
+prConfigs:
+   kyma-incubator:
+     compass:
+       prNumber: 2324
