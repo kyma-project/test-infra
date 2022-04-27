@@ -30,7 +30,7 @@ cleanup() {
   # do not fail the job regardless of the vm deletion result
   set +e
 
-  #gcloud compute instances stop --async --zone="${ZONE}" "reconciler-component-integration-test-${RANDOM_ID}"
+  gcloud compute instances stop --async --zone="${ZONE}" "reconciler-component-integration-test-${RANDOM_ID}"
 
   log::info "End of cleanup"
 }
@@ -54,8 +54,6 @@ if [[ -z "${PULL_NUMBER}" ]]; then
 else
   LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=reconciler-integration")
 fi
-
-echo "xcf3846 LABELS: $LABELS"
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]; do
