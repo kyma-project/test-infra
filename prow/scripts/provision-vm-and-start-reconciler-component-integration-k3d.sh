@@ -30,7 +30,7 @@ cleanup() {
   # do not fail the job regardless of the vm deletion result
   set +e
 
-  gcloud compute instances stop --async --zone="${ZONE}" "reconciler-component-integration-test-${RANDOM_ID}"
+  #gcloud compute instances stop --async --zone="${ZONE}" "reconciler-component-integration-test-${RANDOM_ID}"
 
   log::info "End of cleanup"
 }
