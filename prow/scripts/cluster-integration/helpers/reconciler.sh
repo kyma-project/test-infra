@@ -9,7 +9,7 @@ readonly LOCAL_KUBECONFIG="$HOME/.kube/config"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gardener/gardener.sh
-source "${TEST_INFRA_SOURCES_DIR}prow/scripts/lib/gardener/gardener.sh"
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
 
 function reconciler::export_nightly_cluster_name(){
   # shellcheck disable=SC2046
