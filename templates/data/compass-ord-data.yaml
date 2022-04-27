@@ -1,18 +1,15 @@
 templates:
   - from: templates/generic.tmpl
     render:
-      - to: ../prow/jobs/incubator/compass/compass-integration.yaml
+      - to: ../prow/jobs/incubator/compass/compass-ord.yaml
         localSets:
           jobConfig_default:
             path_alias: github.com/kyma-incubator/compass
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-compass-ord.sh"
-            args:
-              - "--dump-db"
             request_memory: 100Mi
             request_mcpu: 50m
             env:
               GO111MODULE: "on"
-              KYMA_MAJOR_VERSION: "1"
             labels:
               preset-kyma-guard-bot-github-token: "true"
               preset-sa-vm-kyma-integration: "true"
@@ -34,22 +31,6 @@ templates:
                     - "image_buildpack-golang-kubebuilder2"
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-              - jobConfig:
-                  name: "post-main-compass-ord"
-                  labels:
-                    preset-build-main: "true"
-                  annotations:
-                    testgrid-dashboards: kyma-incubator_compass
-                    description: Compass Ord test job.
-                    testgrid-days-of-results: "60"
-                inheritedConfigs:
-                  global:
-                    - "image_buildpack-golang-kubebuilder2"
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"

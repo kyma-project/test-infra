@@ -111,15 +111,24 @@ log::info "Copying Compass to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "compass-ord-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/compass" "~/compass"
 
+log::info "Get ORD commit ID"
+ORD_PR_NUMBER=$(yq e .global.images.ord_service.version /home/prow/go/src/github.com/kyma-incubator/compass/chart/compass/values.yaml | cut -d '-' -f 2 | xargs)
+log::info "ORD_PR_NUMBER PR is: ${ORD_PR_NUMBER}"
+
+ORD_PR_DATA=$(curl -sS "https://api.github.com/repos/kyma-incubator/ord-service/pulls/${ORD_PR_NUMBER}")
+log::info "ORD_PR_DATA is: ${ORD_PR_DATA}"
+
+ORD_PR_COMMIT_HASH=$(jq -r '.merge_commit_sha' <<< ${ORD_PR_DATA})
+log::info "ORD_PR_COMMIT_HASH is: ${ORD_PR_COMMIT_HASH}"
+
 log::info "Fetch ORD service sources"
-git clone https://github.com/kyma-incubator/ord-service.git 
+git clone https://github.com/kyma-incubator/ord-service.git && cd ord-service && git checkout ${ORD_PR_COMMIT_HASH} && cd ..
 
 log::info "Copying ORD service sources to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "compass-ord-test-${RANDOM_ID}" "./ord-service" "~/ord-service"
 
-
-log::info "Triggering the installation"
+log::info "Triggering the test"
 
 gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "compass-ord-test-${RANDOM_ID}" --command="yes | ./compass/installation/scripts/prow/ord-test.sh"
 
