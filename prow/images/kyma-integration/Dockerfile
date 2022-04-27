@@ -48,7 +48,7 @@ RUN . /etc/os-release && \
     add-apt-repository \
     "deb [arch=amd64] https://download.docker.com/linux/$ID $VERSION_CODENAME stable"
 
-ENV DOCKER_VERSION=5:20.10.8*
+ENV DOCKER_VERSION=5:20.10.14*
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
