@@ -19,7 +19,7 @@
 /prow/jobs/busola @dariadomagala @qbalukom @sawthis @valentinvieriu @wawrzyn321 @akucharska
 /prow/jobs/cli @chrkl @jeremyharisch @lindnerby @shorim @tobiscr @a-thaler @clebs @lilitgh @rakesh-garimella @skhalash
 /prow/jobs/console @akucharska @dariadomagala @qbalukom @sawthis @valentinvieriu @wawrzyn321
-/prow/jobs/control-plane @tillknuesting @piotrmiskiewicz @wozniakjan @akgalwas @franpog859 @hanngos @koala7659 @pk85 @rafalpotempa @janmedrek @maladie @ralikio @szwedm @szymongib @tgorgol
+/prow/jobs/control-plane @tillknuesting @piotrmiskiewicz @wozniakjan @akgalwas @franpog859 @hanngos @koala7659 @pk85 @janmedrek @maladie @ralikio @szwedm @szymongib @tgorgol
 /prow/jobs/helm-broker @piotrmiskiewicz @pk85 @ralikio @szwedm @tillknuesting @wozniakjan @hanngos
 /prow/jobs/incubator/compass @kaloyanspiridonov @pk85 @alextargov @danielgospodinow @dimitarpetrov @dzahariev @gvachkov @la4ezar @nickymateev @pankrator @ataleksandrov @desislavaa @dpanayotov @stefancholakov @kirilkabakchiev @nyordanoff @stanislavstefanov @svetlinzarev-sap @karaimin @krasish @petartodorovv
 /prow/jobs/incubator/compass-console @gvachkov @la4ezar @petartodorovv @danielgospodinow @desislavaa @dimitarpetrov @dpanayotov @kaloyanspiridonov @krasish @pk85 @alextargov @nyordanoff @stanislavstefanov @nickymateev @dzahariev @karaimin @kirilkabakchiev @pankrator @stefancholakov @svetlinzarev-sap @ataleksandrov
@@ -31,23 +31,23 @@
 /prow/jobs/incubator/octopus @szwedm @tillknuesting @wozniakjan @hanngos @piotrmiskiewicz @pk85 @ralikio
 /prow/jobs/incubator/ord-service @ataleksandrov @krasish @la4ezar @pk85 @pankrator @petartodorovv @alextargov @dpanayotov @gvachkov @nyordanoff @nickymateev @stanislavstefanov @stefancholakov @danielgospodinow @desislavaa @dimitarpetrov @dzahariev @kaloyanspiridonov @karaimin @kirilkabakchiev @svetlinzarev-sap
 /prow/jobs/incubator/podpreset-crd @szwedm @tillknuesting @wozniakjan @hanngos @piotrmiskiewicz @pk85 @ralikio
-/prow/jobs/incubator/reconciler @pbochynski @varbanv @clebs @dbadura @kwiatekus @m00g3n @moelsayed @jeremyharisch @pprecel @rjankowski93 @tobiscr
+/prow/jobs/incubator/reconciler @pbochynski @varbanv @clebs @dbadura @kwiatekus @m00g3n @moelsayed @jeremyharisch @pprecel @tobiscr
 /prow/jobs/incubator/service-catalog-tester @hanngos @piotrmiskiewicz @pk85 @ralikio @szwedm @tillknuesting @wozniakjan
 /prow/jobs/incubator/varkes @alexandra-simeonova @brendandobbs @jcawley5 @lilitgh @a-thaler
 /prow/jobs/kyma/components/apiserver-proxy @pk85 @dariusztutaj @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski
-/prow/jobs/kyma/components/application-connectivity-certs-setup-job @rafalpotempa @pbochynski @franpog859 @janmedrek @koala7659 @maladie @ralikio @a-thaler @pk85 @akgalwas
-/prow/jobs/kyma/components/application-registry @pk85 @maladie @rafalpotempa @pbochynski @koala7659 @ralikio @a-thaler @akgalwas @franpog859 @janmedrek
+/prow/jobs/kyma/components/application-connectivity-certs-setup-job @pbochynski @franpog859 @janmedrek @koala7659 @maladie @ralikio @a-thaler @pk85 @akgalwas
+/prow/jobs/kyma/components/application-registry @pk85 @maladie @pbochynski @koala7659 @ralikio @a-thaler @akgalwas @franpog859 @janmedrek
 /prow/jobs/kyma/components/busola-migrator @pk85 @akucharska @dariadomagala @qbalukom @sawthis @valentinvieriu @a-thaler @wawrzyn321 @pbochynski
-/prow/jobs/kyma/components/central-application-connectivity-validator @janmedrek @koala7659 @maladie @rafalpotempa @pbochynski @akgalwas @franpog859 @ralikio @a-thaler @pk85
-/prow/jobs/kyma/components/central-application-gateway @rafalpotempa @a-thaler @koala7659 @maladie @janmedrek @ralikio @pbochynski @pk85 @akgalwas @franpog859
-/prow/jobs/kyma/components/compass-runtime-agent @franpog859 @janmedrek @ralikio @pbochynski @a-thaler @pk85 @akgalwas @koala7659 @maladie @rafalpotempa
-/prow/jobs/kyma/components/connection-token-handler @janmedrek @koala7659 @akgalwas @franpog859 @ralikio @a-thaler @pbochynski @pk85 @maladie @rafalpotempa
-/prow/jobs/kyma/components/connector-service @a-thaler @pk85 @janmedrek @koala7659 @maladie @rafalpotempa @ralikio @akgalwas @franpog859 @pbochynski
+/prow/jobs/kyma/components/central-application-connectivity-validator @janmedrek @koala7659 @maladie @pbochynski @akgalwas @franpog859 @ralikio @a-thaler @pk85
+/prow/jobs/kyma/components/central-application-gateway @a-thaler @koala7659 @maladie @janmedrek @ralikio @pbochynski @pk85 @akgalwas @franpog859
+/prow/jobs/kyma/components/compass-runtime-agent @franpog859 @janmedrek @ralikio @pbochynski @a-thaler @pk85 @akgalwas @koala7659 @maladie
+/prow/jobs/kyma/components/connection-token-handler @janmedrek @koala7659 @akgalwas @franpog859 @ralikio @a-thaler @pbochynski @pk85 @maladie
+/prow/jobs/kyma/components/connector-service @a-thaler @pk85 @janmedrek @koala7659 @maladie @ralikio @akgalwas @franpog859 @pbochynski
 /prow/jobs/kyma/components/dex-static-user-configurer @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj
 /prow/jobs/kyma/components/event-publisher-proxy @friedrichwilken @k15r @pxsalehi @vladislavpaskar @a-thaler @pk85 @pbochynski @lilitgh @marcobebway @mfaizanse @nachtmaar @radufa @sayanh
 /prow/jobs/kyma/components/eventing-controller @pbochynski @k15r @lilitgh @marcobebway @mfaizanse @vladislavpaskar @a-thaler @pk85 @friedrichwilken @nachtmaar @pxsalehi @radufa @sayanh
-/prow/jobs/kyma/components/function-controller @pbochynski @pk85 @dbadura @kwiatekus @m00g3n @pprecel @rjankowski93 @a-thaler
-/prow/jobs/kyma/components/function-runtimes @dbadura @kwiatekus @m00g3n @pprecel @rjankowski93 @a-thaler @pbochynski @pk85
+/prow/jobs/kyma/components/function-controller @pbochynski @pk85 @dbadura @kwiatekus @m00g3n @pprecel @a-thaler
+/prow/jobs/kyma/components/function-runtimes @dbadura @kwiatekus @m00g3n @pprecel @a-thaler @pbochynski @pk85
 /prow/jobs/kyma/components/iam-kubeconfig-service @dariusztutaj @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85
 /prow/jobs/kyma/components/istio-installer @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj @mjakobczyk @strekm
 /prow/jobs/kyma/components/kyma-operator @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj @mjakobczyk @strekm
@@ -56,19 +56,19 @@
 /prow/jobs/kyma/components/telemetry-operator @pk85 @szwedm @tillknuesting @a-thaler @hanngos @ralikio @wozniakjan @pbochynski @piotrmiskiewicz
 /prow/jobs/kyma/components/uaa-activator @wozniakjan @pbochynski @piotrmiskiewicz @pk85 @szwedm @tillknuesting @a-thaler @hanngos @ralikio
 /prow/jobs/kyma/components/xip-patch @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj
-/prow/jobs/kyma/tests/application-connector-tests @pbochynski @pk85 @akgalwas @franpog859 @maladie @rafalpotempa @ralikio @a-thaler @janmedrek @koala7659
-/prow/jobs/kyma/tests/application-registry-tests @akgalwas @franpog859 @koala7659 @a-thaler @pk85 @janmedrek @maladie @rafalpotempa @ralikio @pbochynski
-/prow/jobs/kyma/tests/compass-runtime-agent @pk85 @akgalwas @franpog859 @koala7659 @ralikio @pbochynski @janmedrek @maladie @rafalpotempa @a-thaler
-/prow/jobs/kyma/tests/connection-token-handler-tests @rafalpotempa @a-thaler @pbochynski @pk85 @akgalwas @maladie @koala7659 @ralikio @franpog859 @janmedrek
-/prow/jobs/kyma/tests/connector-service-tests @akgalwas @koala7659 @maladie @ralikio @a-thaler @franpog859 @janmedrek @rafalpotempa @pbochynski @pk85
+/prow/jobs/kyma/tests/application-connector-tests @pbochynski @pk85 @akgalwas @franpog859 @maladie @ralikio @a-thaler @janmedrek @koala7659
+/prow/jobs/kyma/tests/application-registry-tests @akgalwas @franpog859 @koala7659 @a-thaler @pk85 @janmedrek @maladie @ralikio @pbochynski
+/prow/jobs/kyma/tests/compass-runtime-agent @pk85 @akgalwas @franpog859 @koala7659 @ralikio @pbochynski @janmedrek @maladie @a-thaler
+/prow/jobs/kyma/tests/connection-token-handler-tests @a-thaler @pbochynski @pk85 @akgalwas @maladie @koala7659 @ralikio @franpog859 @janmedrek
+/prow/jobs/kyma/tests/connector-service-tests @akgalwas @koala7659 @maladie @ralikio @a-thaler @franpog859 @janmedrek @pbochynski @pk85
 /prow/jobs/kyma/tests/end-to-end @wozniakjan @pbochynski @piotrmiskiewicz @pk85 @ralikio @szwedm @tillknuesting @a-thaler @hanngos @k15r
-/prow/jobs/kyma/tests/function-controller @rjankowski93 @a-thaler @pbochynski @pk85 @dbadura @kwiatekus @m00g3n @pprecel
+/prow/jobs/kyma/tests/function-controller @a-thaler @pbochynski @pk85 @dbadura @kwiatekus @m00g3n @pprecel
 /prow/jobs/kyma/tests/integration @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj @mjakobczyk
-/prow/jobs/kyma/tests/rafter @tgorgol @dbadura @m00g3n @pprecel @rjankowski93
-/prow/jobs/kyma/tests/serverless-bench @pbochynski @pk85 @dbadura @kwiatekus @m00g3n @pprecel @rjankowski93 @a-thaler
+/prow/jobs/kyma/tests/rafter @tgorgol @dbadura @m00g3n @pprecel
+/prow/jobs/kyma/tests/serverless-bench @pbochynski @pk85 @dbadura @kwiatekus @m00g3n @pprecel @a-thaler
 /prow/jobs/kyma/tests/service-catalog @szwedm @tillknuesting @a-thaler @hanngos @pk85 @ralikio @wozniakjan @pbochynski @piotrmiskiewicz
 /prow/jobs/kyma/tools/event-subscriber @a-thaler @friedrichwilken @k15r @mfaizanse @nachtmaar @pxsalehi @sayanh @vladislavpaskar @pk85 @lilitgh @marcobebway @radufa @pbochynski
-/prow/jobs/rafter @dbadura @m00g3n @pprecel @rjankowski93 @tgorgol
+/prow/jobs/rafter @dbadura @m00g3n @pprecel @tgorgol
 
 /prow/scripts @kyma-project/prow @kyma-project/developers
 
