@@ -29,7 +29,7 @@
 /prow/jobs/incubator/kyma-showcase @cortey @hanngos @lyczeq @mrcherry97 @mvshao
 /prow/jobs/incubator/milv @m00g3n @pprecel @dbadura
 /prow/jobs/incubator/octopus @szwedm @tillknuesting @wozniakjan @hanngos @piotrmiskiewicz @pk85 @ralikio
-/prow/jobs/incubator/ord-service @kaloyanspiridonov @pk85 @alextargov @danielgospodinow @dimitarpetrov @dzahariev @gvachkov @la4ezar @nickymateev @pankrator @ataleksandrov @desislavaa @dpanayotov @stefancholakov @kirilkabakchiev @nyordanoff @stanislavstefanov @svetlinzarev-sap @karaimin @krasish @petartodorovv
+/prow/jobs/incubator/ord-service @ataleksandrov @krasish @la4ezar @pk85 @pankrator @petartodorovv @alextargov @dpanayotov @gvachkov @nyordanoff @nickymateev @stanislavstefanov @stefancholakov @danielgospodinow @desislavaa @dimitarpetrov @dzahariev @kaloyanspiridonov @karaimin @kirilkabakchiev @svetlinzarev-sap
 /prow/jobs/incubator/podpreset-crd @szwedm @tillknuesting @wozniakjan @hanngos @piotrmiskiewicz @pk85 @ralikio
 /prow/jobs/incubator/reconciler @pbochynski @varbanv @clebs @dbadura @kwiatekus @m00g3n @moelsayed @jeremyharisch @pprecel @tobiscr
 /prow/jobs/incubator/service-catalog-tester @hanngos @piotrmiskiewicz @pk85 @ralikio @szwedm @tillknuesting @wozniakjan
