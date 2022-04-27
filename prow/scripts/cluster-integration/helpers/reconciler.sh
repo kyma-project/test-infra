@@ -8,6 +8,8 @@ readonly LOCAL_KUBECONFIG="$HOME/.kube/config"
 
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/gardener/gardener.sh
+source "${TEST_INFRA_SOURCES_DIR}prow/scripts/lib/gardener/gardener.sh"
 
 function reconciler::export_nightly_cluster_name(){
   # shellcheck disable=SC2046
@@ -40,27 +42,6 @@ function reconciler::delete_cluster_if_exists(){
   done
 }
 
-# reconciler::reprovision_cluster will generate new cluster name
-# and start provisioning again
-function reconciler::reprovision_cluster() {
-    log::info "cluster provisioning failed, trying provision new cluster"
-    log::info "cleaning damaged cluster first"
-
-    gardener::deprovision_cluster \
-      -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
-      -c "${INPUT_CLUSTER_NAME}" \
-      -f "${GARDENER_KYMA_PROW_KUBECONFIG}"
-    
-    log::info "building new cluster name"
-
-    utils::generate_commonName -n "${COMMON_NAME_PREFIX}"
-    COMMON_NAME=${utils_generate_commonName_return_commonName:?}
-    export COMMON_NAME
-    INPUT_CLUSTER_NAME="${COMMON_NAME}"
-    export INPUT_CLUSTER_NAME
-    reconciler::provision_cluster
-}
-
 function reconciler::provision_cluster() {
     export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
     export DOMAIN_NAME="${INPUT_CLUSTER_NAME}"
@@ -68,7 +49,7 @@ function reconciler::provision_cluster() {
     log::info "Creating cluster: ${INPUT_CLUSTER_NAME}"
 
     # catch cluster provisioning errors and try provision new one
-    trap reconciler::reprovision_cluster ERR
+    trap 'gardener::reprovision_cluster -r' ERR
 
     # create the cluster
     envsubst < "${DEFINITION_PATH}" | kubectl create -f -
