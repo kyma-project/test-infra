@@ -25,21 +25,7 @@ plugins:
   kyma-project/test-infra:
     plugins:
       - config-updater
-      - approve
-      - blunderbuss
   kyma-incubator/compass:
-    plugins:
-      - approve
-      - blunderbuss
-  kyma-project/third-party-images:
-    plugins:
-      - approve
-      - blunderbuss
-  kyma-project/kyma:
-    plugins:
-      - approve
-      - blunderbuss
-  kyma-project/cli:
     plugins:
       - approve
       - blunderbuss
@@ -76,35 +62,11 @@ external_plugins:
     - name: cla-assistant
       events:
         - issue_comment
-  kyma-project/test-infra:
-    - name: needs-tws
-      events:
-        - pull_request
-        - pull_request_review
-  kyma-project/kyma:
-    - name: needs-tws
-      events:
-        - pull_request
-        - pull_request_review
-  kyma-project/third-party-images:
-    - name: needs-tws
-      events:
-        - pull_request
-        - pull_request_review
-  kyma-project/cli:
-    - name: needs-tws
-      events:
-        - pull_request
-        - pull_request_review
   kyma-incubator/compass:
     - name: needs-tws
       events:
         - pull_request
         - pull_request_review
-  kyma-project:
-    - name: automerge-notification
-      events:
-        - pull_request
 
 config_updater:
   maps:
@@ -161,13 +123,6 @@ blunderbuss:
 
 approve:
   - repos:
-      - kyma-project/test-infra
-      - kyma-project/third-party-images
-    require_self_approval: false
-    ignore_review_state: false
-  - repos:
-      - kyma-project/kyma
       - kyma-incubator/compass
-      - kyma-project/cli
     require_self_approval: true # ignore authors of the PRs to be able to auto-approve their PR if they are owners
     ignore_review_state: false
