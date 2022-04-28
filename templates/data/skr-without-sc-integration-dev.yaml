@@ -1,0 +1,51 @@
+templates:
+  - fromTo:
+      - from: templates/generic.tmpl
+        to: ../prow/jobs/kyma/skr-without-sc-intgration.yaml
+    render:
+      - localSets:
+          jobConfig_default:
+            annotations:
+              pipeline.clusterprovisioning: keb
+              pipeline.installer: keb
+              pipeline.test: fast-integration
+            path_alias: github.com/kyma-project/kyma
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-without-sc-intgration.sh"
+            cluster: "trusted-workload"
+            request_memory: 100Mi
+            request_cpu: 50m
+            labels:
+              preset-build-main: "true"
+              preset-keb-dev-credentials: "true"
+              preset-kyma-integration-compass-dev: "true"
+              preset-btp-operator-stage-credentials: "true"
+              preset-kyma-integration-kcp-client-credentials: "true"
+              preset-kcp-client-dev-envs: "true"
+          kyma_integration_subaccount:
+            env:
+              KEB_SUBACCOUNT_ID: "prow-keb-integration"
+          keb_plan_aws:
+            annotations:
+              pipeline.platform: gardener_aws
+            env:
+              KEB_PLAN_ID: "361c511f-f939-4621-b228-d0fb79a1fe15"
+        jobConfigs:
+          - repoName: "kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  name: "skr-aws-without-sc-integration-dev"
+                  cron: "0 */2 * * *" # “At minute 0 past every 2nd hour.”
+                  labels:
+                    preset-skr-al-service-key: "true"
+                inheritedConfigs:
+                  global:
+                    - "image_kyma-integration"
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "keb_plan_aws"
+                    - "kyma_integration_subaccount"

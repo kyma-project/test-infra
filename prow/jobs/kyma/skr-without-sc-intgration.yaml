@@ -2,7 +2,7 @@
 
 
 periodics: # runs on schedule
-    - name: kyma-preview-integration-dev
+    - name: skr-aws-without-sc-integration-dev
       annotations:
         pipeline.clusterprovisioning: "keb"
         pipeline.installer: "keb"
@@ -12,15 +12,16 @@ periodics: # runs on schedule
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "kyma-preview-integration-dev"
+        prow.k8s.io/pubsub.runID: "skr-aws-without-sc-integration-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-btp-operator-stage-credentials: "true"
         preset-build-main: "true"
         preset-kcp-client-dev-envs: "true"
         preset-keb-dev-credentials: "true"
         preset-kyma-integration-compass-dev: "true"
         preset-kyma-integration-kcp-client-credentials: "true"
-        preset-kyma-integration-subaccounnt: "true"
-      cron: "0 */4 * * *"
+        preset-skr-al-service-key: "true"
+      cron: "0 */2 * * *"
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -40,16 +41,12 @@ periodics: # runs on schedule
             securityContext:
               privileged: true
             command:
-              - "make"
-            args:
-              - "-C"
-              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
-              - "ci-skr"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-without-sc-intgration.sh"
             env:
               - name: KEB_PLAN_ID
-                value: "5cb3d976-b85c-42ea-a636-79cadda109a9"
-              - name: KYMA_MAJOR_VERSION
-                value: "1"
+                value: "361c511f-f939-4621-b228-d0fb79a1fe15"
+              - name: KEB_SUBACCOUNT_ID
+                value: "prow-keb-integration"
             resources:
               requests:
                 memory: 100Mi

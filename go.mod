@@ -21,7 +21,7 @@ require (
 	cloud.google.com/go/firestore v1.6.1
 	cloud.google.com/go/functions v1.3.0
 	cloud.google.com/go/logging v1.4.2
-	cloud.google.com/go/pubsub v1.20.0
+	cloud.google.com/go/pubsub v1.21.0
 	cloud.google.com/go/storage v1.22.0
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.5.0
@@ -64,7 +64,7 @@ require (
 	go.uber.org/zap v1.21.0
 	golang.org/x/net v0.0.0-20220412020605-290c469a71a5
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5
-	google.golang.org/api v0.75.0
+	google.golang.org/api v0.76.0
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	k8s.io/api v0.22.2
