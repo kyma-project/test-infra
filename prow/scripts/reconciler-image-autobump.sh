@@ -87,8 +87,8 @@ function autobump::update_reconciler_image_tag(){
   cd "${CONTROL_PLANE_DIR}"
   # support old image tag update, should be removed after PR https://github.com/kyma-project/control-plane/pull/1601 merged.
   if $(yq eval '.global.images | has("mothership_reconciler")' ./resources/kcp/values.yaml); then
-    yq e -i '(.global.images.mothership_reconciler ) = "eu.gcr.io/kyma-project/incubator/reconciler/mothership:'${RECONCILER_IMAGE_TAG}'"' ./resources/kcp/values.yaml
-    yq e -i '(.global.images.component_reconciler ) = "eu.gcr.io/kyma-project/incubator/reconciler/component:'${RECONCILER_IMAGE_TAG}'"' ./resources/kcp/values.yaml
+    yq e -i '(.global.images.mothership_reconciler ) |= "eu.gcr.io/kyma-project/incubator/reconciler/mothership:'${RECONCILER_IMAGE_TAG}'"' ./resources/kcp/values.yaml
+    yq e -i '(.global.images.component_reconciler ) |= "eu.gcr.io/kyma-project/incubator/reconciler/component:'${RECONCILER_IMAGE_TAG}'"' ./resources/kcp/values.yaml
   fi
 
   if $(yq eval '.global.images | has("mothership_reconciler_version")' ./resources/kcp/values.yaml); then
