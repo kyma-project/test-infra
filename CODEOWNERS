@@ -21,15 +21,15 @@
 /prow/jobs/console @akucharska @dariadomagala @qbalukom @sawthis @valentinvieriu @wawrzyn321 @kyma-project/prow
 /prow/jobs/control-plane @tillknuesting @piotrmiskiewicz @wozniakjan @akgalwas @franpog859 @hanngos @koala7659 @pk85 @janmedrek @maladie @ralikio @szwedm @kyma-project/prow
 /prow/jobs/helm-broker @piotrmiskiewicz @pk85 @ralikio @szwedm @tillknuesting @wozniakjan @hanngos @kyma-project/prow
-/prow/jobs/incubator/compass @kaloyanspiridonov @pk85 @alextargov @danielgospodinow @dimitarpetrov @dzahariev @gvachkov @la4ezar @nickymateev @pankrator @ataleksandrov @desislavaa @dpanayotov @stefancholakov @kirilkabakchiev @nyordanoff @stanislavstefanov @svetlinzarev-sap @karaimin @krasish @petartodorovv @kyma-project/prow
-/prow/jobs/incubator/compass-console @gvachkov @la4ezar @petartodorovv @danielgospodinow @desislavaa @dimitarpetrov @dpanayotov @kaloyanspiridonov @krasish @pk85 @alextargov @nyordanoff @stanislavstefanov @nickymateev @dzahariev @karaimin @kirilkabakchiev @pankrator @stefancholakov @svetlinzarev-sap @ataleksandrov @kyma-project/prow
+/prow/jobs/incubator/compass @gvachkov @la4ezar @petartodorovv @desislavaa @dimitarpetrov @kaloyanspiridonov @krasish @alextargov @nyordanoff @stanislavstefanov @nickymateev @dzahariev @kirilkabakchiev @stefancholakov @svetlinzarev-sap @dragobt @ivantenevvasilev @kyma-project/prow
+/prow/jobs/incubator/compass-console @gvachkov @la4ezar @petartodorovv @desislavaa @dimitarpetrov @kaloyanspiridonov @krasish @alextargov @nyordanoff @stanislavstefanov @nickymateev @dzahariev @kirilkabakchiev @stefancholakov @svetlinzarev-sap @dragobt @ivantenevvasilev @kyma-project/prow
 /prow/jobs/incubator/dex @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @kyma-project/prow
 /prow/jobs/incubator/documentation-component @m00g3n @kyma-project/prow
 /prow/jobs/incubator/hydra-login-consent @tomasz-smelcerz-sap @dariusztutaj @piotrkpc @kyma-project/prow
 /prow/jobs/incubator/kyma-showcase @cortey @hanngos @lyczeq @mrcherry97 @mvshao @kyma-project/prow
 /prow/jobs/incubator/milv @m00g3n @pprecel @dbadura @kyma-project/prow
 /prow/jobs/incubator/octopus @szwedm @tillknuesting @wozniakjan @hanngos @piotrmiskiewicz @pk85 @ralikio @kyma-project/prow
-/prow/jobs/incubator/ord-service @ataleksandrov @krasish @la4ezar @pk85 @pankrator @petartodorovv @alextargov @dpanayotov @gvachkov @nyordanoff @nickymateev @stanislavstefanov @stefancholakov @danielgospodinow @desislavaa @dimitarpetrov @dzahariev @kaloyanspiridonov @karaimin @kirilkabakchiev @svetlinzarev-sap @kyma-project/prow
+/prow/jobs/incubator/ord-service @gvachkov @kirilkabakchiev @nickymateev @kaloyanspiridonov @alextargov @dzahariev @svetlinzarev-sap @dragobt @kyma-project/prow
 /prow/jobs/incubator/podpreset-crd @szwedm @tillknuesting @wozniakjan @hanngos @piotrmiskiewicz @pk85 @ralikio @kyma-project/prow
 /prow/jobs/incubator/reconciler @pbochynski @varbanv @clebs @dbadura @kwiatekus @m00g3n @moelsayed @jeremyharisch @pprecel @tobiscr @kyma-project/prow
 /prow/jobs/incubator/service-catalog-tester @hanngos @piotrmiskiewicz @pk85 @ralikio @szwedm @tillknuesting @wozniakjan @kyma-project/prow
