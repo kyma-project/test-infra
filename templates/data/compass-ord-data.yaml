@@ -6,6 +6,8 @@ templates:
           jobConfig_default:
             path_alias: github.com/kyma-incubator/compass
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-compass-ord.sh"
+            args:
+              - "--image eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220427-9543160d"
             request_memory: 100Mi
             request_mcpu: 50m
             env:

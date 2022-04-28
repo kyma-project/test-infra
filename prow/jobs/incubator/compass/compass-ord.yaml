@@ -36,6 +36,8 @@ presubmits: # runs on PRs
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-compass-ord.sh"
+            args:
+              - "--image eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220427-9543160d"
             env:
               - name: GO111MODULE
                 value: "on"
