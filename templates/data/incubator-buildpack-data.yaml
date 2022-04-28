@@ -267,12 +267,6 @@ templates:
           reconciler_jobConfig_args:
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
-          reconciler_e2e_upgrade_jobConfig:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade.sh"
-            annotations:
-              pipeline.installer: kyma install, kyma deploy
-              pipeline.test: "upgrade-fast-integration"
-              pipeline.clusterprovisioning: kyma cli
           reconciler_nightly_cluster_jobConfig:
             privileged: false
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"
@@ -693,34 +687,6 @@ templates:
                     - jobConfig_reconciler_publish_unstable_cli
                   local:
                     - extra_refs_kyma_cli
-              - jobConfig:
-                  name: periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade
-                  annotations:
-                    description: Reconciler e2e upgrade test job.
-                  decoration_config:
-                    timeout: 14400000000000 # 4h
-                    grace_period: 600000000000 # 10min
-                  cron: "0 1-22/2 * * 1-5" # "At minute 0 past every 2nd hour from 1 through 22 on every day-of-week from Monday through Friday."
-                  labels:
-                    preset-log-collector-slack-token: "true"
-                    preset-bot-github-token: "true"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_periodic
-                    - gardener_gcp_job
-                    - extra_refs_test-infra
-                    - extra_refs_kyma
-                    - extra_refs_control-plane
-                    - kyma_major_version_1
-                    - kyma_major_upgrade
-                    - disable_testgrid
-                    - image_kyma-integration
-                    - jobConfig_slack_jellyfish
-                  local:
-                    - extra_refs_kyma-1-24
-                    - reconciler_e2e_upgrade_jobConfig
-                    - reconciler_jobConfig_args
               - jobConfig:
                   name: reconciler-control-plane-image-bump
                   annotations:
