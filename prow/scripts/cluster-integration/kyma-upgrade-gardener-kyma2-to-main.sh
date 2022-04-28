@@ -70,9 +70,10 @@ trap gardener::cleanup EXIT INT
 ERROR_LOGGING_GUARD="true"
 export ERROR_LOGGING_GUARD
 
-RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
 readonly COMMON_NAME_PREFIX="grd"
-COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+utils::generate_commonName -n "${COMMON_NAME_PREFIX}"
+
+export COMMON_NAME="${utils_generate_commonName_return_commonName:?}"
 export COMMON_NAME
 set -x
 ### Cluster name must be less than 10 characters!
