@@ -2,8 +2,13 @@
 
 LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
 
-# shellcheck source=prow/scripts/lib/log.sh
-source "${LIBDIR}"/log.sh
+if [ -z ${TEST_INFRA_SOURCES_DIR+present} ]; then
+    # shellcheck source=prow/scripts/lib/log.sh
+    source "${LIBDIR}"/log.sh
+else
+    # shellcheck source=prow/scripts/lib/log.sh
+    source "${TEST_INFRA_SOURCES_DIR}"/log.sh
+fi
 
 # utils::check_required_vars checks if all provided variables are initialized
 #
