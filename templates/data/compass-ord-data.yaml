@@ -28,7 +28,7 @@ templates:
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
-                    - "image_kyma-integration"
+                    - "image_buildpack-golang"
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                     - "extra_refs_test-infra"
