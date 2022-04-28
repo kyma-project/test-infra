@@ -19,7 +19,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/kyma-project/test-infra/prow/scripts/resources/autobumper"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -48,28 +47,28 @@ func TestGetAssignment(t *testing.T) {
 		{
 			description:          "empty oncall URL will return an empty string",
 			oncallURL:            "",
-			oncallGroup:          autobumper.defaultOncallGroup,
+			oncallGroup:          defaultOncallGroup,
 			oncallServerResponse: "",
 			expectResKeyword:     "",
 		},
 		{
 			description:          "an invalid oncall URL will return an error message",
 			oncallURL:            "whatever-url",
-			oncallGroup:          autobumper.defaultOncallGroup,
+			oncallGroup:          defaultOncallGroup,
 			oncallServerResponse: "",
 			expectResKeyword:     "error",
 		},
 		{
 			description:          "an invalid response will return an error message",
 			oncallURL:            "auto",
-			oncallGroup:          autobumper.defaultOncallGroup,
+			oncallGroup:          defaultOncallGroup,
 			oncallServerResponse: "whatever-malformed-response",
 			expectResKeyword:     "error",
 		},
 		{
 			description:          "a valid response will return the oncaller from default group",
 			oncallURL:            "auto",
-			oncallGroup:          autobumper.defaultOncallGroup,
+			oncallGroup:          defaultOncallGroup,
 			oncallServerResponse: `{"Oncall":{"testinfra":"fake-oncall-name"},"Active":{"testinfra":false}}`,
 			expectResKeyword:     "fake-oncall-name",
 		},
@@ -90,14 +89,14 @@ func TestGetAssignment(t *testing.T) {
 		{
 			description:          "a valid response with empty oncall will return on oncall message",
 			oncallURL:            "auto",
-			oncallGroup:          autobumper.defaultOncallGroup,
+			oncallGroup:          defaultOncallGroup,
 			oncallServerResponse: `{"Oncall":{"testinfra":""},"Active":{"testinfra":false}}`,
 			expectResKeyword:     "Nobody",
 		},
 		{
 			description:          "oncall active",
 			oncallURL:            "auto",
-			oncallGroup:          autobumper.defaultOncallGroup,
+			oncallGroup:          defaultOncallGroup,
 			oncallServerResponse: `{"Oncall":{"testinfra":"fake-oncall-name"},"Active":{"testinfra":true}}`,
 			expectResKeyword:     "fake-oncall-name",
 			expectOncallActive:   true,
@@ -105,7 +104,7 @@ func TestGetAssignment(t *testing.T) {
 		{
 			description:          "skip",
 			oncallURL:            "auto",
-			oncallGroup:          autobumper.defaultOncallGroup,
+			oncallGroup:          defaultOncallGroup,
 			oncallServerResponse: `{"Oncall":{"testinfra":"fake-oncall-name"},"Active":{"testinfra":true}}`,
 			skipOncallAssignment: true,
 			expectResKeyword:     "",
@@ -114,7 +113,7 @@ func TestGetAssignment(t *testing.T) {
 		{
 			description:          "self-assign-with-oncall",
 			oncallURL:            "auto",
-			oncallGroup:          autobumper.defaultOncallGroup,
+			oncallGroup:          defaultOncallGroup,
 			oncallServerResponse: `{"Oncall":{"testinfra":"fake-oncall-name"},"Active":{"testinfra":true}}`,
 			skipOncallAssignment: true,
 			selfAssign:           true,
@@ -124,7 +123,7 @@ func TestGetAssignment(t *testing.T) {
 		{
 			description:          "self-assign-without-oncall",
 			oncallURL:            "auto",
-			oncallGroup:          autobumper.defaultOncallGroup,
+			oncallGroup:          defaultOncallGroup,
 			oncallServerResponse: `{"Oncall":{"testinfra":""},"Active":{"testinfra":false}}`,
 			skipOncallAssignment: true,
 			selfAssign:           true,
@@ -144,11 +143,11 @@ func TestGetAssignment(t *testing.T) {
 				tc.oncallURL = testServer.URL
 			}
 
-			res := autobumper.getAssignment(tc.oncallURL, tc.oncallGroup, tc.skipOncallAssignment, tc.selfAssign)
+			res := getAssignment(tc.oncallURL, tc.oncallGroup, tc.skipOncallAssignment, tc.selfAssign)
 			if !strings.Contains(res, tc.expectResKeyword) {
 				t.Errorf("Expect the result %q contains keyword %q but it does not", res, tc.expectResKeyword)
 			}
-			if got, want := autobumper.isOncallActive(tc.oncallURL, tc.oncallGroup), tc.expectOncallActive; got != want {
+			if got, want := isOncallActive(tc.oncallURL, tc.oncallGroup), tc.expectOncallActive; got != want {
 				t.Errorf("Expect oncall active. Want: %v, got: %v", want, got)
 			}
 		})
@@ -159,14 +158,14 @@ func TestValidateOptions(t *testing.T) {
 	emptyStr := ""
 	whateverStr := "whatever"
 	emptyArr := make([]string, 0)
-	emptyPrefixes := make([]autobumper.prefix, 0)
-	latestPrefixes := []autobumper.prefix{{
+	emptyPrefixes := make([]prefix, 0)
+	latestPrefixes := []prefix{{
 		Name:                 "test",
 		Prefix:               "gcr.io/test/",
 		RefConfigFile:        "",
 		StagingRefConfigFile: "",
 	}}
-	upstreamPrefixes := []autobumper.prefix{{
+	upstreamPrefixes := []prefix{{
 		Name:                 "test",
 		Prefix:               "gcr.io/test/",
 		RefConfigFile:        "ref",
@@ -178,7 +177,7 @@ func TestValidateOptions(t *testing.T) {
 		name                string
 		targetVersion       *string
 		includeConfigPaths  *[]string
-		prefixes            *[]autobumper.prefix
+		prefixes            *[]prefix
 		upstreamURLBase     *string
 		err                 bool
 		upstreamBaseChanged bool
@@ -249,10 +248,10 @@ func TestValidateOptions(t *testing.T) {
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			defaultOption := &autobumper.options{
+			defaultOption := &options{
 				UpstreamURLBase:     "whatever-URLBase",
 				Prefixes:            latestPrefixes,
-				TargetVersion:       autobumper.latestVersion,
+				TargetVersion:       latestVersion,
 				IncludedConfigPaths: []string{"whatever-config-path1", "whatever-config-path2"},
 			}
 
@@ -269,7 +268,7 @@ func TestValidateOptions(t *testing.T) {
 				defaultOption.UpstreamURLBase = *tc.upstreamURLBase
 			}
 
-			err := autobumper.validateOptions(defaultOption)
+			err := validateOptions(defaultOption)
 			t.Logf("err is: %v", err)
 			if err == nil && tc.err {
 				t.Errorf("Expected to get an error for %#v but got nil", defaultOption)
@@ -277,10 +276,10 @@ func TestValidateOptions(t *testing.T) {
 			if err != nil && !tc.err {
 				t.Errorf("Expected to not get an error for %#v but got %v", defaultOption, err)
 			}
-			if tc.upstreamBaseChanged && defaultOption.UpstreamURLBase != autobumper.defaultUpstreamURLBase {
-				t.Errorf("UpstreamURLBase should have been changed to %q, but was %q", defaultOption.UpstreamURLBase, autobumper.defaultUpstreamURLBase)
+			if tc.upstreamBaseChanged && defaultOption.UpstreamURLBase != defaultUpstreamURLBase {
+				t.Errorf("UpstreamURLBase should have been changed to %q, but was %q", defaultOption.UpstreamURLBase, defaultUpstreamURLBase)
 			}
-			if !tc.upstreamBaseChanged && defaultOption.UpstreamURLBase == autobumper.defaultUpstreamURLBase {
+			if !tc.upstreamBaseChanged && defaultOption.UpstreamURLBase == defaultUpstreamURLBase {
 				t.Errorf("UpstreamURLBase should not have been changed to default, but was")
 			}
 		})
@@ -355,7 +354,7 @@ func TestUpdateReferences(t *testing.T) {
 	}{
 		{
 			description:   "update the images to the latest version",
-			targetVersion: autobumper.latestVersion,
+			targetVersion: latestVersion,
 			includeConfigPaths: []string{
 				path.Join(tmpDir, "testdata/dir/subdir1"),
 				path.Join(tmpDir, "testdata/dir/subdir2"),
@@ -380,7 +379,7 @@ func TestUpdateReferences(t *testing.T) {
 		},
 		{
 			description:   "by default only yaml files will be updated",
-			targetVersion: autobumper.latestVersion,
+			targetVersion: latestVersion,
 			includeConfigPaths: []string{
 				path.Join(tmpDir, "testdata/dir/subdir3"),
 			},
@@ -391,7 +390,7 @@ func TestUpdateReferences(t *testing.T) {
 		},
 		{
 			description:   "files under the excluded paths will not be updated",
-			targetVersion: autobumper.latestVersion,
+			targetVersion: latestVersion,
 			includeConfigPaths: []string{
 				path.Join(tmpDir, "testdata/dir"),
 			},
@@ -406,7 +405,7 @@ func TestUpdateReferences(t *testing.T) {
 		},
 		{
 			description:   "non YAML files could be configured by specifying extraFiles",
-			targetVersion: autobumper.latestVersion,
+			targetVersion: latestVersion,
 			includeConfigPaths: []string{
 				path.Join(tmpDir, "testdata/dir/subdir3"),
 			},
@@ -423,7 +422,7 @@ func TestUpdateReferences(t *testing.T) {
 		},
 		{
 			description:   "updating non-existed files will return an error",
-			targetVersion: autobumper.latestVersion,
+			targetVersion: latestVersion,
 			includeConfigPaths: []string{
 				path.Join(tmpDir, "testdata/dir/whatever-subdir"),
 			},
@@ -433,14 +432,14 @@ func TestUpdateReferences(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.description, func(t *testing.T) {
-			option := &autobumper.options{
+			option := &options{
 				TargetVersion:       tc.targetVersion,
 				IncludedConfigPaths: tc.includeConfigPaths,
 				ExtraFiles:          tc.extraFiles,
 				ExcludedConfigPaths: tc.excludeConfigPaths,
 			}
 			cli := &fakeImageBumperCli{replacements: map[string]string{}}
-			res, err := autobumper.updateReferences(cli, nil, option)
+			res, err := updateReferences(cli, nil, option)
 			if tc.expectError && err == nil {
 				t.Errorf("Expected to get an error but the result is nil")
 			}
@@ -517,7 +516,7 @@ func TestParseUpstreamImageVersion(t *testing.T) {
 				tc.upstreamURL = testServer.URL
 			}
 
-			res, err := autobumper.parseUpstreamImageVersion(tc.upstreamURL, tc.prefix)
+			res, err := parseUpstreamImageVersion(tc.upstreamURL, tc.prefix)
 			if res != tc.expectedRes {
 				t.Errorf("The expected result %q != the actual result %q", tc.expectedRes, res)
 			}
@@ -547,18 +546,18 @@ func TestUpstreamImageVersionResolver(t *testing.T) {
 		doesNotExistPrefix         = "gcr.io/dne"
 		doesNotExist               = "DNE"
 	)
-	prowPrefixStruct := autobumper.prefix{
+	prowPrefixStruct := prefix{
 		Prefix:               prowPrefix,
 		RefConfigFile:        prowRefConfigFile,
 		StagingRefConfigFile: prowStagingRefConfigFile,
 	}
-	boskosPrefixStruct := autobumper.prefix{
+	boskosPrefixStruct := prefix{
 		Prefix:               boskosPrefix,
 		RefConfigFile:        boskosRefConfigFile,
 		StagingRefConfigFile: boskosStagingRefConfigFile,
 	}
 	// prefix used to test when a tag does not exist. This is used to have parser return a tag that will make TagExists return false
-	tagDoesNotExistPrefix := autobumper.prefix{
+	tagDoesNotExistPrefix := prefix{
 		Prefix:               doesNotExistPrefix,
 		RefConfigFile:        doesNotExist,
 		StagingRefConfigFile: doesNotExist,
@@ -574,7 +573,7 @@ func TestUpstreamImageVersionResolver(t *testing.T) {
 		expectedTargetTag   string
 		expectError         bool
 		resolverError       bool
-		prefixes            []autobumper.prefix
+		prefixes            []prefix
 	}{
 		{
 			description: "resolve image version with an invalid version type",
@@ -590,7 +589,7 @@ func TestUpstreamImageVersionResolver(t *testing.T) {
 			},
 			upstreamVersionType: "whatever-version-type",
 			expectError:         true,
-			prefixes:            []autobumper.prefix{prowPrefixStruct, boskosPrefixStruct},
+			prefixes:            []prefix{prowPrefixStruct, boskosPrefixStruct},
 		},
 		{
 			description: "resolve image with two prefixes possible and upstreamVersion",
@@ -604,9 +603,9 @@ func TestUpstreamImageVersionResolver(t *testing.T) {
 					return "", errors.New("not supported")
 				}
 			},
-			upstreamVersionType: autobumper.upstreamVersion,
+			upstreamVersionType: upstreamVersion,
 			expectError:         false,
-			prefixes:            []autobumper.prefix{prowPrefixStruct, boskosPrefixStruct},
+			prefixes:            []prefix{prowPrefixStruct, boskosPrefixStruct},
 			imageHost:           prowPrefix,
 			currentTag:          "whatever-current-tag",
 			expectedTargetTag:   prowProdFakeVersion,
@@ -623,9 +622,9 @@ func TestUpstreamImageVersionResolver(t *testing.T) {
 					return "", errors.New("not supported")
 				}
 			},
-			upstreamVersionType: autobumper.upstreamStagingVersion,
+			upstreamVersionType: upstreamStagingVersion,
 			expectError:         false,
-			prefixes:            []autobumper.prefix{prowPrefixStruct, boskosPrefixStruct},
+			prefixes:            []prefix{prowPrefixStruct, boskosPrefixStruct},
 			imageHost:           boskosPrefix,
 			currentTag:          "whatever-current-tag",
 			expectedTargetTag:   boskosStagingFakeVersion,
@@ -640,9 +639,9 @@ func TestUpstreamImageVersionResolver(t *testing.T) {
 					return "", errors.New("not supported")
 				}
 			},
-			upstreamVersionType: autobumper.upstreamVersion,
+			upstreamVersionType: upstreamVersion,
 			expectError:         false,
-			prefixes:            []autobumper.prefix{boskosPrefixStruct},
+			prefixes:            []prefix{boskosPrefixStruct},
 			imageHost:           prowPrefix,
 			currentTag:          "whatever-current-tag",
 			expectedTargetTag:   "whatever-current-tag",
@@ -657,9 +656,9 @@ func TestUpstreamImageVersionResolver(t *testing.T) {
 					return "", errors.New("not supported")
 				}
 			},
-			upstreamVersionType: autobumper.upstreamVersion,
+			upstreamVersionType: upstreamVersion,
 			expectError:         false,
-			prefixes:            []autobumper.prefix{tagDoesNotExistPrefix},
+			prefixes:            []prefix{tagDoesNotExistPrefix},
 			imageHost:           doesNotExistPrefix,
 			currentTag:          "doesNotExist",
 			expectedTargetTag:   "",
@@ -668,12 +667,12 @@ func TestUpstreamImageVersionResolver(t *testing.T) {
 	}
 	for _, tc := range cases {
 		t.Run(tc.description, func(t *testing.T) {
-			option := &autobumper.options{
+			option := &options{
 				UpstreamURLBase: fakeUpstreamURLBase,
 				Prefixes:        tc.prefixes,
 			}
 			cli := &fakeImageBumperCli{replacements: map[string]string{}, tagCache: map[string]string{}}
-			resolver, err := autobumper.upstreamImageVersionResolver(option, tc.upstreamVersionType, tc.parser, cli)
+			resolver, err := upstreamImageVersionResolver(option, tc.upstreamVersionType, tc.parser, cli)
 			if tc.expectError && err == nil {
 				t.Errorf("Expected to get an error but the result is nil")
 				return
@@ -719,12 +718,12 @@ func TestUpstreamConfigVersions(t *testing.T) {
 	prowPrefix := "gcr.io/k8s-prow/"
 	boskosPrefix := "gcr.io/k8s-boskos/"
 
-	prowPrefixStruct := autobumper.prefix{
+	prowPrefixStruct := prefix{
 		Prefix:               prowPrefix,
 		RefConfigFile:        prowRefConfigFile,
 		StagingRefConfigFile: prowStagingRefConfigFile,
 	}
-	boskosPrefixStruct := autobumper.prefix{
+	boskosPrefixStruct := prefix{
 		Prefix:               boskosPrefix,
 		RefConfigFile:        boskosRefConfigFile,
 		StagingRefConfigFile: boskosStagingRefConfigFile,
@@ -749,36 +748,36 @@ func TestUpstreamConfigVersions(t *testing.T) {
 		upstreamVersionType string
 		expectedResult      map[string]string
 		expectError         bool
-		prefixes            []autobumper.prefix
+		prefixes            []prefix
 	}{
 		{
 			description:         "resolve image version with an invalid version type",
 			upstreamVersionType: "whatever-version-type",
 			expectError:         true,
-			prefixes:            []autobumper.prefix{prowPrefixStruct, boskosPrefixStruct},
+			prefixes:            []prefix{prowPrefixStruct, boskosPrefixStruct},
 		},
 		{
 			description:         "correct versions map for production",
-			upstreamVersionType: autobumper.upstreamVersion,
+			upstreamVersionType: upstreamVersion,
 			expectError:         false,
-			prefixes:            []autobumper.prefix{prowPrefixStruct, boskosPrefixStruct},
+			prefixes:            []prefix{prowPrefixStruct, boskosPrefixStruct},
 			expectedResult:      map[string]string{prowPrefix: prowProdFakeVersion, boskosPrefix: boskosProdFakeVersion},
 		},
 		{
 			description:         "correct versions map for staging",
-			upstreamVersionType: autobumper.upstreamStagingVersion,
+			upstreamVersionType: upstreamStagingVersion,
 			expectError:         false,
-			prefixes:            []autobumper.prefix{prowPrefixStruct, boskosPrefixStruct},
+			prefixes:            []prefix{prowPrefixStruct, boskosPrefixStruct},
 			expectedResult:      map[string]string{prowPrefix: prowStagingFakeVersion, boskosPrefix: boskosStagingFakeVersion},
 		},
 	}
 	for _, tc := range cases {
 		t.Run(tc.description, func(t *testing.T) {
-			option := &autobumper.options{
+			option := &options{
 				UpstreamURLBase: fakeUpstreamURLBase,
 				Prefixes:        tc.prefixes,
 			}
-			versions, err := autobumper.upstreamConfigVersions(tc.upstreamVersionType, option, fakeImageVersionParser)
+			versions, err := upstreamConfigVersions(tc.upstreamVersionType, option, fakeImageVersionParser)
 			if tc.expectError && err == nil {
 				t.Errorf("Expected to get an error but the result is nil")
 				return
@@ -797,67 +796,67 @@ func TestUpstreamConfigVersions(t *testing.T) {
 }
 
 func TestGetVersionsAndCheckConsistency(t *testing.T) {
-	prowPrefix := autobumper.prefix{Prefix: "gcr.io/k8s-prow/", ConsistentImages: true}
-	boskosPrefix := autobumper.prefix{Prefix: "gcr.io/k8s-boskos/", ConsistentImages: true}
-	inconsistentPrefix := autobumper.prefix{Prefix: "inconsistent/", ConsistentImages: false}
+	prowPrefix := prefix{Prefix: "gcr.io/k8s-prow/", ConsistentImages: true}
+	boskosPrefix := prefix{Prefix: "gcr.io/k8s-boskos/", ConsistentImages: true}
+	inconsistentPrefix := prefix{Prefix: "inconsistent/", ConsistentImages: false}
 	testCases := []struct {
 		name             string
 		images           map[string]string
-		prefixes         []autobumper.prefix
+		prefixes         []prefix
 		expectedVersions map[string][]string
 		err              bool
 	}{
 		{
 			name:             "two prefixes being bumped with consistent tags",
-			prefixes:         []autobumper.prefix{prowPrefix, boskosPrefix},
+			prefixes:         []prefix{prowPrefix, boskosPrefix},
 			images:           map[string]string{"gcr.io/k8s-prow/test:tag1": "newtag1", "gcr.io/k8s-prow/test2:tag1": "newtag1"},
 			err:              false,
 			expectedVersions: map[string][]string{"newtag1": {"gcr.io/k8s-prow/test:tag1", "gcr.io/k8s-prow/test2:tag1"}},
 		},
 		{
 			name:     "two prefixes being bumped with inconsistent tags",
-			prefixes: []autobumper.prefix{prowPrefix, boskosPrefix},
+			prefixes: []prefix{prowPrefix, boskosPrefix},
 			images:   map[string]string{"gcr.io/k8s-prow/test:tag1": "newtag1", "gcr.io/k8s-prow/test2:tag1": "tag1"},
 			err:      true,
 		},
 		{
 			name:             "two prefixes being bumped with no bumps",
-			prefixes:         []autobumper.prefix{prowPrefix, boskosPrefix},
+			prefixes:         []prefix{prowPrefix, boskosPrefix},
 			images:           map[string]string{},
 			err:              false,
 			expectedVersions: map[string][]string{},
 		},
 		{
 			name:             "Prefix being bumped with inconsistent tags",
-			prefixes:         []autobumper.prefix{inconsistentPrefix},
+			prefixes:         []prefix{inconsistentPrefix},
 			images:           map[string]string{"inconsistent/test:tag1": "newtag1", "inconsistent/test2:tag2": "newtag2"},
 			err:              false,
 			expectedVersions: map[string][]string{"newtag1": {"inconsistent/test:tag1"}, "newtag2": {"inconsistent/test2:tag2"}},
 		},
 		{
 			name:             "One of the image types wasn't bumped. Do not include in versions.",
-			prefixes:         []autobumper.prefix{prowPrefix, boskosPrefix},
+			prefixes:         []prefix{prowPrefix, boskosPrefix},
 			images:           map[string]string{"gcr.io/k8s-prow/test:tag1": "newtag1", "gcr.io/k8s-prow/test2:tag1": "newtag1", "gcr.io/k8s-boskos/nobumped:tag1": "tag1"},
 			err:              false,
 			expectedVersions: map[string][]string{"newtag1": {"gcr.io/k8s-prow/test:tag1", "gcr.io/k8s-prow/test2:tag1"}},
 		},
 		{
 			name:             "Two of the images in one type wasn't bumped. Do not include in versions. Do not error",
-			prefixes:         []autobumper.prefix{prowPrefix, boskosPrefix},
+			prefixes:         []prefix{prowPrefix, boskosPrefix},
 			images:           map[string]string{"gcr.io/k8s-prow/test:tag1": "newtag1", "gcr.io/k8s-prow/test2:tag1": "newtag1", "gcr.io/k8s-boskos/nobumped:tag1": "tag1", "gcr.io/k8s-boskos/nobumped2:tag1": "tag1"},
 			err:              false,
 			expectedVersions: map[string][]string{"newtag1": {"gcr.io/k8s-prow/test:tag1", "gcr.io/k8s-prow/test2:tag1"}},
 		},
 		{
 			name:             "prefix was not consistent before bump and now is",
-			prefixes:         []autobumper.prefix{prowPrefix},
+			prefixes:         []prefix{prowPrefix},
 			images:           map[string]string{"gcr.io/k8s-prow/test:tag1": "newtag1", "gcr.io/k8s-prow/test2:tag2": "newtag1"},
 			err:              false,
 			expectedVersions: map[string][]string{"newtag1": {"gcr.io/k8s-prow/test:tag1", "gcr.io/k8s-prow/test2:tag2"}},
 		},
 		{
 			name:             "prefix was not consistent before bump one was bumped ahead manually",
-			prefixes:         []autobumper.prefix{prowPrefix},
+			prefixes:         []prefix{prowPrefix},
 			images:           map[string]string{"gcr.io/k8s-prow/test:tag1": "newtag1", "gcr.io/k8s-prow/test2:newtag1": "newtag1"},
 			err:              false,
 			expectedVersions: map[string][]string{"newtag1": {"gcr.io/k8s-prow/test:tag1"}},
@@ -865,7 +864,7 @@ func TestGetVersionsAndCheckConsistency(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			versions, err := autobumper.getVersionsAndCheckConsistency(tc.prefixes, tc.images)
+			versions, err := getVersionsAndCheckConsistency(tc.prefixes, tc.images)
 			if tc.err && err == nil {
 				t.Errorf("expected error but did not get one")
 			}
@@ -880,62 +879,62 @@ func TestGetVersionsAndCheckConsistency(t *testing.T) {
 }
 
 func TestMakeCommitSummary(t *testing.T) {
-	prowPrefix := autobumper.prefix{Name: "Prow", Prefix: "gcr.io/k8s-prow/", ConsistentImages: true}
-	boskosPrefix := autobumper.prefix{Name: "Boskos", Prefix: "gcr.io/k8s-boskos/", ConsistentImages: true}
-	inconsistentPrefix := autobumper.prefix{Name: "Inconsistent", Prefix: "gcr.io/inconsistent/", ConsistentImages: false}
+	prowPrefix := prefix{Name: "Prow", Prefix: "gcr.io/k8s-prow/", ConsistentImages: true}
+	boskosPrefix := prefix{Name: "Boskos", Prefix: "gcr.io/k8s-boskos/", ConsistentImages: true}
+	inconsistentPrefix := prefix{Name: "Inconsistent", Prefix: "gcr.io/inconsistent/", ConsistentImages: false}
 	testCases := []struct {
 		name           string
-		prefixes       []autobumper.prefix
+		prefixes       []prefix
 		versions       map[string][]string
 		consistency    bool
 		expectedResult string
 	}{
 		{
 			name:           "Two prefixes, but only one bumped",
-			prefixes:       []autobumper.prefix{prowPrefix, boskosPrefix},
+			prefixes:       []prefix{prowPrefix, boskosPrefix},
 			versions:       map[string][]string{"tag1": {"gcr.io/k8s-prow/test:tag1"}},
 			expectedResult: "Update Prow to tag1",
 		},
 		{
 			name:           "Two prefixes, both bumped",
-			prefixes:       []autobumper.prefix{prowPrefix, boskosPrefix},
+			prefixes:       []prefix{prowPrefix, boskosPrefix},
 			versions:       map[string][]string{"tag1": {"gcr.io/k8s-prow/test:tag1"}, "tag2": {"gcr.io/k8s-boskos/test:tag2"}},
 			expectedResult: "Update Prow to tag1, Boskos to tag2",
 		},
 		{
 			name:           "Empty versions",
-			prefixes:       []autobumper.prefix{prowPrefix, boskosPrefix},
+			prefixes:       []prefix{prowPrefix, boskosPrefix},
 			versions:       map[string][]string{},
 			expectedResult: "Update Prow, Boskos images as necessary",
 		},
 		{
 			name:           "One bumped inconsistently",
-			prefixes:       []autobumper.prefix{prowPrefix, boskosPrefix, inconsistentPrefix},
+			prefixes:       []prefix{prowPrefix, boskosPrefix, inconsistentPrefix},
 			versions:       map[string][]string{"tag1": {"gcr.io/k8s-prow/test:tag1"}, "tag2": {"gcr.io/k8s-boskos/test:tag2"}, "tag3": {"gcr.io/inconsistent/test:tag3"}},
 			expectedResult: "Update Prow to tag1, Boskos to tag2 and Inconsistent as needed",
 		},
 		{
 			name:           "inconsistent tag was not bumped, do not include in result",
-			prefixes:       []autobumper.prefix{prowPrefix, boskosPrefix, inconsistentPrefix},
+			prefixes:       []prefix{prowPrefix, boskosPrefix, inconsistentPrefix},
 			versions:       map[string][]string{"tag1": {"gcr.io/k8s-prow/test:tag1"}, "tag2": {"gcr.io/k8s-boskos/test:tag2"}},
 			expectedResult: "Update Prow to tag1, Boskos to tag2",
 		},
 		{
 			name:           "Two images bumped to same version",
-			prefixes:       []autobumper.prefix{prowPrefix, boskosPrefix, inconsistentPrefix},
+			prefixes:       []prefix{prowPrefix, boskosPrefix, inconsistentPrefix},
 			versions:       map[string][]string{"tag1": {"gcr.io/k8s-prow/test:tag1", "gcr.io/inconsistent/test:tag3"}, "tag2": {"gcr.io/k8s-boskos/test:tag2"}},
 			expectedResult: "Update Prow to tag1, Boskos to tag2 and Inconsistent as needed",
 		},
 		{
 			name:           "only bump inconsistent",
-			prefixes:       []autobumper.prefix{inconsistentPrefix},
+			prefixes:       []prefix{inconsistentPrefix},
 			versions:       map[string][]string{"tag1": {"gcr.io/k8s-prow/test:tag1", "gcr.io/inconsistent/test:tag3"}, "tag2": {"gcr.io/k8s-boskos/test:tag2"}},
 			expectedResult: "Update Inconsistent as needed",
 		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			res := autobumper.makeCommitSummary(tc.prefixes, tc.versions)
+			res := makeCommitSummary(tc.prefixes, tc.versions)
 			if res != tc.expectedResult {
 				t.Errorf("expected commit string to be %q, but was %q", tc.expectedResult, res)
 			}
@@ -1033,7 +1032,7 @@ Commits | Dates | Images
 	for _, tc := range testCases {
 		tc := tc
 		t.Run(tc.testName, func(t *testing.T) {
-			want, got := tc.expected, autobumper.generateSummary(tc.name, tc.repo, tc.prefix, tc.summarize, tc.images)
+			want, got := tc.expected, generateSummary(tc.name, tc.repo, tc.prefix, tc.summarize, tc.images)
 			if diff := cmp.Diff(want, got); diff != "" {
 				t.Errorf("generateSummary returned unexpected value (-want +got):\n%s", diff)
 			}
