@@ -8,7 +8,7 @@ gitHubRepo: "control-plane"
 remoteName: "control-plane"
 includedConfigPaths:
   - "resources/kcp/values.yaml"
-headBranchName: "add-free-plan" # target branch for changes push to, default is 'autobump', you can replace this branch for testing purpose.
+#headBranchName: "add-free-plan" # target branch for changes push to, default is 'autobump', you can replace this branch for testing purpose.
 prefixes:
   - name: "Reconciler"
     prefix: "eu.gcr.io/kyma-project/incubator/reconciler/"
