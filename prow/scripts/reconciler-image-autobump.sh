@@ -68,6 +68,12 @@ function utils::check_required_vars() {
     fi
 }
 
+function autobump::build() {
+  log::info "Building k8s image autobump tool"
+  cd "${KYMA_TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/autobumper"
+  go build -o /tools/generic-autobumper
+}
+
 function reconciler::fetch_latest_image_tag() {
   log::info "Fetching latest reconciler commit ID"
   cd "${RECONCILER_DIR}"
@@ -94,7 +100,7 @@ function autobump::commit_changes_and_create_pr(){
     git add resources/kcp/values.yaml
     git commit -m 'Bumping Reconciler:\n\nNo eu.gcr.io/kyma-project/incubator/reconciler/ changes.\n\n' '--author' 'Kyma Bot <kyma.bot@sap.com>'
     log::info "Create PR to control plane"
-    "${KYMA_TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/autobumper --config="${BUMP_TOOL_CONFIG_FILE}"
+    /tools/generic-autobumper --config="${BUMP_TOOL_CONFIG_FILE}"
   else
     log::info "Nothing changed, stopped."
   fi
@@ -105,6 +111,8 @@ function autobump::commit_changes_and_create_pr(){
 ## ---------------------------------------------------------------------------------------
 # check if all the required ENVs are defined
 utils::check_required_vars "${requiredVars[@]}"
+
+autobump::build
 
 # fetch latest reconciler image tag from reconciler commit ID
 reconciler::fetch_latest_image_tag
