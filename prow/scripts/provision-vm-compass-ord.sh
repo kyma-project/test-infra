@@ -41,7 +41,7 @@ ORD_PR_COMMIT_HASH=$(jq -r '.merge_commit_sha' <<< "${ORD_PR_DATA}")
 log::info "ORD_PR_COMMIT_HASH is: ${ORD_PR_COMMIT_HASH}"
 
 log::info "Fetch ORD service sources"
-git clone https://github.com/kyma-incubator/ord-service.git && cd ord-service && git checkout "${ORD_PR_COMMIT_HASH}" && cd ..
+cd /home/prow/ && git clone https://github.com/kyma-incubator/ord-service.git && cd ord-service && git checkout "${ORD_PR_COMMIT_HASH}" && cd ..
 
 log::info "Triggering the test"
 
