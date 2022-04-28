@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
-readonly RECONCILER_SUFFIX="-reconciler"
-readonly RECONCILER_NAMESPACE=reconciler
-readonly RECONCILER_TIMEOUT=1200 # in secs
-readonly RECONCILER_DELAY=15 # in secs
-readonly LOCAL_KUBECONFIG="$HOME/.kube/config"
+# Set readonly variables only if they are not present.
+if [ -z ${RECONCILER_SUFFIX+present} ]; then readonly RECONCILER_SUFFIX="-reconciler"; fi
+if [ -z ${RECONCILER_NAMESPACE+present} ]; then readonly RECONCILER_NAMESPACE=reconciler; fi
+if [ -z ${RECONCILER_TIMEOUT+present} ]; then readonly RECONCILER_TIMEOUT=1200; fi # in secs
+if [ -z ${RECONCILER_DELAY+present} ]; then readonly RECONCILER_DELAY=15; fi # in secs
+if [ -z ${LOCAL_KUBECONFIG+present} ]; then readonly LOCAL_KUBECONFIG="$HOME/.kube/config"; fi
 
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
