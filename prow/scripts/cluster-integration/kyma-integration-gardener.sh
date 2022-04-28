@@ -50,8 +50,6 @@ requiredVars=(
     GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
 )
 
-echo "What the hell I'm doing here!!! [dkfdsf]"
-
 utils::check_required_vars "${requiredVars[@]}"
 
 if [[ $GARDENER_PROVIDER == "azure" ]]; then
