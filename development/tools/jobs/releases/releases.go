@@ -4,10 +4,10 @@ package releases
 
 // List of currently supported releases
 var (
-	Release23  = mustParse("2.3")
-	Release22  = mustParse("2.2")
-	Release21  = mustParse("2.1")
-	Release20  = mustParse("2.0")
+	Release23 = mustParse("2.3")
+	Release22 = mustParse("2.2")
+	Release21 = mustParse("2.1")
+	Release20 = mustParse("2.0")
 )
 
 // GetAllKymaReleases returns all supported kyma release branches
