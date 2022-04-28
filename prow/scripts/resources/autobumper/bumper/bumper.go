@@ -215,10 +215,7 @@ func Run(ctx context.Context, o *Options, prh PRHandler) error {
 	if o.SkipPullRequest {
 		logrus.Debugf("--skip-pull-request is set to true, won't create a pull request.")
 	}
-	if o.Gerrit == nil {
-		return processGitHub(ctx, o, prh)
-	}
-	return processGerrit(ctx, o, prh)
+	return processGitHub(ctx, o, prh)
 }
 
 func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
