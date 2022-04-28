@@ -26,7 +26,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220421-f82abd48"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220427-13347554"
             securityContext:
               privileged: true
             command:
@@ -69,7 +69,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220411-a5159710"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220427-9543160d"
             securityContext:
               privileged: true
             command:
@@ -102,7 +102,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220310-2b410ea6"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220427-9543160d"
             securityContext:
               privileged: true
             command:
@@ -149,7 +149,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220411-a5159710"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220427-9543160d"
             securityContext:
               privileged: true
             command:
