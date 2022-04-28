@@ -71,7 +71,7 @@ function utils::check_required_vars() {
 function autobump::build() {
   log::info "Building k8s image autobump tool"
   cd "${KYMA_TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/autobumper"
-  go build -o /tools/generic-autobumper
+  go build -o /tools/autobumper
 }
 
 function reconciler::fetch_latest_image_tag() {
@@ -107,7 +107,7 @@ function autobump::commit_changes_and_create_pr(){
     git add resources/kcp/values.yaml
     git commit -m 'Bumping Reconciler:\n\nNo eu.gcr.io/kyma-project/incubator/reconciler/ changes.\n\n' '--author' 'Kyma Bot <kyma.bot@sap.com>'
     log::info "Create PR to control plane"
-    /tools/generic-autobumper --config="${BUMP_TOOL_CONFIG_FILE}"
+    /tools/autobumper --config="${BUMP_TOOL_CONFIG_FILE}"
   else
     log::info "Nothing changed, stopped."
   fi
