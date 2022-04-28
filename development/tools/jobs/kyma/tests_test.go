@@ -4,7 +4,6 @@ import (
 	"path"
 	"testing"
 
-	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 )
@@ -45,16 +44,6 @@ var tests = []struct {
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "end-to-end/upgrade", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite, additionalOptions: []jobsuite.Option{
-		jobsuite.RunIfChanged("^tests/end-to-end/upgrade/[^chart]", "tests/end-to-end/upgrade/fix"),
-		jobsuite.JobFileSuffix("tests-generic"),
-	}},
-	{path: "integration/apiserver-proxy", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("tests-generic"),
-			jobsuite.Until(releases.Release124),
-		},
-	},
 	{path: "rafter", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
@@ -63,17 +52,6 @@ var tests = []struct {
 	{path: "integration/api-gateway", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
-		},
-	},
-	{path: "integration/dex", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("tests-generic"),
-			jobsuite.Until(releases.Release124),
-		},
-	},
-	{path: "integration/logging", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
 		},
 	},
 	{path: "contract/knative-channel-kafka", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
