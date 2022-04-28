@@ -14,11 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package autobumper
+package main
 
 import (
 	"fmt"
-	"github.com/kyma-project/test-infra/prow/scripts/resources/autobumper"
 	"strings"
 
 	imagebumper "k8s.io/test-infra/experiment/image-bumper/bumper"
@@ -81,7 +80,7 @@ func isUnderPath(name string, paths []string) bool {
 // isBumpedPrefix takes a prefix and a map of new tags resulted from bumping
 // : the images using those tags and itterates over the map to find if the
 // prefix is found. If it is, this means it has been bumped.
-func isBumpedPrefix(prefix autobumper.prefix, versions map[string][]string) (string, bool) {
+func isBumpedPrefix(prefix prefix, versions map[string][]string) (string, bool) {
 	for tag, imageList := range versions {
 		for _, image := range imageList {
 			if strings.HasPrefix(image, prefix.Prefix) {

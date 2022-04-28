@@ -21,7 +21,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/kyma-project/test-infra/prow/scripts/resources/autobumper"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -348,7 +347,7 @@ func updateReferences(imageBumperCli imageBumper, filterRegexp *regexp.Regexp, o
 		return nil
 	}
 	updateYAMLFile := func(name string) error {
-		if strings.HasSuffix(name, ".yaml") && !autobumper.isUnderPath(name, o.ExcludedConfigPaths) {
+		if strings.HasSuffix(name, ".yaml") && !isUnderPath(name, o.ExcludedConfigPaths) {
 			return updateFile(name)
 		}
 		return nil
@@ -501,7 +500,7 @@ func makeCommitSummary(prefixes []prefix, versions map[string][]string) string {
 	var inconsistentBumps []string
 	var consistentBumps []string
 	for _, prefix := range prefixes {
-		tag, bumped := autobumper.isBumpedPrefix(prefix, versions)
+		tag, bumped := isBumpedPrefix(prefix, versions)
 		if !prefix.ConsistentImages && bumped {
 			inconsistentBumps = append(inconsistentBumps, prefix.Name)
 		} else if prefix.ConsistentImages && bumped {
@@ -537,18 +536,18 @@ func generateSummary(name, repo, prefix string, summarise bool, images map[strin
 		if strings.HasSuffix(image, ":"+newTag) {
 			continue
 		}
-		oldDate, oldCommit, oldVariant := imagebumper.DeconstructTag(autobumper.tagFromName(image))
+		oldDate, oldCommit, oldVariant := imagebumper.DeconstructTag(tagFromName(image))
 		newDate, newCommit, _ := imagebumper.DeconstructTag(newTag)
-		oldCommit = autobumper.commitToRef(oldCommit)
-		newCommit = autobumper.commitToRef(newCommit)
+		oldCommit = commitToRef(oldCommit)
+		newCommit = commitToRef(newCommit)
 		k := oldCommit + ":" + newCommit
 		d := delta{
 			oldCommit: oldCommit,
 			newCommit: newCommit,
 			oldDate:   oldDate,
 			newDate:   newDate,
-			variant:   autobumper.formatVariant(oldVariant),
-			component: autobumper.componentFromName(image),
+			variant:   formatVariant(oldVariant),
+			component: componentFromName(image),
 		}
 		versions[k] = append(versions[k], d)
 	}
@@ -559,7 +558,7 @@ func generateSummary(name, repo, prefix string, summarise bool, images map[strin
 	case len(versions) == 1 && summarise:
 		for k, v := range versions {
 			s := strings.Split(k, ":")
-			return fmt.Sprintf("%s changes: %s/compare/%s...%s (%s → %s)", prefix, repo, s[0], s[1], autobumper.formatTagDate(v[0].oldDate), autobumper.formatTagDate(v[0].newDate))
+			return fmt.Sprintf("%s changes: %s/compare/%s...%s (%s → %s)", prefix, repo, s[0], s[1], formatTagDate(v[0].oldDate), formatTagDate(v[0].newDate))
 		}
 	default:
 		changes := make([]string, 0, len(versions))
@@ -571,7 +570,7 @@ func generateSummary(name, repo, prefix string, summarise bool, images map[strin
 			}
 			sort.Strings(names)
 			changes = append(changes, fmt.Sprintf("%s/compare/%s...%s | %s&nbsp;&#x2192;&nbsp;%s | %s",
-				repo, s[0], s[1], autobumper.formatTagDate(v[0].oldDate), autobumper.formatTagDate(v[0].newDate), strings.Join(names, ", ")))
+				repo, s[0], s[1], formatTagDate(v[0].oldDate), formatTagDate(v[0].newDate), strings.Join(names, ", ")))
 		}
 		sort.Slice(changes, func(i, j int) bool { return strings.Split(changes[i], "|")[1] < strings.Split(changes[j], "|")[1] })
 		return fmt.Sprintf("Multiple distinct %s changes:\n\nCommits | Dates | Images\n--- | --- | ---\n%s\n", prefix, strings.Join(changes, "\n"))
