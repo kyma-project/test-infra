@@ -1,9 +1,9 @@
 global:
-  nextRelease: "2.2"
+  nextRelease: "2.3"
   releases:
+    - "2.2"
     - "2.1"
     - "2.0"
-    - "1.24"
 
 
 # global configSet variables
