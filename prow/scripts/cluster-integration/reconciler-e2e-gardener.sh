@@ -98,6 +98,7 @@ fi
 log::banner "Provisioning Gardener cluster"
 
 # Provision garderner cluster
+export CLEANUP_CLUSTER="true"
 reconciler::provision_cluster
 
 reconciler::export_shoot_cluster_kubeconfig

@@ -1,9 +1,9 @@
 global:
-  nextRelease: "2.2"
+  nextRelease: "2.3"
   releases:
+    - "2.2"
     - "2.1"
     - "2.0"
-    - "1.24"
 
 
 # global configSet variables
@@ -24,7 +24,7 @@ globalSets:
       KYMA_MAJOR_UPGRADE: "true"
   kyma_minor_upgrade:
     env:
-      PREVIOUS_MINOR_VERSION_COUNT: 2
+      PREVIOUS_MINOR_VERSION_COUNT: 1
   # Directory sets
   kyma_project_dir:
     env:
