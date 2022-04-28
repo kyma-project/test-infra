@@ -7,7 +7,7 @@ if [ -z ${TEST_INFRA_SOURCES_DIR+present} ]; then
     source "${LIBDIR}"/log.sh
 else
     # shellcheck source=prow/scripts/lib/log.sh
-    source "${TEST_INFRA_SOURCES_DIR}"/log.sh
+    source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 fi
 
 # utils::check_required_vars checks if all provided variables are initialized
