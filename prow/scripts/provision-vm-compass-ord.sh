@@ -51,30 +51,29 @@ else
 fi
 
 POSITIONAL=()
-while [[ $# -gt 0 ]]
-do
-
+while [[ $# -gt 0 ]]; do
     key="$1"
-
+    
     case ${key} in
         --image)
             IMAGE="$2"
             testCustomImage "${IMAGE}"
             shift
             shift
-            ;;
+        ;;
         --*)
             echo "Unknown flag ${1}"
             exit 1
-            ;;
+        ;;
         *)    # unknown option
             POSITIONAL+=("$1") # save it in an array for later
             shift # past argument
-            ;;
+        ;;
     esac
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
+echo "IMAGE = ${IMAGE}"
 
 if [[ -z "$IMAGE" ]]; then
     log::info "Provisioning vm using the latest default custom image ..."
