@@ -31,13 +31,13 @@ globalSets:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_bootstrap:
-    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220310-2b410ea6"
+    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220427-9543160d"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220421-f82abd48"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220427-13347554"
   image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220411-a5159710"
+    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220427-9543160d"
   image_buildpack-node:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220311-863c512f"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220426-62f9eab9"
   image_buildpack-golang:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220407-4da6c929"
   image_buildpack-golang-kubebuilder2:
