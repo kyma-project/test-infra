@@ -139,7 +139,7 @@ RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor |
 #################################################################
 
 # hadolint ignore=DL3022
-COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20220105-4e0c3c9e /prow-tools /prow-tools
+        COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20220105-4e0c3c9e /prow-tools /prow-tools
 # for better access to prow-tools
 ENV PATH=$PATH:/prow-tools
 
