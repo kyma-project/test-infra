@@ -10,6 +10,8 @@ KYMA_PROJECT_DIR=${KYMA_PROJECT_DIR:-"/home/prow/go/src/github.com/kyma-project"
 source "${SCRIPT_DIR}/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${SCRIPT_DIR}/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$SCRIPT_DIR/lib/gcp.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${SCRIPT_DIR}/lib/docker.sh"
 
@@ -26,6 +28,11 @@ if [[ -z "${PULL_NUMBER}" ]]; then
 else
     LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=compass-ord")
 fi
+
+export GOOGLE_APPLICATION_CREDENTIALS=/etc/credentials/sa-kyma-artifacts/service-account.json
+
+gcp::authenticate \
+     -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 docker::start
 
