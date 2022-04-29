@@ -26,6 +26,7 @@ export RECONCILER_DIR="/home/prow/go/src/github.com/kyma-incubator/reconciler"
 export CONTROL_PLANE_DIR="/home/prow/go/src/github.com/kyma-project/control-plane"
 export KYMA_TEST_INFRA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/test-infra"
 export BUMP_TOOL_CONFIG_FILE="${KYMA_TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/control-plane-autobump-reconciler-config.yaml"
+export KCP_VALUE_PATH="./resources/kcp/values.yaml"
 
 # All provides require these values, each of them may check for additional variables
 requiredVars=(
@@ -86,16 +87,16 @@ function autobump::update_reconciler_image_tag(){
   log::info "Update reconciler image tag in control plane with ${RECONCILER_IMAGE_TAG}"
   cd "${CONTROL_PLANE_DIR}"
   # support old image tag update, should be removed after PR https://github.com/kyma-project/control-plane/pull/1601 merged.
-  if $(yq eval '.global.images | has("mothership_reconciler")' ./resources/kcp/values.yaml); then
-    yq e -i '.global.images.mothership_reconciler = "eu.gcr.io/kyma-project/incubator/reconciler/mothership:'"${RECONCILER_IMAGE_TAG}"'"' ./resources/kcp/values.yaml
-    yq e -i '.global.images.component_reconciler = "eu.gcr.io/kyma-project/incubator/reconciler/component:'"${RECONCILER_IMAGE_TAG}"'"' ./resources/kcp/values.yaml
+  if yq eval '.global.images | has("mothership_reconciler")' "${KCP_VALUE_PATH}"; then
+    yq e -i '.global.images.mothership_reconciler = "eu.gcr.io/kyma-project/incubator/reconciler/mothership:'"${RECONCILER_IMAGE_TAG}"'"' "${KCP_VALUE_PATH}"
+    yq e -i '.global.images.component_reconciler = "eu.gcr.io/kyma-project/incubator/reconciler/component:'"${RECONCILER_IMAGE_TAG}"'"' "${KCP_VALUE_PATH}"
   fi
 
-  if $(yq eval '.global.images | has("mothership_reconciler_version")' ./resources/kcp/values.yaml); then
-    yq e -i '(.global.images.mothership_reconciler_version ) = "'"${RECONCILER_IMAGE_TAG}"'"' ./resources/kcp/values.yaml
+  if yq eval '.global.images | has("mothership_reconciler_version")' "${KCP_VALUE_PATH}"; then
+    yq e -i '(.global.images.mothership_reconciler_version ) = "'"${RECONCILER_IMAGE_TAG}"'"' "${KCP_VALUE_PATH}"
   fi
-  if $(yq eval '.global.images | has("components")' ./resources/kcp/values.yaml); then
-    yq e -i '(.global.images.components.[] | select(has("version")).["version"] ) = "'"${RECONCILER_IMAGE_TAG}"'"' ./resources/kcp/values.yaml
+  if yq eval '.global.images | has("components")' "${KCP_VALUE_PATH}"; then
+    yq e -i '(.global.images.components.[] | select(has("version")).["version"] ) = "'"${RECONCILER_IMAGE_TAG}"'"' "${KCP_VALUE_PATH}"
   fi
 }
 
@@ -103,7 +104,7 @@ function autobump::commit_changes_and_create_pr(){
   log::info "Commit changes..."
   cd "${CONTROL_PLANE_DIR}"
   if [[ $(git status --porcelain) ]]; then
-    git add resources/kcp/values.yaml
+    git add "${KCP_VALUE_PATH}"
     git commit -m 'Bumping Reconciler:\n\nNo eu.gcr.io/kyma-project/incubator/reconciler/ changes.\n\n' '--author' 'Kyma Bot <kyma.bot@sap.com>'
     log::info "Create PR to control plane"
     /tools/autobumper --config="${BUMP_TOOL_CONFIG_FILE}"
