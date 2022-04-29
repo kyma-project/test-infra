@@ -135,21 +135,6 @@ templates:
           - repoName: "github.com/kyma-project/cli"
             jobs:
               - jobConfig:
-                  name: pre-cli-integration-kyma-1
-                  branches:
-                    - main
-                    - ^release-.*$
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                    - "image_buildpack-golang-kubebuilder2"
-                  local:
-                    - "jobConfig_default"
-                    - "jobConfig_submit"
-                    - "jobConfig_presubmit"
-              - jobConfig:
                   path: integration-kyma-2
                   release_since: "2.0"
                   branches:
