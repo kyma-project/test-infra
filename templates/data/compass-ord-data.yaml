@@ -14,6 +14,8 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-sa-vm-kyma-integration: "true"
               preset-dind-enabled: "true"
+              preset-kyma-development-artifacts-bucket: "true"
+              preset-sa-gcr-push: "true"
         jobConfigs:
           - repoName: "kyma-incubator/compass"
             jobs:

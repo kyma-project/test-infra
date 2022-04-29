@@ -12,7 +12,9 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
+        preset-kyma-development-artifacts-bucket: "true"
         preset-kyma-guard-bot-github-token: "true"
+        preset-sa-gcr-push: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^(chart|installation)/'
       skip_report: false

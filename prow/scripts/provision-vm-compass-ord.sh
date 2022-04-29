@@ -12,6 +12,8 @@ source "${SCRIPT_DIR}/lib/log.sh"
 source "${SCRIPT_DIR}/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${SCRIPT_DIR}/lib/docker.sh"
+# shellcheck source=prow/scripts/lib/gcp.sh
+source "$SCRIPT_DIR/lib/gcp.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
@@ -27,6 +29,11 @@ else
     LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=compass-ord")
 fi
 
+log::info "Authenticate"
+gcp::authenticate \
+    -c "${GOOGLE_APPLICATION_CREDENTIALS}"
+
+log::info "Start Docker"
 docker::start
 
 chmod -R 0777 /home/prow/go/src/github.com/kyma-incubator/compass/.git
