@@ -10,8 +10,8 @@ KYMA_PROJECT_DIR=${KYMA_PROJECT_DIR:-"/home/prow/go/src/github.com/kyma-project"
 source "${SCRIPT_DIR}/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${SCRIPT_DIR}/lib/utils.sh"
-# shellcheck source=prow/scripts/lib/gcp.sh
-source "$SCRIPT_DIR/lib/gcp.sh"
+# shellcheck source=prow/scripts/lib/docker.sh
+source "${SCRIPT_DIR}/lib/docker.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
@@ -26,6 +26,8 @@ if [[ -z "${PULL_NUMBER}" ]]; then
 else
     LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=compass-ord")
 fi
+
+docker::start
 
 chmod -R 0777 /home/prow/go/src/github.com/kyma-incubator/compass/.git
 mkdir -p /home/prow/go/src/github.com/kyma-incubator/compass/components/console/shared/build
