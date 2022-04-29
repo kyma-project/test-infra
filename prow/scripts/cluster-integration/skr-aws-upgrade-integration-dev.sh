@@ -39,8 +39,8 @@ kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
 export KYMA_UPGRADE_VERSION="${kyma_get_last_release_version_return_version:?}"
 log::info "### Reading release version from GitHub release API, got: ${KYMA_UPGRADE_VERSION}"
 
-log::info "### Run make ci-skr-kyma-to-kyma2-upgrade"
-make -C /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration ci-skr-kyma-to-kyma2-upgrade
+log::info "### Run make ci-skr-aws-upgrade-integration"
+make -C /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration ci-skr-aws-upgrade-integration
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
