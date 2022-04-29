@@ -620,6 +620,7 @@ templates:
                     - jobConfig_postsubmit
                     - image_kyma-integration
                     - extra_refs_test-infra
+                    - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_component_k3d_integration_jobConfig
