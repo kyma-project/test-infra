@@ -13,6 +13,7 @@ templates:
             labels:
               preset-kyma-guard-bot-github-token: "true"
               preset-sa-vm-kyma-integration: "true"
+              preset-dind-enabled: "true"
               preset-gc-project-env: "true"
         jobConfigs:
           - repoName: "kyma-incubator/compass"

@@ -11,6 +11,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-main-compass-ord"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
+        preset-dind-enabled: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
