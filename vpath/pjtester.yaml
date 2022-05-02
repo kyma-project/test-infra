@@ -3,3 +3,5 @@ pjNames:
     report: true
   - pjName: "pre-main-serverless-integration-k3s"
     report: true
+  - pjName: "nightly-main-reconciler-publish-unstable-cli"
+    report: true
