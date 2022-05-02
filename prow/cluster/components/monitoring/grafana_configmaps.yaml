@@ -17,8 +17,6 @@ data:
         uwsgi_temp_path       /tmp/uwsgi_temp;
         scgi_temp_path        /tmp/scgi_temp;
 
-        proxy_set_header Host $http_host;
-
         server {
             listen 80 default_server;
             server_name _;
@@ -30,6 +28,7 @@ data:
             }
             location / {
                 proxy_pass          http://localhost:3001;
+                proxy_set_header Host $http_host;
             }
         }
     }
