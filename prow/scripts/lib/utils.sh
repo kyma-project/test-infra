@@ -200,6 +200,14 @@ function utils::send_to_vm() {
     [[ ${i} -ge 5 ]] && log::error "Failed after $i attempts." && exit 1
   done;
 }
+
+# utils::ssh_to_vm_with_script communicate to Google Compute Platform over ssh
+#
+# Arguments
+# $1 - compute zone
+# $2 - remote name
+# $3 - ssh command
+# $4 - local script path (optional)
 function utils::ssh_to_vm_with_script() {
   if [ -z "$1" ]; then
     echo "Zone is empty. Exiting..."
