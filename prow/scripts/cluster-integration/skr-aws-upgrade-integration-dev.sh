@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#Description: Kyma Integration plan on SKR AWS. This scripts implements a pipeline that consists of many steps. The purpose is to trigger the ci-skr-kyma-to-kyma2-upgrade fast-integration test in Kyma repository
+#Description: Kyma Integration plan on SKR AWS. This scripts implements a pipeline that consists of many steps. The purpose is to trigger the ci-skr-aws-upgrade-integration fast-integration test in Kyma repository
 #Expected common vars:
 #
 #
