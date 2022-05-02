@@ -128,11 +128,9 @@ utils::compress_send_to_vm "${ZONE}" "kyma-upgrade-test-${RANDOM_ID}" "/home/pro
 set -o pipefail
 log::info "Triggering the installation"
 if [[ "${KYMA_MAJOR_VERSION}" == "1" ]]; then
-  #shellcheck disable=SC2088
-  utils::ssh_to_vm_with_script "${ZONE}" "kyma-upgrade-test-${RANDOM_ID}" "sudo bash" "${SCRIPT_DIR}/cluster-integration/kyma-upgrade-k3d-kyma-to-kyma2.sh"
+  utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-upgrade-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/kyma-upgrade-k3d-kyma-to-kyma2.sh"
 else
-  #shellcheck disable=SC2088
-  utils::ssh_to_vm_with_script "${ZONE}" "kyma-upgrade-test-${RANDOM_ID}" "sudo bash" "${SCRIPT_DIR}/cluster-integration/kyma-upgrade-k3d-kyma2-to-main.sh"
+  utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-upgrade-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/kyma-upgrade-k3d-kyma2-to-main.sh"
 fi
 
 log::success "all done"

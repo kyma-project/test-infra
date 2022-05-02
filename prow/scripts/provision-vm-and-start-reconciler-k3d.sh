@@ -112,7 +112,6 @@ log::info "Copying Reconciler to the instance"
 utils::compress_send_to_vm "${ZONE}" "reconciler-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/reconciler" "~/reconciler"
 
 log::info "Triggering the installation"
-#shellcheck disable=SC2088
-utils::ssh_to_vm_with_script "${ZONE}" "reconciler-integration-test-${RANDOM_ID}" "sudo bash" "${SCRIPT_DIR}/cluster-integration/reconciler-integration-k3d.sh"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "reconciler-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/reconciler-integration-k3d.sh"
 
 log::success "all done"

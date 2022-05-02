@@ -142,7 +142,6 @@ utils::compress_send_to_vm "${ZONE}" "reconciler-component-integration-test-${RA
 utils::compress_send_to_vm "${ZONE}" "reconciler-component-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/test-infra" "~/test-infra"
 
 log::info "Triggering the installation"
-#shellcheck disable=SC2088
-utils::ssh_to_vm_with_script "${ZONE}" "reconciler-component-integration-test-${RANDOM_ID}" "sudo bash" "${SCRIPT_DIR}/cluster-integration/reconciler-component-integration.sh"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "reconciler-component-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/reconciler-component-integration.sh"
 
 log::success "all done"

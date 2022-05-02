@@ -162,13 +162,11 @@ utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home
 # run the relevant script to deploy Kyma and run fast-integration tests
 if [[ "${KYMA_UPGRADE_VERSION}" ]]; then
   log::banner "Triggering the tests for Kyma upgrade scenario from version: ${KYMA_SOURCE} to version: ${KYMA_UPGRADE_VERSION}"
-  #shellcheck disable=SC2088
-  utils::ssh_to_vm_with_script "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "sudo bash" "${SCRIPT_DIR}/cluster-integration/reconciler-integration-with-cli-upgrade-k3d.sh"
+  utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/reconciler-integration-with-cli-upgrade-k3d.sh"
 
 else
   log::banner "Triggering the tests for Kyma deploy scenario for version: ${KYMA_SOURCE}"
-  #shellcheck disable=SC2088
-  utils::ssh_to_vm_with_script "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "sudo bash" "${SCRIPT_DIR}/cluster-integration/reconciler-integration-with-cli-k3d.sh"
+  utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/reconciler-integration-with-cli-k3d.sh"
 
 fi
 

@@ -161,6 +161,5 @@ utils::send_to_vm "${ZONE}" "busola-smoke-test-${RANDOM_ID}" "/home/prow/go/src/
 
 
 log::info "Launching the busola-smoke-test-k3s.sh script"
-#shellcheck disable=SC2088
-utils::ssh_to_vm_with_script "${ZONE}" "busola-smoke-test-${RANDOM_ID}" "sudo bash" "${SCRIPT_DIR}/cluster-integration/busola-smoke-test-docker.sh"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "busola-smoke-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/busola-smoke-test-docker.sh"
 log::success "all done"

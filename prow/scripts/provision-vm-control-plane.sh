@@ -112,17 +112,14 @@ curl -sSLo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/1.
 tar xvzf kyma.tar.gz
 chmod +x kyma
 
-#shellcheck disable=SC2088
-utils::ssh_to_vm_with_script "${ZONE}" "control-plane-integration-test-${RANDOM_ID}" "mkdir \$HOME/bin"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "control-plane-integration-test-${RANDOM_ID}" -c "mkdir \$HOME/bin"
 
 #shellcheck disable=SC2088
 utils::send_to_vm "${ZONE}" "control-plane-integration-test-${RANDOM_ID}" "kyma" "~/bin/kyma"
 
-#shellcheck disable=SC2088
-utils::ssh_to_vm_with_script "${ZONE}" "control-plane-integration-test-${RANDOM_ID}" "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "control-plane-integration-test-${RANDOM_ID}" -c "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
 log::info "Triggering the installation"
 
-#shellcheck disable=SC2088
-utils::ssh_to_vm_with_script "${ZONE}" "control-plane-integration-test-${RANDOM_ID}" "yes | ./control-plane/installation/scripts/prow/deploy-and-test.sh"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "control-plane-integration-test-${RANDOM_ID}" -c "yes | ./control-plane/installation/scripts/prow/deploy-and-test.sh"
 log::info "Copying test artifacts from VM"
 utils::receive_from_vm "${ZONE}" "control-plane-integration-test-${RANDOM_ID}" "/var/log/prow_artifacts" "${ARTIFACTS}"

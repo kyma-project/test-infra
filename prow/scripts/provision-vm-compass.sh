@@ -124,22 +124,19 @@ git clone https://github.com/kyma-project/cli.git && cd cli && git checkout $KYM
 make build-linux && cd ./bin && mv ./kyma-linux ./kyma
 chmod +x kyma
 
-#shellcheck disable=SC2088
-utils::ssh_to_vm_with_script "${ZONE}" "compass-integration-test-${RANDOM_ID}" "mkdir \$HOME/bin"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "compass-integration-test-${RANDOM_ID}" -c "mkdir \$HOME/bin"
 
 #shellcheck disable=SC2088
 utils::send_to_vm "${ZONE}" "compass-integration-test-${RANDOM_ID}" "kyma" "~/bin/kyma"
 
-#shellcheck disable=SC2088
-utils::ssh_to_vm_with_script "${ZONE}" "compass-integration-test-${RANDOM_ID}" "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "compass-integration-test-${RANDOM_ID}" -c "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
 
 cd "$PREV_WD"
 log::info "Successfully installed Kyma CLI version: $KYMA_CLI_VERSION"
 
 log::info "Triggering the installation"
 
-#shellcheck disable=SC2088
-utils::ssh_to_vm_with_script "${ZONE}" "compass-integration-test-${RANDOM_ID}" "yes | ./compass/installation/scripts/prow/deploy-and-test.sh ${DUMP_DB}"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "compass-integration-test-${RANDOM_ID}" -c "yes | ./compass/installation/scripts/prow/deploy-and-test.sh ${DUMP_DB}"
 
 log::info "Copying test artifacts from VM"
 utils::receive_from_vm "${ZONE}" "compass-integration-test-${RANDOM_ID}" "/var/log/prow_artifacts" "${ARTIFACTS}"

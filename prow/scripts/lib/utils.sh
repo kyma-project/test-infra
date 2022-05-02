@@ -203,32 +203,43 @@ function utils::send_to_vm() {
 
 # utils::ssh_to_vm_with_script communicate to Google Compute Platform over ssh
 #
-# Arguments
-# $1 - compute zone
-# $2 - remote name
-# $3 - ssh command
-# $4 - local script path (optional)
+# Arguments:
+#
+# required:
+# z - compute zone
+# n - remote name
+# c - ssh command
+#
+# optional:
+# p - local script path
 function utils::ssh_to_vm_with_script() {
-  if [ -z "$1" ]; then
-    echo "Zone is empty. Exiting..."
-    exit 1
-  fi
-  if [ -z "$2" ]; then
-    echo "Remote name is empty. Exiting..."
-    exit 1
-  fi
-  if [ -z "$3" ]; then
-    echo "Command is empty. Exiting..."
-    exit 1
-  fi
-  if [ -z "$4" ]; then
-    echo "Local script is empty, continue with command only mode..."
-  fi
+  local OPTIND
+  local ZONE
+  local REMOTE_NAME
+  local COMMAND
+  local LOCAL_SCRIPT_PATH
 
-  local ZONE=$1
-  local REMOTE_NAME=$2
-  local COMMAND=$3
-  local LOCAL_SCRIPT_PATH=$4
+
+  while getopts ":z:n:c:p:" opt; do
+      case $opt in
+          z)
+              ZONE="$OPTARG";;
+          n)
+              REMOTE_NAME="$OPTARG";;
+          c)
+              COMMAND="$OPTARG";;
+          p)
+              LOCAL_SCRIPT_PATH="$OPTARG";;
+          \?)
+              echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+          :)
+              echo "Option -$OPTARG argument not provided" >&2 ;;
+      esac
+  done
+
+  utils::check_empty_arg "$ZONE" "compute zone not provided."
+  utils::check_empty_arg "$REMOTE_NAME" "remote name not provided."
+  utils::check_empty_arg "$COMMAND" "ssh command not provided."
 
   if [ -z "${LOCAL_SCRIPT_PATH}" ]; then
       gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-debug}" --quiet --zone="${ZONE}" --command="${COMMAND}" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60 -v" "${REMOTE_NAME}"
@@ -236,6 +247,7 @@ function utils::ssh_to_vm_with_script() {
       gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-debug}" --quiet --zone="${ZONE}" --command="${COMMAND}" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60 -v" "${REMOTE_NAME}" < "${LOCAL_SCRIPT_PATH}"
   fi
 }
+
 # utils::compress_send_to_vm compresses and sends file(s) to Google Compute Platform over scp
 #
 # Arguments

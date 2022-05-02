@@ -140,7 +140,6 @@ utils::send_to_vm "${ZONE}" "busola-lighthouse-${RANDOM_ID}" "/home/prow/go/src/
 
 
 log::info "Launching the busola-lighthouse script"
-#shellcheck disable=SC2088
-utils::ssh_to_vm_with_script "${ZONE}" "busola-lighthouse-${RANDOM_ID}" "sudo bash" "${SCRIPT_DIR}/cluster-integration/busola-lighthouse.sh"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "busola-lighthouse-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/busola-lighthouse.sh"
 
 log::success "all done"

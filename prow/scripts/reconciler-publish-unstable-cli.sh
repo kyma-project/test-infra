@@ -121,8 +121,7 @@ done || exit 1
 trap cleanup exit INT
 
 retries=15
-#shellcheck disable=SC2088
-while ! utils::ssh_to_vm_with_script "${ZONE}" "cli-integration-test-${RANDOM_ID}" "mkdir \$HOME/bin"
+while ! utils::ssh_to_vm_with_script -z "${ZONE}" -n "cli-integration-test-${RANDOM_ID}" -c "mkdir \$HOME/bin"
 
 do
     retries=$((retries-1))
@@ -137,28 +136,23 @@ log::info "Created bin directory on VM"
 log::info "Copying Kyma CLI to the instance"
 #shellcheck disable=SC2088
 utils::send_to_vm "${ZONE}" "cli-integration-test-${RANDOM_ID}" "${KYMA_PROJECT_DIR}/cli/bin/kyma-linux" "~/bin/kyma"
-#shellcheck disable=SC2088
-utils::ssh_to_vm_with_script "${ZONE}" "cli-integration-test-${RANDOM_ID}" "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "cli-integration-test-${RANDOM_ID}" -c "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
 
 log::info "Provisioning k3d Kubernetes runtime"
-#shellcheck disable=SC2088
-utils::ssh_to_vm_with_script "${ZONE}" "cli-integration-test-${RANDOM_ID}" "yes | sudo kyma provision k3d --ci"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "cli-integration-test-${RANDOM_ID}" -c "yes | sudo kyma provision k3d --ci"
 
 log::info "Installing Kyma"
-#shellcheck disable=SC2088
-utils::ssh_to_vm_with_script "${ZONE}" "cli-integration-test-${RANDOM_ID}" "yes | sudo kyma deploy --ci ${SOURCE}"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "cli-integration-test-${RANDOM_ID}" -c "yes | sudo kyma deploy --ci ${SOURCE}"
 
 log::info "Copying Kyma to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "cli-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
 
 log::info "Running fast-integration tests"
-#shellcheck disable=SC2088
-utils::ssh_to_vm_with_script "${ZONE}" "cli-integration-test-${RANDOM_ID}" "cd ~/kyma/tests/fast-integration && sudo make ci"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "cli-integration-test-${RANDOM_ID}" -c "cd ~/kyma/tests/fast-integration && sudo make ci"
 
 log::info "Uninstalling Kyma"
-#shellcheck disable=SC2088
-utils::ssh_to_vm_with_script "${ZONE}" "cli-integration-test-${RANDOM_ID}" "sudo kyma undeploy --ci --timeout=10m0s"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "cli-integration-test-${RANDOM_ID}" -c "sudo kyma undeploy --ci --timeout=10m0s"
 
 log::info "Publishing new unstable builds to $KYMA_CLI_UNSTABLE_BUCKET"
 make ci-main

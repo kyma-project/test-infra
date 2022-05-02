@@ -119,7 +119,6 @@ utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home
 
 log::info "Triggering the installation"
 log::info "Running testsuite ${testSuiteScript}"
-#shellcheck disable=SC2088
-utils::ssh_to_vm_with_script "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "sudo PULL_NUMBER=${PULL_NUMBER}  TEST_SUITE=${TEST_SUITE} bash" "${SCRIPT_DIR}/${testSuiteScript}"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-integration-test-${RANDOM_ID}" -c "sudo PULL_NUMBER=${PULL_NUMBER}  TEST_SUITE=${TEST_SUITE} bash" -p "${SCRIPT_DIR}/${testSuiteScript}"
 
 log::success "all done"

@@ -114,36 +114,30 @@ date
 cd "${KYMA_PROJECT_DIR}/cli"
 make build-linux
 
-#shellcheck disable=SC2088
-utils::ssh_to_vm_with_script "${ZONE}" "cli-integration-test-${RANDOM_ID}" "mkdir \$HOME/bin"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "cli-integration-test-${RANDOM_ID}" -c "mkdir \$HOME/bin"
 
 log::info "Copying Kyma CLI to the instance"
 #shellcheck disable=SC2088
 utils::send_to_vm "${ZONE}" "cli-integration-test-${RANDOM_ID}" "${KYMA_PROJECT_DIR}/cli/bin/kyma-linux" "~/bin/kyma"
-#shellcheck disable=SC2088
-utils::ssh_to_vm_with_script "${ZONE}" "cli-integration-test-${RANDOM_ID}" "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "cli-integration-test-${RANDOM_ID}" -c "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
 
 # Provision Kubernetes runtime
 log::info "Provisioning Kubernetes runtime '$KUBERNETES_RUNTIME'"
 date
 if [ "$KUBERNETES_RUNTIME" = 'minikube' ]; then
-    #shellcheck disable=SC2088
-    utils::ssh_to_vm_with_script "${ZONE}" "cli-integration-test-${RANDOM_ID}" "yes | sudo kyma provision minikube --non-interactive"
+    utils::ssh_to_vm_with_script -z "${ZONE}" -n "cli-integration-test-${RANDOM_ID}" -c "yes | sudo kyma provision minikube --non-interactive"
 
 else
-    #shellcheck disable=SC2088
-    utils::ssh_to_vm_with_script "${ZONE}" "cli-integration-test-${RANDOM_ID}" "yes | sudo kyma provision k3d --ci"
+    utils::ssh_to_vm_with_script -z "${ZONE}" -n "cli-integration-test-${RANDOM_ID}" -c "yes | sudo kyma provision k3d --ci"
 fi
 
 # Install kyma
 log::info "Installing Kyma"
 date
 if [ "$KUBERNETES_RUNTIME" = 'k3d' ]; then
-    #shellcheck disable=SC2088
-    utils::ssh_to_vm_with_script "${ZONE}" "cli-integration-test-${RANDOM_ID}" "yes | sudo kyma deploy --ci ${SOURCE}"
+    utils::ssh_to_vm_with_script -z "${ZONE}" -n "cli-integration-test-${RANDOM_ID}" -c "yes | sudo kyma deploy --ci ${SOURCE}"
 else
-    #shellcheck disable=SC2088
-    utils::ssh_to_vm_with_script "${ZONE}" "cli-integration-test-${RANDOM_ID}" "yes | sudo kyma install --non-interactive ${SOURCE}"
+    utils::ssh_to_vm_with_script -z "${ZONE}" -n "cli-integration-test-${RANDOM_ID}" -c "yes | sudo kyma install --non-interactive ${SOURCE}"
 fi
 
 # Run test suite

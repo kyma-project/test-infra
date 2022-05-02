@@ -142,7 +142,6 @@ utils::send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/g
 
 
 log::info "Launching the busola-integration-test-k3s.sh script"
-#shellcheck disable=SC2088
-utils::ssh_to_vm_with_script "${ZONE}" "busola-integration-test-${RANDOM_ID}" "sudo SCOPE=${SCOPE} bash" "${SCRIPT_DIR}/cluster-integration/busola-integration-test-k3s.sh"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "busola-integration-test-${RANDOM_ID}" -c "sudo SCOPE=${SCOPE} bash" -p "${SCRIPT_DIR}/cluster-integration/busola-integration-test-k3s.sh"
 
 log::success "all done"

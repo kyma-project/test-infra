@@ -142,7 +142,6 @@ if [[ -v TELEMETRY_ENABLED ]]; then
 fi
 
 log::info "Triggering the installation"
-#shellcheck disable=SC2088
-utils::ssh_to_vm_with_script "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "sudo bash" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d.sh"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d.sh"
 
 log::success "all done"
