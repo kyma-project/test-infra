@@ -2,7 +2,7 @@
 
 # log::date retruns current date in format expected by logs
 function log::date {
-    date +"%Y/%m/%d %T %Z"
+    date +"%Y-%m-%d %T %Z"
 }
 
 # log::banner prints message with INFO level in banner form for easier spotting in log files
@@ -22,7 +22,12 @@ function log::banner {
 # Arguments:
 #   $* - Message
 function log::info {
-    echo -e "$(log::date) [INFO] $*"
+   local funcname # get function that called this
+   local dirname
+   local scriptname
+   funcname=${FUNCNAME[1]}
+   scriptname=${BASH_SOURCE[1]:-$1}
+   echo -e "$(log::date) [INFO] PID:$$ --- [$scriptname] $funcname: $*"
 }
 
 # log::success prints a message with info level
@@ -44,7 +49,13 @@ function log::success {
 # Arguments:
 #   $* - Message
 function log::warn {
-    echo -e "$(log::date) [WARN] $*"
+   local funcname # get function that called this
+   local dirname
+   local scriptname
+   local args
+   funcname=${FUNCNAME[1]}
+   scriptname=${BASH_SOURCE[1]:-$1}
+  echo -e "$(log::date) [WARN] PID:$$ --- [$dirname/$scriptname] $funcname: $*"
 }
 
 # log::error prints a message with error level
@@ -52,5 +63,6 @@ function log::warn {
 # Arguments:
 #   $* - Message
 function log::error {
+
     >&2 echo -e "$(log::date) [ERROR] $*"
 }
