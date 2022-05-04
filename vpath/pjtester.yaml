@@ -6,4 +6,4 @@ pjNames:
 prConfigs:
   kyma-incubator:
     reconciler:
-      prNumber: 1066
+      prNumber: 5374
