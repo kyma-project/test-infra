@@ -105,20 +105,16 @@ gardener::provision_cluster
 echo "$KUBECONFIG"
 kubectl config get-contexts
 
-if [[ "${KYMA_MAJOR_VERSION}" == "2" ]]; then
+kyma::deploy_kyma \
+  -p "$EXECUTION_PROFILE" \
+  -d "$KYMA_SOURCES_DIR"
+if [[ "${KYMA_DELETE}" == "true" ]]; then
+  sleep 30
+  kyma::undeploy_kyma
+  sleep 30
   kyma::deploy_kyma \
-    -p "$EXECUTION_PROFILE" \
-    -d "$KYMA_SOURCES_DIR"
-  if [[ "${KYMA_DELETE}" == "true" ]]; then
-    sleep 30
-    kyma::undeploy_kyma
-    sleep 30
-    kyma::deploy_kyma \
-       -p "$EXECUTION_PROFILE" \
-       -d "$KYMA_SOURCES_DIR"
-  fi
-else
-  gardener::install_kyma
+     -p "$EXECUTION_PROFILE" \
+     -d "$KYMA_SOURCES_DIR"
 fi
 
 # generate pod-security-policy list in json
@@ -132,19 +128,7 @@ if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
 fi
 
 
-if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
-    echo "hello from prow"
-    echo "$TEST_DIR"
-    echo "$TEST_COMPONENTS"
-    # gardener::test_performance_kyma
-else
-    # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
-    if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
-      export ENABLE_TEST_LOG_COLLECTOR=true
-    fi
-    gardener::test_kyma
-fi
-
+performance_tests::run
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
