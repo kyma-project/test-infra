@@ -17,50 +17,10 @@ var components = []struct {
 	image             string
 	suite             func(config *jobsuite.Config) jobsuite.Suite
 	additionalOptions []jobsuite.Option
-}{
-	{path: "apiserver-proxy", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.Until(releases.Release124),
-		},
-	},
+},
 	{path: "compass-runtime-agent", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
-		},
-	},
-	{path: "console-backend-service", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.RunIfChanged("components/console-backend-service/main.go", "scripts/go-dep.mk"),
-		},
-	},
-	{path: "dex-static-user-configurer", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.Until(releases.Release124),
-		},
-	},
-	{path: "iam-kubeconfig-service", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.Until(releases.Release124),
-		},
-	},
-	{path: "istio-installer", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-		},
-	},
-	{path: "kyma-operator", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-		},
-	},
-	{path: "permission-controller", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.Until(releases.Release124),
 		},
 	},
 	{path: "service-binding-usage-controller", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
