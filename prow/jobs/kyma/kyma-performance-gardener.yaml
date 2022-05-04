@@ -61,7 +61,7 @@ presubmits: # runs on PRs
               - name: GARDENER_ZONES
                 value: "1"
               - name: KYMA_MAJOR_VERSION
-                value: "1"
+                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION

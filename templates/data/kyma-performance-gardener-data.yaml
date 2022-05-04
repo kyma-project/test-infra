@@ -34,6 +34,7 @@ templates:
               pipeline.test: octopus
               pipeline.clusterprovisioning: kyma cli
             env:
+              KYMA_MAJOR_VERSION: "2"
               TEST_DIR: "/home/prow/go/src/github.com/kyma-project/kyma/tests/perf"
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/performance-tests/kyma-performance-gardener.sh"
           gardener_aws_job:
