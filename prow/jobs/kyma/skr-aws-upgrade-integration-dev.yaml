@@ -2,7 +2,7 @@
 
 
 periodics: # runs on schedule
-    - name: skr-kyma-to-kyma2-upgrade-aws-dev
+    - name: skr-aws-upgrade-integration-dev
       annotations:
         pipeline.clusterprovisioning: "keb"
         pipeline.installer: "keb"
@@ -12,7 +12,7 @@ periodics: # runs on schedule
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "skr-kyma-to-kyma2-upgrade-aws-dev"
+        prow.k8s.io/pubsub.runID: "skr-aws-upgrade-integration-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-build-main: "true"
@@ -39,11 +39,11 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220427-9543160d"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220504-9e1b090f"
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-skr-aws-kyma-to-kyma2.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/skr-aws-upgrade-integration-dev.sh"
             env:
               - name: KEB_PLAN_ID
                 value: "361c511f-f939-4621-b228-d0fb79a1fe15"
@@ -52,7 +52,7 @@ periodics: # runs on schedule
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: KYMA_VERSION
-                value: "1.24.9"
+                value: "2.0.4"
               - name: SKIP_CLEANUP
                 value: "FALSE"
             resources:
