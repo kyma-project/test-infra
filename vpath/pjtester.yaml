@@ -1,5 +1,7 @@
 pjNames:
-  - pjName: "pre-main-reconciler-integration-k3d"
+  - pjName: "presubmit-test-job"
+    report: true
+  - pjName: "re-main-reconciler-integration-k3d"
     report: true
 prConfigs:
   kyma-incubator:
