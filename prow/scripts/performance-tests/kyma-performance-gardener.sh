@@ -25,7 +25,7 @@ ENABLE_TEST_LOG_COLLECTOR=false
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
-export TEST_INFRA_CLUSTER_PERFORMANCE_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-performance/helpers"
+export TEST_INFRA_CLUSTER_PERFORMANCE_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/performance-tests/helpers"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
