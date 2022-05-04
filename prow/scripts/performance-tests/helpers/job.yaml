@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: k6
+spec:
+  template:
+    spec:
+      containers:
+      - name: k6
+        image: grafana/k6:v0.37.0
+        command: ["sh", "-c"]
+        args:
+          - |
+              for filename in /k6/*.js; do
+                [ -e "$filename" ] || continue
+                echo "running $filename"
+                k6 run "$filename"
+              done
+        volumeMounts:
+        - name: test-scripts
+          path: /k6
+      restartPolicy: Never
+      volumes:
+      - name: test-scripts
+        configMap:
+          name: test-scripts
