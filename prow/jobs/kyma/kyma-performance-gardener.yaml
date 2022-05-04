@@ -42,7 +42,7 @@ presubmits: # runs on PRs
         - ^master$
         - ^main$
       extra_refs:
-        - org: kyma-project
+        - org: phyrog
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
