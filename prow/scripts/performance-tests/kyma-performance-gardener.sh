@@ -102,6 +102,9 @@ gardener::generate_overrides
 
 gardener::provision_cluster
 
+echo "$KUBECONFIG"
+kubectl config get-contexts
+
 if [[ "${KYMA_MAJOR_VERSION}" == "2" ]]; then
   kyma::deploy_kyma \
     -p "$EXECUTION_PROFILE" \
