@@ -92,6 +92,7 @@ templates:
               test-suite: "eventing"
             env:
               TEST_COMPONENTS: "eventing"
+            run_if_changed: "^components/eventing-controller/|^components/event-publisher-proxy|^tests/perf/components/eventing|^tests/perf/prerequisites/eventing"
           performance_all:
             annotations:
               test-suite: "all"
