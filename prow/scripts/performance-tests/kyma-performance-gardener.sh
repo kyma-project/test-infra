@@ -131,6 +131,8 @@ fi
 
 if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
     echo "hello from prow"
+    echo "$TEST_DIR"
+    echo "$TEST_COMPONENTS"
     # gardener::test_performance_kyma
 else
     # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
