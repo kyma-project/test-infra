@@ -89,7 +89,8 @@ utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo sh -c 'echo \
 utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo sh -c 'echo \"RateLimitBurst=1500\" >> /etc/systemd/journald.conf'"
 utils::send_to_vm "${ZONE}" "$VM_NAME" "$CURRENT_DIR/resources/dbus-1_system-local.conf" "/tmp/system-local.conf"
 utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo sh -c 'mv /tmp/system-local.conf /etc/dbus-1/system-local.conf'"
-
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo sed -i 's/X11Forwarding yes/X11Forwarding no/' /etc/ssh/sshd_config"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo sed -i 's/#AllowTcpForwarding yes/AllowTcpForwarding no/' /etc/ssh/sshd_config"
 
 log::info "Stopping $VM_NAME in zone ${ZONE} ..."
 gcloud compute instances stop --zone="${ZONE}" "$VM_NAME"
