@@ -299,7 +299,7 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-kyma-integration-telemetry-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^components/telemetry-operator/|^resources/telemetry/'
+      run_if_changed: '^resources/telemetry/'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -589,7 +589,7 @@ postsubmits: # runs on main
         preset-kyma-guard-bot-github-token: "true"
         preset-kyma-integration-telemetry-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^components/telemetry-operator/|^resources/telemetry/'
+      run_if_changed: '^resources/telemetry/'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
