@@ -18,7 +18,7 @@ spec:
               done
         volumeMounts:
         - name: test-scripts
-          path: /k6
+          mountPath: /k6
       restartPolicy: Never
       volumes:
       - name: test-scripts
