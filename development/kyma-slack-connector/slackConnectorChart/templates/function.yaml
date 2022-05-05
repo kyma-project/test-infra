@@ -30,12 +30,12 @@ spec:
           key: token
     - name: SLACK_API_ID
       valueFrom:
-        configMapKeyref:
+        configMapKeyRef:
           name: {{ .Release.Name }}-function-config
           key: slackConnectorApiId
     - name: ENV_PREFIX
       valueFrom:
-        configMapKeyref:
+        configMapKeyRef:
           name: {{ .Release.Name }}-function-config
           key: envPrefix
   runtime: python39
