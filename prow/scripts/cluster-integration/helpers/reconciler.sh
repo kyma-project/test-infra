@@ -170,6 +170,7 @@ function reconciler::initialize_test_pod() {
     KYMA_UPGRADE_SOURCE="main"
   fi
   log::info "Kyma version to reconcile: ${KYMA_UPGRADE_SOURCE}"
+  log::error "Kyma version to reconcile: ${KYMA_UPGRADE_SOURCE}"
 
   # move to reconciler directory
   cd "${CONTROL_PLANE_RECONCILER_DIR}"  || { echo "Failed to change dir to: ${CONTROL_PLANE_RECONCILER_DIR}"; exit 1; }
@@ -186,11 +187,11 @@ function reconciler::initialize_test_pod() {
     sed -i "s/example.com/$domain/" ./e2e-test/template-kyma-main.json
     # shellcheck disable=SC2016
     jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template-kyma-main.json > body.json
-  elif [[ "$KYMA_UPGRADE_SOURCE" =~ 2\.0\.\d+ ]] ; then
+  elif [[ "$KYMA_UPGRADE_SOURCE" =~ ^2\.0\.[0-9]+$ ]] ; then
     sed -i "s/example.com/$domain/" ./e2e-test/template-kyma-2-0-x.json
     # shellcheck disable=SC2016
     jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template-kyma-2-0-x.json > body.json
-  elif [[ "$KYMA_UPGRADE_SOURCE" =~ 2\.[1-9]\.\d+ ]] ; then
+  elif [[ "$KYMA_UPGRADE_SOURCE" =~ ^2\.[1-9]\.[0-9]+$ ]] ; then
     sed -i "s/example.com/$domain/" ./e2e-test/template-kyma-2-1-x.json
     # shellcheck disable=SC2016
     jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template-kyma-2-1-x.json > body.json
