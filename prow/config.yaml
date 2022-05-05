@@ -1036,7 +1036,7 @@ presets:
             name: btp-operator-credentials
             key: clusterid
   - labels:
-      preset-btp-admin-stage-credentials: "true"
+        preset-btp-admin-stage-credentials: "true"
       env:
         - name: BTP_SM_ADMIN_CLIENTID
           valueFrom:
