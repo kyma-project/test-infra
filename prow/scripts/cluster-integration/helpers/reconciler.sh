@@ -170,7 +170,6 @@ function reconciler::initialize_test_pod() {
     KYMA_UPGRADE_SOURCE="main"
   fi
   log::info "Kyma version to reconcile: ${KYMA_UPGRADE_SOURCE}"
-  log::error "Kyma version to reconcile: ${KYMA_UPGRADE_SOURCE}"
 
   # move to reconciler directory
   cd "${CONTROL_PLANE_RECONCILER_DIR}"  || { echo "Failed to change dir to: ${CONTROL_PLANE_RECONCILER_DIR}"; exit 1; }
