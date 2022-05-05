@@ -14,7 +14,37 @@ var tests = []struct {
 	suite             func(config *jobsuite.Config) jobsuite.Suite
 	additionalOptions []jobsuite.Option
 }{
-	{path: "rafter", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
+	{path: "service-catalog", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests-generic"),
+		},
+	},
+	{path: "application-connector-tests", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+		},
+	},
+	{path: "application-registry-tests", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+		},
+	},
+	{path: "compass-runtime-agent", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests-generic"),
+		},
+	},
+	{path: "connection-token-handler-tests", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+		},
+	},
+	{path: "connector-service-tests", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+		},
+	},
+	{path: "integration/api-gateway", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 		},
