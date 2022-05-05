@@ -8,7 +8,7 @@
 # BOT_GITHUB_EMAIL
 # BOT_GITHUB_NAME
 function github::configure_git() {
-  echo "Configuring git"
+  log::info "Configuring git"
   # configure ssh
   if [[ -n "${BOT_GITHUB_SSH_PATH}" ]]; then
       mkdir "${HOME}/.ssh/"

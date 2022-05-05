@@ -40,9 +40,9 @@ function kyma::deploy_kyma() {
                 log::info "Kyma upgrade option: ${upgrade}"
                 ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2 ;;
+                log::warn "Option -$OPTARG argument not provided" >&2 ;;
         esac
     done
 
@@ -88,7 +88,7 @@ function kyma::get_last_release_version {
             v)
                 searchedVersion="$OPTARG" ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
                 echo "Option -$OPTARG argument not provided" >&2 ;;
         esac

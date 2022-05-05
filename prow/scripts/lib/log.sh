@@ -1,8 +1,22 @@
 #!/usr/bin/env bash
 
-# log::date retruns current date in format expected by logs
+# log::date retrun current date in format expected by logs
 function log::date {
     date +"%Y-%m-%d %T %Z"
+}
+
+# log::dump_trace prints stacktrace when an error occur
+#
+log::dump_trace() {
+    local frame=1 line func source n=0
+    while caller "$frame"; do
+        ((frame++))
+    done | while read line func source; do
+        ((n++ == 0)) && {
+            printf 'Encountered an error\n'
+        }
+        printf '%4s at %s\n' " " "$func ($source:$line)"
+    done
 }
 
 # log::banner prints message with INFO level in banner form for easier spotting in log files
@@ -27,7 +41,7 @@ function log::info {
    local scriptname
    funcname=${FUNCNAME[1]}
    scriptname=${BASH_SOURCE[1]:-$1}
-   echo -e "$(log::date) [INFO] PID:$$ --- [$scriptname] $funcname: $*"
+   echo -e "$(log::date) [INFO] PID:$$ --- [$scriptname] $funcname:${BASH_LINENO[1]} $*"
 }
 
 # log::success prints a message with info level
@@ -52,10 +66,9 @@ function log::warn {
    local funcname # get function that called this
    local dirname
    local scriptname
-   local args
    funcname=${FUNCNAME[1]}
    scriptname=${BASH_SOURCE[1]:-$1}
-  echo -e "$(log::date) [WARN] PID:$$ --- [$dirname/$scriptname] $funcname: $*"
+  echo -e "$(log::date) [WARN] PID:$$ --- [$dirname/$scriptname] $funcname:${BASH_LINENO[1]} $*"
 }
 
 # log::error prints a message with error level
@@ -63,6 +76,11 @@ function log::warn {
 # Arguments:
 #   $* - Message
 function log::error {
-
-    >&2 echo -e "$(log::date) [ERROR] $*"
+     local funcname # get function that called this
+     local dirname
+     local scriptname
+     funcname=${FUNCNAME[1]}
+     scriptname=${BASH_SOURCE[1]:-$1}
+    >&2  echo -e "$(log::date) [ERROR] PID:$$ --- [$dirname/$scriptname] $funcname:${BASH_LINENO[1]} $*"
+    >&2 log::dump_trace
 }

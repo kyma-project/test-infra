@@ -44,15 +44,15 @@ EOF
     elif [[ -n "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
       docker::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
     else
-      echo "Skipping docker authentication in GCR. No credentials provided."
+      log::info "Skipping docker authentication in GCR. No credentials provided."
     fi
 
     if [[ -n "${DOCKER_HUB_USER}" ]]; then
-      echo "Authenticating in docker hub."
-      echo "${DOCKER_HUB_PASS}" | docker login -u "${DOCKER_HUB_USER}" --password-stdin || exit 1
+      log::info "Authenticating in docker hub."
+      log::info "${DOCKER_HUB_PASS}" | docker login -u "${DOCKER_HUB_USER}" --password-stdin || exit 1
     fi
 
-    echo "Done starting up docker."
+    log::info "Done starting up docker."
 }
 
 # docker::authenticate sets the docker user based on the provided credentials
@@ -61,10 +61,10 @@ function docker::authenticate() {
   authKey=$1
     if [[ -n "${authKey}" ]]; then
       client_email=$(jq -r '.client_email' < "${authKey}")
-      echo "Authenticating in registry ${DOCKER_PUSH_REPOSITORY%%/*} as $client_email"
+      log::info "Authenticating in registry ${DOCKER_PUSH_REPOSITORY%%/*} as $client_email"
       docker login -u _json_key --password-stdin https://"${DOCKER_PUSH_REPOSITORY%%/*}" < "${authKey}" || exit 1
     else
-      echo "could not authenticate to Docker Registry: authKey is empty" >&2
+      log::info "could not authenticate to Docker Registry: authKey is empty" >&2
     fi
 }
 

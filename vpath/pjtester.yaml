@@ -4,4 +4,4 @@ pjNames:
 prConfigs:
   kyma-incubator:
     reconciler:
-      prNumber: 1072
+      prNumber: 1075
