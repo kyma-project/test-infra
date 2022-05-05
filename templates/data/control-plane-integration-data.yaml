@@ -179,7 +179,7 @@ templates:
               - jobConfig:
                   name: pre-main-control-plane-reconciler-e2e-latest-release
                   run_if_changed: "^resources/kcp/values.yaml|^resources/kcp/charts/mothership-reconciler/|^resources/kcp/charts/component-reconcilers/"
-                  optional: false
+                  optional: true
                 inheritedConfigs:
                   global:
                     - jobConfig_default
