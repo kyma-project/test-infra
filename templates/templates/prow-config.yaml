@@ -1008,6 +1008,11 @@ presets:
   - labels:
       preset-btp-operator-stage-credentials: "true"
     env:
+      - name: BTP_SM_ADMIN_CREDS
+          valueFrom:
+            secretKeyRef:
+              name: btp-operator-credentials
+              key: admincreds
       - name: BTP_OPERATOR_CLIENTID
         valueFrom:
           secretKeyRef:
