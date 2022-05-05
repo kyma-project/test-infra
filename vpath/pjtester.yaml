@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "skr-aws-reconciliation-integration-dev"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 13787

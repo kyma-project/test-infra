@@ -43,4 +43,3 @@ make -C /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration ci
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
-

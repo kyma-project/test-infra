@@ -52,4 +52,3 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "keb_plan_aws"
-
