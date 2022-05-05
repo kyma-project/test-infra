@@ -1036,33 +1036,33 @@ presets:
             name: btp-operator-credentials
             key: clusterid
   - labels:
-        preset-btp-admin-stage-credentials: "true"
-      env:
-        - name: BTP_SM_ADMIN_CLIENTID
-          valueFrom:
-            secretKeyRef:
-              name: btp-admin-credentials
-              key: clientid
-        - name: BTP_SM_ADMIN_CLIENTSECRET
-          valueFrom:
-            secretKeyRef:
-              name: btp-admin-credentials
-              key: clientsecret
-        - name: BTP_SM_ADMIN_URL
-          valueFrom:
-            secretKeyRef:
-              name: btp-admin-credentials
-              key: url
-        - name: BTP_SM_ADMIN_TOKENURL
-          valueFrom:
-            secretKeyRef:
-              name: btp-admin-credentials
-              key: tokenurl
-        - name: BTP_SM_ADMIN_CLUSTERID
-          valueFrom:
-            secretKeyRef:
-              name: btp-admin-credentials
-              key: clusterid
+      preset-btp-admin-stage-credentials: "true"
+    env:
+      - name: BTP_SM_ADMIN_CLIENTID
+        valueFrom:
+          secretKeyRef:
+            name: btp-admin-credentials
+            key: clientid
+      - name: BTP_SM_ADMIN_CLIENTSECRET
+        valueFrom:
+          secretKeyRef:
+            name: btp-admin-credentials
+            key: clientsecret
+      - name: BTP_SM_ADMIN_URL
+        valueFrom:
+          secretKeyRef:
+            name: btp-admin-credentials
+            key: url
+      - name: BTP_SM_ADMIN_TOKENURL
+        valueFrom:
+          secretKeyRef:
+            name: btp-admin-credentials
+            key: tokenurl
+      - name: BTP_SM_ADMIN_CLUSTERID
+        valueFrom:
+          secretKeyRef:
+            name: btp-admin-credentials
+            key: clusterid
   - labels:
       preset-keb-plan-azure: "true"
     env:
