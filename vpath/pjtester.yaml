@@ -1,0 +1,4 @@
+pjNames:
+  - pjName: "skr-aws-integration-dev"
+  - pjName: "skr-azure-integration-dev"
+  - pjName: "skr-aws-without-sc-integration-dev"
