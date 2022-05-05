@@ -1,3 +1,6 @@
 pjNames:
   - pjName: "skr-aws-integration-dev"
-    report: true 
+prConfigs:
+  kyma-project:
+    kyma:
+      branch: main  
