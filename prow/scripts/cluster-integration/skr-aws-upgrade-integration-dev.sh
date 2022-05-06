@@ -44,8 +44,8 @@ kyma::get_offset_minor_releases -v "${KYMA_UPGRADE_VERSION}"
 export KYMA_VERSION="${minor_release_versions:?}"
 log::info "### Reading kyma input version from GitHub release API, got: ${KYMA_VERSION}"
 
-log::info "### Run make ci-skr-aws-upgrade-integration"
-make -C /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration ci-skr-aws-upgrade-integration
+#log::info "### Run make ci-skr-aws-upgrade-integration"
+#make -C /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration ci-skr-aws-upgrade-integration
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
