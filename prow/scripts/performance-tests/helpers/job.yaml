@@ -9,7 +9,7 @@ spec:
     spec:
       containers:
       - name: k6
-        image: grafana/k6:v0.37.0
+        image: grafana/k6:0.37.0
         command: ["sh", "-c"]
         args:
           - |
