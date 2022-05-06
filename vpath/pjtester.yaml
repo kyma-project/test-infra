@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "skr-aws-upgrade-integration-dev"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 14207
