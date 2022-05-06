@@ -26,8 +26,10 @@ log::dump_trace() {
 function log::banner {
   local logdate
   logdate=$(log::date)
+  local scriptname
+  scriptname=${BASH_SOURCE[1]:-$1}
   echo -e "${logdate} [INFO] *************************************************************************************"
-  echo -e "${logdate} [INFO] * $*"
+  echo -e "${logdate} [INFO] [$scriptname] * $*"
   echo -e "${logdate} [INFO] *************************************************************************************"
 }
 

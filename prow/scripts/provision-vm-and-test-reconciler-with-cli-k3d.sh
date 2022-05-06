@@ -118,7 +118,7 @@ trap cleanup exit INT
 
 log::banner "Provision k3d, deploy Kyma and run fast-integration tests"
 
-### define kyma version to deploy
+log::info "Define kyma version to deploy"
 export KYMA_SOURCE="main"
 if [[ "${KYMA_TEST_SOURCE}" == "latest-release" ]]; then
   # Fetch latest Kyma released version
@@ -159,7 +159,7 @@ log::info "Copying Test-infra to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/test-infra" "~/test-infra"
 
-# run the relevant script to deploy Kyma and run fast-integration tests
+log::info "Run the relevant script to deploy Kyma and run fast-integration tests"
 if [[ "${KYMA_UPGRADE_VERSION}" ]]; then
   log::banner "Triggering the tests for Kyma upgrade scenario from version: ${KYMA_SOURCE} to version: ${KYMA_UPGRADE_VERSION}"
   utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/reconciler-integration-with-cli-upgrade-k3d.sh"

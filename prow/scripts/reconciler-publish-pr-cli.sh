@@ -1,4 +1,5 @@
 #!/bin/bash
+log::banner "Reconciler Publish PR-CLI"
 
 set -o errexit
 

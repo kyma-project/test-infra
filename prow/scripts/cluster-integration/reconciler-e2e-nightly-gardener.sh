@@ -78,29 +78,30 @@ fi
 # Checks required vars and initializes gcloud/docker if necessary
 gardener::init
 
+log::info "Export cluster name"
 reconciler::export_nightly_cluster_name
 
 log::banner "Connecting to nightly cluster"
 
 reconciler::export_shoot_cluster_kubeconfig
 
-# Deploy test pod which will trigger reconciliation
+log::info "Deploy test pod which will trigger reconciliation"
 reconciler::deploy_test_pod
 
-# Wait until test-pod is ready
+log::info "Wait until test-pod is ready"
 reconciler::wait_until_test_pod_is_ready
 
-# Set up test pod environment
+log::info "Set up test pod environment"
 reconciler::initialize_test_pod
 
-# Trigger the reconciliation through test pod
+log::info "Trigger the reconciliation through test pod"
 reconciler::trigger_kyma_reconcile
 
-# Wait until reconciliation is complete
+log::info "Wait until reconciliation is complete"
 reconciler::wait_until_kyma_reconciled
 
-# Once Kyma is installed run the fast integration test
+log::info "Once Kyma is installed run the fast integration test"
 gardener::test_fast_integration_kyma
 
-# Break Kyma
+log::info "Delete all deployment Kyma"
 reconciler::break_kyma

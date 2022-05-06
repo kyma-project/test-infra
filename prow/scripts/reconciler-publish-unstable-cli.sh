@@ -1,4 +1,5 @@
 #!/bin/bash
+log::banner "Bump reconciler version used by CLI and publish the unstable CLI binaries"
 
 set -o errexit
 
