@@ -128,9 +128,9 @@ utils::compress_send_to_vm "${ZONE}" "kyma-upgrade-test-${RANDOM_ID}" "/home/pro
 set -o pipefail
 log::info "Triggering the installation"
 if [[ "${KYMA_MAJOR_VERSION}" == "1" ]]; then
-  gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60" "kyma-upgrade-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-upgrade-k3d-kyma-to-kyma2.sh"
+  utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-upgrade-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/kyma-upgrade-k3d-kyma-to-kyma2.sh"
 else
-  gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60" "kyma-upgrade-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-upgrade-k3d-kyma2-to-main.sh"
+  utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-upgrade-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/kyma-upgrade-k3d-kyma2-to-main.sh"
 fi
 
 log::success "all done"
