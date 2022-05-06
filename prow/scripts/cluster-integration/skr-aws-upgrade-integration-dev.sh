@@ -36,7 +36,7 @@ log::info "### Starting pipeline"
 # Fetch latest Kyma2 release
 kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
 # KYMA_UPGRADE_VERSION will be used as a source in the fast-integration test
-export KYMA_UPGRADE_VERSION="2.1.3" #"${kyma_get_last_release_version_return_version:?}"
+export KYMA_UPGRADE_VERSION="2.0.4" #"${kyma_get_last_release_version_return_version:?}"
 log::info "### Reading release version from GitHub release API, got: ${KYMA_UPGRADE_VERSION}"
 
 export PREVIOUS_MINOR_VERSION_COUNT="1"
