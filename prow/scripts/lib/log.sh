@@ -85,5 +85,4 @@ function log::error {
      scriptname=${BASH_SOURCE[1]:-$1}
     >&2  echo -e "$(log::date) [ERROR] PID:$$ --- [$dirname/$scriptname] $funcname:${BASH_LINENO[1]} $*"
     >&2 log::dump_trace
-    echo -e "$(log::date) [ERROR] Prow script name: $(basename "$0")"
 }
