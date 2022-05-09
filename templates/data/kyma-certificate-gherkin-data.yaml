@@ -49,6 +49,8 @@ templates:
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
+                  labels:
+                    preset-log-collector-slack-token: "true"
                 inheritedConfigs:
                   global:
                     - "image_kyma-integration"

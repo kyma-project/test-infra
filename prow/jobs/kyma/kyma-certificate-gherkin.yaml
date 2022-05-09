@@ -22,6 +22,7 @@ presubmits: # runs on PRs
         preset-kyma-integration-compass-dev: "true"
         preset-kyma-integration-kcp-client-credentials: "true"
         preset-kyma-integration-subaccounnt: "true"
+        preset-log-collector-slack-token: "true"
       run_if_changed: '^((tests/fast-integration\S+|resources\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
