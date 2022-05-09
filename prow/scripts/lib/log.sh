@@ -53,4 +53,5 @@ function log::warn {
 #   $* - Message
 function log::error {
     >&2 echo -e "$(log::date) [ERROR] $*"
+    echo -e "$(log::date) [ERROR] Prow script name: $(basename "$0")"
 }
