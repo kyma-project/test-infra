@@ -1,0 +1,12 @@
+pjNames:
+  - pjName: "kyma-preview-integration-dev"
+  - pjName: "skr-azure-integration-dev"
+  - pjName: "skr-azure-lite-integration-dev"
+  - pjName: "skr-aws-integration-dev"
+  - pjName: "skr-trial-integration-dev"
+  - pjName: "skr-free-aws-integration-dev"
+  - pjName: "skr-aws-without-sc-integration-dev"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 14240
