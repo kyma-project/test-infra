@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "pre-main-kyma-gardener-azure-performance-eventing"
+  - pjName: "kyma-certificate-gherkin"
     pjPath: "test-infra/prow/jobs/kyma"
     report: true
 prConfigs:
