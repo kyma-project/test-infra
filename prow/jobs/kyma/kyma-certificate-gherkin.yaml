@@ -8,7 +8,7 @@ presubmits: # runs on PRs
         pipeline.clusterprovisioning: "keb"
         pipeline.installer: "keb"
         pipeline.platform: "gardener_aws"
-        pipeline.test: "fast-integration-gherkin"
+        pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
         testgrid-create-test-group: "false"
       labels:

@@ -15,7 +15,7 @@ templates:
             annotations:
               pipeline.clusterprovisioning: keb
               pipeline.installer: keb
-              pipeline.test: fast-integration-gherkin
+              pipeline.test: fast-integration
             command: "make"
             args:
               - "-C"
