@@ -3,6 +3,7 @@
 
 | name | platform | cluster-provisioning | installer | profile | trigger | tests |
 |:-----|:---------|:---------------------|:----------|:--------|:--------|:------|
+| kyma-certificate-gherkin | gardener_aws | keb | keb |  | pr-submit |  fast-integration  |
 | pre-main-kyma-integration-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-integration-k3d-compass-dev | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-integration-k3d-central-app-connectivity | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
