@@ -12,6 +12,7 @@ templates:
                 - org: "kyma-incubator"
                   repo: "local-kyma"
                   path_alias: "github.com/kyma-incubator/local-kyma"
+                  base_ref: main
           jobConfig_default:
             path_alias: github.com/kyma-project/kyma
             annotations:
