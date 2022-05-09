@@ -1,8 +1,8 @@
 pjNames:
-   - pjName: "kyma-certificate-gherkin"
-     pjPath: "test-infra/prow/jobs/kyma"
-     report: true
- prConfigs:
-   kyma-project:
-     kyma:
-       prNumber: 14210
+  - pjName: "pre-main-kyma-gardener-azure-performance-eventing"
+    pjPath: "test-infra/prow/jobs/kyma"
+    report: true
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 14210
