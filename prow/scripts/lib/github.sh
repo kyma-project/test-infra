@@ -32,4 +32,5 @@ function github::configure_git() {
   if [[ -n "${BOT_GITHUB_NAME}" ]]; then
       git config --global user.name "${BOT_GITHUB_NAME}"
   fi
+    log::info "Git configuration's finished"
 }

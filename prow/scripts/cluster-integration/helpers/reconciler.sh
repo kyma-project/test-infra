@@ -10,6 +10,7 @@ readonly LOCAL_KUBECONFIG="$HOME/.kube/config"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
 function reconciler::export_nightly_cluster_name(){
+  log::info "Export cluster name"
   # shellcheck disable=SC2046
   # shellcheck disable=SC2005
   day=$(echo $(date +%a) | tr "[:upper:]" "[:lower:]" | cut -c1-2)
@@ -125,6 +126,7 @@ function reconciler::wait_until_is_ready() {
 
 # Waits until the test-pod is in ready state
 function reconciler::wait_until_test_pod_is_ready() {
+  log::info "Wait until test-pod is in ready state"
   iterationsLeft=$(( RECONCILER_TIMEOUT/RECONCILER_DELAY ))
   while : ; do
     testPodStatus=$(kubectl get po -n "${RECONCILER_NAMESPACE}" test-pod -ojsonpath='{.status.containerStatuses[?(@.name == "test-pod")].ready}')
@@ -163,6 +165,7 @@ function reconciler::wait_until_test_pod_is_deleted() {
 
 # Initializes test pod which will send reconcile requests to reconciler
 function reconciler::initialize_test_pod() {
+  log::info "Set up test pod environment"
   # Define KUBECONFIG env variable
   export KUBECONFIG="${LOCAL_KUBECONFIG}"
 
@@ -208,6 +211,7 @@ function reconciler::initialize_test_pod() {
 # Only triggers reconciliation of Kyma
 function reconciler::trigger_kyma_reconcile() {
   # Trigger Kyma reconciliation using reconciler
+  log::info "Trigger the reconciliation through test pod"
   log::banner "Reconcile Kyma in the same cluster"
   kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/request-reconcile.sh"
   if [[ $? -ne 0 ]]; then
@@ -218,6 +222,7 @@ function reconciler::trigger_kyma_reconcile() {
 
 # Waits until Kyma reconciliation is in ready state
 function reconciler::wait_until_kyma_reconciled() {
+  log::info "Wait until reconciliation is complete"
   iterationsLeft=$(( RECONCILER_TIMEOUT/RECONCILER_DELAY ))
   while : ; do
     status=$(kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/get-reconcile-status.sh" | xargs)
@@ -247,7 +252,7 @@ function reconciler::wait_until_kyma_reconciled() {
 # Deploy test pod
 function reconciler::deploy_test_pod() {
   # Deploy a test pod
-  log::banner "Deploying test-pod in the cluster"
+  log::info "Deploy test pod in the cluster which will trigger reconciliation"
   test_pod_name=$(kubectl get po test-pod -n "${RECONCILER_NAMESPACE}" -ojsonpath="{ .metadata.name }" --ignore-not-found)
   if [ -n "${test_pod_name}" ]; then
     log::info "Found existing pod: test-pod"

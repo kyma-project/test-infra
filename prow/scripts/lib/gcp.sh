@@ -242,7 +242,7 @@ function gcp::authenticate {
     local OPTIND
     #required arguments
     local googleAppCredentials
-
+    log::info "Check the provided credentials in the argument"
     while getopts ":c:" opt; do
         case $opt in
             c)

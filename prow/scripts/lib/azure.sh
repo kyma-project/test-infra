@@ -9,6 +9,7 @@ source "${LIBDIR}/utils.sh"
 
 # az::verify_deps checks if all required commands are available
 function az::verify_deps {
+  log::info "Verify dependencies checks if all required commands are available"
     if ! [[ -x $(command -v az) ]]; then
         log::error "'az' command not found in \$PATH. Exiting..."
         exit 1
@@ -36,7 +37,6 @@ function az::verify_deps {
 #   "secret": "subscription_secret"
 # }
 function az::authenticate {
-
     local OPTIND
     local azureSubscriptionTenant
     local azureSubscriptionAppID
@@ -45,6 +45,7 @@ function az::authenticate {
 
     # Check the provided credentials in the argument.
     # Use arguments to avoid exporting sensitive values.
+    log::info "Check the provided credentials in the argument"
     while getopts ":f:" opt; do
         case $opt in
             f)
@@ -110,7 +111,7 @@ function az::create_resource_group {
     local resourceGroup
     local azureRegion
     local groupTags
-
+    log::info "Check the provided group name, region and tags in the argument"
     while getopts ":g:r:t:" opt; do
         case $opt in
             g)

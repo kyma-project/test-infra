@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-# log::date retrun current date in format expected by logs
+# log::date returns the current date in format expected by logs
 function log::date {
     date +"%Y-%m-%d %T %Z"
 }
 
-# log::dump_trace prints stacktrace when an error occur
+# log::dump_trace prints stacktrace when an error occurs.
 #
 log::dump_trace() {
     local frame=1 line func source n=0
