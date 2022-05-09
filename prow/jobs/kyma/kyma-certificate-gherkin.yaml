@@ -40,6 +40,10 @@ presubmits: # runs on PRs
           repo: kyma
           path_alias: github.com/kyma-project/kyma
           base_ref: main
+        - org: kyma-incubator
+          repo: local-kyma
+          path_alias: github.com/kyma-incubator/local-kyma
+          base_ref: <no value>
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
