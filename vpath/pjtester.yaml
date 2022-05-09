@@ -1,0 +1,8 @@
+pjNames:
+   - pjName: "kyma-certificate-gherkin"
+     pjPath: "test-infra/prow/jobs/kyma"
+     report: true
+ prConfigs:
+   kyma-project:
+     kyma:
+       prNumber: 14210

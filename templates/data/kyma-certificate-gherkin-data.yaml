@@ -1,0 +1,61 @@
+templates:
+  - fromTo:
+      - from: templates/generic.tmpl
+        to: ../prow/jobs/kyma/kyma-certificate-gherkin.yaml
+    render:
+      - localSets:
+          extra_refs_kyma-local:
+            extra_refs:
+              local-kyma:
+                - org: "kyma-incubator"
+                  repo: "local-kyma"
+                  path_alias: "github.com/kyma-incubator/local-kyma"
+          jobConfig_default:
+            path_alias: github.com/kyma-project/kyma
+            annotations:
+              pipeline.clusterprovisioning: keb
+              pipeline.installer: keb
+              pipeline.test: fast-integration-gherkin
+            command: "make"
+            args:
+              - "-C"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration-gherkin" 
+              - "ci-certificate-gherkin"
+            cluster: "trusted-workload"
+            request_memory: 100Mi
+            request_cpu: 50m
+            labels:
+              preset-build-pr: "true"
+              preset-keb-dev-credentials: "true"
+              preset-kyma-integration-compass-dev: "true"
+              preset-kyma-integration-subaccounnt: "true"
+              preset-kcp-client-dev-envs: "true"
+              preset-kyma-integration-kcp-client-credentials: "true"
+              preset-btp-operator-stage-credentials: "true"
+          keb_plan_aws:
+            annotations:
+              pipeline.platform: gardener_aws
+            env:
+              KEB_PLAN_ID: "5cb3d976-b85c-42ea-a636-79cadda109a9"
+        jobConfigs:
+          - repoName: "kyma-project/kyma"
+            jobs:
+              #presubmit
+              - jobConfig:
+                  name: "kyma-certificate-gherkin"
+                  run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                inheritedConfigs:
+                  global:
+                    - "image_kyma-integration"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                    - "disable_testgrid"
+                    - "kyma_major_version_1"
+                  local:
+                    - "jobConfig_default"
+                    - "keb_plan_aws"
