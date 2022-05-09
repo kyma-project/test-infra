@@ -238,7 +238,7 @@ function gcp::provision_k8s_cluster {
 # required:
 # c - google credentials file path
 function gcp::authenticate {
-
+    log::info "Preparing credentials"
     local OPTIND
     #required arguments
     local googleAppCredentials

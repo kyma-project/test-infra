@@ -10,7 +10,7 @@ readonly LOCAL_KUBECONFIG="$HOME/.kube/config"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
 function reconciler::export_nightly_cluster_name(){
-  log::info "Export cluster name"
+  log::info "Export nightly cluster name"
   # shellcheck disable=SC2046
   # shellcheck disable=SC2005
   day=$(echo $(date +%a) | tr "[:upper:]" "[:lower:]" | cut -c1-2)
@@ -18,6 +18,7 @@ function reconciler::export_nightly_cluster_name(){
 }
 
 function reconciler::delete_cluster_if_exists(){
+  log::info "Delete cluster with reconciler if exists"
   export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
   for i in mo tu we th fr sa su
   do
@@ -63,6 +64,7 @@ function reconciler::reprovision_cluster() {
 }
 
 function reconciler::provision_cluster() {
+    log::info "Provision reconciler cluster"
     export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
     export DOMAIN_NAME="${INPUT_CLUSTER_NAME}"
     export DEFINITION_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/reconciler/shoot-template.yaml"
@@ -91,6 +93,7 @@ function reconciler::deploy() {
 
 # Checks whether reconciler is ready
 function reconciler::wait_until_is_ready() {
+  log::info "Wait until reconciler is in ready state"
   iterationsLeft=$(( RECONCILER_TIMEOUT/RECONCILER_DELAY ))
   while : ; do
     reconcilerCountDeploys=0
@@ -269,6 +272,7 @@ function reconciler::disable_sidecar_injection_reconciler_ns() {
 
 # Export shoot cluster kubeconfig to ENV
 function reconciler::export_shoot_cluster_kubeconfig() {
+  log::info "Export shoot cluster kubeconfig to ENV"
   export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
   local shoot_kubeconfig="/tmp/shoot-kubeconfig.yaml"
   kubectl get secret "${INPUT_CLUSTER_NAME}.kubeconfig"  -ogo-template="{{ .data.kubeconfig | base64decode }}" > "${shoot_kubeconfig}"

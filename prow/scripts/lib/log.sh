@@ -11,7 +11,7 @@ log::dump_trace() {
     local frame=1 line func source n=0
     while caller "$frame"; do
         ((frame++))
-    done | while read line func source; do
+    done | while read -r line func source; do
         ((n++ == 0)) && {
             printf 'Encountered an error\n'
         }

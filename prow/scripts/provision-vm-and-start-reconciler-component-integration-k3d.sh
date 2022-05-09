@@ -46,7 +46,6 @@ function testCustomImage() {
   fi
 }
 
-log::info "Authenticate into GCP"
 gcp::authenticate \
   -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
