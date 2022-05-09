@@ -17,6 +17,8 @@
   onlyReportFailure: true
   testCases:
     - application-connector
+    - application-operator
+    - application-operator-gateway
     - compass-runtime-agent-tests
     - kcp-provisioner-tests
 - channelName: "#hasselhoff-notifications"

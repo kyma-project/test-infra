@@ -14,6 +14,21 @@ var tests = []struct {
 	suite             func(config *jobsuite.Config) jobsuite.Suite
 	additionalOptions []jobsuite.Option
 }{
+	{path: "application-gateway-tests", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+		},
+	},
+	{path: "application-gateway-legacy-tests", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+		},
+	},
+	{path: "application-operator-tests", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+		},
+	},
 	{path: "service-catalog", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
