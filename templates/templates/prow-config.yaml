@@ -18,10 +18,10 @@ plank:
       timeout: 3h
       grace_period: 10m
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20220206-e1cc2403ac
-        initupload: gcr.io/k8s-prow/initupload:v20220206-e1cc2403ac
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20220206-e1cc2403ac
-        sidecar: gcr.io/k8s-prow/sidecar:v20220206-e1cc2403ac
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20220427-2d44ab7fdf
+        initupload: gcr.io/k8s-prow/initupload:v20220427-2d44ab7fdf
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20220427-2d44ab7fdf
+        sidecar: gcr.io/k8s-prow/sidecar:v20220427-2d44ab7fdf
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -105,11 +105,6 @@ branch-protection:
       exclude:
         - "^dependabot/"
       repos:
-        test-infra:
-          required_pull_request_reviews:
-            dismiss_stale_reviews: false
-            require_code_owner_reviews: false
-            required_approving_review_count: 0
         kyma:
           branches:
             kyma-2.0-docu:
@@ -160,6 +155,8 @@ branch-protection:
               protect: true
             develop:
               protect: true
+            load-test-mock:
+              protect: true
 
 tide:
   sync_period: 2m
@@ -195,7 +192,6 @@ tide:
     kyma-incubator/podpreset-crd: squash
     kyma-incubator/service-catalog-tester: squash
     kyma-incubator/kymart: squash
-    kyma-incubator/terraform-provider-kind: squash
     kyma-incubator/dex: squash
     kyma-incubator/varkes: squash
 #    kyma-incubator/marketplaces: squash
@@ -205,7 +201,6 @@ tide:
     kyma-incubator/github-dashboard: squash
     kyma-incubator/vstudio-extension: squash
     kyma-incubator/wordpress-connector: squash
-    kyma-incubator/terraform-modules: squash
     kyma-incubator/connector-tools: squash
 #    kyma-incubator/github-slack-connectors: squash
     kyma-incubator/service-catalog: squash
@@ -237,8 +232,9 @@ tide:
         - do-not-merge/invalid-commit-message
       orgs:
         - kyma-project
+        - kyma-incubator
       excludedRepos:
-        - kyma-project/test-infra # handled in separate query specifically for approve plugin
+        - kyma-incubator/compass # handled in separate query specifically for approve plugin
       reviewApprovedRequired: true
     - labels:
         - lgtm
@@ -251,21 +247,9 @@ tide:
         - do-not-merge/invalid-commit-message
         - do-not-merge/missing-docs-review
       repos:
-        - kyma-project/test-infra
-    - labels:
-        - lgtm
-      missingLabels:
-        - needs-rebase
-        - do-not-merge/hold
-        - do-not-merge/work-in-progress
-        - do-not-merge/invalid-owners-file
-        - do-not-merge/invalid-commit-message
-      orgs:
-        - kyma-incubator
-      reviewApprovedRequired: true
+        - kyma-incubator/compass
   context_options:
     from-branch-protection: true
-#    skip-unknown-contexts: true
 
 presets:
   - labels:
@@ -295,11 +279,11 @@ presets:
       preset-cluster-version: "true"
     env:
       - name: AKS_CLUSTER_VERSION
-        value: "1.20"
+        value: "1.21"
       - name: GKE_CLUSTER_VERSION
-        value: "1.20"
+        value: "1.21"
       - name: GARDENER_CLUSTER_VERSION
-        value: "1.20"
+        value: "1.21"
   # test clusters log collector
   - labels:
       preset-log-collector-slack-token: "true"
@@ -754,6 +738,13 @@ presets:
       - name: UNSTABLE
         value: "true"
   - labels:
+      preset-kyma-cli-pr-unstable: "true"
+    env:
+      - name: KYMA_CLI_PR_UNSTABLE_BUCKET
+        value: gs://kyma-cli-pr
+      - name: UNSTABLE
+        value: "true"
+  - labels:
       preset-stability-checker-slack-notifications: "true"
     env:
       - name: SLACK_CLIENT_WEBHOOK_URL
@@ -823,10 +814,30 @@ presets:
       - name: SLACK_CHANNEL
         value: CBMPTMCV9
   - labels:
-      preset-kyma-wssagent-config: "true"
+      preset-whitesource-product-kyma: "true"
     env:
-      - name: PRODUCTNAME
-        value: "OOSS - KYMA"
+      - name: WS_PRODUCTNAME
+        value: "SHC - XF KYMA RUNTIME 2.0"
+  - labels:
+      preset-whitesource-product-control-plane: "true"
+    env:
+      - name: WS_PRODUCTNAME
+        value: "SHC - KYMA CONTROL PLANE 2.0"
+  - labels:
+      preset-whitesource-product-kyma-dashboard: "true"
+    env:
+      - name: WS_PRODUCTNAME
+        value: "SHC - KYMA DASHBOARD 1.0"
+  - labels:
+      preset-whitesource-product-kyma-release: "true"
+    env:
+      - name: WS_PRODUCTNAME
+        value: "SHC - KYMA RUNTIME RELEASE"
+  - labels:
+      preset-whitesource-product-kyma-release-previous: "true"
+    env:
+      - name: WS_PRODUCTNAME
+        value: "SHC - KYMA RUNTIME RELEASE-1"
   # volume mounts for kind
   - labels:
       preset-kind-volume-mounts: "true"
@@ -1021,6 +1032,34 @@ presets:
         valueFrom:
           secretKeyRef:
             name: btp-operator-credentials
+            key: clusterid
+  - labels:
+      preset-btp-admin-stage-credentials: "true"
+    env:
+      - name: BTP_SM_ADMIN_CLIENTID
+        valueFrom:
+          secretKeyRef:
+            name: btp-admin-credentials
+            key: clientid
+      - name: BTP_SM_ADMIN_CLIENTSECRET
+        valueFrom:
+          secretKeyRef:
+            name: btp-admin-credentials
+            key: clientsecret
+      - name: BTP_SM_ADMIN_URL
+        valueFrom:
+          secretKeyRef:
+            name: btp-admin-credentials
+            key: url
+      - name: BTP_SM_ADMIN_TOKENURL
+        valueFrom:
+          secretKeyRef:
+            name: btp-admin-credentials
+            key: tokenurl
+      - name: BTP_SM_ADMIN_CLUSTERID
+        valueFrom:
+          secretKeyRef:
+            name: btp-admin-credentials
             key: clusterid
   - labels:
       preset-keb-plan-azure: "true"

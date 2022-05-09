@@ -13,9 +13,9 @@ Kyma developers are gathered in the `kyma_developers@sap.com` Google Group admin
 
 Previously, you could only grant roles to Google Cloud user accounts or Cloud IAM service accounts. Google Groups for GKE (Beta) now allows you to grant roles to the members of a G Suite Google Group. With this mechanism, the users and groups themselves are maintained by your G Suite administrators, completely outside of Kubernetes or Cloud Console.
 
-Google Groups give you the possibility to gather Kyma Developers accounts and manage GCP Project permissions based on the group name. Additionally, you can grant Kubernetes Roles, ClusterRoles, RoleBindings, and ClusterRoleBindings to the specific Google Group on your cluster.
+Google Groups give you the possibility to gather Kyma Developers accounts and manage GCP Project permissions based on the group name. Additionally, you can grant Kubernetes Roles, Cluster Roles, Role Bindings, and Cluster Role Bindings to the specific Google Group on your cluster.
 
-For example, all members of the `kyma_developers@sap.com` group receive the **cluster-admin** ClusterRole on the Kyma release cluster built by the **post-relXX-kyma-release-candidate** Prow job.
+For example, all members of the `kyma_developers@sap.com` group receive the **cluster-admin** Cluster Role on the Kyma release cluster built by the **post-relXX-kyma-release-candidate** Prow job.
 
 If you want to leverage this solution, [raise an issue](https://github.com/kyma-project/test-infra/issues/new/choose) with the Neighbors team. The process looks as follows:
 
@@ -25,7 +25,7 @@ If you want to leverage this solution, [raise an issue](https://github.com/kyma-
 
 2. You write a test pipeline where you build the cluster with an additional parameter called **--security-group="gke-security-groups@sap.com**. 
 
-3. In the next step of your test pipeline you create ClusterRoleBindings for the `your_custom_group@sap.com` custom group:
+3. In the next step of your test pipeline you create Cluster Role Bindings for the `your_custom_group@sap.com` custom group:
 
     ```
     kubectl create clusterrolebinding kyma-developers-group-binding --clusterrole="cluster-admin" --group="your_custom_group@sap.com"

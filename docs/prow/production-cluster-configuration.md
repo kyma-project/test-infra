@@ -40,7 +40,7 @@ Use the following tools and configuration:
   ```
 
   This script performs the following steps:
-  - Creates a ClusterRoleBinding to provide access to the Prow cluster. This way it enables running and monitoring jobs on the workload cluster.
+  - Creates a Cluster Role Binding to provide access to the Prow cluster. This way it enables running and monitoring jobs on the workload cluster.
   - Creates Kubernetes Secrets resources from secrets fetched from the GCP bucket.
 
 2. Set the context to your Google Cloud project.
@@ -90,7 +90,7 @@ Use the following tools and configuration:
    The installation script performs the following steps to install Prow:
 
    - Deploys the NGINX Ingress Controller
-   - Creates a ClusterRoleBinding
+   - Creates a Cluster Role Binding
    - Deploys Prow components with the `a202e595a33ac92ab503f913f2d710efabd3de21`revision
    - Deploys the Cert Manager
    - Deploys secure Ingress

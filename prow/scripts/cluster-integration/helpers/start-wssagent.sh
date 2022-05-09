@@ -4,31 +4,43 @@
 #The purpose is to run the wss-unified-agent
 
 #Expected vars:
-# - APIKEY- Key provided by SAP Whitesource Team
-# - PRODUCTNAME - Product inside whitesource
-# - USERKEY - Users specified key(should be a service account)
-# - PROJECTNAME - Kyma component name, scans that directory and posts the results in whitesource
+# - WS_APIKEY- Key provided by SAP Whitesource Team
+# - WS_USERKEY - Users specified key(should be a service account)
+# - WS_PRODUCTNAME - Product inside whitesource
+# - REPOSITORY - Component name, scans that directory and posts the results in whitesource
 # - GITHUB_ORG_DIR - Project directory to scan
-# - SCAN_LANGUAGE - Scan language is used to set the correct values in the whitesource config for golang / javascript
+# - SCAN_LANGUAGE - Scan language is used to set the correct values in the whitesource config for golang / golang-mod / javascript
+# Optional vars:
+# - CUSTOM_PROJECTNAME - Use custom project name instead of REPOSITORY
+# - CREATE_SUBPROJECTS - Find all projects/modules based on the SCAN_LANGUAGE and scan each to a separate Whitesource project
 
-set -o errexit
-export TEST_INFRA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/test-infra/"
-# shellcheck source=prow/scripts/lib/gcp.sh
-source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
+set -e
+export TEST_INFRA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/test-infra"
+# shellcheck source=prow/scripts/lib/log.sh
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/log.sh"
 
 # whitesource config
-GO_CONFIG_PATH="$TEST_INFRA_SOURCES_DIR/prow/images/whitesource-scanner/go-wss-unified-agent.config"
+GO_DEP_CONFIG_PATH="$TEST_INFRA_SOURCES_DIR/prow/images/whitesource-scanner/go-wss-unified-agent.config"
+GO_MOD_CONFIG_PATH="$TEST_INFRA_SOURCES_DIR/prow/images/whitesource-scanner/go-mod-wss-unified-agent.config"
 JAVASCRIPT_CONFIG_PATH="$TEST_INFRA_SOURCES_DIR/prow/images/whitesource-scanner/javascript-wss-unified-agent.config"
 
-# authenticate gcloud client
-gcp::authenticate \
-  -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
-USERKEY=$(cat "${WHITESOURCE_USERKEY}")
+# shellcheck disable=SC2153
+PROJECT_SRC="${GITHUB_ORG_DIR}/${REPOSITORY}"
 
-APIKEY=$(cat "${WHITESOURCE_APIKEY}")
+PROJECTNAME="${REPOSITORY}"
+if [[ $CUSTOM_PROJECTNAME != "" ]]; then
+  PROJECTNAME="${CUSTOM_PROJECTNAME}"
+fi
+
+# pass values to Whitesource binary through WS_* variables
+export WS_USERKEY=$(cat "${WHITESOURCE_USERKEY}")
+export WS_APIKEY=$(cat "${WHITESOURCE_APIKEY}")
+
+# don't stop scans on first failure, but fail the whole job after all scans have finished
+export scan_failed
 
 #exclude components based on dependency management
 function filterFolders() {
@@ -38,11 +50,11 @@ function filterFolders() {
   FOLDER_TO_SCAN=$2
   local EXCLUDES
   EXCLUDES=$({ cd "${FOLDER_TO_SCAN}" && find . -iname "${DEPENDENCY_FILE_TO_EXCLUDE}"; } | grep -v vendor | grep -v tests | xargs -n 1 dirname | sed 's/$/\/**/' | sed 's/^.\//**\//' | paste -s -d" " -)
-  EXCLUDES="excludes=**/tests/** ${EXCLUDES}"
+  EXCLUDES="**/docs/** **/tests/** ${EXCLUDES}"
   echo "$EXCLUDES"
 }
 
-function prepareDependencies() {
+function prepareDepDependencies() {
   local DEPENDENCY_FILE
   DEPENDENCY_FILE=$1
   local FOLDER_TO_SCAN
@@ -58,42 +70,29 @@ function prepareDependencies() {
   done
 }
 
-# shellcheck disable=SC2153
-KYMA_SRC="${GITHUB_ORG_DIR}/${PROJECTNAME}"
-
 case "${SCAN_LANGUAGE}" in
 golang)
   echo "SCAN: golang (dep)"
   go version
-  CONFIG_PATH=$GO_CONFIG_PATH
-  sed -i.bak "s|go.dependencyManager=|go.dependencyManager=dep|g" $CONFIG_PATH
-  sed -i.bak '/^excludes=/d' $CONFIG_PATH
-  echo "scanComment=$(date)" >> $CONFIG_PATH
-  # exclude gomod based folders
-  filterFolders go.mod "${KYMA_SRC}" >>${CONFIG_PATH}
-  prepareDependencies gopkg.toml "${KYMA_SRC}"
+  CONFIG_PATH=$GO_DEP_CONFIG_PATH
+  COMPONENT_DEFINITION="Gopkg.toml"
+  EXCLUDE_PROJECT_CONFIG="go.mod"
+  prepareDepDependencies gopkg.toml "${PROJECT_SRC}"
   ;;
 
 golang-mod)
   echo "SCAN: golang-mod"
   go version
-  CONFIG_PATH=$GO_CONFIG_PATH
+  CONFIG_PATH=$GO_MOD_CONFIG_PATH
   export GO111MODULE=on
-  sed -i.bak "s|go.dependencyManager=|#go.dependencyManager=|g" $CONFIG_PATH
-  sed -i.bak "s|go.collectDependenciesAtRuntime=true|#go.collectDependenciesAtRuntime=true|g" $CONFIG_PATH
-  sed -i.bak "s|go.resolveDependencies=true|go.resolveDependencies=false|g" $CONFIG_PATH
-  sed -i.bak "s|go.ignoreSourceFiles=true|go.modules.ignoreSourceFiles=true|g" $CONFIG_PATH
-  sed -i.bak '/^excludes=/d' $CONFIG_PATH
-  echo "go.modules.resolveDependencies=true" >> $CONFIG_PATH
-  echo "scanComment=$(date)" >> $CONFIG_PATH
-  # exclude godep based folders
-  filterFolders gopkg.toml "${KYMA_SRC}" >>${CONFIG_PATH}
+  EXCLUDE_PROJECT_CONFIG="Gopkg.toml"
+  COMPONENT_DEFINITION="go.mod"
   ;;
 
 javascript)
   echo "SCAN: javascript"
   CONFIG_PATH=$JAVASCRIPT_CONFIG_PATH
-  echo "scanComment=$(date)" >> $CONFIG_PATH
+  COMPONENT_DEFINITION="package.json"
   ;;
 
 *)
@@ -102,16 +101,19 @@ javascript)
   ;;
 esac
 
-echo "***********************************"
-echo "***********Starting Scan***********"
-echo "***********************************"
+echo "scanComment=$(date)" >> $CONFIG_PATH
 
-# resolve deps for console repository
-#if [ "${PROJECTNAME}" == "console" ]; then
-#    cd "$KYMA_SRC"
-#    make resolve
-#fi
+log::banner "Starting Scan"
 
+# scanFolder scans single folder to a Whitesource project
+# parameters:
+# $1 - path to a folder to scan
+# $2 - name of the Whitesource project
+# variables:
+# WS_PRODUCTNAME - name of the Whitesource product
+# EXCLUDE_PROJECT_CONFIG (optional) - name of the config fileson which folders should be excluded
+# DRYRUN (optional) - don't run the Whitesource unified agent binary
+# function returns 0 on success or 1 on fail
 function scanFolder() { # expects to get the fqdn of folder passed to scan
   if [[ $1 == "" ]]; then
     echo "path cannot be empty"
@@ -122,39 +124,90 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
     echo "component name cannot be empty"
     exit 1
   fi
-  cd "${FOLDER}" # change to passed parameter
-  PROJNAME=$2
+  pushd "${FOLDER}" # change to passed parameter
+  WS_PROJECTNAME=$2
+  export WS_PROJECTNAME
 
-  if [[ $CUSTOM_PROJECTNAME == "" ]]; then
-    # use custom projectname for kyma-mod scans in order not to override kyma (dep) scan results
-    sed -i.bak "s|apiKey=|apiKey=${APIKEY}|g; s|productName=|productName=${PRODUCTNAME}|g; s|userKey=|userKey=${USERKEY}|g; s|projectName=|projectName=${PROJNAME}|g" $CONFIG_PATH
-  else
-    sed -i.bak "s|apiKey=|apiKey=${APIKEY}|g; s|productName=|productName=${PRODUCTNAME}|g; s|userKey=|userKey=${USERKEY}|g; s|projectName=|projectName=${CUSTOM_PROJECTNAME}|g" $CONFIG_PATH
+  if [[ -n "$EXCLUDE_PROJECT_CONFIG" ]]; then
+    export WS_EXCLUDES=$(filterFolders "${EXCLUDE_PROJECT_CONFIG}" "$(pwd)")
   fi
 
-  echo "Product name - $PRODUCTNAME"
-  echo "Project name - $PROJNAME"
-  echo "Java Options - '$JAVA_OPTS'"
+  if [[ -n "$CUSTOM_EXCLUDE" ]]; then
+    export WS_EXCLUDES="${WS_EXCLUDES} ${CUSTOM_EXCLUDE}"
+  fi
+
+  # shellcheck disable=SC2153
+  echo "Product name - $WS_PRODUCTNAME"
+  echo "Project name - $WS_PROJECTNAME"
 
   if [ "${DRYRUN}" = false ]; then
-    echo "***********************************"
-    echo "******** Scanning $FOLDER ***"
-    echo "***********************************"
+    log::banner "Scanning $FOLDER"
     if [ -z "$JAVA_OPTS" ]; then
       echo "no additional java_opts set"
       java -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH
+      scan_result="$?"
     else
+      echo "Java Options - '$JAVA_OPTS'"
       java "${JAVA_OPTS}" -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH
+      scan_result="$?"
     fi
   else
-    echo "***********************************"
-    echo "******** DRYRUN Successful for $FOLDER ***"
-    echo "***********************************"
+    log::banner "DRYRUN Successful for $FOLDER"
+  fi
+  popd
+  if [[ "$scan_result" != 0 ]]; then
+    return 1
+  else
+    return 0
   fi
 }
 
-scanFolder "${KYMA_SRC}" "${PROJECTNAME}"
 
-echo "***********************************"
-echo "*********Scanning Finished*********"
-echo "***********************************"
+if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
+  # treat every found Go / JS project as a separate Whitesource project
+  pushd "${PROJECT_SRC}" # change to passed parameter
+
+  # find all go.mod / Gopkg.toml / package.json projects and scan them individually
+  if [[ -n "$CUSTOM_EXCLUDE" ]]; then
+    found_components=$(find . -name "$COMPONENT_DEFINITION" -not -path "./tests/*" -not -path "./docs/*" -not -path "${CUSTOM_EXCLUDE}")
+  else
+    found_components=$(find . -name "$COMPONENT_DEFINITION" -not -path "./tests/*" -not -path "./docs/*" )
+  fi
+
+  while read -r component_definition_path; do
+    # TODO what about excludes?
+    # remove go.mod / Gopkg.toml part
+    component_path="${component_definition_path%/*}"
+    # keep only the last diretrory in the tree as a name
+    component="${component_path##*/}"
+
+    set +e
+    scanFolder "${component_path}" "${PROJECTNAME}-${component}"
+    scan_result="$?"
+    set -e
+
+    if [[ "$scan_result" -ne 0 ]]; then
+      log::error "Scan for ${FOLDER} has failed"
+      scan_failed=1
+    fi
+  done <<< "$found_components"
+  popd
+else
+  # scan PROJECT_SRC directory as a single project
+  set +e
+  scanFolder "${PROJECT_SRC}" "${PROJECTNAME}"
+  scan_result="$?"
+  set -e
+
+  if [[ "$scan_result" -ne 0 ]]; then
+    log::error "Scan for ${PROJECT_SRC} has failed"
+    scan_failed=1
+  fi
+fi
+
+if [[ "$scan_failed" -eq 1 ]]; then
+  log::error "One or more of the scans have failed"
+  exit 1
+else
+  log::banner "Scanning Finished"
+fi

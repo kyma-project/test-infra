@@ -9,9 +9,6 @@
 #
 #Please look in each provider script for provider specific requirements
 
-
-
-
 set -o errexit
 set -o pipefail
 
@@ -41,8 +38,8 @@ function prereq() {
     )
     utils::check_required_vars "${requiredVars[@]}"
 
-    # install kymaCLI from the last release
-    kyma::install_cli_last_release
+    log::info "### Install latest unstable Kyma CLI"
+    kyma::install_unstable_cli
 } 
 
 function provision_cluster() {

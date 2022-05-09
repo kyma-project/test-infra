@@ -21,7 +21,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220504-9e1b090f"
             securityContext:
               privileged: true
             command:
@@ -63,7 +63,7 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220504-9e1b090f"
             command:
               - "prow/cluster/deploy.sh"
             env:
@@ -95,7 +95,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220504-9e1b090f"
             securityContext:
               privileged: true
             command:
@@ -129,9 +129,9 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/label_sync:v20220206-e1cc2403ac"
+          - image: "gcr.io/k8s-prow/label_sync:v20220427-2d44ab7fdf"
             command:
-              - "/app/label_sync/app.binary"
+              - "label_sync"
             args:
               - "--config=/etc/config/labels.yaml"
               - "--confirm=true"
@@ -175,9 +175,9 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20220206-e1cc2403ac"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20220427-2d44ab7fdf"
             command:
-              - "/app/prow/cmd/generic-autobumper/app.binary"
+              - "generic-autobumper"
             args:
               - "--config=prow/autobump-config/prow-cluster-autobump-config.yaml"
             volumeMounts:
@@ -209,11 +209,12 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20220206-e1cc2403ac"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20220427-2d44ab7fdf"
             command:
-              - "/app/prow/cmd/generic-autobumper/app.binary"
+              - "generic-autobumper"
             args:
               - "--config=prow/autobump-config/test-infra-autobump-config.yaml"
+              - "--labels-override=skip-review"
             volumeMounts:
               - name: kyma-bot-github-token
                 mountPath: /etc/github

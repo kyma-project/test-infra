@@ -19,6 +19,7 @@ source "$SCRIPT_DIR/lib/gcp.sh"
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
     export JOB_NAME_PATTERN="(pre-compass-components-.*)|(^pre-compass-tests$)"
+    export JOBGUARD_TIMEOUT="30m"
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
@@ -123,19 +124,19 @@ git clone https://github.com/kyma-project/cli.git && cd cli && git checkout $KYM
 make build-linux && cd ./bin && mv ./kyma-linux ./kyma
 chmod +x kyma
 
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" --command="mkdir \$HOME/bin"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "compass-integration-test-${RANDOM_ID}" -c "mkdir \$HOME/bin"
 
 #shellcheck disable=SC2088
 utils::send_to_vm "${ZONE}" "compass-integration-test-${RANDOM_ID}" "kyma" "~/bin/kyma"
 
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" --command="sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "compass-integration-test-${RANDOM_ID}" -c "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
 
 cd "$PREV_WD"
 log::info "Successfully installed Kyma CLI version: $KYMA_CLI_VERSION"
 
 log::info "Triggering the installation"
 
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" --command="yes | ./compass/installation/scripts/prow/deploy-and-test.sh ${DUMP_DB}"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "compass-integration-test-${RANDOM_ID}" -c "yes | ./compass/installation/scripts/prow/deploy-and-test.sh ${DUMP_DB}"
 
 log::info "Copying test artifacts from VM"
 utils::receive_from_vm "${ZONE}" "compass-integration-test-${RANDOM_ID}" "/var/log/prow_artifacts" "${ARTIFACTS}"

@@ -1,9 +1,9 @@
 global:
-  nextRelease: "2.1"
+  nextRelease: "2.3"
   releases:
+    - "2.2"
+    - "2.1"
     - "2.0"
-    - "1.24"
-    - "1.23"
 
 
 # global configSet variables
@@ -19,27 +19,33 @@ globalSets:
   kyma_major_version_2:
     env:
       KYMA_MAJOR_VERSION: 2
+  kyma_major_upgrade:
+    env:
+      KYMA_MAJOR_UPGRADE: "true"
+  kyma_minor_upgrade:
+    env:
+      PREVIOUS_MINOR_VERSION_COUNT: 1
   # Directory sets
   kyma_project_dir:
     env:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_bootstrap:
-    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95"
+    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220427-9543160d"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220214-025bb976"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220504-4d0541e2"
   image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220504-9e1b090f"
   image_buildpack-node:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220113-247913b9"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220428-a1f1d86f"
   image_buildpack-golang:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220428-6e81d2c4"
   image_buildpack-golang-kubebuilder2:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220428-6e81d2c4"
   image_buildpack-golang-toolbox:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20211223-df98b255"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220428-6e81d2c4"
   image_wssagent:
-    image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220201-cb1ea3fa"
+    image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220428-30197c29"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
@@ -106,6 +112,12 @@ globalSets:
   jobConfig_buildpack_incubator:
     labels:
       preset-docker-push-repository-incubator: "true"
+  jobConfig_reconciler_publish_unstable_cli:
+    command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-unstable-cli.sh"
+    annotations:
+      pipeline.installer: reconciler
+      pipeline.test: "fast-integration"
+      pipeline.clusterprovisioning: reconciler
   # generic component jobConfigs
   jobConfig_generic_component:
     labels:

@@ -6,11 +6,21 @@ readonly RECONCILER_TIMEOUT=1200 # in secs
 readonly RECONCILER_DELAY=15 # in secs
 readonly LOCAL_KUBECONFIG="$HOME/.kube/config"
 
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+
+function reconciler::export_nightly_cluster_name(){
+  # shellcheck disable=SC2046
+  # shellcheck disable=SC2005
+  day=$(echo $(date +%a) | tr "[:upper:]" "[:lower:]" | cut -c1-2)
+  export INPUT_CLUSTER_NAME="${INPUT_CLUSTER_NAME}-${day}"
+}
+
 function reconciler::delete_cluster_if_exists(){
   export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
-  for i in {1..5}
+  for i in mo tu we th fr sa su
   do
-    local name="${INPUT_CLUSTER_NAME}${i}"
+    local name="${INPUT_CLUSTER_NAME}-${i}"
     set +e
     existing_shoot=$(kubectl get shoot "${name}" -ojsonpath="{ .metadata.name }")
     if [ -n "${existing_shoot}" ]; then
@@ -30,11 +40,36 @@ function reconciler::delete_cluster_if_exists(){
   done
 }
 
+# reconciler::reprovision_cluster will generate new cluster name
+# and start provisioning again
+function reconciler::reprovision_cluster() {
+    log::info "cluster provisioning failed, trying provision new cluster"
+    log::info "cleaning damaged cluster first"
+
+    gardener::deprovision_cluster \
+      -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+      -c "${INPUT_CLUSTER_NAME}" \
+      -f "${GARDENER_KYMA_PROW_KUBECONFIG}"
+    
+    log::info "building new cluster name"
+
+    utils::generate_commonName -n "${COMMON_NAME_PREFIX}"
+    COMMON_NAME=${utils_generate_commonName_return_commonName:?}
+    export COMMON_NAME
+    INPUT_CLUSTER_NAME="${COMMON_NAME}"
+    export INPUT_CLUSTER_NAME
+    reconciler::provision_cluster
+}
+
 function reconciler::provision_cluster() {
     export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
     export DOMAIN_NAME="${INPUT_CLUSTER_NAME}"
     export DEFINITION_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/reconciler/shoot-template.yaml"
     log::info "Creating cluster: ${INPUT_CLUSTER_NAME}"
+
+    # catch cluster provisioning errors and try provision new one
+    trap reconciler::reprovision_cluster ERR
+
     # create the cluster
     envsubst < "${DEFINITION_PATH}" | kubectl create -f -
 
@@ -42,6 +77,8 @@ function reconciler::provision_cluster() {
     kubectl wait --for condition="ControlPlaneHealthy" --timeout=20m shoot "${INPUT_CLUSTER_NAME}"
     log::info "Cluster ${INPUT_CLUSTER_NAME} was created successfully"
 
+    # disable trap for cluster provisioning errors to not call it for later errors
+    trap - ERR
 }
 
 function reconciler::deploy() {
@@ -149,30 +186,23 @@ function reconciler::initialize_test_pod() {
     sed -i "s/example.com/$domain/" ./e2e-test/template-kyma-main.json
     # shellcheck disable=SC2016
     jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template-kyma-main.json > body.json
-  else
+  elif [[ "$KYMA_UPGRADE_SOURCE" =~ ^2\.0\.[0-9]+$ ]] ; then
     sed -i "s/example.com/$domain/" ./e2e-test/template-kyma-2-0-x.json
     # shellcheck disable=SC2016
     jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template-kyma-2-0-x.json > body.json
+  elif [[ "$KYMA_UPGRADE_SOURCE" =~ ^2\.[1-9]\.[0-9]+$ ]] ; then
+    sed -i "s/example.com/$domain/" ./e2e-test/template-kyma-2-1-x.json
+    # shellcheck disable=SC2016
+    jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template-kyma-2-1-x.json > body.json
+  else
+    log::error "Unsupported Kyma Version: $KYMA_UPGRADE_SOURCE"
+    exit 1
   fi
   # Copy the reconcile request payload and kyma reconciliation scripts to the test-pod
   kubectl cp body.json -c test-pod reconciler/test-pod:/tmp
   kubectl cp ./e2e-test/reconcile-kyma.sh -c test-pod reconciler/test-pod:/tmp
   kubectl cp ./e2e-test/get-reconcile-status.sh -c test-pod reconciler/test-pod:/tmp
   kubectl cp ./e2e-test/request-reconcile.sh -c test-pod reconciler/test-pod:/tmp
-}
-
-# Triggers reconciliation of Kyma and waits until reconciliation is in ready state
-function reconciler::reconcile_kyma() {
-  set +e
-  # Trigger Kyma reconciliation using reconciler
-  log::banner "Reconcile Kyma in the same cluster until it is ready"
-  kubectl exec -it -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/reconcile-kyma.sh"
-  if [[ $? -ne 0 ]]; then
-      log::error "Failed to reconcile Kyma"
-      kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler -c mothership-reconciler --tail -1
-      exit 1
-  fi
-  set -e
 }
 
 # Only triggers reconciliation of Kyma

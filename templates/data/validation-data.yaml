@@ -26,8 +26,8 @@ templates:
               - jobConfig:
                   name: "pre-test-infra-validate-configs"
                   run_if_changed: "^prow/((plugins|config).yaml|jobs/)"
-                  command: "/app/prow/cmd/checkconfig/app.binary"
-                  image: gcr.io/k8s-prow/checkconfig:v20220206-e1cc2403ac
+                  command: checkconfig
+                  image: gcr.io/k8s-prow/checkconfig:v20220427-2d44ab7fdf
                   args:
                     - "--plugin-config=prow/plugins.yaml"
                     - "--config-path=prow/config.yaml"

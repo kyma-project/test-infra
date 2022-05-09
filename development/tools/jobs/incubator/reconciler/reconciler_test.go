@@ -70,7 +70,7 @@ func TestReconcilerMainIntegrationJobsPresubmit(t *testing.T) {
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.False(t, actualPresubmit.Optional)
 	assert.False(t, actualPresubmit.AlwaysRun)
-	assert.Equal(t, actualPresubmit.RunIfChanged, "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))")
+	assert.Equal(t, actualPresubmit.RunIfChanged, "^(go.mod$|go.sum$)|((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))")
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "main")
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"}, actualPresubmit.Spec.Containers[0].Command)
@@ -95,48 +95,6 @@ func TestReconcilerDevIntegrationJobsPresubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "main")
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"}, actualPresubmit.Spec.Containers[0].Command)
-}
-
-func TestReconcilerJobsPeriodicE2EUpgrade(t *testing.T) {
-	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/reconciler/reconciler.yaml")
-	// THEN
-	require.NoError(t, err)
-
-	kymaPeriodics := jobConfig.AllPeriodics()
-	expName := "periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade"
-	actualPeriodic := tester.FindPeriodicJobByName(kymaPeriodics, expName)
-	assert.Equal(t, expName, actualPeriodic.Name)
-	assert.Equal(t, "0 1-22/2 * * 1-5", actualPeriodic.Cron)
-	assert.Equal(t, 0, actualPeriodic.JobBase.MaxConcurrency)
-	tester.AssertThatHasExtraRefTestInfra(t, actualPeriodic.JobBase.UtilityConfig, "main")
-	tester.AssertThatHasExtraRef(t, actualPeriodic.JobBase.UtilityConfig, []prowapi.Refs{
-		{
-			Org:       "kyma-project",
-			Repo:      "kyma",
-			BaseRef:   "main",
-			PathAlias: "github.com/kyma-project/kyma",
-		},
-	})
-	tester.AssertThatHasExtraRef(t, actualPeriodic.JobBase.UtilityConfig, []prowapi.Refs{
-		{
-			Org:       "kyma-project",
-			Repo:      "kyma",
-			BaseRef:   "release-1.24",
-			PathAlias: "github.com/kyma-project/kyma-1.24",
-		},
-	})
-	tester.AssertThatHasExtraRef(t, actualPeriodic.JobBase.UtilityConfig, []prowapi.Refs{
-		{
-			Org:       "kyma-project",
-			Repo:      "control-plane",
-			BaseRef:   "main",
-			PathAlias: "github.com/kyma-project/control-plane",
-		},
-	})
-	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPeriodic.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade.sh"}, actualPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/reconciler"}, actualPeriodic.Spec.Containers[0].Args)
 }
 
 func TestReconcilerJobsNightlyMain(t *testing.T) {

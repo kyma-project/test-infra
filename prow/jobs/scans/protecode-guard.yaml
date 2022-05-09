@@ -29,7 +29,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220504-9e1b090f"
             automountServiceAccountToken: true
             securityContext:
               privileged: false
@@ -82,7 +82,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220504-9e1b090f"
             automountServiceAccountToken: true
             securityContext:
               privileged: false
@@ -135,7 +135,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220504-9e1b090f"
             automountServiceAccountToken: true
             securityContext:
               privileged: false
@@ -189,7 +189,58 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220504-9e1b090f"
+            automountServiceAccountToken: true
+            securityContext:
+              privileged: false
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/protecode-guard.sh"
+            env:
+              - name: JOBGUARD_TIMEOUT
+                value: "25m"
+              - name: JOB_NAME_PATTERN
+                value: "pre-main-kyma-incubator-reconciler"
+            resources:
+              requests:
+                memory: 200Mi
+                cpu: 80m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pre-dev-reconciler-protecode-guard
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-dev-reconciler-protecode-guard"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-gc-compute-envs: "true"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-gke-kyma-integration: "true"
+      always_run: true
+      optional: true
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^develop$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220504-9e1b090f"
             automountServiceAccountToken: true
             securityContext:
               privileged: false
@@ -243,7 +294,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220105-baf0471a"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220504-9e1b090f"
             automountServiceAccountToken: true
             securityContext:
               privileged: false

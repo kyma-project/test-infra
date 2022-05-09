@@ -4,7 +4,26 @@ import (
 	"cloud.google.com/go/logging"
 )
 
-// Payload represent payload which will be send to gcp stackdriver.
+// Config holds configuration for GCP logging client.
+// It can be passed to the client constructor with client constructor configuration option.
+type Config struct {
+	AppName             string `envconfig:"APP_NAME"` // PubSub Connector application name as set in Compass.
+	LogName             string `envconfig:"LOG_NAME"` // Google cloud logging log name.
+	Component           string `envconfig:"COMPONENT"`
+	ProjectID           string `envconfig:"LOGGING_GCP_PROJECT_ID"`
+	credentialsFilePath string `envconfig:"LOGGING_SA_CREDENTIALS_FILE_PATH"`
+	commonLabels        map[string]string
+	trace               string
+	context             string
+}
+
+// ClientOption is a client constructor configuration option.
+type ClientOption func(*Config) error
+
+// LoggerOption is a logger constructor configuration option.
+type LoggerOption func(*Config) error
+
+// Payload represent payload send to gcp stackdriver.
 type Payload struct {
 	// This is the log message.
 	Message string `json:"message"`
@@ -17,7 +36,6 @@ type Payload struct {
 // Client wraps google gcp logging client and provides additional methods.
 type Client struct {
 	*logging.Client
-	LogName string
 }
 
 // Logger wraps google gcp logging Logger and provides additional methods and fields.

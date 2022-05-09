@@ -53,6 +53,10 @@ requiredVars=(
     EVENTMESH_SECRET_FILE
 )
 
+# export environment variables needed by the Eventing fast-integration tests
+export BACKEND="${BACKEND}"
+export STORAGE="${STORAGE}"
+
 utils::check_required_vars "${requiredVars[@]}"
 
 if [[ $GARDENER_PROVIDER == "azure" ]]; then
@@ -85,29 +89,12 @@ export COMMON_NAME
 export CLUSTER_NAME="${COMMON_NAME}"
 
 # set KYMA_SOURCE used by gardener::install_kyma
-# at the time of writing this comment, kyma-integration-gardener never sets BUILD_TYPE to "release"
-if [[ -n ${PULL_NUMBER} ]]; then
-    # In case of PR, operate on PR number
-    KYMA_SOURCE="PR-${PULL_NUMBER}"
-    export KYMA_SOURCE
-    # TODO maybe can be replaced with PULL_BASE_REF?
-elif [[ "${BUILD_TYPE}" == "release" ]]; then
-    readonly RELEASE_VERSION=$(cat "VERSION")
-    log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
-    KYMA_SOURCE="${RELEASE_VERSION}"
-    export KYMA_SOURCE
-else
-    # Otherwise (master), operate on triggering commit id
-    if [[ -n ${PULL_BASE_SHA} ]]; then
-        readonly COMMIT_ID="${PULL_BASE_SHA::8}"
-        KYMA_SOURCE="${COMMIT_ID}"
-        export KYMA_SOURCE
-    else
-        # periodic job, so default to main
-        KYMA_SOURCE="main"
-        export KYMA_SOURCE
-    fi
-fi
+utils::generate_vars_for_build \
+    -b "$BUILD_TYPE" \
+    -p "$PULL_NUMBER" \
+    -s "$PULL_BASE_SHA" \
+    -n "$JOB_NAME"
+export KYMA_SOURCE=${utils_generate_vars_for_build_return_kymaSource:?}
 
 ## ---------------------------------------------------------------------------------------
 ## Prow job execution steps
@@ -124,13 +111,32 @@ kyma::install_cli
 # currently only Azure generates overrides, but this may change in the future
 gardener::generate_overrides
 
+export CLEANUP_CLUSTER="true"
 gardener::provision_cluster
+
+JETSTREAM_ENABLED="false"
+if [[ ${BACKEND} == "nats_jetstream" ]]; then
+  JETSTREAM_ENABLED="true"
+fi
+
+JETSTREAM_STORAGE=""
+if [[ ${STORAGE} == "file" || ${STORAGE} == "memory" ]]; then
+  JETSTREAM_STORAGE="${STORAGE}"
+fi
 
 # uses previously set KYMA_SOURCE
 if [[ "${KYMA_MAJOR_VERSION}" == "2" ]]; then
-  kyma::deploy_kyma \
-    -p "$EXECUTION_PROFILE" \
-    -d "$KYMA_SOURCES_DIR"
+  log::info "Deploying Kyma"
+  if [[ ${JETSTREAM_ENABLED} == "true" && ${JETSTREAM_STORAGE} != "" ]]; then
+    log::info "JetStream:${JETSTREAM_ENABLED} storage:${JETSTREAM_STORAGE}"
+    gardener::deploy_kyma -p "$EXECUTION_PROFILE" --source "${KYMA_SOURCE}" \
+      --value global.jetstream.enabled=true \
+      --value global.jetstream.storage=file \
+      --value eventing.controller.jetstream.retentionPolicy=limits \
+      --value eventing.controller.jetstream.consumerDeliverPolicy=all
+  else
+    gardener::deploy_kyma -p "$EXECUTION_PROFILE" --source "${KYMA_SOURCE}"
+  fi
 else
   gardener::install_kyma
 fi

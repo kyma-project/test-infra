@@ -36,7 +36,7 @@ gardener::cleanup() {
       utils::oom_get_output
     fi
 
-    if [ -n "${CLEANUP_CLUSTER}" ]; then
+    if  [[ "${CLEANUP_CLUSTER}" == "true" ]] ; then
         log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
         gardener::deprovision_cluster \
             -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
@@ -137,15 +137,7 @@ gardener::install_kyma() {
 }
 
 gardener::deploy_kyma() {
-    log::info "Deploying Kyma"
-
-    (
-    set -x
-    kyma deploy \
-        --ci \
-        --source "${KYMA_SOURCE}" \
-        --timeout 90m
-    )
+    kyma deploy --ci --timeout 90m "$@"
 }
 
 gardener::hibernate_kyma() {

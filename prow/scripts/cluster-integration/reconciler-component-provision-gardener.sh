@@ -87,6 +87,18 @@ export CLUSTER_NAME="${COMMON_NAME}"
 # checks required vars and initializes gcloud/docker if necessary
 gardener::init
 
+# Determine Kyma version from the latest release
+if [[ ! $KYMA_VERSION ]]; then
+    # Fetch latest Kyma2 release
+    kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
+    export KYMA_VERSION="${kyma_get_last_release_version_return_version:?}"
+    log::info "Reading latest Kyma release version, got: ${KYMA_VERSION}"
+fi
+# Determine Istio version based on Kyma version
+istio::get_version
+export ISTIO_VERSION="${istio_version:?}"
+log::info "Reading Istio version from ${KYMA_VERSION}, got: ${ISTIO_VERSION}"
+
 kyma::install_cli
 # if MACHINE_TYPE is not set then use default one
 gardener::set_machine_type
@@ -94,6 +106,7 @@ gardener::set_machine_type
 # currently only Azure generates overrides, but this may change in the future
 gardener::generate_overrides
 
+export CLEANUP_CLUSTER="true"
 gardener::provision_cluster
 
 # shellcheck source=prow/scripts/lib/kyma.sh

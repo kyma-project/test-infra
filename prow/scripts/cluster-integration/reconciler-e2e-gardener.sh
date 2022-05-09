@@ -82,6 +82,17 @@ readonly COMMON_NAME_PREFIX="grd"
 utils::generate_commonName -n "${COMMON_NAME_PREFIX}"
 
 export INPUT_CLUSTER_NAME="${utils_generate_commonName_return_commonName:?}"
+# This is needed for the gardener::cleanup function
+export CLUSTER_NAME="${INPUT_CLUSTER_NAME}"
+
+# set Kyma version to reconcile
+if [[ $KYMA_TEST_SOURCE == "latest-release" ]]; then
+  # Fetch latest Kyma2 release
+  kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
+  export KYMA_UPGRADE_SOURCE="${kyma_get_last_release_version_return_version:?}"
+  log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_UPGRADE_SOURCE}"
+fi
+
 ## ---------------------------------------------------------------------------------------
 ## Prow job execution steps
 ## ---------------------------------------------------------------------------------------
@@ -89,6 +100,7 @@ export INPUT_CLUSTER_NAME="${utils_generate_commonName_return_commonName:?}"
 log::banner "Provisioning Gardener cluster"
 
 # Provision garderner cluster
+export CLEANUP_CLUSTER="true"
 reconciler::provision_cluster
 
 reconciler::export_shoot_cluster_kubeconfig
@@ -108,8 +120,11 @@ reconciler::wait_until_test_pod_is_ready
 # Set up test pod environment
 reconciler::initialize_test_pod
 
-# Run a test pod from where the reconciliation will be triggered
-reconciler::reconcile_kyma
+# Trigger the reconciliation through test pod
+reconciler::trigger_kyma_reconcile
+
+# Wait until reconciliation is complete
+reconciler::wait_until_kyma_reconciled
 
 ### Once Kyma is installed run the fast integration test
 log::banner "Executing test"

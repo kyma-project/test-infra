@@ -15,6 +15,7 @@ import (
 	"text/template"
 
 	"github.com/Masterminds/sprig"
+	"github.com/imdario/mergo"
 	"gopkg.in/yaml.v2"
 	"k8s.io/apimachinery/pkg/util/sets"
 
@@ -29,6 +30,7 @@ const (
 var (
 	configFilePath = flag.String("config", "", "Path of the config file")
 	showOutputDir  = flag.Bool("show-output-dir", false, "Print generated output file paths to stdout")
+	skipDataDir    = flag.Bool("skip-data-dir", false, "Do not process data directory.")
 
 	additionalFuncs = map[string]interface{}{
 		"matchingReleases": rt.MatchingReleases,
@@ -52,6 +54,8 @@ func init() {
 }
 
 func main() {
+	mergoConfig := mergo.Config{}
+	flag.BoolVar(&mergoConfig.AppendSlice, "appendSlice", false, "Rendertemplate will append slices instead overwriting.")
 	flag.Parse()
 
 	if *configFilePath == "" {
@@ -70,37 +74,40 @@ func main() {
 		log.Fatalf("Cannot parse config yaml: %s\n", err)
 	}
 
-	dataFilesDir := filepath.Join(filepath.Dir(*configFilePath), "data")
-	// read all template data from data files
-	var dataFiles []string
-	err = filepath.Walk(dataFilesDir, getFileWalkFunc(dataFilesDir, &dataFiles))
-	if err != nil {
-		log.Fatalf("Cannot read data file directory: %s", err)
-	}
-
-	var dataFilesTemplates []*rt.TemplateConfig
-	for _, dataFile := range dataFiles {
-		var dataFileConfig rt.Config
-		var cfg bytes.Buffer
-		// load datafile as template
-		t, err := loadTemplate(dataFilesDir, dataFile)
+	if !*skipDataDir {
+		dataFilesDir := filepath.Join(filepath.Dir(*configFilePath), "data")
+		// read all template data from data files
+		var dataFiles []string
+		err = filepath.Walk(dataFilesDir, getFileWalkFunc(dataFilesDir, &dataFiles))
 		if err != nil {
-			log.Fatalf("Could not load data file %s: %v", dataFile, err)
+			log.Fatalf("Cannot read data file directory: %s", err)
 		}
-		// execute rendering the datafile from template and store it in-memory
-		// at this point the config has all the global values from config.yaml file
-		if err := t.Execute(&cfg, config); err != nil {
-			log.Fatalf("Cannot render data template: %v", err)
+
+		var dataFilesTemplates []*rt.TemplateConfig
+		for _, dataFile := range dataFiles {
+			var dataFileConfig rt.Config
+			var cfg bytes.Buffer
+			// load datafile as template
+			t, err := loadTemplate(dataFilesDir, dataFile)
+			if err != nil {
+				log.Fatalf("Could not load data file %s: %v", dataFile, err)
+			}
+			// execute rendering the datafile from template and store it in-memory
+			// at this point the config has all the global values from config.yaml file
+			if err := t.Execute(&cfg, config); err != nil {
+				log.Fatalf("Cannot render data template: %v", err)
+			}
+			if err := yaml.Unmarshal(cfg.Bytes(), &dataFileConfig); err != nil {
+				log.Fatalf("Cannot parse data file %s%s: %s\n", dataFilesDir, dataFile, err)
+			}
+			dataFilesTemplates = append(dataFilesTemplates, dataFileConfig.Templates...)
 		}
-		if err := yaml.Unmarshal(cfg.Bytes(), &dataFileConfig); err != nil {
-			log.Fatalf("Cannot parse data file yaml: %s\n", err)
-		}
-		dataFilesTemplates = append(dataFilesTemplates, dataFileConfig.Templates...)
+
+		// append all generated configs from datafiles to the list of templates to generate jobs from
+		config.Templates = append(config.Templates, dataFilesTemplates...)
 	}
 
-	//append all generated configs from datafiles to the list of templates to generate jobs from
-	config.Templates = append(config.Templates, dataFilesTemplates...)
-	config.Merge()
+	config.Merge(mergoConfig)
 
 	// generate final .yaml files
 	for _, templateConfig := range config.Templates {
@@ -114,7 +121,7 @@ func main() {
 // getFileWalkFunc returns walk function that will recursively find YAML files and will return list of these files
 func getFileWalkFunc(dataFilesDir string, dataFiles *[]string) filepath.WalkFunc {
 	return func(path string, info fs.FileInfo, err error) error {
-		//pass the error further, this shouldn't ever happen
+		// pass the error further, this shouldn't ever happen
 		if err != nil {
 			return err
 		}

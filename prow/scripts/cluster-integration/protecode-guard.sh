@@ -67,7 +67,7 @@ do
         fi
     fi
 
-    sleep 15
+    sleep 30
 done
 
 log::error "Timeout reached - job failed"

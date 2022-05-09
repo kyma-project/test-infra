@@ -1,4 +1,4 @@
-FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20211020-638b6f95
+FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20220427-9543160d
 
 # Commit details
 ARG commit
@@ -6,7 +6,7 @@ ENV IMAGE_COMMIT=$commit
 LABEL io.kyma-project.test-infra.commit=$commit
 
 ENV UA_VERSION v22.1.1.1
-ENV GO_VERSION 1.17.5
+ENV GO_VERSION 1.18
 ENV DEP_RELEASE_TAG v0.5.4
 ENV JAVA_VERSION 8u212-b04
 ENV JAVA_BASE_URL https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u212-b04/OpenJDK8U-jdk_

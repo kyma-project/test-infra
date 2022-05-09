@@ -8,40 +8,88 @@ import (
 	"time"
 
 	"cloud.google.com/go/logging"
-	log "github.com/sirupsen/logrus"
 	"google.golang.org/api/option"
 )
 
 const (
 	// ErrorReportingType holds log message payload value for Type expected by google cloud logging to report message as error in Error Reporting.
 	ErrorReportingType = "type.googleapis.com/google.devtools.clouderrorreporting.v1beta1.ReportedErrorEvent"
-	// Default project to store logs.
-	LogsProjectID = "sap-kyma-prow"
-	// Default google cloud logging log file name for log messages send by prowjobs.
+	// LogsProjectID is a default project to store logs.
+	LogsProjectID       = "sap-kyma-prow"
+	CredentialsFilePath = "/etc/gcpLoggingServiceAccountKey/key"
+	// ProwjobsLogName is a default Google Cloud Logging log filename for messages sent by prowjobs.
 	ProwjobsLogName = "prowjobs"
+	// RepoOwnersServiceLogName is a default Google Cloud Logging log filename for messages sent by repoowners service.
+	RepoOwnersServiceLogName = "repoowners"
 )
 
-// newClient create kyma implementation of gcp logging client.
-// It requires credentials file path to authenticate in GCP.
-func newClient(ctx context.Context, credentialsFilePath, logName string) (*Client, error) {
-	client := &Client{
-		LogName: logName,
-	}
-	c, err := logging.NewClient(ctx, LogsProjectID, option.WithCredentialsFile(credentialsFilePath))
+// newClient creates google logging client.
+func newClient(ctx context.Context, credentialsFilePath, projectID string) (*logging.Client, error) {
+	c, err := logging.NewClient(ctx, projectID, option.WithCredentialsFile(credentialsFilePath))
 	if err != nil {
 		return nil, fmt.Errorf("got error while creating google cloud logging client, error: %w", err)
 	}
+	return c, nil
+}
+
+// NewClient is a constructor function creating general purpose kyma wrapper of gcp logging client.
+// It requires credentials file path to authenticate in GCP.
+// A constructor can be configured by providing ClientOptions.
+// Constructor provides default logs Google project ID and path to credentials file.
+func NewClient(ctx context.Context, options ...ClientOption) (*Client, error) {
+	conf := &Config{
+		AppName:             "",
+		LogName:             "",
+		Component:           "",
+		ProjectID:           LogsProjectID,
+		credentialsFilePath: CredentialsFilePath,
+	}
+
+	// Go through provided client options to configure constructor.
+	for _, opt := range options {
+		err := opt(conf)
+		if err != nil {
+			return nil, fmt.Errorf("failed applying functional option: %w", err)
+		}
+	}
+
+	// Get Google client instance.
+	c, err := newClient(ctx, conf.ProjectID, conf.credentialsFilePath)
+	if err != nil {
+		return nil, fmt.Errorf("got error while creating google cloud logging client, error: %w", err)
+	}
+	client := &Client{}
 	client.Client = c
 	return client, nil
 }
 
-// NewProwjobClient creates kyma implementation google cloud logging client with defaults for using in prowjobs.
+// WithProjectID is a client constructor configuration option passing GCP project ID to send log messages to.
+func WithProjectID(projectID string) ClientOption {
+	return func(conf *Config) error {
+		conf.ProjectID = projectID
+		return nil
+	}
+}
+
+// WithCredentialsFilePath is a client constructor configuration option passing path to GCP credentials file.
+func WithCredentialsFilePath(credentialsFilePath string) ClientOption {
+	return func(conf *Config) error {
+		conf.credentialsFilePath = credentialsFilePath
+		return nil
+	}
+}
+
+// NewProwjobClient creates kyma wrapper of google cloud logging client with defaults for using in prowjobs.
+// TODO: preset-prowjob-gcp-logging should be changed to preset-gcp-logging
 // Prow preset with service account credentials for logging to gcp: preset-prowjob-gcp-logging
+// It provides default Google logging log name for logging from prowjobs.
 func NewProwjobClient(ctx context.Context, credentialsFilePath string) (*Client, error) {
-	client, err := newClient(ctx, credentialsFilePath, ProwjobsLogName)
+	c, err := newClient(ctx, credentialsFilePath, ProwjobsLogName)
 	if err != nil {
 		return nil, fmt.Errorf("got error while creating prowjob gcp logging client, error: %w", err)
 	}
+	client := &Client{}
+	client.Client = c
 	return client, nil
 }
 
@@ -66,11 +114,84 @@ func GetProwjobLabels() map[string]string {
 	return labels
 }
 
+// NewLogger is a logger constructor function. Logger is created from Google logging client.
+// It creates general purpose Google logging logger.
+// It provides default Google logging project ID and path to credentials file.
+func (c *Client) NewLogger(options ...LoggerOption) (*Logger, error) {
+	conf := &Config{
+		AppName:             "",
+		LogName:             "",
+		Component:           "",
+		ProjectID:           LogsProjectID,
+		credentialsFilePath: CredentialsFilePath,
+		commonLabels:        nil,
+		trace:               "",
+		context:             "",
+	}
+
+	// Go through provided client options to configure constructor.
+	for _, opt := range options {
+		err := opt(conf)
+		if err != nil {
+			return nil, fmt.Errorf("failed applying functional option: %w", err)
+		}
+	}
+
+	if conf.LogName == "" {
+		return nil, fmt.Errorf("logname was not provided, can not create logger")
+	}
+
+	logger := &Logger{
+		Logger:  nil,
+		trace:   conf.trace,
+		context: conf.context,
+	}
+
+	// Create logger from Google logging client.
+	gcpLogger := c.Logger(conf.LogName, logging.CommonLabels(conf.commonLabels))
+	logger.Logger = gcpLogger
+	return logger, nil
+}
+
+// WithTrace is a logger constructor configuration option passing logger trace value to use in log entries.
+func WithTrace(trace string) LoggerOption {
+	return func(config *Config) error {
+		config.trace = trace
+		return nil
+	}
+}
+
+// WithLoggerContext is a logger constructor configuration option passing logger context description value ot use in log entries.
+func WithLoggerContext(context string) LoggerOption {
+	return func(config *Config) error {
+		config.context = context
+		return nil
+	}
+}
+
+// WithGeneratedTrace is a logger constructor configuration option generating logger trace value to use in log entries.
+func WithGeneratedTrace() LoggerOption {
+	return func(config *Config) error {
+		randomInt := rand.Int()
+		config.trace = fmt.Sprintf("trace/%d", randomInt)
+		return nil
+	}
+}
+
+// LoggerFromConfig is a logger constructor configuration option passing configuration struct.
+// Data from struct will be used to construct client.
+func LoggerFromConfig(conf Config) LoggerOption {
+	return func(config *Config) error {
+		config = &conf
+		return nil
+	}
+}
+
 // NewProwjobLogger creates logger with defaults for logging from prowjobs.
 func (c *Client) NewProwjobLogger() *Logger {
 	// Get default labels for prowjobs.
 	prowjobLabels := GetProwjobLabels()
-	l := c.Logger(c.LogName, logging.CommonLabels(prowjobLabels))
+	l := c.Logger(ProwjobsLogName, logging.CommonLabels(prowjobLabels))
 	logger := &Logger{Logger: l}
 	return logger
 }
@@ -96,44 +217,136 @@ func (l Logger) WithContext(entryContext string) Logger {
 	return l
 }
 
-// LogError log message of Error severity with defaults. Error message is send to standard logger as well
-// It will set log message payload Type to value required by gcp stackdriver to report messages as error in Error Reporting.
-func (l *Logger) LogError(message string) {
-	entry := logging.Entry{
-		Timestamp: time.Now(),
-		Severity:  logging.Error,
+// getMessage format message text with Sprint, Sprintf, or neither.
+func getMessage(template string, fmtArgs []interface{}) string {
+	if len(fmtArgs) == 0 {
+		return template
 	}
-	payload := Payload{
-		Message: message,
-		Type:    ErrorReportingType,
+
+	if template != "" {
+		return fmt.Sprintf(template, fmtArgs...)
 	}
-	if l.context != "" {
-		payload.Context = l.context
+
+	if len(fmtArgs) == 1 {
+		if str, ok := fmtArgs[0].(string); ok {
+			return str
+		}
 	}
-	entry.Payload = payload
-	if l.trace != "" {
-		entry.Trace = l.trace
-	}
-	l.Log(entry)
-	log.Error(message)
+	return fmt.Sprint(fmtArgs...)
 }
 
-// LogInfo log message of Info severity wit defaults. Info message is send to standard logger as well.
-func (l *Logger) LogInfo(message string) {
-	entry := logging.Entry{
+// getEntry creates a Google logging entry.
+func getEntry(severity logging.Severity, context, trace, message string, labels map[string]string) logging.Entry {
+	var payloadType string
+	if severity == logging.Error || severity == logging.Critical || severity == logging.Emergency {
+		payloadType = ErrorReportingType
+	}
+	return logging.Entry{
 		Timestamp: time.Now(),
-		Severity:  logging.Info,
+		Severity:  severity,
+		Labels:    labels,
+		Trace:     trace,
+		Payload: Payload{
+			Type:    payloadType,
+			Message: message,
+			Context: context,
+		}}
+}
+
+// getLabels converts context an array of strings in to map.
+// It binds two subsequent strings in to key value pairs.
+// It will return error if odd number of elements is passed in context.
+func getLabels(contextLabels []string) (map[string]string, error) {
+	labels := make(map[string]string)
+	// Go through all
+	for i := 0; i < len(contextLabels); {
+		// Make sure this element isn't a dangling key. This will happen if odd number of strings is passed in contextLabels.
+		if i == len(contextLabels)-1 {
+			err := fmt.Errorf("an odd number of strings was passed as contextLabels, can't make key, val pairs for all elements")
+			return labels, err
+		}
+		key, val := contextLabels[i], contextLabels[i+1]
+		labels[key] = val
 	}
-	payload := Payload{
-		Message: message,
+	return labels, nil
+}
+
+// log create and send Google logging entry.
+// It collects and formats all required data for Google logging entry.
+func (l *Logger) log(severity logging.Severity, template string, args []interface{}, context []string) {
+	var labels map[string]string
+	message := getMessage(template, args)
+	if context != nil {
+		var err error
+		labels, err = getLabels(context)
+		if err != nil {
+			l.Error(err.Error())
+		}
 	}
-	if l.context != "" {
-		payload.Context = l.context
-	}
-	entry.Payload = payload
-	if l.trace != "" {
-		entry.Trace = l.trace
-	}
+	entry := getEntry(severity, l.context, l.trace, message, labels)
 	l.Log(entry)
-	log.Info(message)
+}
+
+// Error log message of Error severity.
+// It will set log message payload Type to value required by gcp stackdriver to report messages as error in Error Reporting.
+func (l *Logger) Error(args ...interface{}) {
+	l.log(logging.Error, "", args, nil)
+}
+
+// Errorf log message of Error severity. It formats message with sprintf.
+// It will set log message payload Type to value required by gcp stackdriver to report messages as error in Error Reporting.
+func (l *Logger) Errorf(template string, args ...interface{}) {
+	l.log(logging.Error, template, args, nil)
+}
+
+// Errorw log message of Error severity. keysAndValues is added to the log entry as key, value labels.
+// It will set log message payload Type to value required by gcp stackdriver to report messages as error in Error Reporting.
+func (l *Logger) Errorw(message string, keysAndValues ...string) {
+	l.log(logging.Error, message, nil, keysAndValues)
+}
+
+// LogError log message of Error severity.
+// It will set log message payload Type to value required by gcp stackdriver to report messages as error in Error Reporting.
+func (l *Logger) LogError(message string) {
+	l.log(logging.Error, message, nil, nil)
+}
+
+// Warn log message of Info severity.
+func (l *Logger) Warn(args ...interface{}) {
+	l.log(logging.Warning, "", args, nil)
+}
+
+// Info log message of Info severity.
+func (l *Logger) Info(args ...interface{}) {
+	l.log(logging.Info, "", args, nil)
+}
+
+// Infof log message of Info severity. It formats message with sprintf.
+func (l *Logger) Infof(template string, args ...interface{}) {
+	l.log(logging.Info, template, args, nil)
+}
+
+// Infow log message of Info severity. keysAndValues is added to the log entry as key, value labels.
+func (l *Logger) Infow(message string, keysAndValues ...string) {
+	l.log(logging.Info, message, nil, keysAndValues)
+}
+
+// LogInfo log message of Info severity.
+func (l *Logger) LogInfo(message string) {
+	l.log(logging.Info, message, nil, nil)
+}
+
+// Debug log message of Debug severity.
+func (l *Logger) Debug(args ...interface{}) {
+	l.log(logging.Debug, "", args, nil)
+}
+
+// Debugf log message of Debug severity. It formats message with sprintf.
+func (l *Logger) Debugf(template string, args ...interface{}) {
+	l.log(logging.Debug, template, args, nil)
+}
+
+// Debugw log message of Debug severity. keysAndValues is added to the log entry as key, value labels.
+func (l *Logger) Debugw(message string, keysAndValues ...string) {
+	l.log(logging.Debug, message, nil, keysAndValues)
 }

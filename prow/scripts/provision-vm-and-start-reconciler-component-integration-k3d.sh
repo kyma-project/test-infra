@@ -7,13 +7,18 @@ set -o errexit
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
-
+readonly KYMA_PROJECT_DIR="$(cd "${SCRIPT_DIR}/../../../" && pwd)"
+export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
+# shellcheck source=prow/scripts/cluster-integration/helpers/integration-tests.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/integration-tests.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
   log::info "Execute Job Guard"
@@ -107,10 +112,24 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
 trap cleanup exit INT
 
+# Determine Kyma version from the latest release
+if [[ ! $KYMA_VERSION ]]; then
+    # Fetch latest Kyma2 release
+    kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
+    export KYMA_VERSION="${kyma_get_last_release_version_return_version:?}"
+    log::info "Reading latest Kyma release version, got: ${KYMA_VERSION}"
+fi
+# Determine Istio version based on Kyma version
+istio::get_version
+export ISTIO_VERSION="${istio_version:?}"
+log::info "Reading Istio version from ${KYMA_VERSION}, got: ${ISTIO_VERSION}"
+
 log::info "Preparing environment variables for the instance"
 envVars=(
   TEST_NAME
   EXECUTION_PROFILE
+  KYMA_VERSION
+  ISTIO_VERSION
 )
 utils::save_env_file "${envVars[@]}"
 #shellcheck disable=SC2088
@@ -123,6 +142,6 @@ utils::compress_send_to_vm "${ZONE}" "reconciler-component-integration-test-${RA
 utils::compress_send_to_vm "${ZONE}" "reconciler-component-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/test-infra" "~/test-infra"
 
 log::info "Triggering the installation"
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "reconciler-component-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/reconciler-component-integration.sh"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "reconciler-component-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/reconciler-component-integration.sh"
 
 log::success "all done"

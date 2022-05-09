@@ -62,7 +62,7 @@ The configuration options are as follows:
 ## Development
 Use the following helpers for the local development:
 - `./local_minikube_build.sh` which builds the Stability Checker Docker image on a  Minikube registry.
-- `./local/provision_volume.sh` which provisions a PersistentVolumeClaim (PVC) with testing scripts.
+- `./local/provision_volume.sh` which provisions a Persistent Volume Claim (PVC) with testing scripts.
 - `./local/charts/dummy` the chart which contains simple and fast tests. To install it, execute the following command:
 ```
     helm install ./dummy --name dummy --namespace=kyma-system

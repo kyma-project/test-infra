@@ -6,7 +6,7 @@ This folder contains the Buildpack Golang image that is based on the Bootstrap i
 
 The image consists of:
 
-- golang 1.17.5
+- golang 1.18
 - dep 0.5.4
 
 ## Installation

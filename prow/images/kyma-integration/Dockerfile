@@ -48,7 +48,7 @@ RUN . /etc/os-release && \
     add-apt-repository \
     "deb [arch=amd64] https://download.docker.com/linux/$ID $VERSION_CODENAME stable"
 
-ENV DOCKER_VERSION=5:20.10.8*
+ENV DOCKER_VERSION=5:20.10.14*
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -73,7 +73,7 @@ RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
 
 # Versions
 
-ENV GO_VERSION 1.17.5
+ENV GO_VERSION 1.18
 ENV DEP_RELEASE_TAG v0.5.4
 
 # Install Go
@@ -124,7 +124,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 && \
     rm -rf /var/lib/apt/lists/*
 
-ENV AZURE_CLI_VERSION="2.18.0-2*"
+ENV AZURE_CLI_VERSION="2.34.1-1*"
 
 RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | \
     tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null && \
@@ -193,8 +193,7 @@ RUN curl -fLSs -o /usr/local/bin/cosign https://github.com/sigstore/cosign/relea
 #################################################################
 
 # Note: kcp-cli doesn't provide releases
-# https://github.com/kyma-project/control-plane/blob/main/docs/cli/01-01-overview.md
-ENV KCPCLI_VERSION=master-9a0a2e5a
+ENV KCPCLI_VERSION=master-1208b417
 RUN curl -fLSs -o /usr/local/bin/kcp https://storage.googleapis.com/kyma-development-artifacts/kcp/${KCPCLI_VERSION}/kcp-linux &&\
     chmod +x /usr/local/bin/kcp
 

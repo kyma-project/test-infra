@@ -142,6 +142,6 @@ utils::send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/g
 
 
 log::info "Launching the busola-integration-test-k3s.sh script"
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "busola-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/busola-integration-test-k3s.sh"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "busola-integration-test-${RANDOM_ID}" -c "sudo SCOPE=${SCOPE} bash" -p "${SCRIPT_DIR}/cluster-integration/busola-integration-test-k3s.sh"
 
 log::success "all done"
