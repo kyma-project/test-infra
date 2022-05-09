@@ -45,12 +45,11 @@ templates:
               #presubmit
               - jobConfig:
                   name: "kyma-certificate-gherkin"
+                  optional: true
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
-                  labels:
-                    preset-log-collector-slack-token: "true"
                 inheritedConfigs:
                   global:
                     - "image_kyma-integration"
