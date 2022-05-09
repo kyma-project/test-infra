@@ -33,3 +33,5 @@ find "./development/" -type f -name "*.sh" -exec "shellcheck" -x {} +
 find "./prow" -type f -name "*.sh" -exec "shellcheck" -x {} +
 
 log::info "No issues detected!"
+
+log::success "Validate scripts's all done"

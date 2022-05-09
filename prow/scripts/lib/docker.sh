@@ -58,6 +58,7 @@ EOF
 # docker::authenticate sets the docker user based on the provided credentials
 # the script accepts one argument which should be proper auth key
 function docker::authenticate() {
+  log::info "Authenticate the docker using provided credentials: $1"
   authKey=$1
     if [[ -n "${authKey}" ]]; then
       client_email=$(jq -r '.client_email' < "${authKey}")

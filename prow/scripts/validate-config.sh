@@ -40,3 +40,5 @@ then
 else
     echo "OK"
 fi
+
+log::success "validate config's all done"
