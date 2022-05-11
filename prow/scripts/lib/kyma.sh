@@ -20,6 +20,7 @@ function kyma::deploy_kyma() {
     local kymaSourcesDir=""
     local upgrade=
 
+  log::info "Checking Kyma optional arguments"
     while getopts ":s:p:d:u:" opt; do
         case $opt in
             s)
@@ -40,9 +41,9 @@ function kyma::deploy_kyma() {
                 log::info "Kyma upgrade option: ${upgrade}"
                 ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2 ;;
+                log::warn "Option -$OPTARG argument not provided" >&2 ;;
         esac
     done
 
@@ -81,6 +82,7 @@ function kyma::get_last_release_version {
     local githubToken
     local searchedVersion=""
 
+    log::info "Checking Github token and searched version arguments"
     while getopts ":t:v:" opt; do
         case $opt in
             t)
@@ -88,7 +90,7 @@ function kyma::get_last_release_version {
             v)
                 searchedVersion="$OPTARG" ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
                 echo "Option -$OPTARG argument not provided" >&2 ;;
         esac
@@ -229,7 +231,7 @@ kyma::install_cli() {
 
     pushd "/tmp/bin" || exit
 
-    echo "--> Install kyma CLI ${os} locally to /tmp/bin"
+    log::info "--> Install kyma CLI ${os} locally to /tmp/bin"
 
     if [[ "${KYMA_MAJOR_VERSION-}" == "1" ]]; then
         curl -sSLo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/1.24.8/kyma_${os}_x86_64.tar.gz"
@@ -239,8 +241,8 @@ kyma::install_cli() {
     fi
     chmod +x kyma
     kyma_version=$(kyma version --client)
-    echo "--> Kyma CLI version: ${kyma_version}"
-    echo "OK"
+    log::info "--> Kyma CLI version: ${kyma_version}"
+    log::info "OK"
     popd || exit
     eval "${settings}"
 }
@@ -255,13 +257,13 @@ kyma::install_unstable_cli() {
 
     pushd "/tmp/bin" || exit
 
-    echo "--> Install kyma CLI (unstable version) ${os} locally to /tmp/bin"
+    log::info "--> Install kyma CLI (unstable version) ${os} locally to /tmp/bin"
 
     curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-unstable/kyma-${os}?alt=media"
     chmod +x kyma
     kyma_version=$(kyma version --client)
-    echo "--> Kyma CLI (unstable) version: ${kyma_version}"
-    echo "OK"
+    log::info "--> Kyma CLI (unstable) version: ${kyma_version}"
+    log::info "OK"
     popd || exit
     eval "${settings}"
 }
@@ -279,8 +281,8 @@ kyma::install_cli_last_release() {
     && rm -f kyma.tar.gz
 
     kyma_version=$(kyma version --client)
-    echo "--> Kyma CLI version: ${kyma_version}"
-    echo "OK"
+    log::info "--> Kyma CLI version: ${kyma_version}"
+    log::info "OK"
     popd || exit
     eval "${settings}"
 }
@@ -293,7 +295,7 @@ kyma::install_cli_from_reconciler_pr() {
   local os
   os="$(uname -s | tr '[:upper:]' '[:lower:]')"
   if [[ -z "$os" || ! "$os" =~ ^(linux)$ ]]; then
-    echo >&2 -e "Unsupported host OS. Must be Linux."
+    log::error "Unsupported host OS. Must be Linux."
     exit 1
   else
     readonly os
@@ -302,7 +304,7 @@ kyma::install_cli_from_reconciler_pr() {
   kyma_cli_url="https://storage.googleapis.com/kyma-cli-pr/kyma-${os}-pr-${PULL_NUMBER}"
 
   pushd "$install_dir" || exit
-  echo "Downloading Kyma CLI from: ${kyma_cli_url}"
+  log::info "Downloading Kyma CLI from: ${kyma_cli_url}"
   curl -Lo kyma "${kyma_cli_url}"
   chmod +x kyma
   popd || exit
