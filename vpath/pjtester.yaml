@@ -1,5 +1,6 @@
 pjNames:
-  - pjName: "pre-busola-lighthouse"
+  - pjName: "pre-busola-integration-test-k3s-cluster"
+  - pjName: "pre-busola-integration-test-k3s-namespace"
 prConfigs:
   kyma-project:
     busola:
