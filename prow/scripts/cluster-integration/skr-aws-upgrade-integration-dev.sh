@@ -25,6 +25,8 @@ export ERROR_LOGGING_GUARD
 
 prereq
 
+###
+
 log::info "### Starting pipeline"
 
 # Fetch latest Kyma2 release
