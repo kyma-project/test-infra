@@ -7,9 +7,10 @@ set -o pipefail
 
 export LC_ALL=C.UTF-8
 
+readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 # shellcheck source=prow/scripts/lib/log.sh
 source "${SCRIPT_DIR}/lib/log.sh"
-
 # Scripts were checked with shellcheck 0.4.4, but the newer versions adds additional checks that blocks development, so we had to disable them for now
 # unknown version
 export SHELLCHECK_OPTS="-e SC2034 -e SC2181 -e SC2155"
