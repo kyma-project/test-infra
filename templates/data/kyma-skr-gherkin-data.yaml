@@ -42,7 +42,7 @@ templates:
             jobs:
               #presubmit
               - jobConfig:
-                  name: "kyma-certificate-gherkin"
+                  name: "kyma-skr-gherkin"
                   optional: true
                   decoration_config:
                     timeout: 14400000000000 # 4h
