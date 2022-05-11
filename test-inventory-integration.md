@@ -3,7 +3,6 @@
 
 | name | platform | cluster-provisioning | installer | profile | trigger | tests |
 |:-----|:---------|:---------------------|:----------|:--------|:--------|:------|
-| kyma-certificate-gherkin | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-integration-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-integration-k3d-compass-dev | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-integration-k3d-central-app-connectivity | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
@@ -39,6 +38,7 @@
 | kyma-weekly-gardener-gcp-busola-kyma | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
 | kyma-upgrade-gardener-kyma2-to-main-reconciler-main | gardener_azure | kyma cli | kyma deploy |  | periodic |  upgrade-fast-integration  |
 | kyma-upgrade-gardener-kyma2-minor-versions | gardener_azure | kyma cli | kyma deploy |  | periodic |  upgrade-fast-integration  |
+| kyma-certificate-gherkin | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | skr-azure-nightly | gardener_azure | keb | keb |  | periodic |  fast-integration  |
 | skr-azure-integration-dev | gardener_azure | keb | keb |  | periodic |  fast-integration  |
 | skr-azure-lite-integration-dev | gardener_azure | keb | keb | evaluation | periodic |  fast-integration  |
