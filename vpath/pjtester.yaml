@@ -1,7 +1,0 @@
-pjNames:
-  - pjName: "pre-busola-integration-test-k3s-cluster"
-  - pjName: "pre-busola-integration-test-k3s-namespace"
-prConfigs:
-  kyma-project:
-    busola:
-      prNumber: 1321
