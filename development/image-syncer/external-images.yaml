@@ -12,8 +12,8 @@ images:
 - source: "fluent/fluent-bit:1.8.3"
 - source: "gcr.io/google-containers/pause-amd64:3.2"
 # Golang image is pinned because it is force updated in the upstream
-- source: "golang@sha256:f94174c5262af3d8446833277aa27af400fd1a880277d43ec436df06ef3bb8ab"
-  tag: "1.18.1-alpine3.15"
+- source: "golang@sha256:3765360960a954c24b215518a41b0bf8e9e2fe3bd142b6f782fa56f8e00b8d21"
+  tag: "1.18.2-alpine3.15"
 - source: "grafana/loki:2.2.1"
 - source: "grafana/grafana-image-renderer:3.2.1"
 - source: "hudymi/mockice:0.1.3"
