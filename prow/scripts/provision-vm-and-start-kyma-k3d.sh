@@ -23,8 +23,6 @@ fi
 cleanup() {
   # TODO - collect junit results
 
-  # Sleep for two hours so I can debug it
-  sleep 2h
   log::info "Stopping instance kyma-integration-test-${RANDOM_ID}"
   log::info "It will be removed automatically by cleaner job"
 
