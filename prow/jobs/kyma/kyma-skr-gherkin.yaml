@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: kyma-certificate-gherkin
+    - name: kyma-skr-gherkin
       annotations:
         pipeline.clusterprovisioning: "keb"
         pipeline.installer: "keb"
@@ -13,7 +13,7 @@ presubmits: # runs on PRs
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "kyma-certificate-gherkin"
+        prow.k8s.io/pubsub.runID: "kyma-skr-gherkin"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-btp-operator-stage-credentials: "true"
         preset-build-pr: "true"
