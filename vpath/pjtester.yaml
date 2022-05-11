@@ -1,10 +1,10 @@
 pjNames:
-  - pjName: "pre-main-kyma-integration-k3d-compass-dev"
-  - pjName: "pre-main-kyma-integration-k3d-central-app-connectivity-compass"
   - pjName: "pre-main-kyma-gardener-gcp-eventing-upgrade"
   - pjName: "pre-main-kyma-gardener-gcp-eventing-js"
   - pjName: "pre-main-kyma-gardener-gcp-eventing"
+  - pjName: "pre-main-kyma-integration-k3d-compass-dev"
+  - pjName: "pre-main-kyma-integration-k3d-central-app-connectivity-compass"
 prConfigs:
   kyma-project:
     kyma:
-      prNumber: 14123
+      prNumber: 14225
