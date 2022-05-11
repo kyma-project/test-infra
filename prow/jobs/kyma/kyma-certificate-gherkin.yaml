@@ -55,6 +55,8 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration-gherkin"
               - "ci-certificate-gherkin"
             env:
+              - name: KEB_PLAN_ID
+                value: "5cb3d976-b85c-42ea-a636-79cadda109a9"
               - name: KYMA_MAJOR_VERSION
                 value: "1"
             resources:
