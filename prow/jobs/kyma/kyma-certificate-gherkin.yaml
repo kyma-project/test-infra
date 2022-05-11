@@ -15,14 +15,12 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "kyma-certificate-gherkin"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-btp-operator-stage-credentials: "true"
         preset-build-pr: "true"
-        preset-kcp-client-dev-envs: "true"
+        preset-gc-project-env: "true"
         preset-keb-dev-credentials: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-integration-compass-dev: "true"
-        preset-kyma-integration-kcp-client-credentials: "true"
         preset-kyma-integration-subaccounnt: "true"
+        preset-sa-vm-kyma-integration: "true"
       optional: true
       skip_report: false
       decorate: true
@@ -55,7 +53,7 @@ presubmits: # runs on PRs
               - name: KEB_PLAN_ID
                 value: "5cb3d976-b85c-42ea-a636-79cadda109a9"
               - name: KYMA_MAJOR_VERSION
-                value: "1"
+                value: "2"
             resources:
               requests:
                 memory: 100Mi

@@ -29,13 +29,15 @@ templates:
             request_cpu: 50m
             labels:
               preset-kyma-guard-bot-github-token: "true"
+              preset-sa-vm-kyma-integration: "true"
+              preset-gc-project-env: "true"
               preset-build-pr: "true"
               preset-keb-dev-credentials: "true"
-              preset-kyma-integration-compass-dev: "true"
+              #preset-kyma-integration-compass-dev: "true"
               preset-kyma-integration-subaccounnt: "true"
-              preset-kcp-client-dev-envs: "true"
-              preset-kyma-integration-kcp-client-credentials: "true"
-              preset-btp-operator-stage-credentials: "true"
+              #preset-kcp-client-dev-envs: "true"
+              #preset-kyma-integration-kcp-client-credentials: "true"
+              #preset-btp-operator-stage-credentials: "true"
           keb_plan_aws:
             annotations:
               pipeline.platform: k3d #gardener_aws
@@ -58,7 +60,7 @@ templates:
                     - "jobConfig_presubmit"
                     - "extra_refs_test-infra"
                     - "disable_testgrid"
-                    - "kyma_major_version_1"
+                    - "kyma_major_version_2"
                   local:
                     - "jobConfig_default"
                     - "keb_plan_aws"
