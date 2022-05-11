@@ -5,9 +5,9 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: kyma-certificate-gherkin
       annotations:
-        pipeline.clusterprovisioning: "k3d"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
+        pipeline.clusterprovisioning: "keb"
+        pipeline.installer: "keb"
+        pipeline.platform: "gardener_aws"
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
         testgrid-create-test-group: "false"
@@ -15,10 +15,14 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "kyma-certificate-gherkin"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-btp-operator-stage-credentials: "true"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
+        preset-kcp-client-dev-envs: "true"
         preset-keb-dev-credentials: "true"
         preset-kyma-guard-bot-github-token: "true"
+        preset-kyma-integration-compass-dev: "true"
+        preset-kyma-integration-kcp-client-credentials: "true"
         preset-kyma-integration-subaccounnt: "true"
         preset-sa-vm-kyma-integration: "true"
       optional: true
@@ -48,8 +52,10 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             env:
+              - name: KEB_PLAN_ID
+                value: "5cb3d976-b85c-42ea-a636-79cadda109a9"
               - name: KYMA_MAJOR_VERSION
                 value: "2"
             resources:

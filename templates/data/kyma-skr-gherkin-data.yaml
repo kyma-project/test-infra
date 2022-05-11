@@ -1,7 +1,7 @@
 templates:
   - fromTo:
       - from: templates/generic.tmpl
-        to: ../prow/jobs/kyma/kyma-certificate-gherkin.yaml
+        to: ../prow/jobs/kyma/kyma-skr-gherkin.yaml
     render:
       - localSets:
           extra_refs_kyma-local:
@@ -14,11 +14,10 @@ templates:
           jobConfig_default:
             path_alias: github.com/kyma-project/kyma
             annotations:
-              pipeline.clusterprovisioning: k3d
-              pipeline.installer: kyma deploy
+              pipeline.clusterprovisioning: keb
+              pipeline.installer: keb
               pipeline.test: fast-integration
-              pipeline.platform : k3d
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             cluster: "trusted-workload"
             request_memory: 100Mi
             request_cpu: 50m
@@ -28,7 +27,16 @@ templates:
               preset-gc-project-env: "true"
               preset-build-pr: "true"
               preset-keb-dev-credentials: "true"
+              preset-kyma-integration-compass-dev: "true"
               preset-kyma-integration-subaccounnt: "true"
+              preset-kcp-client-dev-envs: "true"
+              preset-kyma-integration-kcp-client-credentials: "true"
+              preset-btp-operator-stage-credentials: "true"
+          keb_plan_aws:
+            annotations:
+              pipeline.platform: gardener_aws
+            env:
+              KEB_PLAN_ID: "5cb3d976-b85c-42ea-a636-79cadda109a9"
         jobConfigs:
           - repoName: "kyma-project/kyma"
             jobs:
@@ -49,4 +57,5 @@ templates:
                     - "kyma_major_version_2"
                   local:
                     - "jobConfig_default"
+                    - "keb_plan_aws"
                     - "extra_refs_kyma-local"
