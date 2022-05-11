@@ -16,9 +16,10 @@ templates:
           jobConfig_default:
             path_alias: github.com/kyma-project/kyma
             annotations:
-              pipeline.clusterprovisioning: keb
-              pipeline.installer: keb
+              pipeline.clusterprovisioning: k3d
+              pipeline.installer: kyma deploy
               pipeline.test: fast-integration
+              pipeline.platform: k3d
             command: "make"
             args:
               - "-C"
@@ -35,11 +36,11 @@ templates:
               preset-kcp-client-dev-envs: "true"
               preset-kyma-integration-kcp-client-credentials: "true"
               preset-btp-operator-stage-credentials: "true"
-          keb_plan_aws:
-            annotations:
-              pipeline.platform: gardener_aws
-            env:
-              KEB_PLAN_ID: "5cb3d976-b85c-42ea-a636-79cadda109a9"
+          # keb_plan_aws:
+          #   annotations:
+          #     pipeline.platform: gardener_aws
+          #   env:
+          #     KEB_PLAN_ID: "5cb3d976-b85c-42ea-a636-79cadda109a9"
         jobConfigs:
           - repoName: "kyma-project/kyma"
             jobs:
@@ -60,5 +61,5 @@ templates:
                     - "kyma_major_version_1"
                   local:
                     - "jobConfig_default"
-                    - "keb_plan_aws"
+                    #- "keb_plan_aws"
                     - "extra_refs_kyma-local"
