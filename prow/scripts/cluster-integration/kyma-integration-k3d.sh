@@ -100,8 +100,14 @@ function run_tests() {
   popd
 }
 
+function run_gherkin_tests() {
+  pushd "${KYMA_SOURCES_DIR}/tests/fast-integration-gherkin"
+  make ci-certificate-gherkin
+  popd
+}
+
 prereq_test
 load_env
 install_cli
 deploy_kyma
-run_tests
+run_gherkin_tests

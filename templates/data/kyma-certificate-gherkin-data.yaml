@@ -19,11 +19,11 @@ templates:
               pipeline.clusterprovisioning: k3d
               pipeline.installer: kyma deploy
               pipeline.test: fast-integration
-            command: "make"
-            args:
-              - "-C"
-              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration-gherkin" 
-              - "ci-certificate-gherkin"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
+            # args:
+            #   - "-C"
+            #   - "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration-gherkin" 
+            #   - "ci-certificate-gherkin"
             cluster: "trusted-workload"
             request_memory: 100Mi
             request_cpu: 50m
