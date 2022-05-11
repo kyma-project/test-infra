@@ -64,7 +64,7 @@ EOF
 }
 
 install_busola(){
-    echo "Install Busolas"
+    echo "Install Busola"
     # $1 is the domain
     echo "Deploying Busola resources on the $1 domain"
     
