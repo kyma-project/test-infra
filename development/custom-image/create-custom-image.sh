@@ -80,15 +80,15 @@ log::info "Moving install-deps-debian.sh to $VM_NAME in zone ${ZONE} ..."
 utils::send_to_vm "${ZONE}" "$VM_NAME" "$CURRENT_DIR/install-deps-debian.sh" "~/"
 
 log::info "Running install-deps-debian.sh ..."
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" "$VM_NAME" --command="./install-deps-debian.sh"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "./install-deps-debian.sh"
 
 log::info "Clearing $VM_NAME machine-id ..."
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --zone "${ZONE}" "$VM_NAME" --command="sudo sh -c 'echo "" > /etc/machine-id'"
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --zone "${ZONE}" "$VM_NAME" --command="sudo sh -c 'echo "" > /var/lib/dbus/machine-id'"
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --zone "${ZONE}" "$VM_NAME" --command="sudo sh -c 'echo \"RateLimitInterval=30s\" > /etc/systemd/journald.conf'"
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --zone "${ZONE}" "$VM_NAME" --command="sudo sh -c 'echo \"RateLimitBurst=1500\" >> /etc/systemd/journald.conf'"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo sh -c 'echo "" > /etc/machine-id'"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo sh -c 'echo "" > /var/lib/dbus/machine-id'"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo sh -c 'echo \"RateLimitInterval=30s\" > /etc/systemd/journald.conf'"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo sh -c 'echo \"RateLimitBurst=1500\" >> /etc/systemd/journald.conf'"
 utils::send_to_vm "${ZONE}" "$VM_NAME" "$CURRENT_DIR/resources/dbus-1_system-local.conf" "/tmp/system-local.conf"
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --zone "${ZONE}" "$VM_NAME" --command="sudo sh -c 'mv /tmp/system-local.conf /etc/dbus-1/system-local.conf'"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo sh -c 'mv /tmp/system-local.conf /etc/dbus-1/system-local.conf'"
 
 
 log::info "Stopping $VM_NAME in zone ${ZONE} ..."

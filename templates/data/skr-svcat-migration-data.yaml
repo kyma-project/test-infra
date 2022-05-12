@@ -22,9 +22,9 @@ templates:
               preset-build-main: "true"
               preset-keb-dev-credentials: "true"
               preset-svcat-migration-subaccounnt: "true"
-              preset-btp-operator-stage-credentials: "true"
               preset-kyma-integration-kcp-client-credentials: "true"
               preset-kcp-client-dev-envs: "true"
+              preset-btp-admin-stage-credentials: "true"
           keb_plan_aws:
             annotations:
               pipeline.platform: gardener_aws

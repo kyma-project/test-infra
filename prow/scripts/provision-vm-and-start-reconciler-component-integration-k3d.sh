@@ -142,6 +142,6 @@ utils::compress_send_to_vm "${ZONE}" "reconciler-component-integration-test-${RA
 utils::compress_send_to_vm "${ZONE}" "reconciler-component-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/test-infra" "~/test-infra"
 
 log::info "Triggering the installation"
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60" "reconciler-component-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/reconciler-component-integration.sh"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "reconciler-component-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/reconciler-component-integration.sh"
 
 log::success "all done"

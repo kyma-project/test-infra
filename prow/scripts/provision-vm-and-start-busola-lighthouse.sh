@@ -140,6 +140,6 @@ utils::send_to_vm "${ZONE}" "busola-lighthouse-${RANDOM_ID}" "/home/prow/go/src/
 
 
 log::info "Launching the busola-lighthouse script"
-gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "busola-lighthouse-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/busola-lighthouse.sh"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "busola-lighthouse-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/busola-lighthouse.sh"
 
 log::success "all done"

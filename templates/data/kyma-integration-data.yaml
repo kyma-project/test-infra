@@ -108,7 +108,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "/prow-tools/ipcleaner -project=${CLOUDSDK_CORE_PROJECT} -dry-run=false -ip-exclude-name-regex='^nightly|nightly-124|weekly|weekly-124|nat-auto-ip|nightly-20'"
+                    - "/prow-tools/ipcleaner -project=${CLOUDSDK_CORE_PROJECT} -dry-run=false -ip-exclude-name-regex='^nightly|nightly-(.*)|weekly|weekly-(.*)|nat-auto-ip'"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -129,7 +129,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "/prow-tools/clusterscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -excluded-clusters=kyma-prow,workload-kyma-prow,nightly,weekly,nightly-124,weekly-124,nightly-20"
+                    - "/prow-tools/clusterscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -excluded-clusters=kyma-prow,workload-kyma-prow,nightly,weekly,nightly-20,nightly-21,nightly-22"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -577,7 +577,7 @@ templates:
                     - "vm_job_labels_template"
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d-telemetry"
-                  run_if_changed: '^components/telemetry-operator/|^resources/telemetry/'
+                  run_if_changed: '^resources/telemetry/|^installation/resources/crds/telemetry'
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-telemetry-enabled: "true"
@@ -686,7 +686,7 @@ templates:
                     - "extra_refs_kyma-local"
               - jobConfig:
                   name: "post-main-kyma-integration-k3d-telemetry"
-                  run_if_changed: '^components/telemetry-operator/|^resources/telemetry/'
+                  run_if_changed: '^resources/telemetry/|^installation/resources/crds/telemetry'
                   labels:
                     preset-build-main: "true"
                     preset-kyma-integration-telemetry-enabled: "true"
@@ -725,7 +725,7 @@ templates:
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
-                  
+
               # periodics
 
               - jobConfig:
