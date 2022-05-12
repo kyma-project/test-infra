@@ -29,6 +29,7 @@ templates:
             labels:
               preset-build-pr: "true"
           command_performance:
+            optional: true
             annotations:
               pipeline.installer: kyma install
               pipeline.test: octopus

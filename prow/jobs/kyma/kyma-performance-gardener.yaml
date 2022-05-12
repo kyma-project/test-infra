@@ -112,6 +112,7 @@ postsubmits: # runs on main
         preset-kyma-cli-stable: "true"
         preset-sa-gardener-logs: "true"
         preset-sa-test-gcr-push: "true"
+      optional: true
       skip_report: false
       decorate: true
       decoration_config:
@@ -194,6 +195,7 @@ periodics: # runs on schedule
         preset-sa-gardener-logs: "true"
         preset-sa-test-gcr-push: "true"
       cron: "0 3 * * *"
+      optional: true
       skip_report: false
       decorate: true
       decoration_config:
