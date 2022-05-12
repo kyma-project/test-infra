@@ -57,7 +57,6 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                     - "extra_refs_test-infra"
-                    - "extra_refs_kyma"
                     - "disable_testgrid"
                     - "kyma_major_version_2"
                   local:
