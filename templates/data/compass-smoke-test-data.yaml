@@ -1,11 +1,11 @@
 templates:
   - from: templates/generic.tmpl
     render:
-      - to: ../prow/jobs/incubator/compass/compass-ord.yaml
+      - to: ../prow/jobs/incubator/compass/compass-smoke-test.yaml
         localSets:
           jobConfig_default:
             path_alias: github.com/kyma-incubator/compass
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-compass-ord.sh"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-compass-smoke-test.sh"
             request_memory: 100Mi
             request_mcpu: 50m
             env:
@@ -20,7 +20,7 @@ templates:
           - repoName: "kyma-incubator/compass"
             jobs:
               - jobConfig:
-                  name: "pre-main-compass-ord"
+                  name: "pre-main-compass-smoke-test"
                   run_if_changed: "^(chart|installation)/"
                   labels:
                     preset-build-pr: "true"

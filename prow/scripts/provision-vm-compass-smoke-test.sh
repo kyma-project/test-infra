@@ -24,9 +24,9 @@ fi
 
 LABELS=""
 if [[ -z "${PULL_NUMBER}" ]]; then
-    LABELS=(--labels "branch=$PULL_BASE_REF,job-name=compass-ord")
+    LABELS=(--labels "branch=$PULL_BASE_REF,job-name=compass-smoke-test")
 else
-    LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=compass-ord")
+    LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=compass-smoke-test")
 fi
 
 log::info "Authenticate"
@@ -55,6 +55,6 @@ cd /home/prow/ && git clone https://github.com/kyma-incubator/ord-service.git &&
 log::info "Triggering the test"
 
 cd /home/prow/go/src/github.com/kyma-incubator/compass/installation/scripts/prow/
-./ord-test.sh
+./compass-smoke-test.sh "/home/prow/"
 
 log::info "Test finished"
