@@ -74,8 +74,17 @@ else
     exit 1
 fi
 
+function cleanupJobAssets() {
+    log::banner "Running cleanup"
+    # clean up fast-integration assets from cluster
+    eventing::fast_integration_test_cleanup
+
+    # clean up gardener
+    gardener::cleanup
+}
+
 # nice cleanup on exit, be it successful or on fail
-trap gardener::cleanup EXIT INT
+trap cleanupJobAssets EXIT INT
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
