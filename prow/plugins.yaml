@@ -1,57 +1,55 @@
 plugins:
   kyma-project:
     plugins:
-      - cat
       - trigger
       - assign
       - wip
       - lgtm
       - hold
       - label
+      - help
+      - size
+      - invalidcommitmsg
+      - verify-owners
+      - owners-label
+      - override
+      - retitle
+      - lifecycle
+      - transfer-issue
       - yuks
       - dog
-      - size
+      - cat
       - shrug
-      - invalidcommitmsg
-      - help
-      - override
+      - pony
   kyma-project/test-infra:
     plugins:
       - config-updater
-      - approve
-      - blunderbuss
   kyma-incubator/compass:
-    plugins:
-      - approve
-      - blunderbuss
-  kyma-project/third-party-images:
-    plugins:
-      - approve
-      - blunderbuss
-  kyma-project/kyma:
-    plugins:
-      - approve
-      - blunderbuss
-  kyma-project/cli:
     plugins:
       - approve
       - blunderbuss
   kyma-incubator:
     plugins:
-      - cat
       - trigger
       - assign
       - wip
       - lgtm
       - hold
       - label
+      - help
+      - size
+      - invalidcommitmsg
+      - verify-owners
+      - owners-label
+      - override
+      - retitle
+      - lifecycle
+      - transfer-issue
       - yuks
       - dog
-      - size
+      - cat
       - shrug
-      - invalidcommitmsg
-      - help
-      - override
+      - pony
 
 external_plugins:
   kyma-project:
@@ -62,35 +60,11 @@ external_plugins:
     - name: cla-assistant
       events:
         - issue_comment
-  kyma-project/test-infra:
-    - name: needs-tws
-      events:
-        - pull_request
-        - pull_request_review
-  kyma-project/kyma:
-    - name: needs-tws
-      events:
-        - pull_request
-        - pull_request_review
-  kyma-project/third-party-images:
-    - name: needs-tws
-      events:
-        - pull_request
-        - pull_request_review
-  kyma-project/cli:
-    - name: needs-tws
-      events:
-        - pull_request
-        - pull_request_review
   kyma-incubator/compass:
     - name: needs-tws
       events:
         - pull_request
         - pull_request_review
-  kyma-project:
-    - name: automerge-notification
-      events:
-        - pull_request
 
 config_updater:
   maps:
