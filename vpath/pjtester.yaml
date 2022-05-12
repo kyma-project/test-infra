@@ -1,7 +1,7 @@
 pjNames:
-  - pjName: "post-main-kyma-integration-k3d-compass-dev"
-  - pjName: "post-main-kyma-integration-k3d"
   - pjName: "pre-main-kyma-gardener-gcp-eventing"
+  - pjName: "pre-main-kyma-gardener-gcp-eventing-upgrade"
+  - pjName: "pre-main-kyma-gardener-gcp-eventing-js"
   - pjName: "pre-main-kyma-gardener-azure-alpha-prod"
   - pjName: "pre-main-kyma-gardener-azure-alpha-eval"
 prConfigs:
