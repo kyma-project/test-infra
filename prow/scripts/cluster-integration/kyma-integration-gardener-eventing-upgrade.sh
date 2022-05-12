@@ -77,7 +77,7 @@ fi
 function cleanupJobAssets() {
     log::banner "Running cleanup"
     # clean up fast-integration assets from cluster
-    eventing::fast_integration_test_cleanup
+    eventing::fast_integration_test_cleanup || log::info "cleanup failed !!!"
 
     # clean up gardener
     gardener::cleanup
