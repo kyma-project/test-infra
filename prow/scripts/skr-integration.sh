@@ -17,8 +17,8 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
   "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
-pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration-gherkin
+pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
 
-make ci-skr-gherkin
+make ci-skr
 
 log::success "all done"

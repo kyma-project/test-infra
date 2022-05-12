@@ -38,6 +38,10 @@ presubmits: # runs on PRs
         - ^master$
         - ^main$
       extra_refs:
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
         - org: kyma-incubator
           repo: local-kyma
           path_alias: github.com/kyma-incubator/local-kyma
@@ -52,7 +56,11 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
+              - "make"
+            args:
+              - "-C"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration-gherkin"
+              - "ci-skr-gherkin"
             env:
               - name: KEB_PLAN_ID
                 value: "5cb3d976-b85c-42ea-a636-79cadda109a9"
