@@ -30,11 +30,11 @@ params+=("--component-version=$(date +v%Y%m%d-%H%M%S)-${git_commit::8}")
 params+=("--git-commit=${git_commit}")
 
 pushd "${TEST_INFRA_SOURCES_DIR}"
-log::info "This tool generates component descriptor file"
+echo "This tool generates component descriptor file"
 /prow-tools/image-url-helper \
     --resources-directory "$KYMA_RESOURCES_DIR" \
     components \
     "${params[@]}"
 
-log::info "Compomnent descriptor was generated succesfully finished"
+echo "Compomnent descriptor was generated succesfully finished"
 popd

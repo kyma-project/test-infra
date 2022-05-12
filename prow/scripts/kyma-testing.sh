@@ -146,5 +146,5 @@ function main() {
 
   exit $((testExitCode + cleanupExitCode + latestTagExitCode))
 }
-log::banner "Testing Kyma!"
+
 main

@@ -50,16 +50,23 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
+
+# Delete cluster with reconciler if exists
 reconciler::delete_cluster_if_exists
 
+# Generate new cluster name
 reconciler::export_nightly_cluster_name
 
+# Provisioning gardener long lasting cluster
 reconciler::provision_cluster
 
 reconciler::export_shoot_cluster_kubeconfig
 
+# Deploy reconciler
 reconciler::deploy
 
+# Disable sidecar injection for reconciler namespace
 reconciler::disable_sidecar_injection_reconciler_ns
 
+# Wait until reconciler is ready
 reconciler::wait_until_is_ready

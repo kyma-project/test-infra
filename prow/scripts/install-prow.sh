@@ -8,8 +8,6 @@
 
 set -o errexit
 
-log::banner "Install Prow"
-
 readonly PROW_DIR="$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )"
 readonly KUBECONFIG=${KUBECONFIG:-"${HOME}/.kube/config"}
 readonly CLUSTER_DIR="$( cd "${PROW_DIR}/cluster" && pwd )"

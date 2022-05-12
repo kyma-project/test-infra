@@ -2,7 +2,9 @@
 
 set -eu
 
-log::banner "Generating GitHub stats..."
+echo "--------------------------------------------------------------------------------"
+echo "Generating GitHub stats..."
+echo "--------------------------------------------------------------------------------"
 
 export APP_GITHUB_ACCESS_TOKEN=${BOT_GITHUB_TOKEN}
 
