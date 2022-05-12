@@ -1,6 +1,6 @@
 pjNames:
     - pjName: "pre-main-compass-smoke-test"
- prConfigs:
+prConfigs:
     kyma-incubator:
       compass:
         prNumber: 2324 
