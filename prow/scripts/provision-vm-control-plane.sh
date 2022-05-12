@@ -123,5 +123,3 @@ log::info "Triggering the installation"
 utils::ssh_to_vm_with_script -z "${ZONE}" -n "control-plane-integration-test-${RANDOM_ID}" -c "yes | ./control-plane/installation/scripts/prow/deploy-and-test.sh"
 log::info "Copying test artifacts from VM"
 utils::receive_from_vm "${ZONE}" "control-plane-integration-test-${RANDOM_ID}" "/var/log/prow_artifacts" "${ARTIFACTS}"
-
-log::info "Provisioning VM Control Plane's done"

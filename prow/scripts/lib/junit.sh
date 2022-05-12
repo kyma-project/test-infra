@@ -54,7 +54,7 @@ function junit::test_start {
     JUNIT_TEST_NAME="${1}"
     JUNIT_TEST_START_TIME=$(date +%s)
     rm -f "$(junit::test_output_filename)"
-    log::info "=== RUN: ${JUNIT_TEST_NAME} 🤔"
+    echo "=== RUN: ${JUNIT_TEST_NAME} 🤔"
 }
 
 # junit::test_output writes JUnit test output to the file
@@ -70,7 +70,7 @@ function junit::test_pass {
         return 0
     fi
     local -r duration=$(($(date +%s)-JUNIT_TEST_START_TIME))
-    log::info "--- PASS: ${JUNIT_TEST_NAME} (${duration}s) 😍"
+    echo "--- PASS: ${JUNIT_TEST_NAME} (${duration}s) 😍"
     echo "        <testcase name=\"${JUNIT_TEST_NAME}\" time=\"${duration}\"></testcase>" >> "$(junit::suite_filename)"
     JUNIT_TEST_NAME=""
 }
@@ -82,7 +82,7 @@ function junit::test_fail {
     fi
     local -r duration=$(($(date +%s)-JUNIT_TEST_START_TIME))
     JUNIT_FAILED_TESTS_COUNT=$((++JUNIT_FAILED_TESTS_COUNT))
-    log::warn "--- FAIL: ${JUNIT_TEST_NAME} (${duration}s) 💩"
+    echo "--- FAIL: ${JUNIT_TEST_NAME} (${duration}s) 💩"
     echo "        <testcase name=\"${JUNIT_TEST_NAME}\" time=\"${duration}\"><failure><![CDATA[
 $(< "$(junit::test_output_filename)" tr -cd '\11\12\15\40-\176' | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g; s/'"'"'/\&#39;/g')
         ]]></failure></testcase>" >> "$(junit::suite_filename)"
@@ -97,7 +97,7 @@ function junit::test_skip {
     fi
     local -r duration=$(($(date +%s)-JUNIT_TEST_START_TIME))
     JUNIT_SKIPPED_TESTS_COUNT=$((++JUNIT_SKIPPED_TESTS_COUNT))
-    log::info "--- SKIP: ${JUNIT_TEST_NAME} (${duration}s) 🙈"
+    echo "--- SKIP: ${JUNIT_TEST_NAME} (${duration}s) 🙈"
     echo "        <testcase name=\"${JUNIT_TEST_NAME}\" time=\"${duration}\"><skipped><![CDATA[
 $(echo "${1}" | tr -cd '\11\12\15\40-\176' | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g; s/'"'"'/\&#39;/g')
         ]]></skipped></testcase>" >> "$(junit::suite_filename)"

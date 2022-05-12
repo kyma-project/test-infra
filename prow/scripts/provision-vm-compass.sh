@@ -140,5 +140,3 @@ utils::ssh_to_vm_with_script -z "${ZONE}" -n "compass-integration-test-${RANDOM_
 
 log::info "Copying test artifacts from VM"
 utils::receive_from_vm "${ZONE}" "compass-integration-test-${RANDOM_ID}" "/var/log/prow_artifacts" "${ARTIFACTS}"
-
-log::info "Provisioning VM Compass's done"

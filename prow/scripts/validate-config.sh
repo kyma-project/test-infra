@@ -16,7 +16,7 @@ if [[ -z "${PLUGINS_PATH}" ]] || [[ -z "${CONFIG_PATH}" ]] || [[ -z "${JOBS_CONF
     usage
 fi
 
-log::info "Checking plugin configuration from '${PLUGINS_PATH}' and prow configuration from '${CONFIG_PATH} and jobs configuration from '${JOBS_CONFIG_PATH}'"
+echo "Checking plugin configuration from '${PLUGINS_PATH}' and prow configuration from '${CONFIG_PATH} and jobs configuration from '${JOBS_CONFIG_PATH}'"
 
 /prow-tools/checkconfig --plugin-config="${PLUGINS_PATH}" --config-path="${CONFIG_PATH}" --job-config-path="${JOBS_CONFIG_PATH}"
 status=$?
@@ -29,7 +29,7 @@ else
     echo "OK"
 fi
 
-log::info "Checking unique name of prow config jobs from '${JOBS_CONFIG_PATH}' directory"
+echo "Checking unique name of prow config jobs from '${JOBS_CONFIG_PATH}' directory"
 /prow-tools/unique-jobs-name --config-path="${CONFIG_PATH}" --jobs-config-dir="${JOBS_CONFIG_PATH}"
 status=$?
 
@@ -40,5 +40,3 @@ then
 else
     echo "OK"
 fi
-
-log::success "validate config's all done"

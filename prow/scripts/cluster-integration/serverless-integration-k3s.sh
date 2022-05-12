@@ -86,9 +86,8 @@ job_status=""
 # helm does not wait for jobs to complete even with --wait
 # TODO but helm@v3.5 has a flag that enables that, get rid of this function once we use helm@v3.5
 getjobstatus(){
-  log::info "Get the job status"
 while true; do
-    log::warn "Test job not completed yet..."
+    echo "Test job not completed yet..."
     [[ $(kubectl get jobs $job_name -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}') == "True" ]] && job_status=1 && echo "Test job failed" && break
     [[ $(kubectl get jobs $job_name -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}') == "True" ]] && job_status=0 && echo "Test job completed successfully" && break
     sleep 5
@@ -99,6 +98,6 @@ getjobstatus
 
 collect_results "${job_name}" "default"
 
-log::info "Exit code ${job_status}"
+echo "Exit code ${job_status}"
 
 exit $job_status

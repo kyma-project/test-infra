@@ -20,7 +20,6 @@ if [[ -z "${SOURCES_DIR}" ]]; then
 fi
 
 function export_variables() {
-  log::info "Export variables for docker image tag"
     if [[ "${BUILD_TYPE}" == "pr" ]]; then
         DOCKER_TAG="PR-${PULL_NUMBER}"
     else
@@ -46,4 +45,3 @@ else
     echo "Not supported build type - ${BUILD_TYPE}"
     exit 1
 fi
-log::info "Publish build pack's done"

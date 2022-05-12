@@ -8,7 +8,6 @@ K3S_DOMAIN="local.kyma.dev"
 CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included:8.7.0"
 
 prepare_k3s() {
-    echo "prepare K3s cluster"
     pushd ${LOCAL_KYMA_DIR}
     ./create-cluster-k3s.sh
     echo "k3s cluster created √"
@@ -17,7 +16,6 @@ prepare_k3s() {
 }
 
 generate_cert(){
-    echo "Generate ssl cerfificate"
     # $1 is the domain
     mkdir ssl
     pushd ssl
@@ -64,7 +62,6 @@ EOF
 }
 
 install_busola(){
-    echo "Install Busola"
     # $1 is the domain
     echo "Deploying Busola resources on the $1 domain"
     
