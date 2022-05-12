@@ -18,25 +18,8 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 		expRunIfChangedPaths    []string
 		expNotRunIfChangedPaths []string
 	}{
-		"Should contain the kyma-integration k3d job": {
-			givenJobName: "pre-main-kyma-integration-k3d",
-
-			expPresets: []preset.Preset{
-				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration",
-			},
-
-			expRunIfChangedRegex: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
-			expRunIfChangedPaths: []string{
-				"resources/values.yaml",
-				"installation/file.yaml",
-			},
-			expNotRunIfChangedPaths: []string{
-				"installation/README.md",
-				"installation/test/test/README.MD",
-			},
-		},
 		"Should contain the kyma-integration k3d with central Application Connectivity job": {
-			givenJobName: "pre-main-kyma-integration-k3d-central-app-connectivity",
+			givenJobName: "pre-main-kyma-integration-k3d",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-connectivity-enabled",
@@ -129,15 +112,8 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 		runIfChanged string
 	}{
 
-		"Should contain the kyma-integration-k3d job": {
+		"Should contain the kyma-integration-k3d with central Application Connectivity job": {
 			givenJobName: "post-main-kyma-integration-k3d",
-
-			expPresets: []preset.Preset{
-				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",
-			},
-		},
-		"Should contain the kyma-integration k3d with central Application Connectivity job": {
-			givenJobName: "post-main-kyma-integration-k3d-central-app-connectivity",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-connectivity-enabled",

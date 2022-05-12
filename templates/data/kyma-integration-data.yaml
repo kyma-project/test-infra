@@ -400,6 +400,7 @@ templates:
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
+                    preset-kyma-integration-central-app-connectivity-enabled: "true"
                   annotations:
                     pipeline.platform: k3d
                 inheritedConfigs:
@@ -426,26 +427,6 @@ templates:
                     preset-build-pr: "true"
                     preset-kyma-integration-compass-dev: "true"
                     preset-kyma-integration-compass-enabled: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                    - "kyma_major_version_2"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "vm_job_template_k3d"
-                    - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
-              - jobConfig:
-                  name: "pre-main-kyma-integration-k3d-central-app-connectivity"
-                  # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  labels:
-                    preset-build-pr: "true"
-                    preset-kyma-integration-central-app-connectivity-enabled: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -602,6 +583,7 @@ templates:
                     testgrid-days-of-results: "60"
                   labels:
                     preset-build-main: "true"
+                    preset-kyma-integration-central-app-connectivity-enabled: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -625,28 +607,6 @@ templates:
                     preset-build-main: "true"
                     preset-kyma-integration-compass-dev: "true"
                     preset-kyma-integration-compass-enabled: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                    - "kyma_major_version_2"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "vm_job_template_k3d"
-                    - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
-              - jobConfig:
-                  name: "post-main-kyma-integration-k3d-central-app-connectivity"
-                  annotations:
-                    testgrid-dashboards: kyma_integration
-                    description: Kyma integration job on k3d with central Application Gateway.
-                    testgrid-days-of-results: "60"
-                  labels:
-                    preset-build-main: "true"
-                    preset-kyma-integration-central-app-connectivity-enabled: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -763,6 +723,7 @@ templates:
                   cron: "5 * * * *"
                   labels:
                     preset-build-main: "true"
+                    preset-kyma-integration-central-app-connectivity-enabled: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
