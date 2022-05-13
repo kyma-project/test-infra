@@ -199,23 +199,9 @@ globalSets:
       pipeline.platform: gardener_gcp
 
 templates:
-#  - from: templates/kyma-release-upgrade.yaml
-#    render:
-#      - to: ../prow/jobs/kyma/kyma-release-upgrade.yaml
   - from: templates/releases.go.tmpl
     render:
       - to: ../development/tools/jobs/releases/releases.go
-#  TODO: remove when https://github.com/kyma-project/test-infra/issues/3174 is finished
-#  - from: templates/kyma-github-release.yaml
-#    render:
-#      - to: ../prow/jobs/kyma/kyma-github-release.yaml
-#        values:
-#          <<: *cluster_default
-#  - from: templates/kyma-release-candidate.yaml
-#    render:
-#      - to: ../prow/jobs/kyma/kyma-release-candidate.yaml
-#        values:
-#          <<: *cluster_default
   - from: templates/prow-config.yaml
     render:
       - to: ../prow/config.yaml
@@ -229,9 +215,6 @@ templates:
             - name: kyma-gke-integration
             - name: kyma-gke-upgrade
             - name: kyma-artifacts
-#  - from: templates/testgrid-default.yaml
-#    render:
-#      - to: ../prow/testgrid-default.yaml
   - from : templates/test-infra-autobump-config.yaml
     render:
       - to: ../prow/autobump-config/test-infra-autobump-config.yaml

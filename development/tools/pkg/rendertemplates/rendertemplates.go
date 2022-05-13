@@ -15,16 +15,16 @@ import (
 
 // Config represents configuration of all templates to render along with global values
 type Config struct {
-	Templates  []*TemplateConfig
-	Global     map[string]interface{}
-	GlobalSets map[string]ConfigSet `yaml:"globalSets,omitempty"`
+	TemplatesConfigs []*TemplateConfig
+	Global           map[string]interface{}
+	GlobalSets       map[string]ConfigSet `yaml:"globalSets,omitempty"`
 }
 
 // TemplateConfig specifies template to use and files to render
 type TemplateConfig struct {
-	FromTo []FromTo `yaml:"fromTo,omitempty"`
-	From   string
-	Render []*RenderConfig
+	FromTo        []FromTo `yaml:"fromTo,omitempty"`
+	From          string
+	RenderConfigs []*RenderConfig
 }
 
 // FromTo defines what template should be used and where to store the render output
@@ -91,22 +91,22 @@ func Map(m map[string]interface{}) (map[string]interface{}, error) {
 
 // Merge merges all jobconfigs using local / globalsets defined in the configuration
 func (cfg *Config) Merge(mergoConfig mergo.Config) {
-	cfg.Templates = generateFromTo(cfg.Templates)
+	cfg.TemplatesConfigs = generateFromTo(cfg.TemplatesConfigs)
 
-	for _, templateConfig := range cfg.Templates {
+	for _, templateConfig := range cfg.TemplatesConfigs {
 		templateConfig.mergeConfigs(cfg, mergoConfig)
 	}
 
-	cfg.Templates = mergeRenderDestinations(cfg.Templates)
+	cfg.TemplatesConfigs = mergeRenderDestinations(cfg.TemplatesConfigs)
 }
 
 // generateFromTo for datafiles without FromTo a new FromTo will be created from From and To fields
-func generateFromTo(templates []*TemplateConfig) []*TemplateConfig {
+func generateFromTo(templatesConfigs []*TemplateConfig) []*TemplateConfig {
 	var tmpls []*TemplateConfig
-	for _, templateConfig := range templates {
+	for _, templateConfig := range templatesConfigs {
 		if len(templateConfig.FromTo) == 0 {
 			if templateConfig.From != "" {
-				for _, renderConfig := range templateConfig.Render {
+				for _, renderConfig := range templateConfig.RenderConfigs {
 					fromTo := FromTo{
 						From: templateConfig.From,
 						To:   renderConfig.To,
@@ -117,8 +117,8 @@ func generateFromTo(templates []*TemplateConfig) []*TemplateConfig {
 						log.Fatalf("Cannot deepcopy object: %s", err)
 					}
 					tmpls = append(tmpls, &TemplateConfig{
-						FromTo: []FromTo{fromTo},
-						Render: []*RenderConfig{&rc},
+						FromTo:        []FromTo{fromTo},
+						RenderConfigs: []*RenderConfig{&rc},
 					})
 				}
 			}
@@ -135,11 +135,11 @@ func mergeRenderDestinations(templates []*TemplateConfig) []*TemplateConfig {
 	for _, templateConfig := range templates {
 		for _, fromTo := range templateConfig.FromTo {
 			if template, ok := tmpl[fromTo]; ok {
-				reposDst, ok := template.Render[0].Values["JobConfigs"].([]Repo)
+				reposDst, ok := template.RenderConfigs[0].Values["JobConfigs"].([]Repo)
 				if !ok {
 					log.Fatalf("dst JobConfigs not of Type []Repo")
 				}
-				reposSrc, ok := templateConfig.Render[0].Values["JobConfigs"].([]Repo)
+				reposSrc, ok := templateConfig.RenderConfigs[0].Values["JobConfigs"].([]Repo)
 				if !ok {
 					log.Fatalf("src JobConfigs not of Type []Repo")
 				}
@@ -147,7 +147,7 @@ func mergeRenderDestinations(templates []*TemplateConfig) []*TemplateConfig {
 				// mergo.Merge(&reposDst,&reposSrc)
 				// reposDst = append(reposDst, reposSrc...)
 
-				template.Render[0].Values["JobConfigs"] = reposDst
+				template.RenderConfigs[0].Values["JobConfigs"] = reposDst
 			} else {
 				var tplCfg TemplateConfig
 				if err := copier.CopyWithOption(&tplCfg, templateConfig, copier.Option{DeepCopy: true}); err != nil {
@@ -196,7 +196,7 @@ func (ft FromTo) String() string {
 // TODO name is misleading
 // mergeConfigs merges parts, generates component jobs and appends all jobs to the list of values
 func (tplCfg *TemplateConfig) mergeConfigs(config *Config, mergoConfig mergo.Config) {
-	for _, render := range tplCfg.Render {
+	for _, render := range tplCfg.RenderConfigs {
 		// merge all parts of a config
 		render.mergeConfigs(config.GlobalSets, mergoConfig)
 		// generate component jobs

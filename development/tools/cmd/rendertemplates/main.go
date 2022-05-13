@@ -87,30 +87,36 @@ func main() {
 		for _, dataFile := range dataFiles {
 			var dataFileConfig rt.Config
 			var cfg bytes.Buffer
-			// load datafile as template
+			// Load datafile as template.
 			t, err := loadTemplate(dataFilesDir, dataFile)
 			if err != nil {
 				log.Fatalf("Could not load data file %s: %v", dataFile, err)
 			}
-			// execute rendering the datafile from template and store it in-memory
-			// at this point the config has all the global values from config.yaml file
+			// Execute rendering the datafile from datafile itself as a template and config as data.
+			// Store it in-memory. At this point the config has all the global values from config.yaml file.
+			// We do this in case a datafile to generate prowjobs definitions is itself a template, thus
+			// it contains golang template actions. We execute a datafile as template with config as datafile to set
+			// some datafile values from config global values. This is used for generating prowjobs for supported
+			// releases only. Config global values provide list of supported releases. This is used as data to render
+			// datafiles containing only supported releases versions as data.
+			// This rendered datafiles are then used to render prowjobs definitions, by applying prowjob definition
+			// template to them.
+			// If datafile doesn't contain any golang templates actions, output will be just a datafile itself.
 			if err := t.Execute(&cfg, config); err != nil {
 				log.Fatalf("Cannot render data template: %v", err)
 			}
 			if err := yaml.Unmarshal(cfg.Bytes(), &dataFileConfig); err != nil {
 				log.Fatalf("Cannot parse data file %s%s: %s\n", dataFilesDir, dataFile, err)
 			}
-			dataFilesTemplates = append(dataFilesTemplates, dataFileConfig.Templates...)
+			// append all generated configs from datafile to the list of templates to generate jobs from
+			config.TemplatesConfigs = append(config.TemplatesConfigs, dataFilesTemplates...)
 		}
-
-		// append all generated configs from datafiles to the list of templates to generate jobs from
-		config.Templates = append(config.Templates, dataFilesTemplates...)
 	}
 
 	config.Merge(mergoConfig)
 
 	// generate final .yaml files
-	for _, templateConfig := range config.Templates {
+	for _, templateConfig := range config.TemplatesConfigs {
 		err = renderTemplate(path.Dir(*configFilePath), templateConfig, config)
 		if err != nil {
 			log.Fatalf("Cannot render template %s: %s", templateConfig.From, err)
@@ -155,7 +161,7 @@ func renderTemplate(basePath string, templateConfig *rt.TemplateConfig, config *
 		if err != nil {
 			return err
 		}
-		for _, render := range templateConfig.Render {
+		for _, render := range templateConfig.RenderConfigs {
 			err = renderFileFromTemplate(basePath, templateInstance, *render, config, fromTo)
 			if err != nil {
 				log.Printf("Failed render %s file", fromTo.To)
