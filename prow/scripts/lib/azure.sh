@@ -9,18 +9,19 @@ source "${LIBDIR}/utils.sh"
 
 # az::verify_deps checks if all required commands are available
 function az::verify_deps {
+  log::info "Verify dependencies checks if all required commands are available"
     if ! [[ -x $(command -v az) ]]; then
         log::error "'az' command not found in \$PATH. Exiting..."
         exit 1
     else
-        echo "Azure CLI Version:"
+        log::info "Azure CLI Version:"
         az version
     fi
     if ! [[ -x $(command -v jq) ]]; then
         log::error "'jq' command not found in \$PATH. Exiting..."
         exit 1
     else
-        echo "jq version:"
+        log::info "jq version:"
         jq --version
     fi
 }
@@ -36,7 +37,6 @@ function az::verify_deps {
 #   "secret": "subscription_secret"
 # }
 function az::authenticate {
-
     local OPTIND
     local azureSubscriptionTenant
     local azureSubscriptionAppID
@@ -45,14 +45,15 @@ function az::authenticate {
 
     # Check the provided credentials in the argument.
     # Use arguments to avoid exporting sensitive values.
+    log::info "Check the provided credentials in the argument"
     while getopts ":f:" opt; do
         case $opt in
             f)
                 azureCredentialsFile="$OPTARG" ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2 ;;
+                log::warn "Option -$OPTARG argument not provided" >&2 ;;
         esac
     done
     utils::check_empty_arg "$azureCredentialsFile" "Missing account credentials, please provide proper credentials"
@@ -85,9 +86,9 @@ function az::set_subscription {
             s)
                 azureSubscription="$OPTARG" ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2 ;;
+                log::warn "Option -$OPTARG argument not provided" >&2 ;;
         esac
     done
     utils::check_empty_arg "$azureSubscription"  "missing Azure Subscription ID, please provide proper azure subscription ID in the argument. Exiting..."
@@ -110,7 +111,7 @@ function az::create_resource_group {
     local resourceGroup
     local azureRegion
     local groupTags
-
+    log::info "Check the provided group name, region and tags in the argument"
     while getopts ":g:r:t:" opt; do
         case $opt in
             g)
@@ -122,9 +123,9 @@ function az::create_resource_group {
                     groupTags+=("$OPTARG")
                 fi ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2 ;;
+                log::warn "Option -$OPTARG argument not provided" >&2 ;;
         esac
     done
 
@@ -177,9 +178,9 @@ function az::delete_resource_group {
             g)
                 resourceGroup="$OPTARG" ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2 ;;
+                log::warn "Option -$OPTARG argument not provided" >&2 ;;
         esac
     done
 
@@ -229,9 +230,9 @@ function az::create_storage_account {
                     groupTags+=("$OPTARG")
                 fi ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2 ;;
+                log::warn "Option -$OPTARG argument not provided" >&2 ;;
         esac
     done
 
@@ -271,9 +272,9 @@ function az::delete_storage_account {
             n)
                 accountName="$OPTARG" ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2 ;;
+                log::warn "Option -$OPTARG argument not provided" >&2 ;;
         esac
     done
 
@@ -334,9 +335,9 @@ function az::provision_k8s_cluster {
             f)
                 credentialsFile="$OPTARG" ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2 ;;
+                log::warn "Option -$OPTARG argument not provided" >&2 ;;
         esac
     done
 
@@ -395,9 +396,9 @@ function az::deprovision_k8s_cluster {
                 resourceGroup="$OPTARG" ;;
 
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2 ;;
+                log::warn "Option -$OPTARG argument not provided" >&2 ;;
         esac
     done
 
@@ -446,9 +447,9 @@ function az::reserve_ip_address {
             r)
                 azureRegion="$OPTARG" ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2 ;;
+                log::warn "Option -$OPTARG argument not provided" >&2 ;;
         esac
     done
 
@@ -490,9 +491,9 @@ function az::get_cluster_resource_group {
             c)
                 clusterName="$OPTARG" ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2 ;;
+                log::warn "Option -$OPTARG argument not provided" >&2 ;;
         esac
     done
 

@@ -1,4 +1,5 @@
 #!/bin/bash
+log::banner "Reconciler Publish PR-CLI"
 
 set -o errexit
 
@@ -47,4 +48,4 @@ export KYMA_CLI_UNSTABLE_BUCKET="${KYMA_CLI_PR_UNSTABLE_BUCKET}"
 log::info "Publishing new builds to $KYMA_CLI_UNSTABLE_BUCKET"
 make upload-binaries
 
-log::success "all done"
+log::success "Reconciler Publish PR CLI's all done"

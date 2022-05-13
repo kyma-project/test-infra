@@ -10,10 +10,11 @@ source "${LIBDIR}"/log.sh
 # Arguments
 # $1 - list of variables
 function utils::check_required_vars() {
+  log::info "Checks if all provided variables are initialized"
     local discoverUnsetVar=false
     for var in "$@"; do
       if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
+        log::warn "ERROR: $var is not set"
         discoverUnsetVar=true
       fi
     done
@@ -173,6 +174,8 @@ function utils::receive_from_vm() {
 # $3 - local path
 # $4 - remote path
 function utils::send_to_vm() {
+  log::info "Sends file(s) to Google Compute Platform over scp"
+  log::info "Checking compute zone, remote name, local path and remote path arguments"
   if [ -z "$1" ]; then
     echo "Zone is empty. Exiting..."
     exit 1
@@ -213,13 +216,14 @@ function utils::send_to_vm() {
 # optional:
 # p - local script path
 function utils::ssh_to_vm_with_script() {
+  log::info "Communicate to Google Compute Platform over ssh"
   local OPTIND
   local ZONE
   local REMOTE_NAME
   local COMMAND
   local LOCAL_SCRIPT_PATH
 
-
+  log::info "Checking Compute Zone, Remote name and ssh command required arguments"
   while getopts ":z:n:c:p:" opt; do
       case $opt in
           z)
@@ -256,6 +260,7 @@ function utils::ssh_to_vm_with_script() {
 # $3 - local path
 # $4 - remote path
 function utils::compress_send_to_vm() {
+  log::info "Compresses and sends file(s) to Google Compute Platform over scp"
   if [ -z "$1" ]; then
     echo "Zone is empty. Exiting..."
     exit 1
@@ -294,6 +299,8 @@ function utils::compress_send_to_vm() {
 # $2 - Gardener cluster name
 # $3 - path to kubeconfig
 function utils::deprovision_gardener_cluster() {
+  log::info "deprovisions a Gardener cluster"
+  log::info "Gardener project name: $1,  Gardner cluster name: $2, path to kubeconfig: $3"
   if [ -z "$1" ]; then
     echo "Project name is empty. Exiting..."
     exit 1
@@ -322,6 +329,8 @@ function utils::deprovision_gardener_cluster() {
 # Arguments
 # $1 - Name of the output json file
 function utils::save_psp_list() {
+  log:: info "generates pod-security-policy list and saves it to json file"
+  log::info "json file name: $1"
   if [ -z "$1" ]; then
     echo "File name is empty. Exiting..."
     exit 1
@@ -726,6 +735,7 @@ function utils::check_empty_arg {
 # utils_set_vars_for_build_return_commonName - generated common name
 # utils_set_vars_for_build_return_kymaSource - generated kyma source
 function utils::generate_vars_for_build {
+  log::info "Generate string values for specific build types"
 
     local OPTIND
 

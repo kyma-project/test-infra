@@ -8,7 +8,8 @@ readonly GO_VERSION=1.18
 readonly PG_MIGRATE_VERSION=v4.15.1
 readonly INSTALL_DIR="/usr/local/bin"
 
-function prereq_test() {
+function check_pre_requirements_for_tests() {
+  log::info "Check pre-requirements for test"
   command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
   command -v npm >/dev/null 2>&1 || { echo >&2 "npm not found"; exit 1; }
   command -v jq >/dev/null 2>&1 || { echo >&2 "jq not found"; exit 1; }
@@ -17,7 +18,7 @@ function prereq_test() {
   command -v k3d >/dev/null 2>&1 || { echo >&2 "k3d not found"; exit 1; }
 }
 
-function create_local_bin() {
+function create_local_bin_folder() {
     echo "Create local bin folder"
     mkdir -p $INSTALL_DIR
     export PATH=$PATH:$INSTALL_DIR
@@ -57,16 +58,16 @@ function run_tests() {
   popd
 }
 
-function provision_pg() {
+function provision_postgres() {
   echo "Starting Postgres"
   pushd $RECONCILER_DIR
   ./scripts/postgres.sh start
   popd
 }
 
-prereq_test
-create_local_bin
+check_pre_requirements_for_tests
+create_local_bin_folder
 install_cli
-provision_pg
+provision_postgres
 provision_k3d
 run_tests
