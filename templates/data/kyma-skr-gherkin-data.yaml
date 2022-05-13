@@ -27,9 +27,6 @@ templates:
             request_memory: 100Mi
             request_cpu: 50m
             labels:
-              preset-kyma-guard-bot-github-token: "true"
-              preset-sa-vm-kyma-integration: "true"
-              preset-gc-project-env: "true"
               preset-build-pr: "true"
               preset-keb-dev-credentials: "true"
               preset-kyma-integration-compass-dev: "true"

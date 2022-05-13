@@ -18,15 +18,12 @@ presubmits: # runs on PRs
         preset-btp-operator-stage-credentials: "true"
         preset-build-pr: "true"
         preset-cluster-version: "true"
-        preset-gc-project-env: "true"
         preset-kcp-client-dev-envs: "true"
         preset-keb-dev-credentials: "true"
-        preset-kyma-guard-bot-github-token: "true"
         preset-kyma-integration-compass-dev: "true"
         preset-kyma-integration-compass-enabled: "true"
         preset-kyma-integration-kcp-client-credentials: "true"
         preset-kyma-integration-subaccounnt: "true"
-        preset-sa-vm-kyma-integration: "true"
       optional: true
       skip_report: false
       decorate: true
