@@ -233,7 +233,6 @@ tide:
       orgs:
         - kyma-project
         - kyma-incubator
-      excludedRepos:
       reviewApprovedRequired: true
   context_options:
     from-branch-protection: true
