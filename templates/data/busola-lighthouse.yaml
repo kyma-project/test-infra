@@ -31,7 +31,7 @@ templates:
               - jobConfig:
                   name: "pre-busola-lighthouse"
                   optional: false
-                  run_if_changed: "^resources/|^lighthouse/"
+                  run_if_changed: "^resources/|^lighthouse/|^nginx/"
                   labels:
                     preset-build-pr: "true"
                     preset-gardener-azure-kyma-integration: "true"
@@ -51,7 +51,7 @@ templates:
               - jobConfig:
                   name: "post-busola-lighthouse"
                   optional: false
-                  run_if_changed: "^resources/|^lighthouse/"
+                  run_if_changed: "^resources/|^lighthouse/|^nginx/"
                   labels:
                     preset-build-main: "false"
                     preset-gardener-azure-kyma-integration: "true"
