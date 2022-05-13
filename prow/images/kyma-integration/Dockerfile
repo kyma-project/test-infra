@@ -48,7 +48,7 @@ RUN . /etc/os-release && \
     add-apt-repository \
     "deb [arch=amd64] https://download.docker.com/linux/$ID $VERSION_CODENAME stable"
 
-ENV DOCKER_VERSION=5:20.10.8*
+ENV DOCKER_VERSION=5:20.10.14*
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -193,8 +193,7 @@ RUN curl -fLSs -o /usr/local/bin/cosign https://github.com/sigstore/cosign/relea
 #################################################################
 
 # Note: kcp-cli doesn't provide releases
-# https://github.com/kyma-project/control-plane/blob/main/docs/cli/01-01-overview.md
-ENV KCPCLI_VERSION=master-9a0a2e5a
+ENV KCPCLI_VERSION=master-1208b417
 RUN curl -fLSs -o /usr/local/bin/kcp https://storage.googleapis.com/kyma-development-artifacts/kcp/${KCPCLI_VERSION}/kcp-linux &&\
     chmod +x /usr/local/bin/kcp
 

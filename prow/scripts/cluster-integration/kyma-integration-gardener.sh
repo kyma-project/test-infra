@@ -100,6 +100,7 @@ kyma::install_cli
 # currently only Azure generates overrides, but this may change in the future
 gardener::generate_overrides
 
+export CLEANUP_CLUSTER="true"
 gardener::provision_cluster
 
 if [[ "${KYMA_MAJOR_VERSION}" == "2" ]]; then

@@ -13,6 +13,8 @@ import (
 
 type fakeAliases struct {
 	ownersAliases
+	// This has to be normalized list of aliases
+	// lowercase and without any GitHub prefixes
 	Aliases repoowners.RepoAliases
 }
 
@@ -381,7 +383,7 @@ func Test_HandlePullRequestReview(t *testing.T) {
 				Action: github.ReviewActionSubmitted,
 				Review: github.Review{
 					State: github.ReviewStateApproved,
-					User:  github.User{Login: "reviewer"},
+					User:  github.User{Login: "Reviewer"},
 				},
 				Repo: github.Repo{
 					Name:  "repo",
@@ -437,7 +439,7 @@ func Test_HandlePullRequestReview(t *testing.T) {
 				Action: github.ReviewActionSubmitted,
 				Review: github.Review{
 					State: github.ReviewStateChangesRequested,
-					User:  github.User{Login: "reviewer"},
+					User:  github.User{Login: "Reviewer"},
 				},
 				Repo: github.Repo{
 					Name:  "repo",
@@ -457,7 +459,7 @@ func Test_HandlePullRequestReview(t *testing.T) {
 				Action: github.ReviewActionSubmitted,
 				Review: github.Review{
 					State: github.ReviewStateChangesRequested,
-					User:  github.User{Login: "reviewer"},
+					User:  github.User{Login: "Reviewer"},
 				},
 				Repo: github.Repo{
 					Name:  "repo",
@@ -481,7 +483,7 @@ func Test_HandlePullRequestReview(t *testing.T) {
 				Action: github.ReviewActionSubmitted,
 				Review: github.Review{
 					State: github.ReviewStateApproved,
-					User:  github.User{Login: "reviewer"},
+					User:  github.User{Login: "Reviewer"},
 				},
 				Repo: github.Repo{
 					Name:  "repo",

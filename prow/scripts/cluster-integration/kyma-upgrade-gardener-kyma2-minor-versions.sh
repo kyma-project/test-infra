@@ -113,7 +113,6 @@ trap gardener::cleanup EXIT INT
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
-export ERROR_LOGGING_GUARD
 
 RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
 readonly COMMON_NAME_PREFIX="grd"
@@ -148,6 +147,7 @@ kyma::install_unstable_cli
 gardener::generate_overrides
 
 log::info "### Provisioning Gardener cluster"
+export CLEANUP_CLUSTER="true"
 gardener::provision_cluster
 
 # deploy base minor version
@@ -156,9 +156,9 @@ deploy_base
 # upgrade to next versions in a loop
 upgrade
 
+unset minor_release_versions
+
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
-
-unset minor_release_versions
 
 

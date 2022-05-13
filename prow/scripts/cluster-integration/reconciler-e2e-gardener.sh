@@ -82,6 +82,8 @@ readonly COMMON_NAME_PREFIX="grd"
 utils::generate_commonName -n "${COMMON_NAME_PREFIX}"
 
 export INPUT_CLUSTER_NAME="${utils_generate_commonName_return_commonName:?}"
+# This is needed for the gardener::cleanup function
+export CLUSTER_NAME="${INPUT_CLUSTER_NAME}"
 
 # set Kyma version to reconcile
 if [[ $KYMA_TEST_SOURCE == "latest-release" ]]; then
@@ -98,6 +100,7 @@ fi
 log::banner "Provisioning Gardener cluster"
 
 # Provision garderner cluster
+export CLEANUP_CLUSTER="true"
 reconciler::provision_cluster
 
 reconciler::export_shoot_cluster_kubeconfig
