@@ -37,6 +37,7 @@ templates:
               preset-btp-operator-stage-credentials: "true"
               preset-cluster-version: "true"
               preset-kyma-integration-kcp-client-credentials: "true"
+              preset-skr-al-service-key: "true"
           keb_plan_aws:
             annotations:
               pipeline.platform: gardener_aws
