@@ -9,7 +9,7 @@ readonly PG_MIGRATE_VERSION=v4.15.1
 readonly INSTALL_DIR="/usr/local/bin"
 
 function check_pre_requirements_for_tests() {
-  log::info "Check pre-requirements for test"
+  echo "Check pre-requirements for test"
   command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
   command -v npm >/dev/null 2>&1 || { echo >&2 "npm not found"; exit 1; }
   command -v jq >/dev/null 2>&1 || { echo >&2 "jq not found"; exit 1; }

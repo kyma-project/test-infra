@@ -329,7 +329,7 @@ function utils::deprovision_gardener_cluster() {
 # Arguments
 # $1 - Name of the output json file
 function utils::save_psp_list() {
-  log:: info "generates pod-security-policy list and saves it to json file"
+  log::info "generates pod-security-policy list and saves it to json file"
   log::info "json file name: $1"
   if [ -z "$1" ]; then
     echo "File name is empty. Exiting..."
