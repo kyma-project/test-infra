@@ -134,7 +134,6 @@ branch-protection:
           branches:
             main:
               protect: true
-              required_status_checks:
         compass-console:
           protect: false
           branches:
