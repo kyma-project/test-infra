@@ -1,5 +1,6 @@
 pjNames:
   - pjName: "kyma-upgrade-k3d-kyma2-to-main"
+  - pjName: "kyma-upgrade-gardener-kyma2-to-main-reconciler-main"
   - pjName: "nightly-main-reconciler-e2e"
   - pjName: "kyma-upgrade-gardener-kyma2-minor-versions"
   - pjName: "pre-main-control-plane-reconciler-e2e-latest-release"
