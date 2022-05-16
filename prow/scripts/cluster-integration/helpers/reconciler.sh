@@ -213,7 +213,7 @@ function reconciler::trigger_kyma_reconcile() {
   sleep 10m
   if [[ $? -ne 0 ]]; then
       log::error "Failed to trigger reconciliation"
-      exit 1
+#      exit 1
   fi
 }
 
