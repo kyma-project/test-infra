@@ -17,7 +17,14 @@ pjNames:
     report: true
   - pjName: "pre-main-reconciler-cli-kyma-prev-to-last-release-upgrade-k3d"
     report: true
+  - pjName: "pre-main-kyma-gardener-gcp-eventing"
+    report: true
+  - pjName: "pre-main-kyma-gardener-gcp-eventing-js"
+    report: true
+  - pjName: "pre-main-kyma-gardener-gcp-eventing-upgrade"
+    report: true
+  - pjName: "pre-main-kyma-gardener-azure-alpha-prod"
+    report: true
+  - pjName: "pre-main-kyma-gardener-azure-alpha-eva"
+    report: true
 prConfigs:
-  kyma-incubator:
-    reconciler:
-      prNumber: 1086
