@@ -3,7 +3,21 @@ pjNames:
     report: true
   - pjName: "pre-main-ory-reconciler-eval-integration"
     report: true
+  - pjName: "nightly-main-reconciler"
+    report: true
+  - pjName: "nightly-main-reconciler-e2e"
+    report: true
+  - pjName: "nightly-main-reconciler-publish-unstable-cli"
+    report: true
+  - pjName: "pre-main-reconciler-publish-pr-cli"
+    report: true
+  - pjName: "pre-main-reconciler-cli-integration-kyma-latest-k3d"
+    report: true
+  - pjName: "pre-main-reconciler-cli-integration-kyma-main-k3d"
+    report: true
+  - pjName: "pre-main-reconciler-cli-kyma-prev-to-last-release-upgrade-k3d"
+    report: true
 prConfigs:
   kyma-incubator:
     reconciler:
-      prNumber: 1089
+      prNumber: 1086
