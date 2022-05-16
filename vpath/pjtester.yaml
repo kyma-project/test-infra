@@ -1,7 +1,10 @@
 pjNames:
-  - pjName: "skr-aws-integration-dev"
-  - pjName: "kyma-integration-k3d"
+  - pjName: "kyma-upgrade-k3d-kyma2-to-main"
+  - pjName: "nightly-main-reconciler-e2e"
+  - pjName: "kyma-upgrade-gardener-kyma2-minor-versions"
+  - pjName: "pre-main-control-plane-reconciler-e2e-latest-release"
+  - pjName: "pre-main-control-plane-reconciler-upgrade-kyma2-latest-to-main-gardener"
 prConfigs:
   kyma-project:
     kyma:
-      prNumber: 14116
+      prNumber: 14282
