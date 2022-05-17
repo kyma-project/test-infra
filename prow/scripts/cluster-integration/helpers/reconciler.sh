@@ -257,7 +257,7 @@ function reconciler::wait_until_kyma_reconciled() {
 # Deploy test pod
 function reconciler::deploy_test_pod() {
   # Deploy a test pod
-  log::info "Deploy test pod in the cluster which will trigger reconciliation"
+  log::info "Deploy test-pod in the cluster which will trigger reconciliation"
   test_pod_name=$(kubectl get po test-pod -n "${RECONCILER_NAMESPACE}" -ojsonpath="{ .metadata.name }" --ignore-not-found)
   if [ -n "${test_pod_name}" ]; then
     log::info "Found existing pod: test-pod"
