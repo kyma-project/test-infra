@@ -47,6 +47,7 @@ templates:
                     - ^master$
                     - ^main$
                     - "^v\\d+\\.\\d+\\.\\d+$" # release tags
+                    - "^v\\d+\\.\\d+\\.\\d-rc\\d$" # release candidate tags
                   labels:
                     preset-build-artifacts-main: "true"
                   slack_channel: "kyma-prow-dev-null"
