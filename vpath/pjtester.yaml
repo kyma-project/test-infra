@@ -41,4 +41,6 @@ pjNames:
     report: true
   - pjName: "post-main-kyma-integration-k3d-central-app-connectivity"
     report: true
+  - pjName: "periodic-main-kyma-incubator-reconciler-kyma1-kyma2-upgrade"
+    report: true
 prConfigs:
