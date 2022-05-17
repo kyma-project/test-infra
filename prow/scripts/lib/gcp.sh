@@ -119,9 +119,9 @@ function gcp::provision_k8s_cluster {
                     local gcpSecurityGroupDomain="$OPTARG"
                 fi ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2 ;;
+                log::warn "Option -$OPTARG argument not provided" >&2 ;;
         esac
     done
 
@@ -238,19 +238,19 @@ function gcp::provision_k8s_cluster {
 # required:
 # c - google credentials file path
 function gcp::authenticate {
-
+    log::info "Preparing credentials"
     local OPTIND
     #required arguments
     local googleAppCredentials
-
+    log::info "Check the provided credentials in the argument"
     while getopts ":c:" opt; do
         case $opt in
             c)
                 googleAppCredentials="$OPTARG" ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2 ;;
+                log::warn "Option -$OPTARG argument not provided" >&2 ;;
         esac
     done
 
@@ -276,9 +276,9 @@ function gcp::set_account() {
             c)
                 googleAppCredentials="$OPTARG" ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2 ;;
+                log::warn "Option -$OPTARG argument not provided" >&2 ;;
         esac
     done
 
@@ -319,9 +319,9 @@ function gcp::reserve_ip_address {
             r)
                 computeRegion=${OPTARG:-$computeRegion} ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2 ;;
+                log::warn "Option -$OPTARG argument not provided" >&2 ;;
         esac
     done
 
@@ -397,9 +397,9 @@ function gcp::create_dns_record {
             z)
                 gcpDnsZoneName="$OPTARG" ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2; exit 1 ;;
+                log::warn "Option -$OPTARG argument not provided" >&2; exit 1 ;;
         esac
     done
 
@@ -497,9 +497,9 @@ function gcp::delete_dns_record {
             z)
                 gcpDnsZoneName="$OPTARG" ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2; ;;
+                log::warn "Option -$OPTARG argument not provided" >&2; ;;
         esac
     done
 
@@ -562,9 +562,9 @@ function gcp::set_vars_for_network {
             n)
                 jobName="$OPTARG" ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2; exit 1 ;;
+                log::warn "Option -$OPTARG argument not provided" >&2; exit 1 ;;
         esac
     done
 
@@ -619,9 +619,9 @@ function gcp::create_network {
             s)
                 gcpSubnetName="$OPTARG" ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2 ;;
+                log::warn "Option -$OPTARG argument not provided" >&2 ;;
         esac
     done
 
@@ -686,9 +686,9 @@ function gcp::deprovision_k8s_cluster {
             d)
                 asyncDeprovision=${OPTARG:-$asyncDeprovision} ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2; ;;
+                log::warn "Option -$OPTARG argument not provided" >&2; ;;
         esac
     done
 
@@ -740,9 +740,9 @@ function gcp::delete_ip_address {
             R)
                 gcpComputeRegion=${OPTARG:-$computeRegion} ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2; ;;
+                log::warn "Option -$OPTARG argument not provided" >&2; ;;
         esac
     done
 
@@ -773,9 +773,9 @@ function gcp::delete_docker_image() {
             i)
                 imageName="$OPTARG" ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2; exit 1 ;;
+                log::warn "Option -$OPTARG argument not provided" >&2; exit 1 ;;
         esac
     done
 
@@ -805,9 +805,9 @@ function gcp::set_latest_cluster_version_for_channel() {
             C)
                 releaseChannel="$OPTARG" ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2; exit 1 ;;
+                log::warn "Option -$OPTARG argument not provided" >&2; exit 1 ;;
         esac
     done
 
@@ -850,9 +850,9 @@ function gcp::encrypt {
             p)
                 project=${OPTARG} ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2; ;;
+                log::warn "Option -$OPTARG argument not provided" >&2; ;;
         esac
     done
 
@@ -903,9 +903,9 @@ function gcp::decrypt {
             p)
                 project=${OPTARG} ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2; ;;
+                log::warn "Option -$OPTARG argument not provided" >&2; ;;
         esac
     done
 
@@ -962,9 +962,9 @@ function gcp::get_cluster_kubeconfig {
             r)
                 provisionRegionalCluster=${OPTARG:-$provisionRegionalCluster} ;;
             \?)
-                echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+                log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
             :)
-                echo "Option -$OPTARG argument not provided" >&2; ;;
+                log::warn "Option -$OPTARG argument not provided" >&2; ;;
         esac
     done
     
