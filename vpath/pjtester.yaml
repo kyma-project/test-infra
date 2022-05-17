@@ -1,7 +1,6 @@
 pjNames:
   - pjName: "skr-aws-integration-dev"
-  - pjName: "kyma-integration-k3d"
 prConfigs:
   kyma-project:
     kyma:
-      prNumber: 14116
+      prNumber: 14312
