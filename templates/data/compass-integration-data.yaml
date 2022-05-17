@@ -9,7 +9,7 @@ templates:
             args:
               - "--dump-db"
             request_memory: 100Mi
-            request_mcpu: 50m
+            request_cpu: 50m
             env:
               GO111MODULE: "on"
               KYMA_MAJOR_VERSION: "1"
