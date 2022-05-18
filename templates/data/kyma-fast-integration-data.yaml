@@ -1,7 +1,7 @@
 templates:
   - from: templates/generic.tmpl
     render:
-      - to: ../prow/jobs/kyma/test/fast-integration/fast-integration-image-generic.yaml
+      - to: ../prow/jobs/kyma/tests/fast-integration/fast-integration-image-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
