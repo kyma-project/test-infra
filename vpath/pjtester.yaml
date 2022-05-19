@@ -1,5 +1,12 @@
 pjNames:
-  - pjName: "pre-main-kyma-integration-k3d-telemetry"
+  - pjName: "pre-main-kyma-integration-k3d"
+  - pjName: "pre-main-kyma-integration-k3d-compass-dev"
+  - pjName: "pre-main-kyma-integration-k3d-central-app-connectivity-compass"
+  - pjName: "pre-main-kyma-gardener-gcp-eventing-upgrade"
+  - pjName: "pre-main-kyma-gardener-gcp-eventing-js"
+  - pjName: "pre-main-kyma-gardener-gcp-eventing"
+  - pjName: "pre-main-kyma-gardener-azure-alpha-prod"
+  - pjName: "pre-main-kyma-gardener-azure-alpha-eval"
 prConfigs:
   kyma-project:
     kyma:
