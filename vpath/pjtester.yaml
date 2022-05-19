@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "serverless-function-benchmark"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 14334
