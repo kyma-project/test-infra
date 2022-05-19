@@ -228,9 +228,9 @@ func (p PluginBackend) handlePullRequestReview(l *zap.SugaredLogger, re github.R
 }
 
 func (p PluginBackend) handleReview(l *zap.SugaredLogger, rc reviewCtx) error {
-	// parsed list of OWNER_ALIASES is converted to lowercase, we need to convert these names too
-	author := strings.ToLower(rc.author)
-	issueAuthor := strings.ToLower(rc.issueAuthor)
+	// normalize GitHub names by making them lowercase and strip any unnecessary prefixes
+	author := github.NormLogin(rc.author)
+	issueAuthor := github.NormLogin(rc.issueAuthor)
 	org := rc.repo.Owner.Login
 	repoName := rc.repo.Name
 	assignees := rc.assignees
@@ -254,7 +254,7 @@ func (p PluginBackend) handleReview(l *zap.SugaredLogger, rc reviewCtx) error {
 	if err != nil {
 		l.Errorw("Could not fetch owners aliases.", "error", err)
 	}
-	twsGroup := repoAliases[DefaultTechnicalWritersGroup]
+	twsGroup := repoAliases.ExpandAlias(DefaultTechnicalWritersGroup)
 	if !twsGroup.Has(author) {
 		// User is not a member of TWs group defined in OWNERS_ALIASES.
 		// possibly review meant for something else. Let's ignore this event.
@@ -263,7 +263,7 @@ func (p PluginBackend) handleReview(l *zap.SugaredLogger, rc reviewCtx) error {
 
 	var isAssignee bool
 	for _, a := range assignees {
-		if strings.ToLower(a.Login) == author {
+		if github.NormLogin(a.Login) == author {
 			isAssignee = true
 			break
 		}

@@ -17,7 +17,7 @@ replace (
 )
 
 require (
-	cloud.google.com/go/bigquery v1.31.0
+	cloud.google.com/go/bigquery v1.32.0
 	cloud.google.com/go/firestore v1.6.1
 	cloud.google.com/go/functions v1.3.0
 	cloud.google.com/go/logging v1.4.2
@@ -26,7 +26,7 @@ require (
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
-	github.com/cloudevents/sdk-go/v2 v2.9.0
+	github.com/cloudevents/sdk-go/v2 v2.10.0
 	github.com/containerd/containerd v1.6.1
 	github.com/containerd/typeurl v1.0.2
 	github.com/docker/docker v20.10.12+incompatible // indirect
@@ -63,7 +63,7 @@ require (
 	go.uber.org/zap v1.21.0
 	golang.org/x/net v0.0.0-20220425223048-2871e0cb64e4
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5
-	google.golang.org/api v0.78.0
+	google.golang.org/api v0.80.0
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	k8s.io/api v0.22.2
