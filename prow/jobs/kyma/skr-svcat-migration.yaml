@@ -14,7 +14,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "skr-aws-svcat-migration-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-btp-operator-stage-credentials: "true"
+        preset-btp-admin-stage-credentials: "true"
         preset-build-main: "true"
         preset-kcp-client-dev-envs: "true"
         preset-keb-dev-credentials: "true"

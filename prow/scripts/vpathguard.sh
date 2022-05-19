@@ -18,3 +18,5 @@ else
   log::success "Directory vpath is not present."
   exit 0
 fi
+
+log::info "Vpathguard script's all done"

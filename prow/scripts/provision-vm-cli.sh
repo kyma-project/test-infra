@@ -163,3 +163,4 @@ else
         log::error "Test file 'test-all.sh' not found"
     fi
 fi
+log::info "Provisioning VM CLI's done"
