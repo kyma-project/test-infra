@@ -19,6 +19,9 @@ fi
 
 pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
 
+export SKIP_PROVISIONING="true"
+export INSTANCE_ID="2d6ed558-fbbd-4096-9bc3-400c9d5df33b"
+
 make ci-skr
 
 log::success "all done"
