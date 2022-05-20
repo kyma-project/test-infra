@@ -41,6 +41,9 @@ function testCustomImage() {
   fi
 }
 
+log::info "test python"
+python --version
+
 gcp::authenticate \
   -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
