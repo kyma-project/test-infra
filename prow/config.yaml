@@ -174,7 +174,6 @@ tide:
     kyma-project/community: squash
     kyma-project/console: squash
     kyma-project/examples: squash
-    kyma-project/helm-broker: squash
     kyma-project/addons: squash
     kyma-project/busola-migrator: squash
     kyma-project/rafter: squash
@@ -190,7 +189,6 @@ tide:
     kyma-incubator/bullseye-showcase: squash
     kyma-incubator/milv: squash
     kyma-incubator/podpreset-crd: squash
-    kyma-incubator/service-catalog-tester: squash
     kyma-incubator/kymart: squash
     kyma-incubator/dex: squash
     kyma-incubator/varkes: squash
@@ -203,14 +201,12 @@ tide:
     kyma-incubator/wordpress-connector: squash
     kyma-incubator/connector-tools: squash
 #    kyma-incubator/github-slack-connectors: squash
-    kyma-incubator/service-catalog: squash
     kyma-incubator/gcp-service-broker: squash
 #    kyma-incubator/homebrew-kyma-incubator: squash
 #    kyma-incubator/runtime: squash
     kyma-incubator/artwork: squash
     kyma-incubator/opensap: squash
 #    kyma-incubator/wormhole: squash
-#    kyma-incubator/k8s-service-catalog: squash
     kyma-incubator/kyma-showcase: squash
     kyma-incubator/sc-removal: squash
     kyma-incubator/hydra-login-consent: squash
