@@ -1,15 +1,15 @@
 templates:
   - from: templates/generic.tmpl
     render:
-      - to: ../prow/jobs/kyma/components/application-connectivity-certs-setup-job/application-connectivity-certs-setup-job-generic.yaml
+      - to: ../prow/jobs/kyma/components/compass-runtime-agent/compass-runtime-agent-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
               - jobConfig:
-                  path: components/application-connectivity-certs-setup-job
+                  path: components/compass-runtime-agent
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/application-connectivity-certs-setup-job"
-                  run_if_changed: "^components/application-connectivity-certs-setup-job/|^common/makefiles/"
+                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/compass-runtime-agent"
+                  run_if_changed: "^components/compass-runtime-agent/|^common/makefiles/"
                   release_since: "1.7"
                 inheritedConfigs:
                   global:
@@ -100,102 +100,6 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/components/application-registry/application-registry-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: components/application-registry
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/application-registry"
-                  run_if_changed: "^components/application-registry/|^common/makefiles/"
-                  release_since: "1.7"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-      - to: ../prow/jobs/kyma/components/compass-runtime-agent/compass-runtime-agent-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: components/compass-runtime-agent
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/compass-runtime-agent"
-                  run_if_changed: "^components/compass-runtime-agent/|^common/makefiles/"
-                  release_since: "1.7"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-      - to: ../prow/jobs/kyma/components/connection-token-handler/connection-token-handler-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: components/connection-token-handler
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/connection-token-handler"
-                  run_if_changed: "^components/connection-token-handler/|^common/makefiles/"
-                  release_since: "1.7"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-      - to: ../prow/jobs/kyma/components/connector-service/connector-service-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: components/connector-service
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/connector-service"
-                  run_if_changed: "^components/connector-service/|^common/makefiles/"
-                  release_since: "1.7"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
       - to: ../prow/jobs/kyma/components/service-binding-usage-controller/service-binding-usage-controller-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
@@ -230,54 +134,6 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/components/uaa-activator"
                   run_if_changed: "^components/uaa-activator/|^common/makefiles/"
                   release_since: "1.9"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-      - to: ../prow/jobs/kyma/tests/service-catalog/service-catalog-tests-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: tests/service-catalog
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/tests/service-catalog"
-                  run_if_changed: "^tests/service-catalog/|^common/makefiles/"
-                  release_since: "1.7"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-      - to: ../prow/jobs/kyma/tests/application-connector-tests/application-connector-tests-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: tests/application-connector-tests
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/tests/application-connector-tests"
-                  run_if_changed: "^tests/application-connector-tests/|^common/makefiles/"
-                  release_since: "1.7"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -364,15 +220,39 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/tests/application-registry-tests/application-registry-tests-generic.yaml
+      - to: ../prow/jobs/kyma/tests/service-catalog/service-catalog-tests-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
               - jobConfig:
-                  path: tests/application-registry-tests
+                  path: tests/service-catalog
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/tests/application-registry-tests"
-                  run_if_changed: "^tests/application-registry-tests/|^common/makefiles/"
+                    - "/home/prow/go/src/github.com/kyma-project/kyma/tests/service-catalog"
+                  run_if_changed: "^tests/service-catalog/|^common/makefiles/"
+                  release_since: "1.7"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_generic_component"
+                    - "jobConfig_generic_component_kyma"
+                    - "extra_refs_test-infra"
+                  preConfigs:
+                    global:
+                      - "jobConfig_presubmit"
+                  postConfigs:
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
+      - to: ../prow/jobs/kyma/tests/application-connector-tests/application-connector-tests-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  path: tests/application-connector-tests
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/kyma/tests/application-connector-tests"
+                  run_if_changed: "^tests/application-connector-tests/|^common/makefiles/"
                   release_since: "1.7"
                 inheritedConfigs:
                   global:
@@ -397,54 +277,6 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/tests/compass-runtime-agent"
                   run_if_changed: "^tests/compass-runtime-agent/|^common/makefiles/"
-                  release_since: "1.7"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-      - to: ../prow/jobs/kyma/tests/connection-token-handler-tests/connection-token-handler-tests-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: tests/connection-token-handler-tests
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/tests/connection-token-handler-tests"
-                  run_if_changed: "^tests/connection-token-handler-tests/|^common/makefiles/"
-                  release_since: "1.7"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-      - to: ../prow/jobs/kyma/tests/connector-service-tests/connector-service-tests-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: tests/connector-service-tests
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/tests/connector-service-tests"
-                  run_if_changed: "^tests/connector-service-tests/|^common/makefiles/"
                   release_since: "1.7"
                 inheritedConfigs:
                   global:
