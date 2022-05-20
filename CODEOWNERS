@@ -48,7 +48,6 @@
 /prow/jobs/kyma/components/istio-installer @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj @mjakobczyk @strekm @kyma-project/prow
 /prow/jobs/kyma/components/kyma-operator @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj @mjakobczyk @strekm @kyma-project/prow
 /prow/jobs/kyma/components/permission-controller @a-thaler @pbochynski @pk85 @dariusztutaj @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @kyma-project/prow
-/prow/jobs/kyma/components/service-binding-usage-controller @piotrmiskiewicz @pk85 @ralikio @szwedm @tillknuesting @wozniakjan @pbochynski @hanngos @a-thaler @kyma-project/prow
 /prow/jobs/kyma/components/telemetry-operator @pk85 @szwedm @tillknuesting @a-thaler @hanngos @ralikio @wozniakjan @pbochynski @piotrmiskiewicz @kyma-project/prow
 /prow/jobs/kyma/components/uaa-activator @wozniakjan @pbochynski @piotrmiskiewicz @pk85 @szwedm @tillknuesting @a-thaler @hanngos @ralikio @kyma-project/prow
 /prow/jobs/kyma/components/xip-patch @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj @kyma-project/prow
