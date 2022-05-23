@@ -1056,6 +1056,10 @@ periodics: # runs on schedule
           repo: reconciler
           path_alias: github.com/kyma-incubator/reconciler
           base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
       reporter_config:
         slack:
           channel: jellyfish-notifications
@@ -1065,7 +1069,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-incubator/reconciler/scripts/prow/reconciler-image-autobump.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-image-autobump.sh"
             resources:
               requests:
                 memory: 3Gi
