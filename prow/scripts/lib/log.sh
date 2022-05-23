@@ -39,7 +39,6 @@ function log::banner {
 #   $* - Message
 function log::info {
    local funcname # get function that called this
-   local dirname
    local scriptname
    funcname=${FUNCNAME[1]}
    scriptname=${BASH_SOURCE[1]:-$1}
@@ -66,11 +65,10 @@ function log::success {
 #   $* - Message
 function log::warn {
    local funcname # get function that called this
-   local dirname
    local scriptname
    funcname=${FUNCNAME[1]}
    scriptname=${BASH_SOURCE[1]:-$1}
-  echo -e "$(log::date) [WARN] PID:$$ --- [$dirname/$scriptname] $funcname:${BASH_LINENO[1]} $*"
+  echo -e "$(log::date) [WARN] PID:$$ --- [$scriptname] $funcname:${BASH_LINENO[1]} $*"
 }
 
 # log::error prints a message with error level
@@ -79,10 +77,9 @@ function log::warn {
 #   $* - Message
 function log::error {
      local funcname # get function that called this
-     local dirname
      local scriptname
      funcname=${FUNCNAME[1]}
      scriptname=${BASH_SOURCE[1]:-$1}
-    >&2  echo -e "$(log::date) [ERROR] PID:$$ --- [$dirname/$scriptname] $funcname:${BASH_LINENO[1]} $*"
+    >&2  echo -e "$(log::date) [ERROR] PID:$$ --- [$scriptname] $funcname:${BASH_LINENO[1]} $*"
     >&2 log::dump_trace
 }
