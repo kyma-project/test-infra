@@ -10,7 +10,6 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration/image"
                   run_if_changed: "^tests/fast-integration/image/"
-                  release_since: "2.2"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
