@@ -30,14 +30,6 @@ cleanup() {
     exit $ARG
 }
 
-function testCustomImage() {
-    CUSTOM_IMAGE="$1"
-    IMAGE_EXISTS=$(gcloud compute images list --filter "name:${CUSTOM_IMAGE}" | tail -n +2 | awk '{print $1}')
-    if [[ -z "$IMAGE_EXISTS" ]]; then
-        log::error "${CUSTOM_IMAGE} is invalid, it is not available in GCP images list, the script will terminate ..." && exit 1
-    fi
-}
-
 gcp::authenticate \
     -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
@@ -116,13 +108,17 @@ log::info "Copying Compass to the instance"
 utils::compress_send_to_vm "${ZONE}" "compass-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/compass" "~/compass"
 
 
-KYMA_CLI_VERSION="a064ffb"
+KYMA_CLI_VERSION="2.0.4"
 log::info "Installing Kyma CLI version: $KYMA_CLI_VERSION"
 
 PREV_WD=$(pwd)
 git clone https://github.com/kyma-project/cli.git && cd cli && git checkout $KYMA_CLI_VERSION
 make build-linux && cd ./bin && mv ./kyma-linux ./kyma
 chmod +x kyma
+
+K3D_VERSION="v5.3.0"
+log::info "Installing k3d version: $K3D_VERSION"
+wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG="${K3D_VERSION}" bash
 
 utils::ssh_to_vm_with_script -z "${ZONE}" -n "compass-integration-test-${RANDOM_ID}" -c "mkdir \$HOME/bin"
 
