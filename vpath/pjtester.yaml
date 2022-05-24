@@ -1,4 +1,5 @@
 pjNames:
   - pjName: "pre-kyma-tests-fast-integration-image"
-    pjPath: "test-infra/prow/jobs/kyma/tests/fast-integration/fast-integration-image-generic.yaml"
+    pjPath: "test-infra/prow/jobs/kyma/tests/fast-integration/"
+    report: true
 
