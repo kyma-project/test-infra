@@ -13,8 +13,8 @@ templates:
                   base_ref: main
           jobConfig_skipprovisioning:
             env:
-              #SKIP_PROVISIONING: true
-              #INSTANCE_ID: 
+              SKIP_PROVISIONING: true
+              INSTANCE_ID: "9A4D7731-BDD5-4E34-A8DA-08A626C7CEB1"
               KEB_SUBACCOUNT_ID: "pandas-test"
           jobConfig_default:
             optional: true
