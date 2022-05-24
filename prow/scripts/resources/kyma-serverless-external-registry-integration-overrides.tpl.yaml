@@ -9,11 +9,6 @@ test:
     ui:
       logging.enabled: true
 
-application-registry:
-  deployment:
-    args:
-      detailedErrorResponse: true
-
 istio:
   override: |
     apiVersion: install.istio.io/v1alpha1

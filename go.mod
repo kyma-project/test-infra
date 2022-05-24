@@ -22,7 +22,7 @@ require (
 	cloud.google.com/go/functions v1.3.0
 	cloud.google.com/go/logging v1.4.2
 	cloud.google.com/go/pubsub v1.21.1
-	cloud.google.com/go/storage v1.22.0
+	cloud.google.com/go/storage v1.22.1
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible

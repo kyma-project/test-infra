@@ -11,7 +11,7 @@ LABEL io.kyma-project.test-infra.commit=$commit
 # Versions
 
 ENV ARCH amd64
-ENV GO_VERSION 1.18
+ENV GO_VERSION 1.18.2
 ENV DEP_RELEASE_TAG v0.5.4
 ENV KUBEBUILDER_VERSION 2.3.2
 ENV KUSTOMIZE_VERSION 3.8.4
@@ -63,7 +63,7 @@ RUN go install golang.org/x/tools/cmd/goimports@latest && \
     go install golang.org/x/perf/cmd/benchstat@latest && \
     go install github.com/vektra/mockery/v2@latest && \
     go install github.com/maxbrunsfeld/counterfeiter/v6@latest && \
-    curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- -b ${GOPATH}/bin ${GOLANGCI_LINT_VERSION}
+    curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | bash -s -- -b ${GOPATH}/bin ${GOLANGCI_LINT_VERSION}
 
 COPY ./license-puller.sh /license-puller.sh
 ENV LICENSE_PULLER_PATH=/license-puller.sh
