@@ -1,5 +1,2 @@
 pjNames:
   - pjName: "pre-kyma-tests-fast-integration-image"
-  - pjName: "post-kyma-tests-fast-integration-image"
-  - pjName: "pre-rel22-kyma-tests-fast-integration-image"
-  - pjName: "post-rel22-kyma-tests-fast-integration-image"
