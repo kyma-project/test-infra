@@ -63,7 +63,7 @@ RUN go install golang.org/x/tools/cmd/goimports@latest && \
     go install golang.org/x/perf/cmd/benchstat@latest && \
     go install github.com/vektra/mockery/v2@latest && \
     go install github.com/maxbrunsfeld/counterfeiter/v6@latest && \
-    curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- -b ${GOPATH}/bin ${GOLANGCI_LINT_VERSION}
+    curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | bash -s -- -b ${GOPATH}/bin ${GOLANGCI_LINT_VERSION}
 
 COPY ./license-puller.sh /license-puller.sh
 ENV LICENSE_PULLER_PATH=/license-puller.sh
