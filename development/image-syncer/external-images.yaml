@@ -43,6 +43,6 @@ images:
 - source: "quay.io/service-manager/sb-proxy-k8s:v0.9.1"
 - source: "nats@sha256:3dfa6b8def0d3c784ef7827f0c21b17afd01be56773c68d5950e9f29172ae796"
   tag: "2.8.2-alpine"
-- source: "natsio/nats-server-config-reloader:0.6.3"
+- source: "natsio/nats-server-config-reloader:0.7.0"
 - source: "natsio/prometheus-nats-exporter:0.9.3"
 - source: "mockserver/mockserver:mockserver-5.11.2"
