@@ -1,5 +1,7 @@
 pjNames:
   - pjName: "pre-kyma-tests-fast-integration-image"
-    pjPath: "test-infra/prow/jobs/kyma/tests/fast-integration/"
-    report: true
-
+    report: false
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 14380
