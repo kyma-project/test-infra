@@ -23,7 +23,6 @@ presubmits: # runs on PRs
         preset-kyma-integration-compass-dev: "true"
         preset-kyma-integration-compass-enabled: "true"
         preset-kyma-integration-kcp-client-credentials: "true"
-        preset-kyma-integration-subaccounnt: "true"
         preset-skr-al-service-key: "true"
       optional: true
       skip_report: false
@@ -48,7 +47,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220504-9e1b090f"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220524-0196d249"
             securityContext:
               privileged: true
             command:
@@ -60,6 +59,8 @@ presubmits: # runs on PRs
             env:
               - name: KEB_PLAN_ID
                 value: "361c511f-f939-4621-b228-d0fb79a1fe15"
+              - name: KEB_SUBACCOUNT_ID
+                value: "pandas-test"
               - name: KYMA_MAJOR_VERSION
                 value: "2"
             resources:
