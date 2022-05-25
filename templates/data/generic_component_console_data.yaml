@@ -1,7 +1,7 @@
 templates:
-  - from: templates/generic.tmpl
+  - from: generic.tmpl
     render:
-      - to: ../prow/jobs/console/core-ui/core-ui.yaml
+      - to: ../../prow/jobs/console/core-ui/core-ui.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/console"
             jobs:
@@ -25,7 +25,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/console/add-ons/add-ons.yaml
+      - to: ../../prow/jobs/console/add-ons/add-ons.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/console"
             jobs:
@@ -49,7 +49,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/console/service-catalog-ui/service-catalog-ui.yaml
+      - to: ../../prow/jobs/console/service-catalog-ui/service-catalog-ui.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/console"
             jobs:
@@ -73,7 +73,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/console/logging/console-logging.yaml
+      - to: ../../prow/jobs/console/logging/console-logging.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/console"
             jobs:
@@ -97,7 +97,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/console/tests/tests.yaml
+      - to: ../../prow/jobs/console/tests/tests.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/console"
             jobs:
@@ -121,7 +121,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/console/core/core.yaml
+      - to: ../../prow/jobs/console/core/core.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/console"
             jobs:

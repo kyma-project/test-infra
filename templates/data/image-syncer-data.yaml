@@ -1,7 +1,7 @@
 templates:
-  - from: templates/generic.tmpl
+  - from: generic.tmpl
     render:
-      - to: ../prow/jobs/test-infra/image-syncer.yaml
+      - to: ../../prow/jobs/test-infra/image-syncer.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/test-infra"
             jobs:

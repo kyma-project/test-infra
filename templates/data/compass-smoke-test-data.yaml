@@ -1,7 +1,7 @@
 templates:
-  - from: templates/generic.tmpl
+  - from: generic.tmpl
     render:
-      - to: ../prow/jobs/incubator/compass/compass-smoke-test.yaml
+      - to: ../../prow/jobs/incubator/compass/compass-smoke-test.yaml
         localSets:
           jobConfig_default:
             path_alias: github.com/kyma-incubator/compass

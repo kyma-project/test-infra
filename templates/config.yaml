@@ -199,12 +199,12 @@ globalSets:
       pipeline.platform: gardener_gcp
 
 templates:
-  - from: templates/releases.go.tmpl
+  - from: releases.go.tmpl
     render:
-      - to: ../development/tools/jobs/releases/releases.go
-  - from: templates/prow-config.yaml
+      - to: ../../development/tools/jobs/releases/releases.go
+  - from: prow-config.yaml
     render:
-      - to: ../prow/config.yaml
+      - to: ../../prow/config.yaml
         values:
           cluster:
             presubmit: untrusted-workload
@@ -215,6 +215,6 @@ templates:
             - name: kyma-gke-integration
             - name: kyma-gke-upgrade
             - name: kyma-artifacts
-  - from : templates/test-infra-autobump-config.yaml
+  - from : test-infra-autobump-config.yaml
     render:
-      - to: ../prow/autobump-config/test-infra-autobump-config.yaml
+      - to: ../../prow/autobump-config/test-infra-autobump-config.yaml
