@@ -33,7 +33,7 @@ require (
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
 	github.com/fsouza/go-dockerclient v1.7.11
 	github.com/gardener/component-cli v0.40.0
-	github.com/gardener/component-spec/bindings-go v0.0.62
+	github.com/gardener/component-spec/bindings-go v0.0.63
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-logr/logr v0.4.0
 	github.com/go-yaml/yaml v2.1.0+incompatible
