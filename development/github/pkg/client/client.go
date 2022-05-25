@@ -109,6 +109,12 @@ func NewSapToolsClient(ctx context.Context, accessToken string) (*SapToolsClient
 // IsStatusOK will check if http response code is 200.
 // On not OK status it will read response body to expose details about error.
 func (c *Client) IsStatusOK(resp *github.Response) (bool, error) {
+	return IsStatusOK(resp)
+}
+
+// IsStatusOK will check if http response code is 200.
+// On not OK status it will read response body to expose details about error.
+func IsStatusOK(resp *github.Response) (bool, error) {
 	if resp.StatusCode != http.StatusOK {
 		bodyBytes, err := ioutil.ReadAll(resp.Body)
 		if err != nil {

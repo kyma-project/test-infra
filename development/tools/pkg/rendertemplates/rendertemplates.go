@@ -15,16 +15,16 @@ import (
 
 // Config represents configuration of all templates to render along with global values
 type Config struct {
-	TemplatesConfigs []*TemplateConfig
+	TemplatesConfigs []*TemplateConfig `yaml:"templates,omitempty"`
 	Global           map[string]interface{}
 	GlobalSets       map[string]ConfigSet `yaml:"globalSets,omitempty"`
 }
 
 // TemplateConfig specifies template to use and files to render
 type TemplateConfig struct {
-	FromTo        []FromTo `yaml:"fromTo,omitempty"`
-	From          string
-	RenderConfigs []*RenderConfig
+	FromTo        []FromTo        `yaml:"fromTo,omitempty"`
+	From          string          `yaml:"from,omitempty"`
+	RenderConfigs []*RenderConfig `yaml:"render,omitempty"`
 }
 
 // FromTo defines what template should be used and where to store the render output
@@ -94,7 +94,7 @@ func (cfg *Config) Merge(mergoConfig mergo.Config) {
 	cfg.TemplatesConfigs = generateFromTo(cfg.TemplatesConfigs)
 
 	for _, templateConfig := range cfg.TemplatesConfigs {
-		templateConfig.mergeConfigs(cfg, mergoConfig)
+		templateConfig.generateRenderConfigs(cfg, mergoConfig)
 	}
 
 	cfg.TemplatesConfigs = mergeRenderDestinations(cfg.TemplatesConfigs)
@@ -130,9 +130,9 @@ func generateFromTo(templatesConfigs []*TemplateConfig) []*TemplateConfig {
 }
 
 // mergeRenderDestinations merges and deduplicates renderconfigurations for destinations so that a file can be used as a target in multiple data files
-func mergeRenderDestinations(templates []*TemplateConfig) []*TemplateConfig {
+func mergeRenderDestinations(templatesConfigs []*TemplateConfig) []*TemplateConfig {
 	tmpl := make(map[FromTo]*TemplateConfig)
-	for _, templateConfig := range templates {
+	for _, templateConfig := range templatesConfigs {
 		for _, fromTo := range templateConfig.FromTo {
 			if template, ok := tmpl[fromTo]; ok {
 				reposDst, ok := template.RenderConfigs[0].Values["JobConfigs"].([]Repo)
@@ -193,12 +193,11 @@ func (ft FromTo) String() string {
 	return fmt.Sprintf("%s -> %s", ft.From, ft.To)
 }
 
-// TODO name is misleading
-// mergeConfigs merges parts, generates component jobs and appends all jobs to the list of values
-func (tplCfg *TemplateConfig) mergeConfigs(config *Config, mergoConfig mergo.Config) {
+// generateRenderConfigs merges parts, generates component jobs and appends all jobs to the list of values
+func (tplCfg *TemplateConfig) generateRenderConfigs(config *Config, mergoConfig mergo.Config) {
 	for _, render := range tplCfg.RenderConfigs {
 		// merge all parts of a config
-		render.mergeConfigs(config.GlobalSets, mergoConfig)
+		render.generateJobConfigs(config.GlobalSets, mergoConfig)
 		// generate component jobs
 		render.GenerateComponentJobs(config.Global)
 		// append all jobs to the list of values for the template
@@ -206,8 +205,8 @@ func (tplCfg *TemplateConfig) mergeConfigs(config *Config, mergoConfig mergo.Con
 	}
 }
 
-// mergeConfigs merges values from GlobalSets, LocalSets and local values for each job
-func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet, mergoConfig mergo.Config) {
+// generateJobConfigs merges values from GlobalSets, LocalSets and local values for each job
+func (r *RenderConfig) generateJobConfigs(globalConfigSets map[string]ConfigSet, mergoConfig mergo.Config) {
 	if present := len(r.JobConfigs); present > 0 {
 		r.Values = make(map[string]interface{})
 		for repoIndex, repo := range r.JobConfigs {
