@@ -18,11 +18,6 @@ var components = []struct {
 	suite             func(config *jobsuite.Config) jobsuite.Suite
 	additionalOptions []jobsuite.Option
 }{
-	{path: "application-connectivity-certs-setup-job", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-		},
-	},
 	{path: "application-connectivity-validator", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -41,22 +36,7 @@ var components = []struct {
 			jobsuite.Optional(),
 		},
 	},
-	{path: "application-registry", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-		},
-	},
 	{path: "compass-runtime-agent", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-		},
-	},
-	{path: "connection-token-handler", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-		},
-	},
-	{path: "connector-service", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 		},

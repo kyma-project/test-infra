@@ -35,14 +35,10 @@
 /prow/jobs/incubator/service-catalog-tester @hanngos @piotrmiskiewicz @pk85 @ralikio @szwedm @tillknuesting @wozniakjan @kyma-project/prow
 /prow/jobs/incubator/varkes @brendandobbs @jcawley5 @lilitgh @a-thaler @kyma-project/prow
 /prow/jobs/kyma/components/apiserver-proxy @pk85 @dariusztutaj @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @kyma-project/prow
-/prow/jobs/kyma/components/application-connectivity-certs-setup-job @pbochynski @franpog859 @janmedrek @koala7659 @maladie @ralikio @a-thaler @pk85 @akgalwas @kyma-project/prow
-/prow/jobs/kyma/components/application-registry @pk85 @maladie @pbochynski @koala7659 @ralikio @a-thaler @akgalwas @franpog859 @janmedrek @kyma-project/prow
 /prow/jobs/kyma/components/busola-migrator @pk85 @akucharska @dariadomagala @qbalukom @sawthis @valentinvieriu @a-thaler @wawrzyn321 @pbochynski @kyma-project/prow
 /prow/jobs/kyma/components/central-application-connectivity-validator @janmedrek @koala7659 @maladie @pbochynski @akgalwas @franpog859 @ralikio @a-thaler @pk85 @kyma-project/prow
 /prow/jobs/kyma/components/central-application-gateway @a-thaler @koala7659 @maladie @janmedrek @ralikio @pbochynski @pk85 @akgalwas @franpog859 @kyma-project/prow
 /prow/jobs/kyma/components/compass-runtime-agent @franpog859 @janmedrek @ralikio @pbochynski @a-thaler @pk85 @akgalwas @koala7659 @maladie @kyma-project/prow
-/prow/jobs/kyma/components/connection-token-handler @janmedrek @koala7659 @akgalwas @franpog859 @ralikio @a-thaler @pbochynski @pk85 @maladie @kyma-project/prow
-/prow/jobs/kyma/components/connector-service @a-thaler @pk85 @janmedrek @koala7659 @maladie @ralikio @akgalwas @franpog859 @pbochynski @kyma-project/prow
 /prow/jobs/kyma/components/dex-static-user-configurer @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj @kyma-project/prow
 /prow/jobs/kyma/components/event-publisher-proxy @friedrichwilken @k15r @pxsalehi @vladislavpaskar @a-thaler @pk85 @pbochynski @lilitgh @marcobebway @mfaizanse @nachtmaar @kyma-project/prow
 /prow/jobs/kyma/components/eventing-controller @pbochynski @k15r @lilitgh @marcobebway @mfaizanse @vladislavpaskar @a-thaler @pk85 @friedrichwilken @nachtmaar @pxsalehi @kyma-project/prow
@@ -56,11 +52,7 @@
 /prow/jobs/kyma/components/telemetry-operator @pk85 @szwedm @tillknuesting @a-thaler @hanngos @ralikio @wozniakjan @pbochynski @piotrmiskiewicz @kyma-project/prow
 /prow/jobs/kyma/components/uaa-activator @wozniakjan @pbochynski @piotrmiskiewicz @pk85 @szwedm @tillknuesting @a-thaler @hanngos @ralikio @kyma-project/prow
 /prow/jobs/kyma/components/xip-patch @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj @kyma-project/prow
-/prow/jobs/kyma/tests/application-connector-tests @pbochynski @pk85 @akgalwas @franpog859 @maladie @ralikio @a-thaler @janmedrek @koala7659 @kyma-project/prow
-/prow/jobs/kyma/tests/application-registry-tests @akgalwas @franpog859 @koala7659 @a-thaler @pk85 @janmedrek @maladie @ralikio @pbochynski @kyma-project/prow
 /prow/jobs/kyma/tests/compass-runtime-agent @pk85 @akgalwas @franpog859 @koala7659 @ralikio @pbochynski @janmedrek @maladie @a-thaler @kyma-project/prow
-/prow/jobs/kyma/tests/connection-token-handler-tests @a-thaler @pbochynski @pk85 @akgalwas @maladie @koala7659 @ralikio @franpog859 @janmedrek @kyma-project/prow
-/prow/jobs/kyma/tests/connector-service-tests @akgalwas @koala7659 @maladie @ralikio @a-thaler @franpog859 @janmedrek @pbochynski @pk85 @kyma-project/prow
 /prow/jobs/kyma/tests/end-to-end @wozniakjan @pbochynski @piotrmiskiewicz @pk85 @ralikio @szwedm @tillknuesting @a-thaler @hanngos @k15r @kyma-project/prow
 /prow/jobs/kyma/tests/function-controller @a-thaler @pbochynski @pk85 @dbadura @kwiatekus @m00g3n @pprecel @kyma-project/prow
 /prow/jobs/kyma/tests/integration @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj @mjakobczyk @kyma-project/prow

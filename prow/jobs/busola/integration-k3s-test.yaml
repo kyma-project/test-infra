@@ -15,7 +15,7 @@ presubmits: # runs on PRs
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^resources/|^tests/'
+      run_if_changed: '^resources/|^tests/^nginx/'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -35,7 +35,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220504-9e1b090f"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220524-0196d249"
             securityContext:
               privileged: true
             command:
@@ -66,7 +66,7 @@ presubmits: # runs on PRs
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^resources/|^tests/'
+      run_if_changed: '^resources/|^tests/^nginx/'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -86,7 +86,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220504-9e1b090f"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220524-0196d249"
             securityContext:
               privileged: true
             command:
@@ -141,7 +141,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220504-9e1b090f"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220524-0196d249"
             securityContext:
               privileged: true
             command:
@@ -193,7 +193,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220504-9e1b090f"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220524-0196d249"
             securityContext:
               privileged: true
             command:
