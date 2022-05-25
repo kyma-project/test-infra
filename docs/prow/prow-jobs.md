@@ -28,6 +28,7 @@ prow
 ```
 > **NOTE:** All YAML files in the whole `jobs` structure need to have unique names.
 
+
 ## Job types
 
 You can configure the following job types:
@@ -76,7 +77,7 @@ If you want to trigger your job again, add one of these comments to your PR:
 `/retest` to only rerun failed tests
 `/test {test-name}` or `/retest {test-name}` to only rerun a specific test. For example, run `/test pre-main-kyma-components-binding-usage-controller`.
 
-After you trigger the job, it appears on `https://status.build.kyma-project.io/`.
+After you trigger the job, it appears on [`https://status.build.kyma-project.io/`](https://status.build.kyma-project.io/).
 
 
 ## Create jobs
@@ -91,8 +92,35 @@ go run development/tools/cmd/rendertemplates/main.go --config templates/config.y
 - For further reference, read a more technical insight into the Kubernetes [Prow Jobs](https://github.com/kubernetes/test-infra/blob/master/prow/jobs.md).
 
 
-## Rerun jobs from UI
+## Prow job tester
+Prow job tester (`pjtester`) is a dedicated tool for testing changes to Prow jobs and scripts in the `test-infra` repository,
+which are **under development**. Additionally, it can use code from pull requests (PRs) in other repositories.
 
+For example, to test PR in the Kyma repository create a new file `vpath/pjtester.yaml` in the `test-infra` repositiry.
+```
+pjNames:
+  - pjName: <PROW JOB NAME>
+  - pjName: ...
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: <PR NUMBER IN KYMA REPO> 
+```
+| Parameter name | Required | Description |
+|----------------|----------|-------------|
+| **pjNames** | Yes | List containing the configuration of Prow jobs to test.
+| **pjNames.pjName** | Yes | Name of the Prow job to test.
+| **prConfigs** | No | Dictionary containing the numbers of the pull request on repositories other than `test-infra`. <br> `pjtester` uses their code to test the Prow jobs.
+
+> **NOTE:** It is recommended to keep PRs as draft ones until you're satisfied with the results.
+
+- For more details on how to use `pjtester`, see [this](https://github.com/kyma-project/test-infra/blob/main/development/tools/cmd/pjtester/README.md)
+document.
+- To see how to trigger Prow jobs to test, go to the aforementioned [`Interact with Prow`](./prow-jobs.md#interact-with-prow) section.
+
+
+## Rerun jobs from UI
+[comment]: <> (Deprecated link - 404 - maybe https://github.com/orgs/kyma-project/teams/prow ?)
 All [cluster-access](https://github.com/orgs/kyma-project/teams/cluster-access) team members are authorized to rerun jobs from UI.
 
 ![rerun job](./assets/rerun.png)
