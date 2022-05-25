@@ -82,10 +82,14 @@ After you trigger the job, it appears on [`https://status.build.kyma-project.io/
 
 ## Create jobs
 
-Jobs are generated from templates stored in the `templates` directory. For details on how to configure templates, see [this](./manage-component-jobs-with-templates.md) document. To generate jobs, run this command in the root of the repository:
+Jobs are generated from templates stored in the `templates` directory. For details on how to configure templates, see [this](./manage-component-jobs-with-templates.md) document. To generate jobs, run one of those commands in the root of the repository:
 
 ```
 go run development/tools/cmd/rendertemplates/main.go --config templates/config.yaml
+```
+or
+```bash
+make jobs-definitions
 ```
 
 - For details on how to create jobs, see [Manage component jobs with templates](./manage-component-jobs-with-templates.md).
@@ -120,7 +124,6 @@ document.
 
 
 ## Rerun jobs from UI
-[comment]: <> (Deprecated link - 404 - maybe https://github.com/orgs/kyma-project/teams/prow ?)
 All [cluster-access](https://github.com/orgs/kyma-project/teams/cluster-access) team members are authorized to rerun jobs from UI.
 
 ![rerun job](./assets/rerun.png)

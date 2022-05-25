@@ -16,9 +16,11 @@ Follow these steps:
 
 Go to `templates/config.yaml` and add a new entry with your component details to the `render` list under the `templates` section.
 
+
 See an example that defines the `application-broker` component from the `kyma` repository, using the generic bootstrap:
 
 ```yaml
+templates:
   - from: templates/generic-component.yaml
     render:
       - to: ../prow/jobs/kyma/components/application-broker/application-broker-generic.yaml
@@ -61,10 +63,14 @@ When writing tests for a new component, use the `tester.GetKymaReleasesSince({ne
 
 3. Generate jobs.
 
-Run this command to generate jobs previously defined in the `config.yaml` file:
+Run one of those commands to generate jobs previously defined in the `config.yaml` file:
 
 ```bash
 go run development/tools/cmd/rendertemplates/main.go --config templates/config.yaml --template templates/templates --data templates/data
+```
+or
+```bash
+make jobs-definitions
 ```
 
 As a result, the Render Templates tool generates the requested job files.

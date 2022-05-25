@@ -152,7 +152,7 @@ The Render Templates builds the **Values** variable by merging Config Sets from 
 
 ## Usage
 
-To run this tool, use this command:
+To run this tool, use one of those commands:
 
 ```bash
 go run development/tools/cmd/rendertemplates/main.go --data path/to/directory/with/data/files
@@ -165,6 +165,10 @@ To work with local files only, provide all paths in flags.
 Example for test-infra repository:
 ```bash
 go run development/tools/cmd/rendertemplates/main.go --config templates/config.yaml --templates templates/templates --data templates/data
+```
+or
+```bash
+make jobs-definitions
 ```
 
 ### Flags
