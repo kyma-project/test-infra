@@ -11,11 +11,6 @@ templates:
                   repo: "local-kyma"
                   path_alias: "github.com/kyma-incubator/local-kyma"
                   base_ref: main
-          jobConfig_skipprovisioning:
-            env:
-              SKIP_PROVISIONING: true
-              INSTANCE_ID: "9A4D7731-BDD5-4E34-A8DA-08A626C7CEB1"
-              KEB_SUBACCOUNT_ID: "pandas-test"
           jobConfig_default:
             optional: true
             path_alias: github.com/kyma-project/kyma
@@ -36,7 +31,7 @@ templates:
               preset-keb-dev-credentials: "true"
               preset-kyma-integration-compass-dev: "true"
               preset-kyma-integration-compass-enabled: "true"
-              #preset-kyma-integration-subaccounnt: "true"
+              preset-kyma-integration-subaccounnt: "true"
               preset-kcp-client-dev-envs: "true"
               preset-kyma-integration-kcp-client-credentials: "true"
               preset-btp-operator-stage-credentials: "true"
@@ -69,4 +64,3 @@ templates:
                     - "jobConfig_default"
                     - "keb_plan_aws"
                     - "extra_refs_kyma-local"
-                    - "jobConfig_skipprovisioning"
