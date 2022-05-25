@@ -144,8 +144,6 @@ func mergeRenderDestinations(templatesConfigs []*TemplateConfig) []*TemplateConf
 					log.Fatalf("src JobConfigs not of Type []Repo")
 				}
 				reposDst = mergeRepos(reposDst, reposSrc)
-				// mergo.Merge(&reposDst,&reposSrc)
-				// reposDst = append(reposDst, reposSrc...)
 
 				template.RenderConfigs[0].Values["JobConfigs"] = reposDst
 			} else {
