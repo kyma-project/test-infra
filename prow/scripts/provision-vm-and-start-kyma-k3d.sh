@@ -138,7 +138,7 @@ if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
 fi
 
 if [[ -v TELEMETRY_ENABLED ]]; then
-  log::info "Copying components file for telemetry tests"
+  log::info "Copying components file for telemetry tests" 
   #shellcheck disable=SC2088
   utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-telemetry-components.yaml" "~/kyma-integration-k3d-telemetry-components.yaml"
 fi
