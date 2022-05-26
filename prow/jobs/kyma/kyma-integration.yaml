@@ -294,7 +294,7 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-integration-telemetry-enabled: "true"
+        preset-kyma-integration-istio-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^resources/istio/|^resources/istio-resources'
       skip_report: false

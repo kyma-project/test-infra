@@ -578,7 +578,7 @@ templates:
                   run_if_changed: '^resources/istio/|^resources/istio-resources'
                   labels:
                     preset-build-pr: "true"
-                    preset-kyma-integration-telemetry-enabled: "true"
+                    preset-kyma-integration-istio-enabled: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

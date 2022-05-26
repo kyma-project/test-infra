@@ -101,7 +101,7 @@ function run_tests() {
   popd
   if [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
     pushd "${KYMA_SOURCES_DIR}/tests/components/istio"
-    make test-k3d
+    make test
     popd
   fi
 }
