@@ -43,7 +43,7 @@ var (
 	dataFilePath     = flag.String("data-file", "", "Path to the data file.")
 	templatesDirPath = flag.String("templates", "", "Path to the templates directory.")
 	showOutputDir    = flag.Bool("show-output-dir", false, "Print generated output file paths to stdout")
-	ghToken          = flag.String("ghToken", "", "GitHub Access Token")
+	ghToken          = flag.String("gh-token", "", "GitHub Access Token")
 
 	ghClient   *github.Client
 	configFile []byte
@@ -77,7 +77,7 @@ func main() {
 	templatesCache := make(map[string]*template.Template)
 	ctx := context.Background()
 
-	flag.BoolVar(&mergoConfig.AppendSlice, "appendSlice", false, "Rendertemplate will append slices instead overwriting.")
+	flag.BoolVar(&mergoConfig.AppendSlice, "append-slice", false, "Rendertemplate will append slices instead overwriting.")
 	flag.Parse()
 
 	if *ghToken != "" {
