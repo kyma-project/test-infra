@@ -62,7 +62,7 @@ function deploy_kyma() {
   kyma_deploy_cmd="kyma deploy -p evaluation --ci --source=local --workspace ${KYMA_SOURCES_DIR}"
 
   if [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
-    kyma_deploy_cmd+=" --component istio"
+    kyma_deploy_cmd+=" --components-file kyma-integration-k3d-istio-components.yaml"
   fi
 
   if [[ -v CENTRAL_APPLICATION_CONNECTIVITY_ENABLED ]]; then
