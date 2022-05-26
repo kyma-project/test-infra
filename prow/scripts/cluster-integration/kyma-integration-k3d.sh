@@ -61,6 +61,10 @@ function deploy_kyma() {
   local kyma_deploy_cmd
   kyma_deploy_cmd="kyma deploy -p evaluation --ci --source=local --workspace ${KYMA_SOURCES_DIR}"
 
+  if [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
+    kyma_deploy_cmd+=" --component istio"
+  fi
+
   if [[ -v CENTRAL_APPLICATION_CONNECTIVITY_ENABLED ]]; then
     kyma_deploy_cmd+=" --value application-connector.central_application_gateway.enabled=true"
   fi
@@ -95,6 +99,11 @@ function run_tests() {
     make ci
   fi
   popd
+  if [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
+    pushd "${KYMA_SOURCES_DIR}/tests/components/istio"
+    make test-k3d
+    popd
+  fi
 }
 
 prereq_test
