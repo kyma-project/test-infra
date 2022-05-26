@@ -95,15 +95,14 @@ function run_tests() {
   elif [[ -v TELEMETRY_ENABLED ]]; then
     npm install
     npm run test-telemetry
+  elif [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
+    pushd "${KYMA_SOURCES_DIR}/tests/components/istio"
+    make test
+    popd
   else
     make ci
   fi
   popd
-  if [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
-    pushd "${KYMA_SOURCES_DIR}/tests/components/istio"
-    make test
-    popd
-  fi
 }
 
 prereq_test
