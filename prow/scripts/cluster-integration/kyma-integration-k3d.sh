@@ -96,7 +96,7 @@ function run_tests() {
     npm install
     npm run test-telemetry
   elif [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
-    pushd "${KYMA_SOURCES_DIR}/tests/components/istio"
+    pushd "../components/istio"
     make test
     popd
   else
