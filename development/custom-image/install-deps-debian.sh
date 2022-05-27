@@ -107,7 +107,7 @@ sudo apt-get install -y google-fluentd-catch-all-config
  curl -fsSL -o /tmp/go.tar.gz "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" && \
      tar xzvf /tmp/go.tar.gz -C /usr/local/go && \
      rm /tmp/go.tar.gz
- echo "export PATH=\$PATH:\$GOPATH/bin:/usr/local/go/bin" >> ~/.profile
+ echo "export PATH=\$PATH:/usr/local/go/bin" >> ~/.profile
 
 # pre-fetch-docker-images
 sudo docker pull eu.gcr.io/kyma-project/external/cypress/included:8.7.0
