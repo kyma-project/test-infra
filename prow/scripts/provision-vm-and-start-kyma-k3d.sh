@@ -91,8 +91,6 @@ if [[ -z "$IMAGE" ]]; then
   fi
 fi
 
-IMAGE="kyma-deps-image-vm-9141b2d1"
-
 ZONE_LIMIT=${ZONE_LIMIT:-5}
 EU_ZONES=$(gcloud compute zones list --filter="name~europe" --limit="${ZONE_LIMIT}" | tail -n +2 | awk '{print $1}')
 STARTTIME=$(date +%s)
