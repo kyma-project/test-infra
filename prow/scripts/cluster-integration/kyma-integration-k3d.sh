@@ -13,6 +13,7 @@ function prereq_test() {
   command -v kubectl >/dev/null 2>&1 || { echo >&2 "kubectl not found"; exit 1; }
   command -v k3d >/dev/null 2>&1 || { echo >&2 "k3d not found"; exit 1; }
   export PATH="${PATH}:/usr/local/go/bin"
+  ls /usr/local/
   command -v go >/dev/null 2>&1 || { echo >&2 "go not found [&32424]"; exit 1; }
 }
 
