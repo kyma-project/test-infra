@@ -96,9 +96,9 @@ export PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
 curl -fsSL -o go.tar.gz "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" && \
     tar xzf go.tar.gz && \
     rm go.tar.gz && \
-    mv go /usr/local && \
-    mkdir -p "${GOPATH}/bin" && \
-    mkdir -p "${GOPATH}/src"
+    sudo mv go /usr/local && \
+    sudo mkdir -p "${GOPATH}/bin" && \
+    sudo mkdir -p "${GOPATH}/src"
 
 # install monitoring agent
 # https://cloud.google.com/monitoring/agent/installation
