@@ -22,8 +22,6 @@ function load_env() {
     # shellcheck disable=SC2046
     export $(xargs < "${ENV_FILE}")
   fi
-  export GOPATH=/workspace/go
-  export PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
 }
 
 function install_cli() {
@@ -109,8 +107,8 @@ function run_tests() {
   popd
 }
 
-prereq_test
 load_env
+prereq_test
 install_cli
 deploy_kyma
 run_tests
