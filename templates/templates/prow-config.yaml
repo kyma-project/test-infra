@@ -949,7 +949,6 @@ presets:
       - name: PROFILE
         value: "production"
   - labels:
-  - labels:
       preset-kyma-integration-central-app-connectivity-enabled: "true"
     env:
       - name: CENTRAL_APPLICATION_CONNECTIVITY_ENABLED
