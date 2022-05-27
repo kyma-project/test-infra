@@ -37,6 +37,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     software-properties-common \
     lsb-release \
     gettext \
+    go \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
