@@ -22,6 +22,7 @@ DOCKER_VERSION=5:20.10.5~3-0~debian-buster
 NODEJS_VERSION="14.x"
 K3D_VERSION="5.0.1"
 PG_MIGRATE_VERSION=v4.15.1
+GO_VERSION=1.18.2
 
 # install docker
 sudo apt-get update
@@ -103,8 +104,6 @@ sudo apt-get install -y 'google-fluentd=1.*'
 sudo apt-get install -y google-fluentd-catch-all-config
 
 # install go
- export GO_VERSION=1.18.2
-
  export GOPATH=/workspace/go
  export PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
 
