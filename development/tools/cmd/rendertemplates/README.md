@@ -158,7 +158,7 @@ To run this tool, use this command:
 go run development/tools/cmd/rendertemplates/main.go --data path/to/directory/with/data/files
 ```
 
-By default Render Templates will download `config.yaml` and templates files from [GitHub](https://github.com/kyma-project/test-infra). You can specify paths to `config.yaml` file and templates directory on command line to override defaults.
+By default, the Render Templates downloads `config.yaml` and templates files from [GitHub](https://github.com/kyma-project/test-infra). You can specify paths to the `config.yaml` file and templates directory on the command line to override defaults.
 
 ### Flags
 
@@ -170,6 +170,6 @@ This tool uses one flag:
 | **&#x2011;&#x2011;data**            |    No    | Path to directory with data files. Mutual exclusive with --data-file argument                                                                     |
 | **&#x2011;&#x2011;data-file**       |    No    | Path to the data file. Mutual exclusive with --data argument.                                                                                     |
 | **&#x2011;&#x2011;templates**       |    No    | Path to the directory with templates files.                                                                                                       |
-| **&#x2011;&#x2011;gh-token**        |    No    | GitHub personal access token. Use it to get files from GitHub as authenticated user. By default Render Templates access GitHub as anonymous user. |
+| **&#x2011;&#x2011;gh-token**        |    No    | GitHub personal access token. Use it to get files from GitHub as an authenticated user. By default the Render Templates access GitHub as an anonymous user. |
 | **&#x2011;&#x2011;show-output-dir** |    No    | Prints out the paths to data files and to the generated files.                                                                                    |
-| **&#x2011;&#x2011;append-slice**    |    No    | Append slices instead overwrite them when merging.                                                                                                |
+| **&#x2011;&#x2011;append-slice**    |    No    | Append slices instead of overwriting them when merging.                                                                                                |
