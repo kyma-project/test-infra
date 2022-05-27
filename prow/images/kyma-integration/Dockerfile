@@ -37,7 +37,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     software-properties-common \
     lsb-release \
     gettext \
-    go \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -81,7 +80,7 @@ ENV DEP_RELEASE_TAG v0.5.4
 ENV GOPATH /workspace/go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
-RUN curl -fsSL -o go.tar.gz "https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz" && \
+RUN curl -fsSL -o go.tar.gz "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" && \
     tar xzf go.tar.gz && \
     rm go.tar.gz && \
     mv go /usr/local && \
