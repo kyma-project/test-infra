@@ -40,12 +40,28 @@ templates:
      ...
 ```
 
-Such an entry uses the `generic.tmpl` template to create the `skr-aws-upgrade-integration-dev.yaml` file under 
-the `/prow/jobs/kyma/` subfolder, specifying that postsubmit job for this test. 
+Such an entry uses the `generic.tmpl` template to create the `skr-aws-upgrade-integration-dev.yaml` file under
+the `/prow/jobs/kyma/` subfolder, specifying that postsubmit job for this test.
 Set the **optional** parameter to `true` for this job to be optional on pull requests (PRs), not to block others.
 **Cron** parameter indicates that this Prow job is run every four hours.
 
 If needed, global config sets (**globalSets**) can be added to the `templates/config.yaml` file.
+
+For **component job**, instead of `name`, `path` indicating the path to the component, is required.
+For example:
+
+```yaml
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/control-plane/components/provisioner/provisioner-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/control-plane"
+            jobs:
+              - jobConfig:
+                  path: components/provisioner
+```
+
 
 - For more information about creating template file, as well as local config sets (**localSets**), job configs (**jobConfig**) and
   (**globalSets**), please refer to [specific documentation](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/rendertemplates).

@@ -46,15 +46,11 @@ localSets:
 Script files (`.sh`) are stored in `prow/scripts` directory.
 
 5. To test PR in the Kyma repository create a new file `vpath/pjtester.yaml` in the `test-infra` repository
-and reference your pipeline name (`<PROW JOB NAME>`) and PR number (`<PR NUMBER>` of `kyma` repository, not `test-infra`!).
+and reference the pipeline name (`<PROW JOB NAME>`).
 ```yaml
 pjNames:
   - pjName: <PROW JOB NAME>
   - pjName: ...
-prConfigs:
-  kyma-project:
-    kyma:
-      prNumber: <PR NUMBER> 
 ```
 - For more details on how to use `pjtester`, see [this](https://github.com/kyma-project/test-infra/blob/main/development/tools/cmd/pjtester/README.md)
   document.
