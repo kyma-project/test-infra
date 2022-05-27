@@ -22,6 +22,8 @@ function load_env() {
     # shellcheck disable=SC2046
     export $(xargs < "${ENV_FILE}")
   fi
+  export GOPATH=/workspace/go
+  export PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
 }
 
 function install_cli() {
