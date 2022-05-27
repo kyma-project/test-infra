@@ -91,6 +91,8 @@ RUN curl -fsSL -o go.tar.gz "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.g
 
 RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
+RUN go -v
+
 
 #################################################################
 ###################### Node.js ##################################
