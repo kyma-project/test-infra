@@ -79,7 +79,7 @@ When writing tests for a new component, use the `tester.GetKymaReleasesSince({ne
 
 3. Generate jobs.
 
-Run one of those commands to generate jobs previously defined in the `config.yaml` file:
+Run one of these commands to generate jobs previously defined in the `config.yaml` file:
 
 ```bash
 go run development/tools/cmd/rendertemplates/main.go --config templates/config.yaml --template templates/templates --data templates/data

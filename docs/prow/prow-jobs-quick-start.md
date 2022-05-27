@@ -22,7 +22,7 @@ If needed, global config sets (**globalSets**) can be added to the `templates/co
 - To learn more about **localSets**, **jobConfig** and **globalSets**, please refer to [specific documentation](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/rendertemplates). 
 - You can search for more examples of template files in the `templates/data` directory.
 
-3. Render template with one of those commands:
+3. Render template with one of these commands:
 ```bash
 go run ./development/tools/cmd/rendertemplates/main.go --config ./templates/config.yaml
 ```
