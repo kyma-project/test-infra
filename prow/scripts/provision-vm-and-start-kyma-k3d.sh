@@ -84,7 +84,7 @@ if [[ -z "$IMAGE" ]]; then
   log::info "Provisioning vm using the latest default custom image ..."
 
   IMAGE=$(gcloud compute images list --sort-by "~creationTimestamp" \
-       --filter "family:custom images AND labels.default:yes" --limit=1 | tail -n +2 | awk '{print $1}')
+       --filter "family:custom images " --limit=1 | tail -n +2 | awk '{print $1}')
 
   if [[ -z "$IMAGE" ]]; then
     log::error "There are no default custom images, the script will exit ..." && exit 1
