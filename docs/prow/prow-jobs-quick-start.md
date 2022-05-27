@@ -24,7 +24,7 @@ If needed, global config sets (**globalSets**) can be added to the `templates/co
 
 3. Render template with one of these commands:
 ```bash
-go run ./development/tools/cmd/rendertemplates/main.go --config ./templates/config.yaml
+go run development/tools/cmd/rendertemplates/main.go --data path/to/directory/with/data/files
 ```
 or 
 ```bash
