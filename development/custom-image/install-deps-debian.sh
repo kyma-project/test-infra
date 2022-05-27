@@ -105,7 +105,7 @@ sudo apt-get install -y google-fluentd-catch-all-config
 
 # install go
  curl -fsSL -o /tmp/go.tar.gz "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" && \
-     tar xzf /tmp/go.tar.gz && \
+     tar xzf /tmp/go.tar.gz -C /tmp/go && \
      rm /tmp/go.tar.gz && \
      sudo mv /tmp/go /usr/local/bin/go
 
