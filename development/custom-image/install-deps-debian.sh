@@ -85,21 +85,6 @@ sudo apt-get -y install \
 # install k3d
 wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v${K3D_VERSION} bash
 
-# install go
-echo "[%a1123123]"
-
-export GO_VERSION=1.18.2
-
-export GOPATH=/workspace/go
-export PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
-
-curl -fsSL -o go.tar.gz "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" && \
-    tar xzf go.tar.gz && \
-    rm go.tar.gz && \
-    sudo mv go /usr/local && \
-    sudo mkdir -p "${GOPATH}/bin" && \
-    sudo mkdir -p "${GOPATH}/src"
-
 # install monitoring agent
 # https://cloud.google.com/monitoring/agent/installation
 curl -sSO https://dl.google.com/cloudagents/add-monitoring-agent-repo.sh && \
