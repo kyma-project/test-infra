@@ -107,7 +107,7 @@ sudo apt-get install -y google-fluentd-catch-all-config
  curl -fsSL -o /tmp/go.tar.gz "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" && \
      tar xzf /tmp/go.tar.gz -C /tmp/go && \
      rm /tmp/go.tar.gz && \
-     sudo mv /tmp/go /usr/local/bin/go
+     sudo mv /tmp/go /usr/local/go
 
 # pre-fetch-docker-images
 sudo docker pull eu.gcr.io/kyma-project/external/cypress/included:8.7.0
