@@ -5,7 +5,7 @@ This document provides an overview of how to quickly start working with Prow job
 1. Fork [`test-infra`](https://github.com/kyma-project/test-infra) repository and feature a new branch.
 
 
-2. Create a template `<PROW JOB NAME>-data.yaml` file in the `templates/data` directory. The file should look like this:
+2. Jobs are generated from templates. To create one, add `<PROW JOB NAME>-data.yaml` file in the `templates/data` directory. The file should look like this:
 
 ```yaml
 templates:
@@ -17,7 +17,7 @@ templates:
 In the `<CONFIGURATION>` part you can specify local config sets (**localSets**) and a configuration of a single job (**jobConfig**), where e.g., the name of the job can be defined.
 If needed, global config sets (**globalSets**) can be added to the `templates/config.yaml` file.
 
-> **NOTE:** Your prow job must have a unique name.
+> **NOTE:** Make sure that your template file and Prow job have unique names.
 
 - To learn more about **localSets**, **jobConfig** and **globalSets**, please refer to [specific documentation](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/rendertemplates). 
 - You can search for more examples of template files in the `templates/data` directory.
@@ -36,8 +36,8 @@ make jobs-definitions
 > **NOTE:** Do not change generated file!
 
 
-4. Each Prow job must execute a command/binary file?. It can be either specified directly in the prow job definition file (`templates/data/<NAME-data.yaml>`),
-or you can attach there a script file, which can provide more possibilities/options?. 
+4. Each Prow job must execute a command. It can be either specified directly in the Prow job definition file (`templates/data/<NAME-data.yaml>`),
+or you can attach there a script file, which provides broader options. 
 ```yaml
 localSets:
   jobConfig_default:
@@ -46,7 +46,7 @@ localSets:
 Script files (`.sh`) are stored in `prow/scripts` directory.
 
 5. To test PR in the Kyma repository create a new file `vpath/pjtester.yaml` in the `test-infra` repository
-and reference your pipeline name (`<PROW JOB NAME>`) and PR number (`<PR NUMBER>` of `kyma` not `test-infra` repository!).
+and reference your pipeline name (`<PROW JOB NAME>`) and PR number (`<PR NUMBER>` of `kyma` repository, not `test-infra`!).
 ```yaml
 pjNames:
   - pjName: <PROW JOB NAME>
@@ -56,12 +56,15 @@ prConfigs:
     kyma:
       prNumber: <PR NUMBER> 
 ```
-> **NOTE:** It is recommended to keep PRs as draft ones until you're satisfied with the results.
-
 - For more details on how to use `pjtester`, see [this](https://github.com/kyma-project/test-infra/blob/main/development/tools/cmd/pjtester/README.md)
   document.
+  
+6. Create a pull request (PR) to `test-infra` repository.
 
-6. Run test with a comment on your `test-infra` pull request (PR) 
+> **NOTE:** It is recommended to keep PRs as draft ones until you're satisfied with the results.
+
+
+7. Run test with a comment on your `test-infra` pull request (PR) 
    e.g. using `/test all` 
    - To learn more about interacting with prow, see [this](./prow-jobs.md#interact-with-prow) document.
    - Look also on [prow command help](https://prow.k8s.io/command-help) for more commands.

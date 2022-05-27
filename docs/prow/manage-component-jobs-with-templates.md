@@ -12,27 +12,43 @@ This document describes how to define, modify, and remove Prow jobs for Kyma com
 
 Follow these steps:
 
-1. Edit the configuration file.
+1. Create the configuration file.
 
-Go to `templates/config.yaml` and add a new entry with your component details to the `render` list under the `templates` section.
+Go to `templates/data` and add a new YAML file (`<PROW JOB NAME>-data.yaml`) with Prow job details to the `render` list under the `templates` section.
 
 
-See an example that defines the `application-broker` component from the `kyma` repository, using the generic bootstrap:
+See an example that defines the `skr-aws-upgrade-integration-dev` test from the `kyma` repository, using the generic bootstrap:
 
 ```yaml
 templates:
-  - from: templates/generic-component.yaml
-    render:
-      - to: ../prow/jobs/kyma/components/application-broker/application-broker-generic.yaml
-        values:
-          <<: *kyma_generic_component
-          path: components/application-broker
-          since: "1.7"
-          optional: true
-    ...
+   - fromTo:
+        - from: templates/generic.tmpl
+          to: ../prow/jobs/kyma/skr-aws-upgrade-integration-dev.yaml
+     render:
+        localSets:
+           postsubmit:
+              type_postsubmit: "true"
+              cluster: "trusted-workload"
+           ...
+        jobConfigs:
+           - repoName: "kyma-project/kyma"
+             jobs:
+                - jobConfig:
+                     name: "skr-aws-upgrade-integration-dev"
+                     cron: "0 */4 * * *" # "Every four hours"
+                     optional: true
+     ...
 ```
 
-Such an entry uses the `generic-component.yaml` template to create the `application-broker-generic.yaml` file under the `/prow/jobs/kyma/components/application-broker/` subfolder, specifying that the presubmit and postsubmit jobs for this component should apply from the `1.7` release onwards. Set the **optional** parameter to `true` for this job to be optional on pull requests (PRs), not to block others.
+Such an entry uses the `generic.tmpl` template to create the `skr-aws-upgrade-integration-dev.yaml` file under 
+the `/prow/jobs/kyma/` subfolder, specifying that postsubmit job for this test. 
+Set the **optional** parameter to `true` for this job to be optional on pull requests (PRs), not to block others.
+**Cron** parameter indicates that this Prow job is run every four hours.
+
+If needed, global config sets (**globalSets**) can be added to the `templates/config.yaml` file.
+
+- For more information about creating template file, as well as local config sets (**localSets**), job configs (**jobConfig**) and
+  (**globalSets**), please refer to [specific documentation](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/rendertemplates).
 
 > **NOTE:** Make sure that the `.yaml` file and the component folder name are the same as the name of the Kyma component. Also, all `.yaml` files in the whole `jobs` structure need to have unique names.
 

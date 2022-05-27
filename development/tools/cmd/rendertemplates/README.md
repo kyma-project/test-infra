@@ -27,21 +27,22 @@ globalSets:
 - **Local ConfigSets** defined under the **localSets** parameter for each **to** key in the `config.yaml` file or in data files in the `templates/data` directory:
 
 ```yaml
-render:
-  - to: ../../prow/jobs/test-infra/buildpack.yaml
-    localSets:
-      default:
-        skip_report: "false"
-        max_concurrency: "10"
-        branches:
-        - "^main$"
-      presubmit:
-        type_presubmit: "true"
-        labels:
-          preset-build-pr: "true"
-      postsubmit:
-        type_postsubmit: "true"
-        cluster: "trusted-workload"
+templates:
+    render:
+      - to: ../prow/jobs/test-infra/buildpack.yaml
+        localSets:
+          default:
+            skip_report: "false"
+            max_concurrency: "10"
+            branches:
+            - "^main$"
+          presubmit:
+            type_presubmit: "true"
+            labels:
+              preset-build-pr: "true"
+          postsubmit:
+            type_postsubmit: "true"
+            cluster: "trusted-workload"
 ```
 
    Config Sets defined in **localSets** have a scope limited to the generated file in which they are defined. Use **localSets** to hold data that is common within the generated file.
