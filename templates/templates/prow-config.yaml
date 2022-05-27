@@ -931,9 +931,9 @@ presets:
             key: COMPASS_CLIENT_SECRET
   - labels:
        preset-kyma-integration-compass-enabled: "true"
-     env:
-       - name: COMPASS_INTEGRATION_ENABLED
-         value: "true"
+    env:
+      - name: COMPASS_INTEGRATION_ENABLED
+        value: "true"
   - labels:
       preset-kyma-integration-istio-evaluation: "true"
     env:
