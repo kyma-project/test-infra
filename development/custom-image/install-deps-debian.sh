@@ -102,6 +102,19 @@ sudo apt-cache madison google-fluentd
 sudo apt-get install -y 'google-fluentd=1.*'
 sudo apt-get install -y google-fluentd-catch-all-config
 
+# install go
+ export GO_VERSION=1.18.2
+
+ export GOPATH=/workspace/go
+ export PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
+
+ curl -fsSL -o go.tar.gz "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" && \
+     tar xzf go.tar.gz && \
+     rm go.tar.gz && \
+     sudo mv go /usr/local && \
+     sudo mkdir -p "${GOPATH}/bin" && \
+     sudo mkdir -p "${GOPATH}/src"
+
 # pre-fetch-docker-images
 sudo docker pull eu.gcr.io/kyma-project/external/cypress/included:8.7.0
 sudo docker pull eu.gcr.io/kyma-project/test-infra/docker-registry-2:20200202
