@@ -88,7 +88,6 @@ function deploy_kyma() {
   kubectl get pods -A
 }
 
-
 function run_tests() {
   pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
   if [[ -v COMPASS_INTEGRATION_ENABLED && -v CENTRAL_APPLICATION_CONNECTIVITY_ENABLED ]]; then
