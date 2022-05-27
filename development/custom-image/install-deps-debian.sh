@@ -86,7 +86,12 @@ sudo apt-get -y install \
 wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v${K3D_VERSION} bash
 
 # install go
-echo "[%134124] ${GOPATH}"
+echo "[%a1123123]"
+
+export GO_VERSION=1.18.2
+
+export GOPATH=/workspace/go
+export PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
 
 curl -fsSL -o go.tar.gz "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" && \
     tar xzf go.tar.gz && \
