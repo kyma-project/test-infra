@@ -930,7 +930,7 @@ presets:
             name: compass-dev-credentials
             key: COMPASS_CLIENT_SECRET
   - labels:
-       preset-kyma-integration-compass-enabled: "true"
+      preset-kyma-integration-compass-enabled: "true"
     env:
       - name: COMPASS_INTEGRATION_ENABLED
         value: "true"
