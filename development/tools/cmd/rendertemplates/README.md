@@ -153,10 +153,14 @@ The Render Templates builds the **Values** variable by merging Config Sets from 
 
 ## Usage
 
-To run this tool, use one of those commands:
+To run this tool, use one of these commands:
 
 ```bash
 go run development/tools/cmd/rendertemplates/main.go --data path/to/directory/with/data/files
+```
+or
+```bash
+make jobs-definitions
 ```
 
 By default, the Render Templates downloads `config.yaml` and templates files from [GitHub](https://github.com/kyma-project/test-infra). You can specify paths to the `config.yaml` file and templates directory on the command line to override defaults.
@@ -166,10 +170,6 @@ To work with local files only, provide all paths in flags.
 Example for test-infra repository:
 ```bash
 go run development/tools/cmd/rendertemplates/main.go --config templates/config.yaml --templates templates/templates --data templates/data
-```
-or
-```bash
-make jobs-definitions
 ```
 
 ### Flags
