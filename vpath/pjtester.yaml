@@ -1,5 +1,6 @@
 pjNames:
-  - pjName: "pre-main-kyma-integration-k3d-istio"
+  - pjName: "pre-main-kyma-integration-k3d-istio-evaluation"
+  - pjName: "pre-main-kyma-integration-k3d-istio-production"
 prConfigs:
   kyma-project:
     kyma:
