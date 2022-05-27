@@ -4,6 +4,56 @@ global:
     - "2.2"
     - "2.1"
     - "2.0"
+    - "1.24"
+    - "1.23"
+  orgs:
+    - name: "kyma-project"
+      repos:
+        - name: "test-infra"
+        - name: "kyma"
+        - name: "busola"
+        - name: "control-plane"
+        - name: "cli"
+        - name: "website"
+        - name: "kyma-operator"
+        - name: "third-party-images"
+        - name: "community"
+        - name: "manifest-operator"
+        - name: "hydroform"
+        - name: "console"
+        - name: "helm-broker"
+        - name: "istio-operator"
+        - name: "addons"
+        - name: "rafter"
+        - name: "private-fn-for-e2e-serverless-tests"
+        - name: "charts"
+        - name: "busola-migrator"
+    - name: "kyma-incubator"
+      repos:
+        - name: "compas"
+        - name: "ord-service"
+        - name: "reconciler"
+        - name: "api-gateway"
+        - name: "bullseye-showcase"
+        - name: "documentation-component"
+        - name: "compass-console"
+        - name: "sap-btp-service-operator"
+        - name: "milv"
+        - name: "varkes"
+        - name: "slack-bot"
+        - name: "podpreset-crd"
+        - name: "migrate"
+        - name: "github-dashboard"
+        - name: "website-vuepress"
+        - name: "sc-removal"
+        - name: "service-catalog-tester"
+        - name: "dex"
+        - name: "kitbag"
+        - name: "octopus"
+        - name: "kyma-showcase"
+        - name: "hydra-login-consent"
+        - name: "terraform-provider-gardener"
+        - name: "kymart"
 
 
 # global configSet variables
@@ -147,9 +197,13 @@ globalSets:
     path_alias: "github.com/kyma-incubator/compass"
   disable_report:
     skip_report: "true"
-  # globalSet for prowjobs which don't inherit jobConfig_default globalSet
+  # globalSet for prowjobs which doesn't inherit jobConfig_default globalSet
   pubsub_labels:
     <<: *pubsub_config
+  trusted_cluster:
+    cluster: "trusted-workload"
+  untrusted_cluster:
+    cluster: "untrusted-workload"
   # extra_refs sets
   extra_refs_test-infra:
     extra_refs:

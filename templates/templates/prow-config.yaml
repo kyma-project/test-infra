@@ -89,7 +89,7 @@ slack_reporter_configs:
 
 in_repo_config:
   enabled:
-    kyma-project/kyma: true
+    "*": true
   allowed_clusters:
     "*": ["default", "untrusted-workload", "trusted-workload"]
     
