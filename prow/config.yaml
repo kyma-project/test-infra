@@ -932,10 +932,10 @@ presets:
             name: compass-dev-credentials
             key: COMPASS_CLIENT_SECRET
   - labels:
-       preset-kyma-integration-compass-enabled: "true"
-     env:
-       - name: COMPASS_INTEGRATION_ENABLED
-         value: "true"
+      preset-kyma-integration-compass-enabled: "true"
+    env:
+      - name: COMPASS_INTEGRATION_ENABLED
+        value: "true"
   - labels:
       preset-kyma-integration-istio-evaluation: "true"
     env:
@@ -950,7 +950,6 @@ presets:
         value: "true"
       - name: PROFILE
         value: "production"
-  - labels:
   - labels:
       preset-kyma-integration-central-app-connectivity-enabled: "true"
     env:
