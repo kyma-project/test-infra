@@ -32,7 +32,7 @@ postsubmits: # runs on main
             command:
               - "generic-autobumper"
             args:
-              - "--config=prow/autobump-config/autobump-test.yaml"
+              - "--config=prow/autobump-config/kyma-autobump-config.yaml"
             resources:
               requests:
                 memory: 3Gi

@@ -26,7 +26,7 @@ templates:
                   image: gcr.io/k8s-prow/generic-autobumper:v20220524-dfb23cb2d1
                   command: generic-autobumper
                   args:
-                    - --config=prow/autobump-config/autobump-test.yaml
+                    - --config=prow/autobump-config/kyma-autobump-config.yaml
                 inheritedConfigs:
                   local:
                     - github_token_mounts
