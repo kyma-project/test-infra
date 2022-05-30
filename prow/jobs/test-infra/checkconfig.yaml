@@ -529,13 +529,41 @@ presubmits: # runs on PRs
               - "--config-path=../prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
-  kyma-incubator/compas:
-    - name: pre-compas-validate-inrepo-prow-configs
+  kyma-project/examples:
+    - name: pre-examples-validate-inrepo-prow-configs
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-compas-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-examples-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20220305-a9a1fd8e47"
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../prow/plugins.yaml"
+              - "--config-path=../prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-incubator/compass:
+    - name: pre-compass-validate-inrepo-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-compass-validate-inrepo-prow-configs"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
       skip_report: false
@@ -1180,6 +1208,230 @@ presubmits: # runs on PRs
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kymart-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20220305-a9a1fd8e47"
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../prow/plugins.yaml"
+              - "--config-path=../prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-incubator/examples:
+    - name: pre-examples-validate-inrepo-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-examples-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20220305-a9a1fd8e47"
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../prow/plugins.yaml"
+              - "--config-path=../prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-incubator/vstudio-extension:
+    - name: pre-vstudio-extension-validate-inrepo-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-vstudio-extension-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20220305-a9a1fd8e47"
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../prow/plugins.yaml"
+              - "--config-path=../prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-incubator/wordpress-connector:
+    - name: pre-wordpress-connector-validate-inrepo-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-wordpress-connector-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20220305-a9a1fd8e47"
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../prow/plugins.yaml"
+              - "--config-path=../prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-incubator/connector-tools:
+    - name: pre-connector-tools-validate-inrepo-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-connector-tools-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20220305-a9a1fd8e47"
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../prow/plugins.yaml"
+              - "--config-path=../prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-incubator/service-catalog:
+    - name: pre-service-catalog-validate-inrepo-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-service-catalog-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20220305-a9a1fd8e47"
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../prow/plugins.yaml"
+              - "--config-path=../prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-incubator/gcp-service-broker:
+    - name: pre-gcp-service-broker-validate-inrepo-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-gcp-service-broker-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20220305-a9a1fd8e47"
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../prow/plugins.yaml"
+              - "--config-path=../prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-incubator/artwork:
+    - name: pre-artwork-validate-inrepo-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-artwork-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20220305-a9a1fd8e47"
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../prow/plugins.yaml"
+              - "--config-path=../prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-incubator/opensap:
+    - name: pre-opensap-validate-inrepo-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-opensap-validate-inrepo-prow-configs"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
       skip_report: false
