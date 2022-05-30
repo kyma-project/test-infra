@@ -1,5 +1,5 @@
 templates:
-  - from: templates/generic.tmpl
+  - from: generic.tmpl
     render:
       - to: ../prow/jobs/kyma/tests/fast-integration/fast-integration-image-generic.yaml
         jobConfigs:
