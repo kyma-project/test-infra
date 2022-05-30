@@ -1,7 +1,7 @@
 templates:
-  - from: templates/generic.tmpl
+  - from: generic.tmpl
     render:
-      - to: ../prow/jobs/test-infra/prow-periodics.yaml
+      - to: ../../prow/jobs/test-infra/prow-periodics.yaml
         localSets:
           periodic_config:
             skip_report: "false"

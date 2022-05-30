@@ -1,7 +1,7 @@
 templates:
-  - from: templates/generic.tmpl
+  - from: generic.tmpl
     render:
-      - to: ../prow/jobs/control-plane/control-plane-gke-integration.yaml
+      - to: ../../prow/jobs/control-plane/control-plane-gke-integration.yaml
         localSets:
           jobConfig_default:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/control-plane-gke-integration.sh"
@@ -60,7 +60,7 @@ templates:
                     - image_kyma-integration
                   local:
                     - jobConfig_default
-      - to: ../prow/jobs/control-plane/control-plane-gke-provisioner-integration.yaml
+      - to: ../../prow/jobs/control-plane/control-plane-gke-provisioner-integration.yaml
         localSets:
           jobConfig_default:
             optional: true # TODO: Remove after testing
@@ -101,7 +101,7 @@ templates:
                     - image_kyma-integration
                   local:
                     - jobConfig_default
-      - to: ../prow/jobs/control-plane/control-plane-integration.yaml
+      - to: ../../prow/jobs/control-plane/control-plane-integration.yaml
         localSets:
           jobConfig_default:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-control-plane.sh"
@@ -145,7 +145,7 @@ templates:
                     - image_buildpack-golang-kubebuilder2
                   local:
                     - jobConfig_default
-      - to: ../prow/jobs/control-plane/control-plane-reconciler-integration.yaml
+      - to: ../../prow/jobs/control-plane/control-plane-reconciler-integration.yaml
         localSets:
           reconciler_e2e_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-gardener.sh"
@@ -193,7 +193,7 @@ templates:
                     - reconciler_e2e_jobConfig
                     - reconciler_jobConfig_args
                     - reconciler_e2e_latest_release_jobConfig
-      - to: ../prow/jobs/control-plane/control-plane-reconciler-upgrade-kyma2-latest-to-main-gardener.yaml
+      - to: ../../prow/jobs/control-plane/control-plane-reconciler-upgrade-kyma2-latest-to-main-gardener.yaml
         localSets:
           reconciler_upgrade_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-upgrade-kyma2-latest-to-main-gardener.sh"

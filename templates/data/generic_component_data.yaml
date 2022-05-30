@@ -1,7 +1,7 @@
 templates:
-  - from: templates/generic.tmpl
+  - from: generic.tmpl
     render:
-      - to: ../prow/jobs/kyma/components/compass-runtime-agent/compass-runtime-agent-generic.yaml
+      - to: ../../prow/jobs/kyma/components/compass-runtime-agent/compass-runtime-agent-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -25,7 +25,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/components/application-connectivity-validator/application-connectivity-validator-generic.yaml
+      - to: ../../prow/jobs/kyma/components/application-connectivity-validator/application-connectivity-validator-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -50,7 +50,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/components/application-gateway/application-gateway-generic.yaml
+      - to: ../../prow/jobs/kyma/components/application-gateway/application-gateway-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -75,7 +75,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/components/application-operator/application-operator-generic.yaml
+      - to: ../../prow/jobs/kyma/components/application-operator/application-operator-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -100,7 +100,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/components/service-binding-usage-controller/service-binding-usage-controller-generic.yaml
+      - to: ../../prow/jobs/kyma/components/service-binding-usage-controller/service-binding-usage-controller-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -124,7 +124,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/components/uaa-activator/uaa-activator-generic.yaml
+      - to: ../../prow/jobs/kyma/components/uaa-activator/uaa-activator-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -148,7 +148,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/tests/application-gateway-tests/application-gateway-tests-generic.yaml
+      - to: ../../prow/jobs/kyma/tests/application-gateway-tests/application-gateway-tests-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -172,7 +172,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/tests/application-gateway-legacy-tests/application-gateway-legacy-tests-generic.yaml
+      - to: ../../prow/jobs/kyma/tests/application-gateway-legacy-tests/application-gateway-legacy-tests-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -196,7 +196,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/tests/application-operator-tests/application-operator-tests-generic.yaml
+      - to: ../../prow/jobs/kyma/tests/application-operator-tests/application-operator-tests-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -220,7 +220,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/tests/service-catalog/service-catalog-tests-generic.yaml
+      - to: ../../prow/jobs/kyma/tests/service-catalog/service-catalog-tests-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -244,7 +244,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/tests/compass-runtime-agent/compass-runtime-agent-tests-generic.yaml
+      - to: ../../prow/jobs/kyma/tests/compass-runtime-agent/compass-runtime-agent-tests-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -268,7 +268,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/tools/event-subscriber/event-subscriber-generic.yaml
+      - to: ../../prow/jobs/kyma/tools/event-subscriber/event-subscriber-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -294,7 +294,7 @@ templates:
                       - "jobConfig_postsubmit"
                       - "jobConfig_slack_dev_null"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/tools/gitserver/gitserver-generic.yaml
+      - to: ../../prow/jobs/kyma/tools/gitserver/gitserver-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -320,7 +320,7 @@ templates:
                       - "jobConfig_postsubmit"
                       - "jobConfig_slack_dev_null"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/tests/integration/api-gateway/api-gateway-tests-generic.yaml
+      - to: ../../prow/jobs/kyma/tests/integration/api-gateway/api-gateway-tests-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -344,7 +344,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/components/event-publisher-proxy/event-publisher-proxy-generic.yaml
+      - to: ../../prow/jobs/kyma/components/event-publisher-proxy/event-publisher-proxy-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -368,7 +368,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/components/eventing-controller/eventing-controller-generic.yaml
+      - to: ../../prow/jobs/kyma/components/eventing-controller/eventing-controller-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -392,7 +392,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/components/function-controller/function-controller-generic.yaml
+      - to: ../../prow/jobs/kyma/components/function-controller/function-controller-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -416,7 +416,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/tests/function-controller/function-controller-tests-generic.yaml
+      - to: ../../prow/jobs/kyma/tests/function-controller/function-controller-tests-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -440,7 +440,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/components/function-runtimes/function-runtimes-generic.yaml
+      - to: ../../prow/jobs/kyma/components/function-runtimes/function-runtimes-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -464,7 +464,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/tests/rafter/rafter-tests-generic.yaml
+      - to: ../../prow/jobs/kyma/tests/rafter/rafter-tests-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -488,7 +488,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/components/busola-migrator/busola-migrator-generic.yaml
+      - to: ../../prow/jobs/kyma/components/busola-migrator/busola-migrator-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -514,7 +514,7 @@ templates:
                       - "jobConfig_postsubmit"
                       - "jobConfig_slack_dev_null"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/components/central-application-gateway/central-application-gateway-generic.yaml
+      - to: ../../prow/jobs/kyma/components/central-application-gateway/central-application-gateway-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -539,7 +539,7 @@ templates:
                       - "jobConfig_postsubmit"
                       - "jobConfig_slack_dev_null"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/components/central-application-connectivity-validator/central-application-connectivity-validator-generic.yaml
+      - to: ../../prow/jobs/kyma/components/central-application-connectivity-validator/central-application-connectivity-validator-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -564,7 +564,7 @@ templates:
                       - "jobConfig_postsubmit"
                       - "jobConfig_slack_dev_null"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/tests/serverless-bench/serverless-bench-generic.yaml
+      - to: ../../prow/jobs/kyma/tests/serverless-bench/serverless-bench-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -588,7 +588,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/components/telemetry-operator/telemetry-operator-generic.yaml
+      - to: ../../prow/jobs/kyma/components/telemetry-operator/telemetry-operator-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:

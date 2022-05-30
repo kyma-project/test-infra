@@ -1,7 +1,7 @@
 templates:
-  - from: templates/generic.tmpl
+  - from: generic.tmpl
     render:
-      - to: ../prow/jobs/kyma/kyma-artifacts.yaml
+      - to: ../../prow/jobs/kyma/kyma-artifacts.yaml
         localSets:
           jobConfig_default:
             path_alias: github.com/kyma-project/kyma
