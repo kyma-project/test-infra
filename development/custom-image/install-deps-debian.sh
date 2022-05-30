@@ -108,7 +108,7 @@ sudo mkdir /usr/local/go && \
      curl -fsSL -o /tmp/go.tar.gz "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" && \
      sudo tar xzf /tmp/go.tar.gz -C /usr/local && \
      rm /tmp/go.tar.gz
-echo "export PATH=\$PATH:/usr/local/go/bin" >> /etc/profile
+sudo echo "export PATH=\$PATH:/usr/local/go/bin" >> /etc/profile
 
 # pre-fetch-docker-images
 sudo docker pull eu.gcr.io/kyma-project/external/cypress/included:8.7.0
