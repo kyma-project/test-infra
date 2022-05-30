@@ -656,13 +656,14 @@ presets:
           secretKeyRef:
             name: kyma-bot-github-token
             key: token
-    # for new tools which does not use env for tokens
+  - labels:
+      preset-autobump-bot-github-token: "true"
     volumes:
-      - name: kyma-bot-token-path
+      - name: kyma-autobump-bot-token-path
         secret:
-          secretName: kyma-bot-github-token
+          secretName: kyma-autobump-bot-github-token
     volumeMounts:
-      - name: kyma-bot-token-path
+      - name: kyma-autobump-bot-token-path
         mountPath: /etc/github
         readOnly: true
   - labels:
