@@ -64,6 +64,11 @@ var tests = []struct {
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
+	{path: "fast-integration", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("image-generic"),
+		},
+	},
 }
 
 func TestTestJobs(t *testing.T) {
