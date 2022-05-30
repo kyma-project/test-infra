@@ -13,11 +13,7 @@ remoteName: "kyma"
 upstreamURLBase: "https://raw.githubusercontent.com/kyma-project/kyma/main"
 headBranchName: "kyma-autobump"
 includedConfigPaths:
-  - "." # test-infra root directory
-excludedConfigPaths:
-  - "tests"
-extraFiles:
-  - "tests.go"
+  - "resources"
 prefixes:
   - name: "kyma-project"
     prefix: "eu.gcr.io/kyma-project/"

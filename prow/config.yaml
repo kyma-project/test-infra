@@ -656,6 +656,15 @@ presets:
           secretKeyRef:
             name: kyma-bot-github-token
             key: token
+    # for new tools which does not use env for tokens
+    volumes:
+      - name: kyma-bot-token-path
+        secret:
+          secretName: kyma-bot-github-token
+    volumeMounts:
+      - name: kyma-bot-token-path
+        mountPath: /etc/github
+        readOnly: true
   - labels:
       preset-bot-github-sap-token: "true"
     env:

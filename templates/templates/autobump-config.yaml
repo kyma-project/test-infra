@@ -23,9 +23,9 @@ labels:
 {{- end }}
 {{- end }}
 
-{{- if .Values.config_paths }}
+{{- if .Values.included_paths }}
 includedConfigPaths:
-{{- range .Values.config_paths }}
+{{- range .Values.included_paths }}
   - {{ quote . }}
 {{- end }}
 {{- else }}
