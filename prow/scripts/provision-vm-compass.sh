@@ -130,6 +130,11 @@ utils::ssh_to_vm_with_script -z "${ZONE}" -n "compass-integration-test-${RANDOM_
 cd "$PREV_WD"
 log::info "Successfully installed Kyma CLI version: $KYMA_CLI_VERSION"
 
+YQ_VERSION="v4.25.1"
+log::info "Installing yq version: $YQ_VERSION"
+wget "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64" && \
+mv yq_linux_amd64 /bin/yq && chmod +x /bin/yq
+
 log::info "Triggering the installation"
 
 utils::ssh_to_vm_with_script -z "${ZONE}" -n "compass-integration-test-${RANDOM_ID}" -c "yes | ./compass/installation/scripts/prow/deploy-and-test.sh ${DUMP_DB}"

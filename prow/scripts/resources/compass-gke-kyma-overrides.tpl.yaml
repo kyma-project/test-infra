@@ -63,13 +63,18 @@ application_connector:
       enabled: false
 service-catalog:
   test:
-    accptance:
+    acceptance:
       enabled: false
 application-connector:
   application-registry:
     deployment:
       args:
         detailedErrorResponse: true
+    tests:
+      enabled: false
+  application-operator:
+    tests:
+      enabled: false
 ory:
   global:
     istio:
