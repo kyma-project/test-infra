@@ -1,3 +1,17 @@
+
+# Image autobump 
+
+This document provides an overview of autobump Prow jobs.  
+
+## Overview
+
+Generic-autobumper tool allows for automatic bump of images provided in full URL format.
+
+## Autobumper config file
+
+Following template data file can be used to generate autobumper config for Kyma repository:
+
+```yaml
 templates:
   # generate autobump configuration
   - from : templates/autobump-config.yaml
@@ -8,8 +22,19 @@ templates:
           repo: kyma
           included_paths:
             - resources
+          excluded_paths:
+            - resources/rafter
+          extra_files:
+           - "non_yaml_file.go"
+```
 
-  # generate autobump job
+This template will update images in yaml files stored in `resources`, except `resources/rafter`. Additional non-YAML files have to be specified in `extra_files` list.
+
+# Autobumper job template
+
+Following template data file can be used to generate autobumper job for Kyma repository:
+
+```yaml
   - from: templates/generic.tmpl
     render:
       - to: ../prow/jobs/kyma/kyma-autobump.yaml
@@ -35,3 +60,4 @@ templates:
                     - jobConfig_postsubmit
                     - pubsub_labels
                     - disable_testgrid
+```
