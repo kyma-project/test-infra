@@ -10,23 +10,13 @@ templates:
             type_periodic: "true"
             cluster: "trusted-workload"
           github_token_mounts:
-            volumes:
-              - name: kyma-bot-github-token
-                secretName: kyma-bot-github-token
-            volumeMounts:
-              - name: kyma-bot-github-token
-                mountPath: /etc/github
-                readOnly: true
+            labels:
+              kyma-bot-github-token: "true"
           label_sync_mounts:
             volumes:
-              - name: kyma-bot-github-token
-                secretName: kyma-bot-github-token
               - name: config
                 configMapName: label-config
             volumeMounts:
-              - name: kyma-bot-github-token
-                mountPath: /etc/github
-                readOnly: true
               - name: config
                 mountPath: /etc/config
                 readOnly: true
@@ -50,6 +40,7 @@ templates:
                   local:
                     - periodic_config
                     - label_sync_mounts
+                    - github_token_mounts
                   global:
                     - "pubsub_labels"
                     - "disable_testgrid"
