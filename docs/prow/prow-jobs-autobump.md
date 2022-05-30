@@ -5,7 +5,7 @@ This document provides an overview of autobump Prow jobs.
 
 ## Overview
 
-Generic-autobumper tool allows for automatic bump of images provided in full URL format.
+Generic-autobumper tool allows for automatic bump of Docker images in files to their latest versions. The images have to be specified as a Docker repository URL.
 
 ## Autobumper config file
 
