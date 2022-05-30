@@ -28,9 +28,10 @@ global:
         - name: "private-fn-for-e2e-serverless-tests"
         - name: "charts"
         - name: "busola-migrator"
+        - name: "examples"
     - name: "kyma-incubator"
       repos:
-        - name: "compas"
+        - name: "compass"
         - name: "ord-service"
         - name: "reconciler"
         - name: "api-gateway"
@@ -54,6 +55,15 @@ global:
         - name: "hydra-login-consent"
         - name: "terraform-provider-gardener"
         - name: "kymart"
+        - name: "examples"
+        - name: "vstudio-extension"
+        - name: "wordpress-connector"
+        - name: "connector-tools"
+        - name: "service-catalog"
+        - name: "gcp-service-broker"
+        - name: "artwork"
+        - name: "opensap"
+        
 
 
 # global configSet variables
