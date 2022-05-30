@@ -12,7 +12,7 @@ templates:
   # generate autobump job
   - from: templates/generic.tmpl
     render:
-      - to: ../prow/jobs/kyma/autobump-test/kyma-autobump.yaml
+      - to: ../prow/jobs/kyma/kyma-autobump.yaml
         localSets:
           github_token_mounts:
             labels:
@@ -35,4 +35,3 @@ templates:
                     - jobConfig_postsubmit
                     - pubsub_labels
                     - disable_testgrid
-                    - extra_refs_test-infra
