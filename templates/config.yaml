@@ -4,8 +4,6 @@ global:
     - "2.2"
     - "2.1"
     - "2.0"
-    - "1.24"
-    - "1.23"
   orgs:
     - name: "kyma-project"
       repos:
