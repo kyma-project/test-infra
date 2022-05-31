@@ -1,7 +1,7 @@
 templates:
-  - from: templates/generic.tmpl
+  - from: generic.tmpl
     render:
-      - to: ../prow/jobs/scans/protecode-guard.yaml
+      - to: ../../prow/jobs/scans/protecode-guard.yaml
         localSets:
           jobConfig_default:
             privileged: "false"

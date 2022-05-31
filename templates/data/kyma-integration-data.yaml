@@ -1,7 +1,7 @@
 templates:
   - fromTo:
-      - from: templates/generic.tmpl
-        to: ../prow/jobs/kyma/kyma-integration.yaml
+      - from: generic.tmpl
+        to: ../../prow/jobs/kyma/kyma-integration.yaml
     render:
       - localSets:
           jobConfig_default:
@@ -284,10 +284,10 @@ templates:
                     - "request_small"
                     - "jobConfig_periodic"
   - fromTo:
-      - from: templates/generic.tmpl
-        to: ../prow/jobs/kyma/kyma-integration.yaml
-      - from: templates/test-inventory.tmpl
-        to: ../test-inventory-integration.md
+      - from: generic.tmpl
+        to: ../../prow/jobs/kyma/kyma-integration.yaml
+      - from: test-inventory.tmpl
+        to: ../../test-inventory-integration.md
     render:
       - localSets:
           extra_refs_kyma-local:

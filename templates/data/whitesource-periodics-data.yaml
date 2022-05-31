@@ -1,7 +1,7 @@
 templates:
-  - from: templates/whitesource-periodics.tmpl
+  - from: whitesource-periodics.tmpl
     render:
-      - to: ../prow/jobs/scans/whitesource-periodics.yaml
+      - to: ../../prow/jobs/scans/whitesource-periodics.yaml
         localSets:
           jobConfig_default:
             privileged: "false"

@@ -1,9 +1,9 @@
 {{ $rel := .Global.nextRelease -}}
 {{ $relShort := $rel | replace "." "" }}
 templates:
-  - from: templates/generic.tmpl
+  - from: generic.tmpl
     render:
-      - to: ../prow/jobs/kyma/releases/kyma-release-{{ $relShort }}.yaml
+      - to: ../../prow/jobs/kyma/releases/kyma-release-{{ $relShort }}.yaml
         localSets:
           bot_token:
             labels:
