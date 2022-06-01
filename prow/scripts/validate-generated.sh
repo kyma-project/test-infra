@@ -12,9 +12,9 @@ source "${SCRIPT_DIR}/lib/log.sh"
 
 log::info "Running jobs generator tool..."
 
-cd "${TEST_INFRA_SOURCES_DIR}/development/tools"
+cd "${TEST_INFRA_SOURCES_DIR}"
 # TODO use rendertemplates binary instead of building one
-go run cmd/rendertemplates/main.go --config "${TEST_INFRA_SOURCES_DIR}"/templates/config.yaml
+go run development/tools/cmd/rendertemplates/main.go --config "${TEST_INFRA_SOURCES_DIR}"/templates/config.yaml --templates "${TEST_INFRA_SOURCES_DIR}"/templates/templates --data "${TEST_INFRA_SOURCES_DIR}"/templates/data
 
 log::info "Looking for job definition and rendered job files inconsistency..."
 
@@ -25,8 +25,8 @@ if [[ -n "${CHANGES}" ]]; then
 
   echo "
     Run:
-        go run cmd/rendertemplates/main.go --config ../../templates/config.yaml
-    in the development/tools directory of the repository and commit changes.
+        go run development/tools/cmd/rendertemplates/main.go --config templates/config.yaml --templates templates/templates --data templates/data
+    in the root directory of the test-infra repository and commit changes.
     For more info read: /docs/prow/templates.md
     "
   exit 1

@@ -1,7 +1,7 @@
 templates:
-  - from: templates/generic.tmpl
+  - from: generic.tmpl
     render:
-      - to: ../prow/jobs/incubator/compass/components/operations-controller/operations-controller-generic.yaml
+      - to: ../../prow/jobs/incubator/compass/components/operations-controller/operations-controller-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
@@ -30,7 +30,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
+      - to: ../../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
@@ -59,7 +59,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/incubator/compass/components/director/director-generic.yaml
+      - to: ../../prow/jobs/incubator/compass/components/director/director-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
@@ -88,7 +88,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/incubator/compass/components/hydrator/hydrator-generic.yaml
+      - to: ../../prow/jobs/incubator/compass/components/hydrator/hydrator-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
@@ -117,7 +117,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/incubator/ord-service/components/ord-service/ord-service-generic.yaml
+      - to: ../../prow/jobs/incubator/ord-service/components/ord-service/ord-service-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/ord-service"
             jobs:
@@ -147,7 +147,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/incubator/compass/components/system-broker/system-broker-generic.yaml
+      - to: ../../prow/jobs/incubator/compass/components/system-broker/system-broker-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
@@ -176,7 +176,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/incubator/compass-console/compass/compass-ui.yaml
+      - to: ../../prow/jobs/incubator/compass-console/compass/compass-ui.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass-console"
             jobs:
@@ -206,7 +206,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/incubator/compass/components/external-services-mock/external-services-mock-generic.yaml
+      - to: ../../prow/jobs/incubator/compass/components/external-services-mock/external-services-mock-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
@@ -235,7 +235,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/incubator/compass/components/connectivity-adapter/connectivity-adapter-generic.yaml
+      - to: ../../prow/jobs/incubator/compass/components/connectivity-adapter/connectivity-adapter-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
@@ -264,7 +264,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/incubator/compass/components/pairing-adapter/pairing-adapter-generic.yaml
+      - to: ../../prow/jobs/incubator/compass/components/pairing-adapter/pairing-adapter-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
@@ -293,7 +293,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/incubator/compass/components/gateway/gateway-generic.yaml
+      - to: ../../prow/jobs/incubator/compass/components/gateway/gateway-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
@@ -322,7 +322,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-generic.yaml
+      - to: ../../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
@@ -351,7 +351,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/incubator/compass/tests/compass-e2e-tests/compass-e2e-tests.yaml
+      - to: ../../prow/jobs/incubator/compass/tests/compass-e2e-tests/compass-e2e-tests.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:

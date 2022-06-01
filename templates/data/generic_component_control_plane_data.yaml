@@ -1,7 +1,7 @@
 templates:
-  - from: templates/generic.tmpl
+  - from: generic.tmpl
     render:
-      - to: ../prow/jobs/control-plane/components/provisioner/provisioner-generic.yaml
+      - to: ../../prow/jobs/control-plane/components/provisioner/provisioner-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/control-plane"
             jobs:
@@ -26,7 +26,7 @@ templates:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
 
-      - to: ../prow/jobs/control-plane/components/kyma-environment-broker/kyma-environment-broker-generic.yaml
+      - to: ../../prow/jobs/control-plane/components/kyma-environment-broker/kyma-environment-broker-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/control-plane"
             jobs:
@@ -51,7 +51,7 @@ templates:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
 
-      - to: ../prow/jobs/control-plane/components/schema-migrator/schema-migrator-kcp-generic.yaml
+      - to: ../../prow/jobs/control-plane/components/schema-migrator/schema-migrator-kcp-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/control-plane"
             jobs:
@@ -76,7 +76,7 @@ templates:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
 
-      - to: ../prow/jobs/control-plane/components/kyma-metrics-collector/kyma-metrics-collector-generic.yaml
+      - to: ../../prow/jobs/control-plane/components/kyma-metrics-collector/kyma-metrics-collector-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/control-plane"
             jobs:
@@ -101,7 +101,7 @@ templates:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
 
-      - to: ../prow/jobs/control-plane/components/kubeconfig-service/kubeconfig-service-generic.yaml
+      - to: ../../prow/jobs/control-plane/components/kubeconfig-service/kubeconfig-service-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/control-plane"
             jobs:
@@ -126,7 +126,7 @@ templates:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
 
-      - to: ../prow/jobs/control-plane/tests/provisioner-tests/provisioner-tests-generic.yaml
+      - to: ../../prow/jobs/control-plane/tests/provisioner-tests/provisioner-tests-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/control-plane"
             jobs:
@@ -151,7 +151,7 @@ templates:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
 
-      - to: ../prow/jobs/control-plane/tests/e2e/provisioning/provisioning-test-generic.yaml
+      - to: ../../prow/jobs/control-plane/tests/e2e/provisioning/provisioning-test-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/control-plane"
             jobs:

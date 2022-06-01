@@ -1,7 +1,7 @@
 templates:
-  - from: templates/generic.tmpl
+  - from: generic.tmpl
     render:
-      - to: ../prow/jobs/console/components/react/react-components.yaml
+      - to: ../../prow/jobs/console/components/react/react-components.yaml
         localSets:
           jobConfig_default:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"

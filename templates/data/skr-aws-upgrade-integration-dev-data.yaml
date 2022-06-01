@@ -1,7 +1,7 @@
 templates:
   - fromTo:
-      - from: templates/generic.tmpl
-        to: ../prow/jobs/kyma/skr-aws-upgrade-integration-dev.yaml
+      - from: generic.tmpl
+        to: ../../prow/jobs/kyma/skr-aws-upgrade-integration-dev.yaml
     render:
       - localSets:
           jobConfig_default:

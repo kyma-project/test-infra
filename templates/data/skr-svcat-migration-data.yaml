@@ -1,7 +1,7 @@
 templates:
   - fromTo:
-      - from: templates/generic.tmpl
-        to: ../prow/jobs/kyma/skr-svcat-migration.yaml
+      - from: generic.tmpl
+        to: ../../prow/jobs/kyma/skr-svcat-migration.yaml
     render:
       - localSets:
           jobConfig_default:

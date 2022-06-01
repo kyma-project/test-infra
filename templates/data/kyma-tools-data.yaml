@@ -1,7 +1,7 @@
 templates:
-  - from: templates/generic.tmpl
+  - from: generic.tmpl
     render:
-      - to: ../prow/jobs/kyma/common/common.yaml
+      - to: ../../prow/jobs/kyma/common/common.yaml
         localSets:
           job_spec:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
