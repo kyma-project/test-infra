@@ -13,6 +13,7 @@ function prereq_test() {
   command -v kubectl >/dev/null 2>&1 || { echo >&2 "kubectl not found"; exit 1; }
   command -v k3d >/dev/null 2>&1 || { echo >&2 "k3d not found"; exit 1; }
   export PATH="${PATH}:/usr/local/go/bin"
+  export PATH="${PATH}:~/go/bin"
   command -v go >/dev/null 2>&1 || { echo >&2 "go not found [&32424]"; exit 1; }
 }
 
@@ -100,7 +101,6 @@ function run_tests() {
   elif [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
     pushd "../components/istio"
     export EXPORT_RESULT="true"
-    go get -u github.com/jstemmer/go-junit-report
     make test
     popd
   else
