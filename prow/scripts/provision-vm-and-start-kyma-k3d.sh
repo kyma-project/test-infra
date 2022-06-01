@@ -125,6 +125,7 @@ envVars=(
   TELEMETRY_ENABLED
   ISTIO_INTEGRATION_ENABLED
   KYMA_MAJOR_VERSION
+  KYMA_PROFILE
   K8S_VERSION
 )
 utils::save_env_file "${envVars[@]}"
