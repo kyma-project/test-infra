@@ -132,7 +132,7 @@ log::info "Successfully installed Kyma CLI version: $KYMA_CLI_VERSION"
 
 YQ_VERSION="v4.25.1"
 log::info "Installing yq version: $YQ_VERSION"
-wget "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64" && \
+wget "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64"
 mv yq_linux_amd64 /bin/yq && chmod +x /bin/yq
 
 log::info "Triggering the installation"
