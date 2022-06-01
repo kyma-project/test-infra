@@ -100,6 +100,7 @@ function run_tests() {
   elif [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
     pushd "../components/istio"
     export EXPORT_RESULT="true"
+    go get -u github.com/jstemmer/go-junit-report
     make test
     popd
   else
