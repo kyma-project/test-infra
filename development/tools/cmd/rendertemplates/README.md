@@ -15,139 +15,140 @@ The Render Templates passes data in the **$.Values** and **$.Global** variables 
 
 - **Global ConfigSets** defined in the **globalSets** key in the `config.yaml` file:
 
-```yaml
-globalSets:
-  image_bootstrap:
-    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
-```
+    ```yaml
+    globalSets:
+      image_bootstrap:
+        image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+    ```
 
    Config Sets defined in **globalSets** hold data used to generate multiple files. A good example of such usage is the `image_bootstrap` global Config Set which defines a bootstrap image to use in Prow jobs.
 
 
 - **Local ConfigSets** defined under the **localSets** parameter for each **to** key in the `config.yaml` file or in data files in the `templates/data` directory:
 
-```yaml
-templates:
-    render:
-      - to: ../prow/jobs/test-infra/buildpack.yaml
-        localSets:
-          default:
-            skip_report: "false"
-            max_concurrency: "10"
-            branches:
-            - "^main$"
-          presubmit:
-            type_presubmit: "true"
-            labels:
-              preset-build-pr: "true"
-          postsubmit:
-            type_postsubmit: "true"
-            cluster: "trusted-workload"
-```
+    ```yaml
+    templates:
+        render:
+          - to: ../prow/jobs/test-infra/buildpack.yaml
+            localSets:
+              default:
+                skip_report: "false"
+                max_concurrency: "10"
+                branches:
+                - "^main$"
+              presubmit:
+                type_presubmit: "true"
+                labels:
+                  preset-build-pr: "true"
+              postsubmit:
+                type_postsubmit: "true"
+                cluster: "trusted-workload"
+    ```
 
    Config Sets defined in **localSets** have a scope limited to the generated file in which they are defined. Use **localSets** to hold data that is common within the generated file.
 
+
 - **One-job ConfigSets** defined in the **jobConfig** key:
 
-```yaml
-jobConfigs:
-  - repoName: "kyma-project/test-infra"
-    jobs:
-    - jobConfig:
-        name: "pre-test-infra-bootstrap"
-        run_if_changed: "^prow/images/bootstrap/"
-        args:
-        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
-```
+    ```yaml
+    jobConfigs:
+      - repoName: "kyma-project/test-infra"
+        jobs:
+        - jobConfig:
+            name: "pre-test-infra-bootstrap"
+            run_if_changed: "^prow/images/bootstrap/"
+            args:
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
+    ```
+    
+    Config Sets defined in **jobConfig** set data for one job. Use such Config Sets to keep values specific for one job only.
+    
+    Every job under the **inheritedConfigs** key specifies which Config Sets are inherited. This key holds a list of Config Sets names from **globalSets** and **localSets**.
 
-Config Sets defined in **jobConfig** set data for one job. Use such Config Sets to keep values specific for one job only.
+    ```yaml
+    jobConfigs:
+      - repoName: "kyma-project/test-infra"
+        jobs:
+          - jobConfig:
+              name: "pre-test-infra-bootstrap"
+              run_if_changed: "^prow/images/bootstrap/"
+            inheritedConfigs:
+              global:
+                - "image_bootstrap"
+              local:
+                - "default"
+                - "presubmit"
+    ```
+    
+    Component job defined in **jobConfig** can be used to generate multiple job definitions for a single component. It is defined by having a `path` value, and by not having a `name` value. This type of config holds two additional lists of configSets named **preConfigs** and **postConfigs**, which hold lists of global and local Config Sets used for presubmit and postsubmit jobs.
 
-Every job under the **inheritedConfigs** key specifies which Config Sets are inherited. This key holds a list of Config Sets names from **globalSets** and **localSets**.
-
-```yaml
-jobConfigs:
-  - repoName: "kyma-project/test-infra"
-    jobs:
-      - jobConfig:
-          name: "pre-test-infra-bootstrap"
-          run_if_changed: "^prow/images/bootstrap/"
-        inheritedConfigs:
-          global:
-            - "image_bootstrap"
-          local:
-            - "default"
-            - "presubmit"
-```
-
-Component job defined in **jobConfig** can be used to generate multiple job definitions for a single component. It is defined by having a `path` value, and by not having a `name` value. This type of config holds two additional lists of configSets named **preConfigs** and **postConfigs**, which hold lists of global and local Config Sets used for presubmit and postsubmit jobs.
-
-```yaml
-localSets:
-  jobConfig_pre:
-    labels:
-      preset-build-pr: "true"
-  jobConfig_post:
-    labels:
-      preset-build-main: "true"
-jobConfigs:
-  - repoName: "github.com/kyma-project/kyma"
-    jobs:
-      - jobConfig:
-          path: components/application-gateway
-          args:
-            - "/home/prow/go/src/github.com/kyma-project/kyma/components/application-gateway"
-          run_if_changed: "^components/application-gateway/|^common/makefiles/"
-          release_since: "1.7"
-        inheritedConfigs:
-          global:
-            - "jobConfig_default"
-            - "image_buildpack-golang"
-            - "jobConfig_generic_component"
-            - "jobConfig_generic_component_kyma"
-            - "extra_refs_test-infra"
-          preConfigs:
-            global:
-              - "jobConfig_presubmit"
-            local:
-              - "jobConfig_pre"
-          postConfigs:
-            global:
-              - "jobConfig_postsubmit"
-              - "disable_testgrid"
-            local:
-              - "jobConfig_post"
-```
-
-The Render Templates tool can generate precommit and postcommit job definitions from a single jobConfig. The job defined in **jobConfigPre** and **jobConfigPost** can generate precommit and postcommit job definitions for a single job. This type of config holds two additional lists of values named **jobConfigPre** and **jobConfigPost**, which hold values used for presubmit and postsubmit jobs, as well as two lists of Config Sets named **preConfigs** and **postConfigs**, which hold lists of global and local Config Sets used for presubmit and postsubmit jobs.
-
-```yaml
-jobConfigs:
-  - repoName: kyma-project/control-plane
-    jobs:
-      - jobConfig:
-          labels:
-            preset-common: "true"
-        jobConfigPre:
-          name: pre-main-kcp-cli
-          run_if_changed: "^tools/cli"
-        jobConfigPost:
-          name: post-main-kcp-cli
-          labels:
-            preset-build-artifacts-main: "true"
-        inheritedConfigs:
-          global:
-            - "jobConfig_default"
-          local:
-            - "jobConfig_default_kcp"
-          preConfigs:
-            global:
-              - "jobConfig_presubmit"
-          postConfigs:
-            global:
-              - "jobConfig_postsubmit"
-              - "disable_testgrid"
-```
-
+    ```yaml
+    localSets:
+      jobConfig_pre:
+        labels:
+          preset-build-pr: "true"
+      jobConfig_post:
+        labels:
+          preset-build-main: "true"
+    jobConfigs:
+      - repoName: "github.com/kyma-project/kyma"
+        jobs:
+          - jobConfig:
+              path: components/application-gateway
+              args:
+                - "/home/prow/go/src/github.com/kyma-project/kyma/components/application-gateway"
+              run_if_changed: "^components/application-gateway/|^common/makefiles/"
+              release_since: "1.7"
+            inheritedConfigs:
+              global:
+                - "jobConfig_default"
+                - "image_buildpack-golang"
+                - "jobConfig_generic_component"
+                - "jobConfig_generic_component_kyma"
+                - "extra_refs_test-infra"
+              preConfigs:
+                global:
+                  - "jobConfig_presubmit"
+                local:
+                  - "jobConfig_pre"
+              postConfigs:
+                global:
+                  - "jobConfig_postsubmit"
+                  - "disable_testgrid"
+                local:
+                  - "jobConfig_post"
+    ```
+    
+    The Render Templates tool can generate precommit and postcommit job definitions from a single jobConfig. The job defined in **jobConfigPre** and **jobConfigPost** can generate precommit and postcommit job definitions for a single job. This type of config holds two additional lists of values named **jobConfigPre** and **jobConfigPost**, which hold values used for presubmit and postsubmit jobs, as well as two lists of Config Sets named **preConfigs** and **postConfigs**, which hold lists of global and local Config Sets used for presubmit and postsubmit jobs.
+    
+    ```yaml
+    jobConfigs:
+      - repoName: kyma-project/control-plane
+        jobs:
+          - jobConfig:
+              labels:
+                preset-common: "true"
+            jobConfigPre:
+              name: pre-main-kcp-cli
+              run_if_changed: "^tools/cli"
+            jobConfigPost:
+              name: post-main-kcp-cli
+              labels:
+                preset-build-artifacts-main: "true"
+            inheritedConfigs:
+              global:
+                - "jobConfig_default"
+              local:
+                - "jobConfig_default_kcp"
+              preConfigs:
+                global:
+                  - "jobConfig_presubmit"
+              postConfigs:
+                global:
+                  - "jobConfig_postsubmit"
+                  - "disable_testgrid"
+    ```
+  
 The Render Templates builds the **Values** variable by merging Config Sets from **globalSets** first. If the job inherits the `default` Config Set from **globalSets**, it is merged first and all other Config Sets from **globalSets** are merged afterwards. Then, the Render Templates merges Config Sets from **localSets**. Again, if the job inherits the `default` Config Set from **localSets**, it's merged first and then all the other Config Sets from **localSets** are merged. Config Sets other than default are merged in any order during the **globalSets** and **localSets** phases. Config Sets from **jobConfig** are merged as the last ones. Existing keys in the **Values** variable are overwritten by values from the merged Config Sets.
 
 

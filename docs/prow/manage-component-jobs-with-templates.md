@@ -14,160 +14,161 @@ Follow these steps:
 
 1. Create the configuration file.
 
-Go to `templates/data` and add a new YAML file (`<PROW JOB NAME>-data.yaml`) with Prow job details to the `render` list under the `templates` section.
+   Go to `templates/data` and add a new YAML file (`<PROW JOB NAME>-data.yaml`) with Prow job details to the `render` list under the `templates` section.
+   
+   See an example that defines the `skr-aws-upgrade-integration-dev` test from the `kyma` repository, using the generic bootstrap:
 
+   ```yaml
+   templates:
+      - fromTo:
+           - from: templates/generic.tmpl
+             to: ../prow/jobs/kyma/skr-aws-upgrade-integration-dev.yaml
+        render:
+           localSets:
+              postsubmit:
+                 type_postsubmit: "true"
+                 cluster: "trusted-workload"
+              ...
+           jobConfigs:
+              - repoName: "kyma-project/kyma"
+                jobs:
+                   - jobConfig:
+                        name: "skr-aws-upgrade-integration-dev"
+                        cron: "0 */4 * * *" # "Every four hours"
+                        optional: true
+        ...
+   ```
 
-See an example that defines the `skr-aws-upgrade-integration-dev` test from the `kyma` repository, using the generic bootstrap:
-
-```yaml
-templates:
-   - fromTo:
-        - from: templates/generic.tmpl
-          to: ../prow/jobs/kyma/skr-aws-upgrade-integration-dev.yaml
-     render:
-        localSets:
-           postsubmit:
-              type_postsubmit: "true"
-              cluster: "trusted-workload"
-           ...
-        jobConfigs:
-           - repoName: "kyma-project/kyma"
-             jobs:
-                - jobConfig:
-                     name: "skr-aws-upgrade-integration-dev"
-                     cron: "0 */4 * * *" # "Every four hours"
-                     optional: true
-     ...
-```
-
-Such an entry uses the `generic.tmpl` template to create the `skr-aws-upgrade-integration-dev.yaml` file under
+   Such an entry uses the `generic.tmpl` template to create the `skr-aws-upgrade-integration-dev.yaml` file under
 the `/prow/jobs/kyma/` subfolder, specifying that postsubmit job for this test.
 Set the **optional** parameter to `true` for this job to be optional on pull requests (PRs), not to block others.
 **Cron** parameter indicates that this Prow job is run every four hours.
 
-If needed, global config sets (**globalSets**) can be added to the `templates/config.yaml` file.
+   If needed, global config sets (**globalSets**) can be added to the `templates/config.yaml` file.
 
-For **component job**, instead of `name`, `path` indicating the path to the component, is required.
-For example:
+   For **component job**, instead of `name`, `path` indicating the path to the component, is required.
+   For example:
 
-```yaml
-templates:
-  - from: templates/generic.tmpl
-    render:
-      - to: ../prow/jobs/control-plane/components/provisioner/provisioner-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/control-plane"
-            jobs:
-              - jobConfig:
-                  path: components/provisioner
-```
+   ```yaml
+   templates:
+     - from: templates/generic.tmpl
+       render:
+         - to: ../prow/jobs/control-plane/components/provisioner/provisioner-generic.yaml
+           jobConfigs:
+             - repoName: "github.com/kyma-project/control-plane"
+               jobs:
+                 - jobConfig:
+                     path: components/provisioner
+   ```
 
+   - For more information about creating template file, as well as local config sets (**localSets**), job configs (**jobConfig**) and
+     (**globalSets**), please refer to [specific documentation](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/rendertemplates).
+   > **NOTE:** Make sure that the `.yaml` file and the component folder name are the same as the name of the Kyma component. Also, all `.yaml` files in the whole `jobs` structure need to have unique names.
+   
+   Use the buildpack for Go or Node.js applications provided in the `test-infra` repository. It is the standard mechanism for defining Prow jobs. If the buildpack you want to use is not there yet, you have to add it. When you add a new buildpack, follow the example of the already defined ones.
 
-- For more information about creating template file, as well as local config sets (**localSets**), job configs (**jobConfig**) and
-  (**globalSets**), please refer to [specific documentation](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/rendertemplates).
-
-> **NOTE:** Make sure that the `.yaml` file and the component folder name are the same as the name of the Kyma component. Also, all `.yaml` files in the whole `jobs` structure need to have unique names.
-
-Use the buildpack for Go or Node.js applications provided in the `test-infra` repository. It is the standard mechanism for defining Prow jobs. If the buildpack you want to use is not there yet, you have to add it. When you add a new buildpack, follow the example of the already defined ones.
 
 2. Define a test for your component.
 
-Add a new component test entry to the [`components_test.go`](../../development/tools/jobs/kyma/components_test.go) file for the `test-infra-test-jobs-yaml-definitions` presubmit job to execute it.
+   Add a new component test entry to the [`components_test.go`](../../development/tools/jobs/kyma/components_test.go) file for the `test-infra-test-jobs-yaml-definitions` presubmit job to execute it.
 
-See the example:
+   See the example:
+   
+   ```go
+   ...
+   {path: "apiserver-proxy", image: tester.ImageGolangBuildpack1_12},
+   {path: "apiserver-proxy", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+     additionalOptions: []jobsuite.Option{
+       jobsuite.JobFileSuffix("generic"),
+       jobsuite.Since(releases.Release17),
+       jobsuite.Optional(),
+     },
+   },
+   ```
+   
+   Same as with component jobs, mark the component test as optional at this stage by adding the `jobsuite.Optional()` entry.
+   
+   If you have access to a Prow cluster, you can test a Prow job on it. For details, see the [official documentation](https://github.com/kubernetes/test-infra/blob/master/prow/build_test_update.md#how-to-test-a-prowjob).
+   
+   When writing tests for a new component, use the `tester.GetKymaReleasesSince({next release})` function to create tests for release jobs.
 
-```go
-...
-{path: "apiserver-proxy", image: tester.ImageGolangBuildpack1_12},
-{path: "apiserver-proxy", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
-  additionalOptions: []jobsuite.Option{
-    jobsuite.JobFileSuffix("generic"),
-    jobsuite.Since(releases.Release17),
-    jobsuite.Optional(),
-  },
-},
-```
-Same as with component jobs, mark the component test as optional at this stage by adding the `jobsuite.Optional()` entry.
-
-If you have access to a Prow cluster, you can test a Prow job on it. For details, see the [official documentation](https://github.com/kubernetes/test-infra/blob/master/prow/build_test_update.md#how-to-test-a-prowjob).
-
-When writing tests for a new component, use the `tester.GetKymaReleasesSince({next release})` function to create tests for release jobs.
 
 3. Generate jobs.
 
-Run one of these commands to generate jobs previously defined in the `config.yaml` file:
+   Run one of these commands to generate jobs previously defined in the `config.yaml` file:
+   ```bash
+   go run development/tools/cmd/rendertemplates/main.go --data path/to/directory/with/data/files
+   ```
+   or
+   ```bash
+   make jobs-definitions
+   ```
+   
+   As a result, the Render Templates tool generates the requested job files
 
-```bash
-go run development/tools/cmd/rendertemplates/main.go --config templates/config.yaml --template templates/templates --data templates/data
-```
-or
-```bash
-make jobs-definitions
-```
-
-As a result, the Render Templates tool generates the requested job files.
 
 4. Check your configuration locally.
 
-Use the `development/validate-config.sh` script to validate your Prow configuration. The script accepts three arguments:
+   Use the `development/validate-config.sh` script to validate your Prow configuration. The script accepts three arguments:
 
-- The path to the plugins configuration file (`prow/plugins.yaml`)
-- The path to the generic configuration file (`prow/config.yaml`)
-- The path to the directory with job definitions (`prow/jobs/`)
+   - The path to the plugins configuration file (`prow/plugins.yaml`)
+   - The path to the generic configuration file (`prow/config.yaml`)
+   - The path to the directory with job definitions (`prow/jobs/`)
 
-See an example:
+   See an example:
 
-```bash
-cd $GOPATH/src/github.com/kyma-project/test-infra
-./development/validate-config.sh prow/plugins.yaml prow/config.yaml prow/jobs/
-```
+   ```bash
+   cd $GOPATH/src/github.com/kyma-project/test-infra
+   ./development/validate-config.sh prow/plugins.yaml prow/config.yaml prow/jobs/
+   ```
 
 5. Merge the changes.
 
-Create a PR with your changes in the `config.yaml` file and the job files generated by the Render Templates.
+   Create a PR with your changes in the `config.yaml` file and the job files generated by the Render Templates.
 
-After your PR is reviewed and approved, merge the changes to the `test-infra` repository. The job configuration is automatically applied to the Prow production cluster. The `config_updater` plugin configured in the `prow/plugins.yaml` file adds a comment to the PR:
+   After your PR is reviewed and approved, merge the changes to the `test-infra` repository. The job configuration is automatically applied to the Prow production cluster. The `config_updater` plugin configured in the `prow/plugins.yaml` file adds a comment to the PR:
 
-![msg](./assets/msg-updated-config.png).
+![msg](./assets/msg-updated-config.png)
 
 6. Create a Makefile for your component.
 
-Buildpacks require `Makefile` defined in your component directory under the `kyma` repository. The `Makefile` has to define the **ci-release** target that is executed for a PR issued against the release branch.
+   Buildpacks require `Makefile` defined in your component directory under the `kyma` repository. The `Makefile` has to define the **ci-release** target that is executed for a PR issued against the release branch.
 
-See an example of `Makefile` for the Console Backend Service component that already uses the generic buildpack:
+   See an example of `Makefile` for the Console Backend Service component that already uses the generic buildpack:
 
-```Makefile
-APP_NAME = console-backend-service
-APP_PATH = components/$(APP_NAME)
-BUILDPACK = eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20190930-d28d219
-SCRIPTS_DIR = $(realpath $(shell pwd)/../..)/scripts
+   ```Makefile
+   APP_NAME = console-backend-service
+   APP_PATH = components/$(APP_NAME)
+   BUILDPACK = eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20190930-d28d219
+   SCRIPTS_DIR = $(realpath $(shell pwd)/../..)/scripts
+   
+   include $(SCRIPTS_DIR)/go-dep.mk
+   
+   VERIFY_IGNORE := /vendor\|/automock\|/testdata\|/pkg
+   
+   .PHONY: path-to-referenced-charts
+   path-to-referenced-charts:
+       @echo "resources/core"
+   
+   ```
 
-include $(SCRIPTS_DIR)/go-dep.mk
+   > **NOTE** Add a tab before each command.
 
-VERIFY_IGNORE := /vendor\|/automock\|/testdata\|/pkg
+   If your job involves pushing a Docker image, its name is based on the following environment variables:
+   
+   - **DOCKER_TAG** that refers to the Docker tag set by the `build.sh` script.
+   - **DOCKER_PUSH_DIRECTORY** that points to the directory in the Docker repository where the image is pushed. Set it in the job definition by adding the **preset-build-pr**, **preset-build-main**, or **preset-build-release** Preset.
+   - **DOCKER_PUSH_REPOSITORY** that is the Docker repository where the image is pushed. It is set in the job definition by the **preset-docker-push-repository** Preset.
 
-.PHONY: path-to-referenced-charts
-path-to-referenced-charts:
-	@echo "resources/core"
-
-```
-
-> **NOTE** Add a tab before each command.
-
-If your job involves pushing a Docker image, its name is based on the following environment variables:
-
-- **DOCKER_TAG** that refers to the Docker tag set by the `build.sh` script.
-- **DOCKER_PUSH_DIRECTORY** that points to the directory in the Docker repository where the image is pushed. Set it in the job definition by adding the **preset-build-pr**, **preset-build-main**, or **preset-build-release** Preset.
-- **DOCKER_PUSH_REPOSITORY** that is the Docker repository where the image is pushed. It is set in the job definition by the **preset-docker-push-repository** Preset.
 
 7. Change your component job and test to obligatory.
 
-Create another PR in the `test-infra` repository that removes these entries:
-
-- `optional: true` from your component job definition in `templates/config.yaml`.
-- `jobsuite.Optional()` from your component test definition in `components_test.go`.
-
-This change makes your component job and test obligatory to pass on all PRs before they can be merged.
+   Create another PR in the `test-infra` repository that removes these entries:
+   
+   - `optional: true` from your component job definition in `templates/config.yaml`.
+   - `jobsuite.Optional()` from your component test definition in `components_test.go`.
+   
+   This change makes your component job and test obligatory to pass on all PRs before they can be merged.
 
 </details>
 <details>

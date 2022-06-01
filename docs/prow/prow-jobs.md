@@ -136,25 +136,24 @@ Use a tool called [mkpj](https://github.com/kubernetes/test-infra/tree/master/pr
 
 1. Clone the `kubernetes/test-infra` repository into the `k8s.io` directory. Run:
 
-```shell
-git clone "git@github.com:kubernetes/test-infra.git" $GOPATH/src/k8s.io
-```
+    ```shell
+    git clone "git@github.com:kubernetes/test-infra.git" $GOPATH/src/k8s.io
+    ```
 
 2. Reset the [compatible](./production-cluster-configuration.md#overview) `kubernetes/test-infra` state:
 
-```shell
-git reset <compatible commit sha> --hard
-```
+    ```shell
+    git reset <compatible commit sha> --hard
+    ```
+3. See the example of generating the `kyma-gke-nightly` target:
 
-See the example of generating the `kyma-gke-nightly` target:
+   ```shell
+   go run prow/cmd/mkpj/main.go --job=kyma-gke-nightly --config-path="$GOPATH/src/github.com/kyma-project/test-infra/prow/config.yaml" --job-config-path="$GOPATH/src/github.com/kyma-project/test-infra/prow/jobs/" > job.yaml
+   ```
+   
+4. You can trigger this job manually. Run:
+   ```shell
+   kubectl apply -f job.yaml
+   ```
 
-```shell
-go run prow/cmd/mkpj/main.go --job=kyma-gke-nightly --config-path="$GOPATH/src/github.com/kyma-project/test-infra/prow/config.yaml" --job-config-path="$GOPATH/src/github.com/kyma-project/test-infra/prow/jobs/" > job.yaml
-```
-
-You can trigger this job manually. Run:
-```shell
-kubectl apply -f job.yaml
-```
-
-**NOTE**: Do not edit the generated YAML by hand. Modify the file under the `--job-config-path` parameter, and use [mkpj](https://github.com/kubernetes/test-infra/tree/master/prow/cmd/mkpj) again.
+> **NOTE**: Do not edit the generated YAML by hand. Modify the file under the `--job-config-path` parameter, and use [mkpj](https://github.com/kubernetes/test-infra/tree/master/prow/cmd/mkpj) again.
