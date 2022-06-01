@@ -101,7 +101,8 @@ function run_tests() {
   elif [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
     pushd "../components/istio"
     export EXPORT_RESULT="true"
-    make test
+    go install github.com/cucumber/godog/cmd/godog@latest
+    make test-bdd
     popd
   else
     make ci
