@@ -133,7 +133,12 @@ log::info "Successfully installed Kyma CLI version: $KYMA_CLI_VERSION"
 YQ_VERSION="v4.25.1"
 log::info "Installing yq version: $YQ_VERSION"
 wget "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64"
-mv yq_linux_amd64 /usr/local/bin/yq && chmod +x /usr/local/bin/yq
+mv yq_linux_amd64 yq
+chmod +x yq
+
+#shellcheck disable=SC2088
+utils::send_to_vm "${ZONE}" "compass-integration-test-${RANDOM_ID}" "yq" "~/bin/yq"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "compass-integration-test-${RANDOM_ID}" -c "sudo cp \$HOME/bin/yq /usr/local/bin/yq"
 
 log::info "Triggering the installation"
 
