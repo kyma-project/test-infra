@@ -65,6 +65,7 @@ function deploy_kyma() {
   kyma_deploy_cmd="kyma deploy -p evaluation --ci --source=local --workspace ${KYMA_SOURCES_DIR}"
 
   if [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
+    echo $PROFILE
     kyma_deploy_cmd="kyma deploy -p ${PROFILE} --ci --source=local --workspace ${KYMA_SOURCES_DIR} --components-file kyma-integration-k3d-istio-components.yaml"
   fi
 
