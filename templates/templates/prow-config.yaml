@@ -939,7 +939,7 @@ presets:
     env:
       - name: ISTIO_INTEGRATION_ENABLED
         value: "true"
-      - name: PROFILE
+      - name: KYMA_PROFILE
         value: "evaluation"
   - labels:
       preset-kyma-integration-istio-production: "true"
