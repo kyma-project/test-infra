@@ -30,12 +30,12 @@ cleanup() {
   set +e
 
   #shellcheck disable=SC2088
-  if [[-v ISTIO_INTEGRATION_ENABLED]]
-  utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/components/istio/junit-report.xml" "${ARTIFACTS}"
+  if [[-v ISTIO_INTEGRATION_ENABLED]] then
+    utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/components/istio/junit-report.xml" "${ARTIFACTS}"
   else
-  utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/fast-integration/junit_kyma-fast-integration.xml" "${ARTIFACTS}"
+    utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/fast-integration/junit_kyma-fast-integration.xml" "${ARTIFACTS}"
   fi
-  gcloud compute instances stop --async --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}"
+    gcloud compute instances stop --async --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}"
 
   log::info "End of cleanup"
 }
