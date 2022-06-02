@@ -31,7 +31,7 @@ require (
 	github.com/containerd/typeurl v1.0.2
 	github.com/docker/docker v20.10.12+incompatible // indirect
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
-	github.com/fsouza/go-dockerclient v1.7.11
+	github.com/fsouza/go-dockerclient v1.8.0
 	github.com/gardener/component-cli v0.40.0
 	github.com/gardener/component-spec/bindings-go v0.0.63
 	github.com/ghodss/yaml v1.0.0
@@ -65,7 +65,7 @@ require (
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5
 	google.golang.org/api v0.81.0
 	gopkg.in/yaml.v2 v2.4.0
-	gopkg.in/yaml.v3 v3.0.0
+	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.22.2
 	k8s.io/apimachinery v0.22.2
 	k8s.io/client-go v11.0.1-0.20190805182717-6502b5e7b1b5+incompatible
