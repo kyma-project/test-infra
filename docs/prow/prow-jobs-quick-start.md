@@ -47,7 +47,6 @@ This document provides an overview of how to quickly start working with Prow job
 
 
 5. To test PR in the Kyma repository create a new file `vpath/pjtester.yaml` in the `test-infra` repository
-and reference the pipeline name (`<PROW JOB NAME>`).
     ```yaml
     pjNames:
       - pjName: <PROW JOB NAME>
