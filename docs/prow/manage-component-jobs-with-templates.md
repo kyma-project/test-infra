@@ -159,7 +159,7 @@ Set the **optional** parameter to `true` for this job to be optional on pull req
    - **DOCKER_PUSH_REPOSITORY** that is the Docker repository where the image is pushed. It is set in the job definition by the **preset-docker-push-repository** Preset.
 
 
-7. Change your component job and test to obligatory.
+7. Make your component job and test obligatory.
 
    Create another PR in the `test-infra` repository that removes these entries:
    
