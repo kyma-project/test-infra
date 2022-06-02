@@ -37,7 +37,7 @@ This document provides an overview of how to quickly start working with Prow job
     > **NOTE:** Do not change generated file!
 
    
-4. Each Prow job must execute a command. It can be either specified directly in the Prow job definition file (`templates/data/<NAME-data.yaml>`),
+4. Each Prow job must execute a command. You can either specify it directly in the Prow job definition file (`templates/data/<NAME-data.yaml>`), or attach a script file to the Prow job definition file. The second alternative provides broader options.
     ```yaml
     localSets:
       jobConfig_default:
