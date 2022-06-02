@@ -118,7 +118,7 @@ prConfigs:
 
 > **NOTE:** It is recommended to keep PRs as draft ones until you're satisfied with the results.
 
-- For more details on how to use `pjtester`, see [this](https://github.com/kyma-project/test-infra/blob/main/development/tools/cmd/pjtester/README.md)
+- For more details on how to use `pjtester`, see [the `pjtester` README](https://github.com/kyma-project/test-infra/blob/main/development/tools/cmd/pjtester/README.md)
 document.
 - To see how to trigger Prow jobs to test, go to the aforementioned [`Interact with Prow`](./prow-jobs.md#interact-with-prow) section.
 
