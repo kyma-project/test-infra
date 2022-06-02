@@ -160,6 +160,13 @@ go run development/tools/cmd/rendertemplates/main.go --data path/to/directory/wi
 
 By default, the Render Templates downloads `config.yaml` and templates files from [GitHub](https://github.com/kyma-project/test-infra). You can specify paths to the `config.yaml` file and templates directory on the command line to override defaults.
 
+To work with local files only provide all paths in flags.
+
+Example for test-infra repository.
+```bash
+go run development/tools/cmd/rendertemplates/main.go --config templates/config.yaml --templates templates/templates --data templates/data
+```
+
 ### Flags
 
 This tool uses one flag:
