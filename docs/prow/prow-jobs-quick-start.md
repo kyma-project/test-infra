@@ -17,7 +17,7 @@ This document provides an overview of how to quickly start working with Prow job
     In the `<CONFIGURATION>` part, you can specify local Config Sets (**localSets**) and a configuration of a single job (**jobConfig**), where you can define, for example, the name of the job.
     If needed, global Config Sets (**globalSets**) can be added to the `templates/config.yaml` file.
     
-    > **NOTE:** Make sure that your template file and Prow job have unique names.
+    > **NOTE:** Your template file and Prow job must have unique names.
     
     - To learn more about **localSets**, **jobConfig** and **globalSets**, please refer to [specific documentation](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/rendertemplates). 
     - You can search for more examples of template files in the `templates/data` directory.
