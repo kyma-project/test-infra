@@ -43,7 +43,7 @@ Follow these steps:
 Set the **optional** parameter to `true` for this job to be optional on pull requests (PRs), not to block others.
 **Cron** parameter indicates that this Prow job is run every four hours.
 
-   If needed, global config sets (**globalSets**) can be added to the `templates/config.yaml` file.
+   If needed, you can add global Config Sets (**globalSets**) to the `templates/config.yaml` file.
 
    For **component job**, instead of `name`, `path` indicating the path to the component, is required.
    For example:
