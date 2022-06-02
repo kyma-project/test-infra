@@ -45,7 +45,7 @@ Set the **optional** parameter to `true` for this job to be optional on pull req
 
    If needed, you can add global Config Sets (**globalSets**) to the `templates/config.yaml` file.
 
-   For **component job**, instead of `name`, `path` indicating the path to the component, is required.
+   For **component job**, instead of `name`, you must use `path` to indicate the path to the component.
    For example:
 
    ```yaml
