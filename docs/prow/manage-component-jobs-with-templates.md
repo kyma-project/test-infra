@@ -130,7 +130,7 @@ Set the **optional** parameter to `true` for this job to be optional on pull req
 
 6. Create a Makefile for your component.
 
-   Buildpacks require `Makefile` defined in your component directory under the `kyma` repository. The `Makefile` has to define the **ci-release** target that is executed for a PR issued against the release branch.
+   Buildpacks need a `Makefile` defined in your component directory under the `kyma` repository. The `Makefile` must define the **ci-release** target that is executed for a PR issued against the release branch.
 
    See an example of `Makefile` for the Console Backend Service component that already uses the generic buildpack:
 
