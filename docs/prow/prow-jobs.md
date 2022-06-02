@@ -116,7 +116,7 @@ prConfigs:
 | **pjNames.pjName** | Yes | Name of the Prow job to test.
 | **prConfigs** | No | Dictionary containing the numbers of the pull requests on repositories other than `test-infra`. <br> `pjtester` uses their code to test the Prow jobs.
 
-> **NOTE:** It is recommended to keep PRs as draft ones until you're satisfied with the results.
+> **NOTE:** We recommend to keep PRs as draft ones until you're satisfied with the results.
 
 - For more details on how to use `pjtester`, see [the `pjtester` README](https://github.com/kyma-project/test-infra/blob/main/development/tools/cmd/pjtester/README.md)
 document.
