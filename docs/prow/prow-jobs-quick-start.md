@@ -14,7 +14,7 @@ This document provides an overview of how to quickly start working with Prow job
           - to: ../prow/jobs/test-infra/stability-checker.yaml
         <CONFIGURATION>
     ```
-    In the `<CONFIGURATION>` part you can specify local config sets (**localSets**) and a configuration of a single job (**jobConfig**), where e.g., the name of the job can be defined.
+    In the `<CONFIGURATION>` part, you can specify local Config Sets (**localSets**) and a configuration of a single job (**jobConfig**), where you can define, for example, the name of the job.
     If needed, global config sets (**globalSets**) can be added to the `templates/config.yaml` file.
     
     > **NOTE:** Make sure that your template file and Prow job have unique names.
