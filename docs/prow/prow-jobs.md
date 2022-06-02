@@ -97,7 +97,7 @@ make jobs-definitions
 
 
 ## Prow job tester
-Prow job tester (`pjtester`) is a dedicated tool for testing changes to Prow jobs and scripts in the `test-infra` repository,
+Prow job tester (`pjtester`) is a dedicated tool for testing changes to Prow jobs and scripts in the `test-infra` repository, which are **under development**. Additionally, it can use code from pull requests (PRs) in other repositories.
 
 For example, to test a PR in the Kyma repository, create a new file `vpath/pjtester.yaml` in the `test-infra` repository.
 ```yaml
