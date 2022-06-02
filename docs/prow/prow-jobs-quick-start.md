@@ -5,7 +5,7 @@ This document provides an overview of how to quickly start working with Prow job
 1. Fork the [`test-infra`](https://github.com/kyma-project/test-infra) repository and feature a new branch.
 
 
-2. Jobs are generated from templates. To create one, add `<PROW JOB NAME>-data.yaml` file in the `templates/data` directory. The file should look like this:
+2. Jobs are generated from templates. To create a template, add the `<PROW JOB NAME>-data.yaml` file in the `templates/data` directory. The file should look like this:
 
     ```yaml
     templates:
