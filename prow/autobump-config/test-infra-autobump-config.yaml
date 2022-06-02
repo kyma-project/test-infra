@@ -14,9 +14,9 @@ includedConfigPaths:
   - "." # test-infra root directory
 excludedConfigPaths:
   - "prow/staging"
+  - "prow/jobs/kyma/releases/kyma-release-23.yaml"
   - "prow/jobs/kyma/releases/kyma-release-22.yaml"
   - "prow/jobs/kyma/releases/kyma-release-21.yaml"
-  - "prow/jobs/kyma/releases/kyma-release-20.yaml"
 extraFiles:
   - "development/tools/jobs/tester/tester.go"
 targetVersion: "latest"
