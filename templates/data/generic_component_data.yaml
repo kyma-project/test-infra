@@ -196,30 +196,6 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../../prow/jobs/kyma/tests/application-operator-tests/application-operator-tests-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: tests/application-operator-tests
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/tests/application-operator-tests"
-                  run_if_changed: "^tests/application-operator-tests/|^common/makefiles/"
-                  release_since: "1.7"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
       - to: ../../prow/jobs/kyma/tests/service-catalog/service-catalog-tests-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
@@ -229,30 +205,6 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/tests/service-catalog"
                   run_if_changed: "^tests/service-catalog/|^common/makefiles/"
-                  release_since: "1.7"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-      - to: ../../prow/jobs/kyma/tests/compass-runtime-agent/compass-runtime-agent-tests-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: tests/compass-runtime-agent
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/tests/compass-runtime-agent"
-                  run_if_changed: "^tests/compass-runtime-agent/|^common/makefiles/"
                   release_since: "1.7"
                 inheritedConfigs:
                   global:
