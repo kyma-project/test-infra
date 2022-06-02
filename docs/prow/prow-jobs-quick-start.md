@@ -62,6 +62,6 @@ and reference the pipeline name (`<PROW JOB NAME>`).
     > **NOTE:** It is recommended to keep PRs as draft ones until you're satisfied with the results.
 
    
-7. Run test with a comment on your `test-infra` pull request (PR) 
+7. Run the test with a comment on your `test-infra` pull request (PR), for example, using `/test all`.
    - To learn more about interacting with Prow, read [Interact with Prow](./prow-jobs.md#interact-with-prow).
    - Look also on [prow command help](https://prow.k8s.io/command-help) for more commands.
