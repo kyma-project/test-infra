@@ -82,7 +82,7 @@ After you trigger the job, it appears on [`https://status.build.kyma-project.io/
 
 ## Create jobs
 
-Jobs are generated from templates stored in the `templates` directory. For details on how to configure templates, see [this](./manage-component-jobs-with-templates.md) document. To generate jobs, run one of these commands in the root of the repository:
+Jobs are generated from templates stored in the `templates` directory. For details on how to configure templates, read [Manage component jobs with templates](./manage-component-jobs-with-templates.md). To generate jobs, run one of these commands in the root of the repository:
 
 ```bash
 go run development/tools/cmd/rendertemplates/main.go --data path/to/directory/with/data/files
