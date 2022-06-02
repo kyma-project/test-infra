@@ -54,7 +54,6 @@ and reference the pipeline name (`<PROW JOB NAME>`).
       - pjName: ...
     ```
     - For more details on how to use `pjtester`, see [this](https://github.com/kyma-project/test-infra/blob/main/development/tools/cmd/pjtester/README.md)
-      document.
  
      
 6. Create a pull request (PR) to the `test-infra` repository.
