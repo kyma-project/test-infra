@@ -40,7 +40,6 @@ Follow these steps:
    ```
 
    Such an entry uses the `generic.tmpl` template to create the `skr-aws-upgrade-integration-dev.yaml` file under the `/prow/jobs/kyma/` subfolder, specifying that postsubmit job for this test.
-the `/prow/jobs/kyma/` subfolder, specifying that postsubmit job for this test.
 Set the **optional** parameter to `true` for this job to be optional on pull requests (PRs), not to block others.
 **Cron** parameter indicates that this Prow job is run every four hours.
 
