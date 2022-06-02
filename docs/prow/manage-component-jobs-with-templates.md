@@ -86,7 +86,7 @@ Set the **optional** parameter to `true` for this job to be optional on pull req
    
    Same as with component jobs, mark the component test as optional at this stage by adding the `jobsuite.Optional()` entry.
    
-   If you have access to a Prow cluster, you can test a Prow job on it. For details, see the [official documentation](https://github.com/kubernetes/test-infra/blob/master/prow/build_test_update.md#how-to-test-a-prowjob).
+   If you have access to a Prow cluster, you can test a Prow job on it. For details, see [Kubernetes: How to test a ProwJob](https://github.com/kubernetes/test-infra/blob/master/prow/build_test_update.md#how-to-test-a-prowjob).
    
    When writing tests for a new component, use the `tester.GetKymaReleasesSince({next release})` function to create tests for release jobs.
 
