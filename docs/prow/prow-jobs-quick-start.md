@@ -19,7 +19,7 @@ This document provides an overview of how to quickly start working with Prow job
     
     > **NOTE:** Your template file and Prow job must have unique names.
     
-    - To learn more about **localSets**, **jobConfig** and **globalSets**, please refer to [specific documentation](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/rendertemplates). 
+    - To learn more about **localSets**, **jobConfig** and **globalSets**, read [Render Templates](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/rendertemplates). 
     - You can search for more examples of template files in the `templates/data` directory.
 
 
