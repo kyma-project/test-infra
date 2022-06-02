@@ -60,7 +60,7 @@ Set the **optional** parameter to `true` for this job to be optional on pull req
                      path: components/provisioner
    ```
 
-   - For more information about creating template file, as well as local config sets (**localSets**), job configs (**jobConfig**) and
+   - For more information about creating template file, as well as local config sets (**localSets**), job configs (**jobConfig**) and (**globalSets**), please refer to [specific documentation](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/rendertemplates).
    > **NOTE:** Make sure that the `.yaml` file and the component folder name are the same as the name of the Kyma component. Also, all `.yaml` files in the whole `jobs` structure need to have unique names.
    
    Use the buildpack for Go or Node.js applications provided in the `test-infra` repository. It is the standard mechanism for defining Prow jobs. If the buildpack you want to use is not there yet, you must add it. When you add a new buildpack, follow the example of the already defined ones.
