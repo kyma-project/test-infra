@@ -1,0 +1,3 @@
+pjNames:
+  - pjName: "kyma-upgrade-gardener-kyma2-minor-versions"
+    report: true
