@@ -23,7 +23,7 @@ This document provides an overview of how to quickly start working with Prow job
     - You can search for more examples of template files in the `templates/data` directory.
 
 
-3. Render template with one of these commands:
+3. Render the template with one of these commands:
     ```bash
     go run development/tools/cmd/rendertemplates/main.go --data path/to/directory/with/data/files
     ```
