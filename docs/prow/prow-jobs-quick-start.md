@@ -57,7 +57,7 @@ and reference the pipeline name (`<PROW JOB NAME>`).
       document.
  
      
-6. Create a pull request (PR) to `test-infra` repository.
+6. Create a pull request (PR) to the `test-infra` repository.
 
     > **NOTE:** It is recommended to keep PRs as draft ones until you're satisfied with the results.
 
