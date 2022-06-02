@@ -135,21 +135,21 @@ func TestMain(m *testing.M) {
 
 func TestReadTestCfg(t *testing.T) {
 	testCfg := readTestCfg(testCfgFile)
-	assert.Containsf(t, testCfg.PjNames, pjCfg{
+	assert.Containsf(t, testCfg.PjConfigs, pjCfg{
 		PjName: "test-infra-presubmit-test-job",
 		PjPath: "test-infra/development/tools/pkg/pjtester/test_artifacts/",
 		Report: true,
 	}, "pjCfg for test-infra-presubmit-test-job has wrong values.")
-	assert.Containsf(t, testCfg.PjNames, pjCfg{
+	assert.Containsf(t, testCfg.PjConfigs, pjCfg{
 		PjName: "fake-repo-presubmit-test-job",
 		PjPath: "test-infra/development/tools/pkg/pjtester/test_artifacts/",
 		Report: false,
 	}, "pjCfg for fake-repo-presubmit-test-job has wrong values.")
-	assert.Containsf(t, testCfg.PjNames, pjCfg{
+	assert.Containsf(t, testCfg.PjConfigs, pjCfg{
 		PjName: "orphaned-disks-cleaner",
 		PjPath: "test-infra/prow/jobs/",
 	}, "pjCfg for orphaned-disks-cleaner has wrong values")
-	assert.Containsf(t, testCfg.PjNames, pjCfg{
+	assert.Containsf(t, testCfg.PjConfigs, pjCfg{
 		PjName: "post-main-kyma-integration-k3d",
 		PjPath: "test-infra/prow/jobs/",
 	}, "pjCfg for post-main-kyma-integration-k3d has wrong values.")
@@ -203,20 +203,20 @@ func TestNewTestPJ(t *testing.T) {
 		},
 		Protected: &fakeRepoProtectedBranch,
 	}, nil, nil)
-	//o.prFinder.Repositories.(*mocks.GithubRepoService).On("GetCommit", ctx, fakeRepoPrOrg, fakeRepoPrRepo, fakeRepoBaseSHA)
+	// o.prFinder.Repositories.(*mocks.GithubRepoService).On("GetCommit", ctx, fakeRepoPrOrg, fakeRepoPrRepo, fakeRepoBaseSHA)
 	o.prFinder.PullRequests.(*mocks.GithubPullRequestsService).On("Get", ctx, fakeRepoPrOrg, fakeRepoPrRepo, fakeRepoPrNumber).Return(&gogithub.PullRequest{
 		Merged:         &fakeRepoMerged,
 		MergeCommitSHA: &fakeRepoPrHeadSHA,
 	}, nil, nil)
-	//o.prFinder.PullRequests.(*mocks.GithubPullRequestsService).MethodCalled("GetBranch", ctx, fakeRepoPrOrg, fakeRepoPrRepo, fakeRepoBaseRef)
-	//o.prFinder.Repositories.(*mocks.GithubRepoService).MethodCalled("Get", ctx, fakeRepoPrOrg, fakeRepoPrRepo, fakeRepoPrNumber)
+	// o.prFinder.PullRequests.(*mocks.GithubPullRequestsService).MethodCalled("GetBranch", ctx, fakeRepoPrOrg, fakeRepoPrRepo, fakeRepoBaseRef)
+	// o.prFinder.Repositories.(*mocks.GithubRepoService).MethodCalled("Get", ctx, fakeRepoPrOrg, fakeRepoPrRepo, fakeRepoPrNumber)
 	defer o.prFinder.Repositories.(*mocks.GithubRepoService).AssertExpectations(t)
 	defer o.prFinder.PullRequests.(*mocks.GithubPullRequestsService).AssertExpectations(t)
 	var testPrCfg *map[string]prOrg
 	if testPrCfg = &testCfg.PrConfigs; testPrCfg != nil {
 		o.getPullRequests(testCfg)
 	}
-	for _, pjCfg := range testCfg.PjNames {
+	for _, pjCfg := range testCfg.PjConfigs {
 		pj := newTestPJ(pjCfg, o)
 		assert.Equalf(t, "untrusted-workload", pj.Spec.Cluster, "Prowjob cluster name is not : untrusted-workload")
 		assert.Regexpf(t, "^testinfraauthor_test_of_prowjob_.*", pj.Spec.Job, "Prowjob name doesn't start with : <author github user>_test_of_prowjob_")

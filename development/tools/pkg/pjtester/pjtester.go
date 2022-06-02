@@ -12,6 +12,7 @@ import (
 
 	"k8s.io/test-infra/prow/pod-utils/downwardapi"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/go-yaml/yaml"
 	"github.com/kyma-project/test-infra/development/tools/pkg/prtagbuilder"
 	"github.com/sirupsen/logrus"
@@ -41,25 +42,28 @@ const (
 
 // pjCfg holds prowjob to test name and path to it's definition.
 type pjCfg struct {
-	PjName string `yaml:"pjName"`
-	PjPath string `yaml:"pjPath,omitempty"`
+	PjName string `yaml:"pjName" validate:"required,min=1"`
+	PjPath string `yaml:"pjPath" default:"test-infra/prow/jobs/"`
 	Report bool   `yaml:"report,omitempty"`
+	PrConfig prCfg `yaml:"prConfigs,omitempty"`
 }
+
+type pjOrg map[string][]pjCfg
 
 // pjCfg holds number of PR to download and fetched details.
 type prCfg struct {
-	PrNumber    int `yaml:"prNumber"`
+	PrNumber    int `yaml:"prNumber" validate:"number,min=1"`
 	pullRequest github.PullRequest
 }
 
 // prOrg holds pr configs per repository.
-type prOrg map[string]prCfg
+//type prOrg map[string]prCfg
 
 // testCfg holds prow config to test path, prowjobs to test names and paths to it's definitions.
 type testCfg struct {
-	PjNames    []pjCfg          `yaml:"pjNames"`
-	ConfigPath string           `yaml:"configPath,omitempty"`
-	PrConfigs  map[string]prOrg `yaml:"prConfigs,omitempty"`
+	PjConfigs  map[string]pjOrg `yaml:"pjConfigs" validate:"required,min=1"`
+	ConfigPath string           `yaml:"configPath" default:"test-infra/prow/config.yaml"`
+	//PrConfigs  map[string]prOrg `yaml:"prConfigs,omitempty"`
 }
 
 // options holds data about prowjob and pull request to test.
@@ -117,7 +121,7 @@ func newProwK8sClientset() *prowclient.Clientset {
 
 // readTestCfg read and validate data from pjtester.yaml file.
 // It will set default path for prowjobs and config files if not provided in a file.
-func readTestCfg(testCfgFile string) testCfg {
+func readTestCfg(testCfgFile string) (testCfg, error) {
 	var t testCfg
 	yamlFile, err := ioutil.ReadFile(testCfgFile)
 	if err != nil {
@@ -127,44 +131,50 @@ func readTestCfg(testCfgFile string) testCfg {
 	if err != nil {
 		log.Fatal("Failed unmarshal test config yaml.")
 	}
-	if len(t.PjNames) == 0 {
-		log.WithError(err).Fatalf("PjNames were not provided.")
-	}
-	for index, pj := range t.PjNames {
-		if pj.PjName == "" {
-			log.WithError(err).Fatalf("jobName to test was not provided.")
+
+	validate := validator.New()
+	// returns nil or ValidationErrors ( []FieldError )
+	err = validate.Struct(t)
+	if err != nil {
+
+		// this check is only needed when your code could produce
+		// an invalid value for validation such as interface with nil
+		// value most including myself do not usually have code like this.
+		if _, ok := err.(*validator.InvalidValidationError); ok {
+			fmt.Println(err)
+			return testCfg{}, err
 		}
-		if pj.PjPath == "" {
-			t.PjNames[index].PjPath = defaultPjPath
+
+		for _, err := range err.(validator.ValidationErrors) {
+
+			fmt.Println(err.Namespace())
+			fmt.Println(err.Field())
+			fmt.Println(err.StructNamespace())
+			fmt.Println(err.StructField())
+			fmt.Println(err.Tag())
+			fmt.Println(err.ActualTag())
+			fmt.Println(err.Kind())
+			fmt.Println(err.Type())
+			fmt.Println(err.Value())
+			fmt.Println(err.Param())
+			fmt.Println()
 		}
+
+		// from here you can create your own error messages in whatever language you wish
+		return testCfg{}, err
 	}
-	if t.ConfigPath == "" {
-		t.ConfigPath = defaultConfigPath
-	}
-	if len(t.PrConfigs) > 0 {
-		for _, repo := range t.PrConfigs {
-			if len(repo) > 0 {
-				for _, pr := range repo {
-					if pr.PrNumber == 0 {
-						log.WithError(err).Fatalf("Pull request number for repo was not provided.")
-					}
-				}
-			} else {
-				log.WithError(err).Fatalf("Pull request number for repo was not provided.")
-			}
-		}
-	}
-	return t
+
+	return t, nil
 }
 
 // getPjCfg is adding prowjob details to the options for triggering prowjob test.
-func getPjCfg(pjCfg pjCfg, o options) options {
-	// jobName is a name of prowjob to test. It was read from pjtester.yaml file.
-	o.jobName = pjCfg.PjName
-	// jobConfigPath is a location of prow jobs config files to test. It was read from pjtester.yaml file or set to default.
-	o.jobConfigPath = fmt.Sprintf("%s/%s", os.Getenv("KYMA_PROJECT_DIR"), pjCfg.PjPath)
-	return o
-}
+// func getPjCfg(pjCfg pjCfg, o options) options {
+// jobName is a name of prowjob to test. It was read from pjtester.yaml file.
+//	o.jobName = pjCfg.PjName
+// jobConfigPath is a location of prow jobs config files to test. It was read from pjtester.yaml file or set to default.
+//	o.jobConfigPath = fmt.Sprintf("%s/%s", os.Getenv("KYMA_PROJECT_DIR"), pjCfg.PjPath)
+//	return o
+// }
 
 // gatherOptions is building common options for all tests.
 // Options are build from PR env variables and prowjob config read from pjtester.yaml file.
@@ -206,7 +216,7 @@ func (o options) withGithubClientOptions() options {
 	return o
 }
 
-// getPullRequests will download pull requests details from github.
+// getPullRequests will download details from github for pull requests defined in pjtester test configuration.
 func (o *options) getPullRequests(t testCfg) {
 	if o.pullRequests == nil {
 		o.pullRequests = make(map[string]prOrg)
@@ -230,12 +240,26 @@ func (o *options) getPullRequests(t testCfg) {
 // For presubmits it will find and download PR details for prowjob Refs, if the PR number for that repo was not provided in pjtester.yaml
 // All test-infra refs will be set to pull request head SHA for which pjtester is triggered for.
 func (o *options) genJobSpec(conf *config.Config, name string) (config.JobBase, prowapi.ProwJobSpec) {
-	for fullRepoName, ps := range conf.PresubmitsStatic {
-		org, repo, err := splitRepoName(fullRepoName)
+	baseSHAGetter := func() (string, error) {
+		var err error
+		baseSHA, err := o.githubClient.GetRef(o.org, o.repo, "heads/"+o.baseRef)
 		if err != nil {
-			logrus.WithError(err).Warnf("Invalid repo name %s.", fullRepoName)
-			continue
+			return "", fmt.Errorf("failed to get baseSHA: %w", err)
 		}
+		return baseSHA, nil
+	}
+
+	headSHAGetter := func() (string, error) {
+		return o.pullSha, nil
+	}
+
+	//for fullRepoName, ps := range conf.PresubmitsStatic {
+	//	org, repo, err := splitRepoName(fullRepoName)
+	//	if err != nil {
+	//		logrus.WithError(err).Warnf("Invalid repo name %s.", fullRepoName)
+	//		continue
+	//	}
+	ps := conf.GetPresubmits(o.githubClient.)
 		for _, p := range ps {
 			if p.Name == o.jobName {
 				pjs := pjutil.PresubmitSpec(p, prowapi.Refs{
@@ -249,7 +273,7 @@ func (o *options) genJobSpec(conf *config.Config, name string) (config.JobBase, 
 				return p.JobBase, pjs
 			}
 		}
-	}
+	//}
 	for fullRepoName, ps := range conf.PostsubmitsStatic {
 		org, repo, err := splitRepoName(fullRepoName)
 		if err != nil {
@@ -328,7 +352,7 @@ func presubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, e
 	if pjs.Refs.Org == opt.org && pjs.Refs.Repo == opt.repo {
 		// set refs with details of tested PR
 		setPrHeadSHA(pjs.Refs, opt)
-		//Add PR details to ExtraRefs if PR number was provided in pjtester.yaml
+		// Add PR details to ExtraRefs if PR number was provided in pjtester.yaml
 		for index, ref := range pjs.ExtraRefs {
 			matched := opt.matchRefPR(&ref)
 			if matched {
@@ -339,7 +363,7 @@ func presubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, e
 	}
 	// If prowjob specification refs point to another repo.
 	if pjs.Refs.Org != opt.org || pjs.Refs.Repo != opt.repo {
-		//Check if PR number for prowjob specification refs was provided in pjtester.yaml.
+		// Check if PR number for prowjob specification refs was provided in pjtester.yaml.
 		if !opt.matchRefPR(pjs.Refs) {
 			// If PR number not provided set BaseRef to main
 			pjs.Refs.BaseRef = defaultMainBranch
@@ -383,7 +407,7 @@ func postsubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, 
 	// If prowjob specification refs point to test infra repo, add test-infra PR refs because we are going to test code from this PR.
 	if pjs.Refs.Org == opt.org && pjs.Refs.Repo == opt.repo {
 		setPrHeadSHA(pjs.Refs, opt)
-		//Add PR details to ExtraRefs if PR number was provided in pjtester.yaml
+		// Add PR details to ExtraRefs if PR number was provided in pjtester.yaml
 		for index, ref := range pjs.ExtraRefs {
 			if opt.matchRefPR(&ref) {
 				pjs.ExtraRefs[index] = ref
@@ -393,7 +417,7 @@ func postsubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, 
 	}
 	// If prowjob specification refs point to another repo.
 	if pjs.Refs.Org != opt.org || pjs.Refs.Repo != opt.repo {
-		//Check if PR number for prowjob specification refs was provided in pjtester.yaml.
+		// Check if PR number for prowjob specification refs was provided in pjtester.yaml.
 		matched := opt.matchRefPR(pjs.Refs)
 		if !matched {
 			// If PR number not provided set BaseRef to main
@@ -456,16 +480,20 @@ func formatPjName(pullAuthor, pjName string) string {
 	return formated
 }
 
-// newTestPJ is building a prowjob definition for test
+// newTestPJ is building a prowjob definition to test prowjobs provided in pjtester test configuration.
 func newTestPJ(pjCfg pjCfg, opt options) prowapi.ProwJob {
-	o := getPjCfg(pjCfg, opt)
-	conf, err := config.Load(o.configPath, o.jobConfigPath, nil, "")
+	// o := getPjCfg(pjCfg, opt)
+	// jobName is a name of prowjob to test. It was read from pjtester.yaml file.
+	opt.jobName = pjCfg.PjName
+	// jobConfigPath is a location of prow jobs config files to test. It was read from pjtester.yaml file or set to default.
+	opt.jobConfigPath = fmt.Sprintf("%s/%s", os.Getenv("KYMA_PROJECT_DIR"), pjCfg.PjPath)
+	conf, err := config.Load(opt.configPath, opt.jobConfigPath, nil, "")
 	if err != nil {
 		logrus.WithError(err).Fatal("Error loading prow config")
 	}
-	job, pjs := o.genJobSpec(conf, o.jobName)
+	job, pjs := opt.genJobSpec(conf, opt.jobName)
 	if job.Name == "" {
-		logrus.Fatalf("Job %s not found.", o.jobName)
+		logrus.Fatalf("Job %s not found.", opt.jobName)
 	}
 	// Building prowjob based on generated job specifications.
 	pj := pjutil.NewProwJob(pjs, job.Labels, job.Annotations)
@@ -489,7 +517,10 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	if err := checkEnvVars(envVarsList); err != nil {
 		logrus.WithError(err).Fatalf("Required environment variable not set.")
 	}
-	testCfg := readTestCfg(testCfgFile)
+	testCfg, err := readTestCfg(testCfgFile)
+	if err != nil {
+		log.Fatal("Pjtester config validation failed.")
+	}
 	o := gatherOptions(testCfg.ConfigPath, ghOptions)
 	prowClient := newProwK8sClientset()
 	pjsClient := prowClient.ProwV1()
@@ -497,13 +528,15 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	if err != nil {
 		logrus.WithError(err).Fatal("Failed to get GitHub client")
 	}
+	// TODO: migrate to use test-infra/development/github/pkg/client
 	o.prFinder = prtagbuilder.NewGitHubClient(nil)
-	var testPrCfg *map[string]prOrg
-	//if testPrCfg = &testCfg.PrConfigs; testPrCfg != nil && !o.prFetched {
-	if testPrCfg = &testCfg.PrConfigs; testPrCfg != nil {
+	// var testPrCfg *map[string]prOrg
+	// if testPrCfg = &testCfg.PrConfigs; testPrCfg != nil && !o.prFetched {
+	if &testCfg.PrConfigs != nil {
 		o.getPullRequests(testCfg)
 	}
-	for _, pjCfg := range testCfg.PjNames {
+	// Go over prowjob names to test and create prowjob definitions for each.
+	for _, pjCfg := range testCfg.PjConfigs {
 		pj := newTestPJ(pjCfg, o)
 		result, err := pjsClient.ProwJobs(metav1.NamespaceDefault).Create(context.Background(), &pj, metav1.CreateOptions{})
 		if err != nil {
