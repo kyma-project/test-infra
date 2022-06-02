@@ -21,7 +21,7 @@ The Render Templates passes data in the **$.Values** and **$.Global** variables 
         image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
     ```
 
-   Config Sets defined in **globalSets** hold data used to generate multiple files. A good example of such usage is the `image_bootstrap` global Config Set which defines a bootstrap image to use in Prow jobs.
+   Config Sets defined in **globalSets** hold data used to generate multiple files. A good example of such usage is the `image_bootstrap` global Config Set, which defines a bootstrap image to use in Prow jobs.
 
 
 - **Local ConfigSets** defined under the **localSets** parameter for each **to** key in the `config.yaml` file or in data files in the `templates/data` directory:
