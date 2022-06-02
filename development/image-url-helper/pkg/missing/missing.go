@@ -12,12 +12,12 @@ import (
 func CheckForMissingImages(allImages common.ComponentImageMap, missingImages common.ComponentImageMap) error {
 
 	for imageURL, image := range allImages {
-		imageReference, err := name.ParseReference(image.Image.FullImageURL())
+		missing, err := isImageMissing(image)
 		if err != nil {
 			return err
 		}
-		_, err = remote.Image(imageReference)
-		if err != nil {
+
+		if missing {
 			if !strings.Contains(err.Error(), "Failed to fetch") {
 				// unknown error, fail here
 				return err
@@ -34,4 +34,22 @@ func CheckForMissingImages(allImages common.ComponentImageMap, missingImages com
 	}
 
 	return nil
+}
+
+// isImageMissing checks if particular image exists
+func isImageMissing(image common.ComponentImage) (bool, error) {
+	imageReference, err := name.ParseReference(image.Image.FullImageURL())
+	if err != nil {
+		return false, err
+	}
+	_, err = remote.Image(imageReference)
+	if err != nil {
+		if !strings.Contains(err.Error(), "Failed to fetch") {
+			// unknown error, fail here
+			return false, err
+		}
+		// don't forward "Failed to fetch"
+		return true, nil
+	}
+	return false, nil
 }

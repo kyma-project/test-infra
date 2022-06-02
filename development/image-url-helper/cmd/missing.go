@@ -1,10 +1,8 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/jamiealquiza/envy"
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/common"
@@ -18,7 +16,8 @@ type existsCmdOptions struct {
 	excludeTestImages bool
 }
 
-func ExistsCmd() *cobra.Command {
+// MissingCmd checks if all images exists
+func MissingCmd() *cobra.Command {
 
 	options := existsCmdOptions{}
 	cmd := &cobra.Command{
@@ -36,8 +35,7 @@ func ExistsCmd() *cobra.Command {
 
 			err := filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, images, testImages))
 			if err != nil {
-				fmt.Printf("Cannot traverse directory: %s\n", err)
-				os.Exit(2)
+				common.PrintAndFail(1, "Cannot traverse directory: %s\n", err)
 			}
 
 			allImages := make(common.ComponentImageMap)
@@ -50,27 +48,12 @@ func ExistsCmd() *cobra.Command {
 
 			err = missing.CheckForMissingImages(allImages, missingImages)
 			if err != nil {
-				fmt.Printf("Cannot check for missing images: %s\n", err)
-				os.Exit(4)
+				common.PrintAndFail(2, "Cannot check for missing images: %s\n", err)
 			}
 
-			if options.outputFormat == "" {
-				common.PrintImages(missingImages)
-			} else if strings.ToLower(options.outputFormat) == "json" {
-				err = list.PrintImagesJSON(missingImages)
-				if err != nil {
-					fmt.Printf("Cannot save JSON: %s\n", err)
-					os.Exit(2)
-				}
-			} else if strings.ToLower(options.outputFormat) == "yaml" {
-				err = list.PrintImagesYAML(missingImages)
-				if err != nil {
-					fmt.Printf("Cannot save JSON: %s\n", err)
-					os.Exit(2)
-				}
-			} else {
-				fmt.Printf("Unknown output format: %s\n", options.outputFormat)
-				os.Exit(2)
+			err = common.PrintComponentImageMap(missingImages, options.outputFormat)
+			if err != nil {
+				common.PrintAndFail(3, "Cannot print image list: %s\n", err)
 			}
 
 			if len(missingImages) > 0 {
