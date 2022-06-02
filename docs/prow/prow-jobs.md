@@ -114,7 +114,7 @@ prConfigs:
 |----------------|----------|-------------|
 | **pjNames** | Yes | List containing the configuration of Prow jobs to test.
 | **pjNames.pjName** | Yes | Name of the Prow job to test.
-| **prConfigs** | No | Dictionary containing the numbers of the pull request on repositories other than `test-infra`. <br> `pjtester` uses their code to test the Prow jobs.
+| **prConfigs** | No | Dictionary containing the numbers of the pull requests on repositories other than `test-infra`. <br> `pjtester` uses their code to test the Prow jobs.
 
 > **NOTE:** It is recommended to keep PRs as draft ones until you're satisfied with the results.
 
