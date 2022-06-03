@@ -590,7 +590,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/kyma:
-    - name: post-main-kyma-gardener-gcp-api-gateway
+    - name: post-main-kyma-gardener-gcp-goats-api-gateway
       annotations:
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma install"
@@ -600,7 +600,7 @@ postsubmits: # runs on main
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-kyma-gardener-gcp-api-gateway"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-gardener-gcp-goats-api-gateway"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-cluster-version: "true"
         preset-debug-commando-oom: "true"

@@ -225,7 +225,7 @@ templates:
                     - installer_2
               # postsubmits
               - jobConfig:
-                  name: post-main-kyma-gardener-gcp-api-gateway
+                  name: post-main-kyma-gardener-gcp-goats-api-gateway
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
