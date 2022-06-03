@@ -34,11 +34,6 @@ var tests = []struct {
 			jobsuite.JobFileSuffix("tests-generic"),
 		},
 	},
-	{path: "integration/api-gateway", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("tests-generic"),
-		},
-	},
 	{path: "contract/knative-channel-kafka", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
