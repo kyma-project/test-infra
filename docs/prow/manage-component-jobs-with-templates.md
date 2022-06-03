@@ -60,8 +60,8 @@ Set the **optional** parameter to `true` for this job to be optional on pull req
                      path: components/provisioner
    ```
 
-   - For more information about creating template file, as well as local config sets (**localSets**), job configs (**jobConfig**) and (**globalSets**), please refer to [specific documentation](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/rendertemplates).
-   > **NOTE:** Make sure that the `.yaml` file and the component folder name are the same as the name of the Kyma component. Also, all `.yaml` files in the whole `jobs` structure need to have unique names.
+   - For more information about creating template file, as well as local config sets (**localSets**), job configs (**jobConfig**) and (**globalSets**), read [Render Templates](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/rendertemplates).
+   > **CAUTION:** The `.yaml` file and the component folder name should be the same as the name of the Kyma component. Also, all `.yaml` files in the whole `jobs` structure must have unique names.
    
    Use the buildpack for Go or Node.js applications provided in the `test-infra` repository. It is the standard mechanism for defining Prow jobs. If the buildpack you want to use is not there yet, you must add it. When you add a new buildpack, follow the example of the already defined ones.
 
@@ -93,16 +93,14 @@ Set the **optional** parameter to `true` for this job to be optional on pull req
 
 3. Generate jobs.
 
-   Run one of these commands to generate jobs previously defined in the `config.yaml` file:
-   ```bash
-   go run development/tools/cmd/rendertemplates/main.go --data path/to/directory/with/data/files
-   ```
-   or
+   Run this command to generate jobs previously defined in the `config.yaml` file:
    ```bash
    make jobs-definitions
    ```
+
+   As a result, the Render Templates tool generates the requested job files.
    
-   As a result, the Render Templates tool generates the requested job files
+   - For more information about generating jobs, read [Render Templates](../../development/tools/cmd/rendertemplates/README.md).
 
 
 4. Check your configuration locally.
@@ -132,7 +130,7 @@ Set the **optional** parameter to `true` for this job to be optional on pull req
 
    Buildpacks need a `Makefile` defined in your component directory under the `kyma` repository. The `Makefile` must define the **ci-release** target that is executed for a PR issued against the release branch.
 
-   See an example of `Makefile` for the Console Backend Service component that already uses the generic buildpack:
+   See an example of `Makefile` for the Application Connectivity Validator component that already uses the generic buildpack:
 
    ```Makefile
    APP_NAME = console-backend-service

@@ -23,18 +23,14 @@ This document provides an overview of how to quickly start working with Prow job
     - You can search for more examples of template files in the `templates/data` directory.
 
 
-3. Render the template with one of these commands:
-    ```bash
-    go run development/tools/cmd/rendertemplates/main.go --data path/to/directory/with/data/files
-    ```
-    or 
+3. Render the template with this command:
     ```bash
     make jobs-definitions
     ```
     
-    - For more details on how rendering templates works, see [this](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/rendertemplates) document.
+    - For more details on how rendering templates works, read [Render Tamplates](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/rendertemplates).
     
-    > **CAUTION:** Do not change the generated file!
+    > **CAUTION:** Do not change the generated file! Otherwise, the PR wouldn't be merged, because the job checking the generated file would fail
 
    
 4. Each Prow job must execute a command. You can either specify it directly in the Prow job definition file (`templates/data/<NAME-data.yaml>`), or attach a script file to the Prow job definition file. The second alternative provides broader options.
