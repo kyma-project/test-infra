@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type existsCmdOptions struct {
+type missingCmdOptions struct {
 	outputFormat      string
 	excludeTestImages bool
 }
@@ -19,7 +19,7 @@ type existsCmdOptions struct {
 // MissingCmd checks if all images exists
 func MissingCmd() *cobra.Command {
 
-	options := existsCmdOptions{}
+	options := missingCmdOptions{}
 	cmd := &cobra.Command{
 		Use:     "missing",
 		Short:   "Check if all images exists",
@@ -65,7 +65,7 @@ func MissingCmd() *cobra.Command {
 	return cmd
 }
 
-func addExistsCmdFlags(cmd *cobra.Command, options *existsCmdOptions) {
+func addExistsCmdFlags(cmd *cobra.Command, options *missingCmdOptions) {
 	cmd.Flags().StringVarP(&options.outputFormat, "output-format", "o", "", "Name of the output format (json/yaml)")
 	cmd.Flags().BoolVarP(&options.excludeTestImages, "exclude-test-images", "e", false, "Exclude test images from the output list")
 	envy.ParseCobra(cmd, envy.CobraConfig{Persistent: true, Prefix: "IMAGE_URL_HELPER"})
