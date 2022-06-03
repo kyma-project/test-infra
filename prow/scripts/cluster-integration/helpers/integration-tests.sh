@@ -8,7 +8,7 @@ function integration_tests::install_kyma() {
 }
 
 function api-gateway::prepare_components_file() {
-  log::info "Preparing Kyma installation with Dex, Ory and API-Gateway"
+  log::info "Preparing Kyma installation with Ory and API-Gateway"
 
 cat << EOF > "$PWD/components.yaml"
 defaultNamespace: kyma-system
@@ -127,7 +127,7 @@ EOF
 function api-gateway::launch_tests() {
   log::info "Running Kyma API-Gateway tests"
 
-  pushd "${KYMA_SOURCES_DIR}/tests/integration/api-gateway/gateway-tests"
+  pushd "${KYMA_SOURCES_DIR}/tests/components/api-gateway/gateway-tests"
   go test -v ./main_test.go
   popd
 
