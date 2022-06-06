@@ -102,7 +102,7 @@ function run_tests() {
     pushd "../components/istio"
     export EXPORT_RESULT="true"
     go install github.com/cucumber/godog/cmd/godog@latest
-    make test
+    make test-bdd
     popd
   else
     make ci
