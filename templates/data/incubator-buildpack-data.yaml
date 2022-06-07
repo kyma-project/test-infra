@@ -1,7 +1,7 @@
 templates:
-  - from: templates/generic.tmpl
+  - from: generic.tmpl
     render:
-      - to: ../prow/jobs/incubator/api-gateway/api-gateway.yaml
+      - to: ../../prow/jobs/incubator/api-gateway/api-gateway.yaml
         jobConfigs:
           - repoName: "kyma-incubator/api-gateway"
             jobs:
@@ -33,7 +33,7 @@ templates:
                     - image_buildpack-golang-kubebuilder2
                     - jobConfig_generic_component
                     - jobConfig_buildpack_incubator
-      - to: ../prow/jobs/incubator/gcp-service-broker/gcp-service-broker.yaml
+      - to: ../../prow/jobs/incubator/gcp-service-broker/gcp-service-broker.yaml
         jobConfigs:
           - repoName: kyma-incubator/gcp-service-broker
             jobs:
@@ -66,7 +66,7 @@ templates:
 
                     - jobConfig_generic_component
                     - jobConfig_buildpack_incubator
-      - to: ../prow/jobs/incubator/github-slack-connectors/github-slack-connectors.yaml
+      - to: ../../prow/jobs/incubator/github-slack-connectors/github-slack-connectors.yaml
         jobConfigs:
           - repoName: kyma-incubator/github-slack-connectors
             jobs:
@@ -128,7 +128,7 @@ templates:
                     - disable_testgrid
                     - jobConfig_generic_component
                     - jobConfig_buildpack_incubator
-      - to: ../prow/jobs/incubator/hydroform/hydroform.yaml
+      - to: ../../prow/jobs/incubator/hydroform/hydroform.yaml
         jobConfigs:
           - repoName: kyma-project/hydroform
             jobs:
@@ -164,7 +164,7 @@ templates:
                     - disable_testgrid
                     - jobConfig_generic_component
                     - jobConfig_buildpack_incubator
-      - to: ../prow/jobs/incubator/milv/milv.yaml
+      - to: ../../prow/jobs/incubator/milv/milv.yaml
         localSets:
           milv_jobConfig:
             args:
@@ -202,7 +202,7 @@ templates:
                     - jobConfig_buildpack_incubator
                   local:
                     - milv_jobConfig
-      - to: ../prow/jobs/incubator/reconciler/reconciler.yaml
+      - to: ../../prow/jobs/incubator/reconciler/reconciler.yaml
         localSets:
           command_integration:
             annotations:
@@ -790,7 +790,7 @@ templates:
                   local:
                     - reconciler_main_jobConfig
 
-      - to: ../prow/jobs/incubator/octopus/octopus.yaml
+      - to: ../../prow/jobs/incubator/octopus/octopus.yaml
         jobConfigs:
           - repoName: kyma-incubator/octopus
             jobs:
@@ -826,7 +826,7 @@ templates:
                     - image_buildpack-golang-kubebuilder2
                     - jobConfig_generic_component
                     - jobConfig_buildpack_incubator
-      - to: ../prow/jobs/incubator/podpreset-crd/podpreset-crd.yaml
+      - to: ../../prow/jobs/incubator/podpreset-crd/podpreset-crd.yaml
         jobConfigs:
           - repoName: kyma-incubator/podpreset-crd
             jobs:
@@ -860,39 +860,7 @@ templates:
                     - image_buildpack-golang-kubebuilder2
                     - jobConfig_generic_component
                     - jobConfig_buildpack_incubator
-      - to: ../prow/jobs/incubator/service-catalog-tester/service-catalog-tester.yaml
-        jobConfigs:
-          - repoName: kyma-incubator/service-catalog-tester
-            jobs:
-              - jobConfig:
-                  name: pre-main-service-catalog-tester
-                  always_run: true
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/service-catalog-tester"
-                    - "ci-pr"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_buildpack-golang
-                    - jobConfig_generic_component
-                    - jobConfig_buildpack_incubator
-              - jobConfig:
-                  name: post-main-service-catalog-tester
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/service-catalog-tester"
-                    - "ci-master"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - disable_testgrid
-                    - image_buildpack-golang
-                    - jobConfig_generic_component
-                    - jobConfig_buildpack_incubator
-      - to: ../prow/jobs/incubator/terraform-provider-gardener/terraform-provider-gardener.yaml
+      - to: ../../prow/jobs/incubator/terraform-provider-gardener/terraform-provider-gardener.yaml
         jobConfigs:
           - repoName: kyma-incubator/terraform-provider-gardener
             jobs:
@@ -928,7 +896,7 @@ templates:
                     - image_buildpack-golang
                     - jobConfig_generic_component
                     - jobConfig_buildpack_incubator
-      - to: ../prow/jobs/incubator/varkes/varkes.yaml
+      - to: ../../prow/jobs/incubator/varkes/varkes.yaml
         localSets:
           npm_bot_preset:
             labels:
@@ -985,7 +953,7 @@ templates:
                     - jobConfig_buildpack_incubator
                   local:
                     - npm_bot_preset
-      - to: ../prow/jobs/incubator/vstudio-extension/vstudio-extension.yaml
+      - to: ../../prow/jobs/incubator/vstudio-extension/vstudio-extension.yaml
         jobConfigs:
           - repoName: kyma-incubator/vstudio-extension
             jobs:
@@ -1017,7 +985,7 @@ templates:
                     - image_buildpack-node
                     - jobConfig_generic_component
                     - jobConfig_buildpack_incubator
-      - to: ../prow/jobs/incubator/documentation-component/documentation-component.yaml
+      - to: ../../prow/jobs/incubator/documentation-component/documentation-component.yaml
         jobConfigs:
           - repoName: kyma-incubator/documentation-component
             jobs:
@@ -1035,7 +1003,7 @@ templates:
                     - image_buildpack-node
                     - jobConfig_generic_component
                     - jobConfig_buildpack_incubator
-      - to: ../prow/jobs/incubator/knative-kafka/knative-kafka.yaml
+      - to: ../../prow/jobs/incubator/knative-kafka/knative-kafka.yaml
         jobConfigs:
           - repoName: kyma-incubator/knative-kafka
             jobs:
@@ -1075,7 +1043,7 @@ templates:
                     - image_buildpack-golang
                     - jobConfig_generic_component
                     - jobConfig_buildpack_incubator
-      - to: ../prow/jobs/incubator/hydra-login-consent/hydra-login-consent.yaml
+      - to: ../../prow/jobs/incubator/hydra-login-consent/hydra-login-consent.yaml
         jobConfigs:
           - repoName: kyma-incubator/hydra-login-consent
             jobs:

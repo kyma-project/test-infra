@@ -1,7 +1,7 @@
 templates:
-  - from: templates/generic.tmpl
+  - from: generic.tmpl
     render:
-      - to: ../prow/jobs/busola/busola-web/busola-web.yaml
+      - to: ../../prow/jobs/busola/busola-web/busola-web.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/busola"
             jobs:
@@ -9,7 +9,7 @@ templates:
                   path: 'web'
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/busola"
-                  run_if_changed: "^core/|^core-ui/|^service-catalog-ui/|^shared/|^package.json|^Makefile|^Dockerfile$"
+                  run_if_changed: "^core/|^core-ui/|^shared/|^package.json|^Makefile|^Dockerfile$"
                   release_since: "1.24"
                 inheritedConfigs:
                   global:
@@ -25,7 +25,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/busola/busola-backend/busola-backend.yaml
+      - to: ../../prow/jobs/busola/busola-backend/busola-backend.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/busola"
             jobs:
@@ -49,7 +49,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/busola/busola.yaml
+      - to: ../../prow/jobs/busola/busola.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/busola"
             jobs:
@@ -58,7 +58,7 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/busola"
                     - "release-local"
-                  run_if_changed: "^backend/|^core/|^core-ui/|^service-catalog-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local"
+                  run_if_changed: "^backend/|^core/|^core-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local"
                   release_since: "1.24"
                 inheritedConfigs:
                   global:

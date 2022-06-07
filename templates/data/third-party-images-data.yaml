@@ -1,7 +1,7 @@
 templates:
-  - from: templates/generic.tmpl
+  - from: generic.tmpl
     render:
-      - to: ../prow/jobs/third-party-images/third-party-images.yaml
+      - to: ../../prow/jobs/third-party-images/third-party-images.yaml
         localSets:
           default:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"

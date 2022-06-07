@@ -19,7 +19,7 @@ const sampleStatus = "RUNNING"
 const ttlLabel = "1" // max ttl of a cluster in hours
 
 var (
-	labelFilterFunc         = TimeBasedClusterRemovalPredicate(map[string]struct{}{"kyma-prow": {}, "workload-kyma-prow": {}, "nightly": {}, "weekly": {}, "service-catalog-nightly": {}})
+	labelFilterFunc         = TimeBasedClusterRemovalPredicate(map[string]struct{}{"kyma-prow": {}, "workload-kyma-prow": {}, "nightly": {}, "weekly": {}})
 	timeNow                 = time.Now()
 	timeNowFormatted        = timeNow.Format(time.RFC3339Nano)
 	timeNowUnix             = strconv.FormatInt(timeNow.Unix(), 10)

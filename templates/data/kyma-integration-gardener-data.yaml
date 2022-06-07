@@ -1,9 +1,9 @@
 templates:
   - fromTo:
-      - from: templates/generic.tmpl
-        to: ../prow/jobs/kyma/kyma-integration-gardener.yaml
-      - from: templates/test-inventory.tmpl
-        to: ../test-inventory-integration.md
+      - from: generic.tmpl
+        to: ../../prow/jobs/kyma/kyma-integration-gardener.yaml
+      - from: test-inventory.tmpl
+        to: ../../test-inventory-integration.md
     render:
       - localSets:
           extra_refs_kyma-local:

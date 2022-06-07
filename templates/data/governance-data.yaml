@@ -1,7 +1,7 @@
 templates:
-  - from: templates/generic.tmpl
+  - from: generic.tmpl
     render:
-      - to: ../prow/jobs/governance.yaml
+      - to: ../../prow/jobs/governance.yaml
         localSets:
           jobConfig_presubmit:
             run_if_changed: "milv.config.yaml|.md$"
