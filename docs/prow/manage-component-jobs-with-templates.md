@@ -39,24 +39,6 @@ Follow these steps:
 
    If needed, you can add global Config Sets (**globalSets**) to the `templates/config.yaml` file.
 
-   For **jobs, which are not component ones**, instead of `path`, you must specify Prow job `name`. See an example of the `skr-aws-upgrade-integration-dev` template:
-   ```yaml
-   templates:
-      - fromTo:
-           - from: templates/generic.tmpl
-             to: ../prow/jobs/kyma/skr-aws-upgrade-integration-dev.yaml
-        render:
-           jobConfigs:
-              - repoName: "kyma-project/kyma"
-                jobs:
-                   - jobConfig:
-                        name: "skr-aws-upgrade-integration-dev"
-                        cron: "0 */4 * * *" # "Every four hours"
-                        optional: true
-        ...
-   ```
-   **Cron** parameter indicates that this Prow job is run every four hours.
-
    - For more information about creating template file, as well as local config sets (**localSets**), job configs (**jobConfig**) and (**globalSets**), read [Render Templates](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/rendertemplates).
    > **CAUTION:** The `.yaml` file and the component folder name should be the same as the name of the Kyma component. Also, all `.yaml` files in the whole `jobs` structure must have unique names.
    
