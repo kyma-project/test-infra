@@ -21,6 +21,7 @@ type GitClient struct {
 // GitClientConfig holds configuration for GitClient.
 type GitClientConfig struct {
 	flagutil.GitOptions
+	// tokenPath is a path to the file with GitHub user personal token.
 	tokenPath    string
 	githubClient *client.GithubClient
 }
