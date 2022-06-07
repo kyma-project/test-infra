@@ -1,6 +1,7 @@
 # Prow Jobs QuickStart
 
 This document provides an overview of how to quickly start working with Prow jobs.
+> **NOTE:** Please be aware that there are two kinds of Prow jobs. If you want to create a job for the component, read [Manage component jobs with templates](./manage-component-jobs-with-templates.md).
 
 1. Fork the [`test-infra`](https://github.com/kyma-project/test-infra) repository and feature a new branch.
 
