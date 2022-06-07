@@ -120,7 +120,7 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - command_performance
-                    - gardener_azure_job
+                    - gardener_aws_job
                     - production_profile
                     - performance_eventing
               # postsubmits
@@ -141,7 +141,7 @@ templates:
                     - kyma_major_version_2
                   local:
                     - jobConfig_default
-                    - gardener_azure_job
+                    - gardener_aws_job
                     - command_performance
                     - production_profile
                     - installer_2
@@ -168,7 +168,7 @@ templates:
                     - kyma_major_version_2
                   local:
                     - jobConfig_default
-                    - gardener_azure_job
+                    - gardener_aws_job
                     - extra_refs_kyma-local
                     - command_performance
                     - production_profile

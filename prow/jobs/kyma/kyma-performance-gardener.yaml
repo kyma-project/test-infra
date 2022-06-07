@@ -7,7 +7,7 @@ presubmits: # runs on PRs
       annotations:
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma install"
-        pipeline.platform: "gardener_azure"
+        pipeline.platform: "gardener_aws"
         pipeline.profile: "production"
         pipeline.test: "performance"
         pipeline.trigger: "pr-submit"
@@ -16,18 +16,11 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-gardener-azure-performance-eventing"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-az-kyma-prow-credentials: "true"
         preset-build-pr: "true"
         preset-cluster-version: "true"
         preset-debug-commando-oom: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-gke-integration: "true"
-        preset-gardener-azure-kyma-integration: "true"
-        preset-gc-compute-envs: "true"
-        preset-gc-project-env: "true"
+        preset-gardener-aws-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
-        preset-sa-gardener-logs: "true"
-        preset-sa-test-gcr-push: "true"
       run_if_changed: '^components/eventing-controller/|^components/event-publisher-proxy|^tests/perf/components/eventing|^tests/perf/prerequisites/eventing'
       optional: true
       skip_report: false
@@ -57,17 +50,13 @@ presubmits: # runs on PRs
               - name: EXECUTION_PROFILE
                 value: "production"
               - name: GARDENER_REGION
-                value: "northeurope"
+                value: "eu-west-3"
               - name: GARDENER_ZONES
-                value: "1"
+                value: "eu-west-3a"
               - name: KYMA_MAJOR_VERSION
                 value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
-              - name: REGION
-                value: "northeurope"
-              - name: RS_GROUP
-                value: "kyma-gardener-azure"
               - name: TEST_COMPONENTS
                 value: "eventing"
               - name: TEST_DIR
@@ -90,7 +79,7 @@ postsubmits: # runs on main
       annotations:
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma deploy"
-        pipeline.platform: "gardener_azure"
+        pipeline.platform: "gardener_aws"
         pipeline.profile: "production"
         pipeline.test: "performance"
         pipeline.trigger: "pr-merge"
@@ -100,18 +89,11 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-kyma-gardener-azure-performance"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-az-kyma-prow-credentials: "true"
         preset-build-main: "true"
         preset-cluster-version: "true"
         preset-debug-commando-oom: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-gke-integration: "true"
-        preset-gardener-azure-kyma-integration: "true"
-        preset-gc-compute-envs: "true"
-        preset-gc-project-env: "true"
+        preset-gardener-aws-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
-        preset-sa-gardener-logs: "true"
-        preset-sa-test-gcr-push: "true"
       optional: true
       skip_report: false
       decorate: true
@@ -140,17 +122,13 @@ postsubmits: # runs on main
               - name: EXECUTION_PROFILE
                 value: "production"
               - name: GARDENER_REGION
-                value: "northeurope"
+                value: "eu-west-3"
               - name: GARDENER_ZONES
-                value: "1"
+                value: "eu-west-3a"
               - name: KYMA_MAJOR_VERSION
                 value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
-              - name: REGION
-                value: "northeurope"
-              - name: RS_GROUP
-                value: "kyma-gardener-azure"
               - name: TEST_COMPONENTS
                 value: "*"
               - name: TEST_DIR
@@ -173,7 +151,7 @@ periodics: # runs on schedule
         description: "Production profile for Kyma 2 Azure Gardener integration job."
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma deploy"
-        pipeline.platform: "gardener_azure"
+        pipeline.platform: "gardener_aws"
         pipeline.profile: "production"
         pipeline.test: "performance"
         pipeline.trigger: "periodic"
@@ -182,18 +160,11 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "kyma-performance-production-gardener-azure"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-az-kyma-prow-credentials: "true"
         preset-cluster-version: "true"
         preset-debug-commando-oom: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-gke-integration: "true"
-        preset-gardener-azure-kyma-integration: "true"
-        preset-gc-compute-envs: "true"
-        preset-gc-project-env: "true"
+        preset-gardener-aws-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
         preset-log-collector-slack-token: "true"
-        preset-sa-gardener-logs: "true"
-        preset-sa-test-gcr-push: "true"
       cron: "0 3 * * *"
       optional: true
       skip_report: false
@@ -227,17 +198,13 @@ periodics: # runs on schedule
               - name: EXECUTION_PROFILE
                 value: "production"
               - name: GARDENER_REGION
-                value: "northeurope"
+                value: "eu-west-3"
               - name: GARDENER_ZONES
-                value: "1"
+                value: "eu-west-3a"
               - name: KYMA_MAJOR_VERSION
                 value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
-              - name: REGION
-                value: "northeurope"
-              - name: RS_GROUP
-                value: "kyma-gardener-azure"
               - name: TEST_DIR
                 value: "/home/prow/go/src/github.com/kyma-project/kyma/tests/perf"
             resources:
