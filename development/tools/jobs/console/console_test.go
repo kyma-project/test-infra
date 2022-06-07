@@ -31,11 +31,6 @@ var components = []struct {
 			jobsuite.AllReleases(),
 		},
 	},
-	{path: "service-catalog-ui", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.AllReleases(),
-		},
-	},
 	{path: "add-ons", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.AllReleases(),
