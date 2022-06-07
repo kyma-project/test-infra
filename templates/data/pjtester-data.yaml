@@ -38,11 +38,11 @@ templates:
                   image: "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-5544"
                   branches:
                     - ^.*$
-                  inheritedConfigs:
-                    global:
-                      - "jobConfig_default"
-                    local:
-                      - "jobConfig_default"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                  local:
+                    - "jobConfig_default"
               - jobConfig:
                   name: pre-main-test-infra-vpathguard
                   run_if_changed: "^(vpath/pjtester.yaml)"
