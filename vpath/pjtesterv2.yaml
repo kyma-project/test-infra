@@ -1,4 +1,8 @@
 pjConfigs:
   kyma-project:
     test-infra:
-      - pjName: pre-test-infra-validate-configs
+      - pjName: pre-test-infra-validate-dockerfiles
+prConfigs:
+  kyma-project:
+    test-infra:
+      prNumber: 5117
