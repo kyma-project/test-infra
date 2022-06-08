@@ -79,7 +79,7 @@ Follow these steps:
 
    As a result, the Render Templates tool generates the requested job files.
    
-   - For more information about generating jobs, read [Render Templates](../../development/tools/cmd/rendertemplates/README.md).
+   For more information about generating jobs, read [Render Templates](../../development/tools/cmd/rendertemplates/README.md).
 
 
 4. Check your configuration locally.
