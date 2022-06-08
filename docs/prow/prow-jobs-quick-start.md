@@ -29,7 +29,7 @@ This document provides an overview of how to quickly start working with Prow job
     make jobs-definitions
     ```
     
-    - For more details on how rendering templates works, read [Render Tamplates](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/rendertemplates).
+    For more details on how rendering templates works, read [Render Tamplates](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/rendertemplates).
     
     > **CAUTION:** Do not change the generated file! Otherwise, the PR wouldn't be merged, because the job checking the generated file would fail
 
