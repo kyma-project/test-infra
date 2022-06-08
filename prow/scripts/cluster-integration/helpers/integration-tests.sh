@@ -28,10 +28,10 @@ function api-gateway::prepare_test_environments() {
   log::info "Prepare test environment variables"
 
   # Preparing needed environment variables for API Gateway tests, these can be moved later on.
-  export TEST_HYDRA_ADDRESS="https://oauth2.${CLUSTER_NAME}.kyma-prow.shoot.canary.k8s-hana.ondemand.com"
+  export TEST_HYDRA_ADDRESS="https://oauth2.${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com"
   export TEST_REQUEST_TIMEOUT="120"
   export TEST_REQUEST_DELAY="10"
-  export TEST_DOMAIN="${CLUSTER_NAME}.kyma-prow.shoot.canary.k8s-hana.ondemand.com"
+  export TEST_DOMAIN="${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com"
   export TEST_CLIENT_TIMEOUT=30s
 }
 
@@ -39,10 +39,10 @@ function api-gateway::configure_ory_hydra() {
   log::info "Prepare test environment variables"
 
   kubectl -n kyma-system set env deployment ory-hydra LOG_LEAK_SENSITIVE_VALUES="true"
-  kubectl -n kyma-system set env deployment ory-hydra URLS_LOGIN="https://ory-hydra-login-consent.${CLUSTER_NAME}.kyma-prow.shoot.canary.k8s-hana.ondemand.com/login"
-  kubectl -n kyma-system set env deployment ory-hydra URLS_CONSENT="https://ory-hydra-login-consent.${CLUSTER_NAME}.kyma-prow.shoot.canary.k8s-hana.ondemand.com/consent"
-  kubectl -n kyma-system set env deployment ory-hydra URLS_SELF_ISSUER="https://oauth2.${CLUSTER_NAME}.kyma-prow.shoot.canary.k8s-hana.ondemand.com/"
-  kubectl -n kyma-system set env deployment ory-hydra URLS_SELF_PUBLIC="https://oauth2.${CLUSTER_NAME}.kyma-prow.shoot.canary.k8s-hana.ondemand.com/"
+  kubectl -n kyma-system set env deployment ory-hydra URLS_LOGIN="https://ory-hydra-login-consent.${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com/login"
+  kubectl -n kyma-system set env deployment ory-hydra URLS_CONSENT="https://ory-hydra-login-consent.${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com/consent"
+  kubectl -n kyma-system set env deployment ory-hydra URLS_SELF_ISSUER="https://oauth2.${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com/"
+  kubectl -n kyma-system set env deployment ory-hydra URLS_SELF_PUBLIC="https://oauth2.${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com/"
   kubectl -n kyma-system rollout restart deployment ory-hydra
   kubectl -n kyma-system rollout status deployment ory-hydra
 }
