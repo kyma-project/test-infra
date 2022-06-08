@@ -40,7 +40,7 @@ const (
 
 var (
 	// TODO: use test pjtesterv2.yaml file, change this to use a production pjtester.yaml
-	testCfgFile = path.Join(defaultClonePath, "kyma-poject", "test-infra/vpath/pjtesterv2.yaml")
+	testCfgFile = path.Join(defaultClonePath, "kyma-project", "test-infra/vpath/pjtesterv2.yaml")
 	envVarsList = []string{"KUBECONFIG_PATH", "PULL_BASE_REF", "PULL_BASE_SHA", "PULL_NUMBER", "PULL_PULL_SHA", "JOB_SPEC", "REPO_OWNER", "REPO_NAME"}
 	log         = logrus.New()
 )
