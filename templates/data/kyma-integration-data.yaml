@@ -576,6 +576,7 @@ templates:
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d-istio-production"
                   run_if_changed: '^resources/istio/|^resources/istio-resources'
+                  optional: true
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-istio-production: "true"
