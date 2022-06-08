@@ -31,7 +31,7 @@ This document provides an overview of how to quickly start working with Prow job
     
     For more details on how rendering templates works, read [Render Tamplates](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/rendertemplates).
     
-    > **CAUTION:** Do not change the generated file! Otherwise, the PR wouldn't be merged, because the job checking the generated file would fail
+    > **CAUTION:** Do not change the generated file! Otherwise, the PR won't be merged, because the job checking the generated file will fail.
 
    
 4. Each Prow job must execute a command. You can either specify it directly in the Prow job definition file (`templates/data/<NAME-data.yaml>`), or attach a script file to the Prow job definition file. The second alternative provides broader options.
