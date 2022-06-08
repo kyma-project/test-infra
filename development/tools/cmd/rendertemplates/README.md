@@ -150,10 +150,15 @@ The Render Templates passes data in the **$.Values** and **$.Global** variables 
     ```
   
 The Render Templates tool builds the **Values** variable in the following order:
+
 First, Config Sets from **globalSets** are merged. If the job inherits the `default` Config Set from **globalSets**, it is merged first and all other Config Sets from **globalSets** are merged afterwards. 
+
 Secondly, the Render Templates merges Config Sets from **localSets**. Again, if the job inherits the `default` Config Set from **localSets**, it's merged first and then all the other Config Sets from **localSets** are merged.
+
 Config Sets other than default are merged in any order during the **globalSets** and **localSets** phases.
+
 Finally, Config Sets from **jobConfig** are merged as the last ones. 
+
 Existing keys in the **Values** variable are overwritten by values from the merged Config Sets.
 
 
