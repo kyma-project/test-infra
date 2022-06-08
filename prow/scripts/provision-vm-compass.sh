@@ -99,7 +99,7 @@ for ZONE in ${EU_ZONES}; do
     gcloud compute instances create "compass-integration-test-${RANDOM_ID}" \
         --metadata enable-oslogin=TRUE \
         --image "${IMAGE}" \
-        --machine-type n1-standard-4 \
+        --machine-type n1-standard-8 \
         --zone "${ZONE}" \
         --boot-disk-size 200 "${LABELS[@]}" &&\
     log::info "Created compass-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
