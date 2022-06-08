@@ -49,7 +49,7 @@ This document provides an overview of how to quickly start working with Prow job
       - pjName: <PROW JOB NAME>
       - pjName: ...
     ```
-    - For more details on how to use `pjtester`, read the [Prow Job tester](https://github.com/kyma-project/test-infra/blob/main/development/tools/cmd/pjtester/README.md) document.
+    For more details on how to use `pjtester`, read the [Prow Job tester](https://github.com/kyma-project/test-infra/blob/main/development/tools/cmd/pjtester/README.md) document.
  
      
 6. Create a pull request (PR) to the `test-infra` repository.
