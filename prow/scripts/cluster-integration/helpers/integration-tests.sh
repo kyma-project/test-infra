@@ -21,7 +21,6 @@ prerequisites:
 components:
   - name: "ory"
   - name: "api-gateway"
-  - name: "istio-resources"
 EOF
 }
 
