@@ -15,6 +15,10 @@ func createComponentImage(image common.Image) common.ComponentImage {
 	return componentImage
 }
 
+func errorNotNil(err error) bool {
+	return err != nil
+}
+
 func TestImageMissing(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -57,10 +61,12 @@ func TestImageMissing(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			actual, err := isImageMissing(test.image)
+			imageReference, err := parseImageReference(test.image)
 			if err != nil {
-				t.Errorf("failed to check for missing image: %s", err)
+				t.Errorf("failed to check for parse image reference: %s", err)
 			}
+			err = getImageError(imageReference)
+			actual := errorNotNil(err)
 			assert.New(t).Equal(test.expected, actual)
 		})
 	}
