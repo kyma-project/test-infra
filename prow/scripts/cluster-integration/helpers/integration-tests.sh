@@ -31,7 +31,7 @@ function api-gateway::prepare_test_environments() {
   export TEST_HYDRA_ADDRESS="https://oauth2.${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com"
   export TEST_REQUEST_TIMEOUT="120"
   export TEST_REQUEST_DELAY="10"
-  export TEST_DOMAIN="${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com"
+  export TEST_DOMAIN="${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com" 
   export TEST_CLIENT_TIMEOUT=30s
 }
 
@@ -106,7 +106,7 @@ spec:
   gateways:
   - kyma-system/kyma-gateway
   hosts:
-  - ory-hydra-login-consent.${CLUSTER_NAME}.kyma-prow.shoot.canary.k8s-hana.ondemand.com
+  - ory-hydra-login-consent.${CLUSTER_NAME}.kyma-prow.shoot.live.k8s-hana.ondemand.com
   http:
   - match:
     - uri:
