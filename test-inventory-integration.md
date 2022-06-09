@@ -31,7 +31,6 @@
 | post-main-kyma-gardener-azure-alpha-eval | gardener_azure | kyma cli | kyma deploy | evaluation | pr-merge |  fast-integration  |
 | post-main-kyma-gardener-azure-alpha-prod | gardener_azure | kyma cli | kyma deploy | production | pr-merge |  fast-integration  |
 | pre-main-kyma-gardener-gcp-eventing | gardener_gcp | kyma cli | kyma deploy |  | pr-submit |  fast-integration  |
-| pre-main-kyma-gardener-gcp-eventing-js | gardener_gcp | kyma cli | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-skr-eventing | gardener_aws | keb | keb |  | pr-submit |  fast-integration  |
 | pre-main-kyma-gardener-gcp-goats-api-gateway | gardener_gcp | kyma cli | kyma install |  | pr-submit |  octopus  |
 | pre-main-kyma-gardener-gcp-eventing-upgrade | gardener_gcp | kyma cli | kyma deploy |  | pr-submit |  fast-integration  |

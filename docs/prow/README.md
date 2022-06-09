@@ -16,6 +16,7 @@ Read the documents to learn how to:
 - [Update](./prow-cluster-update.md) a Prow cluster.
 - [Test scripts and Prow Jobs](../../development/tools/cmd/pjtester/README.md).
 - [Troubleshoot oom events](../../prow/scripts/resources/README.md)
+- [QuickStart with Prow Jobs](./prow-jobs-quick-start.md)
 
 Find out more about:
 

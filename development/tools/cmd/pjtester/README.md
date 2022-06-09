@@ -45,7 +45,7 @@ The `pjtester.yaml` file in the virtual path contains configuration parameters f
 | **pjNames.pjName** | Yes | Name of the Prow Job to test. | Yes |
 | **pjNames.pjPath** | No | Path to the Prow Job definition. <br> Must be relative from the `kyma-project` repository. <br> If not provided, the default location for the `kyma-project/test-infra` repository is used. | No |
 | **pjNames.report** | No | Flag enabling reporting of the Prow Job status. The default value is `false`. | No |
-| **prConfigs** | No | Dictionary containing the numbers of the pull request on repositories other than `test-infra`. <br> `pjtester` uses their code to test the Prow Jobs. | No |
+| **prConfigs** | No | Dictionary containing the numbers of the pull requests on repositories other than `test-infra`. <br> `pjtester` uses their code to test the Prow Jobs. | No |
 | **configPath** | No | Location of the Prow configuration. <br> Defaults to the path used in `kyma-project/test-infra`. | No |
 
 An example `pjtester.yaml` file:

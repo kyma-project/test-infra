@@ -53,10 +53,6 @@ requiredVars=(
     EVENTMESH_SECRET_FILE
 )
 
-# export environment variables needed by the Eventing fast-integration tests
-export BACKEND="${BACKEND}"
-export STORAGE="${STORAGE}"
-
 utils::check_required_vars "${requiredVars[@]}"
 
 if [[ $GARDENER_PROVIDER == "azure" ]]; then
@@ -114,29 +110,12 @@ gardener::generate_overrides
 export CLEANUP_CLUSTER="true"
 gardener::provision_cluster
 
-JETSTREAM_ENABLED="false"
-if [[ ${BACKEND} == "nats_jetstream" ]]; then
-  JETSTREAM_ENABLED="true"
-fi
-
-JETSTREAM_STORAGE=""
-if [[ ${STORAGE} == "file" || ${STORAGE} == "memory" ]]; then
-  JETSTREAM_STORAGE="${STORAGE}"
-fi
-
 # uses previously set KYMA_SOURCE
 if [[ "${KYMA_MAJOR_VERSION}" == "2" ]]; then
   log::info "Deploying Kyma"
-  if [[ ${JETSTREAM_ENABLED} == "true" && ${JETSTREAM_STORAGE} != "" ]]; then
-    log::info "JetStream:${JETSTREAM_ENABLED} storage:${JETSTREAM_STORAGE}"
-    gardener::deploy_kyma -p "$EXECUTION_PROFILE" --source "${KYMA_SOURCE}" \
-      --value global.jetstream.enabled=true \
-      --value global.jetstream.storage=file \
-      --value eventing.controller.jetstream.retentionPolicy=limits \
-      --value eventing.controller.jetstream.consumerDeliverPolicy=all
-  else
-    gardener::deploy_kyma -p "$EXECUTION_PROFILE" --source "${KYMA_SOURCE}"
-  fi
+  gardener::deploy_kyma -p "$EXECUTION_PROFILE" --source "${KYMA_SOURCE}" \
+    --value eventing.controller.jetstream.retentionPolicy=limits \
+    --value eventing.controller.jetstream.consumerDeliverPolicy=all
 else
   gardener::install_kyma
 fi
@@ -157,7 +136,6 @@ if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == 
     # test the default Eventing backend which comes with Kyma
     log::banner "Execute eventing E2E fast-integration tests"
     eventing::test_fast_integration_eventing
-
 else
     # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
     if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
