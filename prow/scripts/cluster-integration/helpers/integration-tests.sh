@@ -51,6 +51,9 @@ function api-gateway::configure_ory_hydra() {
 function api-gateway::deploy_login_consent_app() {
   log::info "Deploying Ory login consent app for tests"
 
+kubectl -n istio-system rollout status deployment istiod
+kubectl -n istio-system rollout status deployment istio-ingressgateway
+
 cat << EOF > "$PWD/ory-hydra-login-consent.yaml"
 apiVersion: apps/v1
 kind: Deployment
