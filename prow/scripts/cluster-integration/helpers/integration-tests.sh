@@ -18,6 +18,7 @@ prerequisites:
     namespace: "istio-system"
   - name: "certificates"
     namespace: "istio-system"
+  - name: "istio-resources"
 components:
   - name: "ory"
   - name: "api-gateway"
@@ -38,10 +39,8 @@ function api-gateway::prepare_test_environments() {
 function api-gateway::configure_ory_hydra() {
   log::info "Prepare test environment variables"
 
-  kubectl cluster-info
+  kubectl get gateway -A
 
-  kubectl get vs -A
-  
   kubectl -n kyma-system set env deployment ory-hydra LOG_LEAK_SENSITIVE_VALUES="true"
   kubectl -n kyma-system set env deployment ory-hydra URLS_LOGIN="https://ory-hydra-login-consent.${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com/login"
   kubectl -n kyma-system set env deployment ory-hydra URLS_CONSENT="https://ory-hydra-login-consent.${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com/consent"
@@ -119,7 +118,7 @@ spec:
         exact: /consent
     route:
     - destination:
-        host: ory-hydra-login-consent
+        host: ory-hydra-login-consent.kyma-system.svc.cluster.local
         port:
           number: 80
 EOF
