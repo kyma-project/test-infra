@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "pre-main-kyma-integration-k3d-compass-dev"
+  - pjName: "pre-kyma-tests-components-application-connector"
 prConfigs:
   kyma-project:
     kyma:
