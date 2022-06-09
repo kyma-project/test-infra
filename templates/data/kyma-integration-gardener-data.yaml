@@ -226,6 +226,7 @@ templates:
               # postsubmits
               - jobConfig:
                   name: post-main-kyma-gardener-gcp-goats-api-gateway
+                  optional: true
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -375,6 +376,7 @@ templates:
                     - command_integration_skr_eventing
               - jobConfig:
                   name: pre-main-kyma-gardener-gcp-goats-api-gateway
+                  optional: true
                   labels:
                     preset-build-pr: "true"
                   decoration_config:
