@@ -18,8 +18,8 @@ prerequisites:
     namespace: "istio-system"
   - name: "certificates"
     namespace: "istio-system"
-  - name: "istio-resources"
 components:
+  - name: "istio-resources"
   - name: "ory"
   - name: "api-gateway"
 EOF
