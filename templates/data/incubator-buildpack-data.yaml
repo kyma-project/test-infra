@@ -791,7 +791,7 @@ templates:
               - jobConfig:
                   name: "pre-main-reconciler-validate-go-mod"
                   # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^go[.]mod$"
+                  run_if_changed: '^go\.mod$'
                   command: "/bin/bash"
                   args:
                     - "python -m ensurepip --upgrade;"
