@@ -124,7 +124,6 @@ spec:
           number: 80
 EOF
   kubectl apply -f "$PWD/ory-hydra-login-consent.yaml"
-
   log::success "App deployed"
 }
 
