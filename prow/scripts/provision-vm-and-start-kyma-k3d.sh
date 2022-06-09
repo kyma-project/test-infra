@@ -30,8 +30,12 @@ cleanup() {
   set +e
 
   #shellcheck disable=SC2088
-  utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/fast-integration/junit_kyma-fast-integration.xml" "${ARTIFACTS}"
-  gcloud compute instances stop --async --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}"
+  if [[ "$ISTIO_INTEGRATION_ENABLED" == "true" ]]; then
+    utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/components/istio/junit-report.xml" "${ARTIFACTS}"
+  else
+    utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/fast-integration/junit_kyma-fast-integration.xml" "${ARTIFACTS}"
+  fi
+    gcloud compute instances stop --async --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}"
 
   log::info "End of cleanup"
 }
@@ -119,7 +123,9 @@ envVars=(
   COMPASS_INTEGRATION_ENABLED
   CENTRAL_APPLICATION_CONNECTIVITY_ENABLED
   TELEMETRY_ENABLED
+  ISTIO_INTEGRATION_ENABLED
   KYMA_MAJOR_VERSION
+  KYMA_PROFILE
   K8S_VERSION
 )
 utils::save_env_file "${envVars[@]}"
@@ -140,6 +146,12 @@ if [[ -v TELEMETRY_ENABLED ]]; then
   log::info "Copying components file for telemetry tests"
   #shellcheck disable=SC2088
   utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-telemetry-components.yaml" "~/kyma-integration-k3d-telemetry-components.yaml"
+fi
+
+if [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
+  log::info "Copying components file for telemetry tests"
+  #shellcheck disable=SC2088
+  utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-istio-components.yaml" "~/kyma-integration-k3d-istio-components.yaml"
 fi
 
 log::info "Triggering the installation"

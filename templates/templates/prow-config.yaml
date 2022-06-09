@@ -17,11 +17,15 @@ plank:
     '*':
       timeout: 3h
       grace_period: 10m
+      censor_secrets: true
+      censoring_options:
+        censoring_concurrency: 2 # 2 concurrent censoring
+        censoring_buffer_size: 3092 # 3kB
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20220527-80855b9778
-        initupload: gcr.io/k8s-prow/initupload:v20220527-80855b9778
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20220527-80855b9778
-        sidecar: gcr.io/k8s-prow/sidecar:v20220527-80855b9778
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20220609-8a6262eb91
+        initupload: gcr.io/k8s-prow/initupload:v20220609-8a6262eb91
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20220609-8a6262eb91
+        sidecar: gcr.io/k8s-prow/sidecar:v20220609-8a6262eb91
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -172,7 +176,6 @@ tide:
     kyma-project/community: squash
     kyma-project/console: squash
     kyma-project/examples: squash
-    kyma-project/helm-broker: squash
     kyma-project/addons: squash
     kyma-project/busola-migrator: squash
     kyma-project/rafter: squash
@@ -188,7 +191,6 @@ tide:
     kyma-incubator/bullseye-showcase: squash
     kyma-incubator/milv: squash
     kyma-incubator/podpreset-crd: squash
-    kyma-incubator/service-catalog-tester: squash
     kyma-incubator/kymart: squash
     kyma-incubator/dex: squash
     kyma-incubator/varkes: squash
@@ -201,14 +203,12 @@ tide:
     kyma-incubator/wordpress-connector: squash
     kyma-incubator/connector-tools: squash
 #    kyma-incubator/github-slack-connectors: squash
-    kyma-incubator/service-catalog: squash
     kyma-incubator/gcp-service-broker: squash
 #    kyma-incubator/homebrew-kyma-incubator: squash
 #    kyma-incubator/runtime: squash
     kyma-incubator/artwork: squash
     kyma-incubator/opensap: squash
 #    kyma-incubator/wormhole: squash
-#    kyma-incubator/k8s-service-catalog: squash
     kyma-incubator/kyma-showcase: squash
     kyma-incubator/sc-removal: squash
     kyma-incubator/hydra-login-consent: squash
@@ -934,6 +934,20 @@ presets:
     env:
       - name: COMPASS_INTEGRATION_ENABLED
         value: "true"
+  - labels:
+      preset-kyma-integration-istio-evaluation: "true"
+    env:
+      - name: ISTIO_INTEGRATION_ENABLED
+        value: "true"
+      - name: KYMA_PROFILE
+        value: "evaluation"
+  - labels:
+      preset-kyma-integration-istio-production: "true"
+    env:
+      - name: ISTIO_INTEGRATION_ENABLED
+        value: "true"
+      - name: KYMA_PROFILE
+        value: "production"
   - labels:
       preset-kyma-integration-central-app-connectivity-enabled: "true"
     env:

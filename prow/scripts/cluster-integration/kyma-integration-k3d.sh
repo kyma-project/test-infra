@@ -12,6 +12,7 @@ function prereq_test() {
   command -v helm >/dev/null 2>&1 || { echo >&2 "helm not found"; exit 1; }
   command -v kubectl >/dev/null 2>&1 || { echo >&2 "kubectl not found"; exit 1; }
   command -v k3d >/dev/null 2>&1 || { echo >&2 "k3d not found"; exit 1; }
+  command -v go >/dev/null 2>&1 || { echo >&2 "go not found"; exit 1; }
 }
 
 function load_env() {
@@ -20,6 +21,8 @@ function load_env() {
     # shellcheck disable=SC2046
     export $(xargs < "${ENV_FILE}")
   fi
+  export PATH="${PATH}:/usr/local/go/bin"
+  export PATH="${PATH}:~/go/bin"
 }
 
 function install_cli() {
@@ -61,6 +64,10 @@ function deploy_kyma() {
   local kyma_deploy_cmd
   kyma_deploy_cmd="kyma deploy -p evaluation --ci --source=local --workspace ${KYMA_SOURCES_DIR}"
 
+  if [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
+    kyma_deploy_cmd="kyma deploy -p ${KYMA_PROFILE} --ci --source=local --workspace ${KYMA_SOURCES_DIR} --components-file kyma-integration-k3d-istio-components.yaml"
+  fi
+
   if [[ -v CENTRAL_APPLICATION_CONNECTIVITY_ENABLED ]]; then
     kyma_deploy_cmd+=" --value application-connector.central_application_gateway.enabled=true"
   fi
@@ -91,14 +98,20 @@ function run_tests() {
   elif [[ -v TELEMETRY_ENABLED ]]; then
     npm install
     npm run test-telemetry
+  elif [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
+    pushd "../components/istio"
+    export EXPORT_RESULT="true"
+    go install github.com/cucumber/godog/cmd/godog@latest
+    make test
+    popd
   else
     make ci
   fi
   popd
 }
 
-prereq_test
 load_env
+prereq_test
 install_cli
 deploy_kyma
 run_tests

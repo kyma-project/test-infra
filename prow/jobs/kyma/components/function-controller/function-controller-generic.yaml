@@ -48,6 +48,50 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+    - name: pre-rel23-kyma-components-function-controller
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-rel23-kyma-components-function-controller"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^components/function-controller/|^common/makefiles/'
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - release-2.3
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: release-2.3
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220524-0196d249"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/kyma/components/function-controller"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-rel22-kyma-components-function-controller
       annotations:
         pipeline.trigger: "pr-submit"
@@ -136,50 +180,6 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-rel20-kyma-components-function-controller
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel20-kyma-components-function-controller"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^components/function-controller/|^common/makefiles/'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - release-2.0
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.0
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220524-0196d249"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/components/function-controller"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/kyma:
@@ -209,6 +209,51 @@ postsubmits: # runs on main
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220524-0196d249"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/kyma/components/function-controller"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: post-rel23-kyma-components-function-controller
+      annotations:
+        pipeline.trigger: "pr-merge"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-rel23-kyma-components-function-controller"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^components/function-controller/|^common/makefiles/'
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - release-2.3
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: release-2.3
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220524-0196d249"
@@ -299,51 +344,6 @@ postsubmits: # runs on main
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-2.1
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220524-0196d249"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/components/function-controller"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: post-rel20-kyma-components-function-controller
-      annotations:
-        pipeline.trigger: "pr-merge"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel20-kyma-components-function-controller"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^components/function-controller/|^common/makefiles/'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - release-2.0
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.0
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220524-0196d249"

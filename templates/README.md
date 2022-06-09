@@ -2,7 +2,9 @@
 
 ## Overview
 
-Jobs and Prow configuration are generated from templates. The `templates` directory has the following structure:
+Jobs and Prow configuration are generated from templates by the Render Templates tool. Check the [Render Templates documentation](../development/tools/cmd/rendertemplates/README.md) for details about usage.
+
+The `templates` directory has the following structure:
 
 - `data`, which is the subdirectory with files that describe jobs that the [Render Templates](../development/tools/cmd/rendertemplates) tool should generate using job definitions from templates.
 - `templates` which is the subdirectory with all template files that supply the definition of [Prow jobs](../prow/jobs) used in Kyma.
