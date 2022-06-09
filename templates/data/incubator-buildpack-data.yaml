@@ -256,9 +256,9 @@ templates:
               EXECUTION_PROFILE: evaluation
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-reconciler-with-cli-k3d.sh"
           reconciler_component_k3d_integration_jobConfig:
-            command:  "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-component-integration-k3d.sh"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-component-integration-k3d.sh"
           reconciler_component_gardener_integration_jobConfig:
-            command:  "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-component-provision-gardener.sh"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-component-provision-gardener.sh"
           reconciler_e2e_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-gardener.sh"
           reconciler_nightly_e2e_jobConfig:
@@ -777,8 +777,26 @@ templates:
                   command: "/bin/bash"
                   args:
                     - "-c"
-                    - "shopt -s globstar;
-                      hadolint --config .hadolint.yaml --no-color **/Dockerfile"
+                    - "shopt -s globstar; hadolint --config .hadolint.yaml --no-color **/Dockerfile"
+                  labels:
+                    preset-kyma-guard-bot-github-token: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_bootstrap
+                  local:
+                    - reconciler_main_jobConfig
+              - jobConfig:
+                  name: "pre-main-reconciler-validate-go-mod"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^go[.]mod$"
+                  command: "/bin/bash"
+                  args:
+                    - "python -m ensurepip --upgrade;"
+                    - "pip install semver==2.10;"
+                    - "make validate-go-mod"
                   labels:
                     preset-kyma-guard-bot-github-token: "true"
                 inheritedConfigs:
