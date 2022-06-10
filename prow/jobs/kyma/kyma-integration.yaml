@@ -721,7 +721,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220609-7c24aa62"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220610-01aba488"
             securityContext:
               privileged: true
             command:
@@ -763,7 +763,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220609-7c24aa62"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220610-01aba488"
             securityContext:
               privileged: true
             command:
@@ -805,7 +805,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220609-7c24aa62"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220610-01aba488"
             securityContext:
               privileged: true
             command:
@@ -847,7 +847,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220609-7c24aa62"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220610-01aba488"
             securityContext:
               privileged: true
             command:
@@ -889,7 +889,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220609-7c24aa62"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220610-01aba488"
             securityContext:
               privileged: true
             command:
@@ -931,7 +931,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220609-7c24aa62"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220610-01aba488"
             securityContext:
               privileged: true
             command:
@@ -974,7 +974,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220609-7c24aa62"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220610-01aba488"
             securityContext:
               privileged: true
             command:
@@ -1015,7 +1015,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220609-7c24aa62"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220610-01aba488"
             securityContext:
               privileged: true
             command:
@@ -1058,7 +1058,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220609-7c24aa62"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220610-01aba488"
             securityContext:
               privileged: true
             command:
