@@ -304,6 +304,7 @@ func (o *options) genJobSpec(pjCfg pjConfig, org, repo string) (config.JobBase, 
 	if o.org == org && o.repo == repo {
 		// read pjspec from local files
 		// pjspec must be in test-infra or .prow, both are already cloned
+		// path to jobs were set to point to local fiels when read prowjob specs.
 		preSubmits = conf.GetPresubmitsStatic(fmt.Sprintf("%s/%s", org, repo))
 	} else {
 		// test-infra from local extra-refs, inrepo from remote
@@ -415,12 +416,14 @@ func (o *options) matchRefPR(ref *prowapi.Refs) bool {
 	return false
 }
 
-// submitRefs build prowjob refs and extrarefs according.
-// It ensure, refs for test-infra is set to details of pull request fro which pjtester was triggered.
+// presubmitRefs build prowjob refs and extrarefs according.
+// It ensure, refs for test-infra is set to details of pull request from which pjtester was triggered.
 // It ensures refs contains pull requests details for presubmit jobs.
 // It ensures details of pull request numbers provided in pjtester.yaml are set for respecting refs or extra refs.
+// TODO: You can't run pj against PR which is in other repo than pj is defined for.
 func presubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, error) {
 	// If prowjob specification refs point to test infra repo, add test-infra PR refs because we are going to test code from this PR.
+	// TODO: check if PR number provided in pjtester.yaml prConfigs is for the same repository. If yes it should be used. You can have a prowjob def here byt want to test it against abother PR.
 	if pjs.Refs.Org == opt.org && pjs.Refs.Repo == opt.repo {
 		// set refs with details of tested PR
 		setPrHeadSHA(pjs.Refs, opt)
@@ -436,8 +439,10 @@ func presubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, e
 	// If prowjob specification refs point to another repo.
 	if pjs.Refs.Org != opt.org || pjs.Refs.Repo != opt.repo {
 		// Check if PR number for prowjob specification refs was provided in pjtester.yaml.
+		// TODO: create dummy PR and run test against it, remove PR after test. This way test doesn't interfere with existing PR.
 		if !opt.matchRefPR(pjs.Refs) {
 			// If PR number not provided set BaseRef to main
+			// TODO: create dummy PR and run test against it, remove PR after test. This way test doesn't interfere with existing PR.
 			pjs.Refs.BaseRef = defaultMainBranch
 			// get latest PR number for BaseRef branch and use it to set extra refs
 			jobSpec := &downwardapi.JobSpec{Refs: pjs.Refs}
