@@ -24,31 +24,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-test-infra-validate-configs
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-test-infra-validate-configs"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/((plugins|config).yaml|jobs/)'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220609-19e07c7554"
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=prow/plugins.yaml"
-              - "--config-path=prow/config.yaml"
-              - "--job-config-path=prow/jobs"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
     - name: pre-main-test-infra-validate-prow-tools
       annotations:
         pipeline.trigger: "pr-submit"

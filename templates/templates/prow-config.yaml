@@ -91,6 +91,12 @@ slack_reporter_configs:
       *Commit:* <{{.BaseLink}}|{{printf "%.7s" .BaseSHA}}>
       {{end}}*<{{.Status.URL}}|View logs>*`}}
 
+in_repo_config:
+  enabled:
+    "*": true
+  allowed_clusters:
+    "*": ["default", "untrusted-workload", "trusted-workload"]
+    
 branch-protection:
   enforce_admins: true
   allow_disabled_policies: true
