@@ -1,7 +1,7 @@
 templates:
-  - from: templates/dependabot.tmpl
+  - from: dependabot.tmpl
     render:
-      - to: ../.github/dependabot.yml
+      - to: ../../.github/dependabot.yml
         localSets:
           dailyGoEcosystem:
             packageEcosystem: "gomod"

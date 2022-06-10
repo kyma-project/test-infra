@@ -1,7 +1,7 @@
 templates:
   - fromTo:
-      - from: templates/generic.tmpl
-        to: ../prow/jobs/kyma/kyma-integration.yaml
+      - from: generic.tmpl
+        to: ../../prow/jobs/kyma/kyma-integration.yaml
     render:
       - localSets:
           jobConfig_default:
@@ -247,23 +247,6 @@ templates:
                     - "request_small"
                     - "jobConfig_periodic"
               - jobConfig:
-                  name: "github-stats"
-                  cron: "0 6 * * *" # "At 6:00 every day"
-                  labels:
-                    preset-bot-github-token: "true"
-                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/github-stats.sh"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "image_prow-tools"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "jobConfig_periodic"
-              - jobConfig:
                   name: "github-issues"
                   cron: "0 6 * * *" # "At 6:00 every day"
                   labels:
@@ -284,10 +267,10 @@ templates:
                     - "request_small"
                     - "jobConfig_periodic"
   - fromTo:
-      - from: templates/generic.tmpl
-        to: ../prow/jobs/kyma/kyma-integration.yaml
-      - from: templates/test-inventory.tmpl
-        to: ../test-inventory-integration.md
+      - from: generic.tmpl
+        to: ../../prow/jobs/kyma/kyma-integration.yaml
+      - from: test-inventory.tmpl
+        to: ../../test-inventory-integration.md
     render:
       - localSets:
           extra_refs_kyma-local:
@@ -562,6 +545,41 @@ templates:
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-telemetry-enabled: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "kyma_major_version_2"
+                    - "jobConfig_presubmit"
+                  local:
+                    - "jobConfig_default"
+                    - "vm_job_template_k3d"
+                    - "vm_job_labels_template"
+              - jobConfig:
+                  name: "pre-main-kyma-integration-k3d-istio-evaluation"
+                  run_if_changed: '^resources/istio/|^resources/istio-resources'
+                  labels:
+                    preset-build-pr: "true"
+                    preset-kyma-integration-istio-evaluation: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "kyma_major_version_2"
+                    - "jobConfig_presubmit"
+                  local:
+                    - "jobConfig_default"
+                    - "vm_job_template_k3d"
+                    - "vm_job_labels_template"
+              - jobConfig:
+                  name: "pre-main-kyma-integration-k3d-istio-production"
+                  run_if_changed: '^resources/istio/|^resources/istio-resources'
+                  optional: true
+                  labels:
+                    preset-build-pr: "true"
+                    preset-kyma-integration-istio-production: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

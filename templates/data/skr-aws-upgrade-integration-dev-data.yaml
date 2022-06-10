@@ -1,7 +1,7 @@
 templates:
   - fromTo:
-      - from: templates/generic.tmpl
-        to: ../prow/jobs/kyma/skr-aws-upgrade-integration-dev.yaml
+      - from: generic.tmpl
+        to: ../../prow/jobs/kyma/skr-aws-upgrade-integration-dev.yaml
     render:
       - localSets:
           jobConfig_default:
@@ -24,6 +24,7 @@ templates:
               preset-kyma-integration-subaccounnt: "true"
               preset-kyma-integration-kcp-client-credentials: "true"
               preset-kcp-client-dev-envs: "true"
+              preset-btp-operator-stage-credentials: "true"
           keb_plan_aws:
             annotations:
               pipeline.platform: gardener_aws

@@ -2,8 +2,6 @@
 
 This document describes how to define, modify, and remove Prow jobs for Kyma components using predefined templates that create both presubmit and postsubmit jobs for your component. Also, this document gives you the steps required to prepare your component for the Prow CI pipeline.
 
->**NOTE:** There are two templates that you can use to generate your component job definitions, `component.yaml` and `generic-component.yaml`. Use the recommended `generic-component.yaml` template that is the latest version using a generic bootstrap. If you decide to use `component.yaml`, define a proper buildpack.
-
 <div tabs name="add-component-jobs">
   <details>
   <summary>
@@ -14,122 +12,148 @@ Follow these steps:
 
 1. Edit the configuration file.
 
-Go to `templates/config.yaml` and add a new entry with your component details to the `render` list under the `templates` section.
+   Go to `templates/data/generic_component_data.yaml` and add a new entry with your component details to the `render` list under the `templates` section.
+   
+   See an example that defines the `compass-runtime-agent` component from the `kyma` repository, using the generic bootstrap:
 
-See an example that defines the `application-broker` component from the `kyma` repository, using the generic bootstrap:
+   ```yaml
+   templates:
+   - from: generic.tmpl
+     render:
+      - to: ../../prow/jobs/kyma/components/compass-runtime-agent/compass-runtime-agent-generic.yaml
+        jobConfigs:
+         - repoName: "github.com/kyma-project/kyma"
+           jobs:
+            - jobConfig:
+              path: components/compass-runtime-agent
+              args:
+              - "/home/prow/go/src/github.com/kyma-project/kyma/components/compass-runtime-agent"
+              run_if_changed: "^components/compass-runtime-agent/|^common/makefiles/"
+              release_since: "1.7"
+              optional: true
+           ...
+   ```
 
-```yaml
-  - from: templates/generic-component.yaml
-    render:
-      - to: ../prow/jobs/kyma/components/application-broker/application-broker-generic.yaml
-        values:
-          <<: *kyma_generic_component
-          path: components/application-broker
-          since: "1.7"
-          optional: true
-    ...
-```
+   Such an entry uses the `generic.tmpl` template to create the `compass-runtime-agent-generic.yaml` file under the `/prow/jobs/kyma/components/compass-runtime-agent/` subfolder, specifying that the presubmit and postsubmit jobs for this component should apply from the `1.7` release onwards.
+   Set the **optional** parameter to `true` for this job to be optional on pull requests (PRs), not to block others.
 
-Such an entry uses the `generic-component.yaml` template to create the `application-broker-generic.yaml` file under the `/prow/jobs/kyma/components/application-broker/` subfolder, specifying that the presubmit and postsubmit jobs for this component should apply from the `1.7` release onwards. Set the **optional** parameter to `true` for this job to be optional on pull requests (PRs), not to block others.
+   If needed, you can add global Config Sets (**globalSets**) to the `templates/config.yaml` file.
 
-> **NOTE:** Make sure that the `.yaml` file and the component folder name are the same as the name of the Kyma component. Also, all `.yaml` files in the whole `jobs` structure need to have unique names.
+   For more information about creating template files, as well as local config sets (**localSets**), job configs (**jobConfig**) and (**globalSets**), read [Render Templates](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/rendertemplates).
+   > **CAUTION:** The `.yaml` file and the component folder name should be the same as the name of the Kyma component. Also, all `.yaml` files in the whole `jobs` structure must have unique names.
+   
+   Use the buildpack for Go or Node.js applications provided in the `test-infra` repository. It is the standard mechanism for defining Prow jobs. If the buildpack you want to use is not there yet, you must add it. When you add a new buildpack, follow the example of the already defined ones.
 
-Use the buildpack for Go or Node.js applications provided in the `test-infra` repository. It is the standard mechanism for defining Prow jobs. If the buildpack you want to use is not there yet, you have to add it. When you add a new buildpack, follow the example of the already defined ones.
 
 2. Define a test for your component.
 
-Add a new component test entry to the [`components_test.go`](../../development/tools/jobs/kyma/components_test.go) file for the `test-infra-test-jobs-yaml-definitions` presubmit job to execute it.
+   Add a new component test entry to the [`components_test.go`](../../development/tools/jobs/kyma/components_test.go) file for the `test-infra-test-jobs-yaml-definitions` presubmit job to execute it.
 
-See the example:
+   See the example:
+   
+   ```go
+   ...
+   {path: "apiserver-proxy", image: tester.ImageGolangBuildpack1_12},
+   {path: "apiserver-proxy", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+     additionalOptions: []jobsuite.Option{
+       jobsuite.JobFileSuffix("generic"),
+       jobsuite.Since(releases.Release17),
+       jobsuite.Optional(),
+     },
+   },
+   ```
+   
+   Same as with component jobs, mark the component test as optional at this stage by adding the `jobsuite.Optional()` entry.
+   
+   If you have access to a Prow cluster, you can test a Prow job on it. For details, see [Kubernetes: How to test a ProwJob](https://github.com/kubernetes/test-infra/blob/master/prow/build_test_update.md#how-to-test-a-prowjob).
+   
+   When writing tests for a new component, use the `tester.GetKymaReleasesSince({next release})` function to create tests for release jobs.
 
-```go
-...
-{path: "apiserver-proxy", image: tester.ImageGolangBuildpack1_12},
-{path: "apiserver-proxy", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
-  additionalOptions: []jobsuite.Option{
-    jobsuite.JobFileSuffix("generic"),
-    jobsuite.Since(releases.Release17),
-    jobsuite.Optional(),
-  },
-},
-```
-Same as with component jobs, mark the component test as optional at this stage by adding the `jobsuite.Optional()` entry.
-
-If you have access to a Prow cluster, you can test a Prow job on it. For details, see the [official documentation](https://github.com/kubernetes/test-infra/blob/master/prow/build_test_update.md#how-to-test-a-prowjob).
-
-When writing tests for a new component, use the `tester.GetKymaReleasesSince({next release})` function to create tests for release jobs.
 
 3. Generate jobs.
 
-Run this command to generate jobs previously defined in the `config.yaml` file:
+   Run this command to generate jobs previously defined in the `config.yaml` file:
+   ```bash
+   make jobs-definitions
+   ```
 
-```bash
-go run development/tools/cmd/rendertemplates/main.go --config templates/config.yaml
-```
+   As a result, the Render Templates tool generates the requested job files.
+   
+   For more information about generating jobs, read [Render Templates](../../development/tools/cmd/rendertemplates/README.md).
 
-As a result, the Render Templates tool generates the requested job files.
 
 4. Check your configuration locally.
 
-Use the `development/validate-config.sh` script to validate your Prow configuration. The script accepts three arguments:
+   Use the `development/validate-config.sh` script to validate your Prow configuration. The script accepts three arguments:
 
-- The path to the plugins configuration file (`prow/plugins.yaml`)
-- The path to the generic configuration file (`prow/config.yaml`)
-- The path to the directory with job definitions (`prow/jobs/`)
+   - The path to the plugins configuration file (`prow/plugins.yaml`)
+   - The path to the generic configuration file (`prow/config.yaml`)
+   - The path to the directory with job definitions (`prow/jobs/`)
 
-See an example:
+   See an example:
 
-```bash
-cd $GOPATH/src/github.com/kyma-project/test-infra
-./development/validate-config.sh prow/plugins.yaml prow/config.yaml prow/jobs/
-```
+   ```bash
+   cd $GOPATH/src/github.com/kyma-project/test-infra
+   ./development/validate-config.sh prow/plugins.yaml prow/config.yaml prow/jobs/
+   ```
 
 5. Merge the changes.
 
-Create a PR with your changes in the `config.yaml` file and the job files generated by the Render Templates.
+   Create a PR with your changes in the `generic_component_data.yaml` file and the job files generated by the Render Templates tool.
 
-After your PR is reviewed and approved, merge the changes to the `test-infra` repository. The job configuration is automatically applied to the Prow production cluster. The `config_updater` plugin configured in the `prow/plugins.yaml` file adds a comment to the PR:
+   After your PR is reviewed and approved, merge the changes to the `test-infra` repository. The job configuration is automatically applied to the Prow production cluster. The `config_updater` plugin configured in the `prow/plugins.yaml` file adds a comment to the PR:
 
-![msg](./assets/msg-updated-config.png).
+![msg](./assets/msg-updated-config.png)
 
 6. Create a Makefile for your component.
 
-Buildpacks require `Makefile` defined in your component directory under the `kyma` repository. The `Makefile` has to define the **ci-release** target that is executed for a PR issued against the release branch.
+   Buildpacks need a `Makefile` defined in your component directory under the `kyma` repository. The `Makefile` must define the **ci-release** target that is executed for a PR issued against the release branch.
 
-See an example of `Makefile` for the Console Backend Service component that already uses the generic buildpack:
+   See an example of `Makefile` for the Central Application Gateway component that already uses the generic buildpack:
 
-```Makefile
-APP_NAME = console-backend-service
-APP_PATH = components/$(APP_NAME)
-BUILDPACK = eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20190930-d28d219
-SCRIPTS_DIR = $(realpath $(shell pwd)/../..)/scripts
+   ```Makefile
+   APP_NAME = central-application-gateway
+   APP_PATH = components/$(APP_NAME)
+   BUILDPACK = eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210607-b7e95d8b
+   SCRIPTS_DIR = $(realpath $(shell pwd)/../..)/common/makefiles
+   
+   override ENTRYPOINT = cmd/applicationgateway/
+   
+   include $(SCRIPTS_DIR)/generic-make-go.mk
+   
+   VERIFY_IGNORE := /vendor\|/mocks
+   
+   release:
+        $(MAKE) gomod-release-local
+   
+   resolve-local:
+        GO111MODULE=on go mod vendor -v
+   
+   test-local:
+        GO111MODULE=on go test ./...
+   
+   .PHONY: path-to-referenced-charts
+   path-to-referenced-charts:
+        @echo "resources/application-connector"
+   ```
 
-include $(SCRIPTS_DIR)/go-dep.mk
+   > **NOTE** Add a tab before each command.
 
-VERIFY_IGNORE := /vendor\|/automock\|/testdata\|/pkg
+   If your job involves pushing a Docker image, its name is based on the following environment variables:
+   
+   - **DOCKER_TAG** that refers to the Docker tag set by the `build.sh` script.
+   - **DOCKER_PUSH_DIRECTORY** that points to the directory in the Docker repository where the image is pushed. Set it in the job definition by adding the **preset-build-pr**, **preset-build-main**, or **preset-build-release** Preset.
+   - **DOCKER_PUSH_REPOSITORY** that is the Docker repository where the image is pushed. It is set in the job definition by the **preset-docker-push-repository** Preset.
 
-.PHONY: path-to-referenced-charts
-path-to-referenced-charts:
-	@echo "resources/core"
 
-```
+7. Make your component job and test obligatory.
 
-> **NOTE** Add a tab before each command.
-
-If your job involves pushing a Docker image, its name is based on the following environment variables:
-
-- **DOCKER_TAG** that refers to the Docker tag set by the `build.sh` script.
-- **DOCKER_PUSH_DIRECTORY** that points to the directory in the Docker repository where the image is pushed. Set it in the job definition by adding the **preset-build-pr**, **preset-build-main**, or **preset-build-release** Preset.
-- **DOCKER_PUSH_REPOSITORY** that is the Docker repository where the image is pushed. It is set in the job definition by the **preset-docker-push-repository** Preset.
-
-7. Change your component job and test to obligatory.
-
-Create another PR in the `test-infra` repository that removes these entries:
-
-- `optional: true` from your component job definition in `templates/config.yaml`.
-- `jobsuite.Optional()` from your component test definition in `components_test.go`.
-
-This change makes your component job and test obligatory to pass on all PRs before they can be merged.
+   Create another PR in the `test-infra` repository that removes these entries:
+   
+   - `optional: true` from your component job definition in `templates/config.yaml`.
+   - `jobsuite.Optional()` from your component test definition in `components_test.go`.
+   
+   This change makes your component job and test obligatory to pass on all PRs before they can be merged.
 
 </details>
 <details>
@@ -139,14 +163,14 @@ Modify component jobs
 
 To change component job configuration, follow these steps:
 
-1. In the `config.yaml` file, change the name of the file where the jobs are generated. For example, add the `deprecated` suffix.
+1. In the `generic_component_data.yaml` file, change the name of the file where the jobs are generated. For example, add the `deprecated` suffix.
 2. Add `until: {last release}` to this configuration. It specifies the release until which this component version applies.
 3. Create a new entry with the new configuration. Set the `to` field to point to the file responsible for storing jobs.
 4. Add `since: {next release}` to the new entry. It specifies the release from which this component version applies.
 
    See this example:
 
-   Buildpack for the API Controller changed from `go1.11` to `go.12` in release 1.5. This is the component configuration before the buildpack change:
+   Buildpack for the API Controller changed from `go1.11` to `go.12` in release `1.5`. This is the component configuration before the buildpack change:
 
    ```yaml
       - to: ../prow/jobs/kyma/components/api-controller/api-controller.yaml
@@ -216,7 +240,7 @@ global:
 
 To remove a component from Prow, follow these steps:
 
-1. In the `config.yaml` file, remove the entries under the `templates` section that refer to your component.
+1. In the `generic_component_data.yaml` file, remove the entries under the `templates` section that refer to your component.
 2. Manually remove all files and the component folder from `/prow/jobs`.
 3. Delete tests for the component jobs.
 

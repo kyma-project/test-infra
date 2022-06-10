@@ -1,9 +1,9 @@
 global:
-  nextRelease: "2.3"
+  nextRelease: "2.4"
   releases:
+    - "2.3"
     - "2.2"
     - "2.1"
-    - "2.0"
   orgs:
     - name: "kyma-project"
       repos:
@@ -91,7 +91,7 @@ globalSets:
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220427-9543160d"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220523-f9ee5f12"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220609-ef3e835a"
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220524-0196d249"
   image_buildpack-node:
@@ -261,26 +261,12 @@ globalSets:
       pipeline.platform: gardener_gcp
 
 templates:
-#  - from: templates/kyma-release-upgrade.yaml
-#    render:
-#      - to: ../prow/jobs/kyma/kyma-release-upgrade.yaml
-  - from: templates/releases.go.tmpl
+  - from: releases.go.tmpl
     render:
-      - to: ../development/tools/jobs/releases/releases.go
-#  TODO: remove when https://github.com/kyma-project/test-infra/issues/3174 is finished
-#  - from: templates/kyma-github-release.yaml
-#    render:
-#      - to: ../prow/jobs/kyma/kyma-github-release.yaml
-#        values:
-#          <<: *cluster_default
-#  - from: templates/kyma-release-candidate.yaml
-#    render:
-#      - to: ../prow/jobs/kyma/kyma-release-candidate.yaml
-#        values:
-#          <<: *cluster_default
-  - from: templates/prow-config.yaml
+      - to: ../../development/tools/jobs/releases/releases.go
+  - from: prow-config.yaml
     render:
-      - to: ../prow/config.yaml
+      - to: ../../prow/config.yaml
         values:
           cluster:
             presubmit: untrusted-workload
@@ -291,9 +277,6 @@ templates:
             - name: kyma-gke-integration
             - name: kyma-gke-upgrade
             - name: kyma-artifacts
-#  - from: templates/testgrid-default.yaml
-#    render:
-#      - to: ../prow/testgrid-default.yaml
-  - from : templates/test-infra-autobump-config.yaml
+  - from : test-infra-autobump-config.yaml
     render:
-      - to: ../prow/autobump-config/test-infra-autobump-config.yaml
+      - to: ../../prow/autobump-config/test-infra-autobump-config.yaml

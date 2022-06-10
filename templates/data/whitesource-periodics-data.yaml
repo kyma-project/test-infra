@@ -1,7 +1,7 @@
 templates:
-  - from: templates/whitesource-periodics.tmpl
+  - from: whitesource-periodics.tmpl
     render:
-      - to: ../prow/jobs/scans/whitesource-periodics.yaml
+      - to: ../../prow/jobs/scans/whitesource-periodics.yaml
         localSets:
           jobConfig_default:
             privileged: "false"
@@ -141,19 +141,6 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
-              - jobConfig:
-                  repository: "helm-broker"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-                    - "product_kyma"
               - jobConfig:
                   repository: "rafter"
                   language: "golang-mod"

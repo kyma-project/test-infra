@@ -169,7 +169,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.AllPeriodics()
-	assert.Len(t, periodics, 21)
+	assert.Len(t, periodics, 20)
 
 	expName := "kyma-upgrade-k3d-kyma2-to-main"
 	kymaUpgradePeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -313,16 +313,6 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, []string{"bash"}, gcrCleanerPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "/prow-tools/gcrcleaner --repository=eu.gcr.io/sap-kyma-prow-workloads --age-in-hours=168 --dry-run=false"}, gcrCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, gcrCleanerPeriodic.JobBase)
-
-	expName = "github-stats"
-	githubStatsPeriodic := tester.FindPeriodicJobByName(periodics, expName)
-	require.NotNil(t, githubStatsPeriodic)
-	assert.Equal(t, expName, githubStatsPeriodic.Name)
-
-	assert.Equal(t, "0 6 * * *", githubStatsPeriodic.Cron)
-	assert.Equal(t, tester.ImageProwToolsLatest, githubStatsPeriodic.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/github-stats.sh"}, githubStatsPeriodic.Spec.Containers[0].Command)
-	tester.AssertThatSpecifiesResourceRequests(t, githubStatsPeriodic.JobBase)
 
 	expName = "github-issues"
 	githubIssuesPeriodic := tester.FindPeriodicJobByName(periodics, expName)

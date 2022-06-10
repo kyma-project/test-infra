@@ -1,7 +1,7 @@
 templates:
-  - from: templates/generic.tmpl
+  - from: generic.tmpl
     render:
-      - to: ../prow/jobs/incubator/kyma-showcase/kyma-showcase.yaml
+      - to: ../../prow/jobs/incubator/kyma-showcase/kyma-showcase.yaml
         localSets:
           jobConfig_generic_component_kyma_showcase:
             labels:
@@ -59,4 +59,3 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-

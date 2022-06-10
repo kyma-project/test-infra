@@ -24,6 +24,7 @@
 # exit on error, and raise error when variable is not set when used
 set -o errexit
 
+ENABLE_TEST_CLEANUP=false
 ENABLE_TEST_LOG_COLLECTOR=false
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
@@ -75,12 +76,26 @@ else
 fi
 
 function cleanupJobAssets() {
-    log::banner "Running cleanup"
-    # clean up fast-integration assets from cluster
-    eventing::fast_integration_test_cleanup || log::info "cleanup failed !!!"
+    # Must be at the beginning
+    EXIT_STATUS=$?
 
-    # clean up gardener
-    gardener::cleanup
+    set +e
+
+    if  [[ "${ENABLE_TEST_CLEANUP}" = true ]] ; then
+        log::banner "Cleanup fast-integration assets"
+        eventing::fast_integration_test_cleanup || log::info "Cleanup fast-integration assets failed"
+    fi
+
+    if  [[ "${CLEANUP_CLUSTER}" == "true" ]] ; then
+        log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
+        gardener::deprovision_cluster \
+            -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+            -c "${CLUSTER_NAME}" \
+            -f "${GARDENER_KYMA_PROW_KUBECONFIG}"
+    fi
+
+    set -e
+    exit ${EXIT_STATUS}
 }
 
 # nice cleanup on exit, be it successful or on fail
@@ -130,6 +145,7 @@ gardener::deploy_kyma --source "${KYMA_SOURCE}"
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
 # test the default Eventing backend which comes with Kyma
+ENABLE_TEST_CLEANUP=true
 eventing::pre_upgrade_test_fast_integration
 
 # upgrade the kyma to the current PR/commit state
