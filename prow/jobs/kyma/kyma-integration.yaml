@@ -296,7 +296,7 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-kyma-integration-istio-evaluation: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^resources/istio/|^resources/istio-resources'
+      run_if_changed: '^resources/istio/|^resources/istio-resources|^tests/components/istio'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -348,7 +348,7 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-kyma-integration-istio-production: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^resources/istio/|^resources/istio-resources'
+      run_if_changed: '^resources/istio/|^resources/istio-resources|^tests/components/istio'
       optional: true
       skip_report: false
       decorate: true
