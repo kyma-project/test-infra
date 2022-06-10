@@ -183,27 +183,27 @@ templates:
                     - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
-#              - jobConfig:
-#                  name: "firewall-cleaner"
-#                  cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
-#                  labels:
-#                    preset-sa-gke-kyma-integration: "true"
-#                    preset-gc-project-env: "true"
-#                  command: "bash"
-#                  args:
-#                    - "-c"
-#                    - "/prow-tools/firewallcleaner -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
-#                inheritedConfigs:
-#                  global:
-#                    - "jobConfig_default"
-#                    - "jobConfig_periodic"
-#                    - "image_prow-tools"
-#                    - "extra_refs_test-infra"
-#                    - "disable_testgrid"
-#                  local:
-#                    - "jobConfig_default"
-#                    - "request_small"
-#                    - "jobConfig_periodic"
+              #              - jobConfig:
+              #                  name: "firewall-cleaner"
+              #                  cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
+              #                  labels:
+              #                    preset-sa-gke-kyma-integration: "true"
+              #                    preset-gc-project-env: "true"
+              #                  command: "bash"
+              #                  args:
+              #                    - "-c"
+              #                    - "/prow-tools/firewallcleaner -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
+              #                inheritedConfigs:
+              #                  global:
+              #                    - "jobConfig_default"
+              #                    - "jobConfig_periodic"
+              #                    - "image_prow-tools"
+              #                    - "extra_refs_test-infra"
+              #                    - "disable_testgrid"
+              #                  local:
+              #                    - "jobConfig_default"
+              #                    - "request_small"
+              #                    - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-dns-cleaner"
                   cron: "30 * * * *" # "At minute 30 past every hour"
@@ -541,7 +541,7 @@ templates:
                     - "vm_job_labels_template"
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d-telemetry"
-                  run_if_changed: '^resources/telemetry/|^installation/resources/crds/telemetry'
+                  run_if_changed: "^resources/telemetry/|^installation/resources/crds/telemetry"
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-telemetry-enabled: "true"
@@ -664,7 +664,7 @@ templates:
                     - "extra_refs_kyma-local"
               - jobConfig:
                   name: "post-main-kyma-integration-k3d-telemetry"
-                  run_if_changed: '^resources/telemetry/|^installation/resources/crds/telemetry'
+                  run_if_changed: "^resources/telemetry/|^installation/resources/crds/telemetry"
                   labels:
                     preset-build-main: "true"
                     preset-kyma-integration-telemetry-enabled: "true"
@@ -680,29 +680,6 @@ templates:
                     - "jobConfig_default"
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
-              - jobConfig:
-                  name: "post-main-k3d-k8s-preview"
-                  annotations:
-                    testgrid-dashboards: kyma_integration
-                    description: Kyma integration job on k3d to test kyma on latest k8s version.
-                    testgrid-days-of-results: "60"
-                  labels:
-                    preset-build-main: "true"
-                  env:
-                    K8S_VERSION: "1.22.6"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                    - "kyma_major_version_2"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "vm_job_template_k3d"
-                    - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
 
               # periodics
 
@@ -822,16 +799,16 @@ templates:
                     preset-gke-pod-security-policy: "true"
                     preset-slack-alerts: "true"
                   volumes:
-                  - name: sa-stability-fluentd-storage-writer
-                    secretName: sa-stability-fluentd-storage-writer
+                    - name: sa-stability-fluentd-storage-writer
+                      secretName: sa-stability-fluentd-storage-writer
                   volumeMounts:
-                  - name: sa-stability-fluentd-storage-writer
-                    mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
-                    readOnly: true
+                    - name: sa-stability-fluentd-storage-writer
+                      mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
+                      readOnly: true
                   command: "bash"
                   args:
-                  - "-c"
-                  - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"
+                    - "-c"
+                    - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"
                   env:
                     MACHINE_TYPE: "custom-8-15360"
                     PROVISION_REGIONAL_CLUSTER: "true"
@@ -843,17 +820,17 @@ templates:
                     TEST_RESULT_WINDOW_TIME: "6h"
                 inheritedConfigs:
                   global:
-                  - "jobConfig_default"
-                  - "jobConfig_periodic"
-                  - "image_kyma-integration"
-                  - "extra_refs_test-infra"
-                  - "extra_refs_kyma"
-                  - "disable_testgrid"
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                    - "disable_testgrid"
                   local:
-                  - "jobConfig_default"
-                  - "request_big"
-                  - "jobConfig_periodic"
-                  - "gke_job_labels_template"
+                    - "jobConfig_default"
+                    - "request_big"
+                    - "jobConfig_periodic"
+                    - "gke_job_labels_template"
               - jobConfig:
                   name: "kyma-gke-nightly-fast-integration"
                   cron: "0 0-1,4-23 * * 1-5" # "At every hour except 03:00 and 4:00 UTC on every weekday Monday through Friday"

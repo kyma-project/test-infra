@@ -138,11 +138,11 @@ templates:
               preset-docker-push-repository-gke-integration: "true"
               preset-kyma-cli-stable: "true"
               preset-az-kyma-prow-credentials: "true"
-              preset-dind-enabled: "true"                   # we need to be able to start docker
-              preset-gc-compute-envs: "true"                # prrovides the GCP region
-              preset-gc-project-env: "true"                 # required to be able to delete images
-              preset-sa-test-gcr-push: "true"               # required for pushing images
-              preset-sa-gardener-logs: "true"               # required for writing logs to Stackdriver
+              preset-dind-enabled: "true" # we need to be able to start docker
+              preset-gc-compute-envs: "true" # prrovides the GCP region
+              preset-gc-project-env: "true" # required to be able to delete images
+              preset-sa-test-gcr-push: "true" # required for pushing images
+              preset-sa-gardener-logs: "true" # required for writing logs to Stackdriver
               preset-cluster-version: "true"
           installer_2:
             annotations:
@@ -397,7 +397,6 @@ templates:
                     - jobConfig_presubmit
                     - gardener_gcp_job_eventing
                     - command_upgrade_eventing
-
 
               # periodics
               - jobConfig:
