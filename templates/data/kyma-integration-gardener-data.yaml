@@ -138,11 +138,11 @@ templates:
               preset-docker-push-repository-gke-integration: "true"
               preset-kyma-cli-stable: "true"
               preset-az-kyma-prow-credentials: "true"
-              preset-dind-enabled: "true"                   # we need to be able to start docker
-              preset-gc-compute-envs: "true"                # prrovides the GCP region
-              preset-gc-project-env: "true"                 # required to be able to delete images
-              preset-sa-test-gcr-push: "true"               # required for pushing images
-              preset-sa-gardener-logs: "true"               # required for writing logs to Stackdriver
+              preset-dind-enabled: "true" # we need to be able to start docker
+              preset-gc-compute-envs: "true" # prrovides the GCP region
+              preset-gc-project-env: "true" # required to be able to delete images
+              preset-sa-test-gcr-push: "true" # required for pushing images
+              preset-sa-gardener-logs: "true" # required for writing logs to Stackdriver
               preset-cluster-version: "true"
           installer_2:
             annotations:
@@ -224,48 +224,6 @@ templates:
                     - production_profile
                     - installer_2
               # postsubmits
-              - jobConfig:
-                  name: post-main-kyma-gardener-azure-alpha-eval
-                  decoration_config:
-                    timeout: 14400000000000 # 4h
-                    grace_period: 600000000000 # 10min
-                  labels:
-                    preset-build-main: "true"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - image_kyma-integration
-                    - disable_testgrid
-                    - kyma_major_version_2
-                  local:
-                    - jobConfig_default
-                    - command_integration
-                    - gardener_azure_job
-                    - evaluation_profile
-                    - installer_2
-              - jobConfig:
-                  name: post-main-kyma-gardener-azure-alpha-prod
-                  decoration_config:
-                    timeout: 14400000000000 # 4h
-                    grace_period: 600000000000 # 10min
-                  labels:
-                    preset-build-main: "true"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - image_kyma-integration
-                    - disable_testgrid
-                    - kyma_major_version_2
-                  local:
-                    - jobConfig_default
-                    - command_integration
-                    - gardener_azure_job
-                    - production_profile
-                    - installer_2
               - jobConfig:
                   name: pre-main-kyma-gardener-gcp-eventing
                   # temporarily make the job optional, as it's falky and blocking development
@@ -354,7 +312,6 @@ templates:
                     - jobConfig_presubmit
                     - gardener_gcp_job_eventing
                     - command_upgrade_eventing
-
 
               # periodics
               - jobConfig:
