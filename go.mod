@@ -45,7 +45,11 @@ require (
 	github.com/imdario/mergo v0.3.13
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/jinzhu/copier v0.3.5
+	github.com/kyma-project/test-infra/development/prow-installer v0.0.0-20220606095715-10a3b90dceee // indirect
+	github.com/kyma-project/test-infra/development/tools v0.0.0-20210518084350-a4b4531c5f35 // indirect
+	github.com/kyma-project/test-infra/watch-pods v0.0.0-20210514142548-909d8bbbd140 // indirect
 	github.com/mandelsoft/vfs v0.0.0-20210530103237-5249dc39ce91
+	github.com/novln/docker-parser v1.0.0 // indirect
 	github.com/onsi/gomega v1.19.0
 	github.com/pkg/errors v0.9.1
 	github.com/satori/go.uuid v1.2.0
