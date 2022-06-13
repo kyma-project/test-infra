@@ -96,6 +96,7 @@ function deploy_kyma() {
   $kyma_deploy_cmd
 
   kubectl get pods -A
+
 }
 
 
@@ -108,6 +109,10 @@ function run_tests() {
   elif [[ -v TELEMETRY_ENABLED ]]; then
     npm install
     npm run test-telemetry
+  elif [[ -v TELEMETRY_ENABLED ]]; then
+      make tests_gateway
+      kubectl logs
+
   elif [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
     pushd "../components/istio"
     export EXPORT_RESULT="true"
