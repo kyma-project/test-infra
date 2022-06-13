@@ -6,8 +6,10 @@ Image URL Helper is a tool that provides the following subcommands:
 
 * The `check` command finds all Helm chart images that don't use the `imageurl` template.
 * The `list` command lists all Helm chart images by checking the `values.yaml` files.
+* The `missing` command lists all non-existent Helm chart images by checking the `values.yaml` files.
 * The `promote` command updates the container registry path and Helm chart images versions in the `values.yaml` files. The subcommand also prints a YAML that can be used by the [Image Syncer](../image-syncer) tool to promote images.
 * The `components` command generates a [Component-Descriptor](https://github.com/gardener/component-spec) file for the `kyma` repository from `values.yaml` files.
+
 
 ## Usage
 
@@ -25,6 +27,15 @@ To run the `list` command, use:
 go run main.go \ 
     --resources-directory={PATH_TO_A_KYMA_RESOURCES_DIRECTORY} \
     list \
+    --exclude-test-images=true \
+    --output-format=json
+```
+
+To run the `missing` command, use:
+```bash
+go run main.go \ 
+    --resources-directory={PATH_TO_A_KYMA_RESOURCES_DIRECTORY} \
+    missing \
     --exclude-test-images=true \
     --output-format=json
 ```
@@ -50,6 +61,8 @@ go run main.go \
     --output-dir={PATH_TO_COMPONENT_DESCRIPTOR_OUTPUT_DIRECTORY} \
     --repo-context={PATH_TO_DOCKER_REPOSITORY}
 ```
+
+
 
 ### Exclude images from the check command
 To exclude image lines from being checked, create a YAML file that contains a list of files and values of images that you want to exclude from the check. Then, provide a path to this file in the `check` command argument. See the example of such a YAML file:
@@ -78,7 +91,7 @@ See the list of flags available for the `check` command:
 
 ### List command flags
 
-See the list of flags available for the `list` command:
+See the list of flags available for the `list` and `missing` command:
 
 | Name                      | Required | Description                                                                                          |
 | :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
