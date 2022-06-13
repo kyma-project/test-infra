@@ -557,7 +557,7 @@ templates:
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
               - jobConfig:
-                  name: "pre-main-kyma-integration-k3d-istio-evaluation"
+                  name: "pre-main-kyma-eval-istio-integration-k3d"
                   run_if_changed: "^((resources/istio\\S+|resources/istio-resources\\S+|tests/components/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   optional: true
                   labels:
@@ -575,7 +575,7 @@ templates:
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
               - jobConfig:
-                  name: "pre-main-kyma-integration-k3d-istio-production"
+                  name: "pre-main-kyma-prod-istio-integration-k3d"
                   run_if_changed: "^((resources/istio\\S+|resources/istio-resources\\S+|tests/components/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   optional: true
                   labels:
