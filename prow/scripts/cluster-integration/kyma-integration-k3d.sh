@@ -109,10 +109,14 @@ function run_tests() {
   elif [[ -v TELEMETRY_ENABLED ]]; then
     npm install
     npm run test-telemetry
-  elif [[ -v TELEMETRY_ENABLED ]]; then
-      make tests_gateway
-      kubectl logs
-
+  elif [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_OS ]]; then
+      pushd "../components/application-connector"
+      make test-os
+      popd
+  elif [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_SKR ]]; then
+      pushd "../components/application-connector"
+      make test-skr
+      popd
   elif [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
     pushd "../components/istio"
     export EXPORT_RESULT="true"
