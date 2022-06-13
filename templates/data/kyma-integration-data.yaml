@@ -400,6 +400,52 @@ templates:
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
+                  name: "pre-main-kyma-integration-k3d-app-connector-skr"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((resources/application-connector\\S+|resources/compass-runtime-agent\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-kyma-integration-central-app-connectivity-enabled: "true"
+                    preset-application-connector-component-tests-skr: "true"
+                  annotations:
+                    pipeline.platform: k3d
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "kyma_major_version_2"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_k3d"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
+              - jobConfig:
+                  name: "pre-main-kyma-integration-k3d-app-connector-os"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((resources/application-connector\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-kyma-integration-central-app-connectivity-enabled: "true"
+                    preset-application-connector-component-tests-skr: "true"
+                  annotations:
+                    pipeline.platform: k3d
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "kyma_major_version_2"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_k3d"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
+              - jobConfig:
                   name: "pre-main-kyma-integration-k3d-compass-dev"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"

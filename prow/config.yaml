@@ -937,6 +937,16 @@ presets:
       - name: COMPASS_INTEGRATION_ENABLED
         value: "true"
   - labels:
+      preset-application-connector-component-tests-skr: "true"
+    env:
+      - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_SKR
+        value: "true"
+  - labels:
+      preset-application-connector-component-tests-os: "true"
+      env:
+        - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_OS
+          value: "true"
+  - labels:
       preset-kyma-integration-istio-evaluation: "true"
     env:
       - name: ISTIO_INTEGRATION_ENABLED

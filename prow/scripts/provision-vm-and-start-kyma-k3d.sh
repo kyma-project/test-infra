@@ -122,6 +122,8 @@ envVars=(
   COMPASS_CLIENT_SECRET
   COMPASS_INTEGRATION_ENABLED
   CENTRAL_APPLICATION_CONNECTIVITY_ENABLED
+  APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_SKR
+  APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_OS
   TELEMETRY_ENABLED
   ISTIO_INTEGRATION_ENABLED
   KYMA_MAJOR_VERSION
@@ -140,6 +142,18 @@ if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
   log::info "Copying components file for compass tests"
   #shellcheck disable=SC2088
   utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-compass-components.yaml" "~/kyma-integration-k3d-compass-components.yaml"
+fi
+
+if [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_OS ]]; then
+  log::info "Copying components file for application connector component tests"
+  #shellcheck disable=SC2088
+  utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-app-connector-components-os.yaml" "~/kyma-integration-k3d-app-connector-components-os.yaml"
+fi
+
+if [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_SKR ]; then
+  log::info "Copying components file for application connector component tests"
+  #shellcheck disable=SC2088
+  utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-app-connector-components-skr.yaml" "~/kyma-integration-k3d-app-connector-components-skr.yaml"
 fi
 
 if [[ -v TELEMETRY_ENABLED ]]; then
