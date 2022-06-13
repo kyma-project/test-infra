@@ -37,19 +37,3 @@ templates:
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
-              - jobConfig:
-                  name: "post-main-compass-integration"
-                  labels:
-                    preset-build-main: "true"
-                  annotations:
-                    testgrid-dashboards: kyma-incubator_compass
-                    description: Compass integration job.
-                    testgrid-days-of-results: "60"
-                inheritedConfigs:
-                  global:
-                    - "image_buildpack-golang-kubebuilder2"
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"

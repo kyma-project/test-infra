@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-//type ImageMap map[string]Image
+// ComponentImageMap defines type for map of ComponentImages, where key is a full image URL
 type ComponentImageMap map[string]ComponentImage
 
 // Image contains info about a singular image
@@ -16,6 +16,7 @@ type Image struct {
 	SHA                     string `yaml:"sha,omitempty"`
 }
 
+// ComponentImage contains image and map of components using this image
 type ComponentImage struct {
 	Components map[string]bool
 	Image      Image
@@ -62,7 +63,7 @@ func GetInconsistentImages(images ComponentImageMap) ComponentImageMap {
 
 // MergeImageMap merges images map into target one
 func MergeImageMap(target ComponentImageMap, source ComponentImageMap) {
-	for key, _ := range source {
+	for key := range source {
 		if _, ok := target[key]; !ok {
 			// we have the same image in both maps
 			// TODO

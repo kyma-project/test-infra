@@ -4,6 +4,64 @@ global:
     - "2.3"
     - "2.2"
     - "2.1"
+  orgs:
+    - name: "kyma-project"
+      repos:
+        - name: "test-infra"
+        - name: "kyma"
+        - name: "busola"
+        - name: "control-plane"
+        - name: "cli"
+        - name: "website"
+        - name: "kyma-operator"
+        - name: "third-party-images"
+        - name: "community"
+        - name: "manifest-operator"
+        - name: "hydroform"
+        - name: "console"
+        - name: "helm-broker"
+        - name: "istio-operator"
+        - name: "addons"
+        - name: "rafter"
+        - name: "private-fn-for-e2e-serverless-tests"
+        - name: "charts"
+        - name: "busola-migrator"
+        - name: "examples"
+    - name: "kyma-incubator"
+      repos:
+        - name: "compass"
+        - name: "ord-service"
+        - name: "reconciler"
+        - name: "api-gateway"
+        - name: "bullseye-showcase"
+        - name: "documentation-component"
+        - name: "compass-console"
+        - name: "sap-btp-service-operator"
+        - name: "milv"
+        - name: "varkes"
+        - name: "slack-bot"
+        - name: "podpreset-crd"
+        - name: "migrate"
+        - name: "github-dashboard"
+        - name: "website-vuepress"
+        - name: "sc-removal"
+        - name: "service-catalog-tester"
+        - name: "dex"
+        - name: "kitbag"
+        - name: "octopus"
+        - name: "kyma-showcase"
+        - name: "hydra-login-consent"
+        - name: "terraform-provider-gardener"
+        - name: "kymart"
+        - name: "examples"
+        - name: "vstudio-extension"
+        - name: "wordpress-connector"
+        - name: "connector-tools"
+        - name: "service-catalog"
+        - name: "gcp-service-broker"
+        - name: "artwork"
+        - name: "opensap"
+        
 
 
 # global configSet variables
@@ -33,7 +91,7 @@ globalSets:
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220427-9543160d"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220607-91e7e5b8"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220610-01aba488"
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220524-0196d249"
   image_buildpack-node:
@@ -147,9 +205,13 @@ globalSets:
     path_alias: "github.com/kyma-incubator/compass"
   disable_report:
     skip_report: "true"
-  # globalSet for prowjobs which don't inherit jobConfig_default globalSet
+  # globalSet for prowjobs which doesn't inherit jobConfig_default globalSet
   pubsub_labels:
     <<: *pubsub_config
+  trusted_cluster:
+    cluster: "trusted-workload"
+  untrusted_cluster:
+    cluster: "untrusted-workload"
   # extra_refs sets
   extra_refs_test-infra:
     extra_refs:
