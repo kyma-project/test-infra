@@ -100,7 +100,6 @@ function run_tests() {
     npm run test-telemetry
   elif [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
     pushd "../components/istio"
-    export EXPORT_RESULT="true"
     go install github.com/cucumber/godog/cmd/godog@latest
     make test
     popd
