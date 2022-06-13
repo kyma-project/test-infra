@@ -297,6 +297,7 @@ presubmits: # runs on PRs
         preset-kyma-integration-istio-evaluation: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^resources/istio/|^resources/istio-resources|^tests/components/istio'
+      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
