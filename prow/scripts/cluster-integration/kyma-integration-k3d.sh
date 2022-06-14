@@ -97,7 +97,6 @@ function deploy_kyma() {
   $kyma_deploy_cmd
 
   kubectl get pods -A
-
 }
 
 

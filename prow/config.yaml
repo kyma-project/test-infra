@@ -949,9 +949,9 @@ presets:
         value: "true"
   - labels:
       preset-application-connector-component-tests-os: "true"
-      env:
-        - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_OS
-          value: "true"
+    env:
+      - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_OS
+        value: "true"
   - labels:
       preset-kyma-integration-istio-evaluation: "true"
     env:
