@@ -85,7 +85,7 @@ function deploy_kyma() {
     kyma_deploy_cmd+=" --components-file kyma-integration-k3d-app-connector-components-skr.yaml"
   fi
 
-  if [[ -v  APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_OS]]; then
+  if [[ -v  APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_OS ]]; then
     kyma_deploy_cmd+=" --components-file kyma-integration-k3d-app-connector-components-os.yaml"
   fi
 
