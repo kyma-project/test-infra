@@ -31,7 +31,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220524-0196d249"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
             securityContext:
               privileged: true
             command:
@@ -40,7 +40,7 @@ presubmits: # runs on PRs
               - name: GO111MODULE
                 value: "on"
               - name: KYMA_MAJOR_VERSION
-                value: "1"
+                value: "2"
             resources:
               requests:
                 memory: 100Mi
