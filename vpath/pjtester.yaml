@@ -1,5 +1,6 @@
 pjNames:
-  - pjName: "pre-kyma-tests-components-application-connector"
+  - pjName: "pre-kyma-tests-components-application-connector-skr"
+  - pjName: "pre-kyma-tests-components-application-connector-os"
 prConfigs:
   kyma-project:
     kyma:
