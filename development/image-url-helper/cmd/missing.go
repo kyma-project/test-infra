@@ -1,32 +1,32 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 
 	"github.com/jamiealquiza/envy"
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/common"
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/list"
+	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/missing"
 	"github.com/spf13/cobra"
 )
 
-type listCmdOptions struct {
+type missingCmdOptions struct {
 	outputFormat      string
 	excludeTestImages bool
 }
 
-// ListCmd lists all images defined in values.yaml files
-func ListCmd() *cobra.Command {
-	options := listCmdOptions{}
+// MissingCmd checks if all images exists
+func MissingCmd() *cobra.Command {
+
+	options := missingCmdOptions{}
 	cmd := &cobra.Command{
-		Use:     "list",
-		Short:   "List all images used in charts",
-		Long:    "List all images used in Helm charts by checking values.yaml files",
-		Example: "image-url-helper list",
+		Use:     "missing",
+		Short:   "Check if all images exists",
+		Long:    "Find all images taht don't exist",
+		Example: "image-url-helper missing",
 		Args:    cobra.ExactArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-
 			// remove trailing slash to have consistent paths
 			ResourcesDirectoryClean := filepath.Clean(ResourcesDirectory)
 
@@ -35,8 +35,7 @@ func ListCmd() *cobra.Command {
 
 			err := filepath.Walk(ResourcesDirectory, list.GetWalkFunc(ResourcesDirectoryClean, images, testImages))
 			if err != nil {
-				fmt.Printf("Cannot traverse directory: %s\n", err)
-				os.Exit(2)
+				common.PrintAndFail(1, "Cannot traverse directory: %s\n", err)
 			}
 
 			allImages := make(common.ComponentImageMap)
@@ -45,17 +44,28 @@ func ListCmd() *cobra.Command {
 				common.MergeImageMap(allImages, testImages)
 			}
 
-			err = common.PrintComponentImageMap(allImages, options.outputFormat)
+			missingImages := make(common.ComponentImageMap)
+
+			err = missing.CheckForMissingImages(allImages, missingImages)
+			if err != nil {
+				common.PrintAndFail(2, "Cannot check for missing images: %s\n", err)
+			}
+
+			err = common.PrintComponentImageMap(missingImages, options.outputFormat)
 			if err != nil {
 				common.PrintAndFail(3, "Cannot print image list: %s\n", err)
 			}
+
+			if len(missingImages) > 0 {
+				os.Exit(3)
+			}
 		},
 	}
-	addListCmdFlags(cmd, &options)
+	addExistsCmdFlags(cmd, &options)
 	return cmd
 }
 
-func addListCmdFlags(cmd *cobra.Command, options *listCmdOptions) {
+func addExistsCmdFlags(cmd *cobra.Command, options *missingCmdOptions) {
 	cmd.Flags().StringVarP(&options.outputFormat, "output-format", "o", "", "Name of the output format (json/yaml)")
 	cmd.Flags().BoolVarP(&options.excludeTestImages, "exclude-test-images", "e", false, "Exclude test images from the output list")
 	envy.ParseCobra(cmd, envy.CobraConfig{Persistent: true, Prefix: "IMAGE_URL_HELPER"})
