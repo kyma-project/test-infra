@@ -151,7 +151,7 @@ if [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_OS ]]; then
   utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-app-connector-components-os.yaml" "~/kyma-integration-k3d-app-connector-components-os.yaml"
 fi
 
-if [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_SKR ]; then
+if [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_SKR ]]; then
   log::info "Copying components file for application connector component tests"
   #shellcheck disable=SC2088
   utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-app-connector-components-skr.yaml" "~/kyma-integration-k3d-app-connector-components-skr.yaml"
