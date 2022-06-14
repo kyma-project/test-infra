@@ -533,8 +533,8 @@ templates:
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
               - jobConfig:
-                  name: "pre-main-kyma-integration-k3d-istio-evaluation"
-                  run_if_changed: '^resources/istio/|^resources/istio-resources|^tests/components/istio'
+                  name: "pre-main-kyma-eval-istio-integration-k3d"
+                  run_if_changed: "(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)"
                   optional: true
                   labels:
                     preset-build-pr: "true"
@@ -551,8 +551,8 @@ templates:
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
               - jobConfig:
-                  name: "pre-main-kyma-integration-k3d-istio-production"
-                  run_if_changed: '^resources/istio/|^resources/istio-resources|^tests/components/istio'
+                  name: "pre-main-kyma-prod-istio-integration-k3d"
+                  run_if_changed: "(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)"
                   optional: true
                   labels:
                     preset-build-pr: "true"

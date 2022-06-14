@@ -65,6 +65,7 @@ function deploy_kyma() {
   kyma_deploy_cmd="kyma deploy -p evaluation --ci --source=local --workspace ${KYMA_SOURCES_DIR}"
 
   if [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
+    echo "Installing Kyma with ${KYMA_PROFILE} profile"
     kyma_deploy_cmd="kyma deploy -p ${KYMA_PROFILE} --ci --source=local --workspace ${KYMA_SOURCES_DIR} --components-file kyma-integration-k3d-istio-components.yaml"
   fi
 
@@ -100,7 +101,6 @@ function run_tests() {
     npm run test-telemetry
   elif [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
     pushd "../components/istio"
-    export EXPORT_RESULT="true"
     go install github.com/cucumber/godog/cmd/godog@latest
     make test
     popd
