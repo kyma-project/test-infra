@@ -5,7 +5,7 @@ This document provides an overview of autobump Prow jobs.
 
 ## Overview
 
-Generic-autobumper tool allows for automatic bump of Docker images in files to their latest versions. The images have to be specified as a Docker image URL.
+[Generic-autobumper](https://github.com/kubernetes/test-infra/tree/master/prow/cmd/generic-autobumper) tool allows for automatic bump of Docker image URLs in values.yaml files to their latest versions. The images have to be specified as a Docker image URL.
 
 ## Autobumper config file
 
@@ -14,7 +14,7 @@ Following template data file can be used to generate autobumper config for Kyma 
 ```yaml
 templates:
   # generate autobump configuration
-  - from : templates/autobump-config.yaml
+  - from : templates/autobump-config.tmpl
     render:
       - to: ../prow/autobump-config/kyma-autobump-config.yaml
         values:
