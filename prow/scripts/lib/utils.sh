@@ -821,3 +821,27 @@ function utils::unmask_debug_output {
         set -x
     fi
 }
+
+# utils::install_yq installs yq CLI
+function utils::install_yq {
+    local settings
+    local yq_version
+    settings="$(set +o); set -$-"
+    mkdir -p "/tmp/bin"
+    export PATH="/tmp/bin:${PATH}"
+
+    pushd "/tmp/bin" || exit
+
+    log::info "--> Install yq CLI locally to /tmp/bin"
+
+    curl -sSLo yq.tar.gz "https://github.com/mikefarah/yq/releases/download/v4.25.1/yq_linux_amd64.tar.gz"
+
+    tar xvzf yq.tar.gz
+
+    chmod +x yq
+    yq_version=$(yq --version)
+    log::info "--> yq CLI version: ${yq_version}"
+    log::info "OK"
+    popd || exit
+    eval "${settings}"
+}

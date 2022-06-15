@@ -139,6 +139,10 @@ function createCluster() {
   envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/compass-gke-kyma-overrides.tpl.yaml" > "$PWD/kyma_overrides.yaml"
 }
 
+function installYQ() {
+  utils:install_yq
+}
+
 function installKyma() {
   kyma::install_cli
 
@@ -211,6 +215,9 @@ NODE=$(kubectl get nodes | tail -n 1 | cut -d ' ' -f 1)
 log::info "Benchmarks will be executed on node: $NODE. Will make it unschedulable."
 kubectl label node "$NODE" benchmark=true
 kubectl cordon "$NODE"
+
+log::info "Install yq"
+installYQ
 
 log::info "Install Kyma"
 installKyma
