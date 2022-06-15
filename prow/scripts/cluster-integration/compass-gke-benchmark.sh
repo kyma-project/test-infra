@@ -140,7 +140,7 @@ function createCluster() {
 }
 
 function installYQ() {
-  utils:install_yq
+  utils::install_yq
 }
 
 function installKyma() {
