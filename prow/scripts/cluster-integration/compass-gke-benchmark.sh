@@ -149,7 +149,7 @@ function installKyma() {
 
 function installCompassOld() {
   cd "$COMPASS_SOURCES_DIR"
-  readonly LATEST_VERSION=main-$(git rev-parse --short main~1)
+  readonly LATEST_VERSION=$(git rev-parse --short main~1)
   echo "Checkout $LATEST_VERSION"
   git checkout "${LATEST_VERSION}"
 
