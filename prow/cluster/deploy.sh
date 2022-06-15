@@ -74,5 +74,5 @@ ensure-context sap-kyma-prow europe-west3-a prow
 
 echo " Deploying Prow..."
 for c in "${prow_components[@]}"; do
-  kubectl apply -f "$SCRIPT_DIR/components/$c"
+  kubectl apply --server-side=true -f "$SCRIPT_DIR/components/$c"
 done
