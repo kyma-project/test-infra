@@ -837,6 +837,7 @@ function utils::install_yq {
     curl -sSLo yq.tar.gz "https://github.com/mikefarah/yq/releases/download/v4.25.1/yq_linux_amd64.tar.gz"
 
     tar xvzf yq.tar.gz
+    mv ./yq_linux_amd64 yq
 
     chmod +x yq
     yq_version=$(yq --version)
