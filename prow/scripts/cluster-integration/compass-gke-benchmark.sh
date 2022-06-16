@@ -143,6 +143,10 @@ function installYQ() {
   utils::install_yq
 }
 
+function installHelm() {
+  utils::install_helm
+}
+
 function installKyma() {
   kyma::install_cli
 
@@ -218,6 +222,9 @@ kubectl cordon "$NODE"
 
 log::info "Install yq"
 installYQ
+
+log::info "Install helm"
+installHelm
 
 log::info "Install Kyma"
 installKyma
