@@ -846,3 +846,28 @@ function utils::install_yq {
     popd || exit
     eval "${settings}"
 }
+
+# utils::install_helm installs helm CLI
+function utils::install_helm {
+    local settings
+    local helm_version
+    settings="$(set +o); set -$-"
+    mkdir -p "/tmp/bin"
+    export PATH="/tmp/bin:${PATH}"
+
+    pushd "/tmp/bin" || exit
+
+    log::info "--> Install helm CLI locally to /tmp/bin"
+
+    curl -sSLo helm.tar.gz "https://get.helm.sh/helm-v3.8.0-linux-amd64.tar.gz"
+
+    tar xvzf helm.tar.gz
+    mv ./linux-amd64/helm .
+
+    chmod +x helm
+    helm_version=$(helm version)
+    log::info "--> helm CLI version: ${helm_version}"
+    log::info "OK"
+    popd || exit
+    eval "${settings}"
+}
