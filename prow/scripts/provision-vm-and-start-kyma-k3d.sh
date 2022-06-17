@@ -110,7 +110,7 @@ for ZONE in ${EU_ZONES}; do
 done || exit 1
 ENDTIME=$(date +%s)
 echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
-MACHINE_IP=$(gcloud compute instances describe "kyma-integration-test-${RANDOM_ID}" -zone "${ZONE}" --format='get(networkInterfaces[0].accessConfigs[0].natIP)')
+MACHINE_IP=$(gcloud compute instances describe "kyma-integration-test-${RANDOM_ID}" --zone "${ZONE}" --format='get(networkInterfaces[0].accessConfigs[0].natIP)')
 
 trap cleanup exit INT
 
