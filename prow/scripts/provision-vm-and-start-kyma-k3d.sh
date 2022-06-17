@@ -20,6 +20,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/kyma.sh"
+# shellcheck source=prow/scripts/lib/docker.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
   log::info "Execute Job Guard"
@@ -55,6 +57,7 @@ function testCustomImage() {
 
 gcp::authenticate \
   -c "${GOOGLE_APPLICATION_CREDENTIALS}"
+docker::start
 
 RANDOM_ID=$(openssl rand -hex 4)
 
