@@ -50,7 +50,13 @@ function install_cli() {
 
 function provision_cluster() {
     # provision k3d clusters with exposed 80, 443 and 32000-32767
-    sudo kyma provision k3d  --k3d-arg "--api-port=6443" --k3d-arg "--port=32000-32767:32000-32767@loadbalancer" --k3s-arg "--tls-san=$MACHINE_IP@servers:*"
+
+    if [[ -v K8S_VERSION ]]; then
+      echo "Creating k3d with kuberenetes version: ${K8S_VERSION}"
+      sudo kyma provision k3d  --k3d-arg "--api-port=6443" --k3d-arg "--port=32000-32767:32000-32767@loadbalancer" --k3s-arg "--tls-san=$MACHINE_IP@servers:*" --ci -k "${K8S_VERSION}"
+    else
+      sudo kyma provision k3d  --k3d-arg "--api-port=6443" --k3d-arg "--port=32000-32767:32000-32767@loadbalancer" --k3s-arg "--tls-san=$MACHINE_IP@servers:*" --ci
+    fi
 }
 
 function get_kubeconfig() {

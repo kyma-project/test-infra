@@ -171,24 +171,14 @@ export KUBECONFIG="$HOME/.kube/config"
 
 
 function deploy_kyma() {
-  k3d version
-
-  if [[ -v K8S_VERSION ]]; then
-    echo "Creating k3d with kuberenetes version: ${K8S_VERSION}"
-    kyma provision k3d --ci -k "${K8S_VERSION}"
-  else
-    kyma provision k3d --ci
-  fi
-  
-  echo "Printing client and server version info"
-
+  log::info "Printing client and server version info"
   kubectl version
 
   local kyma_deploy_cmd
   kyma_deploy_cmd="kyma deploy -p evaluation --ci --source=local --workspace ${KYMA_SOURCES_DIR}"
 
   if [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
-    echo "Installing Kyma with ${KYMA_PROFILE} profile"
+    log::info "Installing Kyma with ${KYMA_PROFILE} profile"
     kyma_deploy_cmd="kyma deploy -p ${KYMA_PROFILE} --ci --source=local --workspace ${KYMA_SOURCES_DIR} --components-file ${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-istio-components.yaml"
   fi
 
