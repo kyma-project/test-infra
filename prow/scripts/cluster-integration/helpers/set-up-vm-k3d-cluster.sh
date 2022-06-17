@@ -50,7 +50,7 @@ function install_cli() {
 
 function provision_cluster() {
     # provision k3d clusters with exposed 80, 443 and 32000-32767
-    sudo kyma provision k3d  --k3d-arg "--api-port=6443" --k3d-arg "--port=32000-32767:32000-32767@loadbalancer" --k3s-arg "--tls-san=$MACHINE_IP@servers:*" > &2
+    sudo kyma provision k3d  --k3d-arg "--api-port=6443" --k3d-arg "--port=32000-32767:32000-32767@loadbalancer" --k3s-arg "--tls-san=$MACHINE_IP@servers:*" >&2
 }
 
 function get_kubeconfig() {
