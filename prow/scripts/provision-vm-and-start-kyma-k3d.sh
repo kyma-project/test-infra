@@ -7,6 +7,7 @@ set -o errexit
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
+export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
@@ -161,9 +162,74 @@ utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" ".env" "~/.env"
 
 log::info "Provision cluster"
 utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/helpers/set-up-vm-k3d-cluster.sh"
-utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kubeconfig.yaml" "kubeconfig.yaml"
-export KUBECONFIG="$(pwd)/kubeconfig.yaml"
+utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kubeconfig.yaml" "/$HOME/.kube/config"
+export KUBECONFIG="/$HOME/.kube/config"
 
-kubectl get pods -A
+
+function deploy_kyma() {
+  k3d version
+
+  if [[ -v K8S_VERSION ]]; then
+    echo "Creating k3d with kuberenetes version: ${K8S_VERSION}"
+    kyma provision k3d --ci -k "${K8S_VERSION}"
+  else
+    kyma provision k3d --ci
+  fi
+  
+  echo "Printing client and server version info"
+
+  kubectl version
+
+  local kyma_deploy_cmd
+  kyma_deploy_cmd="kyma deploy -p evaluation --ci --source=local --workspace ${KYMA_SOURCES_DIR}"
+
+  if [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
+    echo "Installing Kyma with ${KYMA_PROFILE} profile"
+    kyma_deploy_cmd="kyma deploy -p ${KYMA_PROFILE} --ci --source=local --workspace ${KYMA_SOURCES_DIR} --components-file ${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-istio-components.yaml"
+  fi
+
+  if [[ -v CENTRAL_APPLICATION_CONNECTIVITY_ENABLED ]]; then
+    kyma_deploy_cmd+=" --value application-connector.central_application_gateway.enabled=true"
+  fi
+
+  if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
+    kyma_deploy_cmd+=" --value global.disableLegacyConnectivity=true"
+    kyma_deploy_cmd+=" --value compass-runtime-agent.compassRuntimeAgent.config.skipAppsTLSVerification=true"
+    kyma_deploy_cmd+=" --components-file ${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-compass-components.yaml"
+  fi
+
+  if [[ -v TELEMETRY_ENABLED ]]; then
+    kyma_deploy_cmd+=" --value=global.telemetry.enabled=true"
+    kyma_deploy_cmd+=" --components-file ${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-telemetry-components.yaml"
+  fi
+
+  $kyma_deploy_cmd
+
+  kubectl get pods -A
+}
+
+
+function run_tests() {
+  pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
+  if [[ -v COMPASS_INTEGRATION_ENABLED && -v CENTRAL_APPLICATION_CONNECTIVITY_ENABLED ]]; then
+    make ci-application-connectivity-2-compass
+  elif [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
+    make ci-compass
+  elif [[ -v TELEMETRY_ENABLED ]]; then
+    npm install
+    npm run test-telemetry
+  elif [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
+    pushd "../components/istio"
+    go install github.com/cucumber/godog/cmd/godog@latest
+    make test
+    popd
+  else
+    make ci
+  fi
+  popd
+}
+
+deploy_kyma
+run_tests
 
 log::success "all done"
