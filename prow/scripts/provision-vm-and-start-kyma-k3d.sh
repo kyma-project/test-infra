@@ -110,10 +110,12 @@ for ZONE in ${EU_ZONES}; do
 done || exit 1
 ENDTIME=$(date +%s)
 echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
+MACHINE_IP=$(gcloud compute instances describe "kyma-integration-test-${RANDOM_ID}" -zone "${ZONE}" --format='get(networkInterfaces[0].accessConfigs[0].natIP)')
 
 trap cleanup exit INT
 
 log::info "Preparing environment variables for the instance"
+
 envVars=(
   COMPASS_TENANT
   COMPASS_HOST
@@ -126,34 +128,41 @@ envVars=(
   KYMA_MAJOR_VERSION
   KYMA_PROFILE
   K8S_VERSION
+  MACHINE_IP
 )
 utils::save_env_file "${envVars[@]}"
 #shellcheck disable=SC2088
 utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" ".env" "~/.env"
 
-log::info "Copying Kyma to the instance"
-#shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
+# log::info "Copying Kyma to the instance"
+# #shellcheck disable=SC2088
+# utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
 
-if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
-  log::info "Copying components file for compass tests"
-  #shellcheck disable=SC2088
-  utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-compass-components.yaml" "~/kyma-integration-k3d-compass-components.yaml"
-fi
+# if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
+#   log::info "Copying components file for compass tests"
+#   #shellcheck disable=SC2088
+#   utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-compass-components.yaml" "~/kyma-integration-k3d-compass-components.yaml"
+# fi
 
-if [[ -v TELEMETRY_ENABLED ]]; then
-  log::info "Copying components file for telemetry tests"
-  #shellcheck disable=SC2088
-  utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-telemetry-components.yaml" "~/kyma-integration-k3d-telemetry-components.yaml"
-fi
+# if [[ -v TELEMETRY_ENABLED ]]; then
+#   log::info "Copying components file for telemetry tests"
+#   #shellcheck disable=SC2088
+#   utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-telemetry-components.yaml" "~/kyma-integration-k3d-telemetry-components.yaml"
+# fi
 
-if [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
-  log::info "Copying components file for telemetry tests"
-  #shellcheck disable=SC2088
-  utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-istio-components.yaml" "~/kyma-integration-k3d-istio-components.yaml"
-fi
+# if [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
+#   log::info "Copying components file for telemetry tests"
+#   #shellcheck disable=SC2088
+#   utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-istio-components.yaml" "~/kyma-integration-k3d-istio-components.yaml"
+# fi
 
-log::info "Triggering the installation"
-utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d.sh"
+# log::info "Triggering the installation"
+# utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d.sh"
+
+log::info "Provision cluster"
+config=$(utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/helpers/set-up-vm-k3d-cluster.sh")
+
+log::info "Config:"
+echo "$config"
 
 log::success "all done"
