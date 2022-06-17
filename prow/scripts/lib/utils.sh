@@ -821,3 +821,53 @@ function utils::unmask_debug_output {
         set -x
     fi
 }
+
+# utils::install_yq installs yq CLI
+function utils::install_yq {
+    local settings
+    local yq_version
+    settings="$(set +o); set -$-"
+    mkdir -p "/tmp/bin"
+    export PATH="/tmp/bin:${PATH}"
+
+    pushd "/tmp/bin" || exit
+
+    log::info "--> Install yq CLI locally to /tmp/bin"
+
+    curl -sSLo yq.tar.gz "https://github.com/mikefarah/yq/releases/download/v4.25.1/yq_linux_amd64.tar.gz"
+
+    tar xvzf yq.tar.gz
+    mv ./yq_linux_amd64 yq
+
+    chmod +x yq
+    yq_version=$(yq --version)
+    log::info "--> yq CLI version: ${yq_version}"
+    log::info "OK"
+    popd || exit
+    eval "${settings}"
+}
+
+# utils::install_helm installs helm CLI
+function utils::install_helm {
+    local settings
+    local helm_version
+    settings="$(set +o); set -$-"
+    mkdir -p "/tmp/bin"
+    export PATH="/tmp/bin:${PATH}"
+
+    pushd "/tmp/bin" || exit
+
+    log::info "--> Install helm CLI locally to /tmp/bin"
+
+    curl -sSLo helm.tar.gz "https://get.helm.sh/helm-v3.8.0-linux-amd64.tar.gz"
+
+    tar xvzf helm.tar.gz
+    mv ./linux-amd64/helm .
+
+    chmod +x helm
+    helm_version=$(helm version)
+    log::info "--> helm CLI version: ${helm_version}"
+    log::info "OK"
+    popd || exit
+    eval "${settings}"
+}
