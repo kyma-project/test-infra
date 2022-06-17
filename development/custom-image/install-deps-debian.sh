@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###
-# Following script installs necessary tooling for Debian to deploy Kyma on Minikube.
+# Following script installs necessary tooling for Debian to deploy Kyma on k3d.
 #
 # REQUIREMENTS:
 # 64-bit version of one of these Debian versions:
@@ -14,7 +14,6 @@
 set -o errexit
 set -o pipefail
 
-MINIKUBE_VERSION=v1.14.2
 KUBECTL_CLI_VERSION=v1.21.9
 CRICTL_VERSION=v1.12.0
 HELM_VERSION="v3.7.1"
@@ -60,11 +59,6 @@ wget https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO
 	chmod +x /tmp/helm && \
 	sudo mv /tmp/helm /usr/local/bin/helm && \
    rm -rf helm-${HELM_VERSION}-linux-amd64.tar.gz linux-amd64
-
-# install minikube
-curl -Lo /tmp/minikube https://storage.googleapis.com/minikube/releases/${MINIKUBE_VERSION}/minikube-linux-amd64 && \
- chmod +x /tmp/minikube && \
- sudo mv /tmp/minikube /usr/local/bin/minikube
 
 # install postgres and migrate tool
 wget https://github.com/golang-migrate/migrate/releases/download/${PG_MIGRATE_VERSION}/migrate.linux-amd64.tar.gz -O - | tar -zxO migrate > /tmp/migrate && \
