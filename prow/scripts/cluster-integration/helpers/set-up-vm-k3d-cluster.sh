@@ -55,7 +55,7 @@ function provision_cluster() {
 
 function get_kubeconfig() {
     sudo k3d kubeconfig get kyma > kubeconfig.yaml
-    sed -e "s/0.0.0.0/$MACHINE_IP" kubeconfig.yaml
+    sed -e "s/0.0.0.0/$MACHINE_IP/g" kubeconfig.yaml
 }
 
 load_env
