@@ -223,6 +223,7 @@ function run_tests() {
   popd
 }
 
+kyma::install_cli
 deploy_kyma
 run_tests
 
