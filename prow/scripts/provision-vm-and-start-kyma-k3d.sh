@@ -9,6 +9,9 @@ readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 
+# TODO: move this to job definition? Less logs from gcloud itself
+export GCLOUD_SSH_LOG_LEVEL="error"
+
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
@@ -162,8 +165,8 @@ utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" ".env" "~/.env"
 
 log::info "Provision cluster"
 utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/helpers/set-up-vm-k3d-cluster.sh"
-utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kubeconfig.yaml" "/$HOME/.kube/config"
-export KUBECONFIG="/$HOME/.kube/config"
+utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kubeconfig.yaml" "$HOME/.kube/config"
+export KUBECONFIG="$HOME/.kube/config"
 
 
 function deploy_kyma() {
