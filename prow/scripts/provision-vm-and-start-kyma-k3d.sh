@@ -7,7 +7,7 @@ set -o errexit
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
-export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
+export KYMA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/kyma"
 
 # TODO: move this to job definition? Less logs from gcloud itself
 export GCLOUD_SSH_LOG_LEVEL="error"
