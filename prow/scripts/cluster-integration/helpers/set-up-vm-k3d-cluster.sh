@@ -42,7 +42,7 @@ function install_cli() {
   fi
 
   pushd "$install_dir" || exit
-  curl -Lo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}" >&2
+  curl -Lo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}"
   chmod +x kyma
   popd
 
@@ -50,11 +50,11 @@ function install_cli() {
 
 function provision_cluster() {
     # provision k3d clusters with exposed 80, 443 and 32000-32767
-    sudo kyma provision k3d  --k3d-arg "--api-port=6443" --k3d-arg "--port=32000-32767:32000-32767@loadbalancer" --k3s-arg "--tls-san=$MACHINE_IP@servers:*" >&2
+    sudo kyma provision k3d  --k3d-arg "--api-port=6443" --k3d-arg "--port=32000-32767:32000-32767@loadbalancer" --k3s-arg "--tls-san=$MACHINE_IP@servers:*"
 }
 
 function get_kubeconfig() {
-    sudo k3d kubeconfig get kyma > kubeconfig.yaml
+    sudo k3d kubeconfig get kyma |sudo tee kubeconfig.yaml > /dev/null
     sed -e "s/0.0.0.0/$MACHINE_IP/g" kubeconfig.yaml
 }
 

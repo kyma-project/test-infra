@@ -110,7 +110,7 @@ for ZONE in ${EU_ZONES}; do
 done || exit 1
 ENDTIME=$(date +%s)
 echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
-MACHINE_IP=$(gcloud compute instances describe "kyma-integration-test-${RANDOM_ID}" --zone "${ZONE}" --format='get(networkInterfaces[0].accessConfigs[0].natIP)')
+export MACHINE_IP=$(gcloud compute instances describe "kyma-integration-test-${RANDOM_ID}" --zone "${ZONE}" --format='get(networkInterfaces[0].accessConfigs[0].natIP)')
 
 trap cleanup exit INT
 
@@ -160,9 +160,10 @@ utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" ".env" "~/.env"
 # utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d.sh"
 
 log::info "Provision cluster"
-config=$(utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/helpers/set-up-vm-k3d-cluster.sh")
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/helpers/set-up-vm-k3d-cluster.sh"
+utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kubeconfig.yaml" "kubeconfig.yaml"
+export KUBECONFIG="$(pwd)/kubeconfig.yaml"
 
-log::info "Config:"
-echo "$config"
+kubectl get pods -A
 
 log::success "all done"
