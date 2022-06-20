@@ -175,12 +175,10 @@ utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-integration-test-${RANDOM_ID}
 mkdir -p "$HOME/.kube"
 utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kubeconfig.yaml" "$HOME/.kube/config"
 export KUBECONFIG="$HOME/.kube/config"
-
+log::info "Printing client and server version info"
+kubectl version
 
 function deploy_kyma() {
-  log::info "Printing client and server version info"
-  kubectl version
-
   local kyma_deploy_cmd
   kyma_deploy_cmd="kyma deploy -p evaluation --ci --source=local --workspace ${KYMA_SOURCES_DIR}"
 
@@ -204,6 +202,7 @@ function deploy_kyma() {
     kyma_deploy_cmd+=" --components-file ${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-telemetry-components.yaml"
   fi
 
+  kyma_deploy_cmd+=" --value=istio.components.ingressGateways.config.service.loadBalancerIP=${MACHINE_IP}"
   kyma_deploy_cmd+=" --verbose"
 
   $kyma_deploy_cmd
