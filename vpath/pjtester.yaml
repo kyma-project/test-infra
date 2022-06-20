@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "pre-kyma-tests-function-controller"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 14618
+
