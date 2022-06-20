@@ -22,7 +22,6 @@ global:
         - name: "helm-broker"
         - name: "istio-operator"
         - name: "addons"
-        - name: "rafter"
         - name: "private-fn-for-e2e-serverless-tests"
         - name: "charts"
         - name: "busola-migrator"

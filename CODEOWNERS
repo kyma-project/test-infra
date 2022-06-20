@@ -52,10 +52,8 @@
 /prow/jobs/kyma/tests/end-to-end @wozniakjan @pbochynski @piotrmiskiewicz @pk85 @ralikio @szwedm @tillknuesting @a-thaler @hanngos @k15r @kyma-project/prow
 /prow/jobs/kyma/tests/function-controller @a-thaler @pbochynski @pk85 @dbadura @kwiatekus @m00g3n @pprecel @kyma-project/prow
 /prow/jobs/kyma/tests/integration @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj @mjakobczyk @kyma-project/prow
-/prow/jobs/kyma/tests/rafter @dbadura @m00g3n @pprecel @kyma-project/prow
 /prow/jobs/kyma/tests/serverless-bench @pbochynski @pk85 @dbadura @kwiatekus @m00g3n @pprecel @a-thaler @kyma-project/prow
 /prow/jobs/kyma/tools/event-subscriber @a-thaler @friedrichwilken @k15r @mfaizanse @nachtmaar @pxsalehi @vladislavpaskar @pk85 @lilitgh @marcobebway @pbochynski @kyma-project/prow
-/prow/jobs/rafter @dbadura @m00g3n @pprecel @kyma-project/prow
 
 /prow/scripts @kyma-project/prow @kyma-project/developers
 

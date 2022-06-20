@@ -3,18 +3,19 @@
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-kyma-tests-rafter
+    - name: pre-kyma-components-busola-migrator
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-kyma-tests-rafter"
+        prow.k8s.io/pubsub.runID: "pre-kyma-components-busola-migrator"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^tests/rafter/|^common/makefiles/'
+      run_if_changed: '^components/busola-migrator/|^common/makefiles/'
+      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -36,7 +37,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/rafter"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
             resources:
               requests:
                 memory: 3Gi
@@ -48,18 +49,19 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-rel23-kyma-tests-rafter
+    - name: pre-rel23-kyma-components-busola-migrator
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel23-kyma-tests-rafter"
+        prow.k8s.io/pubsub.runID: "pre-rel23-kyma-components-busola-migrator"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^tests/rafter/|^common/makefiles/'
+      run_if_changed: '^components/busola-migrator/|^common/makefiles/'
+      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -80,7 +82,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/rafter"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
             resources:
               requests:
                 memory: 3Gi
@@ -92,18 +94,19 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-rel22-kyma-tests-rafter
+    - name: pre-rel22-kyma-components-busola-migrator
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel22-kyma-tests-rafter"
+        prow.k8s.io/pubsub.runID: "pre-rel22-kyma-components-busola-migrator"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^tests/rafter/|^common/makefiles/'
+      run_if_changed: '^components/busola-migrator/|^common/makefiles/'
+      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -124,7 +127,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/rafter"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
             resources:
               requests:
                 memory: 3Gi
@@ -136,18 +139,19 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-rel21-kyma-tests-rafter
+    - name: pre-rel21-kyma-components-busola-migrator
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel21-kyma-tests-rafter"
+        prow.k8s.io/pubsub.runID: "pre-rel21-kyma-components-busola-migrator"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^tests/rafter/|^common/makefiles/'
+      run_if_changed: '^components/busola-migrator/|^common/makefiles/'
+      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -168,7 +172,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/rafter"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
             resources:
               requests:
                 memory: 3Gi
@@ -183,19 +187,20 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/kyma:
-    - name: post-kyma-tests-rafter
+    - name: post-kyma-components-busola-migrator
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-kyma-tests-rafter"
+        prow.k8s.io/pubsub.runID: "post-kyma-components-busola-migrator"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^tests/rafter/|^common/makefiles/'
+      run_if_changed: '^components/busola-migrator/|^common/makefiles/'
+      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -209,6 +214,9 @@ postsubmits: # runs on main
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-prow-dev-null
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
@@ -217,7 +225,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/rafter"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
             resources:
               requests:
                 memory: 3Gi
@@ -229,19 +237,20 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-rel23-kyma-tests-rafter
+    - name: post-rel23-kyma-components-busola-migrator
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel23-kyma-tests-rafter"
+        prow.k8s.io/pubsub.runID: "post-rel23-kyma-components-busola-migrator"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^tests/rafter/|^common/makefiles/'
+      run_if_changed: '^components/busola-migrator/|^common/makefiles/'
+      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -254,6 +263,9 @@ postsubmits: # runs on main
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-2.3
+      reporter_config:
+        slack:
+          channel: kyma-prow-dev-null
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
@@ -262,7 +274,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/rafter"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
             resources:
               requests:
                 memory: 3Gi
@@ -274,19 +286,20 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-rel22-kyma-tests-rafter
+    - name: post-rel22-kyma-components-busola-migrator
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel22-kyma-tests-rafter"
+        prow.k8s.io/pubsub.runID: "post-rel22-kyma-components-busola-migrator"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^tests/rafter/|^common/makefiles/'
+      run_if_changed: '^components/busola-migrator/|^common/makefiles/'
+      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -299,6 +312,9 @@ postsubmits: # runs on main
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-2.2
+      reporter_config:
+        slack:
+          channel: kyma-prow-dev-null
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
@@ -307,7 +323,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/rafter"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
             resources:
               requests:
                 memory: 3Gi
@@ -319,19 +335,20 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-rel21-kyma-tests-rafter
+    - name: post-rel21-kyma-components-busola-migrator
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel21-kyma-tests-rafter"
+        prow.k8s.io/pubsub.runID: "post-rel21-kyma-components-busola-migrator"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^tests/rafter/|^common/makefiles/'
+      run_if_changed: '^components/busola-migrator/|^common/makefiles/'
+      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -344,6 +361,9 @@ postsubmits: # runs on main
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-2.1
+      reporter_config:
+        slack:
+          channel: kyma-prow-dev-null
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
@@ -352,7 +372,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/rafter"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
             resources:
               requests:
                 memory: 3Gi
