@@ -58,7 +58,6 @@ function testCustomImage() {
 gcp::authenticate \
   -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
-export DOCKER_SKIP_GCR_AUTHENTICATION="true"
 docker::start
 
 RANDOM_ID=$(openssl rand -hex 4)

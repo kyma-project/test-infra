@@ -708,6 +708,7 @@ templates:
                     - "jobConfig_periodic"
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
+                    - "gke_job_labels_template"
               - jobConfig:
                   name: "kyma-gke-nightly"
                   cron: "0 2 * * 1-5" # "At 02:00 UTC on every weekday Monday through Friday"
