@@ -1,6 +1,6 @@
 pjNames:
-  - pjName: "pre-main-kyma-integration-k3d"
+  - pjName: "pre-kyma-tests-function-controller"
 prConfigs:
   kyma-project:
     kyma:
-      prNumber: 14614
+      prNumber: 14618
