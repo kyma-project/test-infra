@@ -42,7 +42,7 @@ cleanup() {
     utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/fast-integration/junit_kyma-fast-integration.xml" "${ARTIFACTS}"
   fi
   
-  # gcloud compute instances stop --async --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}"
+  gcloud compute instances stop --async --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}"
 
   log::info "End of cleanup"
 }
@@ -203,6 +203,8 @@ function deploy_kyma() {
     kyma_deploy_cmd+=" --value=global.telemetry.enabled=true"
     kyma_deploy_cmd+=" --components-file ${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-telemetry-components.yaml"
   fi
+
+  kyma_deploy_cmd+=" --verbose"
 
   $kyma_deploy_cmd
 
