@@ -33,7 +33,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: crier
-        image: gcr.io/k8s-prow/crier:v20220617-15befaa8ca
+        image: gcr.io/k8s-prow/crier:v20220618-82a6661467
         env:
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: "/etc/credentials/service-account.json"
