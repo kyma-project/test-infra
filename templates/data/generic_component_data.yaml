@@ -221,7 +221,7 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../prow/jobs/kyma/components/busola-migrator/busola-migrator-generic.yaml
+      - to: ../../prow/jobs/kyma/components/busola-migrator/busola-migrator-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
