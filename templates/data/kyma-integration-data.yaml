@@ -327,6 +327,8 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-sa-vm-kyma-integration: "true"
               preset-gc-project-env: "true"
+              preset-docker-push-repository-gke-integration: "true"
+              preset-dind-enabled: "true"
           gke_job_template:
             annotations:
               pipeline.platform: gke
@@ -708,7 +710,6 @@ templates:
                     - "jobConfig_periodic"
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
-                    - "gke_job_labels_template"
               - jobConfig:
                   name: "kyma-gke-nightly"
                   cron: "0 2 * * 1-5" # "At 02:00 UTC on every weekday Monday through Friday"
