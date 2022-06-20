@@ -39,12 +39,16 @@ EOF
     done
     printf '=%.0s' {1..80}; echo
 
-    if [[ -n "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
-      docker::authenticate "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
-    elif [[ -n "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
-      docker::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+    if [[ -z "${DOCKER_SKIP_GCR_AUTHENTICATION}" ]]; then
+      if [[ -n "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
+        docker::authenticate "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
+      elif [[ -n "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
+        docker::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+      else
+        log::info "Skipping docker authentication in GCR. No credentials provided."
+      fi
     else
-      log::info "Skipping docker authentication in GCR. No credentials provided."
+       log::info "Skipping docker authentication in GCR."
     fi
 
     if [[ -n "${DOCKER_HUB_USER}" ]]; then
