@@ -21,6 +21,7 @@ plugins:
       - cat
       - shrug
       - pony
+      - skip
   kyma-project/test-infra:
     plugins:
       - config-updater
@@ -50,6 +51,7 @@ plugins:
       - cat
       - shrug
       - pony
+      - skip
 
 external_plugins:
   kyma-project:
