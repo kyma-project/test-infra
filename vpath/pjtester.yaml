@@ -1,6 +1,0 @@
-pjNames:
-  - pjName: "pre-kyma-tests-rafter"
-prConfigs:
-  kyma-project:
-    kyma:
-      prNumber: 14628
