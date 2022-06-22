@@ -718,6 +718,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-kyma-guard-bot-github-token: "true"
       run_if_changed: '^go\.mod$'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -737,9 +738,8 @@ presubmits: # runs on PRs
             command:
               - "/bin/bash"
             args:
-              - "python2 -m ensurepip --upgrade;"
-              - "pip install semver==2.10;"
-              - "make validate-go-mod"
+              - "-c"
+              - "python2 -m ensurepip --upgrade && pip install semver==2.10 && make validate-go-mod"
             env:
               - name: GO11MODULE
                 value: "on"

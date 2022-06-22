@@ -792,11 +792,11 @@ templates:
                   name: "pre-main-reconciler-validate-go-mod"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: '^go\.mod$'
+                  optional: true
                   command: "/bin/bash"
                   args:
-                    - "python2 -m ensurepip --upgrade;"
-                    - "pip install semver==2.10;"
-                    - "make validate-go-mod"
+                    - "-c"
+                    - "python2 -m ensurepip --upgrade && pip install semver==2.10 && make validate-go-mod"
                   labels:
                     preset-kyma-guard-bot-github-token: "true"
                 inheritedConfigs:
