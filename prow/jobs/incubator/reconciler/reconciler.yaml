@@ -739,7 +739,7 @@ presubmits: # runs on PRs
               - "/bin/bash"
             args:
               - "-c"
-              - "python2 -m ensurepip --upgrade && pip install semver==2.10 && make validate-go-mod"
+              - "apt-get install python-pip && pip install semver==2.10 && make validate-go-mod"
             env:
               - name: GO11MODULE
                 value: "on"
