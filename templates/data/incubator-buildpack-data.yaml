@@ -796,7 +796,7 @@ templates:
                   command: "/bin/bash"
                   args:
                     - "-c"
-                    - "apt-get install python-pip && pip install semver==2.10 && make validate-go-mod"
+                    - "curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py && python2 get-pip.py && pip install semver==2.10 && make validate-go-mod"
                   labels:
                     preset-kyma-guard-bot-github-token: "true"
                 inheritedConfigs:
