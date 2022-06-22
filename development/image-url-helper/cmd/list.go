@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/jamiealquiza/envy"
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/common"
@@ -46,23 +45,9 @@ func ListCmd() *cobra.Command {
 				common.MergeImageMap(allImages, testImages)
 			}
 
-			if options.outputFormat == "" {
-				common.PrintImages(allImages)
-			} else if strings.ToLower(options.outputFormat) == "json" {
-				err = list.PrintImagesJSON(allImages)
-				if err != nil {
-					fmt.Printf("Cannot save JSON: %s\n", err)
-					os.Exit(2)
-				}
-			} else if strings.ToLower(options.outputFormat) == "yaml" {
-				err = list.PrintImagesYAML(allImages)
-				if err != nil {
-					fmt.Printf("Cannot save JSON: %s\n", err)
-					os.Exit(2)
-				}
-			} else {
-				fmt.Printf("Unknown output format: %s\n", options.outputFormat)
-				os.Exit(2)
+			err = common.PrintComponentImageMap(allImages, options.outputFormat)
+			if err != nil {
+				common.PrintAndFail(3, "Cannot print image list: %s\n", err)
 			}
 		},
 	}

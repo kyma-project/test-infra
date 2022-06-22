@@ -10,7 +10,7 @@ templates:
             request_cpu: 50m
             env:
               GO111MODULE: "on"
-              KYMA_MAJOR_VERSION: "1"
+              KYMA_MAJOR_VERSION: "2"
             labels:
               preset-kyma-guard-bot-github-token: "true"
               preset-sa-vm-kyma-integration: "true"
@@ -32,22 +32,6 @@ templates:
                     - "image_buildpack-golang-kubebuilder2"
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-              - jobConfig:
-                  name: "post-main-compass-integration-no-dump"
-                  labels:
-                    preset-build-main: "true"
-                  annotations:
-                    testgrid-dashboards: kyma-incubator_compass
-                    description: Compass integration job without db dump.
-                    testgrid-days-of-results: "60"
-                inheritedConfigs:
-                  global:
-                    - "image_buildpack-golang-kubebuilder2"
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
