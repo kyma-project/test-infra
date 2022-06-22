@@ -736,10 +736,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
             command:
-              - "/bin/bash"
-            args:
-              - "-c"
-              - "curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py && python2 get-pip.py && pip install semver==2.10 && make validate-go-mod"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-validate-go-mod.sh"
             env:
               - name: GO11MODULE
                 value: "on"
