@@ -46,8 +46,6 @@ function provision_cluster() {
     else
         sudo kyma provision k3d  --k3d-arg "--api-port=6443" --k3d-arg "--port=32000-32767:32000-32767@loadbalancer" --k3s-arg "--tls-san=$MACHINE_IP@servers:*" --ci
     fi
-
-    $cluster_provision_cmd
 }
 
 # save kubeconfig to a file and adjust server IP

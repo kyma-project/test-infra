@@ -172,6 +172,7 @@ utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" ".env" "~/.env"
 log::info "Provision cluster"
 utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/helpers/set-up-vm-k3d-cluster.sh"
 mkdir -p "$HOME/.kube"
+# shellcheck disable=SC2088
 utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kubeconfig.yaml" "$HOME/.kube/config"
 export KUBECONFIG="$HOME/.kube/config"
 log::info "Printing client and server version info"
