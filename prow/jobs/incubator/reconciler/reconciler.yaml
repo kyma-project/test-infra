@@ -737,7 +737,7 @@ presubmits: # runs on PRs
             command:
               - "/bin/bash"
             args:
-              - "python -m ensurepip --upgrade;"
+              - "python2 -m ensurepip --upgrade;"
               - "pip install semver==2.10;"
               - "make validate-go-mod"
             env:
