@@ -50,7 +50,7 @@ log::banner "Starting Scan"
 
 if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
     # treat every found Go project as a separate  project
-    pushd "${PROJECT_SRC}" # change to passed parameter
+    pushd "${PROJECT_SRC}"  > /dev/null # change to passed parameter
 
     # find all go.mod projects and scan them individually
     found_components=$(find . -name "$COMPONENT_DEFINITION" -not -path "./tests/*" -not -path "./docs/*" )
@@ -72,7 +72,7 @@ if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
             scan_failed=1
         fi
     done <<< "$found_components"
-    popd
+    popd > /dev/null
 else
     # scan PROJECT_SRC directory as a single project
     set +e
