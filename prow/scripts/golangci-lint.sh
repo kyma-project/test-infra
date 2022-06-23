@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 
 set -e
-export TEST_INFRA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/test-infra"
-# shellcheck source=prow/scripts/lib/log.sh
-source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/log.sh"
 
 # shellcheck disable=SC2153
 PROJECT_SRC="${GITHUB_ORG_DIR}/${REPOSITORY}"
@@ -46,7 +43,7 @@ install_linter
 # don't stop scans on first failure, but fail the whole job after all scans have finished
 export scan_failed
 
-log::banner "Starting Scan"
+echo "Starting Scan"
 
 if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
     # treat every found Go project as a separate  project
@@ -61,14 +58,14 @@ if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
         component_path="${component_definition_path%/*}"
         # keep only the last directory in the tree as a name
 
-        log::info "Linting $component_path"
+        echo "- Linting $component_path"
         set +e
         scanFolder "${component_path}"
         scan_result="$?"
         set -e
 
         if [[ "$scan_result" -ne 0 ]]; then
-            log::error "Scan for ${FOLDER} has failed"
+            echo "Scan for ${FOLDER} has failed"
             scan_failed=1
         fi
     done <<< "$found_components"
@@ -81,14 +78,14 @@ else
     set -e
 
     if [[ "$scan_result" -ne 0 ]]; then
-        log::error "Scan for ${PROJECT_SRC} has failed"
+        echo "Scan for ${PROJECT_SRC} has failed"
         scan_failed=1
     fi
 fi
 
 if [[ "$scan_failed" -eq 1 ]]; then
-    log::error "One or more of the scans have failed"
+    echo "One or more of the scans have failed"
     exit 1
 else
-    log::banner "Scanning Finished"
+    echo "Scanning Finished"
 fi
