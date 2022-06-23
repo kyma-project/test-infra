@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+
+set -e
+export TEST_INFRA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/test-infra"
+# shellcheck source=prow/scripts/lib/log.sh
+source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/log.sh"
+
+# shellcheck disable=SC2153
+PROJECT_SRC="${GITHUB_ORG_DIR}/${REPOSITORY}"
+
+function install_linter() {
+    sudo curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.46.2
+    golangci-lint --version
+}
+
+# scanFolder runs single folder through golangci-lint
+# parameters:
+# $1 - path to a folder to scan
+# variables:
+# function returns 0 on success or 1 on fail
+function scanFolder() { # expects to get the fqdn of folder passed to scan
+    if [[ $1 == "" ]]; then
+        echo "path cannot be empty"
+        exit 1
+    fi
+    FOLDER=$1
+    pushd "${FOLDER}" # change to passed parameter
+
+    golangci-lint  run ./...
+    scan_result="$?"
+
+    popd
+    if [[ "$scan_result" != 0 ]]; then
+        return 1
+    else
+        return 0
+    fi
+}
+
+# TODO include that in base image in the first place
+install_linter
+
+# don't stop scans on first failure, but fail the whole job after all scans have finished
+export scan_failed
+
+log::banner "Starting Scan"
+
+if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
+    # treat every found Go project as a separate  project
+    pushd "${PROJECT_SRC}" # change to passed parameter
+
+    # find all go.mod projects and scan them individually
+    found_components=$(find . -name "$COMPONENT_DEFINITION" -not -path "./tests/*" -not -path "./docs/*" )
+
+
+    while read -r component_definition_path; do
+        # remove go.mod part
+        component_path="${component_definition_path%/*}"
+        # keep only the last directory in the tree as a name
+
+        log::info "Linting $component_path"
+        set +e
+        scanFolder "${component_path}" "${PROJECTNAME}-${component}"
+        scan_result="$?"
+        set -e
+
+        if [[ "$scan_result" -ne 0 ]]; then
+            log::error "Scan for ${FOLDER} has failed"
+            scan_failed=1
+        fi
+    done <<< "$found_components"
+    popd
+else
+    # scan PROJECT_SRC directory as a single project
+    set +e
+    scanFolder "${PROJECT_SRC}"
+    scan_result="$?"
+    set -e
+
+    if [[ "$scan_result" -ne 0 ]]; then
+        log::error "Scan for ${PROJECT_SRC} has failed"
+        scan_failed=1
+    fi
+fi
+
+if [[ "$scan_failed" -eq 1 ]]; then
+    log::error "One or more of the scans have failed"
+    exit 1
+else
+    log::banner "Scanning Finished"
+fi
