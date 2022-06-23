@@ -60,7 +60,7 @@ if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
 
         log::info "Linting $component_path"
         set +e
-        scanFolder "${component_path}" "${PROJECTNAME}-${component}"
+        scanFolder "${component_path}"
         scan_result="$?"
         set -e
 
