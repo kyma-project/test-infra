@@ -1,3 +1,7 @@
 pjNames:
   - pjName: "pre-main-reconciler-validate-go-mod"
     report: true
+  prConfigs:
+    kyma-incubator:
+      reconciler:
+        prNumber: 1101
