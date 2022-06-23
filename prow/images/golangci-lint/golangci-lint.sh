@@ -4,13 +4,6 @@ set -e
 
 COMPONENT_DEFINITION="go.mod"
 
-function install_linter() {
-    mkdir -p "/tmp/bin"
-    export PATH="/tmp/bin:${PATH}"
-    curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b /tmp/bin v1.46.2
-    golangci-lint --version
-}
-
 # scanFolder runs single folder through golangci-lint
 # parameters:
 # $1 - path to a folder to scan
@@ -34,9 +27,6 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
         return 0
     fi
 }
-
-# TODO include that in base image in the first place
-install_linter
 
 # don't stop scans on first failure, but fail the whole job after all scans have finished
 export scan_failed
