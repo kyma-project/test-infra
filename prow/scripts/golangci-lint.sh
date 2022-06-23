@@ -2,8 +2,6 @@
 
 set -e
 
-# shellcheck disable=SC2153
-# PROJECT_SRC="${REPO_OWNER}/${REPO_NAME}"
 COMPONENT_DEFINITION="go.mod"
 
 function install_linter() {
@@ -24,12 +22,12 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
         exit 1
     fi
     FOLDER=$1
-    pushd "${FOLDER}" # change to passed parameter
+    pushd "${FOLDER}" > /dev/null # change to passed parameter
 
     golangci-lint  run ./...
     scan_result="$?"
 
-    popd
+    popd > /dev/null
     if [[ "$scan_result" != 0 ]]; then
         return 1
     else
@@ -47,7 +45,6 @@ echo "Starting Scan"
 
 if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
     # treat every found Go project as a separate  project
-    #pushd "${PROJECT_SRC}"  > /dev/null # change to passed parameter
     pwd
 
     # find all go.mod projects and scan them individually
@@ -70,11 +67,10 @@ if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
             scan_failed=1
         fi
     done <<< "$found_components"
-    #popd > /dev/null
 else
-    # scan PROJECT_SRC directory as a single project
+    # scan directory as a single project
     set +e
-    scanFolder "." #${PROJECT_SRC}"
+    scanFolder "."
     scan_result="$?"
     set -e
 
