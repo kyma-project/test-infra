@@ -7,6 +7,7 @@ source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/log.sh"
 
 # shellcheck disable=SC2153
 PROJECT_SRC="${GITHUB_ORG_DIR}/${REPOSITORY}"
+COMPONENT_DEFINITION="go.mod"
 
 function install_linter() {
     mkdir -p "/tmp/bin"
