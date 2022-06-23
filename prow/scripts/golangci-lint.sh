@@ -3,7 +3,7 @@
 set -e
 
 # shellcheck disable=SC2153
-PROJECT_SRC="${GITHUB_ORG_DIR}/${REPOSITORY}"
+PROJECT_SRC="${REPO_OWNER}/${REPO_NAME}"
 COMPONENT_DEFINITION="go.mod"
 
 function install_linter() {
