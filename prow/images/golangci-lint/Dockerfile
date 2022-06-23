@@ -10,5 +10,5 @@ LABEL io.kyma-project.test-infra.commit=$commit
 ENV LANG C.UTF-8
 
 WORKDIR /workspace
-COPY golangci-lint.sh golangci-lint.sh
-ENTRYPOINT ["./golangci-lint.sh"]
+COPY golangci-lint.sh /golangci-lint.sh
+ENTRYPOINT ["/golangci-lint.sh"]
