@@ -3,7 +3,7 @@
 set -e
 
 # shellcheck disable=SC2153
-PROJECT_SRC="${REPO_OWNER}/${REPO_NAME}"
+# PROJECT_SRC="${REPO_OWNER}/${REPO_NAME}"
 COMPONENT_DEFINITION="go.mod"
 
 function install_linter() {
@@ -47,7 +47,8 @@ echo "Starting Scan"
 
 if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
     # treat every found Go project as a separate  project
-    pushd "${PROJECT_SRC}"  > /dev/null # change to passed parameter
+    #pushd "${PROJECT_SRC}"  > /dev/null # change to passed parameter
+    pwd
 
     # find all go.mod projects and scan them individually
     found_components=$(find . -name "$COMPONENT_DEFINITION" -not -path "./tests/*" -not -path "./docs/*" )
@@ -69,16 +70,16 @@ if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
             scan_failed=1
         fi
     done <<< "$found_components"
-    popd > /dev/null
+    #popd > /dev/null
 else
     # scan PROJECT_SRC directory as a single project
     set +e
-    scanFolder "${PROJECT_SRC}"
+    scanFolder "." #${PROJECT_SRC}"
     scan_result="$?"
     set -e
 
     if [[ "$scan_result" -ne 0 ]]; then
-        echo "Scan for ${PROJECT_SRC} has failed"
+        echo "Scan for $(pwd) has failed"
         scan_failed=1
     fi
 fi
