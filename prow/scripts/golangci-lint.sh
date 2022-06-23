@@ -9,7 +9,9 @@ source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/log.sh"
 PROJECT_SRC="${GITHUB_ORG_DIR}/${REPOSITORY}"
 
 function install_linter() {
-    curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.46.2
+    mkdir -p "/tmp/bin"
+    export PATH="/tmp/bin:${PATH}"
+    curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b /tmp/bin v1.46.2
     golangci-lint --version
 }
 
