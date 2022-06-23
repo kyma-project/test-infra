@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 log::banner "Validate reconciler's go.mod file"
 
 log::info "Preconfigure dependencies"
