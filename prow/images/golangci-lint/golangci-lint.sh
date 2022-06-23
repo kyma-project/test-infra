@@ -2,8 +2,6 @@
 
 set -e
 
-COMPONENT_DEFINITION="go.mod"
-
 # scanFolder runs single folder through golangci-lint
 # parameters:
 # $1 - path to a folder to scan
@@ -29,46 +27,32 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
 }
 
 # don't stop scans on first failure, but fail the whole job after all scans have finished
-export scan_failed
+export scan_failed=false
 
 echo "Starting Scan"
 
-if [[ "$CREATE_SUBPROJECTS" == "true" ]]; then
-    # treat every found Go project as a separate  project
-    pwd
+pwd
 
-    # find all go.mod projects and scan them individually
-    found_components=$(find . -name "$COMPONENT_DEFINITION" -not -path "./tests/*" -not -path "./docs/*" )
+# find all go.mod projects and scan them individually
+found_components=$(find . -name "go.mod" -not -path "./tests/*" -not -path "./docs/*" )
 
 
-    while read -r component_definition_path; do
-        # remove go.mod part
-        component_path="${component_definition_path%/*}"
-        # keep only the last directory in the tree as a name
+while read -r component_definition_path; do
+    # remove go.mod part
+    component_path="${component_definition_path%/*}"
+    # keep only the last directory in the tree as a name
 
-        echo "- Linting $component_path"
-        set +e
-        scanFolder "${component_path}"
-        scan_result="$?"
-        set -e
-
-        if [[ "$scan_result" -ne 0 ]]; then
-            echo "Scan for ${FOLDER} has failed"
-            scan_failed=1
-        fi
-    done <<< "$found_components"
-else
-    # scan directory as a single project
+    echo "- Linting $component_path"
     set +e
-    scanFolder "."
+    scanFolder "${component_path}"
     scan_result="$?"
     set -e
 
     if [[ "$scan_result" -ne 0 ]]; then
-        echo "Scan for $(pwd) has failed"
+        echo "Scan for ${FOLDER} has failed"
         scan_failed=1
     fi
-fi
+done <<< "$found_components"
 
 if [[ "$scan_failed" -eq 1 ]]; then
     echo "One or more of the scans have failed"
