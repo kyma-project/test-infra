@@ -137,6 +137,7 @@ function createCluster() {
 
   export DNS_DOMAIN_TRAILING=${DNS_DOMAIN%.}
   envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/compass-gke-kyma-overrides.tpl.yaml" > "$PWD/kyma_overrides.yaml"
+  envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/compass-gke-overrides.tpl.yaml" > "$PWD/compass_common_overrides.yaml"
 }
 
 function installYQ() {
@@ -162,7 +163,8 @@ function installCompassOld() {
   git checkout "${LATEST_VERSION}"
 
   COMPASS_OVERRIDES="${COMPASS_SOURCES_DIR}/installation/resources/compass-overrides-gke-benchmark.yaml"
-  bash "${COMPASS_SCRIPTS_DIR}"/install-compass.sh --overrides-file "${COMPASS_OVERRIDES}" --timeout 30m0s
+  COMPASS_COMMON_OVERRIDES="$PWD/compass_common_overrides.yaml"
+  bash "${COMPASS_SCRIPTS_DIR}"/install-compass.sh --overrides-file "${COMPASS_OVERRIDES}" --overrides-file "${COMPASS_COMMON_OVERRIDES}" --timeout 30m0s
   STATUS=$(helm status compass -n compass-system -o json | jq .info.status)
   echo "Compass installation status ${STATUS}"
 }
@@ -182,7 +184,8 @@ function installCompassNew() {
   fi
 
   COMPASS_OVERRIDES="${COMPASS_SOURCES_DIR}/installation/resources/compass-overrides-gke-benchmark.yaml"
-  bash "${COMPASS_SCRIPTS_DIR}"/install-compass.sh --overrides-file "${COMPASS_OVERRIDES}" --timeout 30m0s
+  COMPASS_COMMON_OVERRIDES="$PWD/compass_common_overrides.yaml"
+  bash "${COMPASS_SCRIPTS_DIR}"/install-compass.sh --overrides-file "${COMPASS_OVERRIDES}" --overrides-file "${COMPASS_COMMON_OVERRIDES}" --timeout 30m0s
   STATUS=$(helm status compass -n compass-system -o json | jq .info.status)
   echo "Compass installation status ${STATUS}"
 
