@@ -14,7 +14,7 @@ presubmits: # runs on PRs
         preset-cluster-version: "true"
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
-      run_if_changed: '^resources/kcp/values.yaml|^resources/kcp/charts/mothership-reconciler/|^resources/kcp/charts/component-reconcilers/'
+      run_if_changed: '^resources/kcp/values-reconciler-image.yaml|^resources/kcp/charts/mothership-reconciler/|^resources/kcp/charts/component-reconcilers/'
       optional: true
       skip_report: false
       decorate: true
@@ -75,7 +75,7 @@ presubmits: # runs on PRs
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
         preset-kyma-guard-bot-github-token: "true"
-      run_if_changed: '^resources/kcp/values.yaml|^resources/kcp/charts/mothership-reconciler/|^resources/kcp/charts/component-reconcilers/'
+      run_if_changed: '^resources/kcp/values-reconciler-image.yaml|^resources/kcp/charts/mothership-reconciler/|^resources/kcp/charts/component-reconcilers/'
       optional: true
       skip_report: false
       decorate: true
