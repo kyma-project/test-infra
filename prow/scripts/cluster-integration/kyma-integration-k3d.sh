@@ -104,9 +104,10 @@ function run_tests() {
     go install github.com/cucumber/godog/cmd/godog@latest
 
     #Check whether Istio deployments are ready
+    kubectl -n kyma-system get deployments
     kubectl -n kyma-system rollout status deployment istiod
     kubectl -n kyma-system rollout status deployment istio-ingressgateway
-    
+
     make test
     popd
   else
