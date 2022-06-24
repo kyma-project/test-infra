@@ -1,4 +1,7 @@
 global:
+  migratorJob:
+    pvc:
+      isLocalEnv: false
   domainName: ${DOMAIN}
   loadBalancerIP: ${GATEWAY_IP_ADDRESS}
   enableAPIPackages: true
