@@ -26,7 +26,7 @@ export RECONCILER_DIR="/home/prow/go/src/github.com/kyma-incubator/reconciler"
 export CONTROL_PLANE_DIR="/home/prow/go/src/github.com/kyma-project/control-plane"
 export KYMA_TEST_INFRA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/test-infra"
 export BUMP_TOOL_CONFIG_FILE="${KYMA_TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/control-plane-autobump-reconciler-config.yaml"
-export KCP_VALUE_PATH="./resources/kcp/values-reconciler-image.yaml"
+export KCP_VALUE_PATH="./resources/kcp/values.yaml"
 
 # All provides require these values, each of them may check for additional variables
 requiredVars=(
