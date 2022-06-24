@@ -7,7 +7,7 @@ spec:
 #  redirectToHttps:
 #    enabled: true
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   namespace: default
@@ -23,6 +23,9 @@ spec:
     http:
       paths:
         - path: /*
+          pathType: ImplementationSpecific
           backend:
-            serviceName: gcsweb
-            servicePort: 80
+            service:
+              name: gcsweb
+              port:
+                number: 80

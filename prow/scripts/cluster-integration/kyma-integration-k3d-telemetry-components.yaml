@@ -15,7 +15,6 @@ components:
   - name: "eventing"
   - name: "ory"
   - name: "api-gateway"
-  - name: "rafter"
   - name: "cluster-users"
   - name: "serverless"
   - name: "telemetry"

@@ -139,6 +139,14 @@ function createCluster() {
   envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/compass-gke-kyma-overrides.tpl.yaml" > "$PWD/kyma_overrides.yaml"
 }
 
+function installYQ() {
+  utils::install_yq
+}
+
+function installHelm() {
+  utils::install_helm
+}
+
 function installKyma() {
   kyma::install_cli
 
@@ -149,7 +157,7 @@ function installKyma() {
 
 function installCompassOld() {
   cd "$COMPASS_SOURCES_DIR"
-  readonly LATEST_VERSION=main-$(git rev-parse --short main~1)
+  readonly LATEST_VERSION=$(git rev-parse --short main~1)
   echo "Checkout $LATEST_VERSION"
   git checkout "${LATEST_VERSION}"
 
@@ -211,6 +219,12 @@ NODE=$(kubectl get nodes | tail -n 1 | cut -d ' ' -f 1)
 log::info "Benchmarks will be executed on node: $NODE. Will make it unschedulable."
 kubectl label node "$NODE" benchmark=true
 kubectl cordon "$NODE"
+
+log::info "Install yq"
+installYQ
+
+log::info "Install helm"
+installHelm
 
 log::info "Install Kyma"
 installKyma
