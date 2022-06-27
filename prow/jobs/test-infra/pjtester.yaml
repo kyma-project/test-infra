@@ -18,7 +18,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220624-09dc2f51"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220625-05254911"
             imagePullPolicy: Always
             securityContext:
               privileged: false
