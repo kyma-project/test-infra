@@ -26,7 +26,7 @@ func TestReconcilerJobsPresubmitE2E(t *testing.T) {
 	assert.False(t, actualPresubmit.SkipReport)
 	//assert.False(t, actualPresubmit.Optional)
 	assert.False(t, actualPresubmit.AlwaysRun)
-	assert.Equal(t, actualPresubmit.RunIfChanged, "^resources/kcp/values-reconciler-image.yaml|^resources/kcp/charts/mothership-reconciler/|^resources/kcp/charts/component-reconcilers/")
+	assert.Equal(t, actualPresubmit.RunIfChanged, "^resources/kcp/values.yaml|^resources/kcp/charts/mothership-reconciler/|^resources/kcp/charts/component-reconcilers/")
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "main")
 	tester.AssertThatHasExtraRef(t, actualPresubmit.JobBase.UtilityConfig, []prowapi.Refs{
 		{
