@@ -8,7 +8,7 @@ function integration_tests::install_kyma() {
 }
 
 function api-gateway::prepare_components_file() {
-  log::info "Preparing Kyma installation with Dex, Ory and API-Gateway"
+  log::info "Preparing Kyma installation with Ory and API-Gateway"
 
 cat << EOF > "$PWD/components.yaml"
 defaultNamespace: kyma-system
@@ -19,6 +19,7 @@ prerequisites:
   - name: "certificates"
     namespace: "istio-system"
 components:
+  - name: "istio-resources"
   - name: "ory"
   - name: "api-gateway"
 EOF
@@ -28,10 +29,10 @@ function api-gateway::prepare_test_environments() {
   log::info "Prepare test environment variables"
 
   # Preparing needed environment variables for API Gateway tests, these can be moved later on.
-  export TEST_HYDRA_ADDRESS="https://oauth2.${CLUSTER_NAME}.kyma-prow.shoot.canary.k8s-hana.ondemand.com"
+  export TEST_HYDRA_ADDRESS="https://oauth2.${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com"
   export TEST_REQUEST_TIMEOUT="120"
   export TEST_REQUEST_DELAY="10"
-  export TEST_DOMAIN="${CLUSTER_NAME}.kyma-prow.shoot.canary.k8s-hana.ondemand.com"
+  export TEST_DOMAIN="${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com" 
   export TEST_CLIENT_TIMEOUT=30s
 }
 
@@ -39,16 +40,19 @@ function api-gateway::configure_ory_hydra() {
   log::info "Prepare test environment variables"
 
   kubectl -n kyma-system set env deployment ory-hydra LOG_LEAK_SENSITIVE_VALUES="true"
-  kubectl -n kyma-system set env deployment ory-hydra URLS_LOGIN="https://ory-hydra-login-consent.${CLUSTER_NAME}.kyma-prow.shoot.canary.k8s-hana.ondemand.com/login"
-  kubectl -n kyma-system set env deployment ory-hydra URLS_CONSENT="https://ory-hydra-login-consent.${CLUSTER_NAME}.kyma-prow.shoot.canary.k8s-hana.ondemand.com/consent"
-  kubectl -n kyma-system set env deployment ory-hydra URLS_SELF_ISSUER="https://oauth2.${CLUSTER_NAME}.kyma-prow.shoot.canary.k8s-hana.ondemand.com/"
-  kubectl -n kyma-system set env deployment ory-hydra URLS_SELF_PUBLIC="https://oauth2.${CLUSTER_NAME}.kyma-prow.shoot.canary.k8s-hana.ondemand.com/"
+  kubectl -n kyma-system set env deployment ory-hydra URLS_LOGIN="https://ory-hydra-login-consent.${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com/login"
+  kubectl -n kyma-system set env deployment ory-hydra URLS_CONSENT="https://ory-hydra-login-consent.${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com/consent"
+  kubectl -n kyma-system set env deployment ory-hydra URLS_SELF_ISSUER="https://oauth2.${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com/"
+  kubectl -n kyma-system set env deployment ory-hydra URLS_SELF_PUBLIC="https://oauth2.${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com/"
   kubectl -n kyma-system rollout restart deployment ory-hydra
   kubectl -n kyma-system rollout status deployment ory-hydra
 }
 
 function api-gateway::deploy_login_consent_app() {
   log::info "Deploying Ory login consent app for tests"
+
+  kubectl -n istio-system rollout status deployment istiod
+  kubectl -n istio-system rollout status deployment istio-ingressgateway
 
 cat << EOF > "$PWD/ory-hydra-login-consent.yaml"
 apiVersion: apps/v1
@@ -106,7 +110,7 @@ spec:
   gateways:
   - kyma-system/kyma-gateway
   hosts:
-  - ory-hydra-login-consent.${CLUSTER_NAME}.kyma-prow.shoot.canary.k8s-hana.ondemand.com
+  - ory-hydra-login-consent.${CLUSTER_NAME}.kyma-prow.shoot.live.k8s-hana.ondemand.com
   http:
   - match:
     - uri:
@@ -115,19 +119,18 @@ spec:
         exact: /consent
     route:
     - destination:
-        host: ory-hydra-login-consent
+        host: ory-hydra-login-consent.kyma-system.svc.cluster.local
         port:
           number: 80
 EOF
   kubectl apply -f "$PWD/ory-hydra-login-consent.yaml"
-
   log::success "App deployed"
 }
 
 function api-gateway::launch_tests() {
   log::info "Running Kyma API-Gateway tests"
 
-  pushd "${KYMA_SOURCES_DIR}/tests/integration/api-gateway/gateway-tests"
+  pushd "${KYMA_SOURCES_DIR}/tests/components/api-gateway/gateway-tests"
   go test -v ./main_test.go
   popd
 

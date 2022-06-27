@@ -323,38 +323,6 @@ templates:
                   local:
                     - "default"
                     - "image-signing"
-
-              - jobConfig:
-                  name: "pre-main-tpi-minio"
-                  run_if_changed: "^minio/"
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/minio"
-                    - "ci-pr"
-                inheritedConfigs:
-                  global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "default"
-              - jobConfig:
-                  name: "post-main-tpi-minio"
-                  run_if_changed: "^minio/"
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/minio"
-                    - "ci-main"
-                inheritedConfigs:
-                  global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "default"
-                    - "image-signing"
-
               - jobConfig:
                   name: "pre-main-tpi-node-exporter"
                   run_if_changed: "^prometheus-node-exporter/"

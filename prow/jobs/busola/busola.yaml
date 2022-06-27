@@ -14,7 +14,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^core/|^core-ui/|^service-catalog-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
+      run_if_changed: '^backend/|^core/|^core-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -30,7 +30,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220524-0196d249"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
             securityContext:
               privileged: true
             command:
@@ -60,7 +60,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^core/|^core-ui/|^service-catalog-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
+      run_if_changed: '^backend/|^core/|^core-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -75,7 +75,7 @@ presubmits: # runs on PRs
           base_ref: release-2.3
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220524-0196d249"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
             securityContext:
               privileged: true
             command:
@@ -105,7 +105,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^core/|^core-ui/|^service-catalog-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
+      run_if_changed: '^backend/|^core/|^core-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -120,7 +120,7 @@ presubmits: # runs on PRs
           base_ref: release-2.2
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220524-0196d249"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
             securityContext:
               privileged: true
             command:
@@ -150,7 +150,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^core/|^core-ui/|^service-catalog-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
+      run_if_changed: '^backend/|^core/|^core-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -165,7 +165,7 @@ presubmits: # runs on PRs
           base_ref: release-2.1
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220524-0196d249"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
             securityContext:
               privileged: true
             command:
@@ -199,7 +199,7 @@ postsubmits: # runs on main
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^core/|^core-ui/|^service-catalog-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
+      run_if_changed: '^backend/|^core/|^core-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -215,7 +215,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220524-0196d249"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
             securityContext:
               privileged: true
             command:
@@ -246,7 +246,7 @@ postsubmits: # runs on main
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^core/|^core-ui/|^service-catalog-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
+      run_if_changed: '^backend/|^core/|^core-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -261,7 +261,7 @@ postsubmits: # runs on main
           base_ref: release-2.3
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220524-0196d249"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
             securityContext:
               privileged: true
             command:
@@ -292,7 +292,7 @@ postsubmits: # runs on main
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^core/|^core-ui/|^service-catalog-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
+      run_if_changed: '^backend/|^core/|^core-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -307,7 +307,7 @@ postsubmits: # runs on main
           base_ref: release-2.2
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220524-0196d249"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
             securityContext:
               privileged: true
             command:
@@ -338,7 +338,7 @@ postsubmits: # runs on main
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^core/|^core-ui/|^service-catalog-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
+      run_if_changed: '^backend/|^core/|^core-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -353,7 +353,7 @@ postsubmits: # runs on main
           base_ref: release-2.1
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220524-0196d249"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
             securityContext:
               privileged: true
             command:

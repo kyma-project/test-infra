@@ -17,23 +17,22 @@ replace (
 )
 
 require (
-	cloud.google.com/go/bigquery v1.32.0
+	cloud.google.com/go/bigquery v1.34.1
 	cloud.google.com/go/firestore v1.6.1
-	cloud.google.com/go/functions v1.3.0
+	cloud.google.com/go/functions v1.4.0
 	cloud.google.com/go/logging v1.4.2
-	cloud.google.com/go/pubsub v1.21.1
-	cloud.google.com/go/storage v1.22.1
+	cloud.google.com/go/pubsub v1.23.0
+	cloud.google.com/go/storage v1.23.0
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
-	github.com/cloudevents/sdk-go/v2 v2.10.0
-	github.com/containerd/containerd v1.6.1
+	github.com/cloudevents/sdk-go/v2 v2.10.1
+	github.com/containerd/containerd v1.6.6
 	github.com/containerd/typeurl v1.0.2
-	github.com/docker/docker v20.10.12+incompatible // indirect
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
-	github.com/fsouza/go-dockerclient v1.7.11
-	github.com/gardener/component-cli v0.40.0
-	github.com/gardener/component-spec/bindings-go v0.0.63
+	github.com/fsouza/go-dockerclient v1.8.1
+	github.com/gardener/component-cli v0.42.0
+	github.com/gardener/component-spec/bindings-go v0.0.65
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-logr/logr v0.4.0
 	github.com/go-yaml/yaml v2.1.0+incompatible
@@ -54,18 +53,18 @@ require (
 	github.com/sigstore/sigstore v1.0.1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/smartystreets/goconvey v1.7.2
-	github.com/spf13/cobra v1.4.0
+	github.com/spf13/cobra v1.5.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.10.0 // indirect
-	github.com/stretchr/testify v1.7.1
+	github.com/stretchr/testify v1.7.5
 	github.com/tidwall/gjson v1.14.1
 	github.com/vrischmann/envconfig v1.3.0
 	go.uber.org/zap v1.21.0
-	golang.org/x/net v0.0.0-20220520000938-2e3eb7b945c2
-	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5
-	google.golang.org/api v0.81.0
+	golang.org/x/net v0.0.0-20220617184016-355a448f1bc9
+	golang.org/x/oauth2 v0.0.0-20220608161450-d0670ef3b1eb
+	google.golang.org/api v0.85.0
 	gopkg.in/yaml.v2 v2.4.0
-	gopkg.in/yaml.v3 v3.0.0
+	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.22.2
 	k8s.io/apimachinery v0.22.2
 	k8s.io/client-go v11.0.1-0.20190805182717-6502b5e7b1b5+incompatible

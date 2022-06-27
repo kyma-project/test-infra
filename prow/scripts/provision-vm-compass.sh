@@ -30,14 +30,6 @@ cleanup() {
     exit $ARG
 }
 
-function testCustomImage() {
-    CUSTOM_IMAGE="$1"
-    IMAGE_EXISTS=$(gcloud compute images list --filter "name:${CUSTOM_IMAGE}" | tail -n +2 | awk '{print $1}')
-    if [[ -z "$IMAGE_EXISTS" ]]; then
-        log::error "${CUSTOM_IMAGE} is invalid, it is not available in GCP images list, the script will terminate ..." && exit 1
-    fi
-}
-
 gcp::authenticate \
     -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
@@ -99,7 +91,7 @@ for ZONE in ${EU_ZONES}; do
     gcloud compute instances create "compass-integration-test-${RANDOM_ID}" \
         --metadata enable-oslogin=TRUE \
         --image "${IMAGE}" \
-        --machine-type n1-standard-4 \
+        --machine-type n1-standard-8 \
         --zone "${ZONE}" \
         --boot-disk-size 200 "${LABELS[@]}" &&\
     log::info "Created compass-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
@@ -116,7 +108,7 @@ log::info "Copying Compass to the instance"
 utils::compress_send_to_vm "${ZONE}" "compass-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/compass" "~/compass"
 
 
-KYMA_CLI_VERSION="a064ffb"
+KYMA_CLI_VERSION="2.0.4"
 log::info "Installing Kyma CLI version: $KYMA_CLI_VERSION"
 
 PREV_WD=$(pwd)
@@ -133,6 +125,16 @@ utils::ssh_to_vm_with_script -z "${ZONE}" -n "compass-integration-test-${RANDOM_
 
 cd "$PREV_WD"
 log::info "Successfully installed Kyma CLI version: $KYMA_CLI_VERSION"
+
+YQ_VERSION="v4.25.1"
+log::info "Installing yq version: $YQ_VERSION"
+wget "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64"
+mv yq_linux_amd64 yq
+chmod +x yq
+
+#shellcheck disable=SC2088
+utils::send_to_vm "${ZONE}" "compass-integration-test-${RANDOM_ID}" "yq" "~/bin/yq"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "compass-integration-test-${RANDOM_ID}" -c "sudo cp \$HOME/bin/yq /usr/local/bin/yq"
 
 log::info "Triggering the installation"
 
