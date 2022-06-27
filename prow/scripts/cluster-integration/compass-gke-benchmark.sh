@@ -138,6 +138,7 @@ function createCluster() {
   export DNS_DOMAIN_TRAILING=${DNS_DOMAIN%.}
   envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/compass-gke-kyma-overrides.tpl.yaml" > "$PWD/kyma_overrides.yaml"
   envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/compass-gke-overrides.tpl.yaml" > "$PWD/compass_common_overrides.yaml"
+  CLOUDSDK_CORE_PROJECT=${CLOUDSDK_CORE_PROJECT} CLOUDSDK_COMPUTE_ZONE=${CLOUDSDK_COMPUTE_ZONE} COMMON_NAME=${COMMON_NAME} envsubst < "${COMPASS_SOURCES_DIR}/installation/resources/compass-overrides-gke-benchmark.yaml" > "$PWD/compass_benchmark_overrides.yaml"
 }
 
 function installYQ() {
@@ -162,7 +163,7 @@ function installCompassOld() {
   echo "Checkout $LATEST_VERSION"
   git checkout "${LATEST_VERSION}"
 
-  COMPASS_OVERRIDES="${COMPASS_SOURCES_DIR}/installation/resources/compass-overrides-gke-benchmark.yaml"
+  COMPASS_OVERRIDES="$PWD/compass_benchmark_overrides.yaml"
   COMPASS_COMMON_OVERRIDES="$PWD/compass_common_overrides.yaml"
   bash "${COMPASS_SCRIPTS_DIR}"/install-compass.sh --overrides-file "${COMPASS_OVERRIDES}" --overrides-file "${COMPASS_COMMON_OVERRIDES}" --timeout 30m0s
   STATUS=$(helm status compass -n compass-system -o json | jq .info.status)
@@ -183,7 +184,7 @@ function installCompassNew() {
     exit 1
   fi
 
-  COMPASS_OVERRIDES="${COMPASS_SOURCES_DIR}/installation/resources/compass-overrides-gke-benchmark.yaml"
+  COMPASS_OVERRIDES="$PWD/compass_benchmark_overrides.yaml"
   COMPASS_COMMON_OVERRIDES="$PWD/compass_common_overrides.yaml"
   bash "${COMPASS_SCRIPTS_DIR}"/install-compass.sh --overrides-file "${COMPASS_OVERRIDES}" --overrides-file "${COMPASS_COMMON_OVERRIDES}" --timeout 30m0s
   STATUS=$(helm status compass -n compass-system -o json | jq .info.status)
