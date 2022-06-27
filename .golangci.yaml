@@ -1,0 +1,11 @@
+linters:
+  disable-all: true
+  enable:
+    - deadcode
+    - exportloopref
+    - gosimple
+    - govet
+    - ineffassign
+    - misspell
+    - staticcheck
+    # - revive # replaces golint
