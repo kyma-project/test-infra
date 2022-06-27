@@ -1,6 +1,6 @@
 presubmits: # runs on PRs
   kyma-project/test-infra:
-    - name: pre-main-test-infra-golangci-lint
+    - name: pre-main-test-infra-lint
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
@@ -18,7 +18,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/golangci-lint:pr-5628"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220627-b303c786"
             automountServiceAccountToken: true
             securityContext:
               privileged: false
