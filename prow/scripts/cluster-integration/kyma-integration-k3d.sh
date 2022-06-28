@@ -39,10 +39,6 @@ function install_cli() {
     readonly os
   fi
 
-  if [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
-    go install github.com/jstemmer/go-junit-report@latest
-  fi
-
   pushd "$install_dir" || exit
   curl -Lo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}"
   chmod +x kyma
