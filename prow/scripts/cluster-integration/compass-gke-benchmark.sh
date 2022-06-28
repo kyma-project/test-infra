@@ -234,27 +234,27 @@ installHelm
 log::info "Install Kyma"
 installKyma
 
-#log::info "Install Compass version from main"
-#installCompassOld
-#
-#readonly SUITE_NAME="testsuite-all"
-#
-#log::info "Execute benchmarks on the current main"
-#kubectl uncordon "$NODE"
-#CONCURRENCY=1 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l "benchmark=true"
-#kubectl cordon "$NODE"
-#
-#PODS=$(kubectl get cts $SUITE_NAME -o=go-template --template='{{range .status.results}}{{range .executions}}{{printf "%s\n" .id}}{{end}}{{end}}')
-#for POD in $PODS; do
-#  CONTAINER=$(kubectl -n kyma-system get pod "$POD" -o jsonpath='{.spec.containers[*].name}' | sed s/istio-proxy//g | awk '{$1=$1};1')
-#  kubectl logs -n kyma-system "$POD" -c "$CONTAINER" > "$CONTAINER"-old
-#done
-#
-#kubectl delete cts $SUITE_NAME
-#
-## Because of sequential compass installation, the second one fails due to compass-migration job patching failure. K8s job's fields are immutable.
-#log::info "Deleting the old compass-migration job"
-#kubectl delete jobs -n compass-system compass-migration
+log::info "Install Compass version from main"
+installCompassOld
+
+readonly SUITE_NAME="testsuite-all"
+
+log::info "Execute benchmarks on the current main"
+kubectl uncordon "$NODE"
+CONCURRENCY=1 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l "benchmark=true"
+kubectl cordon "$NODE"
+
+PODS=$(kubectl get cts $SUITE_NAME -o=go-template --template='{{range .status.results}}{{range .executions}}{{printf "%s\n" .id}}{{end}}{{end}}')
+for POD in $PODS; do
+  CONTAINER=$(kubectl -n kyma-system get pod "$POD" -o jsonpath='{.spec.containers[*].name}' | sed s/istio-proxy//g | awk '{$1=$1};1')
+  kubectl logs -n kyma-system "$POD" -c "$CONTAINER" > "$CONTAINER"-old
+done
+
+kubectl delete cts $SUITE_NAME
+
+# Because of sequential compass installation, the second one fails due to compass-migration job patching failure. K8s job's fields are immutable.
+log::info "Deleting the old compass-migration job"
+kubectl delete jobs -n compass-system compass-migration
 
 log::info "Install New Compass version"
 installCompassNew
