@@ -1,6 +1,13 @@
 #!/bin/bash
 log::banner "Validate reconciler's go.mod file"
 
+set -o errexit
+
+readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# shellcheck source=prow/scripts/lib/log.sh
+source "${SCRIPT_DIR}/lib/log.sh"
+
 # Configure dependencies
 log::info "Configure dependencies"
 curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
