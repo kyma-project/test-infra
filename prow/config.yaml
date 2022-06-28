@@ -144,7 +144,7 @@ deck:
       - lens:
           name: html
         required_files:
-          - ^artifacts(/.*/|/)report.*\.html$
+          - ^artifacts/report.*\.html$
   branding:
     header_color: "#0b74de" # Kyma color
     logo: "/static/extensions/logo.svg"
