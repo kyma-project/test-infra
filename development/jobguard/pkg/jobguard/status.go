@@ -34,7 +34,7 @@ type Status struct {
 // IndexedStatuses contains job status indexed by its name
 type IndexedStatuses map[string]string
 
-// StatusConfig holds configuraiton for GithubStatusFetcher
+// StatusConfig holds configuration for GithubStatusFetcher
 type StatusConfig struct {
 	Origin     string `envconfig:"default=https://api.github.com,API_ORIGIN"`
 	Owner      string `envconfig:"default=kyma-project,REPO_OWNER"`

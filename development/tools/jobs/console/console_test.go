@@ -8,10 +8,6 @@ import (
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 )
 
-const (
-	jobBasePath = "./../../../../prow/jobs/"
-)
-
 var loggingYamlName = "console-logging"
 
 var components = []struct {

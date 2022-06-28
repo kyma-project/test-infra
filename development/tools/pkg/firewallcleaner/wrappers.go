@@ -22,9 +22,7 @@ func (csw *ComputeServiceWrapper) LookupFirewallRule(project string) ([]*compute
 	call := csw.Compute.Firewalls.List(project)
 	var items []*compute.Firewall
 	f := func(page *compute.FirewallList) error {
-		for _, list := range page.Items {
-			items = append(items, list)
-		}
+		items = append(items, page.Items...)
 		return nil
 	}
 	if err := call.Pages(csw.Context, f); err != nil {

@@ -46,7 +46,7 @@ func main() {
 	// TODO replace?
 	auth, err := gcrgoogle.NewEnvAuthenticator()
 	if err != nil {
-		log.Fatalf("failed to setup auther: %s", err)
+		log.Fatalf("failed to setup authenticator: %s", err)
 	}
 
 	regexRepo := regexp.MustCompile(*gcrNameIgnoreRegex)
