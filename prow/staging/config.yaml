@@ -24,6 +24,10 @@ deck:
         required_files:
           - .*/junit.*\.xml
       - lens:
+          name: html
+        required_files:
+          - ^artifacts/report.*\.html$
+      - lens:
           name: podinfo
         required_files:
           - podinfo.json
