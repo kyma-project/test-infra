@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# set -o errexit
-
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # shellcheck source=prow/scripts/lib/log.sh
@@ -20,15 +18,9 @@ log::info "Execute validation script"
 python2 ./scripts/validate-go-mod.py
 
 # Test script exit code
-if [ $? -eq 0 ];then
-    echo Exit code is: $?
+if [[ $? -eq 0 ]];then
     log::success "Result: go.mod is VALID"
-elif [ $? -eq 3 ];then
-    echo Exit code is: $?
-    log::error "Result: go.mod is INVALID (see log above)"
-    exit 1
 else
-    echo Exit code is: $?
-    log::error "Error while executing the go.mod validation script (see log above)"
+    log::error "Result: go.mod is INVALID or script execution failed (see log above)"
     exit 1
 fi
