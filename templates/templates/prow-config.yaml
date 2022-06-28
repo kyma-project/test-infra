@@ -112,11 +112,15 @@ deck:
               - want.+got
               - Your cluster may not be fully functional
               - ^\s+\^$
+              - \^-- # script validation
               - \[(0;)?31m
               - "^diff " # [+-]{3}\\s" has too much noise from go test output and set -x
               - • Failure
               # This highlights the start of bazel tests/runs to skip go importing noise.
               - "^INFO: Analyzed \\d+ targets"
+              - "JobGuard caught error"
+              - "Directory vpath is present"
+              - "\"status\": \"Vulns\"" # protecode guard
         required_files:
           - ^.*build-log\.txt$
       - lens:
