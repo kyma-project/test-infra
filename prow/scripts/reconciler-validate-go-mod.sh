@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -o errexit
+# set -o errexit
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -20,10 +20,9 @@ log::info "Execute validation script"
 python2 ./scripts/validate-go-mod.py
 
 # Test script exit code
-exit_status=$?
-if [ $exit_status -eq 0 ];then
+if [ $? -eq 0 ];then
     log::success "Result: go.mod is VALID"
-elif [ $exit_status -eq 3 ];then
+elif [ $? -eq 3 ];then
     log::error "Result: go.mod is INVALID (see log above)"
     exit 1
 else
