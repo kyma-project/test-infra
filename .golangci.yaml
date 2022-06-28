@@ -1,3 +1,5 @@
+# https://golangci-lint.run/usage/configuration/
+
 linters:
   disable-all: true
   enable:
