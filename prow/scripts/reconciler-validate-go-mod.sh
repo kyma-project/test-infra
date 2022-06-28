@@ -20,9 +20,9 @@ log::info "Execute validation script"
 python2 ./scripts/validate-go-mod.py
 
 # Test script exit code
-if [[ $? -eq 0 ]];then
+if [ $? -eq 0 ];then
     log::success "Result: go.mod is VALID"
-elif [[ $? -eq 3 ]];then
+elif [ $? -eq 3 ];then
     log::error "Result: go.mod is INVALID (see log above)"
     exit 1
 else
