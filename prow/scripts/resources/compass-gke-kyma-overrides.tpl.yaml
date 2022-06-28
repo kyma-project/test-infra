@@ -12,10 +12,16 @@ global:
   environment:
     gardener: false
 istio-configuration:
-  helmValues:
-    gateways:
-      istio-ingressgateway:
-        loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+  components:
+    ingressGateways:
+      config:
+        service:
+          loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+          type: LoadBalancer
+#  helmValues:
+#    gateways:
+#      istio-ingressgateway:
+#        loadBalancerIP: ${GATEWAY_IP_ADDRESS}
   meshConfig:
     defaultConfig:
       holdApplicationUntilProxyStarts: true
