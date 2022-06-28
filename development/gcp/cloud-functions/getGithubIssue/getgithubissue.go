@@ -96,7 +96,7 @@ func isGithubIssueOpen(ctx context.Context, client *github.Client, message kymap
 	} else if err != nil {
 		return nil, nil, fmt.Errorf("calling github API failed, error: %w", err)
 	}
-	b := new(bool)
+	var b *bool
 	if *ghIssue.State == "open" {
 		// Set return value to true when issue is open.
 		b = github.Bool(true)

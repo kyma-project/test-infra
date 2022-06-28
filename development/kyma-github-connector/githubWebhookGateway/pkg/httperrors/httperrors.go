@@ -55,5 +55,4 @@ func SendErrorResponse(apperr apperrors.AppError, w http.ResponseWriter) {
 		appError := apperrors.Internal("failed send response to github: %s", err.Error())
 		log.Fatal(appError.Error())
 	}
-	return
 }

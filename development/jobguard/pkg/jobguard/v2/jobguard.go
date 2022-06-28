@@ -70,7 +70,6 @@ func (c Client) Run() error {
 		switch statuses.CombinedStatus() {
 		case StatusPending:
 			logrus.Debugf("Some statuses are still in pending state: %v", statuses.PendingList())
-			break
 		case StatusFailure:
 			return fmt.Errorf("statuses are in failed state: %v", statuses.FailedList())
 		case StatusSuccess:
