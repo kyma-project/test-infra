@@ -13,6 +13,9 @@ curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
 python2 get-pip.py
 pip install semver==2.10
 
+# TEST
+go mod tidy -compat=1.17
+
 # Execute validation script
 log::info "Execute validation script"
 python2 ./scripts/validate-go-mod.py
