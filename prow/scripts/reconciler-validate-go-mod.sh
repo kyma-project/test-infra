@@ -11,7 +11,7 @@ log::info "Execute validation script"
 
 # TEST:
 pwd
-exit 1
+# exit 1
 
 # TODO: Execute validation script directly from here
 # python2 ./scripts/validate-go-mod.py && \
