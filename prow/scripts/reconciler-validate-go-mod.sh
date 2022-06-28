@@ -1,5 +1,4 @@
 #!/bin/bash
-log::banner "Validate reconciler's go.mod file"
 
 set -o errexit
 
@@ -7,6 +6,8 @@ readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${SCRIPT_DIR}/lib/log.sh"
+
+log::banner "Validate reconciler's go.mod file"
 
 # Configure dependencies
 log::info "Configure dependencies"
