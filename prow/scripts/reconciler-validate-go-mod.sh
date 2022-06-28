@@ -17,14 +17,15 @@ pip install semver==2.10
 
 # Execute validation script
 log::info "Execute validation script"
-python2 ./scripts/validate-go-mod.py && \
-	([ $$? -eq 0 ] && echo "Result: go.mod is VALID") \
-	|| (echo "Result: go.mod is INVALID (see log above)"; exit 1)
+python2 ./scripts/validate-go-mod.py
 
-# TODO: Test script exit code
-# if [[ $? -eq 0 ]];then
-#         log::success "Tests completed"
-#     else
-#         log::error "Tests failed"
-#         exit 1
-#     fi
+# Test script exit code
+if [[ $? -eq 0 ]];then
+    log::success "Result: go.mod is VALID"
+elif [[ $? -eq 3 ]];then
+    log::error "Result: go.mod is INVALID (see log above)"
+    exit 1
+else
+    log::error "Error while executing the go.mod validation script (see log above)"
+    exit 1
+fi
