@@ -87,6 +87,7 @@ function createCluster() {
     -p "$CLOUDSDK_CORE_PROJECT" \
     -r "$CLOUDSDK_COMPUTE_REGION"
   GATEWAY_IP_ADDRESS="${gcp_reserve_ip_address_return_ip_address:?}"
+  export GATEWAY_IP_ADDRESS
   CLEANUP_GATEWAY_IP_ADDRESS="true"
   echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 

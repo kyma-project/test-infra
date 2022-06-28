@@ -11,23 +11,31 @@ global:
     tlsKey: ${TLS_KEY}
   environment:
     gardener: false
-istio:
-  override: |
-    apiVersion: install.istio.io/v1alpha1
-    kind: IstioOperator
-    metadata:
-      namespace: istio-system
-    spec:
-      components:
-        ingressGateways:
-          - name: istio-ingressgateway
-            k8s:
-              service:
-                loadBalancerIP: ${GATEWAY_IP_ADDRESS}
-                type: LoadBalancer
-      meshConfig:
-        defaultConfig:
-          holdApplicationUntilProxyStarts: true
+istio-configuration:
+  helmValues:
+    gateways:
+      istio-ingressgateway:
+        loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+  meshConfig:
+    defaultConfig:
+      holdApplicationUntilProxyStarts: true
+#istio:
+#  override: |
+#    apiVersion: install.istio.io/v1alpha1
+#    kind: IstioOperator
+#    metadata:
+#      namespace: istio-system
+#    spec:
+#      components:
+#        ingressGateways:
+#          - name: istio-ingressgateway
+#            k8s:
+#              service:
+#                loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+#                type: LoadBalancer
+#      meshConfig:
+#        defaultConfig:
+#          holdApplicationUntilProxyStarts: true
 
 kiali:
   authProxy:
