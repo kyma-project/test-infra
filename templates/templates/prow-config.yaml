@@ -22,10 +22,10 @@ plank:
         censoring_concurrency: 2 # 2 concurrent censoring
         censoring_buffer_size: 3092 # 3kB
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20220623-6ff60de3c2
-        initupload: gcr.io/k8s-prow/initupload:v20220623-6ff60de3c2
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20220623-6ff60de3c2
-        sidecar: gcr.io/k8s-prow/sidecar:v20220623-6ff60de3c2
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20220628-aa928caf31
+        initupload: gcr.io/k8s-prow/initupload:v20220628-aa928caf31
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20220628-aa928caf31
+        sidecar: gcr.io/k8s-prow/sidecar:v20220628-aa928caf31
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -112,11 +112,15 @@ deck:
               - want.+got
               - Your cluster may not be fully functional
               - ^\s+\^$
+              - \^-- # script validation
               - \[(0;)?31m
               - "^diff " # [+-]{3}\\s" has too much noise from go test output and set -x
               - • Failure
               # This highlights the start of bazel tests/runs to skip go importing noise.
               - "^INFO: Analyzed \\d+ targets"
+              - "JobGuard caught error"
+              - "Directory vpath is present"
+              - "\"status\": \"Vulns\"" # protecode guard
         required_files:
           - ^.*build-log\.txt$
       - lens:
@@ -139,6 +143,10 @@ deck:
           name: links
         required_files:
           - artifacts/.*\.link\.txt
+      - lens:
+          name: html
+        required_files:
+          - ^artifacts/report.*\.html$
   branding:
     header_color: "#0b74de" # Kyma color
     logo: "/static/extensions/logo.svg"
