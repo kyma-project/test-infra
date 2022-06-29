@@ -34,6 +34,7 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/tests/components/application-connector"
                   run_if_changed: "^tests/components/application-connector/|^common/makefiles/"
+                  optional: "true"
                   release_since: "2.2"
                 inheritedConfigs:
                   global:

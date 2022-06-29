@@ -382,6 +382,7 @@ templates:
                   name: "pre-main-kyma-integration-k3d-app-connector-skr"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources/application-connector\\S+|resources/compass-runtime-agent\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  optional: "true"
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-central-app-connectivity-enabled: "true"
@@ -405,6 +406,7 @@ templates:
                   name: "pre-main-kyma-integration-k3d-app-connector-os"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources/application-connector\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  optional: "true"
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-central-app-connectivity-enabled: "true"
