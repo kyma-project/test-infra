@@ -230,6 +230,10 @@ func GetGithubIssue(ctx context.Context, m kymapubsub.MessagePayload) error {
 			}
 			// Set failing test instance in firestore as closed.
 			_, err := docRef.Update(ctx, updates, firestore.Exists)
+			if err != nil {
+				logger.LogError(fmt.Sprintf("failed setting failing test instance as closed, issue number:  %d, error: %s", ghIssue.GetNumber(), err.Error()))
+				// TODO: need error reporting for such case, without failing whole function
+			}
 			// Remove failing test instance firestore document reference from failing test pubsub message.
 			failingTestMessage.FirestoreDocumentID = nil
 			// Create new github issue.
