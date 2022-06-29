@@ -20,7 +20,7 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
   "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
-cleanup() {
+function cleanup() {
   # TODO - collect junit results
 
   log::info "Stopping instance kyma-integration-test-${RANDOM_ID}"
@@ -33,10 +33,10 @@ cleanup() {
   if [[ "$ISTIO_INTEGRATION_ENABLED" == "true" ]]; then
     utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/components/istio/junit-report.xml" "${ARTIFACTS}"
     utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/components/istio/reports/*.html" "${ARTIFACTS}"
-  else
-    utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/fast-integration/junit_kyma-fast-integration.xml" "${ARTIFACTS}"
   elif [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_OS ]] || [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_SKR ]] ; then
     utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/components/application-connector/junit-report.xml" "${ARTIFACTS}"
+  else
+    utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/fast-integration/junit_kyma-fast-integration.xml" "${ARTIFACTS}"
   fi
 
   gcloud compute instances stop --async --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}"
