@@ -121,6 +121,7 @@ deck:
               - "JobGuard caught error"
               - "Directory vpath is present"
               - "\"status\": \"Vulns\"" # protecode guard
+              - "command not found"
         required_files:
           - ^.*build-log\.txt$
       - lens:
