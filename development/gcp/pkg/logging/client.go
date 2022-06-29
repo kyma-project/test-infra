@@ -181,7 +181,7 @@ func WithGeneratedTrace() LoggerOption {
 // LoggerFromConfig is a logger constructor configuration option passing configuration struct.
 // Data from struct will be used to construct client.
 func LoggerFromConfig(conf Config) LoggerOption {
-	return func(config *Config) error {
+	return func(config *Config) error { //nolint:staticcheck
 		config = &conf
 		return nil
 	}
