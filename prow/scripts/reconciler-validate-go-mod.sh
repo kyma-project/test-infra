@@ -26,11 +26,12 @@ python2 ./scripts/validate-go-mod.py
 # fi
 
 # TEST
-echo Exit code is: $?
+exit_code=$?
+echo Exit code is: $exit_code
 
-if [[ $? -eq 0 ]];then
+if [[ $exit_code -eq 0 ]];then
     log::success "Result: go.mod is VALID"
-elif [[ $? -eq 3 ]];then
+elif [[ $exit_code -eq 3 ]];then
     log::error "Result: go.mod is INVALID (see log above)"
     exit 1
 else
