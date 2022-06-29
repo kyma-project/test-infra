@@ -25,6 +25,9 @@ python2 ./scripts/validate-go-mod.py
 #     exit 1
 # fi
 
+# TEST
+echo Exit code is: $?
+
 if [[ $? -eq 0 ]];then
     log::success "Result: go.mod is VALID"
 elif [[ $? -eq 3 ]];then
