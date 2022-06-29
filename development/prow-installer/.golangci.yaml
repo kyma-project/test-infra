@@ -1,0 +1,5 @@
+# https://golangci-lint.run/usage/configuration/
+
+# we don't use prow-installer anymore
+linters:
+  disable-all: true
