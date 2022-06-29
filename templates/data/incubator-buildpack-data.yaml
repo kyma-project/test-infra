@@ -801,7 +801,7 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_test-infra
-                    - image_bootstrap
+                    - image_kyma-integration
                   local:
                     - reconciler_main_jobConfig
 

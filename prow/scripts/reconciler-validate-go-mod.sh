@@ -13,17 +13,24 @@ curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
 python2 get-pip.py
 pip install semver==2.10
 
-# TEST
-go mod tidy -compat=1.17
-
 # Execute validation script
 log::info "Execute validation script"
 python2 ./scripts/validate-go-mod.py
 
 # Test script exit code
+# if [[ $? -eq 0 ]];then
+#     log::success "Result: go.mod is VALID"
+# else
+#     log::error "Result: go.mod is INVALID or script execution failed (see log above)"
+#     exit 1
+# fi
+
 if [[ $? -eq 0 ]];then
     log::success "Result: go.mod is VALID"
-else
-    log::error "Result: go.mod is INVALID or script execution failed (see log above)"
+elif [[ $? -eq 3 ]];then
+    log::error "Result: go.mod is INVALID (see log above)"
     exit 1
-fi
+else
+    log::error "Error while executing the go.mod validation script (see log above)"
+    exit 1
+fi 
