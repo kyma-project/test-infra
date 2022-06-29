@@ -312,3 +312,27 @@ templates:
                       local:
                         - "default"
                         - "postsubmit"
+                  - jobConfig:
+                      name: "pre-test-infra-golangci-lint"
+                      run_if_changed: "^prow/images/golangci-lint/"
+                      args:
+                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/golangci-lint"
+                    inheritedConfigs:
+                      global:
+                        - "image_bootstrap"
+                        - "jobConfig_default"
+                      local:
+                        - "default"
+                        - "presubmit"
+                  - jobConfig:
+                      name: "post-test-infra-golangci-lint"
+                      run_if_changed: "^prow/images/golangci-lint/"
+                      args:
+                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/golangci-lint"
+                    inheritedConfigs:
+                      global:
+                        - "image_bootstrap"
+                        - "jobConfig_default"
+                      local:
+                        - "default"
+                        - "postsubmit"
