@@ -1,4 +1,3 @@
-//nolint
 module github.com/kyma-project/test-infra/development/gcp/cloud-functions/getslackuserforgithubuser
 
 go 1.17
