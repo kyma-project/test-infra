@@ -13,6 +13,7 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
