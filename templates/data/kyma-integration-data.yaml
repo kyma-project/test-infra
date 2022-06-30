@@ -387,6 +387,7 @@ templates:
                     preset-build-pr: "true"
                     preset-kyma-integration-central-app-connectivity-enabled: "true"
                     preset-application-connector-component-tests-skr: "true"
+                    preset-docker-push-repository-kyma: "true"
                   annotations:
                     pipeline.platform: k3d
                 inheritedConfigs:
@@ -411,6 +412,7 @@ templates:
                     preset-build-pr: "true"
                     preset-kyma-integration-central-app-connectivity-enabled: "true"
                     preset-application-connector-component-tests-os: "true"
+                    preset-docker-push-repository-kyma: "true"
                   annotations:
                     pipeline.platform: k3d
                 inheritedConfigs:
