@@ -33,7 +33,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "golangci-lint run"
+              - "cd operator && golangci-lint run"
             env:
               - name: GO11MODULE
                 value: "on"

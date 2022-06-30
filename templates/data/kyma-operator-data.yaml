@@ -14,7 +14,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "golangci-lint run"
+                    - "cd operator && golangci-lint run"
                   env:
                     GO11MODULE: "on"
                   branches:
