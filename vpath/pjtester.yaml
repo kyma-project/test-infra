@@ -4,4 +4,4 @@ pjNames:
 prConfigs:
   kyma-project:
     kyma-operator:
-      prNumber: 26
+      prNumber: 31
