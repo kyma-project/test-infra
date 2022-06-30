@@ -30,7 +30,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
             command:
-              - "[bash]"
+              - "bash"
             args:
               - "-c"
               - "golangci-lint run"

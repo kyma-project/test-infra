@@ -11,8 +11,7 @@ templates:
                     preset-build-pr: "true"
                     preset-kyma-guard-bot-github-token: "true"
                     preset-gc-project-env: "true"
-                  command:
-                    - "bash"
+                  command: "bash"
                   args:
                     - "-c"
                     - "golangci-lint run"
