@@ -9,7 +9,8 @@ import (
 // WaitAtMost executes a function periodically and waits maximum time to finish
 func WaitAtMost(fn func() (bool, error), tickTime time.Duration, duration time.Duration) error {
 	timeout := time.After(duration)
-	tick := time.Tick(tickTime)
+	tick := time.NewTicker(tickTime)
+	defer tick.Stop()
 
 	for {
 		if ok, err := fn(); err != nil {
@@ -21,7 +22,7 @@ func WaitAtMost(fn func() (bool, error), tickTime time.Duration, duration time.D
 		select {
 		case <-timeout:
 			return fmt.Errorf("waiting for resource failed in given timeout %f second(s)", duration.Seconds())
-		case <-tick:
+		case <-tick.C:
 		}
 	}
 }
