@@ -237,11 +237,11 @@ installKyma
 log::info "Install Compass version from main"
 installCompassOld
 
-readonly SUITE_NAME="testsuite-all"
+readonly SUITE_NAME="compass-e2e-tests"
 
 log::info "Execute benchmarks on the current main"
 kubectl uncordon "$NODE"
-CONCURRENCY=1 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l "benchmark=true"
+bash "${COMPASS_SCRIPTS_DIR}"/testing.sh --benchmark true
 kubectl cordon "$NODE"
 
 PODS=$(kubectl get cts $SUITE_NAME -o=go-template --template='{{range .status.results}}{{range .executions}}{{printf "%s\n" .id}}{{end}}{{end}}')
@@ -261,7 +261,7 @@ installCompassNew
 
 log::info "Execute benchmarks on the new release"
 kubectl uncordon "$NODE"
-CONCURRENCY=1 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l "benchmark=true"
+bash "${COMPASS_SCRIPTS_DIR}"/testing.sh --benchmark true
 kubectl cordon "$NODE"
 
 PODS=$(kubectl get cts $SUITE_NAME -o=go-template --template='{{range .status.results}}{{range .executions}}{{printf "%s\n" .id}}{{end}}{{end}}')
