@@ -133,6 +133,8 @@ envVars=(
   KYMA_MAJOR_VERSION
   KYMA_PROFILE
   K8S_VERSION
+  DOCKER_PUSH_REPOSITORY
+  DOCKER_PUSH_DIRECTORY
 )
 utils::save_env_file "${envVars[@]}"
 #shellcheck disable=SC2088
