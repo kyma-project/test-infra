@@ -2,6 +2,10 @@
 
 run:
   timeout: 2m
+  # skip test files
+  tests: false
+output:
+  sort-results: true
 linters:
   disable-all: true
   enable:
