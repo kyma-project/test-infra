@@ -727,8 +727,8 @@ github.com/fullstorydev/grpcurl v1.8.1/go.mod h1:3BWhvHZwNO7iLXaQlojdg5NA6SxUDeP
 github.com/fullstorydev/grpcurl v1.8.2/go.mod h1:YvWNT3xRp2KIRuvCphFodG0fKkMXwaxA9CJgKCcyzUQ=
 github.com/fvbommel/sortorder v1.0.1 h1:dSnXLt4mJYH25uDDGa3biZNQsozaUWDSWeKJ0qqFfzE=
 github.com/fvbommel/sortorder v1.0.1/go.mod h1:uk88iVf1ovNn1iLfgUVU2F9o5eO30ui720w+kxuqRs0=
-github.com/gardener/component-cli v0.42.0 h1:oQf8jExpqRSySGJnsYcX4BQ4TNgvm3k5v2szC2NcAO4=
-github.com/gardener/component-cli v0.42.0/go.mod h1:1KZ3VZhGXyP7RDtcVLYeQtWDhStwuwupPh3QDsbSV6Y=
+github.com/gardener/component-cli v0.43.0 h1:lSbOdrzWL0M0S7CixnQdXx0dcIdTOt+igcDtL35tECQ=
+github.com/gardener/component-cli v0.43.0/go.mod h1:nCS+MtoyLQDEJSDKDSWxWXxztzvJcuubDieFNn2XePU=
 github.com/gardener/component-spec/bindings-go v0.0.52/go.mod h1:kQFMTWowNAp9tOp6aImQa/NoLzfvX29jN5Qgud9rpQU=
 github.com/gardener/component-spec/bindings-go v0.0.65 h1:HHczHWEJUXYcaKr+UWGvXFTHYONeSdlIqlj0T73POiw=
 github.com/gardener/component-spec/bindings-go v0.0.65/go.mod h1:hwdDN2xZhFxv1vdamShz3/29Nqjx4UQlpxjyBZAZh4M=
