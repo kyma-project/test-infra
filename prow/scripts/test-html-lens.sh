@@ -2,7 +2,7 @@
 
 
 
-golangci-lint  run ./... --out-format html > "${ARTIFACTS}/report-golint.html"
+# golangci-lint  run ./... --out-format html > "${ARTIFACTS}/report-golint.html"
 
 cat <<EOF > "${ARTIFACTS}/report-example.html"
 <!DOCTYPE html>
@@ -11,6 +11,9 @@ cat <<EOF > "${ARTIFACTS}/report-example.html"
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>HTML title</title>
+        <style>
+            body {background-color: white;}
+        </style>
     </head>
     <body>
         <h1>Example report</h1>
