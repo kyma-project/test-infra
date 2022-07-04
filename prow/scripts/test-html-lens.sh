@@ -4,4 +4,4 @@
 
 golangci-lint  run ./... --out-format html > "${ARTIFACTS}/report-golint.html"
 
-curl -LO "${ARTIFACTS}/report-kyma.html" "https://kyma-project.io"
+curl -L -o "${ARTIFACTS}/report-kyma.html" "https://kyma-project.io"
