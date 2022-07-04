@@ -24,6 +24,15 @@ templates:
                     - "jobConfig_presubmit"
                     - "pubsub_labels"
               - jobConfig:
+                  name: "pre-test-infra-test-html-lens"
+                  command: "prow/scripts/test-html-lens.sh"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_presubmit"
+                    - "pubsub_labels"
+              - jobConfig:
                   name: "pre-main-test-infra-validate-prow-tools"
                   privileged: "false"
                   run_if_changed: "^(go.mod|go.sum)$|^development/tools/(cmd/.*|pkg/.*|Makefile|.*.sh)"
