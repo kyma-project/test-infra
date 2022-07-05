@@ -1,6 +1,6 @@
 # HTML lens
 
-Spyglass HTML lens allows to display HTML files in the job result.
+Spyglass HTML lens allows to display HTML files in the job results.
 
 ## Usage
 
