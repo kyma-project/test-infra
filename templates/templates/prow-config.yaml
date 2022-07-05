@@ -301,7 +301,6 @@ tide:
     kyma-incubator/wordpress-connector: squash
     kyma-incubator/connector-tools: squash
 #    kyma-incubator/github-slack-connectors: squash
-    kyma-incubator/gcp-service-broker: squash
 #    kyma-incubator/homebrew-kyma-incubator: squash
 #    kyma-incubator/runtime: squash
     kyma-incubator/artwork: squash
