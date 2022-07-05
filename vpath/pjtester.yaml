@@ -1,0 +1,10 @@
+pjNames:
+  - pjName: "skr-aws-integration-dev"
+  - pjName: "skr-aws-upgrade-integration-dev"
+  - pjName: "skr-free-aws-integration-dev"
+  - pjName: "skr-azure-integration-dev"
+  - pjName: "skr-azure-nightly"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 14747
