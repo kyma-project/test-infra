@@ -34,6 +34,7 @@ function api-gateway::prepare_test_environments() {
   export TEST_REQUEST_DELAY="10"
   export TEST_DOMAIN="${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com" 
   export TEST_CLIENT_TIMEOUT=30s
+  export EXPORT_RESULT="true"
 }
 
 function api-gateway::configure_ory_hydra() {
@@ -130,8 +131,9 @@ EOF
 function api-gateway::launch_tests() {
   log::info "Running Kyma API-Gateway tests"
 
-  pushd "${KYMA_SOURCES_DIR}/tests/components/api-gateway/gateway-tests"
-  go test -v ./main_test.go
+  pushd "${KYMA_SOURCES_DIR}/tests/components/api-gateway"
+  make test
+  mv reports/*.html ${ARTIFACTS}
   popd
 
   log::success "Tests completed"
