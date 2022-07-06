@@ -100,7 +100,7 @@ function run_tests() {
     npm install
     npm run test-telemetry
   elif [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
-    pushd "${KYMA_SOURCES_DIR}/resources/istio"
+    pushd "../../resources/istio"
     helm lint .
     helm template . -f values.yaml
     popd
