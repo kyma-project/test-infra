@@ -921,34 +921,6 @@ presubmits: # runs on PRs
               - "--config-path=../prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
-  kyma-incubator/sc-removal:
-    - name: pre-sc-removal-validate-inrepo-prow-configs
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-sc-removal-validate-inrepo-prow-configs"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220705-20e880da9b"
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-  
   kyma-incubator/dex:
     - name: pre-dex-validate-inrepo-prow-configs
       annotations:
