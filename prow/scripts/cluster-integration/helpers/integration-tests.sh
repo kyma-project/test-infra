@@ -34,7 +34,7 @@ function api-gateway::prepare_test_environments() {
   export TEST_REQUEST_DELAY="10"
   export TEST_DOMAIN="${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com" 
   export TEST_CLIENT_TIMEOUT=30s
-  export TEST_CONCURENCY="8"
+  export TEST_CONCURENCY="1"
   export EXPORT_RESULT="true"
 }
 
