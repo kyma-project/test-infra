@@ -133,7 +133,8 @@ function api-gateway::launch_tests() {
 
   pushd "${KYMA_SOURCES_DIR}/tests/components/api-gateway"
   make test
-  mv reports/*.html ${ARTIFACTS}
+  cp reports/*.html ${ARTIFACTS}
+  cp junit-report.xml ${ARTIFACTS}
   popd
 
   log::success "Tests completed"
