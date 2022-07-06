@@ -25,7 +25,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "cd operator && golangci-lint run --max-issues-per-linter=0 --max-same-issues=0 --sort-results"
+              - "cd operator && golangci-lint run"
             env:
               - name: GO11MODULE
                 value: "on"
