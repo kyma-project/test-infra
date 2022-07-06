@@ -133,7 +133,7 @@ function api-gateway::launch_tests() {
   log::info "Running Kyma API-Gateway tests"
 
   pushd "${KYMA_SOURCES_DIR}/tests/components/api-gateway"
-  mkdir ${ARTIFACTS}/reports
+  mkdir "${ARTIFACTS}/reports"
   make test
   popd
 
