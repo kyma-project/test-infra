@@ -111,11 +111,13 @@ function run_tests() {
     npm run test-telemetry
   elif [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_OS ]]; then
       pushd "../components/application-connector"
+      export EXPORT_RESULT="true"
       go install github.com/jstemmer/go-junit-report/v2@latest
       make test-os
       popd
   elif [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_SKR ]]; then
       pushd "../components/application-connector"
+      export EXPORT_RESULT="true"
       go install github.com/jstemmer/go-junit-report/v2@latest
       make test-skr
       popd
