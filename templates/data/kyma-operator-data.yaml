@@ -10,7 +10,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "cd operator && golangci-lint run --max-issues-per-linter=0 --max-same-issues=0 --sort-results"
+                    - "cd operator && golangci-lint run"
                   env:
                     GO11MODULE: "on"
                   branches:
