@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "pre-kyma-tests-components-application-connector"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 14743
