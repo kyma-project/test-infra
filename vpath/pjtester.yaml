@@ -1,6 +1,4 @@
 pjNames:
-  - pjName: "pre-kyma-tests-components-application-connector"
-  - pjName: "pre-main-kyma-integration-k3d-app-connector-skr"
   - pjName: "pre-main-kyma-integration-k3d-app-connector-os"
 prConfigs:
   kyma-project:
