@@ -52,6 +52,20 @@ gcloud kms keys create $ENCRYPTION_KEY_NAME --location $LOCATION \
   --keyring $KEYRING_NAME --purpose encryption
   ```
 
+## Rotate a key version
+
+Use this command to create a new version of a key:
+```
+gcloud kms keys versions create --key=$ENCRYPTION_KEY_NAME --location $LOCATION \
+  --keyring $KEYRING_NAME --primary
+```
+
+Use this command to disable an old version of a key:
+```
+gcloud kms keys versions disable $VERSION --key=$ENCRYPTION_KEY_NAME --location $LOCATION \
+  --keyring $KEYRING_NAME --primary
+```
+
 ### Create a Google service account
 
 Follow these steps:
@@ -86,6 +100,25 @@ Follow these steps:
    ```
    gcloud projects add-iam-policy-binding $PROJECT --member=serviceAccount:$SA_NAME@$PROJECT.iam.gserviceaccount.com --role=$ROLE
    ```
+
+
+### Rotate a Google service account key
+Follow these steps:
+
+1. Create new key for a service account:
+```
+gcloud iam service-accounts keys create $SECRET_FILE --iam-account=$SA_NAME@$PROJECT.iam.gserviceaccount.com
+```
+
+2.  List all keys:
+```
+gcloud iam service-accounts keys list  --iam-account=$SA_NAME@$PROJECT.iam.gserviceaccount.com --managed-by=user
+```
+
+3. Delete old key:
+```
+gcloud iam service-accounts keys delete $KEY_ID --iam-account=$SA_NAME@$PROJECT.iam.gserviceaccount.com
+```
 
 ### Encrypt the Secret
 
