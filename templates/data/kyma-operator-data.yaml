@@ -1,0 +1,22 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma-operator/operator.yaml
+        jobConfigs:
+          - repoName: kyma-project/kyma-operator
+            jobs:
+              - jobConfig:
+                  name: "pre-main-kyma-operator-lint"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd operator && golangci-lint run"
+                  env:
+                    GO11MODULE: "on"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - image_buildpack-golang

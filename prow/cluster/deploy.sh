@@ -28,6 +28,7 @@ prow_components=(
 "horologium_rbac.yaml"
 "horologium_deployment.yaml"
 "horologium_service.yaml"
+"halogen.yaml"
 "pjtester_prowjob-scheduler_rbac.yaml"
 "prow_controller_manager_rbac.yaml"
 "prow_controller_manager_deployment.yaml"

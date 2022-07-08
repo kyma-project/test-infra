@@ -169,7 +169,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.AllPeriodics()
-	assert.Len(t, periodics, 19)
+	assert.Len(t, periodics, 18)
 
 	expName := "kyma-upgrade-k3d-kyma2-to-main"
 	kymaUpgradePeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -210,18 +210,6 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, []string{"bash"}, addressesCleanerPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "/prow-tools/ipcleaner -project=${CLOUDSDK_CORE_PROJECT} -dry-run=false -ip-exclude-name-regex='^nightly|nightly-(.*)|weekly|weekly-(.*)|nat-auto-ip'"}, addressesCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, addressesCleanerPeriodic.JobBase)
-
-	expName = "orphaned-az-storage-accounts-cleaner"
-	orphanedAZStorageAccountsCleaner := tester.FindPeriodicJobByName(periodics, expName)
-	require.NotNil(t, orphanedAZStorageAccountsCleaner)
-	assert.Equal(t, expName, orphanedAZStorageAccountsCleaner.Name)
-
-	assert.Equal(t, "00 00 * * *", orphanedAZStorageAccountsCleaner.Cron)
-	tester.AssertThatHasPresets(t, orphanedAZStorageAccountsCleaner.JobBase, "preset-az-kyma-prow-credentials")
-	tester.AssertThatHasExtraRepoRefCustom(t, orphanedAZStorageAccountsCleaner.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
-	assert.Equal(t, tester.ImageKymaIntegrationLatest, orphanedAZStorageAccountsCleaner.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/minio/azure-cleaner.sh"}, orphanedAZStorageAccountsCleaner.Spec.Containers[0].Command)
-	tester.AssertThatSpecifiesResourceRequests(t, orphanedAZStorageAccountsCleaner.JobBase)
 
 	expName = "orphaned-assetstore-gcp-bucket-cleaner"
 	assetstoreGcpBucketCleaner := tester.FindPeriodicJobByName(periodics, expName)
