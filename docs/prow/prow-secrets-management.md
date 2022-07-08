@@ -115,7 +115,7 @@ gcloud iam service-accounts keys create $SECRET_FILE --iam-account=$SA_NAME@$PRO
 gcloud iam service-accounts keys list --iam-account=$SA_NAME@$PROJECT.iam.gserviceaccount.com --managed-by=user
 ```
 
-3. Delete old key:
+3. Delete an old key:
 ```
 gcloud iam service-accounts keys delete $KEY_ID --iam-account=$SA_NAME@$PROJECT.iam.gserviceaccount.com
 ```
