@@ -105,7 +105,7 @@ Follow these steps:
 ### Rotate a Google service account key
 Follow these steps:
 
-1. Create new key for a service account:
+1. Create a new key for a service account:
 ```
 gcloud iam service-accounts keys create $SECRET_FILE --iam-account=$SA_NAME@$PROJECT.iam.gserviceaccount.com
 ```
