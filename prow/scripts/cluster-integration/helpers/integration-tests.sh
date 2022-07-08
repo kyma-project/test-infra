@@ -48,6 +48,8 @@ function api-gateway::configure_ory_hydra() {
   kubectl -n kyma-system set env deployment ory-hydra URLS_SELF_PUBLIC="https://oauth2.${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com/"
   kubectl -n kyma-system rollout restart deployment ory-hydra
   kubectl -n kyma-system rollout status deployment ory-hydra
+  kubectl -n kyma-system rollout restart deployment ory-hydra-maester
+  kubectl -n kyma-system rollout status deployment ory-hydra-maester
 }
 
 function api-gateway::deploy_login_consent_app() {
