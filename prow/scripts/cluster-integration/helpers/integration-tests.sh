@@ -62,7 +62,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ory-hydra-login-consent
-  namespace: kyma-system
+  namespace: istio-system
 spec:
   selector:
     matchLabels:
@@ -91,7 +91,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: ory-hydra-login-consent
-  namespace: kyma-system
+  namespace: istio-system
 spec:
   selector:
     app: ory-hydra-login-consent
@@ -106,7 +106,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: ory-hydra-login-consent
-  namespace: kyma-system
+  namespace: istio-system
   labels:
     app: ory-hydra-login-consent
 spec:
@@ -122,7 +122,7 @@ spec:
         exact: /consent
     route:
     - destination:
-        host: ory-hydra-login-consent.kyma-system.svc.cluster.local
+        host: ory-hydra-login-consent.istio-system.svc.cluster.local
         port:
           number: 80
 EOF
