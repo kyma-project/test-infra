@@ -107,3 +107,22 @@ func (c *GitClient) GetGitRepoClient(org, repo string) (git.RepoClient, string, 
 		return gitRepoClient, c.clonedRepos[fmt.Sprintf("%s/%s", org, repo)], nil
 	}
 }
+
+// GetGitRepoClientFromDir provide instance of git repository client. It will clone repository on first use.
+// If repository was already cloned, a new repository client will be created from local repository.
+// During creation from local repository a fetch from upstream is executed.
+func (c *GitClient) GetGitRepoClientFromDir(org, repo, dir string) (git.RepoClient, string, error) {
+	// Create repository client from already cloned local repository.
+	gitRepoClient, err := c.ClientFromDir(org, repo, dir)
+	if err != nil {
+		return nil, "", fmt.Errorf("failed create git repository client from directory, org: %s, repo: %s, directory: %s, error: %w", org, repo, dir, err)
+	}
+	// Fetch changes from upstream.
+	err = gitRepoClient.Fetch()
+	if err != nil {
+		return nil, "", fmt.Errorf("failed fetch repostiory, org: %s, repo: %s, error: %w", org, repo, err)
+	}
+	// Save repository local path to reuse it for creation new repository clients.
+	c.clonedRepos[fmt.Sprintf("%s/%s", org, repo)] = dir
+	return gitRepoClient, dir, nil
+}
