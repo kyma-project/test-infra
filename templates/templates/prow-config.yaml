@@ -1026,17 +1026,17 @@ presets:
       - name: COMPASS_INTEGRATION_ENABLED
         value: "true"
   - labels:
-      preset-kyma-integration-application-connector-component-gateway: "true"
+      preset-kyma-integration-app-connector-tests-app-gateway: "true"
     env:
       - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_GATEWAY
         value: "true"
   - labels:
-      preset-kyma-integration-application-connector-component-validator: "true"
+      preset-kyma-integration-app-connector-tests-app-validator: "true"
     env:
       - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_VALIDATOR
         value: "true"
   - labels:
-      preset-kyma-integration-application-connector-component-runtime-agent: "true"
+      preset-kyma-integration-app-connector-tests-runtime-agent: "true"
     env:
       - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_RUNTIME_AGENT
         value: "true"
