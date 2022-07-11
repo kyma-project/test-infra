@@ -267,7 +267,7 @@ func (o *options) genJobSpec(pjCfg pjConfig, org, repo string) (config.JobBase, 
 	log.Debugf("pjtesterPR: %v", o.testPullRequests)
 	if _, present := o.testPullRequests[o.pjtesterPrOrg][o.pjtesterPrRepo]; present {
 		o.usePjtesterPR = false
-		log.Debugf("using pjtester PR: %v", o.usePjtesterPR)
+		log.Debugf("not using pjtester PR: %v", o.usePjtesterPR)
 	} else {
 		o.usePjtesterPR = true
 		log.Debugf("using pjtester PR: %v", o.usePjtesterPR)
@@ -281,12 +281,19 @@ func (o *options) genJobSpec(pjCfg pjConfig, org, repo string) (config.JobBase, 
 
 	if o.headSHAGetter != nil {
 		preSubmits, err = conf.GetPresubmits(o.gitClient.ClientFactory, fmt.Sprintf("%s/%s", org, repo), o.baseSHAGetter, o.headSHAGetter)
+		if err != nil {
+			log.WithError(err).Fatalf("failed get presubmits")
+		}
 		log.Debugf("Use head getter: %v", o.headSHAGetter)
 	} else {
 		preSubmits, err = conf.GetPresubmits(o.gitClient.ClientFactory, fmt.Sprintf("%s/%s", org, repo), o.baseSHAGetter)
+		if err != nil {
+			log.WithError(err).Fatalf("failed get presubmits")
+		}
 		log.Debugf("Not use head getter")
+		log.Debugf("presubmits count: %d", len(preSubmits))
 	}
-	logrus.Debugf("pjconfig pjname: %s", pjCfg.PjName)
+	log.Debugf("pjconfig pjname: %s", pjCfg.PjName)
 	for _, p := range preSubmits {
 		log.Debugf("presubmit.name : %s", p.Name)
 		if p.Name == pjCfg.PjName {
@@ -304,8 +311,14 @@ func (o *options) genJobSpec(pjCfg pjConfig, org, repo string) (config.JobBase, 
 	}
 	if o.headSHAGetter != nil {
 		postSubmits, err = conf.GetPostsubmits(o.gitClient.ClientFactory, fmt.Sprintf("%s/%s", org, repo), o.baseSHAGetter, o.headSHAGetter)
+		if err != nil {
+			log.WithError(err).Fatalf("failed get postsubmits")
+		}
 	} else {
 		postSubmits, err = conf.GetPostsubmits(o.gitClient.ClientFactory, fmt.Sprintf("%s/%s", org, repo), o.baseSHAGetter)
+		if err != nil {
+			log.WithError(err).Fatalf("failed get postsubmits")
+		}
 	}
 	for _, p := range postSubmits {
 		if p.Name == pjCfg.PjName {
