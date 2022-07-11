@@ -109,17 +109,21 @@ function run_tests() {
   elif [[ -v TELEMETRY_ENABLED ]]; then
     npm install
     npm run test-telemetry
-  elif [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_OS ]]; then
+
+  elif [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_GATEWAY || -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_VALIDATOR || -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_RUNTIME_AGENT]]; then
       pushd "../components/application-connector"
       export EXPORT_RESULT="true"
       go install github.com/jstemmer/go-junit-report/v2@latest
-      make test-os
-      popd
-  elif [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_SKR ]]; then
-      pushd "../components/application-connector"
-      export EXPORT_RESULT="true"
-      go install github.com/jstemmer/go-junit-report/v2@latest
-      make test-skr
+      make test-gateway
+
+      if [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_GATEWAY ]] ; then
+        make test-gateway
+      elif [ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_VALIDATOR ]; then
+        make test-validator
+      elif [ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_RUNTIME_AGENT ]; then
+          make test-compass-runtime-agent
+      fi
+
       popd
   elif [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
     pushd "../components/istio"

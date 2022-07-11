@@ -4,8 +4,9 @@
 | name | platform | cluster-provisioning | installer | profile | trigger | tests |
 |:-----|:---------|:---------------------|:----------|:--------|:--------|:------|
 | pre-main-kyma-integration-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
-| pre-main-kyma-integration-k3d-app-connector-skr | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
-| pre-main-kyma-integration-k3d-app-connector-os | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
+| pre-main-kyma-integration-k3d-app-connector-gateway | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
+| pre-main-kyma-integration-k3d-app-connector-validator | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
+| pre-main-kyma-integration-k3d-runtime-agent | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-integration-k3d-central-app-connectivity-compass | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-serverless-integration-k3s | k3s | k3s | kyma deploy |  | pr-submit |  helm serverless-test  |
 | serverless-function-benchmark | gke |  |  |  | nightly |  Serverless function benchmarks  |

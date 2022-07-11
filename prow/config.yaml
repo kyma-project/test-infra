@@ -1028,14 +1028,19 @@ presets:
       - name: COMPASS_INTEGRATION_ENABLED
         value: "true"
   - labels:
-      preset-application-connector-component-tests-skr: "true"
+      preset-application-connector-component-gateway: "true"
     env:
-      - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_SKR
+      - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_GATEWAY
         value: "true"
   - labels:
-      preset-application-connector-component-tests-os: "true"
+      preset-application-connector-component-validator: "true"
     env:
-      - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_OS
+      - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_VALIDATOR
+        value: "true"
+  - labels:
+      preset-application-connector-component-runtime-agent: "true"
+    env:
+      - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_RUNTIME_AGENT
         value: "true"
   - labels:
       preset-kyma-integration-istio-evaluation: "true"
