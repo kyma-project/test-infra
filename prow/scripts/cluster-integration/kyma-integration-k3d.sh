@@ -114,7 +114,6 @@ function run_tests() {
       pushd "../components/application-connector"
       export EXPORT_RESULT="true"
       go install github.com/jstemmer/go-junit-report/v2@latest
-      make test-gateway
 
       if [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_GATEWAY ]] ; then
         make test-gateway
