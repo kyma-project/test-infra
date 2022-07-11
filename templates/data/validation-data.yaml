@@ -123,8 +123,7 @@ templates:
                   command: "/bin/bash"
                   args: 
                     - "-c"
-                    - "shopt -s globstar;
-                      hadolint --config .hadolint.yaml --no-color **/Dockerfile"
+                    - "echo test"
                 inheritedConfigs:
                   local:
                     - "jobConfig_allBranches"

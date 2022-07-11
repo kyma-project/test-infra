@@ -1,2 +1,5 @@
-pjNames:
-  - pjName: pre-main-test-infra-pjtester-v2
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      test-infra:
+        - pjName: pre-test-infra-validate-dockerfiles
