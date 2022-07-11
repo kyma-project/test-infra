@@ -591,7 +591,7 @@ func newTestPJ(pjCfg pjConfig, opt options, org, repo string) (prowapi.ProwJob, 
 func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	// TODO: use our logging clients
 	log.SetOutput(os.Stdout)
-	log.SetLevel(logrus.InfoLevel)
+	log.SetLevel(logrus.DebugLevel)
 	var err error
 	if err := checkEnvVars(envVarsList); err != nil {
 		logrus.WithError(err).Fatalf("Required environment variable not set.")
