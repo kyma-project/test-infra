@@ -223,7 +223,7 @@ func newCommonOptions(ghOptions prowflagutil.GitHubOptions) options {
 	// pullNumber is a number of github pull request under test
 	o.pullNumber, err = strconv.Atoi(os.Getenv("PULL_NUMBER"))
 	if err != nil {
-		logrus.WithError(err).Fatalf("could not get pull number from env var PULL_NUMBER")
+		log.WithError(err).Fatalf("could not get pull number from env var PULL_NUMBER")
 	}
 	// pullSha is a SHA of github pull request head under test
 	o.pullSha = os.Getenv("PULL_PULL_SHA")
@@ -264,12 +264,13 @@ func (o *options) genJobSpec(pjCfg pjConfig, org, repo string) (config.JobBase, 
 		err         error
 	)
 
+	log.Debugf("pjtesterPR: %v", o.testPullRequests)
 	if _, present := o.testPullRequests[o.pjtesterPrOrg][o.pjtesterPrRepo]; present {
 		o.usePjtesterPR = false
-		logrus.Debugf("using pjtester PR: %v", o.usePjtesterPR)
+		log.Debugf("using pjtester PR: %v", o.usePjtesterPR)
 	} else {
 		o.usePjtesterPR = true
-		logrus.Debugf("using pjtester PR: %v", o.usePjtesterPR)
+		log.Debugf("using pjtester PR: %v", o.usePjtesterPR)
 	}
 
 	// Loading Prow config and Prow Jobs config from files. If files were changed in pull request, new values will be used for test.
@@ -280,14 +281,14 @@ func (o *options) genJobSpec(pjCfg pjConfig, org, repo string) (config.JobBase, 
 
 	if o.headSHAGetter != nil {
 		preSubmits, err = conf.GetPresubmits(o.gitClient.ClientFactory, fmt.Sprintf("%s/%s", org, repo), o.baseSHAGetter, o.headSHAGetter)
-		logrus.Debugf("Use head getter: %v", o.headSHAGetter)
+		log.Debugf("Use head getter: %v", o.headSHAGetter)
 	} else {
 		preSubmits, err = conf.GetPresubmits(o.gitClient.ClientFactory, fmt.Sprintf("%s/%s", org, repo), o.baseSHAGetter)
-		logrus.Debugf("Not use head getter")
+		log.Debugf("Not use head getter")
 	}
 	logrus.Debugf("pjconfig pjname: %s", pjCfg.PjName)
 	for _, p := range preSubmits {
-		logrus.Debugf("presubmit.name : %s", p.Name)
+		log.Debugf("presubmit.name : %s", p.Name)
 		if p.Name == pjCfg.PjName {
 			p.Optional = true
 			pjs := pjutil.PresubmitSpec(p, prowapi.Refs{
@@ -296,7 +297,7 @@ func (o *options) genJobSpec(pjCfg pjConfig, org, repo string) (config.JobBase, 
 			})
 			pjs, err = presubmitRefs(pjs, *o)
 			if err != nil {
-				logrus.WithError(err).Fatalf("failed generate presubmit refs or extrarefs")
+				log.WithError(err).Fatalf("failed generate presubmit refs or extrarefs")
 			}
 			return p.JobBase, pjs, nil
 		}
@@ -314,7 +315,7 @@ func (o *options) genJobSpec(pjCfg pjConfig, org, repo string) (config.JobBase, 
 			})
 			pjs, err = postsubmitRefs(pjs, *o)
 			if err != nil {
-				logrus.WithError(err).Fatalf("failed generate postsubmit refs and extrarefs")
+				log.WithError(err).Fatalf("failed generate postsubmit refs and extrarefs")
 			}
 			return p.JobBase, pjs, nil
 		}
@@ -326,7 +327,7 @@ func (o *options) genJobSpec(pjCfg pjConfig, org, repo string) (config.JobBase, 
 			pjs := pjutil.PeriodicSpec(p)
 			pjs, err = periodicRefs(pjs, *o)
 			if err != nil {
-				logrus.WithError(err).Fatalf("failed generate periodic extrarefs")
+				log.WithError(err).Fatalf("failed generate periodic extrarefs")
 			}
 			return p.JobBase, pjs, nil
 		}
@@ -566,7 +567,7 @@ func newTestPJ(pjCfg pjConfig, opt options, org, repo string) (prowapi.ProwJob, 
 		return prowapi.ProwJob{}, fmt.Errorf("failed set RefsGetters, error: %w", err)
 	}
 	opt.setJobConfigPath(pjCfg, org, repo)
-	logrus.Debugf("job path: %s", opt.jobConfigPath)
+	log.Debugf("job path: %s", opt.jobConfigPath)
 	_, pjSpecification, err := opt.genJobSpec(pjCfg, org, repo)
 	if err != nil {
 		return prowapi.ProwJob{}, fmt.Errorf("failed generating prowjob specification to test: %w", err)
@@ -594,7 +595,7 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	log.SetLevel(logrus.DebugLevel)
 	var err error
 	if err := checkEnvVars(envVarsList); err != nil {
-		logrus.WithError(err).Fatalf("Required environment variable not set.")
+		log.WithError(err).Fatalf("Required environment variable not set.")
 	}
 	o := newCommonOptions(ghOptions)
 	// TODO: use test pjtesterv2.yaml file, change this to use a production pjtester.yaml
@@ -610,13 +611,13 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	prowClient := prowClientSet.ProwV1()
 	ghc, err := o.github.NewGithubClient()
 	if err != nil {
-		logrus.WithError(err).Fatal("Failed to get GitHub client")
+		log.WithError(err).Fatal("Failed to get GitHub client")
 	}
 	o.githubClient = ghc
 	o.gitOptions = git.GitClientConfig{}
 	o.gitClient, err = o.gitOptions.NewGitClient(git.WithGithubClient(o.githubClient))
 	if err != nil {
-		logrus.WithError(err).Fatal("Failed to get git client")
+		log.WithError(err).Fatal("Failed to get git client")
 	}
 	// TODO: migrate to use test-infra/development/github/pkg/client
 	o.prFinder = prtagbuilder.NewGitHubClient(nil)
