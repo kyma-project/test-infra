@@ -266,8 +266,10 @@ func (o *options) genJobSpec(pjCfg pjConfig, org, repo string) (config.JobBase, 
 
 	if _, present := o.testPullRequests[o.pjtesterPrOrg][o.pjtesterPrRepo]; present {
 		o.usePjtesterPR = false
+		logrus.Debugf("using pjtester PR: %v", o.usePjtesterPR)
 	} else {
 		o.usePjtesterPR = true
+		logrus.Debugf("using pjtester PR: %v", o.usePjtesterPR)
 	}
 
 	// Loading Prow config and Prow Jobs config from files. If files were changed in pull request, new values will be used for test.
@@ -278,11 +280,14 @@ func (o *options) genJobSpec(pjCfg pjConfig, org, repo string) (config.JobBase, 
 
 	if o.headSHAGetter != nil {
 		preSubmits, err = conf.GetPresubmits(o.gitClient.ClientFactory, fmt.Sprintf("%s/%s", org, repo), o.baseSHAGetter, o.headSHAGetter)
+		logrus.Debugf("Use head getter: %v", o.headSHAGetter)
 	} else {
 		preSubmits, err = conf.GetPresubmits(o.gitClient.ClientFactory, fmt.Sprintf("%s/%s", org, repo), o.baseSHAGetter)
+		logrus.Debugf("Not use head getter")
 	}
+	logrus.Debugf("pjconfig pjname: %s", pjCfg.PjName)
 	for _, p := range preSubmits {
-		// if p.Name == o.jobName {
+		logrus.Debugf("presubmit.name : %s", p.Name)
 		if p.Name == pjCfg.PjName {
 			p.Optional = true
 			pjs := pjutil.PresubmitSpec(p, prowapi.Refs{
@@ -326,7 +331,7 @@ func (o *options) genJobSpec(pjCfg pjConfig, org, repo string) (config.JobBase, 
 			return p.JobBase, pjs, nil
 		}
 	}
-	return config.JobBase{}, prowapi.ProwJobSpec{}, fmt.Errorf("prowjob to test not found not found in prowjob specification files")
+	return config.JobBase{}, prowapi.ProwJobSpec{}, fmt.Errorf("prowjob to test not found in prowjob specification files")
 }
 
 // setPrHeadSHA set pull request head details for provided refs.
@@ -561,6 +566,7 @@ func newTestPJ(pjCfg pjConfig, opt options, org, repo string) (prowapi.ProwJob, 
 		return prowapi.ProwJob{}, fmt.Errorf("failed set RefsGetters, error: %w", err)
 	}
 	opt.setJobConfigPath(pjCfg, org, repo)
+	logrus.Debugf("job path: %s", opt.jobConfigPath)
 	_, pjSpecification, err := opt.genJobSpec(pjCfg, org, repo)
 	if err != nil {
 		return prowapi.ProwJob{}, fmt.Errorf("failed generating prowjob specification to test: %w", err)
