@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
-	// "log"
 	"os"
 	"path"
 	"strconv"
@@ -32,17 +31,16 @@ import (
 
 // Default values for kyma-project/test-infra
 const (
-	defaultPjPath     = "prow/jobs/"
-	defaultConfigPath = "prow/config.yaml"
-	defaultMainBranch = "main"
-	defaultClonePath  = "/home/prow/go/src/github.com"
-	testinfraOrg      = "kyma-project"
-	testinfraRepo     = "test-infra"
+	defaultPjPath      = "prow/jobs/"
+	defaultConfigPath  = "prow/config.yaml"
+	defaultMainBranch  = "main"
+	defaultClonePath   = "/home/prow/go/src/github.com"
+	testinfraOrg       = "kyma-project"
+	testinfraRepo      = "test-infra"
+	pjtesterConfigPath = "vpath/pjtesterv2.yaml"
 )
 
 var (
-	// TODO: use test pjtesterv2.yaml file, change this to use a production pjtester.yaml
-	testCfgFile = path.Join(defaultClonePath, "kyma-project", "test-infra/vpath/pjtesterv2.yaml")
 	envVarsList = []string{"KUBECONFIG_PATH", "PULL_BASE_REF", "PULL_BASE_SHA", "PULL_NUMBER", "PULL_PULL_SHA", "JOB_SPEC", "REPO_OWNER", "REPO_NAME"}
 	log         = logrus.New()
 )
@@ -50,14 +48,9 @@ var (
 // pjCfg holds prowjob to test name and path to it's definition.
 type pjConfig struct {
 	PjName string `yaml:"pjName" validate:"required,min=1"`
-	PjPath string `yaml:"pjPath" default:"test-infra/prow/jobs/"`
+	PjPath string `yaml:"pjPath" default:"prow/jobs/"` // path relative to repository root
 	Report bool   `yaml:"report,omitempty"`
 }
-
-// type someType struct {
-//	PjCfgs []pjCfg `yaml:"pjCfgs" validate:"required,min=1"`
-//	//PrConfig prCfg `yaml:"prConfig,omitempty"`
-// }
 
 type pjOrg map[string][]pjConfig
 
@@ -74,14 +67,13 @@ type prOrg map[string]prConfig
 
 type pjConfigs struct {
 	PrConfig map[string]prOrg `yaml:"prConfig,omitempty"`
-	ProwJobs map[string]pjOrg `yaml:"prowJobs"`
+	ProwJobs map[string]pjOrg `yaml:"prowJobs" validate:"required,min=1"`
 }
 
 // testCfg holds prow config to test path, prowjobs to test names and paths to it's definitions.
 type testCfg struct {
-	// PjConfigs  map[string]pjOrg `yaml:"pjConfigs" validate:"required,min=1"`
 	PjConfigs  pjConfigs        `yaml:"pjConfigs" validate:"required,min=1"`
-	ConfigPath string           `yaml:"configPath" default:"test-infra/prow/config.yaml"`
+	ConfigPath string           `yaml:"configPath" default:"prow/config.yaml"` // path relative to repository root
 	PrConfig   map[string]prOrg `yaml:"prConfig,omitempty"`
 }
 
@@ -91,13 +83,13 @@ type options struct {
 	configPath    string
 	jobConfigPath string
 
-	baseRef    string
-	baseSha    string
-	pullNumber int
-	pullSha    string
-	pullAuthor string
-	org        string // pjtester pr org
-	repo       string // pjtester pr repo
+	baseRef        string
+	baseSha        string
+	pullNumber     int
+	pullSha        string
+	pullAuthor     string
+	pjtesterPrOrg  string // pjtester pr org
+	pjtesterPrRepo string // pjtester pr repo
 
 	github              ghclient.GithubClientConfig
 	githubClient        *ghclient.GithubClient
@@ -195,7 +187,7 @@ func (o *options) setJobConfigPath(pjconfig pjConfig, org, repo string) {
 	if pjconfig.PjPath != "" {
 		o.jobConfigPath = path.Join(defaultClonePath, org, repo, pjconfig.PjPath)
 	} else {
-		o.jobConfigPath = path.Join(defaultClonePath, "kyma-project", "test-infra", defaultPjPath)
+		o.jobConfigPath = path.Join(defaultClonePath, testinfraOrg, testinfraRepo, defaultPjPath)
 	}
 }
 
@@ -203,7 +195,7 @@ func (o *options) setJobConfigPath(pjconfig pjConfig, org, repo string) {
 func (o *options) setProwConfigPath(testConfig testCfg) {
 	// If
 	if testConfig.ConfigPath != "" {
-		o.configPath = path.Join(defaultClonePath, o.org, o.repo, testConfig.ConfigPath)
+		o.configPath = path.Join(defaultClonePath, o.pjtesterPrOrg, o.pjtesterPrRepo, testConfig.ConfigPath)
 	} else {
 		o.configPath = path.Join(defaultClonePath, testinfraOrg, testinfraRepo, defaultConfigPath)
 	}
@@ -224,10 +216,10 @@ func newCommonOptions(ghOptions prowflagutil.GitHubOptions) options {
 	o.baseRef = os.Getenv("PULL_BASE_REF")
 	// baseSha is a git SHA of a base branch for github pull request under test
 	o.baseSha = os.Getenv("PULL_BASE_SHA")
-	// org is a name of organisation of pull request base branch
-	o.org = os.Getenv("REPO_OWNER")
+	// pjtesterPrOrg is a name of organisation of pull request base branch
+	o.pjtesterPrOrg = os.Getenv("REPO_OWNER")
 	// repo is a name of repository of pull request base branch
-	o.repo = os.Getenv("REPO_NAME")
+	o.pjtesterPrRepo = os.Getenv("REPO_NAME")
 	// pullNumber is a number of github pull request under test
 	o.pullNumber, err = strconv.Atoi(os.Getenv("PULL_NUMBER"))
 	if err != nil {
@@ -272,7 +264,7 @@ func (o *options) genJobSpec(pjCfg pjConfig, org, repo string) (config.JobBase, 
 		err         error
 	)
 
-	if _, present := o.testPullRequests[o.org][o.repo]; present {
+	if _, present := o.testPullRequests[o.pjtesterPrOrg][o.pjtesterPrRepo]; present {
 		o.usePjtesterPR = false
 	} else {
 		o.usePjtesterPR = true
@@ -350,14 +342,14 @@ func setRefs(ref *prowapi.Refs, baseSHA, baseRef, pullAuthor, pullSHA string, pu
 
 func setRefsFromCurrentPR(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, bool) {
 	pjsRefsSet := false
-	if pjs.Refs.Org == opt.org && pjs.Refs.Repo == opt.repo {
+	if pjs.Refs.Org == opt.pjtesterPrOrg && pjs.Refs.Repo == opt.pjtesterPrRepo {
 		// set refs with details of tested PR
 		setRefs(pjs.Refs, opt.baseSha, opt.baseRef, opt.pullAuthor, opt.pullSha, opt.pullNumber)
 		pjsRefsSet = true
 		// TODO: extra setting extrarefs to separate function
 	} else {
 		for index, ref := range pjs.ExtraRefs {
-			if ref.Org == opt.org && ref.Repo == opt.repo {
+			if ref.Org == opt.pjtesterPrOrg && ref.Repo == opt.pjtesterPrRepo {
 				setRefs(&ref, opt.baseSha, opt.baseRef, opt.pullAuthor, opt.pullSha, opt.pullNumber)
 				pjs.ExtraRefs[index] = ref
 			}
@@ -460,7 +452,7 @@ func postsubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, 
 func periodicRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, error) {
 	for index, ref := range pjs.ExtraRefs {
 		if opt.usePjtesterPR {
-			if ref.Org == opt.org && ref.Repo == opt.repo {
+			if ref.Org == opt.pjtesterPrOrg && ref.Repo == opt.pjtesterPrRepo {
 				setRefs(&ref, opt.baseSha, opt.baseRef, opt.pullAuthor, opt.pullSha, opt.pullNumber)
 				pjs.ExtraRefs[index] = ref
 			}
@@ -598,12 +590,14 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	if err := checkEnvVars(envVarsList); err != nil {
 		logrus.WithError(err).Fatalf("Required environment variable not set.")
 	}
+	o := newCommonOptions(ghOptions)
+	// TODO: use test pjtesterv2.yaml file, change this to use a production pjtester.yaml
+	testCfgFile := path.Join(defaultClonePath, o.pjtesterPrOrg, o.pjtesterPrRepo, "vpath/pjtesterv2.yaml")
 	// read pjtester.yaml file
 	testCfg, err := readTestCfg(testCfgFile)
 	if err != nil {
 		log.Fatal("Pjtester config validation failed.")
 	}
-	o := newCommonOptions(ghOptions)
 	// configPath is a location of prow config file to test. It was read from pjtester.yaml file or set to default.
 	o.setProwConfigPath(testCfg)
 	prowClientSet := newProwK8sClientset()

@@ -127,7 +127,7 @@ func TestMain(m *testing.M) {
 	os.Setenv("PULL_PULL_SHA", testInfraPrHeadSHA)
 	os.Setenv("REPO_OWNER", testInfraPrOrg)
 	os.Setenv("REPO_NAME", testInfraPrRepo)
-	os.Setenv("JOB_SPEC", fmt.Sprintf("{\"type\":\"presubmit\",\"job\":\"job-name\",\"buildid\":\"0\",\"prowjobid\":\"uuid\",\"refs\":{\"org\":\"org-name\",\"repo\":\"repo-name\",\"base_ref\":\"base-ref\",\"base_sha\":\"base-sha\",\"pulls\":[{\"number\":1,\"author\":\"%s\",\"sha\":\"pull-sha\"}]}}", testInfraPrAuthor))
+	os.Setenv("JOB_SPEC", fmt.Sprintf("{\"type\":\"presubmit\",\"job\":\"job-name\",\"buildid\":\"0\",\"prowjobid\":\"uuid\",\"refs\":{\"pjtesterPrOrg\":\"pjtesterPrOrg-name\",\"repo\":\"repo-name\",\"base_ref\":\"base-ref\",\"base_sha\":\"base-sha\",\"pulls\":[{\"number\":1,\"author\":\"%s\",\"sha\":\"pull-sha\"}]}}", testInfraPrAuthor))
 	testCfgFile = fmt.Sprintf("%s/test-infra/development/tools/pkg/pjtester/test_artifacts/pjtester.yaml", repoDir)
 	ghOptions = &prowflagutil.GitHubOptions{}
 	os.Exit(m.Run())
