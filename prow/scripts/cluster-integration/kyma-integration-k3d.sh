@@ -79,13 +79,13 @@ function deploy_kyma() {
     kyma_deploy_cmd+=" --components-file kyma-integration-k3d-compass-components.yaml"
   fi
 
-  if [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_SKR ]]; then
+  if [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_VALIDATOR || -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_RUNTIME_AGENT ]]; then
     kyma_deploy_cmd+=" --value global.disableLegacyConnectivity=true"
     kyma_deploy_cmd+=" --value compass-runtime-agent.compassRuntimeAgent.config.skipAppsTLSVerification=true"
     kyma_deploy_cmd+=" --components-file kyma-integration-k3d-app-connector-components-skr.yaml"
   fi
 
-  if [[ -v  APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_OS ]]; then
+  if [[ -v  APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_GATEWAY ]]; then
     kyma_deploy_cmd+=" --components-file kyma-integration-k3d-app-connector-components-os.yaml"
   fi
 

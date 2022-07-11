@@ -59,7 +59,7 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-kyma-integration-k3d-app-connector-gateway
+    - name: pre-main-kyma-integration-k3d-app-gateway
       annotations:
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
@@ -69,12 +69,12 @@ presubmits: # runs on PRs
         pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3d-app-connector-gateway"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3d-app-gateway"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-application-connector-component-tests-gateway: "true"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
+        preset-kyma-integration-application-connector-component-tests-gateway: "true"
         preset-kyma-integration-central-app-connectivity-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^((resources/application-connector\S+|installation\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
@@ -117,7 +117,7 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-kyma-integration-k3d-app-connector-validator
+    - name: pre-main-kyma-integration-k3d-app-conn-validator
       annotations:
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
@@ -127,14 +127,14 @@ presubmits: # runs on PRs
         pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3d-app-connector-validator"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3d-app-conn-validator"
         prow.k8s.io/pubsub.topic: "prowjobs"
         annotations: 
         pipeline.platform: "k3d"
-        preset-application-connector-component-tests-validator: "true"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
+        preset-kyma-integration-application-connector-component-tests-validator: "true"
         preset-kyma-integration-central-app-connectivity-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^((resources/application-connector\S+|installation\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
@@ -191,10 +191,10 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         annotations: 
         pipeline.platform: "k3d"
-        preset-application-connector-component-tests-runtime-agent: "true"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
+        preset-kyma-integration-application-connector-component-tests-runtime-agent: "true"
         preset-kyma-integration-central-app-connectivity-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^((resources/compass-runtime-agent\S+|installation\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
