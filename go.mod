@@ -17,11 +17,11 @@ replace (
 )
 
 require (
-	cloud.google.com/go/bigquery v1.34.1
+	cloud.google.com/go/bigquery v1.35.0
 	cloud.google.com/go/firestore v1.6.1
 	cloud.google.com/go/functions v1.4.0
 	cloud.google.com/go/logging v1.5.0
-	cloud.google.com/go/pubsub v1.23.0
+	cloud.google.com/go/pubsub v1.23.1
 	cloud.google.com/go/storage v1.23.0
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.5.0
@@ -31,7 +31,7 @@ require (
 	github.com/containerd/typeurl v1.0.2
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
 	github.com/fsouza/go-dockerclient v1.8.1
-	github.com/gardener/component-cli v0.42.0
+	github.com/gardener/component-cli v0.43.0
 	github.com/gardener/component-spec/bindings-go v0.0.65
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-logr/logr v0.4.0
