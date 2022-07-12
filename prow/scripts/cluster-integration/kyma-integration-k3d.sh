@@ -111,7 +111,10 @@ function run_tests() {
     make test
     popd
   elif [[ -v API_GATEWAY_INTEGRATION ]]; then
+    pushd "../components/api-gateway"
+    go install github.com/cucumber/godog/cmd/godog@latest
     make test-k3d
+    popd
   else
     make ci
   fi
