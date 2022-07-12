@@ -115,6 +115,9 @@ function run_tests() {
     pushd "../components/api-gateway"
     export EXPORT_RESULT="true"
     export TEST_CONCURENCY="8"
+    export KYMA_DOMAIN="local.kyma.dev"
+    export TEST_DOMAIN="local.kyma.dev"
+    export TEST_HYDRA_ADDRESS="https://oauth2.local.kyma.dev"
     go install github.com/cucumber/godog/cmd/godog@latest
     make test-k3d
     popd
