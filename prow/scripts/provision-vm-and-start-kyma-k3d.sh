@@ -121,8 +121,8 @@ trap cleanup exit INT
 
 log::info "Preparing environment variables for the instance"
 
-GARDENER_ZONE=${ZONE}
-CLUSTER_NAME=kyma-integration-test-${RANDOM_ID}
+export GARDENER_ZONE=${ZONE}
+export CLUSTER_NAME=kyma-integration-test-${RANDOM_ID}
 
 envVars=(
   COMPASS_TENANT
