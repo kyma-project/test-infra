@@ -12,6 +12,7 @@
 | pre-main-kyma-integration-k3d-telemetry | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-eval-istio-integration-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-prod-istio-integration-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
+| pre-main-kyma-prod-istio-integration-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | post-main-kyma-integration-k3d | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-kyma-integration-k3d-central-app-connectivity-compass | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-kyma-integration-k3d-telemetry | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
@@ -27,7 +28,6 @@
 | post-main-kyma-gardener-gcp-goats-api-gateway | gardener_gcp | kyma cli | kyma install |  | pr-merge |  octopus  |
 | pre-main-kyma-gardener-gcp-eventing | gardener_gcp | kyma cli | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-skr-eventing | gardener_aws | keb | keb |  | pr-submit |  fast-integration  |
-| pre-main-kyma-gardener-gcp-goats-api-gateway | gardener_gcp | kyma cli | kyma install |  | pr-submit |  octopus  |
 | pre-main-kyma-gardener-gcp-eventing-upgrade | gardener_gcp | kyma cli | kyma deploy |  | pr-submit |  fast-integration  |
 | kyma-alpha-integration-evaluation-gardener-azure | gardener_azure | kyma cli | kyma deploy | evaluation | periodic |  fast-integration  |
 | kyma-alpha-integration-production-gardener-azure | gardener_azure | kyma cli | kyma deploy | production | periodic |  fast-integration  |

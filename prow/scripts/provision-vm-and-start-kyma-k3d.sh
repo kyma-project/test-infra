@@ -138,6 +138,12 @@ log::info "Copying Kyma to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
 
+if [[ -v API_GATEWAY_INTEGRATION ]]; then
+  log::info "Copying components file for API-gateway tests"
+  #shellcheck disable=SC2088
+  utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-api-gateway-components.yaml" "~/kyma-integration-k3d-api-gateway-components.yaml"
+fi
+
 if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
   log::info "Copying components file for compass tests"
   #shellcheck disable=SC2088

@@ -115,14 +115,8 @@ if [[ "${KYMA_MAJOR_VERSION}" == "2" ]]; then
        -p "$EXECUTION_PROFILE" \
        -d "$KYMA_SOURCES_DIR"
   fi
-# this will be extended with the next components
-elif [[ "${API_GATEWAY_INTEGRATION}" == "true" ]]; then
-  api-gateway::prepare_components_file
-  integration_tests::install_kyma
-  api-gateway::deploy_login_consent_app
-else
-  gardener::install_kyma
 fi
+gardener::install_kyma
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
@@ -137,11 +131,6 @@ fi
 
 if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
     gardener::test_fast_integration_kyma
-# this will be extended with the next components
-elif [[ "${API_GATEWAY_INTEGRATION}" == "true" ]]; then
-    api-gateway::configure_ory_hydra
-    api-gateway::prepare_test_environments
-    api-gateway::launch_tests
 else
     # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
     if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
