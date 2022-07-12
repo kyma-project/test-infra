@@ -7,6 +7,7 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-main-kyma-operator-lint"
+                  always_run: true
                   command: "bash"
                   args:
                     - "-c"
