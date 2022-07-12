@@ -48,6 +48,8 @@ function install_cli() {
 }
 
 function deploy_kyma() {
+  gcloud container clusters list
+
   k3d version
 
   if [[ -v K8S_VERSION ]]; then
@@ -114,7 +116,6 @@ function run_tests() {
     pushd "../components/api-gateway"
     export EXPORT_RESULT="true"
     export TEST_CONCURENCY="8"
-    sudo kyma import hosts 
     go install github.com/cucumber/godog/cmd/godog@latest
     make test-k3d
     popd
