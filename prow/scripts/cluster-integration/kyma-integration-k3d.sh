@@ -113,6 +113,7 @@ function run_tests() {
   elif [[ -v API_GATEWAY_INTEGRATION ]]; then
     pushd "../components/api-gateway"
     export EXPORT_RESULT="true"
+    export TEST_CONCURENCY="8"
     go install github.com/cucumber/godog/cmd/godog@latest
     make test-k3d
     popd
