@@ -48,6 +48,7 @@ function install_cli() {
 }
 
 function deploy_kyma() {
+  echo "gcloud container clusters get-credentials --zone=${ZONE} kyma-integration-test-${RANDOM_ID}"
   gcloud container clusters get-credentials --zone=${ZONE} kyma-integration-test-${RANDOM_ID}
 
   k3d version
