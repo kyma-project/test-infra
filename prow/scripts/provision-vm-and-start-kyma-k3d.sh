@@ -120,6 +120,10 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 trap cleanup exit INT
 
 log::info "Preparing environment variables for the instance"
+
+GARDENER_ZONE=${ZONE}
+CLUSTER_NAME=kyma-integration-test-${RANDOM_ID}
+
 envVars=(
   COMPASS_TENANT
   COMPASS_HOST
@@ -130,8 +134,8 @@ envVars=(
   TELEMETRY_ENABLED
   ISTIO_INTEGRATION_ENABLED
   API_GATEWAY_INTEGRATION
-  RANDOM_ID
-  ZONE
+  GARDENER_ZONE
+  CLUSTER_NAME
   KYMA_MAJOR_VERSION
   KYMA_PROFILE
   K8S_VERSION
