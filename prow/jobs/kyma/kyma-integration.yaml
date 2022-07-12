@@ -326,7 +326,7 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-kyma-prod-istio-integration-k3d
+    - name: pre-main-kyma-api-gateway-integration-k3d
       annotations:
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
@@ -336,7 +336,7 @@ presubmits: # runs on PRs
         pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-prod-istio-integration-k3d"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-api-gateway-integration-k3d"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"

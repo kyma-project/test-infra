@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "pre-main-kyma-gardener-gcp-goats-api-gateway"
+  - pjName: "pre-main-kyma-api-gateway-integration-k3d"
 prConfigs:
   kyma-project:
     kyma:

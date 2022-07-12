@@ -547,7 +547,7 @@ templates:
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
               - jobConfig:
-                  name: pre-main-kyma-prod-istio-integration-k3d
+                  name: pre-main-kyma-api-gateway-integration-k3d
                   optional: true
                   labels:
                     preset-build-pr: "true"
