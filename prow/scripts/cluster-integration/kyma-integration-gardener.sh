@@ -124,7 +124,6 @@ elif [[ "${API_GATEWAY_INTEGRATION}" == "true" ]]; then
 else
   gardener::install_kyma
 fi
-gardener::install_kyma
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
