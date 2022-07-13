@@ -56,7 +56,7 @@ Different build jobs are specified in the `jobs` folder per repository. Each of 
 > **NOTE:** A job cannot access the K8s API.
 
 ## Dynamic provisioning using GKE or Google Compute Engine (GCE)
-The integration job performs integration tests against real clusters. To achieve this, it creates and deletes either the managed Kubernetes clusters using GKE or Virtual Machines (VM) with Minikube installed on them. The integration job uses the Secret configured for a dedicated Google service account.
+The integration job performs integration tests against real clusters. To achieve this, it creates and deletes either the managed Kubernetes clusters using GKE or Virtual Machines (VM) with k3d installed on them. The integration job uses the Secret configured for a dedicated Google service account.
 
 ## Publish images to Google Container Registry (GCR)
 Every job can have a Secret configured to upload Docker images to GCR. That Secret belongs to a dedicated Google service account.

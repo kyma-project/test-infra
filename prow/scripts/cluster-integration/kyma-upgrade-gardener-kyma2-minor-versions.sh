@@ -76,6 +76,9 @@ function upgrade() {
     kyma2_install_dir="$KYMA_SOURCES_DIR/kyma2.$i"
     kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kyma2_install_dir" -u "true"
 
+    log::info "### restart all functions in all namespaces to workaround https://github.com/kyma-project/kyma/issues/14757"
+    kubectl delete pod -l=serverless.kyma-project.io/managed-by=function-controller -A
+    
     # generate pod-security-policy list in json
     utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
