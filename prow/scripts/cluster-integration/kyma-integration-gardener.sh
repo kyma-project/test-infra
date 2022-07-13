@@ -137,6 +137,11 @@ fi
 
 if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
     gardener::test_fast_integration_kyma
+# this will be extended with the next components
+elif [[ "${API_GATEWAY_INTEGRATION}" == "true" ]]; then
+    api-gateway::configure_ory_hydra
+    api-gateway::prepare_test_environments
+    api-gateway::launch_tests
 else
     # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
     if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
