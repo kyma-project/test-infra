@@ -76,7 +76,7 @@ install_busola(){
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
     # helm repo update
     
-    helm install ingress-nginx \
+    helm install ingress-nginx --version 4.1.3 \
     --namespace=kube-system \
     --set controller.extraArgs.default-ssl-certificate=kube-system/default-ssl-certificate \
     ingress-nginx/ingress-nginx > /dev/null
