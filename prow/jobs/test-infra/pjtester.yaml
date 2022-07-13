@@ -79,7 +79,7 @@ presubmits: # runs on PRs
         volumes:
           - name: oauth
             secret:
-              secretName: pjtester-github-token
+              secretName: pjtester-github-oauth-token
     - name: pre-main-test-infra-vpathguard
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -114,3 +114,4 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+  
