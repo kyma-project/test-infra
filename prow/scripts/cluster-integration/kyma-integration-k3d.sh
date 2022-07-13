@@ -118,7 +118,6 @@ function run_tests() {
     export KYMA_DOMAIN="local.kyma.dev"
     export TEST_DOMAIN="local.kyma.dev"
     export TEST_HYDRA_ADDRESS="https://oauth2.local.kyma.dev"
-    npm i chart.js
     go install github.com/cucumber/godog/cmd/godog@latest
     make test-k3d
     popd

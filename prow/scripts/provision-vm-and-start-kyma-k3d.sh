@@ -29,6 +29,8 @@ cleanup() {
   # do not fail the job regardless of the vm deletion result
   set +e
 
+  npm i chart.js
+
   #shellcheck disable=SC2088
   if [[ "$ISTIO_INTEGRATION_ENABLED" == "true" ]]; then
     utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/components/istio/junit-report.xml" "${ARTIFACTS}"
