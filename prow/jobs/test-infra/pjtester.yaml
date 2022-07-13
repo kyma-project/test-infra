@@ -59,10 +59,16 @@ presubmits: # runs on PRs
               privileged: false
             command:
               - "pjtester"
+            args:
+              - "--github-token-path=/etc/github/oauth"
             resources:
               requests:
                 memory: 3Gi
                 cpu: 2
+            volumeMounts:
+              - name: oauth
+                mountPath: /etc/github
+                readOnly: true
         tolerations:
           - key: dedicated
             operator: Equal
@@ -70,6 +76,10 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+        volumes:
+          - name: oauth
+            secret:
+              secretName: pjtester-github-oauth-token
     - name: pre-main-test-infra-vpathguard
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

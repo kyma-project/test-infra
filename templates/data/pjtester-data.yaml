@@ -38,6 +38,15 @@ templates:
                   image: "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-5544"
                   branches:
                     - ^.*$
+                  volumeMounts:
+                    - name: "oauth"
+                      mountPath: "/etc/github"
+                      readOnly: "true"
+                  volumes:
+                    - name: "oauth"
+                      secretName: "pjtester-github-oauth-token"
+                  args:
+                    - "--github-token-path=/etc/github/oauth"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
