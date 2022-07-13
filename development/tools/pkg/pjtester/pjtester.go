@@ -286,6 +286,7 @@ func (o *options) genJobSpec(pjCfg pjConfig, org, repo string) (config.JobBase, 
 		}
 		log.Debugf("Use head getter: %v", o.headSHAGetter)
 	} else {
+		log.Debugf("fetching presubmits")
 		preSubmits, err = conf.GetPresubmits(o.gitClient.ClientFactory, fmt.Sprintf("%s/%s", org, repo), o.baseSHAGetter)
 		if err != nil {
 			log.WithError(err).Fatalf("failed get presubmits")
@@ -603,6 +604,8 @@ func newTestPJ(pjCfg pjConfig, opt options, org, repo string) (prowapi.ProwJob, 
 
 // SchedulePJ will generate prowjob for testing and schedule it on prow for execution.
 func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
+	logrus.SetLevel(logrus.DebugLevel)
+	logrus.SetOutput(os.Stdout)
 	// TODO: use our logging clients
 	log.SetOutput(os.Stdout)
 	log.SetLevel(logrus.DebugLevel)
