@@ -3,17 +3,33 @@
 set -o errexit
 set -o pipefail
 
-LOCAL_KYMA_DIR="./local-kyma"
-K3S_DOMAIN="local.kyma.dev"
+K3S_DOMAIN="kyma"
 CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included:8.7.0"
 
+install_cli() {
+  local install_dir
+  declare -r install_dir="/usr/local/bin"
+  mkdir -p "$install_dir"
+
+  local os
+  os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+  if [[ -z "$os" || ! "$os" =~ ^(darwin|linux)$ ]]; then
+    echo >&2 -e "Unsupported host OS. Must be Linux or Mac OS X."
+    exit 1
+  else
+    readonly os
+  fi
+
+  pushd "$install_dir" || exit
+  curl -Lo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}"
+  chmod +x kyma
+  popd
+
+  kyma version --client
+}
+
 prepare_k3s() {
-    echo "prepare K3s cluster"
-    pushd ${LOCAL_KYMA_DIR}
-    ./create-cluster-k3s.sh
-    echo "k3s cluster created √"
-    kubectl cluster-info
-    popd
+    kyma provision k3d --ci
 }
 
 generate_cert(){
@@ -103,6 +119,9 @@ echo "Node.js version: $(node -v)"
 echo "NPM version: $(npm -v)"
 
 
+echo "STEP: Preparing kyma cli"
+install_cli
+
 echo "STEP: Preparing k3s cluster"
 prepare_k3s
 
@@ -111,7 +130,6 @@ generate_cert $K3S_DOMAIN
 
 echo "STEP: Installing Busola on the cluster"
 install_busola $K3S_DOMAIN
-
 
 
 # wait for all Busola pods to be ready
