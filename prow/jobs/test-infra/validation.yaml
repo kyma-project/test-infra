@@ -264,7 +264,7 @@ presubmits: # runs on PRs
               - "/bin/bash"
             args:
               - "-c"
-              - "shopt -s globstar; hadolint --config .hadolint.yaml --no-color **/Dockerfile"
+              - "cat /home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/install-prow.sh"
             resources:
               requests:
                 memory: 1.5Gi

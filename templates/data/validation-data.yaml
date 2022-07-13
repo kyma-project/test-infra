@@ -123,8 +123,7 @@ templates:
                   command: "/bin/bash"
                   args: 
                     - "-c"
-                    - "shopt -s globstar;
-                      hadolint --config .hadolint.yaml --no-color **/Dockerfile"
+                    - "cat /home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/install-prow.sh"
                 inheritedConfigs:
                   local:
                     - "jobConfig_allBranches"
