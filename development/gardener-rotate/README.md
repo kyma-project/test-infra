@@ -9,6 +9,7 @@ gardener-rotate tool allows to generate a new access token for Gardener service 
 To run gardener-rotate, use:
 ```bash
 go run main.go \ 
+    --service-account={PATH_TO_A_JSON_KEY_FILE} \
     --config-file={PATH_TO_A_YAML_FILE_CONTAINING_CONFIGURATION} \
     --kubeconfig={PATH_TO_A_KUBECONFIG_FILE} \
     --dry-run=true
