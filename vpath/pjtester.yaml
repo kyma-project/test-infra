@@ -3,7 +3,9 @@ pjNames:
     report: true
   - pjName: "pre-main-kyma-operator-lint"
     report: true
-  - pjName: "pre-main-manifest-operator-tests"
+  - pjName: "pre-main-manifest-operator-controller-tests"
+    report: true
+  - pjName: "pre-main-manifest-operator-api-tests"
     report: true
   - pjName: "pre-main-manifest-operator-lint"
     report: true
