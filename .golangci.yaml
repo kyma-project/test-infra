@@ -1,5 +1,9 @@
 # https://golangci-lint.run/usage/configuration/
 
+run:
+  timeout: 2m
+  # skip test files
+  tests: false
 linters:
   disable-all: true
   enable:

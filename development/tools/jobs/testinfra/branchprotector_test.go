@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"strings"
 	"testing"
 
 	"github.com/ghodss/yaml"
@@ -77,15 +76,6 @@ func TestBranchProtectionRelease(t *testing.T) {
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, "tide")
 		})
 	}
-
-}
-
-// status check prefix uses shorten version of release branch, because of that we need to generate the name
-func generateStatusCheck(commonJobName, releaseBranch string) string {
-	rel := strings.Replace(releaseBranch, "release", "rel", -1)
-	rel = strings.Replace(rel, ".", "", -1)
-	rel = strings.Replace(rel, "-", "", -1)
-	return "pre-" + rel + "-" + commonJobName
 
 }
 

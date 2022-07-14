@@ -238,6 +238,9 @@ func main() {
 	ctx := context.Background()
 	withCredentialsFile := pubsubOptions.WithGoogleOption(option.WithCredentialsFile(pubsubOptions.CredentialsFilePath))
 	pubsubClient, err = pubsubOptions.NewClient(ctx, withCredentialsFile)
+	if err != nil {
+		logger.Fatalf("An error occurred during pubsub client configuration: %v", err)
+	}
 
 	logger.Debug("ownersclient ready")
 

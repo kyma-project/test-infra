@@ -139,5 +139,4 @@ func validateElement(fullPath string, m map[string]interface{}, e map[string][]e
 			e[fullPath] = append(e[fullPath], ErrNoDefault)
 		}
 	}
-	return
 }

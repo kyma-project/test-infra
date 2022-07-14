@@ -191,8 +191,8 @@ func Test_removeFromArray(t *testing.T) {
 		args args
 		want []string
 	}{
-		{name: "Remove string succesful", args: args{s: []string{"a", "b", "c"}, r: "b"}, want: []string{"a", "c"}},
-		{name: "Remove only first find succesful", args: args{s: []string{"a", "b", "c", "b"}, r: "b"}, want: []string{"a", "c", "b"}},
+		{name: "Remove string successful", args: args{s: []string{"a", "b", "c"}, r: "b"}, want: []string{"a", "c"}},
+		{name: "Remove only first find successful", args: args{s: []string{"a", "b", "c", "b"}, r: "b"}, want: []string{"a", "c", "b"}},
 		{name: "Remove nothing", args: args{s: []string{"a", "b", "c"}, r: "d"}, want: []string{"a", "b", "c"}},
 	}
 	for _, tt := range tests {

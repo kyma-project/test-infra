@@ -23,12 +23,6 @@ var (
 	shouldNotDeleteDNSRecordType = "A"
 	shouldNotDeleteDNSTTL        = int64(300)
 
-	// dns entry : 3
-	shouldNotDeleteDNSNameTwo       = "this-dns-entry-stays-as-well"
-	shouldNotDeleteDNSIPTwo         = "10.1.1.3"
-	shouldNotDeleteDNSRecordTypeTwo = "B"
-	shouldNotDeleteDNSTTLTwo        = int64(200)
-
 	testProject = "testProject"
 	testZone    = "testRegion"
 )

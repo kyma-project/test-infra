@@ -115,7 +115,7 @@ func IfPresubmitShouldRunAgainstChanges(job config.Presubmit, def bool, changedF
 	}
 	det, shouldRun, err := job.RegexpChangeMatcher.ShouldRun(changed)
 	if err != nil {
-		fmt.Printf("An error occured during IfPresubmitShouldRunAgainstChanges execution: %v", err)
+		fmt.Printf("An error occurred during IfPresubmitShouldRunAgainstChanges execution: %v", err)
 		return false
 	}
 	if det {
@@ -134,7 +134,7 @@ func IfPostsubmitShouldRunAgainstChanges(job config.Postsubmit, changedFiles ...
 	}
 	det, shouldRun, err := job.RegexpChangeMatcher.ShouldRun(changed)
 	if err != nil {
-		fmt.Printf("An error occured during IfPostsubmitShouldRunAgainstChanges execution: %v", err)
+		fmt.Printf("An error occurred during IfPostsubmitShouldRunAgainstChanges execution: %v", err)
 		return false
 	}
 	if det {
