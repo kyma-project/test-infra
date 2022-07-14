@@ -119,7 +119,8 @@ gardener::provision_cluster() {
                 --region "${GARDENER_REGION}" \
                 -z "${GARDENER_ZONES}" \
                 -t "${MACHINE_TYPE}" \
-                --scaler-max 1 --scaler-min 1 \
+                --scaler-max 1 \
+                --scaler-min 1 \
                 --disk-type StandardSSD_LRS \
                 --kube-version="${GARDENER_CLUSTER_VERSION}" \
                 --attempts 1 \
@@ -137,6 +138,8 @@ gardener::provision_cluster() {
                 -z "${GARDENER_ZONES}" \
                 -t "${MACHINE_TYPE}" \
                 --disk-type StandardSSD_LRS \
+                --scaler-max 4 \
+                --scaler-min 2 \
                 --kube-version="${GARDENER_CLUSTER_VERSION}" \
                 --attempts 1 \
                 --verbose

@@ -24,10 +24,10 @@ plank:
         censoring_concurrency: 2 # 2 concurrent censoring
         censoring_buffer_size: 3092 # 3kB
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20220623-6ff60de3c2
-        initupload: gcr.io/k8s-prow/initupload:v20220623-6ff60de3c2
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20220623-6ff60de3c2
-        sidecar: gcr.io/k8s-prow/sidecar:v20220623-6ff60de3c2
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20220713-b07b206195
+        initupload: gcr.io/k8s-prow/initupload:v20220713-b07b206195
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20220713-b07b206195
+        sidecar: gcr.io/k8s-prow/sidecar:v20220713-b07b206195
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -114,11 +114,16 @@ deck:
               - want.+got
               - Your cluster may not be fully functional
               - ^\s+\^$
+              - \^-- # script validation
               - \[(0;)?31m
               - "^diff " # [+-]{3}\\s" has too much noise from go test output and set -x
               - • Failure
               # This highlights the start of bazel tests/runs to skip go importing noise.
               - "^INFO: Analyzed \\d+ targets"
+              - "JobGuard caught error"
+              - "Directory vpath is present"
+              - "\"status\": \"Vulns\"" # protecode guard
+              - "command not found"
         required_files:
           - ^.*build-log\.txt$
       - lens:
@@ -141,6 +146,10 @@ deck:
           name: links
         required_files:
           - artifacts/.*\.link\.txt
+      - lens:
+          name: html
+        required_files:
+          - ^artifacts/report.*\.html$
   branding:
     header_color: "#0b74de" # Kyma color
     logo: "/static/extensions/logo.svg"
@@ -1017,6 +1026,21 @@ presets:
       preset-kyma-integration-compass-enabled: "true"
     env:
       - name: COMPASS_INTEGRATION_ENABLED
+        value: "true"
+  - labels:
+      preset-kyma-integration-app-connector-tests-app-gateway: "true"
+    env:
+      - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_GATEWAY
+        value: "true"
+  - labels:
+      preset-kyma-integration-app-connector-tests-app-validator: "true"
+    env:
+      - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_VALIDATOR
+        value: "true"
+  - labels:
+      preset-kyma-integration-app-connector-tests-runtime-agent: "true"
+    env:
+      - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_RUNTIME_AGENT
         value: "true"
   - labels:
       preset-kyma-integration-istio-evaluation: "true"

@@ -23,7 +23,7 @@ const (
 	DefaultTechnicalWritersGroup = "technical-writers"
 )
 
-var markdownRe = regexp.MustCompile("^.*\\.md$")
+var markdownRe = regexp.MustCompile(`^.*\.md$`)
 
 func HelpProvider(_ []config.OrgRepo) (*pluginhelp.PluginHelp, error) {
 	ph := &pluginhelp.PluginHelp{

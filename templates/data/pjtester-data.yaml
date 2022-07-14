@@ -28,6 +28,31 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
+                  name: pre-main-test-infra-pjtester-v2
+                  run_if_changed: "^(vpath/pjtesterv2.yaml)"
+                  type_presubmit: "true"
+                  cluster: "trusted-workload"
+                  labels:
+                    preset-pjtester-kubeconfig: "true"
+                  command: "pjtester"
+                  image: "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-5544"
+                  branches:
+                    - ^.*$
+                  volumeMounts:
+                    - name: "oauth"
+                      mountPath: "/etc/github"
+                      readOnly: "true"
+                  volumes:
+                    - name: "oauth"
+                      secretName: "pjtester-github-oauth-token"
+                  args:
+                    - "--github-token-path=/etc/github/oauth"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
                   name: pre-main-test-infra-vpathguard
                   run_if_changed: "^(vpath/pjtester.yaml)"
                   type_presubmit: "true"

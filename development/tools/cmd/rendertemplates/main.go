@@ -312,7 +312,7 @@ func loadTemplateFromGithub(templateFileName string, tplCache map[string]*templa
 	}
 	templateString, err := getTemplateFromGithub(ghClient, templateFileName)
 	if err != nil {
-
+		return nil, err
 	}
 	templateInstance, err = template.
 		New(path.Base(templateFileName)).
