@@ -638,7 +638,9 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	// TODO: migrate to use test-infra/development/github/pkg/client
 	o.prFinder = prtagbuilder.NewGitHubClient(nil)
 
+	log.Debugf("prconfigs: %v", &testCfg.PrConfigs)
 	if &testCfg.PrConfigs != nil {
+		log.Debugf("getting details of pull requests for tested prowjobs")
 		pullRequests, err := o.getPullRequests(testCfg.PrConfigs)
 		if err != nil {
 			log.WithError(err).Fatalf("Failed get pull request deatils from GitHub.")
