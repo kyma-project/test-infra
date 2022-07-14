@@ -1028,6 +1028,21 @@ presets:
       - name: COMPASS_INTEGRATION_ENABLED
         value: "true"
   - labels:
+      preset-kyma-integration-app-connector-tests-app-gateway: "true"
+    env:
+      - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_GATEWAY
+        value: "true"
+  - labels:
+      preset-kyma-integration-app-connector-tests-app-validator: "true"
+    env:
+      - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_VALIDATOR
+        value: "true"
+  - labels:
+      preset-kyma-integration-app-connector-tests-runtime-agent: "true"
+    env:
+      - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_RUNTIME_AGENT
+        value: "true"
+  - labels:
       preset-kyma-integration-istio-evaluation: "true"
     env:
       - name: ISTIO_INTEGRATION_ENABLED

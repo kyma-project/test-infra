@@ -85,6 +85,16 @@ function deploy_kyma() {
     kyma_deploy_cmd+=" --components-file kyma-integration-k3d-compass-components.yaml"
   fi
 
+  if [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_VALIDATOR || -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_RUNTIME_AGENT ]]; then
+    kyma_deploy_cmd+=" --value global.disableLegacyConnectivity=true"
+    kyma_deploy_cmd+=" --value compass-runtime-agent.compassRuntimeAgent.config.skipAppsTLSVerification=true"
+    kyma_deploy_cmd+=" --components-file kyma-integration-k3d-app-connector-components-skr.yaml"
+  fi
+
+  if [[ -v  APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_GATEWAY ]]; then
+    kyma_deploy_cmd+=" --components-file kyma-integration-k3d-app-connector-components-os.yaml"
+  fi
+
   if [[ -v TELEMETRY_ENABLED ]]; then
     kyma_deploy_cmd+=" --value=global.telemetry.enabled=true"
     kyma_deploy_cmd+=" --components-file kyma-integration-k3d-telemetry-components.yaml"
@@ -105,6 +115,21 @@ function run_tests() {
   elif [[ -v TELEMETRY_ENABLED ]]; then
     npm install
     npm run test-telemetry
+
+  elif [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_GATEWAY || -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_VALIDATOR || -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_RUNTIME_AGENT ]]; then
+      pushd "../components/application-connector"
+      export EXPORT_RESULT="true"
+      go install github.com/jstemmer/go-junit-report/v2@latest
+
+      if [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_GATEWAY ]]; then
+        make test-gateway
+      elif [ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_VALIDATOR ]; then
+        make test-validator
+      elif [ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_RUNTIME_AGENT ]; then
+        make test-compass-runtime-agent
+      fi
+
+      popd
   elif [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
     pushd "../components/istio"
     export EXPORT_RESULT="true"
