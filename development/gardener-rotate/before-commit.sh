@@ -30,7 +30,7 @@ goFilesToCheck=$(find . -type f -name "*.go" | grep -E -v '\/vendor\/|_*/automoc
 ##
 # GO BUILD
 ##
-binaries=("image-url-helper")
+binaries=("gardener-rotate")
 buildEnv=""
 if [ "$1" == "$CI_FLAG" ]; then
   # build binary statically

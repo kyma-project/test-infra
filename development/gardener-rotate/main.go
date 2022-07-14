@@ -8,8 +8,6 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"golang.org/x/oauth2/google"
-	"google.golang.org/api/container/v1"
 	secretmanager "google.golang.org/api/secretmanager/v1"
 	authentication "k8s.io/api/authentication/v1"
 	meta "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -22,25 +20,7 @@ import (
 // "github.com/kyma-project/test-infra/development/gardener-rotate/pkg"
 
 var (
-	log                = logrus.New()
-	kubeconfigTemplate = `apiVersion: v1
-    kind: Config
-    current-context: garden-neighbors-sa-neighbor-robot
-    contexts:
-      - name: garden-neighbors-sa-neighbor-robot
-        context:
-          cluster: garden
-          user: sa-neighbor-robot
-          namespace: garden-neighbors
-    clusters:
-      - name: garden
-        cluster:
-          server: https://api.canary.gardener.cloud.sap
-    users:
-      - name: sa-neighbor-robot
-        user:
-          token: >-
-            `
+	log = logrus.New()
 )
 
 type ServiceAccount struct {
@@ -48,7 +28,7 @@ type ServiceAccount struct {
 	KubernetesNamespace string `json:"namespace,omitempty"`
 	GCPSecret           string `json:"secret"`
 	GCPProject          string `json:"project"`
-	KeepOld             bool   `json:"keepOld,omitEmpty"`
+	KeepOld             bool   `json:"keepOld,omitempty"`
 	Duration            int64  `json:"duration"`
 }
 
@@ -69,9 +49,9 @@ func main() {
 	var cfg Config
 
 	var rootCmd = &cobra.Command{
-		Use:   "image-syncer",
-		Short: "image-syncer copies images between docker registries",
-		Long:  `image-syncer copies docker images. It compares checksum between source and target and protects target images against overriding`,
+		Use:   "gardener-rotate",
+		Short: "gardener-rotate rotates kubeconfig saved in Secret Manager",
+		Long:  `gardener-rotate creates new gardener service account token and saves updated kubeconfig in Secret Manager`,
 		Run: func(cmd *cobra.Command, args []string) {
 			logLevel := logrus.InfoLevel
 			if cfg.Debug {
@@ -81,12 +61,7 @@ func main() {
 			ctx := context.Background()
 
 			// Prepare Secret Manager API and gardener Kubernetes clients
-			connection, err := google.DefaultClient(ctx, container.CloudPlatformScope)
-			if err != nil {
-				log.Fatalf("Could not get authenticated client: %v", err)
-			}
-
-			secretSvc, err := secretmanager.New(connection)
+			secretSvc, err := secretmanager.NewService(ctx)
 			if err != nil {
 				log.Fatalf("Could not initialize Secret Manager API client: %v", err)
 			}
@@ -165,14 +140,12 @@ func main() {
 								disableCall := secretVersionsSvc.Disable(secretVersion.Name, &disableRequest)
 								_, err := disableCall.Do()
 								if err != nil {
-									log.Fatalf("Could not disable secret version %d: %v", secretVersion.Name, err)
+									log.Fatalf("Could not disable secret version %s: %v", secretVersion.Name, err)
 								}
 							}
 						}
 					}
 				}
-
-				// TODO destroy versions older than x time ?
 			}
 
 		},
