@@ -1,0 +1,13 @@
+steps:
+  - id: build-image
+    dir: .
+    name: 'gcr.io/cloud-builders/docker'
+    args:
+      - "build"
+      - "--tag"
+      - "$_REPOSITORY/gcbuild:$_TAG"
+      - "."
+substitutions:
+  _REPOSITORY: eu.gcr.io/kyma-project
+images:
+  - $_REPOSITORY/gcbuild:$_TAG
