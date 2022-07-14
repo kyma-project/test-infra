@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/manifest-operator/operator.yaml
+      - to: ../../prow/jobs/manifest-operator/manifest-operator.yaml
         jobConfigs:
           - repoName: kyma-project/manifest-operator
             jobs:
