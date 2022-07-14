@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "post-main-kyma-integration-k3d-app-gateway"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 14786
