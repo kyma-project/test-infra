@@ -74,7 +74,7 @@ type pjConfigs struct {
 type testCfg struct {
 	PjConfigs  pjConfigs        `yaml:"pjConfigs" validate:"required,min=1"`
 	ConfigPath string           `yaml:"configPath" default:"prow/config.yaml"` // path relative to repository root
-	PrConfig   map[string]prOrg `yaml:"prConfig,omitempty"`
+	PrConfigs map[string]prOrg `yaml:"prConfigs,omitempty"`
 }
 
 // options holds data about prowjob and pull request to test.
@@ -638,8 +638,8 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	// TODO: migrate to use test-infra/development/github/pkg/client
 	o.prFinder = prtagbuilder.NewGitHubClient(nil)
 
-	if &testCfg.PrConfig != nil {
-		pullRequests, err := o.getPullRequests(testCfg.PrConfig)
+	if &testCfg.PrConfigs != nil {
+		pullRequests, err := o.getPullRequests(testCfg.PrConfigs)
 		if err != nil {
 			log.WithError(err).Fatalf("Failed get pull request deatils from GitHub.")
 		}

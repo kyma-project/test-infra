@@ -154,7 +154,7 @@ func TestReadTestCfg(t *testing.T) {
 		PjPath: "test-infra/prow/jobs/",
 	}, "pjCfg for post-main-kyma-integration-k3d has wrong values.")
 	assert.Equalf(t, "test-infra/prow/config.yaml", testCfg.ConfigPath, "pjtester has wrong path to prow config.yaml file.")
-	assert.Equalf(t, 1212, testCfg.PrConfig["kyma-project"]["kyma"].PrNumber, "PR number for kyma read from pjtester.yaml file is wrong.")
+	assert.Equalf(t, 1212, testCfg.PrConfigs["kyma-project"]["kyma"].PrNumber, "PR number for kyma read from pjtester.yaml file is wrong.")
 }
 
 func TestNewTestPJ(t *testing.T) {
@@ -213,7 +213,7 @@ func TestNewTestPJ(t *testing.T) {
 	defer o.prFinder.Repositories.(*mocks.GithubRepoService).AssertExpectations(t)
 	defer o.prFinder.PullRequests.(*mocks.GithubPullRequestsService).AssertExpectations(t)
 	var testPrCfg *map[string]prOrg
-	if testPrCfg = &testCfg.PrConfig; testPrCfg != nil {
+	if testPrCfg = &testCfg.PrConfigs; testPrCfg != nil {
 		o.getPullRequests(testCfg)
 	}
 	for _, pjCfg := range testCfg.PjConfigs {
