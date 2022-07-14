@@ -17,8 +17,6 @@ import (
 	"sigs.k8s.io/yaml"
 )
 
-// "github.com/kyma-project/test-infra/development/gardener-rotate/pkg"
-
 var (
 	log = logrus.New()
 )
