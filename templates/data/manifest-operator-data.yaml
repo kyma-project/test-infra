@@ -1,0 +1,52 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/manifest-operator/operator.yaml
+        jobConfigs:
+          - repoName: kyma-project/manifest-operator
+            jobs:
+              - jobConfig:
+                  always_run: true
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220627-b303c786"
+                  name: "pre-main-manifest-operator-lint"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd operator && golangci-lint run"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - "build_labels" # default labels
+              - jobConfig:
+                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
+                  name: pre-main-manifest-operator-controller-tests
+                  command: "bash"
+                  args:
+                    - "-c" 
+                    - "cd operator && make test" # run test make target of operator
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default" 
+                    - "jobConfig_presubmit"
+                    - "build_labels" # default labels
+              - jobConfig:
+                  run_if_changed: "^api/(go.mod|go.sum)$|^api/*/(.*.go|Makefile|.*.sh)"
+                  name: pre-main-manifest-operator-api-tests
+                  command: "bash"
+                  args:
+                    - "-c" 
+                    - "cd api && make test" # run test make target of operator
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default" 
+                    - "jobConfig_presubmit"
+                    - "build_labels" # default labels
