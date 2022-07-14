@@ -17,6 +17,7 @@ function prereq_test() {
 
 function load_env() {
   ENV_FILE=".env"
+  cat "${ENV_FILE}"
   if [ -f "${ENV_FILE}" ]; then
     # shellcheck disable=SC2046
     export $(xargs < "${ENV_FILE}")
@@ -63,6 +64,11 @@ function deploy_kyma() {
 
   local kyma_deploy_cmd
   kyma_deploy_cmd="kyma deploy -p evaluation --ci --source=local --workspace ${KYMA_SOURCES_DIR}"
+
+  if [[ -v API_GATEWAY_INTEGRATION ]]; then
+    echo "Executing API-gateway tests on k3d"
+    kyma_deploy_cmd+=" --components-file kyma-integration-k3d-api-gateway-components.yaml"
+  fi
 
   if [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
     echo "Installing Kyma with ${KYMA_PROFILE} profile"
@@ -129,6 +135,16 @@ function run_tests() {
     export EXPORT_RESULT="true"
     go install github.com/cucumber/godog/cmd/godog@latest
     make test
+    popd
+  elif [[ -v API_GATEWAY_INTEGRATION ]]; then
+    pushd "../components/api-gateway"
+    export EXPORT_RESULT="true"
+    export TEST_CONCURENCY="8"
+    export KYMA_DOMAIN="local.kyma.dev"
+    export TEST_DOMAIN="local.kyma.dev"
+    export TEST_HYDRA_ADDRESS="https://oauth2.local.kyma.dev"
+    go install github.com/cucumber/godog/cmd/godog@latest
+    make test-k3d
     popd
   else
     make ci

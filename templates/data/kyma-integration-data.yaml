@@ -280,13 +280,6 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-upgrade-k3d.sh"
             env:
               KYMA_PROJECT_DIR: "."
-          vm_job_template:
-            annotations:
-              pipeline.platform: minikube
-              pipeline.clusterprovisioning: minikube
-              pipeline.installer: kyma install
-              pipeline.test: octopus
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-minikube.sh"
           vm_job_template_k3d:
             annotations:
               pipeline.platform: k3d
@@ -618,7 +611,26 @@ templates:
                     - "jobConfig_default"
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
-
+              - jobConfig:
+                  name: pre-main-kyma-api-gateway-integration-k3d
+                  optional: true
+                  labels:
+                    preset-build-pr: "true"
+                  run_if_changed: "^((tests/components/api-gateway\\S+|resources/api-gateway\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  env:
+                    API_GATEWAY_INTEGRATION: "true"
+                    TEST_ORY_IMAGE: "eu.gcr.io/kyma-project/incubator/test-hydra-login-consent:d6e6d3bc"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "kyma_major_version_2"
+                    - "jobConfig_presubmit"
+                  local:
+                    - "jobConfig_default"
+                    - "vm_job_template_k3d"
+                    - "vm_job_labels_template"
               # postsubmits
               - jobConfig:
                   name: "post-main-kyma-integration-k3d"
@@ -762,7 +774,7 @@ templates:
                   labels:
                     preset-build-main: "true"
                   env:
-                    K8S_VERSION: "1.23.8"
+                    K8S_VERSION: "1.24.2"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
