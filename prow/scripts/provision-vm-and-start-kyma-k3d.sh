@@ -33,6 +33,9 @@ cleanup() {
   if [[ "$ISTIO_INTEGRATION_ENABLED" == "true" ]]; then
     utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/components/istio/junit-report.xml" "${ARTIFACTS}"
     utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/components/istio/reports/*.html" "${ARTIFACTS}"
+  elif [[ "$API_GATEWAY_INTEGRATION" == "true" ]]; then
+    utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/components/api-gateway/junit-report.xml" "${ARTIFACTS}"
+    utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/components/api-gateway/reports/*.html" "${ARTIFACTS}/report.html"
   else
     utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/fast-integration/junit_kyma-fast-integration.xml" "${ARTIFACTS}"
   fi
@@ -117,6 +120,10 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 trap cleanup exit INT
 
 log::info "Preparing environment variables for the instance"
+
+export GARDENER_ZONE=${ZONE}
+export CLUSTER_NAME=kyma-integration-test-${RANDOM_ID}
+
 envVars=(
   COMPASS_TENANT
   COMPASS_HOST
@@ -126,6 +133,9 @@ envVars=(
   CENTRAL_APPLICATION_CONNECTIVITY_ENABLED
   TELEMETRY_ENABLED
   ISTIO_INTEGRATION_ENABLED
+  API_GATEWAY_INTEGRATION
+  GARDENER_ZONE
+  CLUSTER_NAME
   KYMA_MAJOR_VERSION
   KYMA_PROFILE
   K8S_VERSION
@@ -137,6 +147,12 @@ utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" ".env" "~/.env"
 log::info "Copying Kyma to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
+
+if [[ -v API_GATEWAY_INTEGRATION ]]; then
+  log::info "Copying components file for API-gateway tests"
+  #shellcheck disable=SC2088
+  utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-api-gateway-components.yaml" "~/kyma-integration-k3d-api-gateway-components.yaml"
+fi
 
 if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
   log::info "Copying components file for compass tests"
