@@ -24,10 +24,10 @@ plank:
         censoring_concurrency: 2 # 2 concurrent censoring
         censoring_buffer_size: 3092 # 3kB
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20220712-d94683d4de
-        initupload: gcr.io/k8s-prow/initupload:v20220712-d94683d4de
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20220712-d94683d4de
-        sidecar: gcr.io/k8s-prow/sidecar:v20220712-d94683d4de
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20220713-b07b206195
+        initupload: gcr.io/k8s-prow/initupload:v20220713-b07b206195
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20220713-b07b206195
+        sidecar: gcr.io/k8s-prow/sidecar:v20220713-b07b206195
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -1025,6 +1025,21 @@ presets:
       preset-kyma-integration-compass-enabled: "true"
     env:
       - name: COMPASS_INTEGRATION_ENABLED
+        value: "true"
+  - labels:
+      preset-kyma-integration-app-connector-tests-app-gateway: "true"
+    env:
+      - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_GATEWAY
+        value: "true"
+  - labels:
+      preset-kyma-integration-app-connector-tests-app-validator: "true"
+    env:
+      - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_VALIDATOR
+        value: "true"
+  - labels:
+      preset-kyma-integration-app-connector-tests-runtime-agent: "true"
+    env:
+      - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_RUNTIME_AGENT
         value: "true"
   - labels:
       preset-kyma-integration-istio-evaluation: "true"
