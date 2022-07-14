@@ -20,7 +20,7 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
               - jobConfig:
-                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/**/(.*.go|Makefile|.*.sh)"
+                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
                   name: pre-main-kyma-operator-tests
                   command: "bash"
                   args:
