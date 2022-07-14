@@ -1,0 +1,6 @@
+serviceAccounts:
+  - serviceAccount: "sa-neighbor-robot"
+    namespace: "garden-neighbors"
+    secret: "trusted_default_gardener-neighbors-kubeconfig"
+    project: "sap-kyma-prow"
+    duration: 5184000 # 60 days in seconds
