@@ -8,6 +8,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"google.golang.org/api/option"
 	secretmanager "google.golang.org/api/secretmanager/v1"
 	authentication "k8s.io/api/authentication/v1"
 	meta "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -36,10 +37,11 @@ type ConfigFile struct {
 
 // Config stores command line arguments
 type Config struct {
-	Kubeconfig string
-	ConfigFile string
-	DryRun     bool
-	Debug      bool
+	ServiceAccount string
+	Kubeconfig     string
+	ConfigFile     string
+	DryRun         bool
+	Debug          bool
 }
 
 func main() {
@@ -59,7 +61,14 @@ func main() {
 			ctx := context.Background()
 
 			// Prepare Secret Manager API and gardener Kubernetes clients
-			secretSvc, err := secretmanager.NewService(ctx)
+			var serviceAccountGCP string
+			if cfg.ServiceAccount != "" {
+				serviceAccountGCP = cfg.ServiceAccount
+			} else {
+				serviceAccountGCP = os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")
+			}
+
+			secretSvc, err := secretmanager.NewService(ctx, option.WithServiceAccountFile(serviceAccountGCP))
 			if err != nil {
 				log.Fatalf("Could not initialize Secret Manager API client: %v", err)
 			}
@@ -149,10 +158,10 @@ func main() {
 		},
 	}
 
-	// rootCmd.PersistentFlags().StringVarP(&cfg.ServiceAccount, "service-account", "c", "", "Path to GCP service account credentials file")
+	rootCmd.PersistentFlags().StringVarP(&cfg.ServiceAccount, "service-account", "c", "", "Path to GCP service account credentials file")
 	rootCmd.PersistentFlags().StringVarP(&cfg.Kubeconfig, "kubeconfig", "k", "", "Path to kubeconfig file")
 	rootCmd.PersistentFlags().StringVarP(&cfg.ConfigFile, "config-file", "c", "", "Specifies the path to the YAML configuration file")
-	rootCmd.PersistentFlags().BoolVar(&cfg.DryRun, "dry-run", false, "Enables the dry-run mode")
+	rootCmd.PersistentFlags().BoolVar(&cfg.DryRun, "dry-run", true, "Enables the dry-run mode")
 	rootCmd.PersistentFlags().BoolVar(&cfg.Debug, "debug", false, "Enables the debug mode")
 
 	rootCmd.MarkPersistentFlagRequired("config-file")
