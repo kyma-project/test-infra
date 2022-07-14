@@ -45,7 +45,7 @@ else
 fi
 
 # Support configuration via ENV vars (can be be overwritten by CLI args)
-KUBERNETES_RUNTIME="${KUBERNETES_RUNTIME:=minikube}"
+KUBERNETES_RUNTIME="${KUBERNETES_RUNTIME:=k3d}"
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]
@@ -124,11 +124,10 @@ utils::ssh_to_vm_with_script -z "${ZONE}" -n "cli-integration-test-${RANDOM_ID}"
 # Provision Kubernetes runtime
 log::info "Provisioning Kubernetes runtime '$KUBERNETES_RUNTIME'"
 date
-if [ "$KUBERNETES_RUNTIME" = 'minikube' ]; then
-    utils::ssh_to_vm_with_script -z "${ZONE}" -n "cli-integration-test-${RANDOM_ID}" -c "yes | sudo kyma provision minikube --non-interactive"
-
-else
+if [ "$KUBERNETES_RUNTIME" = 'k3d' ]; then
     utils::ssh_to_vm_with_script -z "${ZONE}" -n "cli-integration-test-${RANDOM_ID}" -c "yes | sudo kyma provision k3d --ci"
+else
+    log:error "Unknown Kubernetes runtime: $KUBERNETES_RUNTIME" && exit 1
 fi
 
 # Install kyma

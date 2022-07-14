@@ -126,7 +126,7 @@ func (c *OwnersClient) ResolveSlackNames(allOwners AllOwners, aliases []toolstyp
 				// In such case owners users with enabled pr automerge notification will be search and notified individually.
 				userOwners := repoAliases.ExpandAlias(owner)
 				if userOwners.Len() > 0 {
-					for userOwner, _ := range userOwners {
+					for userOwner := range userOwners {
 						_ = c.checkIfNotifyUser(userOwner, &targets, usersMap)
 					}
 				}

@@ -14,9 +14,10 @@ import (
 	"golang.org/x/oauth2/google"
 	compute "google.golang.org/api/compute/v1"
 	dns "google.golang.org/api/dns/v1"
+	"google.golang.org/api/option"
 )
 
-const defaultAddressRegexpList = "(remoteenvs-)?gkeint-(pr|commit|rel)-.*,(remoteenvs-)?gke-upgrade-(pr|commit|rel)-.*,(remoteenvs-)?(e2etest),gke-central-(pr|commit|rel)-.*,gke-backup-(pr|commit|rel)-.*,gkecompint-(pr|commit)-.*,gke-minio-(pr|commit)-.*,gke-minio-min-(pr|commit)-.*,apiserver.gke.*"
+const defaultAddressRegexpList = "(remoteenvs-)?gkeint-(pr|commit|rel)-.*,(remoteenvs-)?gke-upgrade-(pr|commit|rel)-.*,(remoteenvs-)?(e2etest),gke-central-(pr|commit|rel)-.*,gke-backup-(pr|commit|rel)-.*,gkecompint-(pr|commit)-.*,apiserver.gke.*"
 const minAgeInHours = 1
 const minPatternLength = 5
 
@@ -78,12 +79,12 @@ func main() {
 		log.Fatalf("Could not get authenticated client: %v", err)
 	}
 
-	computeSvc, err := compute.New(computeConn)
+	computeSvc, err := compute.NewService(ctx, option.WithHTTPClient(computeConn))
 	if err != nil {
 		log.Fatalf("Could not initialize gke client for Compute API: %v", err)
 	}
 
-	dnsSvc, err := dns.New(computeConn)
+	dnsSvc, err := dns.NewService(ctx, option.WithHTTPClient(computeConn))
 	if err != nil {
 		log.Fatalf("Could not initialize gke client for Compute API: %v", err)
 	}

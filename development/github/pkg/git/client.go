@@ -93,7 +93,7 @@ func (c *GitClient) GetGitRepoClient(org, repo string) (git.RepoClient, string, 
 		// Fetch changes from upstream.
 		err = gitRepoClient.Fetch()
 		if err != nil {
-			return nil, "", fmt.Errorf("failed fetch repostiory, org: %s, repo: %s, error: %w", org, repo, err)
+			return nil, "", fmt.Errorf("failed fetch repository, org: %s, repo: %s, error: %w", org, repo, err)
 		}
 		return gitRepoClient, path, nil
 	} else {

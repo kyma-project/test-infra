@@ -8,12 +8,6 @@ import (
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 )
 
-const (
-	jobBasePath = "./../../../../prow/jobs/"
-)
-
-var loggingYamlName = "busola-logging"
-
 var components = []struct {
 	path              string
 	image             string

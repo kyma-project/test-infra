@@ -54,10 +54,9 @@ See the example configuration file:
   onlyReportFailure: true
   testCases:
     - serverless
-    - rafter
 ```
 
 Based on that configuration, the Test Log Collector:
 
-- Sends logs from failed `serverless` and `rafter` test cases to `#serverless-core-channel`.
+- Sends logs from failed `serverless` test cases to `#serverless-core-channel`.
 - Sends logs from the remaining failed and successful test cases to `#default-msg-channel`.

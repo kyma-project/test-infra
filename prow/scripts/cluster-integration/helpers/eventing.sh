@@ -205,10 +205,21 @@ function eventing::set_default_kubeconfig_env() {
 function eventing::pre_upgrade_test_fast_integration() {
     log::info "Running pre upgrade Eventing E2E release tests"
 
-    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
-    make ci-test-eventing-pre-upgrade
-    popd
+    if [[ "${KYMA_SOURCE}" ]]; then
+      log::info "Cloning kyma repository and checking out branch:${KYMA_SOURCE}"
+      git clone https://github.com/kyma-project/kyma ~/.kyma_old
+      pushd ~/.kyma_old
+      git checkout "${KYMA_SOURCE}"
+      popd
 
+      pushd ~/.kyma_old/tests/fast-integration
+      make ci-test-eventing-pre-upgrade
+      popd
+    else
+      pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+      make ci-test-eventing-pre-upgrade
+      popd
+    fi
     log::success "Pre upgrade Eventing tests completed"
 }
 function eventing::fast_integration_tests() {

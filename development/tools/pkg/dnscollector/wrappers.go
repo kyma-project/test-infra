@@ -25,9 +25,7 @@ func (csw *ComputeServiceWrapper) LookupIPAddresses(project string, region strin
 	call := csw.Compute.Addresses.List(project, region)
 	call = call.Filter("status: RESERVED")
 	f := func(page *compute.AddressList) error {
-		for _, v := range page.Items {
-			items = append(items, v)
-		}
+		items = append(items, page.Items...)
 		return nil
 	}
 
@@ -52,9 +50,7 @@ func (dsw *DNSServiceWrapper) LookupDNSRecords(project string, managedZone strin
 
 	var items = []*dns.ResourceRecordSet{}
 	f := func(page *dns.ResourceRecordSetsListResponse) error {
-		for _, v := range page.Rrsets {
-			items = append(items, v)
-		}
+		items = append(items, page.Rrsets...)
 		return nil
 	}
 

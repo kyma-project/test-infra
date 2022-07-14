@@ -124,7 +124,7 @@ func filterInstanceGroups(zones []string, computeAPI ComputeAPI, project string)
 
 //Run the main find&destroy function
 func (remover *Remover) Run(dryRun bool, project string) {
-	var instanceGroups = []instanceGroup{}
+	var instanceGroups []instanceGroup
 
 	log.Print("Creating mesh of network elements to delete. This takes some time\n")
 	rawTargetPool, err := remover.computeAPI.LookupTargetPools(project)
