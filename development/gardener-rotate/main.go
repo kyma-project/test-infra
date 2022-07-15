@@ -40,6 +40,7 @@ type Config struct {
 	ServiceAccount string
 	Kubeconfig     string
 	ConfigFile     string
+	Cluster        string
 	DryRun         bool
 }
 
@@ -95,46 +96,60 @@ func main() {
 			for _, sa := range parsedConfig.ServiceAccounts {
 				log.Infof("Rotating token for %s service accout", sa.KubernetesSA)
 
+				// generate new token with duration
+				namespace := "default"
+				if sa.KubernetesNamespace != "" {
+					namespace = sa.KubernetesNamespace
+				}
+
+				log.Infof("Generating new token for %s service accout with %ds duration", sa.KubernetesSA, sa.Duration)
+				tokenRequest := authentication.TokenRequest{Spec: authentication.TokenRequestSpec{ExpirationSeconds: &sa.Duration}}
+				var tokenRequestResponse *authentication.TokenRequest
 				if !cfg.DryRun {
-					// generate new token with duration
-					namespace := "default"
-					if sa.KubernetesNamespace != "" {
-						namespace = sa.KubernetesNamespace
-					}
-
-					tokenRequest := authentication.TokenRequest{Spec: authentication.TokenRequestSpec{ExpirationSeconds: &sa.Duration}}
-
-					tokenRequestResponse, err := k8sClient.CoreV1().ServiceAccounts(namespace).CreateToken(ctx, sa.KubernetesSA, &tokenRequest, meta.CreateOptions{})
+					tokenRequestResponse, err = k8sClient.CoreV1().ServiceAccounts(namespace).CreateToken(ctx, sa.KubernetesSA, &tokenRequest, meta.CreateOptions{})
 					if err != nil {
 						log.Fatalf("Could not get create new token request: %v", err)
 					}
+				}
 
-					// create new kubeconfig
-					serviceAccountKubeconfig, err := generateKubeconfig(k8sConfig.Host, "garden", sa, tokenRequestResponse.Status.Token) //kubeconfigTemplate + tokenRequestResponse.Status.Token + "\n"
+				// create new kubeconfig
+				log.Infof("Generating new kubeconfig for %s service accout", sa.KubernetesSA)
+				serviceAccountKubeconfig := ""
+				if !cfg.DryRun {
+					serviceAccountKubeconfig, err = generateKubeconfig(k8sConfig.Host, cfg.Cluster, sa, tokenRequestResponse.Status.Token)
 					if err != nil {
 						log.Fatalf("Could not get generate kubeconfig: %v", err)
 					}
+				}
 
-					secretParent := "projects/" + sa.GCPProject + "/secrets/" + sa.GCPSecret
+				secretParent := "projects/" + sa.GCPProject + "/secrets/" + sa.GCPSecret
 
-					// get list of all previous secret versions
-					secretVersionsCall := secretSvc.Projects.Secrets.Versions.List(secretParent)
-					secretVersions, err := secretVersionsCall.Do()
+				// get list of all previous secret versions
+				secretVersionsCall := secretSvc.Projects.Secrets.Versions.List(secretParent)
+				var secretVersions *secretmanager.ListSecretVersionsResponse
+				if !cfg.DryRun {
+					secretVersions, err = secretVersionsCall.Do()
 					if err != nil {
 						log.Fatalf("Could not get list of secret versions: %v", err)
 					}
+				}
 
-					// update it in the Secret Manager
-					newVersionRequest := secretmanager.AddSecretVersionRequest{Payload: &secretmanager.SecretPayload{Data: base64.StdEncoding.EncodeToString([]byte(serviceAccountKubeconfig))}}
-					newVersionCall := secretSvc.Projects.Secrets.AddVersion(secretParent, &newVersionRequest)
-
+				// update it in the Secret Manager
+				log.Infof("Adding new secret version for %s service accout", sa.KubernetesSA)
+				newVersionRequest := secretmanager.AddSecretVersionRequest{Payload: &secretmanager.SecretPayload{Data: base64.StdEncoding.EncodeToString([]byte(serviceAccountKubeconfig))}}
+				newVersionCall := secretSvc.Projects.Secrets.AddVersion(secretParent, &newVersionRequest)
+				if !cfg.DryRun && !sa.KeepOld {
 					_, err = newVersionCall.Do()
 					if err != nil {
 						log.Fatalf("Could not create new secret version: %v", err)
 					}
+				}
 
-					// disable all previous versions
-					if !sa.KeepOld {
+				// disable all previous versions
+
+				if !sa.KeepOld {
+					log.Infof("Disabling old secret versions for %s service accout", sa.KubernetesSA)
+					if !cfg.DryRun {
 						for _, secretVersion := range secretVersions.Versions {
 							// we can only disable enabled secrets
 							if secretVersion.State == "ENABLED" {
@@ -157,6 +172,7 @@ func main() {
 	rootCmd.PersistentFlags().StringVarP(&cfg.Kubeconfig, "kubeconfig", "k", "", "Path to kubeconfig file")
 	rootCmd.PersistentFlags().StringVarP(&cfg.ConfigFile, "config-file", "c", "", "Specifies the path to the YAML configuration file")
 	rootCmd.PersistentFlags().BoolVar(&cfg.DryRun, "dry-run", true, "Enables the dry-run mode")
+	rootCmd.PersistentFlags().StringVarP(&cfg.Cluster, "cluster-name", "n", "gardener", "Specifies the name of the cluster")
 
 	rootCmd.MarkPersistentFlagRequired("config-file")
 	rootCmd.MarkPersistentFlagRequired("kubeconfig")
