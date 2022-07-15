@@ -6,6 +6,42 @@ templates:
           - repoName: kyma-project/kyma-watcher
             jobs:
               - jobConfig:
+                  name: periodic-kyma-watcher-operator-tests
+                  cron: "0 */6 * * 1-5" # "At minute 0 past every 6th hour on every day-of-week from Monday through Friday."
+                  annotations:
+                    description: regularly executes the 'make test' command in the kyma-watcher 'operator' directory.
+                  command: "bash"
+                  args:
+                    - "-c" 
+                    - "cd operator && make test" # run test make target of operator
+                  branches:
+                    - ^main$
+                  slack_channel: jellyfish-notifications
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default" 
+                    - "jobConfig_periodic"
+                    - "build_labels" # default labels
+              - jobConfig:
+                  name: periodic-kyma-watcher-listener-tests
+                  cron: "0 */6 * * 1-5" # "At minute 0 past every 6th hour on every day-of-week from Monday through Friday."
+                  annotations:
+                    description: regularly executes the 'make test' command in the kyma-watcher 'listener' directory.
+                  command: "bash"
+                  args:
+                    - "-c" 
+                    - "cd operator && make test" # run test make target of operator
+                  branches:
+                    - ^main$
+                  slack_channel: jellyfish-notifications
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default" 
+                    - "jobConfig_periodic"
+                    - "build_labels" # default labels
+              - jobConfig:
                   run_if_changed: "^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)"
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220627-b303c786"
                   name: "pre-main-kyma-watcher-listener-lint"
@@ -15,7 +51,6 @@ templates:
                     - "cd listener && golangci-lint run"
                   branches:
                     - ^main$
-                  slack_channel: jellyfish-notifications
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -30,7 +65,6 @@ templates:
                     - "cd operator && golangci-lint run"
                   branches:
                     - ^main$
-                  slack_channel: jellyfish-notifications
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -44,7 +78,6 @@ templates:
                     - "cd operator && make test" # run test make target of operator
                   branches:
                     - ^main$ # any pr against main triggers this
-                  slack_channel: jellyfish-notifications
                 inheritedConfigs:
                   global:
                     - "image_buildpack-golang" # takes latest golang image
@@ -60,7 +93,6 @@ templates:
                     - "cd listener && make test" # run test make target of operator
                   branches:
                     - ^main$ # any pr against main triggers this
-                  slack_channel: jellyfish-notifications
                 inheritedConfigs:
                   global:
                     - "image_buildpack-golang" # takes latest golang image
