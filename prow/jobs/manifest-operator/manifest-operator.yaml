@@ -20,6 +20,9 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^main$
+      reporter_config:
+        slack:
+          channel: jellyfish-notifications
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220627-b303c786"
@@ -58,6 +61,9 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^main$
+      reporter_config:
+        slack:
+          channel: jellyfish-notifications
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220627-b303c786"
@@ -96,6 +102,9 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^main$
+      reporter_config:
+        slack:
+          channel: jellyfish-notifications
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
@@ -134,6 +143,9 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^main$
+      reporter_config:
+        slack:
+          channel: jellyfish-notifications
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"

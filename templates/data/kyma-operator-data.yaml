@@ -15,6 +15,7 @@ templates:
                     - "cd operator && golangci-lint run"
                   branches:
                     - ^main$
+                  slack_channel: jellyfish-notifications
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -28,6 +29,7 @@ templates:
                     - "cd operator && make test" # run test make target of operator
                   branches:
                     - ^main$ # any pr against main triggers this
+                  slack_channel: jellyfish-notifications
                 inheritedConfigs:
                   global:
                     - "image_buildpack-golang" # takes latest golang image
