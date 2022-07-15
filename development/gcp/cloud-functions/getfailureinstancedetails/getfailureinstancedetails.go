@@ -136,7 +136,7 @@ func GetFailureInstanceDetails(ctx context.Context, m kymapubsub.MessagePayload)
 	logger.WithLabel("prowjobName", *failingTestMessage.JobName)
 
 	// Get prowjob execution ID from gcs URL path.
-	jobID, err := kymapubsub.GetJobId(failingTestMessage.URL)
+	jobID, err := kymapubsub.GetJobID(failingTestMessage.URL)
 	if err != nil {
 		logger.LogCritical(fmt.Sprintf("failed get job ID, error: %s", err.Error()))
 	}
