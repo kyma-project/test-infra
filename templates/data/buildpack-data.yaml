@@ -336,3 +336,27 @@ templates:
                       local:
                         - "default"
                         - "postsubmit"
+                  - jobConfig:
+                      name: "pre-test-infra-gardener-rotate"
+                      run_if_changed: "^prow/images/gardener-rotate/"
+                      args:
+                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/gardener-rotate"
+                    inheritedConfigs:
+                      global:
+                        - "image_bootstrap"
+                        - "jobConfig_default"
+                      local:
+                        - "default"
+                        - "presubmit"
+                  - jobConfig:
+                      name: "post-test-infra-gardener-rotate"
+                      run_if_changed: "^prow/images/gardener-rotate/|^development/gardener-rotate/"
+                      args:
+                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/gardener-rotate"
+                    inheritedConfigs:
+                      global:
+                        - "image_bootstrap"
+                        - "jobConfig_default"
+                      local:
+                        - "default"
+                        - "postsubmit"
