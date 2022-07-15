@@ -160,19 +160,6 @@ templates:
                       - "disable_testgrid"
                     local:
                       - "jobConfig_postsubmit"
-              - jobConfig:
-                  name: post-cli-integration-kyma-1
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "extra_refs_test-infra"
-                    - "image_buildpack-golang-kubebuilder2"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "jobConfig_submit"
-                    - "jobConfig_postsubmit"
       - to: ../../prow/jobs/cli/cli-compatibility.yaml
         localSets:
           jobConfig_default:
@@ -194,7 +181,7 @@ templates:
             env:
               KUBERNETES_RUNTIME: "k3d"
         jobConfigs:
-          - repoName:  kyma-project/cli
+          - repoName: kyma-project/cli
             jobs:
               - jobConfig:
                   name: "kyma-cli-compatibility-1"
