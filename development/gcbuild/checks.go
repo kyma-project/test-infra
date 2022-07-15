@@ -3,21 +3,26 @@ package main
 import (
 	"fmt"
 	errutil "k8s.io/apimachinery/pkg/util/errors"
+	"os"
 	"regexp"
+	"strings"
 )
 
 const (
 	ErrMissingRepository = "missing-repository"
 	ErrMissingTag        = "missing-tag"
+	ErrMissingVariants   = "missing-variants"
 )
 
 var defaultErrs = []string{
 	ErrMissingTag,
 	ErrMissingRepository,
+	ErrMissingVariants,
 }
 
-func validateConfig(c *Config) error {
+func validateConfig(o options, c *Config) error {
 
+	// TODO (Ressetkk): allow defining which errors to check
 	checks := defaultErrs
 
 	var errs []error
@@ -30,6 +35,8 @@ func validateConfig(c *Config) error {
 			errs = append(errs, validateTag(c))
 		case ErrMissingRepository:
 			errs = append(errs, validateRepository(c))
+		case ErrMissingVariants:
+			errs = append(errs, validateVariants(o, c))
 		}
 	}
 
@@ -78,6 +85,33 @@ func validateRepository(c *Config) error {
 	}
 	if _, ok := c.Substitutions["_REPOSITORY"]; !ok {
 		return fmt.Errorf("missing _REPOSITORY in 'substitutions' field")
+	}
+	return nil
+}
+
+// validateVariants checks, if the config file contains $_VARIANTS substitution
+// if the 'variants.yaml' file is present
+// If the 'variants.yaml' file is present, but no $_VARIANT substitution is available,
+// then variants will be pushed under the same tag, overriding the image.
+func validateVariants(o options, c *Config) error {
+	var hasVariant, fileNotExists bool
+	if _, err := os.Stat(o.variantsFile); err != nil {
+		if !os.IsNotExist(err) {
+			return fmt.Errorf("unknown error during stat variants.yaml: %w", err)
+		}
+		fileNotExists = true
+	}
+	for _, i := range c.Images {
+		if strings.Contains(i, "$_VARIANT") || strings.Contains(i, "${_VARIANT}") {
+			hasVariant = true
+			break
+		}
+	}
+	if !hasVariant && !fileNotExists {
+		return fmt.Errorf("your directory has 'variants.yaml' file present, but there is no $_VARIANT substitution provided in config, add $_VARIANT substitution to the config to allow building variants of the image")
+	}
+	if hasVariant && fileNotExists {
+		return fmt.Errorf("your config has $_VARIANT substitution provided, but you do not use any 'variants.yaml' file")
 	}
 	return nil
 }

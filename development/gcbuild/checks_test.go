@@ -187,3 +187,54 @@ func Test_validateRepository(t *testing.T) {
 		})
 	}
 }
+
+func TestOption_checkVariants(t *testing.T) {
+	tc := []struct {
+		name      string
+		o         options
+		c         *Config
+		expectErr bool
+	}{
+		{
+			name:      "variants.yaml provided, variants substitution present",
+			expectErr: false,
+			o:         options{variantsFile: "testdata/variants.yaml"},
+			c:         &Config{Images: []string{"$_REPOSITORY/name:$_TAG-$_VARIANT"}},
+		},
+		{
+			name:      "variants.yaml provided, variants substitution present",
+			expectErr: false,
+			o:         options{variantsFile: "testdata/variants.yaml"},
+			c:         &Config{Images: []string{"$_REPOSITORY/name:$_TAG-${_VARIANT}"}},
+		},
+		{
+			name:      "variants.yaml provided, variants substitution missing",
+			expectErr: true,
+			o:         options{variantsFile: "testdata/variants.yaml"},
+			c:         &Config{Images: []string{"$_REPOSITORY/name:$_TAG"}},
+		},
+		{
+			name:      "variants.yaml missing, variants substitution missing",
+			expectErr: false,
+			o:         options{},
+			c:         &Config{Images: []string{"$_REPOSITORY/name:$_TAG"}},
+		},
+		{
+			name:      "variants.yaml missing, variants substitution provided",
+			expectErr: true,
+			o:         options{},
+			c:         &Config{Images: []string{"$_REPOSITORY/name:$_TAG-$_VARIANT"}},
+		},
+	}
+	for _, c := range tc {
+		t.Run(c.name, func(t *testing.T) {
+			err := validateVariants(c.o, c.c)
+			if err != nil && !c.expectErr {
+				t.Errorf("validateVariants caught error, but didn't want to: %s", err)
+			}
+			if err == nil && c.expectErr {
+				t.Errorf("validateVariants didn't catch error, but wanted to.")
+			}
+		})
+	}
+}

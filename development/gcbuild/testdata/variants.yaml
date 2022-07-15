@@ -1,0 +1,4 @@
+'main':
+  KUBECTL_VERSION: "1.24.4"
+'1.23':
+  KUBECTL_VERSION: "1.23.9"

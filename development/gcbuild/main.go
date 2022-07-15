@@ -16,10 +16,6 @@ import (
 	"sync"
 )
 
-type FileGetter interface {
-	GetFile(f string) io.ReadCloser
-}
-
 type Config struct {
 	Steps         []Step            `yaml:"steps"`
 	Substitutions map[string]string `yaml:"substitutions"`
@@ -43,29 +39,25 @@ type Step struct {
 	Args []string `yaml:"args"`
 }
 
-type BuildCtx struct {
-	variants variants
-	dir      string
-	name     string
-}
-
 type options struct {
-	buildDir           string
-	cloudBuildYAMLFile string
-	variantsFile       string
-	logDir             string
-	devRegistry        string
-	project            string
-	silent             bool
-	isCI               bool
-	tagger             tags.Tagger
+	buildDir     string
+	configFile   string
+	variantsFile string
+	variant      string
+	logDir       string
+	devRegistry  string
+	project      string
+	silent       bool
+	isCI         bool
+	tagger       tags.Tagger
 }
 
 func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
 	fs.BoolVar(&o.silent, "silent", false, "Do not push build logs to stdout")
 	fs.StringVar(&o.buildDir, "build-dir", ".", "Path to build directory")
-	fs.StringVar(&o.cloudBuildYAMLFile, "cloudbuild-file", "cloudbuild.yaml", "Path to cloudbuild.yaml file relative to build-dir")
-	fs.StringVar(&o.variantsFile, "variants-file", "variants.yaml", "Name of variants file relative to build-dir")
+	fs.StringVar(&o.configFile, "config-file", "cloudbuild.yaml", "Path to cloudbuild.yaml file relative to build-dir")
+	fs.StringVar(&o.variantsFile, "variants-file", "", "Name of variants file relative to build-dir")
+	fs.StringVar(&o.variant, "variant", "", "Define which variant should be built")
 	fs.StringVar(&o.logDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
 	fs.StringVar(&o.devRegistry, "dev-registry", "", "Registry URL where development/dirty images should land. If not set then the default registry is used. This flag is only valid when running in CI (CI env variable is set to `true`)")
 	fs.StringVar(&o.project, "project", "", "GCP project name where build jobs will run")
@@ -112,7 +104,7 @@ func run(o options, name, repo, tag string, subs map[string]string) error {
 	}
 	args := []string{
 		"builds", "submit",
-		"--config", o.cloudBuildYAMLFile,
+		"--config", o.configFile,
 		"--substitutions", strings.Join(s, ","),
 	}
 
@@ -149,9 +141,9 @@ func run(o options, name, repo, tag string, subs map[string]string) error {
 
 type variants map[string]map[string]string
 
-func getVariants(f string) (variants, error) {
+func getVariants(o options) (variants, error) {
 	var v variants
-	b, err := ioutil.ReadFile(f)
+	b, err := ioutil.ReadFile(o.variantsFile)
 	if err != nil {
 		if !os.IsNotExist(err) {
 			return nil, err
@@ -161,6 +153,13 @@ func getVariants(f string) (variants, error) {
 	}
 	if err := yaml.UnmarshalStrict(b, &v); err != nil {
 		return nil, err
+	}
+	if o.variant != "" {
+		va, ok := v[o.variant]
+		if !ok {
+			return nil, fmt.Errorf("requested variant '%s', but it's not present in variants.yaml file", o.variant)
+		}
+		return variants{o.variant: va}, nil
 	}
 	return v, nil
 }
@@ -175,35 +174,25 @@ func getImageNames(repo, tag, variant string, images []string) string {
 }
 
 func runBuildJob(o options) error {
-	buildDir, err := filepath.Abs(o.buildDir)
-	if err != nil {
-		return err
-	}
-	if err := os.Chdir(buildDir); err != nil {
-		return err
-	}
-	/*
-		REQUIRED SUBSTITUTIONS:
-		- _TAG
-		- _REPOSITORY
-	*/
-
-	f, err := getConfig(o.cloudBuildYAMLFile)
+	config, err := getConfig(o.configFile)
 	if err != nil {
 		return err
 	}
 
-	if err := validateConfig(f); err != nil {
-		return fmt.Errorf("could not validate config: %w", err)
+	if err := validateConfig(o, config); err != nil {
+		return fmt.Errorf("config validation ended with error: %w", err)
 	}
-
-	repo := f.Substitutions["_REPOSITORY"]
-	var sha string
+	// TODO (Ressetkk): decouple this function so we can test it
+	repo := config.Substitutions["_REPOSITORY"]
+	var sha, pr string
 	if o.isCI {
 		presubmit := os.Getenv("JOB_TYPE") == "presubmit"
 		if presubmit {
 			if o.devRegistry != "" {
 				repo = o.devRegistry
+			}
+			if n := os.Getenv("PULL_NUMBER"); n != "" {
+				pr = n
 			}
 		}
 
@@ -220,18 +209,25 @@ func runBuildJob(o options) error {
 		}
 	}
 
-	// build a tag
-	t, err := tags.NewTag(
-		tags.CommitSHA(sha))
-	if err != nil {
-		return fmt.Errorf("could not create tag: %w", err)
-	}
-	tag, err := o.tagger.BuildTag(t)
-	if err != nil {
-		return fmt.Errorf("could not build tag: %w", err)
+	var tag string
+	// TODO (Ressetkk): PR tag should not be hardcoded
+	if pr != "" {
+		// assume we are using PR number, build tag as 'PR-XXXX'
+		tag = "PR-" + pr
+	} else {
+		// build a tag from commit SHA
+		t, err := tags.NewTag(
+			tags.CommitSHA(sha))
+		if err != nil {
+			return fmt.Errorf("could not create tag: %w", err)
+		}
+		tag, err = o.tagger.BuildTag(t)
+		if err != nil {
+			return fmt.Errorf("could not build tag: %w", err)
+		}
 	}
 
-	vs, err := getVariants(o.variantsFile)
+	vs, err := getVariants(o)
 	if err != nil {
 		return err
 	}
@@ -245,6 +241,8 @@ func runBuildJob(o options) error {
 		if err != nil {
 			return fmt.Errorf("build encountered error: %w", err)
 		}
+		img := getImageNames(repo, tag, "", config.Images)
+		fmt.Println("Successfully built image:", img)
 	}
 
 	var wg sync.WaitGroup
@@ -257,8 +255,8 @@ func runBuildJob(o options) error {
 				errs = append(errs, fmt.Errorf("job %s ended with error: %w", variant, err))
 				fmt.Printf("Job %s ended with error: %s.\n", variant, err)
 			} else {
-				img := getImageNames(repo, tag, variant, f.Images)
-				fmt.Println("Successfully build image: ", img)
+				img := getImageNames(repo, tag, variant, config.Images)
+				fmt.Println("Successfully build image:", img)
 				fmt.Printf("Job %s finished successfully.\n", variant)
 			}
 		}(k, v)
@@ -267,10 +265,14 @@ func runBuildJob(o options) error {
 	return errutil.NewAggregate(errs)
 }
 
+// validateOptions handles flag validation. All checks should be provided here
 func validateOptions(o options) error {
 	var errs []error
 	if o.project == "" {
 		errs = append(errs, fmt.Errorf("--project flag is missing"))
+	}
+	if o.variant != "" && o.variantsFile == "" {
+		errs = append(errs, fmt.Errorf("variant flag is defined, but variants.yaml flag is missing"))
 	}
 	return errutil.NewAggregate(errs)
 }
@@ -308,7 +310,14 @@ func main() {
 	if err := checkDependencies(); err != nil {
 		panic(err)
 	}
-	err := runBuildJob(o)
+	buildDir, err := filepath.Abs(o.buildDir)
+	if err != nil {
+		panic(err)
+	}
+	if err := os.Chdir(buildDir); err != nil {
+		panic(err)
+	}
+	err = runBuildJob(o)
 	if err != nil {
 		panic(err)
 	}

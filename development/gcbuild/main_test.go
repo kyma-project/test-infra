@@ -18,12 +18,12 @@ func TestFlags(t *testing.T) {
 		{
 			name: "unknown flag, fail",
 			expectedOpts: options{
-				cloudBuildYAMLFile: "cloudbuild.yaml",
-				variantsFile:       "variants.yaml",
-				buildDir:           ".",
-				logDir:             "/logs/artifacts",
-				project:            "sample-project",
-				tagger:             tags.Tagger{TagTemplate: `v{{ .Date }}-{{ .ShortSHA }}`},
+				configFile:   "cloudbuild.yaml",
+				variantsFile: "",
+				buildDir:     ".",
+				logDir:       "/logs/artifacts",
+				project:      "sample-project",
+				tagger:       tags.Tagger{TagTemplate: `v{{ .Date }}-{{ .ShortSHA }}`},
 			},
 			expectedErr: true,
 			args: []string{
@@ -35,17 +35,17 @@ func TestFlags(t *testing.T) {
 			name:        "parsed config, pass",
 			expectedErr: false,
 			expectedOpts: options{
-				cloudBuildYAMLFile: "cloud.yaml",
-				variantsFile:       "var.yaml",
-				buildDir:           "prow/build",
-				logDir:             "prow/logs",
-				project:            "sample-project",
-				tagger:             tags.Tagger{TagTemplate: `{{ .CommitSHA }}`},
-				devRegistry:        "eu.gcr.io/dev-registry",
-				silent:             true,
+				configFile:   "cloud.yaml",
+				variantsFile: "var.yaml",
+				buildDir:     "prow/build",
+				logDir:       "prow/logs",
+				project:      "sample-project",
+				tagger:       tags.Tagger{TagTemplate: `{{ .CommitSHA }}`},
+				devRegistry:  "eu.gcr.io/dev-registry",
+				silent:       true,
 			},
 			args: []string{
-				"--cloudbuild-file=cloud.yaml",
+				"--config-file=cloud.yaml",
 				"--variants-file=var.yaml",
 				"--project=sample-project",
 				"--build-dir=prow/build",
@@ -105,8 +105,8 @@ func Test_parseVariable(t *testing.T) {
 
 func Test_runImageBuild(t *testing.T) {
 	_ = options{
-		buildDir:           ".",
-		cloudBuildYAMLFile: "cloudbuild.yaml",
+		buildDir:   ".",
+		configFile: "cloudbuild.yaml",
 	}
 	//runImageBuild(o)
 }
