@@ -188,7 +188,7 @@ func Test_validateRepository(t *testing.T) {
 	}
 }
 
-func TestOption_checkVariants(t *testing.T) {
+func Test_checkVariants(t *testing.T) {
 	tc := []struct {
 		name      string
 		o         options
