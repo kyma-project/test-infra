@@ -1,0 +1,6 @@
+# https://golangci-lint.run/usage/configuration/
+
+# not used
+run:
+  skip-dirs:
+    - .
