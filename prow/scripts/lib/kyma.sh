@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+publish-buildpack.sh#!/usr/bin/env bash
 
 LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
 
