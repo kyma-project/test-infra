@@ -5,7 +5,17 @@ pjNames:
     report: true
   - pjName: "pre-main-manifest-operator-controller-tests"
     report: true
+  - pjName: "pre-main-manifest-operator-controller-lint"
+    report: true
   - pjName: "pre-main-manifest-operator-api-tests"
     report: true
-  - pjName: "pre-main-manifest-operator-lint"
+  - pjName: "pre-main-manifest-operator-api-lint"
+    report: true
+  - pjName: "pre-main-kyma-watcher-operator-tests"
+    report: true
+  - pjName: "pre-main-kyma-watcher-operator-lint"
+    report: true
+  - pjName: "pre-main-kyma-watcher-listener-tests"
+    report: true
+  - pjName: "pre-main-kyma-watcher-listener-lint"
     report: true

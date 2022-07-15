@@ -1,14 +1,28 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/manifest-operator/manifest-operator.yaml
+      - to: ../../prow/jobs/kyma-watcher/kyma-watcher.yaml
         jobConfigs:
-          - repoName: kyma-project/manifest-operator
+          - repoName: kyma-project/kyma-watcher
             jobs:
+              - jobConfig:
+                  run_if_changed: "^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220627-b303c786"
+                  name: "pre-main-kyma-watcher-listener-lint"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd listener && golangci-lint run"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
               - jobConfig:
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220627-b303c786"
-                  name: "pre-main-manifest-operator-controller-lint"
+                  name: "pre-main-kyma-watcher-operator-lint"
                   command: "bash"
                   args:
                     - "-c"
@@ -19,25 +33,9 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - "build_labels" # default labels
-              - jobConfig:
-                  run_if_changed: "^api/(go.mod|go.sum)$|^api/*/(.*.go|Makefile|.*.sh)"
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220627-b303c786"
-                  name: "pre-main-manifest-operator-api-lint"
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "cd api && golangci-lint run"
-                  branches:
-                    - ^main$
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - "build_labels" # default labels
               - jobConfig:
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
-                  name: pre-main-manifest-operator-controller-tests
+                  name: pre-main-kyma-watcher-operator tests
                   command: "bash"
                   args:
                     - "-c" 
@@ -51,12 +49,12 @@ templates:
                     - "jobConfig_presubmit"
                     - "build_labels" # default labels
               - jobConfig:
-                  run_if_changed: "^api/(go.mod|go.sum)$|^api/*/(.*.go|Makefile|.*.sh)"
-                  name: pre-main-manifest-operator-api-tests
+                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
+                  name: pre-main-kyma-watcher-listener tests
                   command: "bash"
                   args:
                     - "-c" 
-                    - "cd api && make test" # run test make target of operator
+                    - "cd listener && make test" # run test make target of operator
                   branches:
                     - ^main$ # any pr against main triggers this
                 inheritedConfigs:
