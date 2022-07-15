@@ -578,7 +578,7 @@ templates:
               - jobConfig:
                   name: "pre-main-kyma-eval-istio-integration-k3d"
                   run_if_changed: "(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)"
-                  optional: true
+                  optional: false
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-istio-evaluation: "true"
@@ -596,7 +596,7 @@ templates:
               - jobConfig:
                   name: "pre-main-kyma-prod-istio-integration-k3d"
                   run_if_changed: "(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)"
-                  optional: true
+                  optional: false
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-istio-production: "true"
