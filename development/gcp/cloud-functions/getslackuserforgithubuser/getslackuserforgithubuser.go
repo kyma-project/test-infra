@@ -175,7 +175,7 @@ func GetSlackUserForGithubUser(ctx context.Context, m pubsub.MessagePayload) err
 			}
 		} else {
 			// TODO: confirm this will be recorded as error in google cloud error reporting
-			logger.LogError(fmt.Sprintf("failingTestMessage.FirestoreDocumentID is empty, can not store commiters slack usernames in firestore"))
+			logger.LogError("failingTestMessage.FirestoreDocumentID is empty, can not store commiters slack usernames in firestore")
 		}
 	}
 

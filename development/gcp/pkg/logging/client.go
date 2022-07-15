@@ -178,15 +178,6 @@ func WithGeneratedTrace() LoggerOption {
 	}
 }
 
-// LoggerFromConfig is a logger constructor configuration option passing configuration struct.
-// Data from struct will be used to construct client.
-func LoggerFromConfig(conf Config) LoggerOption {
-	return func(config *Config) error {
-		config = &conf
-		return nil
-	}
-}
-
 // NewProwjobLogger creates logger with defaults for logging from prowjobs.
 func (c *Client) NewProwjobLogger() *Logger {
 	// Get default labels for prowjobs.
