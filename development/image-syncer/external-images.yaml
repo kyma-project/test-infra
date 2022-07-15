@@ -33,7 +33,6 @@ images:
 - source: "oryd/oathkeeper:v0.38.25-beta.1"
 - source: "postgres:14.2-alpine3.15"
 - source: "prom/pushgateway:v1.4.2"
-- source: "quay.io/coreos/etcd:v3.3.27"
 - source: "k8s.gcr.io/kube-state-metrics/kube-state-metrics:v2.3.0"
 - source: "quay.io/jetstack/cert-manager-controller:v1.1.0"
 - source: "quay.io/jetstack/cert-manager-cainjector:v1.1.0"
