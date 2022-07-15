@@ -41,7 +41,6 @@ type Config struct {
 	Kubeconfig     string
 	ConfigFile     string
 	DryRun         bool
-	Debug          bool
 }
 
 func main() {
@@ -53,11 +52,7 @@ func main() {
 		Short: "gardener-rotate rotates kubeconfig saved in Secret Manager",
 		Long:  `gardener-rotate creates new gardener service account token and saves updated kubeconfig in Secret Manager`,
 		Run: func(cmd *cobra.Command, args []string) {
-			logLevel := logrus.InfoLevel
-			if cfg.Debug {
-				logLevel = logrus.DebugLevel
-			}
-			log.SetLevel(logLevel)
+			log.SetLevel(logrus.InfoLevel)
 			ctx := context.Background()
 
 			// Prepare Secret Manager API and gardener Kubernetes clients
@@ -98,7 +93,7 @@ func main() {
 
 			// for each service account
 			for _, sa := range parsedConfig.ServiceAccounts {
-				log.Debugf("Rotating token for %s service accout", sa.KubernetesSA)
+				log.Infof("Rotating token for %s service accout", sa.KubernetesSA)
 
 				if !cfg.DryRun {
 					// generate new token with duration
@@ -158,11 +153,10 @@ func main() {
 		},
 	}
 
-	rootCmd.PersistentFlags().StringVarP(&cfg.ServiceAccount, "service-account", "c", "", "Path to GCP service account credentials file")
+	rootCmd.PersistentFlags().StringVarP(&cfg.ServiceAccount, "service-account", "s", "", "Path to GCP service account credentials file")
 	rootCmd.PersistentFlags().StringVarP(&cfg.Kubeconfig, "kubeconfig", "k", "", "Path to kubeconfig file")
 	rootCmd.PersistentFlags().StringVarP(&cfg.ConfigFile, "config-file", "c", "", "Specifies the path to the YAML configuration file")
 	rootCmd.PersistentFlags().BoolVar(&cfg.DryRun, "dry-run", true, "Enables the dry-run mode")
-	rootCmd.PersistentFlags().BoolVar(&cfg.Debug, "debug", false, "Enables the debug mode")
 
 	rootCmd.MarkPersistentFlagRequired("config-file")
 	rootCmd.MarkPersistentFlagRequired("kubeconfig")

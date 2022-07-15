@@ -42,4 +42,3 @@ See the list of flags available for the `promote` command:
 | **--kubeconfig**          |   Yes    | Path to the Gardener kubeconfig file.|
 | **--config-file**         |   Yes    | Path to the `gardener-rotate` configuratino file.|
 | **--dry-run**             |   No     | The boolean value that controls the dry-run mode. It defaults to `true`.|
-| **--debug**               |   No     | The boolean value that controls the debug output.|
