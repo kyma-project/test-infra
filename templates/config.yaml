@@ -55,14 +55,12 @@ global:
         - name: "connector-tools"
         - name: "artwork"
         - name: "opensap"
-        
-
 
 # global configSet variables
 pubsub_config: &pubsub_config
   pubsub_project: "sap-kyma-prow"
   pubsub_topic: "prowjobs"
-  
+
 globalSets:
   # Kyma major version sets
   kyma_major_version_1:
@@ -83,7 +81,7 @@ globalSets:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_bootstrap:
-    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220427-9543160d"
+    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
   image_prow-tools:
     image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220713-107ba8ac"
   image_kyma-integration:
@@ -114,10 +112,10 @@ globalSets:
     nodeSelector:
       dedicated: high-cpu
     tolerations:
-    - key: dedicated
-      value: high-cpu
-      operator: Equal
-      effect: NoSchedule
+      - key: dedicated
+        value: high-cpu
+        operator: Equal
+        effect: NoSchedule
     <<: *pubsub_config
   jobConfig_kyma20_docu:
     skip_report: "false"
@@ -271,6 +269,6 @@ templates:
             - name: kyma-gke-integration
             - name: kyma-gke-upgrade
             - name: kyma-artifacts
-  - from : test-infra-autobump-config.yaml
+  - from: test-infra-autobump-config.yaml
     render:
       - to: ../../prow/autobump-config/test-infra-autobump-config.yaml

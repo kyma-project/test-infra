@@ -1,6 +1,6 @@
 # Basic golang buildpack
 
-FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20220427-9543160d
+FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267
 
 # Commit details
 
@@ -21,12 +21,12 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # apt and install additional packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        rsync \
-        procps \
-        pkg-config \
-        libgit2-dev \
-        && apt-get clean \
-        && rm -rf /var/lib/apt/lists/*
+    rsync \
+    procps \
+    pkg-config \
+    libgit2-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Go and Dep
 ENV GOPATH /workspace/go

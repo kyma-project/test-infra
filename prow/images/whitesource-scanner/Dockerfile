@@ -1,4 +1,4 @@
-FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20220427-9543160d
+FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267
 
 # Commit details
 ARG commit
@@ -26,14 +26,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN curl -fLSs -o openjdk.tgz "${JAVA_BASE_URL}x64_linux_hotspot_${JAVA_URL_VERSION}.tar.gz"
 
 RUN mkdir -p "$JAVA_HOME"; \
-	tar --extract \
-		--file openjdk.tgz \
-		--directory "$JAVA_HOME" \
-		--strip-components 1 \
-		--no-same-owner \
-	; \
-	rm openjdk.tgz* \
-	; \
+    tar --extract \
+    --file openjdk.tgz \
+    --directory "$JAVA_HOME" \
+    --strip-components 1 \
+    --no-same-owner \
+    ; \
+    rm openjdk.tgz* \
+    ; \
     java -version
 
 
