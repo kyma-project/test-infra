@@ -52,16 +52,3 @@ func TestTagger_BuildTag(t *testing.T) {
 		})
 	}
 }
-
-func Test_NewTag(t *testing.T) {
-	tc := []struct {
-		name string
-	}{
-		{},
-	}
-	for _, c := range tc {
-		t.Run(c.name, func(t *testing.T) {
-
-		})
-	}
-}

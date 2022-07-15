@@ -102,11 +102,3 @@ func Test_parseVariable(t *testing.T) {
 		})
 	}
 }
-
-func Test_runImageBuild(t *testing.T) {
-	_ = options{
-		buildDir:   ".",
-		configFile: "cloudbuild.yaml",
-	}
-	//runImageBuild(o)
-}
