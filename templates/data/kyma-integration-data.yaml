@@ -372,6 +372,78 @@ templates:
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
+                  name: "pre-main-kyma-integration-k3d-app-gateway"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((resources/application-connector\\S+|installation\\S+|tests/components/application-connector\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  optional: "true"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-kyma-integration-central-app-connectivity-enabled: "true"
+                    preset-kyma-integration-app-connector-tests-app-gateway: "true"
+                  annotations:
+                    pipeline.platform: k3d
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "kyma_major_version_2"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_k3d"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
+              - jobConfig:
+                  name: "pre-main-kyma-integration-k3d-app-conn-validator"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((resources/application-connector\\S+|installation\\S+|tests/components/application-connector\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  optional: "true"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-kyma-integration-central-app-connectivity-enabled: "true"
+                    preset-kyma-integration-app-connector-tests-app-validator: "true"
+                    annotations:
+                    pipeline.platform: k3d
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "kyma_major_version_2"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_k3d"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
+              - jobConfig:
+                  name: "pre-main-kyma-integration-k3d-runtime-agent"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((resources/compass-runtime-agent\\S+|installation\\S+|tests/components/application-connector\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  optional: "true"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-kyma-integration-central-app-connectivity-enabled: "true"
+                    preset-kyma-integration-app-connector-tests-runtime-agent: "true"
+                    annotations:
+                    pipeline.platform: k3d
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "kyma_major_version_2"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_k3d"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
+              - jobConfig:
                   name: "pre-main-kyma-integration-k3d-central-app-connectivity-compass"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -506,7 +578,7 @@ templates:
               - jobConfig:
                   name: "pre-main-kyma-eval-istio-integration-k3d"
                   run_if_changed: "(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)"
-                  optional: true
+                  optional: false
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-istio-evaluation: "true"
@@ -524,7 +596,7 @@ templates:
               - jobConfig:
                   name: "pre-main-kyma-prod-istio-integration-k3d"
                   run_if_changed: "(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)"
-                  optional: true
+                  optional: false
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-istio-production: "true"
@@ -569,6 +641,75 @@ templates:
                   labels:
                     preset-build-main: "true"
                     preset-kyma-integration-central-app-connectivity-enabled: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "kyma_major_version_2"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_k3d"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
+              - jobConfig:
+                  name: "post-main-kyma-integration-k3d-app-gateway"
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    description: Kyma integration job on k3d for testing application gateway.
+                    testgrid-days-of-results: "60"
+                  labels:
+                    preset-build-main: "true"
+                    preset-kyma-integration-central-app-connectivity-enabled: "true"
+                    preset-kyma-integration-app-connector-tests-app-gateway: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "kyma_major_version_2"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_k3d"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
+              - jobConfig:
+                  name: "post-main-kyma-integration-k3d-app-conn-validator"
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    description: Kyma integration job on k3d for testing application connectivity validator.
+                    testgrid-days-of-results: "60"
+                  labels:
+                    preset-build-main: "true"
+                    preset-kyma-integration-central-app-connectivity-enabled: "true"
+                    preset-kyma-integration-app-connector-tests-app-validator: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "kyma_major_version_2"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_k3d"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
+              - jobConfig:
+                  name: "post-main-kyma-integration-k3d-runtime-agent"
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    description: Kyma integration job on k3d for testing compass runtime agent.
+                    testgrid-days-of-results: "60"
+                  labels:
+                    preset-build-main: "true"
+                    preset-kyma-integration-central-app-connectivity-enabled: "true"
+                    preset-kyma-integration-app-connector-tests-runtime-agent: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

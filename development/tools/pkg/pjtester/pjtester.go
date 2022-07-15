@@ -498,11 +498,8 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 		logrus.WithError(err).Fatal("Failed to get GitHub client")
 	}
 	o.prFinder = prtagbuilder.NewGitHubClient(nil)
-	var testPrCfg *map[string]prOrg
-	//if testPrCfg = &testCfg.PrConfigs; testPrCfg != nil && !o.prFetched {
-	if testPrCfg = &testCfg.PrConfigs; testPrCfg != nil {
-		o.getPullRequests(testCfg)
-	}
+	o.getPullRequests(testCfg)
+
 	for _, pjCfg := range testCfg.PjNames {
 		pj := newTestPJ(pjCfg, o)
 		result, err := pjsClient.ProwJobs(metav1.NamespaceDefault).Create(context.Background(), &pj, metav1.CreateOptions{})

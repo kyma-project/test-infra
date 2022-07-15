@@ -96,7 +96,7 @@ func isGithubIssueOpen(ctx context.Context, client *github.Client, message kymap
 	} else if err != nil {
 		return nil, nil, fmt.Errorf("calling github API failed, error: %w", err)
 	}
-	b := new(bool)
+	var b *bool
 	if *ghIssue.State == "open" {
 		// Set return value to true when issue is open.
 		b = github.Bool(true)
@@ -230,6 +230,10 @@ func GetGithubIssue(ctx context.Context, m kymapubsub.MessagePayload) error {
 			}
 			// Set failing test instance in firestore as closed.
 			_, err := docRef.Update(ctx, updates, firestore.Exists)
+			if err != nil {
+				logger.LogError(fmt.Sprintf("failed setting failing test instance as closed, issue number:  %d, error: %s", ghIssue.GetNumber(), err.Error()))
+				// TODO: need error reporting for such case, without failing whole function
+			}
 			// Remove failing test instance firestore document reference from failing test pubsub message.
 			failingTestMessage.FirestoreDocumentID = nil
 			// Create new github issue.
@@ -282,7 +286,7 @@ func GetGithubIssue(ctx context.Context, m kymapubsub.MessagePayload) error {
 				logger.LogInfo(fmt.Sprintf("github issue, number %d, added to failing test instance", ghIssue.GetNumber()))
 			}
 		} else {
-			logger.LogError(fmt.Sprintf("github issue is nil, something went wrong with creating it"))
+			logger.LogError("github issue is nil, something went wrong with creating it")
 			// TODO: need error reporting for such case, without failing whole function
 		}
 	}
