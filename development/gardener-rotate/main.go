@@ -146,7 +146,6 @@ func main() {
 				}
 
 				// disable all previous versions
-
 				if !sa.KeepOld {
 					log.Infof("Disabling old secret versions for %s service accout", sa.KubernetesSA)
 					if !cfg.DryRun {
@@ -172,7 +171,7 @@ func main() {
 	rootCmd.PersistentFlags().StringVarP(&cfg.Kubeconfig, "kubeconfig", "k", "", "Path to kubeconfig file")
 	rootCmd.PersistentFlags().StringVarP(&cfg.ConfigFile, "config-file", "c", "", "Specifies the path to the YAML configuration file")
 	rootCmd.PersistentFlags().BoolVar(&cfg.DryRun, "dry-run", true, "Enables the dry-run mode")
-	rootCmd.PersistentFlags().StringVarP(&cfg.Cluster, "cluster-name", "n", "gardener", "Specifies the name of the cluster")
+	rootCmd.PersistentFlags().StringVarP(&cfg.Cluster, "cluster-name", "n", "garden", "Specifies the name of the cluster")
 
 	rootCmd.MarkPersistentFlagRequired("config-file")
 	rootCmd.MarkPersistentFlagRequired("kubeconfig")
