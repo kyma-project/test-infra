@@ -68,7 +68,7 @@ func main() {
 				serviceAccountGCP = os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")
 			}
 
-			secretSvc, err := secretmanager.NewService(ctx, option.WithServiceAccountFile(serviceAccountGCP))
+			secretSvc, err := secretmanager.NewService(ctx, option.WithCredentialsFile(serviceAccountGCP))
 			if err != nil {
 				log.Fatalf("Could not initialize Secret Manager API client: %v", err)
 			}
