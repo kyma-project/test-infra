@@ -49,8 +49,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/busola:
@@ -77,8 +77,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/control-plane:
@@ -105,8 +105,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/cli:
@@ -133,8 +133,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/website:
@@ -161,8 +161,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/kyma-operator:
@@ -189,8 +189,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/third-party-images:
@@ -217,8 +217,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/community:
@@ -245,8 +245,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/manifest-operator:
@@ -273,8 +273,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/hydroform:
@@ -301,8 +301,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/console:
@@ -329,8 +329,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/helm-broker:
@@ -357,8 +357,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/istio-operator:
@@ -385,8 +385,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/addons:
@@ -413,8 +413,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/private-fn-for-e2e-serverless-tests:
@@ -441,8 +441,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/charts:
@@ -469,8 +469,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/busola-migrator:
@@ -497,8 +497,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/examples:
@@ -525,8 +525,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/compass:
@@ -553,8 +553,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/ord-service:
@@ -581,8 +581,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/reconciler:
@@ -609,8 +609,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/api-gateway:
@@ -637,8 +637,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/bullseye-showcase:
@@ -665,8 +665,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/documentation-component:
@@ -693,8 +693,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/compass-console:
@@ -721,8 +721,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/sap-btp-service-operator:
@@ -749,8 +749,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/milv:
@@ -777,8 +777,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/varkes:
@@ -805,8 +805,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/slack-bot:
@@ -833,8 +833,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/podpreset-crd:
@@ -861,8 +861,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/migrate:
@@ -889,8 +889,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/github-dashboard:
@@ -917,8 +917,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/website-vuepress:
@@ -945,8 +945,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/sc-removal:
@@ -973,8 +973,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/service-catalog-tester:
@@ -1001,8 +1001,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/dex:
@@ -1029,8 +1029,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/kitbag:
@@ -1057,8 +1057,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/octopus:
@@ -1085,8 +1085,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/kyma-showcase:
@@ -1113,8 +1113,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/hydra-login-consent:
@@ -1141,8 +1141,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/terraform-provider-gardener:
@@ -1169,8 +1169,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/kymart:
@@ -1197,8 +1197,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/examples:
@@ -1225,8 +1225,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/vstudio-extension:
@@ -1253,8 +1253,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/wordpress-connector:
@@ -1281,8 +1281,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/connector-tools:
@@ -1309,8 +1309,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/service-catalog:
@@ -1337,8 +1337,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/gcp-service-broker:
@@ -1365,8 +1365,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/artwork:
@@ -1393,8 +1393,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/opensap:
@@ -1421,7 +1421,7 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
