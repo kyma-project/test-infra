@@ -35,7 +35,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
-                  name: pre-main-kyma-watcher-operator tests
+                  name: pre-main-kyma-watcher-operator-tests
                   command: "bash"
                   args:
                     - "-c" 
@@ -50,7 +50,7 @@ templates:
                     - "build_labels" # default labels
               - jobConfig:
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
-                  name: pre-main-kyma-watcher-listener tests
+                  name: pre-main-kyma-watcher-listener-tests
                   command: "bash"
                   args:
                     - "-c" 
