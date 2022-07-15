@@ -4,6 +4,8 @@ run:
   timeout: 2m
   # skip test files
   tests: false
+  skip-dirs:
+    - prow/scripts/resources/autobumper # not needed for this job
 linters:
   disable-all: true
   enable:
