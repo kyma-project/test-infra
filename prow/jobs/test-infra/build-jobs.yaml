@@ -1,0 +1,17 @@
+presubmits:
+  kyma-project/test-infra:
+    - name: pull-gcbuild-build-demo
+      decorate: true
+      cluster: untrusted-workload
+      presets:
+        preset-sa-gcr-push: "true"
+      branches:
+        - ^main$
+      spec:
+        containers:
+          - name: gcbuild
+            image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220715-5fe7b938
+            command: [ "/gcbuild" ]
+            args:
+              - --project=kyma-project
+              - --config-file=images/echo-demo
