@@ -40,16 +40,18 @@ type Step struct {
 }
 
 type options struct {
-	buildDir     string
-	configFile   string
-	variantsFile string
-	variant      string
-	logDir       string
-	devRegistry  string
-	project      string
-	silent       bool
-	isCI         bool
-	tagger       tags.Tagger
+	buildDir      string
+	configFile    string
+	variantsFile  string
+	variant       string
+	logDir        string
+	devRegistry   string
+	project       string
+	stagingBucket string
+	logsBucket    string
+	silent        bool
+	isCI          bool
+	tagger        tags.Tagger
 }
 
 func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
@@ -61,6 +63,8 @@ func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
 	fs.StringVar(&o.logDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
 	fs.StringVar(&o.devRegistry, "dev-registry", "", "Registry URL where development/dirty images should land. If not set then the default registry is used. This flag is only valid when running in CI (CI env variable is set to `true`)")
 	fs.StringVar(&o.project, "project", "", "GCP project name where build jobs will run")
+	fs.StringVar(&o.stagingBucket, "staging-bucket", "", "Full name to the Google Cloud Storage bucket, where the source will be pushed beforehand. If not set, rely on Google Cloud Build")
+	fs.StringVar(&o.logsBucket, "logs-bucket", "", "Full name to the Google Cloud Storage bucket, where the logs will be pushed after build finishes. If not set, rely on Google Cloud Build")
 	o.tagger.AddFlags(fs)
 	return fs
 }
@@ -295,6 +299,10 @@ func checkDependencies() error {
 }
 
 func main() {
+	if err := checkDependencies(); err != nil {
+		panic(err)
+	}
+
 	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	o := options{}
 	o.gatherOptions(fs)
@@ -305,9 +313,6 @@ func main() {
 		panic(err)
 	}
 	if err := validateOptions(o); err != nil {
-		panic(err)
-	}
-	if err := checkDependencies(); err != nil {
 		panic(err)
 	}
 	buildDir, err := filepath.Abs(o.buildDir)
