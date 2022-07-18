@@ -1,4 +1,6 @@
 pjNames:
   - pjName: "skr-aws-integration-dev"
-  - pjName: "skr-azure-integration-dev"
-  - pjName: "skr-aws-without-sc-integration-dev"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 14843
