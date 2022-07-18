@@ -15,12 +15,12 @@ type ErrorResponse struct {
 }
 
 func AppErrorToResponse(appError apperrors.AppError) (int, ErrorResponse) {
-	httpCode := errorCodeToHttpStatus(appError.Code())
+	httpCode := errorCodeToHTTPStatus(appError.Code())
 	errorMessage := appError.Error()
 	return httpCode, ErrorResponse{httpCode, fmt.Sprintf("%s: %s", appError.Desc(), errorMessage)}
 }
 
-func errorCodeToHttpStatus(code int) int {
+func errorCodeToHTTPStatus(code int) int {
 	switch code {
 	case apperrors.NotFoundError:
 		return http.StatusNotFound
