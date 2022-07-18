@@ -38,8 +38,8 @@ See the list of flags available for the `promote` command:
 | Name                      | Required | Description                                                                                          |
 | :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
 
-| **--service-account**     |   Yes    | Path to GCP service account credentials file.|
-| **--kubeconfig**          |   Yes    | Path to the Gardener kubeconfig file.|
-| **--config-file**         |   Yes    | Path to the `gardener-rotate` configuratino file.|
+| **--service-account**     |   Yes    | Path to GCP service account credentials file. This credential is used to access Secret Manager.|
+| **--kubeconfig**          |   Yes    | Path to the Gardener kubeconfig file. This credential is used for token rotation.|
+| **--config-file**         |   Yes    | Path to the `gardener-rotate` configuration file.|
 | **--dry-run**             |   No     | The boolean value that controls the dry-run mode. It defaults to `true`.|
 | **--cluster-name**        |   No     | Specifies the name of the cluster used in the generated kubeconfig.|
