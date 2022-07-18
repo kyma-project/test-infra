@@ -105,7 +105,7 @@ func GetSlackUserForGithubUser(ctx context.Context, m pubsub.MessagePayload) err
 	logger.WithLabel("prowjobName", *failingTestMessage.JobName)
 
 	// Set label with execution ID for logging.
-	jobID, err := pubsub.GetJobID(failingTestMessage.URL)
+	jobID, err := pubsub.GetJobId(failingTestMessage.URL)
 	if err != nil {
 		logger.LogCritical(fmt.Sprintf("failed get job ID, error: %s", err.Error()))
 	} else {
