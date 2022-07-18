@@ -1,6 +1,6 @@
 serviceAccounts:
-  - serviceAccount: "sa-neighbor-robot"
-    namespace: "garden-neighbors"
-    secret: "trusted_default_gardener-neighbors-kubeconfig"
-    project: "sap-kyma-prow"
-    duration: 5184000 # 60 days in seconds
+  - k8sServiceAccount: "sa-neighbor-robot"
+    k8sNamespace: "garden-neighbors"
+    k8sDuration: 5184000 # 60 days in seconds
+    gcpSecretManagerSecretName: "trusted_default_gardener-neighbors-kubeconfig"
+    gcpProjectName: "sap-kyma-prow"

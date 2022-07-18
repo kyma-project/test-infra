@@ -23,12 +23,12 @@ var (
 )
 
 type ServiceAccount struct {
-	KubernetesSA        string `json:"serviceAccount"`
-	KubernetesNamespace string `json:"namespace,omitempty"`
-	GCPSecret           string `json:"secret"`
-	GCPProject          string `json:"project"`
-	KeepOld             bool   `json:"keepOld,omitempty"`
-	Duration            int64  `json:"duration"`
+	KubernetesSA        string `json:"k8sServiceAccount"`
+	KubernetesNamespace string `json:"k8sNamespace,omitempty"`
+	Duration            int64  `json:"k8sDuration"`
+	GCPSecret           string `json:"gcpSecretManagerSecretName"`
+	GCPProject          string `json:"gcpProjectName"`
+	KeepOld             bool   `json:"gcpKeepOld,omitempty"`
 }
 
 type ConfigFile struct {

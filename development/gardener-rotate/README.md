@@ -22,12 +22,12 @@ gardener-rotate takes as an input parameter a file having the following structur
 
 ```yaml
 serviceAccounts:
-  - serviceAccount: "sa-neighbor-robot" # Kubernetes service account name
-    namespace: "garden-neighbors" # Kubernetes service account namespace
-    duration: 5184000 # vailidity of the new token in seconds
-    secret: "trusted_default_gardener-neighbors-kubeconfig" # name of the GCP secret
-    project: "sap-kyma-prow" # name of the GCP project with the Secret Manager
-    keepOld: false # should old versions of the secret be disabled
+  - k8sServiceAccount: "sa-neighbor-robot" # Kubernetes service account name to rotate
+    k8sNamespace: "garden-neighbors" # Kubernetes service account namespace
+    k8sDuration: 5184000 # vailidity of the new token in seconds
+    gcpSecretManagerSecretName: "trusted_default_gardener-neighbors-kubeconfig" # name of the GCP secret where the kubeconfig is stored
+    gcpProjectName: "sap-kyma-prow" # name of the GCP project with the Secret Manager
+    gcpKeepOld: false # should old versions of the GCP secret be disabled, false by default
 ```
 
 
