@@ -54,21 +54,6 @@ type options struct {
 	tagger        tags.Tagger
 }
 
-func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
-	fs.BoolVar(&o.silent, "silent", false, "Do not push build logs to stdout")
-	fs.StringVar(&o.buildDir, "build-dir", ".", "Path to build directory")
-	fs.StringVar(&o.configFile, "config-file", "cloudbuild.yaml", "Path to cloudbuild.yaml file relative to build-dir")
-	fs.StringVar(&o.variantsFile, "variants-file", "", "Name of variants file relative to build-dir")
-	fs.StringVar(&o.variant, "variant", "", "Define which variant should be built")
-	fs.StringVar(&o.logDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
-	fs.StringVar(&o.devRegistry, "dev-registry", "", "Registry URL where development/dirty images should land. If not set then the default registry is used. This flag is only valid when running in CI (CI env variable is set to `true`)")
-	fs.StringVar(&o.project, "project", "", "GCP project name where build jobs will run")
-	fs.StringVar(&o.stagingBucket, "staging-bucket", "", "Full name to the Google Cloud Storage bucket, where the source will be pushed beforehand. If not set, rely on Google Cloud Build")
-	fs.StringVar(&o.logsBucket, "logs-bucket", "", "Full name to the Google Cloud Storage bucket, where the logs will be pushed after build finishes. If not set, rely on Google Cloud Build")
-	o.tagger.AddFlags(fs)
-	return fs
-}
-
 // parseVariable returns a gcloud compatible substitution option.
 // Keys are set to upper-case and prefix "_" is set if not present.
 func parseVariable(key, value string) string {
@@ -115,6 +100,10 @@ func run(o options, name, repo, tag string, subs map[string]string) error {
 	if o.project != "" {
 		args = append(args, "--project", o.project)
 	}
+	// TODO (@Ressetkk): custom staging bucket implementation and re-using source code in builds
+	//if o.stagingBucket != "" {
+	//
+	//}
 
 	cmd := exec.Command("gcloud", args...)
 
@@ -231,6 +220,11 @@ func runBuildJob(o options) error {
 		}
 	}
 
+	// TODO (@Ressetkk): custom staging bucket implementation and re-using source code in builds
+	//if o.stagingBucket != "" {
+	//
+	//}
+
 	vs, err := getVariants(o)
 	if err != nil {
 		return err
@@ -255,6 +249,7 @@ func runBuildJob(o options) error {
 	for k, v := range vs {
 		go func(variant string, env map[string]string) {
 			defer wg.Done()
+			env["_VARIANT"] = variant
 			if err := run(o, variant, repo, tag, env); err != nil {
 				errs = append(errs, fmt.Errorf("job %s ended with error: %w", variant, err))
 				fmt.Printf("Job %s ended with error: %s.\n", variant, err)
@@ -296,6 +291,21 @@ func checkDependencies() error {
 		}
 	}
 	return errutil.NewAggregate(errs)
+}
+
+func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
+	fs.BoolVar(&o.silent, "silent", false, "Do not push build logs to stdout")
+	fs.StringVar(&o.buildDir, "build-dir", ".", "Path to build directory")
+	fs.StringVar(&o.configFile, "config-file", "cloudbuild.yaml", "Path to cloudbuild.yaml file relative to build-dir")
+	fs.StringVar(&o.variantsFile, "variants-file", "", "Name of variants file relative to build-dir")
+	fs.StringVar(&o.variant, "variant", "", "Define which variant should be built")
+	fs.StringVar(&o.logDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
+	fs.StringVar(&o.devRegistry, "dev-registry", "", "Registry URL where development/dirty images should land. If not set then the default registry is used. This flag is only valid when running in CI (CI env variable is set to `true`)")
+	fs.StringVar(&o.project, "project", "", "GCP project name where build jobs will run")
+	fs.StringVar(&o.stagingBucket, "staging-bucket", "", "Full name to the Google Cloud Storage bucket, where the source will be pushed beforehand. If not set, rely on Google Cloud Build")
+	fs.StringVar(&o.logsBucket, "logs-bucket", "", "Full name to the Google Cloud Storage bucket, where the logs will be pushed after build finishes. If not set, rely on Google Cloud Build")
+	o.tagger.AddFlags(fs)
+	return fs
 }
 
 func main() {
