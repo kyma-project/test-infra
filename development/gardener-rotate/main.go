@@ -138,7 +138,7 @@ func main() {
 				log.Infof("Adding new secret version for %s service accout", sa.KubernetesSA)
 				newVersionRequest := secretmanager.AddSecretVersionRequest{Payload: &secretmanager.SecretPayload{Data: base64.StdEncoding.EncodeToString([]byte(serviceAccountKubeconfig))}}
 				newVersionCall := secretSvc.Projects.Secrets.AddVersion(secretParent, &newVersionRequest)
-				if !cfg.DryRun && !sa.KeepOld {
+				if !cfg.DryRun {
 					_, err = newVersionCall.Do()
 					if err != nil {
 						log.Fatalf("Could not create new secret version: %v", err)
