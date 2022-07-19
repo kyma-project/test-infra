@@ -2,14 +2,15 @@ package main
 
 import (
 	"context"
-	"encoding/base64"
 	"io/ioutil"
 	"os"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"google.golang.org/api/option"
-	secretmanager "google.golang.org/api/secretmanager/v1"
+
+	"github.com/kyma-project/test-infra/development/gcp/pkg/secretmanager"
+	"github.com/kyma-project/test-infra/development/gcp/pkg/secretversionsmanager"
+	gcpsecretmanager "google.golang.org/api/secretmanager/v1"
 	authentication "k8s.io/api/authentication/v1"
 	meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
@@ -64,11 +65,11 @@ func main() {
 				serviceAccountGCP = os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")
 			}
 
-			secretSvc, err := secretmanager.NewService(ctx, option.WithCredentialsFile(serviceAccountGCP))
+			secretSvc, err := secretmanager.NewService(ctx, serviceAccountGCP)
 			if err != nil {
 				log.Fatalf("Could not initialize Secret Manager API client: %v", err)
 			}
-			secretVersionsSvc := secretmanager.NewProjectsSecretsVersionsService(secretSvc)
+			secretVersionsSvc := secretversionsmanager.NewService(secretSvc)
 
 			k8sConfig, err := clientcmd.BuildConfigFromFlags("", cfg.Kubeconfig)
 			if err != nil {
@@ -122,13 +123,10 @@ func main() {
 					}
 				}
 
-				secretParent := "projects/" + sa.GCPProject + "/secrets/" + sa.GCPSecret
-
 				// get list of all previous secret versions
-				secretVersionsCall := secretSvc.Projects.Secrets.Versions.List(secretParent)
-				var secretVersions *secretmanager.ListSecretVersionsResponse
+				var secretVersions *gcpsecretmanager.ListSecretVersionsResponse
 				if !cfg.DryRun {
-					secretVersions, err = secretVersionsCall.Do()
+					secretVersions, err = secretSvc.ListSecretVersions(sa.GCPProject, sa.GCPSecret)
 					if err != nil {
 						log.Fatalf("Could not get list of secret versions: %v", err)
 					}
@@ -136,10 +134,8 @@ func main() {
 
 				// update it in the Secret Manager
 				log.Infof("Adding new secret version for %s service accout", sa.KubernetesSA)
-				newVersionRequest := secretmanager.AddSecretVersionRequest{Payload: &secretmanager.SecretPayload{Data: base64.StdEncoding.EncodeToString([]byte(serviceAccountKubeconfig))}}
-				newVersionCall := secretSvc.Projects.Secrets.AddVersion(secretParent, &newVersionRequest)
 				if !cfg.DryRun {
-					_, err = newVersionCall.Do()
+					_, err = secretSvc.AddSecretVersion(sa.GCPProject, sa.GCPSecret, []byte(serviceAccountKubeconfig))
 					if err != nil {
 						log.Fatalf("Could not create new secret version: %v", err)
 					}
@@ -152,9 +148,7 @@ func main() {
 						for _, secretVersion := range secretVersions.Versions {
 							// we can only disable enabled secrets
 							if secretVersion.State == "ENABLED" {
-								disableRequest := secretmanager.DisableSecretVersionRequest{}
-								disableCall := secretVersionsSvc.Disable(secretVersion.Name, &disableRequest)
-								_, err := disableCall.Do()
+								_, err := secretVersionsSvc.DisableSecretVersion(secretVersion)
 								if err != nil {
 									log.Fatalf("Could not disable secret version %s: %v", secretVersion.Name, err)
 								}
