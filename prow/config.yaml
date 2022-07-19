@@ -358,6 +358,16 @@ presets:
             key: secret
       - name: KYMA_ALERTS_CHANNEL
         value: "#kyma-ci-force"
+  # remove when control plane jobs will wirk with the new version of k8s
+  - labels:
+      preset-cluster-version-previous: "true"
+    env:
+      - name: AKS_CLUSTER_VERSION
+        value: "1.21"
+      - name: GKE_CLUSTER_VERSION
+        value: "1.21"
+      - name: GARDENER_CLUSTER_VERSION
+        value: "1.21"
   # cluster version
   - labels:
       preset-cluster-version: "true"
