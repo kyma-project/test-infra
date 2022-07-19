@@ -70,7 +70,7 @@ deck:
               - DATA RACE
               - dirty working directory
               - ^E\d{4} \d\d:\d\d:\d\d\.\d+
-              - "(Error|ERROR|error)s?:"
+              - (Error|ERROR|error)s?(:|\s)
               - Error.+executing benchmarks
               - Expected.+got
               - FAILED. See logs
