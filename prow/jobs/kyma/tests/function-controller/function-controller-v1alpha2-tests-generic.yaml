@@ -3,12 +3,12 @@
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-kyma-tests-function-controller
+    - name: pre-kyma-tests-function-controller-v1alpha2
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-kyma-tests-function-controller"
+        prow.k8s.io/pubsub.runID: "pre-kyma-tests-function-controller-v1alpha2"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"

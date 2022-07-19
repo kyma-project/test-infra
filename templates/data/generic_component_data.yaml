@@ -179,6 +179,7 @@ templates:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
               - jobConfig:
+                  name: "pre-kyma-components-function-controller-v1alpha2"
                   path: components/function-controller
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/components/function-controller"
@@ -202,6 +203,7 @@ templates:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
               - jobConfig:
+                  name: "pre-kyma-tests-function-controller-v1alpha2"
                   path: tests/function-controller
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/tests/function-controller"
