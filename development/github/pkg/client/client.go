@@ -118,7 +118,7 @@ func IsStatusOK(resp *github.Response) (bool, error) {
 	if resp.StatusCode != http.StatusOK {
 		bodyBytes, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			return false, fmt.Errorf("got error when reading response body for non 200 HTTP reponse code, error: %w", err)
+			return false, fmt.Errorf("got error when reading response body for non 200 HTTP response code, error: %w", err)
 		}
 		bodyString := string(bodyBytes)
 		return false, fmt.Errorf("got non 200 response code in HTTP response, body: %s", bodyString)

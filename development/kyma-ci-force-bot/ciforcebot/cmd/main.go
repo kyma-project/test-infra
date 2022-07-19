@@ -66,7 +66,7 @@ func init() {
 	}
 	randomInt := rand.Int()
 	trace := fmt.Sprintf("projects/%s/traces/%s/%d", conf.ProjectID, conf.Component, randomInt)
-	logger := loggingClient.Logger(conf.LogName, logging.CommonLabels(map[string]string{
+	logger = loggingClient.Logger(conf.LogName, logging.CommonLabels(map[string]string{
 		"appName":   conf.AppName,
 		"component": conf.Component}))
 	// create firestore client, it will be reused by multiple function calls

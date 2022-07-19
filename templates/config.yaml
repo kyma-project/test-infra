@@ -19,7 +19,6 @@ global:
         - name: "manifest-operator"
         - name: "hydroform"
         - name: "console"
-        - name: "helm-broker"
         - name: "istio-operator"
         - name: "addons"
         - name: "private-fn-for-e2e-serverless-tests"
@@ -43,8 +42,6 @@ global:
         - name: "migrate"
         - name: "github-dashboard"
         - name: "website-vuepress"
-        - name: "sc-removal"
-        - name: "service-catalog-tester"
         - name: "dex"
         - name: "kitbag"
         - name: "octopus"
@@ -56,8 +53,6 @@ global:
         - name: "vstudio-extension"
         - name: "wordpress-connector"
         - name: "connector-tools"
-        - name: "service-catalog"
-        - name: "gcp-service-broker"
         - name: "artwork"
         - name: "opensap"
         
@@ -88,9 +83,9 @@ globalSets:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_bootstrap:
-    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220427-9543160d"
+    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220704-9cc2ad51"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220714-22d4bebe"
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
   image_buildpack-node:

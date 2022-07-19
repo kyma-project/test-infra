@@ -15,6 +15,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/container/v1"
+	"google.golang.org/api/option"
 )
 
 var (
@@ -47,7 +48,7 @@ func main() {
 		log.Fatalf("Could not get authenticated client: %v", err)
 	}
 
-	containerSvc, err := container.New(connection)
+	containerSvc, err := container.NewService(ctx, option.WithHTTPClient(connection))
 	if err != nil {
 		log.Fatalf("Could not initialize container API client: %v", err)
 	}

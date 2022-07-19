@@ -25,14 +25,14 @@ const (
 	// ImageNodeBuildpackLatest means Node.js buildpack image (node v12)
 	ImageNodeBuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220428-a1f1d86f"
 	// ImageBootstrapTestInfraLatest means it's used in test-infra prowjob defs.
-	ImageBootstrapTestInfraLatest = "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220427-9543160d"
+	ImageBootstrapTestInfraLatest = "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
 
 	// ImageKymaIntegrationLatest represents kyma integration image with kubectl 1.16
 	ImageKymaIntegrationLatest = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
 	// ImageGolangToolboxLatest represents the latest version of the golang buildpack toolbox
 	ImageGolangToolboxLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c" // see https://github.com/kyma-project/test-infra/pull/3738
 	// ImageProwToolsLatest represents the latest version of the prow-tools image
-	ImageProwToolsLatest = "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220704-9cc2ad51"
+	ImageProwToolsLatest = "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220714-22d4bebe"
 	// KymaProjectDir means kyma project dir
 	KymaProjectDir = "/home/prow/go/src/github.com/kyma-project"
 	// KymaIncubatorDir means kyma incubator dir
@@ -115,7 +115,7 @@ func IfPresubmitShouldRunAgainstChanges(job config.Presubmit, def bool, changedF
 	}
 	det, shouldRun, err := job.RegexpChangeMatcher.ShouldRun(changed)
 	if err != nil {
-		fmt.Printf("An error occured during IfPresubmitShouldRunAgainstChanges execution: %v", err)
+		fmt.Printf("An error occurred during IfPresubmitShouldRunAgainstChanges execution: %v", err)
 		return false
 	}
 	if det {
@@ -134,7 +134,7 @@ func IfPostsubmitShouldRunAgainstChanges(job config.Postsubmit, changedFiles ...
 	}
 	det, shouldRun, err := job.RegexpChangeMatcher.ShouldRun(changed)
 	if err != nil {
-		fmt.Printf("An error occured during IfPostsubmitShouldRunAgainstChanges execution: %v", err)
+		fmt.Printf("An error occurred during IfPostsubmitShouldRunAgainstChanges execution: %v", err)
 		return false
 	}
 	if det {
