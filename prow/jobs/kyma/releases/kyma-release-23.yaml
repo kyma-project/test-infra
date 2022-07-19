@@ -41,7 +41,7 @@ presubmits: # runs on PRs
               - name: KYMA_MAJOR_VERSION
                 value: "2"
               - name: K8S_VERSION
-                value: "1.21"
+                value: "1.21.14"
             resources:
               requests:
                 memory: 100Mi
