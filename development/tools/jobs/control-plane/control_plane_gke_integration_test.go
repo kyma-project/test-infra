@@ -38,7 +38,6 @@ func TestKCPGKEIntegrationPresubmit(t *testing.T) {
 		preset.GardenerAzureIntegration,
 		preset.BuildPr,
 		"preset-kyma-development-artifacts-bucket",
-		preset.ClusterVersion,
 	)
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "main")
 	require.Len(t, actualJob.Spec.Containers, 1)
@@ -77,7 +76,6 @@ func TestKCPGKEIntegrationPostsubmit(t *testing.T) {
 		preset.GardenerAzureIntegration,
 		preset.BuildMaster,
 		"preset-kyma-development-artifacts-bucket",
-		preset.ClusterVersion,
 	)
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "main")
 	require.Len(t, actualJob.Spec.Containers, 1)
