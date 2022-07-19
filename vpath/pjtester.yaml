@@ -1,0 +1,8 @@
+pjNames:
+  - pjName: "pre-main-serverless-v1alpha2-integration-k3s"
+  - pjName: "pre-kyma-components-function-controller-v1alpha2"
+  - pjName: "pre-kyma-tests-function-controller-v1alpha2"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 14847
