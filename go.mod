@@ -51,7 +51,7 @@ require (
 	github.com/shurcooL/githubv4 v0.0.0-20211117020012-5800b9de5b8b
 	github.com/sigstore/cosign v1.2.1
 	github.com/sigstore/sigstore v1.0.1
-	github.com/sirupsen/logrus v1.8.1
+	github.com/sirupsen/logrus v1.9.0
 	github.com/smartystreets/goconvey v1.7.2
 	github.com/spf13/cobra v1.5.0
 	github.com/spf13/pflag v1.0.5
