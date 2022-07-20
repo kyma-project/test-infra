@@ -29,6 +29,11 @@ var components = []struct {
 			jobsuite.AllReleases(),
 		},
 	},
+	{path: "function-controller", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("v1alpha2-generic"),
+		},
+	},
 	{path: "function-runtimes", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
