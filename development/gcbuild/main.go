@@ -51,7 +51,6 @@ type options struct {
 	logsBucket    string
 	silent        bool
 	isCI          bool
-	tagger        tags.Tagger
 }
 
 // parseVariable returns a gcloud compatible substitution option.
@@ -214,7 +213,9 @@ func runBuildJob(o options) error {
 		if err != nil {
 			return fmt.Errorf("could not create tag: %w", err)
 		}
-		tag, err = o.tagger.BuildTag(t)
+
+		tagger := tags.Tagger{TagTemplate: `v{{ .Date }}-{{ .ShortSHA }}`}
+		tag, err = tagger.BuildTag(t)
 		if err != nil {
 			return fmt.Errorf("could not build tag: %w", err)
 		}
@@ -304,7 +305,6 @@ func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
 	fs.StringVar(&o.project, "project", "", "GCP project name where build jobs will run")
 	fs.StringVar(&o.stagingBucket, "staging-bucket", "", "Full name to the Google Cloud Storage bucket, where the source will be pushed beforehand. If not set, rely on Google Cloud Build")
 	fs.StringVar(&o.logsBucket, "logs-bucket", "", "Full name to the Google Cloud Storage bucket, where the logs will be pushed after build finishes. If not set, rely on Google Cloud Build")
-	o.tagger.AddFlags(fs)
 	return fs
 }
 

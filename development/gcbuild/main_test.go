@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"github.com/kyma-project/test-infra/development/gcbuild/tags"
 	"os"
 	"reflect"
 	"testing"
@@ -23,7 +22,6 @@ func TestFlags(t *testing.T) {
 				buildDir:     ".",
 				logDir:       "/logs/artifacts",
 				project:      "sample-project",
-				tagger:       tags.Tagger{TagTemplate: `v{{ .Date }}-{{ .ShortSHA }}`},
 			},
 			expectedErr: true,
 			args: []string{
@@ -40,7 +38,6 @@ func TestFlags(t *testing.T) {
 				buildDir:     "prow/build",
 				logDir:       "prow/logs",
 				project:      "sample-project",
-				tagger:       tags.Tagger{TagTemplate: `{{ .CommitSHA }}`},
 				devRegistry:  "eu.gcr.io/dev-registry",
 				silent:       true,
 			},
@@ -49,7 +46,6 @@ func TestFlags(t *testing.T) {
 				"--variants-file=var.yaml",
 				"--project=sample-project",
 				"--build-dir=prow/build",
-				"--tag-template={{ .CommitSHA }}",
 				"--log-dir=prow/logs",
 				"--dev-registry=eu.gcr.io/dev-registry",
 				"--silent",
