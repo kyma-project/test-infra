@@ -23,7 +23,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-main-kcp-cli
-                  run_if_changed: "^tools/cli"
+                  run_if_changed: "^tools/cli|^components"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
