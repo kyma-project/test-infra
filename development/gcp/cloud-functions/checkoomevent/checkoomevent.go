@@ -24,12 +24,10 @@ type PubSubMessage struct {
 
 // This is the Message payload of pubsub message
 type MessagePayload struct {
-	Attributes   map[string]string `json:"attributes"`
-	Data         string            `json:"data"` // This property is base64 encoded
-	MessageID    string            `json:"messageId"`
-	Message_Id   string            `json:"message_id"`
-	PublishTime  string            `json:"publishTime"`
-	Publish_time string            `json:"publish_time"`
+	Attributes  map[string]string `json:"attributes"`
+	Data        string            `json:"data"` // This property is base64 encoded
+	MessageID   string            `json:"messageId"`
+	PublishTime string            `json:"publishTime"`
 }
 
 // This is the Data payload of pubsub message payload.
