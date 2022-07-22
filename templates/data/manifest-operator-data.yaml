@@ -24,24 +24,6 @@ templates:
                     - "jobConfig_periodic"
                     - "build_labels" # default labels
               - jobConfig:
-                  name: periodic-manifest-operator-api-tests
-                  cron: "0 */6 * * 1-5" # "At minute 0 past every 6th hour on every day-of-week from Monday through Friday."
-                  annotations:
-                    description: regularly executes the 'make test' command in the manifest-operator 'api' directory.
-                  command: "bash"
-                  args:
-                    - "-c" 
-                    - "cd api && make test" # run test make target of operator
-                  branches:
-                    - ^main$
-                  slack_channel: jellyfish-notifications
-                inheritedConfigs:
-                  global:
-                    - "image_buildpack-golang" # takes latest golang image
-                    - "jobConfig_default" 
-                    - "jobConfig_periodic"
-                    - "build_labels" # default labels
-              - jobConfig:
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220627-b303c786"
                   name: "pre-main-manifest-operator-controller-lint"
@@ -51,24 +33,6 @@ templates:
                   args:
                     - "-c"
                     - "cd operator && golangci-lint run"
-                  branches:
-                    - ^main$
-                  slack_channel: jellyfish-notifications
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - "build_labels" # default labels
-              - jobConfig:
-                  run_if_changed: "^api/(go.mod|go.sum)$|^api/*/(.*.go|Makefile|.*.sh)"
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220627-b303c786"
-                  name: "pre-main-manifest-operator-api-lint"
-                  annotations:
-                    description: executes the 'make lint' command in the manifest-operator 'api' directory before any pull request.
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "cd api && golangci-lint run"
                   branches:
                     - ^main$
                   slack_channel: jellyfish-notifications
@@ -88,24 +52,6 @@ templates:
                     - "cd operator && make test" # run test make target of operator
                   branches:
                     - ^main$ # any pr against main trig
-                  slack_channel: jellyfish-notifications
-                inheritedConfigs:
-                  global:
-                    - "image_buildpack-golang" # takes latest golang image
-                    - "jobConfig_default" 
-                    - "jobConfig_presubmit"
-                    - "build_labels" # default labels
-              - jobConfig:
-                  run_if_changed: "^api/(go.mod|go.sum)$|^api/*/(.*.go|Makefile|.*.sh)"
-                  name: pre-main-manifest-operator-api-tests
-                  annotations:
-                    description: executes the 'make test' command in the manifest-operator 'api' directory before any pull request.
-                  command: "bash"
-                  args:
-                    - "-c" 
-                    - "cd api && make test" # run test make target of operator
-                  branches:
-                    - ^main$ # any pr against main triggers this
                   slack_channel: jellyfish-notifications
                 inheritedConfigs:
                   global:
