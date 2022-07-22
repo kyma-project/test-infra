@@ -10,7 +10,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-operator-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -19,7 +18,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220627-b303c786"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220721-c8fa9975"
             securityContext:
               privileged: true
             command:
@@ -55,47 +54,6 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^main$
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
-            securityContext:
-              privileged: true
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "cd operator && make test"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-  
-periodics: # runs on schedule
-    - name: periodic-kyma-operator-tests
-      annotations:
-        description: "regularly executes the 'make test' command in the kyma-operator 'operator' directory."
-        pipeline.trigger: "periodic"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "periodic-kyma-operator-tests"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-sa-gcr-push: "true"
-      cron: "0 */6 * * 1-5"
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      reporter_config:
-        slack:
-          channel: jellyfish-notifications
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
