@@ -6,7 +6,7 @@ templates:
           - repoName: kyma-project/kyma-operator
             jobs:
               - jobConfig:
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220721-c8fa9975"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220722-426fa04d"
                   name: "pre-main-kyma-operator-lint"
                   always_run: true
                   command: "bash"
