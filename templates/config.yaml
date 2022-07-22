@@ -85,11 +85,11 @@ globalSets:
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220714-22d4bebe"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220721-0e9ed480"
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
   image_buildpack-node:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220428-a1f1d86f"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220720-622619a6"
   image_buildpack-golang:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
   image_buildpack-golang-kubebuilder2:
@@ -197,6 +197,9 @@ globalSets:
     labels:
       preset-docker-push-repository-incubator: "true"
     path_alias: "github.com/kyma-incubator/compass"
+  jobConfig_serverlessv1alpha2:
+    branches:
+      - "^serverless-v1alpha2$"
   disable_report:
     skip_report: "true"
   # globalSet for prowjobs which doesn't inherit jobConfig_default globalSet
