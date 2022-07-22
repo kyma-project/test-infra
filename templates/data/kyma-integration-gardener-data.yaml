@@ -305,6 +305,7 @@ templates:
                     grace_period: 600000000000 # 10min
                     # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  skip_if_only_changed: "^tests/fast-integration/skr-test/.*$"
                   volumes:
                     - name: kyma-tunas-prow-event-mesh
                       secretName: kyma-tunas-prow-event-mesh
