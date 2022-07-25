@@ -74,7 +74,7 @@ type pjConfigs struct {
 type testCfg struct {
 	PjConfigs  pjConfigs        `yaml:"pjConfigs" validate:"required,min=1"`
 	ConfigPath string           `yaml:"configPath" default:"prow/config.yaml"` // path relative to repository root
-	PrConfigs map[string]prOrg `yaml:"prConfigs,omitempty"`
+	PrConfigs  map[string]prOrg `yaml:"prConfigs,omitempty"`
 }
 
 // options holds data about prowjob and pull request to test.
@@ -547,35 +547,6 @@ func (o *options) setRefsGetters(currentPrOrg, currentPrRepo string) error {
 
 // newTestPJ is building a prowjob definition to test prowjobs provided in pjtester test configuration.
 func newTestPJ(pjCfg pjConfig, opt options, org, repo string) (prowapi.ProwJob, error) {
-	//	// Test prowjob from pull request in test-infra. Checkout this PR in test-infra repo from extraRefs.
-	//	if opt.pjConfigPullRequest.pullRequest.Number != 0 {
-	//		if opt.pjConfigPullRequest.org == testinfraOrg && opt.pjConfigPullRequest.repo == testinfraRepo {
-	//			err := opt.checkoutTestInfra()
-	//			if err != nil {
-	//				return prowapi.ProwJob{}, fmt.Errorf("")
-	//			}
-	//		} else {
-	//			opt.baseSHAGetter = func() (string, error) {
-	//				return opt.pjConfigPullRequest.pullRequest.Base.SHA, nil
-	//			}
-	//
-	//			opt.headSHAGetter = func() (string, error) {
-	//				return opt.pjConfigPullRequest.pullRequest.Head.SHA, nil
-	//			}
-	//		}
-	//	} else {
-	//		// TODO: use default base and head refs
-	//		opt.baseSHAGetter = func() (string, error) {
-	//			var err error
-	//			baseSHA, err := opt.githubClient.GetRef(org, repo, "heads/main")
-	//			if err != nil {
-	//				return "", fmt.Errorf("failed to get baseSHA: %w", err)
-	//			}
-	//			return baseSHA, nil
-	//		}
-	//
-	//		opt.headSHAGetter = nil
-	//	}
 	err := opt.setRefsGetters(org, repo)
 	if err != nil {
 		return prowapi.ProwJob{}, fmt.Errorf("failed set RefsGetters, error: %w", err)
@@ -587,7 +558,7 @@ func newTestPJ(pjCfg pjConfig, opt options, org, repo string) (prowapi.ProwJob, 
 		return prowapi.ProwJob{}, fmt.Errorf("failed generating prowjob specification to test: %w", err)
 	}
 	// Building prowjob based on generated job specifications.
-	pj := pjutil.NewProwJob(pjSpecification, map[string]string{"createdByPjtester": "true"}, map[string]string{})
+	pj := pjutil.NewProwJob(pjSpecification, map[string]string{"created-by-pjtester": "true", "prow.k8s.io/is-optional": "true"}, map[string]string{})
 	// Add prefix to prowjob to test name.
 	pj.Spec.Job = formatPjName(opt.pullAuthor, pj.Spec.Job)
 	// Add prefix to prowjob to test context.
