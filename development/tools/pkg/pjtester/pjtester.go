@@ -284,7 +284,7 @@ func (o *options) genJobSpec(pjCfg pjConfig, org, repo string) (config.JobBase, 
 		if err != nil {
 			log.WithError(err).Fatalf("failed get presubmits")
 		}
-		log.Debugf("Use head getter: %v", o.headSHAGetter)
+		log.Debugf("Use head getter")
 	} else {
 		log.Debugf("fetching presubmits")
 		preSubmits, err = conf.GetPresubmits(o.gitClient.ClientFactory, fmt.Sprintf("%s/%s", org, repo), o.baseSHAGetter)
@@ -299,6 +299,8 @@ func (o *options) genJobSpec(pjCfg pjConfig, org, repo string) (config.JobBase, 
 		log.Debugf("presubmit.name : %s", p.Name)
 		if p.Name == pjCfg.PjName {
 			p.Optional = true
+			// set prowjob name
+			p.Name = formatPjName(o.pullAuthor, p.Name)
 			pjs := pjutil.PresubmitSpec(p, prowapi.Refs{
 				Org:  org,
 				Repo: repo,
@@ -560,9 +562,9 @@ func newTestPJ(pjCfg pjConfig, opt options, org, repo string) (prowapi.ProwJob, 
 	// Building prowjob based on generated job specifications.
 	pj := pjutil.NewProwJob(pjSpecification, map[string]string{"created-by-pjtester": "true", "prow.k8s.io/is-optional": "true"}, map[string]string{})
 	// Add prefix to prowjob to test name.
-	pj.Spec.Job = formatPjName(opt.pullAuthor, pj.Spec.Job)
+	//pj.Spec.Job = formatPjName(opt.pullAuthor, pj.Spec.Job)
 	// Add prefix to prowjob to test context.
-	pj.Spec.Context = pj.Spec.Job
+	//pj.Spec.Context = pj.Spec.Job
 	// Make sure prowjob to test will run on untrusted-workload cluster.
 	pj.Spec.Cluster = "untrusted-workload"
 	if pjCfg.Report {
