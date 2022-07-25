@@ -110,7 +110,7 @@ func (c *Client) GetGitRepoClient(org, repo string) (git.RepoClient, string, err
 // GetGitRepoClientFromDir provide instance of git repository client. It will clone repository on first use.
 // If repository was already cloned, a new repository client will be created from local repository.
 // During creation from local repository a fetch from upstream is executed.
-func (c *GitClient) GetGitRepoClientFromDir(org, repo, dir string) (git.RepoClient, string, error) {
+func (c *Client) GetGitRepoClientFromDir(org, repo, dir string) (git.RepoClient, string, error) {
 	// Create repository client from already cloned local repository.
 	gitRepoClient, err := c.ClientFromDir(org, repo, dir)
 	if err != nil {

@@ -93,8 +93,8 @@ type options struct {
 
 	github              ghclient.GithubClientConfig
 	githubClient        *ghclient.GithubClient
-	gitOptions          git.GitClientConfig
-	gitClient           *git.GitClient
+	gitOptions          git.ClientConfig
+	gitClient           *git.Client
 	prFinder            *prtagbuilder.GitHubClient
 	testPullRequests    map[string]prOrg
 	pjConfigPullRequest prConfig
@@ -601,8 +601,8 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 		log.WithError(err).Fatal("Failed to get GitHub client")
 	}
 	o.githubClient = ghc
-	o.gitOptions = git.GitClientConfig{}
-	o.gitClient, err = o.gitOptions.NewGitClient(git.WithGithubClient(o.githubClient))
+	o.gitOptions = git.ClientConfig{}
+	o.gitClient, err = o.gitOptions.NewClient(git.WithGithubClient(o.githubClient))
 	if err != nil {
 		log.WithError(err).Fatal("Failed to get git client")
 	}
