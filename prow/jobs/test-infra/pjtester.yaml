@@ -18,7 +18,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220713-107ba8ac"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220721-0e9ed480"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -114,3 +114,52 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+  
+  kyma-project/kyma:
+    - name: pre-main-test-infra-pjtester-v2
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-test-infra-pjtester-v2"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-pjtester-kubeconfig: "true"
+      run_if_changed: '^(vpath/pjtesterv2.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-5544"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            command:
+              - "pjtester"
+            args:
+              - "--github-token-path=/etc/github/oauth"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+            volumeMounts:
+              - name: oauth
+                mountPath: /etc/github
+                readOnly: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+        volumes:
+          - name: oauth
+            secret:
+              secretName: pjtester-github-oauth-token

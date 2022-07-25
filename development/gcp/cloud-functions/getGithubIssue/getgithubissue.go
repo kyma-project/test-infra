@@ -188,8 +188,8 @@ func GetGithubIssue(ctx context.Context, m kymapubsub.MessagePayload) error {
 	// Get metadata from context and set eventID label for logging.
 	contextMetadata, err := metadata.FromContext(ctx)
 	if err != nil {
-		if m.MessageId != "" {
-			logger.WithLabel("messageId", m.MessageId)
+		if m.MessageID != "" {
+			logger.WithLabel("messageId", m.MessageID)
 		} else {
 			logger.LogError(fmt.Sprintf("failed extract metadata from function call context, error: %s", err.Error()))
 		}
@@ -206,7 +206,7 @@ func GetGithubIssue(ctx context.Context, m kymapubsub.MessagePayload) error {
 	logger.WithLabel("prowjobName", *failingTestMessage.JobName)
 
 	// Set label with execution ID for logging.
-	jobID, err := kymapubsub.GetJobId(failingTestMessage.URL)
+	jobID, err := kymapubsub.GetJobID(failingTestMessage.URL)
 	if err != nil {
 		logger.LogCritical(fmt.Sprintf("failed get job ID, error: %s", err.Error()))
 	}
@@ -247,7 +247,7 @@ func GetGithubIssue(ctx context.Context, m kymapubsub.MessagePayload) error {
 				failingTestMessage.GithubIssueNumber = github.Int64(int64(ghIssue.GetNumber()))
 				failingTestMessage.GithubIssueRepo = ghIssue.GetRepository().Name
 				failingTestMessage.GithubIssueOrg = ghIssue.GetRepository().GetOwner().Name
-				failingTestMessage.GithubIssueUrl = ghIssue.URL
+				failingTestMessage.GithubIssueURL = ghIssue.URL
 			}
 			// Publish message to topic creating new failing test instance in firestore db.
 			publlishedMessageID, err := kymapubsub.PublishPubSubMessage(ctx, pubSubClient, failingTestMessage, getFailureInstanceTopic)
@@ -269,7 +269,7 @@ func GetGithubIssue(ctx context.Context, m kymapubsub.MessagePayload) error {
 			failingTestMessage.GithubIssueNumber = github.Int64(int64(*ghIssue.Number))
 			failingTestMessage.GithubIssueRepo = ghIssue.GetRepository().Name
 			failingTestMessage.GithubIssueOrg = ghIssue.GetRepository().GetOwner().Name
-			failingTestMessage.GithubIssueUrl = ghIssue.URL
+			failingTestMessage.GithubIssueURL = ghIssue.URL
 			docRef := firestoreClient.Doc(fmt.Sprintf("%s/%s", firestoreCollection, *failingTestMessage.FirestoreDocumentID))
 			updates := []firestore.Update{
 				{Path: "githubIssueNumber", Value: ghIssue.GetNumber()},

@@ -2,26 +2,26 @@
 
 
 presubmits: # runs on PRs
-  kyma-incubator/documentation-component:
-    - name: pre-documentation-component
+  kyma-project/kyma:
+    - name: pre-kyma-components-function-controller-v1alpha2
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-documentation-component"
+        prow.k8s.io/pubsub.runID: "pre-kyma-components-function-controller-v1alpha2"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
+        preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      always_run: true
+      run_if_changed: '^components/function-controller/|^common/makefiles/'
       skip_report: false
       decorate: true
+      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
-        - ^main$
+        - ^serverless-v1alpha2$
       extra_refs:
         - org: kyma-project
           repo: test-infra
@@ -29,14 +29,13 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220720-622619a6"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
             securityContext:
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/documentation-component"
-              - "ci-pr"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/components/function-controller"
             resources:
               requests:
                 memory: 3Gi
