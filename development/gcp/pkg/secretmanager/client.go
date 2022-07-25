@@ -1,0 +1,40 @@
+package secretmanager
+
+import (
+	"context"
+	"encoding/base64"
+	"fmt"
+
+	"google.golang.org/api/option"
+	gcpsecretmanager "google.golang.org/api/secretmanager/v1"
+)
+
+func NewService(ctx context.Context, serviceAccountGCP string) (*Service, error) {
+	secretManagerClient, err := gcpsecretmanager.NewService(ctx, option.WithCredentialsFile(serviceAccountGCP))
+	if err != nil {
+		return nil, fmt.Errorf("failed to create google Secret Manager client, got error: %w", err)
+	}
+	return &Service{Service: secretManagerClient}, nil
+}
+
+func (sm *Service) AddSecretVersion(gcpProject, secretName string, secretData []byte) (*gcpsecretmanager.SecretVersion, error) {
+	secretParent := "projects/" + gcpProject + "/secrets/" + secretName
+
+	newVersionRequest := gcpsecretmanager.AddSecretVersionRequest{Payload: &gcpsecretmanager.SecretPayload{Data: base64.StdEncoding.EncodeToString(secretData)}}
+	newVersionCall := sm.Projects.Secrets.AddVersion(secretParent, &newVersionRequest)
+	secretVersion, err := newVersionCall.Do()
+	return secretVersion, err
+}
+
+func (sm *Service) ListSecretVersions(gcpProject, secretName string) (*gcpsecretmanager.ListSecretVersionsResponse, error) {
+	secretParent := "projects/" + gcpProject + "/secrets/" + secretName
+	secretVersionsCall := sm.Projects.Secrets.Versions.List(secretParent)
+	secretVersions, err := secretVersionsCall.Do()
+	return secretVersions, err
+}
+
+func (sm *Service) GetSecretVersion(secretPath string) (*gcpsecretmanager.SecretVersion, error) {
+	secretVersionsCall := sm.Projects.Secrets.Versions.Get(secretPath)
+	secretVersion, err := secretVersionsCall.Do()
+	return secretVersion, err
+}
