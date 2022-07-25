@@ -90,8 +90,8 @@ cloud.google.com/go/pubsub v1.2.0/go.mod h1:jhfEVHT8odbXTkndysNHCcx0awwzvfOlguIA
 cloud.google.com/go/pubsub v1.3.1/go.mod h1:i+ucay31+CNRpDW4Lu78I4xXG+O1r/MAHgjpRVR+TSU=
 cloud.google.com/go/pubsub v1.4.0/go.mod h1:LFrqilwgdw4X2cJS9ALgzYmMu+ULyrUN6IHV3CPK4TM=
 cloud.google.com/go/pubsub v1.10.3/go.mod h1:FUcc28GpGxxACoklPsE1sCtbkY4Ix+ro7yvw+h82Jn4=
-cloud.google.com/go/pubsub v1.23.1 h1:eVtkabVa+1M5ai67fGU+idws0hVb/KEPXiDmSS17+qc=
-cloud.google.com/go/pubsub v1.23.1/go.mod h1:ttM6nEGYK/2CnB36ndNySU3ZxPwpBk8cXM6+iOlxH9U=
+cloud.google.com/go/pubsub v1.24.0 h1:aCS6wSMzrc602OeXUMA66KGlyXxpdkHdwN+FSBv/sUg=
+cloud.google.com/go/pubsub v1.24.0/go.mod h1:rWv09Te1SsRpRGPiWOMDKraMQTJyJps4MkUCoMGUgqw=
 cloud.google.com/go/security v0.1.0/go.mod h1:eUUQwjXqLJtaWUqDYZSQG9ZPSm4aobU7GMtgwBsBuLE=
 cloud.google.com/go/spanner v1.17.0/go.mod h1:+17t2ixFwRG4lWRwE+5kipDR9Ef07Jkmc8z0IbMDKUs=
 cloud.google.com/go/spanner v1.18.0/go.mod h1:LvAjUXPeJRGNuGpikMULjhLj/t9cRvdc+fxRoLiugXA=
