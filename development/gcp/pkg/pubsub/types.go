@@ -32,10 +32,10 @@ type Message struct {
 
 // MessagePayload is the pubsub message payload of pubsub message.
 type MessagePayload struct {
-	Attributes   map[string]string `json:"attributes"`
-	Data         []byte            `json:"data"` // This property is base64 encoded
-	MessageId    string            `json:"messageId"`
-	PublishTime  string            `json:"publishTime"`
+	Attributes  map[string]string `json:"attributes"`
+	Data        []byte            `json:"data"` // This property is base64 encoded
+	MessageID   string            `json:"messageId"`
+	PublishTime string            `json:"publishTime"`
 }
 
 // ProwMessage is the Data field of pubsub message payload, published by Prow.
@@ -61,7 +61,7 @@ type FailingTestMessage struct {
 	GithubIssueNumber     *int64   `json:"githubIssueNumber,omitempty"`
 	GithubIssueRepo       *string  `json:"githubIssueRepo,omitempty"`
 	GithubIssueOrg        *string  `json:"githubIssueOrg,omitempty"`
-	GithubIssueUrl        *string  `json:"githubIssueUrl,omitempty"`
+	GithubIssueURL        *string  `json:"githubIssueUrl,omitempty"`
 	SlackThreadID         *string  `json:"slackThreadId,omitempty"`
 	GithubCommitersLogins []string `json:"githubCommitersLogins,omitempty"`
 	CommitersSlackLogins  []string `json:"slackCommitersLogins,omitempty"`

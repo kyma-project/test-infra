@@ -1,18 +1,19 @@
 package checkoomevent
 
 import (
-	"cloud.google.com/go/pubsub"
-	"cloud.google.com/go/storage"
 	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"google.golang.org/api/option"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"regexp"
 	"strings"
+
+	"cloud.google.com/go/pubsub"
+	"cloud.google.com/go/storage"
+	"google.golang.org/api/option"
 )
 
 // This message will be send by pubsub system.
@@ -23,12 +24,10 @@ type PubSubMessage struct {
 
 // This is the Message payload of pubsub message
 type MessagePayload struct {
-	Attributes   map[string]string `json:"attributes"`
-	Data         string            `json:"data"` // This property is base64 encoded
-	MessageId    string            `json:"messageId"`
-	Message_Id   string            `json:"message_id"`
-	PublishTime  string            `json:"publishTime"`
-	Publish_time string            `json:"publish_time"`
+	Attributes  map[string]string `json:"attributes"`
+	Data        string            `json:"data"` // This property is base64 encoded
+	MessageID   string            `json:"messageId"`
+	PublishTime string            `json:"publishTime"`
 }
 
 // This is the Data payload of pubsub message payload.
@@ -69,7 +68,7 @@ func (e LogEntry) String() string {
 
 const (
 	projectID            = "sap-kyma-prow"
-	oomEventFoundTopicId = "oom-event-found"
+	oomEventFoundTopicID = "oom-event-found"
 )
 
 var (
@@ -96,7 +95,7 @@ func init() {
 		log.Fatal(err)
 	}
 	// topic to publish messages when oom event was found
-	oomEventFoundTopic = pubsubClient.Topic(oomEventFoundTopicId)
+	oomEventFoundTopic = pubsubClient.Topic(oomEventFoundTopicID)
 	// disable batch sending by forcing publishing message when one message is ready to send
 	oomEventFoundTopic.PublishSettings.CountThreshold = 1
 	log.SetFlags(0)
@@ -120,15 +119,15 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 			Severity:  "CRITICAL",
 			Trace:     trace,
 			Component: "kyma.prow.cloud-function.checkoomevent",
-			Labels:    map[string]string{"messageId": message.Message.MessageId},
+			Labels:    map[string]string{"messageId": message.Message.MessageID},
 		})
 		w.WriteHeader(http.StatusInternalServerError)
 		if _, err := fmt.Fprint(w, "500 - failed decode message!"); err != nil {
 			log.Println(LogEntry{
-				Message:   fmt.Sprintf("failed send response for message id: %s", message.Message.MessageId),
+				Message:   fmt.Sprintf("failed send response for message id: %s", message.Message.MessageID),
 				Severity:  "CRITICAL",
 				Trace:     trace,
-				Labels:    map[string]string{"messageId": message.Message.MessageId},
+				Labels:    map[string]string{"messageId": message.Message.MessageID},
 				Component: "kyma.prow.cloud-function.checkoomevent",
 			})
 		}
@@ -140,15 +139,15 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 			Severity:  "ERROR",
 			Trace:     trace,
 			Component: "kyma.prow.cloud-function.checkoomevent",
-			Labels:    map[string]string{"messageId": message.Message.MessageId},
+			Labels:    map[string]string{"messageId": message.Message.MessageID},
 		})
 		w.WriteHeader(http.StatusBadRequest)
 		if _, err := fmt.Fprint(w, "400 - message is empty!"); err != nil {
 			log.Println(LogEntry{
-				Message:   fmt.Sprintf("failed send response for message id: %s", message.Message.MessageId),
+				Message:   fmt.Sprintf("failed send response for message id: %s", message.Message.MessageID),
 				Severity:  "CRITICAL",
 				Trace:     trace,
-				Labels:    map[string]string{"messageId": message.Message.MessageId},
+				Labels:    map[string]string{"messageId": message.Message.MessageID},
 				Component: "kyma.prow.cloud-function.checkoomevent",
 			})
 		}
@@ -157,10 +156,10 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 
 	// got valid message
 	log.Println(LogEntry{
-		Message:   fmt.Sprintf("received message with id: %s", message.Message.MessageId),
+		Message:   fmt.Sprintf("received message with id: %s", message.Message.MessageID),
 		Severity:  "INFO",
 		Trace:     trace,
-		Labels:    map[string]string{"messageId": message.Message.MessageId},
+		Labels:    map[string]string{"messageId": message.Message.MessageID},
 		Component: "kyma.prow.cloud-function.checkoomevent",
 	})
 
@@ -172,7 +171,7 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 			Severity:  "CRITICAL",
 			Trace:     trace,
 			Component: "kyma.prow.cloud-function.checkoomevent",
-			Labels:    map[string]string{"messageId": message.Message.MessageId},
+			Labels:    map[string]string{"messageId": message.Message.MessageID},
 		})
 		return
 	}
@@ -185,15 +184,15 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 			Component: "kyma.prow.cloud-function.checkoomevent",
 			Message:   "failed unmarshal message data to json",
 			Trace:     trace,
-			Labels:    map[string]string{"messageId": message.Message.MessageId},
+			Labels:    map[string]string{"messageId": message.Message.MessageID},
 		})
 		w.WriteHeader(http.StatusInternalServerError)
 		if _, err := fmt.Fprint(w, "500 - failed unmarshal message data to json!"); err != nil {
 			log.Println(LogEntry{
-				Message:   fmt.Sprintf("failed send response for message id: %s", message.Message.MessageId),
+				Message:   fmt.Sprintf("failed send response for message id: %s", message.Message.MessageID),
 				Severity:  "CRITICAL",
 				Trace:     trace,
-				Labels:    map[string]string{"messageId": message.Message.MessageId},
+				Labels:    map[string]string{"messageId": message.Message.MessageID},
 				Component: "kyma.prow.cloud-function.checkoomevent",
 			})
 		}
@@ -208,177 +207,175 @@ func Checkoomevent(w http.ResponseWriter, r *http.Request) {
 			Component: "kyma.prow.cloud-function.checkoomevent",
 			Message:   fmt.Sprintf("prowjob %s status is %s, no data to search, skipping", data.JobName, data.Status),
 			Trace:     trace,
-			Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageId},
+			Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageID},
 		})
 		w.WriteHeader(http.StatusOK)
 		if _, err := fmt.Fprintf(w, "200 - message processed, prowjob not finished, no data to analyse"); err != nil {
 			log.Println(LogEntry{
-				Message:   fmt.Sprintf("failed send response for message id: %s", message.Message.MessageId),
+				Message:   fmt.Sprintf("failed send response for message id: %s", message.Message.MessageID),
 				Severity:  "CRITICAL",
 				Trace:     trace,
-				Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageId},
+				Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageID},
+				Component: "kyma.prow.cloud-function.checkoomevent",
+			})
+		}
+		return
+	}
+	// start looking for oom event
+	log.Println(LogEntry{
+		Severity:  "INFO",
+		Component: "kyma.prow.cloud-function.checkoomevent",
+		Message:   fmt.Sprintf("prowjob %s status is %s, searching oom events", data.JobName, data.Status),
+		Trace:     trace,
+		Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageID},
+	})
+	// extract path from gcs bucket url
+	gcsMatch := gcsPathRegex.FindStringSubmatch(data.GcsPath)
+	// build gcs bucket path to describe nodes output
+	objectPath := fmt.Sprintf("%s/artifacts/describe_nodes.txt", gcsMatch[2])
+	// get object with describe nodes output from bucket
+	rc, err := client.Bucket(gcsMatch[1]).Object(objectPath).NewReader(functionCtx)
+	// check if object in a bucket exist
+	if err == storage.ErrObjectNotExist {
+		log.Println(LogEntry{
+			Severity:  "INFO",
+			Component: "kyma.prow.cloud-function.checkoomevent",
+			Message:   "describe_nodes.txt not found, no data to analyse",
+			Trace:     trace,
+			Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageID},
+		})
+		w.WriteHeader(http.StatusOK)
+		if _, err := fmt.Fprintf(w, "200 - message processed, describe_nodes.txt not found, no data to analyse"); err != nil {
+			log.Println(LogEntry{
+				Message:   fmt.Sprintf("failed send response for message id: %s", message.Message.MessageID),
+				Severity:  "CRITICAL",
+				Trace:     trace,
+				Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageID},
+				Component: "kyma.prow.cloud-function.checkoomevent",
+			})
+		}
+		return
+	} else if err != nil && err != storage.ErrObjectNotExist {
+		// report other errors than object not exist errors
+		log.Println(LogEntry{
+			Severity:  "CRITICAL",
+			Component: "kyma.prow.cloud-function.checkoomevent",
+			Message:   fmt.Sprintf("failed get describe_nodes.txt from gcs, can't analyse data, error: %s", err.Error()),
+			Trace:     trace,
+			Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageID},
+		})
+		w.WriteHeader(http.StatusInternalServerError)
+		if _, err := fmt.Fprintf(w, "500 - failed get describe_nodes.txt from gcs, can't analyse data"); err != nil {
+			log.Println(LogEntry{
+				Message:   fmt.Sprintf("failed send response for message id: %s", message.Message.MessageID),
+				Severity:  "CRITICAL",
+				Trace:     trace,
+				Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageID},
 				Component: "kyma.prow.cloud-function.checkoomevent",
 			})
 		}
 		return
 	} else {
-		// start looking for oom event
-		log.Println(LogEntry{
-			Severity:  "INFO",
-			Component: "kyma.prow.cloud-function.checkoomevent",
-			Message:   fmt.Sprintf("prowjob %s status is %s, searching oom events", data.JobName, data.Status),
-			Trace:     trace,
-			Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageId},
-		})
-		// extract path from gcs bucket url
-		gcsMatch := gcsPathRegex.FindStringSubmatch(data.GcsPath)
-		// build gcs bucket path to describe nodes output
-		objectPath := fmt.Sprintf("%s/artifacts/describe_nodes.txt", gcsMatch[2])
-		// get object with describe nodes output from bucket
-		rc, err := client.Bucket(gcsMatch[1]).Object(objectPath).NewReader(functionCtx)
-		// check if object in a bucket exist
-		if err == storage.ErrObjectNotExist {
-			log.Println(LogEntry{
-				Severity:  "INFO",
-				Component: "kyma.prow.cloud-function.checkoomevent",
-				Message:   "describe_nodes.txt not found, no data to analyse",
-				Trace:     trace,
-				Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageId},
-			})
-			w.WriteHeader(http.StatusOK)
-			if _, err := fmt.Fprintf(w, "200 - message processed, describe_nodes.txt not found, no data to analyse"); err != nil {
-				log.Println(LogEntry{
-					Message:   fmt.Sprintf("failed send response for message id: %s", message.Message.MessageId),
-					Severity:  "CRITICAL",
-					Trace:     trace,
-					Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageId},
-					Component: "kyma.prow.cloud-function.checkoomevent",
-				})
-			}
-			return
-		} else if err != nil && err != storage.ErrObjectNotExist {
-			// report other errors than object not exist errors
+		defer rc.Close()
+		// read content of descrbie_nodes.txt
+		body, err := ioutil.ReadAll(rc)
+		if err != nil {
 			log.Println(LogEntry{
 				Severity:  "CRITICAL",
 				Component: "kyma.prow.cloud-function.checkoomevent",
-				Message:   fmt.Sprintf("failed get describe_nodes.txt from gcs, can't analyse data, error: %s", err.Error()),
+				Message:   fmt.Sprintf("failed read describe_nodes.txt, can't analyse data, error: %s", err.Error()),
 				Trace:     trace,
-				Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageId},
+				Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageID},
 			})
 			w.WriteHeader(http.StatusInternalServerError)
-			if _, err := fmt.Fprintf(w, "500 - failed get describe_nodes.txt from gcs, can't analyse data"); err != nil {
+			if _, err := fmt.Fprintf(w, "500 - failed read describe_nodes.txt from gcs, can't analyse data"); err != nil {
 				log.Println(LogEntry{
-					Message:   fmt.Sprintf("failed send response for message id: %s", message.Message.MessageId),
+					Message:   fmt.Sprintf("failed send response for message id: %s", message.Message.MessageID),
 					Severity:  "CRITICAL",
 					Trace:     trace,
-					Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageId},
+					Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageID},
 					Component: "kyma.prow.cloud-function.checkoomevent",
 				})
 			}
 			return
-		} else {
-			defer rc.Close()
-			// read content of descrbie_nodes.txt
-			body, err := ioutil.ReadAll(rc)
+		}
+
+		// search for oom event in describe_nodes.txt
+		oomFound := oomEventRegex.Match(body)
+		if oomFound {
+			// oom event found
+			log.Println(LogEntry{
+				Severity:  "INFO",
+				Component: "kyma.prow.cloud-function.checkoomevent",
+				Message:   fmt.Sprintf("oom event found in prowjob %s", data.JobName),
+				Trace:     trace,
+				Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageID},
+			})
+			// publish message to oom-event-found topic
+			pubsubResponse := oomEventFoundTopic.Publish(functionCtx, &pubsub.Message{
+				Data: bdata,
+			})
+			// check if message published successfully
+			msgID, err := pubsubResponse.Get(functionCtx)
 			if err != nil {
 				log.Println(LogEntry{
 					Severity:  "CRITICAL",
 					Component: "kyma.prow.cloud-function.checkoomevent",
-					Message:   fmt.Sprintf("failed read describe_nodes.txt, can't analyse data, error: %s", err.Error()),
+					Message:   fmt.Sprintf("failed publish oom event found message to oom-event-found topic, error: %s", err.Error()),
 					Trace:     trace,
-					Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageId},
+					Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageID},
 				})
 				w.WriteHeader(http.StatusInternalServerError)
-				if _, err := fmt.Fprintf(w, "500 - failed read describe_nodes.txt from gcs, can't analyse data"); err != nil {
+				if _, err := fmt.Fprintf(w, "500 - failed publish message to oom-event-found topic"); err != nil {
 					log.Println(LogEntry{
-						Message:   fmt.Sprintf("failed send response for message id: %s", message.Message.MessageId),
+						Message:   fmt.Sprintf("failed send response for message id: %s", message.Message.MessageID),
 						Severity:  "CRITICAL",
 						Trace:     trace,
-						Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageId},
+						Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageID},
 						Component: "kyma.prow.cloud-function.checkoomevent",
 					})
 				}
 				return
 			}
-
-			// search for oom event in describe_nodes.txt
-			oomFound := oomEventRegex.Match(body)
-			if oomFound {
-				// oom event found
+			// log and Ack pubsub message
+			log.Println(LogEntry{
+				Severity:  "INFO",
+				Component: "kyma.prow.cloud-function.checkoomevent",
+				Message:   fmt.Sprintf("published oom event found message to oom-event-found topic, messageId: %s", msgID),
+				Trace:     trace,
+				Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageID},
+			})
+			w.WriteHeader(http.StatusOK)
+			if _, err := fmt.Fprintf(w, "200 - message processed, published message to oom-event-found topic"); err != nil {
 				log.Println(LogEntry{
-					Severity:  "INFO",
-					Component: "kyma.prow.cloud-function.checkoomevent",
-					Message:   fmt.Sprintf("oom event found in prowjob %s", data.JobName),
+					Message:   fmt.Sprintf("failed send response for message id: %s", message.Message.MessageID),
+					Severity:  "CRITICAL",
 					Trace:     trace,
-					Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageId},
-				})
-				// publish message to oom-event-found topic
-				pubsubResponse := oomEventFoundTopic.Publish(functionCtx, &pubsub.Message{
-					Data: bdata,
-				})
-				// check if message published successfully
-				msgID, err := pubsubResponse.Get(functionCtx)
-				if err != nil {
-					log.Println(LogEntry{
-						Severity:  "CRITICAL",
-						Component: "kyma.prow.cloud-function.checkoomevent",
-						Message:   fmt.Sprintf("failed publish oom event found message to oom-event-found topic, error: %s", err.Error()),
-						Trace:     trace,
-						Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageId},
-					})
-					w.WriteHeader(http.StatusInternalServerError)
-					if _, err := fmt.Fprintf(w, "500 - failed publish message to oom-event-found topic"); err != nil {
-						log.Println(LogEntry{
-							Message:   fmt.Sprintf("failed send response for message id: %s", message.Message.MessageId),
-							Severity:  "CRITICAL",
-							Trace:     trace,
-							Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageId},
-							Component: "kyma.prow.cloud-function.checkoomevent",
-						})
-					}
-					return
-				}
-				// log and Ack pubsub message
-				log.Println(LogEntry{
-					Severity:  "INFO",
+					Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageID},
 					Component: "kyma.prow.cloud-function.checkoomevent",
-					Message:   fmt.Sprintf("published oom event found message to oom-event-found topic, messageId: %s", msgID),
-					Trace:     trace,
-					Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageId},
 				})
-				w.WriteHeader(http.StatusOK)
-				if _, err := fmt.Fprintf(w, "200 - message processed, published message to oom-event-found topic"); err != nil {
-					log.Println(LogEntry{
-						Message:   fmt.Sprintf("failed send response for message id: %s", message.Message.MessageId),
-						Severity:  "CRITICAL",
-						Trace:     trace,
-						Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageId},
-						Component: "kyma.prow.cloud-function.checkoomevent",
-					})
-				}
-				return
-			} else {
-				// oom event was not found
-				// log and Ack pubsub message
-				log.Println(LogEntry{
-					Severity:  "INFO",
-					Component: "kyma.prow.cloud-function.checkoomevent",
-					Message:   fmt.Sprintf("oom event not found in prowjob %s", data.JobName),
-					Trace:     trace,
-					Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageId},
-				})
-				w.WriteHeader(http.StatusOK)
-				if _, err := fmt.Fprintf(w, "200 - message processed"); err != nil {
-					log.Println(LogEntry{
-						Message:   fmt.Sprintf("failed send response for message id: %s", message.Message.MessageId),
-						Severity:  "CRITICAL",
-						Trace:     trace,
-						Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageId},
-						Component: "kyma.prow.cloud-function.checkoomevent",
-					})
-				}
-				return
 			}
+			return
 		}
+		// oom event was not found
+		// log and Ack pubsub message
+		log.Println(LogEntry{
+			Severity:  "INFO",
+			Component: "kyma.prow.cloud-function.checkoomevent",
+			Message:   fmt.Sprintf("oom event not found in prowjob %s", data.JobName),
+			Trace:     trace,
+			Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageID},
+		})
+		w.WriteHeader(http.StatusOK)
+		if _, err := fmt.Fprintf(w, "200 - message processed"); err != nil {
+			log.Println(LogEntry{
+				Message:   fmt.Sprintf("failed send response for message id: %s", message.Message.MessageID),
+				Severity:  "CRITICAL",
+				Trace:     trace,
+				Labels:    map[string]string{"runID": data.RunID, "prowjobName": data.JobName, "messageId": message.Message.MessageID},
+				Component: "kyma.prow.cloud-function.checkoomevent",
+			})
+		}
+		return
 	}
 }
