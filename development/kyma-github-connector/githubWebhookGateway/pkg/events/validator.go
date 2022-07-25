@@ -15,8 +15,8 @@ type Validator interface {
 	Validate(payload cloudevents.Event) apperrors.AppError
 }
 
-// NewValidator is a function that creates a validator struct with the passed in interface
-func NewValidator() validator {
+// NewValidator returns new Validator
+func NewValidator() Validator {
 	return validator{}
 }
 
