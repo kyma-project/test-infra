@@ -17,18 +17,18 @@ func NewService(ctx context.Context, serviceAccountGCP string) (*Service, error)
 	return &Service{Service: secretManagerClient}, nil
 }
 
-func (sm *Service) AddSecretVersion(gcpProject, secretName string, secretData []byte) (*gcpsecretmanager.SecretVersion, error) {
+func (sm *Service) AddSecretVersion(secretPath string, secretData []byte) (*gcpsecretmanager.SecretVersion, error) {
 	secretParent := "projects/" + gcpProject + "/secrets/" + secretName
 
 	newVersionRequest := gcpsecretmanager.AddSecretVersionRequest{Payload: &gcpsecretmanager.SecretPayload{Data: base64.StdEncoding.EncodeToString(secretData)}}
-	newVersionCall := sm.Projects.Secrets.AddVersion(secretParent, &newVersionRequest)
+	newVersionCall := sm.Projects.Secrets.AddVersion(secretPath, &newVersionRequest)
 	secretVersion, err := newVersionCall.Do()
 	return secretVersion, err
 }
 
-func (sm *Service) ListSecretVersions(gcpProject, secretName string) (*gcpsecretmanager.ListSecretVersionsResponse, error) {
+func (sm *Service) ListSecretVersions(secretPath string) (*gcpsecretmanager.ListSecretVersionsResponse, error) {
 	secretParent := "projects/" + gcpProject + "/secrets/" + secretName
-	secretVersionsCall := sm.Projects.Secrets.Versions.List(secretParent)
+	secretVersionsCall := sm.Projects.Secrets.Versions.List(secretPath)
 	secretVersions, err := secretVersionsCall.Do()
 	return secretVersions, err
 }
