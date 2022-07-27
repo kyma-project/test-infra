@@ -300,6 +300,8 @@ func (o *options) genJobSpec(pjCfg pjConfig, org, repo string) (config.JobBase, 
 			p.Optional = true
 			// set prowjob name
 			p.Name = formatPjName(o.pullAuthor, p.Name)
+			p.Context = p.Name
+			p.Optional = true
 			pjs := pjutil.PresubmitSpec(p, prowapi.Refs{
 				Org:  org,
 				Repo: repo,
@@ -559,11 +561,12 @@ func newTestPJ(pjCfg pjConfig, opt options, org, repo string) (prowapi.ProwJob, 
 		return prowapi.ProwJob{}, fmt.Errorf("failed generating prowjob specification to test: %w", err)
 	}
 	// Building prowjob based on generated job specifications.
-	pj := pjutil.NewProwJob(pjSpecification, map[string]string{"created-by-pjtester": "true", "prow.k8s.io/is-optional": "true"}, map[string]string{})
+	// pj := pjutil.NewProwJob(pjSpecification, map[string]string{"created-by-pjtester": "true", "prow.k8s.io/is-optional": "true"}, map[string]string{})
+	pj := pjutil.NewProwJob(pjSpecification, map[string]string{"created-by-pjtester": "true"}, map[string]string{})
 	// Add prefix to prowjob to test name.
 	// pj.Spec.Job = formatPjName(opt.pullAuthor, pj.Spec.Job)
 	// Add prefix to prowjob to test context.
-	pj.Spec.Context = pj.Spec.Job
+	//pj.Spec.Context = pj.Spec.Job
 	// Make sure prowjob to test will run on untrusted-workload cluster.
 	pj.Spec.Cluster = "untrusted-workload"
 	if pjCfg.Report {
