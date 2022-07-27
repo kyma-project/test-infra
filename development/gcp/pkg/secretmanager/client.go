@@ -18,8 +18,6 @@ func NewService(ctx context.Context, serviceAccountGCP string) (*Service, error)
 }
 
 func (sm *Service) AddSecretVersion(secretPath string, secretData []byte) (*gcpsecretmanager.SecretVersion, error) {
-	secretParent := "projects/" + gcpProject + "/secrets/" + secretName
-
 	newVersionRequest := gcpsecretmanager.AddSecretVersionRequest{Payload: &gcpsecretmanager.SecretPayload{Data: base64.StdEncoding.EncodeToString(secretData)}}
 	newVersionCall := sm.Projects.Secrets.AddVersion(secretPath, &newVersionRequest)
 	secretVersion, err := newVersionCall.Do()
@@ -27,7 +25,6 @@ func (sm *Service) AddSecretVersion(secretPath string, secretData []byte) (*gcps
 }
 
 func (sm *Service) ListSecretVersions(secretPath string) (*gcpsecretmanager.ListSecretVersionsResponse, error) {
-	secretParent := "projects/" + gcpProject + "/secrets/" + secretName
 	secretVersionsCall := sm.Projects.Secrets.Versions.List(secretPath)
 	secretVersions, err := secretVersionsCall.Do()
 	return secretVersions, err

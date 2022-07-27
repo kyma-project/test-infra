@@ -21,7 +21,7 @@ var (
 	credentialsFilePath         = "/etc/gcpLoggingServiceAccountKey/key"
 )
 
-type SecretData struct {
+type ServiceAccountJSON struct {
 	Type             string `json:"type"`
 	ProjectID        string `json:"project_id"`
 	PrivatekayID     string `json:"private_key_id"`
@@ -55,7 +55,7 @@ func init() {
 func RotateServiceAccount(ctx context.Context, m pubsub.MessagePayload) error {
 	var err error
 	var secretRotateMessage pubsub.SecretRotateMessage
-	var secretData SecretData
+	var secretData ServiceAccountJSON
 
 	// Create logger to use google cloud functions structured logging
 	logger := cloudfunctions.NewLogger()
