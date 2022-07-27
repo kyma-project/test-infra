@@ -9,7 +9,7 @@ func DateFormat(format string) TagOption {
 }
 
 func CommitSHA(sha string) TagOption {
-	return func(o *Tag) {
-		o.CommitSHA = sha
+	return func(t *Tag) {
+		t.CommitSHA = sha
 	}
 }

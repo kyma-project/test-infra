@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/kyma-project/test-infra/development/gcbuild/tags"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 	"io"
 	"io/ioutil"
 	errutil "k8s.io/apimachinery/pkg/util/errors"
@@ -16,18 +16,18 @@ import (
 	"sync"
 )
 
-type Config struct {
+type Cloudbuild struct {
 	Steps         []Step            `yaml:"steps"`
 	Substitutions map[string]string `yaml:"substitutions"`
 	Images        []string          `yaml:"images"`
 }
 
-func getConfig(f string) (*Config, error) {
+func getCloudbuild(f string) (*Cloudbuild, error) {
 	b, err := ioutil.ReadFile(f)
 	if err != nil {
 		return nil, err
 	}
-	var cb Config
+	var cb Cloudbuild
 	if err := yaml.Unmarshal(b, &cb); err != nil {
 		return nil, fmt.Errorf("cloudbuild.yaml parse error: %w", err)
 	}
@@ -40,17 +40,15 @@ type Step struct {
 }
 
 type options struct {
-	buildDir      string
-	configFile    string
-	variantsFile  string
-	variant       string
-	logDir        string
-	devRegistry   string
-	project       string
-	stagingBucket string
-	logsBucket    string
-	silent        bool
-	isCI          bool
+	Config
+	configPath   string
+	buildDir     string
+	cloudbuild   string
+	variantsFile string
+	variant      string
+	logDir       string
+	silent       bool
+	isCI         bool
 }
 
 // parseVariable returns a gcloud compatible substitution option.
@@ -92,12 +90,12 @@ func run(o options, name, repo, tag string, subs map[string]string) error {
 	}
 	args := []string{
 		"builds", "submit",
-		"--config", o.configFile,
+		"--config", o.cloudbuild,
 		"--substitutions", strings.Join(s, ","),
 	}
 
-	if o.project != "" {
-		args = append(args, "--project", o.project)
+	if o.Project != "" {
+		args = append(args, "--project", o.Project)
 	}
 	// TODO (@Ressetkk): custom staging bucket implementation and re-using source code in builds
 	//if o.stagingBucket != "" {
@@ -133,6 +131,8 @@ func run(o options, name, repo, tag string, subs map[string]string) error {
 
 type variants map[string]map[string]string
 
+// getVariants fetches variants from variants.yaml file.
+// If variant flag is used, it fetches the requested variant.
 func getVariants(o options) (variants, error) {
 	var v variants
 	b, err := ioutil.ReadFile(o.variantsFile)
@@ -143,7 +143,7 @@ func getVariants(o options) (variants, error) {
 		// variant file not found, skipping
 		return nil, nil
 	}
-	if err := yaml.UnmarshalStrict(b, &v); err != nil {
+	if err := yaml.Unmarshal(b, &v); err != nil {
 		return nil, err
 	}
 	if o.variant != "" {
@@ -156,17 +156,20 @@ func getVariants(o options) (variants, error) {
 	return v, nil
 }
 
+// getImageNames returns aggregated string with a list of images that were built
+// It works by replacing substitution variables with actual values calculated by the tool
 func getImageNames(repo, tag, variant string, images []string) string {
-	r := strings.NewReplacer("$_REPOSITORY", repo, "$_TAG", tag, "$_VARIANT", variant)
-	var res string
+	r := strings.NewReplacer("$_REPOSITORY", repo, "$_TAG", tag, "$_VARIANT", variant,
+		"${_REPOSITORY}", repo, "${_TAG}", tag, "${_VARIANT}", variant)
+	var res []string
 	for _, i := range images {
-		res = res + r.Replace(i) + " "
+		res = append(res, r.Replace(i))
 	}
-	return res
+	return strings.Join(res, " ")
 }
 
 func runBuildJob(o options) error {
-	config, err := getConfig(o.configFile)
+	config, err := getCloudbuild(o.cloudbuild)
 	if err != nil {
 		return err
 	}
@@ -180,8 +183,8 @@ func runBuildJob(o options) error {
 	if o.isCI {
 		presubmit := os.Getenv("JOB_TYPE") == "presubmit"
 		if presubmit {
-			if o.devRegistry != "" {
-				repo = o.devRegistry
+			if o.DevRegistry != "" {
+				repo = o.DevRegistry
 			}
 			if n := os.Getenv("PULL_NUMBER"); n != "" {
 				pr = n
@@ -265,14 +268,22 @@ func runBuildJob(o options) error {
 	return errutil.NewAggregate(errs)
 }
 
-// validateOptions handles flag validation. All checks should be provided here
+// validateOptions handles options validation. All checks should be provided here
 func validateOptions(o options) error {
+	// TODO(Ressetkk): These checks are great candidate to be in checks.go as separate check
 	var errs []error
-	if o.project == "" {
-		errs = append(errs, fmt.Errorf("--project flag is missing"))
+
+	if o.cloudbuild == "" {
+		errs = append(errs, fmt.Errorf("'cloudbuild' option is missing, please define this option using flag --cloudbuild-file"))
+	}
+	if o.buildDir == "" {
+		errs = append(errs, fmt.Errorf("'buildDir' option is missing, please define this option using flag --build-dir"))
+	}
+	if o.Project == "" {
+		errs = append(errs, fmt.Errorf("'project' option is missing in the config file"))
 	}
 	if o.variant != "" && o.variantsFile == "" {
-		errs = append(errs, fmt.Errorf("variant flag is defined, but variants.yaml flag is missing"))
+		errs = append(errs, fmt.Errorf("variant option is defined, but variantsFile option is missing"))
 	}
 	return errutil.NewAggregate(errs)
 }
@@ -296,15 +307,17 @@ func checkDependencies() error {
 
 func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
 	fs.BoolVar(&o.silent, "silent", false, "Do not push build logs to stdout")
+	fs.StringVar(&o.configPath, "config", "", "Path to application config file")
 	fs.StringVar(&o.buildDir, "build-dir", ".", "Path to build directory")
-	fs.StringVar(&o.configFile, "config-file", "cloudbuild.yaml", "Path to cloudbuild.yaml file relative to build-dir")
+	fs.StringVar(&o.cloudbuild, "cloudbuild-file", "cloudbuild.yaml", "Path to cloudbuild.yaml file relative to build-dir")
 	fs.StringVar(&o.variantsFile, "variants-file", "", "Name of variants file relative to build-dir")
 	fs.StringVar(&o.variant, "variant", "", "Define which variant should be built")
 	fs.StringVar(&o.logDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
-	fs.StringVar(&o.devRegistry, "dev-registry", "", "Registry URL where development/dirty images should land. If not set then the default registry is used. This flag is only valid when running in CI (CI env variable is set to `true`)")
-	fs.StringVar(&o.project, "project", "", "GCP project name where build jobs will run")
-	fs.StringVar(&o.stagingBucket, "staging-bucket", "", "Full name to the Google Cloud Storage bucket, where the source will be pushed beforehand. If not set, rely on Google Cloud Build")
-	fs.StringVar(&o.logsBucket, "logs-bucket", "", "Full name to the Google Cloud Storage bucket, where the logs will be pushed after build finishes. If not set, rely on Google Cloud Build")
+	// TODO (Ressetkk): Maybe treat these flags as overrides for config file?
+	//fs.StringVar(&o.devRegistry, "dev-registry", "", "Registry URL where development/dirty images should land. If not set then the default registry is used. This flag is only valid when running in CI (CI env variable is set to `true`)")
+	//fs.StringVar(&o.project, "project", "", "GCP project name where build jobs will run")
+	//fs.StringVar(&o.stagingBucket, "staging-bucket", "", "Full name to the Google Cloud Storage bucket, where the source will be pushed beforehand. If not set, rely on Google Cloud Build")
+	//fs.StringVar(&o.logsBucket, "logs-bucket", "", "Full name to the Google Cloud Storage bucket, where the logs will be pushed after build finishes. If not set, rely on Google Cloud Build")
 	return fs
 }
 
@@ -318,13 +331,24 @@ func main() {
 	o.gatherOptions(fs)
 	// for CI purposes
 	o.isCI = os.Getenv("CI") == "true"
-
 	if err := fs.Parse(os.Args[1:]); err != nil {
 		panic(err)
 	}
+
+	c, err := ioutil.ReadFile(o.configPath)
+	if err != nil {
+		panic(err)
+	}
+
+	if err := o.ParseConfig(c); err != nil {
+		panic(err)
+	}
+
+	// validate if options provided by flags and config file are fine
 	if err := validateOptions(o); err != nil {
 		panic(err)
 	}
+
 	buildDir, err := filepath.Abs(o.buildDir)
 	if err != nil {
 		panic(err)

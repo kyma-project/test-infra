@@ -17,15 +17,13 @@ func TestFlags(t *testing.T) {
 		{
 			name: "unknown flag, fail",
 			expectedOpts: options{
-				configFile:   "cloudbuild.yaml",
+				cloudbuild:   "cloudbuild.yaml",
 				variantsFile: "",
 				buildDir:     ".",
 				logDir:       "/logs/artifacts",
-				project:      "sample-project",
 			},
 			expectedErr: true,
 			args: []string{
-				"--project=sample-project",
 				"--unknown-flag=asdasd",
 			},
 		},
@@ -33,21 +31,19 @@ func TestFlags(t *testing.T) {
 			name:        "parsed config, pass",
 			expectedErr: false,
 			expectedOpts: options{
-				configFile:   "cloud.yaml",
+				cloudbuild:   "cloud.yaml",
+				configPath:   "config.yaml",
 				variantsFile: "var.yaml",
 				buildDir:     "prow/build",
 				logDir:       "prow/logs",
-				project:      "sample-project",
-				devRegistry:  "eu.gcr.io/dev-registry",
 				silent:       true,
 			},
 			args: []string{
-				"--config-file=cloud.yaml",
+				"--config=config.yaml",
+				"--cloudbuild-file=cloud.yaml",
 				"--variants-file=var.yaml",
-				"--project=sample-project",
 				"--build-dir=prow/build",
 				"--log-dir=prow/logs",
-				"--dev-registry=eu.gcr.io/dev-registry",
 				"--silent",
 			},
 		},
@@ -94,6 +90,107 @@ func Test_parseVariable(t *testing.T) {
 			got := parseVariable(c.test, "val")
 			if got != c.expected {
 				t.Errorf("%s != %s", got, c.expected)
+			}
+		})
+	}
+}
+
+func Test_validateOptions(t *testing.T) {
+	tc := []struct {
+		name      string
+		expectErr bool
+		opts      options
+	}{
+		{
+			name:      "project is missing",
+			expectErr: true,
+			opts: options{
+				buildDir:   "dir/",
+				cloudbuild: "cloud.yaml",
+			},
+		},
+		{
+			name:      "variantsFie is missing",
+			expectErr: true,
+			opts: options{
+				buildDir:   "dir/",
+				cloudbuild: "cloud.yaml",
+				variant:    "main",
+				Config:     Config{Project: "sample-project"},
+			},
+		},
+		{
+			name:      "buildDir is missing",
+			expectErr: true,
+			opts: options{
+				cloudbuild: "cloud.yaml",
+				Config:     Config{Project: "sample-project"},
+			},
+		},
+		{
+			name:      "cloudbuild is missing",
+			expectErr: true,
+			opts: options{
+				buildDir: ".",
+				Config:   Config{Project: "sample-project"},
+			},
+		},
+		{
+			name:      "options are valid",
+			expectErr: false,
+			opts: options{
+				buildDir:     ".",
+				cloudbuild:   "cloud.yaml",
+				variant:      "main",
+				variantsFile: "variants.yaml",
+				Config:       Config{Project: "sample-project"},
+			},
+		},
+	}
+	for _, c := range tc {
+		t.Run(c.name, func(t *testing.T) {
+			err := validateOptions(c.opts)
+			if err != nil && !c.expectErr {
+				t.Errorf("caught error, but didn't want to: %v", err)
+			}
+			if err == nil && c.expectErr {
+				t.Errorf("didn't catch error, but wanted to")
+			}
+		})
+	}
+}
+
+func Test_getImageNames(t *testing.T) {
+	tc := []struct {
+		name         string
+		images       []string
+		expectString string
+	}{
+		{
+			name: "replaced strings without {}",
+			images: []string{
+				"$_REPOSITORY/image:$_TAG-$_VARIANT",
+				"$_REPOSITORY/image:latest",
+			},
+			expectString: "kyma.dev/image:12345678-abcdef-main kyma.dev/image:latest",
+		},
+		{
+			name: "replaced strings with {}",
+			images: []string{
+				"${_REPOSITORY}/image:${_TAG}-${_VARIANT}",
+				"${_REPOSITORY}/image:latest",
+			},
+			expectString: "kyma.dev/image:12345678-abcdef-main kyma.dev/image:latest",
+		},
+	}
+	for _, c := range tc {
+		t.Run(c.name, func(t *testing.T) {
+			repo := "kyma.dev"
+			tag := "12345678-abcdef"
+			variant := "main"
+			s := getImageNames(repo, tag, variant, c.images)
+			if s != c.expectString {
+				t.Errorf("%s != %s", s, c.expectString)
 			}
 		})
 	}

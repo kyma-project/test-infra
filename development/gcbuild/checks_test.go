@@ -8,12 +8,12 @@ func Test_validateTag(t *testing.T) {
 	tc := []struct {
 		name      string
 		expectErr bool
-		cfg       *Config
+		cfg       *Cloudbuild
 	}{
 		{
 			name:      "config with $_TAG substitutions in args and images",
 			expectErr: false,
-			cfg: &Config{
+			cfg: &Cloudbuild{
 				Steps: []Step{
 					{
 						Args: []string{
@@ -33,7 +33,7 @@ func Test_validateTag(t *testing.T) {
 		{
 			name:      "config with ${_TAG} substitutions in args and images",
 			expectErr: false,
-			cfg: &Config{
+			cfg: &Cloudbuild{
 				Steps: []Step{
 					{
 						Args: []string{
@@ -53,7 +53,7 @@ func Test_validateTag(t *testing.T) {
 		{
 			name:      "config without substitutions in args",
 			expectErr: true,
-			cfg: &Config{
+			cfg: &Cloudbuild{
 				Steps: []Step{
 					{
 						Args: []string{
@@ -73,7 +73,7 @@ func Test_validateTag(t *testing.T) {
 		{
 			name:      "config without substitutions in images",
 			expectErr: true,
-			cfg: &Config{
+			cfg: &Cloudbuild{
 				Steps: []Step{
 					{
 						Args: []string{
@@ -92,7 +92,7 @@ func Test_validateTag(t *testing.T) {
 		{
 			name:      "config without substitutions in args and images",
 			expectErr: true,
-			cfg: &Config{
+			cfg: &Cloudbuild{
 				Steps: []Step{
 					{
 						Args: []string{
@@ -111,7 +111,7 @@ func Test_validateTag(t *testing.T) {
 		{
 			name:      "config with $_TAG substitutions in multiple steps",
 			expectErr: false,
-			cfg: &Config{
+			cfg: &Cloudbuild{
 				Steps: []Step{
 					{
 						Args: []string{
@@ -152,27 +152,27 @@ func Test_validateRepository(t *testing.T) {
 	tc := []struct {
 		name      string
 		expectErr bool
-		cfg       *Config
+		cfg       *Cloudbuild
 	}{
 		{
 			name:      "_REPOSITORY substitution is present in config",
 			expectErr: false,
-			cfg:       &Config{Substitutions: map[string]string{"_REPOSITORY": "repo.com"}},
+			cfg:       &Cloudbuild{Substitutions: map[string]string{"_REPOSITORY": "repo.com"}},
 		},
 		{
 			name:      "substitutions map is nil",
 			expectErr: true,
-			cfg:       &Config{Substitutions: nil},
+			cfg:       &Cloudbuild{Substitutions: nil},
 		},
 		{
 			name:      "substitutions map is initialized, but empty",
 			expectErr: true,
-			cfg:       &Config{Substitutions: map[string]string{}},
+			cfg:       &Cloudbuild{Substitutions: map[string]string{}},
 		},
 		{
 			name:      "substitutions map doesn't have _REPOSITORY substitution",
 			expectErr: true,
-			cfg:       &Config{Substitutions: map[string]string{"_ASD": "123"}},
+			cfg:       &Cloudbuild{Substitutions: map[string]string{"_ASD": "123"}},
 		},
 	}
 	for _, c := range tc {
@@ -192,38 +192,38 @@ func Test_checkVariants(t *testing.T) {
 	tc := []struct {
 		name      string
 		o         options
-		c         *Config
+		c         *Cloudbuild
 		expectErr bool
 	}{
 		{
 			name:      "variants.yaml provided, variants substitution present",
 			expectErr: false,
 			o:         options{variantsFile: "testdata/variants.yaml"},
-			c:         &Config{Images: []string{"$_REPOSITORY/name:$_TAG-$_VARIANT"}},
+			c:         &Cloudbuild{Images: []string{"$_REPOSITORY/name:$_TAG-$_VARIANT"}},
 		},
 		{
 			name:      "variants.yaml provided, variants substitution present",
 			expectErr: false,
 			o:         options{variantsFile: "testdata/variants.yaml"},
-			c:         &Config{Images: []string{"$_REPOSITORY/name:$_TAG-${_VARIANT}"}},
+			c:         &Cloudbuild{Images: []string{"$_REPOSITORY/name:$_TAG-${_VARIANT}"}},
 		},
 		{
 			name:      "variants.yaml provided, variants substitution missing",
 			expectErr: true,
 			o:         options{variantsFile: "testdata/variants.yaml"},
-			c:         &Config{Images: []string{"$_REPOSITORY/name:$_TAG"}},
+			c:         &Cloudbuild{Images: []string{"$_REPOSITORY/name:$_TAG"}},
 		},
 		{
 			name:      "variants.yaml missing, variants substitution missing",
 			expectErr: false,
 			o:         options{},
-			c:         &Config{Images: []string{"$_REPOSITORY/name:$_TAG"}},
+			c:         &Cloudbuild{Images: []string{"$_REPOSITORY/name:$_TAG"}},
 		},
 		{
 			name:      "variants.yaml missing, variants substitution provided",
 			expectErr: true,
 			o:         options{},
-			c:         &Config{Images: []string{"$_REPOSITORY/name:$_TAG-$_VARIANT"}},
+			c:         &Cloudbuild{Images: []string{"$_REPOSITORY/name:$_TAG-$_VARIANT"}},
 		},
 	}
 	for _, c := range tc {

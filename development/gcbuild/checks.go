@@ -20,7 +20,7 @@ var defaultErrs = []string{
 	ErrMissingVariants,
 }
 
-func validateConfig(o options, c *Config) error {
+func validateConfig(o options, c *Cloudbuild) error {
 
 	// TODO (Ressetkk): allow defining which errors to check
 	checks := defaultErrs
@@ -47,7 +47,7 @@ func validateConfig(o options, c *Config) error {
 // The tool requires that cloudbuild.yaml uses _TAG substitution when tagging image.
 // This check ensures that _TAG is present in at least one of the steps as argument
 // and in the 'images' field.
-func validateTag(c *Config) error {
+func validateTag(c *Cloudbuild) error {
 	var presentInArgs bool
 	r := regexp.MustCompile(`(\$_TAG)|(\${_TAG})`)
 	for _, step := range c.Steps {
@@ -79,7 +79,7 @@ func validateTag(c *Config) error {
 // validateRepository checks, if the _REPOSITORY substitution is present in the 'substitutions' field
 // in the parsed cloudbuild.yaml file.
 // The tool requires this substitution as a default value defined in the config.
-func validateRepository(c *Config) error {
+func validateRepository(c *Cloudbuild) error {
 	if len(c.Substitutions) == 0 {
 		return fmt.Errorf("'substitutions' field is empty")
 	}
@@ -93,7 +93,7 @@ func validateRepository(c *Config) error {
 // if the 'variants.yaml' file is present
 // If the 'variants.yaml' file is present, but no $_VARIANT substitution is available,
 // then variants will be pushed under the same tag, overriding the image.
-func validateVariants(o options, c *Config) error {
+func validateVariants(o options, c *Cloudbuild) error {
 	var hasVariant, fileNotExists bool
 	if _, err := os.Stat(o.variantsFile); err != nil {
 		if !os.IsNotExist(err) {
