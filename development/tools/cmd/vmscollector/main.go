@@ -15,6 +15,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2/google"
 	compute "google.golang.org/api/compute/v1"
+	"google.golang.org/api/option"
 )
 
 const defaultVMNameExcludeRegexp = "gke-nightly-.*|gke-weekly.*|shoot--kyma-prow.*"
@@ -55,7 +56,7 @@ func main() {
 		log.Fatalf("Could not get authenticated client: %v", err)
 	}
 
-	computeSvc, err := compute.New(connection)
+	computeSvc, err := compute.NewService(context, option.WithHTTPClient(connection))
 	if err != nil {
 		log.Fatalf("Could not initialize compute API client: %v", err)
 	}

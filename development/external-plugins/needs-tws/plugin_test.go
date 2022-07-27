@@ -18,7 +18,7 @@ type fakeAliases struct {
 	Aliases repoowners.RepoAliases
 }
 
-type fakeGitClientFactory struct {
+type fakeClientFactory struct {
 	git.ClientFactory
 }
 
@@ -34,7 +34,7 @@ func (f fakeRepoClient) Directory() string {
 	return ""
 }
 
-func (f fakeGitClientFactory) ClientFor(org, repo string) (git.RepoClient, error) {
+func (f fakeClientFactory) ClientFor(org, repo string) (git.RepoClient, error) {
 	return fakeRepoClient{}, nil
 }
 
@@ -337,7 +337,7 @@ func Test_HandlePullRequest(t *testing.T) {
 			p := PluginBackend{
 				ghc: fc,
 				oac: a,
-				gcf: fakeGitClientFactory{},
+				gcf: fakeClientFactory{},
 			}
 			fc.PullRequestChanges[c.event.PullRequest.Number] = c.changes
 			fc.IssueLabelsExisting = c.IssueLabelsExisting
@@ -513,7 +513,7 @@ func Test_HandlePullRequestReview(t *testing.T) {
 			p := PluginBackend{
 				ghc: fc,
 				oac: a,
-				gcf: fakeGitClientFactory{},
+				gcf: fakeClientFactory{},
 			}
 			err := p.handlePullRequestReview(l, c.event)
 			if err != nil {

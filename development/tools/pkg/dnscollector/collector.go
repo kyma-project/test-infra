@@ -107,7 +107,7 @@ func (gc *Collector) Run(project string, managedZone string, regions []string, m
 
 		associatedRecords := findAssociatedRecords(ipAddress.data.Address, allDNSRecords)
 
-		log.Infof("Processing IP Adress: %s, name: \"%s\", region: \"%s\", %d associated DNS record(s)", ipAddress.data.Address, ipAddress.data.Name, ipAddress.region, len(associatedRecords))
+		log.Infof("Processing IP Adsress: %s, name: \"%s\", region: \"%s\", %d associated DNS record(s)", ipAddress.data.Address, ipAddress.data.Name, ipAddress.region, len(associatedRecords))
 
 		allDNSRecordsRemoved := true
 		for _, dnsRecord := range associatedRecords {

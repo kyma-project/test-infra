@@ -1,9 +1,9 @@
 global:
-  nextRelease: "2.5"
+  nextRelease: "2.6"
   releases:
+    - "2.5"
     - "2.4"
     - "2.3"
-    - "2.2"
   orgs:
     - name: "kyma-project"
       repos:
@@ -19,7 +19,6 @@ global:
         - name: "manifest-operator"
         - name: "hydroform"
         - name: "console"
-        - name: "helm-broker"
         - name: "istio-operator"
         - name: "addons"
         - name: "private-fn-for-e2e-serverless-tests"
@@ -43,8 +42,6 @@ global:
         - name: "migrate"
         - name: "github-dashboard"
         - name: "website-vuepress"
-        - name: "sc-removal"
-        - name: "service-catalog-tester"
         - name: "dex"
         - name: "kitbag"
         - name: "octopus"
@@ -56,8 +53,6 @@ global:
         - name: "vstudio-extension"
         - name: "wordpress-connector"
         - name: "connector-tools"
-        - name: "service-catalog"
-        - name: "gcp-service-broker"
         - name: "artwork"
         - name: "opensap"
         
@@ -88,13 +83,13 @@ globalSets:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_bootstrap:
-    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220427-9543160d"
+    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220625-05254911"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220721-0e9ed480"
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
   image_buildpack-node:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220428-a1f1d86f"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220720-622619a6"
   image_buildpack-golang:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
   image_buildpack-golang-kubebuilder2:
@@ -202,6 +197,9 @@ globalSets:
     labels:
       preset-docker-push-repository-incubator: "true"
     path_alias: "github.com/kyma-incubator/compass"
+  jobConfig_serverlessv1alpha2:
+    branches:
+      - "^serverless-v1alpha2$"
   disable_report:
     skip_report: "true"
   # globalSet for prowjobs which doesn't inherit jobConfig_default globalSet

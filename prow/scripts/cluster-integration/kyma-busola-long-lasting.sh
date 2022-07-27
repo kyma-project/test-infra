@@ -55,7 +55,7 @@ function provisionIngress() {
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
     helm repo update
 
-    envsubst < "${RESOURCES_PATH}/nginxValues.yaml" | helm install ingress-nginx --namespace=kube-system -f - ingress-nginx/ingress-nginx
+    envsubst < "${RESOURCES_PATH}/nginxValues.yaml" | helm install ingress-nginx --version 4.1.3 --namespace=kube-system -f - ingress-nginx/ingress-nginx
 
     # wait for ingress controller to start
     kubectl wait --namespace kube-system \

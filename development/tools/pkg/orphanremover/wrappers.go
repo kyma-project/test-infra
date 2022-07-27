@@ -84,9 +84,7 @@ func (csw *ComputeServiceWrapper) LookupURLMaps(project string) ([]*compute.UrlM
 	call := csw.Compute.UrlMaps.List(project)
 	var items []*compute.UrlMap
 	f := func(page *compute.UrlMapList) error {
-		for _, list := range page.Items {
-			items = append(items, list)
-		}
+		items = append(items, page.Items...)
 		return nil
 	}
 	if err := call.Pages(csw.Context, f); err != nil {
@@ -100,9 +98,7 @@ func (csw *ComputeServiceWrapper) LookupBackendServices(project string) ([]*comp
 	call := csw.Compute.BackendServices.List(project)
 	var items []*compute.BackendService
 	f := func(page *compute.BackendServiceList) error {
-		for _, list := range page.Items {
-			items = append(items, list)
-		}
+		items = append(items, page.Items...)
 		return nil
 	}
 	if err := call.Pages(csw.Context, f); err != nil {
@@ -134,9 +130,7 @@ func (csw *ComputeServiceWrapper) LookupTargetPools(project string) ([]*compute.
 	var items []*compute.TargetPool
 	f := func(page *compute.TargetPoolAggregatedList) error {
 		for _, list := range page.Items {
-			for _, element := range list.TargetPools {
-				items = append(items, element)
-			}
+			items = append(items, list.TargetPools...)
 		}
 		return nil
 	}
@@ -172,9 +166,7 @@ func (csw *ComputeServiceWrapper) LookupHTTPProxy(project string) ([]*compute.Ta
 	call := csw.Compute.TargetHttpProxies.List(project)
 	var items []*compute.TargetHttpProxy
 	f := func(page *compute.TargetHttpProxyList) error {
-		for _, list := range page.Items {
-			items = append(items, list)
-		}
+		items = append(items, page.Items...)
 		return nil
 	}
 	if err := call.Pages(csw.Context, f); err != nil {
@@ -188,9 +180,7 @@ func (csw *ComputeServiceWrapper) LookupGlobalForwardingRule(project string) ([]
 	call := csw.Compute.GlobalForwardingRules.List(project)
 	var items []*compute.ForwardingRule
 	f := func(page *compute.ForwardingRuleList) error {
-		for _, list := range page.Items {
-			items = append(items, list)
-		}
+		items = append(items, page.Items...)
 		return nil
 	}
 	if err := call.Pages(csw.Context, f); err != nil {
@@ -202,8 +192,5 @@ func (csw *ComputeServiceWrapper) LookupGlobalForwardingRule(project string) ([]
 //CheckInstance Verify if instance (vm) of given name exists
 func (csw *ComputeServiceWrapper) CheckInstance(project string, zone string, name string) bool {
 	_, err := csw.Compute.Instances.Get(project, zone, name).Do()
-	if err != nil {
-		return false
-	}
-	return true
+	return err == nil
 }

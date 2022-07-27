@@ -82,8 +82,8 @@ func GetGithubCommiter(ctx context.Context, m pubsub.MessagePayload) error {
 	// Get metadata from context and set eventID label for logging.
 	contextMetadata, err := metadata.FromContext(ctx)
 	if err != nil {
-		if m.MessageId != "" {
-			logger.WithLabel("messageId", m.MessageId)
+		if m.MessageID != "" {
+			logger.WithLabel("messageId", m.MessageID)
 		} else {
 			logger.LogError(fmt.Sprintf("failed extract metadata from function call context, error: %s", err.Error()))
 		}
@@ -101,7 +101,7 @@ func GetGithubCommiter(ctx context.Context, m pubsub.MessagePayload) error {
 	logger.WithLabel("prowjobName", *failingTestMessage.JobName)
 
 	// Set label with execution ID for logging.
-	jobID, err := pubsub.GetJobId(failingTestMessage.URL)
+	jobID, err := pubsub.GetJobID(failingTestMessage.URL)
 	if err != nil {
 		logger.LogCritical(fmt.Sprintf("failed get job ID, error: %s", err.Error()))
 	}

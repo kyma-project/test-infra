@@ -96,7 +96,7 @@ func isGithubIssueOpen(ctx context.Context, client *github.Client, message kymap
 	} else if err != nil {
 		return nil, nil, fmt.Errorf("calling github API failed, error: %w", err)
 	}
-	b := new(bool)
+	var b *bool
 	if *ghIssue.State == "open" {
 		// Set return value to true when issue is open.
 		b = github.Bool(true)
@@ -188,8 +188,8 @@ func GetGithubIssue(ctx context.Context, m kymapubsub.MessagePayload) error {
 	// Get metadata from context and set eventID label for logging.
 	contextMetadata, err := metadata.FromContext(ctx)
 	if err != nil {
-		if m.MessageId != "" {
-			logger.WithLabel("messageId", m.MessageId)
+		if m.MessageID != "" {
+			logger.WithLabel("messageId", m.MessageID)
 		} else {
 			logger.LogError(fmt.Sprintf("failed extract metadata from function call context, error: %s", err.Error()))
 		}
@@ -206,7 +206,7 @@ func GetGithubIssue(ctx context.Context, m kymapubsub.MessagePayload) error {
 	logger.WithLabel("prowjobName", *failingTestMessage.JobName)
 
 	// Set label with execution ID for logging.
-	jobID, err := kymapubsub.GetJobId(failingTestMessage.URL)
+	jobID, err := kymapubsub.GetJobID(failingTestMessage.URL)
 	if err != nil {
 		logger.LogCritical(fmt.Sprintf("failed get job ID, error: %s", err.Error()))
 	}
@@ -230,6 +230,10 @@ func GetGithubIssue(ctx context.Context, m kymapubsub.MessagePayload) error {
 			}
 			// Set failing test instance in firestore as closed.
 			_, err := docRef.Update(ctx, updates, firestore.Exists)
+			if err != nil {
+				logger.LogError(fmt.Sprintf("failed setting failing test instance as closed, issue number:  %d, error: %s", ghIssue.GetNumber(), err.Error()))
+				// TODO: need error reporting for such case, without failing whole function
+			}
 			// Remove failing test instance firestore document reference from failing test pubsub message.
 			failingTestMessage.FirestoreDocumentID = nil
 			// Create new github issue.
@@ -243,7 +247,7 @@ func GetGithubIssue(ctx context.Context, m kymapubsub.MessagePayload) error {
 				failingTestMessage.GithubIssueNumber = github.Int64(int64(ghIssue.GetNumber()))
 				failingTestMessage.GithubIssueRepo = ghIssue.GetRepository().Name
 				failingTestMessage.GithubIssueOrg = ghIssue.GetRepository().GetOwner().Name
-				failingTestMessage.GithubIssueUrl = ghIssue.URL
+				failingTestMessage.GithubIssueURL = ghIssue.URL
 			}
 			// Publish message to topic creating new failing test instance in firestore db.
 			publlishedMessageID, err := kymapubsub.PublishPubSubMessage(ctx, pubSubClient, failingTestMessage, getFailureInstanceTopic)
@@ -265,7 +269,7 @@ func GetGithubIssue(ctx context.Context, m kymapubsub.MessagePayload) error {
 			failingTestMessage.GithubIssueNumber = github.Int64(int64(*ghIssue.Number))
 			failingTestMessage.GithubIssueRepo = ghIssue.GetRepository().Name
 			failingTestMessage.GithubIssueOrg = ghIssue.GetRepository().GetOwner().Name
-			failingTestMessage.GithubIssueUrl = ghIssue.URL
+			failingTestMessage.GithubIssueURL = ghIssue.URL
 			docRef := firestoreClient.Doc(fmt.Sprintf("%s/%s", firestoreCollection, *failingTestMessage.FirestoreDocumentID))
 			updates := []firestore.Update{
 				{Path: "githubIssueNumber", Value: ghIssue.GetNumber()},
@@ -282,7 +286,7 @@ func GetGithubIssue(ctx context.Context, m kymapubsub.MessagePayload) error {
 				logger.LogInfo(fmt.Sprintf("github issue, number %d, added to failing test instance", ghIssue.GetNumber()))
 			}
 		} else {
-			logger.LogError(fmt.Sprintf("github issue is nil, something went wrong with creating it"))
+			logger.LogError("github issue is nil, something went wrong with creating it")
 			// TODO: need error reporting for such case, without failing whole function
 		}
 	}

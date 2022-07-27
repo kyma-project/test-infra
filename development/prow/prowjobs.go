@@ -20,9 +20,9 @@ func IsNotPresubmitError(err error) *bool {
 	var e *NotPresubmitError
 	if errors.As(err, &e) {
 		return github.Bool(true)
-	} else {
-		return github.Bool(false)
 	}
+	return github.Bool(false)
+
 }
 
 // GetPrAuthorForPresubmit will provide list all pull requests authors for prowjob of type presubmit.
@@ -41,9 +41,8 @@ func GetPrAuthorForPresubmit() ([]string, error) {
 			authors = append(authors, pull.Author)
 		}
 		return authors, nil
-	} else {
-		return nil, &NotPresubmitError{}
 	}
+	return nil, &NotPresubmitError{}
 }
 
 func GetOrgForPresubmit() (string, error) {
@@ -55,7 +54,6 @@ func GetOrgForPresubmit() (string, error) {
 	// Get authors for presubmits only.
 	if jobSpec.Type == prowapi.PresubmitJob {
 		return jobSpec.Refs.Org, nil
-	} else {
-		return "", &NotPresubmitError{}
 	}
+	return "", &NotPresubmitError{}
 }

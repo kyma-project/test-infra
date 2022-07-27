@@ -4,9 +4,9 @@ decorate_all_jobs: true
 
 plank:
   job_url_prefix_config:
-    '*': https://status.build.kyma-project.io/view/
+    "*": https://status.build.kyma-project.io/view/
   report_templates:
-    '*': >-
+    "*": >-
       [Full PR test history](https://status.build.kyma-project.io/pr-history?org={{"{{"}}.Spec.Refs.Org{{"}}"}}&repo={{"{{"}}.Spec.Refs.Repo{{"}}"}}&pr={{"{{"}}with index .Spec.Refs.Pulls 0{{"}}{{"}}.Number{{"}}{{"}}end{{"}}"}}).
       [Your PR dashboard](https://status.build.kyma-project.io/pr?query=is:pr+state:open+author:{{"{{"}}with
       index .Spec.Refs.Pulls 0{{"}}{{"}}.Author{{"}}{{"}}end{{"}}"}}).
@@ -14,7 +14,7 @@ plank:
   max_concurrency: 100 # Limit of concurrent ProwJobs. Need to be adjusted depending of the cluster size.
   pod_pending_timeout: 60m
   default_decoration_configs:
-    '*':
+    "*":
       timeout: 3h
       grace_period: 10m
       censor_secrets: true
@@ -22,10 +22,10 @@ plank:
         censoring_concurrency: 2 # 2 concurrent censoring
         censoring_buffer_size: 3092 # 3kB
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20220623-6ff60de3c2
-        initupload: gcr.io/k8s-prow/initupload:v20220623-6ff60de3c2
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20220623-6ff60de3c2
-        sidecar: gcr.io/k8s-prow/sidecar:v20220623-6ff60de3c2
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20220721-cf42b99a12
+        initupload: gcr.io/k8s-prow/initupload:v20220721-cf42b99a12
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20220721-cf42b99a12
+        sidecar: gcr.io/k8s-prow/sidecar:v20220721-cf42b99a12
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -68,7 +68,7 @@ deck:
               - DATA RACE
               - dirty working directory
               - ^E\d{4} \d\d:\d\d:\d\d\.\d+
-              - "(Error|ERROR|error)s?:"
+              - (Error|ERROR|error)s?(:|\s)
               - Error.+executing benchmarks
               - Expected.+got
               - FAILED. See logs
@@ -112,11 +112,16 @@ deck:
               - want.+got
               - Your cluster may not be fully functional
               - ^\s+\^$
+              - \^-- # script validation
               - \[(0;)?31m
               - "^diff " # [+-]{3}\\s" has too much noise from go test output and set -x
               - • Failure
               # This highlights the start of bazel tests/runs to skip go importing noise.
               - "^INFO: Analyzed \\d+ targets"
+              - "JobGuard caught error"
+              - "Directory vpath is present"
+              - '"status": "Vulns"' # protecode guard
+              - "command not found"
         required_files:
           - ^.*build-log\.txt$
       - lens:
@@ -139,14 +144,18 @@ deck:
           name: links
         required_files:
           - artifacts/.*\.link\.txt
+      - lens:
+          name: html
+        required_files:
+          - ^artifacts/report.*\.html$
   branding:
     header_color: "#0b74de" # Kyma color
     logo: "/static/extensions/logo.svg"
     favicon: "/static/extensions/favicon.png"
   rerun_auth_configs:
-    '*':
+    "*":
       github_team_ids:
-      - 3108790 # cluster-access GH team in Kyma organization
+        - 3108790 # cluster-access GH team in Kyma organization
 
 sinker:
   max_prowjob_age: 48h
@@ -159,7 +168,7 @@ push_gateway:
   serve_metrics: true
 
 slack_reporter_configs:
-  '*':
+  "*":
     job_types_to_report:
       - postsubmit
       - periodic
@@ -181,7 +190,7 @@ in_repo_config:
     "*": true
   allowed_clusters:
     "*": ["default", "untrusted-workload", "trusted-workload"]
-    
+
 branch-protection:
   enforce_admins: true
   allow_disabled_policies: true
@@ -269,6 +278,9 @@ tide:
     kyma-project/examples: squash
     kyma-project/addons: squash
     kyma-project/busola-migrator: squash
+    kyma-project/kyma-operator: squash
+    kyma-project/kyma-watcher: squash
+    kyma-project/manifest-operator: squash
 
     kyma-incubator/compass: squash
     kyma-incubator/reconciler: squash
@@ -284,7 +296,7 @@ tide:
     kyma-incubator/kymart: squash
     kyma-incubator/dex: squash
     kyma-incubator/varkes: squash
-#    kyma-incubator/marketplaces: squash
+    #    kyma-incubator/marketplaces: squash
     kyma-incubator/octopus: squash
     kyma-incubator/knative-kafka: squash
     kyma-incubator/examples: squash
@@ -292,20 +304,19 @@ tide:
     kyma-incubator/vstudio-extension: squash
     kyma-incubator/wordpress-connector: squash
     kyma-incubator/connector-tools: squash
-#    kyma-incubator/github-slack-connectors: squash
-    kyma-incubator/gcp-service-broker: squash
-#    kyma-incubator/homebrew-kyma-incubator: squash
-#    kyma-incubator/runtime: squash
+    #    kyma-incubator/github-slack-connectors: squash
+    #    kyma-incubator/homebrew-kyma-incubator: squash
+    #    kyma-incubator/runtime: squash
     kyma-incubator/artwork: squash
     kyma-incubator/opensap: squash
-#    kyma-incubator/wormhole: squash
+    #    kyma-incubator/wormhole: squash
     kyma-incubator/kyma-showcase: squash
     kyma-incubator/sc-removal: squash
     kyma-incubator/hydra-login-consent: squash
     kyma-incubator/website-vuepress: squash
   target_url: https://status.build.kyma-project.io/tide
   pr_status_base_urls:
-    '*': https://status.build.kyma-project.io/pr
+    "*": https://status.build.kyma-project.io/pr
   squash_label: tide/merge-method-squash
   rebase_label: tide/merge-method-rebase
   merge_label: tide/merge-method-merge
@@ -334,8 +345,8 @@ presets:
   - labels:
       preset-recreate-cluster: "true"
     env:
-    - name: RECREATE_CLUSTER
-      value: "true"
+      - name: RECREATE_CLUSTER
+        value: "true"
   - labels:
       preset-slack-alerts: "true"
     env:
@@ -348,9 +359,9 @@ presets:
             key: secret
       - name: KYMA_ALERTS_CHANNEL
         value: "#kyma-ci-force"
-  # cluster version
+  # remove when control plane jobs will wirk with the new version of k8s
   - labels:
-      preset-cluster-version: "true"
+      preset-cluster-version-previous: "true"
     env:
       - name: AKS_CLUSTER_VERSION
         value: "1.21"
@@ -358,6 +369,16 @@ presets:
         value: "1.21"
       - name: GARDENER_CLUSTER_VERSION
         value: "1.21"
+  # cluster version
+  - labels:
+      preset-cluster-version: "true"
+    env:
+      - name: AKS_CLUSTER_VERSION
+        value: "1.23"
+      - name: GKE_CLUSTER_VERSION
+        value: "1.23"
+      - name: GARDENER_CLUSTER_VERSION
+        value: "1.23"
   # test clusters log collector
   - labels:
       preset-log-collector-slack-token: "true"
@@ -1017,6 +1038,21 @@ presets:
       - name: COMPASS_INTEGRATION_ENABLED
         value: "true"
   - labels:
+      preset-kyma-integration-app-connector-tests-app-gateway: "true"
+    env:
+      - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_GATEWAY
+        value: "true"
+  - labels:
+      preset-kyma-integration-app-connector-tests-app-validator: "true"
+    env:
+      - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_VALIDATOR
+        value: "true"
+  - labels:
+      preset-kyma-integration-app-connector-tests-runtime-agent: "true"
+    env:
+      - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_RUNTIME_AGENT
+        value: "true"
+  - labels:
       preset-kyma-integration-istio-evaluation: "true"
     env:
       - name: ISTIO_INTEGRATION_ENABLED
@@ -1216,13 +1252,13 @@ presets:
   - labels:
       preset-kyma-periodic-nightly-letsencypt-protection: "true"
     env:
-    - name: LETSENCRYPT_LIMITS_PROTECTION
-      value: "true"
+      - name: LETSENCRYPT_LIMITS_PROTECTION
+        value: "true"
   - labels:
       preset-kyma-kms-sign-key: "true"
     env:
-    - name: KMS_KEY_URL
-      value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
+      - name: KMS_KEY_URL
+        value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
   - labels:
       preset-prowjob-gcp-logging: "true"
     env:
@@ -1239,44 +1275,44 @@ presets:
   - labels:
       preset-kyma-integration-kcp-client-credentials: "true"
     env:
-    - name: KCP_TECH_USER_LOGIN
-      valueFrom:
-        secretKeyRef:
-          name: kcp-client-credentials
-          key: KCP_TECH_USER_LOGIN
-    - name: KCP_TECH_USER_PASSWORD
-      valueFrom:
-        secretKeyRef:
-          name: kcp-client-credentials
-          key: KCP_TECH_USER_PASSWORD
-    - name: KCP_OIDC_CLIENT_ID
-      valueFrom:
-        secretKeyRef:
-          name: kcp-client-credentials
-          key: KCP_OIDC_CLIENT_ID
-    - name: KCP_OIDC_CLIENT_SECRET
-      valueFrom:
-        secretKeyRef:
-          name: kcp-client-credentials
-          key: KCP_OIDC_CLIENT_SECRET
+      - name: KCP_TECH_USER_LOGIN
+        valueFrom:
+          secretKeyRef:
+            name: kcp-client-credentials
+            key: KCP_TECH_USER_LOGIN
+      - name: KCP_TECH_USER_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: kcp-client-credentials
+            key: KCP_TECH_USER_PASSWORD
+      - name: KCP_OIDC_CLIENT_ID
+        valueFrom:
+          secretKeyRef:
+            name: kcp-client-credentials
+            key: KCP_OIDC_CLIENT_ID
+      - name: KCP_OIDC_CLIENT_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: kcp-client-credentials
+            key: KCP_OIDC_CLIENT_SECRET
   - labels:
       preset-serverless-git-auth: "true"
     env:
-    - name: GH_AUTH_PRIVATE_KEY
-      valueFrom:
-        secretKeyRef:
-          name: serverless-git-auth
-          key: GH_AUTH_PRIVATE_KEY
-    - name: AZURE_DEVOPS_AUTH_USERNAME
-      valueFrom:
-        secretKeyRef:
-          name: serverless-git-auth
-          key: AZURE_DEVOPS_AUTH_USERNAME
-    - name: AZURE_DEVOPS_AUTH_PASSWORD
-      valueFrom:
-        secretKeyRef:
-          name: serverless-git-auth
-          key: AZURE_DEVOPS_AUTH_PASSWORD
+      - name: GH_AUTH_PRIVATE_KEY
+        valueFrom:
+          secretKeyRef:
+            name: serverless-git-auth
+            key: GH_AUTH_PRIVATE_KEY
+      - name: AZURE_DEVOPS_AUTH_USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: serverless-git-auth
+            key: AZURE_DEVOPS_AUTH_USERNAME
+      - name: AZURE_DEVOPS_AUTH_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: serverless-git-auth
+            key: AZURE_DEVOPS_AUTH_PASSWORD
   - labels:
       preset-kcp-client-dev-envs: "true"
     env:

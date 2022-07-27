@@ -1,0 +1,35 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma-operator/kyma-operator.yaml
+        jobConfigs:
+          - repoName: kyma-project/kyma-operator
+            jobs:
+              - jobConfig:
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220722-426fa04d"
+                  name: "pre-main-kyma-operator-lint"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd operator && golangci-lint run"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+              - jobConfig:
+                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
+                  name: pre-main-kyma-operator-tests
+                  command: "bash"
+                  args:
+                    - "-c" 
+                    - "cd operator && make test" # run test make target of operator
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default" 
+                    - "jobConfig_presubmit"
+                    - "build_labels" # default labels

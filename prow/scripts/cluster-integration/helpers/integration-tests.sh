@@ -34,6 +34,9 @@ function api-gateway::prepare_test_environments() {
   export TEST_REQUEST_DELAY="10"
   export TEST_DOMAIN="${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com" 
   export TEST_CLIENT_TIMEOUT=30s
+  export TEST_CONCURENCY="8"
+  export EXPORT_RESULT="true"
+  export KYMA_DOMAIN="${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com" 
 }
 
 function api-gateway::configure_ory_hydra() {
@@ -44,6 +47,7 @@ function api-gateway::configure_ory_hydra() {
   kubectl -n kyma-system set env deployment ory-hydra URLS_CONSENT="https://ory-hydra-login-consent.${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com/consent"
   kubectl -n kyma-system set env deployment ory-hydra URLS_SELF_ISSUER="https://oauth2.${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com/"
   kubectl -n kyma-system set env deployment ory-hydra URLS_SELF_PUBLIC="https://oauth2.${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com/"
+  kubectl -n kyma-system scale deployment.apps ory-hydra --replicas=1
   kubectl -n kyma-system rollout restart deployment ory-hydra
   kubectl -n kyma-system rollout status deployment ory-hydra
 }
@@ -59,7 +63,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ory-hydra-login-consent
-  namespace: kyma-system
+  namespace: istio-system
 spec:
   selector:
     matchLabels:
@@ -88,7 +92,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: ory-hydra-login-consent
-  namespace: kyma-system
+  namespace: istio-system
 spec:
   selector:
     app: ory-hydra-login-consent
@@ -103,7 +107,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: ory-hydra-login-consent
-  namespace: kyma-system
+  namespace: istio-system
   labels:
     app: ory-hydra-login-consent
 spec:
@@ -119,7 +123,7 @@ spec:
         exact: /consent
     route:
     - destination:
-        host: ory-hydra-login-consent.kyma-system.svc.cluster.local
+        host: ory-hydra-login-consent.istio-system.svc.cluster.local
         port:
           number: 80
 EOF
@@ -129,9 +133,9 @@ EOF
 
 function api-gateway::launch_tests() {
   log::info "Running Kyma API-Gateway tests"
-
-  pushd "${KYMA_SOURCES_DIR}/tests/components/api-gateway/gateway-tests"
-  go test -v ./main_test.go
+  kubectl get validatingwebhookconfigurations
+  pushd "${KYMA_SOURCES_DIR}/tests/components/api-gateway"
+  make test
   popd
 
   log::success "Tests completed"

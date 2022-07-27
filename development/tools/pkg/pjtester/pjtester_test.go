@@ -212,10 +212,8 @@ func TestNewTestPJ(t *testing.T) {
 	//o.prFinder.Repositories.(*mocks.GithubRepoService).MethodCalled("Get", ctx, fakeRepoPrOrg, fakeRepoPrRepo, fakeRepoPrNumber)
 	defer o.prFinder.Repositories.(*mocks.GithubRepoService).AssertExpectations(t)
 	defer o.prFinder.PullRequests.(*mocks.GithubPullRequestsService).AssertExpectations(t)
-	var testPrCfg *map[string]prOrg
-	if testPrCfg = &testCfg.PrConfigs; testPrCfg != nil {
-		o.getPullRequests(testCfg)
-	}
+	o.getPullRequests(testCfg)
+
 	for _, pjCfg := range testCfg.PjNames {
 		pj := newTestPJ(pjCfg, o)
 		assert.Equalf(t, "untrusted-workload", pj.Spec.Cluster, "Prowjob cluster name is not : untrusted-workload")

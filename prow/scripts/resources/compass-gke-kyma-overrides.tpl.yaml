@@ -53,10 +53,6 @@ application_connector:
   tests:
     application_connector_tests:
       enabled: false
-service-catalog:
-  test:
-    acceptance:
-      enabled: false
 application-connector:
   application-registry:
     deployment:

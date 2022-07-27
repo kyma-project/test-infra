@@ -14,6 +14,11 @@ var tests = []struct {
 	suite             func(config *jobsuite.Config) jobsuite.Suite
 	additionalOptions []jobsuite.Option
 }{
+	{path: "application-connector-component-tests", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+		},
+	},
 	{path: "contract/knative-channel-kafka", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
@@ -22,6 +27,11 @@ var tests = []struct {
 	{path: "function-controller", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
+		},
+	},
+	{path: "function-controller", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("v1alpha2-tests-generic"),
 		},
 	},
 	{path: "serverless-bench", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
