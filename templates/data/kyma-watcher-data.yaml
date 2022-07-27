@@ -25,7 +25,7 @@ templates:
                     - "build_labels" # default labels
               - jobConfig:
                   run_if_changed: "^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)"
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220627-b303c786"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220722-426fa04d"
                   name: "pre-main-kyma-watcher-skr-lint"
                   command: "bash"
                   args:
@@ -72,7 +72,7 @@ templates:
                     - "build_labels" # default labels
               - jobConfig:
                   run_if_changed: "^kcp/(go.mod|go.sum)$|^kcp/*/(.*.go|Makefile|.*.sh)"
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220627-b303c786"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220722-426fa04d"
                   name: "pre-main-kyma-watcher-kcp-lint"
                   command: "bash"
                   args:
