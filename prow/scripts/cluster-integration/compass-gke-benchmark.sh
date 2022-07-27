@@ -237,7 +237,8 @@ installKyma
 #log::info "Install Compass version from main"
 #installCompassOld
 
-# TEMP, delete after validating
+# It is necessary to install 'new' Compass because the related changes in Compass repo will not be applied if we install "old" Compass
+# TODO: delete these two lines after validating this PR and uncomment the two lines above
 log::info "Install New Compass version first"
 installCompassNew
 
