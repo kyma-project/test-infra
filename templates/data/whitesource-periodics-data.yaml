@@ -120,7 +120,7 @@ templates:
                   repository: "kyma-watcher"
                   language: "golang-mod"
                   project: "kyma-project"
-                  subprojects: "false"
+                  subprojects: "true"
                   base_ref: "main"
                 inheritedConfigs:
                   global:

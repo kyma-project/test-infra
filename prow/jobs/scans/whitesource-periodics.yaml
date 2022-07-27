@@ -235,7 +235,7 @@ periodics: # runs on schedule
               - name : REPOSITORY
                 value: kyma-watcher
               - name: CREATE_SUBPROJECTS
-                value: "false"
+                value: "true"
               - name: SCAN_LANGUAGE
                 value: golang-mod
             resources:
