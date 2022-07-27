@@ -24,10 +24,10 @@ plank:
         censoring_concurrency: 2 # 2 concurrent censoring
         censoring_buffer_size: 3092 # 3kB
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20220713-b07b206195
-        initupload: gcr.io/k8s-prow/initupload:v20220713-b07b206195
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20220713-b07b206195
-        sidecar: gcr.io/k8s-prow/sidecar:v20220713-b07b206195
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20220721-cf42b99a12
+        initupload: gcr.io/k8s-prow/initupload:v20220721-cf42b99a12
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20220721-cf42b99a12
+        sidecar: gcr.io/k8s-prow/sidecar:v20220721-cf42b99a12
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -70,7 +70,7 @@ deck:
               - DATA RACE
               - dirty working directory
               - ^E\d{4} \d\d:\d\d:\d\d\.\d+
-              - "(Error|ERROR|error)s?:"
+              - (Error|ERROR|error)s?(:|\s)
               - Error.+executing benchmarks
               - Expected.+got
               - FAILED. See logs
@@ -280,6 +280,9 @@ tide:
     kyma-project/examples: squash
     kyma-project/addons: squash
     kyma-project/busola-migrator: squash
+    kyma-project/kyma-operator: squash
+    kyma-project/kyma-watcher: squash
+    kyma-project/manifest-operator: squash
 
     kyma-incubator/compass: squash
     kyma-incubator/reconciler: squash
@@ -358,6 +361,16 @@ presets:
             key: secret
       - name: KYMA_ALERTS_CHANNEL
         value: "#kyma-ci-force"
+  # remove when control plane jobs will wirk with the new version of k8s
+  - labels:
+      preset-cluster-version-previous: "true"
+    env:
+      - name: AKS_CLUSTER_VERSION
+        value: "1.21"
+      - name: GKE_CLUSTER_VERSION
+        value: "1.21"
+      - name: GARDENER_CLUSTER_VERSION
+        value: "1.21"
   # cluster version
   - labels:
       preset-cluster-version: "true"

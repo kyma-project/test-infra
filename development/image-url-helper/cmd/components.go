@@ -17,7 +17,7 @@ import (
 
 // ComponentsCmd generates component descripto file with all images used in Kyma
 func ComponentsCmd() *cobra.Command {
-	options := component.ComponentOptions{}
+	options := component.Options{}
 	cmd := &cobra.Command{
 		Use:     "components",
 		Short:   "Generates component descriptor file for Kyma",
@@ -81,7 +81,7 @@ func ComponentsCmd() *cobra.Command {
 	return cmd
 }
 
-func addComponentCmdFlags(cmd *cobra.Command, options *component.ComponentOptions) {
+func addComponentCmdFlags(cmd *cobra.Command, options *component.Options) {
 	cmd.Flags().StringVarP(&options.ComponentName, "component-name", "n", "github.com/kyma-project/kyma", "name of the component")
 	cmd.Flags().StringVarP(&options.ComponentVersion, "component-version", "v", "", "component version")
 	cmd.MarkFlagRequired("component-version")

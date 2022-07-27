@@ -31,7 +31,7 @@ func main() {
 		kyma,
 	)
 
-	http.HandleFunc(conf.GitHubWebhookUrlPath, webhook.HandleWebhook)
+	http.HandleFunc(conf.GitHubWebhookURLPath, webhook.HandleWebhook)
 	log.Info(http.ListenAndServe(":"+conf.ListenPort, nil))
 
 	log.Info("Happy GitHub-Connecting!")
