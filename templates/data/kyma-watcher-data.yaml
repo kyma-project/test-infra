@@ -1,0 +1,101 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma-watcher/kyma-watcher.yaml
+        jobConfigs:
+          - repoName: kyma-project/kyma-watcher
+            jobs:
+              - jobConfig:
+                  name: periodic-kyma-watcher-skr-tests
+                  cron: "0 */6 * * 1-5" # "At minute 0 past every 6th hour on every day-of-week from Monday through Friday."
+                  annotations:
+                    description: regularly executes the 'make test' command in the kyma-watcher 'skr' directory.
+                  command: "bash"
+                  args:
+                    - "-c" 
+                    - "cd skr && make test" # run test make target of kcp
+                  branches:
+                    - ^main$
+                  slack_channel: jellyfish-notifications
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default" 
+                    - "jobConfig_periodic"
+                    - "build_labels" # default labels
+              - jobConfig:
+                  run_if_changed: "^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220627-b303c786"
+                  name: "pre-main-kyma-watcher-skr-lint"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd skr && golangci-lint run"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+              - jobConfig:
+                  run_if_changed: "^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)"
+                  name: pre-main-kyma-watcher-skr-tests
+                  command: "bash"
+                  args:
+                    - "-c" 
+                    - "cd skr && make test" # run test make target of skr
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default" 
+                    - "jobConfig_presubmit"
+                    - "build_labels" # default labels
+              - jobConfig:
+                  name: periodic-kyma-watcher-kcp-tests
+                  cron: "0 */6 * * 1-5" # "At minute 0 past every 6th hour on every day-of-week from Monday through Friday."
+                  annotations:
+                    description: regularly executes the 'make test' command in the kyma-watcher 'kcp' directory.
+                  command: "bash"
+                  args:
+                    - "-c" 
+                    - "cd kcp && make test" # run test make target of kcp
+                  branches:
+                    - ^main$
+                  slack_channel: jellyfish-notifications
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default" 
+                    - "jobConfig_periodic"
+                    - "build_labels" # default labels
+              - jobConfig:
+                  run_if_changed: "^kcp/(go.mod|go.sum)$|^kcp/*/(.*.go|Makefile|.*.sh)"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220627-b303c786"
+                  name: "pre-main-kyma-watcher-kcp-lint"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd kcp && golangci-lint run"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+              - jobConfig:
+                  run_if_changed: "^kcp/(go.mod|go.sum)$|^kcp/*/(.*.go|Makefile|.*.sh)"
+                  name: pre-main-kyma-watcher-kcp-tests
+                  command: "bash"
+                  args:
+                    - "-c" 
+                    - "cd kcp && make test" # run test make target of kcp
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default" 
+                    - "jobConfig_presubmit"
+                    - "build_labels" # default labels
