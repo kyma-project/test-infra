@@ -4,6 +4,8 @@ run:
   timeout: 2m
   # skip test files
   tests: false
+output:
+  sort-results: true
 linters:
   disable-all: true
   enable:
@@ -14,4 +16,4 @@ linters:
     - ineffassign
     - misspell
     - staticcheck
-    # - revive # replaces golint
+    - revive # replaces golint
