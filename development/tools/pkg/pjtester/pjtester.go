@@ -298,10 +298,10 @@ func (o *options) genJobSpec(pjCfg pjConfig, org, repo string) (config.JobBase, 
 		log.Debugf("presubmit.name : %s", p.Name)
 		if p.Name == pjCfg.PjName {
 			p.Optional = true
-			// set prowjob name
+			// Add prefix to prowjob to test name.
 			p.Name = formatPjName(o.pullAuthor, p.Name)
+			// Add prefix to prowjob to test context.
 			p.Context = p.Name
-			p.Optional = true
 			pjs := pjutil.PresubmitSpec(p, prowapi.Refs{
 				Org:  org,
 				Repo: repo,
@@ -326,6 +326,10 @@ func (o *options) genJobSpec(pjCfg pjConfig, org, repo string) (config.JobBase, 
 	}
 	for _, p := range postSubmits {
 		if p.Name == pjCfg.PjName {
+			// Add prefix to prowjob to test name.
+			p.Name = formatPjName(o.pullAuthor, p.Name)
+			// Add prefix to prowjob to test context.
+			p.Context = p.Name
 			pjs := pjutil.PostsubmitSpec(p, prowapi.Refs{
 				Org:  org,
 				Repo: repo,
@@ -340,6 +344,8 @@ func (o *options) genJobSpec(pjCfg pjConfig, org, repo string) (config.JobBase, 
 
 	for _, p := range conf.Periodics {
 		if p.Name == pjCfg.PjName {
+			// Add prefix to prowjob to test name.
+			p.Name = formatPjName(o.pullAuthor, p.Name)
 			var err error
 			pjs := pjutil.PeriodicSpec(p)
 			pjs, err = periodicRefs(pjs, *o)
@@ -562,10 +568,6 @@ func newTestPJ(pjCfg pjConfig, opt options, org, repo string) (prowapi.ProwJob, 
 	}
 	// Building prowjob based on generated job specifications.
 	pj := pjutil.NewProwJob(pjSpecification, map[string]string{"created-by-pjtester": "true", "prow.k8s.io/is-optional": "true"}, map[string]string{})
-	// Add prefix to prowjob to test name.
-	// pj.Spec.Job = formatPjName(opt.pullAuthor, pj.Spec.Job)
-	// Add prefix to prowjob to test context.
-	//pj.Spec.Context = pj.Spec.Job
 	// Make sure prowjob to test will run on untrusted-workload cluster.
 	pj.Spec.Cluster = "untrusted-workload"
 	if pjCfg.Report {
