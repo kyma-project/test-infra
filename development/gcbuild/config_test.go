@@ -17,12 +17,14 @@ func Test_ParseConfig(t *testing.T) {
 			config: `project: sample-project
 devRegistry: dev.kyma-project.io/dev-registry
 stagingBucket: gs://staging-bucket
-logsBucket: gs://logs-bucket`,
+logsBucket: gs://logs-bucket
+tagTemplate: v{{ .Date }}-{{ .ShortSHA }}`,
 			expectedConfig: Config{
 				Project:       "sample-project",
 				DevRegistry:   "dev.kyma-project.io/dev-registry",
 				StagingBucket: "gs://staging-bucket",
 				LogsBucket:    "gs://logs-bucket",
+				TagTemplate:   `v{{ .Date }}-{{ .ShortSHA }}`,
 			},
 		},
 		{

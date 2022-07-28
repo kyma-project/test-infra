@@ -205,7 +205,7 @@ func runBuildJob(o options) error {
 	}
 
 	var tag string
-	// TODO (Ressetkk): PR tag should not be hardcoded
+	// (Ressetkk): PR tag should not be hardcoded, in the future we have to find a way to parametrize it
 	if pr != "" {
 		// assume we are using PR number, build tag as 'PR-XXXX'
 		tag = "PR-" + pr
@@ -217,7 +217,11 @@ func runBuildJob(o options) error {
 			return fmt.Errorf("could not create tag: %w", err)
 		}
 
-		tagger := tags.Tagger{TagTemplate: `v{{ .Date }}-{{ .ShortSHA }}`}
+		tagTmpl := `v{{ .Date }}-{{ .ShortSHA }}`
+		if o.TagTemplate != "" {
+			tagTmpl = o.TagTemplate
+		}
+		tagger := tags.Tagger{TagTemplate: tagTmpl}
 		tag, err = tagger.BuildTag(t)
 		if err != nil {
 			return fmt.Errorf("could not build tag: %w", err)
@@ -313,7 +317,7 @@ func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
 	fs.StringVar(&o.variantsFile, "variants-file", "", "Name of variants file relative to build-dir")
 	fs.StringVar(&o.variant, "variant", "", "Define which variant should be built")
 	fs.StringVar(&o.logDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
-	// TODO (Ressetkk): Maybe treat these flags as overrides for config file?
+	// (Ressetkk): Maybe treat these flags as overrides for config file?
 	//fs.StringVar(&o.devRegistry, "dev-registry", "", "Registry URL where development/dirty images should land. If not set then the default registry is used. This flag is only valid when running in CI (CI env variable is set to `true`)")
 	//fs.StringVar(&o.project, "project", "", "GCP project name where build jobs will run")
 	//fs.StringVar(&o.stagingBucket, "staging-bucket", "", "Full name to the Google Cloud Storage bucket, where the source will be pushed beforehand. If not set, rely on Google Cloud Build")
