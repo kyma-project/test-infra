@@ -100,6 +100,54 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
+              # Kyma components
+              - jobConfig:
+                  repository: "kyma-operator"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                  subprojects: "false"
+                  base_ref: "main"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+                    - "product_kyma"
+              - jobConfig:
+                  repository: "kyma-watcher"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                  subprojects: "true"
+                  base_ref: "main"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+                    - "product_kyma"
+              - jobConfig:
+                  repository: "manifest-operator"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                  subprojects: "false"
+                  base_ref: "main"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+                    - "product_kyma"
+
+
               - jobConfig:
                   repository: "busola"
                   language: "javascript"
