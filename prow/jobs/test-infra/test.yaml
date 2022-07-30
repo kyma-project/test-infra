@@ -1,0 +1,14 @@
+presubmits:
+  kyma-project/test-infra:
+    - name: pull-gcbuild-validate
+      run_if_changed: '.*/cloudbuild.yaml$'
+      skip_report: true
+      decorate: true
+      cluster: untrusted-workload
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/gcbuild-lint:v20220731-02ca2c33"
+            command:
+              - "/gcbuild-lint"
+            args:
+              - "--from-git"
