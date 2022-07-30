@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/kyma-project/test-infra/development/gcbuild/config"
 	"os"
 	"reflect"
 	"testing"
@@ -17,10 +18,9 @@ func TestFlags(t *testing.T) {
 		{
 			name: "unknown flag, fail",
 			expectedOpts: options{
-				cloudbuild:   "cloudbuild.yaml",
-				variantsFile: "",
-				buildDir:     ".",
-				logDir:       "/logs/artifacts",
+				cloudbuild: "cloudbuild.yaml",
+				buildDir:   ".",
+				logDir:     "/logs/artifacts",
 			},
 			expectedErr: true,
 			args: []string{
@@ -31,17 +31,15 @@ func TestFlags(t *testing.T) {
 			name:        "parsed config, pass",
 			expectedErr: false,
 			expectedOpts: options{
-				cloudbuild:   "cloud.yaml",
-				configPath:   "config.yaml",
-				variantsFile: "var.yaml",
-				buildDir:     "prow/build",
-				logDir:       "prow/logs",
-				silent:       true,
+				cloudbuild: "cloud.yaml",
+				configPath: "config.yaml",
+				buildDir:   "prow/build",
+				logDir:     "prow/logs",
+				silent:     true,
 			},
 			args: []string{
 				"--config=config.yaml",
 				"--cloudbuild-file=cloud.yaml",
-				"--variants-file=var.yaml",
 				"--build-dir=prow/build",
 				"--log-dir=prow/logs",
 				"--silent",
@@ -110,21 +108,11 @@ func Test_validateOptions(t *testing.T) {
 			},
 		},
 		{
-			name:      "variantsFie is missing",
-			expectErr: true,
-			opts: options{
-				buildDir:   "dir/",
-				cloudbuild: "cloud.yaml",
-				variant:    "main",
-				Config:     Config{Project: "sample-project"},
-			},
-		},
-		{
 			name:      "buildDir is missing",
 			expectErr: true,
 			opts: options{
 				cloudbuild: "cloud.yaml",
-				Config:     Config{Project: "sample-project"},
+				Config:     config.Config{Project: "sample-project"},
 			},
 		},
 		{
@@ -132,18 +120,17 @@ func Test_validateOptions(t *testing.T) {
 			expectErr: true,
 			opts: options{
 				buildDir: ".",
-				Config:   Config{Project: "sample-project"},
+				Config:   config.Config{Project: "sample-project"},
 			},
 		},
 		{
 			name:      "options are valid",
 			expectErr: false,
 			opts: options{
-				buildDir:     ".",
-				cloudbuild:   "cloud.yaml",
-				variant:      "main",
-				variantsFile: "variants.yaml",
-				Config:       Config{Project: "sample-project"},
+				buildDir:   ".",
+				cloudbuild: "cloud.yaml",
+				variant:    "main",
+				Config:     config.Config{Project: "sample-project"},
 			},
 		},
 	}
@@ -191,126 +178,6 @@ func Test_getImageNames(t *testing.T) {
 			s := getImageNames(repo, tag, variant, c.images)
 			if s != c.expectString {
 				t.Errorf("%s != %s", s, c.expectString)
-			}
-		})
-	}
-}
-
-func Test_getVariants(t *testing.T) {
-	tc := []struct {
-		name           string
-		variant        string
-		expectVariants variants
-		expectErr      bool
-		variantsFile   string
-	}{
-		{
-			name:         "valid file, variants passed",
-			expectErr:    false,
-			variantsFile: "testdata/variants.yaml",
-			expectVariants: variants{
-				"main": map[string]string{"KUBECTL_VERSION": "1.24.4"},
-				"1.23": map[string]string{"KUBECTL_VERSION": "1.23.9"},
-			},
-		},
-		{
-			name:           "variant file does not exist, pass",
-			expectErr:      false,
-			variantsFile:   "testdata/not_found.yaml",
-			expectVariants: nil,
-		},
-		{
-			name:         "get only single variant, pass",
-			expectErr:    false,
-			variantsFile: "testdata/variants.yaml",
-			variant:      "main",
-			expectVariants: variants{
-				"main": map[string]string{"KUBECTL_VERSION": "1.24.4"},
-			},
-		},
-		{
-			name:           "variant is not present in variants file, fail",
-			expectErr:      true,
-			variantsFile:   "testdata/variants.yaml",
-			variant:        "missing-variant",
-			expectVariants: nil,
-		},
-		{
-			name:           "malformed variants file, fail",
-			expectErr:      true,
-			variantsFile:   "testdata/malformed-variants.yaml",
-			expectVariants: nil,
-		},
-	}
-	for _, c := range tc {
-		t.Run(c.name, func(t *testing.T) {
-			o := options{
-				variantsFile: c.variantsFile,
-				variant:      c.variant,
-			}
-			v, err := getVariants(o)
-			if err != nil && !c.expectErr {
-				t.Errorf("caught error, but didn't want to: %v", err)
-			}
-			if err == nil && c.expectErr {
-				t.Errorf("didn't catch error, but wanted to")
-			}
-			if !reflect.DeepEqual(v, c.expectVariants) {
-				t.Errorf("%v != %v", v, c.expectVariants)
-			}
-		})
-	}
-}
-
-func Test_getCloudbuild(t *testing.T) {
-	tc := []struct {
-		name             string
-		expectErr        bool
-		expectCloudbuild *Cloudbuild
-		cloudbuildFile   string
-	}{
-		{
-			name:           "missing cloudbuild.yaml, fail",
-			cloudbuildFile: "testdata/missing-cloudbuild.yaml",
-			expectErr:      true,
-		},
-		{
-			name:           "malformed cloudbuild, fail",
-			cloudbuildFile: "testdata/malformed-cloudbuild.yaml",
-			expectErr:      true,
-		},
-		{
-			name:           "valid cloudbuild, pass",
-			cloudbuildFile: "testdata/test-cloudbuild.yaml",
-			expectErr:      false,
-			expectCloudbuild: &Cloudbuild{
-				Steps: []Step{
-					{
-						Name: "gcr.io/cloud-builders/docker",
-						Args: []string{
-							"build",
-							"--tag=$_REPOSITORY/test:$_TAG",
-							"--tag=$_REPOSITORY/test:latest",
-							".",
-						},
-					},
-				},
-				Substitutions: map[string]string{"_REPOSITORY": "kyma.dev"},
-				Images:        []string{"$_REPOSITORY/test:$_TAG", "$_REPOSITORY/test:latest"},
-			},
-		},
-	}
-	for _, c := range tc {
-		t.Run(c.name, func(t *testing.T) {
-			cb, err := getCloudbuild(c.cloudbuildFile)
-			if err != nil && !c.expectErr {
-				t.Errorf("caught error, but didn't want to: %v", err)
-			}
-			if err == nil && c.expectErr {
-				t.Errorf("didn't catch error, but wanted to")
-			}
-			if !reflect.DeepEqual(cb, c.expectCloudbuild) {
-				t.Errorf("%v != %v", cb, c.expectCloudbuild)
 			}
 		})
 	}

@@ -9,7 +9,17 @@ steps:
       - CGO_ENABLED=0
       - GOOS=linux
       - GOARCH=amd64
-  - id: build-image
+  - name: golang:$_GO_VERSION
+    args:
+      - go
+      - build
+      - -o=development/gcbuild/tools/gcbuild-lint/gcbuild-lint
+      - ./development/gcbuild/tools/gcbuild-lint
+    env:
+      - CGO_ENABLED=0
+      - GOOS=linux
+      - GOARCH=amd64
+  - id: build-gcbuild
     name: 'gcr.io/cloud-builders/docker'
     args:
       - build
@@ -17,9 +27,19 @@ steps:
       - --tag=$_REPOSITORY/gcbuild:latest
       - .
     dir: development/gcbuild
+  - id: build-gcbuild-lint
+    name: 'gcr.io/cloud-builders/docker'
+    args:
+      - build
+      - --tag=$_REPOSITORY/gcbuild-lint:$_TAG
+      - --tag=$_REPOSITORY/gcbuild-lint:latest
+      - .
+    dir: development/gcbuild/tools/gcbuild-lint
 substitutions:
   _REPOSITORY: eu.gcr.io/sap-kyma-neighbors-dev
   _GO_VERSION: '1.18'
 images:
   - $_REPOSITORY/gcbuild:$_TAG
   - $_REPOSITORY/gcbuild:latest
+  - $_REPOSITORY/gcbuild-lint:$_TAG
+  - $_REPOSITORY/gcbuild-lint:latest

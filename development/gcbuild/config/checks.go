@@ -1,9 +1,8 @@
-package main
+package config
 
 import (
 	"fmt"
 	errutil "k8s.io/apimachinery/pkg/util/errors"
-	"os"
 	"regexp"
 	"strings"
 )
@@ -20,10 +19,11 @@ var defaultErrs = []string{
 	ErrMissingVariants,
 }
 
-func validateConfig(o options, c *Cloudbuild) error {
-
-	// TODO (Ressetkk): allow defining which errors to check
+func ValidateConfig(enabledErrs []string, c *CloudBuild, vs Variants) error {
 	checks := defaultErrs
+	if len(enabledErrs) > 0 {
+		checks = enabledErrs
+	}
 
 	var errs []error
 	//
@@ -36,7 +36,7 @@ func validateConfig(o options, c *Cloudbuild) error {
 		case ErrMissingRepository:
 			errs = append(errs, validateRepository(c))
 		case ErrMissingVariants:
-			errs = append(errs, validateVariants(o, c))
+			errs = append(errs, validateVariants(c, vs))
 		}
 	}
 
@@ -47,7 +47,7 @@ func validateConfig(o options, c *Cloudbuild) error {
 // The tool requires that cloudbuild.yaml uses _TAG substitution when tagging image.
 // This check ensures that _TAG is present in at least one of the steps as argument
 // and in the 'images' field.
-func validateTag(c *Cloudbuild) error {
+func validateTag(c *CloudBuild) error {
 	var presentInArgs bool
 	r := regexp.MustCompile(`(\$_TAG)|(\${_TAG})`)
 	for _, step := range c.Steps {
@@ -71,7 +71,7 @@ func validateTag(c *Cloudbuild) error {
 		errs = append(errs, fmt.Errorf("steps: missing _TAG substitution in 'args', define at least one step that build image with tag as _TAG substitution"))
 	}
 	if !presentInImages {
-		errs = append(errs, fmt.Errorf("images: missing _TAG substitution in 'images', add image with tag as _TAG to the 'images' feld"))
+		errs = append(errs, fmt.Errorf("images: missing _TAG substitution in 'images', add image with tag as _TAG to the 'images' field"))
 	}
 	return errutil.NewAggregate(errs)
 }
@@ -79,12 +79,12 @@ func validateTag(c *Cloudbuild) error {
 // validateRepository checks, if the _REPOSITORY substitution is present in the 'substitutions' field
 // in the parsed cloudbuild.yaml file.
 // The tool requires this substitution as a default value defined in the config.
-func validateRepository(c *Cloudbuild) error {
+func validateRepository(c *CloudBuild) error {
 	if len(c.Substitutions) == 0 {
-		return fmt.Errorf("'substitutions' field is empty")
+		return fmt.Errorf("'substitutions' field in cloudbuild.yaml file is empty, in order for gcbuild to run properly you must define this field with at least _REPOSITORY variable")
 	}
 	if _, ok := c.Substitutions["_REPOSITORY"]; !ok {
-		return fmt.Errorf("missing _REPOSITORY in 'substitutions' field")
+		return fmt.Errorf("missing _REPOSITORY in 'substitutions' field in cloudbuild.yaml file, add this variable to the 'substitutions' field with default push repository")
 	}
 	return nil
 }
@@ -93,14 +93,9 @@ func validateRepository(c *Cloudbuild) error {
 // if the 'variants.yaml' file is present
 // If the 'variants.yaml' file is present, but no $_VARIANT substitution is available,
 // then variants will be pushed under the same tag, overriding the image.
-func validateVariants(o options, c *Cloudbuild) error {
+func validateVariants(c *CloudBuild, vs Variants) error {
 	var hasVariant, fileNotExists bool
-	if _, err := os.Stat(o.variantsFile); err != nil {
-		if !os.IsNotExist(err) {
-			return fmt.Errorf("unknown error during stat variants.yaml: %w", err)
-		}
-		fileNotExists = true
-	}
+	fileNotExists = vs == nil
 	for _, i := range c.Images {
 		if strings.Contains(i, "$_VARIANT") || strings.Contains(i, "${_VARIANT}") {
 			hasVariant = true

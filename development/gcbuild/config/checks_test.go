@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"testing"
@@ -8,12 +8,12 @@ func Test_validateTag(t *testing.T) {
 	tc := []struct {
 		name      string
 		expectErr bool
-		cfg       *Cloudbuild
+		cfg       *CloudBuild
 	}{
 		{
 			name:      "config with $_TAG substitutions in args and images",
 			expectErr: false,
-			cfg: &Cloudbuild{
+			cfg: &CloudBuild{
 				Steps: []Step{
 					{
 						Args: []string{
@@ -33,7 +33,7 @@ func Test_validateTag(t *testing.T) {
 		{
 			name:      "config with ${_TAG} substitutions in args and images",
 			expectErr: false,
-			cfg: &Cloudbuild{
+			cfg: &CloudBuild{
 				Steps: []Step{
 					{
 						Args: []string{
@@ -53,7 +53,7 @@ func Test_validateTag(t *testing.T) {
 		{
 			name:      "config without substitutions in args",
 			expectErr: true,
-			cfg: &Cloudbuild{
+			cfg: &CloudBuild{
 				Steps: []Step{
 					{
 						Args: []string{
@@ -73,7 +73,7 @@ func Test_validateTag(t *testing.T) {
 		{
 			name:      "config without substitutions in images",
 			expectErr: true,
-			cfg: &Cloudbuild{
+			cfg: &CloudBuild{
 				Steps: []Step{
 					{
 						Args: []string{
@@ -92,7 +92,7 @@ func Test_validateTag(t *testing.T) {
 		{
 			name:      "config without substitutions in args and images",
 			expectErr: true,
-			cfg: &Cloudbuild{
+			cfg: &CloudBuild{
 				Steps: []Step{
 					{
 						Args: []string{
@@ -111,7 +111,7 @@ func Test_validateTag(t *testing.T) {
 		{
 			name:      "config with $_TAG substitutions in multiple steps",
 			expectErr: false,
-			cfg: &Cloudbuild{
+			cfg: &CloudBuild{
 				Steps: []Step{
 					{
 						Args: []string{
@@ -152,27 +152,27 @@ func Test_validateRepository(t *testing.T) {
 	tc := []struct {
 		name      string
 		expectErr bool
-		cfg       *Cloudbuild
+		cfg       *CloudBuild
 	}{
 		{
 			name:      "_REPOSITORY substitution is present in config",
 			expectErr: false,
-			cfg:       &Cloudbuild{Substitutions: map[string]string{"_REPOSITORY": "repo.com"}},
+			cfg:       &CloudBuild{Substitutions: map[string]string{"_REPOSITORY": "repo.com"}},
 		},
 		{
 			name:      "substitutions map is nil",
 			expectErr: true,
-			cfg:       &Cloudbuild{Substitutions: nil},
+			cfg:       &CloudBuild{Substitutions: nil},
 		},
 		{
 			name:      "substitutions map is initialized, but empty",
 			expectErr: true,
-			cfg:       &Cloudbuild{Substitutions: map[string]string{}},
+			cfg:       &CloudBuild{Substitutions: map[string]string{}},
 		},
 		{
 			name:      "substitutions map doesn't have _REPOSITORY substitution",
 			expectErr: true,
-			cfg:       &Cloudbuild{Substitutions: map[string]string{"_ASD": "123"}},
+			cfg:       &CloudBuild{Substitutions: map[string]string{"_ASD": "123"}},
 		},
 	}
 	for _, c := range tc {
@@ -191,44 +191,44 @@ func Test_validateRepository(t *testing.T) {
 func Test_checkVariants(t *testing.T) {
 	tc := []struct {
 		name      string
-		o         options
-		c         *Cloudbuild
+		c         *CloudBuild
+		vs        Variants
 		expectErr bool
 	}{
 		{
 			name:      "variants.yaml provided, variants substitution present",
 			expectErr: false,
-			o:         options{variantsFile: "testdata/variants.yaml"},
-			c:         &Cloudbuild{Images: []string{"$_REPOSITORY/name:$_TAG-$_VARIANT"}},
+			c:         &CloudBuild{Images: []string{"$_REPOSITORY/name:$_TAG-$_VARIANT"}},
+			vs:        Variants{"main": map[string]string{"KUBECTL_VERSION": "1.24.4"}, "1.23": map[string]string{"KUBECTL_VERSION": "1.23.9"}},
 		},
 		{
 			name:      "variants.yaml provided, variants substitution present",
 			expectErr: false,
-			o:         options{variantsFile: "testdata/variants.yaml"},
-			c:         &Cloudbuild{Images: []string{"$_REPOSITORY/name:$_TAG-${_VARIANT}"}},
+			c:         &CloudBuild{Images: []string{"$_REPOSITORY/name:$_TAG-${_VARIANT}"}},
+			vs:        Variants{"main": map[string]string{"KUBECTL_VERSION": "1.24.4"}, "1.23": map[string]string{"KUBECTL_VERSION": "1.23.9"}},
 		},
 		{
 			name:      "variants.yaml provided, variants substitution missing",
 			expectErr: true,
-			o:         options{variantsFile: "testdata/variants.yaml"},
-			c:         &Cloudbuild{Images: []string{"$_REPOSITORY/name:$_TAG"}},
+			c:         &CloudBuild{Images: []string{"$_REPOSITORY/name:$_TAG"}},
+			vs:        Variants{"main": map[string]string{"KUBECTL_VERSION": "1.24.4"}, "1.23": map[string]string{"KUBECTL_VERSION": "1.23.9"}},
 		},
 		{
 			name:      "variants.yaml missing, variants substitution missing",
 			expectErr: false,
-			o:         options{},
-			c:         &Cloudbuild{Images: []string{"$_REPOSITORY/name:$_TAG"}},
+			c:         &CloudBuild{Images: []string{"$_REPOSITORY/name:$_TAG"}},
+			vs:        nil,
 		},
 		{
 			name:      "variants.yaml missing, variants substitution provided",
 			expectErr: true,
-			o:         options{},
-			c:         &Cloudbuild{Images: []string{"$_REPOSITORY/name:$_TAG-$_VARIANT"}},
+			c:         &CloudBuild{Images: []string{"$_REPOSITORY/name:$_TAG-$_VARIANT"}},
+			vs:        nil,
 		},
 	}
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {
-			err := validateVariants(c.o, c.c)
+			err := validateVariants(c.c, c.vs)
 			if err != nil && !c.expectErr {
 				t.Errorf("validateVariants caught error, but didn't want to: %s", err)
 			}

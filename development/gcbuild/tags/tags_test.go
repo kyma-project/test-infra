@@ -31,9 +31,15 @@ func TestTagger_BuildTag(t *testing.T) {
 			expected: "",
 			expErr:   true,
 		},
+		{
+			name:     "tag is v20220602-test",
+			template: `v{{ .Date }}-{{ .Env "test-var" }}`,
+			expected: "v20220602-test",
+		},
 	}
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {
+			t.Setenv("test-var", "test")
 			tag := Tag{
 				ShortSHA:  "abc1234",
 				CommitSHA: "f1c7ca0b532141898f56c1843ae60ebec3a75a85",
