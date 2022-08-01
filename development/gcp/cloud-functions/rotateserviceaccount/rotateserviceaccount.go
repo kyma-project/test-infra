@@ -2,6 +2,7 @@ package rotateserviceaccount
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -63,6 +64,11 @@ func RotateServiceAccount(ctx context.Context, m pubsub.MessagePayload) error {
 	// Set trace value for log entries to identify messages from one function call.
 	logger.GenerateTraceValue(projectID, "RotateServiceAccount")
 
+	if m.Attributes["eventType"] != "SECRET_ROTATE" {
+		logger.LogInfo(fmt.Sprintf("Unsupported event type: %s, quitting\n", m.Attributes["eventType"]))
+		return nil
+	}
+
 	err = json.Unmarshal(m.Data, &secretRotateMessage)
 	if err != nil {
 		logger.LogCritical(fmt.Sprintf("failed to unmarshal message data field, error: %s", err.Error()))
@@ -70,18 +76,22 @@ func RotateServiceAccount(ctx context.Context, m pubsub.MessagePayload) error {
 
 	//get latest secret version data
 	secretlatestVersionPath := secretRotateMessage.Name + "/versions/latest"
+	logger.LogInfo(fmt.Sprintf("Retrieving %s secret", secretlatestVersionPath))
 	secretDataString, err := secretVersionManagerService.GetSecretVersionData(secretlatestVersionPath)
 	if err != nil {
 		logger.LogCritical(fmt.Sprintf("failed to retreive latest version of a secret %s, error: %s", secretRotateMessage.Name, err.Error()))
 	}
 
-	err = json.Unmarshal([]byte(secretDataString), &secretData)
+	logger.LogInfo(fmt.Sprintf("Unmarshalling %s secret", secretRotateMessage.Name))
+	decodedSecretDataString, err := base64.StdEncoding.DecodeString(secretDataString)
+	err = json.Unmarshal([]byte(decodedSecretDataString), &secretData)
 	if err != nil {
 		logger.LogCritical(fmt.Sprintf("failed to unmarshal secret JSON field, error: %s", err.Error()))
 	}
 
 	// get client_email
 	serviceAccountPath := "projects/" + secretData.ProjectID + "/serviceAccounts/" + secretData.ClientEmail
+	logger.LogInfo(fmt.Sprintf("Looking for %s service account", serviceAccountPath))
 	createKeyRequest := iam.CreateServiceAccountKeyRequest{}
 	newKeyCall := serviceAccountService.Projects.ServiceAccounts.Keys.Create(serviceAccountPath, &createKeyRequest)
 	newKey, err := newKeyCall.Do()
@@ -89,12 +99,14 @@ func RotateServiceAccount(ctx context.Context, m pubsub.MessagePayload) error {
 		logger.LogCritical(fmt.Sprintf("failed to create new key for %s Service Account, error: %s", serviceAccountPath, err.Error()))
 	}
 
-	newKeyBytes, err := newKey.MarshalJSON()
+	logger.LogInfo(fmt.Sprintf("Decoding %s new key data", serviceAccountPath))
+	newKeyBytes, err := base64.StdEncoding.DecodeString(newKey.PrivateKeyData)
 	if err != nil {
-		logger.LogCritical(fmt.Sprintf("failed to marshal new key for %s Service Account, error: %s", serviceAccountPath, err.Error()))
+		logger.LogCritical(fmt.Sprintf("failed to decode new key for %s Service Account, error: %s", serviceAccountPath, err.Error()))
 	}
 
 	// update secret
+	logger.LogInfo(fmt.Sprintf("Adding new %s secret version", secretRotateMessage.Name))
 	_, err = secretManagerService.AddSecretVersion(secretRotateMessage.Name, newKeyBytes)
 	if err != nil {
 		logger.LogCritical(fmt.Sprintf("failed to create new %s secret version, error: %s", secretRotateMessage.Name, err.Error()))
