@@ -82,11 +82,13 @@ func RotateServiceAccount(ctx context.Context, m pubsub.MessagePayload) error {
 		logger.LogCritical(fmt.Sprintf("failed to retreive latest version of a secret %s, error: %s", secretRotateMessage.Name, err.Error()))
 	}
 
-	logger.LogInfo(fmt.Sprintf("Unmarshalling %s secret", secretRotateMessage.Name))
+	logger.LogInfo(fmt.Sprintf("Trying to unmarshal %s secret", secretRotateMessage.Name))
 	decodedSecretDataString, err := base64.StdEncoding.DecodeString(secretDataString)
 	err = json.Unmarshal([]byte(decodedSecretDataString), &secretData)
 	if err != nil {
-		logger.LogCritical(fmt.Sprintf("failed to unmarshal secret JSON field, error: %s", err.Error()))
+		logger.LogError(fmt.Sprintf("failed to unmarshal secret JSON field, error: %s", err.Error()))
+		logger.LogInfo("The secret might not store a Service Account credentials")
+		return nil
 	}
 
 	// get client_email
