@@ -1,6 +1,6 @@
 # gcbuild
 
-This tool servers as an intelligent wrapper for `gcloud builds submit`. It runs remote build jobs on Google infrastructure with setting automated substitutions, that developers can use. It's built to reduce the complexity of building the Docker images.
+This tool serves as an intelligent wrapper for `gcloud builds submit`. It runs remote build jobs on Google infrastructure with setting automated substitutions, that developers can use. It's built to reduce the complexity of building the Docker images.
 
 Key features:
 * Automatically control values and presence of required substitutions `$_TAG`, `$_REPOSITORY`, `$_VARIANT`
@@ -29,7 +29,7 @@ tagTemplate: v{{ .Date }}-{{ .ShortSHA }}
 
 The tool also includes the functionality of re-using the same `cloudbuild.yaml` pipeline to concurrently build different variants of the same image.
 `variants.yaml` is the file that contains pre-defined set of the same substitutions with different values.
-It's very handy when there is a requirement to build an image with different versions of the same binary, eg. for different versions of Kubernetes.
+It's very handy when there is a requirement to build an image with different versions of the same binary, for example, for different versions of Kubernetes.
 
 The file has a simple structure:
 ```yaml
@@ -41,8 +41,8 @@ The file has a simple structure:
 
 To use this feature, make sure that:
 * You have the `variants.yaml` file in the **same directory** as the `cloudbuild.yaml` file.
-* The substitutions you replace with the variants are defined in the `cloudbuild.yaml` file and in Dockerfile
-* You have the `$_VARIANT` substitution defined and used in your image tag, for example, `image:$_TAG-$_VARIANT`
+* The substitutions you replace with the variants are defined in the `cloudbuild.yaml` file and in Dockerfile.
+* You have the `$_VARIANT` substitution defined and used in your image tag, for example, `image:$_TAG-$_VARIANT`.
 
 ## Linting configuration files
 
