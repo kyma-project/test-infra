@@ -18,7 +18,6 @@ var (
 	secretManagerService        *secretmanager.Service
 	secretVersionManagerService *secretversionsmanager.Service
 	serviceAccountService       *iam.Service
-	credentialsFilePath         = "/etc/gcpLoggingServiceAccountKey/key"
 )
 
 type ServiceAccountJSON struct {
@@ -40,15 +39,15 @@ func init() {
 
 	projectID = os.Getenv("GCP_PROJECT_ID")
 
-	secretManagerService, err = secretmanager.NewService(ctx, credentialsFilePath)
+	secretManagerService, err = secretmanager.NewService(ctx)
 	if err != nil {
-		panic(fmt.Sprintf("failed creating firestore client, error: %s", err.Error()))
+		panic(fmt.Sprintf("failed creating Secret Manager client, error: %s", err.Error()))
 	}
 	secretVersionManagerService = secretversionsmanager.NewService(secretManagerService)
 
 	serviceAccountService, err = iam.NewService(ctx)
 	if err != nil {
-		panic(fmt.Sprintf("failed creating firestore client, error: %s", err.Error()))
+		panic(fmt.Sprintf("failed creating IAM client, error: %s", err.Error()))
 	}
 }
 

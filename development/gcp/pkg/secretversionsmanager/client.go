@@ -20,5 +20,8 @@ func (svm *Service) DisableSecretVersion(version *gcpsecretmanager.SecretVersion
 func (svm *Service) GetSecretVersionData(secretPath string) (string, error) {
 	secretVersionCall := svm.Access(secretPath)
 	secretVersion, err := secretVersionCall.Do()
+	if err != nil {
+		return "", err
+	}
 	return secretVersion.Payload.Data, err
 }

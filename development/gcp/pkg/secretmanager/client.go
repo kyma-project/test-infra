@@ -9,8 +9,8 @@ import (
 	gcpsecretmanager "google.golang.org/api/secretmanager/v1"
 )
 
-func NewService(ctx context.Context, serviceAccountGCP string) (*Service, error) {
-	secretManagerClient, err := gcpsecretmanager.NewService(ctx, option.WithCredentialsFile(serviceAccountGCP))
+func NewService(ctx context.Context, options ...option.ClientOption) (*Service, error) {
+	secretManagerClient, err := gcpsecretmanager.NewService(ctx, options...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create google Secret Manager client, got error: %w", err)
 	}
