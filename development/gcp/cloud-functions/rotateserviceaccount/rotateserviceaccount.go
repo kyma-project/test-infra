@@ -21,6 +21,7 @@ var (
 	serviceAccountService       *iam.Service
 )
 
+// ServiceAccountJSON stores Service Account athentication data
 type ServiceAccountJSON struct {
 	Type             string `json:"type"`
 	ProjectID        string `json:"project_id"`
@@ -52,6 +53,7 @@ func init() {
 	}
 }
 
+// RotateServiceAccount adds new secret version in Secret Manager on pubsub rotate message
 func RotateServiceAccount(ctx context.Context, m pubsub.MessagePayload) error {
 	var err error
 	var secretRotateMessage pubsub.SecretRotateMessage
@@ -69,6 +71,11 @@ func RotateServiceAccount(ctx context.Context, m pubsub.MessagePayload) error {
 		return nil
 	}
 
+	if secretRotateMessage.Labels["type"] != "service-account" {
+		logger.LogInfo(fmt.Sprintf("Unsupported secret type: %s, quitting\n", secretRotateMessage.Labels["type"]))
+		return nil
+	}
+
 	err = json.Unmarshal(m.Data, &secretRotateMessage)
 	if err != nil {
 		logger.LogCritical(fmt.Sprintf("failed to unmarshal message data field, error: %s", err.Error()))
@@ -79,16 +86,17 @@ func RotateServiceAccount(ctx context.Context, m pubsub.MessagePayload) error {
 	logger.LogInfo(fmt.Sprintf("Retrieving %s secret", secretlatestVersionPath))
 	secretDataString, err := secretVersionManagerService.GetSecretVersionData(secretlatestVersionPath)
 	if err != nil {
-		logger.LogCritical(fmt.Sprintf("failed to retreive latest version of a secret %s, error: %s", secretRotateMessage.Name, err.Error()))
+		logger.LogCritical(fmt.Sprintf("failed to retrieve latest version of a secret %s, error: %s", secretRotateMessage.Name, err.Error()))
 	}
 
 	logger.LogInfo(fmt.Sprintf("Trying to unmarshal %s secret", secretRotateMessage.Name))
 	decodedSecretDataString, err := base64.StdEncoding.DecodeString(secretDataString)
+	if err != nil {
+		logger.LogCritical(fmt.Sprintf("Could not base64 decode %s secret", secretRotateMessage.Name))
+	}
 	err = json.Unmarshal([]byte(decodedSecretDataString), &secretData)
 	if err != nil {
-		logger.LogError(fmt.Sprintf("failed to unmarshal secret JSON field, error: %s", err.Error()))
-		logger.LogInfo("The secret might not store a Service Account credentials")
-		return nil
+		logger.LogCritical(fmt.Sprintf("failed to unmarshal secret JSON field, error: %s", err.Error()))
 	}
 
 	// get client_email
