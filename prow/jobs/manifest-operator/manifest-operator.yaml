@@ -2,33 +2,38 @@
 
 
 presubmits: # runs on PRs
-  kyma-project/test-infra:
-    - name: pre-main-test-infra-image-syncer-validate
+  kyma-project/manifest-operator:
+    - name: pre-main-manifest-operator-controller-lint
       annotations:
+        description: "executes the 'make lint' command in the manifest-operator 'operator' directory before any pull request."
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-test-infra-image-syncer-validate"
+        prow.k8s.io/pubsub.runID: "pre-main-manifest-operator-controller-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(go.mod|go.sum|development/image-syncer)'
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-kyma: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
+      reporter_config:
+        slack:
+          channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220725-7756933d"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220722-426fa04d"
             securityContext:
-              privileged: false
+              privileged: true
             command:
-              - "make"
+              - "bash"
             args:
-              - "-C"
-              - "development/image-syncer"
-              - "validate"
+              - "-c"
+              - "cd operator && golangci-lint run"
             resources:
               requests:
                 memory: 3Gi
@@ -40,25 +45,27 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-test-infra-image-syncer-dry-run
+    - name: pre-main-manifest-operator-controller-tests
       annotations:
+        description: "executes the 'make test' command in the manifest-operator 'operator' directory before any pull request."
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-test-infra-image-syncer-dry-run"
+        prow.k8s.io/pubsub.runID: "pre-main-manifest-operator-controller-tests"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
-        preset-docker-push-repository: "true"
-        preset-kyma-kms-sign-key: "true"
+        preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^(development/image-syncer/external-images.yaml)'
+      run_if_changed: '^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
+      reporter_config:
+        slack:
+          channel: jellyfish-notifications
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220725-7756933d"
@@ -68,7 +75,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "source prow/scripts/lib/docker.sh && docker::start && make -C development/image-syncer dry-run"
+              - "cd operator && make test"
             resources:
               requests:
                 memory: 3Gi
@@ -81,28 +88,25 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
   
-postsubmits: # runs on main
-  kyma-project/test-infra:
-    - name: post-main-test-infra-image-syncer-run
+periodics: # runs on schedule
+    - name: periodic-manifest-operator-controller-tests
       annotations:
-        pipeline.trigger: "pr-merge"
-        testgrid-dashboards: "kyma_experimental"
+        description: "regularly executes the 'make test' command in the manifest-operator 'operator' directory."
+        pipeline.trigger: "periodic"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-test-infra-image-syncer-run"
+        prow.k8s.io/pubsub.runID: "periodic-manifest-operator-controller-tests"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
-        preset-docker-push-repository: "true"
-        preset-kyma-kms-sign-key: "true"
+        preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^(development/image-syncer/external-images.yaml)'
+      cron: "0 */6 * * 1-5"
       skip_report: false
       decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
+      cluster: untrusted-workload
+      reporter_config:
+        slack:
+          channel: jellyfish-notifications
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220725-7756933d"
@@ -112,7 +116,7 @@ postsubmits: # runs on main
               - "bash"
             args:
               - "-c"
-              - "source prow/scripts/lib/docker.sh && docker::start && make -C development/image-syncer run"
+              - "cd operator && make test"
             resources:
               requests:
                 memory: 3Gi

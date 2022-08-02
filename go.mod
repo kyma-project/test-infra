@@ -21,8 +21,8 @@ require (
 	cloud.google.com/go/firestore v1.6.1
 	cloud.google.com/go/functions v1.5.0
 	cloud.google.com/go/logging v1.5.0
-	cloud.google.com/go/pubsub v1.23.1
-	cloud.google.com/go/storage v1.23.0
+	cloud.google.com/go/pubsub v1.24.0
+	cloud.google.com/go/storage v1.24.0
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
@@ -45,7 +45,7 @@ require (
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/jinzhu/copier v0.3.5
 	github.com/mandelsoft/vfs v0.0.0-20210530103237-5249dc39ce91
-	github.com/onsi/gomega v1.19.0
+	github.com/onsi/gomega v1.20.0
 	github.com/pkg/errors v0.9.1
 	github.com/satori/go.uuid v1.2.0
 	github.com/shurcooL/githubv4 v0.0.0-20211117020012-5800b9de5b8b
@@ -62,7 +62,7 @@ require (
 	go.uber.org/zap v1.21.0
 	golang.org/x/net v0.0.0-20220624214902-1bab6f366d9e
 	golang.org/x/oauth2 v0.0.0-20220622183110-fd043fe589d2
-	google.golang.org/api v0.88.0
+	google.golang.org/api v0.89.0
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.22.2

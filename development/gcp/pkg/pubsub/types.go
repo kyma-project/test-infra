@@ -34,7 +34,7 @@ type Message struct {
 type MessagePayload struct {
 	Attributes  map[string]string `json:"attributes"`
 	Data        []byte            `json:"data"` // This property is base64 encoded
-	MessageId   string            `json:"messageId"`
+	MessageID   string            `json:"messageId"`
 	PublishTime string            `json:"publishTime"`
 }
 
@@ -61,7 +61,7 @@ type FailingTestMessage struct {
 	GithubIssueNumber     *int64   `json:"githubIssueNumber,omitempty"`
 	GithubIssueRepo       *string  `json:"githubIssueRepo,omitempty"`
 	GithubIssueOrg        *string  `json:"githubIssueOrg,omitempty"`
-	GithubIssueUrl        *string  `json:"githubIssueUrl,omitempty"`
+	GithubIssueURL        *string  `json:"githubIssueUrl,omitempty"`
 	SlackThreadID         *string  `json:"slackThreadId,omitempty"`
 	GithubCommitersLogins []string `json:"githubCommitersLogins,omitempty"`
 	CommitersSlackLogins  []string `json:"slackCommitersLogins,omitempty"`
