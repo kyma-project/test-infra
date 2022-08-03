@@ -75,3 +75,9 @@ func (e LogEntry) LogInfo(message string) {
 	e.Message = message
 	log.Println(e)
 }
+
+func (e LogEntry) LogDebug(message string) {
+	e.Severity = "DEBUG"
+	e.Message = message
+	log.Println(e)
+}

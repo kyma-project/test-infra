@@ -11,4 +11,7 @@ replace (
 
 require github.com/kyma-project/test-infra v0.0.0-20220715122928-d02a288f4078
 
-require google.golang.org/api v0.89.0
+require (
+	cloud.google.com/go/compute v1.7.0
+	google.golang.org/api v0.89.0
+)

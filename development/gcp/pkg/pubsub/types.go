@@ -68,8 +68,8 @@ type FailingTestMessage struct {
 }
 
 type Rotation struct {
-	nextRotationTime string `yaml:"nextRotationTime"`
-	rotationPeriod   string `yaml:"rotationPeriod"`
+	NextRotationTime string `yaml:"nextRotationTime"`
+	RotationPeriod   string `yaml:"rotationPeriod"`
 }
 
 // SecretRotateMessage is the Data field of pubsub message payload, published by secret rotation automation.

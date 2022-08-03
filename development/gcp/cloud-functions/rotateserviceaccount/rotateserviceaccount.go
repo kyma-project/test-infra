@@ -5,8 +5,8 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"os"
 
+	"cloud.google.com/go/compute/metadata"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/secretmanager"
@@ -39,7 +39,10 @@ func init() {
 	var err error
 	ctx := context.Background()
 
-	projectID = os.Getenv("GCP_PROJECT_ID")
+	projectID, err = metadata.ProjectID()
+	if err != nil {
+		panic(fmt.Sprintf("failed to retrieve GCP Project ID, error: %s", err.Error()))
+	}
 
 	secretManagerService, err = secretmanager.NewService(ctx)
 	if err != nil {
@@ -67,12 +70,12 @@ func RotateServiceAccount(ctx context.Context, m pubsub.MessagePayload) error {
 	logger.GenerateTraceValue(projectID, "RotateServiceAccount")
 
 	if m.Attributes["eventType"] != "SECRET_ROTATE" {
-		logger.LogInfo(fmt.Sprintf("Unsupported event type: %s, quitting\n", m.Attributes["eventType"]))
+		logger.LogDebug(fmt.Sprintf("Unsupported event type: %s, quitting\n", m.Attributes["eventType"]))
 		return nil
 	}
 
 	if secretRotateMessage.Labels["type"] != "service-account" {
-		logger.LogInfo(fmt.Sprintf("Unsupported secret type: %s, quitting\n", secretRotateMessage.Labels["type"]))
+		logger.LogDebug(fmt.Sprintf("Unsupported secret type: %s, quitting\n", secretRotateMessage.Labels["type"]))
 		return nil
 	}
 
@@ -83,7 +86,7 @@ func RotateServiceAccount(ctx context.Context, m pubsub.MessagePayload) error {
 
 	//get latest secret version data
 	secretlatestVersionPath := secretRotateMessage.Name + "/versions/latest"
-	logger.LogInfo(fmt.Sprintf("Retrieving %s secret", secretlatestVersionPath))
+	logger.LogInfo("Retrieving secret: "+ secretlatestVersionPath)
 	secretDataString, err := secretVersionManagerService.GetSecretVersionData(secretlatestVersionPath)
 	if err != nil {
 		logger.LogCritical(fmt.Sprintf("failed to retrieve latest version of a secret %s, error: %s", secretRotateMessage.Name, err.Error()))
