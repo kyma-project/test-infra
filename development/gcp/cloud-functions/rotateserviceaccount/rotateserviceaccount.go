@@ -70,12 +70,12 @@ func RotateServiceAccount(ctx context.Context, m pubsub.MessagePayload) error {
 	logger.GenerateTraceValue(projectID, "RotateServiceAccount")
 
 	if m.Attributes["eventType"] != "SECRET_ROTATE" {
-		logger.LogDebug(fmt.Sprintf("Unsupported event type: %s, quitting\n", m.Attributes["eventType"]))
+		logger.LogDebug(fmt.Sprintf("Unsupported event type: %s, quitting", m.Attributes["eventType"]))
 		return nil
 	}
 
 	if secretRotateMessage.Labels["type"] != "service-account" {
-		logger.LogDebug(fmt.Sprintf("Unsupported secret type: %s, quitting\n", secretRotateMessage.Labels["type"]))
+		logger.LogDebug(fmt.Sprintf("Unsupported secret type: %s, quitting", secretRotateMessage.Labels["type"]))
 		return nil
 	}
 
