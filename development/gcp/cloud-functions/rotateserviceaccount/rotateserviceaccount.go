@@ -81,25 +81,25 @@ func RotateServiceAccount(ctx context.Context, m pubsub.MessagePayload) error {
 
 	err = json.Unmarshal(m.Data, &secretRotateMessage)
 	if err != nil {
-		logger.LogCritical(fmt.Sprintf("failed to unmarshal message data field, error: %s", err.Error()))
+		logger.LogCritical("failed to unmarshal message data field, error: " + err.Error())
 	}
 
 	//get latest secret version data
 	secretlatestVersionPath := secretRotateMessage.Name + "/versions/latest"
-	logger.LogInfo("Retrieving secret: "+ secretlatestVersionPath)
+	logger.LogInfo("Retrieving secret: " + secretlatestVersionPath)
 	secretDataString, err := secretVersionManagerService.GetSecretVersionData(secretlatestVersionPath)
 	if err != nil {
 		logger.LogCritical(fmt.Sprintf("failed to retrieve latest version of a secret %s, error: %s", secretRotateMessage.Name, err.Error()))
 	}
 
-	logger.LogInfo(fmt.Sprintf("Trying to unmarshal %s secret", secretRotateMessage.Name))
+	logger.LogInfo("Trying to unmarshal secret: " + secretRotateMessage.Name)
 	decodedSecretDataString, err := base64.StdEncoding.DecodeString(secretDataString)
 	if err != nil {
-		logger.LogCritical(fmt.Sprintf("Could not base64 decode %s secret", secretRotateMessage.Name))
+		logger.LogCritical("Could not base64 decode secret " + secretRotateMessage.Name)
 	}
 	err = json.Unmarshal([]byte(decodedSecretDataString), &secretData)
 	if err != nil {
-		logger.LogCritical(fmt.Sprintf("failed to unmarshal secret JSON field, error: %s", err.Error()))
+		logger.LogCritical("failed to unmarshal secret JSON field, error: " + err.Error())
 	}
 
 	// get client_email
@@ -112,14 +112,14 @@ func RotateServiceAccount(ctx context.Context, m pubsub.MessagePayload) error {
 		logger.LogCritical(fmt.Sprintf("failed to create new key for %s Service Account, error: %s", serviceAccountPath, err.Error()))
 	}
 
-	logger.LogInfo(fmt.Sprintf("Decoding %s new key data", serviceAccountPath))
+	logger.LogInfo("Decoding new key data for " + serviceAccountPath)
 	newKeyBytes, err := base64.StdEncoding.DecodeString(newKey.PrivateKeyData)
 	if err != nil {
 		logger.LogCritical(fmt.Sprintf("failed to decode new key for %s Service Account, error: %s", serviceAccountPath, err.Error()))
 	}
 
 	// update secret
-	logger.LogInfo(fmt.Sprintf("Adding new %s secret version", secretRotateMessage.Name))
+	logger.LogInfo("Adding new secret version to secret " + secretRotateMessage.Name)
 	_, err = secretManagerService.AddSecretVersion(secretRotateMessage.Name, newKeyBytes)
 	if err != nil {
 		logger.LogCritical(fmt.Sprintf("failed to create new %s secret version, error: %s", secretRotateMessage.Name, err.Error()))
