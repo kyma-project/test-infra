@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "kyma-integration-k3d"
+  - pjName: "kyma-gke-nightly-fast-integration"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 15006
