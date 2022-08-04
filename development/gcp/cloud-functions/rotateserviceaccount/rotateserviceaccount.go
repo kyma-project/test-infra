@@ -9,15 +9,13 @@ import (
 	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/secretmanager"
-	"github.com/kyma-project/test-infra/development/gcp/pkg/secretversionsmanager"
 	"google.golang.org/api/iam/v1"
 )
 
 var (
-	projectID                   string
-	secretManagerService        *secretmanager.Service
-	secretVersionManagerService *secretversionsmanager.Service
-	serviceAccountService       *iam.Service
+	projectID             string
+	secretManagerService  *secretmanager.Service
+	serviceAccountService *iam.Service
 )
 
 // ServiceAccountJSON stores Service Account athentication data
@@ -47,7 +45,6 @@ func init() {
 	if err != nil {
 		panic("failed creating Secret Manager client, error: " + err.Error())
 	}
-	secretVersionManagerService = secretversionsmanager.NewService(secretManagerService)
 
 	serviceAccountService, err = iam.NewService(ctx)
 	if err != nil {
@@ -86,7 +83,7 @@ func RotateServiceAccount(ctx context.Context, m pubsub.MessagePayload) error {
 	//get latest secret version data
 	secretlatestVersionPath := secretRotateMessage.Name + "/versions/latest"
 	logger.LogInfo("Retrieving secret: " + secretlatestVersionPath)
-	secretDataString, err := secretVersionManagerService.GetSecretVersionData(secretlatestVersionPath)
+	secretDataString, err := secretManagerService.GetSecretVersionData(secretlatestVersionPath)
 	if err != nil {
 		logger.LogCritical("failed to retrieve latest version of a secret " + secretRotateMessage.Name + ", error: " + err.Error())
 	}

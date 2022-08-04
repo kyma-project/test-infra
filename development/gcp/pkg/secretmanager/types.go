@@ -5,5 +5,6 @@ import (
 )
 
 type Service struct {
-	*secretmanager.Service
+	Service        *secretmanager.Service
+	VersionService *secretmanager.ProjectsSecretsVersionsService
 }
