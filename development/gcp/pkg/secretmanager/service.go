@@ -9,6 +9,11 @@ import (
 	gcpsecretmanager "google.golang.org/api/secretmanager/v1"
 )
 
+type Service struct {
+	Service        *gcpsecretmanager.Service
+	VersionService *gcpsecretmanager.ProjectsSecretsVersionsService
+}
+
 // NewService creates new Service struct
 func NewService(ctx context.Context, options ...option.ClientOption) (*Service, error) {
 	secretManagerClient, err := gcpsecretmanager.NewService(ctx, options...)
