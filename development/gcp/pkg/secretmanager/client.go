@@ -37,7 +37,7 @@ func (sm *Service) ListSecretVersions(secretPath string) (*gcpsecretmanager.List
 	return secretVersions, err
 }
 
-// GetSecretVersionData retrieves one version of a secret
+// GetSecretVersion retrieves one version of a secret
 // expects secretPath in "projects/*/secrets/*/versions/*" format
 func (sm *Service) GetSecretVersion(secretPath string) (*gcpsecretmanager.SecretVersion, error) {
 	secretVersionsCall := sm.Service.Projects.Secrets.Versions.Get(secretPath)
