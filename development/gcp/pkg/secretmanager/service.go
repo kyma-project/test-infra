@@ -29,33 +29,25 @@ func NewService(ctx context.Context, options ...option.ClientOption) (*Service, 
 // expects secretPath in "projects/*/secrets/*" format
 func (sm *Service) AddSecretVersion(secretPath string, secretData []byte) (*gcpsecretmanager.SecretVersion, error) {
 	newVersionRequest := gcpsecretmanager.AddSecretVersionRequest{Payload: &gcpsecretmanager.SecretPayload{Data: base64.StdEncoding.EncodeToString(secretData)}}
-	newVersionCall := sm.Service.Projects.Secrets.AddVersion(secretPath, &newVersionRequest)
-	secretVersion, err := newVersionCall.Do()
-	return secretVersion, err
+	return sm.Service.Projects.Secrets.AddVersion(secretPath, &newVersionRequest).Do()
 }
 
 // ListSecretVersions lists all versions of a secret
 // expects secretPath in "projects/*/secrets/*" format
 func (sm *Service) ListSecretVersions(secretPath string) (*gcpsecretmanager.ListSecretVersionsResponse, error) {
-	secretVersionsCall := sm.Service.Projects.Secrets.Versions.List(secretPath)
-	secretVersions, err := secretVersionsCall.Do()
-	return secretVersions, err
+	return sm.Service.Projects.Secrets.Versions.List(secretPath).Do()
 }
 
 // GetSecretVersion retrieves one version of a secret
 // expects secretPath in "projects/*/secrets/*/versions/*" format
 func (sm *Service) GetSecretVersion(secretPath string) (*gcpsecretmanager.SecretVersion, error) {
-	secretVersionsCall := sm.Service.Projects.Secrets.Versions.Get(secretPath)
-	secretVersion, err := secretVersionsCall.Do()
-	return secretVersion, err
+	return sm.Service.Projects.Secrets.Versions.Get(secretPath).Do()
 }
 
 // DisableSecretVersion disables a version of a secret
 func (sm *Service) DisableSecretVersion(version *gcpsecretmanager.SecretVersion) (*gcpsecretmanager.SecretVersion, error) {
 	disableRequest := gcpsecretmanager.DisableSecretVersionRequest{}
-	disableCall := sm.VersionService.Disable(version.Name, &disableRequest)
-	returnedSecretVersion, err := disableCall.Do()
-	return returnedSecretVersion, err
+	return sm.VersionService.Disable(version.Name, &disableRequest).Do()
 }
 
 // GetSecretVersionData retrieves payload of a secret version
