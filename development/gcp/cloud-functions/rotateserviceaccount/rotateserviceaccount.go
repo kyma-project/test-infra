@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 
 	"cloud.google.com/go/compute/metadata"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
@@ -41,18 +40,18 @@ func init() {
 
 	projectID, err = metadata.ProjectID()
 	if err != nil {
-		panic(fmt.Sprintf("failed to retrieve GCP Project ID, error: %s", err.Error()))
+		panic("failed to retrieve GCP Project ID, error: " + err.Error())
 	}
 
 	secretManagerService, err = secretmanager.NewService(ctx)
 	if err != nil {
-		panic(fmt.Sprintf("failed creating Secret Manager client, error: %s", err.Error()))
+		panic("failed creating Secret Manager client, error: " + err.Error())
 	}
 	secretVersionManagerService = secretversionsmanager.NewService(secretManagerService)
 
 	serviceAccountService, err = iam.NewService(ctx)
 	if err != nil {
-		panic(fmt.Sprintf("failed creating IAM client, error: %s", err.Error()))
+		panic("failed creating IAM client, error: " + err.Error())
 	}
 }
 
@@ -70,12 +69,7 @@ func RotateServiceAccount(ctx context.Context, m pubsub.MessagePayload) error {
 	logger.GenerateTraceValue(projectID, "RotateServiceAccount")
 
 	if m.Attributes["eventType"] != "SECRET_ROTATE" {
-		logger.LogDebug(fmt.Sprintf("Unsupported event type: %s, quitting", m.Attributes["eventType"]))
-		return nil
-	}
-
-	if secretRotateMessage.Labels["type"] != "service-account" {
-		logger.LogDebug(fmt.Sprintf("Unsupported secret type: %s, quitting", secretRotateMessage.Labels["type"]))
+		logger.LogDebug("Unsupported event type: " + m.Attributes["eventType"] + ", quitting")
 		return nil
 	}
 
@@ -84,12 +78,17 @@ func RotateServiceAccount(ctx context.Context, m pubsub.MessagePayload) error {
 		logger.LogCritical("failed to unmarshal message data field, error: " + err.Error())
 	}
 
+	if secretRotateMessage.Labels["type"] != "service-account" {
+		logger.LogDebug("Unsupported secret type: " + secretRotateMessage.Labels["type"] + ", quitting")
+		return nil
+	}
+
 	//get latest secret version data
 	secretlatestVersionPath := secretRotateMessage.Name + "/versions/latest"
 	logger.LogInfo("Retrieving secret: " + secretlatestVersionPath)
 	secretDataString, err := secretVersionManagerService.GetSecretVersionData(secretlatestVersionPath)
 	if err != nil {
-		logger.LogCritical(fmt.Sprintf("failed to retrieve latest version of a secret %s, error: %s", secretRotateMessage.Name, err.Error()))
+		logger.LogCritical("failed to retrieve latest version of a secret " + secretRotateMessage.Name + ", error: " + err.Error())
 	}
 
 	logger.LogInfo("Trying to unmarshal secret: " + secretRotateMessage.Name)
@@ -104,25 +103,25 @@ func RotateServiceAccount(ctx context.Context, m pubsub.MessagePayload) error {
 
 	// get client_email
 	serviceAccountPath := "projects/" + secretData.ProjectID + "/serviceAccounts/" + secretData.ClientEmail
-	logger.LogInfo(fmt.Sprintf("Looking for %s service account", serviceAccountPath))
+	logger.LogInfo("Looking for service account" + serviceAccountPath)
 	createKeyRequest := iam.CreateServiceAccountKeyRequest{}
 	newKeyCall := serviceAccountService.Projects.ServiceAccounts.Keys.Create(serviceAccountPath, &createKeyRequest)
 	newKey, err := newKeyCall.Do()
 	if err != nil {
-		logger.LogCritical(fmt.Sprintf("failed to create new key for %s Service Account, error: %s", serviceAccountPath, err.Error()))
+		logger.LogCritical("failed to create new key for " + serviceAccountPath + " Service Account, error: " + err.Error())
 	}
 
 	logger.LogInfo("Decoding new key data for " + serviceAccountPath)
 	newKeyBytes, err := base64.StdEncoding.DecodeString(newKey.PrivateKeyData)
 	if err != nil {
-		logger.LogCritical(fmt.Sprintf("failed to decode new key for %s Service Account, error: %s", serviceAccountPath, err.Error()))
+		logger.LogCritical("failed to decode new key for " + serviceAccountPath + " Service Account, error: " + err.Error())
 	}
 
 	// update secret
 	logger.LogInfo("Adding new secret version to secret " + secretRotateMessage.Name)
 	_, err = secretManagerService.AddSecretVersion(secretRotateMessage.Name, newKeyBytes)
 	if err != nil {
-		logger.LogCritical(fmt.Sprintf("failed to create new %s secret version, error: %s", secretRotateMessage.Name, err.Error()))
+		logger.LogCritical("failed to create new " + secretRotateMessage.Name + " secret version, error: " + err.Error())
 	}
 
 	return nil
