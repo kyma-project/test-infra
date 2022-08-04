@@ -66,59 +66,59 @@ func RotateServiceAccount(ctx context.Context, m pubsub.MessagePayload) error {
 	logger.GenerateTraceValue(projectID, "RotateServiceAccount")
 
 	if m.Attributes["eventType"] != "SECRET_ROTATE" {
-		logger.LogDebug("Unsupported event type: " + m.Attributes["eventType"] + ", quitting")
+		logger.LogDebug("Unsupported event type: %s, quitting", m.Attributes["eventType"])
 		return nil
 	}
 
 	err = json.Unmarshal(m.Data, &secretRotateMessage)
 	if err != nil {
-		logger.LogCritical("failed to unmarshal message data field, error: " + err.Error())
+		logger.LogCritical("failed to unmarshal message data field, error: %s", err.Error())
 	}
 
 	if secretRotateMessage.Labels["type"] != "service-account" {
-		logger.LogDebug("Unsupported secret type: " + secretRotateMessage.Labels["type"] + ", quitting")
+		logger.LogDebug("Unsupported secret type: %s, quitting", secretRotateMessage.Labels["type"])
 		return nil
 	}
 
 	//get latest secret version data
 	secretlatestVersionPath := secretRotateMessage.Name + "/versions/latest"
-	logger.LogInfo("Retrieving secret: " + secretlatestVersionPath)
+	logger.LogInfo("Retrieving secret: %s", secretlatestVersionPath)
 	secretDataString, err := secretManagerService.GetSecretVersionData(secretlatestVersionPath)
 	if err != nil {
-		logger.LogCritical("failed to retrieve latest version of a secret " + secretRotateMessage.Name + ", error: " + err.Error())
+		logger.LogCritical("failed to retrieve latest version of a secret %s, error: %s", secretRotateMessage.Name, err.Error())
 	}
 
-	logger.LogInfo("Trying to unmarshal secret: " + secretRotateMessage.Name)
+	logger.LogInfo("Trying to unmarshal secret: %s", secretRotateMessage.Name)
 	decodedSecretDataString, err := base64.StdEncoding.DecodeString(secretDataString)
 	if err != nil {
-		logger.LogCritical("Could not base64 decode secret " + secretRotateMessage.Name)
+		logger.LogCritical("Could not base64 decode secret %s", secretRotateMessage.Name)
 	}
 	err = json.Unmarshal([]byte(decodedSecretDataString), &secretData)
 	if err != nil {
-		logger.LogCritical("failed to unmarshal secret JSON field, error: " + err.Error())
+		logger.LogCritical("failed to unmarshal secret JSON field, error: %s", err.Error())
 	}
 
 	// get client_email
 	serviceAccountPath := "projects/" + secretData.ProjectID + "/serviceAccounts/" + secretData.ClientEmail
-	logger.LogInfo("Looking for service account" + serviceAccountPath)
+	logger.LogInfo("Looking for service account %s", serviceAccountPath)
 	createKeyRequest := iam.CreateServiceAccountKeyRequest{}
 	newKeyCall := serviceAccountService.Projects.ServiceAccounts.Keys.Create(serviceAccountPath, &createKeyRequest)
 	newKey, err := newKeyCall.Do()
 	if err != nil {
-		logger.LogCritical("failed to create new key for " + serviceAccountPath + " Service Account, error: " + err.Error())
+		logger.LogCritical("failed to create new key for %s Service Account, error: %s", serviceAccountPath, err.Error())
 	}
 
-	logger.LogInfo("Decoding new key data for " + serviceAccountPath)
+	logger.LogInfo("Decoding new key data for %s", serviceAccountPath)
 	newKeyBytes, err := base64.StdEncoding.DecodeString(newKey.PrivateKeyData)
 	if err != nil {
-		logger.LogCritical("failed to decode new key for " + serviceAccountPath + " Service Account, error: " + err.Error())
+		logger.LogCritical("failed to decode new key for %s Service Account, error: %s", serviceAccountPath, err.Error())
 	}
 
 	// update secret
-	logger.LogInfo("Adding new secret version to secret " + secretRotateMessage.Name)
+	logger.LogInfo("Adding new secret version to secret %s", secretRotateMessage.Name)
 	_, err = secretManagerService.AddSecretVersion(secretRotateMessage.Name, newKeyBytes)
 	if err != nil {
-		logger.LogCritical("failed to create new " + secretRotateMessage.Name + " secret version, error: " + err.Error())
+		logger.LogCritical("failed to create new %s secret version, error: %s", secretRotateMessage.Name, err.Error())
 	}
 
 	return nil
