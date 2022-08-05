@@ -355,7 +355,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220725-7756933d"
             securityContext:
               privileged: true
             command:
@@ -392,7 +392,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220725-7756933d"
             securityContext:
               privileged: true
             command:
@@ -429,7 +429,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220725-7756933d"
             securityContext:
               privileged: true
             command:
@@ -896,7 +896,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220725-7756933d"
             securityContext:
               privileged: true
             command:
@@ -935,7 +935,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220725-7756933d"
             securityContext:
               privileged: true
             command:
@@ -974,7 +974,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220725-7756933d"
             securityContext:
               privileged: true
             command:

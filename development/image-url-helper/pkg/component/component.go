@@ -18,7 +18,7 @@ import (
 	"github.com/mandelsoft/vfs/pkg/osfs"
 )
 
-type ComponentOptions struct {
+type Options struct {
 	Provider         string
 	ComponentName    string
 	ComponentVersion string
@@ -29,7 +29,7 @@ type ComponentOptions struct {
 	SkipImageHashing bool
 }
 
-func GenerateComponentDescriptor(options ComponentOptions, images common.ComponentImageMap) (*v2.ComponentDescriptor, error) {
+func GenerateComponentDescriptor(options Options, images common.ComponentImageMap) (*v2.ComponentDescriptor, error) {
 	component := &v2.ComponentDescriptor{}
 
 	err := createComponent(component, options)
@@ -52,7 +52,7 @@ func GenerateComponentDescriptor(options ComponentOptions, images common.Compone
 	return component, nil
 }
 
-func createComponent(component *v2.ComponentDescriptor, options ComponentOptions) error {
+func createComponent(component *v2.ComponentDescriptor, options Options) error {
 	v2.DefaultComponent(component)
 	component.Metadata.Version = "v2"
 
@@ -68,7 +68,7 @@ func createComponent(component *v2.ComponentDescriptor, options ComponentOptions
 	return nil
 }
 
-func addSources(component *v2.ComponentDescriptor, options ComponentOptions) error {
+func addSources(component *v2.ComponentDescriptor, options Options) error {
 	source := v2.Source{}
 	// TODO for now we're only generating CD for Kyma
 	source.Name = "kyma-project_kyma"
@@ -86,7 +86,7 @@ func addSources(component *v2.ComponentDescriptor, options ComponentOptions) err
 	return nil
 }
 
-func addResources(component *v2.ComponentDescriptor, options ComponentOptions, images common.ComponentImageMap) error {
+func addResources(component *v2.ComponentDescriptor, options Options, images common.ComponentImageMap) error {
 	for _, image := range images {
 		resource := v2.Resource{}
 
