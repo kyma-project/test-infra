@@ -11,7 +11,7 @@ templates:
             cluster: "trusted-workload"
           github_token_mounts:
             labels:
-              kyma-autobump-bot-github-token: "true"
+              preset-autobump-bot-github-token: "true"
           label_sync_mounts:
             volumes:
               - name: config
