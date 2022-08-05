@@ -99,9 +99,36 @@ install_busola(){
     echo "Busola resources applied √"
 }
 
+
+function install_cli() {
+  local install_dir
+  declare -r install_dir="/usr/local/bin"
+  mkdir -p "$install_dir"
+
+  local os
+  os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+  if [[ -z "$os" || ! "$os" =~ ^(darwin|linux)$ ]]; then
+    echo >&2 -e "Unsupported host OS. Must be Linux or Mac OS X."
+    exit 1
+  else
+    readonly os
+  fi
+
+  pushd "$install_dir" || exit
+  curl -Lo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}"
+  chmod +x kyma
+  popd
+
+  kyma version --client
+}
+
+
 echo "Node.js version: $(node -v)"
 echo "NPM version: $(npm -v)"
 
+
+echo "install kymcia"
+install_cli
 
 echo "STEP: Preparing k3s cluster"
 # prepare_k3s
