@@ -124,9 +124,7 @@ cp "$PWD/kubeconfig-kyma.yaml" "$PWD/busola-tests/fixtures/kubeconfig.yaml"
 cp ~/.kube/config "$PWD/busola-tests/fixtures/kubeconfig-k3s.yaml"
 mkdir -p "$PWD/busola-tests/cypress/screenshots"
 
-cat "$PWD/busola-tests/fixtures/kubeconfig-k3s.yaml"
-
 echo "STEP: Running Cypress tests inside Docker"
 
-docker run --entrypoint /bin/bash --network=host -v "$PWD/busola-tests:/tests" -w /tests $CYPRESS_IMAGE -c "npm ci --no-optional; NO_COLOR=1 npm run test:$SCOPE"
+docker run --entrypoint /bin/bash --net=host --pid=host -v "$PWD/busola-tests:/tests" -w /tests $CYPRESS_IMAGE -c "npm ci --no-optional; NO_COLOR=1 npm run test:$SCOPE"
 
