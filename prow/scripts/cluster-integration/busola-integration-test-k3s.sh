@@ -135,7 +135,7 @@ echo "STEP: Preparing k3s cluster"
 kyma provision k3d --ci
 echo 'provisiont'
 kubectl cluster-info
-k3d
+k3d cluster list
 
 echo "STEP: Generating cerfificate"
 generate_cert $K3S_DOMAIN
@@ -152,7 +152,7 @@ kubectl wait \
 --timeout=120s
 
 cp "$PWD/kubeconfig-kyma.yaml" "$PWD/busola-tests/fixtures/kubeconfig.yaml"
-cp ~/.kube/config "$PWD/busola-tests/fixtures/kubeconfig-k3s.yaml"
+cp $(k3d kubeconfig write kyma) "$PWD/busola-tests/fixtures/kubeconfig-k3s.yaml"
 mkdir -p "$PWD/busola-tests/cypress/screenshots"
 
 echo "STEP: Running Cypress tests inside Docker"
