@@ -1,6 +1,10 @@
 ---
 name: Documentation improvement
 about: Suggest an improvement or report a bug in the documentation
+title: ''
+labels: ''
+assignees: ''
+
 ---
 
 <!-- Thank you for your contribution. Before you submit the issue:

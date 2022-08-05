@@ -2,7 +2,7 @@
 name: Feature request
 about: Suggest an improvement to the project
 title: ''
-labels: area/ci, enhancement
+labels: area/ci
 assignees: ''
 
 ---
