@@ -7,6 +7,28 @@ LOCAL_KYMA_DIR="./local-kyma"
 K3S_DOMAIN="local.kyma.dev"
 CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included:8.7.0"
 
+function install_cli() {
+  local install_dir
+  declare -r install_dir="/usr/local/bin"
+  mkdir -p "$install_dir"
+
+  local os
+  os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+  if [[ -z "$os" || ! "$os" =~ ^(darwin|linux)$ ]]; then
+    echo >&2 -e "Unsupported host OS. Must be Linux or Mac OS X."
+    exit 1
+  else
+    readonly os
+  fi
+
+  pushd "$install_dir" || exit
+  curl -Lo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}"
+  chmod +x kyma
+  popd
+
+  kyma version --client
+}
+
 generate_cert(){
     echo "Generate ssl cerfificate"
     # $1 is the domain
@@ -90,37 +112,12 @@ install_busola(){
     echo "Busola resources applied √"
 }
 
-
-function install_cli() {
-  local install_dir
-  declare -r install_dir="/usr/local/bin"
-  mkdir -p "$install_dir"
-
-  local os
-  os="$(uname -s | tr '[:upper:]' '[:lower:]')"
-  if [[ -z "$os" || ! "$os" =~ ^(darwin|linux)$ ]]; then
-    echo >&2 -e "Unsupported host OS. Must be Linux or Mac OS X."
-    exit 1
-  else
-    readonly os
-  fi
-
-  pushd "$install_dir" || exit
-  curl -Lo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}"
-  chmod +x kyma
-  popd
-
-  kyma version --client
-}
-
-
 echo "Node.js version: $(node -v)"
 echo "NPM version: $(npm -v)"
 
 
-echo "install kymcia"
+echo "STEP: Installing Kyma CLI fore easier cluster setup"
 install_cli
-
 echo "STEP: Preparing k3s cluster"
 kyma provision k3d --ci
 
@@ -144,11 +141,12 @@ cp "$PWD/kubeconfig-kyma.yaml" "$PWD/busola-tests/fixtures/kubeconfig.yaml"
 # copy local cluster and adjust the server address
 cp $(k3d kubeconfig write kyma) "$PWD/busola-tests/fixtures/kubeconfig-k3s.yaml"
 sed -i 's!server: https://0.0.0.0:.*!server: https://kubernetes.default.svc!' "$PWD/busola-tests/fixtures/kubeconfig-k3s.yaml"
+
 mkdir -p "$PWD/busola-tests/cypress/screenshots"
 
 echo "$PWD/busola-tests/fixtures/kubeconfig-k3s.yaml"
 
 echo "STEP: Running Cypress tests inside Docker"
 
-SCOPE=cluster CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included:8.7.0" docker run --entrypoint /bin/bash --net=host --pid=host -v "$PWD/busola-tests:/tests" -w /tests $CYPRESS_IMAGE -c "npm ci --no-optional; NO_COLOR=1 npm run test:$SCOPE"
+docker run --entrypoint /bin/bash --network=host -v "$PWD/busola-tests:/tests" -w /tests $CYPRESS_IMAGE -c "npm ci --no-optional; NO_COLOR=1 npm run test:$SCOPE"
 
