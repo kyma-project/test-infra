@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/kyma-project/test-infra/development/gcp/pkg/secretmanager"
-	"github.com/kyma-project/test-infra/development/gcp/pkg/secretversionsmanager"
+	"google.golang.org/api/option"
 	gcpsecretmanager "google.golang.org/api/secretmanager/v1"
 	authentication "k8s.io/api/authentication/v1"
 	meta "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -65,11 +65,10 @@ func main() {
 				serviceAccountGCP = os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")
 			}
 
-			secretSvc, err := secretmanager.NewService(ctx, serviceAccountGCP)
+			secretSvc, err := secretmanager.NewService(ctx, option.WithCredentialsFile(serviceAccountGCP))
 			if err != nil {
 				log.Fatalf("Could not initialize Secret Manager API client: %v", err)
 			}
-			secretVersionsSvc := secretversionsmanager.NewService(secretSvc)
 
 			k8sConfig, err := clientcmd.BuildConfigFromFlags("", cfg.Kubeconfig)
 			if err != nil {
@@ -122,11 +121,12 @@ func main() {
 						log.Fatalf("Could not get generate kubeconfig: %v", err)
 					}
 				}
+				secretPath := "projects/" + sa.GCPProject + "/secrets/" + sa.GCPSecret
 
 				// get list of all previous secret versions
 				var secretVersions *gcpsecretmanager.ListSecretVersionsResponse
 				if !cfg.DryRun {
-					secretVersions, err = secretSvc.ListSecretVersions(sa.GCPProject, sa.GCPSecret)
+					secretVersions, err = secretSvc.ListSecretVersions(secretPath)
 					if err != nil {
 						log.Fatalf("Could not get list of secret versions: %v", err)
 					}
@@ -135,7 +135,7 @@ func main() {
 				// update it in the Secret Manager
 				log.Infof("Adding new secret version for %s service accout", sa.KubernetesSA)
 				if !cfg.DryRun {
-					_, err = secretSvc.AddSecretVersion(sa.GCPProject, sa.GCPSecret, []byte(serviceAccountKubeconfig))
+					_, err = secretSvc.AddSecretVersion(secretPath, []byte(serviceAccountKubeconfig))
 					if err != nil {
 						log.Fatalf("Could not create new secret version: %v", err)
 					}
@@ -148,7 +148,7 @@ func main() {
 						for _, secretVersion := range secretVersions.Versions {
 							// we can only disable enabled secrets
 							if secretVersion.State == "ENABLED" {
-								_, err := secretVersionsSvc.DisableSecretVersion(secretVersion)
+								_, err := secretSvc.DisableSecretVersion(secretVersion)
 								if err != nil {
 									log.Fatalf("Could not disable secret version %s: %v", secretVersion.Name, err)
 								}
