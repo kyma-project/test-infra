@@ -38,6 +38,9 @@ templates:
           product_kyma_dashboard:
             labels:
               preset-whitesource-product-kyma-dashboard: "true"
+          product_kyma_test:
+            labels:
+              preset-whitesource-product-kyma-test: "true"
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -115,7 +118,7 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
-                    - "product_kyma"
+                    - "product_kyma_test"
               - jobConfig:
                   repository: "kyma-watcher"
                   language: "golang-mod"
@@ -130,7 +133,7 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
-                    - "product_kyma"
+                    - "product_kyma_test"
               - jobConfig:
                   repository: "manifest-operator"
                   language: "golang-mod"
@@ -145,7 +148,7 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
-                    - "product_kyma"
+                    - "product_kyma_test"
 
 
               - jobConfig:
