@@ -41,7 +41,7 @@ Following template data file can be used to generate autobumper job for Kyma rep
         localSets:
           github_token_mounts:
             labels:
-              preset-bot-github-token: "true"
+              preset-autobump-bot-github-token: "true"
         jobConfigs:
           - repoName: kyma-project/kyma
             jobs:
