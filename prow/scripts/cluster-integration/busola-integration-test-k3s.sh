@@ -104,7 +104,11 @@ echo "NPM version: $(npm -v)"
 
 
 echo "STEP: Preparing k3s cluster"
-prepare_k3s
+# prepare_k3s
+kyma provision k3d --ci
+echo 'provisiont'
+kubectl cluster-info
+k3d
 
 echo "STEP: Generating cerfificate"
 generate_cert $K3S_DOMAIN
