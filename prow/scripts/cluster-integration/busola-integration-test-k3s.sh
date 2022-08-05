@@ -151,11 +151,17 @@ kubectl wait \
 --all \
 --timeout=120s
 
+# copy external cluster kubeconfig
 cp "$PWD/kubeconfig-kyma.yaml" "$PWD/busola-tests/fixtures/kubeconfig.yaml"
+
+# copy local cluster and adjust the server address
 cp $(k3d kubeconfig write kyma) "$PWD/busola-tests/fixtures/kubeconfig-k3s.yaml"
+sed -i 's!server: https://0.0.0.0:.*!server: https://kubernetes.default.svc!' "$PWD/busola-tests/fixtures/kubeconfig-k3s.yaml"
 mkdir -p "$PWD/busola-tests/cypress/screenshots"
+
+echo "$PWD/busola-tests/fixtures/kubeconfig-k3s.yaml"
 
 echo "STEP: Running Cypress tests inside Docker"
 
-docker run --entrypoint /bin/bash --net=host --pid=host -v "$PWD/busola-tests:/tests" -w /tests $CYPRESS_IMAGE -c "npm ci --no-optional; NO_COLOR=1 npm run test:$SCOPE"
+SCOPE=cluster CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included:8.7.0" docker run --entrypoint /bin/bash --net=host --pid=host -v "$PWD/busola-tests:/tests" -w /tests $CYPRESS_IMAGE -c "npm ci --no-optional; NO_COLOR=1 npm run test:$SCOPE"
 
