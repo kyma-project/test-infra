@@ -83,11 +83,11 @@ globalSets:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_bootstrap:
-    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
+    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220725-62cace12"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220804-9364d7119"
   image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220808-d24ecd898"
   image_buildpack-node:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220720-622619a6"
   image_buildpack-golang:
