@@ -73,7 +73,6 @@ type Rotation struct {
 }
 
 // SecretRotateMessage is the Data field of pubsub message payload, published by secret rotation automation.
-// It wraps ProwMessage.
 type SecretRotateMessage struct {
 	Name       string              `yaml:"name"`
 	CreateTime string              `yaml:"createTime"`

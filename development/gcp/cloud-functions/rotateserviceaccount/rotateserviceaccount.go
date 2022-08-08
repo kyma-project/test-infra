@@ -18,11 +18,11 @@ var (
 	serviceAccountService *iam.Service
 )
 
-// ServiceAccountJSON stores Service Account athentication data
+// ServiceAccountJSON stores Service Account authentication data
 type ServiceAccountJSON struct {
 	Type             string `json:"type"`
 	ProjectID        string `json:"project_id"`
-	PrivatekayID     string `json:"private_key_id"`
+	PrivateKeyID     string `json:"private_key_id"`
 	PrivateKey       string `json:"private_key"`
 	ClientEmail      string `json:"client_email"`
 	ClientID         string `json:"client_id"`
