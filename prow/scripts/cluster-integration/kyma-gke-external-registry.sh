@@ -99,6 +99,8 @@ export KYMA_SOURCE=${utils_generate_vars_for_build_return_kymaSource:?}
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
+gcloud components install gke-gcloud-auth-plugin
+
 gcp::authenticate \
     -c "$GOOGLE_APPLICATION_CREDENTIALS"
 
