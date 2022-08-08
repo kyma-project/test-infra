@@ -49,6 +49,7 @@ RUN curl -fLSs -o gc-sdk.tar.gz https://dl.google.com/dl/cloudsdk/channels/rapid
     --path-update=false \
     --usage-reporting=false && \
     gcloud components install alpha beta kubectl docker-credential-gcr && \
+    gcloud components install gke-gcloud-auth-plugin && \
     gcloud info | tee /workspace/gcloud-info.txt
 
 # Cluster Version
