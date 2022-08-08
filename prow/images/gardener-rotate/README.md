@@ -2,7 +2,7 @@
 
 ## Overview
 
-This folder contains the gardener-rotate binary that is used to automatically update Gardener kubeconfig secrets.
+This folder contains the gardener-rotate image that is used to automatically update Gardener kubeconfig secrets.
 
 ## Installation
 
