@@ -81,9 +81,8 @@ func RotateServiceAccount(ctx context.Context, m pubsub.MessagePayload) error {
 	}
 
 	//get latest secret version data
-	secretlatestVersionPath := secretRotateMessage.Name + "/versions/latest"
-	logger.LogInfo("Retrieving secret: %s", secretlatestVersionPath)
-	secretDataString, err := secretManagerService.GetSecretVersionData(secretlatestVersionPath)
+	logger.LogInfo("Retrieving latest version of secret: %s", secretRotateMessage.Name)
+	secretDataString, err := secretManagerService.GetLatestSecretVersionData(secretRotateMessage.Name)
 	if err != nil {
 		logger.LogCritical("failed to retrieve latest version of a secret %s, error: %s", secretRotateMessage.Name, err.Error())
 	}
