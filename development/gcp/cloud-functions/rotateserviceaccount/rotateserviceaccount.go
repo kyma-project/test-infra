@@ -9,7 +9,7 @@ import (
 	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/secretmanager"
-	"google.golang.org/api/iam/v1"
+	iam "google.golang.org/api/iam/v1"
 )
 
 var (
