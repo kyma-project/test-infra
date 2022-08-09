@@ -9,7 +9,7 @@ gitHubOrg: {{ quote .Values.org }}
 gitHubRepo: {{ quote .Values.repo }}
 remoteName: {{ if .Values.remote_name }}{{quote .Values.remote_name }}{{ else }}{{ quote .Values.repo }}{{ end }}
 {{- if .Values.base_branch }}
-{{- /* Name of the base branch we want to update. In case of empty name, autobumper will use default branch*/}}
+{{- /* Name of the base branch you want to update. In case of an empty name, autobumper uses default branch*/}}
 gitHubBaseBranch: {{ quote .Values.base_branch}} 
 {{- end }}
 upstreamURLBase: "https://raw.githubusercontent.com/{{ .Values.org }}/{{ .Values.repo }}/main"
@@ -34,7 +34,7 @@ includedConfigPaths:
 {{- end }}
 
 {{- if .Values.excluded_paths }}
-{{- /* yaml files excluded frm autobumping */}}
+{{- /* YAML files excluded from autobumping */}}
 excludedConfigPaths:
 {{- range .Values.excluded_paths }}
   - {{ quote . }}
@@ -42,14 +42,14 @@ excludedConfigPaths:
 {{- end }}
 
 {{- if .Values.extra_files }}
-{{- /* additional non-yaml files */}}
+{{- /* additional non-YAML files */}}
 extraFiles:
 {{- range .Values.extra_files }}
   - {{ quote . }}
 {{- end }}
 {{- end }}
 
-{{- /* list of container registry prefixes we want to autobump */}}
+{{- /* list of container registry prefixes you want to autobump */}}
 prefixes:
   - name: "kyma-project"
     prefix: "eu.gcr.io/kyma-project/"
