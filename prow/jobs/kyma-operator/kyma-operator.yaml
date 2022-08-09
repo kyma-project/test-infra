@@ -5,11 +5,13 @@ presubmits: # runs on PRs
   kyma-project/kyma-operator:
     - name: pre-main-kyma-operator-lint
       annotations:
+        description: "executes the 'golangci-lint lint' command in the kyma-operator 'operator' directory before any pull request."
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-operator-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -18,7 +20,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220722-426fa04d"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220804-607830f89"
             securityContext:
               privileged: true
             command:

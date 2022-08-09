@@ -7,13 +7,26 @@ LOCAL_KYMA_DIR="./local-kyma"
 K3S_DOMAIN="local.kyma.dev"
 CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included:8.7.0"
 
-prepare_k3s() {
-    echo "prepare K3s cluster"
-    pushd ${LOCAL_KYMA_DIR}
-    ./create-cluster-k3s.sh
-    echo "k3s cluster created √"
-    kubectl cluster-info
-    popd
+function install_cli() {
+  local install_dir
+  declare -r install_dir="/usr/local/bin"
+  mkdir -p "$install_dir"
+
+  local os
+  os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+  if [[ -z "$os" || ! "$os" =~ ^(darwin|linux)$ ]]; then
+    echo >&2 -e "Unsupported host OS. Must be Linux or Mac OS X."
+    exit 1
+  else
+    readonly os
+  fi
+
+  pushd "$install_dir" || exit
+  curl -Lo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}"
+  chmod +x kyma
+  popd
+
+  kyma version --client
 }
 
 generate_cert(){
@@ -103,8 +116,10 @@ echo "Node.js version: $(node -v)"
 echo "NPM version: $(npm -v)"
 
 
+echo "STEP: Installing Kyma CLI fore easier cluster setup"
+install_cli
 echo "STEP: Preparing k3s cluster"
-prepare_k3s
+kyma provision k3d --ci
 
 echo "STEP: Generating cerfificate"
 generate_cert $K3S_DOMAIN
@@ -120,7 +135,13 @@ kubectl wait \
 --all \
 --timeout=120s
 
+# copy external cluster kubeconfig
 cp "$PWD/kubeconfig-kyma.yaml" "$PWD/busola-tests/fixtures/kubeconfig.yaml"
+
+# copy local cluster and adjust the server address
+cp "$(k3d kubeconfig write kyma)" "$PWD/busola-tests/fixtures/kubeconfig-k3s.yaml"
+sed -i 's!server: https://0.0.0.0:.*!server: https://kubernetes.default.svc!' "$PWD/busola-tests/fixtures/kubeconfig-k3s.yaml"
+
 mkdir -p "$PWD/busola-tests/cypress/screenshots"
 
 echo "STEP: Running Cypress tests inside Docker"

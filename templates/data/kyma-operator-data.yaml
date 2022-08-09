@@ -6,8 +6,11 @@ templates:
           - repoName: kyma-project/kyma-operator
             jobs:
               - jobConfig:
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220722-426fa04d"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220804-607830f89"
                   name: "pre-main-kyma-operator-lint"
+                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
+                  annotations:
+                    description: executes the 'golangci-lint lint' command in the kyma-operator 'operator' directory before any pull request.
                   command: "bash"
                   args:
                     - "-c"
