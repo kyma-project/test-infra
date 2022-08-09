@@ -30,7 +30,7 @@ function install_cli() {
 }
 
 generate_cert(){
-    echo "Generate ssl cerfificate"
+    echo "Generate ssl certificate"
     # $1 is the domain
     mkdir ssl
     pushd ssl
@@ -121,7 +121,7 @@ install_cli
 echo "STEP: Preparing k3s cluster"
 kyma provision k3d --ci
 
-echo "STEP: Generating cerfificate"
+echo "STEP: Generating certificate"
 generate_cert $K3S_DOMAIN
 
 echo "STEP: Installing Busola on the cluster"
@@ -143,6 +143,10 @@ cp "$(k3d kubeconfig write kyma)" "$PWD/busola-tests/fixtures/kubeconfig-k3s.yam
 sed -i 's!server: https://0.0.0.0:.*!server: https://kubernetes.default.svc!' "$PWD/busola-tests/fixtures/kubeconfig-k3s.yaml"
 
 mkdir -p "$PWD/busola-tests/cypress/screenshots"
+
+# replace symlink with an actual folder
+rm "$PWD/busola-tests/fixtures/examples"
+mv "$PWD/busola-examples" "$PWD/busola-tests/fixtures/examples"
 
 echo "STEP: Running Cypress tests inside Docker"
 
