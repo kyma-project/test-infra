@@ -4,6 +4,13 @@
 
 gardener-rotate tool allows to generate a new access token for Gardener service accounts and update kubeconfig stored in the Secret Manager.
 
+Rotation process steps:
+1. Connect to to Gardener cluster using provided kubeconfig file.
+2. For each service account defined in the config file:
+  1. Generate new Gardener access token.
+  2. Update kubeconfig stored in a Secret Manager secret with the generated access token.
+  3. Disable old versions of the secret.
+
 ## Usage
 
 To run gardener-rotate, use:

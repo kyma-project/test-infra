@@ -23,15 +23,23 @@ var (
 	log = logrus.New()
 )
 
+// ServiceAccount stores information about one Secret to be rotated
 type ServiceAccount struct {
-	KubernetesSA        string `json:"k8sServiceAccount"`
+	// name of the k8s service account
+	KubernetesSA string `json:"k8sServiceAccount"`
+	// namespace of the k8s service account
 	KubernetesNamespace string `json:"k8sNamespace,omitempty"`
-	Duration            int64  `json:"k8sDuration"`
-	GCPSecret           string `json:"gcpSecretManagerSecretName"`
-	GCPProject          string `json:"gcpProjectName"`
-	KeepOld             bool   `json:"gcpKeepOld,omitempty"`
+	// lifetime of a new token in seconds
+	Duration int64 `json:"k8sDuration"`
+	// name of the Secret Manager secret
+	GCPSecret string `json:"gcpSecretManagerSecretName"`
+	// name of the Secret Manager GCP project
+	GCPProject string `json:"gcpProjectName"`
+	// Should we disable old versios of the secret in Secret Manager
+	KeepOld bool `json:"gcpKeepOld,omitempty"`
 }
 
+// g stored gardener-rotate tool config
 type ConfigFile struct {
 	ServiceAccounts []ServiceAccount `json:"serviceAccounts"`
 }
