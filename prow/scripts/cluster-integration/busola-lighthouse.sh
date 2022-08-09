@@ -103,7 +103,7 @@ echo "NPM version: $(npm -v)"
 echo "STEP: Preparing k3s cluster"
 prepare_k3s
 
-echo "STEP: Generating cerfificate"
+echo "STEP: Generating certificate"
 generate_cert $K3S_DOMAIN
 
 echo "STEP: Installing Busola on the cluster"

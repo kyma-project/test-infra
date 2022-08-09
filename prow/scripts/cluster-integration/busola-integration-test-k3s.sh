@@ -30,7 +30,7 @@ function install_cli() {
 }
 
 generate_cert(){
-    echo "Generate ssl cerfificate"
+    echo "Generate ssl certificate"
     # $1 is the domain
     mkdir ssl
     pushd ssl
@@ -121,7 +121,7 @@ install_cli
 echo "STEP: Preparing k3s cluster"
 kyma provision k3d --ci
 
-echo "STEP: Generating cerfificate"
+echo "STEP: Generating certificate"
 generate_cert $K3S_DOMAIN
 
 echo "STEP: Installing Busola on the cluster"
