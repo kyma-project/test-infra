@@ -137,7 +137,7 @@ utils::compress_send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/ho
 
 log::info "Copying Busola 'examples' folder to the instance"
 #shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/examples" "~/busola-tests/fixtures/examples"
+utils::compress_send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/examples" "~/busola-examples"
 
 
 log::info "Copying Kyma-Local to the instance"

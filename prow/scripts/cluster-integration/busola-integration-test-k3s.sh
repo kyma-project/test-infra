@@ -144,9 +144,10 @@ sed -i 's!server: https://0.0.0.0:.*!server: https://kubernetes.default.svc!' "$
 
 mkdir -p "$PWD/busola-tests/cypress/screenshots"
 
-echo "STEP: Running Cypress tests inside Docker"
+rm "$PWD/busola-tests/fixtures/examples"
+mv "$PWD/busola-examples" "$PWD/busola-tests/fixtures/examples"
 
-ls "$PWD/busola-tests/fixtures"
+echo "STEP: Running Cypress tests inside Docker"
 
 docker run --entrypoint /bin/bash --network=host -v "$PWD/busola-tests:/tests" -w /tests $CYPRESS_IMAGE -c "npm ci --no-optional; NO_COLOR=1 npm run test:$SCOPE"
 
