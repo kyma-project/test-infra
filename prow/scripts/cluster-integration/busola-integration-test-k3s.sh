@@ -144,6 +144,7 @@ sed -i 's!server: https://0.0.0.0:.*!server: https://kubernetes.default.svc!' "$
 
 mkdir -p "$PWD/busola-tests/cypress/screenshots"
 
+# replace symlink with an actual folder
 rm "$PWD/busola-tests/fixtures/examples"
 mv "$PWD/busola-examples" "$PWD/busola-tests/fixtures/examples"
 

@@ -136,6 +136,7 @@ log::info "Copying Busola 'resources' folder to the instance"
 utils::compress_send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/resources" "~/busola-resources"
 
 log::info "Copying Busola 'examples' folder to the instance"
+# normally Busola uses a symlink, here we need to copy the folder and replace it manually in "busola-integration-test-k3s.sh"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/examples" "~/busola-examples"
 
