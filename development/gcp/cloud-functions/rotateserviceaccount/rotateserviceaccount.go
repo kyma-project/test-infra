@@ -87,12 +87,7 @@ func RotateServiceAccount(ctx context.Context, m pubsub.MessagePayload) error {
 		logger.LogCritical("failed to retrieve latest version of a secret %s, error: %s", secretRotateMessage.Name, err.Error())
 	}
 
-	logger.LogInfo("Trying to unmarshal secret: %s", secretRotateMessage.Name)
-	decodedSecretDataString, err := base64.StdEncoding.DecodeString(secretDataString)
-	if err != nil {
-		logger.LogCritical("Could not base64 decode secret %s", secretRotateMessage.Name)
-	}
-	err = json.Unmarshal([]byte(decodedSecretDataString), &secretData)
+	err = json.Unmarshal([]byte(secretDataString), &secretData)
 	if err != nil {
 		logger.LogCritical("failed to unmarshal secret JSON field, error: %s", err.Error())
 	}

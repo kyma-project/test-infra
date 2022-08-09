@@ -69,7 +69,8 @@ func (sm *Service) GetLatestSecretVersionData(secretPath string) (string, error)
 	if err != nil {
 		return "", err
 	}
-	return secretVersion.Payload.Data, err
+	decodedSecretDataString, err := base64.StdEncoding.DecodeString(secretVersion.Payload.Data)
+	return string(decodedSecretDataString), err
 }
 
 // GetSecretVersionData retrieves payload of a secret version
@@ -80,5 +81,6 @@ func (sm *Service) GetSecretVersionData(secretPath string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return secretVersion.Payload.Data, err
+	decodedSecretDataString, err := base64.StdEncoding.DecodeString(secretVersion.Payload.Data)
+	return string(decodedSecretDataString), err
 }
