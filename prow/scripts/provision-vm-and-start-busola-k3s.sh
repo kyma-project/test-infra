@@ -135,6 +135,10 @@ log::info "Copying Busola 'resources' folder to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/resources" "~/busola-resources"
 
+log::info "Copying Busola 'examples' folder to the instance"
+#shellcheck disable=SC2088
+utils::compress_send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/examples" "~/busola/tests/fixtures"
+
 
 log::info "Copying Kyma-Local to the instance"
 #shellcheck disable=SC2088
