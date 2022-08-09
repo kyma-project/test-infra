@@ -3,7 +3,6 @@ package cloudfunctions
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"math/rand"
 )
 
@@ -25,7 +24,7 @@ func (e LogEntry) String() string {
 	}
 	out, err := json.Marshal(e)
 	if err != nil {
-		log.Printf("json.Marshal: %v", err)
+		fmt.Printf("json.Marshal: %v", err)
 	}
 	return string(out)
 }
@@ -57,21 +56,31 @@ func (e *LogEntry) WithComponent(component string) *LogEntry {
 	return e
 }
 
-func (e LogEntry) LogCritical(message string) {
+func (e LogEntry) LogCritical(format string, args ...interface{}) {
+	message := fmt.Sprintf(format, args...)
 	e.Severity = "CRITICAL"
 	e.Message = message
-	log.Println(e)
+	fmt.Println(e)
 	panic(message)
 }
 
-func (e LogEntry) LogError(message string) {
+func (e LogEntry) LogError(format string, args ...interface{}) {
+	message := fmt.Sprintf(format, args...)
 	e.Severity = "ERROR"
 	e.Message = message
-	log.Println(e)
+	fmt.Println(e)
 }
 
-func (e LogEntry) LogInfo(message string) {
+func (e LogEntry) LogInfo(format string, args ...interface{}) {
+	message := fmt.Sprintf(format, args...)
 	e.Severity = "INFO"
 	e.Message = message
-	log.Println(e)
+	fmt.Println(e)
+}
+
+func (e LogEntry) LogDebug(format string, args ...interface{}) {
+	message := fmt.Sprintf(format, args...)
+	e.Severity = "DEBUG"
+	e.Message = message
+	fmt.Println(e)
 }
