@@ -563,19 +563,6 @@ presets:
         mountPath: /etc/credentials/sa-prow-job-github-issues
         readOnly: true
   - labels:
-      preset-sa-secret-update: "true"
-    env:
-      - name: GOOGLE_APPLICATION_CREDENTIALS
-        value: /etc/credentials/ssa-secret-update/service-account.json
-    volumes:
-      - name: sa-secret-update
-        secret:
-          secretName: sa-secret-update
-    volumeMounts:
-      - name: sa-secret-update
-        mountPath: /etc/credentials/sa-secret-update
-        readOnly: true
-  - labels:
       preset-gardener-azure-kyma-integration: "true"
     env:
       - name: GARDENER_KYMA_PROW_KUBECONFIG
