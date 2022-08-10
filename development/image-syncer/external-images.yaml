@@ -41,7 +41,7 @@ images:
 - source: "quay.io/prometheus-operator/prometheus-operator:v0.56.3"
 - source: "quay.io/prometheus/alertmanager:v0.24.0"
 - source: "quay.io/prometheus/prometheus:v2.35.0"
-- source: "nats:2.8.4-alpine"
+- source: "nats:2.8.4-alpine3.15"
 - source: "natsio/nats-server-config-reloader:0.7.0"
 - source: "natsio/prometheus-nats-exporter:0.9.3"
 - source: "mockserver/mockserver:mockserver-5.11.2"
