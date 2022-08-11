@@ -7,28 +7,6 @@ LOCAL_KYMA_DIR="./local-kyma"
 K3S_DOMAIN="local.kyma.dev"
 CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included:8.7.0"
 
-function install_cli() {
-  local install_dir
-  declare -r install_dir="/usr/local/bin"
-  mkdir -p "$install_dir"
-
-  local os
-  os="$(uname -s | tr '[:upper:]' '[:lower:]')"
-  if [[ -z "$os" || ! "$os" =~ ^(darwin|linux)$ ]]; then
-    echo >&2 -e "Unsupported host OS. Must be Linux or Mac OS X."
-    exit 1
-  else
-    readonly os
-  fi
-
-  pushd "$install_dir" || exit
-  curl -Lo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}"
-  chmod +x kyma
-  popd
-
-  kyma version --client
-}
-
 generate_cert(){
     echo "Generate ssl certificate"
     # $1 is the domain
@@ -116,10 +94,17 @@ echo "Node.js version: $(node -v)"
 echo "NPM version: $(npm -v)"
 
 
-echo "STEP: Installing Kyma CLI fore easier cluster setup"
-install_cli
-echo "STEP: Preparing k3s cluster"
-kyma provision k3d --ci
+# echo "STEP: Installing Kyma CLI fore easier cluster setup"
+# install_cli
+# echo "STEP: Preparing k3s cluster"
+# kyma provision k3d --ci
+
+
+k3d cluster create busola
+export KUBECONFIG=$(k3d kubeconfig write busola)
+cat $KUBECONFIG
+kubectl cluster-info
+
 
 echo "STEP: Generating certificate"
 generate_cert $K3S_DOMAIN
