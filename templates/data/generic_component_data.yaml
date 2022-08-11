@@ -393,3 +393,27 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
+      - to: ../../prow/jobs/kyma/components/directory-size-exporter/directory-size-exporter-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  path: components/directory-size-exporter
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/directory-size-exporter"
+                  run_if_changed: "^components/directory-size-exporter/|^common/makefiles/"
+                  release_since: "2.0"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_generic_component"
+                    - "jobConfig_generic_component_kyma"
+                    - "extra_refs_test-infra"
+                  preConfigs:
+                    global:
+                      - "jobConfig_presubmit"
+                  postConfigs:
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
