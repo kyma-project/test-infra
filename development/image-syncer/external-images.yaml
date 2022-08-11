@@ -1,7 +1,7 @@
 targetRepoPrefix:  "eu.gcr.io/kyma-project/external/"
 sign: true
 images:
-- source: "alpine:3.16.0"
+- source: "alpine:3.16.2"
 - source: "bitnami/keycloak-gatekeeper@sha256:f0f09bdc936029a254b7fae679ca0215571f48c57a2db6d3edfce9b4b9a20643"
   tag: "10.0.0-v1"
 - source: "bitnami/postgres-exporter:0.8.0-debian-10-r28"
@@ -41,7 +41,7 @@ images:
 - source: "quay.io/prometheus-operator/prometheus-operator:v0.56.3"
 - source: "quay.io/prometheus/alertmanager:v0.24.0"
 - source: "quay.io/prometheus/prometheus:v2.35.0"
-- source: "nats:2.8.4-alpine"
+- source: "nats:2.8.4-alpine3.15"
 - source: "natsio/nats-server-config-reloader:0.7.0"
 - source: "natsio/prometheus-nats-exporter:0.9.3"
 - source: "mockserver/mockserver:mockserver-5.11.2"

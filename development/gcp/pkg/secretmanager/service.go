@@ -38,6 +38,12 @@ func (sm *Service) ListSecretVersions(secretPath string) (*gcpsecretmanager.List
 	return sm.Service.Projects.Secrets.Versions.List(secretPath).Do()
 }
 
+// GetLatestSecretVersion retrieves latest version of a secret
+// expects secretPath in "projects/*/secrets/*" format
+func (sm *Service) GetLatestSecretVersion(secretPath string) (*gcpsecretmanager.SecretVersion, error) {
+	return sm.Service.Projects.Secrets.Versions.Get(secretPath + "/versions/latest").Do()
+}
+
 // GetSecretVersion retrieves one version of a secret
 // expects secretPath in "projects/*/secrets/*/versions/*" format
 func (sm *Service) GetSecretVersion(secretPath string) (*gcpsecretmanager.SecretVersion, error) {
@@ -50,6 +56,23 @@ func (sm *Service) DisableSecretVersion(version *gcpsecretmanager.SecretVersion)
 	return sm.VersionService.Disable(version.Name, &disableRequest).Do()
 }
 
+// GetLatestSecretVersionData retrieves payload of a latest secret version
+// expects secretPath in "projects/*/secrets/*" format
+func (sm *Service) GetLatestSecretVersionData(secretPath string) (string, error) {
+	latestVersion, err := sm.GetLatestSecretVersion(secretPath)
+	if err != nil {
+		return "", err
+	}
+	latestVersionPath := latestVersion.Name
+	secretVersionCall := sm.VersionService.Access(latestVersionPath)
+	secretVersion, err := secretVersionCall.Do()
+	if err != nil {
+		return "", err
+	}
+	decodedSecretDataString, err := base64.StdEncoding.DecodeString(secretVersion.Payload.Data)
+	return string(decodedSecretDataString), err
+}
+
 // GetSecretVersionData retrieves payload of a secret version
 // expects secretPath in "projects/*/secrets/*/versions/*" format
 func (sm *Service) GetSecretVersionData(secretPath string) (string, error) {
@@ -58,5 +81,6 @@ func (sm *Service) GetSecretVersionData(secretPath string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return secretVersion.Payload.Data, err
+	decodedSecretDataString, err := base64.StdEncoding.DecodeString(secretVersion.Payload.Data)
+	return string(decodedSecretDataString), err
 }
