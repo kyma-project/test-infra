@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "presubmit-test-job"
+  - pjName: "directory-size-exporter"
     pjPath: "test-infra/development/tools/pkg/pjtester/test_artifacts/"
     report: true
   - pjName: "orphaned-disks-cleaner"
