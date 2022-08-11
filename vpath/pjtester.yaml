@@ -1,6 +1,6 @@
 pjNames:
   - pjName: "directory-size-exporter"
-    pjPath: "test-infra/development/tools/pkg/pjtester/test_artifacts/"
+    pjPath: "test-infra/prow/jobs/kyma/components/"
     report: true
   - pjName: "orphaned-disks-cleaner"
   - pjName: "post-main-kyma-gke-integration"
