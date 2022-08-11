@@ -102,7 +102,7 @@ echo "NPM version: $(npm -v)"
 
 k3d cluster create busola
 export KUBECONFIG=$(k3d kubeconfig write busola)
-cat $KUBECONFIG
+cat "$KUBECONFIG"
 kubectl cluster-info
 
 
