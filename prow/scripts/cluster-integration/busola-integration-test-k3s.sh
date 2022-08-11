@@ -124,7 +124,7 @@ kubectl wait \
 cp "$PWD/kubeconfig-kyma.yaml" "$PWD/busola-tests/fixtures/kubeconfig.yaml"
 
 # copy local cluster and adjust the server address
-cp "$(k3d kubeconfig write kyma)" "$PWD/busola-tests/fixtures/kubeconfig-k3s.yaml"
+cp $KUBECONFIG "$PWD/busola-tests/fixtures/kubeconfig-k3s.yaml"
 sed -i 's!server: https://0.0.0.0:.*!server: https://kubernetes.default.svc!' "$PWD/busola-tests/fixtures/kubeconfig-k3s.yaml"
 
 mkdir -p "$PWD/busola-tests/cypress/screenshots"
