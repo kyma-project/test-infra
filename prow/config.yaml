@@ -760,6 +760,16 @@ presets:
             name: kyma-bot-github-token
             key: token
   - labels:
+      preset-autobump-bot-github-token: "true"
+    volumes:
+      - name: kyma-autobump-bot-token-path
+        secret:
+          secretName: kyma-autobump-bot-github-token
+    volumeMounts:
+      - name: kyma-autobump-bot-token-path
+        mountPath: /etc/github
+        readOnly: true
+  - labels:
       preset-bot-github-sap-token: "true"
     env:
       - name: BOT_GITHUB_SAP_TOKEN
@@ -927,6 +937,11 @@ presets:
     env:
       - name: WS_PRODUCTNAME
         value: "SHC - KYMA RUNTIME RELEASE-1"
+  - labels:
+      preset-whitesource-product-kyma-test: "true"
+    env:
+      - name: WS_PRODUCTNAME
+        value: "TEST - KYMA"
   # volume mounts for kind
   - labels:
       preset-kind-volume-mounts: "true"

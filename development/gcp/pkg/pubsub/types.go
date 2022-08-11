@@ -66,3 +66,18 @@ type FailingTestMessage struct {
 	GithubCommitersLogins []string `json:"githubCommitersLogins,omitempty"`
 	CommitersSlackLogins  []string `json:"slackCommitersLogins,omitempty"`
 }
+
+type Rotation struct {
+	NextRotationTime string `yaml:"nextRotationTime"`
+	RotationPeriod   string `yaml:"rotationPeriod"`
+}
+
+// SecretRotateMessage is the Data field of pubsub message payload, published by secret rotation automation.
+type SecretRotateMessage struct {
+	Name       string              `yaml:"name"`
+	CreateTime string              `yaml:"createTime"`
+	Labels     map[string]string   `yaml:"labels,omitempty"`
+	Topics     []map[string]string `yaml:"topics,omitempty"`
+	Etag       string              `yaml:"etag"`
+	Rotation   Rotation            `yaml:"rotation,omitempty"`
+}
