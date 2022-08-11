@@ -8,4 +8,4 @@ prConfigs:
   kyma-project:
     kyma:
       prNumber: 15068
-configPath: "test-infra/prow/custom_config.yaml"
+configPath: "test-infra/prow/config.yaml"
