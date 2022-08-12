@@ -23,13 +23,30 @@ templates:
                   name: pre-main-kyma-operator-tests
                   command: "bash"
                   args:
-                    - "-c" 
+                    - "-c"
                     - "cd operator && make test" # run test make target of operator
                   branches:
                     - ^main$ # any pr against main triggers this
                 inheritedConfigs:
                   global:
                     - "image_buildpack-golang" # takes latest golang image
-                    - "jobConfig_default" 
+                    - "jobConfig_default"
                     - "jobConfig_presubmit"
                     - "build_labels" # default labels
+              - jobConfig:
+                  name: "pre-main-kyma-operator-build"
+                  always_run: true
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/kyma-operator/operator"
+                    - "docker-build"
+                    - "docker-push"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
