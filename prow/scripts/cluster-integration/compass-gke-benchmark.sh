@@ -159,6 +159,9 @@ function installKyma() {
   make build-linux && cd ./bin && mv ./kyma-linux ./kyma
   chmod +x kyma
 
+  export PATH="${PREV_WD}/cli/bin:${PATH}"
+  cd "$PREV_WD"
+
   KYMA_VERSION=$(<"${COMPASS_SOURCES_DIR}/installation/resources/KYMA_VERSION")
   MINIMAL_KYMA="${COMPASS_SOURCES_DIR}/installation/resources/kyma/kyma-components-minimal.yaml"
   kyma deploy --ci --source="${KYMA_VERSION}" --workspace "$KYMA_SOURCES_DIR" --verbose -c "${MINIMAL_KYMA}" --values-file "$PWD/kyma_overrides.yaml"
