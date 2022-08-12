@@ -83,6 +83,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-main-kyma-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
+        preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       always_run: true
