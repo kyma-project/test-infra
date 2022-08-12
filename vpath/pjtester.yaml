@@ -1,10 +1,7 @@
 pjNames:
-  - pjName: "pre-main-directory-size-exporter"
-    report: true
-  - pjName: "orphaned-disks-cleaner"
-  - pjName: "post-main-kyma-gke-integration"
+  - pjName: "pre-kyma-components-directory-size-exporter"
+  - pjName: "pre-rel25-kyma-components-directory-size-exporter"
 prConfigs:
   kyma-project:
     kyma:
       prNumber: 15068
-configPath: "test-infra/prow/config.yaml"
