@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "pre-main-kyma-operator-build"
+prConfigs:
+  kyma-project:
+    kyma-operator:
+      prNumber: 113
