@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "directory-size-exporter"
+  - pjName: "pre-main-directory-size-exporter"
     report: true
   - pjName: "orphaned-disks-cleaner"
   - pjName: "post-main-kyma-gke-integration"
