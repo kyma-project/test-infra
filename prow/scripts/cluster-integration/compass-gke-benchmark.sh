@@ -151,7 +151,13 @@ function installHelm() {
 }
 
 function installKyma() {
-  kyma::install_cli
+  KYMA_CLI_VERSION="2.0.4"
+  log::info "Installing Kyma CLI version: $KYMA_CLI_VERSION"
+
+  PREV_WD=$(pwd)
+  git clone https://github.com/kyma-project/cli.git && cd cli && git checkout $KYMA_CLI_VERSION
+  make build-linux && cd ./bin && mv ./kyma-linux ./kyma
+  chmod +x kyma
 
   KYMA_VERSION=$(<"${COMPASS_SOURCES_DIR}/installation/resources/KYMA_VERSION")
   MINIMAL_KYMA="${COMPASS_SOURCES_DIR}/installation/resources/kyma/kyma-components-minimal.yaml"
