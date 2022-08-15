@@ -160,7 +160,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      always_run: true
+      run_if_changed: '^kcp/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -205,7 +205,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      always_run: true
+      run_if_changed: '^skr/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload

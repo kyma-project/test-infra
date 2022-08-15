@@ -85,7 +85,7 @@ templates:
                   labels:
                     preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
                   name: "pre-main-kyma-watcher-kcp-build"
-                  always_run: true
+                  run_if_changed: "^kcp/"
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/kyma-watcher/kcp"
@@ -105,7 +105,7 @@ templates:
                   labels:
                     preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
                   name: "pre-main-kyma-watcher-skr-build"
-                  always_run: true
+                  run_if_changed: "^skr/"
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/kyma-watcher/skr"
