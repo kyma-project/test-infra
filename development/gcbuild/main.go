@@ -213,9 +213,7 @@ func runBuildJob(o options, cb *config.CloudBuild, vs config.Variants) error {
 
 // validateOptions handles options validation. All checks should be provided here
 func validateOptions(o options) error {
-	// TODO(Ressetkk): These checks are great candidate to be in checks.go as separate check
 	var errs []error
-
 	if o.cloudbuild == "" {
 		errs = append(errs, fmt.Errorf("'cloudbuild' option is missing, please define this option using '--cloudbuild-file' flag"))
 	}
@@ -262,56 +260,69 @@ func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
 
 func main() {
 	if err := checkDependencies(); err != nil {
-		panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
 	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	o := options{isCI: os.Getenv("CI") == "true"}
 	o.gatherOptions(fs)
 	if err := fs.Parse(os.Args[1:]); err != nil {
-		panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
-
+	if o.configPath == "" {
+		fmt.Println("'--config' flag is missing or has empty value, please provide the path to valid 'config.yaml' file")
+		os.Exit(1)
+	}
 	c, err := os.ReadFile(o.configPath)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
 	if err := o.ParseConfig(c); err != nil {
-		panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
 	// validate if options provided by flags and config file are fine
 	if err := validateOptions(o); err != nil {
-		panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
 	buildDir, err := filepath.Abs(o.buildDir)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
 	// jump into buildDir directory and run stuff from there
 	if err := os.Chdir(buildDir); err != nil {
-		panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 	cbDir := filepath.Dir(o.cloudbuild)
 	variantsPath := filepath.Join(cbDir, "variants.yaml")
 
 	cb, err := config.GetCloudBuild(o.cloudbuild, os.ReadFile)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
 	variant, err := config.GetVariants(o.variant, variantsPath, os.ReadFile)
 	if err != nil {
 		if !os.IsNotExist(err) {
-			panic(err)
+			fmt.Println(err)
+			os.Exit(1)
 		}
 	}
 	err = runBuildJob(o, cb, variant)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 	fmt.Println("Job's done.")
 }

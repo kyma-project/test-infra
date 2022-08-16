@@ -102,22 +102,26 @@ func main() {
 	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	o.gatherOptions(fs)
 	if err := fs.Parse(os.Args[1:]); err != nil {
-		panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 	files, err := getFiles(o, fs)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 	if len(files) > 0 {
 		for _, f := range files {
 			dir := filepath.Dir(f)
 			cb, err := config.GetCloudBuild(f, os.ReadFile)
 			if err != nil {
-				panic(err)
+				fmt.Println(err)
+				os.Exit(1)
 			}
 			v, err := config.GetVariants("", filepath.Join(dir, "variants.yaml"), os.ReadFile)
 			if err != nil {
-				panic(err)
+				fmt.Println(err)
+				os.Exit(1)
 			}
 
 			if err := config.ValidateConfig(nil, cb, v); err != nil {
