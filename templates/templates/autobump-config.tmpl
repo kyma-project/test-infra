@@ -1,0 +1,58 @@
+gitHubLogin: "kyma-bot"
+gitHubToken: "/etc/github/token"
+gitName: "Kyma Bot"
+gitEmail: "kyma.bot@sap.com"
+skipPullRequest: false
+targetVersion: "latest"
+
+gitHubOrg: {{ quote .Values.org }}
+gitHubRepo: {{ quote .Values.repo }}
+remoteName: {{ if .Values.remote_name }}{{quote .Values.remote_name }}{{ else }}{{ quote .Values.repo }}{{ end }}
+{{- if .Values.base_branch }}
+{{- /* Name of the base branch you want to update. In case of an empty name, autobumper uses default branch*/}}
+gitHubBaseBranch: {{ quote .Values.base_branch}} 
+{{- end }}
+upstreamURLBase: "https://raw.githubusercontent.com/{{ .Values.org }}/{{ .Values.repo }}/main"
+headBranchName: "{{.Values.repo }}-autobump"
+
+{{- if .Values.labels }}
+{{- /* list of labels that will get appended to the created PR */}}
+labels:
+{{- range .Values.labels }}
+  - {{ quote . }}
+{{- end }}
+{{- end }}
+
+{{- if .Values.included_paths }}
+includedConfigPaths:
+{{- range .Values.included_paths }}
+  - {{ quote . }}
+{{- end }}
+{{- else }}
+includedConfigPaths:
+  - "." # test-infra root directory
+{{- end }}
+
+{{- if .Values.excluded_paths }}
+{{- /* YAML files excluded from autobumping */}}
+excludedConfigPaths:
+{{- range .Values.excluded_paths }}
+  - {{ quote . }}
+{{- end }}
+{{- end }}
+
+{{- if .Values.extra_files }}
+{{- /* additional non-YAML files */}}
+extraFiles:
+{{- range .Values.extra_files }}
+  - {{ quote . }}
+{{- end }}
+{{- end }}
+
+{{- /* list of container registry prefixes you want to autobump */}}
+prefixes:
+  - name: "kyma-project"
+    prefix: "eu.gcr.io/kyma-project/"
+    repo: "https://github.com/{{ .Values.org }}/{{ .Values.repo }}"
+    summarise: true
+    consistentImages: false

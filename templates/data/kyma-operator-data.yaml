@@ -1,23 +1,58 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/kyma-operator/operator.yaml
+      - to: ../../prow/jobs/kyma-operator/kyma-operator.yaml
         jobConfigs:
           - repoName: kyma-project/kyma-operator
             jobs:
               - jobConfig:
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220722-426fa04d"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220804-607830f89"
                   name: "pre-main-kyma-operator-lint"
-                  always_run: true
+                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
+                  annotations:
+                    description: executes the 'golangci-lint lint' command in the kyma-operator 'operator' directory before any pull request.
                   command: "bash"
                   args:
                     - "-c"
                     - "cd operator && golangci-lint run"
-                  env:
-                    GO11MODULE: "on"
                   branches:
                     - ^main$
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
+              - jobConfig:
+                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
+                  name: pre-main-kyma-operator-tests
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd operator && make test" # run test make target of operator
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "build_labels" # default labels
+              - jobConfig:
+                  labels:
+                    preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
+                  name: "pre-main-kyma-operator-build"
+                  always_run: true
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/kyma-operator/operator"
+                    - "docker-build"
+                    - "docker-push"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - "build_labels" # default labels

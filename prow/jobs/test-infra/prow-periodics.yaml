@@ -21,7 +21,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220808-d24ecd898"
             securityContext:
               privileged: true
             command:
@@ -63,7 +63,7 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220808-d24ecd898"
             command:
               - "prow/cluster/deploy.sh"
             env:
@@ -95,7 +95,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220808-d24ecd898"
             securityContext:
               privileged: true
             command:
@@ -123,6 +123,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "ci-prow-label-sync"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-autobump-bot-github-token: "true"
       cron: "17 * * * *"
       skip_report: false
       decorate: true
@@ -141,16 +142,10 @@ periodics: # runs on schedule
               - "--endpoint=https://api.github.com"
               - "--debug"
             volumeMounts:
-              - name: kyma-bot-github-token
-                mountPath: /etc/github
-                readOnly: true
               - name: config
                 mountPath: /etc/config
                 readOnly: true
         volumes:
-          - name: kyma-bot-github-token
-            secret:
-              secretName: kyma-bot-github-token
           - name: config
             configMap:
               name: label-config
@@ -161,6 +156,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "ci-prow-autobump"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-autobump-bot-github-token: "true"
       cron: "30 * * * 1-5"
       skip_report: false
       decorate: true
@@ -180,14 +176,6 @@ periodics: # runs on schedule
               - "generic-autobumper"
             args:
               - "--config=prow/autobump-config/prow-cluster-autobump-config.yaml"
-            volumeMounts:
-              - name: kyma-bot-github-token
-                mountPath: /etc/github
-                readOnly: true
-        volumes:
-          - name: kyma-bot-github-token
-            secret:
-              secretName: kyma-bot-github-token
     - name: ci-prow-autobump-jobs
       annotations:
         testgrid-create-test-group: "false"
@@ -195,6 +183,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "ci-prow-autobump-jobs"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-autobump-bot-github-token: "true"
       cron: "45 * * * 1-5"
       skip_report: false
       decorate: true
@@ -215,12 +204,4 @@ periodics: # runs on schedule
             args:
               - "--config=prow/autobump-config/test-infra-autobump-config.yaml"
               - "--labels-override=skip-review"
-            volumeMounts:
-              - name: kyma-bot-github-token
-                mountPath: /etc/github
-                readOnly: true
-        volumes:
-          - name: kyma-bot-github-token
-            secret:
-              secretName: kyma-bot-github-token
   
