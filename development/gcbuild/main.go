@@ -6,7 +6,6 @@ import (
 	"github.com/kyma-project/test-infra/development/gcbuild/config"
 	"github.com/kyma-project/test-infra/development/gcbuild/tags"
 	"io"
-	"io/ioutil"
 	errutil "k8s.io/apimachinery/pkg/util/errors"
 	"os"
 	"os/exec"
@@ -273,7 +272,7 @@ func main() {
 		panic(err)
 	}
 
-	c, err := ioutil.ReadFile(o.configPath)
+	c, err := os.ReadFile(o.configPath)
 	if err != nil {
 		panic(err)
 	}
@@ -299,12 +298,12 @@ func main() {
 	cbDir := filepath.Dir(o.cloudbuild)
 	variantsPath := filepath.Join(cbDir, "variants.yaml")
 
-	cb, err := config.GetCloudBuild(o.cloudbuild, ioutil.ReadFile)
+	cb, err := config.GetCloudBuild(o.cloudbuild, os.ReadFile)
 	if err != nil {
 		panic(err)
 	}
 
-	variant, err := config.GetVariants(o.variant, variantsPath, ioutil.ReadFile)
+	variant, err := config.GetVariants(o.variant, variantsPath, os.ReadFile)
 	if err != nil {
 		if !os.IsNotExist(err) {
 			panic(err)

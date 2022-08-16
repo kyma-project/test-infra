@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"github.com/kyma-project/test-infra/development/gcbuild/config"
-	"io/ioutil"
 	errutil "k8s.io/apimachinery/pkg/util/errors"
 	"os"
 	"os/exec"
@@ -112,11 +111,11 @@ func main() {
 	if len(files) > 0 {
 		for _, f := range files {
 			dir := filepath.Dir(f)
-			cb, err := config.GetCloudBuild(f, ioutil.ReadFile)
+			cb, err := config.GetCloudBuild(f, os.ReadFile)
 			if err != nil {
 				panic(err)
 			}
-			v, err := config.GetVariants("", filepath.Join(dir, "variants.yaml"), ioutil.ReadFile)
+			v, err := config.GetVariants("", filepath.Join(dir, "variants.yaml"), os.ReadFile)
 			if err != nil {
 				panic(err)
 			}
