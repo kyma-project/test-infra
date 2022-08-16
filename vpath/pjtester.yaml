@@ -1,6 +1,9 @@
 pjNames:
-  - pjName: "kyma-integration-k3d-telemetry"
+  - pjName: "pre-main-reconciler-cli-kyma-prev-to-last-release-upgrade-k3d"
 prConfigs:
   kyma-project:
     kyma:
-      prNumber: 15100
+      prNumber: 15111
+  kyma-incubator:
+    reconciler:
+      prNumber: 1145
