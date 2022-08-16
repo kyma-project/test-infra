@@ -13,7 +13,7 @@ This cloud function creates new key for GCP service account on Secret Manager Pu
 6. The Cloud Function generates new key for the service account.
 7. The Cloud Function creates new secret version in Secret Manger, containing the newly created service account key.
 
-# Cloud Function deployment
+## Cloud Function deployment
 
 To deploy the Coud Function follow these steps:
 
