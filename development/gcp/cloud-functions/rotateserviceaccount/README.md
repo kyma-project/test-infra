@@ -1,9 +1,8 @@
-# Rotate service account cloud function
-
+# Rotate service account Cloud Function
 
 ## Overview
 
-This cloud function creates new key for a GCP service account and updates the requesting secret data. The function is triggered by a  Pub/Sub message sent by a secret stored in Secret Manager.
+This Cloud Function creates new key for a GCP service account and updates the requesting secret data. The function is triggered by a  Pub/Sub message sent by a secret stored in Secret Manager.
 
 1. Secret in Secret Manager sends a Pub/Sub message to `secret-manager-notifications` Pub/Sub topic.
 2. The Cloud Function is started.
