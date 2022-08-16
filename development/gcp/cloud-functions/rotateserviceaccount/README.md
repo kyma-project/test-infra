@@ -5,7 +5,7 @@
 
 This cloud function creates new key for a GCP service account and updates the requesting secret data. The function is triggered by a  Pub/Sub message sent by a secret stored in Secret Manager.
 
-1. Secret in Secret mnager senda a Pub/Sub message to `secret-manager-notifications` Pub/Sub topic.
+1. Secret in Secret Manager sends a Pub/Sub message to `secret-manager-notifications` Pub/Sub topic.
 2. The Cloud Function is started.
 3. The Cloud Function check if the value of the `eventType` attribute is set to `SECRET_ROTATE` and stops execution otherwise.
 4. The Cloud Function check if the value of the `type` label is set to `service-account` and stops execution otherwise.
@@ -15,7 +15,7 @@ This cloud function creates new key for a GCP service account and updates the re
 
 ## Cloud Function deployment
 
-To deploy the Coud Function follow these steps:
+To deploy the Cloud Function follow these steps:
 
 1. Run `go mod vendor` inside the `development/gcp/cloud-functions/rotateserviceaccount/` directory.
 2. Create `secret-manager-notifications` Pub/Sub topic if it does not exist.
@@ -35,7 +35,7 @@ gcloud functions deploy rotate-secrets-service-account \
 
 ## Cloud Function usage
 
-To setup secret for automatic rotation follow these steps:
+To setup an automatic rotation for a Secret Manager secret follow these steps:
 1. Create new secret in Secret Manager with existing service account data.
 2. Add `type: service-account` label to the secret.
 3. Set `secret-manager-notifications` as a secret Pub/Sub topic.
