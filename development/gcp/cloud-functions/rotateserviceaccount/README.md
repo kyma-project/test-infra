@@ -3,7 +3,7 @@
 
 ## Overview
 
-This cloud function creates new key for GCP service account on Secret Manager Pub/Sub message and updates the requesting Secret data.
+This cloud function creates new key for a GCP service account and updates the requesting Secret data. The function is triggered by a Secret Manager Pub/Sub message.
 
 1. Secret in Secret mnager senda a Pub/Sub message to `secret-manager-notifications` Pub/Sub topic.
 2. The Cloud Function is started.
