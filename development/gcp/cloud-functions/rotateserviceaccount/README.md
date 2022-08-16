@@ -25,7 +25,7 @@ To deploy the Coud Function follow these steps:
 gcloud functions deploy rotate-secrets-service-account \
 --region europe-west3 \
 --trigger-topic secret-manager-notifications \
---runtime go113 \
+--runtime go116 \
 --source ./ \
 --timeout 10 \
 --max-instances 10 \
