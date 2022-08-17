@@ -1,6 +1,0 @@
-pjNames:
-   - pjName: "pre-kyma-components-directory-size-exporter"
-prConfigs:
-  kyma-project:
-    kyma:
-      prNumber: 15068
