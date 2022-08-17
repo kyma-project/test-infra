@@ -9,9 +9,8 @@ replace (
 	k8s.io/client-go => k8s.io/client-go v0.22.2
 )
 
-require github.com/kyma-project/test-infra v0.0.0-20220715122928-d02a288f4078
-
 require (
 	cloud.google.com/go/compute v1.7.0
+	github.com/kyma-project/test-infra v0.0.0-20220715122928-d02a288f4078
 	google.golang.org/api v0.92.0
 )
