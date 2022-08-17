@@ -402,7 +402,7 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/components/directory-size-exporter"
                   run_if_changed: "^components/directory-size-exporter/|^common/makefiles/"
-                  release_since: "2.5"
+                  release_since: "2.6"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
