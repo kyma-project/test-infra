@@ -5,7 +5,7 @@
 Cloud Function creates a new key for a GCP service account and updates the required secret data. The function is triggered by a  Pub/Sub message sent by a secret stored in Secret Manager.
 
 1. Secret in Secret Manager sends a Pub/Sub message to `secret-manager-notifications` Pub/Sub topic.
-2. Cloud Function is started.
+2. Cloud Function starts.
 3. Cloud Function checks if the value of the **eventType** attribute is set to `SECRET_ROTATE`; if not, it stops its execution.
 4. Cloud Function checks if the value of the **type** label is set to `service-account`; if not, it stops its execution.
 5. Cloud Function reads the name of the service account from the latest version of a secret.
