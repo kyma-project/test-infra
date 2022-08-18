@@ -75,4 +75,5 @@ ory:
         authenticators:
           jwt:
             config:
-              jwks_urls: "https://container.googleapis.com/v1/projects/$CLOUDSDK_CORE_PROJECT/locations/$CLOUDSDK_COMPUTE_ZONE/clusters/$COMMON_NAME/jwks"
+              jwks_urls:
+                - "https://container.googleapis.com/v1/projects/$CLOUDSDK_CORE_PROJECT/locations/$CLOUDSDK_COMPUTE_ZONE/clusters/$COMMON_NAME/jwks"
