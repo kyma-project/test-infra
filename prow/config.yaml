@@ -124,7 +124,7 @@ deck:
               - "Directory vpath is present"
               - '"status": "Vulns"' # protecode guard
               - "command not found"
-              - '[ERROR]'
+              - '\[ERROR\]'
         required_files:
           - ^.*build-log\.txt$
       - lens:
