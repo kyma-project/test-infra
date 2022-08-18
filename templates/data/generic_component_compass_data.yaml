@@ -9,6 +9,9 @@ templates:
                   path: components/operations-controller
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/components/operations-controller"
+                  decoration_config:
+                    timeout: 15m
+                    grace_period: 1m
                   run_if_changed: "^components/operations-controller/|^scripts/"
                   release_since: "1.19"
                   skipReleaseJobs: "true"
@@ -38,6 +41,9 @@ templates:
                   path: components/connector
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/components/connector"
+                  decoration_config:
+                    timeout: 15m
+                    grace_period: 1m
                   run_if_changed: "^components/connector/|^scripts/"
                   release_since: "1.7"
                   skipReleaseJobs: "true"
@@ -67,6 +73,9 @@ templates:
                   path: components/director
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/components/director"
+                  decoration_config:
+                    timeout: 15m
+                    grace_period: 1m
                   run_if_changed: "^components/director/|^scripts/"
                   release_since: "1.7"
                   skipReleaseJobs: "true"
@@ -96,6 +105,9 @@ templates:
                   path: components/hydrator
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/components/hydrator"
+                  decoration_config:
+                    timeout: 15m
+                    grace_period: 1m
                   run_if_changed: "^components/hydrator/|^scripts/"
                   release_since: "1.7"
                   skipReleaseJobs: "true"
@@ -126,6 +138,9 @@ templates:
                   path_alias: "github.com/kyma-incubator/ord-service"
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/ord-service/components/ord-service"
+                  decoration_config:
+                    timeout: 15m
+                    grace_period: 1m
                   run_if_changed: "^components/ord-service/|^scripts/"
                   release_since: "1.17"
                   skipReleaseJobs: "true"
@@ -155,6 +170,9 @@ templates:
                   path: components/system-broker
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/components/system-broker"
+                  decoration_config:
+                    timeout: 15m
+                    grace_period: 1m
                   run_if_changed: "^components/system-broker/|^scripts/"
                   release_since: "1.16"
                   skipReleaseJobs: "true"
@@ -185,6 +203,9 @@ templates:
                   path_alias: "github.com/kyma-incubator/compass-console"
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass-console/compass"
+                  decoration_config:
+                    timeout: 15m
+                    grace_period: 1m
                   run_if_changed: "^compass/|^components/|^shared/|^package.json"
                   release_since: "1.16"
                   skipReleaseJobs: "true"
@@ -214,6 +235,9 @@ templates:
                   path: components/external-services-mock
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/components/external-services-mock"
+                  decoration_config:
+                    timeout: 15m
+                    grace_period: 1m
                   run_if_changed: "^components/external-services-mock/|^scripts/"
                   release_since: "1.12"
                   skipReleaseJobs: "true"
@@ -243,6 +267,9 @@ templates:
                   path: components/connectivity-adapter
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/components/connectivity-adapter"
+                  decoration_config:
+                    timeout: 15m
+                    grace_period: 1m
                   run_if_changed: "^components/connectivity-adapter/|^scripts/"
                   release_since: "1.10"
                   skipReleaseJobs: "true"
@@ -272,6 +299,9 @@ templates:
                   path: components/pairing-adapter
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/components/pairing-adapter"
+                  decoration_config:
+                    timeout: 15m
+                    grace_period: 1m
                   run_if_changed: "^components/pairing-adapter/|^scripts/"
                   release_since: "1.11"
                   skipReleaseJobs: "true"
@@ -301,6 +331,9 @@ templates:
                   path: components/gateway
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/components/gateway"
+                  decoration_config:
+                    timeout: 15m
+                    grace_period: 1m
                   run_if_changed: "^components/gateway/|^scripts/"
                   release_since: "1.7"
                   skipReleaseJobs: "true"
@@ -330,6 +363,9 @@ templates:
                   path: components/schema-migrator
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/components/schema-migrator"
+                  decoration_config:
+                    timeout: 15m
+                    grace_period: 1m
                   run_if_changed: "^components/schema-migrator/|^scripts/"
                   release_since: "1.7"
                   skipReleaseJobs: "true"
@@ -359,6 +395,9 @@ templates:
                   path: tests
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/tests"
+                  decoration_config:
+                    timeout: 15m
+                    grace_period: 1m
                   run_if_changed: "^tests/|^scripts/"
                   release_since: "1.17"
                   skipReleaseJobs: "true"
