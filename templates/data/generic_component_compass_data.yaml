@@ -10,7 +10,7 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/components/operations-controller"
                   decoration_config:
-                    timeout: 15m
+                    timeout: 20m
                     grace_period: 1m
                   run_if_changed: "^components/operations-controller/|^scripts/"
                   release_since: "1.19"
@@ -42,7 +42,7 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/components/connector"
                   decoration_config:
-                    timeout: 15m
+                    timeout: 20m
                     grace_period: 1m
                   run_if_changed: "^components/connector/|^scripts/"
                   release_since: "1.7"
@@ -74,7 +74,7 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/components/director"
                   decoration_config:
-                    timeout: 15m
+                    timeout: 20m
                     grace_period: 1m
                   run_if_changed: "^components/director/|^scripts/"
                   release_since: "1.7"
@@ -106,7 +106,7 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/components/hydrator"
                   decoration_config:
-                    timeout: 15m
+                    timeout: 20m
                     grace_period: 1m
                   run_if_changed: "^components/hydrator/|^scripts/"
                   release_since: "1.7"
@@ -139,7 +139,7 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/ord-service/components/ord-service"
                   decoration_config:
-                    timeout: 15m
+                    timeout: 20m
                     grace_period: 1m
                   run_if_changed: "^components/ord-service/|^scripts/"
                   release_since: "1.17"
@@ -171,7 +171,7 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/components/system-broker"
                   decoration_config:
-                    timeout: 15m
+                    timeout: 20m
                     grace_period: 1m
                   run_if_changed: "^components/system-broker/|^scripts/"
                   release_since: "1.16"
@@ -204,7 +204,7 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass-console/compass"
                   decoration_config:
-                    timeout: 15m
+                    timeout: 20m
                     grace_period: 1m
                   run_if_changed: "^compass/|^components/|^shared/|^package.json"
                   release_since: "1.16"
@@ -236,7 +236,7 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/components/external-services-mock"
                   decoration_config:
-                    timeout: 15m
+                    timeout: 20m
                     grace_period: 1m
                   run_if_changed: "^components/external-services-mock/|^scripts/"
                   release_since: "1.12"
@@ -268,7 +268,7 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/components/connectivity-adapter"
                   decoration_config:
-                    timeout: 15m
+                    timeout: 20m
                     grace_period: 1m
                   run_if_changed: "^components/connectivity-adapter/|^scripts/"
                   release_since: "1.10"
@@ -300,7 +300,7 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/components/pairing-adapter"
                   decoration_config:
-                    timeout: 15m
+                    timeout: 20m
                     grace_period: 1m
                   run_if_changed: "^components/pairing-adapter/|^scripts/"
                   release_since: "1.11"
@@ -332,7 +332,7 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/components/gateway"
                   decoration_config:
-                    timeout: 15m
+                    timeout: 20m
                     grace_period: 1m
                   run_if_changed: "^components/gateway/|^scripts/"
                   release_since: "1.7"
@@ -364,7 +364,7 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/components/schema-migrator"
                   decoration_config:
-                    timeout: 15m
+                    timeout: 20m
                     grace_period: 1m
                   run_if_changed: "^components/schema-migrator/|^scripts/"
                   release_since: "1.7"
@@ -396,7 +396,7 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/tests"
                   decoration_config:
-                    timeout: 15m
+                    timeout: 20m
                     grace_period: 1m
                   run_if_changed: "^tests/|^scripts/"
                   release_since: "1.17"
