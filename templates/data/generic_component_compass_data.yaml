@@ -396,7 +396,7 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/compass/tests"
                   decoration_config:
-                    timeout: 20m
+                    timeout: 30m
                     grace_period: 1m
                   run_if_changed: "^tests/|^scripts/"
                   release_since: "1.17"
