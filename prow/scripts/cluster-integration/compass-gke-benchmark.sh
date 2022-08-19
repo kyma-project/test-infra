@@ -250,13 +250,8 @@ until [[ $(kubectl get cronjob -n kyma-system oathkeeper-jwks-rotator --output=j
   sleep 3
 done
 kubectl patch cronjob -n kyma-system oathkeeper-jwks-rotator -p '{"spec":{"schedule": "0 0 1 * *"}}'
-#log::info "Install Compass version from main"
-#installCompassOld
-
-# It is necessary to install 'new' Compass because the related changes in Compass repo will not be applied if we install "old" Compass
-# TODO: delete these two lines after validating this PR and uncomment the two lines above
-log::info "Install New Compass version first"
-installCompassNew
+log::info "Install Compass version from main"
+installCompassOld
 
 readonly SUITE_NAME="compass-e2e-tests"
 
