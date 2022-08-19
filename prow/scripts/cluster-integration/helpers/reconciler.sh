@@ -75,8 +75,10 @@ function reconciler::provision_cluster() {
     # catch cluster provisioning errors and try provision new one
     trap reconciler::reprovision_cluster ERR
 
+    set +e
     # create the cluster
     envsubst < "${DEFINITION_PATH}" | kubectl create -f -
+    set -e
 
     # wait for the cluster to be ready
     kubectl wait --for condition="ControlPlaneHealthy" --timeout=20m shoot "${INPUT_CLUSTER_NAME}"
