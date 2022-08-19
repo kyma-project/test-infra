@@ -155,7 +155,7 @@ gcp::provision_k8s_cluster \
     -D "$CLUSTER_USE_SSD" \
     -e "$GKE_ENABLE_POD_SECURITY_POLICY" \
     -P "$TEST_INFRA_SOURCES_DIR"
-export CLEANUP_CLUSTER="true"
+export CLEANUP_CLUSTER="false"
 
 utils::generate_self_signed_cert \
     -d "$DNS_DOMAIN" \
