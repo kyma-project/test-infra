@@ -244,7 +244,12 @@ log::info "Install Kyma"
 installKyma
 
 
-kubectl create job --from=cronjob/oathkeeper-jwks-rotator oathkeeper-jwks-rotator-fix-jwks-secret -n kyma-system
+kubectl patch cronjob -n kyma-system oathkeeper-jwks-rotator -p '{"spec":{"schedule": "*/1 * * * *"}}'
+until [[ $(kubectl get cronjob -n kyma-system oathkeeper-jwks-rotator --output=jsonpath={.status.lastScheduleTime}) ]]; do
+  echo "Waiting for cronjob oathkeeper-jwks-rotator to be scheduled"
+  sleep 3
+done
+kubectl patch cronjob -n kyma-system oathkeeper-jwks-rotator -p '{"spec":{"schedule": "0 0 1 * *"}}'
 #log::info "Install Compass version from main"
 #installCompassOld
 
