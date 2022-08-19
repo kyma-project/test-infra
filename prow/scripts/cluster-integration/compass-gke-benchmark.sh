@@ -244,7 +244,7 @@ log::info "Install Kyma"
 installKyma
 
 
-kubectl create job --from=cronjob/oathkeeper-jwks-rotator oathkeeper-jwks-rotator-fix-jwks-secret
+kubectl create job --from=cronjob/oathkeeper-jwks-rotator oathkeeper-jwks-rotator-fix-jwks-secret -n kyma-system
 #log::info "Install Compass version from main"
 #installCompassOld
 
