@@ -1,7 +1,4 @@
 global:
-  migratorJob:
-    pvc:
-      storageClass: standard
   domainName: ${DOMAIN}
   loadBalancerIP: ${GATEWAY_IP_ADDRESS}
   enableAPIPackages: true
