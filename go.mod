@@ -30,7 +30,7 @@ require (
 	github.com/containerd/containerd v1.6.6
 	github.com/containerd/typeurl v1.0.2
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
-	github.com/fsouza/go-dockerclient v1.8.2
+	github.com/fsouza/go-dockerclient v1.8.3
 	github.com/gardener/component-cli v0.43.0
 	github.com/gardener/component-spec/bindings-go v0.0.65
 	github.com/ghodss/yaml v1.0.0
