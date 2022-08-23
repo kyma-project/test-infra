@@ -76,7 +76,6 @@ templates:
                 inheritedConfigs:
                   global:
                     - jobConfig_default
-                    - jobConfig_presubmit
                     - jobConfig_postsubmit
                     - extra_refs_test-infra
                     - image_buildpack-golang
