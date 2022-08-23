@@ -721,8 +721,8 @@ github.com/fsnotify/fsnotify v1.5.1/go.mod h1:T3375wBYaZdLLcVNkcVbzGHY7f1l/uK5T5
 github.com/fsouza/fake-gcs-server v0.0.0-20180612165233-e85be23bdaa8/go.mod h1:1/HufuJ+eaDf4KTnYdS6HJMGvMRU8d4cYTuu/1QaBbI=
 github.com/fsouza/fake-gcs-server v1.19.4 h1:3bRRh/rQnB2XbrMolHAj9oX/PFiWVQFVVfPR5y2pxb8=
 github.com/fsouza/fake-gcs-server v1.19.4/go.mod h1:I0/88nHCASqJJ5M7zVF0zKODkYTcuXFW5J5yajsNJnE=
-github.com/fsouza/go-dockerclient v1.8.2 h1:8A2/xvHxpe5ivfQ2XDJ5EpLBTaxmsFZUJpfX1zSORRY=
-github.com/fsouza/go-dockerclient v1.8.2/go.mod h1:oenNB8JjNKY4o8I/sug4Qah9si/7OxH4MjL+u7oBxP8=
+github.com/fsouza/go-dockerclient v1.8.3 h1:ckb6sG98D607PNQo012YEhQ8hvuRHx7RISIJM5tjkQM=
+github.com/fsouza/go-dockerclient v1.8.3/go.mod h1:oenNB8JjNKY4o8I/sug4Qah9si/7OxH4MjL+u7oBxP8=
 github.com/fullstorydev/grpcurl v1.8.0/go.mod h1:Mn2jWbdMrQGJQ8UD62uNyMumT2acsZUCkZIqFxsQf1o=
 github.com/fullstorydev/grpcurl v1.8.1/go.mod h1:3BWhvHZwNO7iLXaQlojdg5NA6SxUDePli4ecpK1N7gw=
 github.com/fullstorydev/grpcurl v1.8.2/go.mod h1:YvWNT3xRp2KIRuvCphFodG0fKkMXwaxA9CJgKCcyzUQ=
