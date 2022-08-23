@@ -488,28 +488,6 @@ templates:
                     - "vm_job_template_serverless_k3s"
                     - "vm_job_labels_template"
               - jobConfig:
-                  name: "pre-main-serverless-v1alpha2-integration-k3s"
-                  # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((resources/serverless\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  annotations:
-                    pipeline.platform: k3s
-                  labels:
-                    preset-build-pr: "true"
-                  env:
-                    INTEGRATION_SUITE: "serverless-integration"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_serverlessv1alpha2"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "vm_job_template_serverless_k3s"
-                    - "vm_job_labels_template"
-              - jobConfig:
                   name: "serverless-function-benchmark"
                   cron: "0 1,13 * * *" # twice a day
                   annotations:
