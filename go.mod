@@ -31,10 +31,10 @@ require (
 	github.com/containerd/typeurl v1.0.2
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
 	github.com/fsouza/go-dockerclient v1.8.3
-	github.com/gardener/component-cli v0.43.0
-	github.com/gardener/component-spec/bindings-go v0.0.65
+	github.com/gardener/component-cli v0.45.0
+	github.com/gardener/component-spec/bindings-go v0.0.66
 	github.com/ghodss/yaml v1.0.0
-	github.com/go-logr/logr v0.4.0
+	github.com/go-logr/logr v1.2.3
 	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/google/go-containerregistry v0.7.1-0.20211203164431-c75901cce627
 	github.com/google/go-github/v40 v40.0.0
@@ -65,8 +65,8 @@ require (
 	google.golang.org/api v0.93.0
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
-	k8s.io/api v0.22.2
-	k8s.io/apimachinery v0.22.2
+	k8s.io/api v0.22.5
+	k8s.io/apimachinery v0.22.5
 	k8s.io/client-go v11.0.1-0.20190805182717-6502b5e7b1b5+incompatible
 	k8s.io/test-infra v0.0.0-20211214153147-7b2c2d007b33
 	sigs.k8s.io/yaml v1.3.0
