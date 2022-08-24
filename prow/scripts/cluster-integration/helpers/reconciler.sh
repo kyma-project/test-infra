@@ -75,8 +75,10 @@ function reconciler::provision_cluster() {
     # catch cluster provisioning errors and try provision new one
     trap reconciler::reprovision_cluster ERR
 
+    set +e
     # create the cluster
     envsubst < "${DEFINITION_PATH}" | kubectl create -f -
+    set -e
 
     # wait for the cluster to be ready
     kubectl wait --for condition="ControlPlaneHealthy" --timeout=20m shoot "${INPUT_CLUSTER_NAME}"
@@ -244,6 +246,11 @@ function reconciler::wait_until_kyma_reconciled() {
       log::error "Failed to reconcile Kyma. Exiting"
       kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler -c mothership-reconciler --tail -1
       exit 1
+    fi
+
+    if [ -z "${status}" ]; then
+      log::info "Failed to retrieve reconciliation status. Checking if API server is reachable by asking for its version"
+      kubectl version -v=8
     fi
 
     if [ "$RECONCILER_TIMEOUT" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then

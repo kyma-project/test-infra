@@ -38,6 +38,7 @@ templates:
               - jobConfig:
                   name: pre-main-compass-gke-benchmark
                   optional: true
+                  image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220809-002bc8cf3"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((chart\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -49,7 +50,6 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "image_buildpack-golang"
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
@@ -57,6 +57,7 @@ templates:
               - jobConfig:
                   name: pre-rel{{ . | replace "." "" }}-compass-gke-benchmark
                   optional: true
+                  image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220809-002bc8cf3"
                   always_run: false
                   labels:
                     preset-build-release: "true"
@@ -72,7 +73,6 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "image_buildpack-golang"
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"

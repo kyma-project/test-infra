@@ -1,9 +1,9 @@
 global:
-  nextRelease: "2.6"
+  nextRelease: "2.7"
   releases:
+    - "2.6"
     - "2.5"
     - "2.4"
-    - "2.3"
   orgs:
     - name: "kyma-project"
       repos:
@@ -197,9 +197,6 @@ globalSets:
     labels:
       preset-docker-push-repository-incubator: "true"
     path_alias: "github.com/kyma-incubator/compass"
-  jobConfig_serverlessv1alpha2:
-    branches:
-      - "^serverless-v1alpha2$"
   disable_report:
     skip_report: "true"
   # globalSet for prowjobs which doesn't inherit jobConfig_default globalSet
