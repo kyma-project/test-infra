@@ -11,7 +11,7 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/api-gateway"
                     - "ci-pr"
-                  alwaysRun: true
+                  always_run: true
                 inheritedConfigs:
                   global:
                     - jobConfig_default
