@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const apiGatewayJobPath = "./../../../../../prow/jobs/api-gateway/api-gateway-build.yaml"
+const apiGatewayJobPath = "./../../../../prow/jobs/api-gateway/api-gateway-build.yaml"
 
 func TestApiGatewayJobsPresubmit(t *testing.T) {
 	// when
