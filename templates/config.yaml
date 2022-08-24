@@ -1,9 +1,9 @@
 global:
-  nextRelease: "2.6"
+  nextRelease: "2.7"
   releases:
+    - "2.6"
     - "2.5"
     - "2.4"
-    - "2.3"
   orgs:
     - name: "kyma-project"
       repos:

@@ -255,6 +255,11 @@ function reconciler::wait_until_kyma_reconciled() {
       exit 1
     fi
 
+    if [ -z "${status}" ]; then
+      log::info "Failed to retrieve reconciliation status. Checking if API server is reachable by asking for its version"
+      kubectl version -v=8
+    fi
+
     if [ "$RECONCILER_TIMEOUT" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then
       log::error "Timeout reached on Kyma reconciliation. Exiting"
       kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler -c mothership-reconciler --tail -1
