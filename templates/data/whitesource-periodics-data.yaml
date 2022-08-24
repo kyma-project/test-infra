@@ -47,7 +47,7 @@ templates:
               - jobConfig:
                   repository: "api-gateway"
                   language: "golang-mod"
-                  project: "kyma-incubator"
+                  project: "kyma-project"
                   base_ref: "main"
                 inheritedConfigs:
                   global:

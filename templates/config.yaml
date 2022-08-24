@@ -25,12 +25,12 @@ global:
         - name: "charts"
         - name: "busola-migrator"
         - name: "examples"
+        - name: "api-gateway"
     - name: "kyma-incubator"
       repos:
         - name: "compass"
         - name: "ord-service"
         - name: "reconciler"
-        - name: "api-gateway"
         - name: "bullseye-showcase"
         - name: "documentation-component"
         - name: "compass-console"
