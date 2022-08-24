@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/api-gateway/api-gateway.yaml
+      - to: ../../prow/jobs/api-gateway/api-gateway-build.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/api-gateway"
             jobs:
