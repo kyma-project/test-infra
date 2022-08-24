@@ -1,6 +1,6 @@
 pjNames:
-  - pjName: "pre-main-reconciler-cli-kyma-prev-to-last-release-upgrade-k3d"
+  - pjName: "pre-main-kyma-project-api-gateway"
 prConfigs:
   kyma-project:
     api-gateway:
-      prNumber: 5 
+      prNumber: 5
