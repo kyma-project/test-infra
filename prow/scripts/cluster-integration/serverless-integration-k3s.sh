@@ -67,7 +67,7 @@ job_name="k3s-serverless-test"
 if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
   echo "--> Fetching Serverless k3s-tests"
  
-  git clone https://github.com/kyma-project/kyma "${KYMA_SOURCES_DIR}"
+  git clone -b fix_auth_test https://github.com/moelsayed/kyma "${KYMA_SOURCES_DIR}"
   job_name="k3s-serverless-nightly-test"
 fi
 
