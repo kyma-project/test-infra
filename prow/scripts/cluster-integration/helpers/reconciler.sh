@@ -237,6 +237,12 @@ function reconciler::wait_until_kyma_reconciled() {
   iterationsLeft=$(( RECONCILER_TIMEOUT/RECONCILER_DELAY ))
   while : ; do
     status=$(kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/get-reconcile-status.sh" | xargs)
+
+    if [ -z "${status}" ]; then
+      log::info "Failed to retrieve reconciliation status. Checking previous call by enabling debug-mode"
+      kubectl exec -v=8 -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/get-reconcile-status.sh"
+    fi
+
     if [ "${status}" = "ready" ]; then
       log::info "Kyma is reconciled"
       break
@@ -246,11 +252,6 @@ function reconciler::wait_until_kyma_reconciled() {
       log::error "Failed to reconcile Kyma. Exiting"
       kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler -c mothership-reconciler --tail -1
       exit 1
-    fi
-
-    if [ -z "${status}" ]; then
-      log::info "Failed to retrieve reconciliation status. Checking if API server is reachable by asking for its version"
-      kubectl version -v=8
     fi
 
     if [ "$RECONCILER_TIMEOUT" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then
