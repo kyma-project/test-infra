@@ -13,7 +13,7 @@ global:
         - name: "control-plane"
         - name: "cli"
         - name: "website"
-        - name: "kyma-operator"
+        - name: "lifecycle-manager"
         - name: "third-party-images"
         - name: "community"
         - name: "manifest-operator"

@@ -44,7 +44,7 @@
 /prow/jobs/kyma/components/function-runtimes @dbadura @kwiatekus @m00g3n @pprecel @a-thaler @pbochynski @pk85 @kyma-project/prow
 /prow/jobs/kyma/components/iam-kubeconfig-service @dariusztutaj @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @kyma-project/prow
 /prow/jobs/kyma/components/istio-installer @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj @mjakobczyk @strekm @kyma-project/prow
-/prow/jobs/kyma/components/kyma-operator @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj @mjakobczyk @strekm @kyma-project/prow
+/prow/jobs/kyma/components/lifecycle-manager @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj @mjakobczyk @strekm @kyma-project/prow
 /prow/jobs/kyma/components/permission-controller @a-thaler @pbochynski @pk85 @dariusztutaj @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @kyma-project/prow
 /prow/jobs/kyma/components/telemetry-operator @pk85 @szwedm @tillknuesting @a-thaler @hanngos @ralikio @wozniakjan @pbochynski @piotrmiskiewicz @kyma-project/prow
 /prow/jobs/kyma/components/directory-size-exporter @pk85 @szwedm @tillknuesting @a-thaler @hanngos @ralikio @wozniakjan @pbochynski @piotrmiskiewicz @kyma-project/prow
