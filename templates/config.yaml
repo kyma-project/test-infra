@@ -25,12 +25,12 @@ global:
         - name: "charts"
         - name: "busola-migrator"
         - name: "examples"
+        - name: "api-gateway"
     - name: "kyma-incubator"
       repos:
         - name: "compass"
         - name: "ord-service"
         - name: "reconciler"
-        - name: "api-gateway"
         - name: "bullseye-showcase"
         - name: "documentation-component"
         - name: "compass-console"
@@ -185,6 +185,10 @@ globalSets:
     labels:
       preset-docker-push-repository-control-plane: "true"
     path_alias: "github.com/kyma-project/control-plane"
+  jobConfig_generic_component_api-gateway:
+    labels:
+      preset-docker-push-repository-kyma: "true"
+    path_alias: "github.com/kyma-project/api-gateway"
   jobConfig_generic_component_busola:
     labels:
       preset-docker-push-repository-kyma: "true"
