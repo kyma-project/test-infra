@@ -194,7 +194,7 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-    - name: kyma-watcher-whitesource-scan
+    - name: runtime-watcher-whitesource-scan
       annotations:
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
@@ -216,8 +216,8 @@ periodics: # runs on schedule
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
         - org: kyma-project
-          repo: kyma-watcher
-          path_alias: github.com/kyma-project/kyma-watcher
+          repo: runtime-watcher
+          path_alias: github.com/kyma-project/runtime-watcher
           base_ref: main
       spec:
         containers:
@@ -233,7 +233,7 @@ periodics: # runs on schedule
               - name: DRYRUN
                 value: "false"
               - name : REPOSITORY
-                value: kyma-watcher
+                value: runtime-watcher
               - name: CREATE_SUBPROJECTS
                 value: "true"
               - name: SCAN_LANGUAGE
