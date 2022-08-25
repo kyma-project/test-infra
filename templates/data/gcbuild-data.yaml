@@ -1,0 +1,14 @@
+templates:
+  - from: gcbuild.yaml
+    render:
+      - to: ../../prow/jobs/gcbuild-jobs.yaml
+        values:
+          image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220823-ac6a7cfb
+          repos:
+            kyma-project/test-infra:
+              disableValidation: false
+              builds:
+                - name: bootstrap
+                  dir: prow/images/bootstrap
+                  buildDir: prow/images/bootstrap
+                  cloudbuildFile: cloudbuild.yaml

@@ -1,0 +1,86 @@
+{{- $image := .Values.image }}
+{{- range $repo, $v :=  .Values.repos }}
+{{- with $v }}
+presubmits:
+  {{ $repo }}:
+    {{- if not .disableValidation }}
+    - name: pull-gcbuild-validate
+      annotations:
+        description: "Job that runs static checks on all gcbuild-related cloudbuild.yaml files"
+      run_if_changed: '.*cloudbuild\.yaml$'
+      decorate: true
+      cluster: trusted-workload
+      branches:
+        - ^main$
+      spec:
+        containers:
+          - image: {{ $image }}
+            command:
+              - /gcbuild-lint
+            args:
+              - --from-git
+    {{- end }}
+    {{- range .builds }}
+    - name: pull-gcbuild-{{ .name }}
+      annotations:
+        description: "Workload to build image for {{ $repo }}/{{ .name }}."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: '{{ .dir }}/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: untrusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: {{ $image }}
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir={{ .buildDir }}"
+              - "--cloudbuild-file={{ .cloudbuildFile }}"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    {{- end }}
+postsubmits:
+  {{ $repo }}:
+    {{- range .builds }}
+    - name: post-gcbuild-{{ .name }}
+      annotations:
+        description: "Workload to build image for {{ $repo }}/{{ .name }}."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: '{{ .dir }}/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: trusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: {{ $image }}
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir={{ .buildDir }}"
+              - "--cloudbuild-file={{ .cloudbuildFile }}"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    {{- end }}
+{{- end }}
+{{- end }}
