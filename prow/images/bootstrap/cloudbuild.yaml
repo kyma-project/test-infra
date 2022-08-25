@@ -3,12 +3,12 @@ steps:
     name: 'gcr.io/cloud-builders/docker'
     args:
       - build
-      - --tag=$_REPOSITORY/bootstrap:$_TAG-$_VARIANT
+      - --tag=$_REPOSITORY/bootstrap:$_TAG
       - --tag=$_REPOSITORY/bootstrap:latest
       - .
     dir: .
 substitutions:
-  _REPOSITORY: eu.gcr.io/kyma-project
+  _REPOSITORY: eu.gcr.io/kyma-project/test-infra/gcb
 images:
-  - $_REPOSITORY/bootstrap:$_TAG-$_VARIANT
+  - $_REPOSITORY/bootstrap:$_TAG
   - $_REPOSITORY/bootstrap:latest
