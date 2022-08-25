@@ -1,0 +1,13 @@
+global:
+  domainName: ${DOMAIN}
+  loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+  enableAPIPackages: true
+  disableLegacyConnectivity: true
+  tlsCrt: ${TLS_CERT}
+  tlsKey: ${TLS_KEY}
+  ingress:
+    domainName: ${DOMAIN}
+    tlsCrt: ${TLS_CERT}
+    tlsKey: ${TLS_KEY}
+  environment:
+    gardener: false

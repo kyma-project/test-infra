@@ -84,6 +84,13 @@ config_updater:
       clusters:
         trusted-workload:
           - default
+    configs/gcbuild-config.yaml:
+      name: gcbuild-config
+      clusters:
+        trusted-workload:
+          - default
+        untrusted-workload:
+          - default
     prow/cluster/static-files/*:
       name: static-files
 
