@@ -3,4 +3,4 @@ pjNames:
 prConfigs:
   kyma-project:
     api-gateway:
-      prNumber: 5
+      prNumber: 9
