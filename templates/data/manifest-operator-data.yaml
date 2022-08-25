@@ -41,3 +41,43 @@ templates:
                     - "jobConfig_default" 
                     - "jobConfig_presubmit"
                     - "build_labels" # default labels
+              - jobConfig:
+                  labels:
+                    preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
+                  name: "pre-main-manifest-operator-build"
+                  always_run: true
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/manifest-operator/operator"
+                    - "docker-build"
+                    - "docker-push"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - "build_labels" # default labels
+              - jobConfig:
+                  labels:
+                    preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
+                  name: "post-main-manifest-operator-build"
+                  always_run: true
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/manifest-operator/operator"
+                    - "docker-build"
+                    - "docker-push"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - "build_labels" # default labels

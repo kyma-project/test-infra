@@ -81,3 +81,83 @@ templates:
                     - "jobConfig_default" 
                     - "jobConfig_presubmit"
                     - "build_labels" # default labels
+              - jobConfig:
+                  labels:
+                    preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
+                  name: "pre-main-kyma-watcher-kcp-build"
+                  run_if_changed: "^kcp/"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/kyma-watcher/kcp"
+                    - "docker-build"
+                    - "docker-push"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - "build_labels" # default labels
+              - jobConfig:
+                  labels:
+                    preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
+                  name: "post-main-kyma-watcher-kcp-build"
+                  run_if_changed: "^kcp/"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/kyma-watcher/kcp"
+                    - "docker-build"
+                    - "docker-push"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - "build_labels" # default labels
+              - jobConfig:
+                  labels:
+                    preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
+                  name: "pre-main-kyma-watcher-skr-build"
+                  run_if_changed: "^skr/"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/kyma-watcher/skr"
+                    - "docker-build"
+                    - "docker-push"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - "build_labels" # default labels
+              - jobConfig:
+                  labels:
+                    preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
+                  name: "post-main-kyma-watcher-skr-build"
+                  run_if_changed: "^skr/"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/kyma-watcher/skr"
+                    - "docker-build"
+                    - "docker-push"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - "build_labels" # default labels
