@@ -964,27 +964,3 @@ templates:
               #       - "kyma_major_version_1"
               #     local:
               #       - "fast_integration_template"
-
-              # - jobConfig:
-              #     name: "kyma-aks-nightly-fast-integration"
-              #     cron: "0 0-2,4-23 * * 1-5" # "At every hour except 03:00 UTC on every day-of-week from Monday through Friday"
-              #     annotations:
-              #       testgrid-dashboards: kyma_integration
-              #       description: Kyma AKS nightly fast integration tests.
-              #       pipeline.platform: aks
-              #     labels:
-              #       preset-az-kyma-prow-credentials: "true"
-              #     env:
-              #       RS_GROUP: "kyma-nightly-aks"
-              #       INPUT_CLUSTER_NAME: "nightly-aks-124"
-              #       CLUSTER_PROVIDER: "azure"
-              #   inheritedConfigs:
-              #     global:
-              #       - "jobConfig_default"
-              #       - "jobConfig_periodic"
-              #       - "image_kyma-integration"
-              #       - "extra_refs_kyma"
-              #       - "extra_refs_test-infra"
-              #       - "kyma_major_version_1"
-              #     local:
-              #       - "fast_integration_template"

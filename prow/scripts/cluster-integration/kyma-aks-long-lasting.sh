@@ -163,8 +163,6 @@ function installKyma() {
 
 	log::info "Prepare Kyma overrides"
 
-	export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
-
 	KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
 	log::info "Apply Azure disable knative-eventing stdout logging"
@@ -173,7 +171,6 @@ function installKyma() {
 	kubectl apply -f "${KYMA_RESOURCES_DIR}"/azure-crb-for-healthz.yaml
 
   envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-installer-overrides.tpl.yaml" > "$PWD/kyma-installer-overrides.yaml"
-  envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/overrides-dex-and-monitoring.tpl.yaml" > "$PWD/overrides-dex-and-monitoring.yaml"
 
 	log::info "Trigger installation"
 
@@ -181,7 +178,6 @@ function installKyma() {
 			--ci \
 			--source main \
 			-o "$PWD/kyma-installer-overrides.yaml" \
-			-o "$PWD/overrides-dex-and-monitoring.yaml" \
 			-o "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/prometheus-cluster-essentials-overrides.tpl.yaml" \
 			--domain "${DOMAIN}" \
 			--profile production \

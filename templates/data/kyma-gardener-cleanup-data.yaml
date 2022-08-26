@@ -17,18 +17,3 @@ templates:
               grace_period: 600000000000 # 10min
             request_memory: 1Gi
             request_cpu: 400m
-        jobConfigs:
-          - repoName:  kyma-incubator/dex
-            jobs:
-              - jobConfig:
-                  name: "kyma-gardener-cleanup"
-                  cron: "0 * * * *" # "At 0 minute every hour"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
