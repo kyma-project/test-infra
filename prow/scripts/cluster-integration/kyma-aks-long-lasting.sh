@@ -196,16 +196,6 @@ function installKyma() {
 	fi
 }
 
-function apply_dex_github_kyma_admin_group() {
-	kubectl get ClusterRoleBinding kyma-admin-binding -oyaml > kyma-admin-binding.yaml && cat >> kyma-admin-binding.yaml <<EOF 
-- apiGroup: rbac.authorization.k8s.io
-  kind: Group
-  name: kyma-project:cluster-access
-EOF
-
-	kubectl replace -f kyma-admin-binding.yaml
-}
-
 function test_console_url() {
   CONSOLE_URL="https://console.${DOMAIN}"
   console_response=$(curl -L -s -o /dev/null -w "%{http_code}" "${CONSOLE_URL}")
@@ -259,6 +249,5 @@ installKyma
 
 
 log::info "Override kyma-admin-binding ClusterRoleBinding"
-apply_dex_github_kyma_admin_group
 
 test_console_url
