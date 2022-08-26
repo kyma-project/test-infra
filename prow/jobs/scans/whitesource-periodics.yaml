@@ -146,7 +146,7 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-    - name: kyma-operator-whitesource-scan
+    - name: lifecycle-manager-whitesource-scan
       annotations:
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
@@ -168,8 +168,8 @@ periodics: # runs on schedule
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
         - org: kyma-project
-          repo: kyma-operator
-          path_alias: github.com/kyma-project/kyma-operator
+          repo: lifecycle-manager
+          path_alias: github.com/kyma-project/lifecycle-manager
           base_ref: main
       spec:
         containers:
@@ -185,7 +185,7 @@ periodics: # runs on schedule
               - name: DRYRUN
                 value: "false"
               - name : REPOSITORY
-                value: kyma-operator
+                value: lifecycle-manager
               - name: CREATE_SUBPROJECTS
                 value: "false"
               - name: SCAN_LANGUAGE

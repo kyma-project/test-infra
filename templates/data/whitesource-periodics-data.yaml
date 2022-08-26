@@ -105,7 +105,7 @@ templates:
                     - "jobConfig_default"
               # Kyma components
               - jobConfig:
-                  repository: "kyma-operator"
+                  repository: "lifecycle-manager"
                   language: "golang-mod"
                   project: "kyma-project"
                   subprojects: "false"
