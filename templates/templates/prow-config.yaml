@@ -280,12 +280,12 @@ tide:
     kyma-project/addons: squash
     kyma-project/busola-migrator: squash
     kyma-project/lifecycle-manager: squash
-    kyma-project/kyma-watcher: squash
+    kyma-project/runtime-watcher: squash
     kyma-project/manifest-operator: squash
+    kyma-project/api-gateway: squash
 
     kyma-incubator/compass: squash
     kyma-incubator/reconciler: squash
-    kyma-incubator/api-gateway: squash
     kyma-incubator/local-kyma: squash
     kyma-incubator/compass-console: squash
     kyma-incubator/ord-service: squash

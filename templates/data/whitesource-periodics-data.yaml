@@ -47,7 +47,7 @@ templates:
               - jobConfig:
                   repository: "api-gateway"
                   language: "golang-mod"
-                  project: "kyma-incubator"
+                  project: "kyma-project"
                   base_ref: "main"
                 inheritedConfigs:
                   global:
@@ -120,7 +120,7 @@ templates:
                     - "jobConfig_default"
                     - "product_kyma_test"
               - jobConfig:
-                  repository: "kyma-watcher"
+                  repository: "runtime-watcher"
                   language: "golang-mod"
                   project: "kyma-project"
                   subprojects: "true"

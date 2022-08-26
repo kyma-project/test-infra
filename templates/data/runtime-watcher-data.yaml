@@ -1,14 +1,14 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/kyma-watcher/kyma-watcher.yaml
+      - to: ../../prow/jobs/runtime-watcher/runtime-watcher.yaml
         jobConfigs:
-          - repoName: kyma-project/kyma-watcher
+          - repoName: kyma-project/runtime-watcher
             jobs:
               - jobConfig:
                   run_if_changed: "^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)"
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220804-607830f89"
-                  name: "pre-main-kyma-watcher-skr-lint"
+                  name: "pre-main-runtime-watcher-skr-lint"
                   command: "bash"
                   args:
                     - "-c"
@@ -21,7 +21,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   run_if_changed: "^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)"
-                  name: pre-main-kyma-watcher-skr-tests
+                  name: pre-main-runtime-watcher-skr-tests
                   command: "bash"
                   args:
                     - "-c" 
@@ -35,10 +35,10 @@ templates:
                     - "jobConfig_presubmit"
                     - "build_labels" # default labels
               - jobConfig:
-                  name: periodic-kyma-watcher-kcp-tests
+                  name: periodic-runtime-watcher-kcp-tests
                   cron: "0 */6 * * 1-5" # "At minute 0 past every 6th hour on every day-of-week from Monday through Friday."
                   annotations:
-                    description: regularly executes the 'make test' command in the kyma-watcher 'kcp' directory.
+                    description: regularly executes the 'make test' command in the runtime-watcher 'kcp' directory.
                   command: "bash"
                   args:
                     - "-c" 
@@ -55,7 +55,7 @@ templates:
               - jobConfig:
                   run_if_changed: "^kcp/(go.mod|go.sum)$|^kcp/*/(.*.go|Makefile|.*.sh)"
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220804-607830f89"
-                  name: "pre-main-kyma-watcher-kcp-lint"
+                  name: "pre-main-runtime-watcher-kcp-lint"
                   command: "bash"
                   args:
                     - "-c"
@@ -68,7 +68,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   run_if_changed: "^kcp/(go.mod|go.sum)$|^kcp/*/(.*.go|Makefile|.*.sh)"
-                  name: pre-main-kyma-watcher-kcp-tests
+                  name: pre-main-runtime-watcher-kcp-tests
                   command: "bash"
                   args:
                     - "-c" 
@@ -84,11 +84,11 @@ templates:
               - jobConfig:
                   labels:
                     preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
-                  name: "pre-main-kyma-watcher-kcp-build"
+                  name: "pre-main-runtime-watcher-kcp-build"
                   run_if_changed: "^kcp/"
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma-watcher/kcp"
+                    - "/home/prow/go/src/github.com/kyma-project/runtime-watcher/kcp"
                     - "docker-build"
                     - "docker-push"
                   branches:
@@ -104,11 +104,11 @@ templates:
               - jobConfig:
                   labels:
                     preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
-                  name: "post-main-kyma-watcher-kcp-build"
+                  name: "post-main-runtime-watcher-kcp-build"
                   run_if_changed: "^kcp/"
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma-watcher/kcp"
+                    - "/home/prow/go/src/github.com/kyma-project/runtime-watcher/kcp"
                     - "docker-build"
                     - "docker-push"
                   branches:
@@ -124,11 +124,11 @@ templates:
               - jobConfig:
                   labels:
                     preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
-                  name: "pre-main-kyma-watcher-skr-build"
+                  name: "pre-main-runtime-watcher-skr-build"
                   run_if_changed: "^skr/"
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma-watcher/skr"
+                    - "/home/prow/go/src/github.com/kyma-project/runtime-watcher/skr"
                     - "docker-build"
                     - "docker-push"
                   branches:
@@ -144,11 +144,11 @@ templates:
               - jobConfig:
                   labels:
                     preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
-                  name: "post-main-kyma-watcher-skr-build"
+                  name: "post-main-runtime-watcher-skr-build"
                   run_if_changed: "^skr/"
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma-watcher/skr"
+                    - "/home/prow/go/src/github.com/kyma-project/runtime-watcher/skr"
                     - "docker-build"
                     - "docker-push"
                   branches:
