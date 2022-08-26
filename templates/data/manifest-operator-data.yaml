@@ -1,16 +1,16 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/manifest-operator/manifest-operator.yaml
+      - to: ../../prow/jobs/module-manager/module-manager.yaml
         jobConfigs:
-          - repoName: kyma-project/manifest-operator
+          - repoName: kyma-project/module-manager
             jobs:
               - jobConfig:
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220804-607830f89"
-                  name: "pre-main-manifest-operator-controller-lint"
+                  name: "pre-main-module-manager-controller-lint"
                   annotations:
-                    description: executes the 'make lint' command in the manifest-operator 'operator' directory before any pull request.
+                    description: executes the 'make lint' command in the module-manager 'operator' directory before any pull request.
                   command: "bash"
                   args:
                     - "-c"
@@ -25,9 +25,9 @@ templates:
                     - "build_labels" # default labels
               - jobConfig:
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
-                  name: pre-main-manifest-operator-controller-tests
+                  name: pre-main-module-manager-controller-tests
                   annotations:
-                    description: executes the 'make test' command in the manifest-operator 'operator' directory before any pull request.
+                    description: executes the 'make test' command in the module-manager 'operator' directory before any pull request.
                   command: "bash"
                   args:
                     - "-c" 
@@ -44,11 +44,11 @@ templates:
               - jobConfig:
                   labels:
                     preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
-                  name: "pre-main-manifest-operator-build"
+                  name: "pre-main-module-manager-build"
                   always_run: true
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/manifest-operator/operator"
+                    - "/home/prow/go/src/github.com/kyma-project/module-manager/operator"
                     - "docker-build"
                     - "docker-push"
                   branches:
@@ -64,11 +64,11 @@ templates:
               - jobConfig:
                   labels:
                     preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
-                  name: "post-main-manifest-operator-build"
+                  name: "post-main-module-manager-build"
                   always_run: true
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/manifest-operator/operator"
+                    - "/home/prow/go/src/github.com/kyma-project/module-manager/operator"
                     - "docker-build"
                     - "docker-push"
                   branches:

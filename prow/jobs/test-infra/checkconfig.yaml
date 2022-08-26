@@ -249,13 +249,13 @@ presubmits: # runs on PRs
               - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
-  kyma-project/manifest-operator:
-    - name: pre-manifest-operator-validate-inrepo-prow-configs
+  kyma-project/module-manager:
+    - name: pre-module-manager-validate-inrepo-prow-configs
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-manifest-operator-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-module-manager-validate-inrepo-prow-configs"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
       skip_report: false
