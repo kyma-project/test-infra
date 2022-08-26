@@ -281,7 +281,7 @@ tide:
     kyma-project/busola-migrator: squash
     kyma-project/lifecycle-manager: squash
     kyma-project/runtime-watcher: squash
-    kyma-project/manifest-operator: squash
+    kyma-project/module-manager: squash
     kyma-project/api-gateway: squash
 
     kyma-incubator/compass: squash

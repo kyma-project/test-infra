@@ -16,7 +16,7 @@ global:
         - name: "lifecycle-manager"
         - name: "third-party-images"
         - name: "community"
-        - name: "manifest-operator"
+        - name: "module-manager"
         - name: "hydroform"
         - name: "console"
         - name: "istio-operator"

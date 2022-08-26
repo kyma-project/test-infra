@@ -135,7 +135,7 @@ templates:
                     - "jobConfig_default"
                     - "product_kyma_test"
               - jobConfig:
-                  repository: "manifest-operator"
+                  repository: "module-manager"
                   language: "golang-mod"
                   project: "kyma-project"
                   subprojects: "false"
