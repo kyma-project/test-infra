@@ -12,3 +12,47 @@ templates:
                   dir: prow/images/bootstrap
                   buildDir: prow/images/bootstrap
                   cloudbuildFile: cloudbuild.yaml
+                - name: buildpack-golang
+                  dir: prow/images/buildpack-golang
+                  buildDir: prow/images/buildpack-golang
+                  cloudbuildFile: cloudbuild.yaml
+                - name: buildpack-node
+                  dir: prow/images/buildpack-node
+                  buildDir: prow/images/buildpack-node
+                  cloudbuildFile: cloudbuild.yaml
+                - name: kyma-integration
+                  dir: prow/images/kyma-integration
+                  buildDir: prow/images/kyma-integration
+                  cloudbuildFile: cloudbuild.yaml
+                - name: cleaner
+                  dir: prow/images/cleaner
+                  buildDir: prow/images/cleaner
+                  cloudbuildFile: cloudbuild.yaml
+                - name: golangci-lint
+                  dir: prow/images/golangci-lint
+                  buildDir: prow/images/golangci-lint
+                  cloudbuildFile: cloudbuild.yaml
+                - name: prow-tools
+                  dir: prow/images/prow-tools
+                  buildDir: prow/images/prow-tools
+                  cloudbuildFile: cloudbuild.yaml
+                - name: whitesource-scanner
+                  dir: prow/images/whitesource-scanner
+                  buildDir: prow/images/whitesource-scanner
+                  cloudbuildFile: cloudbuild.yaml
+                - name: gardener-rotate
+                  dir: prow/images/gardener-rotate
+                  buildDir: .
+                  cloudbuildFile: prow/images/gardener-rotate/cloudbuild.yaml
+                - name: github-connector-webhook-gateway
+                  dir: development/kyma-github-connector/githubWebhookGateway
+                  buildDir: development/kyma-github-connector/githubWebhookGateway
+                  cloudbuildFile: cloudbuild.yaml
+                - name: pubsub-connector-gateway
+                  dir: development/kyma-pubsub-connector/pubSubGateway
+                  buildDir: development/kyma-pubsub-connector/pubSubGateway
+                  cloudbuildFile: cloudbuild.yaml
+                - name: ci-force-bot
+                  dir: development/kyma-ci-force-bot/ciforcebot
+                  buildDir: development/kyma-ci-force-bot/ciforcebot
+                  cloudbuildFile: cloudbuild.yaml

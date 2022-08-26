@@ -46,6 +46,314 @@ presubmits:
           - name: config
             configMap:
               name: gcbuild-config
+    - name: pull-gcbuild-buildpack-golang
+      annotations:
+        description: "Workload to build image for kyma-project/test-infra/buildpack-golang."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: 'prow/images/buildpack-golang/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: untrusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220823-ac6a7cfb
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir=prow/images/buildpack-golang"
+              - "--cloudbuild-file=cloudbuild.yaml"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    - name: pull-gcbuild-buildpack-node
+      annotations:
+        description: "Workload to build image for kyma-project/test-infra/buildpack-node."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: 'prow/images/buildpack-node/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: untrusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220823-ac6a7cfb
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir=prow/images/buildpack-node"
+              - "--cloudbuild-file=cloudbuild.yaml"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    - name: pull-gcbuild-kyma-integration
+      annotations:
+        description: "Workload to build image for kyma-project/test-infra/kyma-integration."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: 'prow/images/kyma-integration/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: untrusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220823-ac6a7cfb
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir=prow/images/kyma-integration"
+              - "--cloudbuild-file=cloudbuild.yaml"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    - name: pull-gcbuild-cleaner
+      annotations:
+        description: "Workload to build image for kyma-project/test-infra/cleaner."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: 'prow/images/cleaner/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: untrusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220823-ac6a7cfb
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir=prow/images/cleaner"
+              - "--cloudbuild-file=cloudbuild.yaml"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    - name: pull-gcbuild-golangci-lint
+      annotations:
+        description: "Workload to build image for kyma-project/test-infra/golangci-lint."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: 'prow/images/golangci-lint/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: untrusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220823-ac6a7cfb
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir=prow/images/golangci-lint"
+              - "--cloudbuild-file=cloudbuild.yaml"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    - name: pull-gcbuild-prow-tools
+      annotations:
+        description: "Workload to build image for kyma-project/test-infra/prow-tools."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: 'prow/images/prow-tools/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: untrusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220823-ac6a7cfb
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir=prow/images/prow-tools"
+              - "--cloudbuild-file=cloudbuild.yaml"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    - name: pull-gcbuild-whitesource-scanner
+      annotations:
+        description: "Workload to build image for kyma-project/test-infra/whitesource-scanner."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: 'prow/images/whitesource-scanner/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: untrusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220823-ac6a7cfb
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir=prow/images/whitesource-scanner"
+              - "--cloudbuild-file=cloudbuild.yaml"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    - name: pull-gcbuild-gardener-rotate
+      annotations:
+        description: "Workload to build image for kyma-project/test-infra/gardener-rotate."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: 'prow/images/gardener-rotate/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: untrusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220823-ac6a7cfb
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir=."
+              - "--cloudbuild-file=prow/images/gardener-rotate/cloudbuild.yaml"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    - name: pull-gcbuild-github-connector-webhook-gateway
+      annotations:
+        description: "Workload to build image for kyma-project/test-infra/github-connector-webhook-gateway."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: 'development/kyma-github-connector/githubWebhookGateway/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: untrusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220823-ac6a7cfb
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir=development/kyma-github-connector/githubWebhookGateway"
+              - "--cloudbuild-file=cloudbuild.yaml"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    - name: pull-gcbuild-pubsub-connector-gateway
+      annotations:
+        description: "Workload to build image for kyma-project/test-infra/pubsub-connector-gateway."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: 'development/kyma-pubsub-connector/pubSubGateway/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: untrusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220823-ac6a7cfb
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir=development/kyma-pubsub-connector/pubSubGateway"
+              - "--cloudbuild-file=cloudbuild.yaml"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    - name: pull-gcbuild-ci-force-bot
+      annotations:
+        description: "Workload to build image for kyma-project/test-infra/ci-force-bot."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: 'development/kyma-ci-force-bot/ciforcebot/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: untrusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220823-ac6a7cfb
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir=development/kyma-ci-force-bot/ciforcebot"
+              - "--cloudbuild-file=cloudbuild.yaml"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
 postsubmits:
   kyma-project/test-infra:
     - name: post-gcbuild-bootstrap
@@ -67,6 +375,314 @@ postsubmits:
             args:
               - "--config=/config/gcbuild-config.yaml"
               - "--build-dir=prow/images/bootstrap"
+              - "--cloudbuild-file=cloudbuild.yaml"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    - name: post-gcbuild-buildpack-golang
+      annotations:
+        description: "Workload to build image for kyma-project/test-infra/buildpack-golang."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: 'prow/images/buildpack-golang/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: trusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220823-ac6a7cfb
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir=prow/images/buildpack-golang"
+              - "--cloudbuild-file=cloudbuild.yaml"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    - name: post-gcbuild-buildpack-node
+      annotations:
+        description: "Workload to build image for kyma-project/test-infra/buildpack-node."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: 'prow/images/buildpack-node/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: trusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220823-ac6a7cfb
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir=prow/images/buildpack-node"
+              - "--cloudbuild-file=cloudbuild.yaml"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    - name: post-gcbuild-kyma-integration
+      annotations:
+        description: "Workload to build image for kyma-project/test-infra/kyma-integration."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: 'prow/images/kyma-integration/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: trusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220823-ac6a7cfb
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir=prow/images/kyma-integration"
+              - "--cloudbuild-file=cloudbuild.yaml"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    - name: post-gcbuild-cleaner
+      annotations:
+        description: "Workload to build image for kyma-project/test-infra/cleaner."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: 'prow/images/cleaner/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: trusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220823-ac6a7cfb
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir=prow/images/cleaner"
+              - "--cloudbuild-file=cloudbuild.yaml"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    - name: post-gcbuild-golangci-lint
+      annotations:
+        description: "Workload to build image for kyma-project/test-infra/golangci-lint."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: 'prow/images/golangci-lint/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: trusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220823-ac6a7cfb
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir=prow/images/golangci-lint"
+              - "--cloudbuild-file=cloudbuild.yaml"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    - name: post-gcbuild-prow-tools
+      annotations:
+        description: "Workload to build image for kyma-project/test-infra/prow-tools."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: 'prow/images/prow-tools/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: trusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220823-ac6a7cfb
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir=prow/images/prow-tools"
+              - "--cloudbuild-file=cloudbuild.yaml"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    - name: post-gcbuild-whitesource-scanner
+      annotations:
+        description: "Workload to build image for kyma-project/test-infra/whitesource-scanner."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: 'prow/images/whitesource-scanner/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: trusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220823-ac6a7cfb
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir=prow/images/whitesource-scanner"
+              - "--cloudbuild-file=cloudbuild.yaml"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    - name: post-gcbuild-gardener-rotate
+      annotations:
+        description: "Workload to build image for kyma-project/test-infra/gardener-rotate."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: 'prow/images/gardener-rotate/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: trusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220823-ac6a7cfb
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir=."
+              - "--cloudbuild-file=prow/images/gardener-rotate/cloudbuild.yaml"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    - name: post-gcbuild-github-connector-webhook-gateway
+      annotations:
+        description: "Workload to build image for kyma-project/test-infra/github-connector-webhook-gateway."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: 'development/kyma-github-connector/githubWebhookGateway/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: trusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220823-ac6a7cfb
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir=development/kyma-github-connector/githubWebhookGateway"
+              - "--cloudbuild-file=cloudbuild.yaml"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    - name: post-gcbuild-pubsub-connector-gateway
+      annotations:
+        description: "Workload to build image for kyma-project/test-infra/pubsub-connector-gateway."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: 'development/kyma-pubsub-connector/pubSubGateway/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: trusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220823-ac6a7cfb
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir=development/kyma-pubsub-connector/pubSubGateway"
+              - "--cloudbuild-file=cloudbuild.yaml"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    - name: post-gcbuild-ci-force-bot
+      annotations:
+        description: "Workload to build image for kyma-project/test-infra/ci-force-bot."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: 'development/kyma-ci-force-bot/ciforcebot/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: trusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/gcbuild:v20220823-ac6a7cfb
+            command:
+              - "/run.sh"
+            args:
+              - "--config=/config/gcbuild-config.yaml"
+              - "--build-dir=development/kyma-ci-force-bot/ciforcebot"
               - "--cloudbuild-file=cloudbuild.yaml"
             volumeMounts:
               - name: config
