@@ -2,13 +2,13 @@
 
 
 presubmits: # runs on PRs
-  kyma-project/kyma-watcher:
-    - name: pre-main-kyma-watcher-skr-lint
+  kyma-project/runtime-watcher:
+    - name: pre-main-runtime-watcher-skr-lint
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-watcher-skr-lint"
+        prow.k8s.io/pubsub.runID: "pre-main-runtime-watcher-skr-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)'
       skip_report: false
@@ -38,12 +38,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-kyma-watcher-skr-tests
+    - name: pre-main-runtime-watcher-skr-tests
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-watcher-skr-tests"
+        prow.k8s.io/pubsub.runID: "pre-main-runtime-watcher-skr-tests"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -76,12 +76,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-kyma-watcher-kcp-lint
+    - name: pre-main-runtime-watcher-kcp-lint
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-watcher-kcp-lint"
+        prow.k8s.io/pubsub.runID: "pre-main-runtime-watcher-kcp-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^kcp/(go.mod|go.sum)$|^kcp/*/(.*.go|Makefile|.*.sh)'
       skip_report: false
@@ -111,12 +111,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-kyma-watcher-kcp-tests
+    - name: pre-main-runtime-watcher-kcp-tests
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-watcher-kcp-tests"
+        prow.k8s.io/pubsub.runID: "pre-main-runtime-watcher-kcp-tests"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -149,12 +149,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-kyma-watcher-kcp-build
+    - name: pre-main-runtime-watcher-kcp-build
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-watcher-kcp-build"
+        prow.k8s.io/pubsub.runID: "pre-main-runtime-watcher-kcp-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -180,7 +180,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma-watcher/kcp"
+              - "/home/prow/go/src/github.com/kyma-project/runtime-watcher/kcp"
               - "docker-build"
               - "docker-push"
             resources:
@@ -194,12 +194,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-kyma-watcher-skr-build
+    - name: pre-main-runtime-watcher-skr-build
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-watcher-skr-build"
+        prow.k8s.io/pubsub.runID: "pre-main-runtime-watcher-skr-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -225,7 +225,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma-watcher/skr"
+              - "/home/prow/go/src/github.com/kyma-project/runtime-watcher/skr"
               - "docker-build"
               - "docker-push"
             resources:
@@ -241,13 +241,13 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
   
 postsubmits: # runs on main
-  kyma-project/kyma-watcher:
-    - name: post-main-kyma-watcher-kcp-build
+  kyma-project/runtime-watcher:
+    - name: post-main-runtime-watcher-kcp-build
       annotations:
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-kyma-watcher-kcp-build"
+        prow.k8s.io/pubsub.runID: "post-main-runtime-watcher-kcp-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -273,7 +273,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma-watcher/kcp"
+              - "/home/prow/go/src/github.com/kyma-project/runtime-watcher/kcp"
               - "docker-build"
               - "docker-push"
             resources:
@@ -287,12 +287,12 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-main-kyma-watcher-skr-build
+    - name: post-main-runtime-watcher-skr-build
       annotations:
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-kyma-watcher-skr-build"
+        prow.k8s.io/pubsub.runID: "post-main-runtime-watcher-skr-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -318,7 +318,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma-watcher/skr"
+              - "/home/prow/go/src/github.com/kyma-project/runtime-watcher/skr"
               - "docker-build"
               - "docker-push"
             resources:
@@ -334,13 +334,13 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
   
 periodics: # runs on schedule
-    - name: periodic-kyma-watcher-kcp-tests
+    - name: periodic-runtime-watcher-kcp-tests
       annotations:
-        description: "regularly executes the 'make test' command in the kyma-watcher 'kcp' directory."
+        description: "regularly executes the 'make test' command in the runtime-watcher 'kcp' directory."
         pipeline.trigger: "periodic"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "periodic-kyma-watcher-kcp-tests"
+        prow.k8s.io/pubsub.runID: "periodic-runtime-watcher-kcp-tests"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
