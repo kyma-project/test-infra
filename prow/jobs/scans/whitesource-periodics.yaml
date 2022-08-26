@@ -242,7 +242,7 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-    - name: manifest-operator-whitesource-scan
+    - name: module-manager-whitesource-scan
       annotations:
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
@@ -264,8 +264,8 @@ periodics: # runs on schedule
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
         - org: kyma-project
-          repo: manifest-operator
-          path_alias: github.com/kyma-project/manifest-operator
+          repo: module-manager
+          path_alias: github.com/kyma-project/module-manager
           base_ref: main
       spec:
         containers:
@@ -281,7 +281,7 @@ periodics: # runs on schedule
               - name: DRYRUN
                 value: "false"
               - name : REPOSITORY
-                value: manifest-operator
+                value: module-manager
               - name: CREATE_SUBPROJECTS
                 value: "false"
               - name: SCAN_LANGUAGE

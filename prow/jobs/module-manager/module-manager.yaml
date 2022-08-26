@@ -2,14 +2,14 @@
 
 
 presubmits: # runs on PRs
-  kyma-project/manifest-operator:
-    - name: pre-main-manifest-operator-controller-lint
+  kyma-project/module-manager:
+    - name: pre-main-module-manager-controller-lint
       annotations:
-        description: "executes the 'make lint' command in the manifest-operator 'operator' directory before any pull request."
+        description: "executes the 'make lint' command in the module-manager 'operator' directory before any pull request."
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-manifest-operator-controller-lint"
+        prow.k8s.io/pubsub.runID: "pre-main-module-manager-controller-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -45,13 +45,13 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-manifest-operator-controller-tests
+    - name: pre-main-module-manager-controller-tests
       annotations:
-        description: "executes the 'make test' command in the manifest-operator 'operator' directory before any pull request."
+        description: "executes the 'make test' command in the module-manager 'operator' directory before any pull request."
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-manifest-operator-controller-tests"
+        prow.k8s.io/pubsub.runID: "pre-main-module-manager-controller-tests"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -87,12 +87,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-manifest-operator-build
+    - name: pre-main-module-manager-build
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-manifest-operator-build"
+        prow.k8s.io/pubsub.runID: "pre-main-module-manager-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -118,7 +118,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/manifest-operator/operator"
+              - "/home/prow/go/src/github.com/kyma-project/module-manager/operator"
               - "docker-build"
               - "docker-push"
             resources:
@@ -134,13 +134,13 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
   
 postsubmits: # runs on main
-  kyma-project/manifest-operator:
-    - name: post-main-manifest-operator-build
+  kyma-project/module-manager:
+    - name: post-main-module-manager-build
       annotations:
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-manifest-operator-build"
+        prow.k8s.io/pubsub.runID: "post-main-module-manager-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -166,7 +166,7 @@ postsubmits: # runs on main
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/manifest-operator/operator"
+              - "/home/prow/go/src/github.com/kyma-project/module-manager/operator"
               - "docker-build"
               - "docker-push"
             resources:
