@@ -11,7 +11,7 @@ global:
     tlsKey: ${TLS_KEY}
   environment:
     gardener: false
-istio-configuration:
+istio:
   components:
     ingressGateways:
       config:
