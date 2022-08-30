@@ -173,6 +173,7 @@ function installCompassOld() {
   echo "Checkout $LATEST_VERSION"
   git checkout "${LATEST_VERSION}"
 
+  mkdir "$COMPASS_SOURCES_DIR/installation/data"
   echo 'Installing DB'
   DB_OVERRIDES="$PWD/compass_benchmark_overrides.yaml"
   bash "${COMPASS_SCRIPTS_DIR}"/install-db.sh --overrides-file "${DB_OVERRIDES}" --timeout 30m0s
@@ -200,6 +201,7 @@ function installCompassNew() {
     exit 1
   fi
 
+  mkdir "$COMPASS_SOURCES_DIR/installation/data"
   echo 'Installing DB'
   DB_OVERRIDES="$PWD/compass_benchmark_overrides.yaml"
   bash "${COMPASS_SCRIPTS_DIR}"/install-db.sh --overrides-file "${DB_OVERRIDES}" --timeout 30m0s
