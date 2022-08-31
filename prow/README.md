@@ -120,6 +120,6 @@ If you modify scripts in the `test-infra` repository and you want to test the ch
 extra_refs:
   - org: {username}                 # Your GitHub username in the organisation
     repo: test-infra                # Your GitHub repository
-    base_ref: dex-github              # Branch, tag, and release to use
+    base_ref: main                  # Branch, tag, and release to use
     path_alias: github.com/kyma-project/test-infra  # Path to the location where you want to clone the code
 ```

@@ -143,7 +143,6 @@ fi
 # shellcheck disable=SC1090,SC1091
 source "${SCRIPT_DIR}/lib/clitests.sh"
 
-# ON Kyma2 installation there is no dex, therefore skipping the test
 if [ "$KUBERNETES_RUNTIME" = 'k3d' ]; then
     if clitests::testSuiteExists "test-version"; then
         clitests::execute "test-version" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
