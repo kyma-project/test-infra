@@ -108,7 +108,7 @@ log::info "Copying Compass to the instance"
 utils::compress_send_to_vm "${ZONE}" "compass-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/compass" "~/compass"
 
 
-KYMA_CLI_VERSION="2.0.4"
+KYMA_CLI_VERSION="2.1.3"
 log::info "Installing Kyma CLI version: $KYMA_CLI_VERSION"
 
 PREV_WD=$(pwd)

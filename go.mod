@@ -17,11 +17,11 @@ replace (
 )
 
 require (
-	cloud.google.com/go/bigquery v1.38.0
+	cloud.google.com/go/bigquery v1.39.0
 	cloud.google.com/go/firestore v1.6.1
 	cloud.google.com/go/functions v1.5.0
 	cloud.google.com/go/logging v1.5.0
-	cloud.google.com/go/pubsub v1.24.0
+	cloud.google.com/go/pubsub v1.25.1
 	cloud.google.com/go/storage v1.25.0
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.5.0
@@ -59,7 +59,7 @@ require (
 	github.com/stretchr/testify v1.8.0
 	github.com/tidwall/gjson v1.14.1
 	github.com/vrischmann/envconfig v1.3.0
-	go.uber.org/zap v1.22.0
+	go.uber.org/zap v1.23.0
 	golang.org/x/net v0.0.0-20220624214902-1bab6f366d9e
 	golang.org/x/oauth2 v0.0.0-20220822191816-0ebed06d0094
 	google.golang.org/api v0.94.0
