@@ -24,33 +24,15 @@ templates:
                   name: pre-main-runtime-watcher-skr-tests
                   command: "bash"
                   args:
-                    - "-c" 
+                    - "-c"
                     - "cd skr && make test" # run test make target of skr
                   branches:
                     - ^main$ # any pr against main triggers this
                 inheritedConfigs:
                   global:
                     - "image_buildpack-golang" # takes latest golang image
-                    - "jobConfig_default" 
+                    - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "build_labels" # default labels
-              - jobConfig:
-                  name: periodic-runtime-watcher-kcp-tests
-                  cron: "0 */6 * * 1-5" # "At minute 0 past every 6th hour on every day-of-week from Monday through Friday."
-                  annotations:
-                    description: regularly executes the 'make test' command in the runtime-watcher 'kcp' directory.
-                  command: "bash"
-                  args:
-                    - "-c" 
-                    - "cd kcp && make test" # run test make target of kcp
-                  branches:
-                    - ^main$
-                  slack_channel: jellyfish-notifications
-                inheritedConfigs:
-                  global:
-                    - "image_buildpack-golang" # takes latest golang image
-                    - "jobConfig_default" 
-                    - "jobConfig_periodic"
                     - "build_labels" # default labels
               - jobConfig:
                   run_if_changed: "^kcp/(go.mod|go.sum)$|^kcp/*/(.*.go|Makefile|.*.sh)"
@@ -71,14 +53,43 @@ templates:
                   name: pre-main-runtime-watcher-kcp-tests
                   command: "bash"
                   args:
-                    - "-c" 
+                    - "-c"
                     - "cd kcp && make test" # run test make target of kcp
                   branches:
                     - ^main$ # any pr against main triggers this
                 inheritedConfigs:
                   global:
                     - "image_buildpack-golang" # takes latest golang image
-                    - "jobConfig_default" 
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "build_labels" # default labels
+              - jobConfig:
+                  run_if_changed: "^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220804-607830f89"
+                  name: "pre-main-runtime-watcher-listener-lint"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd listener && golangci-lint run"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+              - jobConfig:
+                  run_if_changed: "^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)"
+                  name: pre-main-runtime-watcher-listener-tests
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd listener && make test" # run test make target of kcp
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default"
                     - "jobConfig_presubmit"
                     - "build_labels" # default labels
               - jobConfig:

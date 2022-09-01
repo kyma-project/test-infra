@@ -149,6 +149,79 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+    - name: pre-main-runtime-watcher-listener-lint
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-runtime-watcher-listener-lint"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220804-607830f89"
+            securityContext:
+              privileged: true
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "cd listener && golangci-lint run"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pre-main-runtime-watcher-listener-tests
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-runtime-watcher-listener-tests"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-kyma: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220725-7756933d"
+            securityContext:
+              privileged: true
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "cd listener && make test"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-main-runtime-watcher-kcp-build
       annotations:
         pipeline.trigger: "pr-submit"
@@ -321,47 +394,6 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/runtime-watcher/skr"
               - "docker-build"
               - "docker-push"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-  
-periodics: # runs on schedule
-    - name: periodic-runtime-watcher-kcp-tests
-      annotations:
-        description: "regularly executes the 'make test' command in the runtime-watcher 'kcp' directory."
-        pipeline.trigger: "periodic"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "periodic-runtime-watcher-kcp-tests"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-sa-gcr-push: "true"
-      cron: "0 */6 * * 1-5"
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      reporter_config:
-        slack:
-          channel: jellyfish-notifications
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220725-7756933d"
-            securityContext:
-              privileged: true
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "cd kcp && make test"
             resources:
               requests:
                 memory: 3Gi
