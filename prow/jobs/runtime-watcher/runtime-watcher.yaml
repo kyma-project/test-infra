@@ -3,12 +3,12 @@
 
 presubmits: # runs on PRs
   kyma-project/runtime-watcher:
-    - name: pre-main-runtime-watcher-skr-lint
+    - name: pull-lint
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-runtime-watcher-skr-lint"
+        prow.k8s.io/pubsub.runID: "pull-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)'
       skip_report: false
