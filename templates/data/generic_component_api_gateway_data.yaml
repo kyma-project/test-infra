@@ -38,10 +38,10 @@ templates:
                 inheritedConfigs:
                   global:
                     - jobConfig_default
-                    - jobConfig_postsubmit
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_generic_component_console
                     - extra_refs_test-infra
-                    - disable_testgrid
-                    - image_buildpack-golang-toolbox
                   local:
                     - job_spec
               - jobConfig:
