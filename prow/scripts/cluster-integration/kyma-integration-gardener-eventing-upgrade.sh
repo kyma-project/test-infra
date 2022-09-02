@@ -119,7 +119,10 @@ set -o pipefail
 # Install Kyma form latest release
 kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
 
-export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
+#export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
+# upgrade the kyma to the current PR/commit state
+KYMA_SOURCE="PR-${PULL_NUMBER}"
+export KYMA_SOURCE
 log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
 
 # checks required vars and initializes gcloud/docker if necessary
