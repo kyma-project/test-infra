@@ -1,0 +1,8 @@
+pjNames:
+  - pjName: "pre-api-gateway"
+  - pjName: "post-api-gateway"
+  - pjName: "rel-api-gateway"
+prConfigs:
+  kyma-project:
+    api-gateway:
+      prNumber: 11
