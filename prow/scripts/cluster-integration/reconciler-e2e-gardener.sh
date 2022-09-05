@@ -72,8 +72,7 @@ else
 fi
 
 # nice cleanup on exit, be it succesful or on fail
-# temporarily disabled to provide Gardener test-cluster - https://github.com/gardener/gardener/issues/6588
-#trap gardener::cleanup EXIT INT
+trap gardener::cleanup EXIT INT
 
 # Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
@@ -133,5 +132,3 @@ gardener::test_fast_integration_kyma
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
-
-gardener::cleanup
