@@ -11,60 +11,6 @@ templates:
           - repoName: "github.com/kyma-project/api-gateway"
             jobs:
               - jobConfig:
-                  name: pre-api-gateway
-                  always_run: true
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/api-gateway"
-                    - "ci-pr"
-                  branches:
-                    - "^main$"
-                    - "^release-\\d+\\.\\d+$"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_buildpack-golang-toolbox
-                  local:
-                    - job_spec
-              - jobConfig:
-                  name: post-api-gateway
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/api-gateway"
-                    - "ci-main"
-                  branches:
-                    - "^main$"
-                    - "^release-\\d+\\.\\d+$"
-                  labels:
-                    preset-dind-enabled: "true"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - image_buildpack-golang-toolbox
-                  local:
-                    - job_spec
-              - jobConfig:
-                  name: rel-api-gateway
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/api-gateway"
-                    - "ci-release"
-                  branches:
-                    - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$"
-                  labels:
-                    preset-bot-github-token: "true"
-                    preset-dind-enabled: "true"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - disable_testgrid
-                    - image_buildpack-golang-toolbox
-                  local:
-                    - job_spec
-              - jobConfig:
                   path: api-gateway
                   name: pre-main-kyma-project-api-gateway
                   args:
@@ -94,3 +40,22 @@ templates:
                     - image_buildpack-golang-kubebuilder2
                     - jobConfig_generic_component
                     - jobConfig_generic_component_api-gateway
+              - jobConfig:
+                  name: rel-api-gateway
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/api-gateway"
+                    - "ci-release"
+                  branches:
+                    - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$"
+                  labels:
+                    preset-bot-github-token: "true"
+                    preset-dind-enabled: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - jobConfig_generic_component_api-gateway
+                    - extra_refs_test-infra
+                  local:
+                    - job_spec
