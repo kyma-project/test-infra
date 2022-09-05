@@ -133,3 +133,5 @@ gardener::test_fast_integration_kyma
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
+
+gardener::cleanup
