@@ -1,0 +1,83 @@
+{{- $image := .Values.image }}
+  {{- range $repo, $v :=  .Values.repos }}
+  {{- with $v }}
+presubmits:
+  {{ $repo }}:
+    {{- range .builds }}
+    - name: pull-build-{{ .name }}
+      annotations:
+        description: "Workload to build image for {{ $repo }}/{{ .name }}."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: '{{ .changed }}/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: untrusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: {{ $image }}
+            command:
+              - "/kaniko-build"
+            args:
+              - "--name={{ .name }}"
+              {{- with .directory }}
+              - "--directory={{ . }}"
+              {{- end }}
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context={{ .context }}"
+              - "--dockerfile={{ .dockerfile }}"
+              {{- range $tag := .tags }}
+              - "--tag={{ . }}"
+              {{- end }}
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: gcbuild-config
+    {{- end }}
+postsubmits:
+  {{ $repo }}:
+    {{- range .builds }}
+    - name: post-build-{{ .name }}
+      annotations:
+        description: "Workload to build image for {{ $repo }}:{{ .name }}."
+      labels:
+        preset-sa-gcr-push: "true"
+      run_if_changed: '{{ .changed }}/(.*\.go$|.*/Dockerfile$)'
+      decorate: true
+      cluster: trusted-workload
+      branches:
+        - ^main$
+        - ^master$
+      spec:
+        containers:
+          - image: {{ $image }}
+            command:
+              - "/kaniko-build"
+            args:
+              - "--name={{ .name }}"
+              {{- with .directory }}
+              - "--directory={{ . }}"
+              {{- end }}
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context={{ .context }}"
+              - "--dockerfile={{ .dockerfile }}"
+              {{- range $tag := .tags }}
+              - "--tag={{ . }}"
+              {{- end }}
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+    {{- end }}
+  {{- end }}
+  {{- end }}
