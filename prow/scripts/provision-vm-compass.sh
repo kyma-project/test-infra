@@ -71,6 +71,16 @@ do
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
+echo "----------------------------------------"
+echo "SET:"
+set
+echo "----------------------------------------"
+echo "EXPORT:"
+export
+echo "----------------------------------------"
+echo "parameters: $@"
+echo "----------------------------------------"
+exit 1
 
 if [[ -z "$IMAGE" ]]; then
     log::info "Provisioning vm using the latest default custom image ..."
