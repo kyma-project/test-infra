@@ -28,6 +28,8 @@ templates:
               - jobConfig:
                   path: api-gateway
                   name: post-main-kyma-project-api-gateway
+                  labels:
+                    preset-docker-push-repository-kyma: "true"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/api-gateway"
                     - "ci-main"
@@ -50,6 +52,7 @@ templates:
                   labels:
                     preset-bot-github-token: "true"
                     preset-dind-enabled: "true"
+                    preset-docker-push-repository-kyma: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
