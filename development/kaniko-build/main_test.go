@@ -139,7 +139,7 @@ func TestFlags(t *testing.T) {
 			name: "unknown flag, fail",
 			expectedOpts: options{
 				context:    ".",
-				configPath: "/config/config.yaml",
+				configPath: "/config/kaniko-build-config.yaml",
 				dockerfile: "Dockerfile",
 				logDir:     "/logs/artifacts",
 			},
