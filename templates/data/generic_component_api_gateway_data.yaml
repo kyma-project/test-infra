@@ -29,9 +29,6 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/api-gateway"
                     - "ci-main"
-                  branches:
-                    - "^main$"
-                    - "^release-\\d+\\.\\d+$"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
