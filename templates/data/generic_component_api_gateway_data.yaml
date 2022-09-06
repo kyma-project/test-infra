@@ -42,6 +42,13 @@ templates:
                     - image_buildpack-golang-kubebuilder2
                     - jobConfig_generic_component
                     - jobConfig_generic_component_api-gateway
+                  preConfigs:
+                    global:
+                      - "jobConfig_presubmit"
+                  postConfigs:
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
               - jobConfig:
                   name: rel-api-gateway
                   args:
@@ -62,3 +69,10 @@ templates:
                     - extra_refs_test-infra
                   local:
                     - job_spec
+                  preConfigs:
+                    global:
+                      - "jobConfig_presubmit"
+                  postConfigs:
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
