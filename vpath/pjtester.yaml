@@ -1,6 +1,6 @@
 pjNames:
-  - pjName: "pre-api-gateway"
-  - pjName: "post-api-gateway"
+  - pjName: "pre-main-kyma-project-api-gateway"
+  - pjName: "post-main-kyma-project-api-gateway"
   - pjName: "rel-api-gateway"
 prConfigs:
   kyma-project:
