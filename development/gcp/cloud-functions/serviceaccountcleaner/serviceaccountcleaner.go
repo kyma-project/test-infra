@@ -11,7 +11,6 @@ import (
 	"github.com/kyma-project/test-infra/development/gcp/pkg/iam"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/secretmanager"
 	gcpiam "google.golang.org/api/iam/v1"
-	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 )
 
 var (
