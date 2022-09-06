@@ -28,8 +28,6 @@ templates:
               - jobConfig:
                   path: api-gateway
                   name: post-main-kyma-project-api-gateway
-                  labels:
-                    preset-docker-push-repository-kyma: "true"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/api-gateway"
                     - "ci-main"
