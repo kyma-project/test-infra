@@ -159,6 +159,8 @@ func ServiceAccountCleaner(w http.ResponseWriter, r *http.Request) {
 				if err != nil {
 					logger.LogError("Could not destroy %v secret version: %s", version.Name, err)
 				}
+			} else {
+				logger.LogDebug("Dry run: deleting %s and destroying %s", serviceAccountKeyPath, version.Name)
 			}
 		}
 
