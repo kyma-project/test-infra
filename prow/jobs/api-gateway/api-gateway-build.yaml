@@ -133,9 +133,6 @@ postsubmits: # runs on main
             args:
               - "/home/prow/go/src/github.com/kyma-project/api-gateway"
               - "ci-release"
-            env:
-              - name: GO111MODULE
-                value: "on"
             resources:
               requests:
                 memory: 3Gi

@@ -5,8 +5,6 @@ templates:
         localSets:
           job_spec:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-            env:
-              GO111MODULE: "on"
         jobConfigs:
           - repoName: "github.com/kyma-project/api-gateway"
             jobs:
