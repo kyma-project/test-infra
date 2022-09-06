@@ -36,19 +36,11 @@ templates:
                 inheritedConfigs:
                   global:
                     - jobConfig_default
-                    - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - disable_testgrid
-                    - image_buildpack-golang-kubebuilder2
                     - jobConfig_generic_component
                     - jobConfig_generic_component_api-gateway
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                    - image_buildpack-golang-toolbox
               - jobConfig:
                   name: rel-api-gateway
                   args:
@@ -63,16 +55,10 @@ templates:
                 inheritedConfigs:
                   global:
                     - jobConfig_default
-                    - image_buildpack-golang
                     - jobConfig_generic_component
                     - jobConfig_generic_component_api-gateway
                     - extra_refs_test-infra
+                    - disable_testgrid
+                    - image_buildpack-golang-toolbox
                   local:
                     - job_spec
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
