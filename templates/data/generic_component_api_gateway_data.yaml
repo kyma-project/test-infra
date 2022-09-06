@@ -44,7 +44,7 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/api-gateway"
                     - "ci-release"
                   branches:
-                    - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$"
+                    - '^\d+\.\d+\.\d+(?:-.*)?$'
                   labels:
                     preset-bot-github-token: "true"
                     preset-dind-enabled: "true"
