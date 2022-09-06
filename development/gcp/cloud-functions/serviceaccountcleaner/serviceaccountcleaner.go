@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"time"
 
 	"cloud.google.com/go/compute/metadata"
@@ -63,10 +64,23 @@ func ServiceAccountCleaner(w http.ResponseWriter, r *http.Request) {
 	// Set trace value for log entries to identify messages from one function call.
 	logger.GenerateTraceValue(projectID, "RotateServiceAccount")
 
-	//options ans GET/POST:
+	//options are provided as GET query:
 	// time that latest version needs to exist
-	// TODO
-	cutoffTimeHours := 2
+	cutoffTimeHours := 5
+	keys, ok := r.URL.Query()["age"]
+	if ok && len(keys[0]) > 0 {
+		cutoffTimeHours, err = strconv.Atoi(keys[0])
+		if err != nil {
+			w.WriteHeader(400)
+			logger.LogCritical("failed to convert age in hours to int: %s", err)
+		}
+	}
+
+	dryRun := false
+	keys, ok = r.URL.Query()["dry_run"]
+	if ok && keys[0] == "true" {
+		dryRun = true
+	}
 
 	//get all secrets that have type=service-account
 	projectPath := "projects/" + projectID
@@ -132,17 +146,19 @@ func ServiceAccountCleaner(w http.ResponseWriter, r *http.Request) {
 			serviceAccountKeyPath := "projects/" + versionData.ProjectID + "/serviceAccounts/" + versionData.ClientEmail + "/keys/" + versionData.PrivateKeyID
 			logger.LogInfo("Looking for service account %s", serviceAccountKeyPath)
 
-			// delete the key
-			keyVersionCall := serviceAccountService.Projects.ServiceAccounts.Keys.Delete(serviceAccountKeyPath)
-			_, err = keyVersionCall.Do()
-			if err != nil {
-				logger.LogError("Could not delete %v key: %s", serviceAccountKeyPath, err)
-			}
+			if !dryRun {
+				// delete the key
+				keyVersionCall := serviceAccountService.Projects.ServiceAccounts.Keys.Delete(serviceAccountKeyPath)
+				_, err = keyVersionCall.Do()
+				if err != nil {
+					logger.LogError("Could not delete %v key: %s", serviceAccountKeyPath, err)
+				}
 
-			// destroy the version
-			_, err = secretManagerService.DestroySecretVersion(version.Name)
-			if err != nil {
-				logger.LogError("Could not destroy %v secret version: %s", version.Name, err)
+				// destroy the version
+				_, err = secretManagerService.DestroySecretVersion(version.Name)
+				if err != nil {
+					logger.LogError("Could not destroy %v secret version: %s", version.Name, err)
+				}
 			}
 		}
 
