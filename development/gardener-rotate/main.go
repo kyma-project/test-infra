@@ -156,7 +156,7 @@ func main() {
 						for _, secretVersion := range secretVersions.Versions {
 							// we can only disable enabled secrets
 							if secretVersion.State == "ENABLED" {
-								_, err := secretSvc.DisableSecretVersion(secretVersion)
+								_, err := secretSvc.DisableSecretVersion(secretVersion.Name)
 								if err != nil {
 									log.Fatalf("Could not disable secret version %s: %v", secretVersion.Name, err)
 								}
