@@ -124,15 +124,23 @@ function run_tests() {
       # Check if the env variables are present
       if [[ -z "${COMPASS_TENANT}" ]]; then
         echo "COMPASS_TENANT is not set!"
+      else
+        echo "COMPASS_TENANT is set up correctly!"
       fi
       if [[ -z "${COMPASS_HOST}" ]]; then
         echo "COMPASS_HOST is not set!"
+      else
+        echo "COMPASS_HOST is set up correctly!"
       fi
       if [[ -z "${COMPASS_CLIENT_ID}" ]]; then
         echo "COMPASS_CLIENT_ID is not set!"
+      else
+        echo "COMPASS_CLIENT_ID is set up correctly!"
       fi
       if [[ -z "${COMPASS_CLIENT_SECRET}" ]]; then
         echo "COMPASS_CLIENT_SECRET is not set!"
+      else
+        echo "COMPASS_CLIENT_SECRET is set up correctly!"
       fi
 
       if [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_GATEWAY ]]; then
