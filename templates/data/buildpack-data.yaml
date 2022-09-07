@@ -12,7 +12,7 @@ templates:
                   - "^main$"
                 pubsub_project: "sap-kyma-prow"
                 pubsub_topic: "prowjobs"
-                image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220905-0070bb40f
+                image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-ee6d5e615
                 command: /kaniko-build
                 labels:
                   preset-sa-gcr-push: "true"

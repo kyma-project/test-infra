@@ -8,11 +8,11 @@ import (
 
 type Config struct {
 	// Registry is URL where clean build should land.
-	Registry string `yaml:"directory"`
+	Registry string `yaml:"registry"`
 	// DevRegistry is Registry URL where development/dirty images should land.
 	// If not set then the Registry field is used.
 	// This field is only valid when running in CI (CI env variable is set to `true`)
-	DevRegistry string `yaml:"dev-directory"`
+	DevRegistry string `yaml:"dev-registry"`
 	// Cache options that are directly related to kaniko flags
 	Cache CacheConfig `yaml:"cache"`
 	// TagTemplate is go-template field that defines the format of the $_TAG substitution.

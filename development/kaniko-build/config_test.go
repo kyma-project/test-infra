@@ -15,10 +15,10 @@ func Test_ParseConfig(t *testing.T) {
 	}{
 		{
 			name: "parsed full config",
-			config: `dev-directory: dev.kyma-project.io/dev-directory
+			config: `dev-registry: dev.kyma-project.io/dev-registry
 tag-template: v{{ .Date }}-{{ .ShortSHA }}`,
 			expectedConfig: Config{
-				DevRegistry: "dev.kyma-project.io/dev-directory",
+				DevRegistry: "dev.kyma-project.io/dev-registry",
 				TagTemplate: `v{{ .Date }}-{{ .ShortSHA }}`,
 			},
 		},
