@@ -12,7 +12,6 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
-	"sync"
 )
 
 type options struct {
@@ -143,27 +142,21 @@ func runBuildJob(o options, vs Variants) error {
 		fmt.Println("Successfully built image:", strings.Join(destinations, ", "))
 	}
 
-	var wg sync.WaitGroup
-	wg.Add(len(vs))
 	var errs []error
-	for k, v := range vs {
-		go func(variant string, env map[string]string) {
-			defer wg.Done()
-			var variantTags []string
-			for _, tag := range tags {
-				variantTags = append(variantTags, tag+"-"+variant)
-			}
-			destinations := gatherDestinations(repo, o.directory, o.name, variantTags)
-			if err := run(o, variant, destinations, env); err != nil {
-				errs = append(errs, fmt.Errorf("job %s ended with error: %w", variant, err))
-				fmt.Printf("Job '%s' ended with error: %s.\n", variant, err)
-			} else {
-				fmt.Println("Successfully built image:", strings.Join(destinations, ", "))
-				fmt.Printf("Job '%s' finished successfully.\n", variant)
-			}
-		}(k, v)
+	for variant, env := range vs {
+		var variantTags []string
+		for _, tag := range tags {
+			variantTags = append(variantTags, tag+"-"+variant)
+		}
+		destinations := gatherDestinations(repo, o.directory, o.name, variantTags)
+		if err := run(o, variant, destinations, env); err != nil {
+			errs = append(errs, fmt.Errorf("job %s ended with error: %w", variant, err))
+			fmt.Printf("Job '%s' ended with error: %s.\n", variant, err)
+		} else {
+			fmt.Println("Successfully built image:", strings.Join(destinations, ", "))
+			fmt.Printf("Job '%s' finished successfully.\n", variant)
+		}
 	}
-	wg.Wait()
 	return errutil.NewAggregate(errs)
 }
 
