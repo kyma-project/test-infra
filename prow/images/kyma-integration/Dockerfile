@@ -2,16 +2,10 @@
 
 FROM debian:11
 
-# Commit details
-
-ARG commit
-ENV IMAGE_COMMIT=$commit
-LABEL io.kyma-project.test-infra.commit=$commit
-
 #################################################################
 ###################### Basic Bootstrap ##########################
 #################################################################
-ARG K8S_VERSION=1.23
+ARG K8S_VERSION
 ARG commit
 ENV IMAGE_COMMIT=$commit
 LABEL io.kyma-project.test-infra.commit=$commit
