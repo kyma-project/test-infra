@@ -196,9 +196,9 @@ presubmits: # runs on PRs
         preset-kyma-integration-central-app-connectivity-enabled: "true"
         preset-kyma-integration-compass-dev: "true"
         preset-sa-vm-kyma-integration: "true"
-      always_run: false
+      run_if_changed: '^((resources/application-connector\S+|installation\S+|tests/components/application-connector\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       optional: true
-      skip_report: true
+      skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
