@@ -121,6 +121,20 @@ function run_tests() {
       export EXPORT_RESULT="true"
       go install github.com/jstemmer/go-junit-report/v2@latest
 
+      # Check if the env variables are present
+      if [[ -z "${COMPASS_TENANT}" ]]; then
+        echo "COMPASS_TENANT is not set!"
+      fi
+      if [[ -z "${COMPASS_HOST}" ]]; then
+        echo "COMPASS_HOST is not set!"
+      fi
+      if [[ -z "${COMPASS_CLIENT_ID}" ]]; then
+        echo "COMPASS_CLIENT_ID is not set!"
+      fi
+      if [[ -z "${COMPASS_CLIENT_SECRET}" ]]; then
+        echo "COMPASS_CLIENT_SECRET is not set!"
+      fi
+
       if [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_GATEWAY ]]; then
         make test -f Makefile.test-application-gateway
       elif [ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_VALIDATOR ]; then
