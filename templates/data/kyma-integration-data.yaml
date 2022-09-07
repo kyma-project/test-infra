@@ -421,8 +421,7 @@ templates:
                     - "extra_refs_kyma-local"
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d-runtime-agent"
-                  always_run: "false"
-                  skip_report: "true"
+                  run_if_changed: "^((resources/application-connector\\S+|installation\\S+|tests/components/application-connector\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   optional: "true"
                   labels:
                     preset-build-pr: "true"
