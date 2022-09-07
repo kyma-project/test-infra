@@ -65,7 +65,7 @@ func ServiceAccountCleaner(w http.ResponseWriter, r *http.Request) {
 	logger.GenerateTraceValue(projectID, "RotateServiceAccount")
 
 	//options are provided as GET query:
-	// time that latest version needs to exist
+	// time that latest version of secret needs to exist before older ones can be destroyed
 	cutoffTimeHours := 5
 	keys, ok := r.URL.Query()["age"]
 	if ok && len(keys[0]) > 0 {
