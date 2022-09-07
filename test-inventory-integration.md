@@ -5,6 +5,7 @@
 |:-----|:---------|:---------------------|:----------|:--------|:--------|:------|
 | pre-main-kyma-integration-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-integration-k3d-app-gateway | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
+| pre-main-kyma-integration-k3d-app-conn-validator | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-integration-k3d-central-app-connectivity-compass | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-serverless-integration-k3s | k3s | k3s | kyma deploy |  | pr-submit |  helm serverless-test  |
 | serverless-function-benchmark | gke |  |  |  | nightly |  Serverless function benchmarks  |
@@ -16,6 +17,7 @@
 | pre-main-kyma-api-gateway-integration-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | post-main-kyma-integration-k3d | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-kyma-integration-k3d-app-gateway | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
+| post-main-kyma-integration-k3d-app-conn-validator | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-kyma-integration-k3d-central-app-connectivity-compass | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-kyma-integration-k3d-telemetry | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-k3d-k8s-preview | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
