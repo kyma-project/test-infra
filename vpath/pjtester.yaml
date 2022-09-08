@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "rel-api-gateway"
+prConfigs:
+  kyma-project:
+    api-gateway:
+      prNumber: 1212
