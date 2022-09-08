@@ -10,11 +10,14 @@ templates:
             jobs:
               - jobConfig:
                   path: api-gateway
-                  name: pre-main-kyma-project-api-gateway
+                  name: pre-kyma-project-api-gateway
+                  always_run: true
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/api-gateway"
                     - "ci-pr"
-                  always_run: true
+                  branches:
+                    - "^main$"
+                    - "^release-\\d+\\.\\d+$"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -25,10 +28,13 @@ templates:
                     - jobConfig_generic_component_api-gateway
               - jobConfig:
                   path: api-gateway
-                  name: post-main-kyma-project-api-gateway
+                  name: post-kyma-project-api-gateway
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/api-gateway"
                     - "ci-main"
+                  branches:
+                    - "^main$"
+                    - "^release-\\d+\\.\\d+$"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
