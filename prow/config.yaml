@@ -229,6 +229,8 @@ branch-protection:
                   - "netlify/kyma-project-old/deploy-preview"
         private-fn-for-e2e-serverless-tests:
           protect: false
+        organization-and-operations:
+          protect: false
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
       exclude:
@@ -285,6 +287,7 @@ tide:
     kyma-project/runtime-watcher: squash
     kyma-project/module-manager: squash
     kyma-project/api-gateway: squash
+    kyma-project/organization-and-operations: squash
 
     kyma-incubator/compass: squash
     kyma-incubator/reconciler: squash
