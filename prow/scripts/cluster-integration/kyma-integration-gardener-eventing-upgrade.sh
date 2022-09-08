@@ -121,7 +121,7 @@ kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
 
 #export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
 # upgrade the kyma to the current PR/commit state
-KYMA_SOURCE="PR-${PULL_NUMBER}"
+KYMA_SOURCE="PR-15295"
 export KYMA_SOURCE
 log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
 
@@ -152,7 +152,7 @@ ENABLE_TEST_CLEANUP=true
 eventing::pre_upgrade_test_fast_integration
 
 # upgrade the kyma to the current PR/commit state
-KYMA_SOURCE="PR-${PULL_NUMBER}"
+KYMA_SOURCE="PR-15413"
 export KYMA_SOURCE
 
 # uses previously set KYMA_SOURCE
