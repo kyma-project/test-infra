@@ -152,7 +152,7 @@ ENABLE_TEST_CLEANUP=true
 eventing::pre_upgrade_test_fast_integration
 
 # upgrade the kyma to the current PR/commit state
-KYMA_SOURCE="PR-15413"
+KYMA_SOURCE="PR-15418"
 export KYMA_SOURCE
 
 # uses previously set KYMA_SOURCE
