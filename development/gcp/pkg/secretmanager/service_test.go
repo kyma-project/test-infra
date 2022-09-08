@@ -49,6 +49,28 @@ func TestAddSecretVersion(t *testing.T) {
 	}
 }
 
+func TestListSecretVersions(t *testing.T) {
+	ctx := context.Background()
+	fakeServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		resp := gcpsecretmanager.ListSecretVersionsResponse{}
+		b, err := json.Marshal(resp)
+		if err != nil {
+			http.Error(w, "unable to marshal request: "+err.Error(), http.StatusBadRequest)
+			return
+		}
+		w.Write(b)
+	}))
+	service, err := NewService(ctx, option.WithoutAuthentication(), option.WithEndpoint(fakeServer.URL))
+	if err != nil {
+		t.Errorf("Couldn't create new service: %s", err)
+	}
+
+	_, err = service.ListSecretVersions("project/projectName/secret/secretName")
+	if err != nil {
+		t.Errorf("Couldn't create new secret version: %s", err)
+	}
+}
+
 func TestGetAllSecrets(t *testing.T) {
 	ctx := context.Background()
 	fakeServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
