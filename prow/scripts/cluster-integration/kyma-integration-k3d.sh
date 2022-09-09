@@ -17,7 +17,6 @@ function prereq_test() {
 
 function load_env() {
   ENV_FILE=".env"
-  cat "${ENV_FILE}"
   if [ -f "${ENV_FILE}" ]; then
     # shellcheck disable=SC2046
     export $(xargs < "${ENV_FILE}")
@@ -122,11 +121,11 @@ function run_tests() {
       go install github.com/jstemmer/go-junit-report/v2@latest
 
       if [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_GATEWAY ]]; then
-        make test-gateway
+        make test -f Makefile.test-application-gateway
       elif [ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_VALIDATOR ]; then
-        make test-validator
+        make test -f Makefile.test-application-conn-validator
       elif [ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_RUNTIME_AGENT ]; then
-        make test-compass-runtime-agent
+        make test -f Makefile.test-compass-runtime-agent
       fi
 
       popd

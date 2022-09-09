@@ -22,7 +22,6 @@
 /prow/jobs/control-plane @tillknuesting @piotrmiskiewicz @wozniakjan @akgalwas @franpog859 @hanngos @koala7659 @pk85 @janmedrek @maladie @ralikio @szwedm @kyma-project/prow
 /prow/jobs/incubator/compass @gvachkov @la4ezar @petartodorovv @desislavaa @dimitarpetrov @kaloyanspiridonov @krasish @alextargov @nyordanoff @stanislavstefanov @nickymateev @dzahariev @kirilkabakchiev @stefancholakov @svetlinzarev-sap @dragobt @ivantenevvasilev @kyma-project/prow
 /prow/jobs/incubator/compass-console @gvachkov @la4ezar @petartodorovv @desislavaa @dimitarpetrov @kaloyanspiridonov @krasish @alextargov @nyordanoff @stanislavstefanov @nickymateev @dzahariev @kirilkabakchiev @stefancholakov @svetlinzarev-sap @dragobt @ivantenevvasilev @kyma-project/prow
-/prow/jobs/incubator/dex @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @kyma-project/prow
 /prow/jobs/incubator/documentation-component @m00g3n @kyma-project/prow
 /prow/jobs/incubator/hydra-login-consent @tomasz-smelcerz-sap @dariusztutaj @piotrkpc @kyma-project/prow
 /prow/jobs/incubator/kyma-showcase @cortey @hanngos @lyczeq @mrcherry97 @mvshao @kyma-project/prow
@@ -37,7 +36,6 @@
 /prow/jobs/kyma/components/central-application-connectivity-validator @janmedrek @koala7659 @maladie @pbochynski @akgalwas @franpog859 @ralikio @a-thaler @pk85 @kyma-project/prow
 /prow/jobs/kyma/components/central-application-gateway @a-thaler @koala7659 @maladie @janmedrek @ralikio @pbochynski @pk85 @akgalwas @franpog859 @kyma-project/prow
 /prow/jobs/kyma/components/compass-runtime-agent @franpog859 @janmedrek @ralikio @pbochynski @a-thaler @pk85 @akgalwas @koala7659 @maladie @kyma-project/prow
-/prow/jobs/kyma/components/dex-static-user-configurer @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj @kyma-project/prow
 /prow/jobs/kyma/components/event-publisher-proxy @friedrichwilken @k15r @pxsalehi @vladislavpaskar @a-thaler @pk85 @pbochynski @lilitgh @marcobebway @mfaizanse @nachtmaar @kyma-project/prow
 /prow/jobs/kyma/components/eventing-controller @pbochynski @k15r @lilitgh @marcobebway @mfaizanse @vladislavpaskar @a-thaler @pk85 @friedrichwilken @nachtmaar @pxsalehi @kyma-project/prow
 /prow/jobs/kyma/components/function-controller @pbochynski @pk85 @dbadura @kwiatekus @m00g3n @pprecel @a-thaler @kyma-project/prow
