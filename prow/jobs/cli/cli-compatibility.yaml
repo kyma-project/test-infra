@@ -36,8 +36,6 @@ periodics: # runs on schedule
             env:
               - name: COMPAT_BACKTRACK
                 value: "1"
-              - name: GO111MODULE
-                value: "on"
               - name: KUBERNETES_RUNTIME
                 value: "k3d"
             resources:
