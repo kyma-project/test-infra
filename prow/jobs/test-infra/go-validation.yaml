@@ -1,5 +1,20 @@
 presubmits: # runs on PRs
   kyma-project/test-infra:
+    - name: pull-unit-test-go
+      run_if_changed: '.*\.go$'
+      decorate: true
+      cluster: untrusted-workload
+      branches:
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220809-002bc8cf3"
+            command:
+              - "go"
+            args:
+              - "test"
+              - "-cover"
+              - "./..."
     - name: pre-main-test-infra-lint
       annotations:
         pipeline.trigger: "pr-submit"

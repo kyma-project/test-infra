@@ -17,7 +17,9 @@ func TestApiGatewayJobsPresubmit(t *testing.T) {
 
 	// then
 	require.NoError(t, err)
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/api-gateway"}), "pre-main-kyma-project-api-gateway", "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/api-gateway"}), "pre-kyma-project-api-gateway", "main")
+	require.NotNil(t, actualPresubmit)
+	actualPresubmit = tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/api-gateway"}), "pre-kyma-project-api-gateway", "release-1.0")
 	require.NotNil(t, actualPresubmit)
 
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -37,7 +39,9 @@ func TestApiGatewayJobPostsubmit(t *testing.T) {
 	// then
 	require.NoError(t, err)
 
-	actualPostsubmit := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/api-gateway"}), "post-main-kyma-project-api-gateway", "master")
+	actualPostsubmit := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/api-gateway"}), "post-kyma-project-api-gateway", "main")
+	require.NotNil(t, actualPostsubmit)
+	actualPostsubmit = tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/api-gateway"}), "post-kyma-project-api-gateway", "release-1.0")
 	require.NotNil(t, actualPostsubmit)
 
 	assert.Equal(t, 10, actualPostsubmit.MaxConcurrency)
@@ -46,4 +50,22 @@ func TestApiGatewayJobPostsubmit(t *testing.T) {
 	assert.Equal(t, tester.ImageGolangKubebuilder2BuildpackLatest, actualPostsubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, actualPostsubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/api-gateway", "ci-main"}, actualPostsubmit.Spec.Containers[0].Args)
+}
+
+func TestApiGatewayJobRelease(t *testing.T) {
+	// when
+	jobConfig, err := tester.ReadJobConfig(apiGatewayJobPath)
+
+	// then
+	require.NoError(t, err)
+
+	actualRelease := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/api-gateway"}), "rel-api-gateway", "1.0.0")
+	require.NotNil(t, actualRelease)
+
+	assert.Equal(t, 10, actualRelease.MaxConcurrency)
+
+	tester.AssertThatHasPresets(t, actualRelease.JobBase, preset.DindEnabled, preset.DockerPushRepoKyma, preset.GcrPush)
+	assert.Equal(t, tester.ImageGolangKubebuilder2BuildpackLatest, actualRelease.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, actualRelease.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/api-gateway", "ci-release"}, actualRelease.Spec.Containers[0].Args)
 }

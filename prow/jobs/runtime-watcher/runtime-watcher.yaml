@@ -3,12 +3,12 @@
 
 presubmits: # runs on PRs
   kyma-project/runtime-watcher:
-    - name: pre-main-runtime-watcher-skr-lint
+    - name: pull-skr-lint
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-runtime-watcher-skr-lint"
+        prow.k8s.io/pubsub.runID: "pull-skr-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)'
       skip_report: false
@@ -38,12 +38,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-runtime-watcher-skr-tests
+    - name: pull-skr-tests
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-runtime-watcher-skr-tests"
+        prow.k8s.io/pubsub.runID: "pull-skr-tests"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -76,12 +76,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-runtime-watcher-kcp-lint
+    - name: pull-kcp-lint
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-runtime-watcher-kcp-lint"
+        prow.k8s.io/pubsub.runID: "pull-kcp-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^kcp/(go.mod|go.sum)$|^kcp/*/(.*.go|Makefile|.*.sh)'
       skip_report: false
@@ -111,12 +111,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-runtime-watcher-kcp-tests
+    - name: pull-kcp-tests
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-runtime-watcher-kcp-tests"
+        prow.k8s.io/pubsub.runID: "pull-kcp-tests"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -149,12 +149,85 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-runtime-watcher-kcp-build
+    - name: pull-listener-lint
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-runtime-watcher-kcp-build"
+        prow.k8s.io/pubsub.runID: "pull-listener-lint"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220804-607830f89"
+            securityContext:
+              privileged: true
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "cd listener && golangci-lint run"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pull-listener-tests
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-listener-tests"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-kyma: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220725-7756933d"
+            securityContext:
+              privileged: true
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "cd listener && make test"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pull-kcp-build
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-kcp-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -194,12 +267,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-runtime-watcher-skr-build
+    - name: pull-skr-build
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-runtime-watcher-skr-build"
+        prow.k8s.io/pubsub.runID: "pull-skr-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -242,12 +315,12 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/runtime-watcher:
-    - name: post-main-runtime-watcher-kcp-build
+    - name: main-kcp-build
       annotations:
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-runtime-watcher-kcp-build"
+        prow.k8s.io/pubsub.runID: "main-kcp-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -287,12 +360,12 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-main-runtime-watcher-skr-build
+    - name: main-skr-build
       annotations:
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-runtime-watcher-skr-build"
+        prow.k8s.io/pubsub.runID: "main-skr-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -321,47 +394,6 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/runtime-watcher/skr"
               - "docker-build"
               - "docker-push"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-  
-periodics: # runs on schedule
-    - name: periodic-runtime-watcher-kcp-tests
-      annotations:
-        description: "regularly executes the 'make test' command in the runtime-watcher 'kcp' directory."
-        pipeline.trigger: "periodic"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "periodic-runtime-watcher-kcp-tests"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-sa-gcr-push: "true"
-      cron: "0 */6 * * 1-5"
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      reporter_config:
-        slack:
-          channel: jellyfish-notifications
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220725-7756933d"
-            securityContext:
-              privileged: true
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "cd kcp && make test"
             resources:
               requests:
                 memory: 3Gi
