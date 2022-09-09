@@ -1,6 +1,6 @@
 pjNames:
-  - pjName: "skr-aws-integration-dev"
+  - pjName: "skr-azure-nightly"
 prConfigs:
   kyma-project:
     kyma:
-      prNumber: 15076
+      prNumber: 15423
