@@ -36,28 +36,9 @@ type ServiceAccountJSON struct {
 	ClientCert       string `json:"client_x509_cert_url"`
 }
 
-func init() {
-	var err error
-	ctx := context.Background()
-
-	projectID, err = metadata.ProjectID()
-	if err != nil {
-		panic("failed to retrieve GCP Project ID, error: " + err.Error())
-	}
-
-	secretManagerService, err = secretmanager.NewService(ctx)
-	if err != nil {
-		panic("failed creating Secret Manager client, error: " + err.Error())
-	}
-
-	serviceAccountService, err = gcpiam.NewService(ctx)
-	if err != nil {
-		panic("failed creating IAM client, error: " + err.Error())
-	}
-}
-
 func ServiceAccountCleaner(w http.ResponseWriter, r *http.Request) {
 	var err error
+	ctx := context.Background()
 
 	// Create logger to use google cloud functions structured logging
 	logger := cloudfunctions.NewLogger()
@@ -82,6 +63,32 @@ func ServiceAccountCleaner(w http.ResponseWriter, r *http.Request) {
 	keys, ok = r.URL.Query()["dry_run"]
 	if ok && keys[0] == "true" {
 		dryRun = true
+	}
+
+	keys, ok = r.URL.Query()["project"]
+	if ok {
+		projectID = keys[0]
+	}
+
+	if projectID == "" {
+		projectID, err = metadata.ProjectID()
+		if err != nil {
+			panic("failed to retrieve GCP Project ID, error: " + err.Error())
+		}
+	}
+
+	if secretManagerService == nil {
+		secretManagerService, err = secretmanager.NewService(ctx)
+		if err != nil {
+			panic("failed creating Secret Manager client, error: " + err.Error())
+		}
+	}
+
+	if serviceAccountService == nil {
+		serviceAccountService, err = gcpiam.NewService(ctx)
+		if err != nil {
+			panic("failed creating IAM client, error: " + err.Error())
+		}
 	}
 
 	//get all secrets that have type=service-account
@@ -116,7 +123,7 @@ func ServiceAccountCleaner(w http.ResponseWriter, r *http.Request) {
 		// if latest older than X seconds
 		// timestamp in 2021-07-21T07:31:24.739506Z format
 		//2006-01-02T15:04:05
-		latestVersionTimestamp, err := time.Parse("2006-01-02T15:04:05", versions[0].CreateTime)
+		latestVersionTimestamp, err := time.Parse("2006-01-02T15:04:05.000000Z", versions[0].CreateTime)
 		if err != nil {
 			logger.LogCritical("Couldn't parse date: %s", versions[0].CreateTime)
 		}

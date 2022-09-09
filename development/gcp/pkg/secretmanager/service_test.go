@@ -17,7 +17,7 @@ func serveHTTP(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func TestNewService(t *testing.T) {
+/*func TestNewService(t *testing.T) {
 	ctx := context.Background()
 	fakeServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	}))
@@ -92,3 +92,4 @@ func TestGetAllSecrets(t *testing.T) {
 		t.Errorf("Couldn't get all secrets: %s", err)
 	}
 }
+*/

@@ -62,7 +62,6 @@ func (sm *Service) GetAllSecretVersions(secretPath, filter string) ([]*gcpsecret
 		return nil, err
 	}
 	return allVersionsResponse.Versions, err
-
 }
 
 // DisableSecretVersion disables a version of a secret
