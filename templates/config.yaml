@@ -23,7 +23,6 @@ global:
         - name: "addons"
         - name: "private-fn-for-e2e-serverless-tests"
         - name: "charts"
-        - name: "busola-migrator"
         - name: "examples"
         - name: "api-gateway"
     - name: "kyma-incubator"
