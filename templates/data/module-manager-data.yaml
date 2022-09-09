@@ -8,7 +8,7 @@ templates:
               - jobConfig:
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220804-607830f89"
-                  name: "pre-main-module-manager-controller-lint"
+                  name: "pull-lint"
                   annotations:
                     description: executes the 'make lint' command in the module-manager 'operator' directory before any pull request.
                   command: "bash"
@@ -25,12 +25,12 @@ templates:
                     - "build_labels" # default labels
               - jobConfig:
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
-                  name: pre-main-module-manager-controller-tests
+                  name: pull-tests
                   annotations:
                     description: executes the 'make test' command in the module-manager 'operator' directory before any pull request.
                   command: "bash"
                   args:
-                    - "-c" 
+                    - "-c"
                     - "cd operator && make test" # run test make target of operator
                   branches:
                     - ^main$ # any pr against main trig
@@ -38,13 +38,13 @@ templates:
                 inheritedConfigs:
                   global:
                     - "image_buildpack-golang" # takes latest golang image
-                    - "jobConfig_default" 
+                    - "jobConfig_default"
                     - "jobConfig_presubmit"
                     - "build_labels" # default labels
               - jobConfig:
                   labels:
                     preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
-                  name: "pre-main-module-manager-build"
+                  name: "pull-build"
                   always_run: true
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
                   args:
@@ -64,7 +64,7 @@ templates:
               - jobConfig:
                   labels:
                     preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
-                  name: "post-main-module-manager-build"
+                  name: "main-build"
                   always_run: true
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
                   args:

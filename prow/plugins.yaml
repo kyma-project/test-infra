@@ -91,6 +91,13 @@ config_updater:
           - default
         untrusted-workload:
           - default
+    configs/kaniko-build-config.yaml:
+      name: kaniko-build-config
+      clusters:
+        trusted-workload:
+          - default
+        untrusted-workload:
+          - default
     prow/cluster/static-files/*:
       name: static-files
 

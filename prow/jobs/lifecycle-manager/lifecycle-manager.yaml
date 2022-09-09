@@ -3,13 +3,13 @@
 
 presubmits: # runs on PRs
   kyma-project/lifecycle-manager:
-    - name: pre-main-lifecycle-manager-lint
+    - name: pull-lint
       annotations:
         description: "executes the 'golangci-lint lint' command in the lifecycle-manager 'operator' directory before any pull request."
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-lifecycle-manager-lint"
+        prow.k8s.io/pubsub.runID: "pull-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)'
       skip_report: false
@@ -39,12 +39,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-lifecycle-manager-tests
+    - name: pull-tests
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-lifecycle-manager-tests"
+        prow.k8s.io/pubsub.runID: "pull-tests"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -77,12 +77,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-lifecycle-manager-build
+    - name: pull-build
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-lifecycle-manager-build"
+        prow.k8s.io/pubsub.runID: "pull-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -125,12 +125,12 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/lifecycle-manager:
-    - name: post-main-lifecycle-manager-build
+    - name: main-build
       annotations:
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-lifecycle-manager-build"
+        prow.k8s.io/pubsub.runID: "main-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
