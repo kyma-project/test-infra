@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "pre-main-control-plane-reconciler-upgrade-kyma2-latest-to-main-gardener"
+    report: true
+prConfigs:
+  kyma-project:
+    test-infra:
+      prNumber: 5996
