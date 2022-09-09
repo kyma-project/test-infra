@@ -282,7 +282,6 @@ tide:
     kyma-project/console: squash
     kyma-project/examples: squash
     kyma-project/addons: squash
-    kyma-project/busola-migrator: squash
     kyma-project/lifecycle-manager: squash
     kyma-project/runtime-watcher: squash
     kyma-project/module-manager: squash

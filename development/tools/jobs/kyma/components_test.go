@@ -52,13 +52,6 @@ var components = []struct {
 			jobsuite.AllReleases(),
 		},
 	},
-	{path: "busola-migrator", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.AllReleases(),
-			jobsuite.Optional(),
-		},
-	},
 	{path: "central-application-gateway", image: tester.ImageGolangBuildpack1_16, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
