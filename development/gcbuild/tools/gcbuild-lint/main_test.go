@@ -55,7 +55,7 @@ func Test_baseRef(t *testing.T) {
 	}{
 		{
 			name:      "in CI, baseRef not provided",
-			o:         options{isCI: true},
+			o:         options{isCI: false},
 			expectErr: true,
 		},
 		{
