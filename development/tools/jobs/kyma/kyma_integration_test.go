@@ -35,6 +35,13 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				"installation/test/test/README.MD",
 			},
 		},
+		"Should contain the kyma-integration k3d with central Application Connectivity and Compass job": {
+			givenJobName: "pre-main-kyma-integration-k3d-central-app-connectivity-compass",
+
+			expPresets: []preset.Preset{
+				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-connectivity-enabled", "preset-kyma-integration-compass-dev", "preset-kyma-integration-compass-enabled",
+			},
+		},
 		"Should contain the kyma-integration k3d with telemetry job": {
 			givenJobName: "pre-main-kyma-integration-k3d-telemetry",
 
