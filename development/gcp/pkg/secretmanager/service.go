@@ -53,15 +53,31 @@ func (sm *Service) GetSecretVersion(secretPath string) (*gcpsecretmanager.Secret
 // GetSecretVersion retrieves one version of a secret
 // expects secretPath in "projects/*/secrets/*/versions/*" format
 func (sm *Service) GetAllSecretVersions(secretPath, filter string) ([]*gcpsecretmanager.SecretVersion, error) {
-	allVersionsCall := sm.Service.Projects.Secrets.Versions.List(secretPath)
-	if filter != "" {
-		allVersionsCall = allVersionsCall.Filter(filter)
+	var versions []*gcpsecretmanager.SecretVersion
+	nextPageToken := ""
+
+	for {
+		allVersionsCall := sm.Service.Projects.Secrets.Versions.List(secretPath)
+
+		if filter != "" {
+			allVersionsCall = allVersionsCall.Filter(filter)
+		}
+		if nextPageToken != "" {
+			allVersionsCall.PageToken(nextPageToken)
+		}
+
+		allVersionsResponse, err := allVersionsCall.Do()
+		if err != nil {
+			return nil, err
+		}
+		versions = append(versions, allVersionsResponse.Versions...)
+
+		if allVersionsResponse.NextPageToken == "" {
+			break
+		}
+		nextPageToken = allVersionsResponse.NextPageToken
 	}
-	allVersionsResponse, err := allVersionsCall.Do()
-	if err != nil {
-		return nil, err
-	}
-	return allVersionsResponse.Versions, err
+	return versions, nil
 }
 
 // DisableSecretVersion disables a version of a secret
