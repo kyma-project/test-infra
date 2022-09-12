@@ -121,7 +121,7 @@ kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
 
 #export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
 # upgrade the kyma to the current PR/commit state
-KYMA_SOURCE="PR-15295"
+KYMA_SOURCE="2.5.2"
 export KYMA_SOURCE
 log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
 
