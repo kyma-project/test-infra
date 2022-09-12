@@ -1,3 +1,4 @@
+// Package serviceaccountcleaner contains code for the service-account secret cleaner function
 package serviceaccountcleaner
 
 import (
@@ -13,6 +14,7 @@ import (
 	"github.com/kyma-project/test-infra/development/gcp/pkg/secretmanager"
 	gcpiam "google.golang.org/api/iam/v1"
 
+	// GCP requires this import to successfully build the cloud function
 	_ "github.com/GoogleCloudPlatform/functions-framework-go/funcframework"
 )
 
@@ -36,6 +38,7 @@ type ServiceAccountJSON struct {
 	ClientCert       string `json:"client_x509_cert_url"`
 }
 
+// ServiceAccountCleaner is a cloud function that destroys old versions of service-account secrets and corresponding keys
 func ServiceAccountCleaner(w http.ResponseWriter, r *http.Request) {
 	var err error
 	ctx := context.Background()
