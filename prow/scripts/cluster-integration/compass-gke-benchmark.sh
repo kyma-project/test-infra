@@ -173,13 +173,16 @@ function installCompassOld() {
   echo "Checkout $LATEST_VERSION"
   git checkout "${LATEST_VERSION}"
 
-  mkdir "$COMPASS_SOURCES_DIR/installation/data"
+  COMPASS_OVERRIDES="$PWD/compass_benchmark_overrides.yaml"
+  COMPASS_COMMON_OVERRIDES="$PWD/compass_common_overrides.yaml"
+
   echo 'Installing DB'
-  DB_OVERRIDES="$PWD/compass_benchmark_overrides.yaml"
-  bash "${COMPASS_SCRIPTS_DIR}"/install-db.sh --overrides-file "${DB_OVERRIDES}" --timeout 30m0s
+  mkdir "$COMPASS_SOURCES_DIR/installation/data"
+  bash "${COMPASS_SCRIPTS_DIR}"/install-db.sh --overrides-file "${COMPASS_OVERRIDES}" --overrides-file "${COMPASS_COMMON_OVERRIDES}" --timeout 30m0s
   STATUS=$(helm status localdb -n compass-system -o json | jq .info.status)
   echo "DB installation status ${STATUS}"
 
+  echo 'Installing Compass'
   COMPASS_OVERRIDES="$PWD/compass_benchmark_overrides.yaml"
   COMPASS_COMMON_OVERRIDES="$PWD/compass_common_overrides.yaml"
   bash "${COMPASS_SCRIPTS_DIR}"/install-compass.sh --overrides-file "${COMPASS_OVERRIDES}" --overrides-file "${COMPASS_COMMON_OVERRIDES}" --timeout 30m0s
@@ -201,15 +204,16 @@ function installCompassNew() {
     exit 1
   fi
 
-  mkdir "$COMPASS_SOURCES_DIR/installation/data"
+  COMPASS_OVERRIDES="$PWD/compass_benchmark_overrides.yaml"
+  COMPASS_COMMON_OVERRIDES="$PWD/compass_common_overrides.yaml"
+
   echo 'Installing DB'
-  DB_OVERRIDES="$PWD/compass_benchmark_overrides.yaml"
-  bash "${COMPASS_SCRIPTS_DIR}"/install-db.sh --overrides-file "${DB_OVERRIDES}" --timeout 30m0s
+  mkdir "$COMPASS_SOURCES_DIR/installation/data"
+  bash "${COMPASS_SCRIPTS_DIR}"/install-db.sh --overrides-file "${COMPASS_OVERRIDES}" --overrides-file "${COMPASS_COMMON_OVERRIDES}" --timeout 30m0s
   STATUS=$(helm status localdb -n compass-system -o json | jq .info.status)
   echo "DB installation status ${STATUS}"
 
-  COMPASS_OVERRIDES="$PWD/compass_benchmark_overrides.yaml"
-  COMPASS_COMMON_OVERRIDES="$PWD/compass_common_overrides.yaml"
+  echo 'Installing Compass'
   bash "${COMPASS_SCRIPTS_DIR}"/install-compass.sh --overrides-file "${COMPASS_OVERRIDES}" --overrides-file "${COMPASS_COMMON_OVERRIDES}" --timeout 30m0s
   STATUS=$(helm status compass -n compass-system -o json | jq .info.status)
   echo "Compass installation status ${STATUS}"
