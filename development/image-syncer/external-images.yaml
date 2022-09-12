@@ -31,7 +31,7 @@ images:
 - source: "oryd/hydra:v1.11.8"
 - source: "oryd/oathkeeper-maester:v0.1.5"
 - source: "oryd/oathkeeper:v0.38.25-beta.1"
-- source: "postgres:14.2-alpine3.15"
+- source: "postgres:11.17-alpine3.15"
 - source: "prom/pushgateway:v1.4.3"
 - source: "k8s.gcr.io/kube-state-metrics/kube-state-metrics:v2.5.0"
 - source: "quay.io/jetstack/cert-manager-controller:v1.1.0"
