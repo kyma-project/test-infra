@@ -209,7 +209,7 @@ function eventing::pre_upgrade_test_fast_integration() {
       log::info "Cloning kyma repository and checking out branch:${KYMA_SOURCE}"
       git clone https://github.com/kyma-project/kyma ~/.kyma_old
       pushd ~/.kyma_old
-      git checkout main
+      git checkout "${KYMA_SOURCE}"
       popd
 
       pushd ~/.kyma_old/tests/fast-integration
