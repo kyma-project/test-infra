@@ -27,18 +27,11 @@ func NewGenericComponentSuite(config *jobsuite.Config) jobsuite.Suite {
 
 // Run runs tests on a ComponentSuite
 func (s GenericComponentSuite) Run(t *testing.T) {
-	// we need to omit this check as we have to skip test if a given prowjob is nil
-	//s.testRunAgainstAnyBranch(t)
-
 	jobConfig, err := ReadJobConfig(s.JobConfigPath())
 	require.NoError(t, err)
 
 	t.Run("presubmit", s.testPresubmitJob(jobConfig))
 	t.Run("postsubmit", s.testPostsubmitJob(jobConfig))
-}
-
-func (s GenericComponentSuite) testRunAgainstAnyBranch(t *testing.T) {
-	require.NotEmpty(t, s.branchesToRunAgainst(), "Jobs are not triggered on any branch. If the component is deprecated remove its job file and this test.")
 }
 
 func (s GenericComponentSuite) testPresubmitJob(jobConfig config.JobConfig) func(t *testing.T) {
@@ -183,15 +176,6 @@ FIND:
 	return unsupportedBranches
 }
 
-func (s GenericComponentSuite) componentReleaseBranches() []string {
-	releaseBranches := []string{}
-
-	for _, rel := range s.Releases {
-		releaseBranches = append(releaseBranches, fmt.Sprintf("%v-%v", "release", rel.String()))
-	}
-	return releaseBranches
-}
-
 func (s GenericComponentSuite) branchesNotToRunAgainst() []string {
 	result := make([]string, 0, 1)
 	if s.Deprecated {
@@ -209,9 +193,6 @@ func (s GenericComponentSuite) branchesToRunAgainst() []string {
 		result = append(result, "master")
 	}
 
-	// don't include release branch checking as the components have different prowjobs for releases.
-	//releaseBranches := s.componentReleaseBranches()
-	//result = append(result, releaseBranches...)
 	return result
 }
 

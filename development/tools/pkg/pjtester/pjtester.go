@@ -3,7 +3,6 @@ package pjtester
 import (
 	"bytes"
 	"context"
-	"flag"
 	"fmt"
 	"os"
 	"strconv"
@@ -190,18 +189,6 @@ func gatherOptions(configPath string, ghOptions prowflagutil.GitHubOptions) opti
 	o.pullSha = os.Getenv("PULL_PULL_SHA")
 	// pullAuthor is an author of github pull request under test
 	o.pullAuthor = gjson.Get(os.Getenv("JOB_SPEC"), "refs.pulls.0.author").String()
-	return o
-}
-
-// withGithubClientOptions will add default flags and values for github client.
-func (o options) withGithubClientOptions() options {
-	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
-	o.github.AddFlags(fs)
-	o.github.AllowAnonymous = true
-	_ = fs.Parse(os.Args[1:])
-	if err := o.github.Validate(false); err != nil {
-		logrus.WithError(err).Fatalf("github options validation failed")
-	}
 	return o
 }
 

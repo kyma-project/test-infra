@@ -18,7 +18,6 @@ import (
 
 // SlackNotifier sends notification about test result to Slack channel.
 type SlackNotifier struct {
-	channelID             string
 	cfgMapName            string
 	cfgMapClient          configMapClient
 	testResultWindowTime  time.Duration
