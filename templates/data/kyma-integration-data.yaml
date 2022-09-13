@@ -589,6 +589,26 @@ templates:
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
               - jobConfig:
+                  name: "pre-main-kyma-istio-reconcilation-k3d"
+                  run_if_changed: "(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)"
+                  optional: true
+                  env:
+                    RECONCILATION_TEST: "true"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-kyma-integration-istio-production: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "kyma_major_version_2"
+                    - "jobConfig_presubmit"
+                  local:
+                    - "jobConfig_default"
+                    - "vm_job_template_k3d"
+                    - "vm_job_labels_template"
+              - jobConfig:
                   name: pre-main-kyma-api-gateway-integration-k3d
                   optional: true
                   labels:
