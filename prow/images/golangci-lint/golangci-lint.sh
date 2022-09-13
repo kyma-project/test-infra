@@ -14,7 +14,7 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
     fi
     FOLDER=$1
     pushd "${FOLDER}" > /dev/null # change to passed parameter
-
+    ls -l *.go
     golangci-lint  run ./... -v
     scan_result="$?"
 
@@ -43,7 +43,6 @@ while read -r component_definition_path; do
     # keep only the last directory in the tree as a name
 
     echo "- Linting $component_path"
-    ls -l *.go || true
     set +e
     scanFolder "${component_path}"
     scan_result="$?"
