@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -158,7 +157,7 @@ func SanityCheck(encodedComponentDescriptor []byte) error {
 
 func PushDescriptor(encodedComponentDescriptor []byte, repoContext string) error {
 	// create temporary dir, so pushing can be separate from saving YAML file
-	dirPath, err := ioutil.TempDir(os.TempDir(), "component_descriptor")
+	dirPath, err := os.MkdirTemp(os.TempDir(), "component_descriptor")
 	if err != nil {
 		return err
 	}

@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/signal"
 	"syscall"
@@ -171,7 +170,7 @@ func main() {
 			if err != nil {
 				log.WithError(err).Fatal("Could not parse images file")
 			}
-			authCfg, err := ioutil.ReadFile(cfg.TargetKeyFile)
+			authCfg, err := os.ReadFile(cfg.TargetKeyFile)
 			if err != nil {
 				log.WithError(err).Fatal("Could not open target auth key JSON")
 			}

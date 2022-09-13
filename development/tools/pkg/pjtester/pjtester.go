@@ -5,7 +5,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strconv"
 	"strings"
@@ -119,7 +118,7 @@ func newProwK8sClientset() *prowclient.Clientset {
 // It will set default path for prowjobs and config files if not provided in a file.
 func readTestCfg(testCfgFile string) testCfg {
 	var t testCfg
-	yamlFile, err := ioutil.ReadFile(testCfgFile)
+	yamlFile, err := os.ReadFile(testCfgFile)
 	if err != nil {
 		log.Fatal("Failed read test config file from virtual path KYMA_PROJECT_DIR/test-infra/vpath/pjtester.yaml")
 	}

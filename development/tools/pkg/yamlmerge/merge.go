@@ -22,7 +22,7 @@ func MergeFiles(path, extension, target string, changeFile bool) {
 	files = removeFromArray(files, target)
 
 	for _, f := range files {
-		data, err := ioutil.ReadFile(f)
+		data, err := os.ReadFile(f)
 		if err != nil {
 			log.Fatalf("Couldn't read file (%s) contents: %s\n", f, err.Error())
 		}

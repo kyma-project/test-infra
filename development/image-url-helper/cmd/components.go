@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -65,7 +64,7 @@ func ComponentsCmd() *cobra.Command {
 					log.Fatalf("failed to create output directory: %s", err)
 				}
 
-				ioutil.WriteFile(outputDirClean+"/component-descriptor.yaml", encodedComponentDescriptor, 0666)
+				os.WriteFile(outputDirClean+"/component-descriptor.yaml", encodedComponentDescriptor, 0666)
 			}
 
 			if options.RepoContext != "" {
