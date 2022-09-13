@@ -37,7 +37,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/golangci-lin/golangci-lint.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/golangci-lint/golangci-lint.sh"
             resources:
               requests:
                 memory: 200Mi
