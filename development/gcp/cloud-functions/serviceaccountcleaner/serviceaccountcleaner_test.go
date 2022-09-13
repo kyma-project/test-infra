@@ -10,6 +10,7 @@ import (
 	"net/http/httptest"
 	"reflect"
 	"regexp"
+	"sort"
 	"strings"
 	"testing"
 	"time"
@@ -51,7 +52,6 @@ type fakeSecret struct {
 
 type fakeSecretServer struct {
 	secrets                  map[string]*fakeSecret
-	secretListCallCount      int
 	unknownEndpointCallCount int
 }
 
@@ -123,7 +123,6 @@ func (s *fakeSecretServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			w.Write(b)
-			s.secretListCallCount++
 		}
 	case versionsRegex.MatchString(path):
 		{
@@ -143,14 +142,21 @@ func (s *fakeSecretServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			projectName := strings.Split(path, "/")[3]
 			secretName := strings.Split(path, "/")[5]
 			if secret, ok := s.secrets[secretName]; ok {
-				for versionName, version := range secret.Versions {
+				var versionKeys []string
+				for versionName := range secret.Versions {
+					versionKeys = append(versionKeys, versionName)
+				}
+				sort.Strings(versionKeys)
+
+				for _, versionName := range versionKeys {
+					currentVersion := secret.Versions[versionName]
 					if filterValue != "" {
-						if version.State != filterValue {
+						if currentVersion.State != filterValue {
 							continue
 						}
 					}
 					// secret versions are returned in reverse, from latest to oldest
-					version := &gcpsecretmanager.SecretVersion{Name: createSecretVersionName(projectName, secretName, versionName), CreateTime: version.Date, State: version.State}
+					version := &gcpsecretmanager.SecretVersion{Name: createSecretVersionName(projectName, secretName, versionName), CreateTime: currentVersion.Date, State: currentVersion.State}
 					versionsResponse.Versions = append([]*gcpsecretmanager.SecretVersion{version}, versionsResponse.Versions...)
 				}
 			} else {
@@ -247,7 +253,6 @@ func (s *fakeIAMServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			w.Write(b)
-
 		}
 	default:
 		{
@@ -277,6 +282,7 @@ func TestServiceAccountCleaner(t *testing.T) {
 	}
 
 	timeTenHoursAgo := time.Now().Add(time.Duration(-10) * time.Hour).UTC().Format("2006-01-02T15:04:05.000000Z")
+	timeSixHoursAgo := time.Now().Add(time.Duration(-6) * time.Hour).UTC().Format("2006-01-02T15:04:05.000000Z")
 	// timeThreeHoursAgo := time.Now().Add(time.Duration(-3) * time.Hour).UTC().Format("2006-01-02T15:04:05.000000Z")
 	timeOneHoursAgo := time.Now().Add(time.Duration(-1) * time.Hour).UTC().Format("2006-01-02T15:04:05.000000Z")
 
@@ -355,14 +361,14 @@ func TestServiceAccountCleaner(t *testing.T) {
 				Labels: map[string]string{"type": "service-account"},
 				Versions: map[string]*fakeSecretVersion{
 					"1": {Data: fakeSecretVersionData, Date: timeTenHoursAgo, State: "enabled"},
-					"2": {Data: fakeSecretVersionData2, Date: timeTenHoursAgo, State: "enabled"},
+					"2": {Data: fakeSecretVersionData2, Date: timeSixHoursAgo, State: "enabled"},
 				},
 			}},
 			expectedSecrets: map[string]*fakeSecret{"secret_outdated": {
 				Labels: map[string]string{"type": "service-account"},
 				Versions: map[string]*fakeSecretVersion{
 					"1": {Data: fakeSecretVersionData, Date: timeTenHoursAgo, State: "destroyed"},
-					"2": {Data: fakeSecretVersionData2, Date: timeTenHoursAgo, State: "enabled"},
+					"2": {Data: fakeSecretVersionData2, Date: timeSixHoursAgo, State: "enabled"},
 				},
 			}},
 			keys:             map[string]map[string]bool{fakeSecretEmail: {fakeSecretKey: true, fakeSecretKey2: true}},
@@ -394,8 +400,6 @@ func TestServiceAccountCleaner(t *testing.T) {
 
 			rr := httptest.NewRecorder()
 			ServiceAccountCleaner(rr, req)
-
-			// assert.Equal(t, test.expectedSecretListCallCount, secretServerStruct.secretListCallCount)
 
 			if got := rr.Body.String(); got != test.expectedResponse {
 				t.Errorf("ServiceAccountCleaner(%q) = %q, want %q", test.requestBody, got, test.expectedResponse)
