@@ -4,8 +4,6 @@ run:
   timeout: 2m
   # skip test files
   tests: false
-  skip-files:
-    - "^development/tools/pkg/yamlmerge/merge.go$"
 output:
   sort-results: true
 linters:
