@@ -3,7 +3,6 @@ package check
 import (
 	"bufio"
 	"io/fs"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -46,7 +45,7 @@ func ParseExcludes(excludesListFilename string) ([]Exclude, error) {
 		return nil, nil
 	}
 
-	excludesListFile, err := ioutil.ReadFile(excludesListFilename)
+	excludesListFile, err := os.ReadFile(excludesListFilename)
 	if err != nil {
 		return nil, err
 	}

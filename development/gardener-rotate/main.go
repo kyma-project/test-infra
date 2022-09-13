@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"io/ioutil"
 	"os"
 
 	"github.com/sirupsen/logrus"
@@ -89,7 +88,7 @@ func main() {
 			}
 
 			// parse config file
-			yamlFile, err := ioutil.ReadFile(cfg.ConfigFile)
+			yamlFile, err := os.ReadFile(cfg.ConfigFile)
 			if err != nil {
 				log.Fatalf("error while opening %s file: %s", cfg.ConfigFile, err)
 			}

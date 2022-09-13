@@ -3,7 +3,6 @@ package release
 import (
 	"context"
 	"io"
-	"io/ioutil"
 	"strings"
 
 	"github.com/google/go-github/v40/github"
@@ -25,7 +24,7 @@ type FakeStorageAPIWrapper struct {
 // ReadBucketObject is a fake implementation of ReadBucketObject func
 func (fsaw *FakeStorageAPIWrapper) ReadBucketObject(ctx context.Context, fileName string) (io.ReadCloser, int64, error) {
 	fsaw.TimesReadBucketObjectCalled++
-	return ioutil.NopCloser(strings.NewReader("test artifact data for " + fileName)), 100, nil
+	return io.NopCloser(strings.NewReader("test artifact data for " + fileName)), 100, nil
 
 }
 

@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 
 	"github.com/kyma-project/test-infra/development/tools/pkg/file"
@@ -102,7 +102,7 @@ func replaceConfigMapFromDirectory(name, path string, client configMapSetter) er
 }
 
 func configMapFromFile(name, path string) (*v1.ConfigMap, error) {
-	data, err := ioutil.ReadFile(path)
+	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
@@ -129,7 +129,7 @@ func configMapFromYamlsInDirectory(name, rootPath string) (*v1.ConfigMap, error)
 
 	configData := make(map[string]string, len(paths))
 	for _, path := range paths {
-		data, _ := ioutil.ReadFile(path)
+		data, _ := os.ReadFile(path)
 		filename := filepath.Base(path)
 
 		configData[filename] = string(data)

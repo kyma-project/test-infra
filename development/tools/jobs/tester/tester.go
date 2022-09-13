@@ -2,7 +2,7 @@ package tester
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"testing"
 
@@ -55,7 +55,7 @@ func ReadJobConfig(fileName string) (config.JobConfig, error) {
 		return config.JobConfig{}, errors.Wrapf(err, "while opening file [%s]", fileName)
 	}
 	defer f.Close()
-	b, err := ioutil.ReadAll(f)
+	b, err := io.ReadAll(f)
 	if err != nil {
 		return config.JobConfig{}, errors.Wrapf(err, "while reading file [%s]", fileName)
 	}
