@@ -43,6 +43,7 @@ while read -r component_definition_path; do
     # keep only the last directory in the tree as a name
 
     echo "- Linting $component_path"
+    ls -l *.go
     set +e
     scanFolder "${component_path}"
     scan_result="$?"
