@@ -6,7 +6,7 @@ templates:
           - repoName: kyma-project/lifecycle-manager
             jobs:
               - jobConfig:
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220804-607830f89"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220830-7bf905118"
                   name: pull-lint # "pre-main-lifecycle-manager-lint"
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
                   annotations:
