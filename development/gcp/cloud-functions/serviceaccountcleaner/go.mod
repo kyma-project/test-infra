@@ -13,7 +13,7 @@ require (
 	cloud.google.com/go/compute v1.7.0
 	github.com/GoogleCloudPlatform/functions-framework-go v1.6.1
 	github.com/kyma-project/test-infra v0.0.0-20220715122928-d02a288f4078
-	google.golang.org/api v0.94.0
+	google.golang.org/api v0.95.0
 )
 
 require (
