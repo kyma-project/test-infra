@@ -9,7 +9,7 @@ output:
 linters:
   disable-all: true
   enable:
-    - deadcode
+    - unused
     - exportloopref
     - gosimple
     - govet
