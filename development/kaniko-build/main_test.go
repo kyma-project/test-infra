@@ -8,7 +8,7 @@ import (
 )
 
 func Test_gatherDestinations(t *testing.T) {
-	repo := "dev.kyma.io"
+	repo := []string{"dev.kyma.io", "dev2.kyma.io"}
 	directory := "subdirectory"
 	name := "test-image"
 	tags := []string{
@@ -18,8 +18,11 @@ func Test_gatherDestinations(t *testing.T) {
 	}
 	expected := []string{
 		"dev.kyma.io/subdirectory/test-image:20222002-abcd1234",
+		"dev2.kyma.io/subdirectory/test-image:20222002-abcd1234",
 		"dev.kyma.io/subdirectory/test-image:latest",
+		"dev2.kyma.io/subdirectory/test-image:latest",
 		"dev.kyma.io/subdirectory/test-image:cookie",
+		"dev2.kyma.io/subdirectory/test-image:cookie",
 	}
 	got := gatherDestinations(repo, directory, name, tags)
 	if len(expected) != len(got) {

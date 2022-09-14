@@ -8,11 +8,11 @@ import (
 
 type Config struct {
 	// Registry is URL where clean build should land.
-	Registry string `yaml:"registry"`
+	Registry Registry `yaml:"registry"`
 	// DevRegistry is Registry URL where development/dirty images should land.
 	// If not set then the Registry field is used.
 	// This field is only valid when running in CI (CI env variable is set to `true`)
-	DevRegistry string `yaml:"dev-registry"`
+	DevRegistry Registry `yaml:"dev-registry"`
 	// Cache options that are directly related to kaniko flags
 	Cache CacheConfig `yaml:"cache"`
 	// TagTemplate is go-template field that defines the format of the $_TAG substitution.
@@ -66,4 +66,23 @@ func GetVariants(variant string, f string, fileGetter func(string) ([]byte, erro
 		return Variants{variant: va}, nil
 	}
 	return v, nil
+}
+
+// Registry is a custom type that defines a destination registry provided by config.yaml
+type Registry []string
+
+// UnmarshalYAML provides functionality to unmarshal Registry field if it's a string or a list.
+// This functionality ensures, that both use cases are supported and there are no breaking changes in the config
+func (r *Registry) UnmarshalYAML(value *yaml.Node) error {
+	var reg string
+	if err := value.Decode(&reg); err == nil {
+		*r = append(*r, reg)
+		return nil
+	}
+	var regs []string
+	if err := value.Decode(&regs); err != nil {
+		return err
+	}
+	*r = regs
+	return nil
 }

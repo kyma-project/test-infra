@@ -109,7 +109,7 @@ func runBuildJob(o options, vs Variants) error {
 	if o.isCI {
 		presubmit := os.Getenv("JOB_TYPE") == "presubmit"
 		if presubmit {
-			if o.DevRegistry != "" {
+			if len(o.Registry) > 0 {
 				repo = o.DevRegistry
 			}
 			if n := os.Getenv("PULL_NUMBER"); n != "" {
@@ -189,11 +189,13 @@ func getTags(pr, sha, tagTemplate string, additionalTags []string) ([]string, er
 	return tags, nil
 }
 
-func gatherDestinations(repo, directory, name string, tags []string) []string {
+func gatherDestinations(repo []string, directory, name string, tags []string) []string {
 	var dst []string
 	for _, t := range tags {
-		image := path.Join(repo, directory, name)
-		dst = append(dst, image+":"+strings.ReplaceAll(t, " ", "-"))
+		for _, r := range repo {
+			image := path.Join(r, directory, name)
+			dst = append(dst, image+":"+strings.ReplaceAll(t, " ", "-"))
+		}
 	}
 	return dst
 }
