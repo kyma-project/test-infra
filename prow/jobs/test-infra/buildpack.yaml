@@ -438,7 +438,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-build-githubrelease"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^prow/images/gardener-rotate/|^development/gardener-rotate/'
+      run_if_changed: '^changelog-generator/|^development/tools/cmd/githubrelease/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
