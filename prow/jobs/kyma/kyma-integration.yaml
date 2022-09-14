@@ -77,7 +77,7 @@ presubmits: # runs on PRs
         preset-kyma-integration-app-connector-tests-app-gateway: "true"
         preset-kyma-integration-central-app-connectivity-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^((resources/application-connector\S+|installation\S+|tests/components/application-connector\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      run_if_changed: '^((resources/application-connector\S+|installation\S+|tests/components/application-connector\S+|resources/istio\S+|resources/istio-resources\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       optional: true
       skip_report: false
       decorate: true
@@ -137,7 +137,7 @@ presubmits: # runs on PRs
         preset-kyma-integration-app-connector-tests-app-validator: "true"
         preset-kyma-integration-central-app-connectivity-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^((resources/application-connector\S+|installation\S+|tests/components/application-connector\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      run_if_changed: '^((resources/application-connector\S+|installation\S+|tests/components/application-connector\S+|resources/istio\S+|resources/istio-resources\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       optional: true
       skip_report: false
       decorate: true
