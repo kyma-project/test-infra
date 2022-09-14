@@ -60,9 +60,9 @@ require (
 	github.com/tidwall/gjson v1.14.3
 	github.com/vrischmann/envconfig v1.3.0
 	go.uber.org/zap v1.23.0
-	golang.org/x/net v0.0.0-20220722155237-a158d28d115b
+	golang.org/x/net v0.0.0-20220909164309-bea034e7d591
 	golang.org/x/oauth2 v0.0.0-20220822191816-0ebed06d0094
-	google.golang.org/api v0.95.0
+	google.golang.org/api v0.96.0
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.22.2
