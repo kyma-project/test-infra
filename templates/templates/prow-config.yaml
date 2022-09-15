@@ -229,6 +229,8 @@ branch-protection:
           protect: false
         organization-and-operations:
           protect: false
+        btp-manager:
+          protect: false
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
       exclude:
