@@ -1,4 +1,4 @@
-FROM eu.gcr.io/kyma-project/external/golang:1.18.3-alpine3.16
+FROM golang:1.19.1-alpine3.16
 
 # Commit details
 ARG commit
