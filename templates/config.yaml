@@ -97,7 +97,7 @@ globalSets:
   image_wssagent:
     image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
   image_gardener-rotate:
-    image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20220819-694650155"
+    image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:PR-6025"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
