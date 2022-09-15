@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	"github.com/google/go-github/v42/github"
@@ -116,7 +116,7 @@ func (c *Client) IsStatusOK(resp *github.Response) (bool, error) {
 // On not OK status it will read response body to expose details about error.
 func IsStatusOK(resp *github.Response) (bool, error) {
 	if resp.StatusCode != http.StatusOK {
-		bodyBytes, err := ioutil.ReadAll(resp.Body)
+		bodyBytes, err := io.ReadAll(resp.Body)
 		if err != nil {
 			return false, fmt.Errorf("got error when reading response body for non 200 HTTP response code, error: %w", err)
 		}

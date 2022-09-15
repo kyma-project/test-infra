@@ -22,7 +22,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-protecode-guard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '.*\.go$'
+      run_if_changed: '.*\.go$|.golangci.yaml'
       optional: true
       skip_report: false
       decorate: true
@@ -32,7 +32,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220804-607830f89"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220830-7bf905118"
             automountServiceAccountToken: true
             securityContext:
               privileged: false

@@ -244,7 +244,6 @@ presubmits: # runs on PRs
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
       run_if_changed: '^((tests/fast-integration\S+|resources/eventing\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      optional: true
       skip_report: false
       decorate: true
       decoration_config:
@@ -321,7 +320,7 @@ presubmits: # runs on PRs
         preset-kyma-integration-compass-enabled: "true"
         preset-kyma-integration-kcp-client-credentials: "true"
         preset-kyma-integration-subaccounnt: "true"
-      run_if_changed: '^((tests/fast-integration\S+|resources/eventing\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      run_if_changed: '^((tests/fast-integration/eventing-test|resources/eventing\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       optional: true
       skip_report: false
       decorate: true
@@ -454,7 +453,6 @@ presubmits: # runs on PRs
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
       run_if_changed: '^((tests/fast-integration\S+|resources/eventing\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      optional: true
       skip_report: false
       decorate: true
       decoration_config:

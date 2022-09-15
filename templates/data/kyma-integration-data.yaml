@@ -374,7 +374,7 @@ templates:
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d-app-gateway"
                   # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((resources/application-connector\\S+|installation\\S+|tests/components/application-connector\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  run_if_changed: "^((resources/application-connector\\S+|installation\\S+|tests/components/application-connector\\S+|resources/istio\\S+|resources/istio-resources\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   optional: "true"
                   labels:
                     preset-build-pr: "true"
@@ -398,7 +398,7 @@ templates:
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d-app-conn-validator"
                   # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((resources/application-connector\\S+|installation\\S+|tests/components/application-connector\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  run_if_changed: "^((resources/application-connector\\S+|installation\\S+|tests/components/application-connector\\S+|resources/istio\\S+|resources/istio-resources\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   optional: "true"
                   labels:
                     preset-build-pr: "true"
@@ -422,7 +422,7 @@ templates:
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d-central-app-connectivity-compass"
                   # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  always_run: false
                   optional: "true"
                   labels:
                     preset-build-pr: "true"
@@ -574,6 +574,26 @@ templates:
                   name: "pre-main-kyma-prod-istio-integration-k3d"
                   run_if_changed: "(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)"
                   optional: false
+                  labels:
+                    preset-build-pr: "true"
+                    preset-kyma-integration-istio-production: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "kyma_major_version_2"
+                    - "jobConfig_presubmit"
+                  local:
+                    - "jobConfig_default"
+                    - "vm_job_template_k3d"
+                    - "vm_job_labels_template"
+              - jobConfig:
+                  name: "pre-main-kyma-istio-reconcilation-k3d"
+                  run_if_changed: "(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)"
+                  optional: true
+                  env:
+                    RECONCILATION_TEST: "true"
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-istio-production: "true"

@@ -77,7 +77,7 @@ presubmits: # runs on PRs
         preset-kyma-integration-app-connector-tests-app-gateway: "true"
         preset-kyma-integration-central-app-connectivity-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^((resources/application-connector\S+|installation\S+|tests/components/application-connector\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      run_if_changed: '^((resources/application-connector\S+|installation\S+|tests/components/application-connector\S+|resources/istio\S+|resources/istio-resources\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       optional: true
       skip_report: false
       decorate: true
@@ -137,7 +137,7 @@ presubmits: # runs on PRs
         preset-kyma-integration-app-connector-tests-app-validator: "true"
         preset-kyma-integration-central-app-connectivity-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^((resources/application-connector\S+|installation\S+|tests/components/application-connector\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      run_if_changed: '^((resources/application-connector\S+|installation\S+|tests/components/application-connector\S+|resources/istio\S+|resources/istio-resources\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       optional: true
       skip_report: false
       decorate: true
@@ -196,7 +196,6 @@ presubmits: # runs on PRs
         preset-kyma-integration-compass-dev: "true"
         preset-kyma-integration-compass-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^((tests/fast-integration\S+|resources\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       optional: true
       skip_report: false
       decorate: true
@@ -432,6 +431,61 @@ presubmits: # runs on PRs
             env:
               - name: KYMA_MAJOR_VERSION
                 value: "2"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pre-main-kyma-istio-reconcilation-k3d
+      annotations:
+        pipeline.clusterprovisioning: "k3d"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3d"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "pr-submit"
+        pipeline.type: "integration"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-istio-reconcilation-k3d"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-kyma-integration-istio-production: "true"
+        preset-sa-vm-kyma-integration: "true"
+      run_if_changed: '(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)'
+      optional: true
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220808-d24ecd898"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
+            env:
+              - name: KYMA_MAJOR_VERSION
+                value: "2"
+              - name: RECONCILATION_TEST
+                value: "true"
             resources:
               requests:
                 memory: 3Gi
@@ -909,7 +963,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220804-9364d7119"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220901-6453087a4"
             securityContext:
               privileged: true
             command:
@@ -951,7 +1005,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220804-9364d7119"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220901-6453087a4"
             securityContext:
               privileged: true
             command:
@@ -993,7 +1047,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220804-9364d7119"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220901-6453087a4"
             securityContext:
               privileged: true
             command:
@@ -1035,7 +1089,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220804-9364d7119"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220901-6453087a4"
             securityContext:
               privileged: true
             command:
@@ -1077,7 +1131,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220804-9364d7119"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220901-6453087a4"
             securityContext:
               privileged: true
             command:
@@ -1119,7 +1173,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220804-9364d7119"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220901-6453087a4"
             securityContext:
               privileged: true
             command:
@@ -1162,7 +1216,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220804-9364d7119"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220901-6453087a4"
             securityContext:
               privileged: true
             command:
@@ -1203,7 +1257,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220804-9364d7119"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220901-6453087a4"
             securityContext:
               privileged: true
             command:
@@ -1246,7 +1300,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220804-9364d7119"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220901-6453087a4"
             securityContext:
               privileged: true
             command:

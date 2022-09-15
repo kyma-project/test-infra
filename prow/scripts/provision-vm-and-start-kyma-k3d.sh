@@ -143,6 +143,7 @@ envVars=(
   CLUSTER_NAME
   KYMA_MAJOR_VERSION
   KYMA_PROFILE
+  RECONCILATION_TEST
   K8S_VERSION
 )
 utils::save_env_file "${envVars[@]}"

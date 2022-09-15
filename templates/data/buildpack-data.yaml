@@ -371,3 +371,29 @@ templates:
                       local:
                         - "default"
                         - "postsubmit"
+                  - jobConfig:
+                      name: "pull-build-githubrelease"
+                      run_if_changed: "^changelog-generator/|^development/tools/cmd/githubrelease/"
+                      args:
+                        - "--name=githubrelease"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=."
+                        - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
+                        - "--directory=test-infra"
+                    inheritedConfigs:
+                      local:
+                        - "default"
+                        - "presubmit"
+                  - jobConfig:
+                      name: "post-build-githubrelease"
+                      run_if_changed: "^changelog-generator/|^development/tools/cmd/githubrelease/"
+                      args:
+                        - "--name=githubrelease"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=."
+                        - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
+                        - "--directory=test-infra"
+                    inheritedConfigs:
+                      local:
+                        - "default"
+                        - "postsubmit"

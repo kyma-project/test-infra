@@ -38,7 +38,7 @@ updates:
       prefix: "prow-tools"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/changelog-generator"
+    directory: "/development/tools/cmd/githubrelease"
     labels:
       - "docker"
       - "skip-review"
@@ -46,7 +46,7 @@ updates:
     schedule:
       interval: "daily"
     commit-message:
-      prefix: "changelog-gen"
+      prefix: "githubrelease"
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/development/kyma-ci-force-bot/ciforcebot"
