@@ -638,6 +638,15 @@ presets:
       - name: gardener-neighbors-kubeconfig
         mountPath: /etc/credentials/gardener-neighbors
   - labels:
+      preset-gardener-kyma-rotate-kubeconfig: "true"
+    volumes:
+      - name: gardener-kyma-prow-token-rotate-kubeconfig
+        secret:
+          secretName: gardener-kyma-prow-token-rotate-kubeconfig
+    volumeMounts:
+      - name: gardener-kyma-prow-token-rotate-kubeconfig
+        mountPath: /etc/credentials/gardener-kyma-prow-rotate
+  - labels:
       preset-az-kyma-prow-credentials: "true"
     env:
       - name: AZURE_CREDENTIALS_FILE
@@ -1028,6 +1037,19 @@ presets:
     volumeMounts:
       - name: sa-gke-kyma-integration
         mountPath: /etc/credentials/sa-gke-kyma-integration
+        readOnly: true
+  - labels:
+      preset-sa-secret-update: "true"
+    env:
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-secret-update/service-account.json
+    volumes:
+      - name: sa-secret-update
+        secret:
+          secretName: sa-secret-update
+    volumeMounts:
+      - name: sa-secret-update
+        mountPath: /etc/credentials/sa-secret-update
         readOnly: true
   - labels:
       preset-kyma-integration-compass-dev: "true"
