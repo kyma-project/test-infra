@@ -9,6 +9,6 @@ RUN  CGO_ENABLED=0 go build -o /gardener-rotate -ldflags="-s -w" development/gar
 FROM alpine:3.15.0
 
 COPY --from=builder /gardener-rotate /gardener-rotate
-RUN apk add --no-cache ca-certificates bash && \
+RUN apk add --no-cache ca-certificates && \
 	chmod +x /gardener-rotate
 ENTRYPOINT ["/gardener-rotate"]
