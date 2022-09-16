@@ -636,6 +636,15 @@ presets:
       - name: gardener-neighbors-kubeconfig
         mountPath: /etc/credentials/gardener-neighbors
   - labels:
+      preset-gardener-kyma-rotate-kubeconfig: "true"
+    volumes:
+      - name: gardener-kyma-prow-token-rotate-kubeconfig
+        secret:
+          secretName: gardener-kyma-prow-token-rotate-kubeconfig
+    volumeMounts:
+      - name: gardener-kyma-prow-token-rotate-kubeconfig
+        mountPath: /etc/credentials/gardener-kyma-prow-rotate
+  - labels:
       preset-az-kyma-prow-credentials: "true"
     env:
       - name: AZURE_CREDENTIALS_FILE
