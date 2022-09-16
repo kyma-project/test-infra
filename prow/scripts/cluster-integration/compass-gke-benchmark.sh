@@ -206,7 +206,6 @@ function installCompassNew() {
   COMPASS_COMMON_OVERRIDES="$PWD/compass_common_overrides.yaml"
 
   echo 'Installing DB'
-  mkdir "$COMPASS_SOURCES_DIR/installation/data"
   bash "${COMPASS_SCRIPTS_DIR}"/install-db.sh --overrides-file "${COMPASS_OVERRIDES}" --overrides-file "${COMPASS_COMMON_OVERRIDES}" --timeout 30m0s
   STATUS=$(helm status localdb -n compass-system -o json | jq .info.status)
   echo "DB installation status ${STATUS}"
@@ -268,12 +267,6 @@ done
 kubectl patch cronjob -n kyma-system oathkeeper-jwks-rotator -p '{"spec":{"schedule": "0 0 1 * *"}}'
 log::info "Install Compass version from main"
 installCompassOld
-
-#echo "Deleting kyma-gateway..."
-#kubectl delete gateways.networking.istio.io -n kyma-system kyma-gateway
-#
-#echo "Sleep for 10 minutes..."
-#sleep 10m
 
 readonly SUITE_NAME="compass-e2e-tests"
 
