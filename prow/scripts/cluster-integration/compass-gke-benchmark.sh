@@ -269,6 +269,9 @@ kubectl patch cronjob -n kyma-system oathkeeper-jwks-rotator -p '{"spec":{"sched
 log::info "Install Compass version from main"
 installCompassOld
 
+echo "Deleting kyma-gateway..."
+kubectl delete gateways.networking.istio.io -n kyma-system kyma-gateway
+
 echo "Sleep for 10 minutes..."
 sleep 10m
 
