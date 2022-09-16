@@ -68,7 +68,7 @@ function utils::generate_self_signed_cert() {
     local certPath="$tmpDir/cert.pem"
     local keyPath="$tmpDir/key.pem"
 
-    openssl req -x509 -nodes -days "$certValidDays" -newkey rsa:4069 \
+    openssl req -x509 -nodes -days "$certValidDays" -newkey rsa:4096 \
         -subj "/CN=$dnsFQDN" \
         -reqexts SAN -extensions SAN \
         -config <(cat /etc/ssl/openssl.cnf \
