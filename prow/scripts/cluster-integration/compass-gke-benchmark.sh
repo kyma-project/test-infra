@@ -269,6 +269,9 @@ kubectl patch cronjob -n kyma-system oathkeeper-jwks-rotator -p '{"spec":{"sched
 log::info "Install Compass version from main"
 installCompassOld
 
+echo "Sleep for 10 minutes..."
+sleep 10m
+
 readonly SUITE_NAME="compass-e2e-tests"
 
 log::info "Execute benchmarks on the current main"
