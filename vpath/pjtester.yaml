@@ -1,6 +1,8 @@
-pjConfigs:
+pjNames:
+  - pjName: pre-main-kyma-eval-istio-integration-k3d
+  - pjName: pre-main-kyma-prod-istio-integration-k3d
+  - pjName: pre-main-kyma-istio-reconcilation-k3d
+prConfigs:
   kyma-project:
     kyma:
-      - pjName: pre-main-kyma-eval-istio-integration-k3d
-      - pjName: pre-main-kyma-prod-istio-integration-k3d
-      - pjName: pre-main-kyma-istio-reconcilation-k3d
+      prNumber: 15522
