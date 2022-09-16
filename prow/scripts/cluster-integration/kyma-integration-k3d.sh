@@ -49,12 +49,13 @@ function install_cli() {
 
 function deploy_kyma() {
   k3d version
+  curl -sL https://k3d.io/v5.3.0/usage/advanced/calico.yaml -o calico.yaml
 
   if [[ -v K8S_VERSION ]]; then
     echo "Creating k3d with kuberenetes version: ${K8S_VERSION}"
-    kyma provision k3d --ci -k "${K8S_VERSION}"
+    kyma provision k3d --ci -k "${K8S_VERSION}" --k3d-arg --volume="${PWD}/calico.yaml:/var/lib/rancher/k3s/server/manifests/calico.yaml" -s "--kubelet-arg=network-plugin=cni@agents:*" -s "--flannel-backend=none@server:*"
   else
-    kyma provision k3d --ci
+    kyma provision k3d --ci --k3d-arg --volume="${PWD}/calico.yaml:/var/lib/rancher/k3s/server/manifests/calico.yaml" -s "--kubelet-arg=network-plugin=cni@agents:*" -s "--flannel-backend=none@server:*"
   fi
   
   echo "Printing client and server version info"
