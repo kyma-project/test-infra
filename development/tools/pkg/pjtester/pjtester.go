@@ -53,6 +53,12 @@ var (
 	log         = logrus.New()
 )
 
+type GithubClient interface {
+	github.UserClient
+	GetRef(org, repo, ref string) (string, error)
+	GetPullRequest(org, repo string, number int) (*github.PullRequest, error)
+}
+
 // pjConfig holds user provided configuration of test prowjob.
 type pjConfig struct {
 	PjName string `yaml:"pjName" validate:"required,min=1"` // Test prowjob name.
@@ -85,6 +91,7 @@ type testCfg struct {
 type options struct {
 	configPath    string // configPath is a location of prow config file to use to construct test prowjob.
 	jobConfigPath string
+	clonePath     string
 
 	baseRef        string // baseRef is a base branch name of github pull request under test.
 	baseSha        string // baseSha is a git SHA of a base branch of github pull request under test
@@ -94,11 +101,11 @@ type options struct {
 	pjtesterPrOrg  string // pjtesterPrOrg is a name of organisation of pull request for pjtester prowjob.
 	pjtesterPrRepo string // pjtesterPrRepo is a name of organisation of pull request for pjtester prowjob.
 
-	github       ghclient.GithubClientConfig
-	githubClient *ghclient.GithubClient
-	gitOptions   git.ClientConfig
-	gitClient    *git.Client
-	prFinder     *prtagbuilder.GitHubClient
+	github              ghclient.GithubClientConfig
+	githubClient        GithubClient
+	gitOptions          git.ClientConfig
+	gitClient           git.Client
+	prFinder            *prtagbuilder.GitHubClient
 	testPullRequests    map[string]map[string]prConfig // pull requests used to run test prowjobs.
 	pjConfigPullRequest prConfig                       // pull request with pjtester.yaml file and used to start pjtester.
 
@@ -189,21 +196,23 @@ func readTestCfg(testCfgFile string) (testCfg, error) {
 func (o *options) setJobConfigPath(pjconfig pjConfig, org, repo string) {
 	// jobConfigPath is a location of prow jobs config files to test. It was read from pjtester.yaml file or set to default.
 	if pjconfig.PjPath != "" {
+		// o.jobConfigPath = path.Join(defaultClonePath, org, repo, pjconfig.PjPath)
 		o.jobConfigPath = path.Join(defaultClonePath, org, repo, pjconfig.PjPath)
 	} else {
+		// o.jobConfigPath = path.Join(defaultClonePath, testinfraOrg, testinfraRepo, defaultPjPath)
 		o.jobConfigPath = path.Join(defaultClonePath, testinfraOrg, testinfraRepo, defaultPjPath)
 	}
 }
 
 // configPath is a location of prow config file to test. It was read from pjtester.yaml file or set to default.
 func (o *options) setProwConfigPath(testConfig testCfg) {
-	// If
 	if testConfig.ConfigPath != "" {
+		// o.configPath = path.Join(defaultClonePath, o.pjtesterPrOrg, o.pjtesterPrRepo, testConfig.ConfigPath)
 		o.configPath = path.Join(defaultClonePath, o.pjtesterPrOrg, o.pjtesterPrRepo, testConfig.ConfigPath)
 	} else {
+		// o.configPath = path.Join(defaultClonePath, testinfraOrg, testinfraRepo, defaultConfigPath)
 		o.configPath = path.Join(defaultClonePath, testinfraOrg, testinfraRepo, defaultConfigPath)
 	}
-
 }
 
 // newCommonOptions is building common options and GitHub client for all tests.
@@ -252,39 +261,57 @@ func (o *options) getPullRequests(prconfig map[string]map[string]prConfig) (map[
 	return pullRequests, nil
 }
 
+func (o *options) checkIfUsePjtesterPr() error {
+	log.Debugf("pjtesterPR: %v", o.testPullRequests)
+	if _, present := o.testPullRequests[o.pjtesterPrOrg][o.pjtesterPrRepo]; present {
+		// Not use pjtester pr for test prowjob.
+		o.usePjtesterPR = false
+		log.Debugf("not using pjtester PR: %v", o.usePjtesterPR)
+	} else {
+		// Use pjtester pr for test prowjob.
+		o.usePjtesterPR = true
+		log.Debugf("using pjtester PR: %v", o.usePjtesterPR)
+	}
+	return nil
+}
+
 // genJobSpec will generate job specifications for prowjob to test
 // For presubmits it will find and download PR details for prowjob Refs, if the PR number for that repo was not provided in pjtester.yaml
 // All test-infra refs will be set to pull request head SHA for which pjtester is triggered for.
-func (o *options) genJobSpec(pjCfg pjConfig, org, repo string) (config.JobBase, prowapi.ProwJobSpec, error) {
+func (o *options) genJobSpec(conf *config.Config, pjCfg pjConfig, org, repo string) (config.JobBase, prowapi.ProwJobSpec, error) {
 	var (
 		preSubmits  []config.Presubmit
 		postSubmits []config.Postsubmit
 		err         error
 	)
 
-	log.Debugf("pjtesterPR: %v", o.testPullRequests)
-	if _, present := o.testPullRequests[o.pjtesterPrOrg][o.pjtesterPrRepo]; present {
-		o.usePjtesterPR = false
-		log.Debugf("not using pjtester PR: %v", o.usePjtesterPR)
-	} else {
-		o.usePjtesterPR = true
-		log.Debugf("using pjtester PR: %v", o.usePjtesterPR)
-	}
+	// log.Debugf("pjtesterPR: %v", o.testPullRequests)
+	// if _, present := o.testPullRequests[o.pjtesterPrOrg][o.pjtesterPrRepo]; present {
+	//	// Not use pjtester pr for test prowjob.
+	//	o.usePjtesterPR = false
+	//	log.Debugf("not using pjtester PR: %v", o.usePjtesterPR)
+	// } else {
+	//	// Use pjtester pr for test prowjob.
+	//	o.usePjtesterPR = true
+	//	log.Debugf("using pjtester PR: %v", o.usePjtesterPR)
+	// }
 
+	// TODO: Prow config load must be done outside this function to allow pass mock ProwYAMLGetterWithDefaults
 	// Loading Prow config and Prow Jobs config from files. If files were changed in pull request, new values will be used for test.
-	conf, err := config.Load(o.configPath, o.jobConfigPath, nil, "")
-	if err != nil {
-		return config.JobBase{}, prowapi.ProwJobSpec{}, fmt.Errorf("error loading prow config: %w", err)
-	}
+	// conf, err := config.Load(o.configPath, o.jobConfigPath, nil, "")
+	// if err != nil {
+	//	return config.JobBase{}, prowapi.ProwJobSpec{}, fmt.Errorf("error loading prow config: %w", err)
+	// }
 
 	if o.headSHAGetter != nil {
-		preSubmits, err = conf.GetPresubmits(o.gitClient.ClientFactory, fmt.Sprintf("%s/%s", org, repo), o.baseSHAGetter, o.headSHAGetter)
+		preSubmits, err = conf.GetPresubmits(o.gitClient, fmt.Sprintf("%s/%s", org, repo), o.baseSHAGetter, o.headSHAGetter)
 		if err != nil {
+			// TODO: Add missing error handling.
 		}
 		log.Debugf("Use head getter")
 	} else {
 		log.Debugf("fetching presubmits")
-		preSubmits, err = conf.GetPresubmits(o.gitClient.ClientFactory, fmt.Sprintf("%s/%s", org, repo), o.baseSHAGetter)
+		preSubmits, err = conf.GetPresubmits(o.gitClient, fmt.Sprintf("%s/%s", org, repo), o.baseSHAGetter)
 		if err != nil {
 			log.WithError(err).Fatalf("failed get presubmits")
 		}
@@ -312,12 +339,12 @@ func (o *options) genJobSpec(pjCfg pjConfig, org, repo string) (config.JobBase, 
 		}
 	}
 	if o.headSHAGetter != nil {
-		postSubmits, err = conf.GetPostsubmits(o.gitClient.ClientFactory, fmt.Sprintf("%s/%s", org, repo), o.baseSHAGetter, o.headSHAGetter)
+		postSubmits, err = conf.GetPostsubmits(o.gitClient, fmt.Sprintf("%s/%s", org, repo), o.baseSHAGetter, o.headSHAGetter)
 		if err != nil {
 			log.WithError(err).Fatalf("failed get postsubmits")
 		}
 	} else {
-		postSubmits, err = conf.GetPostsubmits(o.gitClient.ClientFactory, fmt.Sprintf("%s/%s", org, repo), o.baseSHAGetter)
+		postSubmits, err = conf.GetPostsubmits(o.gitClient, fmt.Sprintf("%s/%s", org, repo), o.baseSHAGetter)
 		if err != nil {
 			log.WithError(err).Fatalf("failed get postsubmits")
 		}
@@ -417,7 +444,6 @@ func findLatestPR(pjs prowapi.ProwJobSpec, opt options) (int, error) {
 // It ensure, refs for test-infra is set to details of pull request from which pjtester was triggered.
 // It ensures refs contains pull requests details for presubmit jobs.
 // It ensures details of pull request numbers provided in pjtester.yaml are set for respecting refs or extra refs.
-// TODO: You can't run pj against PR which is in other repo than pj is defined for.
 func presubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, error) {
 	pjsRefsSet := false
 	// If prowjob specification refs point to repo with pjtester,
@@ -508,9 +534,9 @@ func formatPjName(pullAuthor, pjName string) string {
 }
 
 func (o *options) checkoutTestInfra() error {
-	repoclient, _, err := o.gitClient.GetGitRepoClientFromDir(testinfraOrg, testinfraRepo, path.Join(defaultClonePath, testinfraOrg, testinfraRepo))
+	repoclient, _, err := o.gitClient.GetGitRepoClientFromDir(testinfraOrg, testinfraRepo, path.Join(o.clonePath, testinfraOrg, testinfraRepo))
 	if err != nil {
-		return fmt.Errorf("failed get git client for repository from local directory %s, error: %w", path.Join(defaultClonePath, testinfraOrg, testinfraRepo), err)
+		return fmt.Errorf("failed get git client for repository from local directory %s, error: %w", path.Join(o.clonePath, testinfraOrg, testinfraRepo), err)
 	}
 	err = repoclient.CheckoutPullRequest(o.pjConfigPullRequest.PrNumber)
 	if err != nil {
@@ -556,13 +582,23 @@ func (o *options) setRefsGetters(currentPrOrg, currentPrRepo string) error {
 
 // newTestPJ is building a prowjob definition to test prowjobs provided in pjtester test configuration.
 func newTestPJ(pjCfg pjConfig, opt options, org, repo string) (prowapi.ProwJob, error) {
-	err := opt.setRefsGetters(org, repo)
+	err := opt.checkIfUsePjtesterPr()
 	if err != nil {
-		return prowapi.ProwJob{}, fmt.Errorf("failed set RefsGetters, error: %w", err)
+		// TODO: implement error
+		panic("implement me")
 	}
 	opt.setJobConfigPath(pjCfg, org, repo)
 	log.Debugf("job path: %s", opt.jobConfigPath)
-	_, pjSpecification, err := opt.genJobSpec(pjCfg, org, repo)
+	// Loading Prow config and Prow Jobs config from files. If files were changed in pull request, new values will be used for test.
+	conf, err := config.Load(opt.configPath, opt.jobConfigPath, nil, "")
+	if err != nil {
+		return prowapi.ProwJob{}, fmt.Errorf("error loading prow config: %w", err)
+	}
+	err = opt.setRefsGetters(org, repo)
+	if err != nil {
+		return prowapi.ProwJob{}, fmt.Errorf("failed set RefsGetters, error: %w", err)
+	}
+	_, pjSpecification, err := opt.genJobSpec(conf, pjCfg, org, repo)
 	if err != nil {
 		return prowapi.ProwJob{}, fmt.Errorf("failed generating prowjob specification to test: %w", err)
 	}
@@ -592,7 +628,7 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	o := newCommonOptions(ghOptions)
 	// TODO: for test purposes using pjtesterv2.yaml file, use commented line to use a production pjtester.yaml
 	// testCfgFile := path.Join(defaultClonePath, o.pjtesterPrOrg, o.pjtesterPrRepo, pjtesterConfigPath)
-	testCfgFile := path.Join(defaultClonePath, o.pjtesterPrOrg, o.pjtesterPrRepo, "vpath/pjtesterv2.yaml")
+	testCfgFile := path.Join(o.clonePath, o.pjtesterPrOrg, o.pjtesterPrRepo, "vpath/pjtesterv2.yaml")
 	// read pjtester.yaml file
 	testCfg, err := readTestCfg(testCfgFile)
 	if err != nil {
