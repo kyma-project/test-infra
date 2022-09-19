@@ -85,15 +85,15 @@ globalSets:
   image_prow-tools:
     image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220901-6453087a4"
   image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220808-d24ecd898"
+    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220915-084f90d5"
   image_buildpack-node:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220809-8b2d4be4f"
   image_buildpack-golang:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220809-002bc8cf3"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220915-084f90d5"
   image_buildpack-golang-kubebuilder2:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220809-002bc8cf3"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220915-084f90d5"
   image_buildpack-golang-toolbox:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220809-002bc8cf3"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220915-084f90d5"
   image_wssagent:
     image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
   image_gardener-rotate:
