@@ -14,11 +14,28 @@ func Test_ParseConfig(t *testing.T) {
 		expectErr      bool
 	}{
 		{
-			name: "parsed full config",
-			config: `dev-registry: dev.kyma-project.io/dev-registry
+			name: "parsed full config one repo",
+			config: `registry: kyma-project.io/prod-registry
+dev-registry: dev.kyma-project.io/dev-registry
 tag-template: v{{ .Date }}-{{ .ShortSHA }}`,
 			expectedConfig: Config{
-				DevRegistry: "dev.kyma-project.io/dev-registry",
+				Registry:    []string{"kyma-project.io/prod-registry"},
+				DevRegistry: []string{"dev.kyma-project.io/dev-registry"},
+				TagTemplate: `v{{ .Date }}-{{ .ShortSHA }}`,
+			},
+		},
+		{
+			name: "parsed full config with multiple repos",
+			config: `registry:
+- kyma-project.io/prod-registry
+- kyma-project.io/second-registry
+dev-registry:
+- dev.kyma-project.io/dev-registry
+- dev.kyma-project.io/second-registry
+tag-template: v{{ .Date }}-{{ .ShortSHA }}`,
+			expectedConfig: Config{
+				Registry:    []string{"kyma-project.io/prod-registry", "kyma-project.io/second-registry"},
+				DevRegistry: []string{"dev.kyma-project.io/dev-registry", "dev.kyma-project.io/second-registry"},
 				TagTemplate: `v{{ .Date }}-{{ .ShortSHA }}`,
 			},
 		},
