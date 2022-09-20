@@ -1,24 +1,24 @@
 # kaniko-build
 
-This tool serves as an intelligent wrapper for `kaniko-project/executor`. It's built to reduce the complexity of building the Docker images and remove the need of using Docker in Docker when building images in K8s infrastructure.
+This tool serves as an intelligent wrapper for `kaniko-project/executor`. It reduces the complexity of building Docker images and removes the need of using Docker in Docker when building images in K8s infrastructure.
 
 Key features:
-* Automatically provide a default tag, which is computed based on a template provided in `config.yaml`
-* ~~Allow for concurrent builds of image variants that use the same `Dockerfile`~~ See Known issues #1
-* Support for adding multiple tags to the image
-* Save the `kaniko-project/executor` command outputs to separate files
-* Support for pushing images to different repositories with different tags when running in Prow's presubmit job
-* Support for pushing the same images to multiple repositories
-* Supports caching of built layers to reduce build times
+* automatically provides a default tag, which is computed based on a template provided in `config.yaml`
+* ~~allows for concurrent builds of image variants that use the same `Dockerfile`~~ See [Known issues](#known-issues) #1
+* supports adding multiple tags to the image
+* saves the `kaniko-project/executor` command outputs to separate files
+* when running in Prow's presubmit job, supports pushing images to different repositories with different tags 
+* supports pushing the same images to multiple repositories
+* supports caching of built layers to reduce build times
 
 ## Known issues
 
 1. Currently, building different variants of the same image is not working. The issue is tracked in https://github.com/kyma-project/test-infra/issues/5975
-2. This tool is still in early stage of development, though it is stable enough as replacement for `docker build`. Expect bugs and codebase changes!
+2. This tool is still at an early stage of development. It is stable enough as a replacement for `docker build`. However, you can expect bugs and codebase changes.
 
-For any other problems, please raise an [issue](https://github.com/kyma-project/test-infra/issues/new?assignees=&labels=area%2Fci%2C+bug&template=bug-report.md&title=kaniko-build:%20)!
+For any other problems, please raise an [issue](https://github.com/kyma-project/test-infra/issues/new?assignees=&labels=area%2Fci%2C+bug&template=bug-report.md&title=kaniko-build:%20).
 
-## Using config.yaml file
+## Use config.yaml file
 
 `kaniko-build` requires a configuration file to be provided with a set of variables, which are used during the execution.
 A `--config` flag is required.
@@ -36,7 +36,7 @@ cache:
   cache-run-layers: true
 ```
 
-## Building multiple variants of the same image
+## Build multiple variants of the same image
 
 The tool also includes the functionality of re-using the same `Dockerfile` to concurrently build different variants of the same image.
 `variants.yaml` is the file that contains pre-defined set of the same `ARG` substitutions with different values.
@@ -51,8 +51,8 @@ The file has a simple structure:
 ```
 
 To use this feature, make sure that:
-* You have the `variants.yaml` file in the **same directory** as the `Dockerfile` file.
-* Your `Dockerfile` contains `ARG` directives which are named after keys in `variants.yaml`
+* you have the `variants.yaml` file in the **same directory** as the `Dockerfile`
+* your `Dockerfile` contains `ARG` directives which are named after keys in `variants.yaml`
 
 ## Usage
 
