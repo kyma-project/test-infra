@@ -53,14 +53,12 @@ global:
         - name: "connector-tools"
         - name: "artwork"
         - name: "opensap"
-        
-
 
 # global configSet variables
 pubsub_config: &pubsub_config
   pubsub_project: "sap-kyma-prow"
   pubsub_topic: "prowjobs"
-  
+
 globalSets:
   # Kyma major version sets
   kyma_major_version_1:
@@ -89,11 +87,11 @@ globalSets:
   image_buildpack-node:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220809-8b2d4be4f"
   image_buildpack-golang:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220915-084f90d5"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220920-b10d5457"
   image_buildpack-golang-kubebuilder2:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220915-084f90d5"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220920-b10d5457"
   image_buildpack-golang-toolbox:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220915-084f90d5"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220920-b10d5457"
   image_wssagent:
     image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
   image_gardener-rotate:
@@ -114,10 +112,10 @@ globalSets:
     nodeSelector:
       dedicated: high-cpu
     tolerations:
-    - key: dedicated
-      value: high-cpu
-      operator: Equal
-      effect: NoSchedule
+      - key: dedicated
+        value: high-cpu
+        operator: Equal
+        effect: NoSchedule
     <<: *pubsub_config
   jobConfig_kyma20_docu:
     skip_report: "false"
@@ -275,6 +273,6 @@ templates:
             - name: kyma-gke-integration
             - name: kyma-gke-upgrade
             - name: kyma-artifacts
-  - from : test-infra-autobump-config.yaml
+  - from: test-infra-autobump-config.yaml
     render:
       - to: ../../prow/autobump-config/test-infra-autobump-config.yaml
