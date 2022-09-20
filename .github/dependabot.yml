@@ -192,17 +192,6 @@ updates:
       prefix: "whitesource"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/stability-checker/deploy/stability-checker"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "stability-check"
-      include: "scope"
-  - package-ecosystem: "docker"
     directory: "/prow/images/golangci-lint"
     labels:
       - "docker"

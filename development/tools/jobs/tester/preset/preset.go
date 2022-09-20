@@ -58,8 +58,6 @@ const (
 	KymaSlackChannel Preset = "preset-kyma-slack-channel"
 	// SlackBotToken contains the token to use the kyma slack bot
 	SlackBotToken Preset = "preset-sap-slack-bot-token"
-	// StabilityCheckerSlack contains the information for the stability checker slack account
-	StabilityCheckerSlack Preset = "preset-stability-checker-slack-notifications"
 	// NightlyGithubIntegration contains the information for nightly clusters
 	NightlyGithubIntegration Preset = "preset-nightly-github-integration"
 	// KymaKeyring contains the kyma secrets
