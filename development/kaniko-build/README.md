@@ -38,9 +38,9 @@ cache:
 
 ## Build multiple variants of the same image
 
-The tool also includes the functionality of re-using the same `Dockerfile` to concurrently build different variants of the same image.
-`variants.yaml` is the file that contains pre-defined set of the same `ARG` substitutions with different values.
-It's very handy when there is a requirement to build an image with different versions of the same binary, for example, for different versions of Kubernetes or Go.
+With `kaniko-build, you can reuse the same `Dockerfile` to concurrently build different variants of the same image.
+To predefine a set of the same `ARG` substitutions with different values, store them in the `variants.yaml` file .
+Use that feature when you need to build an image with different versions of the same binary, for example, for different versions of Kubernetes or Go.
 
 The file has a simple structure:
 ```yaml
