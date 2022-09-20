@@ -1,5 +1,5 @@
 registry: eu.gcr.io/kyma-project
-reproducible: true
+reproducible: false
 log-format: json
 cache:
   enabled: true
