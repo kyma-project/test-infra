@@ -49,7 +49,6 @@ function install_cli() {
 
 function deploy_kyma() {
   k3d version
-  curl -sL https://k3d.io/v5.3.0/usage/advanced/calico.yaml -o calico.yaml
 
   if [[ -v K8S_VERSION ]]; then
     echo "Creating k3d with kuberenetes version: ${K8S_VERSION}"
