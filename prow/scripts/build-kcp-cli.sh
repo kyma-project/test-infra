@@ -55,14 +55,14 @@ gcp::authenticate \
 log::info "Content of the local artifacts directory"
 ls -la "${ARTIFACTS}"
 
-mkdir -p "${ARTIFACTS}/sync/{ers,kcp}/${BUCKET_DIR}/"
-mv "${ARTIFACTS}/ers*" "${ARTIFACTS}/sync/ers/${BUCKET_DIR}/"
-mv "${ARTIFACTS}/kcp*" "${ARTIFACTS}/sync/kcp/${BUCKET_DIR}/"
+mkdir -p "${ARTIFACTS}"/sync/{ers,kcp}/"${BUCKET_DIR}"/
+mv "${ARTIFACTS}"/ers* "${ARTIFACTS}/sync/ers/${BUCKET_DIR}/"
+mv "${ARTIFACTS}"/kcp* "${ARTIFACTS}/sync/kcp/${BUCKET_DIR}/"
 
 if [[ "${BUILD_TYPE}" == "master" ]]; then
-  mkdir -p "${ARTIFACTS}/sync/{ers,kcp}/master/"
-  cp "${ARTIFACTS}/sync/ers/${BUCKET_DIR}/ers*" "${ARTIFACTS}/sync/ers/master/"
-  cp "${ARTIFACTS}/sync/kcp/${BUCKET_DIR}/kcp*" "${ARTIFACTS}/sync/kcp/master/"
+  mkdir -p "${ARTIFACTS}"/sync/{ers,kcp}/master/
+  cp "${ARTIFACTS}/sync/ers/${BUCKET_DIR}"/ers* "${ARTIFACTS}/sync/ers/master/"
+  cp "${ARTIFACTS}/sync/kcp/${BUCKET_DIR}"/kcp* "${ARTIFACTS}/sync/kcp/master/"
 fi
 
 log::info "Copy artifacts to ${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/{ers,kcp}/${BUCKET_DIR}"
