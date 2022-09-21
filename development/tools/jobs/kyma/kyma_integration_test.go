@@ -49,7 +49,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration", "preset-kyma-integration-telemetry-enabled",
 			},
 
-			expRunIfChangedRegex: "^resources/telemetry/|^installation/resources/crds/telemetry",
+			expRunIfChangedRegex: "^resources/telemetry/|^installation/resources/crds/telemetry/|^tests/fast-integration/telemetry-test/",
 			expRunIfChangedPaths: []string{
 				"resources/telemetry/charts/operator/values.yaml",
 				"resources/telemetry/charts/fluent-bit/values.yaml",
@@ -119,7 +119,7 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 		},
 		"Should contain the kyma-integration k3d with telemetry job": {
 			givenJobName: "post-main-kyma-integration-k3d-telemetry",
-			runIfChanged: "^resources/telemetry/|^installation/resources/crds/telemetry",
+			runIfChanged: "^resources/telemetry/|^installation/resources/crds/telemetry/|^tests/fast-integration/telemetry-test/",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration", "preset-kyma-integration-telemetry-enabled",
