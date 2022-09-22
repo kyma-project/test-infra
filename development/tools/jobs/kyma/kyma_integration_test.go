@@ -173,7 +173,6 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-upgrade-k3d.sh"}, kymaUpgradePeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string(nil), kymaUpgradePeriodic.Spec.Containers[0].Args)
 	tester.AssertThatContainerHasEnv(t, kymaUpgradePeriodic.Spec.Containers[0], "KYMA_PROJECT_DIR", ".")
-	tester.AssertThatContainerHasEnv(t, kymaUpgradePeriodic.Spec.Containers[0], "KYMA_MAJOR_VERSION", "2")
 	tester.AssertThatSpecifiesResourceRequests(t, kymaUpgradePeriodic.JobBase)
 
 	expName = "orphaned-disks-cleaner"
@@ -319,7 +318,6 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "nightly")
 	tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "CLUSTER_PROVIDER", "gcp")
 	tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-b")
-	tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "KYMA_MAJOR_VERSION", "2")
 
 	expName = "serverless-function-metrics-generator"
 	functionsMetricsPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -360,7 +358,6 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	// tester.AssertThatContainerHasEnv(t, weeklyFastIntegrationPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "weekly-124")
 	// tester.AssertThatContainerHasEnv(t, weeklyFastIntegrationPeriodic.Spec.Containers[0], "CLUSTER_PROVIDER", "gcp")
 	// tester.AssertThatContainerHasEnv(t, weeklyFastIntegrationPeriodic.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-b")
-	// tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "KYMA_MAJOR_VERSION", "1")
 
 	// expName = "kyma-aks-nightly-fast-integration"
 	// nightlyAksFastIntegrationPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -377,5 +374,4 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	// tester.AssertThatContainerHasEnv(t, nightlyAksFastIntegrationPeriodic.Spec.Containers[0], "RS_GROUP", "kyma-nightly-aks")
 	// tester.AssertThatContainerHasEnv(t, nightlyAksFastIntegrationPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "nightly-aks-124")
 	// tester.AssertThatContainerHasEnv(t, nightlyAksFastIntegrationPeriodic.Spec.Containers[0], "CLUSTER_PROVIDER", "azure")
-	// tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "KYMA_MAJOR_VERSION", "1")
 }
