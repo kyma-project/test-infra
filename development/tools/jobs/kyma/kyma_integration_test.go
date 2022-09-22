@@ -313,7 +313,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, nightlyFastIntegrationPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"}, nightlyFastIntegrationPeriodic.Spec.Containers[0].Command)
 	tester.AssertThatSpecifiesResourceRequests(t, nightlyFastIntegrationPeriodic.JobBase)
-	assert.Len(t, nightlyFastIntegrationPeriodic.Spec.Containers[0].Env, 5)
+	assert.Len(t, nightlyFastIntegrationPeriodic.Spec.Containers[0].Env, 4)
 	tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "PROVISION_REGIONAL_CLUSTER", "true")
 	tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "nightly")
 	tester.AssertThatContainerHasEnv(t, nightlyFastIntegrationPeriodic.Spec.Containers[0], "CLUSTER_PROVIDER", "gcp")
