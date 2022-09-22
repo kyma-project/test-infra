@@ -36,6 +36,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-application-operator-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^components/application-operator/.*\.go$'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -85,6 +86,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-central-application-connectivity-validator-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^components/central-application-connectivity-validator/.*\.go$'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -134,6 +136,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-central-application-gateway-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^components/central-application-gateway/.*\.go$'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -183,6 +186,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-compass-runtime-agent-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^components/compass-runtime-agent/.*\.go$'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -232,6 +236,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-directory-size-exporter-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^components/directory-size-exporter/.*\.go$'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -281,6 +286,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-event-publisher-proxy-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^components/event-publisher-proxy/.*\.go$'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -330,6 +336,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-eventing-controller-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^components/eventing-controller/.*\.go$'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -379,6 +386,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-function-controller-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^components/function-controller/.*\.go$'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -428,6 +436,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-telemetry-operator-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^components/telemetry-operator/.*\.go$'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
