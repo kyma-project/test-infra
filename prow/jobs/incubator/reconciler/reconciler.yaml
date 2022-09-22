@@ -1249,8 +1249,6 @@ periodics: # runs on schedule
                 value: "europe-west4-b"
               - name: INPUT_CLUSTER_NAME
                 value: "rec-main"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:
