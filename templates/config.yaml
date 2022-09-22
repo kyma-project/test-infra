@@ -18,7 +18,6 @@ global:
         - name: "community"
         - name: "module-manager"
         - name: "hydroform"
-        - name: "console"
         - name: "istio-operator"
         - name: "addons"
         - name: "private-fn-for-e2e-serverless-tests"
@@ -193,10 +192,6 @@ globalSets:
     labels:
       preset-docker-push-repository-kyma: "true"
     path_alias: "github.com/kyma-project/busola"
-  jobConfig_generic_component_console:
-    labels:
-      preset-docker-push-repository-kyma: "true"
-    path_alias: "github.com/kyma-project/console"
   jobConfig_generic_component_compass:
     labels:
       preset-docker-push-repository-incubator: "true"
