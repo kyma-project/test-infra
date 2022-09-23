@@ -2,6 +2,10 @@ templates:
   - from: generic.tmpl
     render:
       - to: ../../prow/jobs/lifecycle-manager/lifecycle-manager.yaml
+        localSets:
+          jobConfig_default:
+            imagePullPolicy: "Always"
+            privileged: "false"
         jobConfigs:
           - repoName: kyma-project/lifecycle-manager
             jobs:
@@ -56,6 +60,37 @@ templates:
                     - image_buildpack-golang
                     - jobConfig_generic_component
                     - "build_labels" # default labels
+
+              - jobConfig:
+                  labels:
+                    preset-sa-gcr-push: "true"
+                  name: main-build-kaniko
+                  always_run: true
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6
+                  branches:
+                    - ^main$
+                  command: /kaniko-build
+                  args:
+                    - "--name=lifecycle-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=prow/images/buildpack-golang"
+                    - "--dockerfile=Dockerfile"
+                    - "--directory=operator"
+                  volumeMounts:
+                    - name: config
+                      mountPath: /config
+                      readOnly: true
+                  volumes:
+                    - name: config
+                      configMapName: kaniko-build-config
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - jobConfig_generic_component
+                    - "build_labels" # default labels
+
               - jobConfig:
                   labels:
                     preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
@@ -72,6 +107,26 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - "build_labels" # default labels
+
+              - jobConfig:
+                  labels:
+                    preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
+                  name: pull-smoke
+                  always_run: true
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/lifecycle-manager/tests/smoke"
+                    - "test-verbose"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-golang
                     - jobConfig_generic_component

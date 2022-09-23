@@ -122,9 +122,108 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+    - name: pull-smoke
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-smoke"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
+        preset-sa-gcr-push: "true"
+      always_run: true
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220920-b10d5457"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/lifecycle-manager/tests/smoke"
+              - "test-verbose"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/lifecycle-manager:
+    - name: main-build-kaniko
+      annotations:
+        pipeline.trigger: "pr-merge"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "main-build-kaniko"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
+        preset-sa-gcr-push: "true"
+      always_run: true
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
+            securityContext:
+              privileged: true
+            command:
+              - "/kaniko-build"
+            args:
+              - "--name=lifecycle-manager"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=prow/images/buildpack-golang"
+              - "--dockerfile=Dockerfile"
+              - "--directory=operator"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: main-build
       annotations:
         pipeline.trigger: "pr-merge"
