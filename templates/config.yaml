@@ -62,6 +62,23 @@ pubsub_config: &pubsub_config
   pubsub_topic: "prowjobs"
   
 globalSets:
+  kaniko_buildpack:
+    skip_report: "false"
+    max_concurrency: "10"
+    decorate: "true"
+    pubsub_project: "sap-kyma-prow"
+    pubsub_topic: "prowjobs"
+    image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220923-cdc39230b
+    command: /kaniko-build
+    labels:
+      preset-sa-gcr-push: "true"
+    volumes:
+      - name: config
+        configMapName: kaniko-build-config
+    volumeMounts:
+      - name: config
+        mountPath: /config
+        readOnly: true
   # Kyma major version sets
   kyma_major_version_1:
     env:
