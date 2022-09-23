@@ -61,28 +61,7 @@ templates:
                     - "jobConfig_presubmit"
                     - "build_labels" # default labels
               - jobConfig:
-                  labels:
-                    preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
-                  name: pull-build # "pre-main-lifecycle-manager-build"
-                  always_run: true
-                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/lifecycle-manager/operator"
-                    - "docker-build"
-                    - "docker-push"
-                  branches:
-                    - ^main$
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_buildpack-golang
-                    - jobConfig_generic_component
-                    - "build_labels" # default labels
-
-              - jobConfig:
-                  name: main-build-kaniko
+                  name: pull-build
                   always_run: true
                   args:
                     - "--name=lifecycle-manager"
@@ -97,24 +76,19 @@ templates:
                     - jobConfig_default
                     - jobConfig_postsubmit
                     - "build_labels" # default labels
-
               - jobConfig:
-                  labels:
-                    preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
-                  name: main-build # "post-main-lifecycle-manager-build"
+                  name: main-build
                   always_run: true
-                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/lifecycle-manager/operator"
-                    - "docker-build"
-                    - "docker-push"
-                  branches:
-                    - ^main$
+                    - "--name=lifecycle-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=operator"
+                    - "--dockerfile=Dockerfile"
+                    - "--directory=."
                 inheritedConfigs:
+                  local:
+                    - default
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - image_buildpack-golang
-                    - jobConfig_generic_component
                     - "build_labels" # default labels
