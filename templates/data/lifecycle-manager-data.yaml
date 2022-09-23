@@ -73,9 +73,7 @@ templates:
                   local:
                     - default
                   global:
-                    - jobConfig_default
                     - jobConfig_presubmit
-                    - "build_labels" # default labels
               - jobConfig:
                   name: main-build
                   always_run: true
@@ -89,6 +87,4 @@ templates:
                   local:
                     - default
                   global:
-                    - jobConfig_default
                     - jobConfig_postsubmit
-                    - "build_labels" # default labels
