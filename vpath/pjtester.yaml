@@ -1,2 +1,3 @@
 pjNames:
-  - pjName: "main-build-kaniko"
+  - pjName: "main-build"
+  - pjName: "pull-build"
