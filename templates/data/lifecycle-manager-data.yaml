@@ -89,7 +89,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=operator"
                     - "--dockerfile=Dockerfile"
-                    - "--directory ."
+                    - "--directory=."
                 inheritedConfigs:
                   local:
                     - default
