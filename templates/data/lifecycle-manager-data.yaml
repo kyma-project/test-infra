@@ -6,6 +6,26 @@ templates:
           jobConfig_default:
             imagePullPolicy: "Always"
             privileged: "false"
+          default:
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            branches:
+              - "^master$"
+              - "^main$"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6
+            command: /kaniko-build
+            labels:
+              preset-sa-gcr-push: "true"
+            volumes:
+              - name: config
+                configMapName: kaniko-build-config
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
         jobConfigs:
           - repoName: kyma-project/lifecycle-manager
             jobs:
@@ -62,33 +82,20 @@ templates:
                     - "build_labels" # default labels
 
               - jobConfig:
-                  labels:
-                    preset-sa-gcr-push: "true"
                   name: main-build-kaniko
                   always_run: true
-                  image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6
-                  branches:
-                    - ^main$
-                  command: /kaniko-build
                   args:
                     - "--name=lifecycle-manager"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=prow/images/buildpack-golang"
                     - "--dockerfile=Dockerfile"
                     - "--directory=operator"
-                  volumeMounts:
-                    - name: config
-                      mountPath: /config
-                      readOnly: true
-                  volumes:
-                    - name: config
-                      configMapName: kaniko-build-config
                 inheritedConfigs:
+                  local:
+                    - default
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - jobConfig_generic_component
                     - "build_labels" # default labels
 
               - jobConfig:
