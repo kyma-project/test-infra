@@ -13,7 +13,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 	"strconv"
@@ -64,7 +63,7 @@ type GithubClient interface {
 type pjConfig struct {
 	PjName string `yaml:"pjName" validate:"required,min=1"` // Test prowjob name.
 	PjPath string `yaml:"pjPath" default:"prow/jobs/"`      // Path to directory or file with test prowjob definition, path is relative to repository root.
-	Report bool `yaml:"report,omitempty"` // Enable reporting of prowjob status, default reporting is enabled.
+	Report bool   `yaml:"report,omitempty"`                 // Enable reporting of prowjob status, default reporting is enabled.
 }
 
 // prConfig holds user and github provided details about pull request.
@@ -83,9 +82,9 @@ type pjConfigs struct {
 
 // testCfg holds user provided configuration for pjtester.
 type testCfg struct {
-	PjConfigs pjConfigs `yaml:"pjConfigs" validate:"required"`
+	PjConfigs  pjConfigs                      `yaml:"pjConfigs" validate:"required"`
 	ConfigPath string                         `yaml:"configPath" default:"prow/config.yaml"` // relative path from repository root to prow configuration file
-	PrConfigs map[string]map[string]prConfig `yaml:"prConfigs,omitempty"` // Holds pull request details used in test prowjobs. Map key represent github organisation name.
+	PrConfigs  map[string]map[string]prConfig `yaml:"prConfigs,omitempty"`                   // Holds pull request details used in test prowjobs. Map key represent github organisation name.
 }
 
 // options holds data about prowjob and pull request to test.
