@@ -197,8 +197,8 @@ postsubmits: # runs on main
             args:
               - "--name=lifecycle-manager"
               - "--config=/config/kaniko-build-config.yaml"
+              - "--context=operator"
               - "--dockerfile=Dockerfile"
-              - "--directory=operator"
             resources:
               requests:
                 memory: 3Gi

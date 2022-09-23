@@ -87,8 +87,8 @@ templates:
                   args:
                     - "--name=lifecycle-manager"
                     - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=operator"
                     - "--dockerfile=Dockerfile"
-                    - "--directory=operator"
                 inheritedConfigs:
                   local:
                     - default
