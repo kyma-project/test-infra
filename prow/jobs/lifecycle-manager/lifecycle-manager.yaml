@@ -197,7 +197,6 @@ postsubmits: # runs on main
             args:
               - "--name=lifecycle-manager"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=prow/images/buildpack-golang"
               - "--dockerfile=Dockerfile"
               - "--directory=operator"
             resources:
