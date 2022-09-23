@@ -15,6 +15,7 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-gke-kyma-integration: "true"
       run_if_changed: '^((components\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -29,7 +30,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
             automountServiceAccountToken: true
             securityContext:
               privileged: false
@@ -68,6 +69,7 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-gke-kyma-integration: "true"
       run_if_changed: '^((components\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -82,7 +84,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
             automountServiceAccountToken: true
             securityContext:
               privileged: false
@@ -121,6 +123,7 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-gke-kyma-integration: "true"
       run_if_changed: '^((.*)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -135,7 +138,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
             automountServiceAccountToken: true
             securityContext:
               privileged: false
@@ -189,7 +192,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
             automountServiceAccountToken: true
             securityContext:
               privileged: false
@@ -240,7 +243,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
             automountServiceAccountToken: true
             securityContext:
               privileged: false
@@ -294,7 +297,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
             automountServiceAccountToken: true
             securityContext:
               privileged: false

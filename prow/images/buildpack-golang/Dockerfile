@@ -1,6 +1,6 @@
 # Basic golang buildpack
 
-FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267
+FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898
 
 # Commit details
 
@@ -11,11 +11,11 @@ LABEL io.kyma-project.test-infra.commit=$commit
 # Versions
 
 ENV ARCH amd64
-ENV GO_VERSION 1.18.3
+ENV GO_VERSION 1.19.1
 ENV DEP_RELEASE_TAG v0.5.4
 ENV KUBEBUILDER_VERSION 2.3.2
 ENV KUSTOMIZE_VERSION 3.8.4
-ENV GOLANGCI_LINT_VERSION v1.45.2
+ENV GOLANGCI_LINT_VERSION v1.49.0
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 

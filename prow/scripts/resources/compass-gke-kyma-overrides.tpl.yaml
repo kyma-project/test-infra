@@ -12,23 +12,15 @@ global:
   environment:
     gardener: false
 istio:
-  override: |
-    apiVersion: install.istio.io/v1alpha1
-    kind: IstioOperator
-    metadata:
-      namespace: istio-system
-    spec:
-      components:
-        ingressGateways:
-          - name: istio-ingressgateway
-            k8s:
-              service:
-                loadBalancerIP: ${GATEWAY_IP_ADDRESS}
-                type: LoadBalancer
-      meshConfig:
-        defaultConfig:
-          holdApplicationUntilProxyStarts: true
-
+  components:
+    ingressGateways:
+      config:
+        service:
+          loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+          type: LoadBalancer
+  meshConfig:
+    defaultConfig:
+      holdApplicationUntilProxyStarts: true
 kiali:
   authProxy:
     enabled: false
@@ -77,3 +69,11 @@ ory:
       gateway:
         name: "kyma-gateway"
         namespace: "kyma-system"
+  oathkeeper:
+    oathkeeper:
+      config:
+        authenticators:
+          jwt:
+            config:
+              jwks_urls:
+                - "https://container.googleapis.com/v1/projects/$CLOUDSDK_CORE_PROJECT/locations/$CLOUDSDK_COMPUTE_ZONE/clusters/$COMMON_NAME/jwks"

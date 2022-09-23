@@ -2,6 +2,7 @@
 /development/checker/vendor
 /development/tools/vendor
 
+vendor/
 tmp/
 .idea/
 .vscode/

@@ -10,23 +10,13 @@ templates:
             type_periodic: "true"
             cluster: "trusted-workload"
           github_token_mounts:
-            volumes:
-              - name: kyma-bot-github-token
-                secretName: kyma-bot-github-token
-            volumeMounts:
-              - name: kyma-bot-github-token
-                mountPath: /etc/github
-                readOnly: true
+            labels:
+              preset-autobump-bot-github-token: "true"
           label_sync_mounts:
             volumes:
-              - name: kyma-bot-github-token
-                secretName: kyma-bot-github-token
               - name: config
                 configMapName: label-config
             volumeMounts:
-              - name: kyma-bot-github-token
-                mountPath: /etc/github
-                readOnly: true
               - name: config
                 mountPath: /etc/config
                 readOnly: true
@@ -36,7 +26,7 @@ templates:
               - jobConfig:
                   name: ci-prow-label-sync
                   cron: "17 * * * *"
-                  image: gcr.io/k8s-prow/label_sync:v20220721-cf42b99a12
+                  image: gcr.io/k8s-prow/label_sync:v20220923-6963e8f005
                   command: label_sync
                   args:
                     - --config=/etc/config/labels.yaml
@@ -50,6 +40,7 @@ templates:
                   local:
                     - periodic_config
                     - label_sync_mounts
+                    - github_token_mounts
                   global:
                     - "pubsub_labels"
                     - "disable_testgrid"
@@ -57,7 +48,7 @@ templates:
                   name: ci-prow-autobump
                   cron: "30 * * * 1-5"
                   slack_channel: kyma-prow-alerts
-                  image: gcr.io/k8s-prow/generic-autobumper:v20220721-cf42b99a12
+                  image: gcr.io/k8s-prow/generic-autobumper:v20220923-6963e8f005
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/prow-cluster-autobump-config.yaml
@@ -99,7 +90,7 @@ templates:
                   name: ci-prow-autobump-jobs
                   cron: "45 * * * 1-5"
                   slack_channel: kyma-prow-alerts
-                  image: gcr.io/k8s-prow/generic-autobumper:v20220721-cf42b99a12
+                  image: gcr.io/k8s-prow/generic-autobumper:v20220923-6963e8f005
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/test-infra-autobump-config.yaml

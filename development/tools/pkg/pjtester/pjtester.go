@@ -156,7 +156,7 @@ func newProwK8sClientset() (*prowclient.Clientset, error) {
 // readTestCfg read and validate data from pjtester.yaml file.
 func readTestCfg(testCfgFile string) (testCfg, error) {
 	var t testCfg
-	yamlFile, err := ioutil.ReadFile(testCfgFile)
+	yamlFile, err := os.ReadFile(testCfgFile)
 	if err != nil {
 		return testCfg{}, fmt.Errorf("failed read test config file from vpath/pjtester.yaml")
 	}

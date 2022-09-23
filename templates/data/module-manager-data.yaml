@@ -1,0 +1,83 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/module-manager/module-manager.yaml
+        jobConfigs:
+          - repoName: kyma-project/module-manager
+            jobs:
+              - jobConfig:
+                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220830-7bf905118"
+                  name: "pull-lint"
+                  annotations:
+                    description: executes the 'make lint' command in the module-manager 'operator' directory before any pull request.
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd operator && golangci-lint run"
+                  branches:
+                    - ^main$
+                  slack_channel: jellyfish-notifications
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - "build_labels" # default labels
+              - jobConfig:
+                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
+                  name: pull-tests
+                  annotations:
+                    description: executes the 'make test' command in the module-manager 'operator' directory before any pull request.
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd operator && make test" # run test make target of operator
+                  branches:
+                    - ^main$ # any pr against main trig
+                  slack_channel: jellyfish-notifications
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "build_labels" # default labels
+              - jobConfig:
+                  labels:
+                    preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
+                  name: "pull-build"
+                  always_run: true
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/module-manager/operator"
+                    - "docker-build"
+                    - "docker-push"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - "build_labels" # default labels
+              - jobConfig:
+                  labels:
+                    preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
+                  name: "main-build"
+                  always_run: true
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/module-manager/operator"
+                    - "docker-build"
+                    - "docker-push"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - "build_labels" # default labels

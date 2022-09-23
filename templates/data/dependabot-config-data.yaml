@@ -46,9 +46,9 @@ templates:
                   local:
                     - "dailyDockerEcosystem"
               - jobConfig:
-                  directory: "/changelog-generator"
+                  directory: "/development/tools/cmd/githubrelease"
                   # commit message can be 15 characters max
-                  commitMsgPrefix: "changelog-gen"
+                  commitMsgPrefix: "githubrelease"
                 inheritedConfigs:
                   local:
                     - "dailyDockerEcosystem"

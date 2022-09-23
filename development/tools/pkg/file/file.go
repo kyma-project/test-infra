@@ -1,7 +1,7 @@
 package file
 
 import (
-	"io/ioutil"
+	"io"
 	"os"
 	"path/filepath"
 )
@@ -21,7 +21,7 @@ func FindAllRecursively(rootPath, extension string) ([]string, error) {
 	return paths, err
 }
 
-//ReadFile .
+// ReadFile .
 func ReadFile(filePath string) (string, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -29,7 +29,7 @@ func ReadFile(filePath string) (string, error) {
 	}
 	defer file.Close()
 
-	data, err := ioutil.ReadAll(file)
+	data, err := io.ReadAll(file)
 	if err != nil {
 		return "", err
 	}

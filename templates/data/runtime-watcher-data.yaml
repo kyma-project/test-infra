@@ -1,0 +1,174 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/runtime-watcher/runtime-watcher.yaml
+        jobConfigs:
+          - repoName: kyma-project/runtime-watcher
+            jobs:
+              - jobConfig:
+                  run_if_changed: "^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220830-7bf905118"
+                  name: "pull-skr-lint"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd skr && golangci-lint run"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+              - jobConfig:
+                  run_if_changed: "^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)"
+                  name: pull-skr-tests
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd skr && make test" # run test make target of skr
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "build_labels" # default labels
+              - jobConfig:
+                  run_if_changed: "^kcp/(go.mod|go.sum)$|^kcp/*/(.*.go|Makefile|.*.sh)"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220830-7bf905118"
+                  name: "pull-kcp-lint"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd kcp && golangci-lint run"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+              - jobConfig:
+                  run_if_changed: "^kcp/(go.mod|go.sum)$|^kcp/*/(.*.go|Makefile|.*.sh)"
+                  name: pull-kcp-tests
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd kcp && make test" # run test make target of kcp
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "build_labels" # default labels
+              - jobConfig:
+                  run_if_changed: "^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220830-7bf905118"
+                  name: "pull-listener-lint"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd listener && golangci-lint run"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+              - jobConfig:
+                  run_if_changed: "^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)"
+                  name: pull-listener-tests
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd listener && make test" # run test make target of kcp
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "build_labels" # default labels
+              - jobConfig:
+                  labels:
+                    preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
+                  name: "pull-kcp-build"
+                  run_if_changed: "^kcp/"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/runtime-watcher/kcp"
+                    - "docker-build"
+                    - "docker-push"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - "build_labels" # default labels
+              - jobConfig:
+                  labels:
+                    preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
+                  name: "main-kcp-build"
+                  run_if_changed: "^kcp/"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/runtime-watcher/kcp"
+                    - "docker-build"
+                    - "docker-push"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - "build_labels" # default labels
+              - jobConfig:
+                  labels:
+                    preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
+                  name: "pull-skr-build"
+                  run_if_changed: "^skr/"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/runtime-watcher/skr"
+                    - "docker-build"
+                    - "docker-push"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - "build_labels" # default labels
+              - jobConfig:
+                  labels:
+                    preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
+                  name: "main-skr-build"
+                  run_if_changed: "^skr/"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/runtime-watcher/skr"
+                    - "docker-build"
+                    - "docker-push"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - jobConfig_generic_component
+                    - "build_labels" # default labels

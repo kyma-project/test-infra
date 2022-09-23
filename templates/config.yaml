@@ -1,9 +1,9 @@
 global:
-  nextRelease: "2.6"
+  nextRelease: "2.8"
   releases:
+    - "2.7"
+    - "2.6"
     - "2.5"
-    - "2.4"
-    - "2.3"
   orgs:
     - name: "kyma-project"
       repos:
@@ -13,24 +13,23 @@ global:
         - name: "control-plane"
         - name: "cli"
         - name: "website"
-        - name: "kyma-operator"
+        - name: "lifecycle-manager"
         - name: "third-party-images"
         - name: "community"
-        - name: "manifest-operator"
+        - name: "module-manager"
         - name: "hydroform"
         - name: "console"
         - name: "istio-operator"
         - name: "addons"
         - name: "private-fn-for-e2e-serverless-tests"
         - name: "charts"
-        - name: "busola-migrator"
         - name: "examples"
+        - name: "api-gateway"
     - name: "kyma-incubator"
       repos:
         - name: "compass"
         - name: "ord-service"
         - name: "reconciler"
-        - name: "api-gateway"
         - name: "bullseye-showcase"
         - name: "documentation-component"
         - name: "compass-console"
@@ -42,7 +41,6 @@ global:
         - name: "migrate"
         - name: "github-dashboard"
         - name: "website-vuepress"
-        - name: "dex"
         - name: "kitbag"
         - name: "octopus"
         - name: "kyma-showcase"
@@ -83,21 +81,23 @@ globalSets:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_bootstrap:
-    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
+    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220725-62cace12"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220901-6453087a4"
   image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
   image_buildpack-node:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220720-622619a6"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220809-8b2d4be4f"
   image_buildpack-golang:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220725-7756933d"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220920-b10d5457"
   image_buildpack-golang-kubebuilder2:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220725-7756933d"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220920-b10d5457"
   image_buildpack-golang-toolbox:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220725-7756933d"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220920-b10d5457"
   image_wssagent:
-    image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220725-97957f3f"
+    image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
+  image_gardener-rotate:
+    image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20220819-694650155"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
@@ -185,6 +185,10 @@ globalSets:
     labels:
       preset-docker-push-repository-control-plane: "true"
     path_alias: "github.com/kyma-project/control-plane"
+  jobConfig_generic_component_api-gateway:
+    labels:
+      preset-docker-push-repository-kyma: "true"
+    path_alias: "github.com/kyma-project/api-gateway"
   jobConfig_generic_component_busola:
     labels:
       preset-docker-push-repository-kyma: "true"
@@ -197,9 +201,6 @@ globalSets:
     labels:
       preset-docker-push-repository-incubator: "true"
     path_alias: "github.com/kyma-incubator/compass"
-  jobConfig_serverlessv1alpha2:
-    branches:
-      - "^serverless-v1alpha2$"
   disable_report:
     skip_report: "true"
   # globalSet for prowjobs which doesn't inherit jobConfig_default globalSet

@@ -87,6 +87,7 @@ function createCluster() {
     -p "$CLOUDSDK_CORE_PROJECT" \
     -r "$CLOUDSDK_COMPUTE_REGION"
   GATEWAY_IP_ADDRESS="${gcp_reserve_ip_address_return_ip_address:?}"
+  export GATEWAY_IP_ADDRESS
   CLEANUP_GATEWAY_IP_ADDRESS="true"
   echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
@@ -110,7 +111,7 @@ function createCluster() {
   gcp::provision_k8s_cluster \
         -c "$COMMON_NAME" \
         -p "$CLOUDSDK_CORE_PROJECT" \
-        -v "$GKE_CLUSTER_VERSION" \
+        -v "1.21.14" \
         -j "$JOB_NAME" \
         -J "$PROW_JOB_ID" \
         -z "$CLOUDSDK_COMPUTE_ZONE" \
@@ -136,7 +137,9 @@ function createCluster() {
   DOCKER_REPOSITORY_ADDRESS=$(echo "$DOCKER_PUSH_REPOSITORY" | cut -d'/' -f1)
 
   export DNS_DOMAIN_TRAILING=${DNS_DOMAIN%.}
-  envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/compass-gke-kyma-overrides.tpl.yaml" > "$PWD/kyma_overrides.yaml"
+  envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/compass-gke-overrides.tpl.yaml" > "$PWD/compass_common_overrides.yaml"
+  CLOUDSDK_CORE_PROJECT=${CLOUDSDK_CORE_PROJECT} CLOUDSDK_COMPUTE_ZONE=${CLOUDSDK_COMPUTE_ZONE} COMMON_NAME=${COMMON_NAME} envsubst < "${COMPASS_SOURCES_DIR}/installation/resources/compass-overrides-gke-benchmark.yaml" > "$PWD/compass_benchmark_overrides.yaml"
+  CLOUDSDK_CORE_PROJECT=${CLOUDSDK_CORE_PROJECT} CLOUDSDK_COMPUTE_ZONE=${CLOUDSDK_COMPUTE_ZONE} COMMON_NAME=${COMMON_NAME} envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/compass-gke-kyma-overrides.tpl.yaml" > "$PWD/kyma_overrides.yaml"
 }
 
 function installYQ() {
@@ -148,7 +151,16 @@ function installHelm() {
 }
 
 function installKyma() {
-  kyma::install_cli
+  KYMA_CLI_VERSION="2.1.3"
+  log::info "Installing Kyma CLI version: $KYMA_CLI_VERSION"
+
+  PREV_WD=$(pwd)
+  git clone https://github.com/kyma-project/cli.git && cd cli && git checkout $KYMA_CLI_VERSION
+  make build-linux && cd ./bin && mv ./kyma-linux ./kyma
+  chmod +x kyma
+
+  export PATH="${PREV_WD}/cli/bin:${PATH}"
+  cd "$PREV_WD"
 
   KYMA_VERSION=$(<"${COMPASS_SOURCES_DIR}/installation/resources/KYMA_VERSION")
   MINIMAL_KYMA="${COMPASS_SOURCES_DIR}/installation/resources/kyma/kyma-components-minimal.yaml"
@@ -161,8 +173,17 @@ function installCompassOld() {
   echo "Checkout $LATEST_VERSION"
   git checkout "${LATEST_VERSION}"
 
-  COMPASS_OVERRIDES="${COMPASS_SOURCES_DIR}/installation/resources/compass-overrides-gke-benchmark.yaml"
-  bash "${COMPASS_SCRIPTS_DIR}"/install-compass.sh --overrides-file "${COMPASS_OVERRIDES}" --timeout 30m0s
+  COMPASS_OVERRIDES="$PWD/compass_benchmark_overrides.yaml"
+  COMPASS_COMMON_OVERRIDES="$PWD/compass_common_overrides.yaml"
+
+  echo 'Installing DB'
+  mkdir "$COMPASS_SOURCES_DIR/installation/data"
+  bash "${COMPASS_SCRIPTS_DIR}"/install-db.sh --overrides-file "${COMPASS_OVERRIDES}" --overrides-file "${COMPASS_COMMON_OVERRIDES}" --timeout 30m0s
+  STATUS=$(helm status localdb -n compass-system -o json | jq .info.status)
+  echo "DB installation status ${STATUS}"
+
+  echo 'Installing Compass'
+  bash "${COMPASS_SCRIPTS_DIR}"/install-compass.sh --overrides-file "${COMPASS_OVERRIDES}" --overrides-file "${COMPASS_COMMON_OVERRIDES}" --timeout 30m0s
   STATUS=$(helm status compass -n compass-system -o json | jq .info.status)
   echo "Compass installation status ${STATUS}"
 }
@@ -181,8 +202,16 @@ function installCompassNew() {
     exit 1
   fi
 
-  COMPASS_OVERRIDES="${COMPASS_SOURCES_DIR}/installation/resources/compass-overrides-gke-benchmark.yaml"
-  bash "${COMPASS_SCRIPTS_DIR}"/install-compass.sh --overrides-file "${COMPASS_OVERRIDES}" --timeout 30m0s
+  COMPASS_OVERRIDES="$PWD/compass_benchmark_overrides.yaml"
+  COMPASS_COMMON_OVERRIDES="$PWD/compass_common_overrides.yaml"
+
+  echo 'Installing DB'
+  bash "${COMPASS_SCRIPTS_DIR}"/install-db.sh --overrides-file "${COMPASS_OVERRIDES}" --overrides-file "${COMPASS_COMMON_OVERRIDES}" --timeout 30m0s
+  STATUS=$(helm status localdb -n compass-system -o json | jq .info.status)
+  echo "DB installation status ${STATUS}"
+
+  echo 'Installing Compass'
+  bash "${COMPASS_SCRIPTS_DIR}"/install-compass.sh --overrides-file "${COMPASS_OVERRIDES}" --overrides-file "${COMPASS_COMMON_OVERRIDES}" --timeout 30m0s
   STATUS=$(helm status compass -n compass-system -o json | jq .info.status)
   echo "Compass installation status ${STATUS}"
 
@@ -201,7 +230,7 @@ function installCompassNew() {
 
 # Using set -f to prevent path globing in post_hook arguments.
 # utils::post_hook call set +f at the beginning.
-trap 'EXIT_STATUS=$?; set -f; utils::post_hook -n "$COMMON_NAME" -p "$CLOUDSDK_CORE_PROJECT" -c "$CLEANUP_CLUSTER" -g "$CLEANUP_GATEWAY_DNS_RECORD" -G "$INGRESS_GATEWAY_HOSTNAME" -a "$CLEANUP_APISERVER_DNS_RECORD" -A "$APISERVER_HOSTNAME" -I "$CLEANUP_GATEWAY_IP_ADDRESS" -l "$ERROR_LOGGING_GUARD" -z "$CLOUDSDK_COMPUTE_ZONE" -R "$CLOUDSDK_COMPUTE_REGION" -r "$PROVISION_REGIONAL_CLUSTER" -d "$DISABLE_ASYNC_DEPROVISION" -s "$COMMON_NAME" -e "$GATEWAY_IP_ADDRESS" -f "$APISERVER_IP_ADDRESS" -N "$COMMON_NAME" -Z "$CLOUDSDK_DNS_ZONE_NAME" -E "$EXIT_STATUS" -j "$JOB_NAME"; ' EXIT INT
+trap 'EXIT_STATUS=$?; set -f; utils::post_hook -n "$COMMON_NAME" -p "$CLOUDSDK_CORE_PROJECT" -c "$CLEANUP_CLUSTER" -g "$CLEANUP_GATEWAY_DNS_RECORD" -G "$INGRESS_GATEWAY_HOSTNAME" -a "$CLEANUP_APISERVER_DNS_RECORD" -A "$APISERVER_HOSTNAME" -I "$CLEANUP_GATEWAY_IP_ADDRESS" -l "$ERROR_LOGGING_GUARD" -z "$CLOUDSDK_COMPUTE_ZONE" -R "$CLOUDSDK_COMPUTE_REGION" -r "$PROVISION_REGIONAL_CLUSTER" -d "$DISABLE_ASYNC_DEPROVISION" -s "$COMMON_NAME" -e "$GATEWAY_IP_ADDRESS" -f "$APISERVER_IP_ADDRESS" -N "$COMMON_NAME" -Z "$CLOUDSDK_DNS_ZONE_NAME" -E "$EXIT_STATUS" -j "$JOB_NAME" -k true; ' EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
@@ -229,14 +258,21 @@ installHelm
 log::info "Install Kyma"
 installKyma
 
+
+kubectl patch cronjob -n kyma-system oathkeeper-jwks-rotator -p '{"spec":{"schedule": "*/1 * * * *"}}'
+until [[ $(kubectl get cronjob -n kyma-system oathkeeper-jwks-rotator --output=jsonpath="{.status.lastScheduleTime}") ]]; do
+  echo "Waiting for cronjob oathkeeper-jwks-rotator to be scheduled"
+  sleep 3
+done
+kubectl patch cronjob -n kyma-system oathkeeper-jwks-rotator -p '{"spec":{"schedule": "0 0 1 * *"}}'
 log::info "Install Compass version from main"
 installCompassOld
 
-readonly SUITE_NAME="testsuite-all"
+readonly SUITE_NAME="compass-e2e-tests"
 
 log::info "Execute benchmarks on the current main"
 kubectl uncordon "$NODE"
-CONCURRENCY=1 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l "benchmark=true"
+bash "${COMPASS_SCRIPTS_DIR}"/testing.sh --benchmark true
 kubectl cordon "$NODE"
 
 PODS=$(kubectl get cts $SUITE_NAME -o=go-template --template='{{range .status.results}}{{range .executions}}{{printf "%s\n" .id}}{{end}}{{end}}')
@@ -256,7 +292,7 @@ installCompassNew
 
 log::info "Execute benchmarks on the new release"
 kubectl uncordon "$NODE"
-CONCURRENCY=1 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh -l "benchmark=true"
+bash "${COMPASS_SCRIPTS_DIR}"/testing.sh --benchmark true
 kubectl cordon "$NODE"
 
 PODS=$(kubectl get cts $SUITE_NAME -o=go-template --template='{{range .status.results}}{{range .executions}}{{printf "%s\n" .id}}{{end}}{{end}}')

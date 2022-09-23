@@ -1,0 +1,90 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/lifecycle-manager/lifecycle-manager.yaml
+        localSets:
+          jobConfig_default:
+            imagePullPolicy: "Always"
+            privileged: "false"
+          default:
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            branches:
+              - "^master$"
+              - "^main$"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6
+            command: /kaniko-build
+            labels:
+              preset-sa-gcr-push: "true"
+            volumes:
+              - name: config
+                configMapName: kaniko-build-config
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        jobConfigs:
+          - repoName: kyma-project/lifecycle-manager
+            jobs:
+              - jobConfig:
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220830-7bf905118"
+                  name: pull-lint # "pre-main-lifecycle-manager-lint"
+                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
+                  annotations:
+                    description: executes the 'golangci-lint lint' command in the lifecycle-manager 'operator' directory before any pull request.
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd operator && golangci-lint run"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+              - jobConfig:
+                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
+                  name: pull-tests # pre-main-lifecycle-manager-tests
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd operator && make test" # run test make target of operator
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "build_labels" # default labels
+              - jobConfig:
+                  name: pull-build
+                  always_run: true
+                  args:
+                    - "--name=lifecycle-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=operator"
+                    - "--dockerfile=Dockerfile"
+                    - "--directory=."
+                inheritedConfigs:
+                  local:
+                    - default
+                  global:
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: main-build
+                  always_run: true
+                  args:
+                    - "--name=lifecycle-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=operator"
+                    - "--dockerfile=Dockerfile"
+                    - "--directory=."
+                inheritedConfigs:
+                  local:
+                    - default
+                  global:
+                    - jobConfig_postsubmit

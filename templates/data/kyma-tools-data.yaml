@@ -4,7 +4,8 @@ templates:
       - to: ../../prow/jobs/kyma/common/common.yaml
         localSets:
           job_spec:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+            command: make
+            privileged: "false"
             run_if_changed: "^common/"
         jobConfigs:
           - repoName: kyma-project/kyma
@@ -12,29 +13,27 @@ templates:
               - jobConfig:
                   name: pre-main-kyma-common
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/common"
+                    - "-C"
+                    - "common"
                     - "ci-pr"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - extra_refs_test-infra
                     - image_buildpack-golang
-                    - build_labels
                   local:
                     - job_spec
               - jobConfig:
                   name: post-main-kyma-common
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/common"
+                    - "-C"
+                    - "common"
                     - "ci-main"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-golang
-                    - build_labels
                   local:
                     - job_spec

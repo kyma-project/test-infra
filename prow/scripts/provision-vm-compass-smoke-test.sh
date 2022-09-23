@@ -46,7 +46,14 @@ log::info "ORD_PR_NUMBER PR is: ${ORD_PR_NUMBER}"
 ORD_PR_DATA=$(curl -sS "https://api.github.com/repos/kyma-incubator/ord-service/pulls/${ORD_PR_NUMBER}")
 log::info "ORD_PR_DATA is: ${ORD_PR_DATA}"
 
-ORD_PR_COMMIT_HASH=$(jq -r '.head.sha' <<< "${ORD_PR_DATA}")
+ORD_PR_STATE=$(jq -r '.state' <<< "${ORD_PR_DATA}")
+
+if [[ "$ORD_PR_STATE" == "open" ]]; then
+    ORD_PR_COMMIT_HASH=$(jq -r '.head.sha' <<< "${ORD_PR_DATA}")
+else
+    ORD_PR_COMMIT_HASH=$(jq -r '.merge_commit_sha' <<< "${ORD_PR_DATA}")
+fi
+
 log::info "ORD_PR_COMMIT_HASH is: ${ORD_PR_COMMIT_HASH}"
 
 log::info "Fetch ORD service sources"

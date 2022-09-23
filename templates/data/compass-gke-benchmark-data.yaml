@@ -49,8 +49,8 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "image_buildpack-golang"
                     - "extra_refs_test-infra"
+                    - "image_buildpack-golang"
                   local:
                     - "jobConfig_default"
               {{- range .Global.releases }}
@@ -72,8 +72,8 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "image_buildpack-golang"
                     - "extra_refs_test-infra"
+                    - "image_buildpack-golang"
                   local:
                     - "jobConfig_default"
                 {{- end }}

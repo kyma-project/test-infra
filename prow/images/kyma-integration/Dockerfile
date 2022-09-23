@@ -11,7 +11,7 @@ LABEL io.kyma-project.test-infra.commit=$commit
 #################################################################
 ###################### Basic Bootstrap ##########################
 #################################################################
-ARG K8S_VERSION=1.18
+ARG K8S_VERSION=1.23
 ARG commit
 ENV IMAGE_COMMIT=$commit
 LABEL io.kyma-project.test-infra.commit=$commit
@@ -73,7 +73,7 @@ RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
 
 # Versions
 
-ENV GO_VERSION 1.18.3
+ENV GO_VERSION 1.19.1
 ENV DEP_RELEASE_TAG v0.5.4
 
 # Install Go
@@ -148,7 +148,7 @@ ENV PATH=$PATH:/prow-tools
 ######################## Install gcloud #########################
 #################################################################
 
-ENV CLOUD_SDK_VERSION=324.0.0 \
+ENV CLOUD_SDK_VERSION=389.0.0 \
     PATH=/google-cloud-sdk/bin:/workspace:${PATH} \
     CLOUDSDK_CORE_DISABLE_PROMPTS=1 \
     CLUSTER_VERSION=$K8S_VERSION
@@ -162,9 +162,11 @@ RUN curl -fLSs -o gc-sdk.tar.gz https://dl.google.com/dl/cloudsdk/channels/rapid
     --path-update=false \
     --usage-reporting=false && \
     gcloud components install alpha beta kubectl docker-credential-gcr && \
+    gcloud components install gke-gcloud-auth-plugin && \
     gcloud info | tee /workspace/gcloud-info.txt && \
     mv /google-cloud-sdk/bin/kubectl.${CLUSTER_VERSION} /google-cloud-sdk/bin/kubectl
 
+ENV USE_GKE_GCLOUD_AUTH_PLUGIN=True
 #################################################################
 ################ Install Benchmark utilities ####################
 #################################################################

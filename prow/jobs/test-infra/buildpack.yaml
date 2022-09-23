@@ -8,9 +8,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-bootstrap"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/bootstrap/'
       skip_report: false
@@ -22,32 +19,28 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=bootstrap"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=prow/images/bootstrap"
+              - "--dockerfile=Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: pre-test-infra-kyma-integration
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-kyma-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/kyma-integration/'
       skip_report: false
@@ -59,32 +52,28 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=kyma-integration"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=prow/images/kyma-integration"
+              - "--dockerfile=Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: pre-test-infra-buildpack-golang
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-buildpack-golang"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/buildpack-golang/'
       skip_report: false
@@ -96,32 +85,28 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=buildpack-golang"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=prow/images/buildpack-golang"
+              - "--dockerfile=Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: pre-test-infra-buildpack-node
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-buildpack-node"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/buildpack-node/'
       skip_report: false
@@ -133,32 +118,28 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=buildpack-node"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=prow/images/buildpack-node"
+              - "--dockerfile=Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: pre-test-infra-cleaner
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-cleaner"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/cleaner/'
       skip_report: false
@@ -170,32 +151,28 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/cleaner"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=cleaner"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=prow/images/cleaner"
+              - "--dockerfile=Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: pre-test-infra-vulnerability-scanner
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-vulnerability-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/vulnerability-scanner/'
       skip_report: false
@@ -207,32 +184,28 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/vulnerability-scanner"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=vulnerability-scanner"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=prow/images/vulnerability-scanner"
+              - "--dockerfile=Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: pre-test-infra-whitesource-scanner
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-whitesource-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/whitesource-scanner/'
       skip_report: false
@@ -244,69 +217,28 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/whitesource-scanner"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pre-test-infra-probot-stale
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-test-infra-probot-stale"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^prow/images/probot-stale/'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/probot-stale"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=whitesource-scanner"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=prow/images/whitesource-scanner"
+              - "--dockerfile=Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: pre-test-infra-prow-tools
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-prow-tools"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^(go\.mod|go\.sum)$|^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
       skip_report: false
@@ -318,32 +250,28 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=prow-tools"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=prow/images/prow-tools/Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: pre-test-infra-github-connector-webhook-gateway
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-github-connector-webhook-gateway"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^development/kyma-github-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
       skip_report: false
@@ -355,32 +283,28 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220725-7756933d"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=github-connector-webhook-gateway"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=development/kyma-github-connector/githubWebhookGateway"
+              - "--dockerfile=Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: pre-test-infra-pubsub-connector-gateway
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-pubsub-connector-gateway"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^development/kyma-pubsub-connector/pubSubGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
       skip_report: false
@@ -392,32 +316,28 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220725-7756933d"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-pubsub-connector/pubSubGateway"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=pubsub-connector-gateway"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=development/kyma-pubsub-connector/pubSubGateway"
+              - "--dockerfile=Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: pre-test-infra-ci-force-bot
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-ci-force-bot"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^development/kyma-ci-force-bot/ciforcebot/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
       skip_report: false
@@ -429,32 +349,28 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220725-7756933d"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-ci-force-bot/ciforcebot"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=ci-force-bot"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=development/kyma-ci-force-bot/ciforcebot"
+              - "--dockerfile=Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: pre-test-infra-golangci-lint
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-golangci-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/golangci-lint/'
       skip_report: false
@@ -466,24 +382,89 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/golangci-lint"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=golangci-lint"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=prow/images/golangci-lint"
+              - "--dockerfile=Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+    - name: pre-test-infra-gardener-rotate
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-gardener-rotate"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/gardener-rotate/|^development/gardener-rotate/'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
+            command:
+              - "/kaniko-build"
+            args:
+              - "--name=gardener-rotate"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=prow/images/gardener-rotate/Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+    - name: pull-build-githubrelease
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-build-githubrelease"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^changelog-generator/|^development/tools/cmd/githubrelease/'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
+            command:
+              - "/kaniko-build"
+            args:
+              - "--name=githubrelease"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
   
 postsubmits: # runs on main
   kyma-project/test-infra:
@@ -494,9 +475,6 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-test-infra-bootstrap"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-release: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/bootstrap/'
       skip_report: false
@@ -508,24 +486,22 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=bootstrap"
+              - "--context=prow/images/bootstrap"
+              - "--dockerfile=Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: post-test-infra-kyma-integration
       annotations:
         testgrid-create-test-group: "false"
@@ -533,9 +509,6 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-test-infra-kyma-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-release: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/kyma-integration/'
       skip_report: false
@@ -547,24 +520,23 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=kyma-integration"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=prow/images/kyma-integration"
+              - "--dockerfile=Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: post-test-infra-buildpack-golang
       annotations:
         testgrid-create-test-group: "false"
@@ -572,9 +544,6 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-test-infra-buildpack-golang"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-release: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/buildpack-golang/'
       skip_report: false
@@ -586,24 +555,23 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=buildpack-golang"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=prow/images/buildpack-golang"
+              - "--dockerfile=Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: post-test-infra-buildpack-node
       annotations:
         testgrid-create-test-group: "false"
@@ -611,9 +579,6 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-test-infra-buildpack-node"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-release: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/buildpack-node/'
       skip_report: false
@@ -625,24 +590,23 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=buildpack-node"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=prow/images/buildpack-node"
+              - "--dockerfile=Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: post-test-infra-cleaner
       annotations:
         testgrid-create-test-group: "false"
@@ -650,9 +614,6 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-test-infra-cleaner"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-release: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/cleaner/'
       skip_report: false
@@ -664,24 +625,23 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/cleaner"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=cleaner"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=prow/images/cleaner"
+              - "--dockerfile=Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: post-test-infra-vulnerability-scanner
       annotations:
         testgrid-create-test-group: "false"
@@ -689,9 +649,6 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-test-infra-vulnerability-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-release: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/vulnerability-scanner/'
       skip_report: false
@@ -703,24 +660,23 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/vulnerability-scanner"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=vulnerability-scanner"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=prow/images/vulnerability-scanner"
+              - "--dockerfile=Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: post-test-infra-whitesource-scanner
       annotations:
         testgrid-create-test-group: "false"
@@ -728,9 +684,6 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-test-infra-whitesource-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-release: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/whitesource-scanner/'
       skip_report: false
@@ -742,63 +695,23 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/whitesource-scanner"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: post-test-infra-probot-stale
-      annotations:
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-test-infra-probot-stale"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-release: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^prow/images/probot-stale/'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/probot-stale"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=whitesource-scanner"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=prow/images/whitesource-scanner"
+              - "--dockerfile=Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: post-test-infra-prow-tools
       annotations:
         testgrid-create-test-group: "false"
@@ -806,9 +719,6 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-test-infra-prow-tools"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-release: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^(go\.mod|go\.sum)$|^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
       skip_report: false
@@ -820,24 +730,23 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=prow-tools"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=prow/images/prow-tools/Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: post-test-infra-github-connector-webhook-gateway
       annotations:
         testgrid-create-test-group: "false"
@@ -845,9 +754,6 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-test-infra-github-connector-webhook-gateway"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-release: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^development/kyma-github-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
       skip_report: false
@@ -859,24 +765,23 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220725-7756933d"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=github-connector-webhook-gateway"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=development/kyma-github-connector/githubWebhookGateway"
+              - "--dockerfile=Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: post-test-infra-pubsub-connector-gateway
       annotations:
         testgrid-create-test-group: "false"
@@ -884,9 +789,6 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-test-infra-pubsub-connector-gateway"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-release: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^development/kyma-pubsub-connector/pubSubGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
       skip_report: false
@@ -898,24 +800,23 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220725-7756933d"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-pubsub-connector/pubSubGateway"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=pubsub-connector-gateway"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=development/kyma-pubsub-connector/pubSubGateway"
+              - "--dockerfile=Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: post-test-infra-ci-force-bot
       annotations:
         testgrid-create-test-group: "false"
@@ -923,9 +824,6 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-test-infra-ci-force-bot"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-release: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^development/kyma-ci-force-bot/ciforcebot/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
       skip_report: false
@@ -937,24 +835,23 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220725-7756933d"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-ci-force-bot/ciforcebot"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=ci-force-bot"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=development/kyma-ci-force-bot/ciforcebot"
+              - "--dockerfile=Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: post-test-infra-golangci-lint
       annotations:
         testgrid-create-test-group: "false"
@@ -962,9 +859,6 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-test-infra-golangci-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-release: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/golangci-lint/'
       skip_report: false
@@ -976,22 +870,91 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220715-f9cd9267"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/golangci-lint"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=golangci-lint"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=prow/images/golangci-lint"
+              - "--dockerfile=Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+    - name: post-test-infra-gardener-rotate
+      annotations:
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-gardener-rotate"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/gardener-rotate/|^development/gardener-rotate/'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
+            command:
+              - "/kaniko-build"
+            args:
+              - "--name=gardener-rotate"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=prow/images/gardener-rotate/Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+    - name: post-build-githubrelease
+      annotations:
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-build-githubrelease"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^changelog-generator/|^development/tools/cmd/githubrelease/'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
+            command:
+              - "/kaniko-build"
+            args:
+              - "--name=githubrelease"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
   

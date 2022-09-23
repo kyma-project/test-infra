@@ -38,13 +38,16 @@ templates:
           product_kyma_dashboard:
             labels:
               preset-whitesource-product-kyma-dashboard: "true"
+          product_kyma_test:
+            labels:
+              preset-whitesource-product-kyma-test: "true"
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
               - jobConfig:
                   repository: "api-gateway"
                   language: "golang-mod"
-                  project: "kyma-incubator"
+                  project: "kyma-project"
                   base_ref: "main"
                 inheritedConfigs:
                   global:
@@ -102,7 +105,7 @@ templates:
                     - "jobConfig_default"
               # Kyma components
               - jobConfig:
-                  repository: "kyma-operator"
+                  repository: "lifecycle-manager"
                   language: "golang-mod"
                   project: "kyma-project"
                   subprojects: "false"
@@ -115,9 +118,9 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
-                    - "product_kyma"
+                    - "product_kyma_test"
               - jobConfig:
-                  repository: "kyma-watcher"
+                  repository: "runtime-watcher"
                   language: "golang-mod"
                   project: "kyma-project"
                   subprojects: "true"
@@ -130,9 +133,9 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
-                    - "product_kyma"
+                    - "product_kyma_test"
               - jobConfig:
-                  repository: "manifest-operator"
+                  repository: "module-manager"
                   language: "golang-mod"
                   project: "kyma-project"
                   subprojects: "false"
@@ -145,7 +148,7 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
-                    - "product_kyma"
+                    - "product_kyma_test"
 
 
               - jobConfig:

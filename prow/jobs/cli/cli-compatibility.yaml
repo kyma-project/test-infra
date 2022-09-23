@@ -28,7 +28,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220725-7756933d"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220920-b10d5457"
             securityContext:
               privileged: true
             command:
@@ -36,8 +36,6 @@ periodics: # runs on schedule
             env:
               - name: COMPAT_BACKTRACK
                 value: "1"
-              - name: GO111MODULE
-                value: "on"
               - name: KUBERNETES_RUNTIME
                 value: "k3d"
             resources:

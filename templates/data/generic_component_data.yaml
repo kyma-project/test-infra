@@ -174,53 +174,6 @@ templates:
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
-      - to: ../../prow/jobs/kyma/components/function-controller/function-controller-v1alpha2-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  name: "pre-kyma-components-function-controller-v1alpha2"
-                  path: components/function-controller
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/function-controller"
-                  run_if_changed: "^components/function-controller/|^common/makefiles/"
-                  release_since: "1.9"
-                  skipReleaseJobs: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_serverlessv1alpha2"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  
-      - to: ../../prow/jobs/kyma/tests/function-controller/function-controller-v1alpha2-tests-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  name: "pre-kyma-tests-function-controller-v1alpha2"
-                  path: tests/function-controller
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/tests/function-controller"
-                  run_if_changed: "^tests/function-controller/|^common/makefiles/"
-                  release_since: "1.10"
-                  skipReleaseJobs: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_serverlessv1alpha2"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
       - to: ../../prow/jobs/kyma/tests/function-controller/function-controller-tests-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
@@ -268,32 +221,6 @@ templates:
                   postConfigs:
                     global:
                       - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-      - to: ../../prow/jobs/kyma/components/busola-migrator/busola-migrator-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: components/busola-migrator
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
-                  run_if_changed: "^components/busola-migrator/|^common/makefiles/"
-                  release_since: "1.22"
-                  optional: true
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "jobConfig_slack_dev_null"
                       - "disable_testgrid"
       - to: ../../prow/jobs/kyma/components/central-application-gateway/central-application-gateway-generic.yaml
         jobConfigs:
@@ -379,6 +306,30 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/components/telemetry-operator"
                   run_if_changed: "^components/telemetry-operator/|^common/makefiles/"
                   release_since: "2.0"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_generic_component"
+                    - "jobConfig_generic_component_kyma"
+                    - "extra_refs_test-infra"
+                  preConfigs:
+                    global:
+                      - "jobConfig_presubmit"
+                  postConfigs:
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
+      - to: ../../prow/jobs/kyma/components/directory-size-exporter/directory-size-exporter-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  path: components/directory-size-exporter
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/directory-size-exporter"
+                  run_if_changed: "^components/directory-size-exporter/|^common/makefiles/"
+                  release_since: "2.6"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

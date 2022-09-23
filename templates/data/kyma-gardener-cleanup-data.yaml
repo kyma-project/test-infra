@@ -18,7 +18,7 @@ templates:
             request_memory: 1Gi
             request_cpu: 400m
         jobConfigs:
-          - repoName:  kyma-incubator/dex
+          - repoName:  kyma-project/test-infra
             jobs:
               - jobConfig:
                   name: "kyma-gardener-cleanup"

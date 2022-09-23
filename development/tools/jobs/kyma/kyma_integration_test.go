@@ -41,16 +41,6 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration", "preset-kyma-integration-central-app-connectivity-enabled", "preset-kyma-integration-compass-dev", "preset-kyma-integration-compass-enabled",
 			},
-
-			expRunIfChangedRegex: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
-			expRunIfChangedPaths: []string{
-				"resources/values.yaml",
-				"installation/file.yaml",
-			},
-			expNotRunIfChangedPaths: []string{
-				"installation/README.md",
-				"installation/test/test/README.MD",
-			},
 		},
 		"Should contain the kyma-integration k3d with telemetry job": {
 			givenJobName: "pre-main-kyma-integration-k3d-telemetry",
@@ -59,13 +49,14 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration", "preset-kyma-integration-telemetry-enabled",
 			},
 
-			expRunIfChangedRegex: "^resources/telemetry/|^installation/resources/crds/telemetry",
+			expRunIfChangedRegex: "^resources/telemetry/|^installation/resources/crds/telemetry/|^tests/fast-integration/telemetry-test/",
 			expRunIfChangedPaths: []string{
 				"resources/telemetry/charts/operator/values.yaml",
 				"resources/telemetry/charts/fluent-bit/values.yaml",
 				"installation/resources/crds/telemetry/logpipelines.crd.yaml",
 			},
 			expNotRunIfChangedPaths: []string{
+				"components/directory-size-exporter/main.go",
 				"components/telemetry-operator/main.go",
 				"installation/README.md",
 				"installation/test/test/README.MD",
@@ -128,7 +119,7 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 		},
 		"Should contain the kyma-integration k3d with telemetry job": {
 			givenJobName: "post-main-kyma-integration-k3d-telemetry",
-			runIfChanged: "^resources/telemetry/|^installation/resources/crds/telemetry",
+			runIfChanged: "^resources/telemetry/|^installation/resources/crds/telemetry/|^tests/fast-integration/telemetry-test/",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration", "preset-kyma-integration-telemetry-enabled",
