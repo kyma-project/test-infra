@@ -75,7 +75,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=prow/images/buildpack-golang"
                     - "--dockerfile=Dockerfile"
-                    - "--directory=/home/prow/go/src/github.com/kyma-project/lifecycle-manager/operator"
+                    - "--directory=operator"
                   volumeMounts:
                     - name: config
                       mountPath: /config
