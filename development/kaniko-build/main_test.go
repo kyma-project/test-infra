@@ -8,28 +8,48 @@ import (
 )
 
 func Test_gatherDestinations(t *testing.T) {
-	repo := []string{"dev.kyma.io", "dev2.kyma.io"}
-	directory := "subdirectory"
-	name := "test-image"
-	tags := []string{
-		"20222002-abcd1234",
-		"latest",
-		"cookie",
+	tc := []struct {
+		name      string
+		directory string
+		repos     []string
+		tags      []string
+		expected  []string
+	}{
+		{
+			name:      "test-image",
+			repos:     []string{"dev.kyma.io", "dev2.kyma.io"},
+			directory: "subdirectory",
+			tags: []string{
+				"20222002-abcd1234",
+				"latest",
+				"cookie",
+			},
+			expected: []string{
+				"dev.kyma.io/subdirectory/test-image:20222002-abcd1234",
+				"dev2.kyma.io/subdirectory/test-image:20222002-abcd1234",
+				"dev.kyma.io/subdirectory/test-image:latest",
+				"dev2.kyma.io/subdirectory/test-image:latest",
+				"dev.kyma.io/subdirectory/test-image:cookie",
+				"dev2.kyma.io/subdirectory/test-image:cookie",
+			},
+		},
+		{
+			name:     "test-no-directory",
+			repos:    []string{"kyma.dev"},
+			tags:     []string{"latest"},
+			expected: []string{"kyma.dev/test-no-directory:latest"},
+		},
 	}
-	expected := []string{
-		"dev.kyma.io/subdirectory/test-image:20222002-abcd1234",
-		"dev2.kyma.io/subdirectory/test-image:20222002-abcd1234",
-		"dev.kyma.io/subdirectory/test-image:latest",
-		"dev2.kyma.io/subdirectory/test-image:latest",
-		"dev.kyma.io/subdirectory/test-image:cookie",
-		"dev2.kyma.io/subdirectory/test-image:cookie",
-	}
-	got := gatherDestinations(repo, directory, name, tags)
-	if len(expected) != len(got) {
-		t.Errorf("result length mismatch. wanted %v, got %v", len(expected), len(got))
-	}
-	if !reflect.DeepEqual(expected, got) {
-		t.Errorf("%s != %s", got, expected)
+	for _, c := range tc {
+		t.Run(c.name, func(t *testing.T) {
+			got := gatherDestinations(c.repos, c.directory, c.name, c.tags)
+			if len(c.expected) != len(got) {
+				t.Errorf("result length mismatch. wanted %v, got %v", len(c.expected), len(got))
+			}
+			if !reflect.DeepEqual(c.expected, got) {
+				t.Errorf("%s != %s", got, c.expected)
+			}
+		})
 	}
 }
 
@@ -76,15 +96,6 @@ func Test_validateOptions(t *testing.T) {
 			expectErr: false,
 			opts: options{
 				directory:  "kyma.dev",
-				context:    "directory/",
-				name:       "test-image",
-				dockerfile: "Dockerfile",
-			},
-		},
-		{
-			name:      "directory missing",
-			expectErr: true,
-			opts: options{
 				context:    "directory/",
 				name:       "test-image",
 				dockerfile: "Dockerfile",
