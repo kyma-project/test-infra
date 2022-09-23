@@ -95,7 +95,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220923-cdc39230b"
             command:
               - "/kaniko-build"
             args:
@@ -133,7 +133,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220923-cdc39230b"
             command:
               - "/kaniko-build"
             args:
