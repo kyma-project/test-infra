@@ -74,7 +74,7 @@ templates:
                     - default
                   global:
                     - jobConfig_default
-                    - jobConfig_postsubmit
+                    - jobConfig_presubmit
                     - "build_labels" # default labels
               - jobConfig:
                   name: main-build
