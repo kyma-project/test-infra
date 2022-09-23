@@ -1,5 +1,3 @@
 pjNames:
   - pjName: "main-build-kaniko"
-    pjPath: "test-infra/development/tools/pkg/pjtester/test_artifacts/"
   - pjName: "pull-smoke"
-    pjPath: "test-infra/development/tools/pkg/pjtester/test_artifacts/"
