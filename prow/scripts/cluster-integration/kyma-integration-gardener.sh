@@ -81,7 +81,7 @@ export COMMON_NAME
 
 export CLUSTER_NAME="${COMMON_NAME}"
 
-# set KYMA_SOURCE used by gardener::install_kyma
+# set KYMA_SOURCE used by kyma deploy
 utils::generate_vars_for_build \
     -b "$BUILD_TYPE" \
     -p "$PULL_NUMBER" \
@@ -119,8 +119,6 @@ if [[ "${API_GATEWAY_INTEGRATION}" == "true" ]]; then
   api-gateway::prepare_components_file
   integration_tests::install_kyma
   api-gateway::deploy_login_consent_app
-else
-  gardener::install_kyma
 fi
 
 # generate pod-security-policy list in json

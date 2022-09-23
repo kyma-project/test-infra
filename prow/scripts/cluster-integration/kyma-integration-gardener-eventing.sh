@@ -84,7 +84,7 @@ export COMMON_NAME
 
 export CLUSTER_NAME="${COMMON_NAME}"
 
-# set KYMA_SOURCE used by gardener::install_kyma
+# set KYMA_SOURCE used by gardener::deploy_kyma
 utils::generate_vars_for_build \
     -b "$BUILD_TYPE" \
     -p "$PULL_NUMBER" \

@@ -152,42 +152,6 @@ gardener::provision_cluster() {
     fi
 }
 
-gardener::install_kyma() {
-    log::info "Installing Kyma"
-
-    prepare_stackdriver_logging "${INSTALLATION_OVERRIDE_STACKDRIVER}"
-    if [[ "$?" -ne 0 ]]; then
-        return 1
-    fi
-
-    set -x
-    if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
-        kyma install \
-            --ci \
-            --source "${KYMA_SOURCE}" \
-            -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
-            --timeout 60m \
-            --profile evaluation \
-            --verbose
-    elif [[ "$EXECUTION_PROFILE" == "production" ]]; then
-        kyma install \
-            --ci \
-            --source "${KYMA_SOURCE}" \
-            -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
-            --timeout 60m \
-            --profile production \
-            --verbose
-    else
-        kyma install \
-            --ci \
-            --source "${KYMA_SOURCE}" \
-            -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
-            --timeout 90m \
-            --verbose
-    fi
-    set +x
-}
-
 gardener::hibernate_kyma() {
     local SAVED_KUBECONFIG=$KUBECONFIG
     export KUBECONFIG=$GARDENER_KYMA_PROW_KUBECONFIG
