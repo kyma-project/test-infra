@@ -203,9 +203,6 @@ func gatherDestinations(repo []string, directory, name string, tags []string) []
 // validateOptions handles options validation. All checks should be provided here
 func validateOptions(o options) error {
 	var errs []error
-	if o.directory == "" {
-		errs = append(errs, fmt.Errorf("flag '--directory' is missing"))
-	}
 	if o.context == "" {
 		errs = append(errs, fmt.Errorf("flag '--context' is missing"))
 	}
