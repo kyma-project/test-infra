@@ -1,0 +1,4 @@
+pjNames:
+  - pjName: "main-build-skr"
+  - pjName: "main-build-kcp"
+  - pjName: "main-build"

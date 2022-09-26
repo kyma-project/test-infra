@@ -91,7 +91,6 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
       spec:
         containers:
@@ -103,7 +102,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=operator"
               - "--dockerfile=Dockerfile"
-              - "--directory=."
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -129,7 +127,6 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
       spec:
         containers:
@@ -141,7 +138,6 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=operator"
               - "--dockerfile=Dockerfile"
-              - "--directory=."
             volumeMounts:
               - name: config
                 mountPath: /config
