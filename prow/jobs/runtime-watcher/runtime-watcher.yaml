@@ -3,12 +3,12 @@
 
 presubmits: # runs on PRs
   kyma-project/runtime-watcher:
-    - name: pull-skr-lint
+    - name: pull-lint-skr
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-skr-lint"
+        prow.k8s.io/pubsub.runID: "pull-lint-skr"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)'
       skip_report: false
@@ -38,12 +38,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pull-skr-tests
+    - name: pull-tests-skr
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-skr-tests"
+        prow.k8s.io/pubsub.runID: "pull-tests-skr"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -76,12 +76,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pull-kcp-lint
+    - name: pull-lint-kcp
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-kcp-lint"
+        prow.k8s.io/pubsub.runID: "pull-lint-kcp"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^kcp/(go.mod|go.sum)$|^kcp/*/(.*.go|Makefile|.*.sh)'
       skip_report: false
@@ -111,12 +111,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pull-kcp-tests
+    - name: pull-tests-kcp
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-kcp-tests"
+        prow.k8s.io/pubsub.runID: "pull-tests-kcp"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -149,12 +149,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pull-listener-lint
+    - name: pull-lint-listener
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-listener-lint"
+        prow.k8s.io/pubsub.runID: "pull-lint-listener"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)'
       skip_report: false
@@ -184,12 +184,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pull-listener-tests
+    - name: pull-tests-listener
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-listener-tests"
+        prow.k8s.io/pubsub.runID: "pull-tests-listener"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
