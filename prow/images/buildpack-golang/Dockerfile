@@ -24,7 +24,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         rsync \
         procps \
         pkg-config \
-        libgit2-dev \
+        libgit2-dev  \
+        qemu \
+        qemu-system \
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/*
 
