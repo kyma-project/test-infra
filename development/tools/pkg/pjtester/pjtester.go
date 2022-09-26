@@ -647,6 +647,7 @@ func (o *options) checkoutTestInfra() error {
 	return nil
 }
 
+// TODO: check if all scenarios are covered by ths function.
 // setRefsGetters set options.baseSHAGetter and options.headSHAGetter or checkout test-infra PR with prowjob definition.
 // This is used to get correct version of prowjob definition for user provided pjtester config.
 func (pjopts *testProwJobOptions) setRefsGetters(opts options) error {
