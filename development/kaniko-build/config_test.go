@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"reflect"
 	"testing"
@@ -140,4 +141,17 @@ func Test_getVariants(t *testing.T) {
 			}
 		})
 	}
+}
+
+func Test_ParseConfigFile(t *testing.T) {
+	f, err := os.ReadFile("./kaniko-build-config.yaml")
+	if err != nil {
+		t.FailNow()
+	}
+	o := options{}
+	err = o.ParseConfig(f)
+	if err != nil {
+		t.FailNow()
+	}
+	fmt.Println(o)
 }
