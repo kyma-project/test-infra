@@ -243,6 +243,7 @@ func (o *options) getPullRequests(prconfig map[string]map[string]prConfig) (map[
 			pullRequests[org] = make(map[string]prConfig)
 		}
 		for repo, prcfg := range repos {
+			log.Debugf("Downloading pull request #%d details from GitHub.", prcfg.PrNumber)
 			pr, err := o.githubClient.GetPullRequest(org, repo, prcfg.PrNumber)
 			if err != nil {
 				return nil, fmt.Errorf("failed to fetch PullRequest from GitHub, error: %w", err)
@@ -651,9 +652,12 @@ func (o *options) checkoutTestInfra() error {
 // setRefsGetters set options.baseSHAGetter and options.headSHAGetter or checkout test-infra PR with prowjob definition.
 // This is used to get correct version of prowjob definition for user provided pjtester config.
 func (pjopts *testProwJobOptions) setRefsGetters(opts options) error {
+	log.Debugf("Setting base and head refs getters to download inrepo config.")
 	// Use pull request with test prowjob definition if it was provided in pjtester config.
 	if opts.pjConfigPullRequest.pullRequest.Number != 0 {
+		log.Debugf("Pull request with prowjob definition provided")
 		if opts.pjConfigPullRequest.org == testinfraOrg && opts.pjConfigPullRequest.repo == testinfraRepo {
+			log.Debugf("Pull request with prowjob definition from test-infra")
 			// PR with test prowjob definition is from test-infra repo.
 			// Checkout it to use it as pjtester prowjob extra refs.
 			err := opts.checkoutTestInfra()
@@ -661,6 +665,7 @@ func (pjopts *testProwJobOptions) setRefsGetters(opts options) error {
 				return fmt.Errorf("")
 			}
 		} else {
+			log.Debugf("Pull request with prowjob definition not from test-infra")
 			// PR with test prowjob definition is not from test-infra repo.
 			// Prow must load prowjob definition as inrepo config.
 			// Set base and head getters to point to the PR base SHA and head SHA.
@@ -673,16 +678,20 @@ func (pjopts *testProwJobOptions) setRefsGetters(opts options) error {
 			return nil
 		}
 	}
+	log.Debugf("Pull request with prowjob definition not provided")
 	// Pull request with test prowjob was not provided in pjtester config file.
 	if pjopts.orgName == opts.pjtesterPrOrg && pjopts.repoName == opts.pjtesterPrRepo {
+		log.Debugf("Test prowjob is defined for the same repo where pjtester pull request exist, prowjob org: %s, prowjob repo %s", pjopts.orgName, pjopts.repoName)
 		pjopts.baseSHAGetter = func() (string, error) {
 			return opts.pjtesterPrBaseSha, nil
 		}
+		log.Debugf("Use headSHAGetter.")
 		pjopts.headSHAGetter = func() (string, error) {
 			return opts.pjtesterPrHeadSha, nil
 		}
 		return nil
 	} else {
+		log.Debugf("Test prowjob is defined for other repo than pjtester pull request exist, prowjob org: %s, prowjob repo %s", pjopts.orgName, pjopts.repoName)
 		pjopts.baseSHAGetter = func() (string, error) {
 			var err error
 			baseSHA, err := opts.githubClient.GetRef(pjopts.orgName, pjopts.repoName, "heads/main")
@@ -691,6 +700,7 @@ func (pjopts *testProwJobOptions) setRefsGetters(opts options) error {
 			}
 			return baseSHA, nil
 		}
+		log.Debugf("Do not use headSHAGetter, set it to null.")
 		pjopts.headSHAGetter = nil
 		return nil
 	}
@@ -702,6 +712,7 @@ func (pjopts *testProwJobOptions) newTestPJ(pjCfg pjConfig, opt options) (prowap
 	//	if err != nil {
 	//		return prowapi.ProwJob{}, fmt.Errorf("failed checking if use pjtester pr as test prowjob refs, error: %w", err)
 	//	}
+	log.Debugf("Loading Prow config from %s and jobs config from %s.", opt.configPath, opt.jobConfigPath)
 	// Loading Prow config and Prow Jobs config from files. If files were changed in pull request, new values will be used for test.
 	conf, err := config.Load(opt.configPath, opt.jobConfigPath, nil, "")
 	if err != nil {
@@ -780,7 +791,7 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	log.Debugf("prconfigs: %v", &testCfg.PrConfigs)
 
 	if &testCfg.PrConfigs != nil {
-		log.Debugf("getting details of pull requests for tested prowjobs")
+		log.Debugf("Getting details of pull requests used in test prowjobs.")
 		pullRequests, err := o.getPullRequests(testCfg.PrConfigs)
 		if err != nil {
 			log.WithError(err).Fatal("Failed get pull request deatils from GitHub.")
@@ -788,6 +799,7 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 		o.testPullRequests = pullRequests
 	}
 	if &testCfg.PjConfigs.PrConfig != nil {
+		log.Debugf("Getting details of pull requests with test prowjobs specification.")
 		pullRequests, err := o.getPullRequests(testCfg.PjConfigs.PrConfig)
 		if err != nil {
 			log.WithError(err).Fatal("Failed get pull request deatils from GitHub.")
@@ -804,6 +816,7 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	for orgName, pjOrg := range testCfg.PjConfigs.ProwJobs {
 		for repoName, pjconfigs := range pjOrg {
 			for _, pjconfig := range pjconfigs {
+				log.Debugf("Preparing test prowjob %s for repo %s", pjconfig.PjName, orgName+"/"+repoName)
 				// generate prowjob specification to test.
 				testPjOpts := testProwJobOptions{
 					repoName: repoName,
