@@ -246,7 +246,7 @@ func (o *options) getPullRequests(prconfig map[string]map[string]prConfig) (map[
 			// If the same PR is provided as test prowjob pr do not download it again.
 			if pr, present := o.testPullRequests[org][repo]; present {
 				if pr.PrNumber == prcfg.PrNumber {
-					log.Debugf("This same pull request is used as test prowjob refs. Using it: %s #%d", prcfg.org+"/"+prcfg.repo, prcfg.PrNumber)
+					log.Debugf("This same pull request is used as test prowjob refs. Using it: %s #%d", pr.org+"/"+pr.repo, prcfg.PrNumber)
 					pullRequests[org][repo] = pr
 					continue
 				}
