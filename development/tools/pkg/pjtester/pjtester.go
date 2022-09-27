@@ -247,7 +247,7 @@ func (o *options) getPullRequests(prconfig map[string]map[string]prConfig) (map[
 			if pr, present := o.testPullRequests[org][repo]; present {
 				if pr.PrNumber == prcfg.PrNumber {
 					log.Debugf("This same pull request is used as test prowjob refs. Using it: %s #%d", prcfg.org+"/"+prcfg.repo, prcfg.PrNumber)
-					pullRequests[org][repo] = prcfg
+					pullRequests[org][repo] = pr
 					continue
 				}
 			}
@@ -695,6 +695,7 @@ func (pjopts *testProwJobOptions) setRefsGetters(opts options) error {
 	// Pull request with test prowjob was not provided in pjtester config file.
 	if pjopts.orgName == opts.pjtesterPrOrg && pjopts.repoName == opts.pjtesterPrRepo {
 		log.Debugf("Test prowjob is defined for the same repo where pjtester pull request exist, prowjob org: %s, prowjob repo %s", pjopts.orgName, pjopts.repoName)
+		log.Debugf("Using pjtester pull request as source of prowjob definition.")
 		log.Debugf("Set baseSHAGetter to return: %s", opts.pjtesterPrBaseSha)
 		pjopts.baseSHAGetter = func() (string, error) {
 			return opts.pjtesterPrBaseSha, nil
