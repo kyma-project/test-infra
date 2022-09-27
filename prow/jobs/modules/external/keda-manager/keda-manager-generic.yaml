@@ -2,16 +2,17 @@
 
 
 presubmits: # runs on PRs
-  kyma-project/lifecycle-manager:
-    - name: pull-lint
+  kyma-project/keda-manager:
+    - name: pre-keda-manager-operator-lint
       annotations:
-        description: "executes the 'golangci-lint lint' command in the lifecycle-manager 'operator' directory before any pull request."
+        description: "executes the 'golangci-lint lint' command in the keda-manager 'operator' directory before any pull request."
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-lint"
+        prow.k8s.io/pubsub.runID: "pre-keda-manager-operator-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -27,7 +28,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "cd operator && golangci-lint run"
+              - "cd operator && golangci-lint run --timeout=2m && echo 'OK!'"
             resources:
               requests:
                 memory: 3Gi
@@ -39,12 +40,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pull-tests
+    - name: pre-keda-manager-operator-tests
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-tests"
+        prow.k8s.io/pubsub.runID: "pre-keda-manager-operator-tests"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -77,12 +78,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pull-build
+    - name: pre-keda-manager-operator-build
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-build"
+        prow.k8s.io/pubsub.runID: "pre-keda-manager-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-gcr-push: "true"
       always_run: true
@@ -91,17 +92,19 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
+        - ^master$
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
               - "/kaniko-build"
             args:
-              - "--name=lifecycle-manager"
+              - "--name=keda-manager"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=operator"
               - "--dockerfile=Dockerfile"
+              - "--directory=."
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -112,13 +115,13 @@ presubmits: # runs on PRs
               name: kaniko-build-config
   
 postsubmits: # runs on main
-  kyma-project/lifecycle-manager:
-    - name: main-build
+  kyma-project/keda-manager:
+    - name: post-keda-manager-operator-build
       annotations:
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "main-build"
+        prow.k8s.io/pubsub.runID: "post-keda-manager-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-gcr-push: "true"
       always_run: true
@@ -127,18 +130,19 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
+        - ^master$
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
             command:
               - "/kaniko-build"
             args:
-              - "--name=lifecycle-manager"
+              - "--name=keda-manager"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=operator"
               - "--dockerfile=Dockerfile"
-              - "--tag=latest"
+              - "--directory=."
             volumeMounts:
               - name: config
                 mountPath: /config
