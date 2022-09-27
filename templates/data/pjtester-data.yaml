@@ -35,7 +35,7 @@ templates:
                   labels:
                     preset-pjtester-kubeconfig: "true"
                   command: "pjtester"
-                  image: "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-5544"
+                  image: "eu.gcr.io/kyma-project/test-infra/prow-tools:PR-5544"
                   branches:
                     - ^.*$
                   volumeMounts:
@@ -79,7 +79,7 @@ templates:
                     labels:
                       preset-pjtester-kubeconfig: "true"
                     command: "pjtester"
-                    image: "eu.gcr.io/kyma-project/test-infra/pr/prow-tools:PR-5544"
+                    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:PR-5544"
                     branches:
                       - ^.*$
                     volumeMounts:
