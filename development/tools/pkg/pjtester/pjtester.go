@@ -373,7 +373,6 @@ func (pjopts *testProwJobOptions) genJobSpec(o options, conf *config.Config, pjC
 				Org:  pjopts.orgName,
 				Repo: pjopts.repoName,
 			})
-			// pjs, err = presubmitRefs(pjs, *o)
 			pjs, err = pjopts.setProwJobSpecRefs(pjs, o)
 			if err != nil {
 				log.WithError(err).Fatalf("failed generate presubmit refs")
@@ -408,7 +407,6 @@ func (pjopts *testProwJobOptions) genJobSpec(o options, conf *config.Config, pjC
 				Org:  pjopts.orgName,
 				Repo: pjopts.repoName,
 			})
-			// pjs, err = postsubmitRefs(pjs, *o)
 			pjs, err = pjopts.setProwJobSpecRefs(pjs, o)
 			if err != nil {
 				log.WithError(err).Fatalf("failed generate presubmit refs")
@@ -427,10 +425,6 @@ func (pjopts *testProwJobOptions) genJobSpec(o options, conf *config.Config, pjC
 			p.Name = formatPjName(o.pjtesterPrAuthor, p.Name)
 			var err error
 			pjs := pjutil.PeriodicSpec(p)
-			// pjs, err = periodicRefs(pjs, *o)
-			// if err != nil {
-			//	log.WithError(err).Fatalf("failed generate periodic extrarefs")
-			// }
 			pjs, err = pjopts.setProwJobSpecExtraRefs(pjs, o)
 			if err != nil {
 				log.WithError(err).Fatalf("failed generate presubmit extrarefs")
@@ -441,7 +435,7 @@ func (pjopts *testProwJobOptions) genJobSpec(o options, conf *config.Config, pjC
 	return config.JobBase{}, prowapi.ProwJobSpec{}, fmt.Errorf("prowjob to test not found in prowjob specification files")
 }
 
-// setRefs set pull request refs.
+// setRefs set prowjob refs.
 func setRefs(ref prowapi.Refs, baseSHA, baseRef, pullAuthor, pullSHA string, pullNumber int) prowapi.Refs {
 	ref.BaseSHA = baseSHA
 	ref.BaseRef = baseRef
@@ -626,7 +620,7 @@ func periodicRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, er
 }
 */
 
-// formatPjName builds and formats testing prowjobname to match gcp cluster labels restrictions.
+// formatPjName add pjtester test prefix and formats testing prowjobname to match gcp cluster labels restrictions.
 func formatPjName(pullAuthor, pjName string) string {
 	fullName := fmt.Sprintf("%s_test_of_prowjob_%s", pullAuthor, pjName)
 	formated := strings.ToLower(fullName)
@@ -670,7 +664,7 @@ func (pjopts *testProwJobOptions) setRefsGetters(opts options) error {
 
 		if opts.pjConfigPullRequest.org == testinfraOrg && opts.pjConfigPullRequest.repo == testinfraRepo {
 
-			log.Debugf("Pull request with prowjob definition is from test-infra, skip set base and head getters, checkout pr in local repo.")
+			log.Debugf("Pull request with prowjob definition is from test-infra, skip set head getters, checkout pr in local repo.")
 
 			// PR with test prowjob definition is from test-infra repo. Test-infra holds static prowjobs defnitions.
 			// Checkout pr locally to load static test prowjob definition from jobConfigPath.
