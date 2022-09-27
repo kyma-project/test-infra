@@ -46,6 +46,8 @@ cleanup() {
 }
 
 LABELS=""
+read -r SCHEMA_MIGRATOR_LABEL <<< "$( get_schema_migrator_label )"
+
 if [[ -z "${PULL_NUMBER}" ]]; then
     LABELS=(--labels "branch=${PULL_BASE_REF},job-name=compass-integration")
     SUFFIX="${PULL_BASE_REF}"
@@ -60,7 +62,6 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
     export JOBGUARD_TIMEOUT="30m"
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 
-    read -r SCHEMA_MIGRATOR_LABEL <<< "$( get_schema_migrator_label )"
     CURRENT_PR_LABEL="PR-${PULL_NUMBER}"
     if [[ "${SCHEMA_MIGRATOR_LABEL}" != "${CURRENT_PR_LABEL}" ]]; then
         # Recycle VM only on PR execution and when schema migrator is not changed as part of this PR
