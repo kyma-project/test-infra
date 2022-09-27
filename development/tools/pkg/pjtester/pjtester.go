@@ -87,7 +87,7 @@ type testCfg struct {
 	PrConfigs map[string]map[string]prConfig `yaml:"prConfigs,omitempty"` // Holds pull request details used in test prowjobs. Map key represent github organisation name.
 }
 
-// options holds data about prowjob and pull request to test.
+// options holds commmon configuration.
 type options struct {
 	configPath    string // configPath is a location of prow config file to use to construct test prowjob.
 	jobConfigPath string // jobConfigPath is a location of prowjob definition file to use to construct test prowjob.
@@ -108,13 +108,9 @@ type options struct {
 	prFinder            *prtagbuilder.GitHubClient
 	testPullRequests    map[string]map[string]prConfig // pull requests used to run test prowjobs.
 	pjConfigPullRequest prConfig                       // pull request used to load test prowjobs definition file.
-
-	// baseSHAGetter config.RefGetter
-	// headSHAGetter config.RefGetter
-
-	// usePjtesterPR bool
 }
 
+// testProwJobOptions holds configuration specific for test prowjob.
 type testProwJobOptions struct {
 	orgName       string
 	repoName      string
@@ -208,7 +204,7 @@ func (o *options) setProwConfigPath(testConfig testCfg) {
 }
 */
 
-// newCommonOptions is building common options and GitHub client for all tests.
+// newCommonOptions builds common options and GitHub client for all tests.
 // Options are build from PR env variables.
 func newCommonOptions(ghOptions prowflagutil.GitHubOptions) (options, error) {
 	var o options
@@ -237,6 +233,7 @@ func newCommonOptions(ghOptions prowflagutil.GitHubOptions) (options, error) {
 // Returned map first level keys represent GitHub organisations names, second level represent repositories names.
 // Pull requests to download are provided in pjtester test configuration file.
 func (o *options) getPullRequests(prconfig map[string]map[string]prConfig) (map[string]map[string]prConfig, error) {
+	log.Debugf("Donwloading pull requests details from GitHub.")
 	pullRequests := make(map[string]map[string]prConfig)
 	for org, repos := range prconfig {
 		if _, ok := pullRequests[org]; !ok {
@@ -673,14 +670,15 @@ func (pjopts *testProwJobOptions) setRefsGetters(opts options) error {
 
 		if opts.pjConfigPullRequest.org == testinfraOrg && opts.pjConfigPullRequest.repo == testinfraRepo {
 
-			log.Debugf("Pull request with prowjob definition is from test-infra")
+			log.Debugf("Pull request with prowjob definition is from test-infra, skip set base and head getters, checkout pr in local repo.")
 
-			// PR with test prowjob definition is from test-infra repo.
-			// Checkout it to use it as pjtester prowjob extra refs.
+			// PR with test prowjob definition is from test-infra repo. Test-infra holds static prowjobs defnitions.
+			// Checkout pr locally to load static test prowjob definition from jobConfigPath.
 			err := opts.checkoutTestInfraPjConfigPR()
 			if err != nil {
 				return fmt.Errorf("failed checkout test-infra repo to commit with pjtester config, error: %w", err)
 			}
+			return nil
 		} else {
 
 			log.Debugf("Pull request with prowjob definition not from test-infra")
@@ -744,7 +742,6 @@ func (pjopts *testProwJobOptions) setRefsGetters(opts options) error {
 			return nil
 		}
 	}
-	return fmt.Errorf("failed set base and head refs getters, no condition matched")
 }
 
 // newTestPJ is building a prowjob definition to test prowjobs provided in pjtester test configuration.
