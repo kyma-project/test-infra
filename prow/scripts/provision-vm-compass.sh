@@ -29,7 +29,7 @@ PROVISIONING_PASS="no"
 
 get_schema_migrator_label() {
     local PATH_TO_VALUES_YAML="/home/prow/go/src/github.com/kyma-incubator/compass/chart/compass/values.yaml"
-    local SCHEMA_MIGRATOR_LABEL=$( cat "${PATH_TO_VALUES_YAML}" | yq '.global.images.schema_migrator.version' )
+    local SCHEMA_MIGRATOR_LABEL=$( cat "${PATH_TO_VALUES_YAML}" | yq e '.global.images.schema_migrator.version' - )
     echo "${SCHEMA_MIGRATOR_LABEL}"
 }
 
