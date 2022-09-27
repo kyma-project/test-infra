@@ -5,7 +5,7 @@ pjConfigs:
         prNumber: 14865
   prowJobs:
     kyma-project:
-      test-infra:
+      kyma:
         - pjName: pre-kyma-inrepo-validate-dockerfiles
 prConfigs:
   kyma-project:
