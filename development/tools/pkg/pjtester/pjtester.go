@@ -279,8 +279,10 @@ func (o *options) checkIfUsePjtesterPr() error {
 }
 */
 
+// getPreAndPostSubmits loads presubmits and postsubmits specifications defined for repository from static and inrepo config.
 func (pjopts *testProwJobOptions) getPreAndPostSubmits(gitClient git.Client, conf *config.Config) ([]config.Presubmit, []config.Postsubmit, error) {
 	if pjopts.headSHAGetter != nil {
+		log.Debugf("Using headSHAGetter")
 		preSubmits, err := conf.GetPresubmits(gitClient, fmt.Sprintf("%s/%s", pjopts.orgName, pjopts.repoName), pjopts.baseSHAGetter, pjopts.headSHAGetter)
 		if err != nil {
 			return nil, nil, fmt.Errorf("failed get presubmits, error: %s", err)
@@ -289,10 +291,10 @@ func (pjopts *testProwJobOptions) getPreAndPostSubmits(gitClient git.Client, con
 		if err != nil {
 			return nil, nil, fmt.Errorf("failed get postsubmits, error: %s", err)
 		}
-		log.Debugf("Use head getter")
+		log.Debugf("Finished loading presubmits and postsubmits.")
 		return preSubmits, postSubmits, nil
 	} else {
-		log.Debugf("fetching presubmits")
+		log.Debugf("Not using headSHAGetter")
 		preSubmits, err := conf.GetPresubmits(gitClient, fmt.Sprintf("%s/%s", pjopts.orgName, pjopts.repoName), pjopts.baseSHAGetter)
 		if err != nil {
 			return nil, nil, fmt.Errorf("failed get presubmits, error: %s", err)
@@ -301,14 +303,13 @@ func (pjopts *testProwJobOptions) getPreAndPostSubmits(gitClient git.Client, con
 		if err != nil {
 			return nil, nil, fmt.Errorf("failed get postsubmits, error: %s", err)
 		}
-		log.Debugf("Not use head getter")
+		log.Debugf("Finished loading presubmits and postsubmits.")
 		return preSubmits, postSubmits, nil
 	}
 }
 
-// genJobSpec will generate test prowjob specifications.
-// For presubmits it will find latest and download PR details for prowjob Refs, if the PR number for that repo was not provided in pjtester.yaml
-// All test-infra refs will be set to pull request head SHA for which pjtester is triggered for.
+// genJobSpec will generate test prowjob specification.
+// For presubmits it will find latest PR and download its details for prowjob Refs, if the PR number for that repo was not provided in pjtester.yaml
 func (pjopts *testProwJobOptions) genJobSpec(o options, conf *config.Config, pjCfg pjConfig) (config.JobBase, prowapi.ProwJobSpec, error) {
 	var (
 		preSubmits  []config.Presubmit
@@ -316,40 +317,40 @@ func (pjopts *testProwJobOptions) genJobSpec(o options, conf *config.Config, pjC
 		err         error
 	)
 
-	// log.Debugf("pjtesterPR: %v", o.testPullRequests)
-	// if _, present := o.testPullRequests[o.pjtesterPrOrg][o.pjtesterPrRepo]; present {
-	//	// Not use pjtester pr for test prowjob.
-	//	o.usePjtesterPR = false
-	//	log.Debugf("not using pjtester PR: %v", o.usePjtesterPR)
-	// } else {
-	//	// Use pjtester pr for test prowjob.
-	//	o.usePjtesterPR = true
-	//	log.Debugf("using pjtester PR: %v", o.usePjtesterPR)
-	// }
 	/*
-		if pjopts.headSHAGetter != nil {
-			preSubmits, err = conf.GetPresubmits(o.gitClient, fmt.Sprintf("%s/%s", org, repo), pjopts.baseSHAGetter, pjopts.headSHAGetter)
-			if err != nil {
-				// TODO: Add missing error handling.
-			}
-			postSubmits, err = conf.GetPostsubmits(o.gitClient, fmt.Sprintf("%s/%s", org, repo), pjopts.baseSHAGetter, pjopts.headSHAGetter)
-			if err != nil {
-				log.WithError(err).Fatalf("failed get postsubmits")
-			}
-			log.Debugf("Use head getter")
+		log.Debugf("pjtesterPR: %v", o.testPullRequests)
+		if _, present := o.testPullRequests[o.pjtesterPrOrg][o.pjtesterPrRepo]; present {
+		// Not use pjtester pr for test prowjob.
+			o.usePjtesterPR = false
+			log.Debugf("not using pjtester PR: %v", o.usePjtesterPR)
 		} else {
-			log.Debugf("fetching presubmits")
-			preSubmits, err = conf.GetPresubmits(o.gitClient, fmt.Sprintf("%s/%s", org, repo), pjopts.baseSHAGetter)
-			if err != nil {
-				log.WithError(err).Fatalf("failed get presubmits")
-			}
-			postSubmits, err = conf.GetPostsubmits(o.gitClient, fmt.Sprintf("%s/%s", org, repo), pjopts.baseSHAGetter)
-			if err != nil {
-				log.WithError(err).Fatalf("failed get postsubmits")
-			}
-			log.Debugf("Not use head getter")
-			log.Debugf("presubmits count: %d", len(preSubmits))
+			// Use pjtester pr for test prowjob.
+			o.usePjtesterPR = true
+			log.Debugf("using pjtester PR: %v", o.usePjtesterPR)
 		}
+			if pjopts.headSHAGetter != nil {
+				preSubmits, err = conf.GetPresubmits(o.gitClient, fmt.Sprintf("%s/%s", org, repo), pjopts.baseSHAGetter, pjopts.headSHAGetter)
+				if err != nil {
+					// TODO: Add missing error handling.
+				}
+				postSubmits, err = conf.GetPostsubmits(o.gitClient, fmt.Sprintf("%s/%s", org, repo), pjopts.baseSHAGetter, pjopts.headSHAGetter)
+				if err != nil {
+					log.WithError(err).Fatalf("failed get postsubmits")
+				}
+				log.Debugf("Use head getter")
+			} else {
+				log.Debugf("fetching presubmits")
+				preSubmits, err = conf.GetPresubmits(o.gitClient, fmt.Sprintf("%s/%s", org, repo), pjopts.baseSHAGetter)
+				if err != nil {
+					log.WithError(err).Fatalf("failed get presubmits")
+				}
+				postSubmits, err = conf.GetPostsubmits(o.gitClient, fmt.Sprintf("%s/%s", org, repo), pjopts.baseSHAGetter)
+				if err != nil {
+					log.WithError(err).Fatalf("failed get postsubmits")
+				}
+				log.Debugf("Not use head getter")
+				log.Debugf("presubmits count: %d", len(preSubmits))
+			}
 
 	*/
 
@@ -656,7 +657,6 @@ func (o *options) checkoutTestInfraPjConfigPR() error {
 	return nil
 }
 
-// TODO: check if all scenarios are covered by ths function.
 // setRefsGetters set options.baseSHAGetter and options.headSHAGetter or checkout test-infra PR with prowjob definition.
 // This is used to get correct version of prowjob definition for user provided pjtester config.
 func (pjopts *testProwJobOptions) setRefsGetters(opts options) error {
@@ -678,6 +678,20 @@ func (pjopts *testProwJobOptions) setRefsGetters(opts options) error {
 			if err != nil {
 				return fmt.Errorf("failed checkout test-infra repo to commit with pjtester config, error: %w", err)
 			}
+			baseSHA, err := pjopts.getMainBranchSHA(opts)
+			if err != nil {
+				return fmt.Errorf("failed to get baseSHA: %w", err)
+			}
+
+			log.Debugf("Set baseSHAGetter to return: %s", baseSHA)
+
+			pjopts.baseSHAGetter = func() (string, error) {
+				return baseSHA, nil
+			}
+
+			log.Debugf("Do not use headSHAGetter, set it to null.")
+
+			pjopts.headSHAGetter = nil
 			return nil
 		} else {
 
@@ -722,10 +736,11 @@ func (pjopts *testProwJobOptions) setRefsGetters(opts options) error {
 
 			log.Debugf("Test prowjob is defined for other repo than pjtester pull request exist, prowjob org: %s, prowjob repo %s", pjopts.orgName, pjopts.repoName)
 			log.Debugf("Set baseSHAGetter to get test prowjob definition from main branch head.")
-			log.Debugf("Downloading SHA of %s heads/main", pjopts.orgName+"/"+pjopts.repoName)
+			// log.Debugf("Downloading SHA of %s heads/main", pjopts.orgName+"/"+pjopts.repoName)
 
-			var err error
-			baseSHA, err := opts.githubClient.GetRef(pjopts.orgName, pjopts.repoName, "heads/main")
+			// var err error
+			// baseSHA, err := opts.githubClient.GetRef(pjopts.orgName, pjopts.repoName, "heads/main")
+			baseSHA, err := pjopts.getMainBranchSHA(opts)
 			if err != nil {
 				return fmt.Errorf("failed to get baseSHA: %w", err)
 			}
@@ -744,7 +759,18 @@ func (pjopts *testProwJobOptions) setRefsGetters(opts options) error {
 	}
 }
 
-// newTestPJ is building a prowjob definition to test prowjobs provided in pjtester test configuration.
+func (pjopts *testProwJobOptions) getMainBranchSHA(opts options) (string, error) {
+	log.Debugf("Downloading SHA of %s heads/main", pjopts.orgName+"/"+pjopts.repoName)
+
+	var err error
+	baseSHA, err := opts.githubClient.GetRef(pjopts.orgName, pjopts.repoName, "heads/main")
+	if err != nil {
+		return "", fmt.Errorf("failed to get baseSHA: %w", err)
+	}
+	return baseSHA, nil
+}
+
+// newTestPJ is building a ProwJob k8s resource specification for test prowjobs provided in pjtester configuration.
 func (pjopts *testProwJobOptions) newTestPJ(pjCfg pjConfig, opt options) (prowapi.ProwJob, error) {
 	log.Debugf("Preparing test prowjob %s for repo %s", pjCfg.PjName, pjopts.orgName+"/"+pjopts.repoName)
 	err := pjopts.setRefsGetters(opt)
@@ -761,10 +787,11 @@ func (pjopts *testProwJobOptions) newTestPJ(pjCfg pjConfig, opt options) (prowap
 	if err != nil {
 		return prowapi.ProwJob{}, fmt.Errorf("failed generating prowjob specification to test: %w", err)
 	}
-	// Building prowjob based on generated job specifications.
+	// Building ProwJob k8s resource based on generated job specifications.
 	pj := pjutil.NewProwJob(pjSpecification, map[string]string{"created-by-pjtester": "true", "prow.k8s.io/is-optional": "true"}, map[string]string{})
 	// Make sure prowjob to test will run on untrusted-workload cluster.
 	pj.Spec.Cluster = "untrusted-workload"
+	// Enable all reporting, otherwise send slack messages to null channel.
 	if pjCfg.Report {
 		pj.Spec.Report = true
 	} else {
@@ -773,7 +800,7 @@ func (pjopts *testProwJobOptions) newTestPJ(pjCfg pjConfig, opt options) (prowap
 	return pj, nil
 }
 
-// SchedulePJ will generate prowjob for testing and schedule it on prow for execution.
+// SchedulePJ will generate ProwJob for testing and crate it on prow k8s cluster for execution.
 // TODO: This function should return error instead stopping execution.
 func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	logrus.SetLevel(logrus.DebugLevel)
@@ -820,11 +847,10 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 		log.WithError(err).Fatal("Failed create git client")
 	}
 
-	// build prtagbuilder GItHub client
+	// build prtagbuilder GitHub client
 	o.prFinder = prtagbuilder.NewGitHubClient(nil)
 
-	log.Debugf("prconfigs: %v", &testCfg.PrConfigs)
-
+	// Download pull requests details from GitHub. PR to download are provided in pjtester.yaml file.
 	if &testCfg.PrConfigs != nil {
 		log.Debugf("Getting details of pull requests used in test prowjobs.")
 		pullRequests, err := o.getPullRequests(testCfg.PrConfigs)
@@ -848,21 +874,21 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 		}
 	}
 
-	// Go over prowjob names to test and create prowjob definitions for each.
+	// Go over prowjob names to test and create ProwJob k8s resources for each.
 	for orgName, pjOrg := range testCfg.PjConfigs.ProwJobs {
 		for repoName, pjconfigs := range pjOrg {
 			for _, pjconfig := range pjconfigs {
-
-				// generate prowjob specification to test.
 				testPjOpts := testProwJobOptions{
 					repoName: repoName,
 					orgName:  orgName,
 					pjConfig: pjconfig,
 				}
+				// generate ProwJob k8s resource specification to test.
 				pj, err := testPjOpts.newTestPJ(pjconfig, o)
 				if err != nil {
 					log.WithError(err).Fatalf("Failed schedule test of prowjob")
 				}
+				// create ProwJob on Prow k8s cluster.
 				result, err := prowClient.ProwJobs(metav1.NamespaceDefault).Create(context.Background(), &pj, metav1.CreateOptions{})
 				if err != nil {
 					log.WithError(err).Fatalf("Failed schedule test of prowjob")
