@@ -106,11 +106,11 @@ globalSets:
   image_buildpack-node:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220809-8b2d4be4f"
   image_buildpack-golang:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220920-b10d5457"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
   image_buildpack-golang-kubebuilder2:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220920-b10d5457"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
   image_buildpack-golang-toolbox:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220920-b10d5457"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
   image_wssagent:
     image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
   image_gardener-rotate:
