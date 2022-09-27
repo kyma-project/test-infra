@@ -148,6 +148,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=operator"
               - "--dockerfile=Dockerfile"
+              - "--tag=latest"
             volumeMounts:
               - name: config
                 mountPath: /config

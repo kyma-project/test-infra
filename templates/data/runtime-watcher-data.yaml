@@ -136,6 +136,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=kcp"
                     - "--dockerfile=Dockerfile"
+                    - "--tag=latest"
                 inheritedConfigs:
                   local:
                     - default
@@ -162,6 +163,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=skr"
                     - "--dockerfile=Dockerfile"
+                    - "--tag=latest"
                 inheritedConfigs:
                   local:
                     - default
