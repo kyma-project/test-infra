@@ -85,6 +85,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=operator"
                     - "--dockerfile=Dockerfile"
+                    - "--tag=latest"
                 inheritedConfigs:
                   local:
                     - default
