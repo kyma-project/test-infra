@@ -38,14 +38,14 @@ cache:
 
 ## Build multi-architecture images
 
->You are reading about experimental feature. Keep in mind that there may be some changes in the future.
+>You are reading about an experimental feature. Keep in mind that there may be some changes to it in the future.
 
-With introduction of experimental BuildKit support, the tool now supports repeatable flag `--platform`.
+With the introduction of the experimental BuildKit support, the tool now supports the repeatable flag `--platform`.
 You can define multiple architectures on which image should be built.
 
 You can use all platforms supported by [BuildKit](https://github.com/moby/buildkit/blob/master/docs/multi-platform.md).
 
-There is a new image with tag suffix `-buildkit`, if you want to use experimental features.
+If you want to use experimental features, there is a new image with the tag suffix `-buildkit`.
 
 ## Build multiple variants of the same image
 
