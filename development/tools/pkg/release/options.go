@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-//Options represents the query options to create a Github release
+// Options represents the query options to create a Github release
 type Options struct {
 	Version      string
 	Body         string
@@ -17,7 +17,7 @@ type Options struct {
 	storage      StorageAPI
 }
 
-//NewOptions returns new instance of Options
+// NewOptions returns new instance of Options
 func NewOptions(ctx context.Context, storage StorageAPI, releaseVersionFilePath, releaseChangelogName, commitish string, r VersionReader) (*Options, error) {
 
 	relOpts := &Options{
