@@ -46,8 +46,59 @@ func parseVariable(key, value string) string {
 	return k + "=" + strings.TrimSpace(value)
 }
 
-// run prepares command execution and handles gathering logs to file
-func run(o options, name string, destinations []string, buildArgs map[string]string) error {
+// runInBuildKit prepares command execution and handles gathering logs from BuildKit-enabled run
+// This function is used only in customized environment
+func runInBuildKit(o options, name string, destinations []string, buildArgs map[string]string) error {
+	dockerfile := filepath.Base(o.dockerfile)
+	dockerfileDir := filepath.Dir(o.dockerfile)
+	args := []string{
+		"build", "--frontend=dockerfile.v0",
+		"--local", "context=" + o.context,
+		"--local", "dockerfile=" + filepath.Join(o.context, dockerfileDir),
+		"--opt", "filename=" + dockerfile,
+	}
+
+	// output definition, multiple images support
+	args = append(args, "--output", "type=image,name="+"\""+strings.Join(destinations, ",")+"\",push=true")
+
+	// build-args
+	for k, v := range buildArgs {
+		args = append(args, "--opt", "build-arg:"+parseVariable(k, v))
+	}
+
+	if o.Config.Cache.Enabled {
+		// NYI
+	}
+
+	cmd := exec.Command("buildctl-daemonless.sh", args...)
+
+	var outw []io.Writer
+	var errw []io.Writer
+
+	if !o.silent {
+		outw = append(outw, os.Stdout)
+		errw = append(errw, os.Stderr)
+	}
+
+	f, err := os.Create(filepath.Join(o.logDir, strings.TrimSpace("build_"+strings.TrimSpace(name)+".log")))
+	if err != nil {
+		return fmt.Errorf("could not create log file: %w", err)
+	}
+
+	outw = append(outw, f)
+	errw = append(errw, f)
+
+	cmd.Stdout = io.MultiWriter(outw...)
+	cmd.Stderr = io.MultiWriter(errw...)
+
+	if err := cmd.Run(); err != nil {
+		return err
+	}
+	return nil
+}
+
+// runInKaniko prepares command execution and handles gathering logs to file
+func runInKaniko(o options, name string, destinations []string, buildArgs map[string]string) error {
 	args := []string{
 		"--context=" + o.context,
 		"--dockerfile=" + o.dockerfile,
@@ -103,6 +154,10 @@ func run(o options, name string, destinations []string, buildArgs map[string]str
 }
 
 func runBuildJob(o options, vs Variants) error {
+	runFunc := runInKaniko
+	if os.Getenv("USE_BUILDKIT") == "true" {
+		runFunc = runInBuildKit
+	}
 	var sha, pr string
 	var err error
 	repo := o.Config.Registry
@@ -135,7 +190,7 @@ func runBuildJob(o options, vs Variants) error {
 	if len(vs) == 0 {
 		// variants.yaml file not present or either empty. Run single build.
 		destinations := gatherDestinations(repo, o.directory, o.name, tags)
-		err = run(o, "build", destinations, make(map[string]string))
+		err = runFunc(o, "build", destinations, make(map[string]string))
 		if err != nil {
 			return fmt.Errorf("build encountered error: %w", err)
 		}
@@ -149,7 +204,7 @@ func runBuildJob(o options, vs Variants) error {
 			variantTags = append(variantTags, tag+"-"+variant)
 		}
 		destinations := gatherDestinations(repo, o.directory, o.name, variantTags)
-		if err := run(o, variant, destinations, env); err != nil {
+		if err := runFunc(o, variant, destinations, env); err != nil {
 			errs = append(errs, fmt.Errorf("job %s ended with error: %w", variant, err))
 			fmt.Printf("Job '%s' ended with error: %s.\n", variant, err)
 		} else {
