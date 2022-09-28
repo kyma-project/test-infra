@@ -36,9 +36,20 @@ cache:
   cache-run-layers: true
 ```
 
+## Build multi-architecture images
+
+>You are reading about experimental feature. Keep in mind that there may be some changes in the future.
+
+With introduction of experimental BuildKit support, the tool now supports repeatable flag `--platform`.
+You can define multiple architectures on which image should be built.
+
+You can use all platforms supported by [BuildKit](https://github.com/moby/buildkit/blob/master/docs/multi-platform.md).
+
+There is a new image with tag suffix `-buildkit`, if you want to use experimental features.
+
 ## Build multiple variants of the same image
 
-With `kaniko-build, you can reuse the same `Dockerfile` to concurrently build different variants of the same image.
+With `kaniko-build`, you can reuse the same `Dockerfile` to concurrently build different variants of the same image.
 To predefine a set of the same `ARG` substitutions with different values, store them in the `variants.yaml` file .
 Use that feature when you need to build an image with different versions of the same binary, for example, for different versions of Kubernetes or Go.
 
@@ -74,6 +85,8 @@ Usage of kaniko-build:
         Do not push build logs to stdout
   -tag value
         Additional tag that the image will be tagged
+  -platform value
+        Only supported with BuildKit. Platform of the image that is built
   -variant string
         If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored
 ```
