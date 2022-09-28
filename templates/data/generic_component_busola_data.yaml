@@ -14,7 +14,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang"
+                    - "image_buildpack-node"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_busola"
                     - "extra_refs_test-infra"
@@ -38,7 +38,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang"
+                    - "image_buildpack-node"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_busola"
                     - "extra_refs_test-infra"
@@ -63,7 +63,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang"
+                    - "image_buildpack-node"
                     - "jobConfig_generic_component"
                     - "jobConfig_generic_component_busola"
                     - "extra_refs_test-infra"
