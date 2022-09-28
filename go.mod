@@ -19,7 +19,7 @@ replace (
 require (
 	cloud.google.com/go/bigquery v1.42.0
 	cloud.google.com/go/firestore v1.6.1
-	cloud.google.com/go/functions v1.5.0
+	cloud.google.com/go/functions v1.7.0
 	cloud.google.com/go/logging v1.5.0
 	cloud.google.com/go/pubsub v1.25.1
 	cloud.google.com/go/storage v1.26.0
