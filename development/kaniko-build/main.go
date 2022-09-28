@@ -109,7 +109,7 @@ func runBuildJob(o options, vs Variants) error {
 	if o.isCI {
 		presubmit := os.Getenv("JOB_TYPE") == "presubmit"
 		if presubmit {
-			if len(o.Registry) > 0 {
+			if len(o.DevRegistry) > 0 {
 				repo = o.DevRegistry
 			}
 			if n := os.Getenv("PULL_NUMBER"); n != "" {
@@ -135,6 +135,7 @@ func runBuildJob(o options, vs Variants) error {
 	if len(vs) == 0 {
 		// variants.yaml file not present or either empty. Run single build.
 		destinations := gatherDestinations(repo, o.directory, o.name, tags)
+		fmt.Println("Starting build for image: ", strings.Join(destinations, ", "))
 		err = run(o, "build", destinations, make(map[string]string))
 		if err != nil {
 			return fmt.Errorf("build encountered error: %w", err)
@@ -149,6 +150,7 @@ func runBuildJob(o options, vs Variants) error {
 			variantTags = append(variantTags, tag+"-"+variant)
 		}
 		destinations := gatherDestinations(repo, o.directory, o.name, variantTags)
+		fmt.Println("Starting build for image: ", strings.Join(destinations, ", "))
 		if err := run(o, variant, destinations, env); err != nil {
 			errs = append(errs, fmt.Errorf("job %s ended with error: %w", variant, err))
 			fmt.Printf("Job '%s' ended with error: %s.\n", variant, err)

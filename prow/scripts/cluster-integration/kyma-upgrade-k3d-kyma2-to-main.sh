@@ -5,7 +5,6 @@
 #Expected common vars:
 # - JOB_TYPE - set up by prow (presubmit, postsubmit, periodic)
 # - KYMA_PROJECT_DIR - directory path with Kyma sources to use for installation
-# - KYMA_MAJOR_VERSION - major version of the first installation
 #
 #Please look in each provider script for provider specific requirements
 
@@ -37,7 +36,6 @@ function prereq() {
     # All provides require these values, each of them may check for additional variables
     requiredVars=(
         KYMA_PROJECT_DIR
-        KYMA_MAJOR_VERSION
     )
     utils::check_required_vars "${requiredVars[@]}"
 
