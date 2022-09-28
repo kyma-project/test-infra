@@ -58,8 +58,6 @@ presubmits: # runs on PRs
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
-              - name: KYMA_MAJOR_VERSION
-                value: "1"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -133,8 +131,6 @@ presubmits: # runs on PRs
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -208,8 +204,6 @@ presubmits: # runs on PRs
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -276,8 +270,6 @@ presubmits: # runs on PRs
                 value: "europe-west4"
               - name: GARDENER_ZONES
                 value: "europe-west4-b"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:
@@ -350,8 +342,6 @@ presubmits: # runs on PRs
                 value: "/etc/credentials/kyma-tunas-prow-event-mesh"
               - name: KEB_PLAN_ID
                 value: "361c511f-f939-4621-b228-d0fb79a1fe15"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:
@@ -485,8 +475,6 @@ presubmits: # runs on PRs
                 value: "europe-west4"
               - name: GARDENER_ZONES
                 value: "europe-west4-b"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:
@@ -636,8 +624,6 @@ periodics: # runs on schedule
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -716,8 +702,6 @@ periodics: # runs on schedule
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -856,8 +840,6 @@ periodics: # runs on schedule
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -932,8 +914,6 @@ periodics: # runs on schedule
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: PREVIOUS_MINOR_VERSION_COUNT

@@ -84,7 +84,7 @@ export COMMON_NAME
 
 export CLUSTER_NAME="${COMMON_NAME}"
 
-# set KYMA_SOURCE used by gardener::install_kyma
+# set KYMA_SOURCE used by gardener::deploy_kyma
 utils::generate_vars_for_build \
     -b "$BUILD_TYPE" \
     -p "$PULL_NUMBER" \
@@ -111,14 +111,11 @@ export CLEANUP_CLUSTER="true"
 gardener::provision_cluster
 
 # uses previously set KYMA_SOURCE
-if [[ "${KYMA_MAJOR_VERSION}" == "2" ]]; then
-  log::info "Deploying Kyma"
-  gardener::deploy_kyma -p "$EXECUTION_PROFILE" --source "${KYMA_SOURCE}" \
-    --value eventing.controller.jetstream.retentionPolicy=limits \
-    --value eventing.controller.jetstream.consumerDeliverPolicy=all
-else
-  gardener::install_kyma
-fi
+log::info "Deploying Kyma"
+gardener::deploy_kyma -p "$EXECUTION_PROFILE" --source "${KYMA_SOURCE}" \
+  --value eventing.controller.jetstream.retentionPolicy=limits \
+  --value eventing.controller.jetstream.consumerDeliverPolicy=all
+
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
