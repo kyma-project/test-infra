@@ -195,7 +195,6 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
-                    - kyma_major_version_1
                   local:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -215,7 +214,6 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
-                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -236,7 +234,6 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
-                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -289,7 +286,6 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
-                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -317,7 +313,6 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
-                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -369,7 +364,6 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
-                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -395,7 +389,6 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - image_kyma-integration
-                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - gardener_azure_job
@@ -421,7 +414,6 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - image_kyma-integration
-                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - gardener_azure_job
@@ -470,7 +462,6 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - image_kyma-integration
-                    - kyma_major_version_2
                     - jobConfig_slack_jellyfish
                   local:
                     - jobConfig_default
@@ -494,7 +485,6 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - image_kyma-integration
-                    - kyma_major_version_2
                     - jobConfig_slack_jellyfish
                     - kyma_minor_upgrade
                   local:

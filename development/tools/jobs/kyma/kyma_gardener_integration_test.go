@@ -61,7 +61,6 @@ func TestKymaGardenerGCPEventingPresubmit(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_REGION", "europe-west4")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_ZONES", "europe-west4-b")
-	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_MAJOR_VERSION", "2")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "CREDENTIALS_DIR", "/etc/credentials/kyma-tunas-prow-event-mesh")
 	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
 }
