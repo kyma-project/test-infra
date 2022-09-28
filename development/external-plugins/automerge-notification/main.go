@@ -26,8 +26,8 @@ const (
 )
 
 var (
-	githubClient     *client.GithubClient
-	gitClientFactory *git.Client
+	githubClient     client.GithubClient
+	gitClientFactory git.Client
 	repoOwnersClient *repoowners.OwnersClient
 	sapToolsClient   *toolsclient.SapToolsClient
 	pubsubClient     *pubsub.Client
@@ -209,28 +209,26 @@ func main() {
 	}
 
 	// Create github.com client.
-	gc, err := pluginOptions.Github.NewGithubClient()
+	githubClient, err = pluginOptions.Github.NewGithubClient()
 	if err != nil {
 		logger.Fatalw("Failed creating GitHub client", "error", err)
 		panic(err)
 	}
-	githubClient = &gc
 	logger.Debug("github client ready")
 
 	// Create git factory for github.com.
-	gcf, err := gitOptions.NewClient(git.WithTokenPath(pluginOptions.Github.TokenPath), git.WithGithubClient(*githubClient))
+	gitClientFactory, err = gitOptions.NewClient(git.WithTokenPath(pluginOptions.Github.TokenPath), git.WithGithubClient(githubClient))
 	if err != nil {
 		logger.Fatalw("Failed creating git client", "error", err)
 		panic(err)
 	}
-	gitClientFactory = &gcf
 	logger.Debug("git client ready")
 
 	// Create repository owners client.
 	repoOwnersClient, err = ownersOptions.NewRepoOwnersClient(
 		repoowners.WithLogger(logger),
-		repoowners.WithGithubClient(githubClient),
-		repoowners.WithGitClient(*gitClientFactory))
+		repoowners.WithGithubClient(&githubClient),
+		repoowners.WithGitClient(gitClientFactory))
 	if err != nil {
 		logger.Fatalw("Failed creating repoOwners client", "error", err)
 		panic(err)
