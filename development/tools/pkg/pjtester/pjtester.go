@@ -268,6 +268,8 @@ func (pjopts *testProwJobOptions) getPreAndPostSubmits(gitClient git.Client, con
 }
 
 // genJobSpec generate test prowjob specification.
+// It will set prowjob refs and extra refs to match scenario provided in pjtester config file.
+// It will prefix name and context with pjtester prefix.
 func (pjopts *testProwJobOptions) genJobSpec(o options, conf *config.Config, pjCfg pjConfig) (config.JobBase, prowapi.ProwJobSpec, error) {
 	var (
 		preSubmits  []config.Presubmit
