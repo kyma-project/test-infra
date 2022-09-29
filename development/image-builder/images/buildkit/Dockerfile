@@ -1,6 +1,6 @@
 FROM alpine:3.16.2 AS creds
 
-SHELL ["/bin/ash", "option", "-o", "pipefail"]
+SHELL ["/bin/ash", "option",  "-o", "pipefail"]
 RUN apk add --no-cache curl && \
     curl -fsSL "https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v2.1.5/docker-credential-gcr_linux_amd64-2.1.5.tar.gz" \
   | tar xz docker-credential-gcr \
@@ -13,6 +13,6 @@ RUN docker-credential-gcr configure-docker
 
 ENV USE_BUILDKIT=true
 
-COPY ./kaniko-build /kaniko-build
+COPY ./image-builder /image-builder
 
-ENTRYPOINT ["/kaniko-build"]
+ENTRYPOINT ["/image-builder"]

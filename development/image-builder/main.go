@@ -288,7 +288,7 @@ func validateOptions(o options) error {
 
 func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
 	fs.BoolVar(&o.silent, "silent", false, "Do not push build logs to stdout")
-	fs.StringVar(&o.configPath, "config", "/config/kaniko-build-config.yaml", "Path to application config file")
+	fs.StringVar(&o.configPath, "config", "/config/image-builder-config.yaml", "Path to application config file")
 	fs.StringVar(&o.context, "context", ".", "Path to build directory context")
 	fs.StringVar(&o.directory, "directory", "", "Destination directory where the image is be pushed. This flag will be ignored if running in presubmit job and devRegistry is provided in config.yaml")
 	fs.StringVar(&o.name, "name", "", "Name of the image to be built")

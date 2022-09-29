@@ -1,4 +1,4 @@
-# kaniko-build
+# image-builder
 
 This tool serves as an intelligent wrapper for `kaniko-project/executor`. It reduces the complexity of building Docker images and removes the need of using Docker in Docker when building images in K8s infrastructure.
 
@@ -6,7 +6,7 @@ Key features:
 * automatically provides a default tag, which is computed based on a template provided in `config.yaml`
 * ~~allows for concurrent builds of image variants that use the same `Dockerfile`~~ See [Known issues](#known-issues) #1
 * supports adding multiple tags to the image
-* saves the `kaniko-project/executor` command outputs to separate files
+* saves command outputs to separate files
 * when running in Prow's presubmit job, supports pushing images to different repositories with different tags 
 * supports pushing the same images to multiple repositories
 * supports caching of built layers to reduce build times
@@ -16,11 +16,11 @@ Key features:
 1. Currently, building different variants of the same image is not working. The issue is tracked in https://github.com/kyma-project/test-infra/issues/5975
 2. This tool is still at an early stage of development. It is stable enough as a replacement for `docker build`. However, you can expect bugs and codebase changes.
 
-For any other problems, please raise an [issue](https://github.com/kyma-project/test-infra/issues/new?assignees=&labels=area%2Fci%2C+bug&template=bug-report.md&title=kaniko-build:%20).
+For any other problems, please raise an [issue](https://github.com/kyma-project/test-infra/issues/new?assignees=&labels=area%2Fci%2C+bug&template=bug-report.md&title=image-builder:%20).
 
 ## Use config.yaml file
 
-`kaniko-build` requires a configuration file to be provided with a set of variables, which are used during the execution.
+`image-builder` requires a configuration file to be provided with a set of variables, which are used during the execution.
 A `--config` flag is required.
 
 For more information, refer to the [config.go](./config.go) file.
@@ -49,7 +49,7 @@ If you want to use experimental features, there is a new image with the tag suff
 
 ## Build multiple variants of the same image
 
-With `kaniko-build`, you can reuse the same `Dockerfile` to concurrently build different variants of the same image.
+With `image-builder`, you can reuse the same `Dockerfile` to concurrently build different variants of the same image.
 To predefine a set of the same `ARG` substitutions with different values, store them in the `variants.yaml` file .
 Use that feature when you need to build an image with different versions of the same binary, for example, for different versions of Kubernetes or Go.
 
@@ -68,9 +68,9 @@ To use this feature, make sure that:
 ## Usage
 
 ```
-Usage of kaniko-build:
+Usage of image-builder:
   -config string
-        Path to application config file (default "/config/kaniko-build-config.yaml")
+        Path to application config file (default "/config/image-builder-config.yaml")
   -context string
         Path to build directory context (default ".")
   -directory string
