@@ -65,7 +65,6 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
                     - "image_kyma-integration"
-                    - "kyma_major_version_2"
                   local:
                     - "request_small"
                     - "vm_job_template_k3d"
@@ -87,7 +86,6 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                     - "image_kyma-integration"
-                    - "kyma_major_version_2"
                   local:
                     - "request_small"
                     - "vm_job_template_k3d"

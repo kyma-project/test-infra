@@ -24,7 +24,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         rsync \
         procps \
         pkg-config \
-        libgit2-dev \
+        libgit2-dev  \
+        qemu \
+        qemu-system \
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/*
 
@@ -53,6 +55,14 @@ RUN curl -fLSs -o kubebuilder.tar.gz "https://github.com/kubernetes-sigs/kubebui
     tar -zxvf kustomize.tar.gz && \
     rm kustomize.tar.gz && \
     mv kustomize /usr/local/bin/kustomize
+
+# install img
+RUN export IMG_SHA256="cc9bf08794353ef57b400d32cd1065765253166b0a09fba360d927cfbd158088" && \
+    # Download and check the sha256sum.
+    curl -fSL "https://github.com/genuinetools/img/releases/download/v0.5.11/img-linux-amd64" -o "/usr/local/bin/img" \
+    	&& echo "${IMG_SHA256}  /usr/local/bin/img" | sha256sum -c - \
+    	&& chmod a+x "/usr/local/bin/img" && \
+    echo "img installed!"
 
 # Install golang toolbox
 RUN go install golang.org/x/tools/cmd/goimports@latest && \

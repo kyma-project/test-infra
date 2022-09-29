@@ -12,8 +12,6 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
-# shellcheck source=prow/scripts/lib/docker.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcp.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
@@ -22,7 +20,6 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 requiredVars=(
     REPO_OWNER
     REPO_NAME
-    DOCKER_PUSH_REPOSITORY
     KYMA_PROJECT_DIR
     CLOUDSDK_CORE_PROJECT
     CLOUDSDK_COMPUTE_REGION
@@ -74,7 +71,6 @@ function createCluster() {
   log::info "Authenticate"
   gcp::authenticate \
     -c "${GOOGLE_APPLICATION_CREDENTIALS}"
-  docker::start
   DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
   export DNS_DOMAIN
   DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
@@ -127,14 +123,6 @@ function createCluster() {
       -v "$SELF_SIGN_CERT_VALID_DAYS"
   export TLS_CERT="${utils_generate_self_signed_cert_return_tls_cert:?}"
   export TLS_KEY="${utils_generate_self_signed_cert_return_tls_key:?}"
-
-  # TODO
-  # Prepare Docker external registry overrides
-  export DOCKER_PASSWORD=""
-  DOCKER_PASSWORD=$(tr -d '\n' < "${GOOGLE_APPLICATION_CREDENTIALS}")
-
-  export DOCKER_REPOSITORY_ADDRESS=""
-  DOCKER_REPOSITORY_ADDRESS=$(echo "$DOCKER_PUSH_REPOSITORY" | cut -d'/' -f1)
 
   export DNS_DOMAIN_TRAILING=${DNS_DOMAIN%.}
   envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/compass-gke-overrides.tpl.yaml" > "$PWD/compass_common_overrides.yaml"

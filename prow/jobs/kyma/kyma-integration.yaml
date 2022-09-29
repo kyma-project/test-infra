@@ -45,9 +45,6 @@ presubmits: # runs on PRs
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 100Mi
@@ -103,9 +100,6 @@ presubmits: # runs on PRs
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 100Mi
@@ -163,9 +157,6 @@ presubmits: # runs on PRs
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 100Mi
@@ -221,9 +212,6 @@ presubmits: # runs on PRs
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 100Mi
@@ -303,7 +291,7 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-kyma-integration-telemetry-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^resources/telemetry/|^installation/resources/crds/telemetry'
+      run_if_changed: '^resources/telemetry/|^installation/resources/crds/telemetry/|^tests/fast-integration/telemetry-test/'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -324,9 +312,6 @@ presubmits: # runs on PRs
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 3Gi
@@ -376,9 +361,6 @@ presubmits: # runs on PRs
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 3Gi
@@ -428,9 +410,6 @@ presubmits: # runs on PRs
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 3Gi
@@ -482,8 +461,6 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: RECONCILATION_TEST
                 value: "true"
             resources:
@@ -538,8 +515,6 @@ presubmits: # runs on PRs
             env:
               - name: API_GATEWAY_INTEGRATION
                 value: "true"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: TEST_ORY_IMAGE
                 value: "eu.gcr.io/kyma-project/incubator/test-hydra-login-consent:d6e6d3bc"
             resources:
@@ -600,9 +575,6 @@ postsubmits: # runs on main
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 100Mi
@@ -659,9 +631,6 @@ postsubmits: # runs on main
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 100Mi
@@ -718,9 +687,6 @@ postsubmits: # runs on main
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 100Mi
@@ -778,9 +744,6 @@ postsubmits: # runs on main
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 100Mi
@@ -810,7 +773,7 @@ postsubmits: # runs on main
         preset-kyma-guard-bot-github-token: "true"
         preset-kyma-integration-telemetry-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^resources/telemetry/|^installation/resources/crds/telemetry'
+      run_if_changed: '^resources/telemetry/|^installation/resources/crds/telemetry/|^tests/fast-integration/telemetry-test/'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -831,9 +794,6 @@ postsubmits: # runs on main
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 3Gi
@@ -891,8 +851,6 @@ postsubmits: # runs on main
             env:
               - name: K8S_VERSION
                 value: "1.24.2"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 100Mi
@@ -963,7 +921,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220901-6453087a4"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220928-25b2c89c"
             securityContext:
               privileged: true
             command:
@@ -1005,7 +963,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220901-6453087a4"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220928-25b2c89c"
             securityContext:
               privileged: true
             command:
@@ -1047,7 +1005,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220901-6453087a4"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220928-25b2c89c"
             securityContext:
               privileged: true
             command:
@@ -1089,7 +1047,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220901-6453087a4"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220928-25b2c89c"
             securityContext:
               privileged: true
             command:
@@ -1131,7 +1089,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220901-6453087a4"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220928-25b2c89c"
             securityContext:
               privileged: true
             command:
@@ -1173,7 +1131,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220901-6453087a4"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220928-25b2c89c"
             securityContext:
               privileged: true
             command:
@@ -1216,7 +1174,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220901-6453087a4"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220928-25b2c89c"
             securityContext:
               privileged: true
             command:
@@ -1257,7 +1215,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220901-6453087a4"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220928-25b2c89c"
             securityContext:
               privileged: true
             command:
@@ -1300,7 +1258,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220901-6453087a4"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220928-25b2c89c"
             securityContext:
               privileged: true
             command:
@@ -1356,8 +1314,6 @@ periodics: # runs on schedule
                 value: "gcp"
               - name: INPUT_CLUSTER_NAME
                 value: "nightly"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: PROVISION_REGIONAL_CLUSTER
                 value: "true"
             resources:
@@ -1412,8 +1368,6 @@ periodics: # runs on schedule
                 value: "gcp"
               - name: INPUT_CLUSTER_NAME
                 value: "nightly"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: PROVISION_REGIONAL_CLUSTER
                 value: "true"
             resources:
@@ -1526,8 +1480,6 @@ periodics: # runs on schedule
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-upgrade-k3d.sh"
             env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "."
             resources:
@@ -1585,9 +1537,6 @@ periodics: # runs on schedule
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 100Mi
@@ -1638,9 +1587,6 @@ periodics: # runs on schedule
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 3Gi
@@ -1783,8 +1729,6 @@ periodics: # runs on schedule
                 value: "gcp"
               - name: INPUT_CLUSTER_NAME
                 value: "nightly"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: PROVISION_REGIONAL_CLUSTER
                 value: "true"
             resources:
