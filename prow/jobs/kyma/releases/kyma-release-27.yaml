@@ -214,7 +214,6 @@ periodics: # runs on schedule
         preset-nightly-github-integration: "true"
         preset-sa-gke-kyma-integration: "true"
         preset-slack-alerts: "true"
-        preset-stability-checker-slack-notifications: "true"
       cron: "0 3 * * 1-5"
       skip_report: false
       decorate: true

@@ -858,16 +858,6 @@ presets:
       - name: UNSTABLE
         value: "true"
   - labels:
-      preset-stability-checker-slack-notifications: "true"
-    env:
-      - name: SLACK_CLIENT_WEBHOOK_URL
-        value: https://sap-btp.slack.com/services/hooks/jenkins-ci
-      - name: SLACK_CLIENT_TOKEN
-        valueFrom:
-          secretKeyRef:
-            name: slack-nightly-token
-            key: token
-  - labels:
       preset-nightly-github-integration: "true"
     env:
       - name: GITHUB_INTEGRATION_APP_CLIENT_ID
