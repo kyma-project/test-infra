@@ -12,7 +12,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-cluster-version: "true"
-        preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
         preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
@@ -52,8 +51,6 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: MACHINE_TYPE
                 value: "n1-highcpu-16"
               - name: NODES_PER_ZONE
@@ -80,7 +77,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-cluster-version: "true"
-        preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
         preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
@@ -118,8 +114,6 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: MACHINE_TYPE
                 value: "n1-highcpu-16"
               - name: NODES_PER_ZONE
@@ -146,7 +140,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-cluster-version: "true"
-        preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
         preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
@@ -184,8 +177,6 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: MACHINE_TYPE
                 value: "n1-highcpu-16"
               - name: NODES_PER_ZONE
@@ -212,7 +203,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-cluster-version: "true"
-        preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
         preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
@@ -250,8 +240,6 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: MACHINE_TYPE
                 value: "n1-highcpu-16"
               - name: NODES_PER_ZONE
