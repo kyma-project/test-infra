@@ -11,10 +11,10 @@ import (
 
 type Client interface {
 	git.ClientFactory
-	GitRepoClient
+	RepoClient
 }
 
-type GitRepoClient interface {
+type RepoClient interface {
 	GetGitRepoClient(org, repo string) (git.RepoClient, string, error)
 	GetGitRepoClientFromDir(org, repo, dir string) (git.RepoClient, string, error)
 }

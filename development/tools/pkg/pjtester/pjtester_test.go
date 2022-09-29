@@ -33,7 +33,7 @@ func (f *FakeGithubClient) Email() (string, error) {
 
 type GitClient struct {
 	k8sgit.ClientFactory
-	git.GitRepoClient
+	git.RepoClient
 }
 
 func fakeProwYAMLGetterFactory(presubmits []config.Presubmit, postsubmits []config.Postsubmit) config.ProwYAMLGetter {
