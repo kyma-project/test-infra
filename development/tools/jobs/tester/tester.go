@@ -19,9 +19,9 @@ import (
 
 const (
 	// ImageGolangBuildpack1_16 means Golang buildpack image with Go 1.16.*
-	ImageGolangBuildpack1_16 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220920-b10d5457"
+	ImageGolangBuildpack1_16 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
 	// ImageGolangKubebuilder2BuildpackLatest means Golang buildpack with Kubebuilder2 image
-	ImageGolangKubebuilder2BuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220920-b10d5457" // see https://github.com/kyma-project/test-infra/pull/3738
+	ImageGolangKubebuilder2BuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961" // see https://github.com/kyma-project/test-infra/pull/3738
 	// ImageNodeBuildpackLatest means Node.js buildpack image (node v12)
 	ImageNodeBuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220809-8b2d4be4f"
 	// ImageBootstrapTestInfraLatest means it's used in test-infra prowjob defs.
@@ -30,9 +30,9 @@ const (
 	// ImageKymaIntegrationLatest represents kyma integration image with kubectl 1.23
 	ImageKymaIntegrationLatest = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
 	// ImageGolangToolboxLatest represents the latest version of the golang buildpack toolbox
-	ImageGolangToolboxLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220920-b10d5457" // see https://github.com/kyma-project/test-infra/pull/3738
+	ImageGolangToolboxLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961" // see https://github.com/kyma-project/test-infra/pull/3738
 	// ImageProwToolsLatest represents the latest version of the prow-tools image
-	ImageProwToolsLatest = "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220901-6453087a4"
+	ImageProwToolsLatest = "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220928-25b2c89c"
 	// KymaProjectDir means kyma project dir
 	KymaProjectDir = "/home/prow/go/src/github.com/kyma-project"
 	// KymaIncubatorDir means kyma incubator dir
