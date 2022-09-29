@@ -129,7 +129,7 @@ func (c *client) GetGitRepoClientFromDir(org, repo, dir string) (git.RepoClient,
 	// Fetch changes from upstream.
 	err = gitRepoClient.Fetch()
 	if err != nil {
-		return nil, "", fmt.Errorf("failed fetch repostiory, org: %s, repo: %s, error: %w", org, repo, err)
+		return nil, "", fmt.Errorf("failed fetch repository, org: %s, repo: %s, error: %w", org, repo, err)
 	}
 	// Save repository local path to reuse it for creation new repository clients.
 	c.clonedRepos[fmt.Sprintf("%s/%s", org, repo)] = dir

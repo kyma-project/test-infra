@@ -382,7 +382,7 @@ func (pjopts *testProwJobOptions) setProwJobSpecRefs(pjs prowapi.ProwJobSpec, op
 	if pjs.Type == "presubmit" {
 		pr, err := opt.githubClient.GetPullRequest(pjs.Refs.Org, pjs.Refs.Repo, branchPR)
 		if err != nil {
-			return prowapi.ProwJobSpec{}, fmt.Errorf("failed get pull request deatils from GitHub, error: %w", err)
+			return prowapi.ProwJobSpec{}, fmt.Errorf("failed get pull request details from GitHub, error: %w", err)
 		}
 		refs := setRefs(*pjs.Refs, pr.Base.SHA, pr.Base.Ref, pr.AuthorAssociation, pr.Head.SHA, pr.Number)
 		pjs.Refs = &refs
@@ -452,7 +452,7 @@ func (o *options) checkoutTestInfraPjConfigPR() error {
 	if err != nil {
 		return fmt.Errorf("failed checkout pull request %s, error: %w", fmt.Sprintf("%s/%s#%d", testinfraOrg, testinfraRepo, o.pjConfigPullRequest.PrNumber), err)
 	}
-	log.Debugf("Succesful checkout kyma-project/test-infra pull request #%d", o.pjConfigPullRequest.PrNumber)
+	log.Debugf("Successful checkout kyma-project/test-infra pull request #%d", o.pjConfigPullRequest.PrNumber)
 	return nil
 }
 
@@ -615,7 +615,7 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	o.prFinder = prtagbuilder.NewGitHubClient(nil)
 
 	// Download pull requests details from GitHub. PR to download are provided in pjtester.yaml file.
-	if &testCfg.PrConfigs != nil {
+	if testCfg.PrConfigs != nil {
 		log.Debugf("Getting details of pull requests used in test prowjobs.")
 		pullRequests, err := o.getPullRequests(testCfg.PrConfigs)
 		if err != nil {
@@ -623,7 +623,7 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 		}
 		o.testPullRequests = pullRequests
 	}
-	if &testCfg.PjConfigs.PrConfig != nil {
+	if testCfg.PjConfigs.PrConfig != nil {
 		log.Debugf("Getting details of pull requests with test prowjobs specification.")
 
 		pullRequests, err := o.getPullRequests(testCfg.PjConfigs.PrConfig)
