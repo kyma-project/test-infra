@@ -29,6 +29,7 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                    - "disable_testgrid"
       - to: ../../prow/jobs/kyma/components/event-publisher-proxy/event-publisher-proxy-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
@@ -57,6 +58,7 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                    - "disable_testgrid"
       - to: ../../prow/jobs/kyma/components/eventing-controller/eventing-controller-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
@@ -85,6 +87,7 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                    - "disable_testgrid"
       - to: ../../prow/jobs/kyma/components/function-controller/function-controller-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
@@ -113,6 +116,7 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                    - "disable_testgrid"
       - to: ../../prow/jobs/kyma/components/function-runtimes/function-runtimes-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
@@ -141,6 +145,7 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                    - "disable_testgrid"
               - jobConfig:
                   name: pull-function-runtimes-nodejs14-build
                   run_if_changed: "^components/function-runtimes/"
@@ -165,6 +170,7 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                    - "disable_testgrid"
               - jobConfig:
                   name: pull-function-runtimes-nodejs16-build
                   run_if_changed: "^components/function-runtimes/"
@@ -189,6 +195,7 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                    - "disable_testgrid"
               - jobConfig:
                   name: pull-function-runtimes-python39-build
                   run_if_changed: "^components/function-runtimes/"
@@ -213,6 +220,7 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                    - "disable_testgrid"
       - to: ../../prow/jobs/kyma/components/central-application-gateway/central-application-gateway-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
@@ -241,6 +249,7 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                    - "disable_testgrid"
       - to: ../../prow/jobs/kyma/components/central-application-connectivity-validator/central-application-connectivity-validator-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
@@ -269,6 +278,7 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                    - "disable_testgrid"
       - to: ../../prow/jobs/kyma/components/telemetry-operator/telemetry-operator-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
@@ -297,6 +307,7 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                    - "disable_testgrid"
       - to: ../../prow/jobs/kyma/components/directory-size-exporter/directory-size-exporter-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
@@ -325,6 +336,7 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                    - "disable_testgrid"
 
       - to: ../../prow/jobs/kyma/tests/application-connector-component-tests/application-connector-component-tests-generic.yaml
         jobConfigs:
@@ -355,6 +367,7 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                    - "disable_testgrid"
               - jobConfig:
                   name: pull-application-connector-connectivity-validator-test-build
                   args:
@@ -380,6 +393,7 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                    - "disable_testgrid"
               - jobConfig:
                   name: pull-application-connector-compass-runtime-agent-test-build
                   args:
@@ -405,6 +419,7 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                    - "disable_testgrid"
               - jobConfig:
                   name: pull-application-connector-mock-app-build
                   args:
@@ -430,6 +445,7 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                    - "disable_testgrid"
 
       - to: ../../prow/jobs/kyma/tests/function-controller/function-controller-tests-generic.yaml
         jobConfigs:
@@ -459,6 +475,7 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                    - "disable_testgrid"
 
       - to: ../../prow/jobs/kyma/tests/serverless-bench/serverless-bench-generic.yaml
         jobConfigs:
@@ -488,6 +505,7 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                    - "disable_testgrid"
 
       - to: ../../prow/jobs/kyma/tools/event-subscriber/event-subscriber-generic.yaml
         jobConfigs:
@@ -518,6 +536,7 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                    - "disable_testgrid"
 
       - to: ../../prow/jobs/kyma/tools/gitserver/gitserver-generic.yaml
         jobConfigs:
@@ -548,3 +567,4 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                    - "disable_testgrid"

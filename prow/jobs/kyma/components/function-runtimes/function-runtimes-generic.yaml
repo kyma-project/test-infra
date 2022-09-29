@@ -133,6 +133,7 @@ postsubmits: # runs on main
     - name: post-function-controller-nodejs12-build
       annotations:
         pipeline.trigger: "pr-merge"
+        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-function-controller-nodejs12-build"
@@ -164,6 +165,7 @@ postsubmits: # runs on main
     - name: post-function-controller-nodejs14-build
       annotations:
         pipeline.trigger: "pr-merge"
+        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-function-controller-nodejs14-build"
@@ -195,6 +197,7 @@ postsubmits: # runs on main
     - name: post-function-controller-nodejs16-build
       annotations:
         pipeline.trigger: "pr-merge"
+        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-function-controller-nodejs16-build"
@@ -226,6 +229,7 @@ postsubmits: # runs on main
     - name: post-function-controller-python39-build
       annotations:
         pipeline.trigger: "pr-merge"
+        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-function-controller-python39-build"

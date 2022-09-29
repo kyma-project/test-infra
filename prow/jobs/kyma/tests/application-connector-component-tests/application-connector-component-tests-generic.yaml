@@ -137,6 +137,7 @@ postsubmits: # runs on main
     - name: post-application-connector-gateway-test-build
       annotations:
         pipeline.trigger: "pr-merge"
+        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-application-connector-gateway-test-build"
@@ -168,6 +169,7 @@ postsubmits: # runs on main
     - name: post-application-connector-connectivity-validator-test-build
       annotations:
         pipeline.trigger: "pr-merge"
+        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-application-connector-connectivity-validator-test-build"
@@ -199,6 +201,7 @@ postsubmits: # runs on main
     - name: post-application-connector-compass-runtime-agent-test-build
       annotations:
         pipeline.trigger: "pr-merge"
+        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-application-connector-compass-runtime-agent-test-build"
@@ -230,6 +233,7 @@ postsubmits: # runs on main
     - name: post-application-connector-mock-app-build
       annotations:
         pipeline.trigger: "pr-merge"
+        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-application-connector-mock-app-build"
