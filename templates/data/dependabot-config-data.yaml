@@ -136,13 +136,6 @@ templates:
                   local:
                     - "dailyDockerEcosystem"
               - jobConfig:
-                  directory: "/stability-checker/deploy/stability-checker"
-                  # commit message can be 15 characters max
-                  commitMsgPrefix: "stability-check"
-                inheritedConfigs:
-                  local:
-                    - "dailyDockerEcosystem"
-              - jobConfig:
                   directory: "/prow/images/golangci-lint"
                   # commit message can be 15 characters max
                   commitMsgPrefix: "golangci-lint"
