@@ -18,7 +18,6 @@ global:
         - name: "community"
         - name: "module-manager"
         - name: "hydroform"
-        - name: "console"
         - name: "istio-operator"
         - name: "addons"
         - name: "private-fn-for-e2e-serverless-tests"
@@ -62,6 +61,23 @@ pubsub_config: &pubsub_config
   pubsub_topic: "prowjobs"
   
 globalSets:
+  kaniko_buildpack:
+    skip_report: "false"
+    max_concurrency: "10"
+    decorate: "true"
+    pubsub_project: "sap-kyma-prow"
+    pubsub_topic: "prowjobs"
+    image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0
+    command: /kaniko-build
+    labels:
+      preset-sa-gcr-push: "true"
+    volumes:
+      - name: config
+        configMapName: kaniko-build-config
+    volumeMounts:
+      - name: config
+        mountPath: /config
+        readOnly: true
   # Kyma major version sets
   kyma_major_upgrade:
     env:
@@ -187,10 +203,6 @@ globalSets:
     labels:
       preset-docker-push-repository-kyma: "true"
     path_alias: "github.com/kyma-project/busola"
-  jobConfig_generic_component_console:
-    labels:
-      preset-docker-push-repository-kyma: "true"
-    path_alias: "github.com/kyma-project/console"
   jobConfig_generic_component_compass:
     labels:
       preset-docker-push-repository-incubator: "true"
