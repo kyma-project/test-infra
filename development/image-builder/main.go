@@ -25,16 +25,22 @@ type options struct {
 	logDir         string
 	silent         bool
 	isCI           bool
-	additionalTags additionalTags
+	additionalTags Strings
+	platforms      Strings
 }
 
-type additionalTags []string
+const (
+	PlatformLinuxAmd64 = "linux/amd64"
+	PlatformLinuxArm64 = "linux/arm64"
+)
 
-func (t additionalTags) String() string {
-	return strings.Join(t, ",")
+type Strings []string
+
+func (t *Strings) String() string {
+	return strings.Join(*t, ",")
 }
 
-func (t *additionalTags) Set(val string) error {
+func (t *Strings) Set(val string) error {
 	*t = append(*t, val)
 	return nil
 }
@@ -46,8 +52,63 @@ func parseVariable(key, value string) string {
 	return k + "=" + strings.TrimSpace(value)
 }
 
-// run prepares command execution and handles gathering logs to file
-func run(o options, name string, destinations []string, buildArgs map[string]string) error {
+// runInBuildKit prepares command execution and handles gathering logs from BuildKit-enabled run
+// This function is used only in customized environment
+func runInBuildKit(o options, name string, destinations, platforms []string, buildArgs map[string]string) error {
+	dockerfile := filepath.Base(o.dockerfile)
+	dockerfileDir := filepath.Dir(o.dockerfile)
+	args := []string{
+		"build", "--frontend=dockerfile.v0",
+		"--local", "context=" + o.context,
+		"--local", "dockerfile=" + filepath.Join(o.context, dockerfileDir),
+		"--opt", "filename=" + dockerfile,
+	}
+
+	// output definition, multiple images support
+	args = append(args, "--output", "type=image,\"name="+strings.Join(destinations, ",")+"\",push=true")
+
+	// build-args
+	for k, v := range buildArgs {
+		args = append(args, "--opt", "build-arg:"+parseVariable(k, v))
+	}
+
+	if len(platforms) > 0 {
+		args = append(args, "--opt", "platform="+strings.Join(platforms, ","))
+	}
+
+	//if o.Config.Cache.Enabled {
+	//	// NYI
+	//}
+
+	cmd := exec.Command("buildctl-daemonless.sh", args...)
+
+	var outw []io.Writer
+	var errw []io.Writer
+
+	if !o.silent {
+		outw = append(outw, os.Stdout)
+		errw = append(errw, os.Stderr)
+	}
+
+	f, err := os.Create(filepath.Join(o.logDir, strings.TrimSpace("build_"+strings.TrimSpace(name)+".log")))
+	if err != nil {
+		return fmt.Errorf("could not create log file: %w", err)
+	}
+
+	outw = append(outw, f)
+	errw = append(errw, f)
+
+	cmd.Stdout = io.MultiWriter(outw...)
+	cmd.Stderr = io.MultiWriter(errw...)
+
+	if err := cmd.Run(); err != nil {
+		return err
+	}
+	return nil
+}
+
+// runInKaniko prepares command execution and handles gathering logs to file
+func runInKaniko(o options, name string, destinations, platforms []string, buildArgs map[string]string) error {
 	args := []string{
 		"--context=" + o.context,
 		"--dockerfile=" + o.dockerfile,
@@ -58,6 +119,10 @@ func run(o options, name string, destinations []string, buildArgs map[string]str
 
 	for k, v := range buildArgs {
 		args = append(args, "--build-arg="+parseVariable(k, v))
+	}
+
+	if len(platforms) > 0 {
+		fmt.Println("'--platform' parameter not supported in kaniko-mode. Use buildkit-enabled image")
 	}
 
 	if o.Config.Cache.Enabled {
@@ -103,6 +168,10 @@ func run(o options, name string, destinations []string, buildArgs map[string]str
 }
 
 func runBuildJob(o options, vs Variants) error {
+	runFunc := runInKaniko
+	if os.Getenv("USE_BUILDKIT") == "true" {
+		runFunc = runInBuildKit
+	}
 	var sha, pr string
 	var err error
 	repo := o.Config.Registry
@@ -136,7 +205,7 @@ func runBuildJob(o options, vs Variants) error {
 		// variants.yaml file not present or either empty. Run single build.
 		destinations := gatherDestinations(repo, o.directory, o.name, tags)
 		fmt.Println("Starting build for image: ", strings.Join(destinations, ", "))
-		err = run(o, "build", destinations, make(map[string]string))
+		err = runFunc(o, "build", destinations, o.platforms, make(map[string]string))
 		if err != nil {
 			return fmt.Errorf("build encountered error: %w", err)
 		}
@@ -151,7 +220,7 @@ func runBuildJob(o options, vs Variants) error {
 		}
 		destinations := gatherDestinations(repo, o.directory, o.name, variantTags)
 		fmt.Println("Starting build for image: ", strings.Join(destinations, ", "))
-		if err := run(o, variant, destinations, env); err != nil {
+		if err := runFunc(o, variant, destinations, o.platforms, env); err != nil {
 			errs = append(errs, fmt.Errorf("job %s ended with error: %w", variant, err))
 			fmt.Printf("Job '%s' ended with error: %s.\n", variant, err)
 		} else {
@@ -219,7 +288,7 @@ func validateOptions(o options) error {
 
 func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
 	fs.BoolVar(&o.silent, "silent", false, "Do not push build logs to stdout")
-	fs.StringVar(&o.configPath, "config", "/config/kaniko-build-config.yaml", "Path to application config file")
+	fs.StringVar(&o.configPath, "config", "/config/image-builder-config.yaml", "Path to application config file")
 	fs.StringVar(&o.context, "context", ".", "Path to build directory context")
 	fs.StringVar(&o.directory, "directory", "", "Destination directory where the image is be pushed. This flag will be ignored if running in presubmit job and devRegistry is provided in config.yaml")
 	fs.StringVar(&o.name, "name", "", "Name of the image to be built")
@@ -227,6 +296,7 @@ func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
 	fs.StringVar(&o.variant, "variant", "", "If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored")
 	fs.StringVar(&o.logDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
 	fs.Var(&o.additionalTags, "tag", "Additional tag that the image will be tagged")
+	fs.Var(&o.platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
 	return fs
 }
 

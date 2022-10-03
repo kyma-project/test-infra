@@ -159,7 +159,6 @@ templates:
                     preset-kyma-keyring: "true"
                     preset-kyma-encryption-key: "true"
                     preset-build-main: "true"
-                    preset-stability-checker-slack-notifications: "true"
                     preset-nightly-github-integration: "true"
                     preset-kms-gc-project-env: "true"
                     preset-certificates-bucket: "true"
