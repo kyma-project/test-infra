@@ -12,23 +12,23 @@ The workhorse for testing Prow Jobs is a tool written in Go called `pjtester`. I
 
 `pjtester` expects to find the configuration of Prow Jobs to tests under `vpath/pjtester.yaml`.
 
-By default, `pjtester` disables Prow Job reporting to Slack. To check the test results, consult the [Prow Status](https://status.build.kyma-project.io/) dashboard. You can enable reporting to Slack, setting a parameter **pjNames.report** in pjtester.yaml to true.
+By default, `pjtester` disables Prow Job reporting to Slack. To check the test results, consult the [Prow Status](https://status.build.kyma-project.io/) dashboard. You can enable reporting to Slack, setting a parameter **report** in pjtester.yaml to true.
 
-First Prow Job tester load prowjob definition. Details from `pjtester.yaml` and from the Prow Job environment variables are used to construct the specification of the Prow Job to test. Prow distinct two types of prowjob definition sources. Static prowjobs are stored in `test-infra` repository and are loaded from local files. Inrepo prowjobs are stored in other repositories and are loaded through GitHub API.
+First `pjtester` load prowjob definition. Details from `pjtester.yaml` and from the Prow Job environment variables are used to construct the specification of the Prow Job to test. Prow distinct two types of prowjob definition sources. Static prowjobs are stored in `test-infra` repository and are loaded from local files. Inrepo prowjobs are stored in other repositories and are loaded through GitHub API.
 
-If `pjtester.yaml` file contains **pjConfigs.prConfig** parameter, provided pull request number is used to find and load test prowjob definition. It applies for both sources, static and inrepo.
+If `pjtester.yaml` file contains **prConfig** parameter, provided pull request number is used to find and load test prowjob definition. It applies for both sources, static and inrepo.
 
-If **pjConfigs.prConfig** is not provided, Prow Job tester will check if pull request with pjtester.yaml file is against the same repository as prowjob to test. `pjtester` uses the environment variables created by Prow for the presubmit job which contains pull request refs and commit hash. If this condition is true, a pjtester pull request will be used to find and load test prowjob definition.
+If **prConfig** is not provided, Prow Job tester will check if pull request with pjtester.yaml file is against the same repository as prowjob to test. `pjtester` uses the environment variables created by Prow for the presubmit job which contains pull request refs and commit hash. If this condition is true, a pjtester pull request will be used to find and load test prowjob definition.
 
-If none of above conditions are meet, Prow Job tester will use `heads/main` refs to load inrepo test prowjob definition and static test prowjob definition if pjtester pull request is open on repository other than `test-infra`. If pjtester pull request is open on `test-infra` repository, a pjtester pull request is used to find and load static test prowjob definition.
+If none of above conditions are meet, `pjtester` will use `heads/main` refs to load inrepo test prowjob definition and static test prowjob definition if pjtester pull request is open on repository other than `test-infra`. If pjtester pull request is open on `test-infra` repository, a pjtester pull request is used to find and load static test prowjob definition.
 
-Once prowjob definition is found and loaded, Prow Job tester generate prowjob specification. Prowjob name and context reported to GitHub is prefixed with pjtester prefix. Prowjob refs and extraRefs are set according to the configuration provided in `pjtester.yaml` file in pjtester prowjob.
+Once prowjob definition is found and loaded, `pjtester` generate prowjob specification. Prowjob name and context reported to GitHub is prefixed with pjtester prefix. Prowjob refs and extraRefs are set according to the configuration provided in `pjtester.yaml` file in pjtester prowjob.
 
 If `pjtester.yaml` file contains pull request numbers in **prConfigs** parameter, they will be used as prowjob refs and extraRefs.
 
 If **prConfigs** doesn't provide pull request number for refs or some extraRefs, but pjtester pull request is open on the same repository, it will be used in prowjob specification as refs or extraRefs.
 
-If some extraRefs will not be set in previous steps, they will be set to values loaded from source. If prowjob refs will not be set, pjtester will set it to match repository `heads/main` details for postsubmit. Presubmit refs will be set to match latest pull request merged to `main` branch.
+If some extraRefs will not be set in previous steps, they will be set to values loaded from source. If prowjob refs will not be set, `pjtester` will set it to match repository `heads/main` details for postsubmit. Presubmit refs will be set to match latest pull request merged to `main` branch.
 
 For presubmit jobs, Prow requires the pull request's head SHA, pull request number, and pull request author set in the Prow Job refs. In the `pjtester.yaml file`, you can specify a pull request number for a repository against which a tested Prow Job is running. If you don't specify it, `pjtester` will find latest pull request merged to `main` branch and use its details for the presubmit refs.
 
