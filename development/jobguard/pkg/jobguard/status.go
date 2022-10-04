@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -106,7 +105,7 @@ func (f *GithubStatusFetcher) Do() (IndexedStatuses, error) {
 
 func (f *GithubStatusFetcher) handleIncorrectHTTPStatus(resp *http.Response) (IndexedStatuses, error) {
 	reqBody := ""
-	rawBody, err := ioutil.ReadAll(resp.Body)
+	rawBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		reqBody = fmt.Sprintf("Could not decode the req body, got err: %v", err)
 	} else {
@@ -118,7 +117,7 @@ func (f *GithubStatusFetcher) handleIncorrectHTTPStatus(resp *http.Response) (In
 }
 
 func (f *GithubStatusFetcher) closeResponseBody(resp *http.Response) {
-	if _, err := io.Copy(ioutil.Discard, resp.Body); err != nil {
+	if _, err := io.Copy(io.Discard, resp.Body); err != nil {
 		log.Println("\tGot error on discarding response body:", err)
 	}
 	if err := resp.Body.Close(); err != nil {

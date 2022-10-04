@@ -18,10 +18,7 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-readonly KCP_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/kcp"
 readonly CURRENT_TIMESTAMP=$(date +%s)
-
-
 
 function export_variables() {
     COMMIT_ID=$(echo "${PULL_BASE_SHA}" | cut -c1-8)
@@ -58,16 +55,15 @@ gcp::authenticate \
 log::info "Content of the local artifacts directory"
 ls -la "${ARTIFACTS}"
 
-log::info "Copy artifacts to ${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}"
-
-gsutil cp "${ARTIFACTS}/kcp.exe" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kcp.exe"
-gsutil cp "${ARTIFACTS}/kcp-linux" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kcp-linux"
-gsutil cp "${ARTIFACTS}/kcp-darwin" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kcp-darwin"
+mkdir -p "${ARTIFACTS}"/sync/{ers,kcp}/"${BUCKET_DIR}"/
+mv "${ARTIFACTS}"/ers* "${ARTIFACTS}/sync/ers/${BUCKET_DIR}/"
+mv "${ARTIFACTS}"/kcp* "${ARTIFACTS}/sync/kcp/${BUCKET_DIR}/"
 
 if [[ "${BUILD_TYPE}" == "master" ]]; then
-  log::info "Copy artifacts to ${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
-
-  gsutil cp "${ARTIFACTS}/kcp.exe" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kcp.exe"
-  gsutil cp "${ARTIFACTS}/kcp-linux" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kcp-linux"
-  gsutil cp "${ARTIFACTS}/kcp-darwin" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kcp-darwin"
+  mkdir -p "${ARTIFACTS}"/sync/{ers,kcp}/master/
+  cp "${ARTIFACTS}/sync/ers/${BUCKET_DIR}"/ers* "${ARTIFACTS}/sync/ers/master/"
+  cp "${ARTIFACTS}/sync/kcp/${BUCKET_DIR}"/kcp* "${ARTIFACTS}/sync/kcp/master/"
 fi
+
+log::info "Copy artifacts to ${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/{ers,kcp}/${BUCKET_DIR}"
+gsutil -m rsync -r "${ARTIFACTS}/sync/" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}"

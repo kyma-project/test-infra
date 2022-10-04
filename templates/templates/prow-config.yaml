@@ -22,10 +22,10 @@ plank:
         censoring_concurrency: 2 # 2 concurrent censoring
         censoring_buffer_size: 3092 # 3kB
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20220912-2b319e1ac8
-        initupload: gcr.io/k8s-prow/initupload:v20220912-2b319e1ac8
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20220912-2b319e1ac8
-        sidecar: gcr.io/k8s-prow/sidecar:v20220912-2b319e1ac8
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20220930-4982ca61ab
+        initupload: gcr.io/k8s-prow/initupload:v20220930-4982ca61ab
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20220930-4982ca61ab
+        sidecar: gcr.io/k8s-prow/sidecar:v20220930-4982ca61ab
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -228,6 +228,8 @@ branch-protection:
         private-fn-for-e2e-serverless-tests:
           protect: false
         organization-and-operations:
+          protect: false
+        btp-manager:
           protect: false
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
@@ -636,6 +638,15 @@ presets:
       - name: gardener-neighbors-kubeconfig
         mountPath: /etc/credentials/gardener-neighbors
   - labels:
+      preset-gardener-kyma-rotate-kubeconfig: "true"
+    volumes:
+      - name: gardener-kyma-prow-token-rotate-kubeconfig
+        secret:
+          secretName: gardener-kyma-prow-token-rotate-kubeconfig
+    volumeMounts:
+      - name: gardener-kyma-prow-token-rotate-kubeconfig
+        mountPath: /etc/credentials/gardener-kyma-prow-rotate
+  - labels:
       preset-az-kyma-prow-credentials: "true"
     env:
       - name: AZURE_CREDENTIALS_FILE
@@ -845,16 +856,6 @@ presets:
       - name: UNSTABLE
         value: "true"
   - labels:
-      preset-stability-checker-slack-notifications: "true"
-    env:
-      - name: SLACK_CLIENT_WEBHOOK_URL
-        value: https://sap-btp.slack.com/services/hooks/jenkins-ci
-      - name: SLACK_CLIENT_TOKEN
-        valueFrom:
-          secretKeyRef:
-            name: slack-nightly-token
-            key: token
-  - labels:
       preset-nightly-github-integration: "true"
     env:
       - name: GITHUB_INTEGRATION_APP_CLIENT_ID
@@ -1026,6 +1027,19 @@ presets:
     volumeMounts:
       - name: sa-gke-kyma-integration
         mountPath: /etc/credentials/sa-gke-kyma-integration
+        readOnly: true
+  - labels:
+      preset-sa-secret-update: "true"
+    env:
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-secret-update/service-account.json
+    volumes:
+      - name: sa-secret-update
+        secret:
+          secretName: sa-secret-update
+    volumeMounts:
+      - name: sa-secret-update
+        mountPath: /etc/credentials/sa-secret-update
         readOnly: true
   - labels:
       preset-kyma-integration-compass-dev: "true"

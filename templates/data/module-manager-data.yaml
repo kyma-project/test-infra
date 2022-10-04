@@ -2,6 +2,29 @@ templates:
   - from: generic.tmpl
     render:
       - to: ../../prow/jobs/module-manager/module-manager.yaml
+        localSets:
+          jobConfig_default:
+            imagePullPolicy: "Always"
+            privileged: "false"
+          default:
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            branches:
+              - "^main$"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0
+            command: /kaniko-build
+            labels:
+              preset-sa-gcr-push: "true"
+            volumes:
+              - name: config
+                configMapName: kaniko-build-config
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
         jobConfigs:
           - repoName: kyma-project/module-manager
             jobs:
@@ -42,42 +65,29 @@ templates:
                     - "jobConfig_presubmit"
                     - "build_labels" # default labels
               - jobConfig:
-                  labels:
-                    preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
-                  name: "pull-build"
+                  name: pull-build
                   always_run: true
-                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/module-manager/operator"
-                    - "docker-build"
-                    - "docker-push"
-                  branches:
-                    - ^main$
+                    - "--name=module-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=operator"
+                    - "--dockerfile=Dockerfile"
                 inheritedConfigs:
+                  local:
+                    - default
                   global:
-                    - jobConfig_default
                     - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_buildpack-golang
-                    - jobConfig_generic_component
-                    - "build_labels" # default labels
               - jobConfig:
-                  labels:
-                    preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
-                  name: "main-build"
+                  name: main-build
                   always_run: true
-                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/module-manager/operator"
-                    - "docker-build"
-                    - "docker-push"
-                  branches:
-                    - ^main$
+                    - "--name=module-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=operator"
+                    - "--dockerfile=Dockerfile"
+                    - "--tag=latest"
                 inheritedConfigs:
+                  local:
+                    - default
                   global:
-                    - jobConfig_default
                     - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - image_buildpack-golang
-                    - jobConfig_generic_component
-                    - "build_labels" # default labels

@@ -3,12 +3,12 @@
 
 presubmits: # runs on PRs
   kyma-project/runtime-watcher:
-    - name: pull-skr-lint
+    - name: pull-lint-skr
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-skr-lint"
+        prow.k8s.io/pubsub.runID: "pull-lint-skr"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)'
       skip_report: false
@@ -38,12 +38,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pull-skr-tests
+    - name: pull-tests-skr
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-skr-tests"
+        prow.k8s.io/pubsub.runID: "pull-tests-skr"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -57,7 +57,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220809-002bc8cf3"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
             securityContext:
               privileged: true
             command:
@@ -76,12 +76,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pull-kcp-lint
+    - name: pull-lint-kcp
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-kcp-lint"
+        prow.k8s.io/pubsub.runID: "pull-lint-kcp"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^kcp/(go.mod|go.sum)$|^kcp/*/(.*.go|Makefile|.*.sh)'
       skip_report: false
@@ -111,12 +111,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pull-kcp-tests
+    - name: pull-tests-kcp
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-kcp-tests"
+        prow.k8s.io/pubsub.runID: "pull-tests-kcp"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -130,7 +130,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220809-002bc8cf3"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
             securityContext:
               privileged: true
             command:
@@ -149,12 +149,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pull-listener-lint
+    - name: pull-lint-listener
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-listener-lint"
+        prow.k8s.io/pubsub.runID: "pull-lint-listener"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)'
       skip_report: false
@@ -184,12 +184,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pull-listener-tests
+    - name: pull-tests-listener
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-listener-tests"
+        prow.k8s.io/pubsub.runID: "pull-tests-listener"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -203,7 +203,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220809-002bc8cf3"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
             securityContext:
               privileged: true
             command:
@@ -222,16 +222,13 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pull-kcp-build
+    - name: pull-build-kcp
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-kcp-build"
+        prow.k8s.io/pubsub.runID: "pull-build-kcp"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^kcp/'
       skip_report: false
@@ -240,43 +237,31 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220809-002bc8cf3"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/runtime-watcher/kcp"
-              - "docker-build"
-              - "docker-push"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pull-skr-build
+              - "--name=runtime-watcher-kcp"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=kcp"
+              - "--dockerfile=Dockerfile"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+    - name: pull-build-skr
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-skr-build"
+        prow.k8s.io/pubsub.runID: "pull-build-skr"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^skr/'
       skip_report: false
@@ -285,124 +270,93 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220809-002bc8cf3"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/runtime-watcher/skr"
-              - "docker-build"
-              - "docker-push"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=runtime-watcher-skr"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=skr"
+              - "--dockerfile=Dockerfile"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
   
 postsubmits: # runs on main
   kyma-project/runtime-watcher:
-    - name: main-kcp-build
+    - name: main-build-kcp
       annotations:
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "main-kcp-build"
+        prow.k8s.io/pubsub.runID: "main-build-kcp"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^kcp/'
+      always_run: true
       skip_report: false
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
       branches:
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220809-002bc8cf3"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/runtime-watcher/kcp"
-              - "docker-build"
-              - "docker-push"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: main-skr-build
+              - "--name=runtime-watcher-kcp"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=kcp"
+              - "--dockerfile=Dockerfile"
+              - "--tag=latest"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+    - name: main-build-skr
       annotations:
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "main-skr-build"
+        prow.k8s.io/pubsub.runID: "main-build-skr"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^skr/'
+      always_run: true
       skip_report: false
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
       branches:
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220809-002bc8cf3"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/runtime-watcher/skr"
-              - "docker-build"
-              - "docker-push"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=runtime-watcher-skr"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=skr"
+              - "--dockerfile=Dockerfile"
+              - "--tag=latest"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
   

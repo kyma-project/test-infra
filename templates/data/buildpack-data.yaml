@@ -12,7 +12,7 @@ templates:
                   - "^main$"
                 pubsub_project: "sap-kyma-prow"
                 pubsub_topic: "prowjobs"
-                image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6
+                image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0
                 command: /kaniko-build
                 labels:
                   preset-sa-gcr-push: "true"
@@ -366,6 +366,32 @@ templates:
                         - "--config=/config/kaniko-build-config.yaml"
                         - "--context=."
                         - "--dockerfile=prow/images/gardener-rotate/Dockerfile"
+                        - "--directory=test-infra"
+                    inheritedConfigs:
+                      local:
+                        - "default"
+                        - "postsubmit"
+                  - jobConfig:
+                      name: "pull-build-githubrelease"
+                      run_if_changed: "^changelog-generator/|^development/tools/cmd/githubrelease/"
+                      args:
+                        - "--name=githubrelease"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=."
+                        - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
+                        - "--directory=test-infra"
+                    inheritedConfigs:
+                      local:
+                        - "default"
+                        - "presubmit"
+                  - jobConfig:
+                      name: "post-build-githubrelease"
+                      run_if_changed: "^changelog-generator/|^development/tools/cmd/githubrelease/"
+                      args:
+                        - "--name=githubrelease"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=."
+                        - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
                         - "--directory=test-infra"
                     inheritedConfigs:
                       local:

@@ -139,52 +139,6 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
   
-  kyma-project/console:
-    - name: pre-main-console-governance
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-console-governance"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-      run_if_changed: 'milv.config.yaml|.md$'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/console
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
-            args:
-              - "--repository"
-              - "console"
-            resources:
-              requests:
-                memory: 10Mi
-                cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-  
   kyma-project/examples:
     - name: pre-main-examples-governance
       annotations:
@@ -257,7 +211,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220809-002bc8cf3"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
             securityContext:
               privileged: true
             command:
@@ -633,54 +587,6 @@ periodics: # runs on schedule
               - "community"
               - "--repository-dir"
               - "/home/prow/go/src/github.com/kyma-project/community"
-              - "--full-validation"
-              - "true"
-            resources:
-              requests:
-                memory: 10Mi
-                cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-  
-    - name: console-governance-nightly
-      annotations:
-        pipeline.trigger: "periodic"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "console-governance-nightly"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-      cron: "0 0 * * 1-5"
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: console
-          path_alias: github.com/kyma-project/console
-          base_ref: master
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
-            args:
-              - "--repository"
-              - "console"
-              - "--repository-dir"
-              - "/home/prow/go/src/github.com/kyma-project/console"
               - "--full-validation"
               - "true"
             resources:

@@ -46,9 +46,9 @@ templates:
                   local:
                     - "dailyDockerEcosystem"
               - jobConfig:
-                  directory: "/changelog-generator"
+                  directory: "/development/tools/cmd/githubrelease"
                   # commit message can be 15 characters max
-                  commitMsgPrefix: "changelog-gen"
+                  commitMsgPrefix: "githubrelease"
                 inheritedConfigs:
                   local:
                     - "dailyDockerEcosystem"
@@ -132,13 +132,6 @@ templates:
                   directory: "/prow/images/whitesource-scanner"
                   # commit message can be 15 characters max
                   commitMsgPrefix: "whitesource"
-                inheritedConfigs:
-                  local:
-                    - "dailyDockerEcosystem"
-              - jobConfig:
-                  directory: "/stability-checker/deploy/stability-checker"
-                  # commit message can be 15 characters max
-                  commitMsgPrefix: "stability-check"
                 inheritedConfigs:
                   local:
                     - "dailyDockerEcosystem"
