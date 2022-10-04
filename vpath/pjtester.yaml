@@ -1,0 +1,8 @@
+pjNames:
+  - pjName: "pull-function-jobinit-build"
+  - pjName: "pull-function-webhook-build"
+  - pjName: "pull-function-controller-build"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 15576
