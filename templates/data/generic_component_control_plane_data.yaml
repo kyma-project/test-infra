@@ -21,10 +21,6 @@ templates:
                   preConfigs:
                     global:
                       - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
 
       - to: ../../prow/jobs/control-plane/components/kyma-environment-broker/kyma-environment-broker-generic.yaml
         jobConfigs:
@@ -46,10 +42,6 @@ templates:
                   preConfigs:
                     global:
                       - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
 
       - to: ../../prow/jobs/control-plane/components/schema-migrator/schema-migrator-kcp-generic.yaml
         jobConfigs:
@@ -71,10 +63,6 @@ templates:
                   preConfigs:
                     global:
                       - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
 
       - to: ../../prow/jobs/control-plane/components/kyma-metrics-collector/kyma-metrics-collector-generic.yaml
         jobConfigs:
@@ -96,10 +84,6 @@ templates:
                   preConfigs:
                     global:
                       - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
 
       - to: ../../prow/jobs/control-plane/components/kubeconfig-service/kubeconfig-service-generic.yaml
         jobConfigs:
@@ -121,10 +105,6 @@ templates:
                   preConfigs:
                     global:
                       - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
 
       - to: ../../prow/jobs/control-plane/tests/provisioner-tests/provisioner-tests-generic.yaml
         jobConfigs:
@@ -146,10 +126,6 @@ templates:
                   preConfigs:
                     global:
                       - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
 
       - to: ../../prow/jobs/control-plane/tests/e2e/provisioning/provisioning-test-generic.yaml
         jobConfigs:
@@ -171,7 +147,3 @@ templates:
                   preConfigs:
                     global:
                       - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
