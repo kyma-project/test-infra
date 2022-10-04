@@ -25,7 +25,69 @@ presubmits: # runs on PRs
               - "--name=function-controller"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/function-controller"
-              - "--dockerfile=Dockerfile"
+              - "--dockerfile=deploy/manager/Dockerfile"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+    - name: pull-function-webhook-build
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-function-webhook-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^components/function-controller/'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+            command:
+              - "/kaniko-build"
+            args:
+              - "--name=function-webhook"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=components/function-controller"
+              - "--dockerfile=deploy/webhook/Dockerfile"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+    - name: pull-function-jobinit-build
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-function-jobinit-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^components/function-controller/'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+            command:
+              - "/kaniko-build"
+            args:
+              - "--name=function-build-init"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=components/function-controller"
+              - "--dockerfile=deploy/jobinit/Dockerfile"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -60,7 +122,71 @@ postsubmits: # runs on main
               - "--name=function-controller"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/function-controller"
-              - "--dockerfile=Dockerfile"
+              - "--dockerfile=deploy/manager/Dockerfile"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+    - name: post-function-webhook-build
+      annotations:
+        pipeline.trigger: "pr-merge"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-function-webhook-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^components/function-controller/'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+            command:
+              - "/kaniko-build"
+            args:
+              - "--name=function-webhook"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=components/function-controller"
+              - "--dockerfile=deploy/webhook/Dockerfile"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+    - name: post-function-jobinit-build
+      annotations:
+        pipeline.trigger: "pr-merge"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-function-jobinit-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^components/function-controller/'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+            command:
+              - "/kaniko-build"
+            args:
+              - "--name=function-build-init"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=components/function-controller"
+              - "--dockerfile=deploy/jobinit/Dockerfile"
             volumeMounts:
               - name: config
                 mountPath: /config
