@@ -2,7 +2,7 @@
 
 ## Overview
 
-Prow Job tester is a tool for testing changes to Prow Jobs definitions and code running in Prow Jobs. It uses the production Prow instance to run chosen Prow Jobs with changes from pull requests (PRs) without going through multiple cycles of new PRs, reviews, and merges. The whole development can be done within one cycle.
+Prow Job tester is a tool for testing changes to the Prow Jobs' definitions and code running in Prow Jobs. It uses the production Prow instance to run chosen Prow Jobs with changes from pull requests (PRs) without going through multiple cycles of new PRs, reviews, and merges. The whole development can be done within one cycle.
 
 ### How it works
 
@@ -12,34 +12,34 @@ The workhorse for testing Prow Jobs is a tool written in Go called `pjtester`. I
 
 `pjtester` expects to find the configuration of Prow Jobs to tests under `vpath/pjtester.yaml`.
 
-By default, `pjtester` disables Prow Job reporting to Slack. To check the test results, consult the [Prow Status](https://status.build.kyma-project.io/) dashboard. You can enable reporting to Slack, setting a parameter **report** in `pjtester.yaml` to `true`.
+By default, `pjtester` disables Prow Job reporting to Slack. To check the test results, consult the [Prow Status](https://status.build.kyma-project.io/) dashboard. You can enable reporting to Slack by setting a parameter **report** in `pjtester.yaml` to `true`.
 
-First `pjtester` loads the prowjob definition. Details from `pjtester.yaml` and from the Prow Job environment variables are used to construct the specification of the Prow Job to test. Prow distinguishes two types of prowjob definition sources. Static prowjobs are stored in the `test-infra` repository and are loaded from local files. Inrepo prowjobs are stored in other repositories and are loaded through GitHub API.
+First `pjtester` loads the prowjob definition. Details from `pjtester.yaml` and from the Prow Job environment variables are used to construct the specification of the Prow Job to test. Prow distinguishes two types of the prowjob definition sources. Static prowjobs are stored in the `test-infra` repository and are loaded from local files. Inrepo prowjobs are stored in other repositories and are loaded through GitHub API.
 
-If the `pjtester.yaml` file contains the **prConfig** parameter, provided pull request number is used to find and load the test prowjob definition. It applies to both sources, static and inrepo.
+If the `pjtester.yaml` file contains the **prConfig** parameter, the provided PR number is used to find and load the test prowjob definition. It applies to both sources, static and inrepo.
 
-If **prConfig** is not provided, the Prow Job tester checks if pull request with the pjtester.yaml file is against the same repository as prowjob to test. `pjtester` uses the environment variables created by Prow for the presubmit job which contains pull request refs and commit hash. If this condition is true, a pjtester pull request is used to find and load the test prowjob definition.
+If **prConfig** is not provided, the Prow Job tester checks if PR with the `pjtester.yaml` file is against the same repository as prowjob to test. `pjtester` uses the environment variables created by Prow for the presubmit job, which contains PR refs and commit hash. If this condition is true, a pjtester pull request is used to find and load the test prowjob definition.
 
-If none of above conditions are meet, `pjtester` uses `heads/main` refs to load the inrepo test prowjob definition and static test prowjob definition if pjtester pull request is open on a repository other than `test-infra`. If pjtester pull request is open on the `test-infra` repository, a pjtester pull request is used to find and load the static test prowjob definition.
+If none of the conditions are met, `pjtester` uses the `heads/main` refs to load the inrepo test prowjob definition. If the pjtester pull request is open on a repository other than `test-infra`, the static test prowjob definition is used. If the pjtester pull request is open on the `test-infra` repository, a pjtester pull request is used to find and load the static test prowjob definition.
 
-Once prowjob definition is found and loaded, `pjtester` generates prowjob specification. Prowjob name and context reported to GitHub are prefixed with the pjtester prefix. Prowjob refs and extraRefs are set according to the configuration provided in the `pjtester.yaml` file in pjtester prowjob.
+Once the prowjob definition is found and loaded, `pjtester` generates prowjob specification. Prowjob name and context reported to GitHub are prefixed with the pjtester prefix. Prowjob refs and extraRefs are set according to the configuration provided in the `pjtester.yaml` file in pjtester prowjob.
 
 If the `pjtester.yaml` file contains pull request numbers in the **prConfigs** parameter, they are used as prowjob refs and extraRefs.
 
-If **prConfigs** doesn't provide a pull request number for refs or some extraRefs, but pjtester pull request is open on the same repository, it is used in the prowjob specification as refs or extraRefs.
+If **prConfigs** doesn't provide a PR number for refs or some extraRefs, but the pjtester pull request is open on the same repository, it is used in the prowjob specification as refs or extraRefs.
 
-If some extraRefs are not set in the previous steps, they will be set to values loaded from the source. If prowjob refs are not set, `pjtester` will set it to match the repository `heads/main` details for postsubmit. Presubmit refs are set to match the latest pull request merged to `main` branch.
+If some extraRefs are not set in the previous steps, they will be set to values loaded from the source. If prowjob refs are not set, `pjtester` will set them to match the repository `heads/main` details for postsubmit. Presubmit refs are set to match the latest PR merged to the `main` branch.
 
-For presubmit jobs, Prow requires the pull request's head SHA, pull request number, and pull request author set in the Prow Job refs. In the `pjtester.yaml` file, you can specify a pull request number for a repository against which a tested Prow Job is running. If you don't specify it, `pjtester` finds the latest pull request merged to the`main` branch and uses its details for the presubmit refs.
+For presubmit jobs, Prow requires the PR's head SHA, PR number and author set in the Prow Job refs. In the `pjtester.yaml` file, you can specify a PR number for a repository against which a tested Prow Job is running. If you don't specify it, `pjtester` finds the latest PR merged to the`main` branch and uses its details for the presubmit refs.
 
 Finally, `pjtester` creates the ProwJob object on the production Prow instance Kubernetes cluster. The Prow Job name, for which you triggered the test, is prefixed with `{YOUR_GITHUB_USER}_test_of_prowjob_`.
 
-Because the `vpath/pjtester.yaml` file is used by `pjtester` only, it should not exist outside the PR. This is why the `pre-vpathgurad` required context is added. It fails whenever the `vpath` directory exists and prevents the PR merge. As soon as the virtual path disappears from the PR, `vpathguard` will allow for the PR merge.
+Because the `vpath/pjtester.yaml` file is used by `pjtester` only, it must not exist outside the PR. This is why the `pre-vpathgurad` required context is added. It fails whenever the `vpath` directory exists and prevents the PR merge. As soon as the virtual path disappears from the PR, `vpathguard` will allow for the PR merge.
 
 
 ## Usage
 
-Next, you must add the `pjtester.yaml` file to the pull request to trigger the `pjtester` execution. `Pjtester` is running by `pre-<REPO_NAME>-pjtester` Prow Job.
+Next, you must add the `pjtester.yaml` file to the PR to trigger the `pjtester` execution. `pjtester` is run by `pre-<REPO_NAME>-pjtester` Prow Job.
 
 The `pjtester.yaml` file in the virtual path contains configuration parameters for the `pjtester` tool:
 
