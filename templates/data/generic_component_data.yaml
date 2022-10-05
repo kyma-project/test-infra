@@ -185,8 +185,8 @@ templates:
                   args:
                     - "--name=function-runtime-nodejs12"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/function-runtimes"
-                    - "--dockerfile=nodejs12/Dockerfile"
+                    - "--context=components/function-runtimes/nodejs12"
+                    - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -197,8 +197,8 @@ templates:
                   args:
                     - "--name=function-runtime-nodejs12"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/function-runtimes"
-                    - "--dockerfile=nodejs12/Dockerfile"
+                    - "--context=components/function-runtimes/nodejs12"
+                    - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -210,8 +210,8 @@ templates:
                   args:
                     - "--name=function-runtime-nodejs14"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/function-runtimes"
-                    - "--dockerfile=nodejs14/Dockerfile"
+                    - "--context=components/function-runtimes/nodejs14"
+                    - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -222,8 +222,8 @@ templates:
                   args:
                     - "--name=function-runtime-nodejs14"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/function-runtimes"
-                    - "--dockerfile=nodejs14/Dockerfile"
+                    - "--context=components/function-runtimes/nodejs14"
+                    - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -235,8 +235,8 @@ templates:
                   args:
                     - "--name=function-runtime-nodejs16"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/function-runtimes"
-                    - "--dockerfile=nodejs16/Dockerfile"
+                    - "--context=components/function-runtimes/nodejs16"
+                    - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -247,8 +247,8 @@ templates:
                   args:
                     - "--name=function-runtime-nodejs16"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/function-runtimes"
-                    - "--dockerfile=nodejs16/Dockerfile"
+                    - "--context=components/function-runtimes/nodejs16"
+                    - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -260,8 +260,8 @@ templates:
                   args:
                     - "--name=function-runtime-python39"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/function-runtimes"
-                    - "--dockerfile=python39/Dockerfile"
+                    - "--context=components/function-runtimes/python39"
+                    - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -272,8 +272,8 @@ templates:
                   args:
                     - "--name=function-runtime-python39"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/function-runtimes"
-                    - "--dockerfile=python39/Dockerfile"
+                    - "--context=components/function-runtimes/python39"
+                    - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
