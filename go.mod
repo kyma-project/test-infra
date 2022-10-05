@@ -21,6 +21,7 @@ require (
 	cloud.google.com/go/compute v1.10.0
 	cloud.google.com/go/firestore v1.8.0
 	cloud.google.com/go/functions v1.7.0
+	cloud.google.com/go/kms v1.4.0
 	cloud.google.com/go/logging v1.5.0
 	cloud.google.com/go/pubsub v1.25.1
 	cloud.google.com/go/storage v1.27.0
@@ -58,6 +59,7 @@ require (
 	golang.org/x/net v0.0.0-20221012135044-0b7e1fb9d458
 	golang.org/x/oauth2 v0.0.0-20221006150949-b44042a4b9c1
 	google.golang.org/api v0.99.0
+	google.golang.org/genproto v0.0.0-20221010155953-15ba04fc1c0e
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.22.2
