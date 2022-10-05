@@ -32,7 +32,7 @@ If some extraRefs are not set in the previous steps, they will be set to values 
 
 For presubmit jobs, Prow requires the PR's head SHA, PR number and author set in the Prow Job refs. In the `pjtester.yaml` file, you can specify a PR number for a repository against which a tested Prow Job is running. If you don't specify it, `pjtester` finds the latest PR merged to the`main` branch and uses its details for the presubmit refs.
 
-Finally, `pjtester` creates the ProwJob object on the production Prow instance Kubernetes cluster. The Prow Job name, for which you triggered the test, is prefixed with `{YOUR_GITHUB_USER}_test_of_prowjob_`.
+Finally, `pjtester` creates the ProwJob Kubernetes object on the production Prow instance. The Prow Job name, for which you triggered the test, is prefixed with `{YOUR_GITHUB_USER}_test_of_prowjob_`.
 
 Because the `vpath/pjtester.yaml` file is used by `pjtester` only, it must not exist outside the PR. This is why the `pre-vpathgurad` required context is added. It fails whenever the `vpath` directory exists and prevents the PR merge. As soon as the virtual path disappears from the PR, `vpathguard` will allow for the PR merge.
 
