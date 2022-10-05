@@ -1,7 +1,7 @@
 # https://golangci-lint.run/usage/configuration/
 
 run:
-  timeout: 3m
+  timeout: 5m
   # skip test files
   tests: false
 output:
