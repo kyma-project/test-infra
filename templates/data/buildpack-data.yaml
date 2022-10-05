@@ -372,6 +372,32 @@ templates:
                         - "default"
                         - "postsubmit"
                   - jobConfig:
+                      name: "pre-test-infra-gardener-sa-rotate"
+                      run_if_changed: "^development/gcp/cloud-run/gardener-sa-rotate/"
+                      args:
+                        - "--name=gardener-sa-rotate"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=."
+                        - "--dockerfile=development/gcp/cloud-run/gardener-sa-rotate/Dockerfile"
+                        - "--directory=test-infra"
+                    inheritedConfigs:
+                      local:
+                        - "default"
+                        - "presubmit"
+                  - jobConfig:
+                      name: "post-test-infra-gardener-sa-rotate"
+                      run_if_changed: "^development/gcp/cloud-run/gardener-sa-rotate/"
+                      args:
+                        - "--name=gardener-sa-rotate"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=."
+                        - "--dockerfile=development/gcp/cloud-run/gardener-sa-rotate/Dockerfile"
+                        - "--directory=test-infra"
+                    inheritedConfigs:
+                      local:
+                        - "default"
+                        - "postsubmit"
+                  - jobConfig:
                       name: "pull-build-githubrelease"
                       run_if_changed: "^changelog-generator/|^development/tools/cmd/githubrelease/"
                       args:
