@@ -18,12 +18,21 @@ Cloud Run app creates a new key for a GCP service account, updates the required 
 ## Cloud Run deployment
 
 To deploy Cloud Run app follow these steps:
-2. Create the `secret-manager-notifications` Pub/Sub topic, if it does not exist.
-3. Create the `service-${PROJECT_NUMBER}@gcp-sa-secretmanager.iam.gserviceaccount.com` service account with the `roles/pubsub.publisher` role, if it does not exist.
-4. Use the following command from this directory to deploy Cloud Function:
+
+1. Create the `secret-manager-notifications` Pub/Sub topic, if it does not exist.
+2. Create the `service-${PROJECT_NUMBER}@gcp-sa-secretmanager.iam.gserviceaccount.com` service account with the `roles/pubsub.publisher` role, if it does not exist.
+3. Use the following command from this directory to deploy Cloud Run app:
 ```bash
-gcloud 
+gcloud run deploy rotate-gardener-secrets-service-account \
+--region europe-west1 \
+--timeout 10 \
+--max-instances 1 \
+--memory 128 \
+--service-account sa-secret-update \
+--image URL \
+--ingress internal
 ```
+4. Create Pub/Sub subscription 
 
 ## Cloud run usage
 
