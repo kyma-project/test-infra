@@ -30,7 +30,7 @@ templates:
           - repoName: github.com/kyma-project/keda-manager
             jobs:
               - jobConfig:
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220830-7bf905118"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221005-ae1d38f9"
                   name: pre-keda-manager-operator-lint # "pre-main-lifecycle-manager-lint"
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
                   annotations:
