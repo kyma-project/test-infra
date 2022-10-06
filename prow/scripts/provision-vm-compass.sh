@@ -25,7 +25,8 @@ chmod +x yq
 
 # Flag to recycle or recreate VM on each commit execution
 RECYCLE_VM="no"
-PROVISIONING_PASS="no"
+# Flag that shows if the mandatory provisioning (kyma installation) was completed
+KYMA_INSTALLED="no"
 
 get_schema_migrator_label() {
     local PATH_TO_VALUES_YAML="/home/prow/go/src/github.com/kyma-incubator/compass/chart/compass/values.yaml"
@@ -35,7 +36,7 @@ get_schema_migrator_label() {
 
 cleanup() {
     local ARG=$?
-    if [[ "${RECYCLE_VM}" == "yes" && "${PROVISIONING_PASS}" == "yes" ]]; then
+    if [[ "${RECYCLE_VM}" == "yes" && "${KYMA_INSTALLED}" == "yes" ]]; then
         log::info "Triggering the compass uninstallation"
         utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_PREFIX}${SUFFIX}" -c "yes | ~/compass/installation/scripts/prow/uninstall-compass.sh"
     else
@@ -70,7 +71,7 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
 fi
 
 # Log the VM recycle strategy
-if [[ "${RECYCLE_VM}" == "yes" && "${PROVISIONING_PASS}" == "yes" ]]; then
+if [[ "${RECYCLE_VM}" == "yes" && "${KYMA_INSTALLED}" == "yes" ]]; then
     log::info "VM will be recycled and reused to execute validaiton of next commit in this PR: ${SUFFIX}"
 else
     log::info "VM will be destroyed when execution of validaiton ends."
@@ -182,9 +183,9 @@ if [[ -z "$VM_FOR_PREFIX_AND_SUFFIX" ]]; then
     log::info "Triggering the full installation"
     utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_PREFIX}${SUFFIX}" -c "yes | ~/compass/installation/scripts/prow/provision.sh ${DUMP_DB}"
     log::info "Full provisioning done"
-    PROVISIONING_PASS="yes"
+    KYMA_INSTALLED="yes"
 else
-    PROVISIONING_PASS="yes"
+    KYMA_INSTALLED="yes"
     trap cleanup exit INT
 
     log::info "The VM with name:  ${VM_FOR_PREFIX_AND_SUFFIX} is available - will be reused..." 
