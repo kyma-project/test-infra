@@ -17,24 +17,22 @@ replace (
 )
 
 require (
-	cloud.google.com/go/bigquery v1.39.0
+	cloud.google.com/go/bigquery v1.42.0
+	cloud.google.com/go/compute v1.10.0
 	cloud.google.com/go/firestore v1.6.1
-	cloud.google.com/go/functions v1.5.0
+	cloud.google.com/go/functions v1.7.0
 	cloud.google.com/go/logging v1.5.0
 	cloud.google.com/go/pubsub v1.25.1
-	cloud.google.com/go/storage v1.26.0
+	cloud.google.com/go/storage v1.27.0
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
-	github.com/cloudevents/sdk-go/v2 v2.11.0
+	github.com/cloudevents/sdk-go/v2 v2.12.0
 	github.com/containerd/containerd v1.6.6
 	github.com/containerd/typeurl v1.0.2
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
 	github.com/fsouza/go-dockerclient v1.8.3
-	github.com/gardener/component-cli v0.43.0
-	github.com/gardener/component-spec/bindings-go v0.0.65
 	github.com/ghodss/yaml v1.0.0
-	github.com/go-logr/logr v0.4.0
 	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/google/go-containerregistry v0.7.1-0.20211203164431-c75901cce627
 	github.com/google/go-github/v40 v40.0.0
@@ -44,10 +42,8 @@ require (
 	github.com/imdario/mergo v0.3.13
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/jinzhu/copier v0.3.5
-	github.com/mandelsoft/vfs v0.0.0-20210530103237-5249dc39ce91
 	github.com/onsi/gomega v1.20.2
 	github.com/pkg/errors v0.9.1
-	github.com/satori/go.uuid v1.2.0
 	github.com/shurcooL/githubv4 v0.0.0-20211117020012-5800b9de5b8b
 	github.com/sigstore/cosign v1.2.1
 	github.com/sigstore/sigstore v1.0.1
@@ -58,11 +54,10 @@ require (
 	github.com/spf13/viper v1.10.0 // indirect
 	github.com/stretchr/testify v1.8.0
 	github.com/tidwall/gjson v1.14.3
-	github.com/vrischmann/envconfig v1.3.0
 	go.uber.org/zap v1.23.0
-	golang.org/x/net v0.0.0-20220722155237-a158d28d115b
-	golang.org/x/oauth2 v0.0.0-20220822191816-0ebed06d0094
-	google.golang.org/api v0.95.0
+	golang.org/x/net v0.0.0-20220909164309-bea034e7d591
+	golang.org/x/oauth2 v0.0.0-20220909003341-f21342109be1
+	google.golang.org/api v0.98.0
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.22.2

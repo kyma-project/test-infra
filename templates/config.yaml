@@ -18,7 +18,6 @@ global:
         - name: "community"
         - name: "module-manager"
         - name: "hydroform"
-        - name: "console"
         - name: "istio-operator"
         - name: "addons"
         - name: "private-fn-for-e2e-serverless-tests"
@@ -62,13 +61,24 @@ pubsub_config: &pubsub_config
   pubsub_topic: "prowjobs"
   
 globalSets:
+  kaniko_buildpack:
+    skip_report: "false"
+    max_concurrency: "10"
+    decorate: "true"
+    pubsub_project: "sap-kyma-prow"
+    pubsub_topic: "prowjobs"
+    image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0
+    command: /kaniko-build
+    labels:
+      preset-sa-gcr-push: "true"
+    volumes:
+      - name: config
+        configMapName: kaniko-build-config
+    volumeMounts:
+      - name: config
+        mountPath: /config
+        readOnly: true
   # Kyma major version sets
-  kyma_major_version_1:
-    env:
-      KYMA_MAJOR_VERSION: 1
-  kyma_major_version_2:
-    env:
-      KYMA_MAJOR_VERSION: 2
   kyma_major_upgrade:
     env:
       KYMA_MAJOR_UPGRADE: "true"
@@ -83,7 +93,7 @@ globalSets:
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220901-6453087a4"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221003-d0889db7"
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
   image_buildpack-node:
@@ -97,7 +107,7 @@ globalSets:
   image_wssagent:
     image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
   image_gardener-rotate:
-    image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20220819-694650155"
+    image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20221003-dd432f00"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
@@ -193,10 +203,6 @@ globalSets:
     labels:
       preset-docker-push-repository-kyma: "true"
     path_alias: "github.com/kyma-project/busola"
-  jobConfig_generic_component_console:
-    labels:
-      preset-docker-push-repository-kyma: "true"
-    path_alias: "github.com/kyma-project/console"
   jobConfig_generic_component_compass:
     labels:
       preset-docker-push-repository-incubator: "true"

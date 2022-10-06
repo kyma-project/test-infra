@@ -51,9 +51,17 @@ func (sm *Service) GetSecretVersion(secretPath string) (*gcpsecretmanager.Secret
 }
 
 // DisableSecretVersion disables a version of a secret
-func (sm *Service) DisableSecretVersion(version *gcpsecretmanager.SecretVersion) (*gcpsecretmanager.SecretVersion, error) {
+// expects versionPath in "projects/*/secrets/*/versions/*" format
+func (sm *Service) DisableSecretVersion(versionPath string) (*gcpsecretmanager.SecretVersion, error) {
 	disableRequest := gcpsecretmanager.DisableSecretVersionRequest{}
-	return sm.VersionService.Disable(version.Name, &disableRequest).Do()
+	return sm.VersionService.Disable(versionPath, &disableRequest).Do()
+}
+
+// DestroySecretVersion destroys a version of a secret
+// expects versionPath in "projects/*/secrets/*/versions/*" format
+func (sm *Service) DestroySecretVersion(versionPath string) (*gcpsecretmanager.SecretVersion, error) {
+	destroyRequest := gcpsecretmanager.DestroySecretVersionRequest{}
+	return sm.VersionService.Destroy(versionPath, &destroyRequest).Do()
 }
 
 // GetLatestSecretVersionData retrieves payload of a latest secret version

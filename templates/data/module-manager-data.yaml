@@ -30,7 +30,7 @@ templates:
             jobs:
               - jobConfig:
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220830-7bf905118"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221005-ae1d38f9"
                   name: "pull-lint"
                   annotations:
                     description: executes the 'make lint' command in the module-manager 'operator' directory before any pull request.
@@ -85,6 +85,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=operator"
                     - "--dockerfile=Dockerfile"
+                    - "--tag=latest"
                 inheritedConfigs:
                   local:
                     - default
