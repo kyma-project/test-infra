@@ -29,7 +29,7 @@ gcloud run deploy rotate-gardener-secrets-service-account \
 --max-instances 1 \
 --memory 128 \
 --service-account sa-secret-update \
---image URL \
+--image eu.gcr.io/kyma-project/test-infra/gardener-sa-rotate:v20221006-6fd98cfd \
 --ingress internal
 ```
 4. Create Pub/Sub subscription 
