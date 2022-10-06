@@ -24,7 +24,7 @@ If none of the conditions are met, `pjtester` uses the `heads/main` refs to load
 
 Once the prowjob definition is found and loaded, `pjtester` generates prowjob specification. Prowjob name and context reported to GitHub are prefixed with the pjtester prefix. Prowjob refs and extraRefs are set according to the configuration provided in the `pjtester.yaml` file in pjtester prowjob.
 
-If the `pjtester.yaml` file contains pull request numbers in the **prConfigs** parameter, they are used as prowjob refs and extraRefs.
+If the `pjtester.yaml` file contains PR numbers in the **prConfigs** parameter, they are used as prowjob refs and extraRefs.
 
 If **prConfigs** doesn't provide a PR number for refs or some extraRefs, but the pjtester pull request is open on the same repository, it is used in the prowjob specification as refs or extraRefs.
 
