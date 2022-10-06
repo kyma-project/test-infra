@@ -13,7 +13,8 @@ Cloud Run app creates a new key for a GCP service account, updates the required 
 7. Cloud Run app generates a new key for the service account.
 8. Cloud Run app creates a new secret version in Secret Manger, containing the newly created service account key.
 9. Cloud Run app updates a secret in Gardener cluster, containing the newly created service account key.
-10. Cloud Run app destroys old versions of a secret in Secret Manager.
+10. Cloud Run app deletes old versions of a key in IAM.
+11. Cloud Run app destroys old versions of a secret in Secret Manager.
 
 ## Cloud Run deployment
 
@@ -21,19 +22,21 @@ To deploy Cloud Run app follow these steps:
 
 1. Create the `secret-manager-notifications` Pub/Sub topic, if it does not exist.
 2. Create the `service-${PROJECT_NUMBER}@gcp-sa-secretmanager.iam.gserviceaccount.com` service account with the `roles/pubsub.publisher` role, if it does not exist.
-3. Use the following command from this directory to deploy Cloud Run app:
+3. Use the following command to deploy Cloud Run app:
 ```bash
 gcloud run deploy rotate-gardener-secrets-service-account \
 --region europe-west1 \
---timeout 10 \
+--timeout 600 \
 --max-instances 1 \
---memory 128 \
---service-account sa-secret-update \
+--memory 128Mi \
+--service-account sa-secret-update@sap-kyma-prow.iam.gserviceaccount.com \
 --ingress internal \
 --project sap-kyma-prow \
+--allow-unauthenticated \
 --image eu.gcr.io/kyma-project/test-infra/gardener-sa-rotate:v20221006-6fd98cfd
 ```
-4. Create Pub/Sub subscription 
+4. Create the push `rotate-gardener-secrets-service-account` Pub/Sub subscription on `secret-manager-notifications` topic pointing to the Cloud Run app URL.
+
 
 ## Cloud run usage
 
