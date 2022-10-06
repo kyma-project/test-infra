@@ -1,0 +1,252 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma/components/kyma-components-static-checks.yaml
+        localSets:
+          linting:
+            skip_report: "false"
+            max_concurrency: "10"
+            optional: "true"
+            decorate: "true"
+            image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220830-7bf905118"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            request_memory: 200Mi
+            request_cpu: 80m
+          testing:
+            skip_report: "false"
+            max_concurrency: "10"
+            optional: "true"
+            decorate: "true"
+            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            request_memory: 1Gi
+            request_cpu: 100m
+        jobConfigs:
+          - repoName: "kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  name: "pull-application-operator-lint"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/application-operator && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                  run_if_changed: '^components/application-operator/(.*\.go$|.golangcilint.yaml)'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                  local:
+                    - linting
+              - jobConfig:
+                  name: "pull-application-operator-unit-test"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/application-operator && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/application-operator/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                  local:
+                    - testing
+
+              - jobConfig:
+                  name: "pull-central-application-connectivity-validator-lint"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/central-application-connectivity-validator && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                  run_if_changed: '^components/central-application-connectivity-validator/(.*\.go$|.golangcilint.yaml)'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                  local:
+                    - linting
+              - jobConfig:
+                  name: "pull-central-application-connectivity-validator-unit-test"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/central-application-connectivity-validator && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/central-application-connectivity-validator/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                  local:
+                    - testing
+
+              - jobConfig:
+                  name: "pull-central-application-gateway-lint"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/central-application-gateway && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                  run_if_changed: '^components/central-application-gateway/(.*\.go$|.golangcilint.yaml)'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                  local:
+                    - linting
+              - jobConfig:
+                  name: "pull-central-application-gateway-unit-test"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/central-application-gateway && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/central-application-gateway/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                  local:
+                    - testing
+
+              - jobConfig:
+                  name: "pull-compass-runtime-agent-lint"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/compass-runtime-agent && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                  run_if_changed: '^components/compass-runtime-agent/(.*\.go$|.golangcilint.yaml)'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                  local:
+                    - linting
+              - jobConfig:
+                  name: "pull-compass-runtime-agent-unit-test"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/compass-runtime-agent && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/compass-runtime-agent/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                  local:
+                    - testing
+
+              - jobConfig:
+                  name: "pull-directory-size-exporter-lint"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/directory-size-exporter && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                  run_if_changed: '^components/directory-size-exporter/(.*\.go$|.golangcilint.yaml)'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                  local:
+                    - linting
+              - jobConfig:
+                  name: "pull-directory-size-exporter-unit-test"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/directory-size-exporter && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/directory-size-exporter/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                  local:
+                    - testing
+
+              - jobConfig:
+                  name: "pull-event-publisher-proxy-lint"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/event-publisher-proxy && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                  run_if_changed: '^components/event-publisher-proxy/(.*\.go$|.golangcilint.yaml)'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                  local:
+                    - linting
+              - jobConfig:
+                  name: "pull-event-publisher-proxy-unit-test"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/event-publisher-proxy && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/event-publisher-proxy/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                  local:
+                    - testing
+
+              - jobConfig:
+                  name: "pull-eventing-controller-lint"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/eventing-controller && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                  run_if_changed: '^components/eventing-controller/(.*\.go$|.golangcilint.yaml)'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                  local:
+                    - linting
+              - jobConfig:
+                  name: "pull-eventing-controller-unit-test"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/eventing-controller && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/eventing-controller/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                  local:
+                    - testing
+
+              - jobConfig:
+                  name: "pull-function-controller-lint"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/function-controller && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                  run_if_changed: '^components/function-controller/(.*\.go$|.golangcilint.yaml)'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                  local:
+                    - linting
+              - jobConfig:
+                  name: "pull-function-controller-unit-test"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/function-controller && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/function-controller/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                  local:
+                    - testing
+
+              - jobConfig:
+                  name: "pull-telemetry-operator-lint"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/telemetry-operator && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                  run_if_changed: '^components/telemetry-operator/(.*\.go$|.golangcilint.yaml)'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                  local:
+                    - linting
+              - jobConfig:
+                  name: "pull-telemetry-operator-unit-test"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/telemetry-operator && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/telemetry-operator/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                  local:
+                    - testing
