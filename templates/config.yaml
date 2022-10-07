@@ -78,6 +78,32 @@ globalSets:
       - name: config
         mountPath: /config
         readOnly: true
+  image-builder-buildkit:
+    skip_report: "false"
+    max_concurrency: 10
+    decorate: "true"
+    pubsub_project: "sap-kyma-prow"
+    pubsub_topic: "prowjobs"
+    image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220928-3d2ace1b4-buildkit
+    command: "/kaniko-build"
+    labels:
+      preset-sa-gcr-push: "true"
+    annotations:
+      container.apparmor.security.beta.kubernetes.io/test: unconfined
+      container.seccomp.security.alpha.kubernetes.io/test: unconfined
+    env:
+      BUILDKITD_FLAGS: "--oci-worker-no-process-sandbox"
+    volumes:
+      - name: share
+        emptyDir: true
+      - name: config
+        configMapName: kaniko-build-config
+    volumeMounts:
+      - mountPath: /home/user/.local/share/buildkit
+        name: share
+      - name: config
+        mountPath: /config
+        readOnly: true
   # Kyma major version sets
   kyma_major_upgrade:
     env:

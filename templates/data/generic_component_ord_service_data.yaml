@@ -1,37 +1,8 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/incubator/ord-service/ord-service-build.yaml
-        localSets:
-          image-builder-buildkit:
-            image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220928-3d2ace1b4-buildkit
-            pubsub_project: "sap-kyma-prow"
-            pubsub_topic: "prowjobs"
-            skip_report: "false"
-            max_concurrency: 10
-            decorate: "true"
-            annotations:
-              container.apparmor.security.beta.kubernetes.io/test: unconfined
-              container.seccomp.security.alpha.kubernetes.io/test: unconfined
-            labels:
-              preset-sa-gcr-push: "true"
-            command: "/kaniko-build"
-            env:
-              BUILDKITD_FLAGS: "--oci-worker-no-process-sandbox"
-            volumes:
-              - name: share
-                emptyDir: true
-              - name: config
-                configMapName: kaniko-build-config
-            volumeMounts:
-              - mountPath: /home/user/.local/share/buildkit
-                name: share
-              - name: config
-                mountPath: /config
-                readOnly: true
+      - to: ../../prow/jobs/incubator/ord-service/components/ord-service/ord-service-generic.yaml
         jobConfigs:
-
-        # Ord-service repo build jobs
           - repoName: "github.com/kyma-incubator/ord-service"
             jobs:
               - jobConfig:
@@ -52,9 +23,8 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-ord-service-build
@@ -74,7 +44,6 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_postsubmit

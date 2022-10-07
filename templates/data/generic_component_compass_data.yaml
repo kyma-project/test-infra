@@ -1,40 +1,10 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/incubator/compass/compass-build.yaml
-        localSets:
-          image-builder-buildkit:
-            image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220928-3d2ace1b4-buildkit
-            pubsub_project: "sap-kyma-prow"
-            pubsub_topic: "prowjobs"
-            skip_report: "false"
-            max_concurrency: 10
-            decorate: "true"
-            annotations:
-              container.apparmor.security.beta.kubernetes.io/test: unconfined
-              container.seccomp.security.alpha.kubernetes.io/test: unconfined
-            labels:
-              preset-sa-gcr-push: "true"
-            command: "/kaniko-build"
-            env:
-              BUILDKITD_FLAGS: "--oci-worker-no-process-sandbox"
-            volumes:
-              - name: share
-                emptyDir: true
-              - name: config
-                configMapName: kaniko-build-config
-            volumeMounts:
-              - mountPath: /home/user/.local/share/buildkit
-                name: share
-              - name: config
-                mountPath: /config
-                readOnly: true
+      - to: ../../prow/jobs/incubator/compass/components/operations-controller/operations-controller-generic.yaml
         jobConfigs:
-
-        # Compass repo build jobs
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
-            # Operations controller build jobs
               - jobConfig:
                   name: pull-operations-controller-build
                   args:
@@ -53,9 +23,8 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-operations-controller-build
@@ -75,12 +44,14 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_postsubmit
 
-            # Connector build jobs
+      - to: ../../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-incubator/compass"
+            jobs:
               - jobConfig:
                   name: pull-connector-build
                   args:
@@ -99,9 +70,8 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-connector-build
@@ -121,12 +91,14 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_postsubmit
 
-            # Director build jobs
+      - to: ../../prow/jobs/incubator/compass/components/director/director-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-incubator/compass"
+            jobs:
               - jobConfig:
                   name: pull-director-build
                   args:
@@ -145,9 +117,8 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-director-build
@@ -167,12 +138,14 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_postsubmit
 
-            # Hydrator build jobs
+      - to: ../../prow/jobs/incubator/compass/components/hydrator/hydrator-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-incubator/compass"
+            jobs:
               - jobConfig:
                   name: pull-hydrator-build
                   args:
@@ -191,9 +164,8 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-hydrator-build
@@ -213,12 +185,14 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_postsubmit
 
-            # System-broker build jobs
+      - to: ../../prow/jobs/incubator/compass/components/system-broker/system-broker-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-incubator/compass"
+            jobs:
               - jobConfig:
                   name: pull-system-broker-build
                   args:
@@ -237,9 +211,8 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-system-broker-build
@@ -259,12 +232,14 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_postsubmit
 
-            # External-services-mock build jobs
+      - to: ../../prow/jobs/incubator/compass/components/external-services-mock/external-services-mock-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-incubator/compass"
+            jobs:
               - jobConfig:
                   name: pull-external-services-mock-build
                   args:
@@ -283,9 +258,8 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-external-services-mock-build
@@ -305,12 +279,14 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_postsubmit
 
-            # Connectivity-adapter build jobs
+      - to: ../../prow/jobs/incubator/compass/components/connectivity-adapter/connectivity-adapter-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-incubator/compass"
+            jobs:
               - jobConfig:
                   name: pull-connectivity-adapter-build
                   args:
@@ -329,9 +305,8 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-connectivity-adapter-build
@@ -351,12 +326,14 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_postsubmit
 
-            # Pairing-adapter build jobs
+      - to: ../../prow/jobs/incubator/compass/components/pairing-adapter/pairing-adapter-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-incubator/compass"
+            jobs:
               - jobConfig:
                   name: pull-pairing-adapter-build
                   args:
@@ -375,9 +352,8 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-pairing-adapter-build
@@ -397,12 +373,14 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_postsubmit
 
-            # Gateway build jobs
+      - to: ../../prow/jobs/incubator/compass/components/gateway/gateway-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-incubator/compass"
+            jobs:
               - jobConfig:
                   name: pull-gateway-build
                   args:
@@ -421,9 +399,8 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-gateway-build
@@ -443,12 +420,14 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_postsubmit
 
-            # Schema-migrator build jobs
+      - to: ../../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-incubator/compass"
+            jobs:
               - jobConfig:
                   name: pull-schema-migrator-build
                   args:
@@ -467,9 +446,8 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-schema-migrator-build
@@ -489,12 +467,14 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_postsubmit
 
-            # Tests build jobs
+      - to: ../../prow/jobs/incubator/compass/tests/compass-e2e-tests/compass-e2e-tests.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-incubator/compass"
+            jobs:
               - jobConfig:
                   name: pull-tests-build
                   args:
@@ -513,9 +493,8 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-tests-build
@@ -535,8 +514,7 @@ templates:
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
-                  local:
-                    - image-builder-buildkit
                   global:
+                    - image-builder-buildkit
                     - jobConfig_postsubmit
 
