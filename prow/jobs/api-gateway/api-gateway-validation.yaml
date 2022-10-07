@@ -23,7 +23,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m --out-format html > ${ARTIFACTS}/golangci-lint-report.html"
+              - "golangci-lint run ./... --timeout=5m --out-format -v html > ${ARTIFACTS}/golangci-lint-report.html"
             resources:
               requests:
                 memory: 200Mi
