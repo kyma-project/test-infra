@@ -31,6 +31,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
+                    - "echo $(git describe --abbrev=0 --tags)"
                     - "go get ./... && go mod vendor && golangci-lint run ./... --modules-download-mode vendor --timeout=5m -v --out-format html > ${ARTIFACTS}/report-golangci-lint.html"
                   always_run: true
                 inheritedConfigs:
