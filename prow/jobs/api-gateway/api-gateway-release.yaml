@@ -3,12 +3,12 @@
 
 postsubmits: # runs on main
   kyma-project/api-gateway:
-    - name: release-api-gateway
+    - name: rel-api-gateway-build
       annotations:
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "release-api-gateway"
+        prow.k8s.io/pubsub.runID: "rel-api-gateway-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-gcr-push: "true"
       optional: false
@@ -22,13 +22,15 @@ postsubmits: # runs on main
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
             command:
-              - "/kaniko-build"
+              - "/bin/sh"
             args:
+              - "-c"
+              - "/kaniko-build"
               - "--name=api-gateway"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
-              - "--tag=${PULL_BASE_REF}"
+              - "--tag=$(git describe --abbrev=0 --tags)"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -37,12 +39,12 @@ postsubmits: # runs on main
           - name: config
             configMap:
               name: kaniko-build-config
-    - name: rel-api-gateway-webhook-certificates
+    - name: rel-api-gateway-webhook-certificates-build
       annotations:
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "rel-api-gateway-webhook-certificates"
+        prow.k8s.io/pubsub.runID: "rel-api-gateway-webhook-certificates-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-gcr-push: "true"
       optional: false
@@ -56,13 +58,15 @@ postsubmits: # runs on main
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
             command:
-              - "/kaniko-build"
+              - "/bin/sh"
             args:
+              - "-c"
+              - "/kaniko-build"
               - "--name=api-gateway-webhook-certificates"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile-certificates"
-              - "--tag=${PULL_BASE_REF}"
+              - "--tag=$(git describe --abbrev=0 --tags)"
             volumeMounts:
               - name: config
                 mountPath: /config

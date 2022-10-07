@@ -17,31 +17,37 @@ templates:
           - repoName: kyma-project/api-gateway
             jobs:
               - jobConfig:
-                  name: release-api-gateway
+                  name: rel-api-gateway-build
                   optional: "false"
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
+                  command: "/bin/sh"
                   args:
+                    - "-c"
+                    - "/kaniko-build"
                     - "--name=api-gateway"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
-                    - "--tag=${PULL_BASE_REF}"
+                    - "--tag=$(git describe --abbrev=0 --tags)"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
               - jobConfig:
-                  name: rel-api-gateway-webhook-certificates
+                  name: rel-api-gateway-webhook-certificates-build
                   optional: "false"
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
+                  command: "/bin/sh"
                   args:
+                    - "-c"
+                    - "/kaniko-build"
                     - "--name=api-gateway-webhook-certificates"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile-certificates"
-                    - "--tag=${PULL_BASE_REF}"
+                    - "--tag=$(git describe --abbrev=0 --tags)"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
