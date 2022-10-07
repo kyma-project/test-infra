@@ -31,7 +31,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                    - "golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m -o html > ${ARTIFACTS}/golangci-lint-report.html"
                   always_run: true
                 inheritedConfigs:
                   global:
