@@ -26,6 +26,7 @@ global:
         - name: "busola-migrator"
         - name: "examples"
         - name: "api-gateway"
+        - name: "btp-manager"
     - name: "kyma-incubator"
       repos:
         - name: "compass"
