@@ -1,37 +1,31 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/api-gateway/api-gateway-build.yaml
+      - to: ../../prow/jobs/api-gateway/api-gateway-build-old.yaml
+        localSets:
+          job_spec:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
         jobConfigs:
           - repoName: "github.com/kyma-project/api-gateway"
             jobs:
               - jobConfig:
-                  path: api-gateway
-                  name: pre-main-kyma-project-api-gateway
+                  name: rel-api-gateway
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/api-gateway"
-                    - "ci-pr"
-                  always_run: true
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_buildpack-golang-kubebuilder2
-                    - jobConfig_generic_component
-                    - jobConfig_generic_component_api-gateway
-              - jobConfig:
-                  path: api-gateway
-                  name: post-main-kyma-project-api-gateway
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/api-gateway"
-                    - "ci-main"
+                    - "ci-release"
+                  branches:
+                    - '^\d+\.\d+\.\d+(?:-.*)?$'
+                  labels:
+                    preset-bot-github-token: "true"
+                    preset-dind-enabled: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - disable_testgrid
-                    - image_buildpack-golang-kubebuilder2
                     - jobConfig_generic_component
                     - jobConfig_generic_component_api-gateway
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                    - image_buildpack-golang-toolbox
+                  local:
+                    - job_spec

@@ -1,7 +1,0 @@
-registry: eu.gcr.io/kyma-project
-reproducible: true
-log-format: json
-cache:
-  enabled: true
-  cache-repo: eu.gcr.io/sap-kyma-neighbors-dev/cache
-  cache-run-layers: true

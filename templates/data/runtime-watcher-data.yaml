@@ -2,13 +2,36 @@ templates:
   - from: generic.tmpl
     render:
       - to: ../../prow/jobs/runtime-watcher/runtime-watcher.yaml
+        localSets:
+          jobConfig_default:
+            imagePullPolicy: "Always"
+            privileged: "false"
+          default:
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            branches:
+              - "^main$"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0
+            command: /kaniko-build
+            labels:
+              preset-sa-gcr-push: "true"
+            volumes:
+              - name: config
+                configMapName: kaniko-build-config
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
         jobConfigs:
           - repoName: kyma-project/runtime-watcher
             jobs:
               - jobConfig:
                   run_if_changed: "^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)"
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220804-607830f89"
-                  name: "pre-main-runtime-watcher-skr-lint"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221005-ae1d38f9"
+                  name: pull-lint-skr
                   command: "bash"
                   args:
                     - "-c"
@@ -21,7 +44,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   run_if_changed: "^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)"
-                  name: pre-main-runtime-watcher-skr-tests
+                  name: pull-tests-skr
                   command: "bash"
                   args:
                     - "-c"
@@ -36,8 +59,8 @@ templates:
                     - "build_labels" # default labels
               - jobConfig:
                   run_if_changed: "^kcp/(go.mod|go.sum)$|^kcp/*/(.*.go|Makefile|.*.sh)"
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220804-607830f89"
-                  name: "pre-main-runtime-watcher-kcp-lint"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221005-ae1d38f9"
+                  name: pull-lint-kcp
                   command: "bash"
                   args:
                     - "-c"
@@ -50,7 +73,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   run_if_changed: "^kcp/(go.mod|go.sum)$|^kcp/*/(.*.go|Makefile|.*.sh)"
-                  name: pre-main-runtime-watcher-kcp-tests
+                  name: pull-tests-kcp
                   command: "bash"
                   args:
                     - "-c"
@@ -65,8 +88,8 @@ templates:
                     - "build_labels" # default labels
               - jobConfig:
                   run_if_changed: "^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)"
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220804-607830f89"
-                  name: "pre-main-runtime-watcher-listener-lint"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221005-ae1d38f9"
+                  name: "pull-lint-listener"
                   command: "bash"
                   args:
                     - "-c"
@@ -79,7 +102,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   run_if_changed: "^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)"
-                  name: pre-main-runtime-watcher-listener-tests
+                  name: pull-tests-listener
                   command: "bash"
                   args:
                     - "-c"
@@ -93,82 +116,56 @@ templates:
                     - "jobConfig_presubmit"
                     - "build_labels" # default labels
               - jobConfig:
-                  labels:
-                    preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
-                  name: "pre-main-runtime-watcher-kcp-build"
+                  name: pull-build-kcp
                   run_if_changed: "^kcp/"
-                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/runtime-watcher/kcp"
-                    - "docker-build"
-                    - "docker-push"
-                  branches:
-                    - ^main$
+                    - "--name=runtime-watcher-kcp"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=kcp"
+                    - "--dockerfile=Dockerfile"
                 inheritedConfigs:
+                  local:
+                    - default
                   global:
-                    - jobConfig_default
                     - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_buildpack-golang
-                    - jobConfig_generic_component
-                    - "build_labels" # default labels
               - jobConfig:
-                  labels:
-                    preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
-                  name: "post-main-runtime-watcher-kcp-build"
-                  run_if_changed: "^kcp/"
-                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  name: main-build-kcp
+                  always_run: true
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/runtime-watcher/kcp"
-                    - "docker-build"
-                    - "docker-push"
-                  branches:
-                    - ^main$
+                    - "--name=runtime-watcher-kcp"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=kcp"
+                    - "--dockerfile=Dockerfile"
+                    - "--tag=latest"
                 inheritedConfigs:
+                  local:
+                    - default
                   global:
-                    - jobConfig_default
                     - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - image_buildpack-golang
-                    - jobConfig_generic_component
-                    - "build_labels" # default labels
               - jobConfig:
-                  labels:
-                    preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
-                  name: "pre-main-runtime-watcher-skr-build"
+                  name: pull-build-skr
                   run_if_changed: "^skr/"
-                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/runtime-watcher/skr"
-                    - "docker-build"
-                    - "docker-push"
-                  branches:
-                    - ^main$
+                    - "--name=runtime-watcher-skr"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=skr"
+                    - "--dockerfile=Dockerfile"
                 inheritedConfigs:
+                  local:
+                    - default
                   global:
-                    - jobConfig_default
                     - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_buildpack-golang
-                    - jobConfig_generic_component
-                    - "build_labels" # default labels
               - jobConfig:
-                  labels:
-                    preset-docker-push-repository-kyma: "true" # sets GCR Registry through DOCKER_PUSH_REPOSITORY
-                  name: "post-main-runtime-watcher-skr-build"
-                  run_if_changed: "^skr/"
-                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  name: main-build-skr
+                  always_run: true
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/runtime-watcher/skr"
-                    - "docker-build"
-                    - "docker-push"
-                  branches:
-                    - ^main$
+                    - "--name=runtime-watcher-skr"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=skr"
+                    - "--dockerfile=Dockerfile"
+                    - "--tag=latest"
                 inheritedConfigs:
+                  local:
+                    - default
                   global:
-                    - jobConfig_default
                     - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - image_buildpack-golang
-                    - jobConfig_generic_component
-                    - "build_labels" # default labels

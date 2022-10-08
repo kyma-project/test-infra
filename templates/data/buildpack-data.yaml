@@ -4,21 +4,31 @@ templates:
           - to: ../../prow/jobs/test-infra/buildpack.yaml
             localSets:
               default:
-                command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+                skip_report: "false"
+                max_concurrency: "10"
+                decorate: "true"
+                branches:
+                  - "^master$"
+                  - "^main$"
+                pubsub_project: "sap-kyma-prow"
+                pubsub_topic: "prowjobs"
+                image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0
+                command: /kaniko-build
                 labels:
-                  preset-dind-enabled: "true"
                   preset-sa-gcr-push: "true"
-                  preset-docker-push-repository-test-infra: "true"
+                volumes:
+                  - name: config
+                    configMapName: kaniko-build-config
+                volumeMounts:
+                  - name: config
+                    mountPath: /config
+                    readOnly: true
               presubmit:
                 type_presubmit: "true"
                 cluster: "untrusted-workload"
-                labels:
-                  preset-build-pr: "true"
               postsubmit:
                 type_postsubmit: "true"
                 cluster: "trusted-workload"
-                labels:
-                  preset-build-release: "true"
                 annotations:
                   testgrid-create-test-group: "false"
             jobConfigs:
@@ -28,11 +38,12 @@ templates:
                       name: "pre-test-infra-bootstrap"
                       run_if_changed: "^prow/images/bootstrap/"
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
+                        - "--name=bootstrap"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=prow/images/bootstrap"
+                        - "--dockerfile=Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -40,11 +51,11 @@ templates:
                       name: "post-test-infra-bootstrap"
                       run_if_changed: "^prow/images/bootstrap/"
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
+                        - "--name=bootstrap"
+                        - "--context=prow/images/bootstrap"
+                        - "--dockerfile=Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -52,11 +63,12 @@ templates:
                       name: "pre-test-infra-kyma-integration"
                       run_if_changed: "^prow/images/kyma-integration/"
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
+                        - "--name=kyma-integration"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=prow/images/kyma-integration"
+                        - "--dockerfile=Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -64,11 +76,12 @@ templates:
                       name: "post-test-infra-kyma-integration"
                       run_if_changed: "^prow/images/kyma-integration/"
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
+                        - "--name=kyma-integration"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=prow/images/kyma-integration"
+                        - "--dockerfile=Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -76,11 +89,12 @@ templates:
                       name: "pre-test-infra-buildpack-golang"
                       run_if_changed: "^prow/images/buildpack-golang/"
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang"
+                        - "--name=buildpack-golang"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=prow/images/buildpack-golang"
+                        - "--dockerfile=Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -88,11 +102,12 @@ templates:
                       name: "post-test-infra-buildpack-golang"
                       run_if_changed: "^prow/images/buildpack-golang/"
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang"
+                        - "--name=buildpack-golang"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=prow/images/buildpack-golang"
+                        - "--dockerfile=Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -100,11 +115,12 @@ templates:
                       name: "pre-test-infra-buildpack-node"
                       run_if_changed: "^prow/images/buildpack-node/"
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node"
+                        - "--name=buildpack-node"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=prow/images/buildpack-node"
+                        - "--dockerfile=Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -112,11 +128,12 @@ templates:
                       name: "post-test-infra-buildpack-node"
                       run_if_changed: "^prow/images/buildpack-node/"
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node"
+                        - "--name=buildpack-node"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=prow/images/buildpack-node"
+                        - "--dockerfile=Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -124,11 +141,12 @@ templates:
                       name: "pre-test-infra-cleaner"
                       run_if_changed: "^prow/images/cleaner/"
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/cleaner"
+                        - "--name=cleaner"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=prow/images/cleaner"
+                        - "--dockerfile=Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -136,11 +154,12 @@ templates:
                       name: "post-test-infra-cleaner"
                       run_if_changed: "^prow/images/cleaner/"
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/cleaner"
+                        - "--name=cleaner"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=prow/images/cleaner"
+                        - "--dockerfile=Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -148,11 +167,12 @@ templates:
                       name: "pre-test-infra-vulnerability-scanner"
                       run_if_changed: "^prow/images/vulnerability-scanner/"
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/vulnerability-scanner"
+                        - "--name=vulnerability-scanner"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=prow/images/vulnerability-scanner"
+                        - "--dockerfile=Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -160,11 +180,12 @@ templates:
                       name: "post-test-infra-vulnerability-scanner"
                       run_if_changed: "^prow/images/vulnerability-scanner/"
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/vulnerability-scanner"
+                        - "--name=vulnerability-scanner"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=prow/images/vulnerability-scanner"
+                        - "--dockerfile=Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -172,11 +193,12 @@ templates:
                       name: "pre-test-infra-whitesource-scanner"
                       run_if_changed: "^prow/images/whitesource-scanner/"
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/whitesource-scanner"
+                        - "--name=whitesource-scanner"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=prow/images/whitesource-scanner"
+                        - "--dockerfile=Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -184,35 +206,12 @@ templates:
                       name: "post-test-infra-whitesource-scanner"
                       run_if_changed: "^prow/images/whitesource-scanner/"
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/whitesource-scanner"
+                        - "--name=whitesource-scanner"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=prow/images/whitesource-scanner"
+                        - "--dockerfile=Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
-                      local:
-                        - "default"
-                        - "postsubmit"
-                  - jobConfig:
-                      run_if_changed: "^prow/images/probot-stale/"
-                      name: "pre-test-infra-probot-stale"
-                      args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/probot-stale"
-                    inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
-                      local:
-                        - "default"
-                        - "presubmit"
-                  - jobConfig:
-                      run_if_changed: "^prow/images/probot-stale/"
-                      name: "post-test-infra-probot-stale"
-                      args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/probot-stale"
-                    inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -220,11 +219,12 @@ templates:
                       name: "pre-test-infra-prow-tools"
                       run_if_changed: '^(go\.mod|go\.sum)$|^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
+                        - "--name=prow-tools"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=."
+                        - "--dockerfile=prow/images/prow-tools/Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -232,11 +232,12 @@ templates:
                       name: "post-test-infra-prow-tools"
                       run_if_changed: '^(go\.mod|go\.sum)$|^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
+                        - "--name=prow-tools"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=."
+                        - "--dockerfile=prow/images/prow-tools/Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -244,11 +245,12 @@ templates:
                      name: "pre-test-infra-github-connector-webhook-gateway"
                      run_if_changed: '^development/kyma-github-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
                      args:
-                       - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway"
+                       - "--name=github-connector-webhook-gateway"
+                       - "--config=/config/kaniko-build-config.yaml"
+                       - "--context=development/kyma-github-connector/githubWebhookGateway"
+                       - "--dockerfile=Dockerfile"
+                       - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_buildpack-golang"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -256,11 +258,12 @@ templates:
                       name: "post-test-infra-github-connector-webhook-gateway"
                       run_if_changed: '^development/kyma-github-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway"
+                        - "--name=github-connector-webhook-gateway"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=development/kyma-github-connector/githubWebhookGateway"
+                        - "--dockerfile=Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_buildpack-golang"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -268,11 +271,12 @@ templates:
                       name: "pre-test-infra-pubsub-connector-gateway"
                       run_if_changed: '^development/kyma-pubsub-connector/pubSubGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-pubsub-connector/pubSubGateway"
+                        - "--name=pubsub-connector-gateway"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=development/kyma-pubsub-connector/pubSubGateway"
+                        - "--dockerfile=Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_buildpack-golang"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -280,11 +284,12 @@ templates:
                       name: "post-test-infra-pubsub-connector-gateway"
                       run_if_changed: '^development/kyma-pubsub-connector/pubSubGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-pubsub-connector/pubSubGateway"
+                        - "--name=pubsub-connector-gateway"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=development/kyma-pubsub-connector/pubSubGateway"
+                        - "--dockerfile=Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_buildpack-golang"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -292,11 +297,12 @@ templates:
                       name: "pre-test-infra-ci-force-bot"
                       run_if_changed: '^development/kyma-ci-force-bot/ciforcebot/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-ci-force-bot/ciforcebot"
+                        - "--name=ci-force-bot"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=development/kyma-ci-force-bot/ciforcebot"
+                        - "--dockerfile=Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_buildpack-golang"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -304,11 +310,12 @@ templates:
                       name: "post-test-infra-ci-force-bot"
                       run_if_changed: '^development/kyma-ci-force-bot/ciforcebot/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/kyma-ci-force-bot/ciforcebot"
+                        - "--name=ci-force-bot"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=development/kyma-ci-force-bot/ciforcebot"
+                        - "--dockerfile=Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_buildpack-golang"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -316,11 +323,12 @@ templates:
                       name: "pre-test-infra-golangci-lint"
                       run_if_changed: "^prow/images/golangci-lint/"
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/golangci-lint"
+                        - "--name=golangci-lint"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=prow/images/golangci-lint"
+                        - "--dockerfile=Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -328,11 +336,12 @@ templates:
                       name: "post-test-infra-golangci-lint"
                       run_if_changed: "^prow/images/golangci-lint/"
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/golangci-lint"
+                        - "--name=golangci-lint"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=prow/images/golangci-lint"
+                        - "--dockerfile=Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "postsubmit"
@@ -340,11 +349,12 @@ templates:
                       name: "pre-test-infra-gardener-rotate"
                       run_if_changed: "^prow/images/gardener-rotate/|^development/gardener-rotate/"
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/gardener-rotate"
+                        - "--name=gardener-rotate"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=."
+                        - "--dockerfile=prow/images/gardener-rotate/Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
                       local:
                         - "default"
                         - "presubmit"
@@ -352,11 +362,64 @@ templates:
                       name: "post-test-infra-gardener-rotate"
                       run_if_changed: "^prow/images/gardener-rotate/|^development/gardener-rotate/"
                       args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/gardener-rotate"
+                        - "--name=gardener-rotate"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=."
+                        - "--dockerfile=prow/images/gardener-rotate/Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                        - "jobConfig_default"
+                      local:
+                        - "default"
+                        - "postsubmit"
+                  - jobConfig:
+                      name: "pre-test-infra-gardener-sa-rotate"
+                      run_if_changed: "^development/gcp/cloud-run/gardener-sa-rotate/"
+                      args:
+                        - "--name=gardener-sa-rotate"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=."
+                        - "--dockerfile=development/gcp/cloud-run/gardener-sa-rotate/Dockerfile"
+                        - "--directory=test-infra"
+                    inheritedConfigs:
+                      local:
+                        - "default"
+                        - "presubmit"
+                  - jobConfig:
+                      name: "post-test-infra-gardener-sa-rotate"
+                      run_if_changed: "^development/gcp/cloud-run/gardener-sa-rotate/"
+                      args:
+                        - "--name=gardener-sa-rotate"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=."
+                        - "--dockerfile=development/gcp/cloud-run/gardener-sa-rotate/Dockerfile"
+                        - "--directory=test-infra"
+                    inheritedConfigs:
+                      local:
+                        - "default"
+                        - "postsubmit"
+                  - jobConfig:
+                      name: "pull-build-githubrelease"
+                      run_if_changed: "^changelog-generator/|^development/tools/cmd/githubrelease/"
+                      args:
+                        - "--name=githubrelease"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=."
+                        - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
+                        - "--directory=test-infra"
+                    inheritedConfigs:
+                      local:
+                        - "default"
+                        - "presubmit"
+                  - jobConfig:
+                      name: "post-build-githubrelease"
+                      run_if_changed: "^changelog-generator/|^development/tools/cmd/githubrelease/"
+                      args:
+                        - "--name=githubrelease"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=."
+                        - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
+                        - "--directory=test-infra"
+                    inheritedConfigs:
                       local:
                         - "default"
                         - "postsubmit"

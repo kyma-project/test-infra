@@ -3,365 +3,70 @@
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-kyma-tests-serverless-bench
+    - name: pull-tests-serverless-bench-build
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-kyma-tests-serverless-bench"
+        prow.k8s.io/pubsub.runID: "pull-tests-serverless-bench-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^tests/serverless-bench/|^common/makefiles/'
+      run_if_changed: '^tests/serverless-bench'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/serverless-bench"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pre-rel26-kyma-tests-serverless-bench
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel26-kyma-tests-serverless-bench"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^tests/serverless-bench/|^common/makefiles/'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - release-2.6
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.6
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/serverless-bench"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pre-rel25-kyma-tests-serverless-bench
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel25-kyma-tests-serverless-bench"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^tests/serverless-bench/|^common/makefiles/'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - release-2.5
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.5
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/serverless-bench"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pre-rel24-kyma-tests-serverless-bench
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel24-kyma-tests-serverless-bench"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^tests/serverless-bench/|^common/makefiles/'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - release-2.4
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.4
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/serverless-bench"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=serverless-bench"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=tests/serverless-bench"
+              - "--dockerfile=Dockerfile"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
   
 postsubmits: # runs on main
   kyma-project/kyma:
-    - name: post-kyma-tests-serverless-bench
+    - name: post-test-serverless-bench-build
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-kyma-tests-serverless-bench"
+        prow.k8s.io/pubsub.runID: "post-test-serverless-bench-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^tests/serverless-bench/|^common/makefiles/'
+      run_if_changed: '^tests/serverless-bench/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
       cluster: trusted-workload
       max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+              - "/kaniko-build"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/serverless-bench"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: post-rel26-kyma-tests-serverless-bench
-      annotations:
-        pipeline.trigger: "pr-merge"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel26-kyma-tests-serverless-bench"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^tests/serverless-bench/|^common/makefiles/'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - release-2.6
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.6
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/serverless-bench"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: post-rel25-kyma-tests-serverless-bench
-      annotations:
-        pipeline.trigger: "pr-merge"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel25-kyma-tests-serverless-bench"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^tests/serverless-bench/|^common/makefiles/'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - release-2.5
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.5
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/serverless-bench"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: post-rel24-kyma-tests-serverless-bench
-      annotations:
-        pipeline.trigger: "pr-merge"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel24-kyma-tests-serverless-bench"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^tests/serverless-bench/|^common/makefiles/'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - release-2.4
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.4
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/serverless-bench"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=serverless-bench"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=tests/serverless-bench"
+              - "--dockerfile=Dockerfile"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
   

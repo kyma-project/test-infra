@@ -111,7 +111,6 @@ trap cleanup exit INT
 
 log::info "Preparing environment variables for the instance"
 envVars=(
-  KYMA_MAJOR_VERSION
   KYMA_PROJECT_DIR
   BOT_GITHUB_TOKEN
 )
@@ -127,10 +126,8 @@ utils::compress_send_to_vm "${ZONE}" "kyma-upgrade-test-${RANDOM_ID}" "/home/pro
 
 set -o pipefail
 log::info "Triggering the installation"
-if [[ "${KYMA_MAJOR_VERSION}" == "1" ]]; then
-  utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-upgrade-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/kyma-upgrade-k3d-kyma-to-kyma2.sh"
-else
-  utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-upgrade-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/kyma-upgrade-k3d-kyma2-to-main.sh"
-fi
+
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-upgrade-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/kyma-upgrade-k3d-kyma2-to-main.sh"
+
 
 log::success "all done"

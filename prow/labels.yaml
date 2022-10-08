@@ -211,11 +211,6 @@ default:
       target: both
       addedBy: label
     - color: 0052cc
-      description: Issues or PRs related to busola-migrator
-      name: area/busola-migrator
-      target: both
-      addedBy: label
-    - color: 0052cc
       description: Issues or PRs related to eventing
       name: area/eventing
       target: both

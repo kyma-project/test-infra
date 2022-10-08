@@ -10,7 +10,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-//Unexported
+// Unexported
 const (
 	ElSchema      = "$schema"
 	ElProperties  = "properties"
@@ -19,7 +19,7 @@ const (
 	ElDefault     = "default"
 )
 
-//Unexported
+// Unexported
 var (
 	ErrNoSchema         = errors.New("no '$schema' element found")
 	ErrNoDescription    = errors.New("no 'description' element found")
