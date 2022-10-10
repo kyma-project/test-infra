@@ -46,6 +46,13 @@ presubmits: # runs on PRs
               - name: config
                 mountPath: /config
                 readOnly: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
         volumes:
           - name: share
           - name: config
@@ -97,6 +104,13 @@ postsubmits: # runs on main
               - name: config
                 mountPath: /config
                 readOnly: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
         volumes:
           - name: share
           - name: config

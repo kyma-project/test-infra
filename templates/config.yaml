@@ -84,6 +84,13 @@ globalSets:
     decorate: "true"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
+    nodeSelector:
+      dedicated: high-cpu
+    tolerations:
+      - key: dedicated
+        value: high-cpu
+        operator: Equal
+        effect: NoSchedule
     image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220928-3d2ace1b4-buildkit
     command: "/kaniko-build"
     labels:
