@@ -133,7 +133,6 @@ func (sm *Service) GetAllSecrets(projectPath string, filter string) ([]*gcpsecre
 		if filter != "" {
 			secretListCall = secretListCall.Filter(filter)
 		}
-		// TODO support paging
 		if nextPageToken != "" {
 			secretListCall.PageToken(nextPageToken)
 		}
