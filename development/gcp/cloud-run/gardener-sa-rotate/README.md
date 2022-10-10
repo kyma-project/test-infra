@@ -2,27 +2,27 @@
 
 ## Overview
 
-Cloud Run app creates a new key for a GCP service account, updates the required secret data, and deletes old versions of a key. The function is triggered by a Pub/Sub message sent by a secret stored in Secret Manager.
+The Cloud Run application creates a new key for a GCP service account, updates the required secret data, and deletes old versions of a key. The function is triggered by a Pub/Sub message sent by a secret stored in Secret Manager.
 
-1. Secret in Secret Manager sends a Pub/Sub message to `secret-manager-notifications` Pub/Sub topic.
-2. Cloud Run app checks if the value of the **eventType** attribute is set to `SECRET_ROTATE`; if not, it stops its execution.
-3. Cloud Run app checks if the value of the **type** label is set to `gardener-service-account`; if not, it stops its execution.
-4. Cloud Run app checks if the values of the **kubeconfig-secret**, **gardener-secret**, and **gardener-secret-namespace** labels are set; if not, it stops its execution.
-5. Cloud Run app authenticates to a cluster using the kubeconfig from the latest version of a secret provided in **kubeconfig-secret** label.
-6. Cloud Run app reads the name of the service account from the latest version of a secret.
-7. Cloud Run app generates a new key for the service account.
-8. Cloud Run app creates a new secret version in Secret Manger, containing the newly created service account key.
-9. Cloud Run app updates a secret in Gardener cluster, containing the newly created service account key.
-10. Cloud Run app deletes old versions of a key in IAM.
-11. Cloud Run app destroys old versions of a secret in Secret Manager.
+1. A secret in Secret Manager sends a Pub/Sub message to the `secret-manager-notifications` Pub/Sub topic.
+2. The Cloud Run application checks if the value of the **eventType** attribute is set to `SECRET_ROTATE`. If not, it stops running.
+3. The Cloud Run application checks if the value of the **type** label is set to `gardener-service-account`. If not, it stops running.
+4. The Cloud Run application checks if the values of the **kubeconfig-secret**, **gardener-secret**, and **gardener-secret-namespace** labels are set. If not, it stops running.
+5. The Cloud Run application authenticates to a cluster using the kubeconfig from the latest version of a secret provided in the **kubeconfig-secret** label.
+6. The Cloud Run application reads the name of the service account from the latest version of a secret.
+7. The Cloud Run application generates a new key for the service account.
+8. The Cloud Run application creates a new secret version containing the newly created service account key in Secret Manger.
+9. The Cloud Run application updates a secret containing the newly created service account key in the Gardener cluster.
+10. The Cloud Run application deletes old versions of a key in IAM.
+11. The Cloud Run application destroys old versions of a secret in Secret Manager.
 
 ## Cloud Run deployment
 
-To deploy Cloud Run app follow these steps:
+To deploy the Cloud Run application, follow the following steps:
 
-1. Create the `secret-manager-notifications` Pub/Sub topic, if it does not exist.
-2. Create the `service-${PROJECT_NUMBER}@gcp-sa-secretmanager.iam.gserviceaccount.com` service account with the `roles/pubsub.publisher` role, if it does not exist.
-3. Use the following command to deploy Cloud Run app:
+1. Create the `secret-manager-notifications` Pub/Sub topic if it does not exist.
+2. Create the `service-${PROJECT_NUMBER}@gcp-sa-secretmanager.iam.gserviceaccount.com` service account with the `roles/pubsub.publisher` role if it does not exist.
+3. Use the following command to deploy the Cloud Run application:
 ```bash
 gcloud run deploy rotate-gardener-secrets-service-account \
 --region europe-west1 \
@@ -35,19 +35,19 @@ gcloud run deploy rotate-gardener-secrets-service-account \
 --allow-unauthenticated \
 --image eu.gcr.io/kyma-project/test-infra/gardener-sa-rotate:v20221006-6fd98cfd
 ```
-4. Create the push `rotate-gardener-secrets-service-account` Pub/Sub subscription on `secret-manager-notifications` topic pointing to the Cloud Run app URL.
+4. Create the push `rotate-gardener-secrets-service-account` Pub/Sub subscription on `secret-manager-notifications` topic pointing to the Cloud Run application URL.
 
 
 ## Cloud run usage
 
-To setup an automatic rotation for a Secret Manager secret follow these steps:
+To setup an automatic rotation for a Secret Manager secret, follow these steps:
 1. Create a new secret in Secret Manager with the existing service account data.
-2. Add `type: gardener-service-account` label to the secret.
-3. Add `kubeconfig-secret` label containing name of the secret containing Gardener cluster kubeconfig to the secret.
-4. Add `gardener-secret` label containing name of a Gardener secret containing service account credentials to the secret.
-5. Add `gardener-secret-namespace` label containing name of a Gardener secret namespace to the secret.
+2. Add the `type: gardener-service-account` label to the secret.
+3. Add the `kubeconfig-secret` label with the name of the secret containing the Gardener cluster kubeconfig to the secret.
+4. Add the `gardener-secret` label with the name of a Gardener secret containing service account credentials to the secret.
+5. Add the `gardener-secret-namespace` label containing the name of a Gardener secret namespace to the secret.
 6. Set `secret-manager-notifications` as a secret Pub/Sub topic.
-7. Set up rotation period for the secret.
+7. Set up a rotation period for the secret.
 
 
 # Secret Manager secret labels
@@ -56,7 +56,7 @@ See the list of labels required for the function:
 
 | Name                      | Required | Description                                                                                          |
 | :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
-| **type** | Yes | Type of secret, must be set to `gardener-service-account`. |
+| **type** | Yes | Type of secret. It must be set to `gardener-service-account`. |
 | **kubeconfig-secret** | Yes | Name of the Secret Manager secret containing kubeconfig. |
 | **gardener-secret** | Yes | Name of the Gardener secret containing service account credentials. |
 | **gardener-secret-namespace** | Yes | Name of the Gardener secret namespace containing service account credentials. |
