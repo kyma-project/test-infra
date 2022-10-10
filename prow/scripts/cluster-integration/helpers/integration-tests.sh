@@ -128,6 +128,7 @@ spec:
           number: 80
 EOF
   kubectl apply -f "$PWD/ory-hydra-login-consent.yaml"
+  kubectl -n istio-system rollout status ory-hydra-login-consent
   log::success "App deployed"
 }
 
