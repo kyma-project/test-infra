@@ -50,6 +50,36 @@ func (sm *Service) GetSecretVersion(secretPath string) (*gcpsecretmanager.Secret
 	return sm.Service.Projects.Secrets.Versions.Get(secretPath).Do()
 }
 
+// GetSecretVersion retrieves one version of a secret
+// expects secretPath in "projects/*/secrets/*/versions/*" format
+func (sm *Service) GetAllSecretVersions(secretPath, filter string) ([]*gcpsecretmanager.SecretVersion, error) {
+	var versions []*gcpsecretmanager.SecretVersion
+	nextPageToken := ""
+
+	for {
+		allVersionsCall := sm.Service.Projects.Secrets.Versions.List(secretPath)
+
+		if filter != "" {
+			allVersionsCall = allVersionsCall.Filter(filter)
+		}
+		if nextPageToken != "" {
+			allVersionsCall.PageToken(nextPageToken)
+		}
+
+		allVersionsResponse, err := allVersionsCall.Do()
+		if err != nil {
+			return nil, err
+		}
+		versions = append(versions, allVersionsResponse.Versions...)
+
+		if allVersionsResponse.NextPageToken == "" {
+			break
+		}
+		nextPageToken = allVersionsResponse.NextPageToken
+	}
+	return versions, nil
+}
+
 // DisableSecretVersion disables a version of a secret
 // expects versionPath in "projects/*/secrets/*/versions/*" format
 func (sm *Service) DisableSecretVersion(versionPath string) (*gcpsecretmanager.SecretVersion, error) {
@@ -91,4 +121,33 @@ func (sm *Service) GetSecretVersionData(secretPath string) (string, error) {
 	}
 	decodedSecretDataString, err := base64.StdEncoding.DecodeString(secretVersion.Payload.Data)
 	return string(decodedSecretDataString), err
+}
+
+// GetAllSecrets gets all or all filtered secrets from Secret Manager.
+func (sm *Service) GetAllSecrets(projectPath string, filter string) ([]*gcpsecretmanager.Secret, error) {
+	var secrets []*gcpsecretmanager.Secret
+	nextPageToken := ""
+
+	for {
+		secretListCall := sm.Service.Projects.Secrets.List(projectPath)
+		if filter != "" {
+			secretListCall = secretListCall.Filter(filter)
+		}
+		if nextPageToken != "" {
+			secretListCall.PageToken(nextPageToken)
+		}
+
+		secretList, err := secretListCall.Do()
+		if err != nil {
+			return nil, err
+		}
+		secrets = append(secrets, secretList.Secrets...)
+
+		if secretList.NextPageToken == "" {
+			break
+		}
+		nextPageToken = secretList.NextPageToken
+	}
+
+	return secrets, nil
 }
