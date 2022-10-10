@@ -128,7 +128,7 @@ spec:
           number: 80
 EOF
   kubectl apply -f "$PWD/ory-hydra-login-consent.yaml"
-  kubectl wait deployment ory-hydra-login-consent -n kyma-system --timeout=60s kyma-system --for condition=available
+  kubectl wait deployment ory-hydra-login-consent -n kyma-system --timeout=60s --for condition=available
   log::success "App deployed"
 }
 
