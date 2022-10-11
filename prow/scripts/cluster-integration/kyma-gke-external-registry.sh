@@ -176,7 +176,9 @@ envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-serverless-ext
 
 log::info "Installation triggered"
 
-kyma::install_cli
+# Install unstable cli because released one is not working without following changes:
+# https://github.com/kyma-project/cli/pull/1398
+kyma::install_unstable_cli
 
 kyma deploy --ci --source=local --workspace "$KYMA_SOURCES_DIR" --verbose \
     --values-file "$PWD/kyma_overrides.yaml"

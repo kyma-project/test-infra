@@ -9,7 +9,7 @@ RUN apk add --no-cache curl && \
 FROM moby/buildkit:v0.10.4-rootless
 
 COPY --from=creds /usr/bin/docker-credential-gcr /usr/bin/
-RUN docker-credential-gcr configure-docker
+RUN docker-credential-gcr configure-docker --registries=eu.gcr.io,europe-docker.pkg.dev
 
 ENV USE_BUILDKIT=true
 

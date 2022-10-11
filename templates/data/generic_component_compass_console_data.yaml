@@ -1,0 +1,51 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/incubator/compass-console/compass/compass-ui.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-incubator/compass-console"
+            jobs:
+              - jobConfig:
+                  name: pull-compass-console-build
+                  args:
+                    - "--name=compass-console"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=compass/Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 60m
+                    grace_period: 1m
+                  run_if_changed: "^compass/|^components/|^shared/|^package.json"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-compass-console-build
+                  args:
+                    - "--name=compass-console"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=compass/Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 60m
+                    grace_period: 1m
+                  run_if_changed: "^compass/|^components/|^shared/|^package.json"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_postsubmit
+
+

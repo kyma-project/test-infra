@@ -19,7 +19,7 @@ replace (
 require (
 	cloud.google.com/go/bigquery v1.42.0
 	cloud.google.com/go/compute v1.10.0
-	cloud.google.com/go/firestore v1.6.1
+	cloud.google.com/go/firestore v1.7.0
 	cloud.google.com/go/functions v1.7.0
 	cloud.google.com/go/logging v1.5.0
 	cloud.google.com/go/pubsub v1.25.1
@@ -42,7 +42,7 @@ require (
 	github.com/imdario/mergo v0.3.13
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/jinzhu/copier v0.3.5
-	github.com/onsi/gomega v1.20.2
+	github.com/onsi/gomega v1.21.1
 	github.com/pkg/errors v0.9.1
 	github.com/shurcooL/githubv4 v0.0.0-20211117020012-5800b9de5b8b
 	github.com/sigstore/cosign v1.2.1
