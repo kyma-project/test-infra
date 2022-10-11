@@ -38,7 +38,7 @@ gcloud run deploy rotate-gardener-secrets-service-account \
 4. Create the push `rotate-gardener-secrets-service-account` Pub/Sub subscription on `secret-manager-notifications` topic pointing to the Cloud Run application URL.
 
 
-## Cloud run usage
+## Cloud Run usage
 
 To setup an automatic rotation for a Secret Manager secret, follow these steps:
 1. Create a new secret in Secret Manager with the existing service account data.
@@ -56,10 +56,10 @@ See the list of labels required for the function:
 
 | Name                      | Required | Description                                                                                          |
 | :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
-| **type** | Yes | Type of secret. It must be set to `gardener-service-account`. |
-| **kubeconfig-secret** | Yes | Name of the Secret Manager secret containing kubeconfig. |
-| **gardener-secret** | Yes | Name of the Gardener secret containing service account credentials. |
-| **gardener-secret-namespace** | Yes | Name of the Gardener secret namespace containing service account credentials. |
+| **type** | Yes | The type of secret. It must be set to `gardener-service-account`. |
+| **kubeconfig-secret** | Yes | the name of the Secret Manager secret containing the kubeconfig. |
+| **gardener-secret** | Yes | the name of the Gardener secret containing service account credentials. |
+| **gardener-secret-namespace** | Yes | The name of the Gardener secret namespace containing service account credentials. |
 
 
 # GET request parameters
@@ -67,5 +67,5 @@ See the list of labels required for the function:
 See the list of GET arguments for the function:
 | Name                      | Required | Description                                                                                          |
 | :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
-| **dry_run** | No | Enables dry run without updating secrets (defaults to false). |
+| **dry_run** | No | Enables a dry run without updating secrets (defaults to false). |
 
