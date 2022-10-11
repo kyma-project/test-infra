@@ -39,6 +39,10 @@ presubmits: # runs on PRs
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 1000m
             volumeMounts:
               - name: share
                 mountPath: /home/user/.local/share/buildkit
@@ -96,6 +100,10 @@ postsubmits: # runs on main
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 1000m
             volumeMounts:
               - name: share
                 mountPath: /home/user/.local/share/buildkit

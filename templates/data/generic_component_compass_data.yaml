@@ -17,6 +17,8 @@ templates:
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
                   run_if_changed: "^components/operations-controller/"
                   branches:
                     - ^main$
@@ -38,6 +40,8 @@ templates:
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
                   run_if_changed: "^components/operations-controller/"
                   branches:
                     - ^main$
@@ -64,6 +68,8 @@ templates:
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
                   run_if_changed: "^components/connector/"
                   branches:
                     - ^main$
@@ -85,6 +91,8 @@ templates:
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
                   run_if_changed: "^components/connector/"
                   branches:
                     - ^main$
@@ -111,6 +119,8 @@ templates:
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
                   run_if_changed: "^components/director/"
                   branches:
                     - ^main$
@@ -132,6 +142,8 @@ templates:
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
                   run_if_changed: "^components/director/"
                   branches:
                     - ^main$
@@ -158,6 +170,8 @@ templates:
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
                   run_if_changed: "^components/hydrator/"
                   branches:
                     - ^main$
@@ -179,6 +193,8 @@ templates:
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
                   run_if_changed: "^components/hydrator/"
                   branches:
                     - ^main$
@@ -205,6 +221,8 @@ templates:
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
                   run_if_changed: "^components/system-broker/"
                   branches:
                     - ^main$
@@ -226,6 +244,8 @@ templates:
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
                   run_if_changed: "^components/system-broker/"
                   branches:
                     - ^main$
@@ -252,6 +272,8 @@ templates:
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
                   run_if_changed: "^components/external-services-mock/"
                   branches:
                     - ^main$
@@ -273,6 +295,8 @@ templates:
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
                   run_if_changed: "^components/external-services-mock/"
                   branches:
                     - ^main$
@@ -299,6 +323,8 @@ templates:
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
                   run_if_changed: "^components/connectivity-adapter/"
                   branches:
                     - ^main$
@@ -320,6 +346,8 @@ templates:
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
                   run_if_changed: "^components/connectivity-adapter/"
                   branches:
                     - ^main$
@@ -346,6 +374,8 @@ templates:
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
                   run_if_changed: "^components/pairing-adapter/"
                   branches:
                     - ^main$
@@ -367,6 +397,8 @@ templates:
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
                   run_if_changed: "^components/pairing-adapter/"
                   branches:
                     - ^main$
@@ -393,6 +425,8 @@ templates:
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
                   run_if_changed: "^components/gateway/"
                   branches:
                     - ^main$
@@ -414,6 +448,8 @@ templates:
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
                   run_if_changed: "^components/gateway/"
                   branches:
                     - ^main$
@@ -439,6 +475,8 @@ templates:
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
                   run_if_changed: "^components/schema-migrator/"
                   branches:
                     - ^main$
@@ -459,6 +497,8 @@ templates:
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
                   run_if_changed: "^components/schema-migrator/"
                   branches:
                     - ^main$
@@ -485,6 +525,8 @@ templates:
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
                   run_if_changed: "^tests/"
                   branches:
                     - ^main$
@@ -506,6 +548,8 @@ templates:
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
                   run_if_changed: "^tests/"
                   branches:
                     - ^main$
