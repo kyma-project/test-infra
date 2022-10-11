@@ -634,7 +634,6 @@ templates:
                     - "--context=components/schema-migrator"
                     - "--dockerfile=Dockerfile"
                     - "--platform=linux/amd64"
-                    - "--platform=linux/arm64"
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
@@ -655,7 +654,6 @@ templates:
                     - "--context=components/schema-migrator"
                     - "--dockerfile=Dockerfile"
                     - "--platform=linux/amd64"
-                    - "--platform=linux/arm64"
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
