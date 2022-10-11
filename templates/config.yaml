@@ -70,7 +70,7 @@ globalSets:
     image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0
     command: /kaniko-build
     labels:
-      preset-sa-gcr-push: "true"
+      preset-sa-kyma-push-images: "true"
     volumes:
       - name: config
         configMapName: kaniko-build-config
@@ -144,9 +144,9 @@ globalSets:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_bootstrap:
-    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221003-d0889db7"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221010-c497a085"
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
   image_buildpack-node:

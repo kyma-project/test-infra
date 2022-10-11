@@ -21,7 +21,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221005-ae1d38f9"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
             securityContext:
               privileged: true
             command:
@@ -85,7 +85,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-keda-manager-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -96,7 +96,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
             command:
               - "/kaniko-build"
             args:
@@ -123,7 +123,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-keda-manager-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -134,7 +134,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
             command:
               - "/kaniko-build"
             args:
