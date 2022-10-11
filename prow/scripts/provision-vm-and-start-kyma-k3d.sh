@@ -4,7 +4,7 @@
 # Use this flag to specify the custom image for provisining vms. If no flag is provided, the latest custom image is used.
 
 set -o errexit
-log::info "Script start"
+
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
 
