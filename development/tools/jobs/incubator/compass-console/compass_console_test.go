@@ -24,8 +24,8 @@ func TestCompassConsoleJobsPresubmit(t *testing.T) {
 	assert.False(t, actualPresubmit.SkipReport)
 
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.KymaPushImages)
-	assert.Equal(t, "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220928-3d2ace1b4-buildkit", actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/kaniko-build"}, actualPresubmit.Spec.Containers[0].Command)
+	assert.Equal(t, "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221011-f36fe4783-buildkit", actualPresubmit.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/image-builder"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"--name=compass-console", "--config=/config/kaniko-build-config.yaml", "--context=.", "--dockerfile=compass/Dockerfile", "--platform=linux/amd64", "--platform=linux/arm64"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
@@ -42,7 +42,7 @@ func TestCompassConsoleJobPostsubmit(t *testing.T) {
 	assert.Equal(t, 10, actualPostsubmit.MaxConcurrency)
 
 	tester.AssertThatHasPresets(t, actualPostsubmit.JobBase, preset.KymaPushImages)
-	assert.Equal(t, "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220928-3d2ace1b4-buildkit", actualPostsubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/kaniko-build"}, actualPostsubmit.Spec.Containers[0].Command)
+	assert.Equal(t, "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221011-f36fe4783-buildkit", actualPostsubmit.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/image-builder"}, actualPostsubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"--name=compass-console", "--config=/config/kaniko-build-config.yaml", "--context=.", "--dockerfile=compass/Dockerfile", "--platform=linux/amd64", "--platform=linux/arm64"}, actualPostsubmit.Spec.Containers[0].Args)
 }
